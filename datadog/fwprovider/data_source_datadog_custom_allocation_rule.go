@@ -2,10 +2,13 @@ package fwprovider
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -143,7 +146,7 @@ func (d *datadogCustomAllocationRuleDataSource) Schema(_ context.Context, _ data
 					},
 					"method": schema.StringAttribute{
 						Computed:    true,
-						Description: "The allocation method. Valid values are `even`, `proportional`, `proportional_timeseries`, or `percent`.",
+						Description: "The allocation method. Valid values are `even`, `even_timeseries`, `percent`, `proportional`, `proportional_timeseries`, or `usage_metric`.",
 					},
 					"allocated_by_tag_keys": schema.ListAttribute{
 						Computed:    true,
@@ -154,6 +157,12 @@ func (d *datadogCustomAllocationRuleDataSource) Schema(_ context.Context, _ data
 						Computed:    true,
 						Description: "List of tag keys used to group costs before allocation.",
 						ElementType: types.StringType,
+					},
+					"based_on_timeseries": schema.StringAttribute{
+						Computed:   true,
+						CustomType: jsontypes.NormalizedType{},
+						Description: "The timeseries query that determines the allocation proportions, encoded as a JSON object. " +
+							"Set when `method` is `proportional_timeseries` or `even_timeseries`.",
 					},
 				},
 				Blocks: map[string]schema.Block{
@@ -252,9 +261,6 @@ func (d *datadogCustomAllocationRuleDataSource) Schema(_ context.Context, _ data
 							},
 						},
 					},
-					"based_on_timeseries": schema.SingleNestedBlock{
-						Attributes: map[string]schema.Attribute{},
-					},
 				},
 			},
 		},
@@ -276,14 +282,14 @@ func (d *datadogCustomAllocationRuleDataSource) Read(ctx context.Context, reques
 	}
 
 	if data, ok := ddResp.GetDataOk(); ok {
-		d.updateState(ctx, &state, data)
+		d.updateState(ctx, &state, data, &response.Diagnostics)
 	}
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogCustomAllocationRuleDataSource) updateState(ctx context.Context, state *datadogCustomAllocationRuleDataSourceModel, data *datadogV2.ArbitraryRuleResponseData) {
+func (d *datadogCustomAllocationRuleDataSource) updateState(ctx context.Context, state *datadogCustomAllocationRuleDataSourceModel, data *datadogV2.ArbitraryRuleResponseData, diags *diag.Diagnostics) {
 	if id, ok := data.GetIdOk(); ok {
 		state.ID = types.StringValue(*id)
 	}
@@ -435,10 +441,15 @@ func (d *datadogCustomAllocationRuleDataSource) updateState(ctx context.Context,
 					strategyTf.BasedOnCosts = append(strategyTf.BasedOnCosts, &basedOnCostsTfItem)
 				}
 			}
-			if basedOnTimeseries, ok := strategy.GetBasedOnTimeseriesOk(); ok {
-				_ = basedOnTimeseries
-				basedOnTimeseriesTf := basedOnTimeseriesModel{}
-				strategyTf.BasedOnTimeseries = &basedOnTimeseriesTf
+			if basedOnTimeseries, ok := strategy.GetBasedOnTimeseriesOk(); ok && len(*basedOnTimeseries) > 0 {
+				basedOnTimeseriesJson, err := json.Marshal(*basedOnTimeseries)
+				if err != nil {
+					diags.AddError("error marshalling based_on_timeseries", err.Error())
+				} else {
+					strategyTf.BasedOnTimeseries = jsontypes.NewNormalizedValue(string(basedOnTimeseriesJson))
+				}
+			} else {
+				strategyTf.BasedOnTimeseries = jsontypes.NewNormalizedNull()
 			}
 			if evaluateGroupedByFilters, ok := strategy.GetEvaluateGroupedByFiltersOk(); ok && len(*evaluateGroupedByFilters) > 0 {
 				strategyTf.EvaluateGroupedByFilters = []*evaluateGroupedByFiltersModel{}

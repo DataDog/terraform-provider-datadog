@@ -1,0 +1,169 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 539
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"costs_to_allocate":[{"condition":"is","tag":"aws_product","value":"AmazonEC2"}],"enabled":true,"provider":["aws"],"rule_name":"tf-test-rule-ts-tf-TestAccDatadogCustomAllocationRuleTimeseries-local-1786388201","strategy":{"based_on_timeseries":{"formulas":[{"formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*} by {host}"}],"response_format":"timeseries"},"granularity":"daily","method":"proportional_timeseries"},"type":"shared"},"type":"upsert_arbitrary_rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 734
+        uncompressed: false
+        body: '{"data":{"id":"26603","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonEC2","values":null}],"created":"2026-08-10T18:56:43.308136863Z","enabled":true,"last_modified_user_uuid":"234a38f2-6533-11f0-a9ad-261b2904e188","order_id":8,"provider":["aws"],"rule_name":"tf-test-rule-ts-tf-TestAccDatadogCustomAllocationRuleTimeseries-local-1786388201","strategy":{"method":"proportional_timeseries","granularity":"daily","based_on_timeseries":{"formulas":[{"formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*} by {host}"}],"response_format":"timeseries"}},"type":"shared","updated":"2026-08-10T18:56:43.308136863Z","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 86.160084ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule/26603
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 728
+        uncompressed: false
+        body: '{"data":{"id":"26603","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonEC2","values":null}],"created":"2026-08-10T18:56:43.308136Z","enabled":true,"last_modified_user_uuid":"234a38f2-6533-11f0-a9ad-261b2904e188","order_id":8,"provider":["aws"],"rule_name":"tf-test-rule-ts-tf-TestAccDatadogCustomAllocationRuleTimeseries-local-1786388201","strategy":{"method":"proportional_timeseries","granularity":"daily","based_on_timeseries":{"formulas":[{"formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*} by {host}"}],"response_format":"timeseries"}},"type":"shared","updated":"2026-08-10T18:56:43.308136Z","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 82.763458ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule/26603
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 728
+        uncompressed: false
+        body: '{"data":{"id":"26603","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonEC2","values":null}],"created":"2026-08-10T18:56:43.308136Z","enabled":true,"last_modified_user_uuid":"234a38f2-6533-11f0-a9ad-261b2904e188","order_id":8,"provider":["aws"],"rule_name":"tf-test-rule-ts-tf-TestAccDatadogCustomAllocationRuleTimeseries-local-1786388201","strategy":{"method":"proportional_timeseries","granularity":"daily","based_on_timeseries":{"formulas":[{"formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*} by {host}"}],"response_format":"timeseries"}},"type":"shared","updated":"2026-08-10T18:56:43.308136Z","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 67.379208ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule/26603
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 59.26775ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule/26603
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 97
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Not found","detail":"The requested resource was not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 41.496292ms
