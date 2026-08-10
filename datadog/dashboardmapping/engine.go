@@ -728,6 +728,7 @@ var dataSourceToQueryType = map[string]string{
 	"cloud_cost":                  "cloud_cost_query",
 	"apm_dependency_stats":        "apm_dependency_stats_query",
 	"apm_resource_stats":          "apm_resource_stats_query",
+	"apm_metrics":                 "apm_metrics_query",
 	"product_analytics":           "event_query",
 	"product_analytics_extended":  "product_analytics_extended_query",
 	"product_analytics_journey":   "user_journey_query",
