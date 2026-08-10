@@ -1,0 +1,36 @@
+# Spec for the parser ordering tests. Paths (zebra/alpha/mid) and /alpha's
+# methods (post/get/delete) are declared out of (path, method) order on
+# purpose, so the tests fail if LoadSpec ever stops sorting.
+openapi: 3.0.0
+info:
+  title: Ordering
+  version: 1.0.0
+paths:
+  /zebra:
+    get:
+      operationId: GetZebra
+      responses:
+        '200':
+          description: ok
+  /alpha:
+    post:
+      operationId: CreateAlpha
+      responses:
+        '201':
+          description: created
+    get:
+      operationId: GetAlpha
+      responses:
+        '200':
+          description: ok
+    delete:
+      operationId: DeleteAlpha
+      responses:
+        '204':
+          description: gone
+  /mid:
+    put:
+      operationId: PutMid
+      responses:
+        '200':
+          description: ok

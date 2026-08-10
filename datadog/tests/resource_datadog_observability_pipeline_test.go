@@ -2095,7 +2095,8 @@ resource "datadog_observability_pipeline" "syslogng_dest" {
         keepalive = 45000
 
         tls {
-          crt_file = "/etc/certs/syslogng.crt"
+          crt_file    = "/etc/certs/syslogng.crt"
+          server_name = "syslogng.example.com"
         }
       }
     }
@@ -2109,6 +2110,7 @@ resource "datadog_observability_pipeline" "syslogng_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.syslog_ng.0.keepalive", "45000"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.syslog_ng.0.tls.0.crt_file", "/etc/certs/syslogng.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.syslog_ng.0.tls.0.server_name", "syslogng.example.com"),
 				),
 			},
 		},
@@ -2817,7 +2819,8 @@ resource "datadog_observability_pipeline" "http_client" {
         scrape_timeout_secs  = 10
         auth_strategy       = "basic"
         tls {
-          crt_file = "/path/to/http.crt"
+          crt_file    = "/path/to/http.crt"
+          server_name = "httpclient.example.com"
         }
       }
     }
@@ -2838,6 +2841,7 @@ resource "datadog_observability_pipeline" "http_client" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_client.0.scrape_timeout_secs", "10"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_client.0.auth_strategy", "basic"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_client.0.tls.0.crt_file", "/path/to/http.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_client.0.tls.0.server_name", "httpclient.example.com"),
 				),
 			},
 		},
@@ -4054,6 +4058,60 @@ resource "datadog_observability_pipeline" "opensearch_datastream" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_opensearchDestinationAuthAndEndpoint(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.opensearch_auth"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "opensearch_auth" {
+  name = "opensearch-auth-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "opensearch-destination-1"
+      inputs = ["source-1"]
+
+      opensearch {
+        bulk_index       = "logs-datastream"
+        endpoint_url_key = "OPENSEARCH_ENDPOINT_URL"
+
+        auth {
+          strategy     = "basic"
+          username_key = "OPENSEARCH_USERNAME"
+          password_key = "OPENSEARCH_PASSWORD"
+        }
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "opensearch-auth-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "opensearch-destination-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opensearch.0.bulk_index", "logs-datastream"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opensearch.0.endpoint_url_key", "OPENSEARCH_ENDPOINT_URL"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opensearch.0.auth.0.strategy", "basic"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opensearch.0.auth.0.username_key", "OPENSEARCH_USERNAME"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opensearch.0.auth.0.password_key", "OPENSEARCH_PASSWORD"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_amazonOpenSearchDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -4888,9 +4946,10 @@ resource "datadog_observability_pipeline" "socket_dest" {
         }
 
         tls {
-          crt_file = "/etc/ssl/certs/socket.crt"
-          ca_file  = "/etc/ssl/certs/ca.crt"
-          key_file = "/etc/ssl/private/socket.key"
+          crt_file    = "/etc/ssl/certs/socket.crt"
+          ca_file     = "/etc/ssl/certs/ca.crt"
+          key_file    = "/etc/ssl/private/socket.key"
+          server_name = "socket.example.com"
         }
       }
     }
@@ -4907,6 +4966,7 @@ resource "datadog_observability_pipeline" "socket_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.socket.0.tls.0.crt_file", "/etc/ssl/certs/socket.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.socket.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.socket.0.tls.0.key_file", "/etc/ssl/private/socket.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.socket.0.tls.0.server_name", "socket.example.com"),
 				),
 			},
 		},
@@ -5093,6 +5153,7 @@ resource "datadog_observability_pipeline" "cloud_prem_dest_tls" {
           ca_file      = "/path/to/ca.pem"
           key_file     = "/path/to/key.pem"
           key_pass_key = "TLS_KEY_PASSPHRASE"
+          server_name  = "cloudprem.example.com"
         }
       }
     }
@@ -5106,6 +5167,7 @@ resource "datadog_observability_pipeline" "cloud_prem_dest_tls" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.cloud_prem.0.tls.0.ca_file", "/path/to/ca.pem"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.cloud_prem.0.tls.0.key_file", "/path/to/key.pem"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.cloud_prem.0.tls.0.key_pass_key", "TLS_KEY_PASSPHRASE"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.cloud_prem.0.tls.0.server_name", "cloudprem.example.com"),
 				),
 			},
 		},
@@ -5660,6 +5722,67 @@ resource "datadog_observability_pipeline" "amazon_s3_generic_buffer" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.buffer.0.memory.0.max_size", "268435456"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.buffer.0.memory.0.when_full", "block"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_amazonS3GenericDestinationSseKms(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.amazon_s3_generic_sse_kms"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "amazon_s3_generic_sse_kms" {
+  name = "amazon s3 generic sse-kms pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "s3-generic-sse-kms-1"
+      inputs = ["source-1"]
+
+      amazon_s3_generic {
+        bucket                = "my-generic-bucket"
+        region                = "us-east-1"
+        storage_class         = "STANDARD"
+        server_side_encryption = "aws:kms"
+        ssekms_key_id         = "arn:aws:kms:us-east-1:123456789012:key/mrk-abc123"
+
+        encoding {
+          type = "json"
+        }
+
+        compression {
+          algorithm = "snappy"
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "s3-generic-sse-kms-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.bucket", "my-generic-bucket"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.region", "us-east-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.storage_class", "STANDARD"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.server_side_encryption", "aws:kms"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.ssekms_key_id", "arn:aws:kms:us-east-1:123456789012:key/mrk-abc123"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.encoding.0.type", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.compression.0.algorithm", "snappy"),
 				),
 			},
 		},
@@ -6505,9 +6628,10 @@ resource "datadog_observability_pipeline" "http_client_dest" {
         }
 
         tls {
-          crt_file = "/etc/ssl/certs/http.crt"
-          ca_file  = "/etc/ssl/certs/ca.crt"
-          key_file = "/etc/ssl/private/http.key"
+          crt_file    = "/etc/ssl/certs/http.crt"
+          ca_file     = "/etc/ssl/certs/ca.crt"
+          key_file    = "/etc/ssl/private/http.key"
+          server_name = "httpclientdest.example.com"
         }
       }
     }
@@ -6525,6 +6649,7 @@ resource "datadog_observability_pipeline" "http_client_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.tls.0.crt_file", "/etc/ssl/certs/http.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.tls.0.key_file", "/etc/ssl/private/http.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.tls.0.server_name", "httpclientdest.example.com"),
 				),
 			},
 		},
@@ -8043,16 +8168,20 @@ resource "datadog_observability_pipeline" "tag_cardinality_limit" {
           limit_exceeded_action = "drop_tag"
           value_limit           = 5000
 
+          tracking_mode {
+            mode = "exact_fingerprint"
+          }
+
           per_metric_limit {
             metric_name           = "request.count"
-            mode                  = "tracked"
+            override_type         = "limit_override"
             limit_exceeded_action = "drop_tag"
             value_limit           = 1000
 
             per_tag_limit {
-              tag_key     = "env"
-              mode        = "limit_override"
-              value_limit = 50
+              tag_key       = "env"
+              override_type = "limit_override"
+              value_limit   = 50
             }
           }
         }
@@ -8071,10 +8200,11 @@ resource "datadog_observability_pipeline" "tag_cardinality_limit" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.limit_exceeded_action", "drop_tag"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.value_limit", "5000"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.tracking_mode.0.mode", "exact_fingerprint"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.metric_name", "request.count"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.mode", "tracked"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.override_type", "limit_override"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.0.tag_key", "env"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.0.mode", "limit_override"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.0.override_type", "limit_override"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.0.value_limit", "50"),
 				),
 			},

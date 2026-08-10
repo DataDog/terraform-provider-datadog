@@ -1,0 +1,469 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: Cloud Cost Management
+  description: The Cloud Cost Management API allows you to set up, edit, and delete Cloud Cost Management
+    accounts for AWS, Azure, and Google Cloud. You can query your cost data by using the [Metrics endpoint](https://docs.datadoghq.com/api/latest/metrics/#query-timeseries-data-across-multiple-products)
+    and the `cloud_cost` data source. For more information, see the [Cloud Cost Management documentation](https://docs.datadoghq.com/cloud_cost_management/).
+paths:
+  /api/v2/tags/enrichment/{ruleset_id}:
+    get:
+      operationId: GetTagPipelinesRuleset
+      tags:
+      - Cloud Cost Management
+      summary: Get a tag pipeline ruleset
+      description: Get a specific tag pipeline ruleset - Retrieve a specific tag pipeline ruleset by its
+        ID
+      parameters:
+      - name: ruleset_id
+        in: path
+        required: true
+        description: The unique identifier of the ruleset
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RulesetResp'
+              examples:
+                default:
+                  value:
+                    data:
+                      attributes:
+                        created: null
+                        enabled: true
+                        last_modified_user_uuid: ''
+                        modified: null
+                        name: Example Ruleset
+                        position: 0
+                        rules:
+                        - enabled: true
+                          mapping: null
+                          metadata: null
+                          name: Add Cost Center Tag
+                          query:
+                            addition:
+                              key: cost_center
+                              value: engineering
+                            case_insensitivity: false
+                            if_tag_exists: do_not_apply
+                            query: account_id:"123456789" AND service:"web-api"
+                          reference_table: null
+                        version: 1
+                      id: 00000000-0000-0000-0000-000000000004
+                      type: ruleset
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      security:
+      - apiKeyAuth: []
+        appKeyAuth: []
+      - AuthZ:
+        - cloud_cost_management_read
+      x-menu-order: 20
+      x-undo:
+        type: safe
+components:
+  responses:
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    DataAttributesRulesItemsIfTagExists:
+      type: string
+      description: The behavior when the tag already exists.
+      enum:
+      - append
+      - do_not_apply
+      - replace
+      x-enum-varnames:
+      - APPEND
+      - DO_NOT_APPLY
+      - REPLACE
+    DataAttributesRulesItemsMapping:
+      type: object
+      description: The definition of `DataAttributesRulesItemsMapping` object.
+      nullable: true
+      required:
+      - destination_key
+      - source_keys
+      properties:
+        destination_key:
+          type: string
+          description: The `mapping` `destination_key`.
+          example: ''
+        if_not_exists:
+          type: boolean
+          description: Deprecated. Use `if_tag_exists` instead. The `mapping` `if_not_exists`.
+          deprecated: true
+        if_tag_exists:
+          $ref: '#/components/schemas/DataAttributesRulesItemsIfTagExists'
+        source_keys:
+          type: array
+          description: The `mapping` `source_keys`.
+          example:
+          - ''
+          items:
+            type: string
+            description: A source key for the mapping rule.
+    RulesetItemMetadata:
+      type: object
+      description: The `items` `metadata`.
+      nullable: true
+      additionalProperties:
+        type: string
+    RulesetResp:
+      type: object
+      description: The definition of `RulesetResp` object.
+      example:
+        data:
+          attributes:
+            created: null
+            enabled: true
+            last_modified_user_uuid: ''
+            modified: null
+            name: Example Ruleset
+            position: 0
+            rules:
+            - enabled: false
+              mapping: null
+              metadata: null
+              name: RC test rule edited1
+              query:
+                addition:
+                  key: abc
+                  value: ww
+                case_insensitivity: false
+                if_tag_exists: do_not_apply
+                query: billingcurrency:"USD" AND account_name:"SZA96462" AND billingcurrency:"USD"
+              reference_table: null
+            - enabled: true
+              mapping:
+                destination_key: h
+                if_tag_exists: do_not_apply
+                source_keys:
+                - accountname
+                - accountownerid
+              metadata: null
+              name: rule with empty source key
+              query: null
+              reference_table: null
+            - enabled: true
+              mapping: null
+              metadata: null
+              name: New table rule with new UI
+              query: null
+              reference_table:
+                case_insensitivity: true
+                field_pairs:
+                - input_column: status_type
+                  output_key: status
+                - input_column: status_description
+                  output_key: dess
+                if_tag_exists: append
+                source_keys:
+                - http_status
+                - status_description
+                table_name: http_status_codes
+            version: 1
+          id: '12345'
+          type: ruleset
+      properties:
+        data:
+          $ref: '#/components/schemas/RulesetRespData'
+    RulesetRespData:
+      type: object
+      description: The definition of `RulesetRespData` object.
+      required:
+      - type
+      properties:
+        attributes:
+          $ref: '#/components/schemas/RulesetRespDataAttributes'
+        id:
+          type: string
+          description: The `RulesetRespData` `id`.
+        type:
+          $ref: '#/components/schemas/RulesetRespDataType'
+    RulesetRespDataAttributes:
+      type: object
+      description: The definition of `RulesetRespDataAttributes` object.
+      required:
+      - created
+      - enabled
+      - last_modified_user_uuid
+      - modified
+      - name
+      - position
+      - rules
+      - version
+      properties:
+        created:
+          $ref: '#/components/schemas/RulesetRespDataAttributesCreated'
+        enabled:
+          type: boolean
+          description: The `attributes` `enabled`.
+          example: false
+        last_modified_user_uuid:
+          type: string
+          description: The `attributes` `last_modified_user_uuid`.
+          example: ''
+        modified:
+          $ref: '#/components/schemas/RulesetRespDataAttributesModified'
+        name:
+          type: string
+          description: The `attributes` `name`.
+          example: ''
+        position:
+          type: integer
+          description: The `attributes` `position`.
+          format: int32
+          maximum: 2147483647
+          example: 0
+        processing_status:
+          type: string
+          description: The `attributes` `processing_status`.
+          example: ''
+        rules:
+          type: array
+          description: The `attributes` `rules`.
+          items:
+            $ref: '#/components/schemas/RulesetRespDataAttributesRulesItems'
+        version:
+          type: integer
+          description: The `attributes` `version`.
+          format: int64
+          example: 0
+    RulesetRespDataAttributesCreated:
+      type: object
+      description: The definition of `RulesetRespDataAttributesCreated` object.
+      properties:
+        nanos:
+          type: integer
+          description: The `created` `nanos`.
+          format: int32
+          maximum: 2147483647
+        seconds:
+          type: integer
+          description: The `created` `seconds`.
+          format: int64
+    RulesetRespDataAttributesModified:
+      type: object
+      description: The definition of `RulesetRespDataAttributesModified` object.
+      properties:
+        nanos:
+          type: integer
+          description: The `modified` `nanos`.
+          format: int32
+          maximum: 2147483647
+        seconds:
+          type: integer
+          description: The `modified` `seconds`.
+          format: int64
+    RulesetRespDataAttributesRulesItems:
+      type: object
+      description: The definition of `RulesetRespDataAttributesRulesItems` object.
+      required:
+      - enabled
+      - name
+      properties:
+        enabled:
+          type: boolean
+          description: The `items` `enabled`.
+          example: false
+        mapping:
+          $ref: '#/components/schemas/DataAttributesRulesItemsMapping'
+        metadata:
+          $ref: '#/components/schemas/RulesetItemMetadata'
+        name:
+          type: string
+          description: The `items` `name`.
+          example: ''
+        query:
+          $ref: '#/components/schemas/RulesetRespDataAttributesRulesItemsQuery'
+        reference_table:
+          $ref: '#/components/schemas/RulesetRespDataAttributesRulesItemsReferenceTable'
+    RulesetRespDataAttributesRulesItemsQuery:
+      type: object
+      description: The definition of `RulesetRespDataAttributesRulesItemsQuery` object.
+      nullable: true
+      required:
+      - addition
+      - query
+      properties:
+        addition:
+          $ref: '#/components/schemas/RulesetRespDataAttributesRulesItemsQueryAddition'
+        case_insensitivity:
+          type: boolean
+          description: The `query` `case_insensitivity`.
+        if_not_exists:
+          type: boolean
+          description: Deprecated. Use `if_tag_exists` instead. The `query` `if_not_exists`.
+          deprecated: true
+        if_tag_exists:
+          $ref: '#/components/schemas/DataAttributesRulesItemsIfTagExists'
+        query:
+          type: string
+          description: The `query` `query`.
+          example: ''
+    RulesetRespDataAttributesRulesItemsQueryAddition:
+      type: object
+      description: The definition of `RulesetRespDataAttributesRulesItemsQueryAddition` object.
+      nullable: true
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: The `addition` `key`.
+          example: ''
+        value:
+          type: string
+          description: The `addition` `value`.
+          example: ''
+    RulesetRespDataAttributesRulesItemsReferenceTable:
+      type: object
+      description: The definition of `RulesetRespDataAttributesRulesItemsReferenceTable` object.
+      nullable: true
+      required:
+      - field_pairs
+      - source_keys
+      - table_name
+      properties:
+        case_insensitivity:
+          type: boolean
+          description: The `reference_table` `case_insensitivity`.
+        field_pairs:
+          type: array
+          description: The `reference_table` `field_pairs`.
+          items:
+            $ref: '#/components/schemas/RulesetRespDataAttributesRulesItemsReferenceTableFieldPairsItems'
+        if_not_exists:
+          type: boolean
+          description: Deprecated. Use `if_tag_exists` instead. The `reference_table` `if_not_exists`.
+          deprecated: true
+        if_tag_exists:
+          $ref: '#/components/schemas/DataAttributesRulesItemsIfTagExists'
+        source_keys:
+          type: array
+          description: The `reference_table` `source_keys`.
+          example:
+          - ''
+          items:
+            type: string
+            description: A source key for the reference table lookup.
+        table_name:
+          type: string
+          description: The `reference_table` `table_name`.
+          example: ''
+    RulesetRespDataAttributesRulesItemsReferenceTableFieldPairsItems:
+      type: object
+      description: The definition of `RulesetRespDataAttributesRulesItemsReferenceTableFieldPairsItems`
+        object.
+      required:
+      - input_column
+      - output_key
+      properties:
+        input_column:
+          type: string
+          description: The `items` `input_column`.
+          example: ''
+        output_key:
+          type: string
+          description: The `items` `output_key`.
+          example: ''
+    RulesetRespDataType:
+      type: string
+      description: Ruleset resource type.
+      default: ruleset
+      example: ruleset
+      enum:
+      - ruleset
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - RULESET
+  securitySchemes:
+    AuthZ:
+      type: oauth2
+      description: This API uses OAuth 2 with the implicit grant flow.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth2/v1/authorize
+          tokenUrl: /oauth2/v1/token
+          scopes: {}
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY

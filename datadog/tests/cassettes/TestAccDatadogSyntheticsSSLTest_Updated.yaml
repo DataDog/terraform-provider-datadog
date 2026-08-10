@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 549
+        content_length: 586
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443","servername":"datadoghq.com"}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1752658561","options":{"accept_self_signed":true,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"status":"paused","subtype":"ssl","tags":[],"type":"api"}
+            {"config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443","servername":"datadoghq.com"}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1783701967","options":{"accept_self_signed":true,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"httpVersion":"any","ignore_certificate_validation":true,"min_location_failed":1,"tick_every":60},"status":"paused","subtype":"ssl","tags":[],"type":"api"}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"7ut-vxz-kpm","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1752658561","status":"paused","type":"api","subtype":"ssl","tags":[],"created_at":"2025-07-16T09:36:03.643812+00:00","modified_at":"2025-07-16T09:36:03.643812+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443","servername":"datadoghq.com"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":178083297,"org_id":321813,"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"creation_source":"terraform"}
+            {"public_id":"7jn-z2a-igw","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1783701967","status":"paused","type":"api","subtype":"ssl","tags":[],"created_at":"2026-07-10T16:46:10.656505+00:00","modified_at":"2026-07-10T16:46:10.656505+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443","servername":"datadoghq.com"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"httpVersion":"any","ignore_certificate_validation":true,"min_location_failed":1,"tick_every":60,"bits_ai_auto_investigate":false},"locations":["aws:eu-central-1"],"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":304331457,"org_id":321813,"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"creation_source":"terraform"}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 666.88ms
+        duration: 519.953917ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/7ut-vxz-kpm
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/7jn-z2a-igw
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"7ut-vxz-kpm","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1752658561","status":"paused","type":"api","subtype":"ssl","tags":[],"created_at":"2025-07-16T09:36:03.643812+00:00","modified_at":"2025-07-16T09:36:03.643812+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443","servername":"datadoghq.com"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":178083297,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"7jn-z2a-igw","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1783701967","status":"paused","type":"api","subtype":"ssl","tags":[],"created_at":"2026-07-10T16:46:10.656505+00:00","modified_at":"2026-07-10T16:46:10.656505+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443","servername":"datadoghq.com"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"httpVersion":"any","ignore_certificate_validation":true,"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":304331457,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 236.710958ms
+        duration: 228.799542ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/7ut-vxz-kpm
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/7jn-z2a-igw
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"7ut-vxz-kpm","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1752658561","status":"paused","type":"api","subtype":"ssl","tags":[],"created_at":"2025-07-16T09:36:03.643812+00:00","modified_at":"2025-07-16T09:36:03.643812+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443","servername":"datadoghq.com"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":178083297,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"7jn-z2a-igw","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1783701967","status":"paused","type":"api","subtype":"ssl","tags":[],"created_at":"2026-07-10T16:46:10.656505+00:00","modified_at":"2026-07-10T16:46:10.656505+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443","servername":"datadoghq.com"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"httpVersion":"any","ignore_certificate_validation":true,"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":304331457,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 232.654ms
+        duration: 265.175959ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/7ut-vxz-kpm
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/7jn-z2a-igw
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"7ut-vxz-kpm","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1752658561","status":"paused","type":"api","subtype":"ssl","tags":[],"created_at":"2025-07-16T09:36:03.643812+00:00","modified_at":"2025-07-16T09:36:03.643812+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443","servername":"datadoghq.com"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":178083297,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"7jn-z2a-igw","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1783701967","status":"paused","type":"api","subtype":"ssl","tags":[],"created_at":"2026-07-10T16:46:10.656505+00:00","modified_at":"2026-07-10T16:46:10.656505+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443","servername":"datadoghq.com"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"httpVersion":"any","ignore_certificate_validation":true,"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":304331457,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 246.547208ms
+        duration: 222.690875ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +160,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/7ut-vxz-kpm
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/7jn-z2a-igw
         method: GET
       response:
         proto: HTTP/1.1
@@ -172,13 +172,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"7ut-vxz-kpm","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1752658561","status":"paused","type":"api","subtype":"ssl","tags":[],"created_at":"2025-07-16T09:36:03.643812+00:00","modified_at":"2025-07-16T09:36:03.643812+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443","servername":"datadoghq.com"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":178083297,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"7jn-z2a-igw","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1783701967","status":"paused","type":"api","subtype":"ssl","tags":[],"created_at":"2026-07-10T16:46:10.656505+00:00","modified_at":"2026-07-10T16:46:10.656505+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443","servername":"datadoghq.com"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"httpVersion":"any","ignore_certificate_validation":true,"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":304331457,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 227.86ms
+        duration: 230.977375ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -195,7 +195,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/7ut-vxz-kpm
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/7jn-z2a-igw
         method: GET
       response:
         proto: HTTP/1.1
@@ -207,13 +207,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"7ut-vxz-kpm","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1752658561","status":"paused","type":"api","subtype":"ssl","tags":[],"created_at":"2025-07-16T09:36:03.643812+00:00","modified_at":"2025-07-16T09:36:03.643812+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443","servername":"datadoghq.com"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":178083297,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"7jn-z2a-igw","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1783701967","status":"paused","type":"api","subtype":"ssl","tags":[],"created_at":"2026-07-10T16:46:10.656505+00:00","modified_at":"2026-07-10T16:46:10.656505+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443","servername":"datadoghq.com"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"httpVersion":"any","ignore_certificate_validation":true,"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":304331457,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 228.819666ms
+        duration: 209.290125ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -230,7 +230,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/7ut-vxz-kpm
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/7jn-z2a-igw
         method: GET
       response:
         proto: HTTP/1.1
@@ -242,13 +242,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"7ut-vxz-kpm","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1752658561","status":"paused","type":"api","subtype":"ssl","tags":[],"created_at":"2025-07-16T09:36:03.643812+00:00","modified_at":"2025-07-16T09:36:03.643812+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443","servername":"datadoghq.com"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":178083297,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"7jn-z2a-igw","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1783701967","status":"paused","type":"api","subtype":"ssl","tags":[],"created_at":"2026-07-10T16:46:10.656505+00:00","modified_at":"2026-07-10T16:46:10.656505+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443","servername":"datadoghq.com"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"checkCertificateRevocation":true,"disableAiaIntermediateFetching":true,"httpVersion":"any","ignore_certificate_validation":true,"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":304331457,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 267.1895ms
+        duration: 227.302ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -261,14 +261,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"config":{"assertions":[{"operator":"isInMoreThan","target":60,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"locations":["aws:eu-central-1"],"message":"Notify @pagerduty","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1752658561-updated","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"status":"live","subtype":"ssl","tags":["foo:bar","foo","env:test"],"type":"api"}
+            {"config":{"assertions":[{"operator":"isInMoreThan","target":60,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"locations":["aws:eu-central-1"],"message":"Notify @pagerduty","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1783701967-updated","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"status":"live","subtype":"ssl","tags":["foo:bar","foo","env:test"],"type":"api"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/7ut-vxz-kpm
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/7jn-z2a-igw
         method: PUT
       response:
         proto: HTTP/1.1
@@ -280,13 +280,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"org_id":321813,"public_id":"7ut-vxz-kpm","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1752658561-updated","status":"live","type":"api","tags":["foo:bar","foo","env:test"],"message":"Notify @pagerduty","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"created_at":"2025-07-16T09:36:03.643812+00:00","modified_at":"2025-07-16T09:36:06.627435+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":60,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"overall_state_modified":"2025-07-16T09:36:06.714685+00:00","subtype":"ssl","monitor_id":178083297,"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"overall_state":2,"creation_source":"terraform"}
+            {"org_id":321813,"public_id":"7jn-z2a-igw","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1783701967-updated","status":"live","type":"api","tags":["foo:bar","foo","env:test"],"message":"Notify @pagerduty","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60,"bits_ai_auto_investigate":false},"locations":["aws:eu-central-1"],"created_at":"2026-07-10T16:46:10.656505+00:00","modified_at":"2026-07-10T16:46:14.509916+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":60,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"overall_state_modified":"1970-01-01T00:00:00+00:00","subtype":"ssl","monitor_id":304331457,"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"overall_state":2,"creation_source":"terraform"}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 747.980833ms
+        duration: 802.330375ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -303,7 +303,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/7ut-vxz-kpm
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/7jn-z2a-igw
         method: GET
       response:
         proto: HTTP/1.1
@@ -315,13 +315,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"7ut-vxz-kpm","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1752658561-updated","status":"live","type":"api","subtype":"ssl","tags":["foo:bar","foo","env:test"],"created_at":"2025-07-16T09:36:03.643812+00:00","modified_at":"2025-07-16T09:36:06.627435+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":60,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"message":"Notify @pagerduty","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":178083297,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"7jn-z2a-igw","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1783701967-updated","status":"live","type":"api","subtype":"ssl","tags":["foo:bar","foo","env:test"],"created_at":"2026-07-10T16:46:10.656505+00:00","modified_at":"2026-07-10T16:46:14.509916+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":60,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"message":"Notify @pagerduty","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":304331457,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 210.286458ms
+        duration: 218.858917ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -338,7 +338,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/7ut-vxz-kpm
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/7jn-z2a-igw
         method: GET
       response:
         proto: HTTP/1.1
@@ -350,13 +350,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"7ut-vxz-kpm","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1752658561-updated","status":"live","type":"api","subtype":"ssl","tags":["foo:bar","foo","env:test"],"created_at":"2025-07-16T09:36:03.643812+00:00","modified_at":"2025-07-16T09:36:06.627435+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":60,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"message":"Notify @pagerduty","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":178083297,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"7jn-z2a-igw","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1783701967-updated","status":"live","type":"api","subtype":"ssl","tags":["foo:bar","foo","env:test"],"created_at":"2026-07-10T16:46:10.656505+00:00","modified_at":"2026-07-10T16:46:14.509916+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":60,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"message":"Notify @pagerduty","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":304331457,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 227.020916ms
+        duration: 5.47694175s
     - id: 10
       request:
         proto: HTTP/1.1
@@ -373,7 +373,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/7ut-vxz-kpm
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/7jn-z2a-igw
         method: GET
       response:
         proto: HTTP/1.1
@@ -385,13 +385,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"7ut-vxz-kpm","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1752658561-updated","status":"live","type":"api","subtype":"ssl","tags":["foo:bar","foo","env:test"],"created_at":"2025-07-16T09:36:03.643812+00:00","modified_at":"2025-07-16T09:36:06.627435+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":60,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"message":"Notify @pagerduty","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":178083297,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"7jn-z2a-igw","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1783701967-updated","status":"live","type":"api","subtype":"ssl","tags":["foo:bar","foo","env:test"],"created_at":"2026-07-10T16:46:10.656505+00:00","modified_at":"2026-07-10T16:46:14.509916+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":60,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"message":"Notify @pagerduty","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":304331457,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 234.475542ms
+        duration: 231.749ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -404,7 +404,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"public_ids":["7ut-vxz-kpm"]}
+            {"public_ids":["7jn-z2a-igw"]}
         form: {}
         headers:
             Accept:
@@ -423,13 +423,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_tests":[{"public_id":"7ut-vxz-kpm","deleted_at":"2025-07-16T09:36:09.510175+00:00"}]}
+            {"deleted_tests":[{"public_id":"7jn-z2a-igw","deleted_at":"2026-07-10T16:46:22.755957+00:00"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.33474025s
+        duration: 926.296042ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -446,7 +446,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/7ut-vxz-kpm
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/7jn-z2a-igw
         method: GET
       response:
         proto: HTTP/1.1
@@ -463,4 +463,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 125.33575ms
+        duration: 180.093542ms

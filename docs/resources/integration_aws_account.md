@@ -57,6 +57,14 @@ resource "datadog_integration_aws_account" "foo" {
     namespace_filters {
       exclude_only = ["AWS/SQS", "AWS/ElasticMapReduce", "AWS/Usage"]
     }
+    metric_name_filters {
+      namespace    = "AWS/EC2"
+      include_only = ["aws.ec2.network_in"]
+    }
+    metric_name_filters {
+      namespace    = "AWS/RDS"
+      exclude_only = ["aws.rds.aurora*"]
+    }
     tag_filters {
       namespace = "AWS/EC2"
       tags      = ["datadog:true"]
@@ -202,6 +210,7 @@ Optional:
 - `collect_cloudwatch_alarms` (Boolean) Enable CloudWatch alarms collection Defaults to `false`.
 - `collect_custom_metrics` (Boolean) Enable custom metrics collection Defaults to `false`.
 - `enabled` (Boolean) Enable AWS metrics collection Defaults to `true`.
+- `metric_name_filters` (Block List) AWS CloudWatch metric name filters. Each filter applies to a single namespace and must define exactly one of `include_only` or `exclude_only`. (see [below for nested schema](#nestedblock--metrics_config--metric_name_filters))
 - `tag_filters` (Block List) AWS Metrics Collection tag filters list. The array of custom AWS resource tags (in the form `key:value`) defines a filter that Datadog uses when collecting metrics from a specified service. Wildcards, such as `?` (match a single character) and `*` (match multiple characters), and exclusion using `!` before the tag are supported. For EC2, only hosts that match one of the defined tags will be imported into Datadog. The rest will be ignored. For example, `env:production,instance-type:c?.*,!region:us-east-1`. (see [below for nested schema](#nestedblock--metrics_config--tag_filters))
 
 <a id="nestedblock--metrics_config--namespace_filters"></a>
@@ -211,6 +220,19 @@ Optional:
 
 - `exclude_only` (List of String) Exclude only these namespaces from metrics collection. Use [`datadog_integration_aws_available_namespaces` data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/integration_aws_available_namespaces) to get allowed values. Defaults to `["AWS/SQS", "AWS/ElasticMapReduce", "AWS/Usage"]`. `AWS/SQS`, `AWS/ElasticMapReduce`, and `AWS/Usage` are excluded by default to reduce your AWS CloudWatch costs from `GetMetricData` API calls.
 - `include_only` (List of String) Include only these namespaces for metrics collection. Use [`datadog_integration_aws_available_namespaces` data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/integration_aws_available_namespaces) to get allowed values.
+
+
+<a id="nestedblock--metrics_config--metric_name_filters"></a>
+### Nested Schema for `metrics_config.metric_name_filters`
+
+Required:
+
+- `namespace` (String) The AWS CloudWatch namespace to which this metric name filter applies.
+
+Optional:
+
+- `exclude_only` (List of String) Exclude metric names matching one of these patterns.
+- `include_only` (List of String) Include only metric names matching one of these patterns.
 
 
 <a id="nestedblock--metrics_config--tag_filters"></a>

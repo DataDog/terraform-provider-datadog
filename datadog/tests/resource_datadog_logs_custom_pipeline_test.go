@@ -191,6 +191,13 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
         }
     }
     processor {
+        exclude_attribute_processor {
+            name = "exclude attribute operation"
+            is_enabled = true
+            attribute_to_exclude = "unwanted.field"
+        }
+    }
+    processor {
         schema_processor {
             name = "Map to OCSF Schema"
             is_enabled = true

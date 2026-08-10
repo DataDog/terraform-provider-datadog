@@ -1,4 +1,7 @@
 TEST?=$$(go list ./...)
+# Unit-test packages: everything except the datadog/tests acceptance suite. These
+# don't interact with the API, use no cassettes, and need no terraform binary.
+UNIT_PKGS?=$$(go list ./... | grep -vE '/datadog/tests(/|$$)')
 RECORD?=false
 GOIMPORTS_FILES?=$$(find . -name '*.go')
 PKG_NAME=datadog
@@ -8,6 +11,7 @@ DEV_TFRC=$(HOME)/.terraform.d/dev/datadog.tfrc
 ZORKIAN_VERSION?=master
 API_CLIENT_VERSION?=master
 LOCAL_PACKAGE="github.com/terraform-providers/terraform-provider-datadog"
+GO?=go
 
 default: build
 
@@ -41,19 +45,24 @@ dev-build:
 dev-clean:
 	@rm -vf $(DEV_PLUGIN_DIR)/terraform-provider-datadog $(DEV_TFRC)
 
-# Run unit tests; these tests don't interact with the API and don't support/need RECORD
-test: get-test-deps fmtcheck
-	gotestsum --hide-summary skipped --format testname --debug --packages $(TEST) -- $(TESTARGS) -timeout=30s
+# Run unit tests; these tests don't interact with the API and don't support/need RECORD.
+# Scoped to UNIT_PKGS so the datadog/tests acceptance suite is never compiled or run here,
+# and so these tests always run regardless of the shard -run filter passed via TESTARGS.
+test:
+	$(GO) tool gotestsum --format testname --debug --packages $(UNIT_PKGS) -- $(TESTARGS) -timeout=120s
 
 # Run acceptance tests (this runs integration CRUD tests through the terraform test framework)
-testacc: get-test-deps
-	RECORD=$(RECORD) TF_ACC=1 gotestsum --format testname --debug --rerun-fails --packages ./... -- -v $(TESTARGS) -timeout 120m
+# Set TESTACC_JSONFILE to also have gotestsum write the raw test2json stream there;
+# scripts/summarize_testacc.py turns it into the PR integration check summary. Unset
+# by default, so local runs behave exactly as before.
+testacc:
+	RECORD=$(RECORD) TF_ACC=1 $(GO) tool gotestsum --format testname --debug --rerun-fails $(if $(TESTACC_JSONFILE),--jsonfile $(TESTACC_JSONFILE)) --packages ./datadog/tests/... -- -v $(TESTARGS) -timeout 120m
 
 # Run both unit and acceptance tests
 testall: test testacc
 
-cassettes: get-test-deps fmtcheck
-	RECORD=true TF_ACC=1 gotestsum --format testname --packages ./... -- -v $(TESTARGS) -timeout 120m
+cassettes: fmtcheck
+	RECORD=true TF_ACC=1 $(GO) tool gotestsum --format testname --packages ./... -- -v $(TESTARGS) -timeout 120m
 
 vet:
 	@echo "go vet ."
@@ -65,7 +74,7 @@ vet:
 	fi
 
 fmt:
-	goimports -format-only -local $(LOCAL_PACKAGE) -w $(GOIMPORTS_FILES)
+	$(GO) tool goimports -format-only -local $(LOCAL_PACKAGE) -w $(GOIMPORTS_FILES)
 	terraform fmt -recursive examples
 
 fmtcheck:
@@ -83,23 +92,29 @@ lint-new:
 lint-fix:
 	golangci-lint run --fix ./...
 
-test-compile: get-test-deps
+test-compile:
 	@if [ "$(TEST)" = "./..." ]; then \
 		echo "ERROR: Set TEST to a specific package. For example,"; \
 		echo "  make test-compile TEST=./$(PKG_NAME)"; \
 		exit 1; \
 	fi
-	gotestsum --format testname -- -c $(TEST) $(TESTARGS)
+	$(GO) tool gotestsum --format testname -- -c $(TEST) $(TESTARGS)
+	
+# Build the tfgen binary into bin/tfgen (generator lives in its own module under .generator-v2)
+tfgen-build:
+	cd .generator-v2 && $(GO) build -o $(CURDIR)/bin/tfgen ./cmd/tfgen
+	@echo "Built tfgen -> bin/tfgen"
+
+# Run the tfgen module's unit tests
+tfgen-test:
+	cd .generator-v2 && $(GO) test ./internal/... ./cmd/tfgen/... -race -cover
+	@echo "tfgen tests passed"
 
 update-go-client:
 	echo "Updating the Zorkian client to ${ZORKIAN_VERSION} and the API Client to ${API_CLIENT_VERSION}"
 	go get github.com/zorkian/go-datadog-api@$(ZORKIAN_VERSION)
 	go get github.com/DataDog/datadog-api-client-go/v2@${API_CLIENT_VERSION}
 	go mod tidy
-
-get-test-deps:
-	gotestsum --version || go install gotest.tools/gotestsum@latest
-	which goimports || go install golang.org/x/tools/cmd/goimports@latest
 
 sweep:
 	TF_ACC=1 go test ./datadog/tests/ -run TestSweep -v -timeout 10m
@@ -125,4 +140,4 @@ check-docs: docs
 		echo "Success: No generated documentation changes detected"; \
 	fi
 
-.PHONY: build dev-build dev-clean check-docs docs test testall testacc cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile get-test-deps license-check sweep
+.PHONY: build dev-build dev-clean check-docs docs test testall testacc tfgen-build tfgen-test cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile license-check sweep

@@ -97,7 +97,7 @@ type httpClientDestinationModel struct {
 	UsernameKey  types.String                                `tfsdk:"username_key"`
 	Compression  []httpClientDestinationCompressionModel     `tfsdk:"compression"`
 	AuthStrategy types.String                                `tfsdk:"auth_strategy"`
-	Tls          []observability_pipeline.TlsModel           `tfsdk:"tls"`
+	Tls          []observability_pipeline.ClientTlsModel     `tfsdk:"tls"`
 	Buffer       []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
@@ -408,9 +408,17 @@ type amazonOpenSearchAuthModel struct {
 }
 
 type opensearchDestinationModel struct {
-	BulkIndex  types.String                                `tfsdk:"bulk_index"`
-	DataStream []opensearchDestinationDataStreamModel      `tfsdk:"data_stream"`
-	Buffer     []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
+	BulkIndex      types.String                                `tfsdk:"bulk_index"`
+	EndpointUrlKey types.String                                `tfsdk:"endpoint_url_key"`
+	Auth           []opensearchDestinationAuthModel            `tfsdk:"auth"`
+	DataStream     []opensearchDestinationDataStreamModel      `tfsdk:"data_stream"`
+	Buffer         []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
+}
+
+type opensearchDestinationAuthModel struct {
+	Strategy    types.String `tfsdk:"strategy"`
+	UsernameKey types.String `tfsdk:"username_key"`
+	PasswordKey types.String `tfsdk:"password_key"`
 }
 
 type opensearchDestinationDataStreamModel struct {
@@ -593,7 +601,7 @@ type rsyslogDestinationModel struct {
 type syslogNgDestinationModel struct {
 	EndpointUrlKey types.String                                `tfsdk:"endpoint_url_key"`
 	Keepalive      types.Int64                                 `tfsdk:"keepalive"`
-	Tls            []observability_pipeline.TlsModel           `tfsdk:"tls"`
+	Tls            []observability_pipeline.ClientTlsModel     `tfsdk:"tls"`
 	Buffer         []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
@@ -746,16 +754,16 @@ type amazonDataFirehoseSourceModel struct {
 }
 
 type httpClientSourceModel struct {
-	Decoding       types.String                      `tfsdk:"decoding"`
-	EndpointUrlKey types.String                      `tfsdk:"endpoint_url_key"`
-	ScrapeInterval types.Int64                       `tfsdk:"scrape_interval_secs"`
-	ScrapeTimeout  types.Int64                       `tfsdk:"scrape_timeout_secs"`
-	AuthStrategy   types.String                      `tfsdk:"auth_strategy"`
-	TokenKey       types.String                      `tfsdk:"token_key"`
-	PasswordKey    types.String                      `tfsdk:"password_key"`
-	UsernameKey    types.String                      `tfsdk:"username_key"`
-	CustomKey      types.String                      `tfsdk:"custom_key"`
-	Tls            []observability_pipeline.TlsModel `tfsdk:"tls"`
+	Decoding       types.String                            `tfsdk:"decoding"`
+	EndpointUrlKey types.String                            `tfsdk:"endpoint_url_key"`
+	ScrapeInterval types.Int64                             `tfsdk:"scrape_interval_secs"`
+	ScrapeTimeout  types.Int64                             `tfsdk:"scrape_timeout_secs"`
+	AuthStrategy   types.String                            `tfsdk:"auth_strategy"`
+	TokenKey       types.String                            `tfsdk:"token_key"`
+	PasswordKey    types.String                            `tfsdk:"password_key"`
+	UsernameKey    types.String                            `tfsdk:"username_key"`
+	CustomKey      types.String                            `tfsdk:"custom_key"`
+	Tls            []observability_pipeline.ClientTlsModel `tfsdk:"tls"`
 }
 
 type googlePubSubSourceModel struct {
@@ -1178,7 +1186,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"tls": observability_pipeline.TlsSchema(),
+												"tls": observability_pipeline.ClientTlsSchema(),
 											},
 										},
 									},
@@ -2314,7 +2322,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														listvalidator.SizeAtMost(1),
 													},
 												},
-												"tls":    observability_pipeline.TlsSchema(),
+												"tls":    observability_pipeline.ClientTlsSchema(),
 												"buffer": observability_pipeline.BufferOptionsSchema(),
 											},
 										},
@@ -2468,7 +2476,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"tls":    observability_pipeline.TlsSchema(),
+												"tls":    observability_pipeline.ClientTlsSchema(),
 												"buffer": observability_pipeline.BufferOptionsSchema(),
 											},
 										},
@@ -2596,8 +2604,37 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													Optional:    true,
 													Description: "The index or datastream to write logs to.",
 												},
+												"endpoint_url_key": schema.StringAttribute{
+													Optional:    true,
+													Description: "Name of the environment variable or secret that holds the OpenSearch endpoint URL.",
+												},
 											},
 											Blocks: map[string]schema.Block{
+												"auth": schema.ListNestedBlock{
+													Description: "Authentication settings for the OpenSearch destination.",
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"strategy": schema.StringAttribute{
+																Required:    true,
+																Description: "The authentication strategy to use.",
+																Validators: []validator.String{
+																	stringvalidator.OneOf("basic", "aws"),
+																},
+															},
+															"username_key": schema.StringAttribute{
+																Optional:    true,
+																Description: "Name of the environment variable or secret that holds the OpenSearch username (used when `strategy` is `basic`).",
+															},
+															"password_key": schema.StringAttribute{
+																Optional:    true,
+																Description: "Name of the environment variable or secret that holds the OpenSearch password (used when `strategy` is `basic`).",
+															},
+														},
+													},
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+												},
 												"data_stream": schema.ListNestedBlock{
 													Description: "Configuration options for writing to OpenSearch Data Streams instead of a fixed index.",
 													NestedObject: schema.NestedBlockObject{
@@ -5407,7 +5444,7 @@ func expandHttpClientDestination(ctx context.Context, dest *destinationModel, sr
 		d.SetCompression(comp)
 	}
 
-	d.Tls = observability_pipeline.ExpandTls(src.Tls)
+	d.Tls = observability_pipeline.ExpandClientTls(src.Tls)
 
 	if len(src.Buffer) > 0 {
 		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
@@ -5442,7 +5479,7 @@ func flattenHttpClientDestination(ctx context.Context, src *datadogV2.Observabil
 		out.UsernameKey = types.StringValue(*v)
 	}
 	if src.Tls != nil {
-		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+		out.Tls = observability_pipeline.FlattenClientTls(src.Tls)
 	}
 
 	if auth, ok := src.GetAuthStrategyOk(); ok {
@@ -6227,7 +6264,7 @@ func expandSyslogNgDestination(ctx context.Context, dest *destinationModel, src 
 	if !src.Keepalive.IsNull() {
 		obj.SetKeepalive(src.Keepalive.ValueInt64())
 	}
-	obj.Tls = observability_pipeline.ExpandTls(src.Tls)
+	obj.Tls = observability_pipeline.ExpandClientTls(src.Tls)
 
 	if len(src.Buffer) > 0 {
 		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
@@ -6250,7 +6287,7 @@ func flattenSyslogNgDestination(ctx context.Context, src *datadogV2.Observabilit
 		out.EndpointUrlKey = types.StringValue(*v)
 	}
 	if src.Tls != nil {
-		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+		out.Tls = observability_pipeline.FlattenClientTls(src.Tls)
 	}
 	if v, ok := src.GetKeepaliveOk(); ok {
 		out.Keepalive = types.Int64Value(*v)
@@ -6623,7 +6660,7 @@ func expandHttpClientSource(src *httpClientSourceModel, id string) datadogV2.Obs
 		auth := datadogV2.ObservabilityPipelineHttpClientSourceAuthStrategy(src.AuthStrategy.ValueString())
 		httpSrc.SetAuthStrategy(auth)
 	}
-	httpSrc.Tls = observability_pipeline.ExpandTls(src.Tls)
+	httpSrc.Tls = observability_pipeline.ExpandClientTls(src.Tls)
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineHttpClientSource: httpSrc,
@@ -6654,7 +6691,7 @@ func flattenHttpClientSource(src *datadogV2.ObservabilityPipelineHttpClientSourc
 		out.CustomKey = types.StringValue(*v)
 	}
 	if src.Tls != nil {
-		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+		out.Tls = observability_pipeline.FlattenClientTls(src.Tls)
 	}
 	if v, ok := src.GetScrapeIntervalSecsOk(); ok {
 		out.ScrapeInterval = types.Int64Value(*v)
@@ -6920,6 +6957,25 @@ func expandOpenSearchDestination(ctx context.Context, dest *destinationModel, sr
 	if !src.BulkIndex.IsNull() {
 		opensearch.SetBulkIndex(src.BulkIndex.ValueString())
 	}
+	if !src.EndpointUrlKey.IsNull() {
+		opensearch.SetEndpointUrlKey(src.EndpointUrlKey.ValueString())
+	}
+
+	if len(src.Auth) > 0 {
+		authModel := src.Auth[0]
+		auth := datadogV2.NewObservabilityPipelineElasticsearchDestinationAuthWithDefaults()
+		strategy, _ := datadogV2.NewObservabilityPipelineAmazonOpenSearchDestinationAuthStrategyFromValue(authModel.Strategy.ValueString())
+		if strategy != nil {
+			auth.SetStrategy(*strategy)
+		}
+		if !authModel.UsernameKey.IsNull() {
+			auth.SetUsernameKey(authModel.UsernameKey.ValueString())
+		}
+		if !authModel.PasswordKey.IsNull() {
+			auth.SetPasswordKey(authModel.PasswordKey.ValueString())
+		}
+		opensearch.SetAuth(*auth)
+	}
 
 	if len(src.Buffer) > 0 {
 		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
@@ -6954,6 +7010,23 @@ func flattenOpenSearchDestination(ctx context.Context, src *datadogV2.Observabil
 
 	out := &opensearchDestinationModel{
 		BulkIndex: types.StringPointerValue(src.BulkIndex),
+	}
+
+	if v, ok := src.GetEndpointUrlKeyOk(); ok {
+		out.EndpointUrlKey = types.StringValue(*v)
+	}
+
+	if auth, ok := src.GetAuthOk(); ok && auth != nil {
+		authModel := opensearchDestinationAuthModel{
+			Strategy: types.StringValue(string(auth.GetStrategy())),
+		}
+		if v, ok := auth.GetUsernameKeyOk(); ok {
+			authModel.UsernameKey = types.StringValue(*v)
+		}
+		if v, ok := auth.GetPasswordKeyOk(); ok {
+			authModel.PasswordKey = types.StringValue(*v)
+		}
+		out.Auth = []opensearchDestinationAuthModel{authModel}
 	}
 
 	if ds, ok := src.GetDataStreamOk(); ok && ds != nil {

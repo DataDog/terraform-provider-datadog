@@ -1,0 +1,136 @@
+openapi: 3.0.0
+info:
+  title: normalize list operation fixture
+  version: 1.0.0
+paths:
+  /api/v2/things:
+    get:
+      operationId: ListThings
+      tags:
+      - Things
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: things
+        cardinality: plural
+        group:
+          read: ListThings
+      parameters:
+      - $ref: '#/components/parameters/PageNumber'
+      - $ref: '#/components/parameters/PageSize'
+      - name: sort
+        in: query
+        required: false
+        description: Sort order.
+        schema:
+          $ref: '#/components/schemas/ThingsSort'
+      - name: include
+        in: query
+        required: false
+        description: Related resources to include.
+        schema:
+          type: array
+          items:
+            type: string
+      - name: filter[keyword]
+        in: query
+        required: false
+        description: Search query.
+        schema:
+          type: string
+      - name: filter[me]
+        in: query
+        required: true
+        description: Only my things.
+        schema:
+          type: boolean
+      x-pagination:
+        limitParam: page[size]
+        pageParam: page[number]
+        resultsPath: data
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingsResponse'
+  /api/v2/things/{thing_id}:
+    get:
+      operationId: GetThing
+      tags:
+      - Things
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: thing
+        group:
+          read: GetThing
+      parameters:
+      - name: thing_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingResponse'
+components:
+  parameters:
+    PageNumber:
+      name: page[number]
+      in: query
+      required: false
+      description: Specific page number to return.
+      schema:
+        type: integer
+        format: int64
+    PageSize:
+      name: page[size]
+      in: query
+      required: false
+      description: Size for a given page.
+      schema:
+        type: integer
+        format: int64
+  schemas:
+    ThingsSort:
+      type: string
+      enum:
+      - name
+      - -name
+    ThingsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Thing'
+    ThingResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Thing'
+    Thing:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The thing's ID.
+        type:
+          type: string
+          description: The resource type.
+        attributes:
+          $ref: '#/components/schemas/ThingAttributes'
+    ThingAttributes:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The thing's name.
+        count:
+          type: integer
+          format: int64
+          description: How many.

@@ -16,6 +16,7 @@ Provides a Datadog Agentless Scanning GCP scan options resource. This can be use
 # Configure agentless scanning for a GCP project
 resource "datadog_agentless_scanning_gcp_scan_options" "example" {
   gcp_project_id     = "company-project-prod"
+  cloud_function     = true
   vuln_containers_os = true
   vuln_host_os       = true
   # compliance_host  = true  # Optional. Defaults to false. Enables host compliance benchmark scanning.
@@ -27,6 +28,7 @@ resource "datadog_agentless_scanning_gcp_scan_options" "example" {
 
 ### Required
 
+- `cloud_function` (Boolean) Indicates if scanning of Cloud Functions is enabled.
 - `gcp_project_id` (String) The GCP project ID for which agentless scanning is configured. Must be a valid GCP project ID: 6–30 characters, start with a lowercase letter, and include only lowercase letters, digits, or hyphens.
 - `vuln_containers_os` (Boolean) Indicates if scanning for vulnerabilities in containers is enabled.
 - `vuln_host_os` (Boolean) Indicates if scanning for vulnerabilities in hosts is enabled.

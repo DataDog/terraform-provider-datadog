@@ -784,6 +784,14 @@ func syntheticsTestDisableAiaIntermediateFetching() *schema.Schema {
 	}
 }
 
+func syntheticsTestIgnoreCertificateValidation() *schema.Schema {
+	return &schema.Schema{
+		Type:        schema.TypeBool,
+		Optional:    true,
+		Description: "Ignore server certificate error for SSL tests.",
+	}
+}
+
 func syntheticsTestAcceptSelfSigned() *schema.Schema {
 	return &schema.Schema{
 		Description: "For SSL tests, whether or not the test should allow self signed certificates.",
@@ -923,6 +931,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 				},
 				"check_certificate_revocation":      syntheticsTestCheckCertificateRevocation(),
 				"disable_aia_intermediate_fetching": syntheticsTestDisableAiaIntermediateFetching(),
+				"ignore_certificate_validation":     syntheticsTestIgnoreCertificateValidation(),
 				"ci": {
 					Description: "CI/CD options for a Synthetic test.",
 					Type:        schema.TypeList,
@@ -5009,6 +5018,9 @@ func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOp
 		if attr, ok := d.GetOk("options_list.0.disable_aia_intermediate_fetching"); ok {
 			options.SetDisableAiaIntermediateFetching(attr.(bool))
 		}
+		if attr, ok := d.GetOk("options_list.0.ignore_certificate_validation"); ok {
+			options.SetIgnoreCertificateValidation(attr.(bool))
+		}
 		if attr, ok := d.GetOk("options_list.0.min_location_failed"); ok {
 			options.SetMinLocationFailed(int64(attr.(int)))
 		}
@@ -5199,6 +5211,9 @@ func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []
 	}
 	if actualOptions.HasDisableAiaIntermediateFetching() {
 		localOptionsList["disable_aia_intermediate_fetching"] = actualOptions.GetDisableAiaIntermediateFetching()
+	}
+	if actualOptions.HasIgnoreCertificateValidation() {
+		localOptionsList["ignore_certificate_validation"] = actualOptions.GetIgnoreCertificateValidation()
 	}
 	if actualOptions.HasAllowInsecure() {
 		localOptionsList["allow_insecure"] = actualOptions.GetAllowInsecure()

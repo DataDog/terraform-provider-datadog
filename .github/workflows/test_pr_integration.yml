@@ -3,83 +3,112 @@ name: PR Integration Tests
 permissions:
   contents: read
 
-# pull_request_target so that PRs from forks can mint Datadog credentials via
-# OIDC. The credentialed job checks out the PR head and, for forks, runs in the
-# forks-prs environment.
+# Triggers after PR Test Selection completes. Because that workflow runs on
+# pull_request, GitHub's fork-approval gate already fired before we get here.
+# No environment gate is needed: approval is implicit in Workflow A completing.
 on: # yamllint disable-line rule:truthy
-  pull_request_target:
-    branches: [master, v3]
-    types: [opened, synchronize, reopened]
+  workflow_run:
+    workflows: ["PR Test Selection"]
+    types: [completed]
 
 concurrency:
-  group: ${{ github.head_ref || github.run_id }}-pr-integration
+  group: ${{ github.event.workflow_run.head_branch }}-pr-integration
   cancel-in-progress: true
 
 env:
   TERRAFORM_VERSION: "1.13.1"
+  # Stable check-run name. Referenced by the required_status_checks rules on the
+  # protected branches, so renaming it silently stops gating merges.
+  CHECK_NAME: pr-integration-tests
 
 jobs:
-  determine-tests:
+  # GitHub attributes workflow_run-triggered runs to the default branch, so this
+  # workflow's own job statuses never appear on the pull request. We therefore
+  # publish an explicit check run against the PR head SHA.
+  #
+  # This has to happen here rather than in PR Test Selection: that workflow runs
+  # on pull_request, so for fork PRs its GITHUB_TOKEN is read-only no matter what
+  # permissions it declares. workflow_run always runs in trusted base-repo context.
+  #
+  # Runs unconditionally, including when the selection run failed, so the check
+  # always exists and always reaches a conclusion. A required check that is never
+  # posted blocks the PR forever.
+  report-start:
     runs-on: ubuntu-latest
+    permissions:
+      checks: write
     outputs:
-      test_args: ${{ steps.build-args.outputs.test_args }}
-      should_run: ${{ steps.build-args.outputs.should_run }}
+      check_run_id: ${{ steps.create.outputs.check_run_id }}
     steps:
-      - name: Checkout base
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+      - name: Create in-progress check run
+        id: create
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          details_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          check_run_id=$(gh api "repos/${GITHUB_REPOSITORY}/check-runs" \
+            -f name="${CHECK_NAME}" \
+            -f head_sha="${HEAD_SHA}" \
+            -f status=in_progress \
+            -f details_url="${details_url}" \
+            -f 'output[title]=Selecting and running affected integration tests' \
+            -f 'output[summary]=Integration tests affected by this PR are running against the live API.' \
+            --jq .id)
+          echo "check_run_id=${check_run_id}" >> "$GITHUB_OUTPUT"
+
+  pr-tests-selection:
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+    permissions:
+      contents: read
+      actions: read # Required to download the selector artifact from another run
+    outputs:
+      should_run: ${{ steps.read.outputs.should_run }}
+      test_args: ${{ steps.read.outputs.test_args }}
+      run_regex: ${{ steps.read.outputs.run_regex }}
+      skip_regex: ${{ steps.read.outputs.skip_regex }}
+    steps:
+      - name: Download test selection
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
-          fetch-depth: 0
-      - name: Get changed files
-        id: changed
+          name: test-selection
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+      - name: Read test selection
+        id: read
         run: |
-          # pull_request_target checks out the base branch (trusted). Fetch the
-          # PR head so the diff and test-selection can see it. Untrusted PR code
-          # is never executed in this credential-less job: we diff by filename
-          # and the selection script only reads PR-head file *contents* (via
-          # git show) to find test function names — it never runs them.
-          git fetch --no-tags origin "refs/pull/${{ github.event.pull_request.number }}/head"
-          git diff --name-only "origin/${{ github.base_ref }}...${{ github.event.pull_request.head.sha }}" > /tmp/changed_files.txt
-          echo "Changed files:"
-          cat /tmp/changed_files.txt
-      - name: Select tests and build args
-        id: build-args
-        run: |
-          RUN_REGEX=$(python3 scripts/select_pr_tests.py --escape-for-make --git-ref "${{ github.event.pull_request.head.sha }}" < /tmp/changed_files.txt)
-
-          if [ -z "$RUN_REGEX" ]; then
-            echo "should_run=false" >> "$GITHUB_OUTPUT"
-            echo "No resource/datasource changes detected, skipping integration tests"
-            exit 0
-          fi
-
-          echo "should_run=true" >> "$GITHUB_OUTPUT"
-
-          ARGS="-run '${RUN_REGEX}'"
-
-          SKIP_REGEX=$(python3 scripts/build_skip_regex.py --escape-for-make)
-          if [ -n "$SKIP_REGEX" ]; then
-            ARGS="${ARGS} -skip '${SKIP_REGEX}'"
-          fi
-
-          echo "test_args=${ARGS}" >> "$GITHUB_OUTPUT"
-          echo "Test args: ${ARGS}"
+          should_run=$(jq -r '.should_run' test-selection.json)
+          test_args=$(jq -r '.test_args' test-selection.json)
+          echo "should_run=${should_run}" >> "$GITHUB_OUTPUT"
+          echo "test_args=${test_args}" >> "$GITHUB_OUTPUT"
+          # The bare -run and -skip alternations, for the check summary: together
+          # they let the summarizer tell a test held back by the flaky-test skip
+          # list apart from one that should have run but reported no result.
+          run_regex=$(printf '%s' "${test_args}" \
+            | sed -n "s/^-run '\([^']*\)'.*/\1/p" | sed 's/\$\$/$/g')
+          skip_regex=$(printf '%s' "${test_args}" \
+            | sed -n "s/.* -skip '\([^']*\)'.*/\1/p" | sed 's/\$\$/$/g')
+          echo "run_regex=${run_regex}" >> "$GITHUB_OUTPUT"
+          echo "skip_regex=${skip_regex}" >> "$GITHUB_OUTPUT"
 
   integration-tests:
-    needs: determine-tests
-    if: needs.determine-tests.outputs.should_run == 'true'
+    needs: pr-tests-selection
+    if: needs.pr-tests-selection.outputs.should_run == 'true'
     runs-on: ubuntu-latest
-    # Fork PRs run untrusted code with live (short-lived, test-org) credentials,
-    # so they run in the forks-prs environment. Same-repo PRs run without an
-    # environment gate.
-    environment: ${{ github.event.pull_request.head.repo.fork && 'forks-prs' || '' }}
     permissions:
       contents: read
       id-token: write # Required to mint Datadog credentials via dd-sts
     steps:
       - name: Checkout PR code
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.event.workflow_run.head_sha }}
+          # checkout v7 refuses fork-head checkouts under workflow_run by
+          # default. Executing the PR's own code is the entire purpose of this
+          # job, so opt in explicitly; without it every fork PR fails here
+          # before a single test runs.
+          allow-unsafe-pr-checkout: true
       - name: Mint Datadog credentials
         id: dd-sts
         uses: DataDog/dd-sts-action@7d2d231c02fd54a3da912e582ff87cb995d1fd30 # v1.0.4
@@ -113,4 +142,107 @@ jobs:
           DD_HTTP_CLIENT_RETRY_ENABLED: "true"
           TF_ACC_TERRAFORM_PATH: "/home/runner/.cache/terraform/terraform"
           TF_ACC_TEMP_DIR: "/tmp"
-          TESTARGS: ${{ needs.determine-tests.outputs.test_args }}
+          TESTACC_JSONFILE: "/tmp/testacc.json"
+          TESTARGS: ${{ needs.pr-tests-selection.outputs.test_args }}
+      # Handed to report-finish rather than summarized here: this job has the PR
+      # head checked out, which for an older PR branch has no summarizer script
+      # at all, and whose copy of it would be PR-authored anyway. The check that
+      # gates merges is built from base-branch code only.
+      - name: Upload raw test results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: testacc-results
+          path: /tmp/testacc.json
+          if-no-files-found: ignore
+
+  # Resolves the check run for every path through this workflow: tests ran and
+  # passed or failed, nothing was affected, the selection run failed, or the
+  # workflow was cancelled. Anything left in_progress would block merges.
+  report-finish:
+    needs: [report-start, pr-tests-selection, integration-tests]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+      actions: read # Required to download the results artifact
+    steps:
+      # No ref: for workflow_run this checks out the default branch, so both the
+      # summarizer and the workflow driving it come from base-branch code.
+      - name: Checkout base branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # Absent when the tests never ran; the summarizer reports that as such.
+      - name: Download raw test results
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: testacc-results
+          path: /tmp/testacc-results
+      # Built from the raw test2json stream rather than the job's pass/fail, so
+      # the check names the tests that failed instead of only linking to logs.
+      - name: Build test summary
+        id: summary
+        if: needs.integration-tests.result != 'skipped'
+        env:
+          RUN_REGEX: ${{ needs.pr-tests-selection.outputs.run_regex }}
+          SKIP_REGEX: ${{ needs.pr-tests-selection.outputs.skip_regex }}
+        run: |
+          result=$(python3 scripts/summarize_testacc.py \
+            --jsonfile /tmp/testacc-results/testacc.json \
+            --selected-regex "${RUN_REGEX}" \
+            --skipped-regex "${SKIP_REGEX}" \
+            --details-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")
+          {
+            echo "title=$(jq -r .title <<<"$result")"
+            echo "summary<<CHECK_SUMMARY_EOF"
+            jq -r .summary <<<"$result"
+            echo "CHECK_SUMMARY_EOF"
+          } >> "$GITHUB_OUTPUT"
+      - name: Complete check run
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECK_RUN_ID: ${{ needs.report-start.outputs.check_run_id }}
+          SELECTION_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          SELECTION_RESULT: ${{ needs.pr-tests-selection.result }}
+          SHOULD_RUN: ${{ needs.pr-tests-selection.outputs.should_run }}
+          TESTS_RESULT: ${{ needs.integration-tests.result }}
+          TESTS_TITLE: ${{ steps.summary.outputs.title }}
+          TESTS_SUMMARY: ${{ steps.summary.outputs.summary }}
+          SELECTION_RUN_URL: ${{ github.event.workflow_run.html_url }}
+        run: |
+          if [ -z "${CHECK_RUN_ID}" ]; then
+            echo "report-start did not create a check run; nothing to complete." >&2
+            exit 1
+          fi
+
+          if [ "${SELECTION_CONCLUSION}" != "success" ] || [ "${SELECTION_RESULT}" != "success" ]; then
+            # A cancelled selection run usually means a newer push superseded this
+            # one, which will publish its own check against the newer commit.
+            if [ "${SELECTION_CONCLUSION}" = "cancelled" ]; then
+              conclusion=cancelled
+            else
+              conclusion=failure
+            fi
+            title="Could not determine which tests to run"
+            summary="The [PR Test Selection run](${SELECTION_RUN_URL}) concluded \`${SELECTION_CONCLUSION}\`, so no integration tests were selected. Re-run it to retry."
+          elif [ "${SHOULD_RUN}" != "true" ]; then
+            conclusion=success
+            title="No affected integration tests"
+            summary="No resource, data source or acceptance test file changed in this PR, so there was nothing to run."
+          else
+            case "${TESTS_RESULT}" in
+              success) conclusion=success ;;
+              cancelled) conclusion=cancelled ;;
+              *) conclusion=failure ;;
+            esac
+            title="${TESTS_TITLE:-Integration tests ${TESTS_RESULT}}"
+            summary="${TESTS_SUMMARY:-The integration test job ${TESTS_RESULT} before producing results.}"
+          fi
+
+          gh api --method PATCH "repos/${GITHUB_REPOSITORY}/check-runs/${CHECK_RUN_ID}" \
+            -f status=completed \
+            -f conclusion="${conclusion}" \
+            -f "output[title]=${title}" \
+            -f "output[summary]=${summary}"

@@ -51,7 +51,7 @@ resource "datadog_on_call_escalation_policy" "policy_test" {
   step {
     escalate_after_seconds = 600
     target {
-      schedule          = datadog_on_call_schedule.schedule.id
+      schedule = datadog_on_call_schedule.schedule.id
       position = "next"
     }
   }

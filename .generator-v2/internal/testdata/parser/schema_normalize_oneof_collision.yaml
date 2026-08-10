@@ -1,0 +1,62 @@
+openapi: 3.0.0
+info:
+  title: normalized oneOf collision fixture
+  version: 1.0.0
+paths:
+  /collision:
+    post:
+      operationId: CreateCollidingOneOf
+      tags: [OneOf]
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: colliding_oneof
+        group:
+          create: CreateCollidingOneOf
+          read: CreateCollidingOneOf
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              discriminator:
+                propertyName: kind
+                mapping:
+                  Foo Bar: "#/components/schemas/Alpha"
+                  foo_bar: "#/components/schemas/Beta"
+              oneOf:
+                - $ref: "#/components/schemas/Alpha"
+                - $ref: "#/components/schemas/Beta"
+      responses:
+        "204":
+          description: no content
+  /healthy:
+    post:
+      operationId: CreateHealthyAfterCollision
+      tags: [OneOf]
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: healthy_after_collision
+        group:
+          create: CreateHealthyAfterCollision
+          read: CreateHealthyAfterCollision
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+      responses:
+        "204":
+          description: no content
+components:
+  schemas:
+    Alpha:
+      type: object
+      properties:
+        alpha:
+          type: string
+    Beta:
+      type: object
+      properties:
+        beta:
+          type: boolean
