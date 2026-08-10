@@ -75,6 +75,20 @@ func TestFlattenDashboardWidgetDefinitions(t *testing.T) {
 	}
 }
 
+func TestFlattenDashboardWidgetDefinitionsAtIndexesPreservesPaths(t *testing.T) {
+	widgets := append(
+		dashboardV2TestTimeseriesWidgets("avg:system.load.1{*}"),
+		dashboardV2TestTimeseriesWidgets("avg:system.cpu.user{*}")...,
+	)
+	definitions := flattenDashboardWidgetDefinitionsAtIndexes(widgets, map[int]struct{}{1: {}})
+	if len(definitions) != 1 {
+		t.Fatalf("expected one known widget definition, got %d", len(definitions))
+	}
+	if got := definitions[0].path; got != "widget 2" {
+		t.Fatalf("expected original widget path to be preserved, got %q", got)
+	}
+}
+
 func TestDashboardV2PlanValidationCanBeDisabled(t *testing.T) {
 	config := map[string]interface{}{
 		"title":       "Plan-time validation test",
@@ -95,19 +109,23 @@ func TestDashboardV2PlanValidationCanBeDisabled(t *testing.T) {
 	}
 }
 
-func TestDashboardWidgetConfigKnown(t *testing.T) {
-	knownConfig := cty.ListVal([]cty.Value{
+func TestDashboardKnownWidgetIndexesFromConfig(t *testing.T) {
+	widgetConfig := cty.ListVal([]cty.Value{
 		cty.ObjectVal(map[string]cty.Value{"query": cty.StringVal("avg:system.load.1{*}")}),
-	})
-	if !dashboardWidgetConfigKnown(knownConfig) {
-		t.Fatal("expected literal widget config to be known")
-	}
-
-	unknownConfig := cty.ListVal([]cty.Value{
 		cty.ObjectVal(map[string]cty.Value{"query": cty.UnknownVal(cty.String)}),
+		cty.ObjectVal(map[string]cty.Value{"query": cty.StringVal("avg:system.cpu.user{*}")}),
 	})
-	if dashboardWidgetConfigKnown(unknownConfig) {
-		t.Fatal("expected interpolated widget query to remain unknown during plan")
+	knownIndexes := dashboardKnownWidgetIndexesFromConfig(widgetConfig)
+	if len(knownIndexes) != 2 {
+		t.Fatalf("expected two known widgets, got %#v", knownIndexes)
+	}
+	for _, index := range []int{0, 2} {
+		if _, ok := knownIndexes[index]; !ok {
+			t.Fatalf("expected widget %d to be known", index)
+		}
+	}
+	if _, ok := knownIndexes[1]; ok {
+		t.Fatal("expected interpolated widget to remain unknown during plan")
 	}
 }
 

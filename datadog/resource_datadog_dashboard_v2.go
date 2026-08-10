@@ -120,11 +120,12 @@ func resourceDatadogDashboardV2ValidateWidgets(ctx context.Context, diff *schema
 	if !ok {
 		return nil
 	}
-	if !dashboardWidgetValuesKnown(diff) {
-		// Values that depend on other resources are not available during planning.
+	widgetList, ok := widgets.([]interface{})
+	if !ok {
 		return nil
 	}
-	definitions := flattenDashboardWidgetDefinitions(widgets)
+	knownWidgetIndexes := dashboardKnownWidgetIndexes(diff, len(widgetList))
+	definitions := flattenDashboardWidgetDefinitionsAtIndexes(widgetList, knownWidgetIndexes)
 	if len(definitions) == 0 {
 		return nil
 	}
@@ -138,18 +139,41 @@ func resourceDatadogDashboardV2ValidateWidgets(ctx context.Context, diff *schema
 	)
 }
 
-func dashboardWidgetValuesKnown(diff *schema.ResourceDiff) bool {
+func dashboardKnownWidgetIndexes(diff *schema.ResourceDiff, widgetCount int) map[int]struct{} {
 	widgetConfig, diagnostics := diff.GetRawConfigAt(cty.GetAttrPath("widget"))
 	if diagnostics.HasError() {
 		// Resource.Diff-based unit tests do not populate RawConfig. Fall back to
 		// the parent availability check for that legacy-only SDK call path.
-		return diff.NewValueKnown("widget")
+		if !diff.NewValueKnown("widget") {
+			return nil
+		}
+		knownIndexes := make(map[int]struct{}, widgetCount)
+		for i := 0; i < widgetCount; i++ {
+			knownIndexes[i] = struct{}{}
+		}
+		return knownIndexes
 	}
-	return dashboardWidgetConfigKnown(widgetConfig)
+	return dashboardKnownWidgetIndexesFromConfig(widgetConfig)
 }
 
-func dashboardWidgetConfigKnown(widgetConfig cty.Value) bool {
-	return widgetConfig.IsWhollyKnown()
+func dashboardKnownWidgetIndexesFromConfig(widgetConfig cty.Value) map[int]struct{} {
+	knownIndexes := make(map[int]struct{})
+	widgetConfig, _ = widgetConfig.UnmarkDeep()
+	if !widgetConfig.IsKnown() || widgetConfig.IsNull() {
+		return knownIndexes
+	}
+	if !widgetConfig.CanIterateElements() {
+		return knownIndexes
+	}
+
+	iterator := widgetConfig.ElementIterator()
+	for i := 0; iterator.Next(); i++ {
+		_, widgetConfig := iterator.Element()
+		if widgetConfig.IsWhollyKnown() {
+			knownIndexes[i] = struct{}{}
+		}
+	}
+	return knownIndexes
 }
 
 // flattenDashboardWidgetDefinitions converts the SDKv2 widget representation to
@@ -160,9 +184,19 @@ func flattenDashboardWidgetDefinitions(widgets interface{}) []dashboardWidgetDef
 	if !ok {
 		return nil
 	}
+	knownWidgetIndexes := make(map[int]struct{}, len(widgetList))
+	for i := range widgetList {
+		knownWidgetIndexes[i] = struct{}{}
+	}
+	return flattenDashboardWidgetDefinitionsAtIndexes(widgetList, knownWidgetIndexes)
+}
 
+func flattenDashboardWidgetDefinitionsAtIndexes(widgetList []interface{}, knownWidgetIndexes map[int]struct{}) []dashboardWidgetDefinition {
 	definitions := make([]dashboardWidgetDefinition, 0, len(widgetList))
 	for i, rawWidget := range widgetList {
+		if _, known := knownWidgetIndexes[i]; !known {
+			continue
+		}
 		widget, ok := rawWidget.(map[string]interface{})
 		if !ok {
 			continue
