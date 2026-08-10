@@ -124,8 +124,13 @@ type Operation struct {
 	ResponseRefName string
 	// QueryParams are the operation's in:query parameters, normalized and sorted
 	// by name. Populated for every operation; the plural data-source path turns
-	// the scalar ones into filters.
+	// the scalar ones into filters. DeclarationOrder retains the original OpenAPI
+	// position so SDK binding can reproduce the client generator's call order.
 	QueryParams []QueryParam
+	// PathParams are the operation's in:path parameters, normalized and sorted
+	// by name. DeclarationOrder retains their position relative to required query
+	// parameters, matching the Go client generator's parameter walk.
+	PathParams []QueryParam
 	// Pagination is the decoded x-pagination extension, or nil when the
 	// operation declares none.
 	Pagination *Pagination
@@ -145,16 +150,25 @@ type Operation struct {
 	// search op (search-only), and is nil when no search is declared or the
 	// declared operationId is unknown.
 	SearchOp *Operation
+	// SDKBinding is the call signature derived from the OpenAPI operation using
+	// the Go SDK generator's naming and ordering rules. The CLI fills it before
+	// artifact construction. Tests that build parser-shaped operations directly
+	// may leave it nil and exercise the legacy call shape.
+	SDKBinding *SDKOperationBinding
 }
 
-// QueryParam is one in:query OpenAPI parameter, with its inner schema
-// normalized like a request/response body. Name preserves the raw OpenAPI
-// spelling, including brackets (e.g. "filter[keyword]").
+// QueryParam is one normalized OpenAPI path or query parameter (the historical
+// name is retained to avoid broad churn). Its inner schema is normalized like a
+// request/response body, and Name preserves raw spelling such as
+// "filter[keyword]".
 type QueryParam struct {
 	Name        string
 	Required    bool
 	Schema      *Schema
 	Description string
+	// DeclarationOrder is the one-based position in operation.parameters. Zero
+	// is reserved for hand-built test fixtures that do not carry source order.
+	DeclarationOrder int
 }
 
 // Pagination is the decoded x-pagination extension on a list operation. It
@@ -167,6 +181,28 @@ type Pagination struct {
 	PageParam string
 	// ResultsPath is the response property holding the result array, e.g. "data".
 	ResultsPath string
+}
+
+// SDKOperationBinding is the Go SDK signature derived for one OpenAPI operation.
+// Required arguments are positional and retain the SDK generator's order.
+// Optional arguments are fields set through With* methods on OptionalParamsType.
+type SDKOperationBinding struct {
+	Required           []SDKArgument
+	Optional           []SDKArgument
+	OptionalParamsType string
+}
+
+// SDKArgument binds one SDK method argument or options setter to an OpenAPI
+// parameter and, after artifact construction, its Terraform model field.
+type SDKArgument struct {
+	Name        string
+	GoName      string
+	GoType      string
+	Location    string
+	Description string
+	Schema      *Schema
+	TFName      string
+	Setter      string
 }
 
 // Schema is a normalized, recursive view of an OpenAPI schema after allOf
@@ -328,8 +364,9 @@ type Attribute struct {
 	// GoType is the corresponding model-struct type, e.g. types.String.
 	GoType string
 	// ElementType is the framework attr.Type for a list/map element value,
-	// e.g. "types.StringType". Set ONLY for ListAttribute/MapAttribute
-	// (collection-of-primitive); empty for everything else.
+	// e.g. "types.StringType" or "types.ListType{ElemType: types.StringType}".
+	// Set only for ListAttribute/MapAttribute collection chains ending in a
+	// primitive; empty for everything else.
 	ElementType string
 	// Format is the OpenAPI format (e.g. "date-time"). It distinguishes SDK
 	// getters whose Go return type differs from the bare scalar: a date-time
@@ -474,6 +511,9 @@ type LifecycleBindings struct {
 
 // SDKCall represents a single datadog-api-client-go invocation.
 type SDKCall struct {
+	// BindingResolved distinguishes an SDK method that genuinely takes no
+	// positional arguments from legacy test fixtures that omit binding data.
+	BindingResolved bool
 	// GoPackage is the versioned SDK package, e.g. "datadogV2".
 	// Rule: "datadog" + strings.ToUpper(version), where version is the path
 	// segment after /api/ in Operation.Path (e.g. /api/v2/... → "datadogV2").
@@ -501,6 +541,10 @@ type SDKCall struct {
 	// NOTE: Schema has no Name field; the model-builder must read this from the
 	// raw libopenapi node, not from Operation.ResponseSchema.
 	GoResponseType string
+	// Arguments are the required positional SDK arguments in call order.
+	Arguments []SDKArgument
+	// OptionalArguments bind Terraform filters to OptionalParamsType setters.
+	OptionalArguments []SDKArgument
 
 	// The fields below back a plural data-source list call.
 

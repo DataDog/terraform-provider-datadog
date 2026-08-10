@@ -44,11 +44,23 @@ var _ = Describe("FrameworkType", func() {
 		Entry("an array of primitive becomes ListAttribute / types.List",
 			&Schema{Kind: SchemaKindArray, Items: &Schema{Kind: SchemaKindPrimitive, Type: "string"}},
 			"schema.ListAttribute", "types.List"),
+		Entry("an array of array becomes ListAttribute / types.List",
+			arrSchema(arrSchema(primSchema("string"))),
+			"schema.ListAttribute", "types.List"),
+		Entry("an array of map becomes ListAttribute / types.List",
+			arrSchema(mapSchema(primSchema("string"))),
+			"schema.ListAttribute", "types.List"),
 		Entry("an array of object becomes ListNestedBlock / types.List",
 			&Schema{Kind: SchemaKindArray, Items: &Schema{Kind: SchemaKindObject}},
 			"schema.ListNestedBlock", "types.List"),
 		Entry("a map of primitive becomes MapAttribute / types.Map",
 			&Schema{Kind: SchemaKindMap, Items: &Schema{Kind: SchemaKindPrimitive, Type: "string"}},
+			"schema.MapAttribute", "types.Map"),
+		Entry("a map of array becomes MapAttribute / types.Map",
+			mapSchema(arrSchema(primSchema("string"))),
+			"schema.MapAttribute", "types.Map"),
+		Entry("a map of map becomes MapAttribute / types.Map",
+			mapSchema(mapSchema(primSchema("string"))),
 			"schema.MapAttribute", "types.Map"),
 		Entry("a map of object becomes MapNestedAttribute / types.Map",
 			&Schema{Kind: SchemaKindMap, Items: &Schema{Kind: SchemaKindObject}},
@@ -79,23 +91,14 @@ var _ = Describe("FrameworkType", func() {
 			&Schema{Kind: SchemaKindPrimitive, Type: ""}, "primitive type"),
 		Entry("an array with nil items has no element type to map",
 			&Schema{Kind: SchemaKindArray}, "nil items"),
-		Entry("an array of array is deferred — error names the element kind",
-			&Schema{Kind: SchemaKindArray, Items: &Schema{Kind: SchemaKindArray, Items: &Schema{Kind: SchemaKindPrimitive, Type: "string"}}},
-			`"array"`),
-		Entry("an array of map is deferred — error names the element kind",
-			&Schema{Kind: SchemaKindArray, Items: &Schema{Kind: SchemaKindMap, Items: &Schema{Kind: SchemaKindPrimitive, Type: "string"}}},
-			`"map"`),
-		Entry("a map of map is deferred — error names the value kind",
-			&Schema{Kind: SchemaKindMap, Items: &Schema{Kind: SchemaKindMap, Items: &Schema{Kind: SchemaKindPrimitive, Type: "string"}}},
-			`"map"`),
 	)
 })
 
-// ElementType is only meaningful for collection-of-primitive nodes; nested
-// (object) collections carry their shape in Children, not an element type.
+// ElementType represents any list/map chain ending in a primitive; object
+// collections carry their shape in Children instead.
 var _ = Describe("ElementType", func() {
 
-	DescribeTable("maps a primitive element/value schema to its framework attr.Type",
+	DescribeTable("maps a primitive-terminal element/value schema to its framework attr.Type",
 		func(elem *Schema, want string) {
 			got, err := ElementType(elem)
 			Expect(err).NotTo(HaveOccurred())
@@ -109,18 +112,25 @@ var _ = Describe("ElementType", func() {
 			&Schema{Kind: SchemaKindPrimitive, Type: "number"}, "types.Float64Type"),
 		Entry("a boolean element becomes types.BoolType",
 			&Schema{Kind: SchemaKindPrimitive, Type: "boolean"}, "types.BoolType"),
+		Entry("an array element becomes a recursive ListType",
+			arrSchema(primSchema("string")), "types.ListType{ElemType: types.StringType}"),
+		Entry("a map element becomes a recursive MapType",
+			mapSchema(primSchema("string")), "types.MapType{ElemType: types.StringType}"),
+		Entry("a deep map-map-list element preserves every level",
+			mapSchema(mapSchema(arrSchema(primSchema("string")))),
+			"types.MapType{ElemType: types.MapType{ElemType: types.ListType{ElemType: types.StringType}}}"),
 	)
 
-	DescribeTable("errors for a non-primitive element (those use nested forms, not ElementType)",
+	DescribeTable("errors for elements that do not terminate in a primitive",
 		func(elem *Schema) {
 			_, err := ElementType(elem)
 			Expect(err).To(HaveOccurred())
 		},
 		Entry("an object element has no scalar element type",
 			&Schema{Kind: SchemaKindObject}),
-		Entry("an array element has no scalar element type",
-			&Schema{Kind: SchemaKindArray, Items: &Schema{Kind: SchemaKindPrimitive, Type: "string"}}),
-		Entry("a map element has no scalar element type",
-			&Schema{Kind: SchemaKindMap, Items: &Schema{Kind: SchemaKindPrimitive, Type: "string"}}),
+		Entry("an array ending in unsupported JSON has no element type",
+			arrSchema(&Schema{Kind: SchemaKindUnsupported})),
+		Entry("a map ending in an object uses nested form",
+			mapSchema(objSchema(nil))),
 	)
 })
