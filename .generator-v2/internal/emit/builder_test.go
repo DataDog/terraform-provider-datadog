@@ -1190,6 +1190,22 @@ var _ = Describe("BuildDataSourceView plural", func() {
 		Expect(view).To(Equal(pluralFixture()))
 	})
 
+	It("does not name an unused SDK item for an empty result projection", func() {
+		op := teamsOperation()
+		item := op.ResponseSchema.Properties["data"].Items
+		delete(item.Properties, "id")
+		delete(item.Properties, "attributes")
+
+		view := mustView(op)
+		Expect(view.State.ItemFields).To(BeEmpty())
+		Expect(view.State.ItemLists).To(BeEmpty())
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		src := string(rendered)
+		Expect(src).To(ContainSubstring("for range *data {"))
+		Expect(src).NotTo(ContainSubstring("for _, item := range *data {"))
+	})
+
 	It("renders unconstrained result-item values as normalized JSON", func() {
 		op := teamsOperation()
 		attributes := op.ResponseSchema.Properties["data"].Items.Properties["attributes"].Properties
