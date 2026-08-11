@@ -154,7 +154,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, requir
 	// ref_cycle) have no Terraform representation: fail the artifact here rather
 	// than emit garbage.
 	switch s.Kind {
-	case SchemaKindPrimitive, SchemaKindObject, SchemaKindArray, SchemaKindMap:
+	case SchemaKindPrimitive, SchemaKindJSON, SchemaKindObject, SchemaKindArray, SchemaKindMap:
 		// representable — continue
 	default:
 		return nil, &UnsupportedKindError{
@@ -181,6 +181,9 @@ func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, requir
 		Format:      s.Format,
 		Sensitive:   s.Sensitive,
 		Description: s.Description,
+	}
+	if s.Kind == SchemaKindJSON {
+		attr.CustomType = "jsontypes.NormalizedType{}"
 	}
 	b.applyPresence(attr, required)
 

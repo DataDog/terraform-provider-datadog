@@ -17,6 +17,9 @@ func FrameworkType(s *Schema) (tfType, goType string, err error) {
 	case SchemaKindPrimitive:
 		return primitiveFrameworkType(s)
 
+	case SchemaKindJSON:
+		return "schema.StringAttribute", "jsontypes.Normalized", nil
+
 	case SchemaKindObject:
 		return "schema.SingleNestedBlock", "types.Object", nil
 
@@ -91,6 +94,8 @@ func ElementType(elem *Schema) (string, error) {
 		default:
 			return "", fmt.Errorf("model: primitive element type %q has no framework element type", elem.Type)
 		}
+	case SchemaKindJSON:
+		return "jsontypes.NormalizedType{}", nil
 	case SchemaKindArray:
 		child, err := ElementType(elem.Items)
 		if err != nil {

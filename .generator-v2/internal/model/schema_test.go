@@ -257,6 +257,18 @@ var _ = Describe("BuildResponseTree type delegation and composites", func() {
 		Expect(labels.Children).To(BeEmpty())
 	})
 
+	It("builds unconstrained JSON as a normalized custom string attribute", func() {
+		tree, _, err := BuildResponseTree(objSchema(map[string]*Schema{
+			"metadata": {Kind: SchemaKindJSON, Description: "Arbitrary metadata."},
+		}))
+		Expect(err).NotTo(HaveOccurred())
+		metadata := attrByPath(tree, "response.metadata")
+		Expect(metadata.TfType).To(Equal("schema.StringAttribute"))
+		Expect(metadata.GoType).To(Equal("jsontypes.Normalized"))
+		Expect(metadata.CustomType).To(Equal("jsontypes.NormalizedType{}"))
+		Expect(metadata.Description).To(Equal("Arbitrary metadata."))
+	})
+
 	DescribeTable("builds recursively typed collections as leaf attributes",
 		func(name string, schema *Schema, wantTFType, wantGoType, wantElementType string) {
 			tree, _, err := BuildResponseTree(objSchema(map[string]*Schema{name: schema}))

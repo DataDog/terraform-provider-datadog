@@ -698,13 +698,17 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 				return nil, err
 			}
 			out.Items = collectionElement(item)
+			if out.Items.Kind == model.SchemaKindJSON {
+				// Preserve heterogeneous or otherwise unconstrained elements by
+				// encoding the complete collection as normalized JSON.
+				out.Kind, out.Items = model.SchemaKindJSON, nil
+			}
 		}
 
 	case model.SchemaKindMap:
 		// Map: dynamic keys sharing one value schema (additionalProperties),
 		// carried in out.Items. A boolean `additionalProperties: true` declares
-		// no value schema — its values are unconstrained, which TF cannot
-		// represent, so carry an Unsupported sentinel for the check to reject.
+		// no value schema, so preserve the complete map as normalized JSON.
 		if s.AdditionalProperties != nil && s.AdditionalProperties.IsA() {
 			value, err := n.normalizeProxyAt(s.AdditionalProperties.A, depth, schemaContext{
 				path:     childPath(ctx.path, "{}"),
@@ -714,8 +718,11 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 				return nil, err
 			}
 			out.Items = collectionElement(value)
+			if out.Items.Kind == model.SchemaKindJSON {
+				out.Kind, out.Items = model.SchemaKindJSON, nil
+			}
 		} else {
-			out.Items = &model.Schema{Kind: model.SchemaKindUnsupported}
+			out.Kind = model.SchemaKindJSON
 		}
 
 	case model.SchemaKindOneOf:
@@ -954,7 +961,7 @@ func (n *schemaNormalizer) mergeOneOfSiblings(
 	// retaining that sentinel here would cause mergeNormalizedSchemas to discard
 	// the required constraint. Give this merge-only schema an empty object shape
 	// so its required names are applied to every object alternative.
-	if common.Kind == model.SchemaKindUnsupported && isRequiredOnlyObjectConstraint(commonRaw) {
+	if (common.Kind == model.SchemaKindUnsupported || common.Kind == model.SchemaKindJSON) && isRequiredOnlyObjectConstraint(commonRaw) {
 		common.Kind = model.SchemaKindObject
 		common.Properties = make(map[string]*model.Schema)
 		common.Required = sortedRequired(commonRaw)
@@ -1136,7 +1143,8 @@ func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaC
 		if err != nil {
 			return nil, err
 		}
-		if branch.Kind == model.SchemaKindUnsupported && branch.UnsupportedReason == "" && n.isAnnotationOnlySchema(raw) {
+		if (branch.Kind == model.SchemaKindUnsupported || branch.Kind == model.SchemaKindJSON) &&
+			branch.UnsupportedReason == "" && n.isAnnotationOnlySchema(raw) {
 			if annotationDescription == "" && raw.Description != "" {
 				annotationDescription = raw.Description
 			}
@@ -1539,7 +1547,7 @@ func cloneSchema(s *model.Schema) *model.Schema {
 // (first match wins, since a node can satisfy several at once):
 // anyOf → unsupported; oneOf → one_of; properties → object; type:array+items →
 // array; additionalProperties → map; a concrete scalar type → primitive; anything
-// else (free-form/empty object, typeless leaf, itemless array) → unsupported.
+// else (free-form/empty object, typeless leaf, itemless array) → json.
 //
 // oneOf and anyOf are intentionally distinct: oneOf is normalized into a typed
 // envelope, while anyOf remains unsupported so its artifact fails rather than
@@ -1556,7 +1564,7 @@ func classifyKind(s *base.Schema) model.SchemaKind {
 		return model.SchemaKindObject
 	case hasType(s, "array") && s.Items != nil:
 		// A list, but only if it says what its elements are. A type:array with
-		// no items has an unknown element type and falls through to unsupported.
+		// no items has an unknown element type and falls through to JSON.
 		return model.SchemaKindArray
 	case isMap(s):
 		// additionalProperties (and no declared properties) → dynamic-key map.
@@ -1565,10 +1573,29 @@ func classifyKind(s *base.Schema) model.SchemaKind {
 		// A concrete scalar leaf (string, integer, number, boolean).
 		return model.SchemaKindPrimitive
 	default:
-		// No representable type or structure: a free-form/empty object
-		// (type:object with no properties), a typeless leaf (empty schema {}),
-		// an itemless array, etc. TF cannot emit these — reject, don't guess.
+		// A genuinely unconstrained value can be preserved losslessly as normalized
+		// JSON. Constraint-bearing schemas without a usable type remain unsupported:
+		// encoding them as JSON would silently discard their validation semantics.
+		if isFreeFormSchema(s) {
+			return model.SchemaKindJSON
+		}
 		return model.SchemaKindUnsupported
+	}
+}
+
+func isFreeFormSchema(s *base.Schema) bool {
+	if s == nil {
+		return false
+	}
+	switch firstType(s) {
+	case "object":
+		return s.Properties == nil || orderedmap.Len(s.Properties) == 0
+	case "array":
+		return s.Items == nil
+	case "":
+		return !hasStructuralOrConstraintKeywords(s)
+	default:
+		return false
 	}
 }
 
@@ -1584,10 +1611,10 @@ func isMap(s *base.Schema) bool {
 
 // collectionElement preserves recursively typed collection shapes. Terraform
 // attr.Type values can represent list/map chains such as list(list(string)) and
-// map(list(string)); only a missing element schema needs an Unsupported sentinel.
+// map(list(string)); a missing element schema is arbitrary JSON.
 func collectionElement(elem *model.Schema) *model.Schema {
 	if elem == nil {
-		return &model.Schema{Kind: model.SchemaKindUnsupported}
+		return &model.Schema{Kind: model.SchemaKindJSON}
 	}
 	return elem
 }

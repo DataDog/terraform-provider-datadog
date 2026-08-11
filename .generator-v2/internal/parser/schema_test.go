@@ -68,10 +68,10 @@ var _ = Describe("NormalizeSchemas kind classification", func() {
 })
 
 // -------------------------------------------------------------------
-//  Unsupported classification (dynamic / unrepresentable shapes)
+//  JSON and unsupported classification
 // -------------------------------------------------------------------
 
-var _ = Describe("NormalizeSchemas unsupported classification", func() {
+var _ = Describe("NormalizeSchemas JSON classification", func() {
 
 	var spec *model.Spec
 
@@ -79,29 +79,29 @@ var _ = Describe("NormalizeSchemas unsupported classification", func() {
 		spec = loadSpecMust("schema_normalize_unsupported.yaml")
 	})
 
-	DescribeTable("classifies a node with no representable type or structure as unsupported, not primitive",
+	DescribeTable("classifies an unconstrained node as normalized JSON",
 		func(operationId string, wantKind model.SchemaKind) {
 			op := opByID(spec, operationId)
 			Expect(op.RequestSchema).NotTo(BeNil(), "operation %s must have a non-nil RequestSchema", operationId)
 			Expect(op.RequestSchema.Kind).To(Equal(wantKind))
 		},
-		Entry("type:object with no properties → unsupported", "CreateEmptyObject", model.SchemaKindUnsupported),
-		Entry("a typeless leaf → unsupported", "CreateUntyped", model.SchemaKindUnsupported),
-		Entry("type:array with no items → unsupported", "CreateArrayNoItems", model.SchemaKindUnsupported),
-		Entry("additionalProperties:{} → map (the value, not the map, is unsupported)", "CreateFreeFormMap", model.SchemaKindMap),
-		Entry("additionalProperties:true → map (the value, not the map, is unsupported)", "CreateBoolMap", model.SchemaKindMap),
+		Entry("type:object with no properties", "CreateEmptyObject", model.SchemaKindJSON),
+		Entry("a typeless leaf", "CreateUntyped", model.SchemaKindJSON),
+		Entry("type:array with no items", "CreateArrayNoItems", model.SchemaKindJSON),
+		Entry("additionalProperties:{}", "CreateFreeFormMap", model.SchemaKindJSON),
+		Entry("additionalProperties:true", "CreateBoolMap", model.SchemaKindJSON),
 	)
 
-	It("carries an unsupported value schema for a free-form additionalProperties:{} map", func() {
+	It("collapses a free-form additionalProperties:{} map into one JSON value", func() {
 		op := opByID(spec, "CreateFreeFormMap")
-		Expect(op.RequestSchema.Items).NotTo(BeNil(), "a free-form map must still carry a value schema")
-		Expect(op.RequestSchema.Items.Kind).To(Equal(model.SchemaKindUnsupported))
+		Expect(op.RequestSchema.Kind).To(Equal(model.SchemaKindJSON))
+		Expect(op.RequestSchema.Items).To(BeNil())
 	})
 
-	It("synthesizes an unsupported value schema for an unconstrained additionalProperties:true map", func() {
+	It("collapses an additionalProperties:true map into one JSON value", func() {
 		op := opByID(spec, "CreateBoolMap")
-		Expect(op.RequestSchema.Items).NotTo(BeNil(), "additionalProperties:true must carry an unsupported sentinel value")
-		Expect(op.RequestSchema.Items.Kind).To(Equal(model.SchemaKindUnsupported))
+		Expect(op.RequestSchema.Kind).To(Equal(model.SchemaKindJSON))
+		Expect(op.RequestSchema.Items).To(BeNil())
 	})
 
 	It("still classifies a concrete scalar leaf as primitive, never unsupported", func() {
