@@ -179,6 +179,36 @@ var _ = Describe("BuildDataSourceView", func() {
 		Expect(src).To(ContainSubstring(`GetIncidentType(d.Auth, state.AccountId.ValueInt64(), parsedId)`))
 	})
 
+	It("coalesces a required path lookup with the returned field of the same name", func() {
+		op := incidentTypeOperation()
+		op.Path = "/api/v2/accounts/{account_id}/incident-types/{incident_type_id}"
+		op.ResponseSchema.Properties["data"].Properties["attributes"].Properties["account_id"] =
+			prim("integer", "The returned account ID.")
+		op.SDKBinding = &model.SDKOperationBinding{Required: []model.SDKArgument{
+			{Name: "account_id", GoName: "accountId", GoType: "int64", Location: "path", Schema: prim("integer", "The lookup account ID.")},
+			{Name: "incident_type_id", GoName: "incidentTypeId", GoType: "string", Location: "path", Schema: prim("string", "The incident type ID.")},
+		}}
+
+		view := mustView(op)
+		var accountAttrs []AttrView
+		for _, attr := range view.Schema.Attributes {
+			if attr.TFName == "account_id" {
+				accountAttrs = append(accountAttrs, attr)
+			}
+		}
+		Expect(accountAttrs).To(Equal([]AttrView{{
+			TFName: "account_id", TFType: "schema.Int64Attribute", Description: "The account_id argument.", Required: true,
+		}}))
+		var accountFields []ModelFieldView
+		for _, field := range view.Models[0].Fields {
+			if field.TFName == "account_id" {
+				accountFields = append(accountFields, field)
+			}
+		}
+		Expect(accountFields).To(HaveLen(1))
+		Expect(view.State.Assignments).To(ContainElement(HaveField("LHS", "state.AccountId")))
+	})
+
 	It("parses a string-valued Terraform id for a numeric SDK path argument", func() {
 		op := incidentTypeOperation()
 		op.SDKBinding = &model.SDKOperationBinding{Required: []model.SDKArgument{{
@@ -510,6 +540,31 @@ var _ = Describe("BuildDataSourceView singular search", func() {
 			Expect(view.State.ParamName).To(Equal("data"))
 			Expect(view.State.ParamType).To(Equal("datadogV2.PowerpackData"))
 			Expect(view.State.Preamble).To(Equal([]string{"attributes := data.GetAttributes()"}))
+		})
+
+		It("coalesces an optional search lookup with its computed returned field", func() {
+			op := powerpackSearchOperation()
+			op.QueryParams[0].Name = "name"
+
+			view := mustView(op)
+			var nameAttrs []AttrView
+			for _, attr := range view.Schema.Attributes {
+				if attr.TFName == "name" {
+					nameAttrs = append(nameAttrs, attr)
+				}
+			}
+			Expect(nameAttrs).To(Equal([]AttrView{{
+				TFName: "name", TFType: "schema.StringAttribute", Description: "The name of the Powerpack to search for.",
+				Optional: true, Computed: true,
+			}}))
+			var nameFields []ModelFieldView
+			for _, field := range view.Models[0].Fields {
+				if field.TFName == "name" {
+					nameFields = append(nameFields, field)
+				}
+			}
+			Expect(nameFields).To(HaveLen(1))
+			Expect(view.State.Assignments).To(ContainElement(HaveField("LHS", "state.Name")))
 		})
 
 		It("parses an optional UUID filter before calling its pinned SDK setter", func() {

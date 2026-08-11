@@ -343,6 +343,8 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 	leafFields := b.models[0].Fields
 
 	inputAttrs, inputFields := buildInputViews(inputLeaves)
+	inputAttrs, inputFields, recordAttrs, leafFields, collisions := coalesceLookupOutputs(inputAttrs, inputFields, recordAttrs, leafFields)
+	b.unsupported = append(b.unsupported, collisions...)
 	filterParams, filterUUID, filterTime := buildFilterParams(search, filterLeaves, &b.unsupported)
 	readArgs, readUUID, readTime, readStrconv := buildArgumentViews(read, &b.unsupported)
 	searchArgs, searchUUID, searchTime, searchStrconv := buildArgumentViews(search, &b.unsupported)
@@ -416,6 +418,67 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 		UsesFmt: !searchable || len(searchView.HashInputs) > 0 || len(b.oneOfRenders) > 0,
 		Dropped: b.dropped,
 	}, nil
+}
+
+// coalesceLookupOutputs merges a singular lookup input with the returned field
+// of the same name. Required path inputs remain Required; optional search inputs
+// become Optional+Computed so the configured value and refreshed API value share
+// one Terraform field. Incompatible types stay local generator diagnostics.
+func coalesceLookupOutputs(
+	inputAttrs []AttrView,
+	inputFields []ModelFieldView,
+	recordAttrs []AttrView,
+	recordFields []ModelFieldView,
+) ([]AttrView, []ModelFieldView, []AttrView, []ModelFieldView, []UnsupportedNode) {
+	attrIndex := make(map[string]int, len(inputAttrs))
+	for i := range inputAttrs {
+		attrIndex[inputAttrs[i].TFName] = i
+	}
+	fieldIndex := make(map[string]int, len(inputFields))
+	for i := range inputFields {
+		fieldIndex[inputFields[i].TFName] = i
+	}
+
+	remainingAttrs := make([]AttrView, 0, len(recordAttrs))
+	var conflicts []UnsupportedNode
+	for _, output := range recordAttrs {
+		i, found := attrIndex[output.TFName]
+		if !found {
+			remainingAttrs = append(remainingAttrs, output)
+			continue
+		}
+		input := &inputAttrs[i]
+		if input.TFType != output.TFType || input.ElementType != output.ElementType || input.CustomType != output.CustomType {
+			conflicts = append(conflicts, UnsupportedNode{
+				Path:   "schema." + output.TFName,
+				Reason: fmt.Sprintf("lookup input type %s conflicts with returned type %s", input.TFType, output.TFType),
+			})
+			continue
+		}
+		if input.Description == "" {
+			input.Description = output.Description
+		}
+		input.Sensitive = input.Sensitive || output.Sensitive
+		input.Computed = input.Optional
+	}
+
+	remainingFields := make([]ModelFieldView, 0, len(recordFields))
+	for _, output := range recordFields {
+		i, found := fieldIndex[output.TFName]
+		if !found {
+			remainingFields = append(remainingFields, output)
+			continue
+		}
+		input := inputFields[i]
+		if input.GoField != output.GoField || input.GoType != output.GoType {
+			conflicts = append(conflicts, UnsupportedNode{
+				Path:   "model." + output.TFName,
+				Reason: fmt.Sprintf("lookup input model type %s conflicts with returned type %s", input.GoType, output.GoType),
+			})
+		}
+	}
+
+	return inputAttrs, inputFields, remainingAttrs, remainingFields, conflicts
 }
 
 // buildInputViews turns Terraform input leaves into schema attributes and model
