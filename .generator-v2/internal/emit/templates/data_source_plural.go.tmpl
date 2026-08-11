@@ -152,7 +152,11 @@ func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.R
 func (d *{{ .GoName }}DataSource) updateState(ctx context.Context, state *{{ .GoName }}DataSourceModel, data *[]{{ .SDKPackage }}.{{ .Read.ItemType }}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	results := make([]*{{ .State.ItemStruct }}, 0, len(*data))
+{{- if or .State.ItemFields .State.ItemLists }}
 	for _, item := range *data {
+{{- else }}
+	for range *data {
+{{- end }}
 		r := {{ .State.ItemStruct }}{
 {{- range .State.ItemFields }}
 			{{ .LHS }}: {{ .RHS }},
