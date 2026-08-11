@@ -146,6 +146,36 @@ var _ = Describe("BuildDataSourceView", func() {
 		}))
 	})
 
+	It("hoists fields from a flat data object without an attributes wrapper", func() {
+		op := incidentTypeOperation()
+		data := op.ResponseSchema.Properties["data"]
+		name := data.Properties["attributes"].Properties["name"]
+		delete(data.Properties, "attributes")
+		data.Properties["name"] = name
+		data.Properties["relationships"] = obj(map[string]*model.Schema{
+			"owner": prim("string", "Relationship metadata."),
+		})
+
+		view := mustView(op)
+		Expect(view.State.Preamble).To(BeEmpty())
+		Expect(view.Schema.Attributes).To(ContainElement(HaveField("TFName", "name")))
+		Expect(view.State.Assignments).To(ContainElement(StateAssignment{
+			Var: "name", GetterOk: "resp.Data.GetNameOk()", LHS: "state.Name", RHS: "types.StringValue(*name)",
+		}))
+		Expect(view.Dropped).To(ContainElement(HaveField("Message", ContainSubstring("response.data.relationships"))))
+	})
+
+	It("supports an identity-only flat data object", func() {
+		op := incidentTypeOperation()
+		data := op.ResponseSchema.Properties["data"]
+		delete(data.Properties, "attributes")
+
+		view := mustView(op)
+		Expect(view.Schema.Attributes).To(BeEmpty())
+		Expect(view.Models[0].Fields).To(HaveLen(1))
+		Expect(view.State.Assignments).To(ContainElement(HaveField("LHS", "state.ID")))
+	})
+
 	It("produces a deeply-equal view across two runs", func() {
 		first, err := BuildDataSourceView(incidentTypeArtifact())
 		Expect(err).NotTo(HaveOccurred())

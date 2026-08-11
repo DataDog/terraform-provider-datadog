@@ -692,11 +692,10 @@ type flattenedEnvelope struct {
 }
 
 // flattenEnvelope recognizes the singular JSON:API envelope at the response root
-// and reshapes it for the walk. It expects a top-level "data" object whose members
-// are a subset of {id, type, attributes}, with "attributes" an object of leaves
-// only. It hoists each attribute leaf to a top-level path ("response.<leaf>"),
-// surfaces "id" from id_strategy (data.id only), and drops "type". Anything outside
-// the recognized envelope is appended to b.unsupported and the result is nil.
+// and reshapes it for the walk. The usual {data:{id,type,attributes}} form hoists
+// attributes; APIs using a flat {data:{id,type,...}} object hoist its non-envelope
+// members directly. In both forms id supplies Terraform identity, while type and
+// relationships are metadata and are dropped.
 func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrategy model.IdStrategy, rootExpr string) *flattenedEnvelope {
 	// A JSON:API response carries sideloading and request metadata beside the
 	// primary resource: "included" (the hydrated targets of data.relationships),
@@ -721,8 +720,10 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 		return nil
 	}
 
-	// data members must be a subset of {id, type, attributes}.
+	// Find the standard envelope members, retaining other members in case this is
+	// one of the flat data objects used by a small set of APIs.
 	var id, attributes *model.Attribute
+	var flatChildren []*model.Attribute
 	ok := true
 	for _, child := range data.Children {
 		switch tfNameOf(child.Path) {
@@ -732,21 +733,14 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 			// type is the discriminator and is not surfaced.
 		case "attributes":
 			attributes = child
-		default:
-			// Members outside {id, type, attributes} (e.g. relationships) have no
-			// place in the attributes-only view; drop them rather than failing.
+		case "relationships":
 			b.dropped = append(b.dropped, droppedEnvelopeMember(child.Path))
+		default:
+			flatChildren = append(flatChildren, child)
 		}
 	}
 
-	if attributes == nil {
-		b.unsupported = append(b.unsupported, UnsupportedNode{
-			Path:   data.Path,
-			Reason: "envelope data is missing an attributes object",
-		})
-		return nil
-	}
-	if attributes.TfType != "schema.SingleNestedBlock" {
+	if attributes != nil && attributes.TfType != "schema.SingleNestedBlock" {
 		b.unsupported = append(b.unsupported, UnsupportedNode{
 			Path:   attributes.Path,
 			Reason: "envelope attributes must be an object",
@@ -754,10 +748,21 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 		return nil
 	}
 
-	// Hoist the attribute children to top-level paths: scalar leaves, typed list/map
+	children := flatChildren
+	if attributes != nil {
+		for _, child := range flatChildren {
+			b.dropped = append(b.dropped, droppedEnvelopeMember(child.Path))
+		}
+		children = attributes.Children
+	} else {
+		// Direct getters live on data instead of its attributes object.
+		b.receiver = rootExpr
+	}
+
+	// Hoist the selected children to top-level paths: scalar leaves, typed list/map
 	// attributes, list-of-object blocks, and bare nested objects are in scope.
-	leaves := make([]*model.Attribute, 0, len(attributes.Children))
-	for _, child := range attributes.Children {
+	leaves := make([]*model.Attribute, 0, len(children))
+	for _, child := range children {
 		if isAuditField(tfNameOf(child.Path)) {
 			b.dropped = append(b.dropped, droppedAuditField(child.Path))
 			continue
@@ -771,7 +776,7 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 		if !isLeafType(child.TfType) && !isArrayType(child.TfType) && !isMapType(child.TfType) && !isObjectType(child.TfType) {
 			b.unsupported = append(b.unsupported, UnsupportedNode{
 				Path:   child.Path,
-				Reason: "nesting under attributes is not supported",
+				Reason: "nested response shape is not supported",
 			})
 			ok = false
 			continue
@@ -804,7 +809,7 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 		}
 	}
 	var preamble []string
-	if len(leaves) > 0 {
+	if attributes != nil && len(leaves) > 0 {
 		preamble = []string{"attributes := " + rootExpr + ".GetAttributes()"}
 	}
 	return &flattenedEnvelope{
