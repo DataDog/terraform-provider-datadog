@@ -6,6 +6,10 @@ generated provider files are discarded after every emit probe and build batch,
 and the command fails if the provider generation paths were dirty before the
 run or differ afterward.
 
+Every sweep rebuilds `bin/tfgen` from the checked-out branch before probing.
+An existing binary is never reused, so reports cannot accidentally measure a
+different branch.
+
 ## Run it
 
 From the provider repository root:

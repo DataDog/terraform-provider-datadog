@@ -877,9 +877,11 @@ def sweep(
     build_timeout: int,
 ) -> list[Result]:
     tfgen = repo / "bin/tfgen"
-    if not tfgen.exists():
-        eprint("bin/tfgen missing; building it with make tfgen-build")
-        run_command(["make", "tfgen-build"], repo, timeout=build_timeout, check=True)
+    # A coverage result is only meaningful for the checked-out generator.  An
+    # existing binary may have been built by another branch, so always replace
+    # it before probing candidates.
+    eprint("building current tfgen with make tfgen-build")
+    run_command(["make", "tfgen-build"], repo, timeout=build_timeout, check=True)
     guard = TreeGuard(repo)
     results: dict[str, Result] = {}
     reports = output_dir / "tfgen-reports"
