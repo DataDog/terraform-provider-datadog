@@ -388,6 +388,22 @@ var _ = Describe("NormalizeSchemas oneOf metadata", func() {
 		))
 	})
 
+	It("treats a bare object type adjacent to oneOf as an object constraint", func() {
+		union := oneOfFor("CreateOneOfWithObjectTypeSibling")
+		Expect(union.Variants).To(HaveLen(2))
+
+		Expect(union.Variants).To(ConsistOf(
+			SatisfyAll(
+				HaveField("Schema.Kind", model.SchemaKindObject),
+				HaveField("Schema.Properties", HaveKey("alpha")),
+			),
+			SatisfyAll(
+				HaveField("Schema.Kind", model.SchemaKindObject),
+				HaveField("Schema.Properties", HaveKey("beta")),
+			),
+		))
+	})
+
 	It("normalizes one adjacent allOf and merges it into every oneOf alternative", func() {
 		union := oneOfFor("CreateOneOfWithAllOfSibling")
 		Expect(union.Variants).To(HaveLen(2))
