@@ -20,6 +20,9 @@ import (
 {{- if .UsesTime }}
 	"time"
 {{- end }}
+{{- if .UsesStrconv }}
+	"strconv"
+{{- end }}
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/{{ .SDKPackage }}"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -106,6 +109,13 @@ func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.R
 		return
 	}
 {{- end }}
+{{- if .IntVar }}
+	{{ .IntVar }}, err := strconv.ParseInt({{ .IntSource }}, 10, {{ .IntBits }})
+	if err != nil {
+		response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
+		return
+	}
+{{- end }}
 {{- end }}
 	resp, httpResp, err := d.Api.{{ .Read.Method }}(d.Auth{{ range .Read.Arguments }}, {{ .Expression }}{{ end }}{{ if and .ByID (not .Read.Arguments) }}, state.ID.ValueString(){{ end }})
 	if err != nil {
@@ -140,6 +150,13 @@ func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.R
 {{- end }}
 {{- if .TimeVar }}
 		{{ .TimeVar }}, err := time.Parse({{ .TimeLayout }}, {{ .TimeSource }})
+		if err != nil {
+			response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
+			return
+		}
+{{- end }}
+{{- if .IntVar }}
+		{{ .IntVar }}, err := strconv.ParseInt({{ .IntSource }}, 10, {{ .IntBits }})
 		if err != nil {
 			response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
 			return
@@ -252,6 +269,13 @@ func (d *{{ .GoName }}DataSource) updateState(ctx context.Context, state *{{ .Go
 {{- end }}
 {{- if .TimeVar }}
 	{{ .TimeVar }}, err := time.Parse({{ .TimeLayout }}, {{ .TimeSource }})
+	if err != nil {
+		response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
+		return
+	}
+{{- end }}
+{{- if .IntVar }}
+	{{ .IntVar }}, err := strconv.ParseInt({{ .IntSource }}, 10, {{ .IntBits }})
 	if err != nil {
 		response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
 		return

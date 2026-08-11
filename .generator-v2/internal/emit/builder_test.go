@@ -179,6 +179,28 @@ var _ = Describe("BuildDataSourceView", func() {
 		Expect(src).To(ContainSubstring(`GetIncidentType(d.Auth, state.AccountId.ValueInt64(), parsedId)`))
 	})
 
+	It("parses a string-valued Terraform id for a numeric SDK path argument", func() {
+		op := incidentTypeOperation()
+		op.SDKBinding = &model.SDKOperationBinding{Required: []model.SDKArgument{{
+			Name: "incident_type_id", GoName: "incidentTypeId", GoType: "int64", Location: "path",
+			Schema: prim("integer", "The numeric incident type ID."),
+		}}}
+
+		view := mustView(op)
+		Expect(view.UsesStrconv).To(BeTrue())
+		Expect(view.Read.Arguments).To(Equal([]SDKArgumentView{{
+			Expression: "parsedId", IntVar: "parsedId", IntSource: "state.ID.ValueString()", IntBits: 64, TFName: "id",
+		}}))
+
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		src := string(rendered)
+		Expect(src).To(ContainSubstring(`"strconv"`))
+		Expect(src).To(ContainSubstring(`parsedId, err := strconv.ParseInt(state.ID.ValueString(), 10, 64)`))
+		Expect(src).To(ContainSubstring(`response.Diagnostics.AddError("Invalid id", err.Error())`))
+		Expect(src).To(ContainSubstring(`GetIncidentType(d.Auth, parsedId)`))
+	})
+
 	It("renders a resolved singleton call without inventing an id argument", func() {
 		op := incidentTypeOperation()
 		op.Path = "/api/v2/incidents/config/types/default"
