@@ -239,24 +239,42 @@ func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, requir
 			// into attribute form regardless of the incoming mode.
 			children, err := b.children(s.Items, path+"{}.", nestAttribute)
 			if err != nil {
-				return nil, err
+				return b.responseMapFallback(attr, err)
 			}
 			attr.Children, attr.ModelRefName = children, s.Items.RefName
 		case SchemaKindOneOf:
 			variants, envelope, err := b.oneOfVariants(s.Items, path+"{}", nestAttribute)
 			if err != nil {
-				return nil, err
+				return b.responseMapFallback(attr, err)
 			}
 			attr.Children, attr.OneOf = variants, envelope
 		default:
 			elem, err := ElementType(s.Items)
 			if err != nil {
-				return nil, err
+				return b.responseMapFallback(attr, err)
 			}
 			attr.ElementType = elem
 		}
 	}
 
+	return attr, nil
+}
+
+// responseMapFallback preserves a computed dynamic map as normalized JSON when
+// one of its value descendants cannot be represented as a Terraform nested
+// attribute. The map remains lossless in state, while request trees stay strict:
+// accepting opaque practitioner input would discard the OpenAPI validation shape.
+func (b *treeBuilder) responseMapFallback(attr *Attribute, projectionErr error) (*Attribute, error) {
+	if b.kind != responseTree {
+		return nil, projectionErr
+	}
+	attr.TfType = "schema.StringAttribute"
+	attr.GoType = "jsontypes.Normalized"
+	attr.CustomType = "jsontypes.NormalizedType{}"
+	attr.ElementType = ""
+	attr.Children = nil
+	attr.OneOf = nil
+	attr.ModelRefName = ""
 	return attr, nil
 }
 
