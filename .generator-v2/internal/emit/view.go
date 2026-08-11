@@ -60,6 +60,8 @@ type DataSourceView struct {
 	UsesUUID bool
 	// UsesTime adds the time import and SDK-input date parsing blocks.
 	UsesTime bool
+	// UsesStrconv adds integer parsing for string-valued Terraform IDs.
+	UsesStrconv bool
 	// UsesJSON adds encoding/json and normalized JSON custom-type imports.
 	UsesJSON bool
 
@@ -202,6 +204,9 @@ type SDKArgumentView struct {
 	TimeVar    string
 	TimeSource string
 	TimeLayout string
+	IntVar     string
+	IntSource  string
+	IntBits    int
 	TFName     string
 }
 

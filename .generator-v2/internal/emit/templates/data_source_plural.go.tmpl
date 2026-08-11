@@ -18,6 +18,9 @@ import (
 {{- if .UsesTime }}
 	"time"
 {{- end }}
+{{- if .UsesStrconv }}
+	"strconv"
+{{- end }}
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/{{ .SDKPackage }}"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -100,6 +103,13 @@ func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.R
 {{- end }}
 {{- if .TimeVar }}
 	{{ .TimeVar }}, err := time.Parse({{ .TimeLayout }}, {{ .TimeSource }})
+	if err != nil {
+		response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
+		return
+	}
+{{- end }}
+{{- if .IntVar }}
+	{{ .IntVar }}, err := strconv.ParseInt({{ .IntSource }}, 10, {{ .IntBits }})
 	if err != nil {
 		response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
 		return

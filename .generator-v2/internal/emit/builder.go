@@ -344,8 +344,8 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 
 	inputAttrs, inputFields := buildInputViews(inputLeaves)
 	filterParams, filterUUID, filterTime := buildFilterParams(search, filterLeaves, &b.unsupported)
-	readArgs, readUUID, readTime := buildArgumentViews(read, &b.unsupported)
-	searchArgs, searchUUID, searchTime := buildArgumentViews(search, &b.unsupported)
+	readArgs, readUUID, readTime, readStrconv := buildArgumentViews(read, &b.unsupported)
+	searchArgs, searchUUID, searchTime, searchStrconv := buildArgumentViews(search, &b.unsupported)
 	if len(b.unsupported) > 0 {
 		return DataSourceView{}, &UnsupportedEmitError{Nodes: b.unsupported}
 	}
@@ -398,6 +398,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 		APIAccessor: "Get" + primary.GoApiStruct + strings.TrimPrefix(primary.GoPackage, "datadog"),
 		UsesUUID:    readUUID || searchUUID || filterUUID,
 		UsesTime:    readTime || searchTime || filterTime,
+		UsesStrconv: readStrconv || searchStrconv,
 		UsesJSON:    b.usesJSON,
 		ByID:        byID,
 		Searchable:  searchable,
@@ -466,13 +467,14 @@ func callHasArgument(call *model.SDKCall, tfName string) bool {
 	return false
 }
 
-func buildArgumentViews(call *model.SDKCall, unsupported *[]UnsupportedNode) ([]SDKArgumentView, bool, bool) {
+func buildArgumentViews(call *model.SDKCall, unsupported *[]UnsupportedNode) ([]SDKArgumentView, bool, bool, bool) {
 	if call == nil || !call.BindingResolved {
-		return nil, false, false
+		return nil, false, false, false
 	}
 	var views []SDKArgumentView
 	usesUUID := false
 	usesTime := false
+	usesStrconv := false
 	for _, arg := range call.Arguments {
 		expr := sdkArgumentExpression(call.GoPackage, arg)
 		if expr.reason != "" {
@@ -484,12 +486,14 @@ func buildArgumentViews(call *model.SDKCall, unsupported *[]UnsupportedNode) ([]
 		views = append(views, SDKArgumentView{
 			Expression: expr.value, UUIDVar: expr.uuidVar, UUIDSource: expr.uuidSource,
 			TimeVar: expr.timeVar, TimeSource: expr.timeSource, TimeLayout: expr.timeLayout,
+			IntVar: expr.intVar, IntSource: expr.intSource, IntBits: expr.intBits,
 			TFName: arg.TFName,
 		})
 		usesUUID = usesUUID || expr.uuidVar != ""
 		usesTime = usesTime || expr.timeVar != ""
+		usesStrconv = usesStrconv || expr.intVar != ""
 	}
-	return views, usesUUID, usesTime
+	return views, usesUUID, usesTime, usesStrconv
 }
 
 func buildFilterParams(call *model.SDKCall, leaves []*model.Attribute, unsupported *[]UnsupportedNode) ([]FilterParamView, bool, bool) {
@@ -547,6 +551,9 @@ type sdkArgumentExpressionView struct {
 	timeVar    string
 	timeSource string
 	timeLayout string
+	intVar     string
+	intSource  string
+	intBits    int
 	reason     string
 }
 
@@ -556,6 +563,23 @@ func sdkArgumentExpression(sdkPackage string, arg model.SDKArgument) sdkArgument
 	}
 	field := goFieldName(arg.TFName)
 	source := "state." + field
+	if arg.TFName == "id" && arg.Schema.Type == "integer" {
+		name := "parsed" + model.SdkName(arg.TFName)
+		value := name
+		bits := 64
+		switch arg.GoType {
+		case "int":
+			bits, value = 0, "int("+name+")"
+		case "int32":
+			bits, value = 32, "int32("+name+")"
+		case "int64":
+		default:
+			value = sdkPackage + "." + arg.GoType + "(" + name + ")"
+		}
+		return sdkArgumentExpressionView{
+			value: value, intVar: name, intSource: source + ".ValueString()", intBits: bits,
+		}
+	}
 	var value string
 	switch arg.Schema.Type {
 	case "string":
@@ -1180,7 +1204,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 
 	inputAttrs, inputFields := buildInputViews(inputLeaves)
 	filterParams, filterUUID, filterTime := buildFilterParams(call, filterLeaves, &unsupported)
-	callArgs, usesUUID, usesTime := buildArgumentViews(call, &unsupported)
+	callArgs, usesUUID, usesTime, usesStrconv := buildArgumentViews(call, &unsupported)
 	goName := dsGoName(a.Name)
 
 	// b hosts walk so list-of-object item fields generate their element structs.
@@ -1355,6 +1379,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 		APIAccessor: "Get" + call.GoApiStruct + strings.TrimPrefix(call.GoPackage, "datadog"),
 		UsesUUID:    usesUUID || filterUUID,
 		UsesTime:    usesTime || filterTime,
+		UsesStrconv: usesStrconv,
 		UsesJSON:    b.usesJSON,
 		Read: SDKReadView{
 			Method:             call.GoMethod,
