@@ -1026,6 +1026,29 @@ var _ = Describe("BuildDataSourceView singular nested arrays", func() {
 		Expect(tagFilters.ElemStruct).To(Equal("datadogCostBudgetEntriesTagFiltersModel"))
 	})
 
+	It("uses path-qualified locals when a nested array repeats its parent name", func() {
+		op := costBudgetOperation()
+		entries := op.ResponseSchema.Properties["data"].Properties["attributes"].Properties["entries"]
+		entries.Items.Properties["entries"] = &model.Schema{
+			Kind: model.SchemaKindArray,
+			Items: obj(map[string]*model.Schema{
+				"amount": prim("number", "The nested amount."),
+			}),
+		}
+
+		view, err := BuildDataSourceView(mustArtifact(op))
+		Expect(err).NotTo(HaveOccurred())
+		outer := view.State.Lists[0]
+		var inner ListAssignment
+		for _, assignment := range outer.Lists {
+			if assignment.LHS == "entriesModel.Entries" {
+				inner = assignment
+			}
+		}
+		Expect(inner.LoopVar).To(Equal("entriesEntriesItem"))
+		Expect(inner.ElemVar).To(Equal("entriesEntriesModel"))
+	})
+
 	It("produces a deeply-equal view across two runs", func() {
 		first, err := BuildDataSourceView(mustArtifact(costBudgetOperation()))
 		Expect(err).NotTo(HaveOccurred())

@@ -999,7 +999,7 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 
 		case "schema.ListNestedBlock":
 			elemStruct, childStem := b.namer.nested(stem, a)
-			base := lowerFirst(field)
+			base := nestedStateBase(tfName, childStem, receiver, lhsPrefix)
 			loopVar, elemVar := base+"Item", base+"Model"
 			fields = append(fields, ModelFieldView{GoField: field, GoType: "[]*" + elemStruct, TFName: tfName})
 			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, childStem, loopVar, elemVar, a.Children)
@@ -1029,8 +1029,9 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 
 		case "schema.SingleNestedBlock":
 			childStruct, childStem := b.namer.nested(stem, a)
-			objVar := leafVar(tfName)
-			elemVar := lowerFirst(field) + "Model"
+			base := nestedStateBase(tfName, childStem, receiver, lhsPrefix)
+			objVar := base
+			elemVar := base + "Model"
 			fields = append(fields, ModelFieldView{GoField: field, GoType: "*" + childStruct, TFName: tfName})
 			childAttrs, childBlocks, childScalars, childLists := b.walk(childStruct, childStem, objVar, elemVar, a.Children)
 			blockViews = append(blockViews, AttrView{
@@ -1069,6 +1070,19 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 // getterOk("attributes", "visible_modules") → "attributes.GetVisibleModulesOk()".
 func getterOk(receiver, name string) string {
 	return receiver + ".Get" + model.SdkName(name) + "Ok()"
+}
+
+// nestedStateBase returns the local-variable stem for one nested object. The
+// ordinary field-derived name keeps generated code compact. When a child repeats
+// its immediate parent's field name, however, that stem would shadow both the SDK
+// receiver and the parent model accumulator (components inside components is a
+// real API shape). Use the path-derived child model stem only for that collision.
+func nestedStateBase(tfName, childStem, receiver, lhsPrefix string) string {
+	base := leafVar(tfName)
+	if base == receiver || base+"Item" == receiver || base+"Model" == lhsPrefix {
+		return lowerFirst(childStem)
+	}
+	return base
 }
 
 // isLeafType reports whether tfType is one of the four scalar attribute forms the
@@ -1375,7 +1389,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 			// itemStem, not "": these hang off the item element, so an inline child
 			// accumulates from the item struct the same way it would under walk.
 			elemStruct, childStem := b.namer.nested(itemStem, n)
-			base := lowerFirst(model.SdkName(tfName))
+			base := nestedStateBase(tfName, childStem, "item.Attributes", "r."+field)
 			loopVar, elemVar := base+"Item", base+"Model"
 			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, childStem, loopVar, elemVar, n.Children)
 			itemBlocks = append(itemBlocks, AttrView{
@@ -1390,8 +1404,9 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 			})
 		case "schema.SingleNestedBlock":
 			elemStruct, childStem := b.namer.nested(itemStem, n)
-			objVar := leafVar(tfName)
-			elemVar := lowerFirst(model.SdkName(tfName)) + "Model"
+			base := nestedStateBase(tfName, childStem, "item.Attributes", "r."+field)
+			objVar := base
+			elemVar := base + "Model"
 			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, childStem, objVar, elemVar, n.Children)
 			itemBlocks = append(itemBlocks, AttrView{
 				TFName: tfName, Description: n.Description,
