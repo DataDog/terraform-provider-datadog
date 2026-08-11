@@ -740,20 +740,27 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 		}
 	}
 
-	if attributes != nil && attributes.TfType != "schema.SingleNestedBlock" {
-		b.unsupported = append(b.unsupported, UnsupportedNode{
-			Path:   attributes.Path,
-			Reason: "envelope attributes must be an object",
-		})
-		return nil
-	}
-
 	children := flatChildren
 	if attributes != nil {
 		for _, child := range flatChildren {
 			b.dropped = append(b.dropped, droppedEnvelopeMember(child.Path))
 		}
-		children = attributes.Children
+		switch {
+		case attributes.TfType == "schema.SingleNestedBlock":
+			children = attributes.Children
+		case isJSONAttribute(attributes):
+			// A few JSON:API-shaped responses define attributes as a free-form
+			// object rather than a typed property bag. Keep the member itself as
+			// normalized JSON and read it directly from data.
+			children = []*model.Attribute{attributes}
+			b.receiver = rootExpr
+		default:
+			b.unsupported = append(b.unsupported, UnsupportedNode{
+				Path:   attributes.Path,
+				Reason: "envelope attributes must be an object or normalized JSON",
+			})
+			return nil
+		}
 	} else {
 		// Direct getters live on data instead of its attributes object.
 		b.receiver = rootExpr
@@ -809,7 +816,7 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 		}
 	}
 	var preamble []string
-	if attributes != nil && len(leaves) > 0 {
+	if attributes != nil && attributes.TfType == "schema.SingleNestedBlock" && len(leaves) > 0 {
 		preamble = []string{"attributes := " + rootExpr + ".GetAttributes()"}
 	}
 	return &flattenedEnvelope{
