@@ -773,7 +773,7 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 			b.dropped = append(b.dropped, droppedIDCollision(child.Path))
 			continue
 		}
-		if !isLeafType(child.TfType) && !isArrayType(child.TfType) && !isMapType(child.TfType) && !isObjectType(child.TfType) {
+		if !isLeafType(child.TfType) && !isArrayType(child.TfType) && !isMapType(child.TfType) && !isObjectType(child.TfType) && !isOpaqueJSONType(child.TfType) {
 			b.unsupported = append(b.unsupported, UnsupportedNode{
 				Path:   child.Path,
 				Reason: "nested response shape is not supported",
@@ -997,6 +997,18 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 				ElementType:   a.ElementType,
 			})
 
+		case "schema.MapNestedAttribute":
+			// Dynamic keys whose values are structured objects cannot be expressed
+			// as blocks. Preserve the complete SDK map as canonical JSON instead of
+			// dropping either its keys or its nested values.
+			b.usesJSON = true
+			attrViews = append(attrViews, opaqueJSONView(a))
+			fields = append(fields, ModelFieldView{GoField: field, GoType: "jsontypes.Normalized", TFName: tfName})
+			lists = append(lists, ListAssignment{
+				Kind: "json", LHS: lhsPrefix + "." + field,
+				GetterOk: getterOk(receiver, tfName), Var: leafVar(tfName), Path: a.Path,
+			})
+
 		case "schema.ListNestedBlock":
 			elemStruct, childStem := b.namer.nested(stem, a)
 			base := nestedStateBase(tfName, childStem, receiver, lhsPrefix)
@@ -1115,6 +1127,19 @@ func isArrayType(tfType string) bool {
 
 // isMapType reports whether tfType is a typed dynamic-key map attribute.
 func isMapType(tfType string) bool { return tfType == "schema.MapAttribute" }
+
+// isOpaqueJSONType identifies a response shape that Terraform can retain but
+// the generator cannot safely model as nested blocks. A structured map is kept
+// as normalized JSON so its dynamic keys and complete values survive in state.
+func isOpaqueJSONType(tfType string) bool { return tfType == "schema.MapNestedAttribute" }
+
+func opaqueJSONView(a *model.Attribute) AttrView {
+	return AttrView{
+		TFName: tfNameOf(a.Path), TFType: "schema.StringAttribute",
+		CustomType: "jsontypes.NormalizedType{}", Description: a.Description,
+		Required: a.Required, Optional: a.Optional, Computed: a.Computed, Sensitive: a.Sensitive,
+	}
+}
 
 // isObjectType reports whether tfType is a bare nested object the envelope
 // hoists into single-object machinery (schema.SingleNestedBlock).
@@ -1348,6 +1373,16 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 			})
 			continue
 		}
+		if isOpaqueJSONType(n.TfType) {
+			b.usesJSON = true
+			itemAttrs = append(itemAttrs, opaqueJSONView(n))
+			itemFields = append(itemFields, ModelFieldView{GoField: field, GoType: "jsontypes.Normalized", TFName: tfName})
+			itemLists = append(itemLists, ListAssignment{
+				Kind: "json", LHS: "r." + field, GetterOk: getter,
+				Var: leafVar(tfName), Path: n.Path,
+			})
+			continue
+		}
 
 		// Same rule as walk: a union is keyed on OneOf, never on TfType.
 		if n.OneOf != nil {
@@ -1549,7 +1584,7 @@ func flattenItemElement(block *model.Attribute, unsupported *[]UnsupportedNode, 
 					nonScalars = append(nonScalars, leaf)
 				case isLeafType(leaf.TfType):
 					scalars = append(scalars, itemElementLeaf{attr: leaf, chain: itemGetter("item.Attributes", tfNameOf(leaf.Path))})
-				case isArrayType(leaf.TfType), isMapType(leaf.TfType), isObjectType(leaf.TfType):
+				case isArrayType(leaf.TfType), isMapType(leaf.TfType), isObjectType(leaf.TfType), isOpaqueJSONType(leaf.TfType):
 					nonScalars = append(nonScalars, leaf)
 				default:
 					*unsupported = append(*unsupported, UnsupportedNode{Path: leaf.Path, Reason: "nesting under item attributes is not supported"})
