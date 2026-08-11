@@ -1059,6 +1059,27 @@ var _ = Describe("BuildDataSourceView singular nested arrays", func() {
 })
 
 var _ = Describe("BuildDataSourceView singular arrays", func() {
+	It("preserves an opaque JSON:API attributes member as normalized JSON", func() {
+		op := teamSingularOperation()
+		data := op.ResponseSchema.Properties["data"]
+		data.Properties["attributes"] = &model.Schema{
+			Kind: model.SchemaKindJSON, Description: "Free-form resource attributes.",
+		}
+
+		view := mustView(op)
+		Expect(view.UsesJSON).To(BeTrue())
+		Expect(view.Schema.Attributes).To(ContainElement(SatisfyAll(
+			HaveField("TFName", "attributes"),
+			HaveField("CustomType", "jsontypes.NormalizedType{}"),
+		)))
+		Expect(view.State.Preamble).To(BeEmpty())
+		Expect(view.State.Lists).To(ContainElement(SatisfyAll(
+			HaveField("Kind", "json"),
+			HaveField("LHS", "state.Attributes"),
+			HaveField("GetterOk", ContainSubstring(".GetAttributesOk()")),
+		)))
+	})
+
 	It("renders unconstrained response values as normalized JSON", func() {
 		op := teamSingularOperation()
 		attrs := op.ResponseSchema.Properties["data"].Properties["attributes"].Properties
