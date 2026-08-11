@@ -397,6 +397,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 		APIStruct:   primary.GoApiStruct,
 		APIAccessor: "Get" + primary.GoApiStruct + strings.TrimPrefix(primary.GoPackage, "datadog"),
 		UsesUUID:    readUUID || searchUUID || filterUUID,
+		UsesJSON:    b.usesJSON,
 		ByID:        byID,
 		Searchable:  searchable,
 		Read:        readView,
@@ -428,7 +429,7 @@ func buildInputViews(leaves []*model.Attribute) (attrs []AttrView, fields []Mode
 	for i, leaf := range leaves {
 		tfName := tfNameOf(leaf.Path)
 		attrs = append(attrs, AttrView{
-			TFName: tfName, TFType: leaf.TfType, Description: leaf.Description,
+			TFName: tfName, TFType: leaf.TfType, CustomType: leaf.CustomType, Description: leaf.Description,
 			Required: leaf.Required, Optional: leaf.Optional,
 		})
 		field := ModelFieldView{GoField: model.SdkName(tfName), GoType: leaf.GoType, TFName: tfName}
@@ -709,6 +710,7 @@ type dataSourceBuilder struct {
 	namer       modelNamer
 	models      []ModelStructView
 	unsupported []UnsupportedNode
+	usesJSON    bool
 	// dropped notes envelope members skipped from the attributes-only view
 	// (e.g. relationships), surfaced as diagnostics rather than failures.
 	dropped []DroppedMember
@@ -808,6 +810,7 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 			attrViews = append(attrViews, AttrView{
 				TFName:      tfName,
 				TFType:      a.TfType,
+				CustomType:  a.CustomType,
 				Description: a.Description,
 				Required:    a.Required,
 				Optional:    a.Optional,
@@ -816,6 +819,14 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 			})
 			fields = append(fields, ModelFieldView{GoField: field, GoType: a.GoType, TFName: tfName})
 			varName := leafVar(tfName)
+			if isJSONAttribute(a) {
+				b.usesJSON = true
+				lists = append(lists, ListAssignment{
+					Kind: "json", LHS: lhsPrefix + "." + field,
+					GetterOk: getterOk(receiver, tfName), Var: varName, Path: a.Path,
+				})
+				continue
+			}
 			scalars = append(scalars, StateAssignment{
 				Var:      varName,
 				GetterOk: getterOk(receiver, tfName),
@@ -949,6 +960,10 @@ func isLeafType(tfType string) bool {
 	default:
 		return false
 	}
+}
+
+func isJSONAttribute(a *model.Attribute) bool {
+	return a != nil && a.CustomType == "jsontypes.NormalizedType{}"
 }
 
 // isArrayType reports whether tfType is one of the array attribute forms the
@@ -1185,6 +1200,19 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 		tfName := tfNameOf(n.Path)
 		field := goFieldName(tfName)
 		getter := getterOk("item.Attributes", tfName)
+		if isJSONAttribute(n) {
+			b.usesJSON = true
+			itemAttrs = append(itemAttrs, AttrView{
+				TFName: tfName, TFType: n.TfType, CustomType: n.CustomType,
+				Description: n.Description, Computed: true,
+			})
+			itemFields = append(itemFields, ModelFieldView{GoField: field, GoType: n.GoType, TFName: tfName})
+			itemLists = append(itemLists, ListAssignment{
+				Kind: "json", LHS: "r." + field, GetterOk: getter,
+				Var: leafVar(tfName), Path: n.Path,
+			})
+			continue
+		}
 
 		// Same rule as walk: a union is keyed on OneOf, never on TfType.
 		if n.OneOf != nil {
@@ -1297,6 +1325,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 		APIStruct:   call.GoApiStruct,
 		APIAccessor: "Get" + call.GoApiStruct + strings.TrimPrefix(call.GoPackage, "datadog"),
 		UsesUUID:    usesUUID || filterUUID,
+		UsesJSON:    b.usesJSON,
 		Read: SDKReadView{
 			Method:             call.GoMethod,
 			Paginated:          call.Paginated,
@@ -1358,7 +1387,7 @@ func flattenItemElement(block *model.Attribute, unsupported *[]UnsupportedNode, 
 		case "type":
 			// discriminator; dropped
 		case "id":
-			if !isLeafType(child.TfType) {
+			if !isLeafType(child.TfType) || isJSONAttribute(child) {
 				*unsupported = append(*unsupported, UnsupportedNode{Path: child.Path, Reason: "item id must be a scalar"})
 				continue
 			}
@@ -1378,6 +1407,8 @@ func flattenItemElement(block *model.Attribute, unsupported *[]UnsupportedNode, 
 					continue
 				}
 				switch {
+				case isJSONAttribute(leaf):
+					nonScalars = append(nonScalars, leaf)
 				case isLeafType(leaf.TfType):
 					scalars = append(scalars, itemElementLeaf{attr: leaf, chain: itemGetter("item.Attributes", tfNameOf(leaf.Path))})
 				case isArrayType(leaf.TfType), isMapType(leaf.TfType), isObjectType(leaf.TfType):

@@ -30,11 +30,11 @@ const (
 	ArtifactKindDataSource ArtifactKind = "data_source"
 )
 
-// SchemaKind classifies a normalized Schema node by structure. Primitive,
-// Object, Array and Map are directly emittable as Terraform attributes. OneOf
+// SchemaKind classifies a normalized Schema node by structure. Primitive, JSON,
+// Object, Array and Map are directly emittable as Terraform attributes. JSON is
+// an unconstrained OpenAPI value represented as normalized JSON text. OneOf
 // requires a synthetic envelope described by Schema.OneOf. RefCycle,
-// DepthExceeded and Unsupported are fatal — the builder fails the artifact rather
-// than emitting a types.Dynamic escape hatch.
+// DepthExceeded and Unsupported are fatal.
 //
 // RefCycle and DepthExceeded are deliberately distinct: a cycle is a property of
 // the document that no flag can fix, whereas exhausting --max-depth says only
@@ -45,6 +45,7 @@ type SchemaKind string
 
 const (
 	SchemaKindPrimitive     SchemaKind = "primitive"
+	SchemaKindJSON          SchemaKind = "json"
 	SchemaKindObject        SchemaKind = "object"
 	SchemaKindArray         SchemaKind = "array"
 	SchemaKindMap           SchemaKind = "map"
@@ -363,6 +364,9 @@ type Attribute struct {
 	TfType string
 	// GoType is the corresponding model-struct type, e.g. types.String.
 	GoType string
+	// CustomType is the optional framework custom type expression rendered on
+	// the schema attribute, e.g. jsontypes.NormalizedType{} for arbitrary JSON.
+	CustomType string
 	// ElementType is the framework attr.Type for a list/map element value,
 	// e.g. "types.StringType" or "types.ListType{ElemType: types.StringType}".
 	// Set only for ListAttribute/MapAttribute collection chains ending in a

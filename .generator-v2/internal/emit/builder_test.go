@@ -903,6 +903,37 @@ var _ = Describe("BuildDataSourceView singular nested arrays", func() {
 })
 
 var _ = Describe("BuildDataSourceView singular arrays", func() {
+	It("renders unconstrained response values as normalized JSON", func() {
+		op := teamSingularOperation()
+		attrs := op.ResponseSchema.Properties["data"].Properties["attributes"].Properties
+		attrs["metadata"] = &model.Schema{
+			Kind: model.SchemaKindJSON, Description: "Arbitrary metadata.",
+		}
+
+		view := mustView(op)
+		Expect(view.UsesJSON).To(BeTrue())
+		var metadata AttrView
+		for _, attr := range view.Schema.Attributes {
+			if attr.TFName == "metadata" {
+				metadata = attr
+			}
+		}
+		Expect(metadata.TFType).To(Equal("schema.StringAttribute"))
+		Expect(metadata.CustomType).To(Equal("jsontypes.NormalizedType{}"))
+		Expect(view.State.Lists).To(ContainElement(ListAssignment{
+			Kind: "json", LHS: "state.Metadata", GetterOk: "attributes.GetMetadataOk()",
+			Var: "metadata", Path: "response.metadata",
+		}))
+
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		src := string(rendered)
+		Expect(src).To(ContainSubstring(`"encoding/json"`))
+		Expect(src).To(ContainSubstring(`"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"`))
+		Expect(src).To(ContainSubstring("encoded, err := json.Marshal(metadata)"))
+		Expect(src).To(ContainSubstring("state.Metadata = jsontypes.NewNormalizedValue(string(encoded))"))
+	})
+
 	It("hoists a string array under attributes into a ListAttribute carrying its element type", func() {
 		view, err := BuildDataSourceView(mustArtifact(teamSingularOperation()))
 		Expect(err).NotTo(HaveOccurred())
@@ -1024,6 +1055,26 @@ var _ = Describe("BuildDataSourceView plural", func() {
 		view, err := BuildDataSourceView(art)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(view).To(Equal(pluralFixture()))
+	})
+
+	It("renders unconstrained result-item values as normalized JSON", func() {
+		op := teamsOperation()
+		attributes := op.ResponseSchema.Properties["data"].Items.Properties["attributes"].Properties
+		attributes["metadata"] = &model.Schema{
+			Kind: model.SchemaKindJSON, Description: "Arbitrary metadata.",
+		}
+
+		view := mustView(op)
+		Expect(view.UsesJSON).To(BeTrue())
+		Expect(view.State.ItemLists).To(ContainElement(ListAssignment{
+			Kind: "json", LHS: "r.Metadata", GetterOk: "item.Attributes.GetMetadataOk()",
+			Var: "metadata", Path: "response.data[].attributes.metadata",
+		}))
+
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		src := string(rendered)
+		Expect(src).To(ContainSubstring("r.Metadata = jsontypes.NewNormalizedValue(string(encoded))"))
 	})
 
 	It("emits a recursively typed map on a plural result item", func() {

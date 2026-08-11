@@ -58,6 +58,8 @@ type DataSourceView struct {
 	APIConstructor string
 	// UsesUUID adds the google/uuid import and SDK-input parsing blocks.
 	UsesUUID bool
+	// UsesJSON adds encoding/json and normalized JSON custom-type imports.
+	UsesJSON bool
 
 	// ByID and Searchable select how a singular data source resolves its one
 	// record, driving the Read body and the "id" attribute: ByID only → by-id
@@ -246,6 +248,8 @@ type AttrView struct {
 	// ElementType is the framework attr.Type rendered on a schema.ListAttribute,
 	// e.g. "types.StringType". Non-empty only for a collection-of-primitive leaf.
 	ElementType string
+	// CustomType is the optional framework custom type expression for a leaf.
+	CustomType string
 	// Description is the attribute description (repo convention: always set).
 	Description string
 
@@ -351,8 +355,9 @@ type StateAssignment struct {
 // nested model slice, recursing through Scalars (the element's leaf fields) and
 // Lists (its nested list fields); an object_single maps one nested object into a
 // generated model pointer, assigned once instead of looped; and a oneof unwraps an
-// SDK oneOf wrapper through OneOf. All forms are guarded by an Ok-getter so an
-// absent field stays null. Primitive-terminal collections retain whether they
+// SDK oneOf wrapper through OneOf. JSON stores an unconstrained SDK value as
+// normalized JSON text. All forms are guarded by an Ok-getter so an absent field
+// stays null. Primitive-terminal collections retain whether they
 // are lists or maps so the matching framework conversion helper is rendered.
 //
 // A oneOf envelope rides this type rather than a parallel one because it needs
@@ -360,8 +365,8 @@ type StateAssignment struct {
 // nested object, inside a list element, or inside another envelope's variant — and
 // duplicating that composition for one extra shape would be the larger cost.
 type ListAssignment struct {
-	// Kind is "primitive", "object", "object_single" (a single nested object,
-	// assigned once rather than appended in a loop), or "oneof" (see OneOf).
+	// Kind is "primitive", "json", "object", "object_single" (a single nested
+	// object, assigned once rather than appended in a loop), or "oneof" (see OneOf).
 	Kind string
 	// ContainerKind is "list" or "map" for Kind == "primitive". It selects
 	// the framework ValueFrom and Null constructors used by the template.
@@ -378,6 +383,8 @@ type ListAssignment struct {
 	// collection, e.g. "types.ListType{ElemType: types.StringType}". Empty for
 	// an object list.
 	ElementType string
+	// Path identifies JSON conversion diagnostics.
+	Path string
 
 	// The fields below back an object list (Kind == "object").
 
