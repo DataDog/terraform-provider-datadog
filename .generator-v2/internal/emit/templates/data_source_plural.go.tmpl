@@ -12,6 +12,9 @@ import (
 {{- if .UsesFmt }}
 	"fmt"
 {{- end }}
+{{- if .UsesStrconv }}
+	"strconv"
+{{- end }}
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/{{ .SDKPackage }}"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -59,8 +62,8 @@ func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.R
 	var optionalParams {{ .SDKPackage }}.{{ .Read.OptionalParamsType }}
 {{- range .Read.Filters }}
 	if !state.{{ .StateField }}.IsNull() {
-{{- if .UUIDVar }}
-		{{ .UUIDVar }}, err := uuid.Parse({{ .UUIDSource }})
+{{- if .ParsedVar }}
+		{{ .ParsedVar }}, err := {{ .ParseCall }}
 		if err != nil {
 			response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
 			return
@@ -75,8 +78,8 @@ func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.R
 {{- end }}
 {{ end }}
 {{- range .Read.Arguments }}
-{{- if .UUIDVar }}
-	{{ .UUIDVar }}, err := uuid.Parse({{ .UUIDSource }})
+{{- if .ParsedVar }}
+	{{ .ParsedVar }}, err := {{ .ParseCall }}
 	if err != nil {
 		response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
 		return

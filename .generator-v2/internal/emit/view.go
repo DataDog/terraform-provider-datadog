@@ -58,6 +58,9 @@ type DataSourceView struct {
 	APIConstructor string
 	// UsesUUID adds the google/uuid import and SDK-input parsing blocks.
 	UsesUUID bool
+	// UsesStrconv adds the strconv import for id-bound SDK-input parsing blocks
+	// (e.g. an integer path parameter aliased to the string "id" attribute).
+	UsesStrconv bool
 
 	// ByID and Searchable select how a singular data source resolves its one
 	// record, driving the Read body and the "id" attribute: ByID only → by-id
@@ -188,13 +191,15 @@ type SDKReadView struct {
 	HashInputs []FilterParamView
 }
 
-// SDKArgumentView is one rendered positional SDK call argument. UUID arguments
-// carry a preparation variable; all other scalar arguments render Expression
-// directly at the call site.
+// SDKArgumentView is one rendered positional SDK call argument. An argument
+// that must be recovered by parsing a string (a uuid-typed argument, or any
+// non-string argument aliased from the always-string "id" attribute) carries
+// a preparation variable and the call that parses it; all other scalar
+// arguments render Expression directly at the call site.
 type SDKArgumentView struct {
 	Expression string
-	UUIDVar    string
-	UUIDSource string
+	ParsedVar  string
+	ParseCall  string
 	TFName     string
 }
 
@@ -215,11 +220,12 @@ type FilterParamView struct {
 	// Setter is the SDK With* method. Empty retains the legacy direct-field form
 	// used by parser-shaped unit fixtures without resolved SDK bindings.
 	Setter string
-	// UUIDVar and UUIDSource request a uuid.Parse preparation inside the filter's
+	// ParsedVar and ParseCall request a parse preparation inside the filter's
 	// non-null guard before ValueExpr is passed to Setter. They are populated only
-	// when the pinned SDK setter accepts uuid.UUID.
-	UUIDVar    string
-	UUIDSource string
+	// when the pinned SDK setter accepts a type (uuid.UUID) that must be recovered
+	// from the filter's string-typed model field.
+	ParsedVar string
+	ParseCall string
 	// TFName is the Terraform attribute name used in parse diagnostics.
 	TFName string
 }
