@@ -30,6 +30,14 @@ paths:
                   description: Authored single-branch description.
                   allOf:
                     - $ref: '#/components/schemas/Status'
+                empty_identity:
+                  allOf:
+                    - {}
+                    - $ref: '#/components/schemas/Status'
+                nullable_identity:
+                  allOf:
+                    - nullable: true
+                    - $ref: '#/components/schemas/ObjectA'
                 two_objects:
                   allOf:
                     - $ref: '#/components/schemas/ObjectA'

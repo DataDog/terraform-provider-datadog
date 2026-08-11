@@ -1114,9 +1114,10 @@ func oneOfValueWrapped(schema *model.Schema) bool {
 // normalizeAllOf flattens the bounded allOf subset used by the Datadog API
 // spec. A single structural branch is a metadata overlay; multiple structural
 // branches must all be objects with disjoint properties. Annotation-only
-// branches are ignored structurally but may supply a local description or
-// sensitive marker. Anything outside that subset becomes an Unsupported schema
-// with a reason so only the affected artifact fails later in the model layer.
+// branches and empty identity branches are ignored structurally; annotations may
+// still supply a local description or sensitive marker. Anything outside that
+// subset becomes an Unsupported schema with a reason so only the affected
+// artifact fails later in the model layer.
 func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaContext) (*model.Schema, error) {
 	if reason := unsupportedAllOfOuterStructure(s); reason != "" {
 		return unsupportedSchema(reason), nil
@@ -1143,8 +1144,10 @@ func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaC
 		if err != nil {
 			return nil, err
 		}
-		if (branch.Kind == model.SchemaKindUnsupported || branch.Kind == model.SchemaKindJSON) &&
-			branch.UnsupportedReason == "" && n.isAnnotationOnlySchema(raw) {
+		// An unconstrained schema is the identity element of allOf intersection.
+		// This is context-specific: the same {} used as a property value remains
+		// arbitrary JSON, but inside allOf it adds no structural constraint.
+		if branch.UnsupportedReason == "" && !hasStructuralOrConstraintKeywords(raw) {
 			if annotationDescription == "" && raw.Description != "" {
 				annotationDescription = raw.Description
 			}

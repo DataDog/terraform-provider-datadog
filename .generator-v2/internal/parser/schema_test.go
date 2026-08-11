@@ -617,6 +617,18 @@ var _ = Describe("NormalizeSchemas allOf normalization", func() {
 		Expect(status.Description).To(Equal("Authored single-branch description."))
 	})
 
+	It("ignores empty and nullable-only identity branches inside allOf", func() {
+		status := schemaProperty(request, "empty_identity")
+		Expect(status.Kind).To(Equal(model.SchemaKindPrimitive))
+		Expect(status.Type).To(Equal("string"))
+		Expect(status.Enum).To(Equal([]string{"active", "inactive"}))
+
+		object := schemaProperty(request, "nullable_identity")
+		Expect(object.Kind).To(Equal(model.SchemaKindObject))
+		Expect(object.Properties).To(HaveKey("alpha"))
+		Expect(object.Properties).To(HaveKey("zeta"))
+	})
+
 	DescribeTable("merges object branches with deterministic properties and required fields",
 		func(property string, wantProperties, wantRequired []string) {
 			composed := schemaProperty(request, property)
