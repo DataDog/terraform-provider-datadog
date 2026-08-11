@@ -300,6 +300,27 @@ var _ = Describe("BuildResponseTree type delegation and composites", func() {
 		Expect(pathsOf(configs.Children)).To(Equal([]string{"response.configs{}.x"}))
 	})
 
+	It("preserves an unprojectable response map as normalized JSON", func() {
+		schema := objSchema(map[string]*Schema{
+			"configs": mapSchema(objSchema(map[string]*Schema{
+				"value": {Kind: SchemaKindUnsupported, UnsupportedReason: "heterogeneous union"},
+			})),
+		})
+
+		tree, _, err := BuildResponseTree(schema)
+		Expect(err).NotTo(HaveOccurred())
+		configs := attrByPath(tree, "response.configs")
+		Expect(configs.TfType).To(Equal("schema.StringAttribute"))
+		Expect(configs.GoType).To(Equal("jsontypes.Normalized"))
+		Expect(configs.CustomType).To(Equal("jsontypes.NormalizedType{}"))
+		Expect(configs.Children).To(BeEmpty())
+
+		request, _, requestErr := BuildRequestTree(schema)
+		Expect(request).To(BeNil())
+		Expect(requestErr).To(HaveOccurred())
+		Expect(requestErr.Error()).To(ContainSubstring("heterogeneous union"))
+	})
+
 	It("builds a nested object (no map ancestor) as a SingleNestedBlock with .key children", func() {
 		tree, _, err := BuildResponseTree(objSchema(map[string]*Schema{
 			"options": objSchema(map[string]*Schema{"notify": primSchema("boolean")}),
@@ -462,9 +483,6 @@ var _ = Describe("BuildResponseTree defensive guard", func() {
 		Entry("inside an array-of-object element",
 			objSchema(map[string]*Schema{"list": arrSchema(objSchema(map[string]*Schema{"bad": {Kind: SchemaKindRefCycle}}))}),
 			"response.list[].bad"),
-		Entry("inside a map-of-object value",
-			objSchema(map[string]*Schema{"m": mapSchema(objSchema(map[string]*Schema{"bad": {Kind: SchemaKindRefCycle}}))}),
-			"response.m{}.bad"),
 	)
 
 	It("retains a parser-supplied reason when an unsupported node fails one artifact", func() {
