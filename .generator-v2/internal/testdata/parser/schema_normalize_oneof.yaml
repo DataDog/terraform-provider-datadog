@@ -141,6 +141,28 @@ paths:
       responses:
         "204":
           description: no content
+  /object-type-sibling:
+    post:
+      operationId: CreateOneOfWithObjectTypeSibling
+      tags: [OneOf]
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: oneof_with_object_type_sibling
+        group:
+          create: CreateOneOfWithObjectTypeSibling
+          read: CreateOneOfWithObjectTypeSibling
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              oneOf:
+                - $ref: "#/components/schemas/AlphaVariant"
+                - $ref: "#/components/schemas/BetaVariant"
+      responses:
+        "204":
+          description: no content
   /required-only-sibling:
     post:
       operationId: CreateOneOfWithRequiredOnlySibling

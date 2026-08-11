@@ -1013,6 +1013,14 @@ func mergeNormalizedSchemas(variant, common *model.Schema) *model.Schema {
 	if common == nil {
 		return variant
 	}
+	// A bare type: object sibling constrains every oneOf alternative to an
+	// object without adding any fields. A normalized free-form object uses the
+	// JSON kind, but an explicitly shaped object alternative is already a
+	// narrower representation of that constraint.
+	if common.Kind == model.SchemaKindJSON && common.Type == "object" && variant.Kind == model.SchemaKindObject {
+		variant.Sensitive = variant.Sensitive || common.Sensitive
+		return variant
+	}
 	if common.Kind == model.SchemaKindUnsupported {
 		out := cloneSchema(common)
 		if out.Description == "" {
