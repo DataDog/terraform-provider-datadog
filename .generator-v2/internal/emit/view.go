@@ -58,6 +58,8 @@ type DataSourceView struct {
 	APIConstructor string
 	// UsesUUID adds the google/uuid import and SDK-input parsing blocks.
 	UsesUUID bool
+	// UsesTime adds the time import and SDK-input date parsing blocks.
+	UsesTime bool
 	// UsesJSON adds encoding/json and normalized JSON custom-type imports.
 	UsesJSON bool
 
@@ -197,6 +199,9 @@ type SDKArgumentView struct {
 	Expression string
 	UUIDVar    string
 	UUIDSource string
+	TimeVar    string
+	TimeSource string
+	TimeLayout string
 	TFName     string
 }
 
@@ -222,6 +227,11 @@ type FilterParamView struct {
 	// when the pinned SDK setter accepts uuid.UUID.
 	UUIDVar    string
 	UUIDSource string
+	// TimeVar, TimeSource, and TimeLayout request a time.Parse preparation for
+	// SDK setters accepting time.Time.
+	TimeVar    string
+	TimeSource string
+	TimeLayout string
 	// TFName is the Terraform attribute name used in parse diagnostics.
 	TFName string
 }

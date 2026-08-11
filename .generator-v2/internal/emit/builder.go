@@ -343,9 +343,9 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 	leafFields := b.models[0].Fields
 
 	inputAttrs, inputFields := buildInputViews(inputLeaves)
-	filterParams, filterUUID := buildFilterParams(search, filterLeaves, &b.unsupported)
-	readArgs, readUUID := buildArgumentViews(read, &b.unsupported)
-	searchArgs, searchUUID := buildArgumentViews(search, &b.unsupported)
+	filterParams, filterUUID, filterTime := buildFilterParams(search, filterLeaves, &b.unsupported)
+	readArgs, readUUID, readTime := buildArgumentViews(read, &b.unsupported)
+	searchArgs, searchUUID, searchTime := buildArgumentViews(search, &b.unsupported)
 	if len(b.unsupported) > 0 {
 		return DataSourceView{}, &UnsupportedEmitError{Nodes: b.unsupported}
 	}
@@ -397,6 +397,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 		APIStruct:   primary.GoApiStruct,
 		APIAccessor: "Get" + primary.GoApiStruct + strings.TrimPrefix(primary.GoPackage, "datadog"),
 		UsesUUID:    readUUID || searchUUID || filterUUID,
+		UsesTime:    readTime || searchTime || filterTime,
 		UsesJSON:    b.usesJSON,
 		ByID:        byID,
 		Searchable:  searchable,
@@ -465,31 +466,35 @@ func callHasArgument(call *model.SDKCall, tfName string) bool {
 	return false
 }
 
-func buildArgumentViews(call *model.SDKCall, unsupported *[]UnsupportedNode) ([]SDKArgumentView, bool) {
+func buildArgumentViews(call *model.SDKCall, unsupported *[]UnsupportedNode) ([]SDKArgumentView, bool, bool) {
 	if call == nil || !call.BindingResolved {
-		return nil, false
+		return nil, false, false
 	}
 	var views []SDKArgumentView
 	usesUUID := false
+	usesTime := false
 	for _, arg := range call.Arguments {
-		expr, uuidVar, uuidSource, reason := sdkArgumentExpression(call.GoPackage, arg)
-		if reason != "" {
+		expr := sdkArgumentExpression(call.GoPackage, arg)
+		if expr.reason != "" {
 			*unsupported = append(*unsupported, UnsupportedNode{
-				Path: "sdk." + call.GoMethod + "." + arg.Name, Reason: reason,
+				Path: "sdk." + call.GoMethod + "." + arg.Name, Reason: expr.reason,
 			})
 			continue
 		}
 		views = append(views, SDKArgumentView{
-			Expression: expr, UUIDVar: uuidVar, UUIDSource: uuidSource, TFName: arg.TFName,
+			Expression: expr.value, UUIDVar: expr.uuidVar, UUIDSource: expr.uuidSource,
+			TimeVar: expr.timeVar, TimeSource: expr.timeSource, TimeLayout: expr.timeLayout,
+			TFName: arg.TFName,
 		})
-		usesUUID = usesUUID || uuidVar != ""
+		usesUUID = usesUUID || expr.uuidVar != ""
+		usesTime = usesTime || expr.timeVar != ""
 	}
-	return views, usesUUID
+	return views, usesUUID, usesTime
 }
 
-func buildFilterParams(call *model.SDKCall, leaves []*model.Attribute, unsupported *[]UnsupportedNode) ([]FilterParamView, bool) {
+func buildFilterParams(call *model.SDKCall, leaves []*model.Attribute, unsupported *[]UnsupportedNode) ([]FilterParamView, bool, bool) {
 	if call == nil {
-		return nil, false
+		return nil, false, false
 	}
 	byName := map[string]model.SDKArgument{}
 	for _, arg := range call.OptionalArguments {
@@ -497,6 +502,7 @@ func buildFilterParams(call *model.SDKCall, leaves []*model.Attribute, unsupport
 	}
 	var params []FilterParamView
 	usesUUID := false
+	usesTime := false
 	for _, leaf := range leaves {
 		tfName := tfNameOf(leaf.Path)
 		if !call.BindingResolved {
@@ -513,26 +519,40 @@ func buildFilterParams(call *model.SDKCall, leaves []*model.Attribute, unsupport
 			})
 			continue
 		}
-		expr, uuidVar, uuidSource, reason := sdkArgumentExpression(call.GoPackage, arg)
-		if reason != "" {
-			*unsupported = append(*unsupported, UnsupportedNode{Path: "sdk." + call.GoMethod + "." + arg.Name, Reason: reason})
+		expr := sdkArgumentExpression(call.GoPackage, arg)
+		if expr.reason != "" {
+			*unsupported = append(*unsupported, UnsupportedNode{Path: "sdk." + call.GoMethod + "." + arg.Name, Reason: expr.reason})
 			continue
 		}
 		param := FilterParamView{
-			StateField: model.SdkName(tfName), ParamField: model.SdkName(tfName), ValueExpr: expr, Setter: arg.Setter,
+			StateField: model.SdkName(tfName), ParamField: model.SdkName(tfName), ValueExpr: expr.value, Setter: arg.Setter,
 		}
-		if uuidVar != "" {
-			param.UUIDVar, param.UUIDSource, param.TFName = uuidVar, uuidSource, tfName
+		if expr.uuidVar != "" {
+			param.UUIDVar, param.UUIDSource, param.TFName = expr.uuidVar, expr.uuidSource, tfName
 			usesUUID = true
+		}
+		if expr.timeVar != "" {
+			param.TimeVar, param.TimeSource, param.TimeLayout, param.TFName = expr.timeVar, expr.timeSource, expr.timeLayout, tfName
+			usesTime = true
 		}
 		params = append(params, param)
 	}
-	return params, usesUUID
+	return params, usesUUID, usesTime
 }
 
-func sdkArgumentExpression(sdkPackage string, arg model.SDKArgument) (expr, uuidVar, uuidSource, reason string) {
+type sdkArgumentExpressionView struct {
+	value      string
+	uuidVar    string
+	uuidSource string
+	timeVar    string
+	timeSource string
+	timeLayout string
+	reason     string
+}
+
+func sdkArgumentExpression(sdkPackage string, arg model.SDKArgument) sdkArgumentExpressionView {
 	if arg.Schema == nil || arg.Schema.Kind != model.SchemaKindPrimitive {
-		return "", "", "", fmt.Sprintf("SDK argument type %s is outside scalar-first support", arg.GoType)
+		return sdkArgumentExpressionView{reason: fmt.Sprintf("SDK argument type %s is outside scalar-first support", arg.GoType)}
 	}
 	field := goFieldName(arg.TFName)
 	source := "state." + field
@@ -547,22 +567,31 @@ func sdkArgumentExpression(sdkPackage string, arg model.SDKArgument) (expr, uuid
 	case "number":
 		value = source + ".ValueFloat64()"
 	default:
-		return "", "", "", fmt.Sprintf("OpenAPI scalar type %q is not supported", arg.Schema.Type)
+		return sdkArgumentExpressionView{reason: fmt.Sprintf("OpenAPI scalar type %q is not supported", arg.Schema.Type)}
 	}
 
 	switch arg.GoType {
 	case "string", "bool", "int64", "float64":
-		return value, "", "", ""
+		return sdkArgumentExpressionView{value: value}
 	case "int", "int32", "float32":
-		return arg.GoType + "(" + value + ")", "", "", ""
+		return sdkArgumentExpressionView{value: arg.GoType + "(" + value + ")"}
 	case "uuid.UUID":
 		name := "parsed" + model.SdkName(arg.TFName)
-		return name, name, value, ""
+		return sdkArgumentExpressionView{value: name, uuidVar: name, uuidSource: value}
+	case "time.Time":
+		layout := "time.RFC3339"
+		if arg.Schema.Format == "date" {
+			layout = "time.DateOnly"
+		} else if arg.Schema.Format != "date-time" {
+			return sdkArgumentExpressionView{reason: fmt.Sprintf("SDK time.Time argument has unsupported OpenAPI format %q", arg.Schema.Format)}
+		}
+		name := "parsed" + model.SdkName(arg.TFName)
+		return sdkArgumentExpressionView{value: name, timeVar: name, timeSource: value, timeLayout: layout}
 	}
 	if strings.ContainsAny(arg.GoType, "[]*{}.") || arg.GoType == "interface{}" {
-		return "", "", "", fmt.Sprintf("SDK argument type %s is outside scalar-first support", arg.GoType)
+		return sdkArgumentExpressionView{reason: fmt.Sprintf("SDK argument type %s is outside scalar-first support", arg.GoType)}
 	}
-	return sdkPackage + "." + arg.GoType + "(" + value + ")", "", "", ""
+	return sdkArgumentExpressionView{value: sdkPackage + "." + arg.GoType + "(" + value + ")"}
 }
 
 // flattenedEnvelope is the result of recognizing a singular JSON:API envelope:
@@ -1150,8 +1179,8 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 	}
 
 	inputAttrs, inputFields := buildInputViews(inputLeaves)
-	filterParams, filterUUID := buildFilterParams(call, filterLeaves, &unsupported)
-	callArgs, usesUUID := buildArgumentViews(call, &unsupported)
+	filterParams, filterUUID, filterTime := buildFilterParams(call, filterLeaves, &unsupported)
+	callArgs, usesUUID, usesTime := buildArgumentViews(call, &unsupported)
 	goName := dsGoName(a.Name)
 
 	// b hosts walk so list-of-object item fields generate their element structs.
@@ -1325,6 +1354,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 		APIStruct:   call.GoApiStruct,
 		APIAccessor: "Get" + call.GoApiStruct + strings.TrimPrefix(call.GoPackage, "datadog"),
 		UsesUUID:    usesUUID || filterUUID,
+		UsesTime:    usesTime || filterTime,
 		UsesJSON:    b.usesJSON,
 		Read: SDKReadView{
 			Method:             call.GoMethod,

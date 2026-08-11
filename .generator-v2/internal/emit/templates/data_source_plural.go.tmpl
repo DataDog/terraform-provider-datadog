@@ -15,6 +15,9 @@ import (
 {{- if .UsesFmt }}
 	"fmt"
 {{- end }}
+{{- if .UsesTime }}
+	"time"
+{{- end }}
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/{{ .SDKPackage }}"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -72,6 +75,13 @@ func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.R
 			return
 		}
 {{- end }}
+{{- if .TimeVar }}
+		{{ .TimeVar }}, err := time.Parse({{ .TimeLayout }}, {{ .TimeSource }})
+		if err != nil {
+			response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
+			return
+		}
+{{- end }}
 {{- if .Setter }}
 		optionalParams.{{ .Setter }}({{ .ValueExpr }})
 {{- else }}
@@ -83,6 +93,13 @@ func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.R
 {{- range .Read.Arguments }}
 {{- if .UUIDVar }}
 	{{ .UUIDVar }}, err := uuid.Parse({{ .UUIDSource }})
+	if err != nil {
+		response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
+		return
+	}
+{{- end }}
+{{- if .TimeVar }}
+	{{ .TimeVar }}, err := time.Parse({{ .TimeLayout }}, {{ .TimeSource }})
 	if err != nil {
 		response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
 		return
