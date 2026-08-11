@@ -516,6 +516,32 @@ var _ = Describe("BuildDataSourceView singular search", func() {
 			Expect(src).To(ContainSubstring(`optionalParams.WithFilterName(parsedFilterName)`))
 		})
 
+		It("parses an RFC3339 filter before calling a time.Time SDK setter", func() {
+			op := powerpackSearchOperation()
+			op.QueryParams[0].Schema.Format = "date-time"
+			op.SDKBinding = &model.SDKOperationBinding{
+				OptionalParamsType: "ListPowerpacksOptionalParameters",
+				Optional: []model.SDKArgument{{
+					Name: "filter[name]", GoName: "filterName", GoType: "time.Time", Location: "query",
+					Schema: op.QueryParams[0].Schema, Setter: "WithFilterName",
+				}},
+			}
+
+			view := mustView(op)
+			Expect(view.UsesTime).To(BeTrue())
+			Expect(view.Search.Filters).To(Equal([]FilterParamView{{
+				StateField: "FilterName", ParamField: "FilterName", ValueExpr: "parsedFilterName", Setter: "WithFilterName",
+				TimeVar: "parsedFilterName", TimeSource: "state.FilterName.ValueString()", TimeLayout: "time.RFC3339", TFName: "filter_name",
+			}}))
+
+			rendered, err := RenderDataSource(view)
+			Expect(err).NotTo(HaveOccurred())
+			src := string(rendered)
+			Expect(src).To(ContainSubstring(`"time"`))
+			Expect(src).To(ContainSubstring(`parsedFilterName, err := time.Parse(time.RFC3339, state.FilterName.ValueString())`))
+			Expect(src).To(ContainSubstring(`optionalParams.WithFilterName(parsedFilterName)`))
+		})
+
 		It("hashes the search inputs when the selected record has no id", func() {
 			op := powerpackSearchOperation()
 			delete(op.ResponseSchema.Properties["data"].Items.Properties, "id")
@@ -1150,6 +1176,27 @@ var _ = Describe("BuildDataSourceView plural", func() {
 		Expect(err).NotTo(HaveOccurred())
 		src := string(rendered)
 		Expect(src).To(ContainSubstring(`parsedFilterKeyword, err := uuid.Parse(state.FilterKeyword.ValueString())`))
+		Expect(src).To(ContainSubstring(`optionalParams.WithFilterKeyword(parsedFilterKeyword)`))
+	})
+
+	It("parses a date filter in the plural Read path", func() {
+		op := teamsOperation()
+		filter := op.QueryParams[0]
+		filter.Schema.Format = "date"
+		op.SDKBinding = &model.SDKOperationBinding{
+			OptionalParamsType: "ListTeamsOptionalParameters",
+			Optional: []model.SDKArgument{
+				{Name: filter.Name, GoName: "filterKeyword", GoType: "time.Time", Location: "query", Schema: filter.Schema, Setter: "WithFilterKeyword"},
+				{Name: "filter[me]", GoName: "filterMe", GoType: "bool", Location: "query", Schema: op.QueryParams[1].Schema, Setter: "WithFilterMe"},
+			},
+		}
+
+		view := mustView(op)
+		Expect(view.UsesTime).To(BeTrue())
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		src := string(rendered)
+		Expect(src).To(ContainSubstring(`parsedFilterKeyword, err := time.Parse(time.DateOnly, state.FilterKeyword.ValueString())`))
 		Expect(src).To(ContainSubstring(`optionalParams.WithFilterKeyword(parsedFilterKeyword)`))
 	})
 
