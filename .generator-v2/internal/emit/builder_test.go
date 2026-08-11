@@ -1090,6 +1090,29 @@ var _ = Describe("BuildDataSourceView singular arrays", func() {
 		Expect(src).To(ContainSubstring("state.Metadata = jsontypes.NewNormalizedValue(string(encoded))"))
 	})
 
+	It("preserves a structured response map as normalized JSON", func() {
+		op := teamSingularOperation()
+		attrs := op.ResponseSchema.Properties["data"].Properties["attributes"].Properties
+		attrs["custom_attributes"] = &model.Schema{
+			Kind: model.SchemaKindMap, Description: "Dynamic structured values.",
+			Items: obj(map[string]*model.Schema{
+				"enabled": prim("boolean", "Whether the value is enabled."),
+			}),
+		}
+
+		view := mustView(op)
+		Expect(view.UsesJSON).To(BeTrue())
+		Expect(view.Schema.Attributes).To(ContainElement(SatisfyAll(
+			HaveField("TFName", "custom_attributes"),
+			HaveField("TFType", "schema.StringAttribute"),
+			HaveField("CustomType", "jsontypes.NormalizedType{}"),
+		)))
+		Expect(view.State.Lists).To(ContainElement(ListAssignment{
+			Kind: "json", LHS: "state.CustomAttributes", GetterOk: "attributes.GetCustomAttributesOk()",
+			Var: "customAttributes", Path: "response.custom_attributes",
+		}))
+	})
+
 	It("hoists a string array under attributes into a ListAttribute carrying its element type", func() {
 		view, err := BuildDataSourceView(mustArtifact(teamSingularOperation()))
 		Expect(err).NotTo(HaveOccurred())
@@ -1247,6 +1270,24 @@ var _ = Describe("BuildDataSourceView plural", func() {
 		Expect(err).NotTo(HaveOccurred())
 		src := string(rendered)
 		Expect(src).To(ContainSubstring("r.Metadata = jsontypes.NewNormalizedValue(string(encoded))"))
+	})
+
+	It("preserves a structured result-item map as normalized JSON", func() {
+		op := teamsOperation()
+		attributes := op.ResponseSchema.Properties["data"].Items.Properties["attributes"].Properties
+		attributes["custom_attributes"] = &model.Schema{
+			Kind: model.SchemaKindMap, Description: "Dynamic structured values.",
+			Items: obj(map[string]*model.Schema{
+				"enabled": prim("boolean", "Whether the value is enabled."),
+			}),
+		}
+
+		view := mustView(op)
+		Expect(view.UsesJSON).To(BeTrue())
+		Expect(view.State.ItemLists).To(ContainElement(ListAssignment{
+			Kind: "json", LHS: "r.CustomAttributes", GetterOk: "item.Attributes.GetCustomAttributesOk()",
+			Var: "customAttributes", Path: "response.data[].attributes.custom_attributes",
+		}))
 	})
 
 	It("emits a recursively typed map on a plural result item", func() {
