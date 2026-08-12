@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -24,11 +25,12 @@ type samlIdpMetadataResource struct {
 }
 
 type samlIdpMetadataModel struct {
-	ID          types.String `tfsdk:"id"`
-	IdpMetadata types.String `tfsdk:"idp_metadata"`
-	EntityId    types.String `tfsdk:"entity_id"`
-	SsoUrl      types.String `tfsdk:"sso_url"`
-	ExpiresAt   types.String `tfsdk:"expires_at"`
+	ID                       types.String `tfsdk:"id"`
+	IdpMetadata              types.String `tfsdk:"idp_metadata"`
+	EntityId                 types.String `tfsdk:"entity_id"`
+	SsoUrl                   types.String `tfsdk:"sso_url"`
+	ExpiresAt                types.String `tfsdk:"expires_at"`
+	AssertionConsumerService types.List   `tfsdk:"assertion_consumer_service"`
 }
 
 func NewSamlIdpMetadataResource() resource.Resource {
@@ -55,15 +57,20 @@ func (r *samlIdpMetadataResource) Schema(_ context.Context, _ resource.SchemaReq
 			},
 			"entity_id": schema.StringAttribute{
 				Computed:    true,
-				Description: "The IdP entity ID of the SAML configuration.",
+				Description: "The service provider entity ID Datadog presents to the identity provider.",
 			},
 			"sso_url": schema.StringAttribute{
 				Computed:    true,
-				Description: "The single sign-on (SSO) URL of the SAML configuration.",
+				Description: "The single sign-on URL users can visit to start a SAML login. `null` when the organization is identity-provider-initiated and has no subdomain.",
 			},
 			"expires_at": schema.StringAttribute{
 				Computed:    true,
-				Description: "The timestamp (RFC3339) at which the IdP certificate of the SAML configuration expires.",
+				Description: "The timestamp (RFC3339) at which the uploaded identity provider metadata expires.",
+			},
+			"assertion_consumer_service": schema.ListAttribute{
+				Computed:    true,
+				ElementType: types.StringType,
+				Description: "The assertion consumer service (ACS) URLs that the identity provider posts SAML responses to.",
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -160,6 +167,7 @@ func (r *samlIdpMetadataResource) updateState(state *samlIdpMetadataModel, resp 
 	state.EntityId = types.StringNull()
 	state.SsoUrl = types.StringNull()
 	state.ExpiresAt = types.StringNull()
+	state.AssertionConsumerService = types.ListNull(types.StringType)
 
 	attributes := resp.GetAttributes()
 	if entityId, ok := attributes.GetEntityIdOk(); ok && entityId != nil {
@@ -170,5 +178,12 @@ func (r *samlIdpMetadataResource) updateState(state *samlIdpMetadataModel, resp 
 	}
 	if expiresAt, ok := attributes.GetExpiresAtOk(); ok && expiresAt != nil {
 		state.ExpiresAt = types.StringValue(expiresAt.Format(time.RFC3339))
+	}
+	if acsUrls, ok := attributes.GetAssertionConsumerServiceOk(); ok && acsUrls != nil {
+		acsValues := make([]attr.Value, 0, len(*acsUrls))
+		for _, acsUrl := range *acsUrls {
+			acsValues = append(acsValues, types.StringValue(acsUrl))
+		}
+		state.AssertionConsumerService = types.ListValueMust(types.StringType, acsValues)
 	}
 }

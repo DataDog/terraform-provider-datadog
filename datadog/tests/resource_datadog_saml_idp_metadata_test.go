@@ -44,19 +44,21 @@ func TestAccSamlIdpMetadataBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet(
 						"datadog_saml_idp_metadata.foo", "id"),
-					resource.TestCheckResourceAttr(
-						"datadog_saml_idp_metadata.foo", "entity_id", entityId),
-					resource.TestCheckResourceAttr(
-						"datadog_saml_idp_metadata.foo", "sso_url", ssoUrl),
+					// entity_id refers to Datadog's service provider configuration, not
+					// the uploaded metadata, so only assert that it is set.
+					resource.TestCheckResourceAttrSet(
+						"datadog_saml_idp_metadata.foo", "entity_id"),
+					resource.TestCheckResourceAttrSet(
+						"datadog_saml_idp_metadata.foo", "expires_at"),
 				),
 			},
 			{
 				Config: testAccCheckDatadogSamlIdpMetadata(entityId, ssoUrlUpdated),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr(
-						"datadog_saml_idp_metadata.foo", "entity_id", entityId),
-					resource.TestCheckResourceAttr(
-						"datadog_saml_idp_metadata.foo", "sso_url", ssoUrlUpdated),
+					resource.TestCheckResourceAttrSet(
+						"datadog_saml_idp_metadata.foo", "id"),
+					resource.TestCheckResourceAttrSet(
+						"datadog_saml_idp_metadata.foo", "entity_id"),
 				),
 			},
 		},

@@ -28,7 +28,8 @@ resource "datadog_saml_idp_metadata" "example" {
 
 ### Read-Only
 
-- `entity_id` (String) The IdP entity ID of the SAML configuration.
-- `expires_at` (String) The timestamp (RFC3339) at which the IdP certificate of the SAML configuration expires.
+- `assertion_consumer_service` (List of String) The assertion consumer service (ACS) URLs that the identity provider posts SAML responses to.
+- `entity_id` (String) The service provider entity ID Datadog presents to the identity provider.
+- `expires_at` (String) The timestamp (RFC3339) at which the uploaded identity provider metadata expires.
 - `id` (String) The ID of this resource.
-- `sso_url` (String) The single sign-on (SSO) URL of the SAML configuration.
+- `sso_url` (String) The single sign-on URL users can visit to start a SAML login. `null` when the organization is identity-provider-initiated and has no subdomain.
