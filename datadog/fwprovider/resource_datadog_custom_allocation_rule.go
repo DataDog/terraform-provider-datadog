@@ -67,7 +67,11 @@ type strategyModel struct {
 	AllocatedByFilters       []*allocatedByFiltersModel       `tfsdk:"allocated_by_filters"`
 	BasedOnCosts             []*basedOnCostsModel             `tfsdk:"based_on_costs"`
 	EvaluateGroupedByFilters []*evaluateGroupedByFiltersModel `tfsdk:"evaluate_grouped_by_filters"`
-	BasedOnTimeseries        jsontypes.Normalized             `tfsdk:"based_on_timeseries"`
+	BasedOnTimeseries        *basedOnTimeseriesModel          `tfsdk:"based_on_timeseries"`
+}
+
+type basedOnTimeseriesModel struct {
+	Json jsontypes.Normalized `tfsdk:"json"`
 }
 type allocatedByModel struct {
 	Percentage    types.Float64         `tfsdk:"percentage"`
@@ -427,18 +431,6 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 						},
 						Description: "The allocation method.",
 					},
-					"based_on_timeseries": schema.StringAttribute{
-						Optional:   true,
-						Computed:   true,
-						CustomType: jsontypes.NormalizedType{},
-						Validators: []validator.String{
-							basedOnTimeseriesValidator{},
-						},
-						Description: "The timeseries query that determines the allocation proportions, encoded as a JSON object. " +
-							"Required when `method` is `proportional_timeseries` or `even_timeseries`. " +
-							"Uses Datadog's formulas-and-functions request format with `queries`, `formulas`, and `response_format` keys. " +
-							"Build it with `jsonencode()`. The set of supported `data_source` values is defined by the API, not by this provider.",
-					},
 					"allocated_by_tag_keys": schema.ListAttribute{
 						Optional:    true,
 						Description: "List of tag keys used to allocate costs (e.g., `[\"team\", \"project\"]`). Costs will be distributed across unique values of these tags.",
@@ -552,6 +544,22 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 									Description: "A list of tag values to match when grouping. Use with `in` or `not in` conditions.",
 									ElementType: types.StringType,
 								},
+							},
+						},
+					},
+					"based_on_timeseries": schema.SingleNestedBlock{
+						Attributes: map[string]schema.Attribute{
+							"json": schema.StringAttribute{
+								Optional:   true,
+								Computed:   true,
+								CustomType: jsontypes.NormalizedType{},
+								Validators: []validator.String{
+									basedOnTimeseriesValidator{},
+								},
+								Description: "The timeseries query that determines the allocation proportions, encoded as a JSON object. " +
+									"Required when `method` is `proportional_timeseries` or `even_timeseries`. " +
+									"Uses Datadog's formulas-and-functions request format with `queries`, `formulas`, and `response_format` keys. " +
+									"Build it with `jsonencode()`. The set of supported `data_source` values is defined by the API, not by this provider.",
 							},
 						},
 					},
@@ -867,10 +875,10 @@ func (r *datadogCustomAllocationRuleResource) updateState(ctx context.Context, s
 					if err != nil {
 						diags.AddError("error marshalling based_on_timeseries", err.Error())
 					} else {
-						strategyTf.BasedOnTimeseries = jsontypes.NewNormalizedValue(string(basedOnTimeseriesJson))
+						strategyTf.BasedOnTimeseries = &basedOnTimeseriesModel{
+							Json: jsontypes.NewNormalizedValue(string(basedOnTimeseriesJson)),
+						}
 					}
-				} else {
-					strategyTf.BasedOnTimeseries = jsontypes.NewNormalizedNull()
 				}
 				if evaluateGroupedByFilters, ok := strategy.GetEvaluateGroupedByFiltersOk(); ok && len(*evaluateGroupedByFilters) > 0 {
 
@@ -1058,9 +1066,11 @@ func (r *datadogCustomAllocationRuleResource) buildDatadogCustomAllocationRuleRe
 			strategy.SetEvaluateGroupedByFilters(evaluateGroupedByFilters)
 		}
 
-		if !state.Strategy.BasedOnTimeseries.IsNull() && !state.Strategy.BasedOnTimeseries.IsUnknown() {
+		if state.Strategy.BasedOnTimeseries != nil &&
+			!state.Strategy.BasedOnTimeseries.Json.IsNull() &&
+			!state.Strategy.BasedOnTimeseries.Json.IsUnknown() {
 			var basedOnTimeseries map[string]interface{}
-			if err := json.Unmarshal([]byte(state.Strategy.BasedOnTimeseries.ValueString()), &basedOnTimeseries); err != nil {
+			if err := json.Unmarshal([]byte(state.Strategy.BasedOnTimeseries.Json.ValueString()), &basedOnTimeseries); err != nil {
 				diags.AddError("error parsing based_on_timeseries", err.Error())
 			} else {
 				strategy.SetBasedOnTimeseries(basedOnTimeseries)

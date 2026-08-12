@@ -246,14 +246,14 @@ func TestBasedOnTimeseriesRoundTrip(t *testing.T) {
 	if diags.HasError() {
 		t.Fatalf("updateState errors: %v", diags.Errors())
 	}
-	if state.Strategy.BasedOnTimeseries.IsNull() {
+	if state.Strategy.BasedOnTimeseries == nil || state.Strategy.BasedOnTimeseries.Json.IsNull() {
 		t.Fatal("expected based_on_timeseries in state")
 	}
 
 	// Nothing may be dropped on the way back out. `is_negated: false` is the
 	// case to watch: a bool zero value is the most likely thing to disappear.
 	var flattened map[string]interface{}
-	if err := json.Unmarshal([]byte(state.Strategy.BasedOnTimeseries.ValueString()), &flattened); err != nil {
+	if err := json.Unmarshal([]byte(state.Strategy.BasedOnTimeseries.Json.ValueString()), &flattened); err != nil {
 		t.Fatalf("state value is not valid JSON: %v", err)
 	}
 	if !reflect.DeepEqual(flattened, original) {

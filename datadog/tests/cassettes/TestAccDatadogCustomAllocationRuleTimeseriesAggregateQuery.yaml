@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"costs_to_allocate":[{"condition":"is","tag":"aws_product","value":"AmazonEC2"}],"enabled":true,"provider":["aws"],"rule_name":"tf-test-rule-ts-agg-tf-TestAccDatadogCustomAllocationRuleTimeseriesAggregateQuery-local-1786388201","strategy":{"based_on_timeseries":{"formulas":[{"formula":"query1"}],"queries":[{"augment_query":{"columns":[{"name":"team"},{"name":"dd_team"}],"data_source":"reference_table","name":"filter_query","table_name":"tf_test_team_mapping"},"base_query":{"data_source":"metrics","name":"query1","query":"sum:system.cpu.user{*} by {dd.team}"},"compute":[{"aggregation":"sum","name":"compute_result"}],"data_source":"aggregate_augmented_query","group_by":[{"facet":"team","source":"filter_query"}],"join_condition":{"augment_attribute":"dd_team","base_attribute":"dd.team","is_negated":false,"join_type":"inner"},"name":"query1"}],"response_format":"timeseries"},"granularity":"daily","method":"proportional_timeseries"},"type":"shared"},"type":"upsert_arbitrary_rule"}}
+            {"data":{"attributes":{"costs_to_allocate":[{"condition":"is","tag":"aws_product","value":"AmazonEC2"}],"enabled":true,"provider":["aws"],"rule_name":"tf-test-rule-ts-agg-tf-TestAccDatadogCustomAllocationRuleTimeseriesAggregateQuery-local-1786553446","strategy":{"based_on_timeseries":{"formulas":[{"formula":"query1"}],"queries":[{"augment_query":{"columns":[{"name":"team"},{"name":"dd_team"}],"data_source":"reference_table","name":"filter_query","table_name":"tf_test_team_mapping"},"base_query":{"data_source":"metrics","name":"query1","query":"sum:system.cpu.user{*} by {dd.team}"},"compute":[{"aggregation":"sum","name":"compute_result"}],"data_source":"aggregate_augmented_query","group_by":[{"facet":"team","source":"filter_query"}],"join_condition":{"augment_attribute":"dd_team","base_attribute":"dd.team","is_negated":false,"join_type":"inner"},"name":"query1"}],"response_format":"timeseries"},"granularity":"daily","method":"proportional_timeseries"},"type":"shared"},"type":"upsert_arbitrary_rule"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"26601","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonEC2","values":null}],"created":"2026-08-10T18:56:43.284509366Z","enabled":true,"last_modified_user_uuid":"234a38f2-6533-11f0-a9ad-261b2904e188","order_id":7,"provider":["aws"],"rule_name":"tf-test-rule-ts-agg-tf-TestAccDatadogCustomAllocationRuleTimeseriesAggregateQuery-local-1786388201","strategy":{"method":"proportional_timeseries","granularity":"daily","based_on_timeseries":{"formulas":[{"formula":"query1"}],"queries":[{"augment_query":{"columns":[{"name":"team"},{"name":"dd_team"}],"data_source":"reference_table","name":"filter_query","table_name":"tf_test_team_mapping"},"base_query":{"data_source":"metrics","name":"query1","query":"sum:system.cpu.user{*} by {dd.team}"},"compute":[{"aggregation":"sum","name":"compute_result"}],"data_source":"aggregate_augmented_query","group_by":[{"facet":"team","source":"filter_query"}],"join_condition":{"augment_attribute":"dd_team","base_attribute":"dd.team","is_negated":false,"join_type":"inner"},"name":"query1"}],"response_format":"timeseries"}},"type":"shared","updated":"2026-08-10T18:56:43.284509366Z","version":1}}}'
+        body: '{"data":{"id":"26824","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonEC2","values":null}],"created":"2026-08-12T16:50:49.166048247Z","enabled":true,"last_modified_user_uuid":"234a38f2-6533-11f0-a9ad-261b2904e188","order_id":6,"provider":["aws"],"rule_name":"tf-test-rule-ts-agg-tf-TestAccDatadogCustomAllocationRuleTimeseriesAggregateQuery-local-1786553446","strategy":{"method":"proportional_timeseries","granularity":"daily","based_on_timeseries":{"formulas":[{"formula":"query1"}],"queries":[{"augment_query":{"columns":[{"name":"team"},{"name":"dd_team"}],"data_source":"reference_table","name":"filter_query","table_name":"tf_test_team_mapping"},"base_query":{"data_source":"metrics","name":"query1","query":"sum:system.cpu.user{*} by {dd.team}"},"compute":[{"aggregation":"sum","name":"compute_result"}],"data_source":"aggregate_augmented_query","group_by":[{"facet":"team","source":"filter_query"}],"join_condition":{"augment_attribute":"dd_team","base_attribute":"dd.team","is_negated":false,"join_type":"inner"},"name":"query1"}],"response_format":"timeseries"}},"type":"shared","updated":"2026-08-12T16:50:49.166048247Z","version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 62.451708ms
+        duration: 156.771417ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule/26601
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule/26824
         method: GET
       response:
         proto: HTTP/1.1
@@ -63,13 +63,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"26601","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonEC2","values":null}],"created":"2026-08-10T18:56:43.284509Z","enabled":true,"last_modified_user_uuid":"234a38f2-6533-11f0-a9ad-261b2904e188","order_id":7,"provider":["aws"],"rule_name":"tf-test-rule-ts-agg-tf-TestAccDatadogCustomAllocationRuleTimeseriesAggregateQuery-local-1786388201","strategy":{"method":"proportional_timeseries","granularity":"daily","based_on_timeseries":{"formulas":[{"formula":"query1"}],"queries":[{"augment_query":{"columns":[{"name":"team"},{"name":"dd_team"}],"data_source":"reference_table","name":"filter_query","table_name":"tf_test_team_mapping"},"base_query":{"data_source":"metrics","name":"query1","query":"sum:system.cpu.user{*} by {dd.team}"},"compute":[{"aggregation":"sum","name":"compute_result"}],"data_source":"aggregate_augmented_query","group_by":[{"facet":"team","source":"filter_query"}],"join_condition":{"augment_attribute":"dd_team","base_attribute":"dd.team","is_negated":false,"join_type":"inner"},"name":"query1"}],"response_format":"timeseries"}},"type":"shared","updated":"2026-08-10T18:56:43.284509Z","version":1}}}'
+        body: '{"data":{"id":"26824","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonEC2","values":null}],"created":"2026-08-12T16:50:49.166048Z","enabled":true,"last_modified_user_uuid":"234a38f2-6533-11f0-a9ad-261b2904e188","order_id":6,"provider":["aws"],"rule_name":"tf-test-rule-ts-agg-tf-TestAccDatadogCustomAllocationRuleTimeseriesAggregateQuery-local-1786553446","strategy":{"method":"proportional_timeseries","granularity":"daily","based_on_timeseries":{"formulas":[{"formula":"query1"}],"queries":[{"augment_query":{"columns":[{"name":"team"},{"name":"dd_team"}],"data_source":"reference_table","name":"filter_query","table_name":"tf_test_team_mapping"},"base_query":{"data_source":"metrics","name":"query1","query":"sum:system.cpu.user{*} by {dd.team}"},"compute":[{"aggregation":"sum","name":"compute_result"}],"data_source":"aggregate_augmented_query","group_by":[{"facet":"team","source":"filter_query"}],"join_condition":{"augment_attribute":"dd_team","base_attribute":"dd.team","is_negated":false,"join_type":"inner"},"name":"query1"}],"response_format":"timeseries"}},"type":"shared","updated":"2026-08-12T16:50:49.166048Z","version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 51.356417ms
+        duration: 70.367875ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule/26601
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule/26824
         method: GET
       response:
         proto: HTTP/1.1
@@ -96,13 +96,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"26601","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonEC2","values":null}],"created":"2026-08-10T18:56:43.284509Z","enabled":true,"last_modified_user_uuid":"234a38f2-6533-11f0-a9ad-261b2904e188","order_id":7,"provider":["aws"],"rule_name":"tf-test-rule-ts-agg-tf-TestAccDatadogCustomAllocationRuleTimeseriesAggregateQuery-local-1786388201","strategy":{"method":"proportional_timeseries","granularity":"daily","based_on_timeseries":{"formulas":[{"formula":"query1"}],"queries":[{"augment_query":{"columns":[{"name":"team"},{"name":"dd_team"}],"data_source":"reference_table","name":"filter_query","table_name":"tf_test_team_mapping"},"base_query":{"data_source":"metrics","name":"query1","query":"sum:system.cpu.user{*} by {dd.team}"},"compute":[{"aggregation":"sum","name":"compute_result"}],"data_source":"aggregate_augmented_query","group_by":[{"facet":"team","source":"filter_query"}],"join_condition":{"augment_attribute":"dd_team","base_attribute":"dd.team","is_negated":false,"join_type":"inner"},"name":"query1"}],"response_format":"timeseries"}},"type":"shared","updated":"2026-08-10T18:56:43.284509Z","version":1}}}'
+        body: '{"data":{"id":"26824","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonEC2","values":null}],"created":"2026-08-12T16:50:49.166048Z","enabled":true,"last_modified_user_uuid":"234a38f2-6533-11f0-a9ad-261b2904e188","order_id":6,"provider":["aws"],"rule_name":"tf-test-rule-ts-agg-tf-TestAccDatadogCustomAllocationRuleTimeseriesAggregateQuery-local-1786553446","strategy":{"method":"proportional_timeseries","granularity":"daily","based_on_timeseries":{"formulas":[{"formula":"query1"}],"queries":[{"augment_query":{"columns":[{"name":"team"},{"name":"dd_team"}],"data_source":"reference_table","name":"filter_query","table_name":"tf_test_team_mapping"},"base_query":{"data_source":"metrics","name":"query1","query":"sum:system.cpu.user{*} by {dd.team}"},"compute":[{"aggregation":"sum","name":"compute_result"}],"data_source":"aggregate_augmented_query","group_by":[{"facet":"team","source":"filter_query"}],"join_condition":{"augment_attribute":"dd_team","base_attribute":"dd.team","is_negated":false,"join_type":"inner"},"name":"query1"}],"response_format":"timeseries"}},"type":"shared","updated":"2026-08-12T16:50:49.166048Z","version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 95.343834ms
+        duration: 71.05725ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule/26601
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule/26824
         method: GET
       response:
         proto: HTTP/1.1
@@ -129,13 +129,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"26601","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonEC2","values":null}],"created":"2026-08-10T18:56:43.284509Z","enabled":true,"last_modified_user_uuid":"234a38f2-6533-11f0-a9ad-261b2904e188","order_id":7,"provider":["aws"],"rule_name":"tf-test-rule-ts-agg-tf-TestAccDatadogCustomAllocationRuleTimeseriesAggregateQuery-local-1786388201","strategy":{"method":"proportional_timeseries","granularity":"daily","based_on_timeseries":{"formulas":[{"formula":"query1"}],"queries":[{"augment_query":{"columns":[{"name":"team"},{"name":"dd_team"}],"data_source":"reference_table","name":"filter_query","table_name":"tf_test_team_mapping"},"base_query":{"data_source":"metrics","name":"query1","query":"sum:system.cpu.user{*} by {dd.team}"},"compute":[{"aggregation":"sum","name":"compute_result"}],"data_source":"aggregate_augmented_query","group_by":[{"facet":"team","source":"filter_query"}],"join_condition":{"augment_attribute":"dd_team","base_attribute":"dd.team","is_negated":false,"join_type":"inner"},"name":"query1"}],"response_format":"timeseries"}},"type":"shared","updated":"2026-08-10T18:56:43.284509Z","version":1}}}'
+        body: '{"data":{"id":"26824","type":"arbitrary_rule","attributes":{"costs_to_allocate":[{"tag":"aws_product","condition":"is","value":"AmazonEC2","values":null}],"created":"2026-08-12T16:50:49.166048Z","enabled":true,"last_modified_user_uuid":"234a38f2-6533-11f0-a9ad-261b2904e188","order_id":6,"provider":["aws"],"rule_name":"tf-test-rule-ts-agg-tf-TestAccDatadogCustomAllocationRuleTimeseriesAggregateQuery-local-1786553446","strategy":{"method":"proportional_timeseries","granularity":"daily","based_on_timeseries":{"formulas":[{"formula":"query1"}],"queries":[{"augment_query":{"columns":[{"name":"team"},{"name":"dd_team"}],"data_source":"reference_table","name":"filter_query","table_name":"tf_test_team_mapping"},"base_query":{"data_source":"metrics","name":"query1","query":"sum:system.cpu.user{*} by {dd.team}"},"compute":[{"aggregation":"sum","name":"compute_result"}],"data_source":"aggregate_augmented_query","group_by":[{"facet":"team","source":"filter_query"}],"join_condition":{"augment_attribute":"dd_team","base_attribute":"dd.team","is_negated":false,"join_type":"inner"},"name":"query1"}],"response_format":"timeseries"}},"type":"shared","updated":"2026-08-12T16:50:49.166048Z","version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 61.285666ms
+        duration: 56.101167ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -152,7 +152,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule/26601
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule/26824
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -166,7 +166,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 50.271292ms
+        duration: 126.719334ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -183,7 +183,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule/26601
+        url: https://api.datadoghq.com/api/v2/cost/arbitrary_rule/26824
         method: GET
       response:
         proto: HTTP/1.1
@@ -199,4 +199,4 @@ interactions:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 53.513625ms
+        duration: 73.611458ms

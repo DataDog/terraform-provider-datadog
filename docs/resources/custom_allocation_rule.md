@@ -56,15 +56,17 @@ resource "datadog_custom_allocation_rule" "my_timeseries_allocation_rule" {
     # query's group-by.
     evaluate_grouped_by_tag_keys = ["env"]
 
-    based_on_timeseries = jsonencode({
-      response_format = "timeseries"
-      queries = [{
-        name        = "query1"
-        data_source = "metrics"
-        query       = "sum:postgresql.queries.time{*} by {user,env}.as_count()"
-      }]
-      formulas = [{ formula = "query1" }]
-    })
+    based_on_timeseries {
+      json = jsonencode({
+        response_format = "timeseries"
+        queries = [{
+          name        = "query1"
+          data_source = "metrics"
+          query       = "sum:postgresql.queries.time{*} by {user,env}.as_count()"
+        }]
+        formulas = [{ formula = "query1" }]
+      })
+    }
   }
 }
 ```
@@ -113,7 +115,7 @@ Optional:
 - `allocated_by_filters` (Block List) (see [below for nested schema](#nestedblock--strategy--allocated_by_filters))
 - `allocated_by_tag_keys` (List of String) List of tag keys used to allocate costs (e.g., `["team", "project"]`). Costs will be distributed across unique values of these tags.
 - `based_on_costs` (Block List) (see [below for nested schema](#nestedblock--strategy--based_on_costs))
-- `based_on_timeseries` (String) The timeseries query that determines the allocation proportions, encoded as a JSON object. Required when `method` is `proportional_timeseries` or `even_timeseries`. Uses Datadog's formulas-and-functions request format with `queries`, `formulas`, and `response_format` keys. Build it with `jsonencode()`. The set of supported `data_source` values is defined by the API, not by this provider.
+- `based_on_timeseries` (Block, Optional) (see [below for nested schema](#nestedblock--strategy--based_on_timeseries))
 - `evaluate_grouped_by_filters` (Block List) (see [below for nested schema](#nestedblock--strategy--evaluate_grouped_by_filters))
 - `evaluate_grouped_by_tag_keys` (List of String) List of tag keys used to group costs before allocation. Costs are grouped by these tag values before applying the allocation strategy.
 - `granularity` (String) The granularity level for cost allocation. Valid values are `daily` or `monthly`.
@@ -157,6 +159,14 @@ Optional:
 - `tag` (String) The tag key to use as the basis for cost allocation calculations.
 - `value` (String) The single tag value to use for cost calculations. Use with conditions like `=`, `!=`, `is`, `is not`, `like`.
 - `values` (List of String) A list of tag values to use for cost calculations. Use with `in` or `not in` conditions.
+
+
+<a id="nestedblock--strategy--based_on_timeseries"></a>
+### Nested Schema for `strategy.based_on_timeseries`
+
+Optional:
+
+- `json` (String) The timeseries query that determines the allocation proportions, encoded as a JSON object. Required when `method` is `proportional_timeseries` or `even_timeseries`. Uses Datadog's formulas-and-functions request format with `queries`, `formulas`, and `response_format` keys. Build it with `jsonencode()`. The set of supported `data_source` values is defined by the API, not by this provider.
 
 
 <a id="nestedblock--strategy--evaluate_grouped_by_filters"></a>

@@ -158,12 +158,6 @@ func (d *datadogCustomAllocationRuleDataSource) Schema(_ context.Context, _ data
 						Description: "List of tag keys used to group costs before allocation.",
 						ElementType: types.StringType,
 					},
-					"based_on_timeseries": schema.StringAttribute{
-						Computed:   true,
-						CustomType: jsontypes.NormalizedType{},
-						Description: "The timeseries query that determines the allocation proportions, encoded as a JSON object. " +
-							"Set when `method` is `proportional_timeseries` or `even_timeseries`.",
-					},
 				},
 				Blocks: map[string]schema.Block{
 					"allocated_by": schema.ListNestedBlock{
@@ -258,6 +252,16 @@ func (d *datadogCustomAllocationRuleDataSource) Schema(_ context.Context, _ data
 									Description: "The list of tag values used in the filter (for multi-value conditions like `in` or `not_in`).",
 									ElementType: types.StringType,
 								},
+							},
+						},
+					},
+					"based_on_timeseries": schema.SingleNestedBlock{
+						Attributes: map[string]schema.Attribute{
+							"json": schema.StringAttribute{
+								Computed:   true,
+								CustomType: jsontypes.NormalizedType{},
+								Description: "The timeseries query that determines the allocation proportions, encoded as a JSON object. " +
+									"Set when `method` is `proportional_timeseries` or `even_timeseries`.",
 							},
 						},
 					},
@@ -446,10 +450,10 @@ func (d *datadogCustomAllocationRuleDataSource) updateState(ctx context.Context,
 				if err != nil {
 					diags.AddError("error marshalling based_on_timeseries", err.Error())
 				} else {
-					strategyTf.BasedOnTimeseries = jsontypes.NewNormalizedValue(string(basedOnTimeseriesJson))
+					strategyTf.BasedOnTimeseries = &basedOnTimeseriesModel{
+						Json: jsontypes.NewNormalizedValue(string(basedOnTimeseriesJson)),
+					}
 				}
-			} else {
-				strategyTf.BasedOnTimeseries = jsontypes.NewNormalizedNull()
 			}
 			if evaluateGroupedByFilters, ok := strategy.GetEvaluateGroupedByFiltersOk(); ok && len(*evaluateGroupedByFilters) > 0 {
 				strategyTf.EvaluateGroupedByFilters = []*evaluateGroupedByFiltersModel{}

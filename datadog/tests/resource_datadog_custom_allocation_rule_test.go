@@ -195,7 +195,7 @@ func TestAccDatadogCustomAllocationRuleTimeseries(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_custom_allocation_rule.foo", "strategy.granularity", "daily"),
 					resource.TestCheckResourceAttrSet(
-						"datadog_custom_allocation_rule.foo", "strategy.based_on_timeseries"),
+						"datadog_custom_allocation_rule.foo", "strategy.based_on_timeseries.json"),
 				),
 			},
 		},
@@ -223,7 +223,7 @@ func TestAccDatadogCustomAllocationRuleTimeseriesAggregateQuery(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_custom_allocation_rule.foo", "strategy.method", "proportional_timeseries"),
 					resource.TestCheckResourceAttrSet(
-						"datadog_custom_allocation_rule.foo", "strategy.based_on_timeseries"),
+						"datadog_custom_allocation_rule.foo", "strategy.based_on_timeseries.json"),
 				),
 			},
 			{
@@ -264,7 +264,7 @@ func TestAccDatadogCustomAllocationRuleTimeseriesPreservedOnRename(t *testing.T)
 					resource.TestCheckResourceAttr(
 						"datadog_custom_allocation_rule.foo", "rule_name", fmt.Sprintf("tf-test-rule-ts-renamed-%s", uniq)),
 					resource.TestCheckResourceAttrSet(
-						"datadog_custom_allocation_rule.foo", "strategy.based_on_timeseries"),
+						"datadog_custom_allocation_rule.foo", "strategy.based_on_timeseries.json"),
 				),
 			},
 		},
@@ -397,15 +397,17 @@ resource "datadog_custom_allocation_rule" "foo" {
 }
 
 const testAccTimeseriesMetricsQuery = `
-    based_on_timeseries = jsonencode({
-      response_format = "timeseries"
-      queries = [{
-        name        = "query1"
-        data_source = "metrics"
-        query       = "avg:system.cpu.user{*} by {host}"
-      }]
-      formulas = [{ formula = "query1" }]
-    })`
+    based_on_timeseries {
+      json = jsonencode({
+        response_format = "timeseries"
+        queries = [{
+          name        = "query1"
+          data_source = "metrics"
+          query       = "avg:system.cpu.user{*} by {host}"
+        }]
+        formulas = [{ formula = "query1" }]
+      })
+    }`
 
 func testAccCheckDatadogCustomAllocationRuleTimeseries(uniq string) string {
 	return testAccTimeseriesRuleConfig(fmt.Sprintf("tf-test-rule-ts-%s", uniq), testAccTimeseriesMetricsQuery)
@@ -417,33 +419,35 @@ func testAccCheckDatadogCustomAllocationRuleTimeseriesRenamed(uniq string) strin
 
 func testAccCheckDatadogCustomAllocationRuleTimeseriesAggregate(uniq string) string {
 	return testAccTimeseriesRuleConfig(fmt.Sprintf("tf-test-rule-ts-agg-%s", uniq), `
-    based_on_timeseries = jsonencode({
-      response_format = "timeseries"
-      formulas        = [{ formula = "query1" }]
-      queries = [{
-        data_source = "aggregate_augmented_query"
-        name        = "query1"
-        base_query = {
-          data_source = "metrics"
+    based_on_timeseries {
+      json = jsonencode({
+        response_format = "timeseries"
+        formulas        = [{ formula = "query1" }]
+        queries = [{
+          data_source = "aggregate_augmented_query"
           name        = "query1"
-          query       = "sum:system.cpu.user{*} by {dd.team}"
-        }
-        augment_query = {
-          data_source = "reference_table"
-          name        = "filter_query"
-          table_name  = "tf_test_team_mapping"
-          columns     = [{ name = "team" }, { name = "dd_team" }]
-        }
-        compute  = [{ aggregation = "sum", name = "compute_result" }]
-        group_by = [{ facet = "team", source = "filter_query" }]
-        join_condition = {
-          join_type         = "inner"
-          is_negated        = false
-          base_attribute    = "dd.team"
-          augment_attribute = "dd_team"
-        }
-      }]
-    })`)
+          base_query = {
+            data_source = "metrics"
+            name        = "query1"
+            query       = "sum:system.cpu.user{*} by {dd.team}"
+          }
+          augment_query = {
+            data_source = "reference_table"
+            name        = "filter_query"
+            table_name  = "tf_test_team_mapping"
+            columns     = [{ name = "team" }, { name = "dd_team" }]
+          }
+          compute  = [{ aggregation = "sum", name = "compute_result" }]
+          group_by = [{ facet = "team", source = "filter_query" }]
+          join_condition = {
+            join_type         = "inner"
+            is_negated        = false
+            base_attribute    = "dd.team"
+            augment_attribute = "dd_team"
+          }
+        }]
+      })
+    }`)
 }
 
 func testAccCheckDatadogCustomAllocationRuleDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {

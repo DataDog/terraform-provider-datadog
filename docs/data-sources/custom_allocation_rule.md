@@ -55,7 +55,7 @@ Read-Only:
 - `allocated_by_filters` (Block List) (see [below for nested schema](#nestedblock--strategy--allocated_by_filters))
 - `allocated_by_tag_keys` (List of String) List of tag keys used to allocate costs.
 - `based_on_costs` (Block List) (see [below for nested schema](#nestedblock--strategy--based_on_costs))
-- `based_on_timeseries` (String) The timeseries query that determines the allocation proportions, encoded as a JSON object. Set when `method` is `proportional_timeseries` or `even_timeseries`.
+- `based_on_timeseries` (Block, Read-only) (see [below for nested schema](#nestedblock--strategy--based_on_timeseries))
 - `evaluate_grouped_by_filters` (Block List) (see [below for nested schema](#nestedblock--strategy--evaluate_grouped_by_filters))
 - `evaluate_grouped_by_tag_keys` (List of String) List of tag keys used to group costs before allocation.
 - `granularity` (String) The granularity level for cost allocation (`daily` or `monthly`).
@@ -99,6 +99,14 @@ Read-Only:
 - `tag` (String) The tag key used in the filter.
 - `value` (String) The tag value used in the filter (for single-value conditions).
 - `values` (List of String) The list of tag values used in the filter (for multi-value conditions like `in` or `not_in`).
+
+
+<a id="nestedblock--strategy--based_on_timeseries"></a>
+### Nested Schema for `strategy.based_on_timeseries`
+
+Read-Only:
+
+- `json` (String) The timeseries query that determines the allocation proportions, encoded as a JSON object. Set when `method` is `proportional_timeseries` or `even_timeseries`.
 
 
 <a id="nestedblock--strategy--evaluate_grouped_by_filters"></a>

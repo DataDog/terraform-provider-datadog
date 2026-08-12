@@ -41,14 +41,16 @@ resource "datadog_custom_allocation_rule" "my_timeseries_allocation_rule" {
     # query's group-by.
     evaluate_grouped_by_tag_keys = ["env"]
 
-    based_on_timeseries = jsonencode({
-      response_format = "timeseries"
-      queries = [{
-        name        = "query1"
-        data_source = "metrics"
-        query       = "sum:postgresql.queries.time{*} by {user,env}.as_count()"
-      }]
-      formulas = [{ formula = "query1" }]
-    })
+    based_on_timeseries {
+      json = jsonencode({
+        response_format = "timeseries"
+        queries = [{
+          name        = "query1"
+          data_source = "metrics"
+          query       = "sum:postgresql.queries.time{*} by {user,env}.as_count()"
+        }]
+        formulas = [{ formula = "query1" }]
+      })
+    }
   }
 }
