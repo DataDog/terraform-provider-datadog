@@ -1,3 +1,30 @@
+## 4.18.0 (August 12, 2026)
+
+### BUGFIXES
+* [datadog_incident_notification_rule] fix inconsistent result after apply on renotify_on by @Cesarsk in https://github.com/DataDog/terraform-provider-datadog/pull/4066
+* [datadog_incident_postmortem_template] enable unstable operations for incident postmortem templates by @sonya in https://github.com/DataDog/terraform-provider-datadog/pull/4115
+* [datadog_synthetics_test] Prevent error when step params variable/pattern is empty by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/4110
+### IMPROVEMENTS
+* [datadog_dashboard_v2] Add APM metrics formula queries by @Jiawen23 in https://github.com/DataDog/terraform-provider-datadog/pull/4023
+* [datadog_dashboard_v2] Add Product Analytics widgets by @Jiawen23 in https://github.com/DataDog/terraform-provider-datadog/pull/4009
+* [datadog_dashboard_v2] Add Query Table request sorting by @Jiawen23 in https://github.com/DataDog/terraform-provider-datadog/pull/4022
+* [datadog_dashboard_v2] Add Query Value comparison support by @Jiawen23 in https://github.com/DataDog/terraform-provider-datadog/pull/3991
+* [datadog_datadog_dashboard] Add missing data sources for stream widget by @Raganof in https://github.com/DataDog/terraform-provider-datadog/pull/4078
+* [datadog_logs_custom_pipeline] Add key-value type in Logs Array Processor by @mateo-villa in https://github.com/DataDog/terraform-provider-datadog/pull/4047
+* [datadog_organization_settings] Stop forcing saml_autocreate_access_role to st by @Cesarsk in https://github.com/DataDog/terraform-provider-datadog/pull/4004
+* [datadog_synthetics_test] Add test configuration attributes to the data source by @idubinskiy in https://github.com/DataDog/terraform-provider-datadog/pull/4082
+### FEATURES
+* [datadog_webhook_oauth2_client_credentials] Add resource for webhook OAuth2 auth methods by @Cesarsk in https://github.com/DataDog/terraform-provider-datadog/pull/4084
+
+## New Contributors
+* @2rs2ts made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3943
+* @Raganof made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4078
+* @idubinskiy made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4082
+* @ronangaret made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4067
+* @sonya made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4115
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.17.0...v4.18.0
+
 ## 4.17.0 (July 29, 2026)
 
 ### BUGFIXES
