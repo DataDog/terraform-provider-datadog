@@ -163,13 +163,14 @@ func (v basedOnTimeseriesValidator) ValidateString(ctx context.Context, req vali
 			continue
 		}
 		name, _ := query["name"].(string)
-		if name == "" {
+		switch {
+		case name == "":
 			resp.Diagnostics.AddAttributeError(req.Path, "Missing query name",
 				fmt.Sprintf("queries[%d] must have a non-empty `name`", i))
-		} else if names[name] {
+		case names[name]:
 			resp.Diagnostics.AddAttributeError(req.Path, "Duplicate query name",
 				fmt.Sprintf("query name %q is used more than once", name))
-		} else {
+		default:
 			names[name] = true
 		}
 		if ds, _ := query["data_source"].(string); ds == "" {
