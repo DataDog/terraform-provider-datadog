@@ -735,6 +735,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationTemplate", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListIncidentNotificationTemplates", true)
 
+	// Enable IncidentPostmortemTemplate
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateIncidentPostmortemTemplate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetIncidentPostmortemTemplate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentPostmortemTemplate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentPostmortemTemplate", true)
+
 	// Enable OrgGroup
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateOrgGroup", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetOrgGroup", true)
