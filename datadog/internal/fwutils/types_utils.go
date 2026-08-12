@@ -55,6 +55,13 @@ func ToTerraformInt64(v *int64, ok bool) types.Int64 {
 	return types.Int64Null()
 }
 
+func ToTerraformFloat64(v *float64, ok bool) types.Float64 {
+	if ok && v != nil {
+		return types.Float64Value(*v)
+	}
+	return types.Float64Null()
+}
+
 func ToTerraformSetString(ctx context.Context, get func() (*[]string, bool)) types.Set {
 	if v, ok := get(); ok && v != nil {
 		result, _ := types.SetValueFrom(ctx, types.StringType, v)
@@ -78,6 +85,12 @@ func SetOptInt32(i types.Int32, set func(int32)) {
 func SetOptInt64(i types.Int64, set func(int64)) {
 	if !i.IsNull() && !i.IsUnknown() {
 		set(i.ValueInt64())
+	}
+}
+
+func SetOptFloat64(f types.Float64, set func(float64)) {
+	if !f.IsNull() && !f.IsUnknown() {
+		set(f.ValueFloat64())
 	}
 }
 

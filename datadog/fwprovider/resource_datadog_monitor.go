@@ -264,11 +264,12 @@ type DataQualityQuery struct {
 }
 
 type DataQualityMonitorOptions struct {
-	CustomSql         types.String `tfsdk:"custom_sql"`
-	CustomWhere       types.String `tfsdk:"custom_where"`
-	GroupByColumns    types.List   `tfsdk:"group_by_columns"`
-	CrontabOverride   types.String `tfsdk:"crontab_override"`
-	ModelTypeOverride types.String `tfsdk:"model_type_override"`
+	CustomSql         types.String  `tfsdk:"custom_sql"`
+	CustomWhere       types.String  `tfsdk:"custom_where"`
+	GroupByColumns    types.List    `tfsdk:"group_by_columns"`
+	CrontabOverride   types.String  `tfsdk:"crontab_override"`
+	ModelTypeOverride types.String  `tfsdk:"model_type_override"`
+	Sensitivity       types.Float64 `tfsdk:"sensitivity"`
 }
 
 type DataJobsQuery struct {
@@ -1188,6 +1189,10 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 													Optional:    true,
 													Description: "Override for the model type. Valid values are `freshness`, `percentage`, `any`.",
 												},
+												"sensitivity": schema.Float64Attribute{
+													Optional:    true,
+													Description: "Sensitivity of the anomaly detection model, expressed as a multiplier on the width of the predicted bounds. Higher values widen the bounds and produce fewer alerts, lower values tighten them and produce more alerts. Defaults to `3.0`.",
+												},
 											},
 										},
 									},
@@ -1950,6 +1955,7 @@ func (r *monitorResource) buildDataQualityQueryStruct(ctx context.Context, dataQ
 			if !opt.ModelTypeOverride.IsNull() {
 				monitorOptsReq.SetModelTypeOverride(datadogV1.MonitorFormulaAndFunctionDataQualityModelTypeOverride(opt.ModelTypeOverride.ValueString()))
 			}
+			fwutils.SetOptFloat64(opt.Sensitivity, monitorOptsReq.SetSensitivity)
 			dataQualityQueryReq.SetMonitorOptions(monitorOptsReq)
 		}
 		variableReq.MonitorFormulaAndFunctionDataQualityQueryDefinition = &dataQualityQueryReq
@@ -2695,6 +2701,7 @@ func (r *monitorResource) buildDataQualityQueryState(ctx context.Context, dataQu
 			CustomSql:       fwutils.ToTerraformStr(monitorOpts.GetCustomSqlOk()),
 			CustomWhere:     fwutils.ToTerraformStr(monitorOpts.GetCustomWhereOk()),
 			CrontabOverride: fwutils.ToTerraformStr(monitorOpts.GetCrontabOverrideOk()),
+			Sensitivity:     fwutils.ToTerraformFloat64(monitorOpts.GetSensitivityOk()),
 		}
 		if groupByCols, ok := monitorOpts.GetGroupByColumnsOk(); ok && groupByCols != nil {
 			monitorOptsState.GroupByColumns, _ = types.ListValueFrom(ctx, types.StringType, groupByCols)
