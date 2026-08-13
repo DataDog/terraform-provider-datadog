@@ -1,0 +1,24 @@
+---
+# Policy for: .github/workflows/cassettes_record.yml in DataDog/terraform-provider-datadog
+# Allows the cassette-recording workflow to push recorded cassettes back to PR branches.
+#
+# Uses `subject` (exact match) for the default-branch ref.  For issue_comment
+# events without an environment, GitHub sets the OIDC subject to
+# `repo:DataDog/terraform-provider-datadog:ref:refs/heads/master` (the
+# default branch).  Fork PR runs use the `forks-prs` environment, producing a
+# subject of `repo:DataDog/terraform-provider-datadog:environment:forks-prs`,
+# which does NOT match this exact subject.  This prevents fork-controlled
+# code (which has `id-token: write`) from directly minting a
+# `contents: write` token.
+issuer: https://token.actions.githubusercontent.com
+subject: repo:DataDog/terraform-provider-datadog:ref:refs/heads/master
+
+claim_pattern:
+  event_name: issue_comment
+  job_workflow_ref: DataDog/terraform-provider-datadog/\.github/workflows/cassettes_record\.yml@.*
+  ref: refs/heads/master
+  repository: DataDog/terraform-provider-datadog
+
+permissions:
+  contents: write
+  pull_requests: write
