@@ -59,7 +59,7 @@ Read-Only:
 - `evaluate_grouped_by_filters` (Block List) (see [below for nested schema](#nestedblock--strategy--evaluate_grouped_by_filters))
 - `evaluate_grouped_by_tag_keys` (List of String) List of tag keys used to group costs before allocation.
 - `granularity` (String) The granularity level for cost allocation (`daily` or `monthly`).
-- `method` (String) The allocation method. Valid values are `even`, `even_timeseries`, `percent`, `proportional`, `proportional_timeseries`, or `usage_metric`.
+- `method` (String) The allocation method. Valid values are `even`, `proportional`, `proportional_timeseries`, or `percent`.
 
 <a id="nestedblock--strategy--allocated_by"></a>
 ### Nested Schema for `strategy.allocated_by`
@@ -106,7 +106,7 @@ Read-Only:
 
 Read-Only:
 
-- `json` (String) The timeseries query that determines the allocation proportions, encoded as a JSON object. Set when `method` is `proportional_timeseries` or `even_timeseries`.
+- `json` (String) The timeseries query that determines the allocation proportions, encoded as a JSON object. Set when `method` is `proportional_timeseries`.
 
 
 <a id="nestedblock--strategy--evaluate_grouped_by_filters"></a>

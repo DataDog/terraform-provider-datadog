@@ -423,11 +423,9 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 						Validators: []validator.String{
 							stringvalidator.OneOf(
 								"even",
-								"even_timeseries",
 								"percent",
 								"proportional",
 								"proportional_timeseries",
-								"usage_metric",
 							),
 						},
 						Description: "The allocation method.",
@@ -558,7 +556,7 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 									basedOnTimeseriesValidator{},
 								},
 								Description: "The timeseries query that determines the allocation proportions, encoded as a JSON object. " +
-									"Required when `method` is `proportional_timeseries` or `even_timeseries`. " +
+									"Required when `method` is `proportional_timeseries`. " +
 									"Uses Datadog's formulas-and-functions request format with `queries`, `formulas`, and `response_format` keys. " +
 									"Build it with `jsonencode()`. The set of supported `data_source` values is defined by the API, not by this provider.",
 							},

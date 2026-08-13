@@ -31,7 +31,7 @@ Provides a Datadog On-Call user notification channel resource.
 <a id="nestedblock--email"></a>
 ### Nested Schema for `email`
 
-Required:
+Optional:
 
 - `address` (String) The e-mail address to be notified
 - `formats` (List of String) Preferred content formats for notifications
@@ -40,6 +40,6 @@ Required:
 <a id="nestedblock--phone"></a>
 ### Nested Schema for `phone`
 
-Required:
+Optional:
 
-- `number` (String) The E-164 formatted phone number (e.g. +3371234567)
+- `number` (String) The E-164 formatted phone number (for example, +3371234567)

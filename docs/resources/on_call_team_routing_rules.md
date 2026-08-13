@@ -130,7 +130,7 @@ Optional:
 
 - `ack_timeout_minutes` (Number) Number of minutes before an acknowledged page is re-triggered. Value must be between 30 and 4320.
 - `policy_id` (String) Escalation policy ID.
-- `support_hours` (Block, Optional) Support hours during which the escalation policy will execute. (see [below for nested schema](#nestedblock--rule--action--escalation_policy--support_hours))
+- `support_hours` (Block, Optional) Support hours during which the escalation policy will trigger. (see [below for nested schema](#nestedblock--rule--action--escalation_policy--support_hours))
 - `urgency` (String) Urgency for pages created via this action. Valid values are `high`, `low`, `dynamic`.
 
 <a id="nestedblock--rule--action--escalation_policy--support_hours"></a>

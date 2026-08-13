@@ -146,7 +146,7 @@ func (d *datadogCustomAllocationRuleDataSource) Schema(_ context.Context, _ data
 					},
 					"method": schema.StringAttribute{
 						Computed:    true,
-						Description: "The allocation method. Valid values are `even`, `even_timeseries`, `percent`, `proportional`, `proportional_timeseries`, or `usage_metric`.",
+						Description: "The allocation method. Valid values are `even`, `proportional`, `proportional_timeseries`, or `percent`.",
 					},
 					"allocated_by_tag_keys": schema.ListAttribute{
 						Computed:    true,
@@ -261,7 +261,7 @@ func (d *datadogCustomAllocationRuleDataSource) Schema(_ context.Context, _ data
 								Computed:   true,
 								CustomType: jsontypes.NormalizedType{},
 								Description: "The timeseries query that determines the allocation proportions, encoded as a JSON object. " +
-									"Set when `method` is `proportional_timeseries` or `even_timeseries`.",
+									"Set when `method` is `proportional_timeseries`.",
 							},
 						},
 					},
