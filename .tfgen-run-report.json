@@ -1,0 +1,26 @@
+{
+  "run_id": "8ecea762-beb8-4a9c-968f-4e3ee56c63a1",
+  "generator_version": "dev",
+  "spec_hash": "7e57ae220a7670dff8f71e133816fd2ddfb780027fd99d831487fa1577718769",
+  "started_at": "2026-08-13T12:22:51.375104287Z",
+  "finished_at": "2026-08-13T12:22:53.79197038Z",
+  "artifacts": null,
+  "skipped_operations": [
+    {
+      "operation_id": "ListDatastores",
+      "path": "/api/v2/actions-datastores",
+      "method": "GET",
+      "reason": "tracking_field_absent"
+    }
+  ],
+  "summary": {
+    "created": 0,
+    "updated": 0,
+    "unchanged": 0,
+    "skipped": 0,
+    "failed": 0,
+    "retired": 0,
+    "retire_blocked": 0,
+    "registration_retired": 0
+  }
+}
