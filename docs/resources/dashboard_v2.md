@@ -27099,9 +27099,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for the Topology request ('service_map' or 'data_streams').
+- `data_source` (String) The data source for the Topology request. Valid values are `service_map`, `data_streams`.
 - `filters` (List of String) Your environment and primary tag (or `*` if enabled for your account).
-- `service` (String) Name of the service.
+- `service` (String) Name of the service. Leave this empty and use `query_string` instead.
+
+Optional:
+
+- `query_string` (String) A search string for filtering services. When set, this replaces the `service` field.
 
 
 
@@ -59909,9 +59913,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for the Topology request ('service_map' or 'data_streams').
+- `data_source` (String) The data source for the Topology request. Valid values are `service_map`, `data_streams`.
 - `filters` (List of String) Your environment and primary tag (or `*` if enabled for your account).
-- `service` (String) Name of the service.
+- `service` (String) Name of the service. Leave this empty and use `query_string` instead.
+
+Optional:
+
+- `query_string` (String) A search string for filtering services. When set, this replaces the `service` field.
 
 
 

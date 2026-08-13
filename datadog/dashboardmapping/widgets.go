@@ -1215,10 +1215,13 @@ var TreemapWidgetSpec = WidgetSpec{
 	},
 }
 
-// TopologyMapWidgetSpec corresponds to OpenAPI TopologyMapWidgetDefinition.
-// Note: TopologyRequest.Query is a singular struct (*TopologyQuery) in the API,
-// so "query" maps to a JSON object (TypeBlock), not a list (TypeBlockList).
-// The HCL schema uses TypeList with an implicit single element.
+// TopologyMapWidgetSpec corresponds to OpenAPI TopologyMapWidgetDefinition,
+// a oneOf over TopologyMapWidgetDefinitionServiceMap and
+// TopologyMapWidgetDefinitionDataStreams. Both variants share the same JSON
+// shape, so one spec covers them; the query's data_source picks the variant.
+// Note: the request's query is a singular struct in the API, so "query" maps to
+// a JSON object (TypeBlock), not a list (TypeBlockList). The HCL schema uses
+// TypeList with an implicit single element.
 var topologyRequestFields = []FieldSpec{
 	{HCLKey: "request_type", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "The request type for the Topology request ('topology')."},
