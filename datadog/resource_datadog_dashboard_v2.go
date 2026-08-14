@@ -76,7 +76,7 @@ func buildDashboardV2Schema() map[string]*schema.Schema {
 	topSchema["validate"] = &schema.Schema{
 		Type:        schema.TypeBool,
 		Optional:    true,
-		Description: "If set to `false`, skip dashboard widget validation during plan. Defaults to `true`.",
+		Description: "Whether to send widget definitions to the Datadog API to validate widget configuration and query values during `terraform plan`. Defaults to `true`. Setting this to `false` skips only the Datadog API validation; local Terraform schema and conflicting-field checks still run.",
 		DiffSuppressFunc: func(_, _, _ string, _ *schema.ResourceData) bool {
 			// This provider-only setting is never sent to the backend.
 			return true
