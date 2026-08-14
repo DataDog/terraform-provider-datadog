@@ -3,7 +3,6 @@ package test
 import (
 	"context"
 	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/google/uuid"
@@ -16,33 +15,40 @@ import (
 func TestAccDatadogStatusPageComponent_Basic(t *testing.T) {
 	// Not parallel: the org's status-page contract permits only one page at a time.
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	uniq := uniqueEntityName(ctx, t)
-	prefix := "tf" + uuid.NewString()[:8]
-	componentName := "datadog_status_page_component.comp"
+	tok := statusPageToken(ctx, t)
+	name := "tf-sp-" + tok
+	prefix := "tfsp" + tok
+	grpName := "datadog_status_page_component.grp"
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogStatusPageComponentDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccStatusPageComponentConfig(uniq, prefix),
+				Config: testAccStatusPageComponentConfig(name, prefix, false),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr(componentName, "name", uniq+"-api"),
-					resource.TestCheckResourceAttr(componentName, "type", "component"),
-					resource.TestCheckResourceAttrSet(componentName, "group_id"),
-					resource.TestCheckResourceAttrSet(componentName, "status_page_id"),
+					resource.TestCheckResourceAttr(grpName, "name", name+"-group"),
+					resource.TestCheckResourceAttr(grpName, "type", "group"),
+					resource.TestCheckResourceAttr(grpName, "components.#", "2"),
+					resource.TestCheckResourceAttr(grpName, "components.0.name", name+"-c1"),
+					resource.TestCheckResourceAttr(grpName, "components.1.name", name+"-c2"),
+					resource.TestCheckResourceAttrSet(grpName, "status_page_id"),
 				),
 			},
 			{
-				Config: testAccStatusPageComponentConfigRenamed(uniq, prefix),
-				Check:  resource.TestCheckResourceAttr(componentName, "name", uniq+"-api-2"),
+				// add a third child -> exercises the create-child reconciliation path
+				Config: testAccStatusPageComponentConfig(name, prefix, true),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(grpName, "components.#", "3"),
+					resource.TestCheckResourceAttr(grpName, "components.2.name", name+"-c3"),
+				),
 			},
 			{
-				ResourceName:      componentName,
+				ResourceName:      grpName,
 				ImportState:       true,
 				ImportStateVerify: true,
 				ImportStateIdFunc: func(s *terraform.State) (string, error) {
-					r := s.RootModule().Resources[componentName]
+					r := s.RootModule().Resources[grpName]
 					return fmt.Sprintf("%s:%s", r.Primary.Attributes["status_page_id"], r.Primary.ID), nil
 				},
 			},
@@ -50,7 +56,15 @@ func TestAccDatadogStatusPageComponent_Basic(t *testing.T) {
 	})
 }
 
-func testAccStatusPageComponentConfig(uniq, prefix string) string {
+func testAccStatusPageComponentConfig(name, prefix string, withThird bool) string {
+	third := ""
+	if withThird {
+		third = fmt.Sprintf(`
+  components {
+    name     = "%s-c3"
+    position = 2
+  }`, name)
+	}
 	return fmt.Sprintf(`
 resource "datadog_status_page" "foo" {
   name               = "%[1]s"
@@ -64,19 +78,16 @@ resource "datadog_status_page_component" "grp" {
   name           = "%[1]s-group"
   type           = "group"
   position       = 0
-}
 
-resource "datadog_status_page_component" "comp" {
-  status_page_id = datadog_status_page.foo.id
-  name           = "%[1]s-api"
-  type           = "component"
-  position       = 0
-  group_id       = datadog_status_page_component.grp.id
-}`, uniq, prefix)
-}
-
-func testAccStatusPageComponentConfigRenamed(uniq, prefix string) string {
-	return strings.Replace(testAccStatusPageComponentConfig(uniq, prefix), uniq+"-api", uniq+"-api-2", 1)
+  components {
+    name     = "%[1]s-c1"
+    position = 0
+  }
+  components {
+    name     = "%[1]s-c2"
+    position = 1
+  }%[3]s
+}`, name, prefix, third)
 }
 
 func testAccCheckDatadogStatusPageComponentDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {

@@ -5,14 +5,14 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
 func TestAccDatadogStatusPageDataSource_Basic(t *testing.T) {
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	uniq := uniqueEntityName(ctx, t)
-	prefix := "tf" + uuid.NewString()[:8]
+	tok := statusPageToken(ctx, t)
+	name := "tf-sp-" + tok
+	prefix := "tfsp" + tok
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
@@ -28,9 +28,9 @@ resource "datadog_status_page" "foo" {
 
 data "datadog_status_page" "by_id" {
   id = datadog_status_page.foo.id
-}`, uniq, prefix),
+}`, name, prefix),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("data.datadog_status_page.by_id", "name", uniq),
+					resource.TestCheckResourceAttr("data.datadog_status_page.by_id", "name", name),
 					resource.TestCheckResourceAttr("data.datadog_status_page.by_id", "type", "internal"),
 					resource.TestCheckResourceAttr("data.datadog_status_page.by_id", "visualization_type", "bars_only"),
 				),

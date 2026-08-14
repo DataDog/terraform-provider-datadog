@@ -3,12 +3,12 @@
 page_title: "datadog_status_page_component Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Status Page Component resource. This can be used to create and manage a component or component group on a datadog_status_page.
+  Provides a Datadog Status Page Component resource. A component is a single status item; a group bundles child components declared via components blocks. Groups must declare at least one child (the API rejects empty groups).
 ---
 
 # datadog_status_page_component (Resource)
 
-Provides a Datadog Status Page Component resource. This can be used to create and manage a component or component group on a `datadog_status_page`.
+Provides a Datadog Status Page Component resource. A `component` is a single status item; a `group` bundles child components declared via `components` blocks. Groups must declare at least one child (the API rejects empty groups).
 
 ## Example Usage
 
@@ -20,19 +20,29 @@ resource "datadog_status_page" "example" {
   visualization_type = "bars_only"
 }
 
-resource "datadog_status_page_component" "group" {
+# A group bundles child components (declared inline; groups cannot be empty).
+resource "datadog_status_page_component" "note_generation" {
   status_page_id = datadog_status_page.example.id
   name           = "Note Generation"
   type           = "group"
   position       = 0
+
+  components {
+    name     = "Inpatient"
+    position = 0
+  }
+  components {
+    name     = "Ambulatory"
+    position = 1
+  }
 }
 
+# A standalone top-level component (no group).
 resource "datadog_status_page_component" "api" {
   status_page_id = datadog_status_page.example.id
   name           = "API"
   type           = "component"
-  position       = 0
-  group_id       = datadog_status_page_component.group.id
+  position       = 1
 }
 ```
 
@@ -43,13 +53,24 @@ resource "datadog_status_page_component" "api" {
 
 - `name` (String) The name of the component or group.
 - `status_page_id` (String) The ID of the status page this component belongs to.
-- `type` (String) The component type. Valid values are `component`, `group`.
+- `type` (String) The component type. Valid values are `component`, `group`. Valid values are `component`, `group`.
 
 ### Optional
 
-- `group_id` (String) The ID of the parent group (a component of type `group`). Omit for top-level components and for groups.
-- `position` (Number) The ordering position of the component within its page or group.
+- `components` (Block List) Child components of a `group`. Required (and only valid) when `type` is `group`; child names must be unique within the group. (see [below for nested schema](#nestedblock--components))
+- `position` (Number) The ordering position of this item on the page (0-based). Positions must stay within bounds across all top-level items.
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+<a id="nestedblock--components"></a>
+### Nested Schema for `components`
+
+Required:
+
+- `name` (String) The name of the child component.
+
+Optional:
+
+- `position` (Number) The ordering position of the child within the group (0-based).

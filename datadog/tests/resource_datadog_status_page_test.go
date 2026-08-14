@@ -2,6 +2,8 @@ package test
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"testing"
 
@@ -12,11 +14,21 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
+// statusPageToken returns a deterministic (record/replay-stable) 10-char token
+// derived from uniqueEntityName. Status page names are capped at 50 characters and
+// domain prefixes must be short and alphanumeric, so the raw uniqueEntityName is too
+// long; this keeps the derived values well within bounds while staying unique.
+func statusPageToken(ctx context.Context, t *testing.T) string {
+	sum := sha256.Sum256([]byte(uniqueEntityName(ctx, t)))
+	return hex.EncodeToString(sum[:])[:10]
+}
+
 func TestAccDatadogStatusPage_Basic(t *testing.T) {
 	// Not parallel: the org's status-page contract permits only one page at a time.
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	uniq := uniqueEntityName(ctx, t)
-	prefix := "tf" + uuid.NewString()[:8]
+	tok := statusPageToken(ctx, t)
+	name := "tf-sp-" + tok
+	prefix := "tfsp" + tok
 	resourceName := "datadog_status_page.foo"
 
 	resource.Test(t, resource.TestCase{
@@ -24,10 +36,10 @@ func TestAccDatadogStatusPage_Basic(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogStatusPageDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccStatusPageConfig(uniq, prefix, "internal", "bars_and_uptime_percentage"),
+				Config: testAccStatusPageConfig(name, prefix, "internal", "bars_and_uptime_percentage"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogStatusPageExists(providers.frameworkProvider, resourceName),
-					resource.TestCheckResourceAttr(resourceName, "name", uniq),
+					resource.TestCheckResourceAttr(resourceName, "name", name),
 					resource.TestCheckResourceAttr(resourceName, "type", "internal"),
 					resource.TestCheckResourceAttr(resourceName, "visualization_type", "bars_and_uptime_percentage"),
 					resource.TestCheckResourceAttrSet(resourceName, "page_url"),
@@ -35,10 +47,10 @@ func TestAccDatadogStatusPage_Basic(t *testing.T) {
 			},
 			{
 				// mutate patchable fields -> must NOT force replacement
-				Config: testAccStatusPageConfig(uniq+"-2", prefix, "internal", "bars_only"),
+				Config: testAccStatusPageConfig(name+"-2", prefix, "internal", "bars_only"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogStatusPageExists(providers.frameworkProvider, resourceName),
-					resource.TestCheckResourceAttr(resourceName, "name", uniq+"-2"),
+					resource.TestCheckResourceAttr(resourceName, "name", name+"-2"),
 					resource.TestCheckResourceAttr(resourceName, "visualization_type", "bars_only"),
 				),
 			},

@@ -277,16 +277,18 @@ func (r *statusPageResource) updateState(state *statusPageResourceModel, attrs d
 	state.Enabled = types.BoolValue(attrs.GetEnabled())
 	state.CustomDomain = types.StringValue(attrs.GetCustomDomain())
 	state.CustomDomainEnabled = types.BoolValue(attrs.GetCustomDomainEnabled())
-	if attrs.HasCompanyLogo() {
-		state.CompanyLogo = types.StringValue(attrs.GetCompanyLogo())
+	state.CompanyLogo = optionalString(attrs.GetCompanyLogo())
+	state.Favicon = optionalString(attrs.GetFavicon())
+	state.EmailHeaderImage = optionalString(attrs.GetEmailHeaderImage())
+	state.SlackAppIcon = optionalString(attrs.GetSlackAppIcon())
+}
+
+// optionalString maps an empty API value back to null so an unset optional
+// attribute stays null in state (the API echoes unset branding fields as null,
+// which the NullableString accessors surface as an empty string).
+func optionalString(v string) types.String {
+	if v == "" {
+		return types.StringNull()
 	}
-	if attrs.HasFavicon() {
-		state.Favicon = types.StringValue(attrs.GetFavicon())
-	}
-	if attrs.HasEmailHeaderImage() {
-		state.EmailHeaderImage = types.StringValue(attrs.GetEmailHeaderImage())
-	}
-	if attrs.HasSlackAppIcon() {
-		state.SlackAppIcon = types.StringValue(attrs.GetSlackAppIcon())
-	}
+	return types.StringValue(v)
 }
