@@ -34,6 +34,17 @@ resource "datadog_on_call_schedule" "test" {
       start_time = "09:00:00"
     }
   }
+  # Layer with a different time zone
+  layer {
+    name           = "Asia-Pacific On-Call Layer"
+    effective_date = "2025-01-01T00:00:00Z"
+    rotation_start = "2025-01-01T00:00:00Z"
+    time_zone      = "Asia/Tokyo"
+    interval {
+      days = 7
+    }
+    users = ["00000000-aba1-0000-0000-000000000001"]
+  }
 }
 ```
 
@@ -42,12 +53,12 @@ resource "datadog_on_call_schedule" "test" {
 
 ### Required
 
+- `layer` (Block List) List of layers for the schedule. (see [below for nested schema](#nestedblock--layer))
 - `name` (String) A human-readable name for the new schedule.
 - `time_zone` (String) The time zone in which the schedule is defined.
 
 ### Optional
 
-- `layer` (Block List) List of layers for the schedule. (see [below for nested schema](#nestedblock--layer))
 - `teams` (List of String) A list of team ids associated with the schedule.
 
 ### Read-Only
@@ -60,6 +71,7 @@ resource "datadog_on_call_schedule" "test" {
 Required:
 
 - `effective_date` (String) The date/time when this layer should become active (in ISO 8601).
+- `interval` (Block List) Rotation interval for this layer. (see [below for nested schema](#nestedblock--layer--interval))
 - `name` (String) The name of this layer. Should be unique within the schedule.
 - `rotation_start` (String) The date/time when the rotation for this layer starts (in ISO 8601).
 - `users` (List of String) List of user IDs for the layer. Can either be a valid user id or `null` to represent No-one.
@@ -67,9 +79,8 @@ Required:
 Optional:
 
 - `end_date` (String) The date/time after which this layer no longer applies (in ISO 8601).
-- `interval` (Block, Optional) (see [below for nested schema](#nestedblock--layer--interval))
 - `restriction` (Block List) List of restrictions for the layer. (see [below for nested schema](#nestedblock--layer--restriction))
-- `time_zone` (String) The time zone for this layer. String length must be at least 1.
+- `time_zone` (String) The time zone for this layer. If not specified, the layer inherits the schedule's time zone.
 
 Read-Only:
 

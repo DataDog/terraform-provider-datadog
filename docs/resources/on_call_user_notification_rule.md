@@ -33,6 +33,6 @@ Provides a Datadog On-Call user notification rule resource.
 <a id="nestedblock--phone"></a>
 ### Nested Schema for `phone`
 
-Optional:
+Required:
 
 - `method` (String) Specifies the method in which a phone is used in a notification rule. Valid values are `sms`, `voice`.

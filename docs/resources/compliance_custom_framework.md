@@ -49,14 +49,15 @@ resource "datadog_compliance_custom_framework" "framework" {
 
 ### Required
 
-- `handle` (String) The framework handle. String length must be at least 1.
+- `handle` (String) The framework handle. String length must be at least 1. This field is immutable.
 - `name` (String) The framework name. String length must be at least 1.
-- `version` (String) The framework version. String length must be at least 1.
+- `version` (String) The framework version. String length must be at least 1. This field is immutable.
+- `requirements` (Block List) The requirements of the framework. Length must be at least 1. (see [below for nested schema](#nestedblock--requirements))
+
 
 ### Optional
 
 - `icon_url` (String) The URL of the icon representing the framework
-- `requirements` (Block List) The requirements of the framework. (see [below for nested schema](#nestedblock--requirements))
 
 ### Read-Only
 
@@ -68,10 +69,7 @@ resource "datadog_compliance_custom_framework" "framework" {
 Required:
 
 - `name` (String) The name of the requirement. String length must be at least 1.
-
-Optional:
-
-- `controls` (Block List) The controls of the requirement. (see [below for nested schema](#nestedblock--requirements--controls))
+- `controls` (Block List) The controls of the requirement. Length must be at least 1. (see [below for nested schema](#nestedblock--requirements--controls))
 
 <a id="nestedblock--requirements--controls"></a>
 ### Nested Schema for `requirements.controls`
@@ -79,4 +77,4 @@ Optional:
 Required:
 
 - `name` (String) The name of the control. String length must be at least 1.
-- `rules_id` (Set of String) The set of rules IDs for the control.
+- `rules_id` (Set of String) The set of rules IDs for the control. Length must be at least 1.
