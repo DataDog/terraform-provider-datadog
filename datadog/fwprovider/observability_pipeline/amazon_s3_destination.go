@@ -81,20 +81,12 @@ func ExpandAmazonS3Destination(ctx context.Context, id string, inputs types.List
 	dest.SetKeyPrefix(src.KeyPrefix.ValueString())
 	dest.SetStorageClass(datadogV2.ObservabilityPipelineAmazonS3DestinationStorageClass(src.StorageClass.ValueString()))
 
-	// TODO(OPA-5637): the client's ObservabilityPipelineAmazonS3Destination model has no typed
-	// ServerSideEncryption/SsekmsKeyId fields yet (unlike the generic destination), so bridge through
-	// AdditionalProperties, which round-trips via Marshal/Unmarshal. Replace with typed setters once
-	// the client is regenerated from the api-spec change.
-	if !src.ServerSideEncryption.IsNull() || !src.SseKmsKeyId.IsNull() {
-		if dest.AdditionalProperties == nil {
-			dest.AdditionalProperties = map[string]interface{}{}
-		}
-		if !src.ServerSideEncryption.IsNull() {
-			dest.AdditionalProperties["server_side_encryption"] = src.ServerSideEncryption.ValueString()
-		}
-		if !src.SseKmsKeyId.IsNull() {
-			dest.AdditionalProperties["ssekms_key_id"] = src.SseKmsKeyId.ValueString()
-		}
+	if !src.ServerSideEncryption.IsNull() {
+		dest.SetServerSideEncryption(datadogV2.ObservabilityPipelineAmazonS3DestinationServerSideEncryption(src.ServerSideEncryption.ValueString()))
+	}
+
+	if !src.SseKmsKeyId.IsNull() {
+		dest.SetSsekmsKeyId(src.SseKmsKeyId.ValueString())
 	}
 
 	if len(src.Auth) > 0 {
@@ -128,12 +120,11 @@ func FlattenAmazonS3Destination(ctx context.Context, src *datadogV2.Observabilit
 		SseKmsKeyId:          types.StringNull(),
 	}
 
-	// TODO(OPA-5637): read via AdditionalProperties until the client exposes typed getters (see Expand).
-	if v, ok := src.AdditionalProperties["server_side_encryption"].(string); ok && v != "" {
-		model.ServerSideEncryption = types.StringValue(v)
+	if v, ok := src.GetServerSideEncryptionOk(); ok {
+		model.ServerSideEncryption = types.StringValue(string(*v))
 	}
-	if v, ok := src.AdditionalProperties["ssekms_key_id"].(string); ok && v != "" {
-		model.SseKmsKeyId = types.StringValue(v)
+	if v, ok := src.GetSsekmsKeyIdOk(); ok {
+		model.SseKmsKeyId = types.StringValue(*v)
 	}
 
 	if auth, ok := src.GetAuthOk(); ok {
