@@ -71,7 +71,7 @@ func (r *statusPageComponentResource) Schema(_ context.Context, _ resource.Schem
 			},
 			"type": schema.StringAttribute{
 				Required:      true,
-				Description:   "The component type. Valid values are `component`, `group`.",
+				Description:   "The component type.",
 				Validators:    []validator.String{stringvalidator.OneOf("component", "group")},
 				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			},

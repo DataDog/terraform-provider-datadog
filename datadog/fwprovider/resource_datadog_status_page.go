@@ -74,12 +74,12 @@ func (r *statusPageResource) Schema(_ context.Context, _ resource.SchemaRequest,
 			},
 			"type": schema.StringAttribute{
 				Required:    true,
-				Description: "The type of status page. Valid values are `public`, `internal`.",
+				Description: "The type of status page.",
 				Validators:  []validator.String{stringvalidator.OneOf("public", "internal")},
 			},
 			"visualization_type": schema.StringAttribute{
 				Required:    true,
-				Description: "How component status is visualized. Valid values are `bars_and_uptime_percentage`, `bars_only`, `component_name_only`.",
+				Description: "How component status is visualized.",
 				Validators:  []validator.String{stringvalidator.OneOf("bars_and_uptime_percentage", "bars_only", "component_name_only")},
 			},
 			"company_logo": schema.StringAttribute{
