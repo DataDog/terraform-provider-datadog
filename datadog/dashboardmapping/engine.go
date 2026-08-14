@@ -1811,6 +1811,104 @@ func BuildWidgetEngineJSONFromMap(widget map[string]interface{}) map[string]inte
 	return buildWidgetEngineJSONFromMap(widget)
 }
 
+// WidgetDefinitionHCLKey returns the Terraform block name for a widget JSON
+// type. Validation APIs speak in JSON paths, while provider errors must point
+// users to the corresponding HCL configuration.
+func WidgetDefinitionHCLKey(widgetType string) string {
+	for _, spec := range allWidgetSpecs {
+		if spec.JSONType == widgetType {
+			return spec.HCLKey
+		}
+	}
+	return "unknown_definition"
+}
+
+// WidgetErrorPathToHCL translates a widget-definition JSON error path, such as
+// "requests.0.q", to its FieldSpec-backed Terraform path, such as
+// "request.0.q". Unknown path segments are preserved so backend errors never
+// lose useful location information.
+func WidgetErrorPathToHCL(widgetType, jsonPath string) string {
+	var fields []FieldSpec
+	for _, spec := range allWidgetSpecs {
+		if spec.JSONType == widgetType {
+			fields = make([]FieldSpec, 0, len(CommonWidgetFields)+len(spec.Fields))
+			fields = append(fields, CommonWidgetFields...)
+			fields = append(fields, spec.Fields...)
+			break
+		}
+	}
+	if len(fields) == 0 {
+		return normalizeValidationJSONPath(jsonPath)
+	}
+
+	tokens := strings.Split(normalizeValidationJSONPath(jsonPath), ".")
+	return strings.Join(fieldSpecJSONPathToHCL(fields, tokens), ".")
+}
+
+func normalizeValidationJSONPath(path string) string {
+	path = strings.ReplaceAll(path, "[", ".")
+	path = strings.ReplaceAll(path, "]", "")
+	return strings.Trim(path, ".")
+}
+
+func fieldSpecJSONPathToHCL(fields []FieldSpec, tokens []string) []string {
+	if len(tokens) == 0 {
+		return nil
+	}
+
+	for _, field := range fields {
+		jsonPath := field.effectiveJSONPath()
+		// Formula-and-function blocks use singular HCL names but are assembled
+		// into plural JSON arrays by the request post-processor.
+		if field.Type == TypeBlockList && field.JSONKey == "" && field.JSONPath == "" {
+			switch field.HCLKey {
+			case "query":
+				jsonPath = "queries"
+			case "formula":
+				jsonPath = "formulas"
+			}
+		}
+		jsonTokens := strings.Split(jsonPath, ".")
+		if !hasPathPrefix(tokens, jsonTokens) {
+			continue
+		}
+
+		result := []string{field.HCLKey}
+		rest := tokens[len(jsonTokens):]
+		switch field.Type {
+		case TypeBlock, TypeBlockList:
+			if len(rest) > 0 {
+				if _, err := strconv.Atoi(rest[0]); err == nil {
+					result = append(result, rest[0])
+					rest = rest[1:]
+				}
+			}
+			result = append(result, fieldSpecJSONPathToHCL(field.Children, rest)...)
+		case TypeOneOf:
+			// The selected HCL variant is not encoded in the JSON error path.
+			// Preserve the remaining backend path rather than inventing a block.
+			result = append(result, rest...)
+		default:
+			result = append(result, rest...)
+		}
+		return result
+	}
+
+	return tokens
+}
+
+func hasPathPrefix(path, prefix []string) bool {
+	if len(prefix) > len(path) {
+		return false
+	}
+	for i := range prefix {
+		if path[i] != prefix[i] {
+			return false
+		}
+	}
+	return true
+}
+
 // buildWidgetEngineJSONFromMap builds the JSON for a single widget from a SDKv2 map.
 // Parallel to buildWidgetEngineJSON but reads from map[string]interface{}.
 func buildWidgetEngineJSONFromMap(widget map[string]interface{}) map[string]interface{} {

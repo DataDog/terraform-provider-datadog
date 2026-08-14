@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
-	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -58,7 +57,7 @@ func TestFlattenDashboardWidgetDefinitions(t *testing.T) {
 	if len(definitions) != 2 {
 		t.Fatalf("expected group and child definitions, got %d", len(definitions))
 	}
-	if got := definitions[0].path; got != "widget 1" {
+	if got := definitions[0].terraformPath; got != "widget.0.group_definition.0" {
 		t.Fatalf("unexpected group path %q", got)
 	}
 	if got := definitions[0].definition["type"]; got != "group" {
@@ -67,25 +66,11 @@ func TestFlattenDashboardWidgetDefinitions(t *testing.T) {
 	if children, ok := definitions[0].definition["widgets"].([]interface{}); !ok || len(children) != 0 {
 		t.Fatalf("group validation payload should not contain children, got %#v", definitions[0].definition["widgets"])
 	}
-	if got := definitions[1].path; got != "widget 1 > child 1" {
+	if got := definitions[1].terraformPath; got != "widget.0.group_definition.0.widget.0.timeseries_definition.0" {
 		t.Fatalf("unexpected child path %q", got)
 	}
 	if got := definitions[1].definition["type"]; got != "timeseries" {
 		t.Fatalf("unexpected child type %#v", got)
-	}
-}
-
-func TestFlattenDashboardWidgetDefinitionsAtIndexesPreservesPaths(t *testing.T) {
-	widgets := append(
-		dashboardV2TestTimeseriesWidgets("avg:system.load.1{*}"),
-		dashboardV2TestTimeseriesWidgets("avg:system.cpu.user{*}")...,
-	)
-	definitions := flattenDashboardWidgetDefinitionsAtIndexes(widgets, map[int]struct{}{1: {}})
-	if len(definitions) != 1 {
-		t.Fatalf("expected one known widget definition, got %d", len(definitions))
-	}
-	if got := definitions[0].path; got != "widget 2" {
-		t.Fatalf("expected original widget path to be preserved, got %q", got)
 	}
 }
 
@@ -106,26 +91,6 @@ func TestDashboardV2PlanValidationCanBeDisabled(t *testing.T) {
 		nil,
 	); err != nil {
 		t.Fatalf("unexpected diff error: %v", err)
-	}
-}
-
-func TestDashboardKnownWidgetIndexesFromConfig(t *testing.T) {
-	widgetConfig := cty.ListVal([]cty.Value{
-		cty.ObjectVal(map[string]cty.Value{"query": cty.StringVal("avg:system.load.1{*}")}),
-		cty.ObjectVal(map[string]cty.Value{"query": cty.UnknownVal(cty.String)}),
-		cty.ObjectVal(map[string]cty.Value{"query": cty.StringVal("avg:system.cpu.user{*}")}),
-	})
-	knownIndexes := dashboardKnownWidgetIndexesFromConfig(widgetConfig)
-	if len(knownIndexes) != 2 {
-		t.Fatalf("expected two known widgets, got %#v", knownIndexes)
-	}
-	for _, index := range []int{0, 2} {
-		if _, ok := knownIndexes[index]; !ok {
-			t.Fatalf("expected widget %d to be known", index)
-		}
-	}
-	if _, ok := knownIndexes[1]; ok {
-		t.Fatal("expected interpolated widget to remain unknown during plan")
 	}
 }
 
@@ -196,7 +161,7 @@ func TestDashboardV2PlanValidationRejectsMalformedQuery(t *testing.T) {
 	if err == nil {
 		t.Fatal("expected malformed dashboard query to fail planning")
 	}
-	for _, expected := range []string{"widget 1", "timeseries", "requests.0.q", "missing closing brace"} {
+	for _, expected := range []string{"widget.0.timeseries_definition.0.request.0.q", "timeseries", "missing closing brace"} {
 		if !strings.Contains(err.Error(), expected) {
 			t.Fatalf("expected error %q to contain %q", err, expected)
 		}
@@ -206,7 +171,7 @@ func TestDashboardV2PlanValidationRejectsMalformedQuery(t *testing.T) {
 func TestValidateDashboardWidgetDefinitions(t *testing.T) {
 	definitions := []dashboardWidgetDefinition{
 		{
-			path: "widget 1 > child 1",
+			terraformPath: "widget.0.group_definition.0.widget.0.timeseries_definition.0",
 			definition: map[string]interface{}{
 				"type": "timeseries",
 				"requests": []interface{}{
@@ -245,7 +210,7 @@ func TestValidateDashboardWidgetDefinitions(t *testing.T) {
 		if err == nil {
 			t.Fatal("expected validation error")
 		}
-		for _, expected := range []string{"widget 1 > child 1", "timeseries", "requests.0.q", "missing closing brace"} {
+		for _, expected := range []string{"widget.0.group_definition.0.widget.0.timeseries_definition.0.request.0.q", "timeseries", "missing closing brace"} {
 			if !strings.Contains(err.Error(), expected) {
 				t.Fatalf("expected error %q to contain %q", err, expected)
 			}

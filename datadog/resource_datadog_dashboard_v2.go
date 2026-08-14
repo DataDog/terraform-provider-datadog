@@ -10,7 +10,6 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
-	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -99,8 +98,8 @@ func buildDashboardV2Schema() map[string]*schema.Schema {
 }
 
 type dashboardWidgetDefinition struct {
-	path       string
-	definition map[string]interface{}
+	terraformPath string
+	definition    map[string]interface{}
 }
 
 type dashboardWidgetValidationResult struct {
@@ -110,8 +109,8 @@ type dashboardWidgetValidationResult struct {
 	ErrorPath    *string `json:"error_path"`
 }
 
-// resourceDatadogDashboardV2ValidateWidgets validates fully known widget definitions
-// during planning. Like monitor validation, callers can explicitly opt out.
+// resourceDatadogDashboardV2ValidateWidgets validates widget definitions during
+// planning. Like monitor validation, callers can explicitly opt out.
 func resourceDatadogDashboardV2ValidateWidgets(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 	if validate, ok := diff.GetOkExists("validate"); ok && !validate.(bool) {
 		return nil
@@ -120,12 +119,7 @@ func resourceDatadogDashboardV2ValidateWidgets(ctx context.Context, diff *schema
 	if !ok {
 		return nil
 	}
-	widgetList, ok := widgets.([]interface{})
-	if !ok {
-		return nil
-	}
-	knownWidgetIndexes := dashboardKnownWidgetIndexes(diff, len(widgetList))
-	definitions := flattenDashboardWidgetDefinitionsAtIndexes(widgetList, knownWidgetIndexes)
+	definitions := flattenDashboardWidgetDefinitions(widgets)
 	if len(definitions) == 0 {
 		return nil
 	}
@@ -139,43 +133,6 @@ func resourceDatadogDashboardV2ValidateWidgets(ctx context.Context, diff *schema
 	)
 }
 
-func dashboardKnownWidgetIndexes(diff *schema.ResourceDiff, widgetCount int) map[int]struct{} {
-	widgetConfig, diagnostics := diff.GetRawConfigAt(cty.GetAttrPath("widget"))
-	if diagnostics.HasError() {
-		// Resource.Diff-based unit tests do not populate RawConfig. Fall back to
-		// the parent availability check for that legacy-only SDK call path.
-		if !diff.NewValueKnown("widget") {
-			return nil
-		}
-		knownIndexes := make(map[int]struct{}, widgetCount)
-		for i := 0; i < widgetCount; i++ {
-			knownIndexes[i] = struct{}{}
-		}
-		return knownIndexes
-	}
-	return dashboardKnownWidgetIndexesFromConfig(widgetConfig)
-}
-
-func dashboardKnownWidgetIndexesFromConfig(widgetConfig cty.Value) map[int]struct{} {
-	knownIndexes := make(map[int]struct{})
-	widgetConfig, _ = widgetConfig.UnmarkDeep()
-	if !widgetConfig.IsKnown() || widgetConfig.IsNull() {
-		return knownIndexes
-	}
-	if !widgetConfig.CanIterateElements() {
-		return knownIndexes
-	}
-
-	iterator := widgetConfig.ElementIterator()
-	for i := 0; iterator.Next(); i++ {
-		_, widgetConfig := iterator.Element()
-		if widgetConfig.IsWhollyKnown() {
-			knownIndexes[i] = struct{}{}
-		}
-	}
-	return knownIndexes
-}
-
 // flattenDashboardWidgetDefinitions converts the SDKv2 widget representation to
 // API widget definitions. Group children are validated separately so errors point
 // to the specific nested widget.
@@ -184,19 +141,8 @@ func flattenDashboardWidgetDefinitions(widgets interface{}) []dashboardWidgetDef
 	if !ok {
 		return nil
 	}
-	knownWidgetIndexes := make(map[int]struct{}, len(widgetList))
-	for i := range widgetList {
-		knownWidgetIndexes[i] = struct{}{}
-	}
-	return flattenDashboardWidgetDefinitionsAtIndexes(widgetList, knownWidgetIndexes)
-}
-
-func flattenDashboardWidgetDefinitionsAtIndexes(widgetList []interface{}, knownWidgetIndexes map[int]struct{}) []dashboardWidgetDefinition {
 	definitions := make([]dashboardWidgetDefinition, 0, len(widgetList))
 	for i, rawWidget := range widgetList {
-		if _, known := knownWidgetIndexes[i]; !known {
-			continue
-		}
 		widget, ok := rawWidget.(map[string]interface{})
 		if !ok {
 			continue
@@ -206,14 +152,17 @@ func flattenDashboardWidgetDefinitionsAtIndexes(widgetList []interface{}, knownW
 		if !ok {
 			continue
 		}
-		appendDashboardWidgetDefinition(&definitions, fmt.Sprintf("widget %d", i+1), definition)
+		widgetType, _ := definition["type"].(string)
+		definitionKey := dashboardmapping.WidgetDefinitionHCLKey(widgetType)
+		terraformPath := fmt.Sprintf("widget.%d.%s.0", i, definitionKey)
+		appendDashboardWidgetDefinition(&definitions, terraformPath, definition)
 	}
 	return definitions
 }
 
-func appendDashboardWidgetDefinition(definitions *[]dashboardWidgetDefinition, path string, definition map[string]interface{}) {
+func appendDashboardWidgetDefinition(definitions *[]dashboardWidgetDefinition, terraformPath string, definition map[string]interface{}) {
 	if definition["type"] != "group" {
-		*definitions = append(*definitions, dashboardWidgetDefinition{path: path, definition: definition})
+		*definitions = append(*definitions, dashboardWidgetDefinition{terraformPath: terraformPath, definition: definition})
 		return
 	}
 
@@ -222,7 +171,7 @@ func appendDashboardWidgetDefinition(definitions *[]dashboardWidgetDefinition, p
 		groupDefinition[key] = value
 	}
 	groupDefinition["widgets"] = []interface{}{}
-	*definitions = append(*definitions, dashboardWidgetDefinition{path: path, definition: groupDefinition})
+	*definitions = append(*definitions, dashboardWidgetDefinition{terraformPath: terraformPath, definition: groupDefinition})
 
 	children, ok := definition["widgets"].([]interface{})
 	if !ok {
@@ -237,7 +186,10 @@ func appendDashboardWidgetDefinition(definitions *[]dashboardWidgetDefinition, p
 		if !ok {
 			continue
 		}
-		appendDashboardWidgetDefinition(definitions, fmt.Sprintf("%s > child %d", path, i+1), childDefinition)
+		childType, _ := childDefinition["type"].(string)
+		childDefinitionKey := dashboardmapping.WidgetDefinitionHCLKey(childType)
+		childTerraformPath := fmt.Sprintf("%s.widget.%d.%s.0", terraformPath, i, childDefinitionKey)
+		appendDashboardWidgetDefinition(definitions, childTerraformPath, childDefinition)
 	}
 }
 
@@ -286,14 +238,18 @@ func validateDashboardWidgetDefinitions(
 			if result.ErrorMessage != nil && *result.ErrorMessage != "" {
 				message = *result.ErrorMessage
 			}
-			if result.ErrorPath != nil && *result.ErrorPath != "" && !strings.Contains(message, *result.ErrorPath) {
-				message = fmt.Sprintf("%s: %s", *result.ErrorPath, message)
-			}
 			widgetType := "unknown"
 			if result.WidgetType != nil && *result.WidgetType != "" {
 				widgetType = *result.WidgetType
 			}
-			failures = append(failures, fmt.Sprintf("%s (%s): %s", definitions[i].path, widgetType, message))
+			terraformPath := definitions[i].terraformPath
+			if result.ErrorPath != nil && *result.ErrorPath != "" {
+				mappedPath := dashboardmapping.WidgetErrorPathToHCL(widgetType, *result.ErrorPath)
+				if mappedPath != "" {
+					terraformPath += "." + mappedPath
+				}
+			}
+			failures = append(failures, fmt.Sprintf("%s (%s): %s", terraformPath, widgetType, message))
 		}
 		if len(failures) > 0 {
 			return retry.NonRetryableError(fmt.Errorf("dashboard widget validation failed:\n%s", strings.Join(failures, "\n")))
