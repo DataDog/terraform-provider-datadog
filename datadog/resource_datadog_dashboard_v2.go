@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
-	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
@@ -90,7 +89,7 @@ func resourceDatadogDashboardV2Create(ctx context.Context, d *schema.ResourceDat
 	auth := providerConf.Auth
 
 	data := collectDashboardData(d)
-	bodyStr, err := dashboardmapping.MarshalDashboardJSONFromMap(data, "")
+	bodyStr, err := dashboardmapping.MarshalDashboardJSONFromMapWithRawConfig(data, "", d)
 	if err != nil {
 		return diag.Errorf("failed to build dashboard JSON: %s", err)
 	}
@@ -152,7 +151,7 @@ func resourceDatadogDashboardV2Update(ctx context.Context, d *schema.ResourceDat
 
 	dashboardID := d.Id()
 	data := collectDashboardData(d)
-	bodyStr, err := dashboardmapping.MarshalDashboardJSONFromMap(data, dashboardID)
+	bodyStr, err := dashboardmapping.MarshalDashboardJSONFromMapWithRawConfig(data, dashboardID, d)
 	if err != nil {
 		return diag.Errorf("failed to build dashboard JSON: %s", err)
 	}
@@ -203,80 +202,8 @@ func collectDashboardData(d *schema.ResourceData) map[string]interface{} {
 			data[f.HCLKey] = d.Get(f.HCLKey)
 		}
 	}
-	widgets := d.Get("widget")
-	restoreHostmapExplicitZeroStyleBounds(d, widgets)
-	data["widget"] = widgets
+	data["widget"] = d.Get("widget")
 	return data
-}
-
-type rawConfigAtReader interface {
-	GetRawConfigAt(cty.Path) (cty.Value, diag.Diagnostics)
-}
-
-// restoreHostmapExplicitZeroStyleBounds restores explicitly configured zero
-// fill bounds that SDKv2 omits from nested block maps. An omitted bound means
-// automatic scaling to the API, so configuration presence must be preserved.
-func restoreHostmapExplicitZeroStyleBounds(d rawConfigAtReader, widgets interface{}) {
-	widgetList, ok := widgets.([]interface{})
-	if !ok {
-		return
-	}
-	for widgetIndex, widgetValue := range widgetList {
-		widgetMap, ok := widgetValue.(map[string]interface{})
-		if !ok {
-			continue
-		}
-		definitionList, ok := widgetMap["hostmap_definition"].([]interface{})
-		if !ok || len(definitionList) == 0 {
-			continue
-		}
-		definitionMap, ok := definitionList[0].(map[string]interface{})
-		if !ok {
-			continue
-		}
-		requestList, ok := definitionMap["request"].([]interface{})
-		if !ok {
-			continue
-		}
-		for requestIndex, requestValue := range requestList {
-			requestMap, ok := requestValue.(map[string]interface{})
-			if !ok || requestMap["request_type"] != "infrastructure_hostmap" {
-				continue
-			}
-			path := cty.GetAttrPath("widget").
-				IndexInt(widgetIndex).
-				GetAttr("hostmap_definition").
-				IndexInt(0).
-				GetAttr("request").
-				IndexInt(requestIndex)
-			restoreHostmapRequestExplicitZeroStyleBounds(d, requestMap, path)
-		}
-	}
-}
-
-func restoreHostmapRequestExplicitZeroStyleBounds(d rawConfigAtReader, requestMap map[string]interface{}, path cty.Path) {
-	if styleList, ok := requestMap["style"].([]interface{}); ok && len(styleList) > 0 {
-		styleMap, _ := styleList[0].(map[string]interface{})
-		if styleMap == nil {
-			styleMap = map[string]interface{}{}
-			styleList[0] = styleMap
-		}
-		for _, field := range []string{"fill_min", "fill_max"} {
-			if _, present := styleMap[field]; present {
-				continue
-			}
-			value, diags := d.GetRawConfigAt(path.GetAttr("style").IndexInt(0).GetAttr(field))
-			if !diags.HasError() && value.IsKnown() && !value.IsNull() {
-				styleMap[field] = 0.0
-			}
-		}
-	}
-
-	if childList, ok := requestMap["child"].([]interface{}); ok && len(childList) > 0 {
-		if childMap, ok := childList[0].(map[string]interface{}); ok {
-			restoreHostmapRequestExplicitZeroStyleBounds(d, childMap, path.GetAttr("child").IndexInt(0))
-		}
-	}
 }
 
 // setDashboardStateSDKv2 populates ResourceData from the dashboard API response map.

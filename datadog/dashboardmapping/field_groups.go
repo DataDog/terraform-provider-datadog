@@ -718,9 +718,9 @@ var hostmapInfrastructureStyleFields = []FieldSpec{
 		Description: "Color palette name or alias."},
 	{HCLKey: "palette_flip", Type: TypeBool, OmitEmpty: true,
 		Description: "Whether to invert the color palette."},
-	{HCLKey: "fill_min", Type: TypeFloat, OmitEmpty: true,
+	{HCLKey: "fill_min", Type: TypeFloat, OmitEmpty: true, PreserveZero: true,
 		Description: "Minimum value for the fill color scale. Omit to use automatic scaling."},
-	{HCLKey: "fill_max", Type: TypeFloat, OmitEmpty: true,
+	{HCLKey: "fill_max", Type: TypeFloat, OmitEmpty: true, PreserveZero: true,
 		Description: "Maximum value for the fill color scale. Omit to use automatic scaling."},
 }
 
