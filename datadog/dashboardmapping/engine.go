@@ -1759,14 +1759,14 @@ func buildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec, ctx
 
 		case TypeInt:
 			intVal := getIntFromMap(data, f.HCLKey)
-			if f.OmitEmpty && intVal == 0 && !(f.PreserveZero && ctx.explicitlyConfiguredZero(data, f)) {
+			if f.OmitEmpty && intVal == 0 && (!f.PreserveZero || !ctx.explicitlyConfiguredZero(data, f)) {
 				continue
 			}
 			setAtJSONPath(result, f.effectiveJSONPath(), intVal)
 
 		case TypeFloat:
 			floatVal := getFloat64FromMap(data, f.HCLKey)
-			if f.OmitEmpty && floatVal == 0 && !(f.PreserveZero && ctx.explicitlyConfiguredZero(data, f)) {
+			if f.OmitEmpty && floatVal == 0 && (!f.PreserveZero || !ctx.explicitlyConfiguredZero(data, f)) {
 				continue
 			}
 			setAtJSONPath(result, f.effectiveJSONPath(), floatVal)
@@ -2715,7 +2715,7 @@ func MarshalDashboardJSONFromMap(data map[string]interface{}, id string) (string
 func MarshalDashboardJSONFromMapWithRawConfig(data map[string]interface{}, id string, rawConfig RawConfigAtReader) (string, error) {
 	body, err := json.Marshal(BuildDashboardEngineJSONFromMapWithRawConfig(data, id, rawConfig))
 	if err != nil {
-		return "", fmt.Errorf("error marshaling dashboard JSON: %s", err)
+		return "", fmt.Errorf("error marshaling dashboard JSON: %w", err)
 	}
 	return string(body) + "\n", nil
 }
