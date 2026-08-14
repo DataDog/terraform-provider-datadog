@@ -1384,14 +1384,21 @@ var toplistWidgetStyleFields = []FieldSpec{
 		Description: "The scaling mode for the widget."},
 }
 
-// topologyQueryFields corresponds to the inline query block on TopologyRequest.
+// topologyQueryFields corresponds to the inline query block on
+// TopologyRequestServiceMap / TopologyRequestDataStreams. The API models one
+// query variant per data source (TopologyQueryServiceMap,
+// TopologyQueryDataStreams); both variants share the same JSON shape, so a
+// single field group covers them, with data_source selecting the variant.
 var topologyQueryFields = []FieldSpec{
 	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
-		Description: "The data source for the Topology request ('service_map' or 'data_streams')."},
+		ValidValues: []string{"service_map", "data_streams"},
+		Description: "The data source for the Topology request."},
 	{HCLKey: "service", Type: TypeString, OmitEmpty: false, Required: true,
-		Description: "Name of the service."},
+		Description: "Name of the service. Leave this empty and use `query_string` instead."},
 	{HCLKey: "filters", Type: TypeStringList, OmitEmpty: false, Required: true,
 		Description: "Your environment and primary tag (or `*` if enabled for your account)."},
+	{HCLKey: "query_string", Type: TypeString, OmitEmpty: true,
+		Description: "A search string for filtering services. When set, this replaces the `service` field."},
 }
 
 // apmStatsQueryColumnFields corresponds to column entries inside
