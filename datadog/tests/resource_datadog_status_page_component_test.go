@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccDatadogStatusPageComponent_Basic(t *testing.T) {
-	t.Parallel()
+	// Not parallel: the org's status-page contract permits only one page at a time.
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 	prefix := "tf" + uuid.NewString()[:8]
