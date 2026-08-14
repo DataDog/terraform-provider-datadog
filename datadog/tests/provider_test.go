@@ -339,6 +339,8 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_status_page_test":                                            "status-pages",
 	"tests/resource_datadog_status_page_component_test":                                  "status-pages",
 	"tests/data_source_datadog_status_page_test":                                         "status-pages",
+	"tests/data_source_datadog_status_pages_test":                                        "status-pages",
+	"tests/data_source_datadog_status_page_components_test":                              "status-pages",
 	"tests/resource_datadog_synthetics_concurrency_cap_test":                             "synthetics",
 	"tests/resource_datadog_synthetics_global_variable_test":                             "synthetics",
 	"tests/resource_datadog_synthetics_private_location_test":                            "synthetics",
