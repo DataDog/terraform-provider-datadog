@@ -28,6 +28,12 @@ func TestWidgetErrorPathToHCL(t *testing.T) {
 			want:       "request.0.q",
 		},
 		{
+			name:       "backend list representation",
+			widgetType: "timeseries",
+			jsonPath:   "['requests', 0, 'q']",
+			want:       "request.0.q",
+		},
+		{
 			name:       "formula and function query",
 			widgetType: "timeseries",
 			jsonPath:   "requests.0.queries.1.query",

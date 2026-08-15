@@ -27,7 +27,7 @@ func TestBuildDashboardV2SchemaValidate(t *testing.T) {
 	}
 }
 
-func TestFlattenDashboardWidgetDefinitions(t *testing.T) {
+func TestFlattenDashboardWidgets(t *testing.T) {
 	widgets := []interface{}{
 		map[string]interface{}{
 			"group_definition": []interface{}{
@@ -46,6 +46,14 @@ func TestFlattenDashboardWidgetDefinitions(t *testing.T) {
 									},
 								},
 							},
+							"widget_layout": []interface{}{
+								map[string]interface{}{
+									"x":      0,
+									"y":      1,
+									"width":  4,
+									"height": 2,
+								},
+							},
 						},
 					},
 				},
@@ -53,24 +61,30 @@ func TestFlattenDashboardWidgetDefinitions(t *testing.T) {
 		},
 	}
 
-	definitions := flattenDashboardWidgetDefinitions(widgets)
-	if len(definitions) != 2 {
-		t.Fatalf("expected group and child definitions, got %d", len(definitions))
+	validationWidgets := flattenDashboardWidgets(widgets)
+	if len(validationWidgets) != 2 {
+		t.Fatalf("expected group and child widgets, got %d", len(validationWidgets))
 	}
-	if got := definitions[0].terraformPath; got != "widget.0.group_definition.0" {
+	if got := validationWidgets[0].terraformPath; got != "widget.0.group_definition.0" {
 		t.Fatalf("unexpected group path %q", got)
 	}
-	if got := definitions[0].definition["type"]; got != "group" {
+	groupDefinition := validationWidgets[0].widget["definition"].(map[string]interface{})
+	if got := groupDefinition["type"]; got != "group" {
 		t.Fatalf("unexpected group type %#v", got)
 	}
-	if children, ok := definitions[0].definition["widgets"].([]interface{}); !ok || len(children) != 0 {
-		t.Fatalf("group validation payload should not contain children, got %#v", definitions[0].definition["widgets"])
+	if children, ok := groupDefinition["widgets"].([]interface{}); !ok || len(children) != 0 {
+		t.Fatalf("group validation payload should not contain children, got %#v", groupDefinition["widgets"])
 	}
-	if got := definitions[1].terraformPath; got != "widget.0.group_definition.0.widget.0.timeseries_definition.0" {
+	if got := validationWidgets[1].terraformPath; got != "widget.0.group_definition.0.widget.0.timeseries_definition.0" {
 		t.Fatalf("unexpected child path %q", got)
 	}
-	if got := definitions[1].definition["type"]; got != "timeseries" {
+	childDefinition := validationWidgets[1].widget["definition"].(map[string]interface{})
+	if got := childDefinition["type"]; got != "timeseries" {
 		t.Fatalf("unexpected child type %#v", got)
+	}
+	childLayout := validationWidgets[1].widget["layout"].(map[string]interface{})
+	if childLayout["x"] != 0 || childLayout["y"] != 1 {
+		t.Fatalf("child validation payload should preserve its layout, got %#v", childLayout)
 	}
 }
 
@@ -98,7 +112,7 @@ func TestDashboardV2PlanValidationCallsEndpointByDefault(t *testing.T) {
 	called := false
 	client := dashboardValidationTestClient(t, func(w http.ResponseWriter, r *http.Request) {
 		called = true
-		assertDashboardValidationRequest(t, r, 1)
+		assertDashboardValidationRequest(t, r, 1, "ordered", "")
 		writeDashboardValidationResponse(t, w, map[string]interface{}{
 			"results": []interface{}{map[string]interface{}{"is_valid": true, "widget_type": "timeseries"}},
 		})
@@ -127,10 +141,11 @@ func TestDashboardV2PlanValidationRejectsMalformedQuery(t *testing.T) {
 	const malformedQuery = "sum:metric.name{env:test} by {service.ad_count()"
 
 	client := dashboardValidationTestClient(t, func(w http.ResponseWriter, r *http.Request) {
-		definitions := assertDashboardValidationRequest(t, r, 1)
-		requests, ok := definitions[0]["requests"].([]interface{})
+		widgets := assertDashboardValidationRequest(t, r, 1, "ordered", "")
+		definition := widgets[0]["definition"].(map[string]interface{})
+		requests, ok := definition["requests"].([]interface{})
 		if !ok || len(requests) != 1 {
-			t.Fatalf("expected one widget request, got %#v", definitions[0]["requests"])
+			t.Fatalf("expected one widget request, got %#v", definition["requests"])
 		}
 		request, ok := requests[0].(map[string]interface{})
 		if !ok || request["q"] != malformedQuery {
@@ -140,7 +155,7 @@ func TestDashboardV2PlanValidationRejectsMalformedQuery(t *testing.T) {
 			"results": []interface{}{map[string]interface{}{
 				"is_valid":      false,
 				"widget_type":   "timeseries",
-				"error_path":    "requests.0.q",
+				"error_path":    "['requests', 0, 'q']",
 				"error_message": "invalid metric query: missing closing brace",
 			}},
 		})
@@ -168,14 +183,16 @@ func TestDashboardV2PlanValidationRejectsMalformedQuery(t *testing.T) {
 	}
 }
 
-func TestValidateDashboardWidgetDefinitions(t *testing.T) {
-	definitions := []dashboardWidgetDefinition{
+func TestValidateDashboardWidgets(t *testing.T) {
+	validationWidgets := []dashboardWidget{
 		{
 			terraformPath: "widget.0.group_definition.0.widget.0.timeseries_definition.0",
-			definition: map[string]interface{}{
-				"type": "timeseries",
-				"requests": []interface{}{
-					map[string]interface{}{"q": "avg:system.load.1{*}", "display_type": "line"},
+			widget: map[string]interface{}{
+				"definition": map[string]interface{}{
+					"type": "timeseries",
+					"requests": []interface{}{
+						map[string]interface{}{"q": "avg:system.load.1{*}", "display_type": "line"},
+					},
 				},
 			},
 		},
@@ -183,13 +200,13 @@ func TestValidateDashboardWidgetDefinitions(t *testing.T) {
 
 	t.Run("valid", func(t *testing.T) {
 		client := dashboardValidationTestClient(t, func(w http.ResponseWriter, r *http.Request) {
-			assertDashboardValidationRequest(t, r, 1)
+			assertDashboardValidationRequest(t, r, 1, "ordered", "fixed")
 			writeDashboardValidationResponse(t, w, map[string]interface{}{
 				"results": []interface{}{map[string]interface{}{"is_valid": true, "widget_type": "timeseries"}},
 			})
 		})
 
-		if err := validateDashboardWidgetDefinitions(context.Background(), context.Background(), client, definitions); err != nil {
+		if err := validateDashboardWidgets(context.Background(), context.Background(), client, validationWidgets, "ordered", "fixed"); err != nil {
 			t.Fatalf("unexpected validation error: %v", err)
 		}
 	})
@@ -200,13 +217,13 @@ func TestValidateDashboardWidgetDefinitions(t *testing.T) {
 				"results": []interface{}{map[string]interface{}{
 					"is_valid":      false,
 					"widget_type":   "timeseries",
-					"error_path":    "requests.0.q",
+					"error_path":    "['requests', 0, 'q']",
 					"error_message": "invalid metric query: missing closing brace",
 				}},
 			})
 		})
 
-		err := validateDashboardWidgetDefinitions(context.Background(), context.Background(), client, definitions)
+		err := validateDashboardWidgets(context.Background(), context.Background(), client, validationWidgets, "ordered", "")
 		if err == nil {
 			t.Fatal("expected validation error")
 		}
@@ -222,7 +239,7 @@ func TestValidateDashboardWidgetDefinitions(t *testing.T) {
 			writeDashboardValidationResponse(t, w, map[string]interface{}{"results": []interface{}{}})
 		})
 
-		err := validateDashboardWidgetDefinitions(context.Background(), context.Background(), client, definitions)
+		err := validateDashboardWidgets(context.Background(), context.Background(), client, validationWidgets, "ordered", "")
 		if err == nil || !strings.Contains(err.Error(), "0 results for 1 widgets") {
 			t.Fatalf("expected cardinality error, got %v", err)
 		}
@@ -234,7 +251,7 @@ func TestValidateDashboardWidgetDefinitions(t *testing.T) {
 			_, _ = w.Write([]byte(`{"errors":["invalid request"]}`))
 		})
 
-		err := validateDashboardWidgetDefinitions(context.Background(), context.Background(), client, definitions)
+		err := validateDashboardWidgets(context.Background(), context.Background(), client, validationWidgets, "ordered", "")
 		if err == nil || !strings.Contains(err.Error(), "error validating dashboard widgets") {
 			t.Fatalf("expected endpoint error, got %v", err)
 		}
@@ -252,7 +269,7 @@ func dashboardValidationTestClient(t *testing.T, handler http.HandlerFunc) *data
 	return datadog.NewAPIClient(configuration)
 }
 
-func assertDashboardValidationRequest(t *testing.T, request *http.Request, definitionCount int) []map[string]interface{} {
+func assertDashboardValidationRequest(t *testing.T, request *http.Request, widgetCount int, layoutType, reflowType string) []map[string]interface{} {
 	t.Helper()
 	if request.Method != http.MethodPost {
 		t.Fatalf("expected POST, got %s", request.Method)
@@ -261,15 +278,26 @@ func assertDashboardValidationRequest(t *testing.T, request *http.Request, defin
 		t.Fatalf("expected path %q, got %q", dashboardWidgetValidationPath, request.URL.Path)
 	}
 	var body struct {
-		WidgetDefinitions []map[string]interface{} `json:"widget_definitions"`
+		Widgets    []map[string]interface{} `json:"widgets"`
+		LayoutType string                   `json:"layout_type"`
+		ReflowType *string                  `json:"reflow_type"`
 	}
 	if err := json.NewDecoder(request.Body).Decode(&body); err != nil {
 		t.Fatalf("decode request: %v", err)
 	}
-	if len(body.WidgetDefinitions) != definitionCount {
-		t.Fatalf("expected %d definitions, got %d", definitionCount, len(body.WidgetDefinitions))
+	if len(body.Widgets) != widgetCount {
+		t.Fatalf("expected %d widgets, got %d", widgetCount, len(body.Widgets))
 	}
-	return body.WidgetDefinitions
+	if body.LayoutType != layoutType {
+		t.Fatalf("expected layout type %q, got %q", layoutType, body.LayoutType)
+	}
+	if reflowType == "" && body.ReflowType != nil {
+		t.Fatalf("expected reflow type to be omitted, got %q", *body.ReflowType)
+	}
+	if reflowType != "" && (body.ReflowType == nil || *body.ReflowType != reflowType) {
+		t.Fatalf("expected reflow type %q, got %#v", reflowType, body.ReflowType)
+	}
+	return body.Widgets
 }
 
 func writeDashboardValidationResponse(t *testing.T, writer http.ResponseWriter, response interface{}) {

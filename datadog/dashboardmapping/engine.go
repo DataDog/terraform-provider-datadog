@@ -1846,6 +1846,19 @@ func WidgetErrorPathToHCL(widgetType, jsonPath string) string {
 }
 
 func normalizeValidationJSONPath(path string) string {
+	path = strings.TrimSpace(path)
+	if strings.HasPrefix(path, "[") && strings.HasSuffix(path, "]") {
+		path = strings.TrimSuffix(strings.TrimPrefix(path, "["), "]")
+		parts := strings.Split(path, ",")
+		tokens := make([]string, 0, len(parts))
+		for _, part := range parts {
+			token := strings.Trim(strings.TrimSpace(part), "'\"")
+			if token != "" {
+				tokens = append(tokens, token)
+			}
+		}
+		return strings.Join(tokens, ".")
+	}
 	path = strings.ReplaceAll(path, "[", ".")
 	path = strings.ReplaceAll(path, "]", "")
 	return strings.Trim(path, ".")
