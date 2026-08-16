@@ -1,3 +1,20 @@
+## 4.19.0 (August 16, 2026)
+
+### BUGFIXES
+* [datadog_dashboard] Update Topology Map widget adapter by @ddadamhooper in https://github.com/DataDog/terraform-provider-datadog/pull/4119
+* [datadog_dashboard] Fix datadog-api-client-go/v2 to allow incidents_stream in widget by @Raganof in https://github.com/DataDog/terraform-provider-datadog/pull/4144
+* [datadog_dashboard] Update dashboard_v2 topology_map documentation by @ddadamhooper in https://github.com/DataDog/terraform-provider-datadog/pull/4148
+### IMPROVEMENTS
+* [datadog_monitor] Support llm-observability alert monitor type by @fpighi in https://github.com/DataDog/terraform-provider-datadog/pull/4142
+* [datadog_custom_allocation_rule] Add based_on_timeseries passthrough support by @denozor-dog in https://github.com/DataDog/terraform-provider-datadog/pull/4121
+### FEATURES
+* [datadog_governance_control] Add resource for Governance Console controls by @Cesarsk in https://github.com/DataDog/terraform-provider-datadog/pull/4083
+
+## New Contributors
+* @ddadamhooper made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4119
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.18.0...v4.19.0
+
 ## 4.18.0 (August 12, 2026)
 
 ### BUGFIXES
