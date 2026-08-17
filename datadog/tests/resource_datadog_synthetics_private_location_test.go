@@ -83,6 +83,61 @@ func TestAccDatadogSyntheticsPrivateLocation_Updated(t *testing.T) {
 	})
 }
 
+// TestAccDatadogSyntheticsPrivateLocation_ImportThenUpdate exercises the
+// Import-then-Update flow that previously failed with:
+//
+//	Provider returned invalid result object after apply ... unknown value
+//	for datadog_synthetics_private_location.<name>.config
+//
+// The Datadog API only emits the private-location `config` payload on Create
+// (Read and Update responses don't include it). Before the fix, an imported
+// resource started with `state.Config = null`, the `UseStateForUnknown` plan
+// modifier had no known prior value to carry forward, and the Update handler
+// left `state.Config` unknown — tripping the post-apply consistency check.
+//
+// Steps:
+//  1. Create the resource via config so it exists in DD.
+//  2. ImportState with `ImportStatePersist: true` so the test's working
+//     state is replaced by an imported state where `config` is null
+//     (matching what `terraform import` produces in real use).
+//  3. Apply an Update on top of that imported state — should succeed.
+func TestAccDatadogSyntheticsPrivateLocation_ImportThenUpdate(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	t.Parallel()
+	if !isReplaying() {
+		log.Println("Skipping private locations tests in non replaying mode")
+		return
+	}
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	privateLocationName := uniqueEntityName(ctx, t)
+	frameworkProvider := providers.frameworkProvider
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsPrivateLocationIsDestroyed(frameworkProvider),
+		Steps: []resource.TestStep{
+			// 1. Create
+			{
+				Config: createSyntheticsPrivateLocationConfig(privateLocationName),
+			},
+			// 2. Re-import. ImportStatePersist replaces working state with
+			//    the imported state, where `config` is null (Read API does
+			//    not return it).
+			{
+				Config:                  createSyntheticsPrivateLocationConfig(privateLocationName),
+				ResourceName:            "datadog_synthetics_private_location.foo",
+				ImportState:             true,
+				ImportStatePersist:      true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"config", "api_key"},
+			},
+			// 3. Update on top of imported state — previously failed.
+			updateSyntheticsPrivateLocationStep(ctx, frameworkProvider, t),
+		},
+	})
+}
+
 func createSyntheticsPrivateLocationStep(ctx context.Context, accProvider *fwprovider.FrameworkProvider, t *testing.T) resource.TestStep {
 	privateLocationName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
