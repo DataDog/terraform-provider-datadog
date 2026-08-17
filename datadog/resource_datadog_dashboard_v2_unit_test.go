@@ -108,6 +108,54 @@ func TestDashboardV2PlanValidationCanBeDisabled(t *testing.T) {
 	}
 }
 
+func TestDashboardV2PlanValidationSkipsUnknownInputValues(t *testing.T) {
+	// This is the SDKv2 sentinel accepted by terraform.NewResourceConfigRaw for
+	// values that will only become known after dependencies are resolved.
+	const unknownValue = "74D93920-ED26-11E3-AC10-0800200C9A66"
+
+	tests := map[string]map[string]interface{}{
+		"widget": {
+			"title":       "Plan-time validation test",
+			"layout_type": "ordered",
+			"widget":      dashboardV2TestTimeseriesWidgets(unknownValue),
+		},
+		"layout_type": {
+			"title":       "Plan-time validation test",
+			"layout_type": unknownValue,
+			"widget":      dashboardV2TestTimeseriesWidgets("avg:system.load.1{*}"),
+		},
+		"reflow_type": {
+			"title":       "Plan-time validation test",
+			"layout_type": "ordered",
+			"reflow_type": unknownValue,
+			"widget":      dashboardV2TestTimeseriesWidgets("avg:system.load.1{*}"),
+		},
+	}
+
+	for name, rawConfig := range tests {
+		t.Run(name, func(t *testing.T) {
+			called := false
+			client := dashboardValidationTestClient(t, func(http.ResponseWriter, *http.Request) {
+				called = true
+			})
+			providerConfig := &ProviderConfiguration{
+				Auth: context.Background(),
+				DatadogApiInstances: &utils.ApiInstances{
+					HttpClient: client,
+				},
+			}
+			config := terraform.NewResourceConfigRaw(rawConfig)
+
+			if _, err := resourceDatadogDashboardV2().Diff(context.Background(), nil, config, providerConfig); err != nil {
+				t.Fatalf("unexpected diff error: %v", err)
+			}
+			if called {
+				t.Fatal("validation endpoint must not be called while input values are unknown")
+			}
+		})
+	}
+}
+
 func TestDashboardV2PlanValidationCallsEndpointByDefault(t *testing.T) {
 	called := false
 	client := dashboardValidationTestClient(t, func(w http.ResponseWriter, r *http.Request) {

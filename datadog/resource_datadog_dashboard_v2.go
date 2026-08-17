@@ -18,8 +18,8 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-// TODO: Replace this raw endpoint path with the generated Datadog API client method once the endpoint is published in the API spec and client.
-const dashboardWidgetValidationPath = "/api/v2/dashboard/widgets/validate"
+// TODO: Replace this raw endpoint path with the generated Datadog API client method once the unstable endpoint is published in the API spec and client.
+const dashboardWidgetValidationPath = "/api/unstable/dashboard/widgets/validate"
 
 // resourceDatadogDashboardV2 returns the SDKv2 resource for datadog_dashboard_v2.
 // It shares all FieldSpec/WidgetSpec declarations via the dashboardmapping package.
@@ -115,6 +115,12 @@ func resourceDatadogDashboardV2ValidateWidgets(ctx context.Context, diff *schema
 	if validate, ok := diff.GetOkExists("validate"); ok && !validate.(bool) {
 		return nil
 	}
+	widgetSchema := buildDashboardV2Schema()["widget"]
+	if !dashboardV2ConfigValueKnown(diff, "widget", widgetSchema) ||
+		!diff.NewValueKnown("layout_type") ||
+		!diff.NewValueKnown("reflow_type") {
+		return nil
+	}
 	widgets, ok := diff.GetOk("widget")
 	if !ok {
 		return nil
@@ -135,6 +141,50 @@ func resourceDatadogDashboardV2ValidateWidgets(ctx context.Context, diff *schema
 		layoutType,
 		reflowType,
 	)
+}
+
+// dashboardV2ConfigValueKnown reports whether every configurable value is
+// known. Computed fields are ignored because Terraform populates them with
+// unknown placeholders during planning even though they are not API inputs.
+func dashboardV2ConfigValueKnown(diff *schema.ResourceDiff, path string, fieldSchema *schema.Schema) bool {
+	if fieldSchema.Computed {
+		return true
+	}
+	if !diff.NewValueKnown(path) {
+		return false
+	}
+
+	if fieldSchema.Type != schema.TypeList {
+		return true
+	}
+	values, ok := diff.Get(path).([]interface{})
+	if !ok {
+		return true
+	}
+	for i := range values {
+		elementPath := fmt.Sprintf("%s.%d", path, i)
+		switch elementSchema := fieldSchema.Elem.(type) {
+		case *schema.Schema:
+			if !dashboardV2ConfigValueKnown(diff, elementPath, elementSchema) {
+				return false
+			}
+		case *schema.Resource:
+			if !dashboardV2ConfigObjectKnown(diff, elementPath, elementSchema.Schema) {
+				return false
+			}
+		}
+	}
+
+	return true
+}
+
+func dashboardV2ConfigObjectKnown(diff *schema.ResourceDiff, path string, objectSchema map[string]*schema.Schema) bool {
+	for name, fieldSchema := range objectSchema {
+		if !dashboardV2ConfigValueKnown(diff, path+"."+name, fieldSchema) {
+			return false
+		}
+	}
+	return true
 }
 
 // flattenDashboardWidgets converts the SDKv2 widget representation to API
