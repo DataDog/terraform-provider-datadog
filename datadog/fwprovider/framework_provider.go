@@ -158,6 +158,7 @@ var Datasources = []func() datasource.DataSource{
 	NewAwsIntegrationIAMPermissionsResourceCollectionDataSource,
 	NewAwsLogsServicesDataSource,
 	NewDatadogApmRetentionFiltersOrderDataSource,
+	NewDatadogApmServicesDataSource,
 	NewDatadogDashboardListDataSource,
 	NewDatadogIntegrationAWSNamespaceRulesDatasource,
 	NewDatadogMetricActiveTagsAndAggregationsDataSource,
