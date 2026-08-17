@@ -18,7 +18,8 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-const dashboardWidgetValidationPath = "/api/v1/dashboard/widgets/validate"
+// TODO: Replace this raw endpoint path with the generated Datadog API client method once the endpoint is published in the API spec and client.
+const dashboardWidgetValidationPath = "/api/v2/dashboard/widgets/validate"
 
 // resourceDatadogDashboardV2 returns the SDKv2 resource for datadog_dashboard_v2.
 // It shares all FieldSpec/WidgetSpec declarations via the dashboardmapping package.
