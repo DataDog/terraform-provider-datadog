@@ -110,8 +110,7 @@ type dashboardWidgetValidationResult struct {
 	ErrorPath    *string `json:"error_path"`
 }
 
-// resourceDatadogDashboardV2ValidateWidgets validates widget definitions during
-// planning. Like monitor validation, callers can explicitly opt out.
+// resourceDatadogDashboardV2ValidateWidgets validates widget definitions during planning.
 func resourceDatadogDashboardV2ValidateWidgets(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 	if validate, ok := diff.GetOkExists("validate"); ok && !validate.(bool) {
 		return nil
@@ -228,6 +227,7 @@ func validateDashboardWidgets(
 	}
 
 	return retry.RetryContext(ctx, retryTimeout, func() *retry.RetryError {
+		// Use the raw request helper until this endpoint is available in the generated Datadog API client.
 		responseBody, httpResponse, err := utils.SendRequest(auth, client, http.MethodPost, dashboardWidgetValidationPath, &body)
 		if err != nil {
 			translatedErr := utils.TranslateClientError(err, httpResponse, "error validating dashboard widgets")
