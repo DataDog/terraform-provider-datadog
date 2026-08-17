@@ -1,0 +1,447 @@
+name: Record Cassettes
+
+# Triggered when a maintainer posts "/cassettes record" on a PR.
+# issue_comment events always run in the base-repo context with a writable
+# GITHUB_TOKEN, so fork PRs don't need the two-workflow workflow_run dance
+# that pull_request events require.
+on: # yamllint disable-line rule:truthy
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write # Required for dd-sts-action and dd-octo-sts-action
+
+# Only /cassettes record commands share the per-PR concurrency group so they
+# can cancel a previous recording.  Ordinary comments get a unique group
+# (based on run_id) and never cancel an in-progress recording.
+concurrency:
+  group: ${{ startsWith(github.event.comment.body, '/cassettes record') && format('cassettes-record-{0}', github.event.issue.number) || format('ignore-{0}', github.run_id) }}
+  cancel-in-progress: true
+
+env:
+  TERRAFORM_VERSION: "1.13.1"
+  GO_VERSION: "1.23"
+
+jobs:
+  # ──────────────────────────────────────────────────────────────────────
+  # Gate job: validate the commenter's permission, fetch PR metadata, and
+  # post an in-progress comment.  Runs before the credentialed record job so
+  # that fork PRs can be routed through the forks-prs environment.
+  # ──────────────────────────────────────────────────────────────────────
+  gate:
+    runs-on: ubuntu-latest
+    # Only trigger on PR comments containing the command.  Permission is
+    # checked in a step (not in `if`) because the collaborators API call
+    # cannot be evaluated in a job-level conditional.
+    if: |
+      github.event.issue.pull_request != null &&
+      startsWith(github.event.comment.body, '/cassettes record')
+    outputs:
+      has_access: ${{ steps.check_access.outputs.has_access }}
+      head_ref: ${{ steps.pr.outputs.head_ref }}
+      head_sha: ${{ steps.pr.outputs.head_sha }}
+      base_sha: ${{ steps.pr.outputs.base_sha }}
+      is_fork: ${{ steps.pr.outputs.is_fork }}
+    steps:
+      - name: Check commenter permission
+        id: check_access
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COMMENTER: ${{ github.event.comment.user.login }}
+        run: |
+          # Query the collaborator permission API for an accurate repo-level
+          # permission check.  author_association (OWNER/MEMBER/COLLABORATOR)
+          # is unreliable: MEMBER only means org membership, not repo write
+          # access, and COLLABORATOR may include external write collaborators.
+          #
+          # If the API call fails (transient error, rate limit, token scope),
+          # fail closed: deny access rather than falling back to the
+          # unreliable author_association, which could grant access to org
+          # members who lack repo write permission.
+          PERMISSION=$(gh api \
+            "repos/${GITHUB_REPOSITORY}/collaborators/${COMMENTER}/permission" \
+            --jq '.permission' 2>/dev/null || echo "unknown")
+
+          case "$PERMISSION" in
+            admin|maintain|write)
+              echo "has_access=true" >> "$GITHUB_OUTPUT"
+              echo "Permission: ${PERMISSION} (granted via API)"
+              ;;
+            triage|read|none)
+              echo "has_access=false" >> "$GITHUB_OUTPUT"
+              echo "Permission: ${PERMISSION} (denied via API)"
+              ;;
+            *)
+              # API call failed; fail closed for safety.
+              echo "has_access=false" >> "$GITHUB_OUTPUT"
+              echo "Permission: API lookup failed (denied — fail closed)"
+              ;;
+          esac
+
+      - name: Post rejection comment for unauthorized users
+        if: steps.check_access.outputs.has_access != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr comment ${{ github.event.issue.number }} --body \
+            "❌ Only maintainers with write access can run \`/cassettes record\`."
+
+      - name: Add eyes reaction to triggering comment
+        if: steps.check_access.outputs.has_access == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api \
+            "repos/${GITHUB_REPOSITORY}/issues/comments/${{ github.event.comment.id }}/reactions" \
+            -f content=eyes >/dev/null 2>&1 || true
+
+      - name: Fetch PR metadata
+        id: pr
+        if: steps.check_access.outputs.has_access == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PR_JSON=$(gh pr view ${{ github.event.issue.number }} --json \
+            headRefName,headRefOid,baseRefOid,isCrossRepository)
+          echo "head_ref=$(echo "$PR_JSON" | jq -r .headRefName)"       >> "$GITHUB_OUTPUT"
+          echo "head_sha=$(echo "$PR_JSON" | jq -r .headRefOid)"        >> "$GITHUB_OUTPUT"
+          echo "base_sha=$(echo "$PR_JSON" | jq -r .baseRefOid)"        >> "$GITHUB_OUTPUT"
+          echo "is_fork=$(echo "$PR_JSON" | jq -r .isCrossRepository)"  >> "$GITHUB_OUTPUT"
+
+      - name: Post in-progress comment
+        if: steps.check_access.outputs.has_access == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          MARKER="<!-- cassettes-record -->"
+          BODY="${MARKER}
+
+          🔄 Recording cassettes for affected tests…
+
+          - PR: #${{ github.event.issue.number }}
+          - Head SHA: \`${{ steps.pr.outputs.head_sha }}\`
+          - Fork: ${{ steps.pr.outputs.is_fork == 'true' && 'yes (cassettes will be uploaded as an artifact)' || 'no (cassettes will be pushed to the PR branch)' }}
+          "
+
+          # Upsert: find existing bot-owned comment with marker, update or
+          # create.  Restrict to bot-owned comments so a user-posted marker
+          # can't cause a patch failure (the bot can't edit others' comments).
+          COMMENT_ID=$(gh api \
+            "repos/${GITHUB_REPOSITORY}/issues/${{ github.event.issue.number }}/comments?per_page=100" \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | contains(\"${MARKER}\"))) | .id" | head -1)
+
+          if [ -n "$COMMENT_ID" ]; then
+            gh api -X PATCH \
+              "repos/${GITHUB_REPOSITORY}/issues/comments/${COMMENT_ID}" \
+              -f body="$BODY" >/dev/null
+          else
+            gh pr comment ${{ github.event.issue.number }} --body "$BODY" >/dev/null
+          fi
+
+  # ──────────────────────────────────────────────────────────────────────
+  # Record job: checkout PR head, mint Datadog credentials, select affected
+  # tests, record cassettes, and push them back (or upload as artifact for
+  # fork PRs). Fork PRs run in the forks-prs environment for defense-in-depth.
+  # ──────────────────────────────────────────────────────────────────────
+  record:
+    needs: gate
+    runs-on: ubuntu-latest
+    if: needs.gate.outputs.has_access == 'true'
+    # Fork PRs run untrusted code with live (short-lived, test-org) credentials,
+    # so they run in the forks-prs environment. Same-repo PRs use no environment
+    # gate; the maintainer's explicit /cassettes record comment is the approval.
+    environment: ${{ needs.gate.outputs.is_fork == 'true' && 'forks-prs' || '' }}
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+    steps:
+      # ── Checkout ────────────────────────────────────────────────────
+      # persist-credentials: false prevents the GITHUB_TOKEN (which has
+      # pull-requests: write) from being stored in local git config where
+      # fork-controlled code could read it.
+      - name: Checkout PR head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.gate.outputs.head_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          # checkout v7 refuses fork-head checkouts under issue_comment by
+          # default. Running the PR's code is intended here; fork runs are
+          # gated on the forks-prs environment declared above.
+          allow-unsafe-pr-checkout: true
+
+      - name: Install Go
+        uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: Install Terraform
+        run: |
+          wget -q "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
+          unzip -o "terraform_${TERRAFORM_VERSION}_linux_amd64.zip" -d ~/.local/bin
+          echo "TF_ACC_TERRAFORM_PATH=$HOME/.local/bin/terraform" >> "$GITHUB_ENV"
+
+      # ── Credentials ──────────────────────────────────────────────────
+      - name: Mint Datadog credentials
+        id: dd-sts
+        uses: DataDog/dd-sts-action@7d2d231c02fd54a3da912e582ff87cb995d1fd30 # v1.0.4
+        with:
+          policy: terraform-provider-datadog
+
+      # ── Test selection ───────────────────────────────────────────────
+      - name: Select affected tests
+        id: select
+        run: |
+          git diff --name-only \
+            "${{ needs.gate.outputs.base_sha }}...${{ needs.gate.outputs.head_sha }}" \
+            > /tmp/changed_files.txt
+
+          echo "Changed files:"
+          cat /tmp/changed_files.txt
+
+          RUN_REGEX=$(python3 scripts/select_pr_tests.py \
+            --escape-for-make \
+            --git-ref "${{ needs.gate.outputs.head_sha }}" \
+            < /tmp/changed_files.txt)
+
+          if [ -z "$RUN_REGEX" ]; then
+            echo "no_tests=true" >> "$GITHUB_OUTPUT"
+            echo "No affected acceptance tests found."
+          else
+            echo "no_tests=false" >> "$GITHUB_OUTPUT"
+            echo "test_args=-run '${RUN_REGEX}'" >> "$GITHUB_OUTPUT"
+            echo "Selected tests: -run '${RUN_REGEX}'"
+          fi
+
+      # ── Early exit: no affected tests ────────────────────────────────
+      - name: Post "no tests" comment
+        if: steps.select.outputs.no_tests == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          MARKER="<!-- cassettes-record -->"
+          BODY="${MARKER}
+
+          ℹ️ No acceptance tests are affected by the changed files in this PR.
+
+          If you intended to record all tests, please run \`make cassettes\` locally instead.
+          "
+
+          COMMENT_ID=$(gh api \
+            "repos/${GITHUB_REPOSITORY}/issues/${{ github.event.issue.number }}/comments?per_page=100" \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | contains(\"${MARKER}\"))) | .id" | head -1)
+
+          if [ -n "$COMMENT_ID" ]; then
+            gh api -X PATCH \
+              "repos/${GITHUB_REPOSITORY}/issues/comments/${COMMENT_ID}" \
+              -f body="$BODY" >/dev/null
+          else
+            gh pr comment ${{ github.event.issue.number }} --body "$BODY" >/dev/null
+          fi
+
+      # ── Sweep stale resources ────────────────────────────────────────
+      - name: Sweep stale test resources
+        if: steps.select.outputs.no_tests != 'true'
+        continue-on-error: true
+        run: make sweep
+        env:
+          DD_TEST_CLIENT_API_KEY: ${{ steps.dd-sts.outputs.api_key }}
+          DD_TEST_CLIENT_APP_KEY: ${{ steps.dd-sts.outputs.app_key }}
+
+      # ── Record cassettes ─────────────────────────────────────────────
+      # Uses make testacc with RECORD=true (same target as CI, just in record
+      # mode). TESTARGS scopes recording to only the tests affected by this
+      # PR, avoiding hitting the API for unrelated resources.
+      - name: Record cassettes
+        id: record
+        if: steps.select.outputs.no_tests != 'true'
+        continue-on-error: true
+        run: make testacc
+        env:
+          RECORD: "true"
+          CI: "true"
+          BUILD_BUILDID: ${{ github.run_id }}
+          DD_TEST_CLIENT_API_KEY: ${{ steps.dd-sts.outputs.api_key }}
+          DD_TEST_CLIENT_APP_KEY: ${{ steps.dd-sts.outputs.app_key }}
+          DD_HTTP_CLIENT_RETRY_ENABLED: "true"
+          TF_ACC_TEMP_DIR: "/tmp"
+          TESTARGS: ${{ steps.select.outputs.test_args }}
+
+      # ── Collect changed cassette files ───────────────────────────────
+      - name: Collect changed cassette files
+        id: cassettes
+        if: always() && steps.select.outputs.no_tests != 'true'
+        run: |
+          # Stage cassette files (both .yaml and .freeze) that were created
+          # or modified by the recording step.
+          git add datadog/tests/cassettes/ 2>/dev/null || true
+
+          CHANGED=$(git diff --cached --name-only -- datadog/tests/cassettes/ || true)
+          {
+            echo "changed<<CASSETTE_EOF"
+            echo "$CHANGED"
+            echo "CASSETTE_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+          COUNT=$(echo "$CHANGED" | grep -c . || true)
+          [ -z "$CHANGED" ] && COUNT=0
+          echo "count=${COUNT}" >> "$GITHUB_OUTPUT"
+
+          # Stage only changed files in a temp directory for artifact upload,
+          # instead of uploading the entire 144 MiB cassette directory.
+          if [ "$COUNT" != "0" ]; then
+            STAGING=$(mktemp -d)
+            echo "$CHANGED" | while IFS= read -r f; do
+              [ -z "$f" ] && continue
+              mkdir -p "$STAGING/$(dirname "$f")"
+              cp "$f" "$STAGING/$f"
+            done
+            echo "staging=$STAGING" >> "$GITHUB_OUTPUT"
+          fi
+
+          echo "Changed cassette files (${COUNT}):"
+          echo "$CHANGED"
+
+      # ── Same-repo PR: push cassettes directly ────────────────────────
+      - name: Mint Octo token
+        if: steps.cassettes.outputs.count != '0' && needs.gate.outputs.is_fork != 'true'
+        id: octo-sts
+        uses: DataDog/dd-octo-sts-action@96a25462dbcb10ebf0bfd6e2ccc917d2ab235b9a # v1.0.4
+        with:
+          scope: DataDog/terraform-provider-datadog
+          policy: self.cassettes-record
+
+      - name: Push cassettes to PR branch
+        id: push
+        if: steps.cassettes.outputs.count != '0' && needs.gate.outputs.is_fork != 'true'
+        env:
+          GH_TOKEN: ${{ steps.octo-sts.outputs.token }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          auth_header="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 | tr -d '\n')"
+          git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic $auth_header"
+          unset auth_header
+
+          git commit -m "chore: record cassettes for PR #${{ github.event.issue.number }}
+
+          Recorded via \`/cassettes record\` command.
+          Affected tests: ${{ steps.select.outputs.test_args }}
+          "
+
+          if ! git push origin "HEAD:${{ needs.gate.outputs.head_ref }}"; then
+            echo "::error::Failed to push cassettes to ${{ needs.gate.outputs.head_ref }}"
+            echo "The branch may have been force-pushed or deleted. Please re-run the command."
+            exit 1
+          fi
+
+      # ── Fork PR: upload only changed cassettes as artifact ───────────
+      - name: Upload cassettes artifact
+        id: upload
+        if: steps.cassettes.outputs.count != '0' && needs.gate.outputs.is_fork == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: cassettes-pr-${{ github.event.issue.number }}
+          path: ${{ steps.cassettes.outputs.staging }}/datadog/tests/cassettes/
+          if-no-files-found: warn
+
+      # ── Post result comment ──────────────────────────────────────────
+      - name: Post result comment
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RECORD_OUTCOME: ${{ steps.record.outcome }}
+          CASSETTE_COUNT: ${{ steps.cassettes.outputs.count }}
+          CASSETTE_FILES: ${{ steps.cassettes.outputs.changed }}
+          IS_FORK: ${{ needs.gate.outputs.is_fork }}
+          PUSH_OUTCOME: ${{ steps.push.outcome }}
+          UPLOAD_OUTCOME: ${{ steps.upload.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          MARKER="<!-- cassettes-record -->"
+
+          # Build the comment body based on the outcome.
+          if [ "${{ steps.select.outputs.no_tests }}" = "true" ]; then
+            # Already posted in the "no tests" step; nothing to do here.
+            exit 0
+          fi
+
+          if [ "$RECORD_OUTCOME" = "success" ]; then
+            ICON="✅"
+            STATUS="Cassettes recorded successfully."
+          elif [ "$RECORD_OUTCOME" = "failure" ]; then
+            ICON="⚠️"
+            STATUS="Some tests failed during recording. Cassettes for passing tests were still collected."
+          else
+            ICON="❌"
+            STATUS="Recording did not complete."
+          fi
+
+          # Determine delivery status, including push/upload failures.
+          DELIVERY=""
+          DELIVERY_FAILED=""
+          if [ "$IS_FORK" = "true" ]; then
+            if [ "$CASSETTE_COUNT" = "0" ]; then
+              DELIVERY="No cassette files were changed."
+            elif [ "$UPLOAD_OUTCOME" != "success" ]; then
+              DELIVERY_FAILED="❌ Failed to upload cassette artifact (outcome: ${UPLOAD_OUTCOME}). See the workflow run for details."
+            else
+              DELIVERY="📦 Cassettes are available as a [workflow artifact](${RUN_URL}). Download \`cassettes-pr-${{ github.event.issue.number }}\`, extract the files into \`datadog/tests/cassettes/\`, and commit them to your PR branch."
+            fi
+          else
+            if [ "$CASSETTE_COUNT" = "0" ]; then
+              DELIVERY="No cassette files were changed."
+            elif [ "$PUSH_OUTCOME" != "success" ]; then
+              DELIVERY_FAILED="❌ Failed to push cassettes to the PR branch (outcome: ${PUSH_OUTCOME}). The branch may have been force-pushed or deleted. Please re-run \`/cassettes record\`."
+            else
+              DELIVERY="📥 Cassettes have been pushed to the PR branch."
+            fi
+          fi
+
+          # Build the file list (cap at 30 lines to avoid huge comments).
+          FILE_LIST=""
+          if [ -n "$CASSETTE_FILES" ] && [ "$CASSETTE_COUNT" != "0" ]; then
+            FILE_LIST=$'\n\n**Changed cassette files** ('"$CASSETTE_COUNT"' total):\n'
+            FILE_LIST+="$(echo "$CASSETTE_FILES" | head -30 | sed 's/^/`- `/')"
+            if [ "$CASSETTE_COUNT" -gt 30 ]; then
+              FILE_LIST+=$'\n'"… and $((CASSETTE_COUNT - 30)) more."
+            fi
+          fi
+
+          # Use failure message if delivery failed, otherwise use success message.
+          if [ -n "$DELIVERY_FAILED" ]; then
+            DELIVERY="$DELIVERY_FAILED"
+          fi
+
+          BODY="${MARKER}
+
+          ${ICON} ${STATUS}
+
+          ${DELIVERY}
+          $(printf '%b' "$FILE_LIST")
+
+          [View workflow run](${RUN_URL})
+          "
+
+          # Upsert: find existing bot-owned comment with marker, update or
+          # create.  Restrict to bot-owned comments so a user-posted marker
+          # can't cause a patch failure (the bot can't edit others' comments).
+          COMMENT_ID=$(gh api \
+            "repos/${GITHUB_REPOSITORY}/issues/${{ github.event.issue.number }}/comments?per_page=100" \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | contains(\"${MARKER}\"))) | .id" | head -1)
+
+          if [ -n "$COMMENT_ID" ]; then
+            if ! gh api -X PATCH \
+              "repos/${GITHUB_REPOSITORY}/issues/comments/${COMMENT_ID}" \
+              -f body="$BODY" >/dev/null 2>&1; then
+              # Patch failed (e.g. comment was deleted); create a new one.
+              gh pr comment ${{ github.event.issue.number }} --body "$BODY" >/dev/null
+            fi
+          else
+            gh pr comment ${{ github.event.issue.number }} --body "$BODY" >/dev/null
+          fi
