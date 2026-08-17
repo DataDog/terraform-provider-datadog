@@ -251,6 +251,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_integration_aws_log_collection_test":                         "integration-aws",
 	"tests/resource_datadog_integration_aws_tag_filter_test":                             "integration-aws",
 	"tests/resource_datadog_integration_aws_test":                                        "integration-aws",
+	"tests/data_source_datadog_integration_aws_account_test":                             "integration-aws",
 	"tests/resource_datadog_integration_aws_account_test":                                "integration-aws",
 	"tests/resource_datadog_integration_aws_account_ccm_config_test":                     "integration-aws",
 	"tests/resource_datadog_integration_aws_event_bridge_test":                           "integration-aws",
