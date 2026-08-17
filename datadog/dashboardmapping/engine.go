@@ -1811,16 +1811,24 @@ func BuildWidgetEngineJSONFromMap(widget map[string]interface{}) map[string]inte
 	return buildWidgetEngineJSONFromMap(widget)
 }
 
+func widgetSpecForJSONType(widgetType string) *WidgetSpec {
+	for i := range allWidgetSpecs {
+		if allWidgetSpecs[i].JSONType == widgetType {
+			return &allWidgetSpecs[i]
+		}
+	}
+	return nil
+}
+
 // WidgetDefinitionHCLKey returns the Terraform block name for a widget JSON
 // type. Validation APIs speak in JSON paths, while provider errors must point
 // users to the corresponding HCL configuration.
 func WidgetDefinitionHCLKey(widgetType string) string {
-	for _, spec := range allWidgetSpecs {
-		if spec.JSONType == widgetType {
-			return spec.HCLKey
-		}
+	spec := widgetSpecForJSONType(widgetType)
+	if spec == nil {
+		return "unknown_definition"
 	}
-	return "unknown_definition"
+	return spec.HCLKey
 }
 
 // WidgetErrorPathToHCL translates a widget-definition JSON error path, such as
@@ -1828,18 +1836,13 @@ func WidgetDefinitionHCLKey(widgetType string) string {
 // "request.0.q". Unknown path segments are preserved so backend errors never
 // lose useful location information.
 func WidgetErrorPathToHCL(widgetType, jsonPath string) string {
-	var fields []FieldSpec
-	for _, spec := range allWidgetSpecs {
-		if spec.JSONType == widgetType {
-			fields = make([]FieldSpec, 0, len(CommonWidgetFields)+len(spec.Fields))
-			fields = append(fields, CommonWidgetFields...)
-			fields = append(fields, spec.Fields...)
-			break
-		}
-	}
-	if len(fields) == 0 {
+	spec := widgetSpecForJSONType(widgetType)
+	if spec == nil {
 		return normalizeValidationJSONPath(jsonPath)
 	}
+	fields := make([]FieldSpec, 0, len(CommonWidgetFields)+len(spec.Fields))
+	fields = append(fields, CommonWidgetFields...)
+	fields = append(fields, spec.Fields...)
 
 	tokens := strings.Split(normalizeValidationJSONPath(jsonPath), ".")
 	return strings.Join(fieldSpecJSONPathToHCL(fields, tokens), ".")
