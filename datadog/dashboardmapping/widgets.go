@@ -1189,6 +1189,12 @@ var GeomapWidgetSpec = WidgetSpec{
 				{HCLKey: "focus", Type: TypeString, OmitEmpty: false, Required: true,
 					Description: "The 2-letter ISO code of a country to focus the map on, or `WORLD` for global view, or a region (`EMEA`, `APAC`, `LATAM`), or a continent (`NORTH_AMERICA`, `SOUTH_AMERICA`, `EUROPE`, `AFRICA`, `ASIA`, `OCEANIA`)."},
 			}},
+		// Keep the request variants flat for compatibility with the existing public
+		// request { q = ... } / request { query { ... } } HCL shape. A discriminated
+		// TypeBlockList would require new region_request/event_list_request wrapper
+		// blocks and break existing configurations. ValidateWidgetConflicts therefore
+		// enforces the variant-specific field constraints. Do not copy this
+		// compatibility exception for new widgets; prefer a discriminated TypeBlockList.
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false, MaxItems: 2,
 			Description: "A region-layer or point-layer request. Up to two `request` blocks are allowed.",
 			Children:    geomapWidgetRequestFields},

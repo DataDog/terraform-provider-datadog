@@ -2864,36 +2864,46 @@ func ValidateWidgetConflicts(data map[string]interface{}) []string {
 // formula requests from event-list point requests by response_format and uses
 // different JSON keys for their queries ("queries" versus "query").
 func validateGeomapRequestVariant(reqMap map[string]interface{}) string {
-	regionQueryFields := []string{"q", "log_query", "rum_query", "query", "formula"}
-	hasRegionQuery := false
-	for _, key := range regionQueryFields {
-		if valueIsSet(reqMap[key]) {
-			hasRegionQuery = true
-			break
-		}
+	regionFields := []string{
+		"q", "log_query", "rum_query", "query", "formula", "conditional_formats", "sort",
 	}
-	hasListStreamQuery := valueIsSet(reqMap["list_stream_query"])
+	pointFields := []string{"columns", "list_stream_query", "text_format"}
+	hasRegionFields := anyFieldSet(reqMap, regionFields)
+	hasPointFields := anyFieldSet(reqMap, pointFields)
 
-	if hasRegionQuery && hasListStreamQuery {
-		return `"list_stream_query" cannot be combined with a region-layer query or formula`
+	if hasRegionFields && hasPointFields {
+		return "region-layer fields cannot be combined with event-list point-layer fields"
 	}
 
 	responseFormat, _ := reqMap["response_format"].(string)
 	switch responseFormat {
 	case "event_list":
-		if hasRegionQuery {
-			return `response_format "event_list" cannot be used with a region-layer query or formula`
+		if hasRegionFields {
+			return `response_format "event_list" cannot be used with region-layer fields`
 		}
 	case "scalar", "timeseries":
-		if hasListStreamQuery {
+		if hasPointFields {
 			return fmt.Sprintf(
-				`response_format %q cannot be used with "list_stream_query"`,
+				`response_format %q cannot be used with event-list point-layer fields`,
 				responseFormat,
 			)
+		}
+	case "":
+		if hasPointFields {
+			return `event-list point-layer fields require response_format "event_list"`
 		}
 	}
 
 	return ""
+}
+
+func anyFieldSet(data map[string]interface{}, keys []string) bool {
+	for _, key := range keys {
+		if valueIsSet(data[key]) {
+			return true
+		}
+	}
+	return false
 }
 
 func valueIsSet(v interface{}) bool {

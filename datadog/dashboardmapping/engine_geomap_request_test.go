@@ -181,6 +181,38 @@ func TestGeomapRequestRejectsMixedRegionAndEventListShapes(t *testing.T) {
 			"response_format":   "timeseries",
 			"list_stream_query": listStreamQuery,
 		},
+		"event list with conditional formats": {
+			"response_format": "event_list",
+			"conditional_formats": []interface{}{map[string]interface{}{
+				"comparator": ">",
+				"value":      80.0,
+				"palette":    "white_on_red",
+			}},
+		},
+		"scalar with columns": {
+			"response_format": "scalar",
+			"columns": []interface{}{map[string]interface{}{
+				"field": "timestamp",
+				"width": "auto",
+			}},
+		},
+		"timeseries with text format": {
+			"response_format": "timeseries",
+			"text_format": []interface{}{map[string]interface{}{
+				"palette": "white_on_red",
+			}},
+		},
+		"region sort with text format": {
+			"sort": []interface{}{map[string]interface{}{
+				"count": 20,
+			}},
+			"text_format": []interface{}{map[string]interface{}{
+				"palette": "white_on_red",
+			}},
+		},
+		"point fields without event list response format": {
+			"list_stream_query": listStreamQuery,
+		},
 	}
 
 	for name, request := range tests {
