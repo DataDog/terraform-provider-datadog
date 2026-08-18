@@ -57,6 +57,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationGcpResource,
 	NewIntegrationGcpStsResource,
 	NewCloudInventorySyncConfigResource,
+	NewGovernanceControlResource,
 	NewIpAllowListResource,
 	NewMonitorNotificationRuleResource,
 	NewSecurityNotificationRuleResource,
@@ -96,6 +97,7 @@ var Resources = []func() resource.Resource{
 	NewServiceAccountResource,
 	NewWebhookResource,
 	NewWebhookCustomVariableResource,
+	NewWebhookOauth2ClientCredentialsResource,
 	NewLogsCustomDestinationResource,
 	NewLogsRestrictionQueryResource,
 	NewTenantBasedHandleResource,
@@ -133,7 +135,9 @@ var Resources = []func() resource.Resource{
 	NewIncidentTypeResource,
 	NewIncidentNotificationTemplateResource,
 	NewIncidentNotificationRuleResource,
+	NewIncidentPostmortemTemplateResource,
 	NewIncidentUserDefinedFieldResource,
+	NewIncidentUserDefinedRoleResource,
 	NewAwsCurConfigResource,
 	NewGcpUcConfigResource,
 	NewDatadogCustomAllocationRuleResource,
@@ -179,6 +183,7 @@ var Datasources = []func() datasource.DataSource{
 	NewSensitiveDataScannerGroupOrderDatasource,
 	NewDatadogUsersDataSource,
 	NewDatadogRoleUsersDataSource,
+	NewDatadogRolePermissionsDataSource,
 	NewSecurityMonitoringSuppressionDataSource,
 	NewSecurityMonitoringCriticalAssetDataSource,
 	NewSecurityMonitoringCriticalAssetsDataSource,
@@ -676,6 +681,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentUserDefinedField", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentUserDefinedField", true)
 
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListIncidentUserDefinedRoles", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateIncidentUserDefinedRole", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetIncidentUserDefinedRole", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentUserDefinedRole", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentUserDefinedRole", true)
+
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateWebIntegrationAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetWebIntegrationAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListWebIntegrationAccounts", true)
@@ -724,6 +735,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentNotificationTemplate", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationTemplate", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListIncidentNotificationTemplates", true)
+
+	// Enable IncidentPostmortemTemplate
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateIncidentPostmortemTemplate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetIncidentPostmortemTemplate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentPostmortemTemplate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentPostmortemTemplate", true)
 
 	// Enable OrgGroup
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateOrgGroup", true)
@@ -788,6 +805,23 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationTicketCreationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationTicketCreationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationTicketCreationRules", true)
+
+	// Enable Tag Indexing Rules & Exemptions
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateTagIndexingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetTagIndexingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateTagIndexingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteTagIndexingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListTagIndexingRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderTagIndexingRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateTagIndexingRuleExemption", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetTagIndexingRuleExemption", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteTagIndexingRuleExemption", true)
+
+	// Enable Governance Controls
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetGovernanceControl", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateGovernanceControl", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetGovernanceControlNotificationSettings", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateGovernanceControlNotificationSettings", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())

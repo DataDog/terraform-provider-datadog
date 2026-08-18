@@ -200,6 +200,8 @@ Optional:
 
 - `auth` (Block List) AWS authentication credentials used for accessing AWS services. If omitted, the system's default credentials are used (for example, the IAM role and environment variables). (see [below for nested schema](#nestedblock--config--destination--amazon_s3--auth))
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--amazon_s3--buffer))
+- `server_side_encryption` (String) The server-side encryption algorithm used when storing objects in S3. Valid values: `aws:kms`, `AES256`. Valid values are `aws:kms`, `AES256`.
+- `ssekms_key_id` (String) ID of the AWS KMS key to use for SSE-KMS encryption. Only applies when `server_side_encryption` is `aws:kms`.
 
 <a id="nestedblock--config--destination--amazon_s3--auth"></a>
 ### Nested Schema for `config.destination.amazon_s3.auth`
@@ -597,6 +599,7 @@ Optional:
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `server_name` (String) Server name to use for Server Name Indication (SNI) and to verify against the certificate presented by the remote host. Use this when the address you connect to doesn't match the certificate's Common Name or Subject Alternative Name.
 
 
 
@@ -1124,6 +1127,7 @@ Optional:
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `server_name` (String) Server name to use for Server Name Indication (SNI) and to verify against the certificate presented by the remote host. Use this when the address you connect to doesn't match the certificate's Common Name or Subject Alternative Name.
 
 
 
@@ -1534,6 +1538,7 @@ Optional:
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `server_name` (String) Server name to use for Server Name Indication (SNI) and to verify against the certificate presented by the remote host. Use this when the address you connect to doesn't match the certificate's Common Name or Subject Alternative Name.
 
 
 
@@ -1743,6 +1748,7 @@ Optional:
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `server_name` (String) Server name to use for Server Name Indication (SNI) and to verify against the certificate presented by the remote host. Use this when the address you connect to doesn't match the certificate's Common Name or Subject Alternative Name.
 
 
 
@@ -2835,6 +2841,7 @@ Optional:
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `server_name` (String) Server name to use for Server Name Indication (SNI) and to verify against the certificate presented by the remote host. Use this when the address you connect to doesn't match the certificate's Common Name or Subject Alternative Name.
 
 
 

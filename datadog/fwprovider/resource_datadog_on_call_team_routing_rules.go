@@ -157,6 +157,21 @@ func (m *onCallTeamRoutingRulesModel) Validate() diag.Diagnostics {
 			rootEscalationPolicyPath := root.AtName("escalation_policy")
 			diags.AddAttributeError(rootEscalationPolicyPath, "conflicting escalation policy configuration", "cannot combine rule-level `escalation_policy` attribute with an `escalation_policy` action in the same rule. Use one or the other.")
 		}
+
+		// The API requires the last rule to be a catch-all: no query, no time
+		// restriction, and an escalation policy. It rejects the whole request
+		// with a 400 otherwise.
+		if i == len(m.Rules)-1 {
+			if !rule.Query.IsNull() && !rule.Query.IsUnknown() && rule.Query.ValueString() != "" {
+				diags.AddAttributeError(root.AtName("query"), "invalid query on last rule", "the last rule acts as a catch-all and must not use a query. Remove `query` from the last rule, or move a catch-all rule to the end.")
+			}
+			if rule.TimeRestrictions != nil {
+				diags.AddAttributeError(root.AtName("time_restrictions"), "invalid time_restrictions on last rule", "the last rule acts as a catch-all and must not use a time restriction. Remove `time_restrictions` from the last rule, or move a catch-all rule to the end.")
+			}
+			if rule.EscalationPolicy.IsNull() && !hasEscalationPolicyAction {
+				diags.AddAttributeError(root.AtName("escalation_policy"), "missing escalation policy on last rule", "the last rule acts as a catch-all and must define an escalation policy. Set `escalation_policy` or add an `escalation_policy` action to the last rule.")
+			}
+		}
 	}
 
 	return diags
@@ -204,16 +219,16 @@ func (r *onCallTeamRoutingRulesResource) Schema(_ context.Context, _ resource.Sc
 							Optional:    true,
 							Computed:    true,
 							Default:     stringdefault.StaticString(""),
-							Description: "Defines the query or condition that triggers this routing rule.",
+							Description: "Defines the query or condition that triggers this routing rule. Must not be set on the last rule, which acts as a catch-all rule.",
 						},
 						"escalation_policy": schema.StringAttribute{
 							Optional:    true,
-							Description: "ID of the policy to be applied when this routing rule matches.",
+							Description: "ID of the policy to be applied when this routing rule matches. The last rule must define an escalation policy, either via this attribute or via an `escalation_policy` action.",
 						},
 					},
 					Blocks: map[string]schema.Block{
 						"time_restrictions": schema.SingleNestedBlock{
-							Description: "Holds time zone information and a list of time restrictions for a routing rule.",
+							Description: "Holds time zone information and a list of time restrictions for a routing rule. Must not be set on the last rule, which acts as a catch-all rule.",
 							Attributes: map[string]schema.Attribute{
 								"time_zone": schema.StringAttribute{
 									Required:    false,

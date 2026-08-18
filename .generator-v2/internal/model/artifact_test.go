@@ -53,6 +53,35 @@ var _ = Describe("BuildArtifact", func() {
 		_, err := BuildArtifact(&Operation{})
 		Expect(err).To(HaveOccurred())
 	})
+
+	It("maps scalar SDK arguments to required Terraform inputs and aliases the terminal path parameter to id", func() {
+		op := incidentTypeOp()
+		op.Path = "/api/v2/accounts/{account_id}/incident-types/{incident_type_id}"
+		op.SDKBinding = &SDKOperationBinding{Required: []SDKArgument{
+			{Name: "account_id", GoName: "accountId", GoType: "int64", Location: "path", Schema: primSchema("integer")},
+			{Name: "incident_type_id", GoName: "incidentTypeId", GoType: "string", Location: "path", Schema: primSchema("string")},
+		}}
+
+		art, err := BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(art.Lifecycle.Read.BindingResolved).To(BeTrue())
+		Expect(art.Lifecycle.Read.Arguments).To(HaveLen(2))
+		Expect(art.Lifecycle.Read.Arguments[0].TFName).To(Equal("account_id"))
+		Expect(art.Lifecycle.Read.Arguments[1].TFName).To(Equal("id"))
+		Expect(art.Schema.Attributes[0].Path).To(Equal("account_id"))
+		Expect(art.Schema.Attributes[0].Required).To(BeTrue())
+		Expect(art.Schema.Attributes[0].GoType).To(Equal("types.Int64"))
+	})
+
+	It("rejects collection-valued required SDK arguments in scalar-first mode", func() {
+		op := incidentTypeOp()
+		op.SDKBinding = &SDKOperationBinding{Required: []SDKArgument{
+			{Name: "row_id", GoName: "rowId", GoType: "[]string", Location: "query", Schema: &Schema{Kind: SchemaKindArray, Items: primSchema("string")}},
+		}}
+
+		_, err := BuildArtifact(op)
+		Expect(err).To(MatchError(ContainSubstring("unsupported scalar-first type []string")))
+	})
 })
 
 var _ = Describe("BuildArtifact plural", func() {

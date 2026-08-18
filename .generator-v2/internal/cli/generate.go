@@ -2,9 +2,9 @@ package cli
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
@@ -15,16 +15,21 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/emit"
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/parser"
+	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/sdkbind"
+	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/sdkbinding"
 )
 
 // errCheckFailed signals that --check found files that would change.
 // Execute translates this into exit code 3.
 var errCheckFailed = fmt.Errorf("check: one or more files would change")
 
-// apiInstancesHelperPath is the provider's ApiInstances helper, the source of
-// truth for SDK API accessor names. It is read relative to the working directory
-// (the repo root), like the other default paths.
-const apiInstancesHelperPath = "datadog/internal/utils/api_instances_helper.go"
+// apiInstancesHelperRelPath locates the provider's ApiInstances helper, the source
+// of truth for SDK API accessor names. It is resolved against --output-root rather
+// than the working directory, so it lands on the real file wherever tfgen is run
+// from.
+const apiInstancesHelperRelPath = "../internal/utils/api_instances_helper.go"
+
+const datadogV2SDKPackage = "github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 
 func newGenerateCmd(flags *globalFlags) *cobra.Command {
 	var check bool
@@ -43,8 +48,10 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 	var retire string
 
 	cmd := &cobra.Command{
-		Use:   "generate",
-		Short: "Generate Terraform artifacts from the OpenAPI spec",
+		Use:               "generate",
+		Short:             "Generate Terraform artifacts from the OpenAPI spec",
+		Args:              cobra.NoArgs,
+		ValidArgsFunction: cobra.NoFileCompletions,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Orphan detection is only valid when tfgen sees the complete annotation
 			// set, so --reconcile cannot be narrowed by --include.
@@ -82,15 +89,28 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 
 				filter := parseInclude(include)
 
-				// Resolve the provider's SDK-accessor names, the source of truth for
-				// APIAccessor. A missing file is expected outside a full checkout; a parse
-				// failure is worth surfacing. Either way we fall back to derived names.
-				accessors, accErr := emit.ResolveAPIAccessors(apiInstancesHelperPath)
+				// Resolve the provider's SDK-accessor names first so existing cached
+				// clients and aliased names (RUM, APM, Observability Pipelines) remain
+				// the preferred initialization path.
+				accessors, accErr := emit.ResolveAPIAccessors(filepath.Join(outputRoot, apiInstancesHelperRelPath))
 				if accErr != nil {
-					if !errors.Is(accErr, os.ErrNotExist) {
-						cmd.PrintErrln("tfgen: could not resolve API accessors, using derived names:", accErr)
-					}
+					cmd.PrintErrln("tfgen: could not resolve provider API accessors; SDK constructor names will be derived from OpenAPI tags:", accErr)
 					accessors = nil
+				}
+
+				// The OpenAPI derivation is authoritative. Loading the pinned SDK is
+				// best-effort corroboration only: a cold cache, missing package, or new
+				// endpoint must not prevent generation before the SDK update lands.
+				var sdkBindings *sdkbinding.Inventory
+				sdkPackageDir, sdkDirErr := resolveSDKPackageDir(outputRoot)
+				if sdkDirErr != nil {
+					cmd.PrintErrln("tfgen: pinned SDK corroboration unavailable; generating from OpenAPI bindings:", sdkDirErr)
+				} else {
+					sdkBindings, err = sdkbinding.Load(sdkPackageDir)
+					if err != nil {
+						cmd.PrintErrln("tfgen: pinned SDK corroboration unavailable; generating from OpenAPI bindings:", err)
+						sdkBindings = nil
+					}
 				}
 
 				var registrations []emit.GeneratedRegistration
@@ -122,7 +142,7 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 						continue
 					}
 
-					entry, testEntry, exampleEntry, reg := generateArtifact(op, outputRoot, testsOutputRoot, examplesOutputRoot, emitTests, check, accessors)
+					entry, testEntry, exampleEntry, reg := generateArtifact(op, outputRoot, testsOutputRoot, examplesOutputRoot, emitTests, check, accessors, sdkBindings)
 					runReport.Artifacts = append(runReport.Artifacts, entry)
 					if testEntry != nil {
 						runReport.Artifacts = append(runReport.Artifacts, *testEntry)
@@ -217,11 +237,68 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 	return cmd
 }
 
+// resolveSDKPackageDir asks the provider module selected by outputRoot for the
+// pinned datadogV2 package directory. Tests often render into a temporary output
+// root, so the current checkout is a fallback when that root is outside a Go
+// module.
+func resolveSDKPackageDir(outputRoot string) (string, error) {
+	moduleRoot, err := findProviderModuleRoot(outputRoot)
+	if err != nil {
+		return "", err
+	}
+
+	goList := exec.Command("go", "list", "-f={{.Dir}}", datadogV2SDKPackage)
+	goList.Dir = moduleRoot
+	var stderr bytes.Buffer
+	goList.Stderr = &stderr
+	output, err := goList.Output()
+	if err != nil {
+		return "", fmt.Errorf("go list %s from %s: %w: %s", datadogV2SDKPackage, moduleRoot, err, strings.TrimSpace(stderr.String()))
+	}
+	dir := strings.TrimSpace(string(output))
+	if dir == "" {
+		return "", fmt.Errorf("go list %s from %s returned an empty directory", datadogV2SDKPackage, moduleRoot)
+	}
+	return dir, nil
+}
+
+func findProviderModuleRoot(outputRoot string) (string, error) {
+	var starts []string
+	if outputRoot != "" {
+		absoluteOutputRoot, err := filepath.Abs(outputRoot)
+		if err != nil {
+			return "", fmt.Errorf("resolve output root %s: %w", outputRoot, err)
+		}
+		starts = append(starts, absoluteOutputRoot)
+	}
+	workingDir, err := os.Getwd()
+	if err != nil {
+		return "", fmt.Errorf("get working directory: %w", err)
+	}
+	starts = append(starts, workingDir)
+
+	for _, start := range starts {
+		for dir := start; ; dir = filepath.Dir(dir) {
+			goMod, readErr := os.ReadFile(filepath.Join(dir, "go.mod"))
+			if readErr == nil &&
+				bytes.Contains(goMod, []byte("module github.com/terraform-providers/terraform-provider-datadog")) &&
+				bytes.Contains(goMod, []byte("github.com/DataDog/datadog-api-client-go/v2")) {
+				return dir, nil
+			}
+			parent := filepath.Dir(dir)
+			if parent == dir {
+				break
+			}
+		}
+	}
+	return "", fmt.Errorf("could not find the terraform-provider-datadog module containing the pinned datadog-api-client-go dependency")
+}
+
 // generateArtifact runs the full model→emit→write pipeline for one tracked
 // operation. On success it also returns the GeneratedRegistration the caller
 // uses to wire the data source into the provider; it is nil for a skipped or
 // failed artifact.
-func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examplesOutputRoot string, emitTests, check bool, accessors map[string]string) (model.ArtifactReportEntry, *model.ArtifactReportEntry, *model.ArtifactReportEntry, *emit.GeneratedRegistration) {
+func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examplesOutputRoot string, emitTests, check bool, accessors map[string]string, sdkBindings *sdkbinding.Inventory) (model.ArtifactReportEntry, *model.ArtifactReportEntry, *model.ArtifactReportEntry, *emit.GeneratedRegistration) {
 	entry := model.ArtifactReportEntry{
 		Name: op.Tracking.ArtifactName,
 		Kind: op.Tracking.ArtifactKind,
@@ -236,6 +313,28 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examples
 		return entry, nil, nil, nil
 	}
 
+	// Resolve the SDK oneOf wrapper, members and constructors before the schema is
+	// projected, since the projection carries those bindings onto each envelope
+	// rather than deriving them. Binding is per operation, so an unresolvable union
+	// fails only this artifact.
+	if err := sdkbind.BindOperation(op); err != nil {
+		return failEntry(entry, err), nil, nil, nil
+	}
+	bindingDiagnostics, err := sdkbinding.Bind(op, sdkBindings)
+	if err != nil {
+		return failEntry(entry, err), nil, nil, nil
+	}
+	if op.SearchOp != nil && op.SearchOp != op {
+		if err := sdkbind.BindOperation(op.SearchOp); err != nil {
+			return failEntry(entry, err), nil, nil, nil
+		}
+		searchDiagnostics, err := sdkbinding.Bind(op.SearchOp, sdkBindings)
+		if err != nil {
+			return failEntry(entry, err), nil, nil, nil
+		}
+		bindingDiagnostics = append(bindingDiagnostics, searchDiagnostics...)
+	}
+
 	artifact, err := model.BuildArtifact(op)
 	if err != nil {
 		return failEntry(entry, err), nil, nil, nil
@@ -244,18 +343,22 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examples
 	entry.Path = artifact.SourceFile
 	// Non-fatal notes (e.g. query params dropped from a plural filter set) ride
 	// along on a successful entry; failEntry below overrides them on failure.
+	entry.Diagnostics = append(entry.Diagnostics, bindingDiagnostics...)
 	entry.Diagnostics = append(entry.Diagnostics, artifact.Diagnostics...)
 
 	view, err := emit.BuildDataSourceView(artifact)
 	if err != nil {
 		return failEntry(entry, err), nil, nil, nil
 	}
-	// Correct APIAccessor to the name the provider's helper actually exposes,
-	// which diverges from the derived name for a few acronym/aliased APIs.
-	emit.ApplyAPIAccessor(&view, accessors)
-	// Members the emit flattener dropped (e.g. relationships) ride along as info.
-	for _, msg := range view.Dropped {
-		entry.Diagnostics = append(entry.Diagnostics, model.Diagnostic{Severity: model.SeverityInfo, Message: msg})
+	// Prefer the provider's existing helper accessor (including acronym/alias
+	// spellings), then derive the same constructor the SDK generator will emit.
+	if err := emit.ApplyAPIAccessor(&view, accessors); err != nil {
+		return failEntry(entry, err), nil, nil, nil
+	}
+	// Members the emit flattener dropped (e.g. relationships) ride along at the
+	// severity the drop warrants.
+	for _, d := range view.Dropped {
+		entry.Diagnostics = append(entry.Diagnostics, model.Diagnostic{Severity: d.Severity, Message: d.Message})
 	}
 
 	src, err := emit.RenderDataSource(view)

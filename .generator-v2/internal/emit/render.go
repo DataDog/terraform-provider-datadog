@@ -53,6 +53,10 @@ var dataSourceTemplates = template.Must(
 // NOTE: this is a minimal execution harness so the templates are runnable and
 // testable on their own.
 func RenderDataSource(v DataSourceView) ([]byte, error) {
+	if err := checkDuplicateFields(v.Models); err != nil {
+		return nil, fmt.Errorf("emit: data source %q: %w", v.TypeName, err)
+	}
+
 	name := "data_source_singular"
 	if v.Cardinality == Plural {
 		name = "data_source_plural"
@@ -68,6 +72,29 @@ func RenderDataSource(v DataSourceView) ([]byte, error) {
 		return nil, fmt.Errorf("emit: gofmt of generated data source %q: %w\n--- raw output ---\n%s", v.TypeName, err, buf.String())
 	}
 	return dropBlankLineAfterBrace(formatted), nil
+}
+
+// checkDuplicateFields rejects duplicate Go model names and a model struct that
+// declares the same Terraform name twice. Either shape produces generated code
+// that does not compile, so failing here keeps a broken artifact from being
+// written and reported as created.
+func checkDuplicateFields(models []ModelStructView) error {
+	modelNames := make(map[string]bool, len(models))
+	for _, m := range models {
+		if modelNames[m.Name] {
+			return fmt.Errorf("model %s is declared twice", m.Name)
+		}
+		modelNames[m.Name] = true
+
+		seen := make(map[string]bool, len(m.Fields))
+		for _, f := range m.Fields {
+			if seen[f.TFName] {
+				return fmt.Errorf("model %s declares tfsdk:%q twice", m.Name, f.TFName)
+			}
+			seen[f.TFName] = true
+		}
+	}
+	return nil
 }
 
 // dropBlankLineAfterBrace removes blank lines that immediately follow a line

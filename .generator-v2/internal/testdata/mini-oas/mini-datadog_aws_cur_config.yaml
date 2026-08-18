@@ -105,6 +105,13 @@ paths:
       x-menu-order: 5
       x-undo:
         type: safe
+      x-datadog-tf-generator:
+        artifact_kind: "data_source"
+        artifact_name: "aws_cur_config"
+        tf_description: "Get a specific AWS CUR config"
+        group:
+          read: "GetCostAWSCURConfig"
+
 components:
   responses:
     TooManyRequestsResponse:

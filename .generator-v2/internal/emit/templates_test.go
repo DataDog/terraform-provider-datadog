@@ -11,7 +11,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
-// updateGolden rewrites the testdata/*.golden files from the current template
+// updateGolden rewrites the snapshots/*.golden files from the current template
 // output. Run `go test ./internal/emit/... -update` after an intentional
 // template change, then review the diff.
 var updateGolden = flag.Bool("update", false, "update golden files")
@@ -36,10 +36,16 @@ var _ = Describe("data-source templates", func() {
 		Entry("plural no-params (datastores)", "data_source_plural_no_params.golden", datastoresView),
 		Entry("singular nested object (apm_retention_filter)", "data_source_singular_object.golden", retentionFilterView),
 		Entry("plural nested object (gizmos)", "data_source_plural_object.golden", pluralObjectView),
+		// The oneOf goldens pin the envelope's schema blocks and model structs. Their
+		// updateState is deliberately still mapping-free: the mapper lands next, and the diff
+		// this golden produces then is the review surface for that change.
+		Entry("singular oneOf envelope", "data_source_singular_oneof.golden", oneOfEnvelopeView),
+		Entry("singular oneOf in a list", "data_source_singular_oneof_list.golden", oneOfEnvelopeListView),
+		Entry("singular SDK constructor fallback (case)", "data_source_singular_constructor.golden", caseConstructorView),
 	)
 
 	It("renders deterministically across runs", func() {
-		for _, v := range []DataSourceView{incidentTypeView(), teamSingularView(), costBudgetView(), powerpackSearchView(), datastoreBothView(), pluralFixture(), pluralNestedView(), datastoresView(), retentionFilterView(), pluralObjectView()} {
+		for _, v := range []DataSourceView{incidentTypeView(), teamSingularView(), costBudgetView(), powerpackSearchView(), datastoreBothView(), pluralFixture(), pluralNestedView(), datastoresView(), retentionFilterView(), pluralObjectView(), oneOfEnvelopeView(), oneOfEnvelopeListView(), caseConstructorView()} {
 			first, err := RenderDataSource(v)
 			Expect(err).NotTo(HaveOccurred())
 			second, err := RenderDataSource(v)
@@ -76,10 +82,10 @@ var _ = Describe("data-source acceptance-test scaffolds", func() {
 	})
 })
 
-// matchGolden compares got against testdata/<name>, or rewrites it under -update.
+// matchGolden compares got against snapshots/<name>, or rewrites it under -update.
 func matchGolden(name string, got []byte) {
 	GinkgoHelper()
-	path := filepath.Join("../testdata/emit", name)
+	path := filepath.Join("../snapshots", name)
 
 	if *updateGolden {
 		Expect(os.MkdirAll(filepath.Dir(path), 0o755)).To(Succeed())
@@ -172,11 +178,49 @@ func datastoreBothView() DataSourceView {
 	return mustView(datastoreBothOperation())
 }
 
+// caseConstructorView exercises the missing-ApiInstances path end to end through
+// API client resolution and the shared Configure template.
+func caseConstructorView() DataSourceView {
+	GinkgoHelper()
+	view := DataSourceView{
+		Cardinality: Singular,
+		TypeName:    "case",
+		UsesFmt:     true,
+		GoName:      "datadogCase",
+		Description: "Use this data source to retrieve a case.",
+		SDKPackage:  "datadogV2",
+		APIStruct:   "CaseManagementApi",
+		APIAccessor: "GetCaseManagementApiV2",
+		ByID:        true,
+		Read: SDKReadView{
+			Method:       "GetCase",
+			ResponseType: "CaseResponse",
+		},
+		Models: []ModelStructView{{
+			Name: "datadogCaseDataSourceModel",
+			Fields: []ModelFieldView{{
+				GoField: "ID",
+				GoType:  "types.String",
+				TFName:  "id",
+			}},
+		}},
+		State: StateView{
+			ParamName: "resp",
+			ParamType: "*datadogV2.CaseResponse",
+		},
+	}
+	Expect(ApplyAPIAccessor(&view, nil)).To(Succeed())
+	return view
+}
+
 // pluralFixture is the teams data source as a view.
 func pluralFixture() DataSourceView {
 	return DataSourceView{
 		Cardinality: Plural,
 		TypeName:    "teams",
+		// Hand-built views must set UsesFmt themselves; the builder computes it for
+		// every view it produces. This fixture's filter hash reaches fmt.Sprintf.
+		UsesFmt:     true,
 		GoName:      "datadogTeams",
 		Description: "Use this data source to retrieve information about existing teams for use in other resources.",
 		SDKPackage:  "datadogV2",
@@ -191,6 +235,10 @@ func pluralFixture() DataSourceView {
 				{StateField: "FilterKeyword", ParamField: "FilterKeyword", ValueExpr: "ValueStringPointer()"},
 				{StateField: "FilterMe", ParamField: "FilterMe", ValueExpr: "ValueBoolPointer()"},
 			},
+			HashInputs: []FilterParamView{
+				{StateField: "FilterKeyword", ValueExpr: "ValueStringPointer()"},
+				{StateField: "FilterMe", ValueExpr: "ValueBoolPointer()"},
+			},
 		},
 		Models: []ModelStructView{
 			{
@@ -199,11 +247,11 @@ func pluralFixture() DataSourceView {
 					{Comment: "Query Parameters", GoField: "FilterKeyword", GoType: "types.String", TFName: "filter_keyword"},
 					{GoField: "FilterMe", GoType: "types.Bool", TFName: "filter_me"},
 					{Comment: "Results", GoField: "ID", GoType: "types.String", TFName: "id"},
-					{GoField: "Teams", GoType: "[]*TeamModel", TFName: "teams"},
+					{GoField: "Teams", GoType: "[]*datadogTeamsTeamModel", TFName: "teams"},
 				},
 			},
 			{
-				Name: "TeamModel",
+				Name: "datadogTeamsTeamModel",
 				Fields: []ModelFieldView{
 					{GoField: "Description", GoType: "types.String", TFName: "description"},
 					{GoField: "Handle", GoType: "types.String", TFName: "handle"},
@@ -243,7 +291,7 @@ func pluralFixture() DataSourceView {
 			},
 		},
 		State: StateView{
-			ItemStruct: "TeamModel",
+			ItemStruct: "datadogTeamsTeamModel",
 			ItemField:  "Teams",
 			ItemFields: []StateAssignment{
 				{LHS: "Description", RHS: "types.StringValue(item.Attributes.GetDescription())"},
@@ -255,8 +303,8 @@ func pluralFixture() DataSourceView {
 				{LHS: "UserCount", RHS: "types.Int64Value(int64(item.Attributes.GetUserCount()))"},
 			},
 			ItemLists: []ListAssignment{
-				{Kind: "primitive", LHS: "r.HiddenModules", GetterOk: "item.Attributes.GetHiddenModulesOk()", Var: "hiddenModules", ElementType: "types.StringType"},
-				{Kind: "primitive", LHS: "r.VisibleModules", GetterOk: "item.Attributes.GetVisibleModulesOk()", Var: "visibleModules", ElementType: "types.StringType"},
+				{Kind: "primitive", ContainerKind: "list", LHS: "r.HiddenModules", GetterOk: "item.Attributes.GetHiddenModulesOk()", Var: "hiddenModules", ElementType: "types.StringType"},
+				{Kind: "primitive", ContainerKind: "list", LHS: "r.VisibleModules", GetterOk: "item.Attributes.GetVisibleModulesOk()", Var: "visibleModules", ElementType: "types.StringType"},
 			},
 		},
 	}
