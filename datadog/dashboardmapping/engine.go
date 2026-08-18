@@ -489,11 +489,21 @@ type FormulaRequestConfig struct {
 	// ExtraFields are widget-specific request-level fields emitted before formulas.
 	// Example: on_right_yaxis + display_type for timeseries; change-widget fields.
 	ExtraFields []FieldSpec
+	// FormulaFields overrides the fields used to build and flatten each formula.
+	// nil defaults to widgetFormulaFields.
+	FormulaFields []FieldSpec
 	// IncludeSort: when true, build/flatten the sort block (toplist, geomap, etc.).
 	IncludeSort bool
 	// AllowResponseFormatOverride reads response_format from HCL when present,
 	// falling back to ResponseFormat when omitted.
 	AllowResponseFormatOverride bool
+}
+
+func (cfg FormulaRequestConfig) effectiveFormulaFields() []FieldSpec {
+	if cfg.FormulaFields != nil {
+		return cfg.FormulaFields
+	}
+	return widgetFormulaFields
 }
 
 // Per-widget FormulaRequestConfig declarations.
@@ -608,7 +618,7 @@ func flattenFormulaRequest(req map[string]interface{}, cfg FormulaRequestConfig)
 		flat := make([]interface{}, len(formulas))
 		for i, f := range formulas {
 			if fm, ok := f.(map[string]interface{}); ok {
-				flat[i] = FlattenEngineJSON(widgetFormulaFields, fm)
+				flat[i] = FlattenEngineJSON(cfg.effectiveFormulaFields(), fm)
 			} else {
 				flat[i] = map[string]interface{}{}
 			}
@@ -1923,7 +1933,7 @@ func buildFormulaRequestFromMap(reqMap map[string]interface{}, cfg FormulaReques
 	if len(formulaList) > 0 {
 		formulas := make([]interface{}, 0, len(formulaList))
 		for _, fMap := range formulaList {
-			formulas = append(formulas, BuildEngineJSONFromMap(fMap, widgetFormulaFields))
+			formulas = append(formulas, BuildEngineJSONFromMap(fMap, cfg.effectiveFormulaFields()))
 		}
 		result["formulas"] = formulas
 	}
