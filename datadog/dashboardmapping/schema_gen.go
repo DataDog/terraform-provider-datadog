@@ -101,7 +101,16 @@ func FieldSpecToSDKv2(f FieldSpec) *schema.Schema {
 		} else {
 			s.Type = schema.TypeList
 		}
-		s.Elem = &schema.Schema{Type: schema.TypeString}
+		elem := &schema.Schema{Type: schema.TypeString}
+		if len(f.ValidValues) > 0 {
+			elem.ValidateDiagFunc = validation.ToDiagFunc(
+				validation.StringInSlice(f.ValidValues, false),
+			)
+		}
+		s.Elem = elem
+		if f.MinItems > 0 {
+			s.MinItems = f.MinItems
+		}
 		if f.MaxItems > 0 {
 			s.MaxItems = f.MaxItems
 		}
@@ -113,6 +122,9 @@ func FieldSpecToSDKv2(f FieldSpec) *schema.Schema {
 			s.Type = schema.TypeList
 		}
 		s.Elem = &schema.Schema{Type: schema.TypeInt}
+		if f.MinItems > 0 {
+			s.MinItems = f.MinItems
+		}
 		if f.MaxItems > 0 {
 			s.MaxItems = f.MaxItems
 		}
@@ -145,6 +157,9 @@ func FieldSpecToSDKv2(f FieldSpec) *schema.Schema {
 			s.Elem = &schema.Resource{
 				Schema: FieldSpecsToSDKv2Schema(f.Children),
 			}
+		}
+		if f.MinItems > 0 {
+			s.MinItems = f.MinItems
 		}
 		if f.MaxItems > 0 {
 			s.MaxItems = f.MaxItems

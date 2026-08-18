@@ -1,0 +1,100 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://datadog.github.io/terraform-provider-datadog/contracts/tracking-field.schema.json",
+    "title": "x-datadog-tf-generator",
+    "description": "OpenAPI 3.0 vendor extension that opts an operation in to Datadog Terraform provider generation.",
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["artifact_kind", "artifact_name"],
+    "properties": {
+      "artifact_kind": {
+        "type": "string",
+        "enum": ["resource", "data_source"],
+        "description": "Whether this operation should be exposed as a Terraform resource (with full CRUD lifecycle) or a Terraform data source (read-only)."
+      },
+      "artifact_name": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*$",
+        "minLength": 1,
+        "maxLength": 64,
+        "description": "Terraform-facing artifact name without the 'datadog_' prefix. Must be lowercase snake_case. Must be unique per artifact_kind — resources and data sources are separate Terraform namespaces, so a resource and a data source may share a name."
+      },
+      "tf_description": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Human-readable doc string for the generated artifact's top-level Terraform schema (the data source / resource description shown in `terraform docs`). Optional; when omitted the generated Description is left empty. Convention: \"Use this data source to retrieve information about an existing <thing>.\""
+      },
+      "cardinality": {
+        "type": "string",
+        "enum": ["singular", "plural"],
+        "default": "singular",
+        "description": "For a data source, whether the read resolves a single item by id (singular) or returns a filtered list (plural). Ignored for resources."
+      },
+      "group": {
+        "type": "object",
+        "description": "The OpenAPI operations backing this artifact. For a resource: the create/read/update/delete lifecycle. For a data source: read (a by-id endpoint) and/or search (a list endpoint used to resolve a single match). May reference operations by their operationId.",
+        "additionalProperties": false,
+        "properties": {
+          "create": { "type": "string", "description": "operationId of the Create endpoint (resources)." },
+          "read":   { "type": "string", "description": "operationId of the Read (by-id) endpoint." },
+          "search": { "type": "string", "description": "operationId of the list endpoint used to resolve a single match. Singular data sources only; never inferred." },
+          "update": { "type": "string", "description": "operationId of the Update endpoint (resources). May be omitted; the generator will then mark all attributes ForceNew per the missing-CRUD edge case in the spec." },
+          "delete": { "type": "string", "description": "operationId of the Delete endpoint (resources)." }
+        },
+        "anyOf": [ { "required": ["read"] }, { "required": ["search"] } ]
+      },
+      "id_strategy": {
+        "type": "string",
+        "enum": ["data.id", "data.attributes.id", "data.attributes.uuid", "header.location"],
+        "default": "data.id",
+        "description": "How to derive the Terraform resource ID from the API response on Create/Read."
+      },
+      "sensitive": {
+        "type": "boolean",
+        "default": false,
+        "description": "When attached to a Schema Object, marks the attribute as Terraform-sensitive (suppressed in plan output)."
+      },
+      "skip": {
+        "type": "boolean",
+        "default": false,
+        "description": "Explicitly disable generation for this operation while keeping the annotation in place. Equivalent to removing the extension, but documented in-spec so reviewers see the choice."
+      },
+      "overwrites": {
+        "type": "string",
+        "minLength": 1,
+        "description": "The constructor function of the hand-written data source this generated artifact replaces, e.g. \"NewDatadogTeamDataSource\". When set, the generated file overwrites the hand-written one in place (they share the datadog_<artifact_name>.go path), the generator removes that constructor from the FrameworkProvider Datasources slice, and registers the generated constructor in generatedDatasources. Omit for purely additive generation. Data sources only."
+      }
+    },
+    "examples": [
+      {
+        "artifact_kind": "data_source",
+        "artifact_name": "team",
+        "tf_description": "Use this data source to retrieve information about an existing Datadog team.",
+        "overwrites": "NewDatadogTeamDataSource",
+        "group":{
+          "read": "GetTeam",
+          "search": "ListTeams"
+        }
+      },
+      {
+        "artifact_kind": "data_source",
+        "artifact_name": "powerpack",
+        "tf_description": "Use this data source to retrieve information about an existing Datadog Powerpack.",
+        "group":{
+          "search": "ListPowerpacks"
+        }
+      },
+      {
+        "artifact_kind": "resource",
+        "artifact_name": "incident_type",
+        "group": {
+          "create": "CreateIncidentType",
+          "read": "GetIncidentType",
+          "update": "UpdateIncidentType",
+          "delete": "DeleteIncidentType"
+        },
+        "id_strategy": "data.id"
+      }
+    ]
+  }
+  

@@ -1,0 +1,751 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: Powerpack
+  description: 'The Powerpack endpoints allow you to:
+
+
+    - Get a Powerpack
+
+    - Create a Powerpack
+
+    - Delete a Powerpack
+
+    - Get a list of all Powerpacks
+
+
+    The Patch and Delete API methods can only be performed on a Powerpack by
+
+    a user who has the powerpack create permission for that specific Powerpack.
+
+
+    Read [Scale Graphing Expertise with Powerpacks](https://docs.datadoghq.com/dashboards/guide/powerpacks-best-practices/)
+    for more information.'
+paths:
+  /api/v2/powerpacks:
+    get:
+      operationId: ListPowerpacks
+      tags:
+      - Powerpack
+      summary: Get all powerpacks
+      description: Get a list of all powerpacks.
+      parameters:
+      - name: page[limit]
+        in: query
+        required: false
+        description: Maximum number of powerpacks in the response.
+        schema:
+          type: integer
+          format: int64
+          maximum: 1000
+          default: 25
+        example: 25
+      - $ref: '#/components/parameters/PageOffset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListPowerpacksResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                    - id: 00000000-0000-0000-0000-000000000001
+                      type: powerpack
+                      attributes:
+                        name: Sample Powerpack
+                        description: Powerpack for ABC
+                        tags:
+                        - tag:foo1
+                        group_widget:
+                          definition:
+                            widgets:
+                            - definition:
+                                type: note
+                                content: example
+                              layout:
+                                x: 0
+                                y: 0
+                                width: 10
+                                height: 5
+                            layout_type: ordered
+                            type: group
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      security:
+      - apiKeyAuth: []
+        appKeyAuth: []
+      - AuthZ:
+        - dashboards_read
+      x-permission:
+        operator: OR
+        permissions:
+        - dashboards_read
+      x-pagination:
+        limitParam: page[limit]
+        pageOffsetParam: page[offset]
+        resultsPath: data
+      x-undo:
+        type: safe
+      x-menu-order: 1
+components:
+  parameters:
+    PageOffset:
+      name: page[offset]
+      in: query
+      required: false
+      description: Specific offset to use as the beginning of the returned page.
+      schema:
+        type: integer
+        format: int64
+        default: 0
+        example: 0
+  responses:
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    ListPowerpacksResponse:
+      type: object
+      description: Response object which includes all powerpack configurations.
+      properties:
+        data:
+          type: array
+          description: List of powerpack definitions.
+          items:
+            $ref: '#/components/schemas/PowerpackData'
+        included:
+          type: array
+          description: Array of objects related to the users.
+          items:
+            $ref: '#/components/schemas/User'
+        links:
+          $ref: '#/components/schemas/PowerpackResponseLinks'
+        meta:
+          $ref: '#/components/schemas/PowerpacksResponseMeta'
+    OrganizationsType:
+      type: string
+      description: Organizations resource type.
+      default: orgs
+      example: orgs
+      enum:
+      - orgs
+      x-enum-varnames:
+      - ORGS
+    PowerpackAttributes:
+      type: object
+      description: Powerpack attribute object.
+      required:
+      - group_widget
+      - name
+      properties:
+        description:
+          type: string
+          description: Description of this powerpack.
+          example: Powerpack for ABC
+        group_widget:
+          $ref: '#/components/schemas/PowerpackGroupWidget'
+        name:
+          type: string
+          description: Name of the powerpack.
+          example: Sample Powerpack
+        tags:
+          type: array
+          description: List of tags to identify this powerpack.
+          maxItems: 8
+          example:
+          - tag:foo1
+          items:
+            type: string
+            description: A tag to identify this powerpack.
+            maxLength: 80
+        template_variables:
+          type: array
+          description: List of template variables for this powerpack.
+          example:
+          - name: test
+            defaults:
+            - '*'
+          items:
+            $ref: '#/components/schemas/PowerpackTemplateVariable'
+    PowerpackData:
+      type: object
+      description: Powerpack data object.
+      properties:
+        attributes:
+          $ref: '#/components/schemas/PowerpackAttributes'
+        type:
+          type: string
+          description: Type of widget, must be powerpack.
+          example: powerpack
+        id:
+          type: string
+          description: ID of the powerpack.
+        relationships:
+          $ref: '#/components/schemas/PowerpackRelationships'
+      x-merge-override:
+        required: false
+    PowerpackGroupWidget:
+      type: object
+      description: Powerpack group widget definition object.
+      required:
+      - definition
+      properties:
+        definition:
+          $ref: '#/components/schemas/PowerpackGroupWidgetDefinition'
+        layout:
+          $ref: '#/components/schemas/PowerpackGroupWidgetLayout'
+        live_span:
+          $ref: '#/components/schemas/WidgetLiveSpan'
+    PowerpackGroupWidgetDefinition:
+      type: object
+      description: Powerpack group widget object.
+      required:
+      - widgets
+      - layout_type
+      - type
+      properties:
+        widgets:
+          type: array
+          description: Widgets inside the powerpack.
+          example:
+          - definition:
+              type: note
+              content: example
+            layout:
+              x: 0
+              y: 0
+              width: 10
+              height: 5
+          items:
+            $ref: '#/components/schemas/PowerpackInnerWidgets'
+        layout_type:
+          type: string
+          description: Layout type of widgets.
+          example: ordered
+        type:
+          type: string
+          description: Type of widget, must be group.
+          example: group
+        show_title:
+          type: boolean
+          description: Boolean indicating whether powerpack group title should be visible or not.
+          example: true
+        title:
+          type: string
+          description: Name for the group widget.
+          example: Sample Powerpack
+    PowerpackGroupWidgetLayout:
+      type: object
+      description: Powerpack group widget layout.
+      required:
+      - x
+      - y
+      - width
+      - height
+      properties:
+        height:
+          type: integer
+          description: The height of the widget. Should be a non-negative integer.
+          format: int64
+          minimum: 0
+          example: 0
+        width:
+          type: integer
+          description: The width of the widget. Should be a non-negative integer.
+          format: int64
+          minimum: 0
+          example: 0
+        x:
+          type: integer
+          description: The position of the widget on the x (horizontal) axis. Should be a non-negative
+            integer.
+          format: int64
+          minimum: 0
+          example: 0
+        y:
+          type: integer
+          description: The position of the widget on the y (vertical) axis. Should be a non-negative integer.
+          format: int64
+          minimum: 0
+          example: 0
+      x-ignore-duplicate-object: true
+    PowerpackInnerWidgetLayout:
+      type: object
+      description: Powerpack inner widget layout.
+      required:
+      - x
+      - y
+      - width
+      - height
+      properties:
+        height:
+          type: integer
+          description: The height of the widget. Should be a non-negative integer.
+          format: int64
+          minimum: 0
+          example: 0
+        width:
+          type: integer
+          description: The width of the widget. Should be a non-negative integer.
+          format: int64
+          minimum: 0
+          example: 0
+        x:
+          type: integer
+          description: The position of the widget on the x (horizontal) axis. Should be a non-negative
+            integer.
+          format: int64
+          minimum: 0
+          example: 0
+        y:
+          type: integer
+          description: The position of the widget on the y (vertical) axis. Should be a non-negative integer.
+          format: int64
+          minimum: 0
+          example: 0
+      x-ignore-duplicate-object: true
+    PowerpackInnerWidgets:
+      type: object
+      description: Powerpack group widget definition of individual widgets.
+      required:
+      - definition
+      properties:
+        definition:
+          type: object
+          description: Information about widget.
+          example:
+            definition:
+              type: note
+              content: example
+          additionalProperties: {}
+        layout:
+          $ref: '#/components/schemas/PowerpackInnerWidgetLayout'
+    PowerpackRelationships:
+      type: object
+      description: Powerpack relationship object.
+      properties:
+        author:
+          $ref: '#/components/schemas/RelationshipToUser'
+    PowerpackResponseLinks:
+      type: object
+      description: Links attributes.
+      properties:
+        first:
+          type: string
+          description: Link to last page.
+        last:
+          type: string
+          description: Link to first page.
+          nullable: true
+          example: https://app.datadoghq.com/api/v2/powerpacks?page[offset]=0&page[limit]=25
+        next:
+          type: string
+          description: Link for the next set of results.
+          example: https://app.datadoghq.com/api/v2/powerpacks?page[offset]=25&page[limit]=25
+        prev:
+          type: string
+          description: Link for the previous set of results.
+          nullable: true
+        self:
+          type: string
+          description: Link to current page.
+          example: https://app.datadoghq.com/api/v2/powerpacks
+      x-ignore-duplicate-object: true
+    PowerpackTemplateVariable:
+      type: object
+      description: Powerpack template variables.
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of the variable.
+          example: datacenter
+        defaults:
+          type: array
+          description: One or many template variable default values within the saved view, which are unioned
+            together using `OR` if more than one is specified.
+          items:
+            type: string
+            description: One or many default values of the template variable.
+            minLength: 1
+        prefix:
+          type: string
+          description: The tag prefix associated with the variable. Only tags with this prefix appear
+            in the variable drop-down.
+          nullable: true
+          example: host
+        available_values:
+          type: array
+          description: The list of values that the template variable drop-down is limited to.
+          nullable: true
+          example:
+          - my-host
+          - host1
+          - host2
+          items:
+            type: string
+            description: Template variable value.
+    PowerpacksResponseMeta:
+      type: object
+      description: Powerpack response metadata.
+      properties:
+        pagination:
+          $ref: '#/components/schemas/PowerpacksResponseMetaPagination'
+    PowerpacksResponseMetaPagination:
+      type: object
+      description: Powerpack response pagination metadata.
+      properties:
+        first_offset:
+          type: integer
+          description: The first offset.
+          format: int64
+        last_offset:
+          type: integer
+          description: The last offset.
+          format: int64
+          nullable: true
+        limit:
+          type: integer
+          description: Pagination limit.
+          format: int64
+        next_offset:
+          type: integer
+          description: The next offset.
+          format: int64
+        offset:
+          type: integer
+          description: The offset.
+          format: int64
+        prev_offset:
+          type: integer
+          description: The previous offset.
+          format: int64
+        total:
+          type: integer
+          description: Total results.
+          format: int64
+        type:
+          type: string
+          description: Offset type.
+    RelationshipToOrganization:
+      type: object
+      description: Relationship to an organization.
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/RelationshipToOrganizationData'
+    RelationshipToOrganizationData:
+      type: object
+      description: Relationship to organization object.
+      required:
+      - id
+      - type
+      properties:
+        type:
+          $ref: '#/components/schemas/OrganizationsType'
+        id:
+          type: string
+          description: ID of the organization.
+          example: 00000000-0000-beef-0000-000000000000
+    RelationshipToOrganizations:
+      type: object
+      description: Relationship to organizations.
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          description: Relationships to organization objects.
+          example: []
+          items:
+            $ref: '#/components/schemas/RelationshipToOrganizationData'
+    RelationshipToRoleData:
+      type: object
+      description: Relationship to role object.
+      properties:
+        type:
+          $ref: '#/components/schemas/RolesType'
+        id:
+          type: string
+          description: The unique identifier of the role.
+          example: 3653d3c6-0c75-11ea-ad28-fb5701eabc7d
+      x-merge-override:
+        required: false
+    RelationshipToRoles:
+      type: object
+      description: Relationship to roles.
+      properties:
+        data:
+          type: array
+          description: An array containing type and the unique identifier of a role.
+          items:
+            $ref: '#/components/schemas/RelationshipToRoleData'
+      x-merge-override:
+        required: false
+    RelationshipToUser:
+      type: object
+      description: Relationship to user.
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/RelationshipToUserData'
+    RelationshipToUserData:
+      type: object
+      description: Relationship to user object.
+      required:
+      - id
+      - type
+      properties:
+        type:
+          $ref: '#/components/schemas/UsersType'
+        id:
+          type: string
+          description: A unique identifier that represents the user.
+          example: 00000000-0000-0000-2345-000000000000
+      x-merge-override:
+        required: false
+    RelationshipToUsers:
+      type: object
+      description: Relationship to users.
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          description: Relationships to user objects.
+          example: []
+          items:
+            $ref: '#/components/schemas/RelationshipToUserData'
+    RolesType:
+      type: string
+      description: Roles type.
+      default: roles
+      example: roles
+      enum:
+      - roles
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - ROLES
+    User:
+      type: object
+      description: User object returned by the API.
+      properties:
+        type:
+          $ref: '#/components/schemas/UsersType'
+        id:
+          type: string
+          description: ID of the user.
+        attributes:
+          $ref: '#/components/schemas/UserAttributes'
+        relationships:
+          $ref: '#/components/schemas/UserResponseRelationships'
+      x-merge-override:
+        required: false
+    UserAttributes:
+      type: object
+      description: Attributes of user object returned by the API.
+      properties:
+        mfa_enabled:
+          type: boolean
+          description: Whether multi-factor authentication (MFA) is enabled for the user's account.
+          readOnly: true
+        name:
+          type: string
+          description: The full display name of the user as shown in the Datadog UI.
+          nullable: true
+        handle:
+          type: string
+          description: The unique handle (username) of the user, typically matching their email prefix.
+        created_at:
+          type: string
+          description: The ISO 8601 timestamp of when the user account was created.
+          format: date-time
+        modified_at:
+          type: string
+          description: The ISO 8601 timestamp of when the user account was last modified.
+          format: date-time
+        email:
+          type: string
+          description: The email address of the user, used for login and notifications.
+        icon:
+          type: string
+          description: URL of the user's profile icon, typically a Gravatar URL derived from the email
+            address.
+        title:
+          type: string
+          description: The job title of the user (for example, "Senior Engineer" or "Product Manager").
+          nullable: true
+        verified:
+          type: boolean
+          description: Whether the user's email address has been verified.
+        disabled:
+          type: boolean
+          description: Whether the user account is deactivated. Disabled users cannot log in.
+        status:
+          type: string
+          description: The current status of the user account (for example, `Active`, `Pending`, or `Disabled`).
+        service_account:
+          type: boolean
+          description: 'Whether this is a service account rather than a human user.
+
+            Service accounts are used for programmatic API access.'
+        last_login_time:
+          type: string
+          description: The ISO 8601 timestamp of the user's most recent login, or null if the user has
+            never logged in.
+          format: date-time
+          nullable: true
+          readOnly: true
+        uuid:
+          type: string
+          description: The globally unique identifier (UUID) of the user.
+          readOnly: true
+    UserResponseRelationships:
+      type: object
+      description: Relationships of the user object returned by the API.
+      properties:
+        roles:
+          $ref: '#/components/schemas/RelationshipToRoles'
+        org:
+          $ref: '#/components/schemas/RelationshipToOrganization'
+        other_users:
+          $ref: '#/components/schemas/RelationshipToUsers'
+        other_orgs:
+          $ref: '#/components/schemas/RelationshipToOrganizations'
+      x-merge-override:
+        properties: false
+    UsersType:
+      type: string
+      description: Users resource type.
+      default: users
+      example: users
+      enum:
+      - users
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - USERS
+    WidgetLiveSpan:
+      type: string
+      description: The available timeframes depend on the widget you are using.
+      example: 5m
+      enum:
+      - 1m
+      - 5m
+      - 10m
+      - 15m
+      - 30m
+      - 1h
+      - 4h
+      - 1d
+      - 2d
+      - 1w
+      - 1mo
+      - 3mo
+      - 6mo
+      - 1y
+      - alert
+      x-enum-varnames:
+      - PAST_ONE_MINUTE
+      - PAST_FIVE_MINUTES
+      - PAST_TEN_MINUTES
+      - PAST_FIFTEEN_MINUTES
+      - PAST_THIRTY_MINUTES
+      - PAST_ONE_HOUR
+      - PAST_FOUR_HOURS
+      - PAST_ONE_DAY
+      - PAST_TWO_DAYS
+      - PAST_ONE_WEEK
+      - PAST_ONE_MONTH
+      - PAST_THREE_MONTHS
+      - PAST_SIX_MONTHS
+      - PAST_ONE_YEAR
+      - ALERT
+  securitySchemes:
+    AuthZ:
+      type: oauth2
+      description: This API uses OAuth 2 with the implicit grant flow.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth2/v1/authorize
+          tokenUrl: /oauth2/v1/token
+          scopes: {}
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY

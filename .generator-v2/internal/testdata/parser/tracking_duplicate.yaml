@@ -1,0 +1,33 @@
+openapi: 3.0.0
+info:
+  title: tracking duplicate fixture
+  version: 1.0.0
+paths:
+  /teams:
+    get:
+      operationId: ListTeams
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: team
+        group:
+          read: ListTeams
+      responses:
+        '200':
+          description: ok
+  /teams/{id}:
+    get:
+      operationId: GetTeam
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: team
+        group:
+          read: GetTeam
+      responses:
+        '200':
+          description: ok

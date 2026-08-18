@@ -1,0 +1,43 @@
+name: Generator Checks
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    paths:
+      - ".generator-v2/**"
+      - "GNUmakefile"
+      - ".github/workflows/tfgen.yml"
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}-tfgen
+  cancel-in-progress: true
+
+jobs:
+  build-vet-and-test:
+    name: build, vet, and test
+    runs-on: ubuntu-latest
+    if: github.event.action != 'closed' && github.event.pull_request.merged != true
+    defaults:
+      run:
+        working-directory: .generator-v2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Go
+        uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe
+        with:
+          go-version-file: .generator-v2/go.mod
+          cache: true
+          cache-dependency-path: .generator-v2/go.sum
+
+      - name: go build
+        run: go build ./cmd/tfgen/...
+
+      - name: go vet
+        run: go vet ./cmd/tfgen/...
+
+      - name: Test
+        run: make -C .. tfgen-test

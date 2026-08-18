@@ -12,7 +12,9 @@ import (
 )
 
 func TestAccDatadogIncidentTypeDataSource_Basic(t *testing.T) {
-	t.Parallel()
+	// Not parallel: these incident-type acceptance tests all create incident types
+	// against the shared staging org, and running them concurrently bursts the
+	// per-org rate limit on the incidents config API (429s). Serialize to flatten it.
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	incidentTypeName := fmt.Sprintf("test-it-ds-%d", clockFromContext(ctx).Now().Unix())
 

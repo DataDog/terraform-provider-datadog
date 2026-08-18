@@ -112,6 +112,9 @@ type FieldSpec struct {
 	// TypeBlock always uses MaxItems: 1 automatically.
 	MaxItems int
 
+	// MinItems: minimum count for list and TypeBlockList fields (default 0 = unset).
+	MinItems int
+
 	// Sensitive: mask this field in logs and UI
 	Sensitive bool
 
@@ -179,6 +182,69 @@ type WidgetSpec struct {
 	// Fields are the widget-specific fields.
 	// CommonWidgetFields are automatically merged in by the engine.
 	Fields []FieldSpec
+
+	// JSONMatchPath and JSONMatchValues disambiguate widget schemas that share
+	// the same JSON type. The path supports object keys and array indexes, for
+	// example `requests.0.request_type` for the two funnel definitions.
+	JSONMatchPath   string
+	JSONMatchValues []string
+
+	// JSONDefaultMatch marks the fallback schema when the JSON type matches but
+	// the discriminator path is absent or contains an unknown value.
+	JSONDefaultMatch bool
+}
+
+// getAtInterfacePath reads a dotted path through JSON objects and arrays.
+func getAtInterfacePath(value interface{}, path string) interface{} {
+	if path == "" {
+		return value
+	}
+	parts := strings.Split(path, ".")
+	current := value
+	for _, part := range parts {
+		switch typed := current.(type) {
+		case map[string]interface{}:
+			current = typed[part]
+		case []interface{}:
+			index, err := strconv.Atoi(part)
+			if err != nil || index < 0 || index >= len(typed) {
+				return nil
+			}
+			current = typed[index]
+		default:
+			return nil
+		}
+	}
+	return current
+}
+
+// findWidgetSpecForJSON selects the schema for a widget definition, including
+// discriminator-aware selection when multiple HCL definitions share a JSON type.
+func findWidgetSpecForJSON(def map[string]interface{}) *WidgetSpec {
+	widgetType, _ := def["type"].(string)
+	var fallback *WidgetSpec
+	for i := range allWidgetSpecs {
+		spec := &allWidgetSpecs[i]
+		if spec.JSONType != widgetType {
+			continue
+		}
+		if spec.JSONMatchPath == "" {
+			if fallback == nil || spec.JSONDefaultMatch {
+				fallback = spec
+			}
+			continue
+		}
+		matchValue, _ := getAtInterfacePath(def, spec.JSONMatchPath).(string)
+		for _, expected := range spec.JSONMatchValues {
+			if matchValue == expected {
+				return spec
+			}
+		}
+		if spec.JSONDefaultMatch {
+			fallback = spec
+		}
+	}
+	return fallback
 }
 
 // ============================================================
@@ -567,9 +633,20 @@ var scalarWithConditionalFormatsConfig = FormulaRequestConfig{
 	ExtraFields:    conditionalFormatsExtraFields,
 }
 
+var queryValueFormulaRequestConfig = FormulaRequestConfig{
+	ResponseFormat: "scalar",
+	StyleFields:    widgetRequestStyleFields,
+	IncludeSort:    true,
+	ExtraFields: append(
+		append([]FieldSpec{}, conditionalFormatsExtraFields...),
+		queryValueWidgetComparisonField,
+	),
+}
+
 var queryTableFormulaRequestConfig = FormulaRequestConfig{
 	ResponseFormat: "scalar",
 	ExtraFields:    queryTableRequestExtraFields,
+	IncludeSort:    true,
 }
 
 var geomapFormulaRequestConfig = FormulaRequestConfig{
@@ -589,7 +666,9 @@ func formulaRequestConfigForWidget(jsonType string) FormulaRequestConfig {
 		return heatmapFormulaRequestConfig
 	case "change":
 		return changeFormulaRequestConfig
-	case "query_value", "toplist", "bar_chart":
+	case "query_value":
+		return queryValueFormulaRequestConfig
+	case "toplist", "bar_chart":
 		return scalarWithConditionalFormatsConfig
 	case "geomap":
 		return geomapFormulaRequestConfig
@@ -660,18 +739,23 @@ func flattenFormulaRequest(req map[string]interface{}, cfg FormulaRequestConfig)
 // dataSourceToQueryType maps JSON data_source values to HCL query block keys.
 // Used by flattenFormulaQueryJSON to route flattened queries to the right block.
 var dataSourceToQueryType = map[string]string{
-	"metrics":              "metric_query",
-	"logs":                 "event_query",
-	"spans":                "event_query",
-	"profiling":            "event_query",
-	"audit":                "event_query",
-	"rum":                  "event_query",
-	"errors":               "event_query",
-	"process":              "process_query",
-	"slo":                  "slo_query",
-	"cloud_cost":           "cloud_cost_query",
-	"apm_dependency_stats": "apm_dependency_stats_query",
-	"apm_resource_stats":   "apm_resource_stats_query",
+	"metrics":                     "metric_query",
+	"logs":                        "event_query",
+	"spans":                       "event_query",
+	"profiling":                   "event_query",
+	"audit":                       "event_query",
+	"rum":                         "event_query",
+	"errors":                      "event_query",
+	"process":                     "process_query",
+	"slo":                         "slo_query",
+	"cloud_cost":                  "cloud_cost_query",
+	"apm_dependency_stats":        "apm_dependency_stats_query",
+	"apm_resource_stats":          "apm_resource_stats_query",
+	"apm_metrics":                 "apm_metrics_query",
+	"product_analytics":           "event_query",
+	"product_analytics_extended":  "product_analytics_extended_query",
+	"product_analytics_journey":   "user_journey_query",
+	"product_analytics_retention": "retention_query",
 }
 
 // isFormulaCapableWidget returns true for widget types that support
@@ -702,12 +786,9 @@ func flattenWidgetEngineJSON(widgetData map[string]interface{}) (map[string]inte
 	if !ok {
 		return nil, nil
 	}
-	widgetType, _ := def["type"].(string)
 
-	for _, spec := range allWidgetSpecs {
-		if spec.JSONType != widgetType {
-			continue
-		}
+	if matchedSpec := findWidgetSpecForJSON(def); matchedSpec != nil {
+		spec := *matchedSpec
 		allFields := make([]FieldSpec, 0, len(CommonWidgetFields)+len(spec.Fields))
 		allFields = append(allFields, CommonWidgetFields...)
 		allFields = append(allFields, spec.Fields...)
@@ -867,9 +948,7 @@ func flattenWidgetSortByJSON(sortObj map[string]interface{}) map[string]interfac
 			switch sortType {
 			case "formula":
 				fs := map[string]interface{}{}
-				if idx, ok := obMap["index"].(float64); ok {
-					fs["index"] = int(idx)
-				}
+				fs["index"] = getIntFromMap(obMap, "index")
 				if ord, ok := obMap["order"].(string); ok {
 					fs["order"] = ord
 				}
@@ -1192,6 +1271,11 @@ func flattenQueryTableRequestJSON(req map[string]interface{}) map[string]interfa
 	}
 	// Old-style request
 	result := FlattenEngineJSON(queryTableOldRequestFields, req)
+	if sortObj, ok := req["sort"].(map[string]interface{}); ok {
+		if s := flattenWidgetSortByJSON(sortObj); len(s) > 0 {
+			result["sort"] = []interface{}{s}
+		}
+	}
 	// text_formats (2D array) needs special handling
 	if textFormats, ok := req["text_formats"].([]interface{}); ok && len(textFormats) > 0 {
 		result["text_formats"] = flattenQueryTableTextFormatsJSON(textFormats)
@@ -1301,11 +1385,8 @@ func flattenSplitConfigStaticSplitsJSON(staticSplits []interface{}) []interface{
 // flattenSplitGraphSourceWidgetJSON flattens the source_widget_definition JSON
 // for a split_graph widget response. Returns dropped paths from the inner widget.
 func flattenSplitGraphSourceWidgetJSON(srcDef map[string]interface{}) (map[string]interface{}, []string) {
-	widgetType, _ := srcDef["type"].(string)
-	for _, spec := range allWidgetSpecs {
-		if spec.JSONType != widgetType {
-			continue
-		}
+	if matchedSpec := findWidgetSpecForJSON(srcDef); matchedSpec != nil {
+		spec := *matchedSpec
 		allFields := make([]FieldSpec, 0, len(CommonWidgetFields)+len(spec.Fields))
 		allFields = append(allFields, CommonWidgetFields...)
 		allFields = append(allFields, spec.Fields...)
@@ -2122,9 +2203,7 @@ func buildWidgetSortByJSONFromMap(sortMap map[string]interface{}) map[string]int
 			entry := map[string]interface{}{}
 			if fsMap := getBlockFromMap(obMap, "formula_sort"); fsMap != nil {
 				entry["type"] = "formula"
-				if idx := getIntFromMap(fsMap, "index"); idx != 0 {
-					entry["index"] = idx
-				}
+				entry["index"] = getIntFromMap(fsMap, "index")
 				if ord := getStringFromMap(fsMap, "order"); ord != "" {
 					entry["order"] = ord
 				}
@@ -2165,6 +2244,11 @@ func buildQueryTableRequestsJSONFromMap(defMap map[string]interface{}) []interfa
 			requests = append(requests, req)
 		} else {
 			req := BuildEngineJSONFromMap(reqMap, queryTableOldRequestFields)
+			if sortMap := getBlockFromMap(reqMap, "sort"); sortMap != nil {
+				if sortJSON := buildWidgetSortByJSONFromMap(sortMap); len(sortJSON) > 0 {
+					req["sort"] = sortJSON
+				}
+			}
 			buildQueryTableTextFormatsJSONFromMap(reqMap, req)
 			requests = append(requests, req)
 		}
@@ -2421,7 +2505,7 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 	}
 
 	// ---- Funnel request_type injection ----
-	if spec.JSONType == "funnel" {
+	if spec.HCLKey == "funnel_definition" {
 		if requests, ok := defJSON["requests"].([]interface{}); ok {
 			for _, req := range requests {
 				if reqMap, ok := req.(map[string]interface{}); ok {

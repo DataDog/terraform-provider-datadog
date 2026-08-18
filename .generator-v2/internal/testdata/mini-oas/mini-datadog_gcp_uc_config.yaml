@@ -1,0 +1,244 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: Cloud Cost Management
+  description: The Cloud Cost Management API allows you to set up, edit, and delete Cloud Cost Management
+    accounts for AWS, Azure, and Google Cloud. You can query your cost data by using the [Metrics endpoint](https://docs.datadoghq.com/api/latest/metrics/#query-timeseries-data-across-multiple-products)
+    and the `cloud_cost` data source. For more information, see the [Cloud Cost Management documentation](https://docs.datadoghq.com/cloud_cost_management/).
+paths:
+  /api/v2/cost/gcp_uc_config/{cloud_account_id}:
+    get:
+      operationId: GetCostGCPUsageCostConfig
+      tags:
+      - Cloud Cost Management
+      summary: Get Google Cloud Usage Cost config
+      description: Get a specific Google Cloud Usage Cost config.
+      parameters:
+      - name: cloud_account_id
+        in: path
+        required: true
+        description: The unique identifier of the cloud account
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GcpUcConfigResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                      attributes:
+                        account_id: 123456_A123BC_12AB34
+                        bucket_name: dd-cost-bucket
+                        created_at: '2023-01-01T12:00:00.000000'
+                        dataset: billing
+                        error_messages: []
+                        export_prefix: datadog_cloud_cost_usage_export
+                        export_project_name: dd-cloud-cost-report
+                        months: 36
+                        project_id: my-project-123
+                        service_account: dd-ccm-gcp-integration@my-environment.iam.gserviceaccount.com
+                        status: active
+                        status_updated_at: '2023-01-01T12:00:00.000000'
+                        updated_at: '2023-01-01T12:00:00.000000'
+                      id: '123456789123'
+                      type: gcp_uc_config
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      security:
+      - apiKeyAuth: []
+        appKeyAuth: []
+      - AuthZ:
+        - cloud_cost_management_read
+      x-menu-order: 15
+      x-undo:
+        type: safe
+components:
+  responses:
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    GcpUcConfigResponse:
+      type: object
+      description: The definition of `GcpUcConfigResponse` object.
+      example:
+        data:
+          attributes:
+            account_id: 123456_A123BC_12AB34
+            bucket_name: dd-cost-bucket
+            created_at: '2023-01-01T12:00:00.000000'
+            dataset: billing
+            error_messages: []
+            export_prefix: datadog_cloud_cost_usage_export
+            export_project_name: dd-cloud-cost-report
+            months: 36
+            project_id: my-project-123
+            service_account: dd-ccm-gcp-integration@my-environment.iam.gserviceaccount.com
+            status: active
+            status_updated_at: '2023-01-01T12:00:00.000000'
+            updated_at: '2023-01-01T12:00:00.000000'
+          id: '123456789123'
+          type: gcp_uc_config
+      properties:
+        data:
+          $ref: '#/components/schemas/GcpUcConfigResponseData'
+    GcpUcConfigResponseData:
+      type: object
+      description: The definition of `GcpUcConfigResponseData` object.
+      required:
+      - type
+      properties:
+        attributes:
+          $ref: '#/components/schemas/GcpUcConfigResponseDataAttributes'
+        id:
+          type: string
+          description: The `GcpUcConfigResponseData` `id`.
+        type:
+          $ref: '#/components/schemas/GcpUcConfigResponseDataType'
+    GcpUcConfigResponseDataAttributes:
+      type: object
+      description: The definition of `GcpUcConfigResponseDataAttributes` object.
+      properties:
+        account_id:
+          type: string
+          description: The `attributes` `account_id`.
+        bucket_name:
+          type: string
+          description: The `attributes` `bucket_name`.
+        created_at:
+          type: string
+          description: The `attributes` `created_at`.
+        dataset:
+          type: string
+          description: The `attributes` `dataset`.
+        error_messages:
+          type: array
+          description: The `attributes` `error_messages`.
+          nullable: true
+          items:
+            type: string
+            description: An error message string.
+        export_prefix:
+          type: string
+          description: The `attributes` `export_prefix`.
+        export_project_name:
+          type: string
+          description: The `attributes` `export_project_name`.
+        months:
+          type: integer
+          description: The `attributes` `months`.
+          format: int64
+        project_id:
+          type: string
+          description: The `attributes` `project_id`.
+        service_account:
+          type: string
+          description: The `attributes` `service_account`.
+        status:
+          type: string
+          description: The `attributes` `status`.
+        status_updated_at:
+          type: string
+          description: The `attributes` `status_updated_at`.
+        updated_at:
+          type: string
+          description: The `attributes` `updated_at`.
+    GcpUcConfigResponseDataType:
+      type: string
+      description: Google Cloud Usage Cost config resource type.
+      default: gcp_uc_config
+      example: gcp_uc_config
+      enum:
+      - gcp_uc_config
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - GCP_UC_CONFIG
+  securitySchemes:
+    AuthZ:
+      type: oauth2
+      description: This API uses OAuth 2 with the implicit grant flow.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth2/v1/authorize
+          tokenUrl: /oauth2/v1/token
+          scopes: {}
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY

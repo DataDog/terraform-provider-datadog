@@ -27,6 +27,7 @@ data "datadog_security_monitoring_critical_asset" "my_critical_asset" {
 
 ### Read-Only
 
+- `description` (String) A description of the critical asset.
 - `enabled` (Boolean) Whether the critical asset is enabled.
 - `query` (String) The query used to match a critical asset and the associated signals.
 - `rule_query` (String) The rule query to filter which detection rules this critical asset applies to.

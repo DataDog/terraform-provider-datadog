@@ -1,0 +1,1527 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: Action Connection
+  description: 'Action connections extend your installed integrations and allow you to take action in
+    your third-party systems
+
+    (e.g. AWS, GitLab, and Statuspage) with Datadog’s Workflow Automation and App Builder products.
+
+
+    Datadog’s Integrations automatically provide authentication for Slack, Microsoft Teams, PagerDuty,
+    Opsgenie,
+
+    JIRA, GitHub, and Statuspage. You do not need additional connections in order to access these tools
+    within
+
+    Workflow Automation and App Builder.
+
+
+    We offer granular access control for editing and resolving connections.'
+  externalDocs:
+    description: Find out more at
+    url: https://docs.datadoghq.com/service_management/workflows/connections/
+paths:
+  /api/v2/actions/connections/{connection_id}:
+    get:
+      operationId: GetActionConnection
+      tags:
+      - Action Connection
+      summary: Get an existing Action Connection
+      description: Get an existing Action Connection. This API requires a [registered application key](https://docs.datadoghq.com/api/latest/action-connection/#register-a-new-app-key).
+      parameters:
+      - $ref: '#/components/parameters/ConnectionId'
+      responses:
+        '200':
+          description: Successfully get Action Connection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetActionConnectionResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                      id: 00000000-0000-0000-0000-000000000002
+                      type: action_connection
+                      attributes:
+                        name: My AWS Connection
+                        integration:
+                          type: AWS
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSONAPIErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSONAPIErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSONAPIErrorResponse'
+        '429':
+          description: Too Many Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSONAPIErrorResponse'
+      x-menu-order: 1
+      x-undo:
+        type: safe
+components:
+  parameters:
+    ConnectionId:
+      name: connection_id
+      in: path
+      required: true
+      description: The ID of the action connection
+      schema:
+        type: string
+  schemas:
+    AWSAssumeRole:
+      type: object
+      description: The definition of `AWSAssumeRole` object.
+      required:
+      - type
+      - account_id
+      - role
+      properties:
+        account_id:
+          type: string
+          description: AWS account the connection is created for
+          pattern: ^\d{12}$
+          example: '111222333444'
+        external_id:
+          type: string
+          description: External ID used to scope which connection can be used to assume the role
+          readOnly: true
+          example: 33a1011635c44b38a064cf14e82e1d8f
+        principal_id:
+          type: string
+          description: AWS account that will assume the role
+          readOnly: true
+          example: '123456789012'
+        role:
+          type: string
+          description: Role to assume
+          example: my-role
+        type:
+          $ref: '#/components/schemas/AWSAssumeRoleType'
+    AWSAssumeRoleType:
+      type: string
+      description: The definition of `AWSAssumeRoleType` object.
+      example: AWSAssumeRole
+      enum:
+      - AWSAssumeRole
+      x-enum-varnames:
+      - AWSASSUMEROLE
+    AWSCredentials:
+      description: The definition of `AWSCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/AWSAssumeRole'
+    AWSIntegration:
+      type: object
+      description: The definition of `AWSIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/AWSCredentials'
+        type:
+          $ref: '#/components/schemas/AWSIntegrationType'
+    AWSIntegrationType:
+      type: string
+      description: The definition of `AWSIntegrationType` object.
+      example: AWS
+      enum:
+      - AWS
+      x-enum-varnames:
+      - AWS
+    ActionConnectionAttributes:
+      type: object
+      description: The definition of `ActionConnectionAttributes` object.
+      required:
+      - name
+      - integration
+      properties:
+        integration:
+          $ref: '#/components/schemas/ActionConnectionIntegration'
+        name:
+          type: string
+          description: Name of the connection
+          example: My AWS Connection
+    ActionConnectionData:
+      type: object
+      description: Data related to the connection.
+      required:
+      - type
+      - attributes
+      properties:
+        attributes:
+          $ref: '#/components/schemas/ActionConnectionAttributes'
+        id:
+          type: string
+          description: The connection identifier
+          readOnly: true
+        type:
+          $ref: '#/components/schemas/ActionConnectionDataType'
+    ActionConnectionDataType:
+      type: string
+      description: The definition of `ActionConnectionDataType` object.
+      example: action_connection
+      enum:
+      - action_connection
+      x-enum-varnames:
+      - ACTION_CONNECTION
+    ActionConnectionIntegration:
+      description: The definition of `ActionConnectionIntegration` object.
+      oneOf:
+      - $ref: '#/components/schemas/AWSIntegration'
+      - $ref: '#/components/schemas/AnthropicIntegration'
+      - $ref: '#/components/schemas/AsanaIntegration'
+      - $ref: '#/components/schemas/AzureIntegration'
+      - $ref: '#/components/schemas/CircleCIIntegration'
+      - $ref: '#/components/schemas/ClickupIntegration'
+      - $ref: '#/components/schemas/CloudflareIntegration'
+      - $ref: '#/components/schemas/ConfigCatIntegration'
+      - $ref: '#/components/schemas/DatadogIntegration'
+      - $ref: '#/components/schemas/FastlyIntegration'
+      - $ref: '#/components/schemas/FreshserviceIntegration'
+      - $ref: '#/components/schemas/GCPIntegration'
+      - $ref: '#/components/schemas/GeminiIntegration'
+      - $ref: '#/components/schemas/GitlabIntegration'
+      - $ref: '#/components/schemas/GreyNoiseIntegration'
+      - $ref: '#/components/schemas/HTTPIntegration'
+      - $ref: '#/components/schemas/LaunchDarklyIntegration'
+      - $ref: '#/components/schemas/NotionIntegration'
+      - $ref: '#/components/schemas/OktaIntegration'
+      - $ref: '#/components/schemas/OpenAIIntegration'
+      - $ref: '#/components/schemas/ServiceNowIntegration'
+      - $ref: '#/components/schemas/SplitIntegration'
+      - $ref: '#/components/schemas/StatsigIntegration'
+      - $ref: '#/components/schemas/VirusTotalIntegration'
+    AnthropicAPIKey:
+      type: object
+      description: The definition of the `AnthropicAPIKey` object.
+      required:
+      - type
+      - api_token
+      properties:
+        api_token:
+          type: string
+          description: The `AnthropicAPIKey` `api_token`.
+          example: ''
+        type:
+          $ref: '#/components/schemas/AnthropicAPIKeyType'
+    AnthropicAPIKeyType:
+      type: string
+      description: The definition of the `AnthropicAPIKey` object.
+      example: AnthropicAPIKey
+      enum:
+      - AnthropicAPIKey
+      x-enum-varnames:
+      - ANTHROPICAPIKEY
+    AnthropicCredentials:
+      description: The definition of the `AnthropicCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/AnthropicAPIKey'
+    AnthropicIntegration:
+      type: object
+      description: The definition of the `AnthropicIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/AnthropicCredentials'
+        type:
+          $ref: '#/components/schemas/AnthropicIntegrationType'
+    AnthropicIntegrationType:
+      type: string
+      description: The definition of the `AnthropicIntegrationType` object.
+      example: Anthropic
+      enum:
+      - Anthropic
+      x-enum-varnames:
+      - ANTHROPIC
+    AsanaAccessToken:
+      type: object
+      description: The definition of the `AsanaAccessToken` object.
+      required:
+      - type
+      - access_token
+      properties:
+        access_token:
+          type: string
+          description: The `AsanaAccessToken` `access_token`.
+          example: ''
+        type:
+          $ref: '#/components/schemas/AsanaAccessTokenType'
+    AsanaAccessTokenType:
+      type: string
+      description: The definition of the `AsanaAccessToken` object.
+      example: AsanaAccessToken
+      enum:
+      - AsanaAccessToken
+      x-enum-varnames:
+      - ASANAACCESSTOKEN
+    AsanaCredentials:
+      description: The definition of the `AsanaCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/AsanaAccessToken'
+    AsanaIntegration:
+      type: object
+      description: The definition of the `AsanaIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/AsanaCredentials'
+        type:
+          $ref: '#/components/schemas/AsanaIntegrationType'
+    AsanaIntegrationType:
+      type: string
+      description: The definition of the `AsanaIntegrationType` object.
+      example: Asana
+      enum:
+      - Asana
+      x-enum-varnames:
+      - ASANA
+    AzureCredentials:
+      description: The definition of the `AzureCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/AzureTenant'
+    AzureIntegration:
+      type: object
+      description: The definition of the `AzureIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/AzureCredentials'
+        type:
+          $ref: '#/components/schemas/AzureIntegrationType'
+    AzureIntegrationType:
+      type: string
+      description: The definition of the `AzureIntegrationType` object.
+      example: Azure
+      enum:
+      - Azure
+      x-enum-varnames:
+      - AZURE
+    AzureTenant:
+      type: object
+      description: The definition of the `AzureTenant` object.
+      required:
+      - type
+      - tenant_id
+      - app_client_id
+      - client_secret
+      properties:
+        app_client_id:
+          type: string
+          description: The Client ID, also known as the Application ID in Azure, is a unique identifier
+            for an application. It's used to identify the application during the authentication process.
+            Your Application (client) ID is listed in the application's overview page. You can navigate
+            to your application via the Azure Directory.
+          example: ''
+        client_secret:
+          type: string
+          description: The Client Secret is a confidential piece of information known only to the application
+            and Azure AD. It's used to prove the application's identity. Your Client Secret is available
+            from the application’s secrets page. You can navigate to your application via the Azure Directory.
+          example: ''
+        custom_scopes:
+          type: string
+          description: If provided, the custom scope to be requested from Microsoft when acquiring an
+            OAuth 2 access token. This custom scope is used only in conjunction with the HTTP action.
+            A resource's scope is constructed by using the identifier URI for the resource and .default,
+            separated by a forward slash (/) as follows:{identifierURI}/.default.
+        tenant_id:
+          type: string
+          description: The Tenant ID, also known as the Directory ID in Azure, is a unique identifier
+            that represents an Azure AD instance. Your Tenant ID (Directory ID) is listed in your Active
+            Directory overview page under the 'Tenant information' section.
+          example: ''
+        type:
+          $ref: '#/components/schemas/AzureTenantType'
+    AzureTenantType:
+      type: string
+      description: The definition of the `AzureTenant` object.
+      example: AzureTenant
+      enum:
+      - AzureTenant
+      x-enum-varnames:
+      - AZURETENANT
+    CircleCIAPIKey:
+      type: object
+      description: The definition of the `CircleCIAPIKey` object.
+      required:
+      - type
+      - api_token
+      properties:
+        api_token:
+          type: string
+          description: The `CircleCIAPIKey` `api_token`.
+          example: ''
+        type:
+          $ref: '#/components/schemas/CircleCIAPIKeyType'
+    CircleCIAPIKeyType:
+      type: string
+      description: The definition of the `CircleCIAPIKey` object.
+      example: CircleCIAPIKey
+      enum:
+      - CircleCIAPIKey
+      x-enum-varnames:
+      - CIRCLECIAPIKEY
+    CircleCICredentials:
+      description: The definition of the `CircleCICredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/CircleCIAPIKey'
+    CircleCIIntegration:
+      type: object
+      description: The definition of the `CircleCIIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/CircleCICredentials'
+        type:
+          $ref: '#/components/schemas/CircleCIIntegrationType'
+    CircleCIIntegrationType:
+      type: string
+      description: The definition of the `CircleCIIntegrationType` object.
+      example: CircleCI
+      enum:
+      - CircleCI
+      x-enum-varnames:
+      - CIRCLECI
+    ClickupAPIKey:
+      type: object
+      description: The definition of the `ClickupAPIKey` object.
+      required:
+      - type
+      - api_token
+      properties:
+        api_token:
+          type: string
+          description: The `ClickupAPIKey` `api_token`.
+          example: ''
+        type:
+          $ref: '#/components/schemas/ClickupAPIKeyType'
+    ClickupAPIKeyType:
+      type: string
+      description: The definition of the `ClickupAPIKey` object.
+      example: ClickupAPIKey
+      enum:
+      - ClickupAPIKey
+      x-enum-varnames:
+      - CLICKUPAPIKEY
+    ClickupCredentials:
+      description: The definition of the `ClickupCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/ClickupAPIKey'
+    ClickupIntegration:
+      type: object
+      description: The definition of the `ClickupIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/ClickupCredentials'
+        type:
+          $ref: '#/components/schemas/ClickupIntegrationType'
+    ClickupIntegrationType:
+      type: string
+      description: The definition of the `ClickupIntegrationType` object.
+      example: Clickup
+      enum:
+      - Clickup
+      x-enum-varnames:
+      - CLICKUP
+    CloudflareAPIToken:
+      type: object
+      description: The definition of the `CloudflareAPIToken` object.
+      required:
+      - type
+      - api_token
+      properties:
+        api_token:
+          type: string
+          description: The `CloudflareAPIToken` `api_token`.
+          example: ''
+        type:
+          $ref: '#/components/schemas/CloudflareAPITokenType'
+    CloudflareAPITokenType:
+      type: string
+      description: The definition of the `CloudflareAPIToken` object.
+      example: CloudflareAPIToken
+      enum:
+      - CloudflareAPIToken
+      x-enum-varnames:
+      - CLOUDFLAREAPITOKEN
+    CloudflareCredentials:
+      description: The definition of the `CloudflareCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/CloudflareAPIToken'
+      - $ref: '#/components/schemas/CloudflareGlobalAPIToken'
+    CloudflareGlobalAPIToken:
+      type: object
+      description: The definition of the `CloudflareGlobalAPIToken` object.
+      required:
+      - type
+      - auth_email
+      - global_api_key
+      properties:
+        auth_email:
+          type: string
+          description: The `CloudflareGlobalAPIToken` `auth_email`.
+          example: ''
+        global_api_key:
+          type: string
+          description: The `CloudflareGlobalAPIToken` `global_api_key`.
+          example: ''
+        type:
+          $ref: '#/components/schemas/CloudflareGlobalAPITokenType'
+    CloudflareGlobalAPITokenType:
+      type: string
+      description: The definition of the `CloudflareGlobalAPIToken` object.
+      example: CloudflareGlobalAPIToken
+      enum:
+      - CloudflareGlobalAPIToken
+      x-enum-varnames:
+      - CLOUDFLAREGLOBALAPITOKEN
+    CloudflareIntegration:
+      type: object
+      description: The definition of the `CloudflareIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/CloudflareCredentials'
+        type:
+          $ref: '#/components/schemas/CloudflareIntegrationType'
+    CloudflareIntegrationType:
+      type: string
+      description: The definition of the `CloudflareIntegrationType` object.
+      example: Cloudflare
+      enum:
+      - Cloudflare
+      x-enum-varnames:
+      - CLOUDFLARE
+    ConfigCatCredentials:
+      description: The definition of the `ConfigCatCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/ConfigCatSDKKey'
+    ConfigCatIntegration:
+      type: object
+      description: The definition of the `ConfigCatIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/ConfigCatCredentials'
+        type:
+          $ref: '#/components/schemas/ConfigCatIntegrationType'
+    ConfigCatIntegrationType:
+      type: string
+      description: The definition of the `ConfigCatIntegrationType` object.
+      example: ConfigCat
+      enum:
+      - ConfigCat
+      x-enum-varnames:
+      - CONFIGCAT
+    ConfigCatSDKKey:
+      type: object
+      description: The definition of the `ConfigCatSDKKey` object.
+      required:
+      - type
+      - sdk_key
+      - api_username
+      - api_password
+      properties:
+        api_password:
+          type: string
+          description: The `ConfigCatSDKKey` `api_password`.
+          example: ''
+        api_username:
+          type: string
+          description: The `ConfigCatSDKKey` `api_username`.
+          example: ''
+        sdk_key:
+          type: string
+          description: The `ConfigCatSDKKey` `sdk_key`.
+          example: ''
+        type:
+          $ref: '#/components/schemas/ConfigCatSDKKeyType'
+    ConfigCatSDKKeyType:
+      type: string
+      description: The definition of the `ConfigCatSDKKey` object.
+      example: ConfigCatSDKKey
+      enum:
+      - ConfigCatSDKKey
+      x-enum-varnames:
+      - CONFIGCATSDKKEY
+    DatadogAPIKey:
+      type: object
+      description: The definition of the `DatadogAPIKey` object.
+      required:
+      - type
+      - datacenter
+      - api_key
+      - app_key
+      properties:
+        api_key:
+          type: string
+          description: The `DatadogAPIKey` `api_key`.
+          example: ''
+        app_key:
+          type: string
+          description: The `DatadogAPIKey` `app_key`.
+          example: ''
+        datacenter:
+          type: string
+          description: The `DatadogAPIKey` `datacenter`.
+          example: ''
+        subdomain:
+          type: string
+          description: Custom subdomain used for Datadog URLs generated with this Connection. For example,
+            if this org uses `https://acme.datadoghq.com` to access Datadog, set this field to `acme`.
+            If this field is omitted, generated URLs will use the default site URL for its datacenter
+            (see [https://docs.datadoghq.com/getting_started/site](https://docs.datadoghq.com/getting_started/site)).
+        type:
+          $ref: '#/components/schemas/DatadogAPIKeyType'
+    DatadogAPIKeyType:
+      type: string
+      description: The definition of the `DatadogAPIKey` object.
+      example: DatadogAPIKey
+      enum:
+      - DatadogAPIKey
+      x-enum-varnames:
+      - DATADOGAPIKEY
+    DatadogCredentials:
+      description: The definition of the `DatadogCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/DatadogAPIKey'
+    DatadogIntegration:
+      type: object
+      description: The definition of the `DatadogIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/DatadogCredentials'
+        type:
+          $ref: '#/components/schemas/DatadogIntegrationType'
+    DatadogIntegrationType:
+      type: string
+      description: The definition of the `DatadogIntegrationType` object.
+      example: Datadog
+      enum:
+      - Datadog
+      x-enum-varnames:
+      - DATADOG
+    FastlyAPIKey:
+      type: object
+      description: The definition of the `FastlyAPIKey` object.
+      required:
+      - type
+      - api_key
+      properties:
+        api_key:
+          type: string
+          description: The `FastlyAPIKey` `api_key`.
+          example: ''
+        type:
+          $ref: '#/components/schemas/FastlyAPIKeyType'
+    FastlyAPIKeyType:
+      type: string
+      description: The definition of the `FastlyAPIKey` object.
+      example: FastlyAPIKey
+      enum:
+      - FastlyAPIKey
+      x-enum-varnames:
+      - FASTLYAPIKEY
+    FastlyCredentials:
+      description: The definition of the `FastlyCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/FastlyAPIKey'
+    FastlyIntegration:
+      type: object
+      description: The definition of the `FastlyIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/FastlyCredentials'
+        type:
+          $ref: '#/components/schemas/FastlyIntegrationType'
+    FastlyIntegrationType:
+      type: string
+      description: The definition of the `FastlyIntegrationType` object.
+      example: Fastly
+      enum:
+      - Fastly
+      x-enum-varnames:
+      - FASTLY
+    FreshserviceAPIKey:
+      type: object
+      description: The definition of the `FreshserviceAPIKey` object.
+      required:
+      - type
+      - domain
+      - api_key
+      properties:
+        api_key:
+          type: string
+          description: The `FreshserviceAPIKey` `api_key`.
+          example: ''
+        domain:
+          type: string
+          description: The `FreshserviceAPIKey` `domain`.
+          example: ''
+        type:
+          $ref: '#/components/schemas/FreshserviceAPIKeyType'
+    FreshserviceAPIKeyType:
+      type: string
+      description: The definition of the `FreshserviceAPIKey` object.
+      example: FreshserviceAPIKey
+      enum:
+      - FreshserviceAPIKey
+      x-enum-varnames:
+      - FRESHSERVICEAPIKEY
+    FreshserviceCredentials:
+      description: The definition of the `FreshserviceCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/FreshserviceAPIKey'
+    FreshserviceIntegration:
+      type: object
+      description: The definition of the `FreshserviceIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/FreshserviceCredentials'
+        type:
+          $ref: '#/components/schemas/FreshserviceIntegrationType'
+    FreshserviceIntegrationType:
+      type: string
+      description: The definition of the `FreshserviceIntegrationType` object.
+      example: Freshservice
+      enum:
+      - Freshservice
+      x-enum-varnames:
+      - FRESHSERVICE
+    GCPCredentials:
+      description: The definition of the `GCPCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/GCPServiceAccount'
+    GCPIntegration:
+      type: object
+      description: The definition of the `GCPIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/GCPCredentials'
+        type:
+          $ref: '#/components/schemas/GCPIntegrationType'
+    GCPIntegrationType:
+      type: string
+      description: The definition of the `GCPIntegrationType` object.
+      example: GCP
+      enum:
+      - GCP
+      x-enum-varnames:
+      - GCP
+    GCPServiceAccount:
+      type: object
+      description: The definition of the `GCPServiceAccount` object.
+      required:
+      - type
+      - service_account_email
+      - private_key
+      properties:
+        private_key:
+          type: string
+          description: The `GCPServiceAccount` `private_key`.
+          example: ''
+        service_account_email:
+          type: string
+          description: The `GCPServiceAccount` `service_account_email`.
+          example: ''
+        type:
+          $ref: '#/components/schemas/GCPServiceAccountCredentialType'
+    GCPServiceAccountCredentialType:
+      type: string
+      description: The definition of the `GCPServiceAccount` object.
+      example: GCPServiceAccount
+      enum:
+      - GCPServiceAccount
+      x-enum-varnames:
+      - GCPSERVICEACCOUNT
+    GeminiAPIKey:
+      type: object
+      description: The definition of the `GeminiAPIKey` object.
+      required:
+      - type
+      - api_key
+      properties:
+        api_key:
+          type: string
+          description: The `GeminiAPIKey` `api_key`.
+          example: ''
+        type:
+          $ref: '#/components/schemas/GeminiAPIKeyType'
+    GeminiAPIKeyType:
+      type: string
+      description: The definition of the `GeminiAPIKey` object.
+      example: GeminiAPIKey
+      enum:
+      - GeminiAPIKey
+      x-enum-varnames:
+      - GEMINIAPIKEY
+    GeminiCredentials:
+      description: The definition of the `GeminiCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/GeminiAPIKey'
+    GeminiIntegration:
+      type: object
+      description: The definition of the `GeminiIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/GeminiCredentials'
+        type:
+          $ref: '#/components/schemas/GeminiIntegrationType'
+    GeminiIntegrationType:
+      type: string
+      description: The definition of the `GeminiIntegrationType` object.
+      example: Gemini
+      enum:
+      - Gemini
+      x-enum-varnames:
+      - GEMINI
+    GetActionConnectionResponse:
+      type: object
+      description: The response for found connection
+      properties:
+        data:
+          $ref: '#/components/schemas/ActionConnectionData'
+      x-ignore-duplicate-object: true
+    GitlabAPIKey:
+      type: object
+      description: The definition of the `GitlabAPIKey` object.
+      required:
+      - type
+      - api_token
+      properties:
+        api_token:
+          type: string
+          description: The `GitlabAPIKey` `api_token`.
+          example: ''
+        type:
+          $ref: '#/components/schemas/GitlabAPIKeyType'
+    GitlabAPIKeyType:
+      type: string
+      description: The definition of the `GitlabAPIKey` object.
+      example: GitlabAPIKey
+      enum:
+      - GitlabAPIKey
+      x-enum-varnames:
+      - GITLABAPIKEY
+    GitlabCredentials:
+      description: The definition of the `GitlabCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/GitlabAPIKey'
+    GitlabIntegration:
+      type: object
+      description: The definition of the `GitlabIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/GitlabCredentials'
+        type:
+          $ref: '#/components/schemas/GitlabIntegrationType'
+    GitlabIntegrationType:
+      type: string
+      description: The definition of the `GitlabIntegrationType` object.
+      example: Gitlab
+      enum:
+      - Gitlab
+      x-enum-varnames:
+      - GITLAB
+    GreyNoiseAPIKey:
+      type: object
+      description: The definition of the `GreyNoiseAPIKey` object.
+      required:
+      - type
+      - api_key
+      properties:
+        api_key:
+          type: string
+          description: The `GreyNoiseAPIKey` `api_key`.
+          example: ''
+        type:
+          $ref: '#/components/schemas/GreyNoiseAPIKeyType'
+    GreyNoiseAPIKeyType:
+      type: string
+      description: The definition of the `GreyNoiseAPIKey` object.
+      example: GreyNoiseAPIKey
+      enum:
+      - GreyNoiseAPIKey
+      x-enum-varnames:
+      - GREYNOISEAPIKEY
+    GreyNoiseCredentials:
+      description: The definition of the `GreyNoiseCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/GreyNoiseAPIKey'
+    GreyNoiseIntegration:
+      type: object
+      description: The definition of the `GreyNoiseIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/GreyNoiseCredentials'
+        type:
+          $ref: '#/components/schemas/GreyNoiseIntegrationType'
+    GreyNoiseIntegrationType:
+      type: string
+      description: The definition of the `GreyNoiseIntegrationType` object.
+      example: GreyNoise
+      enum:
+      - GreyNoise
+      x-enum-varnames:
+      - GREYNOISE
+    HTTPBody:
+      type: object
+      description: The definition of `HTTPBody` object.
+      properties:
+        content:
+          type: string
+          description: Serialized body content
+          example: '{"some-json": "with-value"}'
+        content_type:
+          type: string
+          description: Content type of the body
+          example: application/json
+    HTTPCredentials:
+      description: The definition of `HTTPCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/HTTPTokenAuth'
+    HTTPHeader:
+      type: object
+      description: The definition of `HTTPHeader` object.
+      required:
+      - name
+      - value
+      properties:
+        name:
+          type: string
+          description: The `HTTPHeader` `name`.
+          pattern: ^[A-Za-z][A-Za-z\\d\\-\\_]*$
+          example: MyHttpHeader
+        value:
+          type: string
+          description: The `HTTPHeader` `value`.
+          example: Some header value
+    HTTPIntegration:
+      type: object
+      description: The definition of `HTTPIntegration` object.
+      required:
+      - type
+      - base_url
+      - credentials
+      properties:
+        base_url:
+          type: string
+          description: Base HTTP url for the integration
+          example: http://datadoghq.com
+        credentials:
+          $ref: '#/components/schemas/HTTPCredentials'
+        type:
+          $ref: '#/components/schemas/HTTPIntegrationType'
+    HTTPIntegrationType:
+      type: string
+      description: The definition of `HTTPIntegrationType` object.
+      example: HTTP
+      enum:
+      - HTTP
+      x-enum-varnames:
+      - HTTP
+    HTTPToken:
+      type: object
+      description: The definition of `HTTPToken` object.
+      required:
+      - name
+      - value
+      - type
+      properties:
+        name:
+          type: string
+          description: The `HTTPToken` `name`.
+          pattern: ^[A-Za-z][A-Za-z\\d]*$
+          example: MyToken
+        type:
+          $ref: '#/components/schemas/TokenType'
+        value:
+          type: string
+          description: The `HTTPToken` `value`.
+          example: Some Token Value
+    HTTPTokenAuth:
+      type: object
+      description: The definition of `HTTPTokenAuth` object.
+      required:
+      - type
+      properties:
+        body:
+          $ref: '#/components/schemas/HTTPBody'
+        headers:
+          type: array
+          description: The `HTTPTokenAuth` `headers`.
+          items:
+            $ref: '#/components/schemas/HTTPHeader'
+        tokens:
+          type: array
+          description: The `HTTPTokenAuth` `tokens`.
+          items:
+            $ref: '#/components/schemas/HTTPToken'
+        type:
+          $ref: '#/components/schemas/HTTPTokenAuthType'
+        url_parameters:
+          type: array
+          description: The `HTTPTokenAuth` `url_parameters`.
+          items:
+            $ref: '#/components/schemas/UrlParam'
+    HTTPTokenAuthType:
+      type: string
+      description: The definition of `HTTPTokenAuthType` object.
+      example: HTTPTokenAuth
+      enum:
+      - HTTPTokenAuth
+      x-enum-varnames:
+      - HTTPTOKENAUTH
+    JSONAPIErrorItem:
+      type: object
+      description: API error response body
+      properties:
+        status:
+          type: string
+          description: Status code of the response.
+          example: '400'
+        title:
+          type: string
+          description: Short human-readable summary of the error.
+          example: Bad Request
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the error.
+          example: Missing required attribute in body
+        meta:
+          type: object
+          description: Non-standard meta-information about the error
+          additionalProperties: {}
+        source:
+          $ref: '#/components/schemas/JSONAPIErrorItemSource'
+    JSONAPIErrorItemSource:
+      type: object
+      description: References to the source of the error.
+      properties:
+        pointer:
+          type: string
+          description: A JSON pointer to the value in the request document that caused the error.
+          example: /data/attributes/title
+        parameter:
+          type: string
+          description: A string indicating which URI query parameter caused the error.
+          example: limit
+        header:
+          type: string
+          description: A string indicating the name of a single request header which caused the error.
+          example: Authorization
+    JSONAPIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          items:
+            $ref: '#/components/schemas/JSONAPIErrorItem'
+    LaunchDarklyAPIKey:
+      type: object
+      description: The definition of the `LaunchDarklyAPIKey` object.
+      required:
+      - type
+      - api_token
+      properties:
+        api_token:
+          type: string
+          description: The `LaunchDarklyAPIKey` `api_token`.
+          example: ''
+        type:
+          $ref: '#/components/schemas/LaunchDarklyAPIKeyType'
+    LaunchDarklyAPIKeyType:
+      type: string
+      description: The definition of the `LaunchDarklyAPIKey` object.
+      example: LaunchDarklyAPIKey
+      enum:
+      - LaunchDarklyAPIKey
+      x-enum-varnames:
+      - LAUNCHDARKLYAPIKEY
+    LaunchDarklyCredentials:
+      description: The definition of the `LaunchDarklyCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/LaunchDarklyAPIKey'
+    LaunchDarklyIntegration:
+      type: object
+      description: The definition of the `LaunchDarklyIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/LaunchDarklyCredentials'
+        type:
+          $ref: '#/components/schemas/LaunchDarklyIntegrationType'
+    LaunchDarklyIntegrationType:
+      type: string
+      description: The definition of the `LaunchDarklyIntegrationType` object.
+      example: LaunchDarkly
+      enum:
+      - LaunchDarkly
+      x-enum-varnames:
+      - LAUNCHDARKLY
+    NotionAPIKey:
+      type: object
+      description: The definition of the `NotionAPIKey` object.
+      required:
+      - type
+      - api_token
+      properties:
+        api_token:
+          type: string
+          description: The `NotionAPIKey` `api_token`.
+          example: ''
+        type:
+          $ref: '#/components/schemas/NotionAPIKeyType'
+    NotionAPIKeyType:
+      type: string
+      description: The definition of the `NotionAPIKey` object.
+      example: NotionAPIKey
+      enum:
+      - NotionAPIKey
+      x-enum-varnames:
+      - NOTIONAPIKEY
+    NotionCredentials:
+      description: The definition of the `NotionCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/NotionAPIKey'
+    NotionIntegration:
+      type: object
+      description: The definition of the `NotionIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/NotionCredentials'
+        type:
+          $ref: '#/components/schemas/NotionIntegrationType'
+    NotionIntegrationType:
+      type: string
+      description: The definition of the `NotionIntegrationType` object.
+      example: Notion
+      enum:
+      - Notion
+      x-enum-varnames:
+      - NOTION
+    OktaAPIToken:
+      type: object
+      description: The definition of the `OktaAPIToken` object.
+      required:
+      - type
+      - domain
+      - api_token
+      properties:
+        api_token:
+          type: string
+          description: The `OktaAPIToken` `api_token`.
+          example: ''
+        domain:
+          type: string
+          description: The `OktaAPIToken` `domain`.
+          example: ''
+        type:
+          $ref: '#/components/schemas/OktaAPITokenType'
+    OktaAPITokenType:
+      type: string
+      description: The definition of the `OktaAPIToken` object.
+      example: OktaAPIToken
+      enum:
+      - OktaAPIToken
+      x-enum-varnames:
+      - OKTAAPITOKEN
+    OktaCredentials:
+      description: The definition of the `OktaCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/OktaAPIToken'
+    OktaIntegration:
+      type: object
+      description: The definition of the `OktaIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/OktaCredentials'
+        type:
+          $ref: '#/components/schemas/OktaIntegrationType'
+    OktaIntegrationType:
+      type: string
+      description: The definition of the `OktaIntegrationType` object.
+      example: Okta
+      enum:
+      - Okta
+      x-enum-varnames:
+      - OKTA
+    OpenAIAPIKey:
+      type: object
+      description: The definition of the `OpenAIAPIKey` object.
+      required:
+      - type
+      - api_token
+      properties:
+        api_token:
+          type: string
+          description: The `OpenAIAPIKey` `api_token`.
+          example: ''
+        type:
+          $ref: '#/components/schemas/OpenAIAPIKeyType'
+    OpenAIAPIKeyType:
+      type: string
+      description: The definition of the `OpenAIAPIKey` object.
+      example: OpenAIAPIKey
+      enum:
+      - OpenAIAPIKey
+      x-enum-varnames:
+      - OPENAIAPIKEY
+    OpenAICredentials:
+      description: The definition of the `OpenAICredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/OpenAIAPIKey'
+    OpenAIIntegration:
+      type: object
+      description: The definition of the `OpenAIIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/OpenAICredentials'
+        type:
+          $ref: '#/components/schemas/OpenAIIntegrationType'
+    OpenAIIntegrationType:
+      type: string
+      description: The definition of the `OpenAIIntegrationType` object.
+      example: OpenAI
+      enum:
+      - OpenAI
+      x-enum-varnames:
+      - OPENAI
+    ServiceNowBasicAuth:
+      type: object
+      description: The definition of the `ServiceNowBasicAuth` object.
+      required:
+      - type
+      - instance
+      - username
+      - password
+      properties:
+        instance:
+          type: string
+          description: The `ServiceNowBasicAuth` `instance`.
+          example: ''
+        password:
+          type: string
+          description: The `ServiceNowBasicAuth` `password`.
+          example: ''
+        type:
+          $ref: '#/components/schemas/ServiceNowBasicAuthType'
+        username:
+          type: string
+          description: The `ServiceNowBasicAuth` `username`.
+          example: ''
+    ServiceNowBasicAuthType:
+      type: string
+      description: The definition of the `ServiceNowBasicAuth` object.
+      example: ServiceNowBasicAuth
+      enum:
+      - ServiceNowBasicAuth
+      x-enum-varnames:
+      - SERVICENOWBASICAUTH
+    ServiceNowCredentials:
+      description: The definition of the `ServiceNowCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/ServiceNowBasicAuth'
+    ServiceNowIntegration:
+      type: object
+      description: The definition of the `ServiceNowIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/ServiceNowCredentials'
+        type:
+          $ref: '#/components/schemas/ServiceNowIntegrationType'
+    ServiceNowIntegrationType:
+      type: string
+      description: The definition of the `ServiceNowIntegrationType` object.
+      example: ServiceNow
+      enum:
+      - ServiceNow
+      x-enum-varnames:
+      - SERVICENOW
+    SplitAPIKey:
+      type: object
+      description: The definition of the `SplitAPIKey` object.
+      required:
+      - type
+      - api_key
+      properties:
+        api_key:
+          type: string
+          description: The `SplitAPIKey` `api_key`.
+          example: ''
+        type:
+          $ref: '#/components/schemas/SplitAPIKeyType'
+    SplitAPIKeyType:
+      type: string
+      description: The definition of the `SplitAPIKey` object.
+      example: SplitAPIKey
+      enum:
+      - SplitAPIKey
+      x-enum-varnames:
+      - SPLITAPIKEY
+    SplitCredentials:
+      description: The definition of the `SplitCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/SplitAPIKey'
+    SplitIntegration:
+      type: object
+      description: The definition of the `SplitIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/SplitCredentials'
+        type:
+          $ref: '#/components/schemas/SplitIntegrationType'
+    SplitIntegrationType:
+      type: string
+      description: The definition of the `SplitIntegrationType` object.
+      example: Split
+      enum:
+      - Split
+      x-enum-varnames:
+      - SPLIT
+    StatsigAPIKey:
+      type: object
+      description: The definition of the `StatsigAPIKey` object.
+      required:
+      - type
+      - api_key
+      properties:
+        api_key:
+          type: string
+          description: The `StatsigAPIKey` `api_key`.
+          example: ''
+        type:
+          $ref: '#/components/schemas/StatsigAPIKeyType'
+    StatsigAPIKeyType:
+      type: string
+      description: The definition of the `StatsigAPIKey` object.
+      example: StatsigAPIKey
+      enum:
+      - StatsigAPIKey
+      x-enum-varnames:
+      - STATSIGAPIKEY
+    StatsigCredentials:
+      description: The definition of the `StatsigCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/StatsigAPIKey'
+    StatsigIntegration:
+      type: object
+      description: The definition of the `StatsigIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/StatsigCredentials'
+        type:
+          $ref: '#/components/schemas/StatsigIntegrationType'
+    StatsigIntegrationType:
+      type: string
+      description: The definition of the `StatsigIntegrationType` object.
+      example: Statsig
+      enum:
+      - Statsig
+      x-enum-varnames:
+      - STATSIG
+    TokenName:
+      type: string
+      description: Name for tokens.
+      pattern: ^[A-Za-z][A-Za-z\\d]*$
+      example: MyTokenName
+    TokenType:
+      type: string
+      description: The definition of `TokenType` object.
+      example: SECRET
+      enum:
+      - SECRET
+      x-enum-varnames:
+      - SECRET
+    UrlParam:
+      type: object
+      description: The definition of `UrlParam` object.
+      required:
+      - name
+      - value
+      properties:
+        name:
+          $ref: '#/components/schemas/TokenName'
+          example: MyUrlParameter
+        value:
+          type: string
+          description: The `UrlParam` `value`.
+          example: Some Url Parameter value
+    VirusTotalAPIKey:
+      type: object
+      description: The definition of the `VirusTotalAPIKey` object.
+      required:
+      - type
+      - api_key
+      properties:
+        api_key:
+          type: string
+          description: The `VirusTotalAPIKey` `api_key`.
+          example: ''
+        type:
+          $ref: '#/components/schemas/VirusTotalAPIKeyType'
+    VirusTotalAPIKeyType:
+      type: string
+      description: The definition of the `VirusTotalAPIKey` object.
+      example: VirusTotalAPIKey
+      enum:
+      - VirusTotalAPIKey
+      x-enum-varnames:
+      - VIRUSTOTALAPIKEY
+    VirusTotalCredentials:
+      description: The definition of the `VirusTotalCredentials` object.
+      oneOf:
+      - $ref: '#/components/schemas/VirusTotalAPIKey'
+    VirusTotalIntegration:
+      type: object
+      description: The definition of the `VirusTotalIntegration` object.
+      required:
+      - type
+      - credentials
+      properties:
+        credentials:
+          $ref: '#/components/schemas/VirusTotalCredentials'
+        type:
+          $ref: '#/components/schemas/VirusTotalIntegrationType'
+    VirusTotalIntegrationType:
+      type: string
+      description: The definition of the `VirusTotalIntegrationType` object.
+      example: VirusTotal
+      enum:
+      - VirusTotal
+      x-enum-varnames:
+      - VIRUSTOTAL
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY

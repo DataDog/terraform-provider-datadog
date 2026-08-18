@@ -13,6 +13,8 @@ resource "datadog_tag_indexing_rule" "specific" {
 }
 
 # Enforce evaluation order: broad rule first, then specific override.
+# rule_ids must list EVERY active tag indexing rule in the org (this resource owns the whole-org
+# order). Any rule omitted here will be rejected by the API.
 resource "datadog_tag_indexing_rule_order" "example" {
   name = "main"
   rule_ids = [

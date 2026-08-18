@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 350
+        content_length: 407
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"query":"source:runtime-security-agent","rule_query":"type:(log_detection OR signal_correlation OR workload_security OR application_security) ruleId:007-d1a-1f3","severity":"increase","tags":["test:tf-tf-TestAccSecurityMonitoringCriticalAsset_Basic-local-1768600035","team:security"]},"type":"critical_assets"}}
+            {"data":{"attributes":{"description":"Production database servers handling PII","enabled":true,"query":"source:runtime-security-agent","rule_query":"type:(log_detection OR signal_correlation OR workload_security OR application_security) ruleId:007-d1a-1f3","severity":"increase","tags":["test:tf-tf-TestAccSecurityMonitoringCriticalAsset_Basic-local-1768600035","team:security"]},"type":"critical_assets"}}
         form: {}
         headers:
             Accept:
@@ -28,9 +28,9 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 631
+        content_length: 688
         uncompressed: false
-        body: '{"data":{"id":"ac61dd62-9e01-4e3b-9df6-db101d42854a","type":"critical_assets","attributes":{"creation_author_id":1445416,"creation_date":1768600036726,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"enabled":true,"query":"source:runtime-security-agent","rule_query":"type:(log_detection OR signal_correlation OR workload_security OR application_security) ruleId:007-d1a-1f3","severity":"increase","tags":["test:tf-tf-TestAccSecurityMonitoringCriticalAsset_Basic-local-1768600035","team:security"],"update_author_id":1445416,"update_date":1768600036726,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        body: '{"data":{"id":"ac61dd62-9e01-4e3b-9df6-db101d42854a","type":"critical_assets","attributes":{"creation_author_id":1445416,"creation_date":1768600036726,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"description":"Production database servers handling PII","enabled":true,"query":"source:runtime-security-agent","rule_query":"type:(log_detection OR signal_correlation OR workload_security OR application_security) ruleId:007-d1a-1f3","severity":"increase","tags":["test:tf-tf-TestAccSecurityMonitoringCriticalAsset_Basic-local-1768600035","team:security"],"update_author_id":1445416,"update_date":1768600036726,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -61,9 +61,9 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 631
+        content_length: 688
         uncompressed: false
-        body: '{"data":{"id":"ac61dd62-9e01-4e3b-9df6-db101d42854a","type":"critical_assets","attributes":{"creation_author_id":1445416,"creation_date":1768600036726,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"enabled":true,"query":"source:runtime-security-agent","rule_query":"type:(log_detection OR signal_correlation OR workload_security OR application_security) ruleId:007-d1a-1f3","severity":"increase","tags":["test:tf-tf-TestAccSecurityMonitoringCriticalAsset_Basic-local-1768600035","team:security"],"update_author_id":1445416,"update_date":1768600036726,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        body: '{"data":{"id":"ac61dd62-9e01-4e3b-9df6-db101d42854a","type":"critical_assets","attributes":{"creation_author_id":1445416,"creation_date":1768600036726,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"description":"Production database servers handling PII","enabled":true,"query":"source:runtime-security-agent","rule_query":"type:(log_detection OR signal_correlation OR workload_security OR application_security) ruleId:007-d1a-1f3","severity":"increase","tags":["test:tf-tf-TestAccSecurityMonitoringCriticalAsset_Basic-local-1768600035","team:security"],"update_author_id":1445416,"update_date":1768600036726,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -94,9 +94,9 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 631
+        content_length: 688
         uncompressed: false
-        body: '{"data":{"id":"ac61dd62-9e01-4e3b-9df6-db101d42854a","type":"critical_assets","attributes":{"creation_author_id":1445416,"creation_date":1768600036726,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"enabled":true,"query":"source:runtime-security-agent","rule_query":"type:(log_detection OR signal_correlation OR workload_security OR application_security) ruleId:007-d1a-1f3","severity":"increase","tags":["test:tf-tf-TestAccSecurityMonitoringCriticalAsset_Basic-local-1768600035","team:security"],"update_author_id":1445416,"update_date":1768600036726,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        body: '{"data":{"id":"ac61dd62-9e01-4e3b-9df6-db101d42854a","type":"critical_assets","attributes":{"creation_author_id":1445416,"creation_date":1768600036726,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"description":"Production database servers handling PII","enabled":true,"query":"source:runtime-security-agent","rule_query":"type:(log_detection OR signal_correlation OR workload_security OR application_security) ruleId:007-d1a-1f3","severity":"increase","tags":["test:tf-tf-TestAccSecurityMonitoringCriticalAsset_Basic-local-1768600035","team:security"],"update_author_id":1445416,"update_date":1768600036726,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json

@@ -1,0 +1,71 @@
+openapi: 3.0.0
+info:
+  title: full CRUD group resolution fixture
+  version: 1.0.0
+paths:
+  /things:
+    post:
+      operationId: CreateThing
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: thing
+        group:
+          create: CreateThing
+          read: GetThing
+          update: UpdateThing
+          delete: DeleteThing
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+  /things/{id}:
+    get:
+      operationId: GetThing
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+    put:
+      operationId: UpdateThing
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+    delete:
+      operationId: DeleteThing
+      responses:
+        '204':
+          description: no content

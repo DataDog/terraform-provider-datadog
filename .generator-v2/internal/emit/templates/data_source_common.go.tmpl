@@ -1,0 +1,239 @@
+{{/*
+  Shared partials for the data-source templates. These define the pieces that
+  are identical between the singular and plural shapes: the Go model structs,
+  the recursive schema attribute/block rendering, and the type / constructor /
+  Configure / Metadata boilerplate.
+
+  Whitespace here is intentionally loose: every rendered file is run through
+  go/format, which fixes all indentation and trailing space. Templates only
+  need to emit syntactically valid Go.
+*/}}
+
+{{/* modelStructs renders every Go struct in .Models, parent first. */}}
+{{- define "modelStructs" -}}
+{{- range .Models }}
+type {{ .Name }} struct {
+{{- range .Fields }}
+{{- if .Comment }}
+
+	// {{ .Comment }}
+{{- end }}
+	{{ .GoField }} {{ .GoType }} `tfsdk:"{{ .TFName }}"`
+{{- end }}
+}
+
+{{ end }}
+{{- end -}}
+
+{{/* schemaAttribute renders one leaf schema.*Attribute entry. */}}
+{{- define "schemaAttribute" -}}
+"{{ .TFName }}": {{ .TFType }}{
+	Description: {{ printf "%q" .Description }},
+{{- if .ElementType }}
+	ElementType: {{ .ElementType }},
+{{- end }}
+{{- if .Required }}
+	Required: true,
+{{- end }}
+{{- if .Optional }}
+	Optional: true,
+{{- end }}
+{{- if .Computed }}
+	Computed: true,
+{{- end }}
+{{- if .Sensitive }}
+	Sensitive: true,
+{{- end }}
+},
+{{- end -}}
+
+{{/* nestedBody renders the Attributes/Blocks maps shared by both block kinds. */}}
+{{- define "nestedBody" -}}
+{{- if .Attributes }}
+Attributes: map[string]schema.Attribute{
+{{- range .Attributes }}
+{{ template "schemaAttribute" . }}
+{{- end }}
+},
+{{- end }}
+{{- if .Blocks }}
+Blocks: map[string]schema.Block{
+{{- range .Blocks }}
+{{ template "schemaBlock" . }}
+{{- end }}
+},
+{{- end }}
+{{- end -}}
+
+{{/* schemaBlock renders one nested block, recursing through nestedBody. */}}
+{{- define "schemaBlock" -}}
+{{- if .ListBlock }}
+"{{ .TFName }}": schema.ListNestedBlock{
+	Description: {{ printf "%q" .Description }},
+	NestedObject: schema.NestedBlockObject{
+{{ template "nestedBody" . }}
+	},
+},
+{{- else }}
+"{{ .TFName }}": schema.SingleNestedBlock{
+	Description: {{ printf "%q" .Description }},
+{{ template "nestedBody" . }}
+},
+{{- end }}
+{{- end -}}
+
+{{/*
+  renderList projects one SDK collection into state. The primitive branch reports
+  the conversion's own diagnostics instead of discarding them, and converts under
+  the caller's ctx: a state mapper has no business minting context.Background(),
+  and a failed ListValueFrom used to leave a zero value in state silently. Each
+  branch opens its own `if` block, so the block-scoped listDiags cannot collide
+  with a sibling or nested list.
+*/}}
+{{- define "renderList" -}}
+{{- if eq .Kind "primitive" -}}
+if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+	var collectionDiags diag.Diagnostics
+	{{- if eq .ContainerKind "map" }}
+	{{ .LHS }}, collectionDiags = types.MapValueFrom(ctx, {{ .ElementType }}, *{{ .Var }})
+	{{- else }}
+	{{ .LHS }}, collectionDiags = types.ListValueFrom(ctx, {{ .ElementType }}, *{{ .Var }})
+	{{- end }}
+	diags.Append(collectionDiags...)
+} else {
+	{{- if eq .ContainerKind "map" }}
+	{{ .LHS }} = types.MapNull({{ .ElementType }})
+	{{- else }}
+	{{ .LHS }} = types.ListNull({{ .ElementType }})
+	{{- end }}
+}
+{{- else if eq .Kind "object" -}}
+if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+	for _, {{ .LoopVar }} := range *{{ .Var }} {
+		{{ .ElemVar }} := &{{ .ElemStruct }}{}
+{{- range .Scalars }}
+		if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+			{{ .LHS }} = {{ .RHS }}
+		}
+{{- end }}
+{{- range .Lists }}
+		{{ template "renderList" . }}
+{{- end }}
+		{{ .LHS }} = append({{ .LHS }}, {{ .ElemVar }})
+	}
+}
+{{- else if eq .Kind "object_single" -}}
+if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+	{{ .ElemVar }} := &{{ .ElemStruct }}{}
+{{- range .Scalars }}
+	if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+		{{ .LHS }} = {{ .RHS }}
+	}
+{{- end }}
+{{- range .Lists }}
+	{{ template "renderList" . }}
+{{- end }}
+	{{ .LHS }} = {{ .ElemVar }}
+}
+{{- else if eq .Kind "oneof" -}}
+{{ template "renderOneOf" .OneOf }}
+{{- end }}
+{{- end -}}
+
+{{/*
+  renderOneOf unwraps one SDK oneOf wrapper into its Terraform envelope model.
+
+  Every member is inspected and the matches counted; the envelope is only assigned
+  when exactly one matched. This is deliberately not the SDK's own behaviour —
+  MarshalJSON and GetActualInstance both return the first non-nil member — because
+  the contract requires zero, multiple, or an unparsed payload to be reported at the
+  union's schema path rather than silently resolving to one branch.
+
+  The wrapper itself is reached through an ordinary Ok-getter; only its members are
+  plain fields, which is why they are read with `:=` rather than Get<Field>Ok.
+*/}}
+{{- define "renderOneOf" -}}
+if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+{{- if .Collection }}
+	for _, {{ .LoopVar }} := range *{{ .Var }} {
+		{{ template "oneOfBody" . }}
+	}
+{{- else }}
+	{{ template "oneOfBody" . }}
+{{- end }}
+}
+{{- end -}}
+
+{{/*
+  oneOfBody selects at most one variant off .Receiver and reports anything
+  ambiguous. Split from renderOneOf so the collection and single forms share it.
+*/}}
+{{- define "oneOfBody" -}}
+{{ .ModelVar }} := &{{ .GoModel }}{}
+{{ .MatchVar }} := 0
+{{- range .Variants }}
+if {{ .SDKVar }} := {{ $.Receiver }}.{{ .SDKField }}; {{ .SDKVar }} != nil {
+	{{ .ModelVar }} := &{{ .GoModel }}{}
+{{- with .Value }}
+	{{ .LHS }} = {{ .RHS }}
+{{- end }}
+{{- range .Scalars }}
+	if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+		{{ .LHS }} = {{ .RHS }}
+	}
+{{- end }}
+{{- range .Lists }}
+	{{ template "renderList" . }}
+{{- end }}
+	{{ $.ModelVar }}.{{ .GoField }} = {{ .ModelVar }}
+	{{ $.MatchVar }}++
+}
+{{- end }}
+switch {
+case {{ .Receiver }}.UnparsedObject != nil:
+	diags.AddError(
+		"unexpected {{ .SDKType }} in the API response",
+		"{{ .Path }}: the Datadog API returned a value none of the {{ .SDKType }} alternatives could parse",
+	)
+case {{ .MatchVar }} > 1:
+	diags.AddError(
+		"ambiguous {{ .SDKType }} in the API response",
+		fmt.Sprintf("{{ .Path }}: the Datadog API response matched %d {{ .SDKType }} alternatives, expected exactly one", {{ .MatchVar }}),
+	)
+case {{ .MatchVar }} == 1:
+	{{ if .Collection }}{{ .LHS }} = append({{ .LHS }}, {{ .ModelVar }}){{ else }}{{ .LHS }} = {{ .ModelVar }}{{ end }}
+{{- if not .Optional }}
+default:
+	diags.AddError(
+		"missing {{ .SDKType }} in the API response",
+		"{{ .Path }}: the Datadog API response matched none of the {{ .SDKType }} alternatives, and the field is not optional",
+	)
+{{- end }}
+}
+{{- end -}}
+
+{{/* boilerplate renders the data-source struct, constructor, Configure, Metadata. */}}
+{{- define "boilerplate" -}}
+type {{ .GoName }}DataSource struct {
+	Api  *{{ .SDKPackage }}.{{ .APIStruct }}
+	Auth context.Context
+}
+
+func New{{ title .GoName }}DataSource() datasource.DataSource {
+	return &{{ .GoName }}DataSource{}
+}
+
+func (d *{{ .GoName }}DataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+	providerData, _ := request.ProviderData.(*FrameworkProvider)
+{{- if .APIAccessor }}
+	d.Api = providerData.DatadogApiInstances.{{ .APIAccessor }}()
+{{- else }}
+	d.Api = {{ .SDKPackage }}.{{ .APIConstructor }}(providerData.DatadogApiInstances.HttpClient)
+{{- end }}
+	d.Auth = providerData.Auth
+}
+
+func (d *{{ .GoName }}DataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
+	response.TypeName = "{{ .TypeName }}"
+}
+{{- end -}}

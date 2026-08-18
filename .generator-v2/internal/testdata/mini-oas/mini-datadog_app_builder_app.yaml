@@ -1,0 +1,958 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: App Builder
+  description: Datadog App Builder provides a low-code solution to rapidly develop and integrate secure,
+    customized applications into your monitoring stack that are built to accelerate remediation at scale.
+    These API endpoints allow you to create, read, update, delete, and publish apps.
+paths:
+  /api/v2/app-builder/apps/{app_id}:
+    get:
+      operationId: GetApp
+      tags:
+      - App Builder
+      summary: Get App
+      description: Get the full definition of an app. This API requires a [registered application key](https://docs.datadoghq.com/api/latest/action-connection/#register-a-new-app-key).
+        Alternatively, you can configure these permissions [in the UI](https://docs.datadoghq.com/account_management/api-app-keys/#actions-api-access).
+      parameters:
+      - name: app_id
+        in: path
+        required: true
+        description: The ID of the app to retrieve.
+        schema:
+          type: string
+          format: uuid
+        example: 65bb1f25-52e1-4510-9f8d-22d1516ed693
+      - name: version
+        in: query
+        required: false
+        description: The version number of the app to retrieve. If not specified, the latest version is
+          returned. Version numbers start at 1 and increment with each update. The special values `latest`
+          and `deployed` can be used to retrieve the latest version or the published version, respectively.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAppResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                      id: 00000000-0000-0000-0000-000000000001
+                      type: appDefinitions
+                      attributes:
+                        name: Example App
+                        description: A sample app
+                        rootInstanceName: grid0
+                        components: []
+                        queries: []
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSONAPIErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSONAPIErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSONAPIErrorResponse'
+        '410':
+          description: Gone
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSONAPIErrorResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      x-menu-order: 4
+      x-undo:
+        type: safe
+      x-permission:
+        operator: AND
+        permissions:
+        - apps_run
+        - connections_read
+components:
+  responses:
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    ActionQuery:
+      type: object
+      description: An action query. This query type is used to trigger an action, such as sending a HTTP
+        request.
+      required:
+      - id
+      - name
+      - type
+      - properties
+      properties:
+        id:
+          type: string
+          description: The ID of the action query.
+          format: uuid
+          example: 65bb1f25-52e1-4510-9f8d-22d1516ed693
+        name:
+          type: string
+          description: A unique identifier for this action query. This name is also used to access the
+            query's result throughout the app.
+          example: fetchPendingOrders
+        type:
+          $ref: '#/components/schemas/ActionQueryType'
+        properties:
+          $ref: '#/components/schemas/ActionQueryProperties'
+        events:
+          type: array
+          description: Events to listen for downstream of the action query.
+          items:
+            $ref: '#/components/schemas/AppBuilderEvent'
+    ActionQueryCondition:
+      description: Whether to run this query. If specified, the query will only run if this condition
+        evaluates to `true` in JavaScript and all other conditions are also met.
+      oneOf:
+      - type: boolean
+      - type: string
+        example: ${true}
+    ActionQueryDebounceInMs:
+      description: The minimum time in milliseconds that must pass before the query can be triggered again.
+        This is useful for preventing accidental double-clicks from triggering the query multiple times.
+      oneOf:
+      - type: number
+        format: double
+        example: 310.5
+      - type: string
+        description: If this is a string, it must be a valid JavaScript expression that evaluates to a
+          number.
+        example: ${1000}
+    ActionQueryMockedOutputs:
+      description: The mocked outputs of the action query. This is useful for testing the app without
+        actually running the action.
+      oneOf:
+      - type: string
+      - $ref: '#/components/schemas/ActionQueryMockedOutputsObject'
+    ActionQueryMockedOutputsEnabled:
+      description: Whether to enable the mocked outputs for testing.
+      example: false
+      oneOf:
+      - type: boolean
+      - type: string
+        description: If this is a string, it must be a valid JavaScript expression that evaluates to a
+          boolean.
+        example: ${true}
+    ActionQueryMockedOutputsObject:
+      type: object
+      description: The mocked outputs of the action query.
+      required:
+      - enabled
+      properties:
+        enabled:
+          $ref: '#/components/schemas/ActionQueryMockedOutputsEnabled'
+        outputs:
+          type: string
+          description: The mocked outputs of the action query, serialized as JSON.
+          example: '{"status": "success"}'
+    ActionQueryOnlyTriggerManually:
+      description: Determines when this query is executed. If set to `false`, the query will run when
+        the app loads and whenever any query arguments change. If set to `true`, the query will only run
+        when manually triggered from elsewhere in the app.
+      oneOf:
+      - type: boolean
+      - type: string
+        description: If this is a string, it must be a valid JavaScript expression that evaluates to a
+          boolean.
+        example: ${true}
+    ActionQueryPollingIntervalInMs:
+      description: If specified, the app will poll the query at the specified interval in milliseconds.
+        The minimum polling interval is 15 seconds. The query will only poll when the app's browser tab
+        is active.
+      oneOf:
+      - type: number
+        format: double
+        minimum: 15000.0
+        example: 30000.0
+      - type: string
+        description: If this is a string, it must be a valid JavaScript expression that evaluates to a
+          number.
+        example: ${15000}
+    ActionQueryProperties:
+      type: object
+      description: The properties of the action query.
+      required:
+      - spec
+      properties:
+        onlyTriggerManually:
+          $ref: '#/components/schemas/ActionQueryOnlyTriggerManually'
+        requiresConfirmation:
+          $ref: '#/components/schemas/ActionQueryRequiresConfirmation'
+        condition:
+          $ref: '#/components/schemas/ActionQueryCondition'
+        debounceInMs:
+          $ref: '#/components/schemas/ActionQueryDebounceInMs'
+        showToastOnError:
+          $ref: '#/components/schemas/ActionQueryShowToastOnError'
+        mockedOutputs:
+          $ref: '#/components/schemas/ActionQueryMockedOutputs'
+        pollingIntervalInMs:
+          $ref: '#/components/schemas/ActionQueryPollingIntervalInMs'
+        spec:
+          $ref: '#/components/schemas/ActionQuerySpec'
+        outputs:
+          type: string
+          description: The post-query transformation function, which is a JavaScript function that changes
+            the query's `.outputs` property after the query's execution.
+          example: ${((outputs) => {return outputs.body.data})(self.rawOutputs)}
+    ActionQueryRequiresConfirmation:
+      description: Whether to prompt the user to confirm this query before it runs.
+      oneOf:
+      - type: boolean
+      - type: string
+        description: If this is a string, it must be a valid JavaScript expression that evaluates to a
+          boolean.
+        example: ${true}
+    ActionQueryShowToastOnError:
+      description: Whether to display a toast to the user when the query returns an error.
+      oneOf:
+      - type: boolean
+      - type: string
+        description: If this is a string, it must be a valid JavaScript expression that evaluates to a
+          boolean.
+        example: ${true}
+    ActionQuerySpec:
+      description: The definition of the action query.
+      example: ''
+      oneOf:
+      - type: string
+      - $ref: '#/components/schemas/ActionQuerySpecObject'
+    ActionQuerySpecConnectionGroup:
+      type: object
+      description: The connection group to use for an action query.
+      properties:
+        id:
+          type: string
+          description: The ID of the connection group.
+          format: uuid
+          example: 65bb1f25-52e1-4510-9f8d-22d1516ed693
+        tags:
+          type: array
+          description: The tags of the connection group.
+          items:
+            type: string
+            description: A tag for the connection group.
+    ActionQuerySpecInput:
+      type: object
+      description: The inputs to the action query. See the [Actions Catalog](https://docs.datadoghq.com/actions/actions_catalog/)
+        for more detail on each action and its inputs.
+      additionalProperties: {}
+    ActionQuerySpecInputs:
+      description: The inputs to the action query. These are the values that are passed to the action
+        when it is triggered.
+      oneOf:
+      - type: string
+      - $ref: '#/components/schemas/ActionQuerySpecInput'
+    ActionQuerySpecObject:
+      type: object
+      description: The action query spec object.
+      required:
+      - fqn
+      properties:
+        fqn:
+          type: string
+          description: The fully qualified name of the action type.
+          example: com.datadoghq.http.request
+        connectionId:
+          type: string
+          description: The ID of the custom connection to use for this action query.
+          example: 65bb1f25-52e1-4510-9f8d-22d1516ed693
+        connectionGroup:
+          $ref: '#/components/schemas/ActionQuerySpecConnectionGroup'
+        inputs:
+          $ref: '#/components/schemas/ActionQuerySpecInputs'
+    ActionQueryType:
+      type: string
+      description: The action query type.
+      default: action
+      example: action
+      enum:
+      - action
+      x-enum-varnames:
+      - ACTION
+    AppBuilderEvent:
+      type: object
+      description: An event on a UI component that triggers a response or action in an app.
+      properties:
+        name:
+          $ref: '#/components/schemas/AppBuilderEventName'
+        type:
+          $ref: '#/components/schemas/AppBuilderEventType'
+      additionalProperties: {}
+    AppBuilderEventName:
+      type: string
+      description: The triggering action for the event.
+      example: click
+      enum:
+      - pageChange
+      - tableRowClick
+      - _tableRowButtonClick
+      - change
+      - submit
+      - click
+      - toggleOpen
+      - close
+      - open
+      - executionFinished
+      x-enum-varnames:
+      - PAGECHANGE
+      - TABLEROWCLICK
+      - TABLEROWBUTTONCLICK
+      - CHANGE
+      - SUBMIT
+      - CLICK
+      - TOGGLEOPEN
+      - CLOSE
+      - OPEN
+      - EXECUTIONFINISHED
+    AppBuilderEventType:
+      type: string
+      description: The response to the event.
+      example: triggerQuery
+      enum:
+      - custom
+      - setComponentState
+      - triggerQuery
+      - openModal
+      - closeModal
+      - openUrl
+      - downloadFile
+      - setStateVariableValue
+      x-enum-varnames:
+      - CUSTOM
+      - SETCOMPONENTSTATE
+      - TRIGGERQUERY
+      - OPENMODAL
+      - CLOSEMODAL
+      - OPENURL
+      - DOWNLOADFILE
+      - SETSTATEVARIABLEVALUE
+    AppDefinitionType:
+      type: string
+      description: The app definition type.
+      default: appDefinitions
+      example: appDefinitions
+      enum:
+      - appDefinitions
+      x-enum-varnames:
+      - APPDEFINITIONS
+    AppDeploymentType:
+      type: string
+      description: The deployment type.
+      default: deployment
+      example: deployment
+      enum:
+      - deployment
+      x-enum-varnames:
+      - DEPLOYMENT
+    AppMeta:
+      type: object
+      description: Metadata of an app.
+      properties:
+        org_id:
+          type: integer
+          description: The Datadog organization ID that owns the app.
+          format: int64
+        user_id:
+          type: integer
+          description: The ID of the user who created the app.
+          format: int64
+        user_uuid:
+          type: string
+          description: The UUID of the user who created the app.
+          format: uuid
+          example: 65bb1f25-52e1-4510-9f8d-22d1516ed693
+        user_name:
+          type: string
+          description: The name (or email address) of the user who created the app.
+        version:
+          type: integer
+          description: The version number of the app. This starts at 1 and increments with each update.
+          format: int64
+        updated_since_deployment:
+          type: boolean
+          description: Whether the app was updated since it was last published. Published apps are pinned
+            to a specific version and do not automatically update when the app is updated.
+        created_at:
+          type: string
+          description: Timestamp of when the app was created.
+          format: date-time
+        updated_at:
+          type: string
+          description: Timestamp of when the app was last updated.
+          format: date-time
+        deleted_at:
+          type: string
+          description: Timestamp of when the app was deleted.
+          format: date-time
+    AppRelationship:
+      type: object
+      description: The app's publication relationship and custom connections.
+      properties:
+        deployment:
+          $ref: '#/components/schemas/DeploymentRelationship'
+        connections:
+          type: array
+          description: Array of custom connections used by the app.
+          items:
+            $ref: '#/components/schemas/CustomConnection'
+    Component:
+      type: object
+      description: '[Definition of a UI component in the app](https://docs.datadoghq.com/service_management/app_builder/components/)'
+      required:
+      - name
+      - type
+      - properties
+      properties:
+        id:
+          type: string
+          description: The ID of the UI component. This property is deprecated; use `name` to identify
+            individual components instead.
+          nullable: true
+        name:
+          type: string
+          description: A unique identifier for this UI component. This name is also visible in the app
+            editor.
+          example: ''
+        type:
+          $ref: '#/components/schemas/ComponentType'
+        properties:
+          $ref: '#/components/schemas/ComponentProperties'
+        events:
+          type: array
+          description: Events to listen for on the UI component.
+          items:
+            $ref: '#/components/schemas/AppBuilderEvent'
+    ComponentGrid:
+      type: object
+      description: A grid component. The grid component is the root canvas for an app and contains all
+        other components.
+      required:
+      - name
+      - type
+      - properties
+      properties:
+        id:
+          type: string
+          description: The ID of the grid component. This property is deprecated; use `name` to identify
+            individual components instead.
+        name:
+          type: string
+          description: A unique identifier for this grid component. This name is also visible in the app
+            editor.
+          example: ''
+        type:
+          $ref: '#/components/schemas/ComponentGridType'
+        properties:
+          $ref: '#/components/schemas/ComponentGridProperties'
+        events:
+          type: array
+          description: Events to listen for on the grid component.
+          items:
+            $ref: '#/components/schemas/AppBuilderEvent'
+    ComponentGridProperties:
+      type: object
+      description: Properties of a grid component.
+      properties:
+        isVisible:
+          $ref: '#/components/schemas/ComponentGridPropertiesIsVisible'
+        children:
+          type: array
+          description: The child components of the grid.
+          items:
+            $ref: '#/components/schemas/Component'
+        backgroundColor:
+          type: string
+          description: The background color of the grid.
+          default: default
+    ComponentGridPropertiesIsVisible:
+      description: Whether the grid component and its children are visible. If a string, it must be a
+        valid JavaScript expression that evaluates to a boolean.
+      oneOf:
+      - type: string
+      - type: boolean
+        default: true
+    ComponentGridType:
+      type: string
+      description: The grid component type.
+      default: grid
+      example: grid
+      enum:
+      - grid
+      x-enum-varnames:
+      - GRID
+    ComponentProperties:
+      type: object
+      description: Properties of a UI component. Different component types can have their own additional
+        unique properties. See the [components documentation](https://docs.datadoghq.com/service_management/app_builder/components/)
+        for more detail on each component type and its properties.
+      properties:
+        children:
+          type: array
+          description: The child components of the UI component.
+          items:
+            $ref: '#/components/schemas/Component'
+        isVisible:
+          $ref: '#/components/schemas/ComponentPropertiesIsVisible'
+      additionalProperties: {}
+    ComponentPropertiesIsVisible:
+      description: Whether the UI component is visible. If this is a string, it must be a valid JavaScript
+        expression that evaluates to a boolean.
+      oneOf:
+      - type: boolean
+      - type: string
+        description: If this is a string, it must be a valid JavaScript expression that evaluates to a
+          boolean.
+        example: ${true}
+    ComponentType:
+      type: string
+      description: The UI component type.
+      example: text
+      enum:
+      - table
+      - textInput
+      - textArea
+      - button
+      - text
+      - select
+      - modal
+      - schemaForm
+      - checkbox
+      - tabs
+      - vegaChart
+      - radioButtons
+      - numberInput
+      - fileInput
+      - jsonInput
+      - gridCell
+      - dateRangePicker
+      - search
+      - container
+      - calloutValue
+      x-enum-varnames:
+      - TABLE
+      - TEXTINPUT
+      - TEXTAREA
+      - BUTTON
+      - TEXT
+      - SELECT
+      - MODAL
+      - SCHEMAFORM
+      - CHECKBOX
+      - TABS
+      - VEGACHART
+      - RADIOBUTTONS
+      - NUMBERINPUT
+      - FILEINPUT
+      - JSONINPUT
+      - GRIDCELL
+      - DATERANGEPICKER
+      - SEARCH
+      - CONTAINER
+      - CALLOUTVALUE
+    CustomConnection:
+      type: object
+      description: A custom connection used by an app.
+      properties:
+        id:
+          type: string
+          description: The ID of the custom connection.
+          format: uuid
+          example: 65bb1f25-52e1-4510-9f8d-22d1516ed693
+        type:
+          $ref: '#/components/schemas/CustomConnectionType'
+        attributes:
+          $ref: '#/components/schemas/CustomConnectionAttributes'
+    CustomConnectionAttributes:
+      type: object
+      description: The custom connection attributes.
+      properties:
+        name:
+          type: string
+          description: The name of the custom connection.
+        onPremRunner:
+          $ref: '#/components/schemas/CustomConnectionAttributesOnPremRunner'
+    CustomConnectionAttributesOnPremRunner:
+      type: object
+      description: Information about the Private Action Runner used by the custom connection, if the custom
+        connection is associated with a Private Action Runner.
+      properties:
+        id:
+          type: string
+          description: The Private Action Runner ID.
+        url:
+          type: string
+          description: The URL of the Private Action Runner.
+    CustomConnectionType:
+      type: string
+      description: The custom connection type.
+      default: custom_connections
+      example: custom_connections
+      enum:
+      - custom_connections
+      x-enum-varnames:
+      - CUSTOM_CONNECTIONS
+    DataTransform:
+      type: object
+      description: A data transformer, which is custom JavaScript code that executes and transforms data
+        when its inputs change.
+      required:
+      - id
+      - name
+      - type
+      - properties
+      properties:
+        id:
+          type: string
+          description: The ID of the data transformer.
+          format: uuid
+          example: 65bb1f25-52e1-4510-9f8d-22d1516ed693
+        name:
+          type: string
+          description: A unique identifier for this data transformer. This name is also used to access
+            the transformer's result throughout the app.
+          example: combineTwoOrders
+        type:
+          $ref: '#/components/schemas/DataTransformType'
+        properties:
+          $ref: '#/components/schemas/DataTransformProperties'
+    DataTransformProperties:
+      type: object
+      description: The properties of the data transformer.
+      properties:
+        outputs:
+          type: string
+          description: A JavaScript function that returns the transformed data.
+          example: "${(() => {return {\n    allItems: [...fetchOrder1.outputs.items, ...fetchOrder2.outputs.items],\n}})()}"
+    DataTransformType:
+      type: string
+      description: The data transform type.
+      default: dataTransform
+      example: dataTransform
+      enum:
+      - dataTransform
+      x-enum-varnames:
+      - DATATRANSFORM
+    Deployment:
+      type: object
+      description: The version of the app that was published.
+      properties:
+        id:
+          type: string
+          description: The deployment ID.
+          format: uuid
+          example: 65bb1f25-52e1-4510-9f8d-22d1516ed693
+        type:
+          $ref: '#/components/schemas/AppDeploymentType'
+        attributes:
+          $ref: '#/components/schemas/DeploymentAttributes'
+        meta:
+          $ref: '#/components/schemas/DeploymentMetadata'
+    DeploymentAttributes:
+      type: object
+      description: The attributes object containing the version ID of the published app.
+      properties:
+        app_version_id:
+          type: string
+          description: The version ID of the app that was published. For an unpublished app, this is always
+            the nil UUID (`00000000-0000-0000-0000-000000000000`).
+          format: uuid
+          example: 65bb1f25-52e1-4510-9f8d-22d1516ed693
+    DeploymentMetadata:
+      type: object
+      description: Metadata object containing the publication creation information.
+      properties:
+        created_at:
+          type: string
+          description: Timestamp of when the app was published.
+          format: date-time
+        user_id:
+          type: integer
+          description: The ID of the user who published the app.
+          format: int64
+        user_uuid:
+          type: string
+          description: The UUID of the user who published the app.
+          format: uuid
+          example: 65bb1f25-52e1-4510-9f8d-22d1516ed693
+        user_name:
+          type: string
+          description: The name (or email address) of the user who published the app.
+    DeploymentRelationship:
+      type: object
+      description: Information pointing to the app's publication status.
+      properties:
+        data:
+          $ref: '#/components/schemas/DeploymentRelationshipData'
+        meta:
+          $ref: '#/components/schemas/DeploymentMetadata'
+    DeploymentRelationshipData:
+      type: object
+      description: Data object containing the deployment ID.
+      properties:
+        id:
+          type: string
+          description: The deployment ID.
+          format: uuid
+          example: 65bb1f25-52e1-4510-9f8d-22d1516ed693
+        type:
+          $ref: '#/components/schemas/AppDeploymentType'
+    GetAppResponse:
+      type: object
+      description: The full app definition response object.
+      properties:
+        data:
+          $ref: '#/components/schemas/GetAppResponseData'
+        relationship:
+          $ref: '#/components/schemas/AppRelationship'
+        meta:
+          $ref: '#/components/schemas/AppMeta'
+        included:
+          type: array
+          description: Data on the version of the app that was published.
+          items:
+            $ref: '#/components/schemas/Deployment'
+    GetAppResponseData:
+      type: object
+      description: The data object containing the app definition.
+      required:
+      - id
+      - type
+      - attributes
+      properties:
+        id:
+          type: string
+          description: The ID of the app.
+          format: uuid
+          example: 65bb1f25-52e1-4510-9f8d-22d1516ed693
+        type:
+          $ref: '#/components/schemas/AppDefinitionType'
+        attributes:
+          $ref: '#/components/schemas/GetAppResponseDataAttributes'
+    GetAppResponseDataAttributes:
+      type: object
+      description: The app definition attributes, such as name, description, and components.
+      properties:
+        description:
+          type: string
+          description: A human-readable description for the app.
+        name:
+          type: string
+          description: The name of the app.
+        tags:
+          type: array
+          description: A list of tags for the app, which can be used to filter apps.
+          example:
+          - service:webshop-backend
+          - team:webshop
+          items:
+            type: string
+            description: An individual tag for the app.
+        components:
+          type: array
+          description: The UI components that make up the app.
+          items:
+            $ref: '#/components/schemas/ComponentGrid'
+        queries:
+          type: array
+          description: An array of queries, such as external actions and state variables, that the app
+            uses.
+          items:
+            $ref: '#/components/schemas/Query'
+        rootInstanceName:
+          type: string
+          description: The name of the root component of the app. This must be a `grid` component that
+            contains all other components.
+        favorite:
+          type: boolean
+          description: Whether the app is marked as a favorite by the current user.
+      x-ignore-duplicate-object: true
+    JSONAPIErrorItem:
+      type: object
+      description: API error response body
+      properties:
+        status:
+          type: string
+          description: Status code of the response.
+          example: '400'
+        title:
+          type: string
+          description: Short human-readable summary of the error.
+          example: Bad Request
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the error.
+          example: Missing required attribute in body
+        meta:
+          type: object
+          description: Non-standard meta-information about the error
+          additionalProperties: {}
+        source:
+          $ref: '#/components/schemas/JSONAPIErrorItemSource'
+    JSONAPIErrorItemSource:
+      type: object
+      description: References to the source of the error.
+      properties:
+        pointer:
+          type: string
+          description: A JSON pointer to the value in the request document that caused the error.
+          example: /data/attributes/title
+        parameter:
+          type: string
+          description: A string indicating which URI query parameter caused the error.
+          example: limit
+        header:
+          type: string
+          description: A string indicating the name of a single request header which caused the error.
+          example: Authorization
+    JSONAPIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          items:
+            $ref: '#/components/schemas/JSONAPIErrorItem'
+    Query:
+      description: A data query used by an app. This can take the form of an external action, a data transformation,
+        or a state variable.
+      oneOf:
+      - $ref: '#/components/schemas/ActionQuery'
+      - $ref: '#/components/schemas/DataTransform'
+      - $ref: '#/components/schemas/StateVariable'
+    StateVariable:
+      type: object
+      description: A variable, which can be set and read by other components in the app.
+      required:
+      - id
+      - name
+      - type
+      - properties
+      properties:
+        id:
+          type: string
+          description: The ID of the state variable.
+          format: uuid
+          example: 65bb1f25-52e1-4510-9f8d-22d1516ed693
+        name:
+          type: string
+          description: A unique identifier for this state variable. This name is also used to access the
+            variable's value throughout the app.
+          example: ordersToSubmit
+        type:
+          $ref: '#/components/schemas/StateVariableType'
+        properties:
+          $ref: '#/components/schemas/StateVariableProperties'
+    StateVariableProperties:
+      type: object
+      description: The properties of the state variable.
+      properties:
+        defaultValue:
+          description: The default value of the state variable.
+          example: ${['order_3145', 'order_4920']}
+    StateVariableType:
+      type: string
+      description: The state variable type.
+      default: stateVariable
+      example: stateVariable
+      enum:
+      - stateVariable
+      x-enum-varnames:
+      - STATEVARIABLE
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY

@@ -31,6 +31,7 @@ func TestAccSecurityMonitoringCriticalAsset_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "query", "source:runtime-security-agent"),
 					resource.TestCheckResourceAttr(resourceName, "rule_query", "type:(log_detection OR signal_correlation OR workload_security OR application_security) ruleId:007-d1a-1f3"),
 					resource.TestCheckResourceAttr(resourceName, "severity", "increase"),
+					resource.TestCheckResourceAttr(resourceName, "description", "Production database servers handling PII"),
 					resource.TestCheckResourceAttr(resourceName, "tags.#", "2"),
 				),
 			},
@@ -55,6 +56,7 @@ func TestAccSecurityMonitoringCriticalAsset_Update(t *testing.T) {
 					testAccCheckSecurityMonitoringCriticalAssetExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "severity", "increase"),
 					resource.TestCheckResourceAttr(resourceName, "enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "description", "Production database servers handling PII"),
 				),
 			},
 			{
@@ -64,6 +66,7 @@ func TestAccSecurityMonitoringCriticalAsset_Update(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "enabled", "false"),
 					resource.TestCheckResourceAttr(resourceName, "query", "source:cloudtrail"),
 					resource.TestCheckResourceAttr(resourceName, "severity", "high"),
+					resource.TestCheckResourceAttr(resourceName, "description", "Updated critical asset for cloudtrail sources"),
 					resource.TestCheckResourceAttr(resourceName, "tags.#", "1"),
 				),
 			},
@@ -71,14 +74,79 @@ func TestAccSecurityMonitoringCriticalAsset_Update(t *testing.T) {
 	})
 }
 
-func testAccSecurityMonitoringCriticalAssetConfig(uniq string) string {
+// TestAccSecurityMonitoringCriticalAsset_Description exercises the optional description
+// field transitions: create without a description (null), add one (null => non-empty),
+// then remove it again (non-empty => null).
+func TestAccSecurityMonitoringCriticalAsset_Description(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	assetName := uniqueEntityName(ctx, t)
+	resourceName := "datadog_security_monitoring_critical_asset.test"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckSecurityMonitoringCriticalAssetDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccSecurityMonitoringCriticalAssetConfigNoDescription(assetName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSecurityMonitoringCriticalAssetExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckNoResourceAttr(resourceName, "description"),
+				),
+			},
+			{
+				Config: testAccSecurityMonitoringCriticalAssetConfigCustomDescription(assetName, "A critical asset description"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSecurityMonitoringCriticalAssetExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "description", "A critical asset description"),
+				),
+			},
+			{
+				Config: testAccSecurityMonitoringCriticalAssetConfigNoDescription(assetName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSecurityMonitoringCriticalAssetExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckNoResourceAttr(resourceName, "description"),
+				),
+			},
+		},
+	})
+}
+
+func testAccSecurityMonitoringCriticalAssetConfigNoDescription(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_security_monitoring_critical_asset" "test" {
   enabled    = true
   query      = "source:runtime-security-agent"
-  rule_query = "type:(log_detection OR signal_correlation OR workload_security OR application_security) ruleId:007-d1a-1f3"
+  rule_query = "type:log_detection source:cloudtrail"
   severity   = "increase"
-  tags       = ["test:tf-%s", "team:security"]
+  tags       = ["test:tf-%s"]
+}
+`, uniq)
+}
+
+func testAccSecurityMonitoringCriticalAssetConfigCustomDescription(uniq string, description string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_critical_asset" "test" {
+  enabled     = true
+  query       = "source:runtime-security-agent"
+  rule_query  = "type:log_detection source:cloudtrail"
+  severity    = "increase"
+  description = %q
+  tags        = ["test:tf-%s"]
+}
+`, description, uniq)
+}
+
+func testAccSecurityMonitoringCriticalAssetConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_critical_asset" "test" {
+  enabled     = true
+  query       = "source:runtime-security-agent"
+  rule_query  = "type:(log_detection OR signal_correlation OR workload_security OR application_security) ruleId:007-d1a-1f3"
+  severity    = "increase"
+  description = "Production database servers handling PII"
+  tags        = ["test:tf-%s", "team:security"]
 }
 `, uniq)
 }
@@ -86,11 +154,12 @@ resource "datadog_security_monitoring_critical_asset" "test" {
 func testAccSecurityMonitoringCriticalAssetConfigUpdated(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_security_monitoring_critical_asset" "test" {
-  enabled    = false
-  query      = "source:cloudtrail"
-  rule_query = "type:(log_detection OR signal_correlation OR workload_security OR application_security) *"
-  severity   = "high"
-  tags       = ["test:tf-%s"]
+  enabled     = false
+  query       = "source:cloudtrail"
+  rule_query  = "type:(log_detection OR signal_correlation OR workload_security OR application_security) *"
+  severity    = "high"
+  description = "Updated critical asset for cloudtrail sources"
+  tags        = ["test:tf-%s"]
 }
 `, uniq)
 }

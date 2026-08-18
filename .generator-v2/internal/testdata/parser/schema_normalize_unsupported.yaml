@@ -1,0 +1,200 @@
+openapi: 3.0.0
+info:
+  title: normalize unsupported-kind fixture
+  version: 1.0.0
+paths:
+  /empty-object:
+    post:
+      operationId: CreateEmptyObject
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: empty_object_r
+        group:
+          create: CreateEmptyObject
+          read: CreateEmptyObject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              # type:object with no properties and no additionalProperties:
+              # free-form object, nothing to emit.
+              type: object
+      responses:
+        '204':
+          description: no content
+  /untyped:
+    post:
+      operationId: CreateUntyped
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: untyped_r
+        group:
+          create: CreateUntyped
+          read: CreateUntyped
+      requestBody:
+        content:
+          application/json:
+            schema:
+              # No type, no structure — a fully dynamic leaf.
+              description: an arbitrary value of unknown type
+      responses:
+        '204':
+          description: no content
+  /array-no-items:
+    post:
+      operationId: CreateArrayNoItems
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: array_no_items_r
+        group:
+          create: CreateArrayNoItems
+          read: CreateArrayNoItems
+      requestBody:
+        content:
+          application/json:
+            schema:
+              # A list whose element type is unknown.
+              type: array
+      responses:
+        '204':
+          description: no content
+  /free-form-map:
+    post:
+      operationId: CreateFreeFormMap
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: free_form_map_r
+        group:
+          create: CreateFreeFormMap
+          read: CreateFreeFormMap
+      requestBody:
+        content:
+          application/json:
+            schema:
+              # additionalProperties:{} → map whose value schema is unconstrained.
+              additionalProperties: {}
+      responses:
+        '204':
+          description: no content
+  /bool-map:
+    post:
+      operationId: CreateBoolMap
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: bool_map_r
+        group:
+          create: CreateBoolMap
+          read: CreateBoolMap
+      requestBody:
+        content:
+          application/json:
+            schema:
+              # additionalProperties:true → map whose value schema is unconstrained.
+              additionalProperties: true
+      responses:
+        '204':
+          description: no content
+  /array-of-array:
+    post:
+      operationId: CreateArrayOfArray
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: array_of_array_r
+        group:
+          create: CreateArrayOfArray
+          read: CreateArrayOfArray
+      requestBody:
+        content:
+          application/json:
+            schema:
+              # A list element must be a primitive or object; a list-of-list has
+              # no representable element type.
+              type: array
+              items:
+                type: array
+                items:
+                  type: string
+      responses:
+        '204':
+          description: no content
+  /array-of-map:
+    post:
+      operationId: CreateArrayOfMap
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: array_of_map_r
+        group:
+          create: CreateArrayOfMap
+          read: CreateArrayOfMap
+      requestBody:
+        content:
+          application/json:
+            schema:
+              # A list whose element is a map: no representable element type.
+              type: array
+              items:
+                additionalProperties:
+                  type: string
+      responses:
+        '204':
+          description: no content
+  /map-of-array:
+    post:
+      operationId: CreateMapOfArray
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: map_of_array_r
+        group:
+          create: CreateMapOfArray
+          read: CreateMapOfArray
+      requestBody:
+        content:
+          application/json:
+            schema:
+              # A map value must be a primitive or object; a map-of-list has no
+              # representable value type.
+              additionalProperties:
+                type: array
+                items:
+                  type: string
+      responses:
+        '204':
+          description: no content
+  /map-of-map:
+    post:
+      operationId: CreateMapOfMap
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: map_of_map_r
+        group:
+          create: CreateMapOfMap
+          read: CreateMapOfMap
+      requestBody:
+        content:
+          application/json:
+            schema:
+              # A map whose value is a map: no representable value type.
+              additionalProperties:
+                additionalProperties:
+                  type: string
+      responses:
+        '204':
+          description: no content
+  /typed-primitive:
+    post:
+      operationId: CreateTypedPrimitive
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: typed_primitive_r
+        group:
+          create: CreateTypedPrimitive
+          read: CreateTypedPrimitive
+      requestBody:
+        content:
+          application/json:
+            schema:
+              # Boundary guard: a concrete scalar must stay primitive (emittable).
+              type: string
+      responses:
+        '204':
+          description: no content
