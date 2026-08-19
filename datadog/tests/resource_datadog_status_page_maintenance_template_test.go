@@ -15,7 +15,7 @@ import (
 func TestAccDatadogStatusPageMaintenanceTemplate_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	pageName := fmt.Sprintf("test-status-page-maintenance-template-basic-%d", clockFromContext(ctx).Now().Unix())
+	pageName := fmt.Sprintf("test-sp-maint-tmpl-basic-%d", clockFromContext(ctx).Now().Unix())
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -55,7 +55,7 @@ func TestAccDatadogStatusPageMaintenanceTemplate_Basic(t *testing.T) {
 func TestAccDatadogStatusPageMaintenanceTemplate_Updated(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	pageName := fmt.Sprintf("test-status-page-maintenance-template-updated-%d", clockFromContext(ctx).Now().Unix())
+	pageName := fmt.Sprintf("test-sp-maint-tmpl-updated-%d", clockFromContext(ctx).Now().Unix())
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -91,7 +91,7 @@ func TestAccDatadogStatusPageMaintenanceTemplate_Updated(t *testing.T) {
 func TestAccDatadogStatusPageMaintenanceTemplate_Import(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	pageName := fmt.Sprintf("test-status-page-maintenance-template-import-%d", clockFromContext(ctx).Now().Unix())
+	pageName := fmt.Sprintf("test-sp-maint-tmpl-import-%d", clockFromContext(ctx).Now().Unix())
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -125,14 +125,16 @@ func testAccCheckDatadogStatusPageMaintenanceTemplateConfig(pageName string) str
 	return fmt.Sprintf(`
 resource "datadog_status_page" "foo" {
   name               = "%[1]s"
-  type               = "public"
+  type               = "internal"
   domain_prefix      = "%[1]s"
   visualization_type = "bars_and_uptime_percentage"
 
-  components {
-    name = "API"
-    type = "component"
-  }
+  components = [
+    {
+      name = "API"
+      type = "component"
+    }
+  ]
 }
 
 resource "datadog_status_page_maintenance_template" "foo" {
@@ -150,14 +152,16 @@ func testAccCheckDatadogStatusPageMaintenanceTemplateConfigUpdated(pageName stri
 	return fmt.Sprintf(`
 resource "datadog_status_page" "foo" {
   name               = "%[1]s"
-  type               = "public"
+  type               = "internal"
   domain_prefix      = "%[1]s"
   visualization_type = "bars_and_uptime_percentage"
 
-  components {
-    name = "API"
-    type = "component"
-  }
+  components = [
+    {
+      name = "API"
+      type = "component"
+    }
+  ]
 }
 
 resource "datadog_status_page_maintenance_template" "foo" {

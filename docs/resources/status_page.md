@@ -21,25 +21,27 @@ resource "datadog_status_page" "example" {
   domain_prefix      = "example"
   visualization_type = "bars_and_uptime_percentage"
 
-  components {
-    name = "API"
-    type = "component"
-  }
-
-  components {
-    name = "Infrastructure"
-    type = "group"
-
-    components {
-      name = "US Region"
+  components = [
+    {
+      name = "API"
       type = "component"
-    }
+    },
+    {
+      name = "Infrastructure"
+      type = "group"
 
-    components {
-      name = "EU Region"
-      type = "component"
+      components = [
+        {
+          name = "US Region"
+          type = "component"
+        },
+        {
+          name = "EU Region"
+          type = "component"
+        }
+      ]
     }
-  }
+  ]
 }
 ```
 

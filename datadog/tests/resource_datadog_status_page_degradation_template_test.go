@@ -15,7 +15,7 @@ import (
 func TestAccDatadogStatusPageDegradationTemplate_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	pageName := fmt.Sprintf("test-status-page-degradation-template-basic-%d", clockFromContext(ctx).Now().Unix())
+	pageName := fmt.Sprintf("test-sp-degrade-tmpl-basic-%d", clockFromContext(ctx).Now().Unix())
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -55,7 +55,7 @@ func TestAccDatadogStatusPageDegradationTemplate_Basic(t *testing.T) {
 func TestAccDatadogStatusPageDegradationTemplate_Updated(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	pageName := fmt.Sprintf("test-status-page-degradation-template-updated-%d", clockFromContext(ctx).Now().Unix())
+	pageName := fmt.Sprintf("test-sp-degrade-tmpl-updated-%d", clockFromContext(ctx).Now().Unix())
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -91,7 +91,7 @@ func TestAccDatadogStatusPageDegradationTemplate_Updated(t *testing.T) {
 func TestAccDatadogStatusPageDegradationTemplate_Import(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	pageName := fmt.Sprintf("test-status-page-degradation-template-import-%d", clockFromContext(ctx).Now().Unix())
+	pageName := fmt.Sprintf("test-sp-degrade-tmpl-import-%d", clockFromContext(ctx).Now().Unix())
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -125,14 +125,16 @@ func testAccCheckDatadogStatusPageDegradationTemplateConfig(pageName string) str
 	return fmt.Sprintf(`
 resource "datadog_status_page" "foo" {
   name               = "%[1]s"
-  type               = "public"
+  type               = "internal"
   domain_prefix      = "%[1]s"
   visualization_type = "bars_and_uptime_percentage"
 
-  components {
-    name = "API"
-    type = "component"
-  }
+  components = [
+    {
+      name = "API"
+      type = "component"
+    }
+  ]
 }
 
 resource "datadog_status_page_degradation_template" "foo" {
@@ -140,15 +142,19 @@ resource "datadog_status_page_degradation_template" "foo" {
   name              = "%[1]s"
   degradation_title = "API degradation"
 
-  components_affected {
-    id     = datadog_status_page.foo.components[0].id
-    status = "degraded"
-  }
+  components_affected = [
+    {
+      id     = datadog_status_page.foo.components[0].id
+      status = "degraded"
+    }
+  ]
 
-  updates {
-    message = "We are investigating the issue."
-    status  = "investigating"
-  }
+  updates = [
+    {
+      message = "We are investigating the issue."
+      status   = "investigating"
+    }
+  ]
 }`, pageName)
 }
 
@@ -156,14 +162,16 @@ func testAccCheckDatadogStatusPageDegradationTemplateConfigUpdated(pageName stri
 	return fmt.Sprintf(`
 resource "datadog_status_page" "foo" {
   name               = "%[1]s"
-  type               = "public"
+  type               = "internal"
   domain_prefix      = "%[1]s"
   visualization_type = "bars_and_uptime_percentage"
 
-  components {
-    name = "API"
-    type = "component"
-  }
+  components = [
+    {
+      name = "API"
+      type = "component"
+    }
+  ]
 }
 
 resource "datadog_status_page_degradation_template" "foo" {
@@ -171,15 +179,19 @@ resource "datadog_status_page_degradation_template" "foo" {
   name              = "%[1]s-updated"
   degradation_title = "API degradation (updated)"
 
-  components_affected {
-    id     = datadog_status_page.foo.components[0].id
-    status = "major_outage"
-  }
+  components_affected = [
+    {
+      id     = datadog_status_page.foo.components[0].id
+      status = "major_outage"
+    }
+  ]
 
-  updates {
-    message = "We have identified the root cause."
-    status  = "identified"
-  }
+  updates = [
+    {
+      message = "We have identified the root cause."
+      status   = "identified"
+    }
+  ]
 }`, pageName)
 }
 

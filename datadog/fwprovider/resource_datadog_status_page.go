@@ -183,7 +183,6 @@ func (r *statusPageResource) Schema(_ context.Context, _ resource.SchemaRequest,
 						"components": schema.ListNestedAttribute{
 							Description: "If this component is of type `group`, the components nested within the group.",
 							Optional:    true,
-							Computed:    true,
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"id": schema.StringAttribute{

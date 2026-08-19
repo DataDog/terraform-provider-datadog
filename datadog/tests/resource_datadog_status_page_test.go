@@ -29,7 +29,7 @@ func TestAccDatadogStatusPage_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_status_page.foo", "name", pageName),
 					resource.TestCheckResourceAttr(
-						"datadog_status_page.foo", "type", "public"),
+						"datadog_status_page.foo", "type", "internal"),
 					resource.TestCheckResourceAttr(
 						"datadog_status_page.foo", "visualization_type", "bars_and_uptime_percentage"),
 					resource.TestCheckResourceAttr(
@@ -114,14 +114,16 @@ func testAccCheckDatadogStatusPageConfig(pageName string) string {
 	return fmt.Sprintf(`
 resource "datadog_status_page" "foo" {
   name               = "%[1]s"
-  type               = "public"
+  type               = "internal"
   domain_prefix      = "%[1]s"
   visualization_type = "bars_and_uptime_percentage"
 
-  components {
-    name = "API"
-    type = "component"
-  }
+  components = [
+    {
+      name = "API"
+      type = "component"
+    }
+  ]
 }`, pageName)
 }
 
@@ -129,14 +131,16 @@ func testAccCheckDatadogStatusPageConfigUpdated(pageName string) string {
 	return fmt.Sprintf(`
 resource "datadog_status_page" "foo" {
   name               = "%[1]s-updated"
-  type               = "public"
+  type               = "internal"
   domain_prefix      = "%[1]s"
   visualization_type = "bars_only"
 
-  components {
-    name = "API"
-    type = "component"
-  }
+  components = [
+    {
+      name = "API"
+      type = "component"
+    }
+  ]
 }`, pageName)
 }
 
