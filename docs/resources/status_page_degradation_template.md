@@ -13,6 +13,8 @@ Provides a Datadog status page degradation template resource. This can be used t
 ## Example Usage
 
 ```terraform
+# Create new datadog_status_page_degradation_template resource
+
 resource "datadog_status_page" "example" {
   name               = "Example Status Page"
   type               = "public"
@@ -52,9 +54,9 @@ resource "datadog_status_page_degradation_template" "example" {
 
 ### Optional
 
-- `components_affected` (Block List) The components affected by a degradation created from this template. (see [below for nested schema](#nestedblock--components_affected))
+- `components_affected` (Attributes List) The components affected by a degradation created from this template. (see [below for nested schema](#nestedatt--components_affected))
 - `degradation_title` (String) The title used for a degradation created from this template.
-- `updates` (Block List) The pre-filled updates for a degradation created from this template. (see [below for nested schema](#nestedblock--updates))
+- `updates` (Attributes List) The pre-filled updates for a degradation created from this template. (see [below for nested schema](#nestedatt--updates))
 
 ### Read-Only
 
@@ -62,7 +64,7 @@ resource "datadog_status_page_degradation_template" "example" {
 - `id` (String) The ID of the degradation template.
 - `modified_at` (String) Timestamp of when the degradation template was last modified.
 
-<a id="nestedblock--components_affected"></a>
+<a id="nestedatt--components_affected"></a>
 ### Nested Schema for `components_affected`
 
 Required:
@@ -74,7 +76,8 @@ Optional:
 
 - `name` (String) The name of the affected component.
 
-<a id="nestedblock--updates"></a>
+
+<a id="nestedatt--updates"></a>
 ### Nested Schema for `updates`
 
 Required:
@@ -94,5 +97,3 @@ The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/c
 ```shell
 terraform import datadog_status_page_degradation_template.example "09a89ab4-d622-4fbd-87e5-81b4124bd064:1e2c6615-801b-4630-9d31-5b2f27d5b6f0"
 ```
-
-The import ID is `<page_id>:<degradation_template_id>`.

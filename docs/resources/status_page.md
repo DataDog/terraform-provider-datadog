@@ -13,6 +13,8 @@ Provides a Datadog status page resource. This can be used to create and manage D
 ## Example Usage
 
 ```terraform
+# Create new datadog_status_page resource
+
 resource "datadog_status_page" "example" {
   name               = "Example Status Page"
   type               = "public"
@@ -54,7 +56,7 @@ resource "datadog_status_page" "example" {
 ### Optional
 
 - `company_logo` (String) The company logo displayed on the status page.
-- `components` (Block List) The components (and component groups) displayed on the status page. (see [below for nested schema](#nestedblock--components))
+- `components` (Attributes List) The components (and component groups) displayed on the status page. (see [below for nested schema](#nestedatt--components))
 - `email_header_image` (String) The header image included in subscriber emails.
 - `favicon` (String) The favicon displayed for the status page.
 - `slack_app_icon` (String) The icon used for the status page's Slack app integration.
@@ -71,7 +73,7 @@ resource "datadog_status_page" "example" {
 - `modified_at` (String) Timestamp when the status page was last modified.
 - `page_url` (String) The URL of the status page.
 
-<a id="nestedblock--components"></a>
+<a id="nestedatt--components"></a>
 ### Nested Schema for `components`
 
 Required:
@@ -81,7 +83,24 @@ Required:
 
 Optional:
 
-- `components` (Block List) If this component is of type `group`, the components nested within the group.
+- `components` (Attributes List) If this component is of type `group`, the components nested within the group. (see [below for nested schema](#nestedatt--components--components))
+- `position` (Number) The zero-indexed position of the component.
+
+Read-Only:
+
+- `id` (String) The ID of the component.
+- `status` (String) The current status of the component. Server-managed; not settable.
+
+<a id="nestedatt--components--components"></a>
+### Nested Schema for `components.components`
+
+Required:
+
+- `name` (String) The name of the component.
+- `type` (String) The type of the component. Valid values are: component, group.
+
+Optional:
+
 - `position` (Number) The zero-indexed position of the component.
 
 Read-Only:
