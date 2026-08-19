@@ -3,12 +3,12 @@
 page_title: "datadog_status_page Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog status page resource. This can be used to create and manage Datadog status pages. Component/degradation-template/maintenance-template management is not yet supported by this resource.
+  Provides a Datadog status page resource. This can be used to create and manage Datadog status pages, including their components.
 ---
 
 # datadog_status_page (Resource)
 
-Provides a Datadog status page resource. This can be used to create and manage Datadog status pages. Component/degradation-template/maintenance-template management is not yet supported by this resource.
+Provides a Datadog status page resource. This can be used to create and manage Datadog status pages, including their components.
 
 ## Example Usage
 

@@ -6,6 +6,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -73,7 +74,7 @@ func (r *statusPageResource) Metadata(_ context.Context, _ resource.MetadataRequ
 
 func (r *statusPageResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Provides a Datadog status page resource. This can be used to create and manage Datadog status pages. Component/degradation-template/maintenance-template management is not yet supported by this resource.",
+		Description: "Provides a Datadog status page resource. This can be used to create and manage Datadog status pages, including their components.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "The ID of the status page.",
@@ -367,11 +368,37 @@ func (r *statusPageResource) Read(ctx context.Context, request resource.ReadRequ
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
+// requireUnpublished returns a diagnostic if the status page is currently published, since the API
+// rejects changing a page's type or deleting a page while it is enabled (published). trailingClause
+// completes "Status page must be unpublished before <trailingClause>", e.g. "its type can be changed".
+func requireUnpublished(state *statusPageModel, trailingClause string) diag.Diagnostic {
+	if state.Enabled.ValueBool() {
+		return diag.NewErrorDiagnostic(
+			fmt.Sprintf("Status page must be unpublished before %s", trailingClause),
+			"This status page is currently published (enabled=true). Publishing/unpublishing is managed outside this resource, via the status page publish/unpublish API or UI; unpublish the page first, then retry.",
+		)
+	}
+	return nil
+}
+
 func (r *statusPageResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var plan statusPageModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
 	if response.Diagnostics.HasError() {
 		return
+	}
+
+	var state statusPageModel
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	if !plan.Type.Equal(state.Type) {
+		if d := requireUnpublished(&state, "its type can be changed"); d != nil {
+			response.Diagnostics.Append(d)
+			return
+		}
 	}
 
 	id, err := uuid.Parse(plan.ID.ValueString())
@@ -438,9 +465,290 @@ func (r *statusPageResource) Update(ctx context.Context, request resource.Update
 		return
 	}
 
+	if d := r.syncComponents(id, state.Components, plan.Components); d.HasError() {
+		response.Diagnostics.Append(d...)
+		return
+	}
+
+	// Components are managed via separate component endpoints, not reflected in the PatchStatusPage
+	// response above, so re-read the page to populate the final component tree (ids, status, etc.).
+	resp, httpResp, err = r.Api.GetStatusPage(r.Auth, id)
+	if err != nil {
+		response.Diagnostics.AddError(
+			"Error reading status page",
+			"Could not read status page ID "+plan.ID.ValueString()+" after updating components: "+err.Error(),
+		)
+		return
+	}
+
 	r.updateStateFromResponse(&plan, &resp)
 
 	response.Diagnostics.Append(response.State.Set(ctx, &plan)...)
+}
+
+// syncComponents reconciles the top-level components list against the API. Components have no
+// user-assignable identity in this schema (their id is server-generated and Computed-only), so
+// entries are correlated positionally: index i in oldComponents (from state) is treated as the
+// same logical slot as index i in newComponents (from plan), matching how Terraform itself diffs
+// this ordered list. A component whose type changes cannot be patched in place (the component
+// PATCH endpoint has no type field), so it's deleted and recreated instead.
+func (r *statusPageResource) syncComponents(pageID uuid.UUID, oldComponents, newComponents []statusPageComponentModel) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	count := len(oldComponents)
+	if len(newComponents) > count {
+		count = len(newComponents)
+	}
+
+	for i := 0; i < count; i++ {
+		switch {
+		case i < len(oldComponents) && i < len(newComponents):
+			old, new := oldComponents[i], newComponents[i]
+			oldID, err := uuid.Parse(old.ID.ValueString())
+			if err != nil {
+				diags.AddError("Error parsing component ID", "Could not parse component ID "+old.ID.ValueString()+": "+err.Error())
+				return diags
+			}
+
+			if new.Type.ValueString() != old.Type.ValueString() {
+				if _, err := r.Api.DeleteComponent(r.Auth, pageID, oldID); err != nil {
+					diags.AddError("Error deleting component", "Could not delete component ID "+old.ID.ValueString()+" while changing its type: "+err.Error())
+					return diags
+				}
+				diags.Append(r.createComponent(pageID, new, i)...)
+			} else {
+				diags.Append(r.updateComponent(pageID, oldID, new, i)...)
+				if !diags.HasError() {
+					diags.Append(r.syncSubComponents(pageID, oldID, old.Components, new.Components)...)
+				}
+			}
+		case i >= len(oldComponents):
+			diags.Append(r.createComponent(pageID, newComponents[i], i)...)
+		default:
+			oldID, err := uuid.Parse(oldComponents[i].ID.ValueString())
+			if err != nil {
+				diags.AddError("Error parsing component ID", "Could not parse component ID "+oldComponents[i].ID.ValueString()+": "+err.Error())
+				return diags
+			}
+			if _, err := r.Api.DeleteComponent(r.Auth, pageID, oldID); err != nil {
+				diags.AddError("Error deleting component", "Could not delete component ID "+oldComponents[i].ID.ValueString()+": "+err.Error())
+				return diags
+			}
+		}
+
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	return diags
+}
+
+// syncSubComponents reconciles the components nested within a single group, using the same
+// positional correlation as syncComponents.
+func (r *statusPageResource) syncSubComponents(pageID, groupID uuid.UUID, oldComponents, newComponents []statusPageSubComponentModel) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	count := len(oldComponents)
+	if len(newComponents) > count {
+		count = len(newComponents)
+	}
+
+	for i := 0; i < count; i++ {
+		switch {
+		case i < len(oldComponents) && i < len(newComponents):
+			old, new := oldComponents[i], newComponents[i]
+			oldID, err := uuid.Parse(old.ID.ValueString())
+			if err != nil {
+				diags.AddError("Error parsing component ID", "Could not parse component ID "+old.ID.ValueString()+": "+err.Error())
+				return diags
+			}
+
+			if new.Type.ValueString() != old.Type.ValueString() {
+				if _, err := r.Api.DeleteComponent(r.Auth, pageID, oldID); err != nil {
+					diags.AddError("Error deleting component", "Could not delete component ID "+old.ID.ValueString()+" while changing its type: "+err.Error())
+					return diags
+				}
+				diags.Append(r.createSubComponent(pageID, groupID, new, i)...)
+			} else {
+				diags.Append(r.updateSubComponent(pageID, oldID, new, i)...)
+			}
+		case i >= len(oldComponents):
+			diags.Append(r.createSubComponent(pageID, groupID, newComponents[i], i)...)
+		default:
+			oldID, err := uuid.Parse(oldComponents[i].ID.ValueString())
+			if err != nil {
+				diags.AddError("Error parsing component ID", "Could not parse component ID "+oldComponents[i].ID.ValueString()+": "+err.Error())
+				return diags
+			}
+			if _, err := r.Api.DeleteComponent(r.Auth, pageID, oldID); err != nil {
+				diags.AddError("Error deleting component", "Could not delete component ID "+oldComponents[i].ID.ValueString()+": "+err.Error())
+				return diags
+			}
+		}
+
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	return diags
+}
+
+func componentPosition(configured types.Int64, index int) int64 {
+	if !configured.IsNull() && !configured.IsUnknown() {
+		return configured.ValueInt64()
+	}
+	return int64(index)
+}
+
+func (r *statusPageResource) updateComponent(pageID, componentID uuid.UUID, component statusPageComponentModel, index int) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	name := component.Name.ValueString()
+	position := componentPosition(component.Position, index)
+
+	_, httpResp, err := r.Api.UpdateComponent(r.Auth, pageID, componentID, datadogV2.PatchComponentRequest{
+		Data: &datadogV2.PatchComponentRequestData{
+			Id:   componentID,
+			Type: datadogV2.STATUSPAGESCOMPONENTGROUPTYPE_COMPONENTS,
+			Attributes: datadogV2.PatchComponentRequestDataAttributes{
+				Name:     &name,
+				Position: &position,
+			},
+		},
+	})
+	if err != nil {
+		diags.AddError(
+			"Error updating component",
+			fmt.Sprintf("Could not update component ID %s: %s. HTTP Response: %v", componentID.String(), err.Error(), httpResp),
+		)
+		return diags
+	}
+	if httpResp.StatusCode != 200 {
+		diags.AddError(
+			"Error updating component",
+			fmt.Sprintf("Received HTTP status %d updating component ID %s. Response body: %v", httpResp.StatusCode, componentID.String(), httpResp),
+		)
+	}
+	return diags
+}
+
+func (r *statusPageResource) updateSubComponent(pageID, componentID uuid.UUID, component statusPageSubComponentModel, index int) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	name := component.Name.ValueString()
+	position := componentPosition(component.Position, index)
+
+	_, httpResp, err := r.Api.UpdateComponent(r.Auth, pageID, componentID, datadogV2.PatchComponentRequest{
+		Data: &datadogV2.PatchComponentRequestData{
+			Id:   componentID,
+			Type: datadogV2.STATUSPAGESCOMPONENTGROUPTYPE_COMPONENTS,
+			Attributes: datadogV2.PatchComponentRequestDataAttributes{
+				Name:     &name,
+				Position: &position,
+			},
+		},
+	})
+	if err != nil {
+		diags.AddError(
+			"Error updating component",
+			fmt.Sprintf("Could not update component ID %s: %s. HTTP Response: %v", componentID.String(), err.Error(), httpResp),
+		)
+		return diags
+	}
+	if httpResp.StatusCode != 200 {
+		diags.AddError(
+			"Error updating component",
+			fmt.Sprintf("Received HTTP status %d updating component ID %s. Response body: %v", httpResp.StatusCode, componentID.String(), httpResp),
+		)
+	}
+	return diags
+}
+
+func (r *statusPageResource) createComponent(pageID uuid.UUID, component statusPageComponentModel, index int) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	attributes := datadogV2.CreateComponentRequestDataAttributes{
+		Name:     component.Name.ValueString(),
+		Position: componentPosition(component.Position, index),
+		Type:     datadogV2.CreateComponentRequestDataAttributesType(component.Type.ValueString()),
+	}
+	if len(component.Components) > 0 {
+		subItems := make([]datadogV2.CreateComponentRequestDataAttributesComponentsItems, len(component.Components))
+		for j, sub := range component.Components {
+			subItems[j] = datadogV2.CreateComponentRequestDataAttributesComponentsItems{
+				Name:     sub.Name.ValueString(),
+				Position: componentPosition(sub.Position, j),
+				Type:     datadogV2.StatusPagesComponentGroupAttributesComponentsItemsType(sub.Type.ValueString()),
+			}
+		}
+		attributes.Components = subItems
+	}
+
+	body := datadogV2.CreateComponentRequest{
+		Data: &datadogV2.CreateComponentRequestData{
+			Type:       datadogV2.STATUSPAGESCOMPONENTGROUPTYPE_COMPONENTS,
+			Attributes: attributes,
+		},
+	}
+
+	_, httpResp, err := r.Api.CreateComponent(r.Auth, pageID, body)
+	if err != nil {
+		diags.AddError(
+			"Error creating component",
+			fmt.Sprintf("Could not create component %q: %s. HTTP Response: %v", component.Name.ValueString(), err.Error(), httpResp),
+		)
+		return diags
+	}
+	if httpResp.StatusCode != 201 {
+		diags.AddError(
+			"Error creating component",
+			fmt.Sprintf("Received HTTP status %d creating component %q. Response body: %v", httpResp.StatusCode, component.Name.ValueString(), httpResp),
+		)
+	}
+	return diags
+}
+
+func (r *statusPageResource) createSubComponent(pageID, groupID uuid.UUID, component statusPageSubComponentModel, index int) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	body := datadogV2.CreateComponentRequest{
+		Data: &datadogV2.CreateComponentRequestData{
+			Type: datadogV2.STATUSPAGESCOMPONENTGROUPTYPE_COMPONENTS,
+			Attributes: datadogV2.CreateComponentRequestDataAttributes{
+				Name:     component.Name.ValueString(),
+				Position: componentPosition(component.Position, index),
+				Type:     datadogV2.CreateComponentRequestDataAttributesType(component.Type.ValueString()),
+			},
+			Relationships: &datadogV2.CreateComponentRequestDataRelationships{
+				Group: &datadogV2.CreateComponentRequestDataRelationshipsGroup{
+					Data: *datadogV2.NewNullableCreateComponentRequestDataRelationshipsGroupData(
+						&datadogV2.CreateComponentRequestDataRelationshipsGroupData{
+							Id:   groupID,
+							Type: datadogV2.STATUSPAGESCOMPONENTGROUPTYPE_COMPONENTS,
+						},
+					),
+				},
+			},
+		},
+	}
+
+	_, httpResp, err := r.Api.CreateComponent(r.Auth, pageID, body)
+	if err != nil {
+		diags.AddError(
+			"Error creating component",
+			fmt.Sprintf("Could not create component %q: %s. HTTP Response: %v", component.Name.ValueString(), err.Error(), httpResp),
+		)
+		return diags
+	}
+	if httpResp.StatusCode != 201 {
+		diags.AddError(
+			"Error creating component",
+			fmt.Sprintf("Received HTTP status %d creating component %q. Response body: %v", httpResp.StatusCode, component.Name.ValueString(), httpResp),
+		)
+	}
+	return diags
 }
 
 func (r *statusPageResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
@@ -459,6 +767,18 @@ func (r *statusPageResource) Delete(ctx context.Context, request resource.Delete
 		return
 	}
 
+	if state.Enabled.ValueBool() {
+		if unpublishResp, err := r.Api.UnpublishStatusPage(r.Auth, id); err != nil {
+			if unpublishResp == nil || unpublishResp.StatusCode != 404 {
+				response.Diagnostics.AddError(
+					"Error unpublishing status page",
+					"Could not unpublish status page ID "+state.ID.ValueString()+" before deletion: "+err.Error(),
+				)
+				return
+			}
+		}
+	}
+
 	httpResp, err := r.Api.DeleteStatusPage(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
@@ -466,8 +786,6 @@ func (r *statusPageResource) Delete(ctx context.Context, request resource.Delete
 		}
 		response.Diagnostics.AddError(
 			"Error deleting status page",
-			// A status page must be unpublished (see enabled/PublishStatusPage/UnpublishStatusPage,
-			// not managed by this resource) before it can be deleted; the API surfaces that as a 409.
 			"Could not delete status page ID "+state.ID.ValueString()+": "+err.Error(),
 		)
 		return

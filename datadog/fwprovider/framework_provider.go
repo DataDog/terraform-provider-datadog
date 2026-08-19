@@ -148,6 +148,8 @@ var Resources = []func() resource.Resource{
 	NewDatastoreResource,
 	NewDatastoreItemResource,
 	NewStatusPageResource,
+	NewStatusPageDegradationTemplateResource,
+	NewStatusPageMaintenanceTemplateResource,
 }
 
 var Datasources = []func() datasource.DataSource{
