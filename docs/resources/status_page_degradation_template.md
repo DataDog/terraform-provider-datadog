@@ -44,7 +44,7 @@ resource "datadog_status_page_degradation_template" "example" {
   updates = [
     {
       message = "We are investigating the issue."
-      status   = "investigating"
+      status  = "investigating"
     }
   ]
 }
