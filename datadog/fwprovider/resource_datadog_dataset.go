@@ -87,7 +87,7 @@ func (r *DatasetResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"product": schema.StringAttribute{
-							Description: "The product type of the dataset. Supported types: `apm`, `rum`, `synthetics`, `metrics`, `logs`, `sd_repoinfo`, `error_tracking`, `cloud_cost`, and `ml_obs`.",
+							Description: "The product type of the dataset. Supported types: `apm`, `rum`, `metrics`, `logs`, `sd_repoinfo`, `error_tracking`, `cloud_cost`, and `ml_obs`.",
 							Required:    true,
 						},
 						"filters": schema.SetAttribute{
@@ -264,8 +264,8 @@ func (r *DatasetResource) buildCreateDatasetRequestBody(ctx context.Context, dat
 		}
 		ddProductFilters = append(ddProductFilters, ddFilter)
 	}
-
 	attributes.ProductFilters = ddProductFilters
+
 	body.SetAttributes(attributes)
 	req := datadogV2.NewDatasetCreateRequest(*body)
 
