@@ -130,6 +130,33 @@ func TestAccMonitorNotificationRuleWithConditionalRecipients_Create(t *testing.T
 	})
 }
 
+func TestAccMonitorNotificationRuleWithBundleConfig_Create(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogMonitorNotificationRuleDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorNotificationRule_bundleConfig(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorNotificationRuleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor_notification_rule.r", "name", "A notification rule name"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor_notification_rule.r", "filter.tags.*", fmt.Sprintf("env:%s", uniq)),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor_notification_rule.r", "filter.tags.*", "host:abc"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor_notification_rule.r", "bundle_config.duration", "3600"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccMonitorNotificationRule_Update(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -228,6 +255,19 @@ func testAccCheckDatadogMonitorNotificationRule_update(uniq string) string {
     recipients = ["jira-foo", "jira-bar"]
 	filter {
 	  tags = ["env:%s", "host:abc", "poke:mon"]
+	}
+}`, uniq)
+}
+
+func testAccCheckDatadogMonitorNotificationRule_bundleConfig(uniq string) string {
+	return fmt.Sprintf(`resource "datadog_monitor_notification_rule" "r" {
+    name = "A notification rule name"
+    recipients = ["slack-foo"]
+	filter {
+	  tags = ["env:%s", "host:abc"]
+	}
+	bundle_config {
+	  duration = 3600
 	}
 }`, uniq)
 }
