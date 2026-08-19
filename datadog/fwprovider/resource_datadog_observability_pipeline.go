@@ -550,13 +550,14 @@ type splunkTcpSourceModel struct {
 }
 
 type gcsDestinationModel struct {
-	Bucket       types.String                                `tfsdk:"bucket"`
-	KeyPrefix    types.String                                `tfsdk:"key_prefix"`
-	StorageClass types.String                                `tfsdk:"storage_class"`
-	Acl          types.String                                `tfsdk:"acl"`
-	Auth         []gcpAuthModel                              `tfsdk:"auth"`
-	Metadata     []metadataEntry                             `tfsdk:"metadata"`
-	Buffer       []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
+	Bucket       types.String                                     `tfsdk:"bucket"`
+	KeyPrefix    types.String                                     `tfsdk:"key_prefix"`
+	StorageClass types.String                                     `tfsdk:"storage_class"`
+	Acl          types.String                                     `tfsdk:"acl"`
+	Auth         []gcpAuthModel                                   `tfsdk:"auth"`
+	Metadata     []metadataEntry                                  `tfsdk:"metadata"`
+	Buffer       []observability_pipeline.BufferOptionsModel      `tfsdk:"buffer"`
+	Compression  []observability_pipeline.ArchiveCompressionModel `tfsdk:"compression"`
 }
 
 type metadataEntry struct {
@@ -639,10 +640,11 @@ type elasticsearchDestinationCompressionModel struct {
 }
 
 type azureStorageDestinationModel struct {
-	ContainerName       types.String                                `tfsdk:"container_name"`
-	BlobPrefix          types.String                                `tfsdk:"blob_prefix"`
-	ConnectionStringKey types.String                                `tfsdk:"connection_string_key"`
-	Buffer              []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
+	ContainerName       types.String                                     `tfsdk:"container_name"`
+	BlobPrefix          types.String                                     `tfsdk:"blob_prefix"`
+	ConnectionStringKey types.String                                     `tfsdk:"connection_string_key"`
+	Buffer              []observability_pipeline.BufferOptionsModel      `tfsdk:"buffer"`
+	Compression         []observability_pipeline.ArchiveCompressionModel `tfsdk:"compression"`
 }
 
 type microsoftSentinelDestinationModel struct {
@@ -2365,7 +2367,8 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														},
 													},
 												},
-												"buffer": observability_pipeline.BufferOptionsSchema(),
+												"buffer":      observability_pipeline.BufferOptionsSchema(),
+												"compression": observability_pipeline.ArchiveCompressionSchema(),
 											},
 										},
 									},
@@ -2724,7 +2727,8 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"buffer": observability_pipeline.BufferOptionsSchema(),
+												"buffer":      observability_pipeline.BufferOptionsSchema(),
+												"compression": observability_pipeline.ArchiveCompressionSchema(),
 											},
 										},
 									},
@@ -5862,8 +5866,30 @@ func expandGoogleCloudStorageDestination(ctx context.Context, destModel *destina
 		}
 	}
 
+	if len(d.Compression) > 0 {
+		dest.SetCompression(expandGoogleCloudStorageCompression(d.Compression[0]))
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineGoogleCloudStorageDestination: dest,
+	}
+}
+
+// expandGoogleCloudStorageCompression converts the archive compression model to the API oneOf.
+func expandGoogleCloudStorageCompression(m observability_pipeline.ArchiveCompressionModel) datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationCompression {
+	switch m.Algorithm.ValueString() {
+	case "zstd":
+		c := datadogV2.NewObservabilityPipelineGoogleCloudStorageDestinationCompressionZstdWithDefaults()
+		if !m.Level.IsNull() {
+			c.SetLevel(m.Level.ValueInt64())
+		}
+		return datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationCompressionZstdAsObservabilityPipelineGoogleCloudStorageDestinationCompression(c)
+	default: // "gzip"
+		c := datadogV2.NewObservabilityPipelineGoogleCloudStorageDestinationCompressionGzipWithDefaults()
+		if !m.Level.IsNull() {
+			c.SetLevel(m.Level.ValueInt64())
+		}
+		return datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationCompressionGzipAsObservabilityPipelineGoogleCloudStorageDestinationCompression(c)
 	}
 }
 
@@ -5902,7 +5928,40 @@ func flattenGoogleCloudStorageDestination(ctx context.Context, src *datadogV2.Ob
 		}
 	}
 
+	if compression, ok := src.GetCompressionOk(); ok {
+		out.Compression = flattenGoogleCloudStorageCompression(compression)
+	}
+
 	return out
+}
+
+// flattenGoogleCloudStorageCompression converts the API archive compression oneOf to the Terraform model.
+func flattenGoogleCloudStorageCompression(src *datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationCompression) []observability_pipeline.ArchiveCompressionModel {
+	if src == nil {
+		return nil
+	}
+	switch {
+	case src.ObservabilityPipelineGoogleCloudStorageDestinationCompressionGzip != nil:
+		level := types.Int64Null()
+		if v, ok := src.ObservabilityPipelineGoogleCloudStorageDestinationCompressionGzip.GetLevelOk(); ok {
+			level = types.Int64Value(*v)
+		}
+		return []observability_pipeline.ArchiveCompressionModel{{
+			Algorithm: types.StringValue("gzip"),
+			Level:     level,
+		}}
+	case src.ObservabilityPipelineGoogleCloudStorageDestinationCompressionZstd != nil:
+		level := types.Int64Null()
+		if v, ok := src.ObservabilityPipelineGoogleCloudStorageDestinationCompressionZstd.GetLevelOk(); ok {
+			level = types.Int64Value(*v)
+		}
+		return []observability_pipeline.ArchiveCompressionModel{{
+			Algorithm: types.StringValue("zstd"),
+			Level:     level,
+		}}
+	default:
+		return nil
+	}
 }
 
 func expandGooglePubSubDestination(ctx context.Context, dest *destinationModel, d *googlePubSubDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
@@ -6486,8 +6545,30 @@ func expandAzureStorageDestination(ctx context.Context, dest *destinationModel, 
 		}
 	}
 
+	if len(src.Compression) > 0 {
+		obj.SetCompression(expandAzureStorageCompression(src.Compression[0]))
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		AzureStorageDestination: obj,
+	}
+}
+
+// expandAzureStorageCompression converts the Terraform archive compression model to the API oneOf.
+func expandAzureStorageCompression(m observability_pipeline.ArchiveCompressionModel) datadogV2.ObservabilityPipelineAzureStorageDestinationCompression {
+	switch m.Algorithm.ValueString() {
+	case "zstd":
+		c := datadogV2.NewObservabilityPipelineAzureStorageDestinationCompressionZstdWithDefaults()
+		if !m.Level.IsNull() {
+			c.SetLevel(m.Level.ValueInt64())
+		}
+		return datadogV2.ObservabilityPipelineAzureStorageDestinationCompressionZstdAsObservabilityPipelineAzureStorageDestinationCompression(c)
+	default: // "gzip"
+		c := datadogV2.NewObservabilityPipelineAzureStorageDestinationCompressionGzipWithDefaults()
+		if !m.Level.IsNull() {
+			c.SetLevel(m.Level.ValueInt64())
+		}
+		return datadogV2.ObservabilityPipelineAzureStorageDestinationCompressionGzipAsObservabilityPipelineAzureStorageDestinationCompression(c)
 	}
 }
 
@@ -6512,7 +6593,41 @@ func flattenAzureStorageDestination(ctx context.Context, src *datadogV2.AzureSto
 			out.Buffer = []observability_pipeline.BufferOptionsModel{*outBuffer}
 		}
 	}
+
+	if compression, ok := src.GetCompressionOk(); ok {
+		out.Compression = flattenAzureStorageCompression(compression)
+	}
+
 	return out
+}
+
+// flattenAzureStorageCompression converts the API archive compression oneOf to the Terraform model.
+func flattenAzureStorageCompression(src *datadogV2.ObservabilityPipelineAzureStorageDestinationCompression) []observability_pipeline.ArchiveCompressionModel {
+	if src == nil {
+		return nil
+	}
+	switch {
+	case src.ObservabilityPipelineAzureStorageDestinationCompressionGzip != nil:
+		level := types.Int64Null()
+		if v, ok := src.ObservabilityPipelineAzureStorageDestinationCompressionGzip.GetLevelOk(); ok {
+			level = types.Int64Value(*v)
+		}
+		return []observability_pipeline.ArchiveCompressionModel{{
+			Algorithm: types.StringValue("gzip"),
+			Level:     level,
+		}}
+	case src.ObservabilityPipelineAzureStorageDestinationCompressionZstd != nil:
+		level := types.Int64Null()
+		if v, ok := src.ObservabilityPipelineAzureStorageDestinationCompressionZstd.GetLevelOk(); ok {
+			level = types.Int64Value(*v)
+		}
+		return []observability_pipeline.ArchiveCompressionModel{{
+			Algorithm: types.StringValue("zstd"),
+			Level:     level,
+		}}
+	default:
+		return nil
+	}
 }
 
 func expandMicrosoftSentinelDestination(ctx context.Context, dest *destinationModel, src *microsoftSentinelDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
