@@ -50,10 +50,10 @@ type rumExclusionFilterModel struct {
 }
 
 type rumExclusionFilterAttributes struct {
-	Name      string `json:"name,omitempty"`
-	Enabled   *bool  `json:"enabled,omitempty"`
-	EventType string `json:"event_type,omitempty"`
-	Query     string `json:"query,omitempty"`
+	Name      string  `json:"name,omitempty"`
+	Enabled   *bool   `json:"enabled,omitempty"`
+	EventType string  `json:"event_type,omitempty"`
+	Query     *string `json:"query,omitempty"`
 }
 
 type rumExclusionFilterRequestData struct {
@@ -244,7 +244,9 @@ func (r *rumExclusionFilterResource) updateState(state *rumExclusionFilterModel,
 	state.ID = types.StringValue(data.ID)
 	state.Name = types.StringValue(attributes.Name)
 	state.EventType = types.StringValue(attributes.EventType)
-	state.Query = types.StringValue(attributes.Query)
+	if attributes.Query != nil {
+		state.Query = types.StringValue(*attributes.Query)
+	}
 	if attributes.Enabled != nil {
 		state.Enabled = types.BoolValue(*attributes.Enabled)
 	}
@@ -257,7 +259,8 @@ func (r *rumExclusionFilterResource) buildRumExclusionFilterCreateRequestBody(st
 	}
 
 	if !state.Query.IsNull() {
-		attributes.Query = state.Query.ValueString()
+		query := state.Query.ValueString()
+		attributes.Query = &query
 	}
 
 	if !state.Enabled.IsNull() {
@@ -280,7 +283,8 @@ func (r *rumExclusionFilterResource) buildRumExclusionFilterUpdateRequestBody(st
 	}
 
 	if !state.Query.IsNull() {
-		attributes.Query = state.Query.ValueString()
+		query := state.Query.ValueString()
+		attributes.Query = &query
 	}
 
 	if !state.Enabled.IsNull() {
