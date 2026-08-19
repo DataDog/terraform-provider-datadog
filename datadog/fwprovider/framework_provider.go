@@ -147,6 +147,7 @@ var Resources = []func() resource.Resource{
 	NewReferenceTableResource,
 	NewDatastoreResource,
 	NewDatastoreItemResource,
+	NewStatusPageResource,
 }
 
 var Datasources = []func() datasource.DataSource{
