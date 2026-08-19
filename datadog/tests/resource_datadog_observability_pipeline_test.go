@@ -7752,6 +7752,62 @@ resource "datadog_observability_pipeline" "databricks_zerobus_basic" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_databricksZerobusDestinationBuffer(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.databricks_zerobus_buffer"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "databricks_zerobus_buffer" {
+  name = "databricks zerobus pipeline (buffer)"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "databricks-zerobus-dest-buffer-1"
+      inputs = ["source-1"]
+
+      databricks_zerobus {
+        table_name = "my_catalog.my_schema.my_table"
+
+        auth {
+          client_id = "my-oauth-client-id"
+        }
+
+        buffer {
+          disk {
+            max_size  = 1073741824
+            when_full = "block"
+          }
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "databricks-zerobus-dest-buffer-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.table_name", "my_catalog.my_schema.my_table"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.auth.0.client_id", "my-oauth-client-id"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.buffer.0.disk.0.max_size", "1073741824"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.buffer.0.disk.0.when_full", "block"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_splunkHecMetricsDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	resourceName := "datadog_observability_pipeline.splunk_hec_metrics_dest"

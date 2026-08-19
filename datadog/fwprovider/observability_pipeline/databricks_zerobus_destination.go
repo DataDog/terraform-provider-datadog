@@ -20,6 +20,7 @@ type DatabricksZerobusDestinationModel struct {
 	TableName               types.String                 `tfsdk:"table_name"`
 	UnityCatalogEndpointKey types.String                 `tfsdk:"unity_catalog_endpoint_key"`
 	Auth                    []DatabricksZerobusAuthModel `tfsdk:"auth"`
+	Buffer                  []BufferOptionsModel         `tfsdk:"buffer"`
 }
 
 // DatabricksZerobusDestinationSchema returns the schema for the DatabricksZerobus destination.
@@ -57,6 +58,7 @@ func DatabricksZerobusDestinationSchema() schema.ListNestedBlock {
 						},
 					},
 				},
+				"buffer": BufferOptionsSchema(),
 			},
 		},
 	}
@@ -86,6 +88,13 @@ func ExpandDatabricksZerobusDestination(ctx context.Context, id string, inputs t
 			auth.SetClientSecretKey(src.Auth[0].ClientSecretKey.ValueString())
 		}
 		dest.SetAuth(*auth)
+	}
+
+	if len(src.Buffer) > 0 {
+		buffer := ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			dest.SetBuffer(*buffer)
+		}
 	}
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
@@ -123,6 +132,13 @@ func FlattenDatabricksZerobusDestination(ctx context.Context, src *datadogV2.Obs
 			authModel.ClientSecretKey = types.StringValue(*v)
 		}
 		model.Auth = []DatabricksZerobusAuthModel{authModel}
+	}
+
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			model.Buffer = []BufferOptionsModel{*outBuffer}
+		}
 	}
 
 	return model

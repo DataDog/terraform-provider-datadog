@@ -683,6 +683,7 @@ Required:
 Optional:
 
 - `auth` (Block List) OAuth client credentials used to authenticate with Databricks. (see [below for nested schema](#nestedblock--config--destination--databricks_zerobus--auth))
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--databricks_zerobus--buffer))
 - `ingestion_endpoint_key` (String) The name of the secret or environment variable holding the Databricks Zerobus ingestion endpoint URL.
 - `unity_catalog_endpoint_key` (String) The name of the secret or environment variable holding the Databricks Unity Catalog endpoint URL.
 
@@ -696,6 +697,34 @@ Required:
 Optional:
 
 - `client_secret_key` (String) The name of the secret or environment variable holding the OAuth client secret. Defaults to `DESTINATION_DATABRICKS_ZEROBUS_OAUTH_CLIENT_SECRET`.
+
+
+<a id="nestedblock--config--destination--databricks_zerobus--buffer"></a>
+### Nested Schema for `config.destination.databricks_zerobus.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--databricks_zerobus--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--databricks_zerobus--buffer--memory))
+
+<a id="nestedblock--config--destination--databricks_zerobus--buffer--disk"></a>
+### Nested Schema for `config.destination.databricks_zerobus.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--databricks_zerobus--buffer--memory"></a>
+### Nested Schema for `config.destination.databricks_zerobus.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
 
 
 
