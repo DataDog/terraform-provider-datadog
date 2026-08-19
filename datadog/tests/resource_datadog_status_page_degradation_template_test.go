@@ -23,6 +23,9 @@ func TestAccDatadogStatusPageDegradationTemplate_Basic(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogStatusPageDegradationTemplateDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
+				Config: testAccCheckDatadogStatusPageOnlyConfig(pageName),
+			},
+			{
 				Config: testAccCheckDatadogStatusPageDegradationTemplateConfig(pageName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogStatusPageDegradationTemplateExists(providers.frameworkProvider),
@@ -63,6 +66,9 @@ func TestAccDatadogStatusPageDegradationTemplate_Updated(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogStatusPageDegradationTemplateDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
+				Config: testAccCheckDatadogStatusPageOnlyConfig(pageName),
+			},
+			{
 				Config: testAccCheckDatadogStatusPageDegradationTemplateConfig(pageName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogStatusPageDegradationTemplateExists(providers.frameworkProvider),
@@ -98,6 +104,9 @@ func TestAccDatadogStatusPageDegradationTemplate_Import(t *testing.T) {
 		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogStatusPageDegradationTemplateDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogStatusPageOnlyConfig(pageName),
+			},
 			{
 				Config: testAccCheckDatadogStatusPageDegradationTemplateConfig(pageName),
 			},

@@ -23,6 +23,9 @@ func TestAccDatadogStatusPageMaintenanceTemplate_Basic(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogStatusPageMaintenanceTemplateDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
+				Config: testAccCheckDatadogStatusPageOnlyConfig(pageName),
+			},
+			{
 				Config: testAccCheckDatadogStatusPageMaintenanceTemplateConfig(pageName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogStatusPageMaintenanceTemplateExists(providers.frameworkProvider),
@@ -63,6 +66,9 @@ func TestAccDatadogStatusPageMaintenanceTemplate_Updated(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogStatusPageMaintenanceTemplateDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
+				Config: testAccCheckDatadogStatusPageOnlyConfig(pageName),
+			},
+			{
 				Config: testAccCheckDatadogStatusPageMaintenanceTemplateConfig(pageName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogStatusPageMaintenanceTemplateExists(providers.frameworkProvider),
@@ -99,6 +105,9 @@ func TestAccDatadogStatusPageMaintenanceTemplate_Import(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogStatusPageMaintenanceTemplateDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
+				Config: testAccCheckDatadogStatusPageOnlyConfig(pageName),
+			},
+			{
 				Config: testAccCheckDatadogStatusPageMaintenanceTemplateConfig(pageName),
 			},
 			{
@@ -119,6 +128,23 @@ func testAccStatusPageMaintenanceTemplateImportStateIDFunc(resourceName string) 
 		}
 		return fmt.Sprintf("%s:%s", r.Primary.Attributes["page_id"], r.Primary.ID), nil
 	}
+}
+
+func testAccCheckDatadogStatusPageOnlyConfig(pageName string) string {
+	return fmt.Sprintf(`
+resource "datadog_status_page" "foo" {
+  name               = "%[1]s"
+  type               = "internal"
+  domain_prefix      = "%[1]s"
+  visualization_type = "bars_and_uptime_percentage"
+
+  components = [
+    {
+      name = "API"
+      type = "component"
+    }
+  ]
+}`, pageName)
 }
 
 func testAccCheckDatadogStatusPageMaintenanceTemplateConfig(pageName string) string {
