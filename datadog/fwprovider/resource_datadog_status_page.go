@@ -476,7 +476,7 @@ func (r *statusPageResource) Update(ctx context.Context, request resource.Update
 	if err != nil {
 		response.Diagnostics.AddError(
 			"Error reading status page",
-			"Could not read status page ID "+plan.ID.ValueString()+" after updating components: "+err.Error(),
+			fmt.Sprintf("Could not read status page ID %s after updating components: %s. HTTP Response: %v", plan.ID.ValueString(), err.Error(), httpResp),
 		)
 		return
 	}
