@@ -15,10 +15,10 @@ Provides a Datadog status page resource. This can be used to create and manage D
 ```terraform
 # Create new datadog_status_page resource
 
-resource "datadog_status_page" "example" {
-  name               = "Example Status Page"
+resource "datadog_status_page" "acme_status_page" {
+  name               = "Acme Status"
   type               = "public"
-  domain_prefix      = "example"
+  domain_prefix      = "acme-status"
   visualization_type = "bars_and_uptime_percentage"
 }
 ```
