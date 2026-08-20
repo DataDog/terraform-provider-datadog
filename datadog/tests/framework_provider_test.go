@@ -189,6 +189,13 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.GetGovernanceControlNotificationSettings", true)
 	config.SetUnstableOperationEnabled("v2.UpdateGovernanceControlNotificationSettings", true)
 
+	// Enable Execution Policies
+	config.SetUnstableOperationEnabled("v2.CreateExecutionPolicy", true)
+	config.SetUnstableOperationEnabled("v2.GetExecutionPolicy", true)
+	config.SetUnstableOperationEnabled("v2.UpdateExecutionPolicy", true)
+	config.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
+	config.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
+
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true
 	}
