@@ -57,7 +57,7 @@ resource "datadog_status_page_component" "acme_infrastructure" {
 
 - `name` (String) The name of the component.
 - `page_id` (String) The ID of the status page this component belongs to.
-- `position` (Number) The position of the component on the status page.
+- `position` (Number) The position of the component on the status page. Must be between `0` and the current number of existing components on the page, inclusive (i.e. it can append one past the current highest position, but cannot skip ahead further or be negative). A `position` value that depends on a sibling component being created first requires an explicit `depends_on` on that sibling to guarantee creation order.
 - `type` (String) The type of the component. Valid values are: component, group.
 
 ### Optional
