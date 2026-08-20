@@ -23,6 +23,7 @@ var (
 	_ resource.ResourceWithConfigure      = &rumRetentionQuotaResource{}
 	_ resource.ResourceWithImportState    = &rumRetentionQuotaResource{}
 	_ resource.ResourceWithValidateConfig = &rumRetentionQuotaResource{}
+	_ validator.Float64                   = maxRetentionRateValidator{}
 )
 
 // This endpoint is not yet part of the public datadog-api-client-go SDK, so requests
@@ -166,6 +167,9 @@ func (r *rumRetentionQuotaResource) Schema(_ context.Context, _ resource.SchemaR
 					"max_retention_rate": schema.Float64Attribute{
 						Description: "The maximum share of sessions to retain, in the range `(0, 1]`.",
 						Required:    true,
+						Validators: []validator.Float64{
+							maxRetentionRateValidator{},
+						},
 					},
 				},
 			},
@@ -363,5 +367,32 @@ func (r *rumRetentionQuotaResource) buildRequestBody(state *rumRetentionQuotaMod
 			Type:       "rum_quota_config",
 			Attributes: attributes,
 		},
+	}
+}
+
+// maxRetentionRateValidator enforces the API's (0, 1] range, which float64validator.Between
+// cannot express since it treats both bounds as inclusive.
+type maxRetentionRateValidator struct{}
+
+func (v maxRetentionRateValidator) Description(_ context.Context) string {
+	return "value must be greater than 0 and less than or equal to 1"
+}
+
+func (v maxRetentionRateValidator) MarkdownDescription(ctx context.Context) string {
+	return v.Description(ctx)
+}
+
+func (v maxRetentionRateValidator) ValidateFloat64(ctx context.Context, request validator.Float64Request, response *validator.Float64Response) {
+	if request.ConfigValue.IsNull() || request.ConfigValue.IsUnknown() {
+		return
+	}
+
+	value := request.ConfigValue.ValueFloat64()
+	if value <= 0 || value > 1 {
+		response.Diagnostics.AddAttributeError(
+			request.Path,
+			"Invalid Attribute Value",
+			fmt.Sprintf("%s, got: %f", v.Description(ctx), value),
+		)
 	}
 }
