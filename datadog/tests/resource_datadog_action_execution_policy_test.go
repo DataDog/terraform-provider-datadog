@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -135,6 +136,33 @@ func TestAccDatadogActionExecutionPolicy_EmptyScope(t *testing.T) {
 	})
 }
 
+func TestAccDatadogActionExecutionPolicy_EmptyScopeVariant(t *testing.T) {
+	t.Parallel()
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	for _, variant := range []struct {
+		name        string
+		integration string
+	}{
+		{name: "kubernetes", integration: "INTEGRATION_KUBERNETES"},
+		{name: "scripts", integration: "INTEGRATION_SCRIPT"},
+		{name: "remote_action_rshell", integration: "INTEGRATION_REMOTE_ACTION"},
+	} {
+		t.Run(variant.name, func(t *testing.T) {
+			resource.Test(t, resource.TestCase{
+				PreCheck:                 func() { testAccPreCheck(t) },
+				ProtoV6ProviderFactories: accProviders,
+				Steps: []resource.TestStep{
+					{
+						Config:      testAccDatadogActionExecutionPolicyEmptyScopeVariantConfig(variant.integration, variant.name),
+						ExpectError: regexp.MustCompile("must contain at least one `rule`\\s+block"),
+					},
+				},
+			})
+		})
+	}
+}
+
 func testAccDatadogActionExecutionPolicyKubernetesConfig(name, effect, namespaces string) string {
 	return fmt.Sprintf(`
 resource "datadog_action_execution_policy" "test" {
@@ -217,6 +245,23 @@ resource "datadog_action_execution_policy" "test" {
 
   scope {}
 }`, name)
+}
+
+func testAccDatadogActionExecutionPolicyEmptyScopeVariantConfig(integration, variant string) string {
+	return fmt.Sprintf(`
+resource "datadog_action_execution_policy" "test" {
+  name   = "invalid-empty-scope-variant"
+  effect = "allow"
+
+  action_pattern {
+    integration = %q
+    action_fqns = ["*"]
+  }
+
+  scope {
+    %s {}
+  }
+}`, integration, variant)
 }
 
 func testAccCheckDatadogActionExecutionPolicyExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {

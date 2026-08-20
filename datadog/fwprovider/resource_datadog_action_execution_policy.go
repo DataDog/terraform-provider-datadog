@@ -110,9 +110,7 @@ func (r *actionExecutionPolicyResource) Metadata(_ context.Context, _ resource.M
 	response.TypeName = "action_execution_policy"
 }
 
-// ValidateConfig covers the cross-field rules the schema cannot express: `action_pattern`
-// is required (blocks have no native Required), at most one scope variant may be set, and
-// the scope variant that is set must match `action_pattern.integration`.
+// ValidateConfig covers the cross-field rules the schema cannot express
 func (r *actionExecutionPolicyResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
 	var config actionExecutionPolicyModel
 	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
@@ -158,6 +156,24 @@ func (r *actionExecutionPolicyResource) ValidateConfig(ctx context.Context, requ
 
 	// An empty scope block is valid: it means the policy has no scope restriction.
 	if len(set) == 0 {
+		return
+	}
+
+	var ruleCount int
+	switch set[0] {
+	case "kubernetes":
+		ruleCount = len(config.Scope.Kubernetes.Rule)
+	case "scripts":
+		ruleCount = len(config.Scope.Scripts.Rule)
+	case "remote_action_rshell":
+		ruleCount = len(config.Scope.RemoteActionRshell.Rule)
+	}
+	if ruleCount == 0 {
+		response.Diagnostics.AddAttributeError(
+			frameworkPath.Root("scope").AtName(set[0]).AtName("rule"),
+			"Missing scope rule block",
+			fmt.Sprintf("A configured `%s` scope must contain at least one `rule` block.", set[0]),
+		)
 		return
 	}
 
