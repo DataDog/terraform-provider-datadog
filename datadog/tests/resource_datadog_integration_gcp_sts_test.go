@@ -185,6 +185,7 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 					  automute                              = "false"
 					  is_cspm_enabled                       = "false"
 					  resource_collection_enabled           = "false"
+					  is_org_folder_resource_collection_enabled = "false"
 					  is_security_command_center_enabled    = "false"
 					  is_resource_change_collection_enabled = "false"
 					  is_per_project_quota_enabled          = "false"
@@ -213,6 +214,7 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_cspm_enabled"), knownvalue.Bool(false)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_security_command_center_enabled"), knownvalue.Bool(false)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("resource_collection_enabled"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_org_folder_resource_collection_enabled"), knownvalue.Bool(false)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_resource_change_collection_enabled"), knownvalue.Bool(false)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_per_project_quota_enabled"), knownvalue.Bool(false)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("account_tags"), knownvalue.SetExact([]knownvalue.Check{
@@ -260,6 +262,7 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 					  automute                              = "true"
 					  is_cspm_enabled                       = "true"
 					  resource_collection_enabled           = "true"
+					  is_org_folder_resource_collection_enabled = "true"
 					  is_security_command_center_enabled    = "true"
 					  is_resource_change_collection_enabled = "true"
 					  is_per_project_quota_enabled          = "true"
@@ -289,6 +292,7 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_cspm_enabled"), knownvalue.Bool(true)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_security_command_center_enabled"), knownvalue.Bool(true)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("resource_collection_enabled"), knownvalue.Bool(true)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_org_folder_resource_collection_enabled"), knownvalue.Bool(true)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_resource_change_collection_enabled"), knownvalue.Bool(true)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_per_project_quota_enabled"), knownvalue.Bool(true)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("account_tags"), knownvalue.Null()),
@@ -346,6 +350,7 @@ func TestAccIntegrationGcpStsDefault(t *testing.T) {
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_cspm_enabled"), knownvalue.Bool(false)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_security_command_center_enabled"), knownvalue.Bool(false)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("resource_collection_enabled"), knownvalue.Bool(true)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_org_folder_resource_collection_enabled"), knownvalue.Bool(false)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_resource_change_collection_enabled"), knownvalue.Bool(false)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_per_project_quota_enabled"), knownvalue.Bool(false)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("account_tags"), knownvalue.Null()),
