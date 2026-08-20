@@ -147,6 +147,10 @@ var Resources = []func() resource.Resource{
 	NewReferenceTableResource,
 	NewDatastoreResource,
 	NewDatastoreItemResource,
+	NewStatusPageResource,
+	NewStatusPageComponentResource,
+	NewStatusPageDegradationTemplateResource,
+	NewStatusPageMaintenanceTemplateResource,
 }
 
 var Datasources = []func() datasource.DataSource{
