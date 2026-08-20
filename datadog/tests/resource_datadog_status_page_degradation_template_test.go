@@ -23,9 +23,6 @@ func TestAccDatadogStatusPageDegradationTemplate_Basic(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogStatusPageDegradationTemplateDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogStatusPageOnlyConfig(pageName),
-			},
-			{
 				Config: testAccCheckDatadogStatusPageDegradationTemplateConfig(pageName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogStatusPageDegradationTemplateExists(providers.frameworkProvider),
@@ -66,9 +63,6 @@ func TestAccDatadogStatusPageDegradationTemplate_Updated(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogStatusPageDegradationTemplateDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogStatusPageOnlyConfig(pageName),
-			},
-			{
 				Config: testAccCheckDatadogStatusPageDegradationTemplateConfig(pageName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogStatusPageDegradationTemplateExists(providers.frameworkProvider),
@@ -105,9 +99,6 @@ func TestAccDatadogStatusPageDegradationTemplate_Import(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogStatusPageDegradationTemplateDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogStatusPageOnlyConfig(pageName),
-			},
-			{
 				Config: testAccCheckDatadogStatusPageDegradationTemplateConfig(pageName),
 			},
 			{
@@ -137,13 +128,13 @@ resource "datadog_status_page" "foo" {
   type               = "internal"
   domain_prefix      = "%[1]s"
   visualization_type = "bars_and_uptime_percentage"
+}
 
-  components = [
-    {
-      name = "API"
-      type = "component"
-    }
-  ]
+resource "datadog_status_page_component" "foo" {
+  page_id  = datadog_status_page.foo.id
+  name     = "API"
+  type     = "component"
+  position = 0
 }
 
 resource "datadog_status_page_degradation_template" "foo" {
@@ -153,7 +144,7 @@ resource "datadog_status_page_degradation_template" "foo" {
 
   components_affected = [
     {
-      id     = datadog_status_page.foo.components[0].id
+      id     = datadog_status_page_component.foo.id
       status = "degraded"
     }
   ]
@@ -174,13 +165,13 @@ resource "datadog_status_page" "foo" {
   type               = "internal"
   domain_prefix      = "%[1]s"
   visualization_type = "bars_and_uptime_percentage"
+}
 
-  components = [
-    {
-      name = "API"
-      type = "component"
-    }
-  ]
+resource "datadog_status_page_component" "foo" {
+  page_id  = datadog_status_page.foo.id
+  name     = "API"
+  type     = "component"
+  position = 0
 }
 
 resource "datadog_status_page_degradation_template" "foo" {
@@ -190,7 +181,7 @@ resource "datadog_status_page_degradation_template" "foo" {
 
   components_affected = [
     {
-      id     = datadog_status_page.foo.components[0].id
+      id     = datadog_status_page_component.foo.id
       status = "major_outage"
     }
   ]

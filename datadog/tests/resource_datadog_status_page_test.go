@@ -32,12 +32,6 @@ func TestAccDatadogStatusPage_Basic(t *testing.T) {
 						"datadog_status_page.foo", "type", "internal"),
 					resource.TestCheckResourceAttr(
 						"datadog_status_page.foo", "visualization_type", "bars_and_uptime_percentage"),
-					resource.TestCheckResourceAttr(
-						"datadog_status_page.foo", "components.#", "1"),
-					resource.TestCheckResourceAttr(
-						"datadog_status_page.foo", "components.0.name", "API"),
-					resource.TestCheckResourceAttr(
-						"datadog_status_page.foo", "components.0.type", "component"),
 					resource.TestCheckResourceAttrSet(
 						"datadog_status_page.foo", "id"),
 					resource.TestCheckResourceAttrSet(
@@ -117,13 +111,6 @@ resource "datadog_status_page" "foo" {
   type               = "internal"
   domain_prefix      = "%[1]s"
   visualization_type = "bars_and_uptime_percentage"
-
-  components = [
-    {
-      name = "API"
-      type = "component"
-    }
-  ]
 }`, pageName)
 }
 
@@ -134,13 +121,6 @@ resource "datadog_status_page" "foo" {
   type               = "internal"
   domain_prefix      = "%[1]s"
   visualization_type = "bars_only"
-
-  components = [
-    {
-      name = "API"
-      type = "component"
-    }
-  ]
 }`, pageName)
 }
 

@@ -23,9 +23,6 @@ func TestAccDatadogStatusPageMaintenanceTemplate_Basic(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogStatusPageMaintenanceTemplateDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogStatusPageOnlyConfig(pageName),
-			},
-			{
 				Config: testAccCheckDatadogStatusPageMaintenanceTemplateConfig(pageName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogStatusPageMaintenanceTemplateExists(providers.frameworkProvider),
@@ -66,9 +63,6 @@ func TestAccDatadogStatusPageMaintenanceTemplate_Updated(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogStatusPageMaintenanceTemplateDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogStatusPageOnlyConfig(pageName),
-			},
-			{
 				Config: testAccCheckDatadogStatusPageMaintenanceTemplateConfig(pageName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogStatusPageMaintenanceTemplateExists(providers.frameworkProvider),
@@ -105,9 +99,6 @@ func TestAccDatadogStatusPageMaintenanceTemplate_Import(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogStatusPageMaintenanceTemplateDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogStatusPageOnlyConfig(pageName),
-			},
-			{
 				Config: testAccCheckDatadogStatusPageMaintenanceTemplateConfig(pageName),
 			},
 			{
@@ -130,23 +121,6 @@ func testAccStatusPageMaintenanceTemplateImportStateIDFunc(resourceName string) 
 	}
 }
 
-func testAccCheckDatadogStatusPageOnlyConfig(pageName string) string {
-	return fmt.Sprintf(`
-resource "datadog_status_page" "foo" {
-  name               = "%[1]s"
-  type               = "internal"
-  domain_prefix      = "%[1]s"
-  visualization_type = "bars_and_uptime_percentage"
-
-  components = [
-    {
-      name = "API"
-      type = "component"
-    }
-  ]
-}`, pageName)
-}
-
 func testAccCheckDatadogStatusPageMaintenanceTemplateConfig(pageName string) string {
 	return fmt.Sprintf(`
 resource "datadog_status_page" "foo" {
@@ -154,20 +128,20 @@ resource "datadog_status_page" "foo" {
   type               = "internal"
   domain_prefix      = "%[1]s"
   visualization_type = "bars_and_uptime_percentage"
+}
 
-  components = [
-    {
-      name = "API"
-      type = "component"
-    }
-  ]
+resource "datadog_status_page_component" "foo" {
+  page_id  = datadog_status_page.foo.id
+  name     = "API"
+  type     = "component"
+  position = 0
 }
 
 resource "datadog_status_page_maintenance_template" "foo" {
   page_id                  = datadog_status_page.foo.id
   name                     = "%[1]s"
   maintenance_title        = "Scheduled API maintenance"
-  component_ids            = [datadog_status_page.foo.components[0].id]
+  component_ids            = [datadog_status_page_component.foo.id]
   scheduled_description    = "Maintenance is scheduled."
   in_progress_description  = "Maintenance is in progress."
   completed_description    = "Maintenance is complete."
@@ -181,20 +155,20 @@ resource "datadog_status_page" "foo" {
   type               = "internal"
   domain_prefix      = "%[1]s"
   visualization_type = "bars_and_uptime_percentage"
+}
 
-  components = [
-    {
-      name = "API"
-      type = "component"
-    }
-  ]
+resource "datadog_status_page_component" "foo" {
+  page_id  = datadog_status_page.foo.id
+  name     = "API"
+  type     = "component"
+  position = 0
 }
 
 resource "datadog_status_page_maintenance_template" "foo" {
   page_id                  = datadog_status_page.foo.id
   name                     = "%[1]s-updated"
   maintenance_title        = "Scheduled API maintenance (updated)"
-  component_ids            = [datadog_status_page.foo.components[0].id]
+  component_ids            = [datadog_status_page_component.foo.id]
   scheduled_description    = "Maintenance is scheduled."
   in_progress_description  = "Maintenance is in progress."
   completed_description    = "Maintenance has completed."

@@ -3,12 +3,12 @@
 page_title: "datadog_status_page Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog status page resource. This can be used to create and manage Datadog status pages, including their components.
+  Provides a Datadog status page resource. This can be used to create and manage Datadog status pages.
 ---
 
 # datadog_status_page (Resource)
 
-Provides a Datadog status page resource. This can be used to create and manage Datadog status pages, including their components.
+Provides a Datadog status page resource. This can be used to create and manage Datadog status pages.
 
 ## Example Usage
 
@@ -20,28 +20,6 @@ resource "datadog_status_page" "example" {
   type               = "public"
   domain_prefix      = "example"
   visualization_type = "bars_and_uptime_percentage"
-
-  components = [
-    {
-      name = "API"
-      type = "component"
-    },
-    {
-      name = "Infrastructure"
-      type = "group"
-
-      components = [
-        {
-          name = "US Region"
-          type = "component"
-        },
-        {
-          name = "EU Region"
-          type = "component"
-        }
-      ]
-    }
-  ]
 }
 ```
 
@@ -58,7 +36,6 @@ resource "datadog_status_page" "example" {
 ### Optional
 
 - `company_logo` (String) The company logo displayed on the status page.
-- `components` (Attributes List) The components (and component groups) displayed on the status page. (see [below for nested schema](#nestedatt--components))
 - `email_header_image` (String) The header image included in subscriber emails.
 - `favicon` (String) The favicon displayed for the status page.
 - `slack_app_icon` (String) The icon used for the status page's Slack app integration.
@@ -72,43 +49,8 @@ resource "datadog_status_page" "example" {
 - `custom_domain_enabled` (Boolean) Whether the custom domain is enabled for the status page. Managed via a separate custom-domain flow, not by this resource.
 - `enabled` (Boolean) Whether the status page is published. Managed by the publish/unpublish API operations, not by this resource; always reflects the page's current state.
 - `id` (String) The ID of the status page.
-- `modified_at` (String) Timestamp when the status page was last modified.
+- `modified_at` (String) Timestamp when the status page was last modified. Changes on every real update, so this must stay Unknown during an actual update plan rather than using UseStateForUnknown.
 - `page_url` (String) The URL of the status page.
-
-<a id="nestedatt--components"></a>
-### Nested Schema for `components`
-
-Required:
-
-- `name` (String) The name of the component.
-- `type` (String) The type of the component. Valid values are: component, group.
-
-Optional:
-
-- `components` (Attributes List) If this component is of type `group`, the components nested within the group. (see [below for nested schema](#nestedatt--components--components))
-- `position` (Number) The zero-indexed position of the component.
-
-Read-Only:
-
-- `id` (String) The ID of the component.
-- `status` (String) The current status of the component. Server-managed; not settable.
-
-<a id="nestedatt--components--components"></a>
-### Nested Schema for `components.components`
-
-Required:
-
-- `name` (String) The name of the component.
-- `type` (String) The type of the component. Valid values are: component, group.
-
-Optional:
-
-- `position` (Number) The zero-indexed position of the component.
-
-Read-Only:
-
-- `id` (String) The ID of the component.
-- `status` (String) The current status of the component. Server-managed; not settable.
 
 ## Import
 

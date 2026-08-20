@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"reflect"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
@@ -10,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -19,6 +21,7 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &statusPageResource{}
 	_ resource.ResourceWithImportState = &statusPageResource{}
+	_ resource.ResourceWithModifyPlan  = &statusPageResource{}
 )
 
 type statusPageResource struct {
@@ -27,45 +30,56 @@ type statusPageResource struct {
 }
 
 type statusPageModel struct {
-	ID                        types.String               `tfsdk:"id"`
-	Name                      types.String               `tfsdk:"name"`
-	Type                      types.String               `tfsdk:"type"`
-	Enabled                   types.Bool                 `tfsdk:"enabled"`
-	DomainPrefix              types.String               `tfsdk:"domain_prefix"`
-	CustomDomain              types.String               `tfsdk:"custom_domain"`
-	CustomDomainEnabled       types.Bool                 `tfsdk:"custom_domain_enabled"`
-	PageURL                   types.String               `tfsdk:"page_url"`
-	VisualizationType         types.String               `tfsdk:"visualization_type"`
-	SubscriptionsEnabled      types.Bool                 `tfsdk:"subscriptions_enabled"`
-	SlackSubscriptionsEnabled types.Bool                 `tfsdk:"slack_subscriptions_enabled"`
-	CompanyLogo               types.String               `tfsdk:"company_logo"`
-	Favicon                   types.String               `tfsdk:"favicon"`
-	EmailHeaderImage          types.String               `tfsdk:"email_header_image"`
-	SlackAppIcon              types.String               `tfsdk:"slack_app_icon"`
-	CreatedAt                 types.String               `tfsdk:"created_at"`
-	ModifiedAt                types.String               `tfsdk:"modified_at"`
-	Components                []statusPageComponentModel `tfsdk:"components"`
-}
-
-type statusPageComponentModel struct {
-	ID         types.String                  `tfsdk:"id"`
-	Name       types.String                  `tfsdk:"name"`
-	Type       types.String                  `tfsdk:"type"`
-	Position   types.Int64                   `tfsdk:"position"`
-	Status     types.String                  `tfsdk:"status"`
-	Components []statusPageSubComponentModel `tfsdk:"components"`
-}
-
-type statusPageSubComponentModel struct {
-	ID       types.String `tfsdk:"id"`
-	Name     types.String `tfsdk:"name"`
-	Type     types.String `tfsdk:"type"`
-	Position types.Int64  `tfsdk:"position"`
-	Status   types.String `tfsdk:"status"`
+	ID                        types.String `tfsdk:"id"`
+	Name                      types.String `tfsdk:"name"`
+	Type                      types.String `tfsdk:"type"`
+	Enabled                   types.Bool   `tfsdk:"enabled"`
+	DomainPrefix              types.String `tfsdk:"domain_prefix"`
+	CustomDomain              types.String `tfsdk:"custom_domain"`
+	CustomDomainEnabled       types.Bool   `tfsdk:"custom_domain_enabled"`
+	PageURL                   types.String `tfsdk:"page_url"`
+	VisualizationType         types.String `tfsdk:"visualization_type"`
+	SubscriptionsEnabled      types.Bool   `tfsdk:"subscriptions_enabled"`
+	SlackSubscriptionsEnabled types.Bool   `tfsdk:"slack_subscriptions_enabled"`
+	CompanyLogo               types.String `tfsdk:"company_logo"`
+	Favicon                   types.String `tfsdk:"favicon"`
+	EmailHeaderImage          types.String `tfsdk:"email_header_image"`
+	SlackAppIcon              types.String `tfsdk:"slack_app_icon"`
+	CreatedAt                 types.String `tfsdk:"created_at"`
+	ModifiedAt                types.String `tfsdk:"modified_at"`
 }
 
 func NewStatusPageResource() resource.Resource {
 	return &statusPageResource{}
+}
+
+// ModifyPlan pins modified_at back to its prior state value when no other
+// attribute is actually changing. modified_at genuinely changes on real
+// updates, so it can't use UseStateForUnknown() (which is unconditional),
+// but without any plan modifier Terraform 1.1.5's core marks it Unknown even
+// on a no-op replan, unlike newer Terraform-core versions.
+func (r *statusPageResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	if req.State.Raw.IsNull() || req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var planModel, stateModel statusPageModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &planModel)...)
+	resp.Diagnostics.Append(req.State.Get(ctx, &stateModel)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	priorModifiedAt := stateModel.ModifiedAt
+	planModel.ModifiedAt = types.StringNull()
+	stateModel.ModifiedAt = types.StringNull()
+	if !reflect.DeepEqual(planModel, stateModel) {
+		// A real change is happening elsewhere in the plan; leave modified_at
+		// as Terraform's core computed it (Unknown).
+		return
+	}
+
+	resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, path.Root("modified_at"), priorModifiedAt)...)
 }
 
 func (r *statusPageResource) Metadata(_ context.Context, _ resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -74,7 +88,7 @@ func (r *statusPageResource) Metadata(_ context.Context, _ resource.MetadataRequ
 
 func (r *statusPageResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Provides a Datadog status page resource. This can be used to create and manage Datadog status pages, including their components.",
+		Description: "Provides a Datadog status page resource. This can be used to create and manage Datadog status pages.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "The ID of the status page.",
@@ -102,115 +116,89 @@ func (r *statusPageResource) Schema(_ context.Context, _ resource.SchemaRequest,
 			"enabled": schema.BoolAttribute{
 				Description: "Whether the status page is published. Managed by the publish/unpublish API operations, not by this resource; always reflects the page's current state.",
 				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"custom_domain": schema.StringAttribute{
 				Description: "The custom domain configured for the status page, if any. Managed via a separate custom-domain flow, not by this resource.",
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"custom_domain_enabled": schema.BoolAttribute{
 				Description: "Whether the custom domain is enabled for the status page. Managed via a separate custom-domain flow, not by this resource.",
 				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"page_url": schema.StringAttribute{
 				Description: "The URL of the status page.",
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"subscriptions_enabled": schema.BoolAttribute{
 				Description: "Whether subscriber notifications are enabled for the status page.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"slack_subscriptions_enabled": schema.BoolAttribute{
 				Description: "Whether Slack subscriber notifications are enabled for the status page.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"company_logo": schema.StringAttribute{
 				Description: "The company logo displayed on the status page.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"favicon": schema.StringAttribute{
 				Description: "The favicon displayed for the status page.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"email_header_image": schema.StringAttribute{
 				Description: "The header image included in subscriber emails.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"slack_app_icon": schema.StringAttribute{
 				Description: "The icon used for the status page's Slack app integration.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"created_at": schema.StringAttribute{
 				Description: "Timestamp when the status page was created.",
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"modified_at": schema.StringAttribute{
-				Description: "Timestamp when the status page was last modified.",
+				Description: "Timestamp when the status page was last modified. Changes on every real update, so this must stay Unknown during an actual update plan rather than using UseStateForUnknown.",
 				Computed:    true,
-			},
-			"components": schema.ListNestedAttribute{
-				Description: "The components (and component groups) displayed on the status page.",
-				Optional:    true,
-				Computed:    true,
-				NestedObject: schema.NestedAttributeObject{
-					Attributes: map[string]schema.Attribute{
-						"id": schema.StringAttribute{
-							Description: "The ID of the component.",
-							Computed:    true,
-						},
-						"name": schema.StringAttribute{
-							Description: "The name of the component.",
-							Required:    true,
-						},
-						"type": schema.StringAttribute{
-							Description: "The type of the component. Valid values are: component, group.",
-							Required:    true,
-						},
-						"position": schema.Int64Attribute{
-							Description: "The zero-indexed position of the component.",
-							Optional:    true,
-							Computed:    true,
-						},
-						"status": schema.StringAttribute{
-							Description: "The current status of the component. Server-managed; not settable.",
-							Computed:    true,
-						},
-						"components": schema.ListNestedAttribute{
-							Description: "If this component is of type `group`, the components nested within the group.",
-							Optional:    true,
-							NestedObject: schema.NestedAttributeObject{
-								Attributes: map[string]schema.Attribute{
-									"id": schema.StringAttribute{
-										Description: "The ID of the component.",
-										Computed:    true,
-									},
-									"name": schema.StringAttribute{
-										Description: "The name of the component.",
-										Required:    true,
-									},
-									"type": schema.StringAttribute{
-										Description: "The type of the component. Valid values are: component, group.",
-										Required:    true,
-									},
-									"position": schema.Int64Attribute{
-										Description: "The zero-indexed position of the component.",
-										Optional:    true,
-										Computed:    true,
-									},
-									"status": schema.StringAttribute{
-										Description: "The current status of the component. Server-managed; not settable.",
-										Computed:    true,
-									},
-								},
-							},
-						},
-					},
-				},
 			},
 		},
 	}
@@ -234,42 +222,6 @@ func (r *statusPageResource) Configure(_ context.Context, request resource.Confi
 	r.Auth = providerData.Auth
 }
 
-func buildStatusPageComponents(components []statusPageComponentModel) []datadogV2.CreateStatusPageRequestDataAttributesComponentsItems {
-	if components == nil {
-		return nil
-	}
-	result := make([]datadogV2.CreateStatusPageRequestDataAttributesComponentsItems, len(components))
-	for i, component := range components {
-		name := component.Name.ValueString()
-		componentType := datadogV2.CreateComponentRequestDataAttributesType(component.Type.ValueString())
-		item := datadogV2.CreateStatusPageRequestDataAttributesComponentsItems{
-			Name: &name,
-			Type: &componentType,
-		}
-		if !component.Position.IsNull() && !component.Position.IsUnknown() {
-			item.Position = component.Position.ValueInt64Pointer()
-		}
-		if len(component.Components) > 0 {
-			subItems := make([]datadogV2.CreateStatusPageRequestDataAttributesComponentsItemsComponentsItems, len(component.Components))
-			for j, sub := range component.Components {
-				subName := sub.Name.ValueString()
-				subType := datadogV2.StatusPagesComponentGroupAttributesComponentsItemsType(sub.Type.ValueString())
-				subItem := datadogV2.CreateStatusPageRequestDataAttributesComponentsItemsComponentsItems{
-					Name: &subName,
-					Type: &subType,
-				}
-				if !sub.Position.IsNull() && !sub.Position.IsUnknown() {
-					subItem.Position = sub.Position.ValueInt64Pointer()
-				}
-				subItems[j] = subItem
-			}
-			item.Components = subItems
-		}
-		result[i] = item
-	}
-	return result
-}
-
 func (r *statusPageResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
 	var plan statusPageModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
@@ -282,7 +234,6 @@ func (r *statusPageResource) Create(ctx context.Context, request resource.Create
 		Type:              datadogV2.CreateStatusPageRequestDataAttributesType(plan.Type.ValueString()),
 		DomainPrefix:      plan.DomainPrefix.ValueString(),
 		VisualizationType: datadogV2.CreateStatusPageRequestDataAttributesVisualizationType(plan.VisualizationType.ValueString()),
-		Components:        buildStatusPageComponents(plan.Components),
 	}
 
 	if !plan.SubscriptionsEnabled.IsNull() && !plan.SubscriptionsEnabled.IsUnknown() {
@@ -464,290 +415,9 @@ func (r *statusPageResource) Update(ctx context.Context, request resource.Update
 		return
 	}
 
-	if d := r.syncComponents(id, state.Components, plan.Components); d.HasError() {
-		response.Diagnostics.Append(d...)
-		return
-	}
-
-	// Components are managed via separate component endpoints, not reflected in the PatchStatusPage
-	// response above, so re-read the page to populate the final component tree (ids, status, etc.).
-	resp, httpResp, err = r.Api.GetStatusPage(r.Auth, id)
-	if err != nil {
-		response.Diagnostics.AddError(
-			"Error reading status page",
-			fmt.Sprintf("Could not read status page ID %s after updating components: %s. HTTP Response: %v", plan.ID.ValueString(), err.Error(), httpResp),
-		)
-		return
-	}
-
 	r.updateStateFromResponse(&plan, &resp)
 
 	response.Diagnostics.Append(response.State.Set(ctx, &plan)...)
-}
-
-// syncComponents reconciles the top-level components list against the API. Components have no
-// user-assignable identity in this schema (their id is server-generated and Computed-only), so
-// entries are correlated positionally: index i in oldComponents (from state) is treated as the
-// same logical slot as index i in newComponents (from plan), matching how Terraform itself diffs
-// this ordered list. A component whose type changes cannot be patched in place (the component
-// PATCH endpoint has no type field), so it's deleted and recreated instead.
-func (r *statusPageResource) syncComponents(pageID uuid.UUID, oldComponents, newComponents []statusPageComponentModel) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	count := len(oldComponents)
-	if len(newComponents) > count {
-		count = len(newComponents)
-	}
-
-	for i := 0; i < count; i++ {
-		switch {
-		case i < len(oldComponents) && i < len(newComponents):
-			old, new := oldComponents[i], newComponents[i]
-			oldID, err := uuid.Parse(old.ID.ValueString())
-			if err != nil {
-				diags.AddError("Error parsing component ID", "Could not parse component ID "+old.ID.ValueString()+": "+err.Error())
-				return diags
-			}
-
-			if new.Type.ValueString() != old.Type.ValueString() {
-				if _, err := r.Api.DeleteComponent(r.Auth, pageID, oldID); err != nil {
-					diags.AddError("Error deleting component", "Could not delete component ID "+old.ID.ValueString()+" while changing its type: "+err.Error())
-					return diags
-				}
-				diags.Append(r.createComponent(pageID, new, i)...)
-			} else {
-				diags.Append(r.updateComponent(pageID, oldID, new, i)...)
-				if !diags.HasError() {
-					diags.Append(r.syncSubComponents(pageID, oldID, old.Components, new.Components)...)
-				}
-			}
-		case i >= len(oldComponents):
-			diags.Append(r.createComponent(pageID, newComponents[i], i)...)
-		default:
-			oldID, err := uuid.Parse(oldComponents[i].ID.ValueString())
-			if err != nil {
-				diags.AddError("Error parsing component ID", "Could not parse component ID "+oldComponents[i].ID.ValueString()+": "+err.Error())
-				return diags
-			}
-			if _, err := r.Api.DeleteComponent(r.Auth, pageID, oldID); err != nil {
-				diags.AddError("Error deleting component", "Could not delete component ID "+oldComponents[i].ID.ValueString()+": "+err.Error())
-				return diags
-			}
-		}
-
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	return diags
-}
-
-// syncSubComponents reconciles the components nested within a single group, using the same
-// positional correlation as syncComponents.
-func (r *statusPageResource) syncSubComponents(pageID, groupID uuid.UUID, oldComponents, newComponents []statusPageSubComponentModel) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	count := len(oldComponents)
-	if len(newComponents) > count {
-		count = len(newComponents)
-	}
-
-	for i := 0; i < count; i++ {
-		switch {
-		case i < len(oldComponents) && i < len(newComponents):
-			old, new := oldComponents[i], newComponents[i]
-			oldID, err := uuid.Parse(old.ID.ValueString())
-			if err != nil {
-				diags.AddError("Error parsing component ID", "Could not parse component ID "+old.ID.ValueString()+": "+err.Error())
-				return diags
-			}
-
-			if new.Type.ValueString() != old.Type.ValueString() {
-				if _, err := r.Api.DeleteComponent(r.Auth, pageID, oldID); err != nil {
-					diags.AddError("Error deleting component", "Could not delete component ID "+old.ID.ValueString()+" while changing its type: "+err.Error())
-					return diags
-				}
-				diags.Append(r.createSubComponent(pageID, groupID, new, i)...)
-			} else {
-				diags.Append(r.updateSubComponent(pageID, oldID, new, i)...)
-			}
-		case i >= len(oldComponents):
-			diags.Append(r.createSubComponent(pageID, groupID, newComponents[i], i)...)
-		default:
-			oldID, err := uuid.Parse(oldComponents[i].ID.ValueString())
-			if err != nil {
-				diags.AddError("Error parsing component ID", "Could not parse component ID "+oldComponents[i].ID.ValueString()+": "+err.Error())
-				return diags
-			}
-			if _, err := r.Api.DeleteComponent(r.Auth, pageID, oldID); err != nil {
-				diags.AddError("Error deleting component", "Could not delete component ID "+oldComponents[i].ID.ValueString()+": "+err.Error())
-				return diags
-			}
-		}
-
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	return diags
-}
-
-func componentPosition(configured types.Int64, index int) int64 {
-	if !configured.IsNull() && !configured.IsUnknown() {
-		return configured.ValueInt64()
-	}
-	return int64(index)
-}
-
-func (r *statusPageResource) updateComponent(pageID, componentID uuid.UUID, component statusPageComponentModel, index int) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	name := component.Name.ValueString()
-	position := componentPosition(component.Position, index)
-
-	_, httpResp, err := r.Api.UpdateComponent(r.Auth, pageID, componentID, datadogV2.PatchComponentRequest{
-		Data: &datadogV2.PatchComponentRequestData{
-			Id:   componentID,
-			Type: datadogV2.STATUSPAGESCOMPONENTGROUPTYPE_COMPONENTS,
-			Attributes: datadogV2.PatchComponentRequestDataAttributes{
-				Name:     &name,
-				Position: &position,
-			},
-		},
-	})
-	if err != nil {
-		diags.AddError(
-			"Error updating component",
-			fmt.Sprintf("Could not update component ID %s: %s. HTTP Response: %v", componentID.String(), err.Error(), httpResp),
-		)
-		return diags
-	}
-	if httpResp.StatusCode != 200 {
-		diags.AddError(
-			"Error updating component",
-			fmt.Sprintf("Received HTTP status %d updating component ID %s. Response body: %v", httpResp.StatusCode, componentID.String(), httpResp),
-		)
-	}
-	return diags
-}
-
-func (r *statusPageResource) updateSubComponent(pageID, componentID uuid.UUID, component statusPageSubComponentModel, index int) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	name := component.Name.ValueString()
-	position := componentPosition(component.Position, index)
-
-	_, httpResp, err := r.Api.UpdateComponent(r.Auth, pageID, componentID, datadogV2.PatchComponentRequest{
-		Data: &datadogV2.PatchComponentRequestData{
-			Id:   componentID,
-			Type: datadogV2.STATUSPAGESCOMPONENTGROUPTYPE_COMPONENTS,
-			Attributes: datadogV2.PatchComponentRequestDataAttributes{
-				Name:     &name,
-				Position: &position,
-			},
-		},
-	})
-	if err != nil {
-		diags.AddError(
-			"Error updating component",
-			fmt.Sprintf("Could not update component ID %s: %s. HTTP Response: %v", componentID.String(), err.Error(), httpResp),
-		)
-		return diags
-	}
-	if httpResp.StatusCode != 200 {
-		diags.AddError(
-			"Error updating component",
-			fmt.Sprintf("Received HTTP status %d updating component ID %s. Response body: %v", httpResp.StatusCode, componentID.String(), httpResp),
-		)
-	}
-	return diags
-}
-
-func (r *statusPageResource) createComponent(pageID uuid.UUID, component statusPageComponentModel, index int) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	attributes := datadogV2.CreateComponentRequestDataAttributes{
-		Name:     component.Name.ValueString(),
-		Position: componentPosition(component.Position, index),
-		Type:     datadogV2.CreateComponentRequestDataAttributesType(component.Type.ValueString()),
-	}
-	if len(component.Components) > 0 {
-		subItems := make([]datadogV2.CreateComponentRequestDataAttributesComponentsItems, len(component.Components))
-		for j, sub := range component.Components {
-			subItems[j] = datadogV2.CreateComponentRequestDataAttributesComponentsItems{
-				Name:     sub.Name.ValueString(),
-				Position: componentPosition(sub.Position, j),
-				Type:     datadogV2.StatusPagesComponentGroupAttributesComponentsItemsType(sub.Type.ValueString()),
-			}
-		}
-		attributes.Components = subItems
-	}
-
-	body := datadogV2.CreateComponentRequest{
-		Data: &datadogV2.CreateComponentRequestData{
-			Type:       datadogV2.STATUSPAGESCOMPONENTGROUPTYPE_COMPONENTS,
-			Attributes: attributes,
-		},
-	}
-
-	_, httpResp, err := r.Api.CreateComponent(r.Auth, pageID, body)
-	if err != nil {
-		diags.AddError(
-			"Error creating component",
-			fmt.Sprintf("Could not create component %q: %s. HTTP Response: %v", component.Name.ValueString(), err.Error(), httpResp),
-		)
-		return diags
-	}
-	if httpResp.StatusCode != 201 {
-		diags.AddError(
-			"Error creating component",
-			fmt.Sprintf("Received HTTP status %d creating component %q. Response body: %v", httpResp.StatusCode, component.Name.ValueString(), httpResp),
-		)
-	}
-	return diags
-}
-
-func (r *statusPageResource) createSubComponent(pageID, groupID uuid.UUID, component statusPageSubComponentModel, index int) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	body := datadogV2.CreateComponentRequest{
-		Data: &datadogV2.CreateComponentRequestData{
-			Type: datadogV2.STATUSPAGESCOMPONENTGROUPTYPE_COMPONENTS,
-			Attributes: datadogV2.CreateComponentRequestDataAttributes{
-				Name:     component.Name.ValueString(),
-				Position: componentPosition(component.Position, index),
-				Type:     datadogV2.CreateComponentRequestDataAttributesType(component.Type.ValueString()),
-			},
-			Relationships: &datadogV2.CreateComponentRequestDataRelationships{
-				Group: &datadogV2.CreateComponentRequestDataRelationshipsGroup{
-					Data: *datadogV2.NewNullableCreateComponentRequestDataRelationshipsGroupData(
-						&datadogV2.CreateComponentRequestDataRelationshipsGroupData{
-							Id:   groupID,
-							Type: datadogV2.STATUSPAGESCOMPONENTGROUPTYPE_COMPONENTS,
-						},
-					),
-				},
-			},
-		},
-	}
-
-	_, httpResp, err := r.Api.CreateComponent(r.Auth, pageID, body)
-	if err != nil {
-		diags.AddError(
-			"Error creating component",
-			fmt.Sprintf("Could not create component %q: %s. HTTP Response: %v", component.Name.ValueString(), err.Error(), httpResp),
-		)
-		return diags
-	}
-	if httpResp.StatusCode != 201 {
-		diags.AddError(
-			"Error creating component",
-			fmt.Sprintf("Received HTTP status %d creating component %q. Response body: %v", httpResp.StatusCode, component.Name.ValueString(), httpResp),
-		)
-	}
-	return diags
 }
 
 func (r *statusPageResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
@@ -858,51 +528,6 @@ func (r *statusPageResource) updateStateFromResponse(state *statusPageModel, res
 		}
 		if modifiedAt, ok := attributes.GetModifiedAtOk(); ok && modifiedAt != nil {
 			state.ModifiedAt = types.StringValue(modifiedAt.Format("2006-01-02T15:04:05Z"))
-		}
-
-		if components, ok := attributes.GetComponentsOk(); ok && components != nil {
-			state.Components = make([]statusPageComponentModel, len(*components))
-			for i, component := range *components {
-				componentModel := statusPageComponentModel{}
-				if component.Id != nil {
-					componentModel.ID = types.StringValue(component.Id.String())
-				}
-				if component.Name != nil {
-					componentModel.Name = types.StringValue(*component.Name)
-				}
-				if component.Type != nil {
-					componentModel.Type = types.StringValue(string(*component.Type))
-				}
-				if component.Position != nil {
-					componentModel.Position = types.Int64Value(*component.Position)
-				}
-				if component.Status != nil {
-					componentModel.Status = types.StringValue(string(*component.Status))
-				}
-				if len(component.Components) > 0 {
-					componentModel.Components = make([]statusPageSubComponentModel, len(component.Components))
-					for j, sub := range component.Components {
-						subModel := statusPageSubComponentModel{}
-						if sub.Id != nil {
-							subModel.ID = types.StringValue(sub.Id.String())
-						}
-						if sub.Name != nil {
-							subModel.Name = types.StringValue(*sub.Name)
-						}
-						if sub.Type != nil {
-							subModel.Type = types.StringValue(string(*sub.Type))
-						}
-						if sub.Position != nil {
-							subModel.Position = types.Int64Value(*sub.Position)
-						}
-						if sub.Status != nil {
-							subModel.Status = types.StringValue(string(*sub.Status))
-						}
-						componentModel.Components[j] = subModel
-					}
-				}
-				state.Components[i] = componentModel
-			}
 		}
 	}
 }

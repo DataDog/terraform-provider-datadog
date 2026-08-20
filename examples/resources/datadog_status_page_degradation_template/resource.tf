@@ -5,13 +5,13 @@ resource "datadog_status_page" "example" {
   type               = "public"
   domain_prefix      = "example"
   visualization_type = "bars_and_uptime_percentage"
+}
 
-  components = [
-    {
-      name = "API"
-      type = "component"
-    }
-  ]
+resource "datadog_status_page_component" "api" {
+  page_id  = datadog_status_page.example.id
+  name     = "API"
+  type     = "component"
+  position = 0
 }
 
 resource "datadog_status_page_degradation_template" "example" {
@@ -21,7 +21,7 @@ resource "datadog_status_page_degradation_template" "example" {
 
   components_affected = [
     {
-      id     = datadog_status_page.example.components[0].id
+      id     = datadog_status_page_component.api.id
       status = "degraded"
     }
   ]
