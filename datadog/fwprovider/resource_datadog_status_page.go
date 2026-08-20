@@ -82,6 +82,58 @@ func (r *statusPageResource) ModifyPlan(ctx context.Context, req resource.Modify
 	resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, path.Root("modified_at"), priorModifiedAt)...)
 }
 
+// statusPageURLShape buckets a status page type by the page_url format the
+// API derives from it. "internal" pages URL to a Datadog-domain viewer path;
+// every other type (public, and the upcoming private) URLs to a
+// domain_prefix-based subdomain, so they share a shape.
+func statusPageURLShape(pageType types.String) string {
+	if pageType.ValueString() == "internal" {
+		return "internal"
+	}
+	return "domain_prefix"
+}
+
+// statusPageURLPlanModifier behaves like stringplanmodifier.UseStateForUnknown(),
+// except it lets page_url stay Unknown (instead of reusing the prior state
+// value) when domain_prefix changes, or when type changes across a URL-shape
+// boundary, since the API derives page_url from those fields server-side.
+type statusPageURLPlanModifier struct{}
+
+func (m statusPageURLPlanModifier) Description(_ context.Context) string {
+	return "Recomputes page_url when domain_prefix changes, or type changes across a URL-shape boundary, instead of reusing the prior state value."
+}
+
+func (m statusPageURLPlanModifier) MarkdownDescription(ctx context.Context) string {
+	return m.Description(ctx)
+}
+
+func (m statusPageURLPlanModifier) PlanModifyString(ctx context.Context, req planmodifier.StringRequest, resp *planmodifier.StringResponse) {
+	if req.State.Raw.IsNull() || req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var stateType, planType, stateDomainPrefix, planDomainPrefix types.String
+	resp.Diagnostics.Append(req.State.GetAttribute(ctx, path.Root("type"), &stateType)...)
+	resp.Diagnostics.Append(req.Plan.GetAttribute(ctx, path.Root("type"), &planType)...)
+	resp.Diagnostics.Append(req.State.GetAttribute(ctx, path.Root("domain_prefix"), &stateDomainPrefix)...)
+	resp.Diagnostics.Append(req.Plan.GetAttribute(ctx, path.Root("domain_prefix"), &planDomainPrefix)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if statusPageURLShape(stateType) != statusPageURLShape(planType) || !stateDomainPrefix.Equal(planDomainPrefix) {
+		// page_url is derived server-side from type/domain_prefix; force a
+		// recompute instead of letting Terraform's default proposal carry
+		// forward the now-stale prior value.
+		resp.PlanValue = types.StringUnknown()
+		return
+	}
+
+	if req.PlanValue.IsUnknown() {
+		resp.PlanValue = req.StateValue
+	}
+}
+
 func (r *statusPageResource) Metadata(_ context.Context, _ resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = "status_page"
 }
@@ -138,7 +190,7 @@ func (r *statusPageResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Description: "The URL of the status page.",
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+					statusPageURLPlanModifier{},
 				},
 			},
 			"subscriptions_enabled": schema.BoolAttribute{
@@ -427,6 +479,11 @@ func (r *statusPageResource) Delete(ctx context.Context, request resource.Delete
 		return
 	}
 
+	if d := requireUnpublished(&state, "it can be deleted"); d != nil {
+		response.Diagnostics.Append(d)
+		return
+	}
+
 	id, err := uuid.Parse(state.ID.ValueString())
 	if err != nil {
 		response.Diagnostics.AddError(
@@ -434,18 +491,6 @@ func (r *statusPageResource) Delete(ctx context.Context, request resource.Delete
 			"Could not parse status page ID: "+err.Error(),
 		)
 		return
-	}
-
-	if state.Enabled.ValueBool() {
-		if unpublishResp, err := r.Api.UnpublishStatusPage(r.Auth, id); err != nil {
-			if unpublishResp == nil || unpublishResp.StatusCode != 404 {
-				response.Diagnostics.AddError(
-					"Error unpublishing status page",
-					"Could not unpublish status page ID "+state.ID.ValueString()+" before deletion: "+err.Error(),
-				)
-				return
-			}
-		}
 	}
 
 	httpResp, err := r.Api.DeleteStatusPage(r.Auth, id)

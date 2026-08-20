@@ -84,7 +84,7 @@ func (r *statusPageComponentResource) Schema(_ context.Context, _ resource.Schem
 				},
 			},
 			"position": schema.Int64Attribute{
-				Description: "The position of the component on the status page.",
+				Description: "The position of the component on the status page. Must be between `0` and the current number of existing components on the page, inclusive (i.e. it can append one past the current highest position, but cannot skip ahead further or be negative). A `position` value that depends on a sibling component being created first requires an explicit `depends_on` on that sibling to guarantee creation order.",
 				Required:    true,
 			},
 			"status": schema.StringAttribute{
