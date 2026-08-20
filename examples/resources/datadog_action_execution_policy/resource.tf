@@ -28,26 +28,6 @@ resource "datadog_action_execution_policy" "kubernetes_prod_read" {
   }
 }
 
-# Scripts: deny a specific shell script action everywhere, regardless of agent tags
-# (no `target` block means the policy applies fleet-wide).
-resource "datadog_action_execution_policy" "deny_dangerous_script" {
-  name   = "deny-dangerous-cleanup-script"
-  effect = "deny"
-
-  action_pattern {
-    integration = "INTEGRATION_SCRIPT"
-    action_fqns = ["com.datadoghq.script.runShellScript"]
-  }
-
-  scope {
-    scripts {
-      rule {
-        target_script_names = ["dangerous-cleanup.sh"]
-      }
-    }
-  }
-}
-
 # Remote action (rshell): allow command execution restricted to a read-only path on staging agents.
 resource "datadog_action_execution_policy" "rshell_staging_readonly" {
   name   = "rshell-staging-readonly"
@@ -70,6 +50,26 @@ resource "datadog_action_execution_policy" "rshell_staging_readonly" {
   target {
     name       = "staging"
     agent_tags = ["env:staging"]
+  }
+}
+
+# Scripts: deny a specific shell script action everywhere, regardless of agent tags
+# (no `target` block means the policy applies fleet-wide).
+resource "datadog_action_execution_policy" "deny_dangerous_script" {
+  name   = "deny-dangerous-cleanup-script"
+  effect = "deny"
+
+  action_pattern {
+    integration = "INTEGRATION_SCRIPT"
+    action_fqns = ["com.datadoghq.script.runShellScript"]
+  }
+
+  scope {
+    scripts {
+      rule {
+        target_script_names = ["dangerous-cleanup.sh"]
+      }
+    }
   }
 }
 
