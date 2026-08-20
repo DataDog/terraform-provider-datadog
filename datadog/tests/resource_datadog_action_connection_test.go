@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
@@ -39,6 +40,90 @@ func TestAccDatadogActionConnectionResource_AWS_AssumeRole(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "aws.assume_role.role", testAWSRole),
 					resource.TestCheckResourceAttrSet(resourceName, "aws.assume_role.principal_id"),
 					resource.TestCheckResourceAttrSet(resourceName, "aws.assume_role.external_id"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogActionConnectionResource_Tags(t *testing.T) {
+	t.Parallel()
+
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	connectionName := uniqueEntityName(ctx, t)
+	resourceName := "datadog_action_connection.aws_assume_role_conn"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogConnectionDestroy(providers.frameworkProvider, resourceName),
+		Steps: []resource.TestStep{
+			{
+				Config: testAWSAssumeRoleConnectionResourceConfigWithTags(connectionName, `["env:test", "team:action-platform"]`),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogConnectionExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(resourceName, "tags.*", "env:test"),
+					resource.TestCheckTypeSetElemAttr(resourceName, "tags.*", "team:action-platform"),
+				),
+			},
+			{
+				Config: testAWSAssumeRoleConnectionResourceConfigWithTags(connectionName, `["env:prod", "team:action-platform"]`),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogConnectionExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(resourceName, "tags.*", "env:prod"),
+					resource.TestCheckTypeSetElemAttr(resourceName, "tags.*", "team:action-platform"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogActionConnectionResource_DefaultTags(t *testing.T) {
+	t.Parallel()
+
+	ctx, providers, _ := testAccFrameworkMuxProviders(context.Background(), t)
+
+	connectionName := uniqueEntityName(ctx, t)
+	resourceName := "datadog_action_connection.aws_assume_role_conn"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() { testAccPreCheck(t) },
+		Steps: []resource.TestStep{
+			{
+				Config: testAWSAssumeRoleConnectionResourceConfigWithTags(connectionName, `["env:test"]`),
+				ProtoV6ProviderFactories: map[string]func() (tfprotov6.ProviderServer, error){
+					"datadog": withDefaultTagsFw(ctx, providers, map[string]string{
+						"env":        "default",
+						"managed_by": "terraform",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogConnectionExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "tags.#", "1"),
+					resource.TestCheckTypeSetElemAttr(resourceName, "tags.*", "env:test"),
+					resource.TestCheckResourceAttr(resourceName, "effective_tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(resourceName, "effective_tags.*", "env:test"),
+					resource.TestCheckTypeSetElemAttr(resourceName, "effective_tags.*", "managed_by:terraform"),
+				),
+			},
+			{
+				Config: testAWSAssumeRoleConnectionResourceConfigWithTags(connectionName, `["env:test"]`),
+				ProtoV6ProviderFactories: map[string]func() (tfprotov6.ProviderServer, error){
+					"datadog": withDefaultTagsFw(ctx, providers, map[string]string{
+						"env":        "default",
+						"managed_by": "opentofu",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogConnectionExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "tags.#", "1"),
+					resource.TestCheckTypeSetElemAttr(resourceName, "tags.*", "env:test"),
+					resource.TestCheckResourceAttr(resourceName, "effective_tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(resourceName, "effective_tags.*", "env:test"),
+					resource.TestCheckTypeSetElemAttr(resourceName, "effective_tags.*", "managed_by:opentofu"),
 				),
 			},
 		},

@@ -1,5 +1,6 @@
 resource "datadog_action_connection" "aws_connection" {
   name = "My AWS Connection"
+  tags = ["env:prod", "team:action-platform"]
 
   aws {
     assume_role {
