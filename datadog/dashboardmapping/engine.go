@@ -555,8 +555,21 @@ type FormulaRequestConfig struct {
 	// ExtraFields are widget-specific request-level fields emitted before formulas.
 	// Example: on_right_yaxis + display_type for timeseries; change-widget fields.
 	ExtraFields []FieldSpec
+	// FormulaFields overrides the fields used to build and flatten each formula.
+	// nil defaults to widgetFormulaFields.
+	FormulaFields []FieldSpec
 	// IncludeSort: when true, build/flatten the sort block (toplist, geomap, etc.).
 	IncludeSort bool
+	// AllowResponseFormatOverride reads response_format from HCL when present,
+	// falling back to ResponseFormat when omitted.
+	AllowResponseFormatOverride bool
+}
+
+func (cfg FormulaRequestConfig) effectiveFormulaFields() []FieldSpec {
+	if cfg.FormulaFields != nil {
+		return cfg.FormulaFields
+	}
+	return widgetFormulaFields
 }
 
 // Per-widget FormulaRequestConfig declarations.
@@ -636,6 +649,14 @@ var queryTableFormulaRequestConfig = FormulaRequestConfig{
 	IncludeSort:    true,
 }
 
+var geomapFormulaRequestConfig = FormulaRequestConfig{
+	ResponseFormat:              "scalar",
+	StyleFields:                 geomapWidgetRequestStyleFields,
+	ExtraFields:                 geomapRequestExtraFields,
+	IncludeSort:                 true,
+	AllowResponseFormatOverride: true,
+}
+
 // formulaRequestConfigForWidget returns the FormulaRequestConfig for a given widget type.
 func formulaRequestConfigForWidget(jsonType string) FormulaRequestConfig {
 	switch jsonType {
@@ -649,6 +670,8 @@ func formulaRequestConfigForWidget(jsonType string) FormulaRequestConfig {
 		return queryValueFormulaRequestConfig
 	case "toplist", "bar_chart":
 		return scalarWithConditionalFormatsConfig
+	case "geomap":
+		return geomapFormulaRequestConfig
 	default:
 		return scalarFormulaRequestConfig
 	}
@@ -674,7 +697,7 @@ func flattenFormulaRequest(req map[string]interface{}, cfg FormulaRequestConfig)
 		flat := make([]interface{}, len(formulas))
 		for i, f := range formulas {
 			if fm, ok := f.(map[string]interface{}); ok {
-				flat[i] = FlattenEngineJSON(widgetFormulaFields, fm)
+				flat[i] = FlattenEngineJSON(cfg.effectiveFormulaFields(), fm)
 			} else {
 				flat[i] = map[string]interface{}{}
 			}
@@ -1991,7 +2014,7 @@ func buildFormulaRequestFromMap(reqMap map[string]interface{}, cfg FormulaReques
 	if len(formulaList) > 0 {
 		formulas := make([]interface{}, 0, len(formulaList))
 		for _, fMap := range formulaList {
-			formulas = append(formulas, BuildEngineJSONFromMap(fMap, widgetFormulaFields))
+			formulas = append(formulas, BuildEngineJSONFromMap(fMap, cfg.effectiveFormulaFields()))
 		}
 		result["formulas"] = formulas
 	}
@@ -2031,7 +2054,13 @@ func buildFormulaRequestFromMap(reqMap map[string]interface{}, cfg FormulaReques
 
 	// response_format
 	if len(formulaList) > 0 || len(queryList) > 0 {
-		result["response_format"] = cfg.ResponseFormat
+		responseFormat := cfg.ResponseFormat
+		if cfg.AllowResponseFormatOverride {
+			if configured := getStringFromMap(reqMap, "response_format"); configured != "" {
+				responseFormat = configured
+			}
+		}
+		result["response_format"] = responseFormat
 	}
 
 	return result
@@ -2872,6 +2901,14 @@ func ValidateWidgetConflicts(data map[string]interface{}) []string {
 			if requestFields != nil {
 				reqList := getBlockListFromMap(defMap, "request")
 				for ri, reqMap := range reqList {
+					if spec.JSONType == "geomap" {
+						if err := validateGeomapRequestVariant(reqMap); err != "" {
+							errs = append(errs, fmt.Sprintf(
+								"widget[%d].%s.request[%d]: %s",
+								wi, spec.HCLKey, ri, err,
+							))
+						}
+					}
 					for _, f := range requestFields {
 						if len(f.ConflictsWith) == 0 {
 							continue
@@ -2904,6 +2941,64 @@ func ValidateWidgetConflicts(data map[string]interface{}) []string {
 		}
 	}
 	return errs
+}
+
+// validateGeomapRequestVariant enforces the Geomap request union while preserving
+// the existing flat HCL request block. The API distinguishes region-layer
+// formula requests from event-list point requests by response_format and uses
+// different JSON keys for their queries ("queries" versus "query").
+func validateGeomapRequestVariant(reqMap map[string]interface{}) string {
+	regionFields := []string{
+		"q", "log_query", "rum_query", "query", "formula", "conditional_formats", "sort",
+	}
+	pointFields := []string{"columns", "list_stream_query", "text_format"}
+	hasRegionFields := anyFieldSet(reqMap, regionFields)
+	hasPointFields := anyFieldSet(reqMap, pointFields)
+
+	if hasRegionFields && hasPointFields {
+		return "region-layer fields cannot be combined with event-list point-layer fields"
+	}
+
+	responseFormat, _ := reqMap["response_format"].(string)
+	switch responseFormat {
+	case "event_list":
+		if hasRegionFields {
+			return `response_format "event_list" cannot be used with region-layer fields`
+		}
+	case "scalar", "timeseries":
+		if hasPointFields {
+			return fmt.Sprintf(
+				`response_format %q cannot be used with event-list point-layer fields`,
+				responseFormat,
+			)
+		}
+	case "":
+		if hasPointFields {
+			return `event-list point-layer fields require response_format "event_list"`
+		}
+	}
+
+	return ""
+}
+
+func anyFieldSet(data map[string]interface{}, keys []string) bool {
+	for _, key := range keys {
+		if valueIsSet(data[key]) {
+			return true
+		}
+	}
+	return false
+}
+
+func valueIsSet(v interface{}) bool {
+	switch value := v.(type) {
+	case string:
+		return value != ""
+	case []interface{}:
+		return len(value) > 0
+	default:
+		return v != nil
+	}
 }
 
 // fieldIsSetInMap returns true if the field has a non-zero value in the map.
