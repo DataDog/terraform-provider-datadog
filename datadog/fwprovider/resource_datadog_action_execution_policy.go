@@ -499,7 +499,14 @@ func updateExecutionPolicyStateFromResponse(ctx context.Context, state *actionEx
 		ActionFqns:  executionPolicyStringListValue(ctx, attributes.ActionPattern.ActionFqns, diags),
 	}
 
-	state.Scope = flattenExecutionPolicyScope(ctx, attributes.Scope, diags)
+	apiScope := flattenExecutionPolicyScope(ctx, attributes.Scope, diags)
+	stateHasExplicitEmptyScope := state.Scope != nil &&
+		state.Scope.Kubernetes == nil &&
+		state.Scope.Scripts == nil &&
+		state.Scope.RemoteActionRshell == nil
+	if apiScope != nil || !stateHasExplicitEmptyScope {
+		state.Scope = apiScope
+	}
 
 	if len(attributes.Targets) == 0 {
 		state.Target = nil
