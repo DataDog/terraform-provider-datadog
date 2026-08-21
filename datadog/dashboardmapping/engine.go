@@ -16,6 +16,8 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	"github.com/hashicorp/go-cty/cty"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 )
 
 // FieldType drives serialization/deserialization behavior in the engine.
@@ -91,6 +93,11 @@ type FieldSpec struct {
 	// OmitEmpty: if true, the field is omitted from JSON when it is the zero value.
 	// Derived by comparing cassette request bodies against HCL configs.
 	OmitEmpty bool
+
+	// PreserveZero keeps an explicitly configured numeric zero in JSON while still
+	// omitting an unset optional field. SDKv2 drops zero values from some nested
+	// decoded maps, so the build engine consults raw configuration when available.
+	PreserveZero bool
 
 	// Children: for TypeBlock and TypeBlockList, the nested field specs.
 	Children []FieldSpec
@@ -555,8 +562,18 @@ type FormulaRequestConfig struct {
 	// ExtraFields are widget-specific request-level fields emitted before formulas.
 	// Example: on_right_yaxis + display_type for timeseries; change-widget fields.
 	ExtraFields []FieldSpec
+	// FormulaFields overrides the fields used to build and flatten each formula.
+	// nil defaults to widgetFormulaFields.
+	FormulaFields []FieldSpec
 	// IncludeSort: when true, build/flatten the sort block (toplist, geomap, etc.).
 	IncludeSort bool
+}
+
+func (cfg FormulaRequestConfig) effectiveFormulaFields() []FieldSpec {
+	if cfg.FormulaFields != nil {
+		return cfg.FormulaFields
+	}
+	return widgetFormulaFields
 }
 
 // Per-widget FormulaRequestConfig declarations.
@@ -636,6 +653,12 @@ var queryTableFormulaRequestConfig = FormulaRequestConfig{
 	IncludeSort:    true,
 }
 
+var hostmapInfrastructureEnrichmentFormulaRequestConfig = FormulaRequestConfig{
+	ResponseFormat: "scalar",
+	ExtraFields:    hostmapInfrastructureEnrichmentFields,
+	FormulaFields:  hostmapInfrastructureFormulaFields,
+}
+
 // formulaRequestConfigForWidget returns the FormulaRequestConfig for a given widget type.
 func formulaRequestConfigForWidget(jsonType string) FormulaRequestConfig {
 	switch jsonType {
@@ -674,7 +697,7 @@ func flattenFormulaRequest(req map[string]interface{}, cfg FormulaRequestConfig)
 		flat := make([]interface{}, len(formulas))
 		for i, f := range formulas {
 			if fm, ok := f.(map[string]interface{}); ok {
-				flat[i] = FlattenEngineJSON(widgetFormulaFields, fm)
+				flat[i] = FlattenEngineJSON(cfg.effectiveFormulaFields(), fm)
 			} else {
 				flat[i] = map[string]interface{}{}
 			}
@@ -709,6 +732,26 @@ func flattenFormulaRequest(req map[string]interface{}, cfg FormulaRequestConfig)
 				result["sort"] = []interface{}{s}
 			}
 		}
+	}
+	return result
+}
+
+func flattenHostmapInfrastructureRequestJSON(request map[string]interface{}, fields []FieldSpec) map[string]interface{} {
+	result := FlattenEngineJSON(fields, request)
+	if enrichments, ok := request["enrichments"].([]interface{}); ok {
+		flatEnrichments := make([]interface{}, len(enrichments))
+		for i, enrichment := range enrichments {
+			enrichmentMap, ok := enrichment.(map[string]interface{})
+			if !ok {
+				flatEnrichments[i] = map[string]interface{}{}
+				continue
+			}
+			flatEnrichments[i] = flattenFormulaRequest(enrichmentMap, hostmapInfrastructureEnrichmentFormulaRequestConfig)
+		}
+		result["enrichment"] = flatEnrichments
+	}
+	if child, ok := request["child"].(map[string]interface{}); ok {
+		result["child"] = []interface{}{flattenHostmapInfrastructureRequestJSON(child, hostmapInfrastructureLeafFields)}
 	}
 	return result
 }
@@ -1149,6 +1192,15 @@ func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defSt
 				flatRequests[ri] = flattenQueryTableRequestJSON(reqMap)
 			}
 			defState["request"] = flatRequests
+		}
+	}
+
+	// ---- Host map infrastructure request ----
+	if spec.JSONType == "hostmap" {
+		if request, ok := def["requests"].(map[string]interface{}); ok {
+			if requestType, _ := request["request_type"].(string); requestType == "infrastructure_hostmap" {
+				defState["request"] = []interface{}{flattenHostmapInfrastructureRequestJSON(request, hostmapRequestInnerFields)}
+			}
 		}
 	}
 
@@ -1748,9 +1800,43 @@ func getBlockListFromMap(data map[string]interface{}, key string) []map[string]i
 // Generic Engine: SDKv2 map → JSON (build direction)
 // ============================================================
 
+// RawConfigAtReader exposes SDKv2's raw Terraform configuration without tying
+// the mapping engine to schema.ResourceData.
+type RawConfigAtReader interface {
+	GetRawConfigAt(cty.Path) (cty.Value, diag.Diagnostics)
+}
+
+type mapBuildContext struct {
+	rawConfig RawConfigAtReader
+	path      cty.Path
+}
+
+func (ctx mapBuildContext) block(key string, index int) mapBuildContext {
+	return mapBuildContext{
+		rawConfig: ctx.rawConfig,
+		path:      ctx.path.GetAttr(key).IndexInt(index),
+	}
+}
+
+func (ctx mapBuildContext) explicitlyConfiguredZero(data map[string]interface{}, field FieldSpec) bool {
+	if _, present := data[field.HCLKey]; present {
+		return true
+	}
+	if ctx.rawConfig == nil {
+		return false
+	}
+	value, diags := ctx.rawConfig.GetRawConfigAt(ctx.path.GetAttr(field.HCLKey))
+	return !diags.HasError() && value.IsKnown() && !value.IsNull() &&
+		value.Type() == cty.Number && value.AsBigFloat().Sign() == 0
+}
+
 // BuildEngineJSONFromMap converts a SDKv2 data map to a JSON map using FieldSpec declarations.
 // This is the SDKv2 parallel of BuildEngineJSON (which reads from map[string]attr.Value).
 func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map[string]interface{} {
+	return buildEngineJSONFromMap(data, fields, mapBuildContext{})
+}
+
+func buildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec, ctx mapBuildContext) map[string]interface{} {
 	result := map[string]interface{}{}
 	for _, f := range fields {
 		if f.SchemaOnly {
@@ -1774,14 +1860,14 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 
 		case TypeInt:
 			intVal := getIntFromMap(data, f.HCLKey)
-			if f.OmitEmpty && intVal == 0 {
+			if f.OmitEmpty && intVal == 0 && (!f.PreserveZero || !ctx.explicitlyConfiguredZero(data, f)) {
 				continue
 			}
 			setAtJSONPath(result, f.effectiveJSONPath(), intVal)
 
 		case TypeFloat:
 			floatVal := getFloat64FromMap(data, f.HCLKey)
-			if f.OmitEmpty && floatVal == 0 {
+			if f.OmitEmpty && floatVal == 0 && (!f.PreserveZero || !ctx.explicitlyConfiguredZero(data, f)) {
 				continue
 			}
 			setAtJSONPath(result, f.effectiveJSONPath(), floatVal)
@@ -1811,7 +1897,7 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 			if child == nil {
 				continue
 			}
-			nested := BuildEngineJSONFromMap(child, f.Children)
+			nested := buildEngineJSONFromMap(child, f.Children, ctx.block(f.HCLKey, 0))
 			if len(nested) == 0 && f.OmitEmpty {
 				continue
 			}
@@ -1830,13 +1916,14 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 				// Discriminated union per list item
 				items := getBlockListFromMap(data, f.HCLKey)
 				built := make([]interface{}, 0, len(items))
-				for _, item := range items {
+				for i, item := range items {
 					matched, inner := findPopulatedVariant(f, item)
 					if matched == nil {
 						built = append(built, map[string]interface{}{})
 						continue
 					}
-					resultJSON := BuildEngineJSONFromMap(inner, matched.Children)
+					variantCtx := ctx.block(f.HCLKey, i).block(matched.HCLKey, 0)
+					resultJSON := buildEngineJSONFromMap(inner, matched.Children, variantCtx)
 					if matched.Discriminator != nil && matched.Discriminator.Value != "" {
 						keyToInject := matched.Discriminator.ChildJSONKey
 						if keyToInject == "" {
@@ -1855,8 +1942,8 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 			} else {
 				items := getBlockListFromMap(data, f.HCLKey)
 				built := make([]interface{}, 0, len(items))
-				for _, item := range items {
-					built = append(built, BuildEngineJSONFromMap(item, f.Children))
+				for i, item := range items {
+					built = append(built, buildEngineJSONFromMap(item, f.Children, ctx.block(f.HCLKey, i)))
 				}
 				if f.OmitEmpty && len(built) == 0 {
 					continue
@@ -1875,7 +1962,8 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 			matched, inner := findPopulatedVariant(f, outer)
 			var built map[string]interface{}
 			if matched != nil && inner != nil {
-				built = BuildEngineJSONFromMap(inner, matched.Children)
+				variantCtx := ctx.block(f.HCLKey, 0).block(matched.HCLKey, 0)
+				built = buildEngineJSONFromMap(inner, matched.Children, variantCtx)
 			}
 			if built == nil {
 				if f.OmitEmpty {
@@ -1909,12 +1997,18 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 // This is the exported entry point for callers outside the dashboardmapping package
 // (e.g., the powerpack SDKv2 resource).
 func BuildWidgetEngineJSONFromMap(widget map[string]interface{}) map[string]interface{} {
-	return buildWidgetEngineJSONFromMap(widget)
+	return buildWidgetEngineJSONFromMap(widget, mapBuildContext{})
+}
+
+// BuildWidgetEngineJSONFromMapWithRawConfig builds one widget while preserving
+// explicitly configured zero values at the supplied Terraform configuration path.
+func BuildWidgetEngineJSONFromMapWithRawConfig(widget map[string]interface{}, rawConfig RawConfigAtReader, path cty.Path) map[string]interface{} {
+	return buildWidgetEngineJSONFromMap(widget, mapBuildContext{rawConfig: rawConfig, path: path})
 }
 
 // buildWidgetEngineJSONFromMap builds the JSON for a single widget from a SDKv2 map.
 // Parallel to buildWidgetEngineJSON but reads from map[string]interface{}.
-func buildWidgetEngineJSONFromMap(widget map[string]interface{}) map[string]interface{} {
+func buildWidgetEngineJSONFromMap(widget map[string]interface{}, ctx mapBuildContext) map[string]interface{} {
 	for _, spec := range allWidgetSpecs {
 		defList, ok := widget[spec.HCLKey].([]interface{})
 		if !ok || len(defList) == 0 {
@@ -1928,32 +2022,19 @@ func buildWidgetEngineJSONFromMap(widget map[string]interface{}) map[string]inte
 		allFields := make([]FieldSpec, 0, len(CommonWidgetFields)+len(spec.Fields))
 		allFields = append(allFields, CommonWidgetFields...)
 		allFields = append(allFields, spec.Fields...)
-		defJSON := BuildEngineJSONFromMap(defMap, allFields)
+		defCtx := ctx.block(spec.HCLKey, 0)
+		defJSON := buildEngineJSONFromMap(defMap, allFields, defCtx)
 		defJSON["type"] = spec.JSONType
 
 		// Per-widget post-processing
-		buildWidgetPostProcessFromMap(defMap, spec, defJSON)
+		buildWidgetPostProcessFromMap(defMap, spec, defJSON, defCtx)
 
 		widgetJSON := map[string]interface{}{"definition": defJSON}
 
 		// Include widget_layout if present
 		if layoutList, ok := widget["widget_layout"].([]interface{}); ok && len(layoutList) > 0 {
 			if layoutMap, ok := layoutList[0].(map[string]interface{}); ok {
-				layout := map[string]interface{}{}
-				// Zero is a valid x/y coordinate, unlike width and height.
-				for _, key := range []string{"x", "y"} {
-					if _, ok := layoutMap[key]; ok {
-						layout[key] = getIntFromMap(layoutMap, key)
-					}
-				}
-				for _, key := range []string{"width", "height"} {
-					if v := getIntFromMap(layoutMap, key); v != 0 {
-						layout[key] = v
-					}
-				}
-				if getBoolFromMap(layoutMap, "is_column_break") {
-					layout["is_column_break"] = true
-				}
+				layout := buildEngineJSONFromMap(layoutMap, widgetLayoutFieldSpecs, ctx.block("widget_layout", 0))
 				if len(layout) > 0 {
 					widgetJSON["layout"] = layout
 				}
@@ -1971,18 +2052,18 @@ func buildWidgetEngineJSONFromMap(widget map[string]interface{}) map[string]inte
 }
 
 // buildWidgetsJSONFromMap builds the "widgets" array from a SDKv2 data map.
-func buildWidgetsJSONFromMap(data map[string]interface{}) []interface{} {
+func buildWidgetsJSONFromMap(data map[string]interface{}, ctx mapBuildContext) []interface{} {
 	widgetList, ok := data["widget"].([]interface{})
 	if !ok || len(widgetList) == 0 {
 		return []interface{}{}
 	}
 	widgets := make([]interface{}, 0, len(widgetList))
-	for _, w := range widgetList {
+	for i, w := range widgetList {
 		widgetMap, ok := w.(map[string]interface{})
 		if !ok {
 			continue
 		}
-		built := buildWidgetEngineJSONFromMap(widgetMap)
+		built := buildWidgetEngineJSONFromMap(widgetMap, ctx.block("widget", i))
 		if built != nil {
 			widgets = append(widgets, built)
 		}
@@ -2011,7 +2092,7 @@ func buildFormulaRequestFromMap(reqMap map[string]interface{}, cfg FormulaReques
 	if len(formulaList) > 0 {
 		formulas := make([]interface{}, 0, len(formulaList))
 		for _, fMap := range formulaList {
-			formulas = append(formulas, BuildEngineJSONFromMap(fMap, widgetFormulaFields))
+			formulas = append(formulas, BuildEngineJSONFromMap(fMap, cfg.effectiveFormulaFields()))
 		}
 		result["formulas"] = formulas
 	}
@@ -2054,6 +2135,22 @@ func buildFormulaRequestFromMap(reqMap map[string]interface{}, cfg FormulaReques
 		result["response_format"] = cfg.ResponseFormat
 	}
 
+	return result
+}
+
+func buildHostmapInfrastructureRequestJSONFromMap(requestMap map[string]interface{}, fields []FieldSpec, ctx mapBuildContext) map[string]interface{} {
+	result := buildEngineJSONFromMap(requestMap, fields, ctx)
+	enrichmentList := getBlockListFromMap(requestMap, "enrichment")
+	if len(enrichmentList) > 0 {
+		enrichments := make([]interface{}, 0, len(enrichmentList))
+		for _, enrichmentMap := range enrichmentList {
+			enrichments = append(enrichments, buildFormulaRequestFromMap(enrichmentMap, hostmapInfrastructureEnrichmentFormulaRequestConfig))
+		}
+		result["enrichments"] = enrichments
+	}
+	if childMap := getBlockFromMap(requestMap, "child"); childMap != nil {
+		result["child"] = buildHostmapInfrastructureRequestJSONFromMap(childMap, hostmapInfrastructureLeafFields, ctx.block("child", 0))
+	}
 	return result
 }
 
@@ -2360,7 +2457,7 @@ func buildScatterplotTableJSONFromMap(defMap map[string]interface{}, defJSON map
 
 // buildSplitGraphSourceWidgetJSONFromMap builds the source_widget_definition JSON for split_graph.
 // Parallel to buildSplitGraphSourceWidgetJSON in engine.go.
-func buildSplitGraphSourceWidgetJSONFromMap(defMap map[string]interface{}) map[string]interface{} {
+func buildSplitGraphSourceWidgetJSONFromMap(defMap map[string]interface{}, ctx mapBuildContext) map[string]interface{} {
 	srcWidgetMap := getBlockFromMap(defMap, "source_widget_definition")
 	if srcWidgetMap == nil {
 		return nil
@@ -2377,9 +2474,10 @@ func buildSplitGraphSourceWidgetJSONFromMap(defMap map[string]interface{}) map[s
 		allFields := make([]FieldSpec, 0, len(CommonWidgetFields)+len(spec.Fields))
 		allFields = append(allFields, CommonWidgetFields...)
 		allFields = append(allFields, spec.Fields...)
-		defJSON := BuildEngineJSONFromMap(innerMap, allFields)
+		innerCtx := ctx.block("source_widget_definition", 0).block(spec.HCLKey, 0)
+		defJSON := buildEngineJSONFromMap(innerMap, allFields, innerCtx)
 		defJSON["type"] = spec.JSONType
-		buildWidgetPostProcessFromMap(innerMap, spec, defJSON)
+		buildWidgetPostProcessFromMap(innerMap, spec, defJSON, innerCtx)
 		return defJSON
 	}
 	return nil
@@ -2415,18 +2513,18 @@ func buildSplitConfigStaticSplitsJSONFromMap(splitConfigMap map[string]interface
 
 // buildGroupWidgetsJSONFromMap builds the "widgets" array for a group widget.
 // Parallel to buildGroupWidgetsJSON in engine.go.
-func buildGroupWidgetsJSONFromMap(defMap map[string]interface{}) []interface{} {
+func buildGroupWidgetsJSONFromMap(defMap map[string]interface{}, ctx mapBuildContext) []interface{} {
 	widgetList, ok := defMap["widget"].([]interface{})
 	if !ok || len(widgetList) == 0 {
 		return []interface{}{}
 	}
 	widgets := make([]interface{}, 0, len(widgetList))
-	for _, w := range widgetList {
+	for i, w := range widgetList {
 		widgetMap, ok := w.(map[string]interface{})
 		if !ok {
 			continue
 		}
-		built := buildWidgetEngineJSONFromMap(widgetMap)
+		built := buildWidgetEngineJSONFromMap(widgetMap, ctx.block("widget", i))
 		if built == nil {
 			built = map[string]interface{}{}
 		}
@@ -2437,7 +2535,7 @@ func buildGroupWidgetsJSONFromMap(defMap map[string]interface{}) []interface{} {
 
 // buildWidgetPostProcessFromMap runs all per-widget post-processing in the build direction.
 // Parallel to buildWidgetPostProcess in engine.go but reads from map[string]interface{}.
-func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpec, defJSON map[string]interface{}) {
+func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpec, defJSON map[string]interface{}, ctx mapBuildContext) {
 	// ---- Formula/query blocks ----
 	if isFormulaCapableWidget(spec.JSONType) {
 		requestList := getBlockListFromMap(defMap, "request")
@@ -2474,6 +2572,15 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 		defJSON["requests"] = buildQueryTableRequestsJSONFromMap(defMap)
 	}
 
+	// ---- Host map infrastructure request ----
+	if spec.JSONType == "hostmap" {
+		if requestMap := getBlockFromMap(defMap, "request"); requestMap != nil {
+			if getStringFromMap(requestMap, "request_type") == "infrastructure_hostmap" {
+				defJSON["requests"] = buildHostmapInfrastructureRequestJSONFromMap(requestMap, hostmapRequestInnerFields, ctx.block("request", 0))
+			}
+		}
+	}
+
 	// ---- Heatmap: histogram request variant ----
 	if spec.JSONType == "heatmap" {
 		requestList := getBlockListFromMap(defMap, "request")
@@ -2490,7 +2597,7 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 
 	// ---- Split graph source widget + static_splits ----
 	if spec.JSONType == "split_group" {
-		srcDefJSON := buildSplitGraphSourceWidgetJSONFromMap(defMap)
+		srcDefJSON := buildSplitGraphSourceWidgetJSONFromMap(defMap, ctx)
 		if srcDefJSON != nil {
 			defJSON["source_widget_definition"] = srcDefJSON
 		}
@@ -2506,7 +2613,7 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 
 	// ---- Group nested widgets ----
 	if spec.JSONType == "group" {
-		defJSON["widgets"] = buildGroupWidgetsJSONFromMap(defMap)
+		defJSON["widgets"] = buildGroupWidgetsJSONFromMap(defMap, ctx)
 	}
 
 	// ---- Funnel request_type injection ----
@@ -2664,13 +2771,23 @@ func buildWildcardRequestsJSONFromMap(defMap map[string]interface{}) []interface
 // BuildDashboardEngineJSONFromMap builds the full dashboard JSON body from a SDKv2 data map.
 // Parallel to BuildDashboardEngineJSON in engine.go.
 func BuildDashboardEngineJSONFromMap(data map[string]interface{}, id string) map[string]interface{} {
-	result := BuildEngineJSONFromMap(data, DashboardTopLevelFields)
+	return buildDashboardEngineJSONFromMap(data, id, mapBuildContext{})
+}
+
+// BuildDashboardEngineJSONFromMapWithRawConfig preserves explicitly configured
+// zero values that SDKv2 omits from decoded nested maps.
+func BuildDashboardEngineJSONFromMapWithRawConfig(data map[string]interface{}, id string, rawConfig RawConfigAtReader) map[string]interface{} {
+	return buildDashboardEngineJSONFromMap(data, id, mapBuildContext{rawConfig: rawConfig})
+}
+
+func buildDashboardEngineJSONFromMap(data map[string]interface{}, id string, ctx mapBuildContext) map[string]interface{} {
+	result := buildEngineJSONFromMap(data, DashboardTopLevelFields, ctx)
 
 	// Both POST and PUT bodies need the id set.
 	result["id"] = id
 
 	// Build widgets with type dispatch.
-	widgets := buildWidgetsJSONFromMap(data)
+	widgets := buildWidgetsJSONFromMap(data, ctx)
 	result["widgets"] = widgets
 
 	// Build tabs with @N → widget ID resolution.
@@ -2723,6 +2840,16 @@ func MarshalDashboardJSONFromMap(data map[string]interface{}, id string) (string
 	body, err := json.Marshal(BuildDashboardEngineJSONFromMap(data, id))
 	if err != nil {
 		return "", fmt.Errorf("error marshaling dashboard JSON: %s", err)
+	}
+	return string(body) + "\n", nil
+}
+
+// MarshalDashboardJSONFromMapWithRawConfig marshals a dashboard while retaining
+// explicit zero values from raw Terraform configuration.
+func MarshalDashboardJSONFromMapWithRawConfig(data map[string]interface{}, id string, rawConfig RawConfigAtReader) (string, error) {
+	body, err := json.Marshal(BuildDashboardEngineJSONFromMapWithRawConfig(data, id, rawConfig))
+	if err != nil {
+		return "", fmt.Errorf("error marshaling dashboard JSON: %w", err)
 	}
 	return string(body) + "\n", nil
 }
