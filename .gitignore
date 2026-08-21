@@ -43,3 +43,7 @@ CLAUDE.local.md
 
 # local scratch for testing generated providers
 sandbox/
+
+# Local tfgen coverage-sweep artifacts (the harness itself is tracked).
+.generator-v2/tools/coverage/results/
+.generator-v2/tools/coverage/__pycache__/
