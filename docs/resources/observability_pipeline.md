@@ -2439,7 +2439,7 @@ Optional:
 
 - `hash` (Block List) Hashes the matched value. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--on_match--hash))
 - `partial_redact` (Block List) Redacts part of the matched value (e.g., keep last 4 characters). (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--on_match--partial_redact))
-- `redact` (Block List) Redacts the matched value. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--on_match--redact))
+- `redact` (Block List) Redacts the matched value. Exactly one of `redact`, `hash`, or `partial_redact` must be specified. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--on_match--redact))
 
 <a id="nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--on_match--hash"></a>
 ### Nested Schema for `config.processor_group.processor.sensitive_data_scanner.rule.on_match.hash`
@@ -2468,7 +2468,7 @@ Optional:
 
 Optional:
 
-- `custom` (Block List) Pattern detection using a custom regular expression. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern--custom))
+- `custom` (Block List) Pattern detection using a custom regular expression. Exactly one of `custom` or `library` must be specified. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern--custom))
 - `library` (Block List) Pattern detection using a predefined pattern from the Sensitive Data Scanner library. For Terraform setup (standard pattern data source and library rules), see the [Sensitive Data Scanner processor documentation](https://docs.datadoghq.com/observability_pipelines/processors/sensitive_data_scanner/?tab=libraryrules#set-up-the-processor-using-terraform). (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern--library))
 
 <a id="nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern--custom"></a>
@@ -2498,7 +2498,7 @@ Optional:
 
 - `all` (Boolean) Scan all fields.
 - `exclude` (Block List) Explicitly exclude these fields from scanning. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--scope--exclude))
-- `include` (Block List) Explicitly include these fields for scanning. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--scope--include))
+- `include` (Block List) Explicitly include these fields for scanning. Exactly one of `include`, `exclude`, or `all` must be specified. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--scope--include))
 
 <a id="nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--scope--exclude"></a>
 ### Nested Schema for `config.processor_group.processor.sensitive_data_scanner.rule.scope.exclude`
