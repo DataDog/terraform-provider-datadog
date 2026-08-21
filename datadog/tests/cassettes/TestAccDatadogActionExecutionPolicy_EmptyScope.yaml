@@ -1,0 +1,235 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 219
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"action_pattern":{"action_fqns":["*"],"integration":"INTEGRATION_SCRIPT"},"effect":"allow","name":"tf-TestAccDatadogActionExecutionPolicy_EmptyScope-local-1787229737"},"type":"execution_policy"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 463
+        uncompressed: false
+        body: '{"data":{"id":"634b8122-1a48-4975-a78f-4030e0f3d5a7","type":"execution_policy","attributes":{"action_pattern":{"integration":"INTEGRATION_SCRIPT","action_fqns":["*"]},"created_at":"2026-08-20T12:42:20Z","created_by":"d72ee86c-6207-4077-b40c-93fded100245","effect":"allow","name":"tf-TestAccDatadogActionExecutionPolicy_EmptyScope-local-1787229737","targets":[],"updated_at":"2026-08-20T12:42:20Z","updated_by":"d72ee86c-6207-4077-b40c-93fded100245","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 191.209583ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies/634b8122-1a48-4975-a78f-4030e0f3d5a7
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 474
+        uncompressed: false
+        body: '{"data":{"id":"634b8122-1a48-4975-a78f-4030e0f3d5a7","type":"execution_policy","attributes":{"action_pattern":{"integration":"INTEGRATION_SCRIPT","action_fqns":["*"]},"created_at":"2026-08-20T12:42:20Z","created_by":"d72ee86c-6207-4077-b40c-93fded100245","effect":"allow","name":"tf-TestAccDatadogActionExecutionPolicy_EmptyScope-local-1787229737","scope":{},"targets":[],"updated_at":"2026-08-20T12:42:20Z","updated_by":"d72ee86c-6207-4077-b40c-93fded100245","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 205.876ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies/634b8122-1a48-4975-a78f-4030e0f3d5a7
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 474
+        uncompressed: false
+        body: '{"data":{"id":"634b8122-1a48-4975-a78f-4030e0f3d5a7","type":"execution_policy","attributes":{"action_pattern":{"integration":"INTEGRATION_SCRIPT","action_fqns":["*"]},"created_at":"2026-08-20T12:42:20Z","created_by":"d72ee86c-6207-4077-b40c-93fded100245","effect":"allow","name":"tf-TestAccDatadogActionExecutionPolicy_EmptyScope-local-1787229737","scope":{},"targets":[],"updated_at":"2026-08-20T12:42:20Z","updated_by":"d72ee86c-6207-4077-b40c-93fded100245","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 145.979083ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies/634b8122-1a48-4975-a78f-4030e0f3d5a7
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 474
+        uncompressed: false
+        body: '{"data":{"id":"634b8122-1a48-4975-a78f-4030e0f3d5a7","type":"execution_policy","attributes":{"action_pattern":{"integration":"INTEGRATION_SCRIPT","action_fqns":["*"]},"created_at":"2026-08-20T12:42:20Z","created_by":"d72ee86c-6207-4077-b40c-93fded100245","effect":"allow","name":"tf-TestAccDatadogActionExecutionPolicy_EmptyScope-local-1787229737","scope":{},"targets":[],"updated_at":"2026-08-20T12:42:20Z","updated_by":"d72ee86c-6207-4077-b40c-93fded100245","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 152.739167ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies/634b8122-1a48-4975-a78f-4030e0f3d5a7
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 474
+        uncompressed: false
+        body: '{"data":{"id":"634b8122-1a48-4975-a78f-4030e0f3d5a7","type":"execution_policy","attributes":{"action_pattern":{"integration":"INTEGRATION_SCRIPT","action_fqns":["*"]},"created_at":"2026-08-20T12:42:20Z","created_by":"d72ee86c-6207-4077-b40c-93fded100245","effect":"allow","name":"tf-TestAccDatadogActionExecutionPolicy_EmptyScope-local-1787229737","scope":{},"targets":[],"updated_at":"2026-08-20T12:42:20Z","updated_by":"d72ee86c-6207-4077-b40c-93fded100245","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 147.305833ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies/634b8122-1a48-4975-a78f-4030e0f3d5a7
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 155.7275ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies/634b8122-1a48-4975-a78f-4030e0f3d5a7
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 80
+        uncompressed: false
+        body: '{"errors":[{"title":"Generic Error","detail":"error getting execution policy"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 207.079125ms
