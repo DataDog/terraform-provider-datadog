@@ -164,6 +164,9 @@ func (r *teamNotificationRuleResource) ModifyPlan(ctx context.Context, request r
 	// For each optional notification block, if it's not in the config but is in the plan,
 	// explicitly set it to null in the plan. This ensures proper handling in Terraform 1.1.2
 	// where optional nested blocks aren't automatically planned for removal.
+	if config.Email == nil && plan.Email != nil {
+		plan.Email = nil
+	}
 	if config.MsTeams == nil && plan.MsTeams != nil {
 		plan.MsTeams = nil
 	}
@@ -336,9 +339,13 @@ func (r *teamNotificationRuleResource) updateState(ctx context.Context, state *t
 
 	state.ID = types.StringValue(notificationRule.GetId())
 
-	// Default values. If attributes are not present, we will use these
-	// The API will NOT return the email.Enabled field if it is false
-	state.Email = &emailModel{Enabled: types.BoolValue(false)}
+	// The API omits email when it is disabled. Preserve whether the optional
+	// email block was configured so an absent block does not become
+	// email { enabled = false } after apply, while an explicitly disabled block
+	// remains present in state.
+	if state.Email != nil {
+		state.Email = &emailModel{Enabled: types.BoolValue(false)}
+	}
 	state.MsTeams = nil
 	state.Pagerduty = nil
 	state.Slack = nil
