@@ -159,6 +159,7 @@ resource "datadog_dashboard_v2" "free_dashboard" {
 - `template_variable` (Block List) The list of template variables for this dashboard. (see [below for nested schema](#nestedblock--template_variable))
 - `template_variable_preset` (Block List) The list of selectable template variable presets for this dashboard. (see [below for nested schema](#nestedblock--template_variable_preset))
 - `url` (String) The URL of the dashboard.
+- `validate` (Boolean) Whether to send widgets to the Datadog API to validate widget configuration and query values during `terraform plan`. Defaults to `true`. Setting this to `false` skips only the Datadog API validation; local Terraform schema and checks for conflicting fields still run.
 - `widget` (Block List) The list of widgets to display on the dashboard. (see [below for nested schema](#nestedblock--widget))
 
 ### Read-Only

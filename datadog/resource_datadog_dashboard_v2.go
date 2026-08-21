@@ -2,17 +2,24 @@ package datadog
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"strings"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/dashboardmapping"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
+
+// TODO: Replace this raw endpoint path with the generated Datadog API client method once the unstable endpoint is published in the API spec and client.
+const dashboardWidgetValidationPath = "/api/unstable/dashboard/widgets/validate"
 
 // resourceDatadogDashboardV2 returns the SDKv2 resource for datadog_dashboard_v2.
 // It shares all FieldSpec/WidgetSpec declarations via the dashboardmapping package.
@@ -26,7 +33,7 @@ func resourceDatadogDashboardV2() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		CustomizeDiff: func(_ context.Context, diff *schema.ResourceDiff, _ interface{}) error {
+		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 			oldValue, newValue := diff.GetChange("dashboard_lists")
 			if !oldValue.(*schema.Set).Equal(newValue.(*schema.Set)) {
 				removed := oldValue.(*schema.Set).Difference(newValue.(*schema.Set))
@@ -45,7 +52,7 @@ func resourceDatadogDashboardV2() *schema.Resource {
 				return fmt.Errorf("%s", strings.Join(errs, "\n"))
 			}
 
-			return nil
+			return resourceDatadogDashboardV2ValidateWidgets(ctx, diff, meta)
 		},
 		SchemaFunc: buildDashboardV2Schema,
 	}
@@ -67,6 +74,15 @@ func buildDashboardV2Schema() map[string]*schema.Schema {
 			return true
 		},
 	}
+	topSchema["validate"] = &schema.Schema{
+		Type:        schema.TypeBool,
+		Optional:    true,
+		Description: "Whether to send widgets to the Datadog API to validate widget configuration and query values during `terraform plan`. Defaults to `true`. Setting this to `false` skips only the Datadog API validation; local Terraform schema and checks for conflicting fields still run.",
+		DiffSuppressFunc: func(_, _, _ string, _ *schema.ResourceData) bool {
+			// This provider-only setting is never sent to the backend.
+			return true
+		},
+	}
 
 	// Add widget block with all widget types
 	widgetSchema := dashboardmapping.AllWidgetSDKv2Schema(false)
@@ -80,6 +96,239 @@ func buildDashboardV2Schema() map[string]*schema.Schema {
 	}
 
 	return topSchema
+}
+
+type dashboardWidget struct {
+	terraformPath string
+	widget        map[string]interface{}
+}
+
+type dashboardWidgetValidationResult struct {
+	IsValid      bool    `json:"is_valid"`
+	WidgetType   *string `json:"widget_type"`
+	ErrorMessage *string `json:"error_message"`
+	ErrorPath    *string `json:"error_path"`
+}
+
+// resourceDatadogDashboardV2ValidateWidgets validates widget definitions during planning.
+func resourceDatadogDashboardV2ValidateWidgets(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+	if validate, ok := diff.GetOkExists("validate"); ok && !validate.(bool) {
+		return nil
+	}
+	widgetSchema := buildDashboardV2Schema()["widget"]
+	if !dashboardV2ConfigValueKnown(diff, "widget", widgetSchema) ||
+		!diff.NewValueKnown("layout_type") ||
+		!diff.NewValueKnown("reflow_type") {
+		return nil
+	}
+	widgets, ok := diff.GetOk("widget")
+	if !ok {
+		return nil
+	}
+	validationWidgets := flattenDashboardWidgets(widgets)
+	if len(validationWidgets) == 0 {
+		return nil
+	}
+	layoutType, _ := diff.Get("layout_type").(string)
+	reflowType, _ := diff.Get("reflow_type").(string)
+
+	providerConf := meta.(*ProviderConfiguration)
+	return validateDashboardWidgets(
+		ctx,
+		providerConf.Auth,
+		providerConf.DatadogApiInstances.HttpClient,
+		validationWidgets,
+		layoutType,
+		reflowType,
+	)
+}
+
+// dashboardV2ConfigValueKnown reports whether every configurable value is
+// known. Computed fields are ignored because Terraform populates them with
+// unknown placeholders during planning even though they are not API inputs.
+func dashboardV2ConfigValueKnown(diff *schema.ResourceDiff, path string, fieldSchema *schema.Schema) bool {
+	if fieldSchema.Computed {
+		return true
+	}
+	if !diff.NewValueKnown(path) {
+		return false
+	}
+
+	if fieldSchema.Type != schema.TypeList {
+		return true
+	}
+	values, ok := diff.Get(path).([]interface{})
+	if !ok {
+		return true
+	}
+	for i := range values {
+		elementPath := fmt.Sprintf("%s.%d", path, i)
+		switch elementSchema := fieldSchema.Elem.(type) {
+		case *schema.Schema:
+			if !dashboardV2ConfigValueKnown(diff, elementPath, elementSchema) {
+				return false
+			}
+		case *schema.Resource:
+			if !dashboardV2ConfigObjectKnown(diff, elementPath, elementSchema.Schema) {
+				return false
+			}
+		}
+	}
+
+	return true
+}
+
+func dashboardV2ConfigObjectKnown(diff *schema.ResourceDiff, path string, objectSchema map[string]*schema.Schema) bool {
+	for name, fieldSchema := range objectSchema {
+		if !dashboardV2ConfigValueKnown(diff, path+"."+name, fieldSchema) {
+			return false
+		}
+	}
+	return true
+}
+
+// flattenDashboardWidgets converts the SDKv2 widget representation to API
+// widgets. Group children are validated separately so errors point to the
+// specific nested widget.
+func flattenDashboardWidgets(widgets interface{}) []dashboardWidget {
+	widgetList, ok := widgets.([]interface{})
+	if !ok {
+		return nil
+	}
+	validationWidgets := make([]dashboardWidget, 0, len(widgetList))
+	for i, rawWidget := range widgetList {
+		widget, ok := rawWidget.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		widgetJSON := dashboardmapping.BuildWidgetEngineJSONFromMap(widget)
+		definition, ok := widgetJSON["definition"].(map[string]interface{})
+		if !ok {
+			continue
+		}
+		widgetType, _ := definition["type"].(string)
+		definitionKey := dashboardmapping.WidgetDefinitionHCLKey(widgetType)
+		terraformPath := fmt.Sprintf("widget.%d.%s.0", i, definitionKey)
+		appendDashboardWidget(&validationWidgets, terraformPath, widgetJSON)
+	}
+	return validationWidgets
+}
+
+func appendDashboardWidget(widgets *[]dashboardWidget, terraformPath string, widget map[string]interface{}) {
+	definition, ok := widget["definition"].(map[string]interface{})
+	if !ok {
+		return
+	}
+	if definition["type"] != "group" {
+		*widgets = append(*widgets, dashboardWidget{terraformPath: terraformPath, widget: widget})
+		return
+	}
+
+	groupWidget := make(map[string]interface{}, len(widget))
+	for key, value := range widget {
+		groupWidget[key] = value
+	}
+	groupDefinition := make(map[string]interface{}, len(definition))
+	for key, value := range definition {
+		groupDefinition[key] = value
+	}
+	groupDefinition["widgets"] = []interface{}{}
+	groupWidget["definition"] = groupDefinition
+	*widgets = append(*widgets, dashboardWidget{terraformPath: terraformPath, widget: groupWidget})
+
+	children, ok := definition["widgets"].([]interface{})
+	if !ok {
+		return
+	}
+	for i, rawChild := range children {
+		child, ok := rawChild.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		childDefinition, ok := child["definition"].(map[string]interface{})
+		if !ok {
+			continue
+		}
+		childType, _ := childDefinition["type"].(string)
+		childDefinitionKey := dashboardmapping.WidgetDefinitionHCLKey(childType)
+		childTerraformPath := fmt.Sprintf("%s.widget.%d.%s.0", terraformPath, i, childDefinitionKey)
+		appendDashboardWidget(widgets, childTerraformPath, child)
+	}
+}
+
+func validateDashboardWidgets(
+	ctx context.Context,
+	auth context.Context,
+	client *datadog.APIClient,
+	validationWidgets []dashboardWidget,
+	layoutType string,
+	reflowType string,
+) error {
+	widgets := make([]map[string]interface{}, len(validationWidgets))
+	for i, validationWidget := range validationWidgets {
+		widgets[i] = validationWidget.widget
+	}
+	body := map[string]interface{}{
+		"widgets":     widgets,
+		"layout_type": layoutType,
+	}
+	if reflowType != "" {
+		body["reflow_type"] = reflowType
+	}
+
+	return retry.RetryContext(ctx, retryTimeout, func() *retry.RetryError {
+		// Use the raw request helper until this endpoint is available in the generated Datadog API client.
+		responseBody, httpResponse, err := utils.SendRequest(auth, client, http.MethodPost, dashboardWidgetValidationPath, &body)
+		if err != nil {
+			translatedErr := utils.TranslateClientError(err, httpResponse, "error validating dashboard widgets")
+			if httpResponse != nil && (httpResponse.StatusCode == http.StatusBadGateway || httpResponse.StatusCode == http.StatusGatewayTimeout) {
+				return retry.RetryableError(translatedErr)
+			}
+			return retry.NonRetryableError(translatedErr)
+		}
+
+		var response struct {
+			Results []dashboardWidgetValidationResult `json:"results"`
+		}
+		if err := json.Unmarshal(responseBody, &response); err != nil {
+			return retry.NonRetryableError(fmt.Errorf("error parsing dashboard widget validation response: %w", err))
+		}
+		if len(response.Results) != len(validationWidgets) {
+			return retry.NonRetryableError(fmt.Errorf(
+				"dashboard widget validation response contained %d results for %d widgets",
+				len(response.Results),
+				len(validationWidgets),
+			))
+		}
+
+		failures := make([]string, 0)
+		for i, result := range response.Results {
+			if result.IsValid {
+				continue
+			}
+			message := "invalid widget definition"
+			if result.ErrorMessage != nil && *result.ErrorMessage != "" {
+				message = *result.ErrorMessage
+			}
+			widgetType := "unknown"
+			if result.WidgetType != nil && *result.WidgetType != "" {
+				widgetType = *result.WidgetType
+			}
+			terraformPath := validationWidgets[i].terraformPath
+			if result.ErrorPath != nil && *result.ErrorPath != "" {
+				mappedPath := dashboardmapping.WidgetErrorPathToHCL(widgetType, *result.ErrorPath)
+				if mappedPath != "" {
+					terraformPath += "." + mappedPath
+				}
+			}
+			failures = append(failures, fmt.Sprintf("%s (%s): %s", terraformPath, widgetType, message))
+		}
+		if len(failures) > 0 {
+			return retry.NonRetryableError(fmt.Errorf("dashboard widget validation failed:\n%s", strings.Join(failures, "\n")))
+		}
+
+		return nil
+	})
 }
 
 // resourceDatadogDashboardV2Create creates a new dashboard via the Datadog API.
