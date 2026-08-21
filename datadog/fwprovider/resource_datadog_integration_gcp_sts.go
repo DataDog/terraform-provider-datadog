@@ -60,22 +60,23 @@ type MonitoredResourceConfigModel struct {
 }
 
 type integrationGcpStsModel struct {
-	ID                                types.String `tfsdk:"id"`
-	AccountTags                       types.Set    `tfsdk:"account_tags"`
-	Automute                          types.Bool   `tfsdk:"automute"`
-	ClientEmail                       types.String `tfsdk:"client_email"`
-	DelegateAccountEmail              types.String `tfsdk:"delegate_account_email"`
-	HostFilters                       types.Set    `tfsdk:"host_filters"`               // DEPRECATED: use MonitoredResourceConfigs["gce_instance"]
-	CloudRunRevisionFilters           types.Set    `tfsdk:"cloud_run_revision_filters"` // DEPRECATED: use MonitoredResourceConfigs["cloud_run_revision"]
-	IsCspmEnabled                     types.Bool   `tfsdk:"is_cspm_enabled"`
-	IsSecurityCommandCenterEnabled    types.Bool   `tfsdk:"is_security_command_center_enabled"`
-	IsResourceChangeCollectionEnabled types.Bool   `tfsdk:"is_resource_change_collection_enabled"`
-	IsPerProjectQuotaEnabled          types.Bool   `tfsdk:"is_per_project_quota_enabled"`
-	ResourceCollectionEnabled         types.Bool   `tfsdk:"resource_collection_enabled"`
-	MetricNamespaceConfigs            types.Set    `tfsdk:"metric_namespace_configs"`
-	MonitoredResourceConfigs          types.Set    `tfsdk:"monitored_resource_configs"`
-	IsGlobalLocationEnabled           types.Bool   `tfsdk:"is_global_location_enabled"`
-	RegionFilterConfigs               types.Set    `tfsdk:"region_filter_configs"`
+	ID                                   types.String `tfsdk:"id"`
+	AccountTags                          types.Set    `tfsdk:"account_tags"`
+	Automute                             types.Bool   `tfsdk:"automute"`
+	ClientEmail                          types.String `tfsdk:"client_email"`
+	DelegateAccountEmail                 types.String `tfsdk:"delegate_account_email"`
+	HostFilters                          types.Set    `tfsdk:"host_filters"`               // DEPRECATED: use MonitoredResourceConfigs["gce_instance"]
+	CloudRunRevisionFilters              types.Set    `tfsdk:"cloud_run_revision_filters"` // DEPRECATED: use MonitoredResourceConfigs["cloud_run_revision"]
+	IsCspmEnabled                        types.Bool   `tfsdk:"is_cspm_enabled"`
+	IsSecurityCommandCenterEnabled       types.Bool   `tfsdk:"is_security_command_center_enabled"`
+	IsResourceChangeCollectionEnabled    types.Bool   `tfsdk:"is_resource_change_collection_enabled"`
+	IsPerProjectQuotaEnabled             types.Bool   `tfsdk:"is_per_project_quota_enabled"`
+	ResourceCollectionEnabled            types.Bool   `tfsdk:"resource_collection_enabled"`
+	IsOrgFolderResourceCollectionEnabled types.Bool   `tfsdk:"is_org_folder_resource_collection_enabled"`
+	MetricNamespaceConfigs               types.Set    `tfsdk:"metric_namespace_configs"`
+	MonitoredResourceConfigs             types.Set    `tfsdk:"monitored_resource_configs"`
+	IsGlobalLocationEnabled              types.Bool   `tfsdk:"is_global_location_enabled"`
+	RegionFilterConfigs                  types.Set    `tfsdk:"region_filter_configs"`
 }
 
 func NewIntegrationGcpStsResource() resource.Resource {
@@ -160,7 +161,12 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 				Computed:    true,
 			},
 			"resource_collection_enabled": schema.BoolAttribute{
-				Description: "When enabled, Datadog scans for all resources in your GCP environment.",
+				Description: "When enabled, Datadog scans for all project-level resources in your GCP environment.",
+				Optional:    true,
+				Computed:    true,
+			},
+			"is_org_folder_resource_collection_enabled": schema.BoolAttribute{
+				Description: "When enabled, Datadog scans for organization and folder-level resources under the organization the Service Account lives in.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -371,6 +377,9 @@ func (r *integrationGcpStsResource) parseGcpStsResponseBody(ctx context.Context,
 	if resourceCollectionEnabled, ok := attributes.GetResourceCollectionEnabledOk(); ok {
 		model.ResourceCollectionEnabled = types.BoolValue(*resourceCollectionEnabled)
 	}
+	if isOrgFolderResourceCollectionEnabled, ok := attributes.GetIsOrgFolderResourceCollectionEnabledOk(); ok {
+		model.IsOrgFolderResourceCollectionEnabled = types.BoolValue(*isOrgFolderResourceCollectionEnabled)
+	}
 
 	if accountTags := attributes.GetAccountTags(); len(accountTags) > 0 {
 		model.AccountTags, _ = types.SetValueFrom(ctx, types.StringType, accountTags)
@@ -424,6 +433,9 @@ func (r *integrationGcpStsResource) buildGcpStsRequestBody(ctx context.Context, 
 	}
 	if !model.ResourceCollectionEnabled.IsUnknown() {
 		attributes.SetResourceCollectionEnabled(model.ResourceCollectionEnabled.ValueBool())
+	}
+	if !model.IsOrgFolderResourceCollectionEnabled.IsUnknown() {
+		attributes.SetIsOrgFolderResourceCollectionEnabled(model.IsOrgFolderResourceCollectionEnabled.ValueBool())
 	}
 	if !model.IsPerProjectQuotaEnabled.IsUnknown() {
 		attributes.SetIsPerProjectQuotaEnabled(model.IsPerProjectQuotaEnabled.ValueBool())
