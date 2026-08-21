@@ -213,6 +213,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogCurrentUserDataSource,
 	NewDatadogDatastoreDataSource,
 	NewDatastoreItemDataSource,
+	NewDatadogDowntimeDataSource,
 }
 
 // FrameworkProvider struct
