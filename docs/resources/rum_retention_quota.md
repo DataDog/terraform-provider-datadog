@@ -34,24 +34,15 @@ resource "datadog_rum_retention_quota" "testing_rum_retention_quota" {
 ### Required
 
 - `application_id` (String) RUM application ID.
-- `mode` (String) The retention quota mode. Valid values are `custom`, `adaptive`.
+- `mode` (String) The retention quota mode. Valid values are `custom`.
 
 ### Optional
 
-- `adaptive` (Block, Optional) Adaptive retention quota configuration. Required when `mode` is `adaptive`. (see [below for nested schema](#nestedblock--adaptive))
 - `custom` (Block, Optional) Custom retention quota configuration. Required when `mode` is `custom`. (see [below for nested schema](#nestedblock--custom))
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-<a id="nestedblock--adaptive"></a>
-### Nested Schema for `adaptive`
-
-Required:
-
-- `max_retention_rate` (Number) The maximum share of sessions to retain, in the range `(0, 1]`.
-
 
 <a id="nestedblock--custom"></a>
 ### Nested Schema for `custom`

@@ -23,7 +23,6 @@ var (
 	_ resource.ResourceWithConfigure      = &rumRetentionQuotaResource{}
 	_ resource.ResourceWithImportState    = &rumRetentionQuotaResource{}
 	_ resource.ResourceWithValidateConfig = &rumRetentionQuotaResource{}
-	_ validator.Float64                   = maxRetentionRateValidator{}
 )
 
 // This endpoint is not yet part of the public datadog-api-client-go SDK, so requests
@@ -38,11 +37,10 @@ type rumRetentionQuotaResource struct {
 }
 
 type rumRetentionQuotaModel struct {
-	ID            types.String                    `tfsdk:"id"`
-	ApplicationID types.String                    `tfsdk:"application_id"`
-	Mode          types.String                    `tfsdk:"mode"`
-	Custom        *rumRetentionQuotaCustomModel   `tfsdk:"custom"`
-	Adaptive      *rumRetentionQuotaAdaptiveModel `tfsdk:"adaptive"`
+	ID            types.String                  `tfsdk:"id"`
+	ApplicationID types.String                  `tfsdk:"application_id"`
+	Mode          types.String                  `tfsdk:"mode"`
+	Custom        *rumRetentionQuotaCustomModel `tfsdk:"custom"`
 }
 
 type rumRetentionQuotaCustomModel struct {
@@ -53,10 +51,6 @@ type rumRetentionQuotaCustomModel struct {
 	QuotaReachedAction types.String `tfsdk:"quota_reached_action"`
 }
 
-type rumRetentionQuotaAdaptiveModel struct {
-	MaxRetentionRate types.Float64 `tfsdk:"max_retention_rate"`
-}
-
 type rumRetentionQuotaCustomAttributes struct {
 	WindowType         string `json:"window_type"`
 	SessionLimit       int64  `json:"session_limit"`
@@ -65,14 +59,9 @@ type rumRetentionQuotaCustomAttributes struct {
 	QuotaReachedAction string `json:"quota_reached_action"`
 }
 
-type rumRetentionQuotaAdaptiveAttributes struct {
-	MaxRetentionRate float64 `json:"max_retention_rate"`
-}
-
 type rumRetentionQuotaAttributes struct {
-	Mode     string                               `json:"mode"`
-	Custom   *rumRetentionQuotaCustomAttributes   `json:"custom,omitempty"`
-	Adaptive *rumRetentionQuotaAdaptiveAttributes `json:"adaptive,omitempty"`
+	Mode   string                             `json:"mode"`
+	Custom *rumRetentionQuotaCustomAttributes `json:"custom,omitempty"`
 }
 
 type rumRetentionQuotaRequestData struct {
@@ -124,7 +113,7 @@ func (r *rumRetentionQuotaResource) Schema(_ context.Context, _ resource.SchemaR
 				Description: "The retention quota mode.",
 				Required:    true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("custom", "adaptive"),
+					stringvalidator.OneOf("custom"),
 				},
 			},
 			"id": utils.ResourceIDAttribute(),
@@ -161,18 +150,6 @@ func (r *rumRetentionQuotaResource) Schema(_ context.Context, _ resource.SchemaR
 					},
 				},
 			},
-			"adaptive": schema.SingleNestedBlock{
-				Description: "Adaptive retention quota configuration. Required when `mode` is `adaptive`.",
-				Attributes: map[string]schema.Attribute{
-					"max_retention_rate": schema.Float64Attribute{
-						Description: "The maximum share of sessions to retain, in the range `(0, 1]`.",
-						Required:    true,
-						Validators: []validator.Float64{
-							maxRetentionRateValidator{},
-						},
-					},
-				},
-			},
 		},
 	}
 }
@@ -188,21 +165,8 @@ func (r *rumRetentionQuotaResource) ValidateConfig(ctx context.Context, request 
 		return
 	}
 
-	switch state.Mode.ValueString() {
-	case "custom":
-		if state.Custom == nil {
-			response.Diagnostics.AddAttributeError(path.Root("custom"), "Missing Attribute Configuration", "the `custom` block is required when `mode` is `custom`")
-		}
-		if state.Adaptive != nil {
-			response.Diagnostics.AddAttributeError(path.Root("adaptive"), "Conflicting Attribute Configuration", "the `adaptive` block must not be set when `mode` is `custom`")
-		}
-	case "adaptive":
-		if state.Adaptive == nil {
-			response.Diagnostics.AddAttributeError(path.Root("adaptive"), "Missing Attribute Configuration", "the `adaptive` block is required when `mode` is `adaptive`")
-		}
-		if state.Custom != nil {
-			response.Diagnostics.AddAttributeError(path.Root("custom"), "Conflicting Attribute Configuration", "the `custom` block must not be set when `mode` is `adaptive`")
-		}
+	if state.Mode.ValueString() == "custom" && state.Custom == nil {
+		response.Diagnostics.AddAttributeError(path.Root("custom"), "Missing Attribute Configuration", "the `custom` block is required when `mode` is `custom`")
 	}
 }
 
@@ -330,14 +294,6 @@ func (r *rumRetentionQuotaResource) updateState(state *rumRetentionQuotaModel, r
 	} else {
 		state.Custom = nil
 	}
-
-	if attributes.Adaptive != nil {
-		state.Adaptive = &rumRetentionQuotaAdaptiveModel{
-			MaxRetentionRate: types.Float64Value(attributes.Adaptive.MaxRetentionRate),
-		}
-	} else {
-		state.Adaptive = nil
-	}
 }
 
 func (r *rumRetentionQuotaResource) buildRequestBody(state *rumRetentionQuotaModel) *rumRetentionQuotaRequest {
@@ -355,44 +311,11 @@ func (r *rumRetentionQuotaResource) buildRequestBody(state *rumRetentionQuotaMod
 		}
 	}
 
-	if state.Adaptive != nil {
-		attributes.Adaptive = &rumRetentionQuotaAdaptiveAttributes{
-			MaxRetentionRate: state.Adaptive.MaxRetentionRate.ValueFloat64(),
-		}
-	}
-
 	return &rumRetentionQuotaRequest{
 		Data: rumRetentionQuotaRequestData{
 			ID:         state.ApplicationID.ValueString(),
 			Type:       "rum_quota_config",
 			Attributes: attributes,
 		},
-	}
-}
-
-// maxRetentionRateValidator enforces the API's (0, 1] range, which float64validator.Between
-// cannot express since it treats both bounds as inclusive.
-type maxRetentionRateValidator struct{}
-
-func (v maxRetentionRateValidator) Description(_ context.Context) string {
-	return "value must be greater than 0 and less than or equal to 1"
-}
-
-func (v maxRetentionRateValidator) MarkdownDescription(ctx context.Context) string {
-	return v.Description(ctx)
-}
-
-func (v maxRetentionRateValidator) ValidateFloat64(ctx context.Context, request validator.Float64Request, response *validator.Float64Response) {
-	if request.ConfigValue.IsNull() || request.ConfigValue.IsUnknown() {
-		return
-	}
-
-	value := request.ConfigValue.ValueFloat64()
-	if value <= 0 || value > 1 {
-		response.Diagnostics.AddAttributeError(
-			request.Path,
-			"Invalid Attribute Value",
-			fmt.Sprintf("%s, got: %f", v.Description(ctx), value),
-		)
 	}
 }
