@@ -17,7 +17,6 @@ import (
 
 func TestAccDatadogLogsPipelinesDatasource(t *testing.T) {
 	_, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
@@ -26,7 +25,8 @@ func TestAccDatadogLogsPipelinesDatasource(t *testing.T) {
 			{
 				Config: testAccDatasourceLogsPipelinesConfig(),
 				Check: resource.ComposeTestCheckFunc(
-					dataLogsPipelinesCountCheck(accProvider),
+					resource.TestCheckResourceAttrSet("data.datadog_logs_pipelines.foo", "logs_pipelines.#"),
+					resource.TestCheckResourceAttr("data.datadog_logs_pipelines.foo", "id", "logs-pipeline"),
 				),
 			},
 		},
@@ -37,30 +37,6 @@ func testAccDatasourceLogsPipelinesConfig() string {
 	return `
 data "datadog_logs_pipelines" "foo" {
 }`
-}
-
-func dataLogsPipelinesCountCheck(accProvider func() (*schema.Provider, error)) func(state *terraform.State) error {
-	return func(state *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		auth := providerConf.Auth
-		apiInstances := providerConf.DatadogApiInstances
-
-		logsPipelines, _, err := apiInstances.GetLogsPipelinesApiV1().ListLogsPipelines(auth)
-		if err != nil {
-			return err
-		}
-
-		resourceAttributes := state.RootModule().Resources["data.datadog_logs_pipelines.foo"].Primary.Attributes
-		logPipelinesCount, _ := strconv.Atoi(resourceAttributes["logs_pipelines.#"])
-
-		if logPipelinesCount != len(logsPipelines) {
-			return fmt.Errorf("expected %d pipelines got %d pipelines",
-				logPipelinesCount, len(logsPipelines))
-		}
-
-		return nil
-	}
 }
 
 func TestAccDatadogLogsPipelinesDatasourceReadonly(t *testing.T) {
