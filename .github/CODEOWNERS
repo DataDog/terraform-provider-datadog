@@ -52,6 +52,7 @@ datadog/**/*datadog_downtime*                     @api-reliability @DataDog/moni
 datadog/**/*datadog_domain_allowlist*             @api-reliability @DataDog/team-aaa
 datadog/**/*datadog_logs*                         @api-reliability @DataDog/logs-backend @DataDog/logs-core @DataDog/logs-forwarding @DataDog/logs-app
 datadog/**/*datadog_metric*                       @api-reliability @DataDog/metrics-intake @DataDog/timeseries-query @DataDog/metrics-storage-platform
+datadog/**/*datadog_metric_tag_configuration*     @api-reliability @DataDog/metrics-experience
 datadog/**/*datadog_monitor*                      @api-reliability @DataDog/monitor-app
 datadog/**/*datadog_appsec*                       @api-reliability @DataDog/asm-backend
 datadog/**/*datadog_azure_integration*            @api-reliability @DataDog/azure-integrations
