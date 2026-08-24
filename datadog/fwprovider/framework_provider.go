@@ -153,6 +153,7 @@ var Resources = []func() resource.Resource{
 var Datasources = []func() datasource.DataSource{
 	NewAPIKeyDataSource,
 	NewAwsAvailableNamespacesDataSource,
+	NewAwsIntegrationAccountDataSource,
 	NewAwsIntegrationExternalIDDataSource,
 	NewAwsIntegrationIAMPermissionsDataSource,
 	NewAwsIntegrationIAMPermissionsStandardDataSource,
