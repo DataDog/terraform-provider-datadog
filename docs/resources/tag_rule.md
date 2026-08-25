@@ -55,7 +55,7 @@ resource "datadog_tag_rule" "service" {
 - `scope` (String) The scope the rule applies within. Typically an environment, team, or organization-level identifier used to limit where the rule is enforced.
 - `source` (String) The telemetry source that the tag rule applies to. This field cannot be updated after creation; changing it forces a new resource. Valid values are `logs`, `spans`, `metrics`, `rum`, `feed`.
 - `tag_key` (String) The tag key that the rule governs (for example, `service`).
-- `tag_value_patterns` (List of String) One or more patterns that valid values for the tag key must match. At least one pattern is required. These are not regular expressions: the API restricts pattern characters to `A-Za-z0-9_:-.,/*`, with `*` acting as a wildcard.
+- `tag_value_patterns` (List of String) One or more patterns that valid values for the tag key must match. At least one pattern is required. These are not regular expressions: the API restricts pattern characters to `A-Za-z0-9_:-.,/*`, with `*` acting as a wildcard. A pattern made up only of wildcards (for example a bare `*`) is rejected by the API.
 
 ### Optional
 

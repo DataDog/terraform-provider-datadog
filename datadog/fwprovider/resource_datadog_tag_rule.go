@@ -3,10 +3,12 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -24,6 +26,17 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &tagRuleResource{}
 	_ resource.ResourceWithImportState = &tagRuleResource{}
+)
+
+var (
+	// tagValuePatternCharsetRegex mirrors the character class the API restricts
+	// tag_value_patterns to.
+	tagValuePatternCharsetRegex = regexp.MustCompile(`^[A-Za-z0-9_.,:/*-]+$`)
+	// tagValuePatternNonWildcardRegex matches if the pattern has at least one
+	// non-wildcard character. The API rejects a pattern made up only of `*`
+	// (for example a bare "*") with a generic 400 invalid request, so this is
+	// caught at plan time instead.
+	tagValuePatternNonWildcardRegex = regexp.MustCompile(`[A-Za-z0-9_.,:/-]`)
 )
 
 type tagRuleResource struct {
@@ -109,10 +122,16 @@ func (r *tagRuleResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				Required:    true,
 			},
 			"tag_value_patterns": schema.ListAttribute{
-				Description: "One or more patterns that valid values for the tag key must match. At least one pattern is required. These are not regular expressions: the API restricts pattern characters to `A-Za-z0-9_:-.,/*`, with `*` acting as a wildcard.",
+				Description: "One or more patterns that valid values for the tag key must match. At least one pattern is required. These are not regular expressions: the API restricts pattern characters to `A-Za-z0-9_:-.,/*`, with `*` acting as a wildcard. A pattern made up only of wildcards (for example a bare `*`) is rejected by the API.",
 				Required:    true,
 				ElementType: types.StringType,
-				Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
+				Validators: []validator.List{
+					listvalidator.SizeAtLeast(1),
+					listvalidator.ValueStringsAre(
+						stringvalidator.RegexMatches(tagValuePatternCharsetRegex, "must only contain characters in A-Za-z0-9_:-.,/* (with * as a wildcard)"),
+						stringvalidator.RegexMatches(tagValuePatternNonWildcardRegex, "must contain at least one non-wildcard character; the API rejects a pattern made up only of wildcards"),
+					),
+				},
 			},
 			"rule_type": schema.StringAttribute{
 				Description: "How the rule is enforced. `surfacing` only highlights non-compliant telemetry, while `blocking` rejects telemetry that violates the rule. The API only accepts `surfacing` at creation time, so creating a rule directly as `blocking` requires `force_blocking_on_create` to be set to `true`. Using `blocking` at all requires blocking tag rules to be enabled for your organization; otherwise the API returns `403 permission denied`.",
