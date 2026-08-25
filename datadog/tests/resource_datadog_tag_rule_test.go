@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -204,6 +205,90 @@ func TestAccDatadogTagRule_SourceForcesReplacement(t *testing.T) {
 	})
 }
 
+// TestAccDatadogTagRule_SoftDelete covers the hard_delete = false path: destroying the
+// resource must leave the rule recoverable (deleted_at set) rather than removing it.
+func TestAccDatadogTagRule_SoftDelete(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ruleName := fmt.Sprintf("tf-test-tag-rule-softdelete-%d", clockFromContext(ctx).Now().Unix())
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogTagRuleSoftDeleted(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogTagRuleConfigSoftDelete(ruleName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogTagRuleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_tag_rule.foo", "hard_delete", "false"),
+				),
+			},
+		},
+	})
+}
+
+// TestAccDatadogTagRule_SoftDeleteDrift covers Read's handling of a rule that was
+// soft-deleted out-of-band: the API still returns 200 with deleted_at set, so a refresh
+// must treat that as gone rather than looping on the tombstone forever.
+func TestAccDatadogTagRule_SoftDeleteDrift(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ruleName := fmt.Sprintf("tf-test-tag-rule-softdrift-%d", clockFromContext(ctx).Now().Unix())
+	config := testAccCheckDatadogTagRuleConfigSurfacing(ruleName)
+
+	// Captured in step 1's Check, read from step 2's PreConfig (no state access there).
+	var capturedID string
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: config,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogTagRuleExists(providers.frameworkProvider),
+					func(s *terraform.State) error {
+						rs, ok := s.RootModule().Resources["datadog_tag_rule.foo"]
+						if !ok {
+							return fmt.Errorf("resource not found: datadog_tag_rule.foo")
+						}
+						capturedID = rs.Primary.ID
+						return nil
+					},
+				),
+			},
+			{
+				// Soft-delete the rule out-of-band, bypassing Terraform entirely, so the
+				// only way the provider can notice is Read's deleted_at check.
+				PreConfig: func() {
+					api := providers.frameworkProvider.DatadogApiInstances.GetTagRulesApiV2()
+					optionalParams := datadogV2.NewDeleteTagRuleOptionalParameters().WithHardDelete(false)
+					if _, err := api.DeleteTagRule(providers.frameworkProvider.Auth, capturedID, *optionalParams); err != nil {
+						t.Fatalf("failed to soft-delete tag rule out-of-band: %s", err)
+					}
+				},
+				Config:             config,
+				PlanOnly:           true,
+				ExpectNonEmptyPlan: true,
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogTagRuleConfigSoftDelete(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_tag_rule" "foo" {
+  name               = "%[1]s"
+  source             = "logs"
+  scope              = "%[1]s"
+  tag_key            = "env"
+  tag_value_patterns = ["prod", "staging"]
+  rule_type          = "surfacing"
+  hard_delete        = false
+}`, name)
+}
+
 func testAccCheckDatadogTagRuleConfigSurfacing(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_tag_rule" "foo" {
@@ -320,4 +405,29 @@ func tagRuleDestroyHelper(ctx context.Context, s *terraform.State, apiInstances 
 		return fmt.Errorf("tag rule %s still exists", r.Primary.ID)
 	}
 	return nil
+}
+
+// testAccCheckDatadogTagRuleSoftDeleted asserts the opposite of tagRuleDestroyHelper: with
+// hard_delete = false, the rule must still exist after destroy, with deleted_at set.
+func testAccCheckDatadogTagRuleSoftDeleted(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
+		api := apiInstances.GetTagRulesApiV2()
+
+		for _, r := range s.RootModule().Resources {
+			if r.Type != "datadog_tag_rule" {
+				continue
+			}
+
+			resp, httpResp, err := api.GetTagRule(auth, r.Primary.ID)
+			if err != nil {
+				return utils.TranslateClientError(err, httpResp, "error retrieving soft-deleted tag rule")
+			}
+			if !resp.Data.Attributes.DeletedAt.IsSet() || resp.Data.Attributes.DeletedAt.Get() == nil {
+				return fmt.Errorf("tag rule %s was hard-deleted despite hard_delete = false", r.Primary.ID)
+			}
+		}
+		return nil
+	}
 }
