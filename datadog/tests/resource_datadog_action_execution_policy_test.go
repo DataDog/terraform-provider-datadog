@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
-	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
@@ -110,7 +109,7 @@ func TestAccDatadogActionExecutionPolicy_EmptyScope(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	name := uniqueEntityName(ctx, t)
-	config := testAccDatadogActionExecutionPolicyEmptyScopeConfig(name)
+	config := testAccDatadogActionExecutionPolicyScopeLessConfig(name)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -125,12 +124,26 @@ func TestAccDatadogActionExecutionPolicy_EmptyScope(t *testing.T) {
 				),
 			},
 			{
-				Config: config,
-				ConfigPlanChecks: resource.ConfigPlanChecks{
-					PreApply: []plancheck.PlanCheck{
-						plancheck.ExpectEmptyPlan(),
-					},
-				},
+				ResourceName:      actionExecutionPolicyResourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
+func TestAccDatadogActionExecutionPolicy_EmptyScopeRejected(t *testing.T) {
+	t.Parallel()
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	name := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccDatadogActionExecutionPolicyEmptyScopeConfig(name),
+				ExpectError: regexp.MustCompile("Empty scope block"),
 			},
 		},
 	})
@@ -244,6 +257,19 @@ resource "datadog_action_execution_policy" "test" {
   }
 
   scope {}
+}`, name)
+}
+
+func testAccDatadogActionExecutionPolicyScopeLessConfig(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_action_execution_policy" "test" {
+  name   = %q
+  effect = "allow"
+
+  action_pattern {
+    integration = "INTEGRATION_SCRIPT"
+    action_fqns = ["*"]
+  }
 }`, name)
 }
 

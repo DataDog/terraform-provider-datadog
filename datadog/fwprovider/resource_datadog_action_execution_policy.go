@@ -154,8 +154,12 @@ func (r *actionExecutionPolicyResource) ValidateConfig(ctx context.Context, requ
 		return
 	}
 
-	// An empty scope block is valid: it means the policy has no scope restriction.
 	if len(set) == 0 {
+		response.Diagnostics.AddAttributeError(
+			frameworkPath.Root("scope"),
+			"Empty scope block",
+			"A configured `scope` block must contain one of `kubernetes`, `scripts` or `remote_action_rshell`. Omit `scope` when the policy has no scope restriction.",
+		)
 		return
 	}
 
@@ -266,7 +270,7 @@ func (r *actionExecutionPolicyResource) Schema(_ context.Context, _ resource.Sch
 				},
 			},
 			"scope": schema.SingleNestedBlock{
-				Description: "Restricts where the policy applies, beyond `action_pattern`. At most one of `kubernetes`, `scripts` or `remote_action_rshell` may be set, and it must match `action_pattern.integration`. Omitting this block means the policy has no scope restriction.",
+				Description: "Restricts where the policy applies, beyond `action_pattern`. When configured, exactly one of `kubernetes`, `scripts` or `remote_action_rshell` must be set, and it must match `action_pattern.integration`. Omitting this block means the policy has no scope restriction.",
 				Blocks: map[string]schema.Block{
 					"kubernetes": schema.SingleNestedBlock{
 						Description: "Restricts the policy to specific Kubernetes namespaces. Requires `action_pattern.integration` to be `INTEGRATION_KUBERNETES`.",
@@ -519,14 +523,7 @@ func updateExecutionPolicyStateFromResponse(ctx context.Context, state *actionEx
 		ActionFqns:  executionPolicyStringListValue(ctx, attributes.ActionPattern.ActionFqns, diags),
 	}
 
-	apiScope := flattenExecutionPolicyScope(ctx, attributes.Scope, diags)
-	stateHasExplicitEmptyScope := state.Scope != nil &&
-		state.Scope.Kubernetes == nil &&
-		state.Scope.Scripts == nil &&
-		state.Scope.RemoteActionRshell == nil
-	if apiScope != nil || !stateHasExplicitEmptyScope {
-		state.Scope = apiScope
-	}
+	state.Scope = flattenExecutionPolicyScope(ctx, attributes.Scope, diags)
 
 	if len(attributes.Targets) == 0 {
 		state.Target = nil

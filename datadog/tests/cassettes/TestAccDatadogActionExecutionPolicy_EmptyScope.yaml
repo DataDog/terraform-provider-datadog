@@ -151,39 +151,6 @@ interactions:
         form: {}
         headers:
             Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/actions/execution-policies/634b8122-1a48-4975-a78f-4030e0f3d5a7
-        method: GET
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 474
-        uncompressed: false
-        body: '{"data":{"id":"634b8122-1a48-4975-a78f-4030e0f3d5a7","type":"execution_policy","attributes":{"action_pattern":{"integration":"INTEGRATION_SCRIPT","action_fqns":["*"]},"created_at":"2026-08-20T12:42:20Z","created_by":"d72ee86c-6207-4077-b40c-93fded100245","effect":"allow","name":"tf-TestAccDatadogActionExecutionPolicy_EmptyScope-local-1787229737","scope":{},"targets":[],"updated_at":"2026-08-20T12:42:20Z","updated_by":"d72ee86c-6207-4077-b40c-93fded100245","version":1}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 147.305833ms
-    - id: 5
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
                 - '*/*'
         url: https://api.datadoghq.com/api/v2/actions/execution-policies/634b8122-1a48-4975-a78f-4030e0f3d5a7
         method: DELETE
@@ -200,7 +167,7 @@ interactions:
         status: 204 No Content
         code: 204
         duration: 155.7275ms
-    - id: 6
+    - id: 5
       request:
         proto: HTTP/1.1
         proto_major: 1

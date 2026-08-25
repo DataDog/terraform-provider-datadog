@@ -9,6 +9,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -134,5 +135,35 @@ func TestActionExecutionPolicyWriteUsesCanonicalResponseState(t *testing.T) {
 				t.Fatalf("target tags = %v, want backend-canonical [env:test service:web]", gotTags)
 			}
 		})
+	}
+}
+
+func TestUpdateExecutionPolicyStateFromResponseDropsEmptyScope(t *testing.T) {
+	t.Parallel()
+
+	actionPattern := datadogV2.NewExecutionPolicyActionPattern(
+		[]string{"*"},
+		datadogV2.EXECUTIONPOLICYINTEGRATION_INTEGRATION_SCRIPT,
+	)
+	attributes := datadogV2.NewExecutionPolicyAttributesWithDefaults()
+	attributes.SetActionPattern(*actionPattern)
+	attributes.SetScope(*datadogV2.NewExecutionPolicyScope())
+	data := datadogV2.NewExecutionPolicyResponseData(
+		*attributes,
+		"policy-id",
+		datadogV2.EXECUTIONPOLICYTYPE_EXECUTION_POLICY,
+	)
+	state := actionExecutionPolicyModel{
+		Scope: &executionPolicyScopeModel{},
+	}
+	var diagnostics diag.Diagnostics
+
+	updateExecutionPolicyStateFromResponse(context.Background(), &state, data, &diagnostics)
+
+	if diagnostics.HasError() {
+		t.Fatalf("unexpected diagnostics: %v", diagnostics.Errors())
+	}
+	if state.Scope != nil {
+		t.Fatalf("scope = %#v, want nil for an empty API scope", state.Scope)
 	}
 }

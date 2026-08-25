@@ -111,7 +111,7 @@ resource "datadog_restriction_policy" "kubernetes_prod_perms" {
 ### Optional
 
 - `action_pattern` (Block, Optional) The set of actions this policy applies to. Required. (see [below for nested schema](#nestedblock--action_pattern))
-- `scope` (Block, Optional) Restricts where the policy applies, beyond `action_pattern`. At most one of `kubernetes`, `scripts` or `remote_action_rshell` may be set, and it must match `action_pattern.integration`. Omitting this block means the policy has no scope restriction. (see [below for nested schema](#nestedblock--scope))
+- `scope` (Block, Optional) Restricts where the policy applies, beyond `action_pattern`. When configured, exactly one of `kubernetes`, `scripts` or `remote_action_rshell` must be set, and it must match `action_pattern.integration`. Omitting this block means the policy has no scope restriction. (see [below for nested schema](#nestedblock--scope))
 - `target` (Block List) A target this policy is scoped to, expressed as a set of Agent tags. Each target is matched independently; omitting all `target` blocks applies the policy fleet-wide. (see [below for nested schema](#nestedblock--target))
 
 ### Read-Only
