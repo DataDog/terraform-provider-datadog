@@ -142,7 +142,7 @@ func (r *rumRetentionQuotaResource) Schema(_ context.Context, _ resource.SchemaR
 						Required:    true,
 					},
 					"quota_reached_action": schema.StringAttribute{
-						Description: "The action taken once the quota is reached.",
+						Description: "The action taken after the quota is reached.",
 						Required:    true,
 						Validators: []validator.String{
 							stringvalidator.OneOf("stop", "slowdown"),
