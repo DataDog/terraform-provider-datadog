@@ -37,6 +37,7 @@ type MonitorNotificationRuleModel struct {
 	Recipients                                   types.Set                                     `tfsdk:"recipients"`
 	MonitorNotificationRuleFilter                *MonitorNotificationRuleFilter                `tfsdk:"filter"`
 	MonitorNotificationRuleConditionalRecipients *MonitorNotificationRuleConditionalRecipients `tfsdk:"conditional_recipients"`
+	MonitorNotificationRuleBundleConfig          *MonitorNotificationRuleBundleConfig          `tfsdk:"bundle_config"`
 }
 
 type MonitorNotificationRuleFilter struct {
@@ -54,6 +55,10 @@ type MonitorNotificationRuleConditionalRecipients struct {
 	FallbackRecipients                                     types.Set                                               `tfsdk:"fallback_recipients"`
 }
 
+type MonitorNotificationRuleBundleConfig struct {
+	Duration types.Int32 `tfsdk:"duration"`
+}
+
 func NewMonitorNotificationRuleResource() resource.Resource {
 	return &MonitorNotificationRuleResource{}
 }
@@ -67,6 +72,10 @@ func (r *MonitorNotificationRuleResource) ConfigValidators(ctx context.Context) 
 		resourcevalidator.ExactlyOneOf(
 			frameworkPath.MatchRoot("recipients"),
 			frameworkPath.MatchRoot("conditional_recipients"),
+		),
+		resourcevalidator.RequiredTogether(
+			frameworkPath.MatchRoot("bundle_config"),
+			frameworkPath.MatchRoot("bundle_config").AtName("duration"),
 		),
 	}
 }
@@ -154,6 +163,15 @@ func (r *MonitorNotificationRuleResource) Schema(_ context.Context, _ resource.S
 								},
 							},
 						},
+					},
+				},
+			},
+			"bundle_config": schema.SingleNestedBlock{
+				Description: "Use bundle config to enable alert bundling to reduce monitor signal noises. **Note**: This feature is in preview and is subject to change. If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).",
+				Attributes: map[string]schema.Attribute{
+					"duration": schema.Int32Attribute{
+						Description: "Duration of the bundling period",
+						Optional:    true,
 					},
 				},
 			},
@@ -274,6 +292,7 @@ func (r *MonitorNotificationRuleResource) updateState(ctx context.Context, state
 		}
 	}
 	r.updateConditionalRecipientsState(ctx, state, attributes)
+	r.updateBundleConfigState(state, attributes)
 }
 
 func (r *MonitorNotificationRuleResource) updateConditionalRecipientsState(ctx context.Context, state *MonitorNotificationRuleModel, attributes datadogV2.MonitorNotificationRuleResponseAttributes) {
@@ -304,6 +323,17 @@ func (r *MonitorNotificationRuleResource) updateConditionalRecipientsState(ctx c
 	}
 }
 
+func (r *MonitorNotificationRuleResource) updateBundleConfigState(state *MonitorNotificationRuleModel, attributes datadogV2.MonitorNotificationRuleResponseAttributes) {
+	bundleConfig, ok := attributes.GetBundleConfigOk()
+	if !ok || bundleConfig == nil {
+		return
+	}
+
+	state.MonitorNotificationRuleBundleConfig = &MonitorNotificationRuleBundleConfig{
+		Duration: fwutils.ToTerraformInt32(bundleConfig.GetDurationOk()),
+	}
+}
+
 func (r *MonitorNotificationRuleResource) buildRequestAttributes(ctx context.Context, state *MonitorNotificationRuleModel) (*datadogV2.MonitorNotificationRuleAttributes, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewMonitorNotificationRuleAttributesWithDefaults()
@@ -326,6 +356,10 @@ func (r *MonitorNotificationRuleResource) buildRequestAttributes(ctx context.Con
 
 	if conditionalRecipientsStruct := r.buildConditionalRecipientsRequest(ctx, state.MonitorNotificationRuleConditionalRecipients); conditionalRecipientsStruct != nil {
 		attributes.SetConditionalRecipients(*conditionalRecipientsStruct)
+	}
+
+	if bundleConfig := r.buildBundleConfigRequest(state.MonitorNotificationRuleBundleConfig); bundleConfig != nil {
+		attributes.SetBundleConfig(*bundleConfig)
 	}
 
 	return attributes, diags
@@ -371,4 +405,13 @@ func (r *MonitorNotificationRuleResource) buildConditionalRecipientsRequest(ctx 
 	conditionalRecipientsReq.SetConditions(conditionsReq)
 	fwutils.SetOptStringList(conditionalRecipients.FallbackRecipients, conditionalRecipientsReq.SetFallbackRecipients, ctx)
 	return &conditionalRecipientsReq
+}
+
+func (r *MonitorNotificationRuleResource) buildBundleConfigRequest(bundleConfig *MonitorNotificationRuleBundleConfig) *datadogV2.MonitorNotificationRuleBundleConfig {
+	if bundleConfig == nil {
+		return nil
+	}
+	bundleConfigReq := datadogV2.MonitorNotificationRuleBundleConfig{}
+	fwutils.SetOptInt32(bundleConfig.Duration, bundleConfigReq.SetDuration)
+	return &bundleConfigReq
 }

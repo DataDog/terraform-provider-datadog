@@ -63,6 +63,7 @@ var Resources = []func() resource.Resource{
 	NewSecurityNotificationRuleResource,
 	NewRestrictionPolicyResource,
 	NewRumApplicationResource,
+	NewRumExclusionFilterResource,
 	NewRumMetricResource,
 	NewRumRetentionFilterResource,
 	NewRumRetentionFiltersOrderResource,
@@ -153,6 +154,7 @@ var Resources = []func() resource.Resource{
 var Datasources = []func() datasource.DataSource{
 	NewAPIKeyDataSource,
 	NewAwsAvailableNamespacesDataSource,
+	NewAwsIntegrationAccountDataSource,
 	NewAwsIntegrationExternalIDDataSource,
 	NewAwsIntegrationIAMPermissionsDataSource,
 	NewAwsIntegrationIAMPermissionsStandardDataSource,
@@ -870,9 +872,13 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	if httpClientRetryEnabled {
 		ddClientConfig.RetryConfiguration.EnableRetry = httpClientRetryEnabled
 
-		if !config.HttpClientRetryBackoffMultiplier.IsNull() {
-			timeout := time.Duration(config.HttpClientRetryBackoffMultiplier.ValueInt64()) * time.Second
+		if !config.HttpClientRetryTimeout.IsNull() {
+			timeout := time.Duration(config.HttpClientRetryTimeout.ValueInt64()) * time.Second
 			ddClientConfig.RetryConfiguration.HTTPRetryTimeout = timeout
+		}
+
+		if !config.HttpClientRetryBackoffMultiplier.IsNull() {
+			ddClientConfig.RetryConfiguration.BackOffMultiplier = float64(config.HttpClientRetryBackoffMultiplier.ValueInt64())
 		}
 
 		if !config.HttpClientRetryBackoffBase.IsNull() {
