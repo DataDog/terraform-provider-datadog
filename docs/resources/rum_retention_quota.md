@@ -51,7 +51,7 @@ Required:
 
 - `daily_reset_time` (String) The time of day the quota resets, in `HH:MM` format.
 - `daily_reset_timezone` (String) The UTC offset for `daily_reset_time`, in `±HH:MM` format.
-- `quota_reached_action` (String) The action taken after the quota is reached. Valid values are `stop`, `slowdown`.
+- `quota_reached_action` (String) The action taken once the quota is reached. Valid values are `stop`, `slowdown`.
 - `session_limit` (Number) The maximum number of sessions to retain within the window.
 - `window_type` (String) The window over which the quota resets. Valid values are `daily`.
 
