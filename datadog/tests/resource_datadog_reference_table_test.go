@@ -137,6 +137,41 @@ func TestAccReferenceTable_UpdateSyncEnabled(t *testing.T) {
 	})
 }
 
+// TestAccReferenceTable_EmptyDescription tests that an explicit `description = ""` is
+// preserved in state rather than being read back as null, which previously failed with
+// "Provider produced inconsistent result after apply". This verifies:
+// 1. A table created with an empty description keeps that empty string in state
+// 2. The description can subsequently be updated to a non-empty value
+func TestAccReferenceTable_EmptyDescription(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogReferenceTableDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogReferenceTableDescription(uniq, ""),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogReferenceTableExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_reference_table.description_test", "description", ""),
+				),
+			},
+			{
+				Config: testAccCheckDatadogReferenceTableDescription(uniq, "Now described"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogReferenceTableExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_reference_table.description_test", "description", "Now described"),
+				),
+			},
+		},
+	})
+}
+
 // TestAccReferenceTable_Import tests that an existing reference table can be imported
 // into Terraform state using `terraform import`. This verifies:
 // 1. A table can be created normally
@@ -249,6 +284,45 @@ resource "datadog_reference_table" "evolution" {
 
   tags = ["test:terraform"]
 }`, sanitized)
+}
+
+func testAccCheckDatadogReferenceTableDescription(uniq string, description string) string {
+	// Sanitize: replace dashes with underscores and convert to lowercase
+	sanitized := strings.ToLower(strings.ReplaceAll(uniq, "-", "_"))
+	return fmt.Sprintf(`
+resource "datadog_reference_table" "description_test" {
+  table_name  = "tf_test_description_%s"
+  description = "%s"
+  source      = "S3"
+
+  file_metadata {
+    sync_enabled = true
+
+    access_details {
+      aws_detail {
+        aws_account_id  = "924305315327"
+        aws_bucket_name = "dd-reference-tables-dev-staging"
+        file_path       = "test.csv"
+      }
+    }
+  }
+
+  schema {
+    primary_keys = ["a"]
+
+    fields {
+      name = "a"
+      type = "STRING"
+    }
+
+    fields {
+      name = "b"
+      type = "STRING"
+    }
+  }
+
+  tags = ["test:terraform"]
+}`, sanitized, description)
 }
 
 func testAccCheckDatadogReferenceTableSyncEnabled(uniq string, syncEnabled bool) string {
