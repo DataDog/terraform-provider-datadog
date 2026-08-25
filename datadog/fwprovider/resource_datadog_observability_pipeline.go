@@ -45,11 +45,12 @@ type observabilityPipelineModel struct {
 }
 
 type configModel struct {
-	PipelineType          types.String           `tfsdk:"pipeline_type"`
-	UseLegacySearchSyntax types.Bool             `tfsdk:"use_legacy_search_syntax"`
-	Sources               []*sourceModel         `tfsdk:"source"`
-	ProcessorGroups       []*processorGroupModel `tfsdk:"processor_group"`
-	Destinations          []*destinationModel    `tfsdk:"destination"`
+	PipelineType             types.String           `tfsdk:"pipeline_type"`
+	EndToEndAcknowledgements types.Bool             `tfsdk:"end_to_end_acknowledgements"`
+	UseLegacySearchSyntax    types.Bool             `tfsdk:"use_legacy_search_syntax"`
+	Sources                  []*sourceModel         `tfsdk:"source"`
+	ProcessorGroups          []*processorGroupModel `tfsdk:"processor_group"`
+	Destinations             []*destinationModel    `tfsdk:"destination"`
 }
 
 type destinationModel struct {
@@ -811,6 +812,13 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 				Description: "Configuration for the pipeline.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
+						"end_to_end_acknowledgements": schema.BoolAttribute{
+							Optional: true,
+							Computed: true,
+							Description: "Enables end-to-end event delivery confirmation for the pipeline. " +
+								"When enabled, sources confirm receipt only after all destinations have successfully received the events. " +
+								"Requires Observability Pipelines Worker 2.14 or later. All configured sources must support this behavior.",
+						},
 						"pipeline_type": schema.StringAttribute{
 							Optional:    true,
 							Computed:    true,
@@ -3056,6 +3064,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 	if len(state.Config) > 0 && !state.Config[0].UseLegacySearchSyntax.IsNull() && !state.Config[0].UseLegacySearchSyntax.IsUnknown() {
 		config.SetUseLegacySearchSyntax(state.Config[0].UseLegacySearchSyntax.ValueBool())
 	}
+	if len(state.Config) > 0 && !state.Config[0].EndToEndAcknowledgements.IsNull() && !state.Config[0].EndToEndAcknowledgements.IsUnknown() {
+		config.SetEndToEndAcknowledgements(state.Config[0].EndToEndAcknowledgements.ValueBool())
+	}
 
 	// Sources
 	for _, sourceBlock := range state.Config[0].Sources {
@@ -3253,6 +3264,12 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		useLegacySearchSyntax = types.BoolValue(*v)
 	}
 	outCfg.UseLegacySearchSyntax = useLegacySearchSyntax
+
+	endToEndAcknowledgements := types.BoolNull()
+	if v, ok := cfg.GetEndToEndAcknowledgementsOk(); ok {
+		endToEndAcknowledgements = types.BoolValue(*v)
+	}
+	outCfg.EndToEndAcknowledgements = endToEndAcknowledgements
 
 	for _, src := range cfg.GetSources() {
 		sourceBlock := &sourceModel{}
