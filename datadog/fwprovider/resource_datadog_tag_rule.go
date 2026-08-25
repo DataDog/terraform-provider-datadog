@@ -115,7 +115,7 @@ func (r *tagRuleResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
 			},
 			"rule_type": schema.StringAttribute{
-				Description: "How the rule is enforced. `surfacing` only highlights non-compliant telemetry, while `blocking` rejects telemetry that violates the rule. The API only accepts `surfacing` at creation time, so creating a rule directly as `blocking` requires `force_blocking_on_create` to be set to `true`.",
+				Description: "How the rule is enforced. `surfacing` only highlights non-compliant telemetry, while `blocking` rejects telemetry that violates the rule. The API only accepts `surfacing` at creation time, so creating a rule directly as `blocking` requires `force_blocking_on_create` to be set to `true`. Using `blocking` at all requires blocking tag rules to be enabled for your organization; otherwise the API returns `403 permission denied`.",
 				Required:    true,
 				Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewTagRuleTypeFromValue)},
 			},

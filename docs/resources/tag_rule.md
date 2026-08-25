@@ -51,7 +51,7 @@ resource "datadog_tag_rule" "service" {
 ### Required
 
 - `name` (String) Human-readable name for the tag rule.
-- `rule_type` (String) How the rule is enforced. `surfacing` only highlights non-compliant telemetry, while `blocking` rejects telemetry that violates the rule. The API only accepts `surfacing` at creation time, so creating a rule directly as `blocking` requires `force_blocking_on_create` to be set to `true`. Valid values are `blocking`, `surfacing`.
+- `rule_type` (String) How the rule is enforced. `surfacing` only highlights non-compliant telemetry, while `blocking` rejects telemetry that violates the rule. The API only accepts `surfacing` at creation time, so creating a rule directly as `blocking` requires `force_blocking_on_create` to be set to `true`. Using `blocking` at all requires blocking tag rules to be enabled for your organization; otherwise the API returns `403 permission denied`. Valid values are `blocking`, `surfacing`.
 - `scope` (String) The scope the rule applies within. Typically an environment, team, or organization-level identifier used to limit where the rule is enforced.
 - `source` (String) The telemetry source that the tag rule applies to. This field cannot be updated after creation; changing it forces a new resource. Valid values are `logs`, `spans`, `metrics`, `rum`, `feed`.
 - `tag_key` (String) The tag key that the rule governs (for example, `service`).

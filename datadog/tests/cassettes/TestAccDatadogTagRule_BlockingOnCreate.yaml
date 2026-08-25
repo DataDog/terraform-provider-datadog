@@ -1,0 +1,205 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 233
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"name":"tf-test-tag-rule-blocking-1787669984","rule_type":"surfacing","scope":"tf-test-tag-rule-blocking-1787669984","source":"logs","tag_key":"env","tag_value_patterns":["prod","staging"]},"type":"tag_rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/tag_rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 577
+        uncompressed: false
+        body: '{"data":{"id":"2093","type":"tag_policy","attributes":{"created_at":"2026-08-25T14:59:47.920905Z","created_by":"f6188377-1854-42ac-9174-a7a1944647cb","enabled":true,"modified_at":"2026-08-25T14:59:47.920905Z","modified_by":"f6188377-1854-42ac-9174-a7a1944647cb","name":"tf-test-tag-rule-blocking-1787669984","negated":false,"policy_name":"tf-test-tag-rule-blocking-1787669984","policy_type":"surfacing","required":false,"rule_type":"surfacing","scope":"tf-test-tag-rule-blocking-1787669984","source":"logs","tag_key":"env","tag_value_patterns":["prod","staging"],"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 303.162465ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 276
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"name":"tf-test-tag-rule-blocking-1787669984","negated":false,"required":false,"rule_type":"blocking","scope":"tf-test-tag-rule-blocking-1787669984","tag_key":"env","tag_value_patterns":["prod","staging"]},"id":"2093","type":"tag_rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/tag_rules/2093
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 575
+        uncompressed: false
+        body: '{"data":{"id":"2093","type":"tag_policy","attributes":{"created_at":"2026-08-25T14:59:47.920905Z","created_by":"f6188377-1854-42ac-9174-a7a1944647cb","enabled":true,"modified_at":"2026-08-25T14:59:48.053656Z","modified_by":"f6188377-1854-42ac-9174-a7a1944647cb","name":"tf-test-tag-rule-blocking-1787669984","negated":false,"policy_name":"tf-test-tag-rule-blocking-1787669984","policy_type":"blocking","required":false,"rule_type":"blocking","scope":"tf-test-tag-rule-blocking-1787669984","source":"logs","tag_key":"env","tag_value_patterns":["prod","staging"],"version":2}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 141.991275ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/tag_rules/2093
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 575
+        uncompressed: false
+        body: '{"data":{"id":"2093","type":"tag_policy","attributes":{"created_at":"2026-08-25T14:59:47.920905Z","created_by":"f6188377-1854-42ac-9174-a7a1944647cb","enabled":true,"modified_at":"2026-08-25T14:59:48.053656Z","modified_by":"f6188377-1854-42ac-9174-a7a1944647cb","name":"tf-test-tag-rule-blocking-1787669984","negated":false,"policy_name":"tf-test-tag-rule-blocking-1787669984","policy_type":"blocking","required":false,"rule_type":"blocking","scope":"tf-test-tag-rule-blocking-1787669984","source":"logs","tag_key":"env","tag_value_patterns":["prod","staging"],"version":2}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 106.662029ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/tag_rules/2093
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 575
+        uncompressed: false
+        body: '{"data":{"id":"2093","type":"tag_policy","attributes":{"created_at":"2026-08-25T14:59:47.920905Z","created_by":"f6188377-1854-42ac-9174-a7a1944647cb","enabled":true,"modified_at":"2026-08-25T14:59:48.053656Z","modified_by":"f6188377-1854-42ac-9174-a7a1944647cb","name":"tf-test-tag-rule-blocking-1787669984","negated":false,"policy_name":"tf-test-tag-rule-blocking-1787669984","policy_type":"blocking","required":false,"rule_type":"blocking","scope":"tf-test-tag-rule-blocking-1787669984","source":"logs","tag_key":"env","tag_value_patterns":["prod","staging"],"version":2}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 123.203838ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/governance/tag_rules/2093?hard_delete=true
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 141.542052ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/tag_rules/2093
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 79
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Not Found","detail":"resource not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 117.985349ms
