@@ -19,7 +19,7 @@ resource "datadog_tag_rule" "service" {
   source             = "spans"
   scope              = "org"
   tag_key            = "service"
-  tag_value_patterns = ["^[a-z0-9-]+$"]
+  tag_value_patterns = ["web-*"]
   rule_type          = "blocking"
 
   force_blocking_on_create = true

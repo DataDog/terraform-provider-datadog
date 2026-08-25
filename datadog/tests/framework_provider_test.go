@@ -189,6 +189,12 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.GetGovernanceControlNotificationSettings", true)
 	config.SetUnstableOperationEnabled("v2.UpdateGovernanceControlNotificationSettings", true)
 
+	// Enable Governance Tag Rules
+	config.SetUnstableOperationEnabled("v2.CreateTagRule", true)
+	config.SetUnstableOperationEnabled("v2.GetTagRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateTagRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteTagRule", true)
+
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true
 	}

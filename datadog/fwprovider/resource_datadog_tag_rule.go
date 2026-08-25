@@ -109,7 +109,7 @@ func (r *tagRuleResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				Required:    true,
 			},
 			"tag_value_patterns": schema.ListAttribute{
-				Description: "One or more patterns that valid values for the tag key must match. At least one pattern is required.",
+				Description: "One or more patterns that valid values for the tag key must match. At least one pattern is required. These are not regular expressions: the API restricts pattern characters to `A-Za-z0-9_:-.,/*`, with `*` acting as a wildcard.",
 				Required:    true,
 				ElementType: types.StringType,
 				Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
@@ -240,12 +240,11 @@ func (r *tagRuleResource) Create(ctx context.Context, request resource.CreateReq
 	// rather than an untracked rule in the org.
 	r.updateState(&plan, &resp)
 
-	blocking := datadogV2.TAGRULETYPE_BLOCKING
 	promoteBody := datadogV2.TagRuleUpdateRequest{
 		Data: datadogV2.TagRuleUpdateData{
 			Id:         plan.ID.ValueString(),
 			Type:       datadogV2.TAGRULERESOURCETYPE_TAG_RULE,
-			Attributes: &datadogV2.TagRuleUpdateAttributes{RuleType: &blocking},
+			Attributes: buildTagRuleUpdateAttributes(&plan, datadogV2.TAGRULETYPE_BLOCKING),
 		},
 	}
 
@@ -303,28 +302,11 @@ func (r *tagRuleResource) Update(ctx context.Context, request resource.UpdateReq
 
 	// `source` is absent from TagRuleUpdateAttributes and carries RequiresReplace, so it is
 	// never part of an update.
-	name := plan.Name.ValueString()
-	scope := plan.Scope.ValueString()
-	tagKey := plan.TagKey.ValueString()
-	ruleType := datadogV2.TagRuleType(plan.RuleType.ValueString())
-	enabled := plan.Enabled.ValueBool()
-	negated := plan.Negated.ValueBool()
-	required := plan.Required.ValueBool()
-
 	body := datadogV2.TagRuleUpdateRequest{
 		Data: datadogV2.TagRuleUpdateData{
-			Id:   plan.ID.ValueString(),
-			Type: datadogV2.TAGRULERESOURCETYPE_TAG_RULE,
-			Attributes: &datadogV2.TagRuleUpdateAttributes{
-				Name:             &name,
-				Scope:            &scope,
-				TagKey:           &tagKey,
-				TagValuePatterns: expandTagValuePatterns(plan.TagValuePatterns),
-				RuleType:         &ruleType,
-				Enabled:          &enabled,
-				Negated:          &negated,
-				Required:         &required,
-			},
+			Id:         plan.ID.ValueString(),
+			Type:       datadogV2.TAGRULERESOURCETYPE_TAG_RULE,
+			Attributes: buildTagRuleUpdateAttributes(&plan, datadogV2.TagRuleType(plan.RuleType.ValueString())),
 		},
 	}
 
@@ -382,6 +364,29 @@ func (r *tagRuleResource) updateState(state *tagRuleModel, resp *datadogV2.TagRu
 		patterns[i] = types.StringValue(pattern)
 	}
 	state.TagValuePatterns = patterns
+}
+
+// buildTagRuleUpdateAttributes returns the complete mutable attribute set for a PATCH.
+// The API rejects a partial payload with `400 invalid request`, so every updatable field
+// is always sent, even when only one of them changed.
+func buildTagRuleUpdateAttributes(plan *tagRuleModel, ruleType datadogV2.TagRuleType) *datadogV2.TagRuleUpdateAttributes {
+	name := plan.Name.ValueString()
+	scope := plan.Scope.ValueString()
+	tagKey := plan.TagKey.ValueString()
+	enabled := plan.Enabled.ValueBool()
+	negated := plan.Negated.ValueBool()
+	required := plan.Required.ValueBool()
+
+	return &datadogV2.TagRuleUpdateAttributes{
+		Name:             &name,
+		Scope:            &scope,
+		TagKey:           &tagKey,
+		TagValuePatterns: expandTagValuePatterns(plan.TagValuePatterns),
+		RuleType:         &ruleType,
+		Enabled:          &enabled,
+		Negated:          &negated,
+		Required:         &required,
+	}
 }
 
 func expandTagValuePatterns(patterns []types.String) []string {
