@@ -84,6 +84,7 @@ var Resources = []func() resource.Resource{
 	NewSyntheticsGlobalVariableResource,
 	NewSyntheticsPrivateLocationResource,
 	NewSyntheticsSuiteResource,
+	NewTagRuleResource,
 	NewTeamLinkResource,
 	NewTeamMembershipResource,
 	NewTeamNotificationRuleResource,
@@ -694,6 +695,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListWebIntegrationAccounts", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateWebIntegrationAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteWebIntegrationAccount", true)
+
+	// Enable Governance Tag Rules
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateTagRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetTagRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateTagRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteTagRule", true)
 
 	// Enable Logs Restriction Queries
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateRestrictionQuery", true)
