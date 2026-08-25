@@ -256,7 +256,8 @@ func (r *tagRuleResource) Create(ctx context.Context, request resource.CreateReq
 			fmt.Sprintf("The tag rule was created as `surfacing` (ID %s) but could not be updated to `blocking`: %s. "+
 				"The rule exists in Datadog and is tracked in state as `surfacing`; the resource is tainted. Run "+
 				"`terraform apply` again to retry the update, or `terraform destroy` to remove the rule.",
-				plan.ID.ValueString(), err.Error()),
+				plan.ID.ValueString(),
+				utils.TranslateClientError(err, httpResp, "error promoting TagRule to blocking").Error()),
 		)
 		return
 	}
