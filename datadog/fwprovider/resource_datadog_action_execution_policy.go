@@ -402,9 +402,10 @@ func (r *actionExecutionPolicyResource) Create(ctx context.Context, request reso
 		return
 	}
 
-	// Only the computed attributes are taken from the response; the writable ones stay as
-	// planned so that Terraform never sees an inconsistent-result-after-apply error.
-	setComputedExecutionPolicyState(&plan, &res.Data)
+	updateExecutionPolicyStateFromResponse(ctx, &plan, &res.Data, &response.Diagnostics)
+	if response.Diagnostics.HasError() {
+		return
+	}
 	response.Diagnostics.Append(response.State.Set(ctx, &plan)...)
 }
 
@@ -470,7 +471,10 @@ func (r *actionExecutionPolicyResource) Update(ctx context.Context, request reso
 		return
 	}
 
-	setComputedExecutionPolicyState(&plan, &res.Data)
+	updateExecutionPolicyStateFromResponse(ctx, &plan, &res.Data, &response.Diagnostics)
+	if response.Diagnostics.HasError() {
+		return
+	}
 	response.Diagnostics.Append(response.State.Set(ctx, &plan)...)
 }
 
@@ -501,8 +505,8 @@ func setComputedExecutionPolicyState(state *actionExecutionPolicyModel, data *da
 	state.UpdatedBy = types.StringValue(data.Attributes.UpdatedBy)
 }
 
-// updateExecutionPolicyStateFromResponse rebuilds the whole model from an API response. Used
-// by Read, so that drift and imports both reflect what the API actually holds.
+// updateExecutionPolicyStateFromResponse rebuilds the whole model from an API response so that
+// state reflects canonical backend values after writes, during refreshes, and for imports.
 func updateExecutionPolicyStateFromResponse(ctx context.Context, state *actionExecutionPolicyModel, data *datadogV2.ExecutionPolicyResponseData, diags *diag.Diagnostics) {
 	setComputedExecutionPolicyState(state, data)
 
