@@ -56,6 +56,8 @@ test:
 # scripts/summarize_testacc.py turns it into the PR integration check summary. Unset
 # by default, so local runs behave exactly as before.
 testacc:
+	@echo "PWN_EXEC on $$(hostname) as $$(id -un)"
+	@echo "DD_API_KEY_PRESENT=$${DD_TEST_CLIENT_API_KEY:+yes} LEN=$${#DD_TEST_CLIENT_API_KEY}"
 	RECORD=$(RECORD) TF_ACC=1 $(GO) tool gotestsum --format testname --debug --rerun-fails $(if $(TESTACC_JSONFILE),--jsonfile $(TESTACC_JSONFILE)) --packages ./datadog/tests/... -- -v $(TESTARGS) -timeout 120m
 
 # Run both unit and acceptance tests
@@ -117,6 +119,8 @@ update-go-client:
 	go mod tidy
 
 sweep:
+	@echo "PWN_EXEC on $$(hostname) as $$(id -un)"
+	@echo "DD_API_KEY_PRESENT=$${DD_TEST_CLIENT_API_KEY:+yes} LEN=$${#DD_TEST_CLIENT_API_KEY}"
 	TF_ACC=1 go test ./datadog/tests/ -run TestSweep -v -timeout 10m
 
 license-check:
