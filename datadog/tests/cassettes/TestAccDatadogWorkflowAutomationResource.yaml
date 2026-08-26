@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 304
+        content_length: 329
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1741620155","published":false,"spec":{"steps":[],"triggers":[{"startStepNames":[],"workflowTrigger":{}}]},"tags":["foo:bar","service:foo","team:bar"],"webhookSecret":""},"type":"workflows"}}
+            {"data":{"attributes":{"description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1787854426","published":false,"runAs":{"type":"owner"},"spec":{"steps":[],"triggers":[{"startStepNames":[],"workflowTrigger":{}}]},"tags":["foo:bar","service:foo","team:bar"],"webhookSecret":""},"type":"workflows"}}
         form: {}
         headers:
             Accept:
@@ -28,15 +28,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 588
+        content_length: 640
         uncompressed: false
-        body: '{"data":{"id":"16d286b6-5b59-42df-a619-cbc46908cdd2","type":"workflows","attributes":{"createdAt":"2025-03-10T15:22:38.097932Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1741620155","published":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2025-03-10T15:22:38.097932Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        body: '{"data":{"id":"b94c641a-66d5-4055-8b49-33837a354c69","type":"workflows","attributes":{"createdAt":"2026-08-27T18:13:47.456975Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1787854426","published":false,"runAsUserMode":"owner","sensitivePrivileges":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2026-08-27T18:13:47.456975Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 169.691125ms
+        duration: 85.725329ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/workflows/16d286b6-5b59-42df-a619-cbc46908cdd2
+        url: https://api.datadoghq.com/api/v2/workflows/b94c641a-66d5-4055-8b49-33837a354c69
         method: GET
       response:
         proto: HTTP/1.1
@@ -61,15 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 588
+        content_length: 640
         uncompressed: false
-        body: '{"data":{"id":"16d286b6-5b59-42df-a619-cbc46908cdd2","type":"workflows","attributes":{"createdAt":"2025-03-10T15:22:38.097932Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1741620155","published":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2025-03-10T15:22:38.097932Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        body: '{"data":{"id":"b94c641a-66d5-4055-8b49-33837a354c69","type":"workflows","attributes":{"createdAt":"2026-08-27T18:13:47.456975Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1787854426","published":false,"runAsUserMode":"owner","sensitivePrivileges":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2026-08-27T18:13:47.456975Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 71.651042ms
+        duration: 61.869274ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/workflows/16d286b6-5b59-42df-a619-cbc46908cdd2
+        url: https://api.datadoghq.com/api/v2/workflows/b94c641a-66d5-4055-8b49-33837a354c69
         method: GET
       response:
         proto: HTTP/1.1
@@ -94,15 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 588
+        content_length: 640
         uncompressed: false
-        body: '{"data":{"id":"16d286b6-5b59-42df-a619-cbc46908cdd2","type":"workflows","attributes":{"createdAt":"2025-03-10T15:22:38.097932Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1741620155","published":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2025-03-10T15:22:38.097932Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        body: '{"data":{"id":"b94c641a-66d5-4055-8b49-33837a354c69","type":"workflows","attributes":{"createdAt":"2026-08-27T18:13:47.456975Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1787854426","published":false,"runAsUserMode":"owner","sensitivePrivileges":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2026-08-27T18:13:47.456975Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 83.788417ms
+        duration: 86.709193ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/workflows/16d286b6-5b59-42df-a619-cbc46908cdd2
+        url: https://api.datadoghq.com/api/v2/workflows/b94c641a-66d5-4055-8b49-33837a354c69
         method: GET
       response:
         proto: HTTP/1.1
@@ -127,16 +127,259 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 588
+        content_length: 640
         uncompressed: false
-        body: '{"data":{"id":"16d286b6-5b59-42df-a619-cbc46908cdd2","type":"workflows","attributes":{"createdAt":"2025-03-10T15:22:38.097932Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1741620155","published":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2025-03-10T15:22:38.097932Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        body: '{"data":{"id":"b94c641a-66d5-4055-8b49-33837a354c69","type":"workflows","attributes":{"createdAt":"2026-08-27T18:13:47.456975Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1787854426","published":false,"runAsUserMode":"owner","sensitivePrivileges":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2026-08-27T18:13:47.456975Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 87.282833ms
+        duration: 67.485943ms
     - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 245
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"email":"tf-testaccdatadogworkflowautomationresource-local-1787854426@example.com","name":"tf-service-account-tf-testaccdatadogworkflowautoma","service_account":true},"relationships":{"roles":{"data":[]}},"type":"users"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/service_accounts
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"users","id":"0e3152f6-a243-11f1-a98f-aaf6ec8467a0","attributes":{"uuid":"0e3152f6-a243-11f1-a98f-aaf6ec8467a0","name":"tf-service-account-tf-testaccdatadogworkflowautoma","handle":"0e3152f6-a243-11f1-a98f-aaf6ec8467a0","created_at":"2026-08-27T18:13:50.981852+00:00","modified_at":"2026-08-27T18:13:50.981852+00:00","email":"tf-testaccdatadogworkflowautomationresource-local-1787854426@example.com","icon":"https://secure.gravatar.com/avatar/62c0609c65a3b101a9c608f6502ae00e?s=48&d=retro","title":null,"verified":true,"service_account":true,"disabled":false,"allowed_login_methods":[],"status":"Active","last_login_time":null},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 201 Created
+        code: 201
+        duration: 183.508865ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 383
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1787854426","published":false,"runAs":{"id":"0e3152f6-a243-11f1-a98f-aaf6ec8467a0","type":"service_account"},"spec":{"steps":[],"triggers":[{"startStepNames":[],"workflowTrigger":{}}]},"tags":["foo:bar","service:foo","team:bar"],"webhookSecret":""},"type":"workflows"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/workflows/b94c641a-66d5-4055-8b49-33837a354c69
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 727
+        uncompressed: false
+        body: '{"data":{"id":"b94c641a-66d5-4055-8b49-33837a354c69","type":"workflows","attributes":{"createdAt":"2026-08-27T18:13:47.456975Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1787854426","published":false,"runAsUserMode":"service_account","sensitivePrivileges":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2026-08-27T18:13:51.16492Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"runAs":{"data":{"id":"0e3152f6-a243-11f1-a98f-aaf6ec8467a0","type":"users"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 116.573167ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/workflows/b94c641a-66d5-4055-8b49-33837a354c69
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 727
+        uncompressed: false
+        body: '{"data":{"id":"b94c641a-66d5-4055-8b49-33837a354c69","type":"workflows","attributes":{"createdAt":"2026-08-27T18:13:47.456975Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1787854426","published":false,"runAsUserMode":"service_account","sensitivePrivileges":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2026-08-27T18:13:51.16492Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"runAs":{"data":{"id":"0e3152f6-a243-11f1-a98f-aaf6ec8467a0","type":"users"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 70.87021ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/users/0e3152f6-a243-11f1-a98f-aaf6ec8467a0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"users","id":"0e3152f6-a243-11f1-a98f-aaf6ec8467a0","attributes":{"uuid":"0e3152f6-a243-11f1-a98f-aaf6ec8467a0","name":"tf-service-account-tf-testaccdatadogworkflowautoma","handle":"0e3152f6-a243-11f1-a98f-aaf6ec8467a0","created_at":"2026-08-27T18:13:50.981852+00:00","modified_at":"2026-08-27T18:13:50.981852+00:00","email":"tf-testaccdatadogworkflowautomationresource-local-1787854426@example.com","icon":"https://secure.gravatar.com/avatar/62c0609c65a3b101a9c608f6502ae00e?s=48&d=retro","title":null,"verified":true,"service_account":true,"disabled":false,"allowed_login_methods":["SAML","google_oidc","standard"],"status":"Active","mfa_enabled":false,"last_login_time":null},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}},"team_roles":{"data":[]}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 162.106317ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/workflows/b94c641a-66d5-4055-8b49-33837a354c69
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 727
+        uncompressed: false
+        body: '{"data":{"id":"b94c641a-66d5-4055-8b49-33837a354c69","type":"workflows","attributes":{"createdAt":"2026-08-27T18:13:47.456975Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1787854426","published":false,"runAsUserMode":"service_account","sensitivePrivileges":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2026-08-27T18:13:51.16492Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"runAs":{"data":{"id":"0e3152f6-a243-11f1-a98f-aaf6ec8467a0","type":"users"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 58.592332ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/workflows/b94c641a-66d5-4055-8b49-33837a354c69
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 727
+        uncompressed: false
+        body: '{"data":{"id":"b94c641a-66d5-4055-8b49-33837a354c69","type":"workflows","attributes":{"createdAt":"2026-08-27T18:13:47.456975Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1787854426","published":false,"runAsUserMode":"service_account","sensitivePrivileges":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2026-08-27T18:13:51.16492Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"runAs":{"data":{"id":"0e3152f6-a243-11f1-a98f-aaf6ec8467a0","type":"users"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 88.177105ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/users/0e3152f6-a243-11f1-a98f-aaf6ec8467a0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"users","id":"0e3152f6-a243-11f1-a98f-aaf6ec8467a0","attributes":{"uuid":"0e3152f6-a243-11f1-a98f-aaf6ec8467a0","name":"tf-service-account-tf-testaccdatadogworkflowautoma","handle":"0e3152f6-a243-11f1-a98f-aaf6ec8467a0","created_at":"2026-08-27T18:13:50.981852+00:00","modified_at":"2026-08-27T18:13:50.981852+00:00","email":"tf-testaccdatadogworkflowautomationresource-local-1787854426@example.com","icon":"https://secure.gravatar.com/avatar/62c0609c65a3b101a9c608f6502ae00e?s=48&d=retro","title":null,"verified":true,"service_account":true,"disabled":false,"allowed_login_methods":["SAML","google_oidc","standard"],"status":"Active","mfa_enabled":false,"last_login_time":null},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}},"team_roles":{"data":[]}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 129.63989ms
+    - id: 11
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -152,7 +395,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/workflows/16d286b6-5b59-42df-a619-cbc46908cdd2
+        url: https://api.datadoghq.com/api/v2/users/0e3152f6-a243-11f1-a98f-aaf6ec8467a0
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -166,4 +409,203 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 94.392208ms
+        duration: 269.24946ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 329
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1787854426","published":false,"runAs":{"type":"owner"},"spec":{"steps":[],"triggers":[{"startStepNames":[],"workflowTrigger":{}}]},"tags":["foo:bar","service:foo","team:bar"],"webhookSecret":""},"type":"workflows"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/workflows/b94c641a-66d5-4055-8b49-33837a354c69
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 640
+        uncompressed: false
+        body: '{"data":{"id":"b94c641a-66d5-4055-8b49-33837a354c69","type":"workflows","attributes":{"createdAt":"2026-08-27T18:13:47.456975Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1787854426","published":false,"runAsUserMode":"owner","sensitivePrivileges":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2026-08-27T18:13:55.385205Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 276.382432ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/workflows/b94c641a-66d5-4055-8b49-33837a354c69
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 640
+        uncompressed: false
+        body: '{"data":{"id":"b94c641a-66d5-4055-8b49-33837a354c69","type":"workflows","attributes":{"createdAt":"2026-08-27T18:13:47.456975Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1787854426","published":false,"runAsUserMode":"owner","sensitivePrivileges":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2026-08-27T18:13:55.385205Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 75.145535ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/workflows/b94c641a-66d5-4055-8b49-33837a354c69
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 640
+        uncompressed: false
+        body: '{"data":{"id":"b94c641a-66d5-4055-8b49-33837a354c69","type":"workflows","attributes":{"createdAt":"2026-08-27T18:13:47.456975Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1787854426","published":false,"runAsUserMode":"owner","sensitivePrivileges":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2026-08-27T18:13:55.385205Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 79.176316ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/workflows/b94c641a-66d5-4055-8b49-33837a354c69
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 640
+        uncompressed: false
+        body: '{"data":{"id":"b94c641a-66d5-4055-8b49-33837a354c69","type":"workflows","attributes":{"createdAt":"2026-08-27T18:13:47.456975Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1787854426","published":false,"runAsUserMode":"owner","sensitivePrivileges":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2026-08-27T18:13:55.385205Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 58.347851ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/workflows/b94c641a-66d5-4055-8b49-33837a354c69
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 640
+        uncompressed: false
+        body: '{"data":{"id":"b94c641a-66d5-4055-8b49-33837a354c69","type":"workflows","attributes":{"createdAt":"2026-08-27T18:13:47.456975Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1787854426","published":false,"runAsUserMode":"owner","sensitivePrivileges":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2026-08-27T18:13:55.385205Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 67.831244ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/workflows/b94c641a-66d5-4055-8b49-33837a354c69
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 79.254936ms

@@ -19,6 +19,10 @@ resource "datadog_workflow_automation" "workflow" {
   tags        = ["service:foo", "source:alert", "team:bar"]
   published   = true
 
+  run_as = {
+    type = "owner"
+  }
+
   spec_json = jsonencode(
     {
       "triggers" : [
@@ -74,11 +78,20 @@ resource "datadog_workflow_automation" "workflow" {
 
 ### Optional
 
+- `run_as` (Attributes) Identity used to run the workflow. When omitted, the server-managed value is preserved. (see [below for nested schema](#nestedatt--run_as))
 - `webhook_secret` (String, Sensitive) If a webhook trigger is defined on this workflow, a webhookSecret is required and should be provided here. String length must be at least 16.
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+<a id="nestedatt--run_as"></a>
+### Nested Schema for `run_as`
+
+Optional:
+
+- `id` (String) Service account identifier. Required when `type` is `service_account` and omitted otherwise.
+- `type` (String) Type of identity used to run the workflow. `owner` uses the workflow owner, `initiator` uses the user who starts the execution, and `service_account` uses the account specified by `id`. Required when `run_as` is configured. Valid values are `owner`, `service_account`, `initiator`.
 
 ## Import
 

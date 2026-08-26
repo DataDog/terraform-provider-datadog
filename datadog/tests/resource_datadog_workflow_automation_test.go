@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -42,6 +43,7 @@ func TestAccDatadogWorkflowAutomationResource(t *testing.T) {
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	workflowName := uniqueEntityName(ctx, t)
+	serviceAccountName := ("tf-service-account-" + strings.ToLower(workflowName))[:50]
 	resourceName := "datadog_workflow_automation.my_workflow"
 
 	// Simulates the behavior of the `jsonencode` function in Terraform which will store the json_spec with no whitespace
@@ -68,7 +70,45 @@ func TestAccDatadogWorkflowAutomationResource(t *testing.T) {
 					resource.TestCheckTypeSetElemAttr(resourceName, "tags.*", "foo:bar"),
 					resource.TestCheckResourceAttr(resourceName, "published", "false"),
 					resource.TestCheckResourceAttr(resourceName, "spec_json", testWorkflowEmptySpecNoWhitespace),
+					resource.TestCheckResourceAttr(resourceName, "run_as.type", "owner"),
+					resource.TestCheckNoResourceAttr(resourceName, "run_as.id"),
 				),
+			},
+			{
+				Config: testWorkflowAutomationResourceServiceAccountConfig(workflowName, serviceAccountName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogWorkflowExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "run_as.type", "service_account"),
+					resource.TestCheckResourceAttrPair(resourceName, "run_as.id", "datadog_service_account.workflow_run_as", "id"),
+				),
+			},
+			{
+				Config: testWorkflowAutomationResourceConfig(workflowName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogWorkflowExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "run_as.type", "owner"),
+					resource.TestCheckNoResourceAttr(resourceName, "run_as.id"),
+				),
+			},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			{
+				Config: testInvalidWorkflowAutomationRunAsConfig(workflowName, `
+		run_as = {
+			type = "service_account"
+		}`),
+				ExpectError: regexp.MustCompile("run_as.id must be a non-empty value when run_as.type is service_account"),
+			},
+			{
+				Config: testInvalidWorkflowAutomationRunAsConfig(workflowName, `
+		run_as = {
+			type = "owner"
+			id   = "must-be-omitted"
+		}`),
+				ExpectError: regexp.MustCompile("run_as.id must be omitted when run_as.type is owner or initiator"),
 			},
 			{
 				Config:      testInvalidWorkflowAutomationResourceConfig(workflowName),
@@ -87,10 +127,52 @@ func testWorkflowAutomationResourceConfig(workflowName string) string {
 		tags        = %s
 		published   = false
 
+		run_as = {
+			type = "owner"
+		}
+
 		spec_json = jsonencode(
 %s
 		)
 	}`, workflowName, testWorkflowDescription, testWorkflowTags, testWorkflowSpec)
+}
+
+func testWorkflowAutomationResourceServiceAccountConfig(workflowName, serviceAccountName string) string {
+	return fmt.Sprintf(`
+	resource "datadog_service_account" "workflow_run_as" {
+		email = "%[3]s@example.com"
+		name  = "%[2]s"
+	}
+
+	resource "datadog_workflow_automation" "my_workflow" {
+		name        = "%[1]s"
+		description = "%[4]s"
+		tags        = %[5]s
+		published   = false
+
+		run_as = {
+			type = "service_account"
+			id   = datadog_service_account.workflow_run_as.id
+		}
+
+		spec_json = jsonencode(
+%[6]s
+		)
+	}`, workflowName, serviceAccountName, strings.ToLower(workflowName), testWorkflowDescription, testWorkflowTags, testWorkflowSpec)
+}
+
+func testInvalidWorkflowAutomationRunAsConfig(workflowName, runAs string) string {
+	return fmt.Sprintf(`
+	resource "datadog_workflow_automation" "invalid_workflow" {
+		name        = "%s"
+		description = "%s"
+		tags        = %s
+		published   = false
+		%s
+		spec_json = jsonencode(
+%s
+		)
+	}`, workflowName, testWorkflowDescription, testWorkflowTags, runAs, testWorkflowSpec)
 }
 
 func testInvalidWorkflowAutomationResourceConfig(workflowName string) string {
