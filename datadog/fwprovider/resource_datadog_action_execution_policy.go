@@ -9,6 +9,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
@@ -93,7 +94,7 @@ type executionPolicyRemoteActionRshellScopeRuleModel struct {
 
 type executionPolicyTargetModel struct {
 	Name      types.String `tfsdk:"name"`
-	AgentTags types.List   `tfsdk:"agent_tags"`
+	AgentTags types.Set    `tfsdk:"agent_tags"`
 }
 
 func NewActionExecutionPolicyResource() resource.Resource {
@@ -353,7 +354,7 @@ func (r *actionExecutionPolicyResource) Schema(_ context.Context, _ resource.Sch
 					},
 				},
 			},
-			"target": schema.ListNestedBlock{
+			"target": schema.SetNestedBlock{
 				Description: "A target this policy is scoped to, expressed as a set of Agent tags. Each target is matched independently; omitting all `target` blocks applies the policy fleet-wide.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
@@ -361,12 +362,12 @@ func (r *actionExecutionPolicyResource) Schema(_ context.Context, _ resource.Sch
 							Optional:    true,
 							Description: "A human-readable name for the target.",
 						},
-						"agent_tags": schema.ListAttribute{
+						"agent_tags": schema.SetAttribute{
 							Required:    true,
 							ElementType: types.StringType,
 							Description: "The Agent tags identifying the target, for example `env:prod`.",
-							Validators: []validator.List{
-								listvalidator.SizeAtLeast(1),
+							Validators: []validator.Set{
+								setvalidator.SizeAtLeast(1),
 							},
 						},
 					},
@@ -531,7 +532,7 @@ func updateExecutionPolicyStateFromResponse(ctx context.Context, state *actionEx
 		targets := make([]*executionPolicyTargetModel, 0, len(attributes.Targets))
 		for _, target := range attributes.Targets {
 			model := &executionPolicyTargetModel{
-				AgentTags: executionPolicyStringListValue(ctx, target.AgentTags, diags),
+				AgentTags: executionPolicyStringSetValue(ctx, target.AgentTags, diags),
 			}
 			if name, ok := target.GetNameOk(); ok && name != nil {
 				model.Name = types.StringValue(*name)
@@ -620,7 +621,7 @@ func buildExecutionPolicyWriteAttributes(ctx context.Context, plan *actionExecut
 		targets := make([]datadogV2.ExecutionPolicyTarget, 0, len(plan.Target))
 		for _, target := range plan.Target {
 			apiTarget := datadogV2.NewExecutionPolicyTarget(
-				executionPolicyStringSlice(ctx, target.AgentTags, diags),
+				executionPolicyStringSetSlice(ctx, target.AgentTags, diags),
 			)
 			if !target.Name.IsNull() && !target.Name.IsUnknown() {
 				apiTarget.SetName(target.Name.ValueString())
@@ -694,4 +695,19 @@ func executionPolicyStringListValue(ctx context.Context, values []string, diags 
 	list, d := types.ListValueFrom(ctx, types.StringType, values)
 	diags.Append(d...)
 	return list
+}
+
+func executionPolicyStringSetSlice(ctx context.Context, set types.Set, diags *diag.Diagnostics) []string {
+	if set.IsNull() || set.IsUnknown() {
+		return nil
+	}
+	var out []string
+	diags.Append(set.ElementsAs(ctx, &out, false)...)
+	return out
+}
+
+func executionPolicyStringSetValue(ctx context.Context, values []string, diags *diag.Diagnostics) types.Set {
+	set, d := types.SetValueFrom(ctx, types.StringType, values)
+	diags.Append(d...)
+	return set
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -33,8 +34,10 @@ func TestAccDatadogActionExecutionPolicy_Kubernetes(t *testing.T) {
 					resource.TestCheckResourceAttr(actionExecutionPolicyResourceName, "action_pattern.integration", "INTEGRATION_KUBERNETES"),
 					resource.TestCheckResourceAttr(actionExecutionPolicyResourceName, "action_pattern.action_fqns.0", "*"),
 					resource.TestCheckResourceAttr(actionExecutionPolicyResourceName, "scope.kubernetes.rule.0.target_namespaces.0", "default"),
-					resource.TestCheckResourceAttr(actionExecutionPolicyResourceName, "target.0.name", "test-agents"),
-					resource.TestCheckResourceAttr(actionExecutionPolicyResourceName, "target.0.agent_tags.0", "env:test"),
+					resource.TestCheckTypeSetElemNestedAttrs(actionExecutionPolicyResourceName, "target.*", map[string]string{
+						"name":         "test-agents",
+						"agent_tags.#": "1",
+					}),
 					resource.TestCheckResourceAttrSet(actionExecutionPolicyResourceName, "id"),
 					resource.TestCheckResourceAttrSet(actionExecutionPolicyResourceName, "version"),
 				),
@@ -53,6 +56,29 @@ func TestAccDatadogActionExecutionPolicy_Kubernetes(t *testing.T) {
 				ResourceName:      actionExecutionPolicyResourceName,
 				ImportState:       true,
 				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
+func TestAccDatadogActionExecutionPolicy_TargetCanonicalization(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	name := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogActionExecutionPolicyDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccDatadogActionExecutionPolicyTargetCanonicalizationConfig(name),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogActionExecutionPolicyExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(actionExecutionPolicyResourceName, "target.#", "2"),
+					testAccCheckDatadogActionExecutionPolicyTargetTags("z-target", "region:a", "env:prod"),
+					testAccCheckDatadogActionExecutionPolicyTargetTags("a-target", "service:web"),
+				),
 			},
 		},
 	})
@@ -202,6 +228,29 @@ resource "datadog_action_execution_policy" "test" {
 }`, name, effect, namespaces)
 }
 
+func testAccDatadogActionExecutionPolicyTargetCanonicalizationConfig(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_action_execution_policy" "test" {
+  name   = %q
+  effect = "allow"
+
+  action_pattern {
+    integration = "INTEGRATION_SCRIPT"
+    action_fqns = ["*"]
+  }
+
+  target {
+    name       = "z-target"
+    agent_tags = ["region:a", "env:prod", "env:prod"]
+  }
+
+  target {
+    name       = "a-target"
+    agent_tags = ["service:web"]
+  }
+}`, name)
+}
+
 func testAccDatadogActionExecutionPolicyScriptsConfig(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_action_execution_policy" "test" {
@@ -302,6 +351,41 @@ func testAccCheckDatadogActionExecutionPolicyExists(accProvider *fwprovider.Fram
 			return fmt.Errorf("received an error retrieving execution policy: %w", err)
 		}
 		return nil
+	}
+}
+
+func testAccCheckDatadogActionExecutionPolicyTargetTags(name string, expectedTags ...string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		rs, ok := s.RootModule().Resources[actionExecutionPolicyResourceName]
+		if !ok {
+			return fmt.Errorf("resource not found: %s", actionExecutionPolicyResourceName)
+		}
+
+		for key, value := range rs.Primary.Attributes {
+			if !strings.HasSuffix(key, ".name") || value != name {
+				continue
+			}
+
+			prefix := strings.TrimSuffix(key, "name") + "agent_tags."
+			if got := rs.Primary.Attributes[prefix+"#"]; got != fmt.Sprint(len(expectedTags)) {
+				return fmt.Errorf("target %q has %s tags, want %d", name, got, len(expectedTags))
+			}
+			for _, expectedTag := range expectedTags {
+				found := false
+				for tagKey, tagValue := range rs.Primary.Attributes {
+					if strings.HasPrefix(tagKey, prefix) && tagValue == expectedTag {
+						found = true
+						break
+					}
+				}
+				if !found {
+					return fmt.Errorf("target %q is missing tag %q", name, expectedTag)
+				}
+			}
+			return nil
+		}
+
+		return fmt.Errorf("target %q not found", name)
 	}
 }
 

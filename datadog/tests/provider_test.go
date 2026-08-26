@@ -546,7 +546,7 @@ func restoreClock(t *testing.T) clockwork.FakeClock {
 		t.Logf("Could not load clock: %v", err)
 		return setClock(t)
 	}
-	now, err := time.Parse(time.RFC3339Nano, string(data))
+	now, err := time.Parse(time.RFC3339Nano, strings.TrimSpace(string(data)))
 	if err != nil {
 		t.Fatalf("Could not parse clock date: %v", err)
 	}
@@ -573,7 +573,7 @@ func restoreClockWithName(t *testing.T, name string) clockwork.FakeClock {
 		t.Logf("Could not load clock for %s: %v", name, err)
 		return setClock(t)
 	}
-	now, err := time.Parse(time.RFC3339Nano, string(data))
+	now, err := time.Parse(time.RFC3339Nano, strings.TrimSpace(string(data)))
 	if err != nil {
 		t.Fatalf("Could not parse clock date: %v", err)
 	}

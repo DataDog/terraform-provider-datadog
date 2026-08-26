@@ -5,15 +5,33 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"slices"
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	resourceschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
+
+func TestActionExecutionPolicyTargetUsesSetSemantics(t *testing.T) {
+	t.Parallel()
+
+	r := &actionExecutionPolicyResource{}
+	var response resource.SchemaResponse
+	r.Schema(context.Background(), resource.SchemaRequest{}, &response)
+
+	target, ok := response.Schema.Blocks["target"].(resourceschema.SetNestedBlock)
+	if !ok {
+		t.Fatalf("target block has type %T, want schema.SetNestedBlock", response.Schema.Blocks["target"])
+	}
+	if _, ok := target.NestedObject.Attributes["agent_tags"].(resourceschema.SetAttribute); !ok {
+		t.Fatalf("target.agent_tags has type %T, want schema.SetAttribute", target.NestedObject.Attributes["agent_tags"])
+	}
+}
 
 func TestActionExecutionPolicyWriteUsesCanonicalResponseState(t *testing.T) {
 	const policyID = "7f8396a4-cbba-4a5e-8b77-eefa9e535899"
@@ -58,7 +76,7 @@ func TestActionExecutionPolicyWriteUsesCanonicalResponseState(t *testing.T) {
 	var schemaResponse resource.SchemaResponse
 	r.Schema(ctx, resource.SchemaRequest{}, &schemaResponse)
 
-	plannedTags, diags := types.ListValueFrom(ctx, types.StringType, []string{"service:web", "env:test", "env:test"})
+	plannedTags, diags := types.SetValueFrom(ctx, types.StringType, []string{"service:web", "env:test"})
 	if diags.HasError() {
 		t.Fatalf("building planned tags: %v", diags.Errors())
 	}
@@ -131,8 +149,8 @@ func TestActionExecutionPolicyWriteUsesCanonicalResponseState(t *testing.T) {
 			if diags := got.Target[0].AgentTags.ElementsAs(ctx, &gotTags, false); diags.HasError() {
 				t.Fatalf("reading target tags: %v", diags.Errors())
 			}
-			if len(gotTags) != 2 || gotTags[0] != "env:test" || gotTags[1] != "service:web" {
-				t.Fatalf("target tags = %v, want backend-canonical [env:test service:web]", gotTags)
+			if len(gotTags) != 2 || !slices.Contains(gotTags, "env:test") || !slices.Contains(gotTags, "service:web") {
+				t.Fatalf("target tags = %v, want set containing env:test and service:web", gotTags)
 			}
 		})
 	}
