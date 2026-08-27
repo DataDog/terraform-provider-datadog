@@ -147,6 +147,10 @@ var Resources = []func() resource.Resource{
 	NewReferenceTableResource,
 	NewDatastoreResource,
 	NewDatastoreItemResource,
+	NewStatusPageResource,
+	NewStatusPageComponentResource,
+	NewStatusPageDegradationTemplateResource,
+	NewStatusPageMaintenanceTemplateResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -212,6 +216,14 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogCurrentUserDataSource,
 	NewDatadogDatastoreDataSource,
 	NewDatastoreItemDataSource,
+	NewStatusPageDataSource,
+	NewStatusPagesDataSource,
+	NewStatusPageComponentDataSource,
+	NewStatusPageComponentsDataSource,
+	NewStatusPageDegradationTemplateDataSource,
+	NewStatusPageDegradationTemplatesDataSource,
+	NewStatusPageMaintenanceTemplateDataSource,
+	NewStatusPageMaintenanceTemplatesDataSource,
 }
 
 // FrameworkProvider struct
