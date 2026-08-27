@@ -63,6 +63,7 @@ type ApiInstances struct {
 	domainAllowlistApiV2           *datadogV2.DomainAllowlistApi
 	downtimesApiV2                 *datadogV2.DowntimesApi
 	eventsApiV2                    *datadogV2.EventsApi
+	executionPolicyApiV2           *datadogV2.ExecutionPolicyApi
 	fastlyIntegrationApiV2         *datadogV2.FastlyIntegrationApi
 	gcpStsIntegrationApiV2         *datadogV2.GCPIntegrationApi
 	governanceConsoleApiV2         *datadogV2.GovernanceConsoleApi
@@ -449,6 +450,14 @@ func (i *ApiInstances) GetEventsApiV2() *datadogV2.EventsApi {
 		i.eventsApiV2 = datadogV2.NewEventsApi(i.HttpClient)
 	}
 	return i.eventsApiV2
+}
+
+// GetExecutionPolicyApiV2 get instance of ExecutionPolicyApi
+func (i *ApiInstances) GetExecutionPolicyApiV2() *datadogV2.ExecutionPolicyApi {
+	if i.executionPolicyApiV2 == nil {
+		i.executionPolicyApiV2 = datadogV2.NewExecutionPolicyApi(i.HttpClient)
+	}
+	return i.executionPolicyApiV2
 }
 
 // GetGCPStsIntegrationApiV2 get instance of GetGCPStsIntegration
