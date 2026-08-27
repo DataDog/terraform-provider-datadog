@@ -200,6 +200,7 @@ Optional:
 
 - `auth` (Block List) AWS authentication credentials used for accessing AWS services. If omitted, the system's default credentials are used (for example, the IAM role and environment variables). (see [below for nested schema](#nestedblock--config--destination--amazon_s3--auth))
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--amazon_s3--buffer))
+- `compression` (Block List) Compression configuration for archived logs. When omitted, the worker default (gzip) is used. (see [below for nested schema](#nestedblock--config--destination--amazon_s3--compression))
 - `server_side_encryption` (String) The server-side encryption algorithm used when storing objects in S3. Valid values: `aws:kms`, `AES256`. Valid values are `aws:kms`, `AES256`.
 - `ssekms_key_id` (String) ID of the AWS KMS key to use for SSE-KMS encryption. Only applies when `server_side_encryption` is `aws:kms`.
 
@@ -239,6 +240,18 @@ Optional:
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
 - `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
+
+
+<a id="nestedblock--config--destination--amazon_s3--compression"></a>
+### Nested Schema for `config.destination.amazon_s3.compression`
+
+Required:
+
+- `algorithm` (String) Compression algorithm. One of `gzip` or `zstd`. Valid values are `gzip`, `zstd`.
+
+Optional:
+
+- `level` (Number) Compression level. Applies to `gzip` (1-9) and `zstd` (1-21).
 
 
 
@@ -409,6 +422,7 @@ Optional:
 
 - `blob_prefix` (String) Optional prefix for blobs written to the container.
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--azure_storage--buffer))
+- `compression` (Block List) Compression configuration for archived logs. When omitted, the worker default (gzip) is used. (see [below for nested schema](#nestedblock--config--destination--azure_storage--compression))
 - `connection_string_key` (String) Name of the environment variable or secret that holds the Azure Storage connection string.
 
 <a id="nestedblock--config--destination--azure_storage--buffer"></a>
@@ -437,6 +451,18 @@ Optional:
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
 - `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
+
+
+<a id="nestedblock--config--destination--azure_storage--compression"></a>
+### Nested Schema for `config.destination.azure_storage.compression`
+
+Required:
+
+- `algorithm` (String) Compression algorithm. One of `gzip` or `zstd`. Valid values are `gzip`, `zstd`.
+
+Optional:
+
+- `level` (Number) Compression level. Applies to `gzip` (1-9) and `zstd` (1-21).
 
 
 
@@ -893,6 +919,7 @@ Optional:
 - `acl` (String) Access control list setting for objects written to the bucket.
 - `auth` (Block List) Google Cloud credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--auth))
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--buffer))
+- `compression` (Block List) Compression configuration for archived logs. When omitted, the worker default (gzip) is used. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--compression))
 - `key_prefix` (String) Optional prefix for object keys within the GCS bucket.
 - `metadata` (Block List) Custom metadata key-value pairs added to each object. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--metadata))
 
@@ -930,6 +957,18 @@ Optional:
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
 - `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
+
+
+<a id="nestedblock--config--destination--google_cloud_storage--compression"></a>
+### Nested Schema for `config.destination.google_cloud_storage.compression`
+
+Required:
+
+- `algorithm` (String) Compression algorithm. One of `gzip` or `zstd`. Valid values are `gzip`, `zstd`.
+
+Optional:
+
+- `level` (Number) Compression level. Applies to `gzip` (1-9) and `zstd` (1-21).
 
 
 <a id="nestedblock--config--destination--google_cloud_storage--metadata"></a>
