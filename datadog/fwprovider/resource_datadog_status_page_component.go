@@ -17,8 +17,9 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &statusPageComponentResource{}
-	_ resource.ResourceWithImportState = &statusPageComponentResource{}
+	_ resource.ResourceWithConfigure      = &statusPageComponentResource{}
+	_ resource.ResourceWithImportState    = &statusPageComponentResource{}
+	_ resource.ResourceWithValidateConfig = &statusPageComponentResource{}
 )
 
 type statusPageComponentResource struct {
@@ -150,6 +151,35 @@ func (r *statusPageComponentResource) Configure(_ context.Context, request resou
 
 	r.Api = providerData.DatadogApiInstances.GetStatusPagesApiV2()
 	r.Auth = providerData.Auth
+}
+
+func (r *statusPageComponentResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
+	var cfg statusPageComponentModel
+	response.Diagnostics.Append(request.Config.Get(ctx, &cfg)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	switch cfg.Type.ValueString() {
+	case "group":
+		if len(cfg.Components) == 0 {
+			response.Diagnostics.AddAttributeError(path.Root("components"), "group requires children",
+				"A component of type `group` must declare at least one `components` block.")
+		}
+	case "component":
+		if len(cfg.Components) > 0 {
+			response.Diagnostics.AddAttributeError(path.Root("components"), "component cannot have children",
+				"`components` blocks are only valid when `type` is `group`.")
+		}
+	}
+
+	for i, sub := range cfg.Components {
+		if subType := sub.Type.ValueString(); subType != "" && subType != "component" {
+			response.Diagnostics.AddAttributeError(path.Root("components").AtListIndex(i).AtName("type"),
+				"invalid sub-component type",
+				fmt.Sprintf("Sub-components must have `type = \"component\"`, got %q. Nested groups are not supported.", subType))
+		}
+	}
 }
 
 func buildStatusPageComponentSubComponents(components []statusPageSubComponentModel) []datadogV2.CreateComponentRequestDataAttributesComponentsItems {
