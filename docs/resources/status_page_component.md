@@ -57,18 +57,18 @@ resource "datadog_status_page_component" "acme_infrastructure" {
 
 - `name` (String) The name of the component.
 - `page_id` (String) The ID of the status page this component belongs to.
-- `position` (Number) The position of the component on the status page. Must be between `0` and the current number of existing components on the page, inclusive (i.e. it can append one past the current highest position, but cannot skip ahead further or be negative). A `position` value that depends on a sibling component being created first requires an explicit `depends_on` on that sibling to guarantee creation order.
+- `position` (Number) The position of the component on the status page. Must be between `0` and the current number of existing components on the page, inclusive (that is, it can append one past the current highest position, but cannot skip ahead further or be negative). A `position` value that depends on a sibling component being created first requires an explicit `depends_on` on that sibling to guarantee creation order.
 - `type` (String) The type of the component. Valid values are: component, group.
 
 ### Optional
 
-- `components` (Attributes List) The sub-components of a component of type `group`. Sub-components can only be set at creation time; changing this list requires replacing the component. (see [below for nested schema](#nestedatt--components))
+- `components` (Attributes List) The sub-components of a component of type `group`. (see [below for nested schema](#nestedatt--components))
 
 ### Read-Only
 
-- `created_at` (String) Timestamp of when the component was created.
+- `created_at` (String) Timestamp when the component was created.
 - `id` (String) The ID of the component.
-- `modified_at` (String) Timestamp of when the component was last modified.
+- `modified_at` (String) Timestamp when the component was last modified.
 - `status` (String) The current status of the component.
 
 <a id="nestedatt--components"></a>
@@ -77,8 +77,11 @@ resource "datadog_status_page_component" "acme_infrastructure" {
 Required:
 
 - `name` (String) The name of the sub-component.
-- `position` (Number) The position of the sub-component within the group.
 - `type` (String) The type of the sub-component. Valid value is: component.
+
+Optional:
+
+- `position` (Number) The position of the sub-component within the group. Either every sub-component in the group must set this, or none of them should - if all are omitted, position is inferred from declaration order for a new group, or defaults to `0` (i.e. the front of the group, shifting existing siblings back) when adding a single new child to an existing group.
 
 Read-Only:
 

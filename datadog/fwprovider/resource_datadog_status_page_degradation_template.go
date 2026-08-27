@@ -120,11 +120,11 @@ func (r *statusPageDegradationTemplateResource) Schema(_ context.Context, _ reso
 				},
 			},
 			"created_at": schema.StringAttribute{
-				Description: "Timestamp of when the degradation template was created.",
+				Description: "Timestamp when the degradation template was created.",
 				Computed:    true,
 			},
 			"modified_at": schema.StringAttribute{
-				Description: "Timestamp of when the degradation template was last modified.",
+				Description: "Timestamp when the degradation template was last modified.",
 				Computed:    true,
 			},
 		},

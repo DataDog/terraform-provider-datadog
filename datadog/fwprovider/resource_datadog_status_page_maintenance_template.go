@@ -90,7 +90,7 @@ func (r *statusPageMaintenanceTemplateResource) Schema(_ context.Context, _ reso
 				Optional:    true,
 			},
 			"created_at": schema.StringAttribute{
-				Description: "Timestamp of when the maintenance template was created.",
+				Description: "Timestamp when the maintenance template was created.",
 				Computed:    true,
 			},
 			"modified_at": schema.StringAttribute{

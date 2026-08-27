@@ -70,9 +70,9 @@ resource "datadog_status_page_degradation_template" "acme_degradation_template" 
 
 ### Read-Only
 
-- `created_at` (String) Timestamp of when the degradation template was created.
+- `created_at` (String) Timestamp when the degradation template was created.
 - `id` (String) The ID of the degradation template.
-- `modified_at` (String) Timestamp of when the degradation template was last modified.
+- `modified_at` (String) Timestamp when the degradation template was last modified.
 
 <a id="nestedatt--components_affected"></a>
 ### Nested Schema for `components_affected`

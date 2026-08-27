@@ -31,7 +31,7 @@ data "datadog_status_page_maintenance_template" "routine" {
 
 - `completed_description` (String) The pre-filled description shown once the maintenance is completed.
 - `component_ids` (List of String) The IDs of the components affected by a maintenance created from this template.
-- `created_at` (String) Timestamp of when the maintenance template was created.
+- `created_at` (String) Timestamp when the maintenance template was created.
 - `in_progress_description` (String) The pre-filled description shown while the maintenance is in progress.
 - `maintenance_title` (String) The title used for a maintenance created from this template.
 - `modified_at` (String) Timestamp of when the maintenance template was last modified.

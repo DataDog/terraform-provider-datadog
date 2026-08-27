@@ -173,14 +173,14 @@ func (r *statusPageResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				},
 			},
 			"custom_domain": schema.StringAttribute{
-				Description: "The custom domain configured for the status page, if any. Managed via a separate custom-domain flow, not by this resource.",
+				Description: "The custom domain configured for the status page, if any. Managed through a separate custom-domain flow, not by this resource.",
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"custom_domain_enabled": schema.BoolAttribute{
-				Description: "Whether the custom domain is enabled for the status page. Managed via a separate custom-domain flow, not by this resource.",
+				Description: "Whether the custom domain is enabled for the status page. Managed through a separate custom-domain flow, not by this resource.",
 				Computed:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
@@ -249,7 +249,7 @@ func (r *statusPageResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				},
 			},
 			"modified_at": schema.StringAttribute{
-				Description: "Timestamp when the status page was last modified. Changes on every real update, so this must stay Unknown during an actual update plan rather than using UseStateForUnknown.",
+				Description: "Timestamp when the status page was last modified.",
 				Computed:    true,
 			},
 		},

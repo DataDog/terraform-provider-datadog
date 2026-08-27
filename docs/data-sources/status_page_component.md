@@ -30,8 +30,8 @@ data "datadog_status_page_component" "api" {
 ### Read-Only
 
 - `components` (Attributes List) The sub-components of a component of type `group`. (see [below for nested schema](#nestedatt--components))
-- `created_at` (String) Timestamp of when the component was created.
-- `modified_at` (String) Timestamp of when the component was last modified.
+- `created_at` (String) Timestamp when the component was created.
+- `modified_at` (String) Timestamp when the component was last modified.
 - `name` (String) The name of the component.
 - `position` (Number) The position of the component on the status page.
 - `status` (String) The current status of the component.

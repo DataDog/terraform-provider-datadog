@@ -58,7 +58,7 @@ resource "datadog_status_page_maintenance_template" "acme_maintenance_template" 
 
 ### Read-Only
 
-- `created_at` (String) Timestamp of when the maintenance template was created.
+- `created_at` (String) Timestamp when the maintenance template was created.
 - `id` (String) The ID of the maintenance template.
 - `modified_at` (String) Timestamp of when the maintenance template was last modified.
 

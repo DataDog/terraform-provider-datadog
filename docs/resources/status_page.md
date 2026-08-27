@@ -45,11 +45,11 @@ resource "datadog_status_page" "acme_status_page" {
 ### Read-Only
 
 - `created_at` (String) Timestamp when the status page was created.
-- `custom_domain` (String) The custom domain configured for the status page, if any. Managed via a separate custom-domain flow, not by this resource.
-- `custom_domain_enabled` (Boolean) Whether the custom domain is enabled for the status page. Managed via a separate custom-domain flow, not by this resource.
+- `custom_domain` (String) The custom domain configured for the status page, if any. Managed through a separate custom-domain flow, not by this resource.
+- `custom_domain_enabled` (Boolean) Whether the custom domain is enabled for the status page. Managed through a separate custom-domain flow, not by this resource.
 - `enabled` (Boolean) Whether the status page is published. Managed by the publish/unpublish API operations, not by this resource; always reflects the page's current state.
 - `id` (String) The ID of the status page.
-- `modified_at` (String) Timestamp when the status page was last modified. Changes on every real update, so this must stay Unknown during an actual update plan rather than using UseStateForUnknown.
+- `modified_at` (String) Timestamp when the status page was last modified.
 - `page_url` (String) The URL of the status page.
 
 ## Import

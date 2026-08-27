@@ -30,9 +30,9 @@ data "datadog_status_page_degradation_template" "outage" {
 ### Read-Only
 
 - `components_affected` (Attributes List) The components affected by a degradation created from this template. (see [below for nested schema](#nestedatt--components_affected))
-- `created_at` (String) Timestamp of when the degradation template was created.
+- `created_at` (String) Timestamp when the degradation template was created.
 - `degradation_title` (String) The title used for a degradation created from this template.
-- `modified_at` (String) Timestamp of when the degradation template was last modified.
+- `modified_at` (String) Timestamp when the degradation template was last modified.
 - `name` (String) The name of the degradation template.
 - `updates` (Attributes List) The pre-filled updates for a degradation created from this template. (see [below for nested schema](#nestedatt--updates))
 

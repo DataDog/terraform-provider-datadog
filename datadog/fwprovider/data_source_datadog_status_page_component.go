@@ -115,11 +115,11 @@ func (d *statusPageComponentDataSource) Schema(_ context.Context, _ datasource.S
 				},
 			},
 			"created_at": schema.StringAttribute{
-				Description: "Timestamp of when the component was created.",
+				Description: "Timestamp when the component was created.",
 				Computed:    true,
 			},
 			"modified_at": schema.StringAttribute{
-				Description: "Timestamp of when the component was last modified.",
+				Description: "Timestamp when the component was last modified.",
 				Computed:    true,
 			},
 		},
