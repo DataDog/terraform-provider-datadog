@@ -248,9 +248,6 @@ Optional:
 Required:
 
 - `algorithm` (String) Compression algorithm. One of `gzip` or `zstd`. Valid values are `gzip`, `zstd`.
-
-Optional:
-
 - `level` (Number) Compression level. Applies to `gzip` (1-9) and `zstd` (1-21).
 
 
@@ -459,9 +456,6 @@ Optional:
 Required:
 
 - `algorithm` (String) Compression algorithm. One of `gzip` or `zstd`. Valid values are `gzip`, `zstd`.
-
-Optional:
-
 - `level` (Number) Compression level. Applies to `gzip` (1-9) and `zstd` (1-21).
 
 
@@ -965,9 +959,6 @@ Optional:
 Required:
 
 - `algorithm` (String) Compression algorithm. One of `gzip` or `zstd`. Valid values are `gzip`, `zstd`.
-
-Optional:
-
 - `level` (Number) Compression level. Applies to `gzip` (1-9) and `zstd` (1-21).
 
 

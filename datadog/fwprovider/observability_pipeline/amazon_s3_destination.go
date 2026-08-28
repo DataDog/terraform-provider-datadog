@@ -116,15 +116,11 @@ func expandAmazonS3Compression(m ArchiveCompressionModel) datadogV2.Observabilit
 	switch m.Algorithm.ValueString() {
 	case "zstd":
 		c := datadogV2.NewObservabilityPipelineAmazonS3DestinationCompressionZstdWithDefaults()
-		if !m.Level.IsNull() {
-			c.SetLevel(m.Level.ValueInt64())
-		}
+		c.SetLevel(m.Level.ValueInt64())
 		return datadogV2.ObservabilityPipelineAmazonS3DestinationCompressionZstdAsObservabilityPipelineAmazonS3DestinationCompression(c)
 	default: // "gzip"
 		c := datadogV2.NewObservabilityPipelineAmazonS3DestinationCompressionGzipWithDefaults()
-		if !m.Level.IsNull() {
-			c.SetLevel(m.Level.ValueInt64())
-		}
+		c.SetLevel(m.Level.ValueInt64())
 		return datadogV2.ObservabilityPipelineAmazonS3DestinationCompressionGzipAsObservabilityPipelineAmazonS3DestinationCompression(c)
 	}
 }

@@ -5880,15 +5880,11 @@ func expandGoogleCloudStorageCompression(m observability_pipeline.ArchiveCompres
 	switch m.Algorithm.ValueString() {
 	case "zstd":
 		c := datadogV2.NewObservabilityPipelineGoogleCloudStorageDestinationCompressionZstdWithDefaults()
-		if !m.Level.IsNull() {
-			c.SetLevel(m.Level.ValueInt64())
-		}
+		c.SetLevel(m.Level.ValueInt64())
 		return datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationCompressionZstdAsObservabilityPipelineGoogleCloudStorageDestinationCompression(c)
 	default: // "gzip"
 		c := datadogV2.NewObservabilityPipelineGoogleCloudStorageDestinationCompressionGzipWithDefaults()
-		if !m.Level.IsNull() {
-			c.SetLevel(m.Level.ValueInt64())
-		}
+		c.SetLevel(m.Level.ValueInt64())
 		return datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationCompressionGzipAsObservabilityPipelineGoogleCloudStorageDestinationCompression(c)
 	}
 }
@@ -6559,15 +6555,11 @@ func expandAzureStorageCompression(m observability_pipeline.ArchiveCompressionMo
 	switch m.Algorithm.ValueString() {
 	case "zstd":
 		c := datadogV2.NewObservabilityPipelineAzureStorageDestinationCompressionZstdWithDefaults()
-		if !m.Level.IsNull() {
-			c.SetLevel(m.Level.ValueInt64())
-		}
+		c.SetLevel(m.Level.ValueInt64())
 		return datadogV2.ObservabilityPipelineAzureStorageDestinationCompressionZstdAsObservabilityPipelineAzureStorageDestinationCompression(c)
 	default: // "gzip"
 		c := datadogV2.NewObservabilityPipelineAzureStorageDestinationCompressionGzipWithDefaults()
-		if !m.Level.IsNull() {
-			c.SetLevel(m.Level.ValueInt64())
-		}
+		c.SetLevel(m.Level.ValueInt64())
 		return datadogV2.ObservabilityPipelineAzureStorageDestinationCompressionGzipAsObservabilityPipelineAzureStorageDestinationCompression(c)
 	}
 }

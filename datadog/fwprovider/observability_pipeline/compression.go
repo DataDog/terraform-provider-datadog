@@ -91,7 +91,7 @@ func ArchiveCompressionSchema() schema.ListNestedBlock {
 					},
 				},
 				"level": schema.Int64Attribute{
-					Optional:    true,
+					Required:    true,
 					Description: "Compression level. Applies to `gzip` (1-9) and `zstd` (1-21).",
 				},
 			},
