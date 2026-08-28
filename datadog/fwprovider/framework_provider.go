@@ -67,6 +67,7 @@ var Resources = []func() resource.Resource{
 	NewRumMetricResource,
 	NewRumRetentionFilterResource,
 	NewRumRetentionFiltersOrderResource,
+	NewRumRetentionQuotaResource,
 	NewSecurityFindingsMuteRuleResource,
 	NewSecurityFindingsMuteRulesOrderResource,
 	NewSecurityFindingsDueDateRuleResource,
@@ -107,6 +108,7 @@ var Resources = []func() resource.Resource{
 	NewAppsecWafCustomRuleResource,
 	NewWorkflowsWebhookHandleResource,
 	NewActionConnectionResource,
+	NewActionExecutionPolicyResource,
 	NewWorkflowAutomationResource,
 	NewAppBuilderAppResource,
 	NewObservabilitPipelineResource,
@@ -831,6 +833,13 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateGovernanceControl", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetGovernanceControlNotificationSettings", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateGovernanceControlNotificationSettings", true)
+
+	// Enable Execution Policies
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateExecutionPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetExecutionPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateExecutionPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
