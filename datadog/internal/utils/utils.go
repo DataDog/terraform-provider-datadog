@@ -73,6 +73,9 @@ const DDHTTPRetryBackoffBase = "DD_HTTP_CLIENT_RETRY_BACKOFF_BASE"
 // DDHTTPRetryMaxRetries name of env var for max retries
 const DDHTTPRetryMaxRetries = "DD_HTTP_CLIENT_RETRY_MAX_RETRIES"
 
+// DDHTTPRetryJitter name of env var for retry jitter
+const DDHTTPRetryJitter = "DD_HTTP_CLIENT_RETRY_JITTER"
+
 // DDCloudProviderTypeEnvName name of env var for cloud provider type
 const DDCloudProviderTypeEnvName = "DD_CLOUD_PROVIDER_TYPE"
 
