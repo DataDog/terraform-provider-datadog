@@ -194,7 +194,7 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.GetTagRule", true)
 	config.SetUnstableOperationEnabled("v2.UpdateTagRule", true)
 	config.SetUnstableOperationEnabled("v2.DeleteTagRule", true)
-  
+
 	// Enable Execution Policies
 	config.SetUnstableOperationEnabled("v2.CreateExecutionPolicy", true)
 	config.SetUnstableOperationEnabled("v2.GetExecutionPolicy", true)
