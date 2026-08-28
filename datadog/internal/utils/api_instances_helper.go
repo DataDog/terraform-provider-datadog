@@ -106,6 +106,7 @@ type ApiInstances struct {
 	deploymentGatesV2              *datadogV2.DeploymentGatesApi
 	webIntegrationsApiV2           *datadogV2.WebIntegrationsApi
 	webhooksIntegrationApiV2       *datadogV2.WebhooksIntegrationApi
+	tagRulesApiV2                  *datadogV2.TagRulesApi
 }
 
 // GetAuthenticationApiV1 get instance of AuthenticationApi
@@ -847,4 +848,12 @@ func (i *ApiInstances) GetWebhooksIntegrationApiV2() *datadogV2.WebhooksIntegrat
 		i.webhooksIntegrationApiV2 = datadogV2.NewWebhooksIntegrationApi(i.HttpClient)
 	}
 	return i.webhooksIntegrationApiV2
+}
+
+// GetTagRulesApiV2 get instance of TagRulesApi
+func (i *ApiInstances) GetTagRulesApiV2() *datadogV2.TagRulesApi {
+	if i.tagRulesApiV2 == nil {
+		i.tagRulesApiV2 = datadogV2.NewTagRulesApi(i.HttpClient)
+	}
+	return i.tagRulesApiV2
 }

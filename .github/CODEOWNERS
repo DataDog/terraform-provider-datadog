@@ -119,6 +119,7 @@ datadog/**/*observability_pipeline*               @api-reliability @DataDog/obse
 datadog/**/*datadog_secure_embed_dashboard*       @api-reliability @DataDog/api-reliability @DataDog/reporting-and-sharing
 datadog/**/*datadog_tag_indexing_rule*            @api-reliability @DataDog/metrics-experience
 datadog/**/*datadog_governance_control*           @api-reliability @DataDog/aaa-governance-console
+datadog/**/*datadog_tag_rule*                     @DataDog/api-reliability @DataDog/aaa-governance-console @DataDog/odp-governance
 
 # Team-specific
 docs/resources/observability_pipeline.md                  @DataDog/observability-pipelines
@@ -127,11 +128,13 @@ docs/resources/secure_embed_dashboard.md                  @DataDog/reporting-and
 docs/resources/security_findings_*.md                     @DataDog/k9-shared-capabilities
 docs/resources/service_access_token.md                    @DataDog/credential-management
 docs/resources/tag_indexing_rule*.md                      @DataDog/metrics-experience
+docs/resources/tag_rule.md                                @DataDog/aaa-governance-console @DataDog/odp-governance
 examples/**/datadog_org_group*/**                         @DataDog/org-management
 examples/resources/datadog_on_call_team_routing_rules/**  @DataDog/on-call
 examples/resources/datadog_security_findings_*/**         @DataDog/k9-shared-capabilities
 examples/resources/datadog_service_access_token/          @DataDog/credential-management
 examples/resources/datadog_tag_indexing_rule*/**          @DataDog/metrics-experience
+examples/resources/datadog_tag_rule/**                    @DataDog/aaa-governance-console @DataDog/odp-governance
 scripts/*cloud-cost-import-existing-resources*            @DataDog/cloud-cost-management
 templates/**/org_group*.md.tmpl                           @DataDog/org-management
 docs/resources/governance_control.md                      @DataDog/aaa-governance-console
