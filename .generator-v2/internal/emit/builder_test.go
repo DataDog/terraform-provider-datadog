@@ -594,7 +594,7 @@ var _ = Describe("BuildDataSourceView singular search", func() {
 		It("hashes a fixed seed on the search path when the selected record has no id", func() {
 			op := datastoreBothOperation()
 			delete(op.ResponseSchema.Properties["data"].Properties, "id")
-			delete(op.SearchOp().ResponseSchema.Properties["data"].Items.Properties, "id")
+			delete(op.ResolvedGroup.Search.ResponseSchema.Properties["data"].Items.Properties, "id")
 
 			view := mustView(op)
 			Expect(view.Search.HashInputs).To(BeEmpty())
@@ -680,7 +680,7 @@ func powerpackSearchOperation() *model.Operation {
 }
 
 // datastoreBothOperation is an id-optional singular data source: the tracked op is
-// the by-id GET, and SearchOp points at the list GET (no query params, matching the
+// the by-id GET, and the resolved group's search role points at the list GET (no query params, matching the
 // real ListDatastores). Its element mirrors data_source_datadog_datastore.go.
 func datastoreBothOperation() *model.Operation {
 	listOp := &model.Operation{
@@ -716,7 +716,7 @@ func datastoreBothOperation() *model.Operation {
 // id field and the search filter coexist.
 func datastoreBothWithFilterOperation() *model.Operation {
 	op := datastoreBothOperation()
-	op.SearchOp().QueryParams = []model.QueryParam{
+	op.ResolvedGroup.Search.QueryParams = []model.QueryParam{
 		{Name: "filter[keyword]", Schema: prim("string", ""), Description: "Filter datastores by keyword."},
 	}
 	return op

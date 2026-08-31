@@ -54,7 +54,7 @@ var _ = Describe("ResolveOperationGroups", func() {
 			ResolveOperationGroups(spec)
 
 			Expect(read.ResolvedGroup.Search).To(BeIdenticalTo(list))
-			Expect(read.SearchOp()).To(BeIdenticalTo(list))
+			Expect(read.ResolvedGroup.Op(model.GroupRoleSearch)).To(BeIdenticalTo(list))
 		})
 
 		It("resolves a search-only group to the annotated operation itself", func() {
@@ -133,7 +133,9 @@ var _ = Describe("ResolveOperationGroups", func() {
 
 			Expect(untracked.ResolvedGroup).To(BeNil())
 			Expect(groupless.ResolvedGroup).To(BeNil())
-			Expect(groupless.SearchOp()).To(BeNil())
+			// A nil group answers for every role without a guard at the call site.
+			Expect(groupless.ResolvedGroup.Op(model.GroupRoleSearch)).To(BeNil())
+			Expect(groupless.ResolvedGroup.Op(model.GroupRoleCreate)).To(BeNil())
 		})
 	})
 
@@ -207,18 +209,45 @@ var _ = Describe("ResolveOperationGroups", func() {
 var _ = Describe("ResolvedGroup.Operations", func() {
 	first, second := &model.Operation{OperationId: "First"}, &model.Operation{OperationId: "Second"}
 
-	It("returns the resolved operations in create/read/search/update/delete order", func() {
-		g := &model.ResolvedGroup{Create: first, Delete: second}
-		Expect(g.Operations()).To(Equal([]*model.Operation{first, second}))
-	})
-
-	It("returns an operation filling two roles exactly once", func() {
-		g := &model.ResolvedGroup{Read: first, Search: first, Delete: second}
-		Expect(g.Operations()).To(Equal([]*model.Operation{first, second}))
-	})
+	DescribeTable("returns the resolved operations in create/read/search/update/delete order",
+		func(g *model.ResolvedGroup, want []*model.Operation) {
+			Expect(g.Operations()).To(Equal(want))
+		},
+		Entry("distinct roles", &model.ResolvedGroup{Create: first, Delete: second},
+			[]*model.Operation{first, second}),
+		Entry("an operation filling two roles appears once", &model.ResolvedGroup{Read: first, Search: first, Delete: second},
+			[]*model.Operation{first, second}),
+	)
 
 	It("is nil-safe and skips unfilled roles", func() {
 		Expect((*model.ResolvedGroup)(nil).Operations()).To(BeEmpty())
 		Expect((&model.ResolvedGroup{}).Operations()).To(BeEmpty())
+	})
+})
+
+var _ = Describe("ResolvedGroup.Op", func() {
+	group := &model.ResolvedGroup{
+		Create: &model.Operation{OperationId: "CreateThing"},
+		Read:   &model.Operation{OperationId: "GetThing"},
+		Search: &model.Operation{OperationId: "ListThings"},
+		Update: &model.Operation{OperationId: "UpdateThing"},
+		Delete: &model.Operation{OperationId: "DeleteThing"},
+	}
+
+	DescribeTable("returns the operation resolved for each role",
+		func(role model.GroupRole, wantOperationId string) {
+			Expect(group.Op(role).OperationId).To(Equal(wantOperationId))
+		},
+		Entry("create", model.GroupRoleCreate, "CreateThing"),
+		Entry("read", model.GroupRoleRead, "GetThing"),
+		Entry("search", model.GroupRoleSearch, "ListThings"),
+		Entry("update", model.GroupRoleUpdate, "UpdateThing"),
+		Entry("delete", model.GroupRoleDelete, "DeleteThing"),
+	)
+
+	It("returns nil for an unfilled role, an unknown role, and a nil group", func() {
+		Expect((&model.ResolvedGroup{}).Op(model.GroupRoleCreate)).To(BeNil())
+		Expect(group.Op(model.GroupRole("publish"))).To(BeNil())
+		Expect((*model.ResolvedGroup)(nil).Op(model.GroupRoleRead)).To(BeNil())
 	})
 })
