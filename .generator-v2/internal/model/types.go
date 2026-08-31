@@ -9,6 +9,7 @@
 package model
 
 import (
+	"slices"
 	"time"
 
 	v3 "github.com/pb33f/libopenapi/datamodel/high/v3"
@@ -144,17 +145,92 @@ type Operation struct {
 	// ItemRefName) or an inline data object. Lets a "both" data source detect when
 	// its by-id record shape diverges from its list element shape.
 	ResponseDataRefName string
-	// SearchOp is the operation named by Tracking.Group.Search, resolved during
-	// NormalizeSchemas: the list endpoint a singular data source searches to
-	// resolve one record. It points at the operation itself when this op is the
-	// search op (search-only), and is nil when no search is declared or the
-	// declared operationId is unknown.
-	SearchOp *Operation
+	// ResolvedGroup is Tracking.Group with every declared operationId replaced by
+	// the operation it names, filled by parser.ResolveOperationGroups. It is nil
+	// on an operation that declares no group, and on hand-built test operations
+	// that never went through the parser.
+	ResolvedGroup *ResolvedGroup
 	// SDKBinding is the call signature derived from the OpenAPI operation using
 	// the Go SDK generator's naming and ordering rules. The CLI fills it before
 	// artifact construction. Tests that build parser-shaped operations directly
 	// may leave it nil and exercise the legacy call shape.
 	SDKBinding *SDKOperationBinding
+}
+
+// SearchOp returns the list operation the group's search reference resolved to:
+// the endpoint a singular data source searches to resolve one record. It points
+// at the operation itself when this op *is* the search op (search-only), and is
+// nil when no search is declared, the declared operationId is unknown, or the
+// group was never resolved. Nil-safe, so callers need no group nil check.
+func (o *Operation) SearchOp() *Operation {
+	if o == nil || o.ResolvedGroup == nil {
+		return nil
+	}
+	return o.ResolvedGroup.Search
+}
+
+// GroupRole names one operation slot in a tracking group. The values are the
+// annotation keys themselves, so a diagnostic can quote what the author wrote.
+type GroupRole string
+
+const (
+	GroupRoleCreate GroupRole = "create"
+	GroupRoleRead   GroupRole = "read"
+	GroupRoleSearch GroupRole = "search"
+	GroupRoleUpdate GroupRole = "update"
+	GroupRoleDelete GroupRole = "delete"
+)
+
+// ResolvedGroup is an OperationGroup with every declared operationId replaced by
+// the *Operation it names — the CRUD lifecycle for a resource, the by-id read
+// and/or the list search for a data source. It is produced by
+// parser.ResolveOperationGroups once the whole spec is enumerated, because a
+// group may reference an operation that appears later in the document (or that
+// carries no tracking field of its own).
+//
+// A role is nil both when the annotation left it out and when the operationId
+// it named matches no operation in the spec; Unresolved is what distinguishes
+// the two, listing only the latter. Resolution never fails the run:
+// FR-012 requires an unrepresentable annotation to fail its own artifact while
+// unrelated artifacts continue, so the unresolved references travel with the
+// operation for the artifact and lifecycle builders to act on.
+type ResolvedGroup struct {
+	Create *Operation
+	Read   *Operation
+	// Search is the list endpoint a singular data source resolves one record
+	// through. It is the annotated operation itself for a search-only artifact.
+	Search *Operation
+	Update *Operation
+	Delete *Operation
+	// Unresolved lists the declared references whose operationId matches no
+	// operation in the spec, in create/read/search/update/delete order.
+	Unresolved []GroupReference
+}
+
+// GroupReference is one (role, operationId) pair exactly as the annotation
+// declared it, retained so a diagnostic can name both.
+type GroupReference struct {
+	Role        GroupRole
+	OperationId string
+}
+
+// Operations returns every distinct operation the group resolved to, in
+// create/read/search/update/delete order. An operation filling two roles — a
+// group whose read and search name the same endpoint, say — appears once.
+// Nil-safe, and the order is document-independent, which is what every
+// consumer needs for deterministic output.
+func (g *ResolvedGroup) Operations() []*Operation {
+	if g == nil {
+		return nil
+	}
+	ops := make([]*Operation, 0, 5)
+	for _, op := range []*Operation{g.Create, g.Read, g.Search, g.Update, g.Delete} {
+		if op == nil || slices.Contains(ops, op) {
+			continue
+		}
+		ops = append(ops, op)
+	}
+	return ops
 }
 
 // QueryParam is one normalized OpenAPI path or query parameter (the historical
