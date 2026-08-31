@@ -89,7 +89,7 @@ func resourceDatadogDashboardV2Create(ctx context.Context, d *schema.ResourceDat
 	auth := providerConf.Auth
 
 	data := collectDashboardData(d)
-	bodyStr, err := dashboardmapping.MarshalDashboardJSONFromMap(data, "")
+	bodyStr, err := dashboardmapping.MarshalDashboardJSONFromMapWithRawConfig(data, "", d)
 	if err != nil {
 		return diag.Errorf("failed to build dashboard JSON: %s", err)
 	}
@@ -151,7 +151,7 @@ func resourceDatadogDashboardV2Update(ctx context.Context, d *schema.ResourceDat
 
 	dashboardID := d.Id()
 	data := collectDashboardData(d)
-	bodyStr, err := dashboardmapping.MarshalDashboardJSONFromMap(data, dashboardID)
+	bodyStr, err := dashboardmapping.MarshalDashboardJSONFromMapWithRawConfig(data, dashboardID, d)
 	if err != nil {
 		return diag.Errorf("failed to build dashboard JSON: %s", err)
 	}
