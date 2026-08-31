@@ -869,6 +869,21 @@ var DistributionWidgetSpec = WidgetSpec{
 }
 
 // HeatmapWidgetSpec corresponds to OpenAPI HeatMapWidgetDefinition.
+var heatmapHistogramQueryFields = []FieldSpec{
+	{HCLKey: "metric_query", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Metric query for distribution of point values.",
+		Children:    formulaAndFunctionMetricQueryFields},
+}
+
+var heatmapHistogramRequestFields = []FieldSpec{
+	{HCLKey: "histogram_query", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Singular metric query for a histogram-mode heatmap request.",
+		Children:    heatmapHistogramQueryFields},
+	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
+		Description: "The style of the widget graph. One nested block is allowed using the structure below.",
+		Children:    widgetRequestStyleFields},
+}
+
 var heatmapWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
 		Deprecated:    "Use queries and formulas instead.",
@@ -877,6 +892,10 @@ var heatmapWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
 		Description: "The style of the widget graph. One nested block is allowed using the structure below.",
 		Children:    widgetRequestStyleFields},
+	{HCLKey: "histogram_request", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description:   "Histogram request for distribution of point values.",
+		Children:      heatmapHistogramRequestFields,
+		ConflictsWith: []string{"q", "style", "log_query", "apm_query", "rum_query", "security_query", "process_query", "query", "formula"}},
 }, standardQueryFields...)
 
 // heatmapWidgetXAxisFields corresponds to OpenAPI components/schemas/HeatMapWidgetXAxis.
@@ -906,7 +925,7 @@ var HeatmapWidgetSpec = WidgetSpec{
 			Description: "The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below.",
 			Children:    widgetEventFields},
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
-			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
+			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below.",
 			Children:    heatmapWidgetRequestFields},
 		{HCLKey: "marker", JSONKey: "markers", Type: TypeBlockList, OmitEmpty: true,
 			Description: "A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `heatmap_definition` block.",
