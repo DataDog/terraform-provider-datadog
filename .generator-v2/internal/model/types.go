@@ -157,18 +157,6 @@ type Operation struct {
 	SDKBinding *SDKOperationBinding
 }
 
-// SearchOp returns the list operation the group's search reference resolved to:
-// the endpoint a singular data source searches to resolve one record. It points
-// at the operation itself when this op *is* the search op (search-only), and is
-// nil when no search is declared, the declared operationId is unknown, or the
-// group was never resolved. Nil-safe, so callers need no group nil check.
-func (o *Operation) SearchOp() *Operation {
-	if o == nil || o.ResolvedGroup == nil {
-		return nil
-	}
-	return o.ResolvedGroup.Search
-}
-
 // GroupRole names one operation slot in a tracking group. The values are the
 // annotation keys themselves, so a diagnostic can quote what the author wrote.
 type GroupRole string
@@ -212,6 +200,32 @@ type ResolvedGroup struct {
 type GroupReference struct {
 	Role        GroupRole
 	OperationId string
+}
+
+// Op returns the operation resolved for role. It is nil when the annotation
+// omitted that role, when the operationId it named matched no operation, and
+// when the group was never resolved — and it is nil-safe on the receiver, so a
+// caller holding a possibly-groupless operation can write
+// op.ResolvedGroup.Op(GroupRoleSearch) with no guard of its own. Every role is
+// reached this same way: the safety seam belongs to the group, not to whichever
+// role happened to acquire callers first.
+func (g *ResolvedGroup) Op(role GroupRole) *Operation {
+	if g == nil {
+		return nil
+	}
+	switch role {
+	case GroupRoleCreate:
+		return g.Create
+	case GroupRoleRead:
+		return g.Read
+	case GroupRoleSearch:
+		return g.Search
+	case GroupRoleUpdate:
+		return g.Update
+	case GroupRoleDelete:
+		return g.Delete
+	}
+	return nil
 }
 
 // Operations returns every distinct operation the group resolved to, in

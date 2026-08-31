@@ -39,21 +39,21 @@ func ResolveOperationGroups(spec *model.Spec) {
 // regardless of how the annotation was written.
 func resolveGroup(decl *model.OperationGroup, byID map[string]*model.Operation) *model.ResolvedGroup {
 	g := &model.ResolvedGroup{}
-	resolve := func(role model.GroupRole, id string, dst **model.Operation) {
+	resolve := func(role model.GroupRole, id string) *model.Operation {
 		if id == "" {
-			return
+			return nil
 		}
 		if target := byID[id]; target != nil {
-			*dst = target
-			return
+			return target
 		}
 		g.Unresolved = append(g.Unresolved, model.GroupReference{Role: role, OperationId: id})
+		return nil
 	}
-	resolve(model.GroupRoleCreate, decl.Create, &g.Create)
-	resolve(model.GroupRoleRead, decl.Read, &g.Read)
-	resolve(model.GroupRoleSearch, decl.Search, &g.Search)
-	resolve(model.GroupRoleUpdate, decl.Update, &g.Update)
-	resolve(model.GroupRoleDelete, decl.Delete, &g.Delete)
+	g.Create = resolve(model.GroupRoleCreate, decl.Create)
+	g.Read = resolve(model.GroupRoleRead, decl.Read)
+	g.Search = resolve(model.GroupRoleSearch, decl.Search)
+	g.Update = resolve(model.GroupRoleUpdate, decl.Update)
+	g.Delete = resolve(model.GroupRoleDelete, decl.Delete)
 	return g
 }
 

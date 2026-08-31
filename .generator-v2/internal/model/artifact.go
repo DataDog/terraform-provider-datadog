@@ -27,7 +27,9 @@ func BuildArtifact(op *Operation) (*Artifact, error) {
 	// A group reference naming an operationId the spec does not declare is an
 	// author error the run report must show, even when the artifact still builds
 	// without that role.
-	artifact.Diagnostics = append(unresolvedGroupDiagnostics(op), artifact.Diagnostics...)
+	if diags := unresolvedGroupDiagnostics(op); len(diags) > 0 {
+		artifact.Diagnostics = append(diags, artifact.Diagnostics...)
+	}
 	return artifact, nil
 }
 
@@ -120,7 +122,7 @@ func buildSingularSearchArtifact(op *Operation) (*Artifact, error) {
 // same element shape the search returns); the search side adds Optional filters
 // from the list op's query parameters and the list call, alongside the by-id Read.
 func buildSingularBothArtifact(op *Operation) (*Artifact, error) {
-	searchOp := op.SearchOp()
+	searchOp := op.ResolvedGroup.Op(GroupRoleSearch)
 	if searchOp == nil {
 		return nil, fmt.Errorf("model: data source %q declares group.search %q but no such operation exists",
 			op.Tracking.ArtifactName, op.Tracking.Group.Search)
@@ -176,10 +178,16 @@ func buildSingularBothArtifact(op *Operation) (*Artifact, error) {
 }
 
 // unresolvedGroupDiagnostics reports every group reference whose operationId
-// matches no operation in the spec. The role is nil-filled rather than fatal
-// here — a data source resolves its record from the annotated operation itself,
-// so a dangling read/search reference degrades the lookup instead of breaking
-// it — but a silent drop would leave the author's typo invisible.
+// matches no operation in the spec, so an author's typo is never dropped
+// silently.
+//
+// It reports rather than fails, because whether a dangling reference is fatal
+// depends on the role: a builder that cannot proceed without one fails the
+// artifact itself with a message naming the role (buildSingularBothArtifact
+// does exactly that for a dangling group.search, and the resource lifecycle
+// builder will for the CRUD roles), and those returns never reach here. What is
+// left for this to surface is the remainder — a reference to a role this
+// artifact shape does not consume, which would otherwise vanish unnoticed.
 func unresolvedGroupDiagnostics(op *Operation) []Diagnostic {
 	if op.ResolvedGroup == nil || len(op.ResolvedGroup.Unresolved) == 0 {
 		return nil

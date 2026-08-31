@@ -324,7 +324,7 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examples
 	if err != nil {
 		return failEntry(entry, err), nil, nil, nil
 	}
-	if searchOp := op.SearchOp(); searchOp != nil && searchOp != op {
+	if searchOp := op.ResolvedGroup.Op(model.GroupRoleSearch); searchOp != nil && searchOp != op {
 		if err := sdkbind.BindOperation(searchOp); err != nil {
 			return failEntry(entry, err), nil, nil, nil
 		}

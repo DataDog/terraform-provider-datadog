@@ -375,7 +375,7 @@ func searchPowerpackOp() *Operation {
 }
 
 // bothDatastoreOp is an id-optional singular data source: the tracked op is the
-// by-id GET (group.read), and SearchOp points at the list GET (group.search)
+// by-id GET (group.read), and the resolved group's search role points at the list GET (group.search)
 // carrying one scalar filter.
 func bothDatastoreOp() *Operation {
 	listOp := &Operation{
