@@ -2,6 +2,8 @@ package fwutils
 
 import (
 	"context"
+	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -296,6 +298,192 @@ func TestGetSecretForUpdate(t *testing.T) {
 			}
 			if tt.wantShouldSet && result.Value != tt.wantValue {
 				t.Errorf("Value = %q, want %q", result.Value, tt.wantValue)
+			}
+		})
+	}
+}
+
+func TestWriteOnlySecretConfigPaths(t *testing.T) {
+	root := WriteOnlySecretConfig{
+		OriginalAttr:  "password",
+		WriteOnlyAttr: "password_wo",
+		TriggerAttr:   "password_wo_version",
+	}
+	if got, want := root.attrPath("password_wo").String(), "password_wo"; got != want {
+		t.Errorf("root attrPath = %q, want %q", got, want)
+	}
+	if got, want := root.attrExpression("password_wo").String(), "password_wo"; got != want {
+		t.Errorf("root attrExpression = %q, want %q", got, want)
+	}
+
+	nested := root
+	nested.ParentBlocks = []string{"authentication", "basic"}
+	if got, want := nested.attrPath("password_wo").String(), "authentication.basic.password_wo"; got != want {
+		t.Errorf("nested attrPath = %q, want %q", got, want)
+	}
+	if got, want := nested.attrExpression("password_wo").String(), "authentication.basic.password_wo"; got != want {
+		t.Errorf("nested attrExpression = %q, want %q", got, want)
+	}
+}
+
+// validatorDescriptions joins the descriptions of an attribute's validators.
+// The validators render their path expressions into those descriptions, which is
+// the only way to observe the paths from outside the validators package.
+func validatorDescriptions(t *testing.T, attr schema.Attribute) string {
+	t.Helper()
+	stringAttr, ok := attr.(schema.StringAttribute)
+	if !ok {
+		t.Fatalf("expected schema.StringAttribute, got %T", attr)
+	}
+	var descriptions []string
+	for _, attrValidator := range stringAttr.Validators {
+		descriptions = append(descriptions, attrValidator.Description(context.Background()))
+	}
+	return strings.Join(descriptions, "\n")
+}
+
+func TestCreateWriteOnlySecretAttributesPaths(t *testing.T) {
+	root := WriteOnlySecretConfig{
+		OriginalAttr:  "password",
+		WriteOnlyAttr: "password_wo",
+		TriggerAttr:   "password_wo_version",
+	}
+	nested := root
+	nested.ParentBlocks = []string{"authentication", "basic"}
+
+	cases := []struct {
+		name   string
+		config WriteOnlySecretConfig
+		prefix string
+	}{
+		{name: "root keeps unprefixed paths", config: root},
+		{name: "nested block prefixes paths", config: nested, prefix: "authentication.basic."},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			attrs := CreateWriteOnlySecretAttributes(tc.config)
+			original := validatorDescriptions(t, attrs["password"])
+			writeOnly := validatorDescriptions(t, attrs["password_wo"])
+			trigger := validatorDescriptions(t, attrs["password_wo_version"])
+
+			// Validators render a path collection as "[first,second]". Keeping the
+			// brackets in the expectation makes each token unambiguous: "[password_wo]"
+			// cannot match inside "[password_wo_version]", and an unprefixed
+			// expectation cannot match a prefixed path.
+			pathList := func(attrs ...string) string {
+				prefixed := make([]string, 0, len(attrs))
+				for _, attr := range attrs {
+					prefixed = append(prefixed, tc.prefix+attr)
+				}
+				return fmt.Sprintf("%q", "["+strings.Join(prefixed, ",")+"]")
+			}
+			wantPair := pathList("password", "password_wo")
+
+			// Both members of the ExactlyOneOf pair reference each other.
+			for attr, got := range map[string]string{"password": original, "password_wo": writeOnly} {
+				if !strings.Contains(got, wantPair) {
+					t.Errorf("%s validators should reference %s, got:\n%s", attr, wantPair, got)
+				}
+			}
+			// The write-only attribute requires its version trigger, and vice versa.
+			if want := pathList("password_wo_version"); !strings.Contains(writeOnly, want) {
+				t.Errorf("password_wo validators should reference %s, got:\n%s", want, writeOnly)
+			}
+			if want := pathList("password_wo"); !strings.Contains(trigger, want) {
+				t.Errorf("password_wo_version validators should reference %s, got:\n%s", want, trigger)
+			}
+			// PreferWriteOnlyAttribute renders its path unquoted.
+			if want := "attribute " + tc.prefix + "password_wo should be preferred"; !strings.Contains(original, want) {
+				t.Errorf("password validators should contain %q, got:\n%s", want, original)
+			}
+		})
+	}
+}
+
+func testNestedWriteOnlySchema() schema.Schema {
+	return schema.Schema{
+		Blocks: map[string]schema.Block{
+			"authentication": schema.SingleNestedBlock{
+				Blocks: map[string]schema.Block{
+					"basic": schema.SingleNestedBlock{
+						Attributes: map[string]schema.Attribute{
+							"username":            schema.StringAttribute{Optional: true},
+							"password":            schema.StringAttribute{Optional: true, Sensitive: true},
+							"password_wo":         schema.StringAttribute{Optional: true, Sensitive: true, WriteOnly: true},
+							"password_wo_version": schema.StringAttribute{Optional: true},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func makeNestedConfigValue(password, passwordWo *string) tftypes.Value {
+	basicType := tftypes.Object{AttributeTypes: map[string]tftypes.Type{
+		"username":            tftypes.String,
+		"password":            tftypes.String,
+		"password_wo":         tftypes.String,
+		"password_wo_version": tftypes.String,
+	}}
+	authType := tftypes.Object{AttributeTypes: map[string]tftypes.Type{"basic": basicType}}
+	rootType := tftypes.Object{AttributeTypes: map[string]tftypes.Type{"authentication": authType}}
+
+	strVal := func(s *string) tftypes.Value {
+		if s == nil {
+			return tftypes.NewValue(tftypes.String, nil)
+		}
+		return tftypes.NewValue(tftypes.String, *s)
+	}
+
+	basic := tftypes.NewValue(basicType, map[string]tftypes.Value{
+		"username":            tftypes.NewValue(tftypes.String, "datadog"),
+		"password":            strVal(password),
+		"password_wo":         strVal(passwordWo),
+		"password_wo_version": tftypes.NewValue(tftypes.String, nil),
+	})
+	auth := tftypes.NewValue(authType, map[string]tftypes.Value{"basic": basic})
+	return tftypes.NewValue(rootType, map[string]tftypes.Value{"authentication": auth})
+}
+
+func TestGetSecretForCreateFromNestedBlock(t *testing.T) {
+	handler := &WriteOnlySecretHandler{
+		Config: WriteOnlySecretConfig{
+			OriginalAttr:  "password",
+			WriteOnlyAttr: "password_wo",
+			TriggerAttr:   "password_wo_version",
+			ParentBlocks:  []string{"authentication", "basic"},
+		},
+	}
+
+	cases := []struct {
+		name       string
+		password   *string
+		passwordWo *string
+		wantSet    bool
+		wantValue  string
+	}{
+		{name: "write-only wins", passwordWo: ptr("wo-secret"), wantSet: true, wantValue: "wo-secret"},
+		{name: "plaintext fallback", password: ptr("plain-secret"), wantSet: true, wantValue: "plain-secret"},
+		{name: "neither set", wantSet: false},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			config := &tfsdk.Config{
+				Schema: testNestedWriteOnlySchema(),
+				Raw:    makeNestedConfigValue(tc.password, tc.passwordWo),
+			}
+			result := handler.GetSecretForCreate(context.Background(), config)
+			if result.Diagnostics.HasError() {
+				t.Fatalf("unexpected diagnostics: %v", result.Diagnostics)
+			}
+			if result.ShouldSetValue != tc.wantSet {
+				t.Errorf("ShouldSetValue = %v, want %v", result.ShouldSetValue, tc.wantSet)
+			}
+			if result.Value != tc.wantValue {
+				t.Errorf("Value = %q, want %q", result.Value, tc.wantValue)
 			}
 		})
 	}

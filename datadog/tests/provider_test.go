@@ -138,6 +138,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_cloud_inventory_sync_config_test":                            "cloud-inventory",
 	"tests/resource_datadog_cloud_workload_security_agent_rule_test":                     "cloud_workload_security",
 	"tests/resource_datadog_action_connection_test":                                      "action_connection",
+	"tests/resource_datadog_action_execution_policy_test":                                "execution_policy",
 	"tests/resource_datadog_agentless_scanning_aws_scan_options_test":                    "agentless-scanning",
 	"tests/resource_datadog_agentless_scanning_azure_scan_options_test":                  "agentless-scanning",
 	"tests/resource_datadog_agentless_scanning_gcp_scan_options_test":                    "agentless-scanning",
@@ -188,6 +189,8 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_v2_timeseries_event_query_test":                    "dashboards",
 	"tests/resource_datadog_dashboard_v2_funnel_test":                                    "dashboards",
 	"tests/resource_datadog_dashboard_v2_geomap_request_parity_test":                     "dashboards",
+	"tests/resource_datadog_dashboard_v2_hostmap_infrastructure_test":                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_hostmap_ddsql_test":                             "dashboards",
 	"tests/resource_datadog_dashboard_v2_heatmap_histogram_test":                         "dashboards",
 	"tests/resource_datadog_dashboard_v2_bar_chart_test":                                 "dashboards",
 	"tests/resource_datadog_dashboard_v2_sankey_test":                                    "dashboards",
@@ -253,6 +256,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_integration_aws_log_collection_test":                         "integration-aws",
 	"tests/resource_datadog_integration_aws_tag_filter_test":                             "integration-aws",
 	"tests/resource_datadog_integration_aws_test":                                        "integration-aws",
+	"tests/data_source_datadog_integration_aws_account_test":                             "integration-aws",
 	"tests/resource_datadog_integration_aws_account_test":                                "integration-aws",
 	"tests/resource_datadog_integration_aws_account_ccm_config_test":                     "integration-aws",
 	"tests/resource_datadog_integration_aws_event_bridge_test":                           "integration-aws",
@@ -367,6 +371,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_tag_pipeline_ruleset_test":                                   "tag-pipeline",
 	"tests/data_source_datadog_tag_pipeline_ruleset_test":                                "tag-pipeline",
 	"tests/resource_datadog_tag_pipeline_rulesets_test":                                  "tag-pipeline",
+	"tests/resource_datadog_tag_rule_test":                                               "tag-rules",
 	"tests/resource_datadog_app_key_registration_test":                                   "app_key_registration",
 	"tests/resource_datadog_aws_cur_config_test":                                         "cost-management",
 	"tests/resource_datadog_gcp_uc_config_test":                                          "cost-management",
@@ -545,7 +550,7 @@ func restoreClock(t *testing.T) clockwork.FakeClock {
 		t.Logf("Could not load clock: %v", err)
 		return setClock(t)
 	}
-	now, err := time.Parse(time.RFC3339Nano, string(data))
+	now, err := time.Parse(time.RFC3339Nano, strings.TrimSpace(string(data)))
 	if err != nil {
 		t.Fatalf("Could not parse clock date: %v", err)
 	}
@@ -572,7 +577,7 @@ func restoreClockWithName(t *testing.T, name string) clockwork.FakeClock {
 		t.Logf("Could not load clock for %s: %v", name, err)
 		return setClock(t)
 	}
-	now, err := time.Parse(time.RFC3339Nano, string(data))
+	now, err := time.Parse(time.RFC3339Nano, strings.TrimSpace(string(data)))
 	if err != nil {
 		t.Fatalf("Could not parse clock date: %v", err)
 	}

@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 760
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2HostmapDDSQL-local-1784746143","widgets":[{"definition":{"requests":{"limit":250,"projection":{"dimensions":[{"column":"entity_id","dimension":"node"},{"column":"service","dimension":"group"},{"alias":"CPU","column":"cpu_usage","dimension":"fill","number_format":{"unit":{"label":"%","type":"custom_unit_label"}}}],"type":"hostmap"},"query":{"data_source":"dataset","dataset_id":"example-dataset","dataset_provider":"ddsql_query","filter":"service:web-store","limit":100,"sort":{"fields":[{"name":"cpu_usage","order":"desc"}]}},"request_type":"data_projection"},"title":"DDSQL host map","type":"hostmap"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"k2z-bkr-ypd","title":"tf-TestAccDatadogDashboardV2HostmapDDSQL-local-1784746143","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/k2z-bkr-ypd/tf-testaccdatadogdashboardv2hostmapddsql-local-1784746143","template_variables":[],"widgets":[{"definition":{"requests":{"limit":250,"projection":{"dimensions":[{"column":"entity_id","dimension":"node"},{"column":"service","dimension":"group"},{"alias":"CPU","column":"cpu_usage","dimension":"fill","number_format":{"unit":{"label":"%","type":"custom_unit_label"}}}],"type":"hostmap"},"query":{"data_source":"dataset","dataset_id":"example-dataset","dataset_provider":"ddsql_query","filter":"service:web-store","limit":100,"sort":{"fields":[{"name":"cpu_usage","order":"desc"}]}},"request_type":"data_projection"},"title":"DDSQL host map","type":"hostmap"},"id":5750449187276457}],"notify_list":[],"created_at":"2026-07-22T18:49:06.094891+00:00","modified_at":"2026-07-22T18:49:06.094891+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 363.342ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/k2z-bkr-ypd
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"k2z-bkr-ypd","title":"tf-TestAccDatadogDashboardV2HostmapDDSQL-local-1784746143","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/k2z-bkr-ypd/tf-testaccdatadogdashboardv2hostmapddsql-local-1784746143","template_variables":[],"widgets":[{"definition":{"requests":{"limit":250,"projection":{"dimensions":[{"column":"entity_id","dimension":"node"},{"column":"service","dimension":"group"},{"alias":"CPU","column":"cpu_usage","dimension":"fill","number_format":{"unit":{"label":"%","type":"custom_unit_label"}}}],"type":"hostmap"},"query":{"data_source":"dataset","dataset_id":"example-dataset","dataset_provider":"ddsql_query","filter":"service:web-store","limit":100,"sort":{"fields":[{"name":"cpu_usage","order":"desc"}]}},"request_type":"data_projection"},"title":"DDSQL host map","type":"hostmap"},"id":5750449187276457}],"notify_list":[],"created_at":"2026-07-22T18:49:06.094891+00:00","modified_at":"2026-07-22T18:49:06.094891+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 156.054125ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/k2z-bkr-ypd
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"k2z-bkr-ypd","title":"tf-TestAccDatadogDashboardV2HostmapDDSQL-local-1784746143","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/k2z-bkr-ypd/tf-testaccdatadogdashboardv2hostmapddsql-local-1784746143","template_variables":[],"widgets":[{"definition":{"requests":{"limit":250,"projection":{"dimensions":[{"column":"entity_id","dimension":"node"},{"column":"service","dimension":"group"},{"alias":"CPU","column":"cpu_usage","dimension":"fill","number_format":{"unit":{"label":"%","type":"custom_unit_label"}}}],"type":"hostmap"},"query":{"data_source":"dataset","dataset_id":"example-dataset","dataset_provider":"ddsql_query","filter":"service:web-store","limit":100,"sort":{"fields":[{"name":"cpu_usage","order":"desc"}]}},"request_type":"data_projection"},"title":"DDSQL host map","type":"hostmap"},"id":5750449187276457}],"notify_list":[],"created_at":"2026-07-22T18:49:06.094891+00:00","modified_at":"2026-07-22T18:49:06.094891+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 219.216834ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/k2z-bkr-ypd
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"k2z-bkr-ypd","title":"tf-TestAccDatadogDashboardV2HostmapDDSQL-local-1784746143","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/k2z-bkr-ypd/tf-testaccdatadogdashboardv2hostmapddsql-local-1784746143","template_variables":[],"widgets":[{"definition":{"requests":{"limit":250,"projection":{"dimensions":[{"column":"entity_id","dimension":"node"},{"column":"service","dimension":"group"},{"alias":"CPU","column":"cpu_usage","dimension":"fill","number_format":{"unit":{"label":"%","type":"custom_unit_label"}}}],"type":"hostmap"},"query":{"data_source":"dataset","dataset_id":"example-dataset","dataset_provider":"ddsql_query","filter":"service:web-store","limit":100,"sort":{"fields":[{"name":"cpu_usage","order":"desc"}]}},"request_type":"data_projection"},"title":"DDSQL host map","type":"hostmap"},"id":5750449187276457}],"notify_list":[],"created_at":"2026-07-22T18:49:06.094891+00:00","modified_at":"2026-07-22T18:49:06.094891+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 163.68575ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/k2z-bkr-ypd
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"k2z-bkr-ypd"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 574.011375ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/k2z-bkr-ypd
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID k2z-bkr-ypd not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 149.366417ms

@@ -67,6 +67,7 @@ var Resources = []func() resource.Resource{
 	NewRumMetricResource,
 	NewRumRetentionFilterResource,
 	NewRumRetentionFiltersOrderResource,
+	NewRumRetentionQuotaResource,
 	NewSecurityFindingsMuteRuleResource,
 	NewSecurityFindingsMuteRulesOrderResource,
 	NewSecurityFindingsDueDateRuleResource,
@@ -84,6 +85,7 @@ var Resources = []func() resource.Resource{
 	NewSyntheticsGlobalVariableResource,
 	NewSyntheticsPrivateLocationResource,
 	NewSyntheticsSuiteResource,
+	NewTagRuleResource,
 	NewTeamLinkResource,
 	NewTeamMembershipResource,
 	NewTeamNotificationRuleResource,
@@ -106,6 +108,7 @@ var Resources = []func() resource.Resource{
 	NewAppsecWafCustomRuleResource,
 	NewWorkflowsWebhookHandleResource,
 	NewActionConnectionResource,
+	NewActionExecutionPolicyResource,
 	NewWorkflowAutomationResource,
 	NewAppBuilderAppResource,
 	NewObservabilitPipelineResource,
@@ -153,6 +156,7 @@ var Resources = []func() resource.Resource{
 var Datasources = []func() datasource.DataSource{
 	NewAPIKeyDataSource,
 	NewAwsAvailableNamespacesDataSource,
+	NewAwsIntegrationAccountDataSource,
 	NewAwsIntegrationExternalIDDataSource,
 	NewAwsIntegrationIAMPermissionsDataSource,
 	NewAwsIntegrationIAMPermissionsStandardDataSource,
@@ -694,6 +698,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateWebIntegrationAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteWebIntegrationAccount", true)
 
+	// Enable Governance Tag Rules
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateTagRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetTagRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateTagRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteTagRule", true)
+
 	// Enable Logs Restriction Queries
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateRestrictionQuery", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetRestrictionQuery", true)
@@ -823,6 +833,13 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateGovernanceControl", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetGovernanceControlNotificationSettings", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateGovernanceControlNotificationSettings", true)
+
+	// Enable Execution Policies
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateExecutionPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetExecutionPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateExecutionPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
