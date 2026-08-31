@@ -74,8 +74,12 @@ func backtickedToken(s string) (string, bool) {
 }
 
 // NormalizeSchemas fills RequestSchema and ResponseSchema on every tracked
-// operation's CRUD group, resolving the create/read/update/delete operationIds
-// in Tracking.Group to operations and extracting their bodies from rawOps.
+// operation and on every operation its CRUD group resolved to, extracting their
+// bodies from rawOps.
+//
+// It requires ResolveOperationGroups to have run first — that pass turns the
+// group's operationIds into the *model.Operation pointers walked here. LoadSpec
+// calls the two in order.
 //
 // Request uses the application/json requestBody; response uses the
 // application/json body of the lowest-numbered 2xx code that has one. A missing
@@ -94,62 +98,33 @@ func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operatio
 		trackingFieldName: trackingFieldName,
 	}
 
-	// operationId → *model.Operation, to resolve a group's CRUD references.
-	byID := make(map[string]*model.Operation, len(spec.Operations))
-	for _, op := range spec.Operations {
-		if op == nil || op.OperationId == "" {
-			continue
-		}
-		byID[op.OperationId] = op
-	}
-
-	// Roots are tracked operations; each fills its group's operations, which may
-	// themselves be untracked. filled dedups operations shared across groups.
+	// Roots are tracked operations; each fills its own bodies and its group's,
+	// which may themselves be untracked. The tracked operation is filled whether
+	// or not its group names it, so a group that references only other operations
+	// — or no group at all — still leaves the annotated operation's own request
+	// and response trees populated. filled dedups operations shared across groups.
 	filled := make(map[*model.Operation]bool)
+	fill := func(target *model.Operation) error {
+		if filled[target] {
+			return nil
+		}
+		filled[target] = true
+		return n.fillOperation(target, rawOps[target])
+	}
 	for _, op := range spec.Operations {
 		if op == nil || op.Tracking == nil {
 			continue
 		}
-		for _, id := range groupOperationIds(op.Tracking) {
-			target := byID[id]
-			if target == nil || filled[target] {
-				continue
-			}
-			filled[target] = true
-			if err := n.fillOperation(target, rawOps[target]); err != nil {
+		if err := fill(op); err != nil {
+			return err
+		}
+		for _, target := range op.ResolvedGroup.Operations() {
+			if err := fill(target); err != nil {
 				return err
 			}
 		}
 	}
-
-	// Resolve each tracked op's search reference to the list operation it points
-	// at, so BuildArtifact can reach the search op's filters and list call. An
-	// unknown operationId leaves SearchOp nil for BuildArtifact to fail-slow on.
-	for _, op := range spec.Operations {
-		if op == nil || op.Tracking == nil || op.Tracking.Group == nil {
-			continue
-		}
-		if id := op.Tracking.Group.Search; id != "" {
-			op.SearchOp = byID[id]
-		}
-	}
 	return nil
-}
-
-// groupOperationIds returns the non-empty operationIds backing a tracking group
-// (create/read/search/update/delete), so their schemas get normalized.
-func groupOperationIds(t *model.TrackingFieldMetadata) []string {
-	if t == nil || t.Group == nil {
-		return nil
-	}
-	g := t.Group
-	ids := make([]string, 0, 5)
-	for _, id := range []string{g.Create, g.Read, g.Search, g.Update, g.Delete} {
-		if id != "" {
-			ids = append(ids, id)
-		}
-	}
-	return ids
 }
 
 // schemaNormalizer holds the per-pass state: the component set for $ref

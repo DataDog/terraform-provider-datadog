@@ -324,11 +324,11 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examples
 	if err != nil {
 		return failEntry(entry, err), nil, nil, nil
 	}
-	if op.SearchOp != nil && op.SearchOp != op {
-		if err := sdkbind.BindOperation(op.SearchOp); err != nil {
+	if searchOp := op.SearchOp(); searchOp != nil && searchOp != op {
+		if err := sdkbind.BindOperation(searchOp); err != nil {
 			return failEntry(entry, err), nil, nil, nil
 		}
-		searchDiagnostics, err := sdkbinding.Bind(op.SearchOp, sdkBindings)
+		searchDiagnostics, err := sdkbinding.Bind(searchOp, sdkBindings)
 		if err != nil {
 			return failEntry(entry, err), nil, nil, nil
 		}

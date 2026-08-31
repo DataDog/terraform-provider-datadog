@@ -20,6 +20,19 @@ func BuildArtifact(op *Operation) (*Artifact, error) {
 	if op == nil || op.Tracking == nil {
 		return nil, fmt.Errorf("model: BuildArtifact requires a tracked operation")
 	}
+	artifact, err := buildArtifact(op)
+	if err != nil {
+		return nil, err
+	}
+	// A group reference naming an operationId the spec does not declare is an
+	// author error the run report must show, even when the artifact still builds
+	// without that role.
+	artifact.Diagnostics = append(unresolvedGroupDiagnostics(op), artifact.Diagnostics...)
+	return artifact, nil
+}
+
+// buildArtifact selects the builder for op's cardinality and lookup shape.
+func buildArtifact(op *Operation) (*Artifact, error) {
 	if op.Tracking.Cardinality == CardinalityPlural {
 		return buildPluralArtifact(op)
 	}
@@ -107,7 +120,7 @@ func buildSingularSearchArtifact(op *Operation) (*Artifact, error) {
 // same element shape the search returns); the search side adds Optional filters
 // from the list op's query parameters and the list call, alongside the by-id Read.
 func buildSingularBothArtifact(op *Operation) (*Artifact, error) {
-	searchOp := op.SearchOp
+	searchOp := op.SearchOp()
 	if searchOp == nil {
 		return nil, fmt.Errorf("model: data source %q declares group.search %q but no such operation exists",
 			op.Tracking.ArtifactName, op.Tracking.Group.Search)
@@ -160,6 +173,26 @@ func buildSingularBothArtifact(op *Operation) (*Artifact, error) {
 		},
 		Diagnostics: diags,
 	}, nil
+}
+
+// unresolvedGroupDiagnostics reports every group reference whose operationId
+// matches no operation in the spec. The role is nil-filled rather than fatal
+// here — a data source resolves its record from the annotated operation itself,
+// so a dangling read/search reference degrades the lookup instead of breaking
+// it — but a silent drop would leave the author's typo invisible.
+func unresolvedGroupDiagnostics(op *Operation) []Diagnostic {
+	if op.ResolvedGroup == nil || len(op.ResolvedGroup.Unresolved) == 0 {
+		return nil
+	}
+	diags := make([]Diagnostic, 0, len(op.ResolvedGroup.Unresolved))
+	for _, ref := range op.ResolvedGroup.Unresolved {
+		diags = append(diags, Diagnostic{
+			Severity: SeverityWarning,
+			Message: fmt.Sprintf("artifact %q: group.%s names operationId %q, which no operation in the spec declares; that role is unbound",
+				op.Tracking.ArtifactName, ref.Role, ref.OperationId),
+		})
+	}
+	return diags
 }
 
 // sourceFileFor is the output path for a data-source artifact name.
