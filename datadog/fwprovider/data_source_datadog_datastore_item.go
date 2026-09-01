@@ -109,7 +109,8 @@ func (d *datastoreItemDataSource) Read(ctx context.Context, request datasource.R
 
 	// Filter with `filter`, not `ItemKey`: the client sends the latter as
 	// `item_key` while the API reads `itemKey`, so it is ignored and the
-	// response is the whole datastore.
+	// response is the whole datastore. `filter` is a glob, so it can match
+	// more than one item and the exact key is selected below.
 	optionalParams := datadogV2.NewListDatastoreItemsOptionalParameters().WithFilter(itemKey)
 
 	resp, _, err := d.Api.ListDatastoreItems(d.Auth, datastoreID, *optionalParams)
@@ -123,12 +124,14 @@ func (d *datastoreItemDataSource) Read(ctx context.Context, request datasource.R
 	}
 
 	// Check if item was found
-	item := datastoreItemByKey(resp.GetData(), itemKey)
+	items := resp.GetData()
+	item := datastoreItemByKey(items, itemKey)
 	if item == nil {
-		response.Diagnostics.AddError(
-			"Item not found",
-			fmt.Sprintf("No item found with key '%s' in datastore '%s'", itemKey, datastoreID),
-		)
+		detail := fmt.Sprintf("No item found with key '%s' in datastore '%s'", itemKey, datastoreID)
+		if len(items) > 0 {
+			detail += fmt.Sprintf(". %d item(s) match it as a glob, but none has that exact key", len(items))
+		}
+		response.Diagnostics.AddError("Item not found", detail)
 		return
 	}
 

@@ -45,6 +45,11 @@ func TestDatastoreItemByKey(t *testing.T) {
 		})
 	}
 
+	// `filter` is a glob, so a key with a wildcard matches several items but
+	// is the exact key of none of them.
+	if item := datastoreItemByKey(items, "a*"); item != nil {
+		t.Fatalf("got an item for a glob key")
+	}
 	if item := datastoreItemByKey(items, "missing"); item != nil {
 		t.Fatalf("got an item for a key that is not in the listing")
 	}
