@@ -354,6 +354,29 @@ type Schema struct {
 	// carrying one — mirroring how the SDK generator's child_models() prefers a
 	// $ref name over the parent-derived alternative name.
 	RefName string
+	// Provenance is non-nil only on a node of the schema MergeResourceSchema
+	// produces by unioning the Create request, Update request and Read response
+	// bodies (FR-034); nil everywhere else. That nil-ness is what distinguishes a
+	// merged schema from a single-direction one, so BuildResourceTree can reject
+	// an unmerged input rather than silently flag every node Computed.
+	Provenance *SchemaProvenance
+}
+
+// SchemaProvenance records which of the three bodies a resource schema merge
+// reads — Create request, Update request, Read response — contributed a node,
+// so BuildResourceTree can derive Terraform presence flags as a total function
+// of these three bits alone (FR-034a), with no further OpenAPI signal
+// consulted. Set only by MergeResourceSchema.
+type SchemaProvenance struct {
+	// InRequest is true when the node is present in the Create or Update
+	// request body.
+	InRequest bool
+	// RequestRequired is true when the node is named in the Create body's
+	// Required list. The Update body is never consulted for requiredness — a
+	// PATCH body marks everything optional.
+	RequestRequired bool
+	// InResponse is true when the node is present in the Read response body.
+	InResponse bool
 }
 
 // OneOfSpec is the normalized representation of an OpenAPI oneOf. The envelope
@@ -494,6 +517,14 @@ type Attribute struct {
 	Default *Literal
 	// Validators is the fingerprintable validator list for this attribute.
 	Validators []ValidatorSpec
+	// PlanModifiers is populated only by BuildResourceTree (FR-034d); empty for
+	// both data-source tree shapes. UseStateForUnknown() lands on an Optional +
+	// Computed attribute, RequiresReplace() on a request-settable one when the
+	// group resolves no Update role. Never populated on a Computed-only
+	// attribute — the server may change such a value during apply, so either
+	// modifier there produces an inconsistent-result error or a spurious
+	// replacement.
+	PlanModifiers []PlanModifierSpec
 	// Description is always populated from the OpenAPI description (repo convention).
 	Description string
 	// Children holds nested attributes for nested blocks.
@@ -597,6 +628,19 @@ type Literal struct {
 // validator: the constructor plus its Go-source-rendered arguments.
 type ValidatorSpec struct {
 	// Name is the validator constructor, e.g. stringvalidator.LengthAtLeast.
+	Name string
+	// Args are the constructor arguments rendered as Go source expressions.
+	Args []string
+}
+
+// PlanModifierSpec is one plan modifier attached to a resource attribute
+// (FR-034d), rendered as a Go constructor call. Populated only by
+// BuildResourceTree, from the same resource flag matrix that derives
+// Required/Optional/Computed, and typed per framework value kind
+// (planmodifier.Bool, planmodifier.Object, ...) derived from Attribute.GoType.
+type PlanModifierSpec struct {
+	// Name is the plan modifier constructor, e.g.
+	// stringplanmodifier.UseStateForUnknown or boolplanmodifier.RequiresReplace.
 	Name string
 	// Args are the constructor arguments rendered as Go source expressions.
 	Args []string
