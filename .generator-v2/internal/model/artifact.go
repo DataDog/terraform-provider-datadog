@@ -3,7 +3,6 @@ package model
 import (
 	"fmt"
 	"strings"
-	"unicode"
 )
 
 // BuildArtifact wraps a tracked Operation into an *Artifact and resolves its SDK
@@ -369,7 +368,7 @@ func SDKPackageForPath(path string) string {
 func sdkCall(op *Operation, aliasTerminalID bool) *SDKCall {
 	call := &SDKCall{
 		GoPackage:      SDKPackageForPath(op.Path),
-		GoApiStruct:    tagToClassName(op.Tag) + "Api",
+		GoApiStruct:    SdkClassName(op.Tag),
 		GoMethod:       op.OperationId,
 		GoResponseType: op.ResponseRefName,
 	}
@@ -561,21 +560,4 @@ func versionSegment(path string) string {
 		}
 	}
 	return ""
-}
-
-// tagToClassName converts an OpenAPI tag into the datadog-api-client-go API
-// struct base name: non-alphanumeric runs become word breaks, each word is
-// capitalized on its first rune, and in-word casing is preserved. So "org
-// groups" → "OrgGroups" and "APM" → "APM". This deliberately differs from
-// SdkName, which lower-cases acronyms ("APM" → "Apm").
-func tagToClassName(tag string) string {
-	var b strings.Builder
-	for _, word := range strings.FieldsFunc(tag, func(r rune) bool {
-		return !unicode.IsLetter(r) && !unicode.IsNumber(r)
-	}) {
-		runes := []rune(word)
-		b.WriteRune(unicode.ToUpper(runes[0]))
-		b.WriteString(string(runes[1:]))
-	}
-	return b.String()
 }

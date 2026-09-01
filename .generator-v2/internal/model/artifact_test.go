@@ -8,14 +8,6 @@ import (
 )
 
 var _ = Describe("BuildArtifact", func() {
-	DescribeTable("tagToClassName capitalizes each word and preserves in-word casing",
-		func(tag, want string) { Expect(tagToClassName(tag)).To(Equal(want)) },
-		Entry("a single word passes through", "Incidents", "Incidents"),
-		Entry("a space-separated tag joins into PascalCase", "org groups", "OrgGroups"),
-		Entry("an acronym is preserved, not lower-cased", "APM", "APM"),
-		Entry("mixed punctuation becomes word breaks", "cloud-cost.management", "CloudCostManagement"),
-	)
-
 	DescribeTable("versionSegment returns the path segment after /api/",
 		func(path, want string) { Expect(versionSegment(path)).To(Equal(want)) },
 		Entry("a v2 path", "/api/v2/incidents/config/types/{id}", "v2"),
