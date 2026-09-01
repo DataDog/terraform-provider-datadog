@@ -228,6 +228,23 @@ func (g *ResolvedGroup) Op(role GroupRole) *Operation {
 	return nil
 }
 
+// UnresolvedId returns the operationId the annotation declared for role when that
+// reference resolved to nothing, and "" when the role was simply never declared.
+// It is the counterpart to Op: Op answers "which operation", this answers "and if
+// none, what did the author write". Both are nil-safe on the receiver for the
+// same reason — the safety seam belongs to the group.
+func (g *ResolvedGroup) UnresolvedId(role GroupRole) string {
+	if g == nil {
+		return ""
+	}
+	for _, ref := range g.Unresolved {
+		if ref.Role == role {
+			return ref.OperationId
+		}
+	}
+	return ""
+}
+
 // Operations returns every distinct operation the group resolved to, in
 // create/read/search/update/delete order. An operation filling two roles — a
 // group whose read and search name the same endpoint, say — appears once.
@@ -426,7 +443,9 @@ type Artifact struct {
 	// tracking extension's tf_description field; empty when the author omits it.
 	Description string
 	// Schema is the Terraform schema derived from the response (and request,
-	// for resources).
+	// for resources). It is nil on a resource until the request/response merge
+	// lands (FR-034, T120-T124): the lifecycle builds without it, and nothing
+	// consumes a resource artifact yet.
 	Schema *AttributeTree
 	// Lifecycle holds the SDK call bindings. For data sources only Read is set
 	Lifecycle *LifecycleBindings
@@ -596,7 +615,16 @@ type LifecycleBindings struct {
 	Search     *SDKCall
 	Update     *SDKCall
 	Delete     *SDKCall
-	IdStrategy IdStrategy
+	// UpdateUnsupported records that the tracking group declares no update role,
+	// so no endpoint can modify this resource in place (spec Edge Case). It states
+	// the lifecycle fact rather than the Terraform consequence — deciding that the
+	// consequence is RequiresReplace on every practitioner-settable attribute is
+	// the schema builder's job (FR-034d, T123).
+	//
+	// It is not derivable from Update == nil, which is also true of every data
+	// source; the flag is false there, which is the honest answer.
+	UpdateUnsupported bool
+	IdStrategy        IdStrategy
 }
 
 // SDKCall represents a single datadog-api-client-go invocation.
