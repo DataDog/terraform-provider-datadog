@@ -52,3 +52,29 @@ func TestDatastoreItemByKey(t *testing.T) {
 		t.Fatalf("got an item from an empty listing")
 	}
 }
+
+func TestDatastoreItemValueToMap(t *testing.T) {
+	got, err := datastoreItemValueToMap(map[string]interface{}{
+		"product": "apm",
+		"object":  map[string]interface{}{"threshold": float64(10)},
+		"list":    []interface{}{"a", "b"},
+		"number":  float64(10),
+		"bool":    true,
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %s", err)
+	}
+
+	want := map[string]string{
+		"product": "apm",
+		"object":  `{"threshold":10}`,
+		"list":    `["a","b"]`,
+		"number":  "10",
+		"bool":    "true",
+	}
+	for column, expected := range want {
+		if got[column] != expected {
+			t.Errorf("column %q: got %q, want %q", column, got[column], expected)
+		}
+	}
+}

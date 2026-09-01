@@ -7,6 +7,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -71,7 +72,7 @@ func (d *datastoreItemDataSource) Schema(_ context.Context, _ datasource.SchemaR
 			"value": schema.MapAttribute{
 				Computed:    true,
 				ElementType: types.StringType,
-				Description: "The data content (as key-value pairs) of the datastore item.",
+				Description: "The data content (as key-value pairs) of the datastore item. A column of the datastore's JSON type is returned as a JSON string, so `jsondecode` can read it.",
 			},
 			"created_at": schema.StringAttribute{
 				Computed:    true,
@@ -132,13 +133,17 @@ func (d *datastoreItemDataSource) Read(ctx context.Context, request datasource.R
 		return
 	}
 
-	d.updateState(ctx, &state, item)
+	response.Diagnostics.Append(d.updateState(ctx, &state, item)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datastoreItemDataSource) updateState(ctx context.Context, state *datastoreItemDataSourceModel, resp *datadogV2.ItemApiPayloadData) {
+func (d *datastoreItemDataSource) updateState(ctx context.Context, state *datastoreItemDataSourceModel, resp *datadogV2.ItemApiPayloadData) diag.Diagnostics {
+	diags := diag.Diagnostics{}
 	datastoreID := state.DatastoreID.ValueString()
 	itemKey := state.ItemKey.ValueString()
 
@@ -170,13 +175,17 @@ func (d *datastoreItemDataSource) updateState(ctx context.Context, state *datast
 
 	// Convert value map to types.Map
 	if value, ok := attributes.GetValueOk(); ok && value != nil {
-		valueMap := make(map[string]string)
-		for k, v := range *value {
-			valueMap[k] = fmt.Sprintf("%v", v)
+		valueMap, err := datastoreItemValueToMap(*value)
+		if err != nil {
+			diags.AddError("error rendering datastore item value", err.Error())
+			return diags
 		}
-		mapValue, diags := types.MapValueFrom(ctx, types.StringType, valueMap)
-		if !diags.HasError() {
+		mapValue, mapDiags := types.MapValueFrom(ctx, types.StringType, valueMap)
+		diags.Append(mapDiags...)
+		if !mapDiags.HasError() {
 			state.Value = mapValue
 		}
 	}
+
+	return diags
 }
