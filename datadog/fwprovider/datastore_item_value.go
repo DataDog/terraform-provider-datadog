@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 )
 
 // datastoreItemValueToMap flattens an item's columns to strings, the element
@@ -19,11 +20,13 @@ func datastoreItemValueToMap(value map[string]interface{}) map[string]string {
 			out[column] = typed
 		case map[string]interface{}, []interface{}:
 			// The value was decoded from the API's JSON, so it encodes back.
-			if encoded, err := json.Marshal(typed); err == nil {
-				out[column] = string(encoded)
-				continue
+			encoded, err := json.Marshal(typed)
+			if err != nil {
+				log.Printf("[WARN] datadog_datastore_item: column %q is not encodable to JSON (%v); returning its Go rendering", column, err)
+				out[column] = fmt.Sprintf("%v", typed)
+				break
 			}
-			out[column] = fmt.Sprintf("%v", typed)
+			out[column] = string(encoded)
 		default:
 			out[column] = fmt.Sprintf("%v", typed)
 		}
