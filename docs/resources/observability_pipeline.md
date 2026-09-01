@@ -1604,8 +1604,9 @@ Required:
 
 Optional:
 
-- `auto_extract_timestamp` (Boolean) If `true`, Splunk tries to extract timestamps from incoming log events.
+- `auto_extract_timestamp` (Boolean) If `true`, Splunk tries to extract timestamps from incoming log events. If `false`, Splunk assigns the time the event was received. Only applies when `endpoint_target` is `event`; cannot be `true` when `endpoint_target` is `raw`.
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--splunk_hec--buffer))
+- `endpoint_target` (String) The Splunk HEC endpoint to send events to. Use `event` to send structured events to the `/event` endpoint, or `raw` to send the raw message to the `/raw` endpoint. Valid values are `event`, `raw`.
 - `endpoint_url_key` (String) Name of the environment variable or secret that holds the Splunk HEC endpoint URL.
 - `index` (String) Optional name of the Splunk index where logs are written.
 - `indexed_fields` (List of String) List of log field names to send as indexed fields to Splunk HEC. Available only when `encoding` is `json`.
