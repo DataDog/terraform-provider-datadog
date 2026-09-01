@@ -6,16 +6,18 @@ import (
 	"unicode"
 )
 
-// BuildArtifact wraps a tracked Operation's response tree into an *Artifact and
-// resolves its SDK call bindings. It sets Name/Kind/SourceFile/Schema and the
-// data-source SDK calls (Lifecycle.Read for by-id, Lifecycle.Search for the list
-// call) plus Lifecycle.IdStrategy. The request side (Create/Update/Delete,
-// GoRequestType) stays empty.
+// BuildArtifact wraps a tracked Operation into an *Artifact and resolves its SDK
+// call bindings. It sets Name/Kind/SourceFile plus Lifecycle.IdStrategy, and the
+// SDK calls its kind implies.
 //
 // A singular data source resolves its one record three ways, selected by which
 // group operations are declared: read only (by-id, the original behavior),
 // search only (find one in a list), or both (by-id when an id is given, else
-// search). Plural is unchanged.
+// search). Plural is unchanged. Each sets Schema from the response tree.
+//
+// A resource instead resolves the full CRUD set (Create/Read/Update/Delete, with
+// GoRequestType on the two that send a body) and leaves Schema nil until the
+// request/response merge lands — see buildResourceArtifact.
 func BuildArtifact(op *Operation) (*Artifact, error) {
 	if op == nil || op.Tracking == nil {
 		return nil, fmt.Errorf("model: BuildArtifact requires a tracked operation")
@@ -33,8 +35,13 @@ func BuildArtifact(op *Operation) (*Artifact, error) {
 	return artifact, nil
 }
 
-// buildArtifact selects the builder for op's cardinality and lookup shape.
+// buildArtifact selects the builder for op's kind, cardinality and lookup shape.
+// Kind is tested first: cardinality describes how a data source resolves its
+// records and says nothing about a resource, which always maps to exactly one.
 func buildArtifact(op *Operation) (*Artifact, error) {
+	if op.Tracking.ArtifactKind == ArtifactKindResource {
+		return buildResourceArtifact(op)
+	}
 	if op.Tracking.Cardinality == CardinalityPlural {
 		return buildPluralArtifact(op)
 	}
@@ -53,6 +60,40 @@ func buildArtifact(op *Operation) (*Artifact, error) {
 	}
 }
 
+// buildResourceArtifact builds a full-CRUD resource from the tracking group (see
+// buildResourceLifecycle).
+//
+// Schema is deliberately left nil. A resource's tree is the union of the Create
+// request, Update request and Read response bodies (FR-034/FR-034b), which
+// T120-T124 build; there is no correct single-body tree to put here in the
+// meantime, and populating one from the response alone would mark every
+// attribute Computed and read as a working resource. The CLI still skips
+// kind=resource, so nothing consumes this artifact yet.
+func buildResourceArtifact(op *Operation) (*Artifact, error) {
+	// Create and Read are load-bearing for the schema, not the lifecycle: without
+	// Create nothing is ever Required and the whole schema silently becomes
+	// Optional, without Read nothing is ever Computed and refresh can never
+	// reconcile state (FR-034b). Delete is load-bearing for the lifecycle, since
+	// Terraform must be able to destroy what it created. Two of the three are
+	// therefore preconditions of the merge T124 will add here, so the guard runs
+	// before any sub-builder rather than inside one of them.
+	if err := requireResolvedRoles(op, GroupRoleCreate, GroupRoleRead, GroupRoleDelete); err != nil {
+		return nil, err
+	}
+	lifecycle, diags, err := buildResourceLifecycle(op)
+	if err != nil {
+		return nil, err
+	}
+	return &Artifact{
+		Name:        op.Tracking.ArtifactName,
+		Kind:        ArtifactKindResource,
+		Description: op.Tracking.TfDescription,
+		SourceFile:  sourceFileFor(ArtifactKindResource, op.Tracking.ArtifactName),
+		Lifecycle:   lifecycle,
+		Diagnostics: diags,
+	}, nil
+}
+
 // buildSingularByIdArtifact resolves the one record by direct id lookup: its
 // Schema is the by-id response tree and Lifecycle.Read the get-by-id call.
 func buildSingularByIdArtifact(op *Operation) (*Artifact, error) {
@@ -60,7 +101,7 @@ func buildSingularByIdArtifact(op *Operation) (*Artifact, error) {
 	if err != nil {
 		return nil, err
 	}
-	read := readCall(op, true)
+	read := sdkCall(op, true)
 	inputs, err := buildRequiredInputLeaves(read.Arguments)
 	if err != nil {
 		return nil, err
@@ -72,7 +113,7 @@ func buildSingularByIdArtifact(op *Operation) (*Artifact, error) {
 		Cardinality: CardinalitySingular,
 		Description: op.Tracking.TfDescription,
 		Schema:      schema,
-		SourceFile:  sourceFileFor(op.Tracking.ArtifactName),
+		SourceFile:  sourceFileFor(op.Tracking.ArtifactKind, op.Tracking.ArtifactName),
 		Lifecycle: &LifecycleBindings{
 			Read:       read,
 			IdStrategy: op.Tracking.IdStrategy,
@@ -108,7 +149,7 @@ func buildSingularSearchArtifact(op *Operation) (*Artifact, error) {
 		Cardinality: CardinalitySingular,
 		Description: op.Tracking.TfDescription,
 		Schema:      &AttributeTree{Attributes: append(append(inputs, filters...), record.Attributes...)},
-		SourceFile:  sourceFileFor(op.Tracking.ArtifactName),
+		SourceFile:  sourceFileFor(op.Tracking.ArtifactKind, op.Tracking.ArtifactName),
 		Lifecycle: &LifecycleBindings{
 			Search:     search,
 			IdStrategy: op.Tracking.IdStrategy,
@@ -122,11 +163,10 @@ func buildSingularSearchArtifact(op *Operation) (*Artifact, error) {
 // same element shape the search returns); the search side adds Optional filters
 // from the list op's query parameters and the list call, alongside the by-id Read.
 func buildSingularBothArtifact(op *Operation) (*Artifact, error) {
-	searchOp := op.ResolvedGroup.Op(GroupRoleSearch)
-	if searchOp == nil {
-		return nil, fmt.Errorf("model: data source %q declares group.search %q but no such operation exists",
-			op.Tracking.ArtifactName, op.Tracking.Group.Search)
+	if err := requireResolvedRoles(op, GroupRoleSearch); err != nil {
+		return nil, err
 	}
+	searchOp := op.ResolvedGroup.Op(GroupRoleSearch)
 
 	// One state mapper serves both lookups only when the by-id record and the
 	// list element are the same shape. Stay "both" only when both $ref names are
@@ -153,7 +193,7 @@ func buildSingularBothArtifact(op *Operation) (*Artifact, error) {
 	if err != nil {
 		return nil, err
 	}
-	read := readCall(op, true)
+	read := sdkCall(op, true)
 	search := listCall(searchOp)
 	inputs, err := mergeRequiredInputLeaves(read.Arguments, search.Arguments)
 	if err != nil {
@@ -167,7 +207,7 @@ func buildSingularBothArtifact(op *Operation) (*Artifact, error) {
 		Cardinality: CardinalitySingular,
 		Description: op.Tracking.TfDescription,
 		Schema:      &AttributeTree{Attributes: append(append(inputs, filters...), record.Attributes...)},
-		SourceFile:  sourceFileFor(op.Tracking.ArtifactName),
+		SourceFile:  sourceFileFor(op.Tracking.ArtifactKind, op.Tracking.ArtifactName),
 		Lifecycle: &LifecycleBindings{
 			Read:       read,
 			Search:     search,
@@ -182,10 +222,8 @@ func buildSingularBothArtifact(op *Operation) (*Artifact, error) {
 // silently.
 //
 // It reports rather than fails, because whether a dangling reference is fatal
-// depends on the role: a builder that cannot proceed without one fails the
-// artifact itself with a message naming the role (buildSingularBothArtifact
-// does exactly that for a dangling group.search, and the resource lifecycle
-// builder will for the CRUD roles), and those returns never reach here. What is
+// depends on the shape: a shape that cannot proceed without a role rejects it up
+// front via requireResolvedRoles, and those returns never reach here. What is
 // left for this to surface is the remainder — a reference to a role this
 // artifact shape does not consume, which would otherwise vanish unnoticed.
 func unresolvedGroupDiagnostics(op *Operation) []Diagnostic {
@@ -203,9 +241,15 @@ func unresolvedGroupDiagnostics(op *Operation) []Diagnostic {
 	return diags
 }
 
-// sourceFileFor is the output path for a data-source artifact name.
-func sourceFileFor(name string) string {
-	return "datadog/fwprovider/data_source_datadog_" + name + ".go"
+// sourceFileFor is the output path for an artifact, keyed on kind so the two
+// prefixes stay in one place. Note the CLI overwrites SourceFile with a path
+// under --output-root, so the directory here is a default rather than a promise.
+func sourceFileFor(kind ArtifactKind, name string) string {
+	prefix := "data_source_datadog_"
+	if kind == ArtifactKindResource {
+		prefix = "resource_datadog_"
+	}
+	return "datadog/fwprovider/" + prefix + name + ".go"
 }
 
 // singularEnvelope wraps a list element schema in a one-property {data: element}
@@ -265,7 +309,7 @@ func buildPluralArtifact(op *Operation) (*Artifact, error) {
 		Cardinality: CardinalityPlural,
 		Description: op.Tracking.TfDescription,
 		Schema:      &AttributeTree{Attributes: attrs},
-		SourceFile:  "datadog/fwprovider/data_source_datadog_" + name + ".go",
+		SourceFile:  sourceFileFor(ArtifactKindDataSource, name),
 		Lifecycle: &LifecycleBindings{
 			Read:       read,
 			IdStrategy: op.Tracking.IdStrategy,
@@ -319,8 +363,10 @@ func SDKPackageForPath(path string) string {
 	return "datadog" + strings.ToUpper(versionSegment(path))
 }
 
-// readCall resolves the datadog-api-client-go binding for op's read.
-func readCall(op *Operation, aliasTerminalID bool) *SDKCall {
+// sdkCall resolves the datadog-api-client-go binding shared by every call shape:
+// package, API struct, method, response type and bound arguments. aliasTerminalID
+// renames a trailing path-id argument to "id".
+func sdkCall(op *Operation, aliasTerminalID bool) *SDKCall {
 	call := &SDKCall{
 		GoPackage:      SDKPackageForPath(op.Path),
 		GoApiStruct:    tagToClassName(op.Tag) + "Api",
@@ -337,7 +383,7 @@ func readCall(op *Operation, aliasTerminalID bool) *SDKCall {
 // params are query parameters), and the pagination flag. Shared by the plural
 // path and the singular search path.
 func listCall(op *Operation) *SDKCall {
-	c := readCall(op, false)
+	c := sdkCall(op, false)
 	c.ItemType = op.ItemRefName
 	c.Paginated = op.Pagination != nil
 	if op.SDKBinding == nil && len(op.QueryParams) > 0 {
