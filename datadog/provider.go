@@ -20,6 +20,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/cloudauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
@@ -110,7 +111,7 @@ func Provider() *schema.Provider {
 			"cloud_provider_region": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "The cloud provider region specifier; used for cloud-provider-based authentication. For example, `us-east-1` for AWS.",
+				Description: "The cloud provider region specifier; used for cloud-provider-based authentication. For example, `us-east-1` for AWS. When omitted for AWS, the region is loaded from the AWS SDK default configuration chain.",
 			},
 			"org_uuid": {
 				Type:        schema.TypeString,
@@ -121,19 +122,19 @@ func Provider() *schema.Provider {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Sensitive:   true,
-				Description: "The AWS access key ID; used for cloud-provider-based authentication. This can also be set using the `AWS_ACCESS_KEY_ID` environment variable. Required when using `cloud_provider_type` set to `aws`.",
+				Description: "An optional explicit AWS access key ID used for cloud-provider-based authentication. This can also be set using the `AWS_ACCESS_KEY_ID` environment variable. When explicit credentials are omitted, the AWS SDK default credential chain is used.",
 			},
 			"aws_secret_access_key": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Sensitive:   true,
-				Description: "The AWS secret access key; used for cloud-provider-based authentication. This can also be set using the `AWS_SECRET_ACCESS_KEY` environment variable. Required when using `cloud_provider_type` set to `aws`.",
+				Description: "An optional explicit AWS secret access key used for cloud-provider-based authentication. This can also be set using the `AWS_SECRET_ACCESS_KEY` environment variable. It must be provided together with `aws_access_key_id`. Omit both fields to use the AWS SDK default credential chain.",
 			},
 			"aws_session_token": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Sensitive:   true,
-				Description: "The AWS session token; used for cloud-provider-based authentication. This can also be set using the `AWS_SESSION_TOKEN` environment variable. Required when using `cloud_provider_type` set to `aws` and using temporary credentials.",
+				Description: "An optional AWS session token used with explicit temporary credentials for cloud-provider-based authentication. This can also be set using the `AWS_SESSION_TOKEN` environment variable.",
 			},
 			"http_client_retry_enabled": {
 				Type:         schema.TypeString,
@@ -430,7 +431,9 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	communityClient.HttpClient = c
 
 	// Initialize the official Datadog V1 API client
+	datadogHTTPClient := utils.NewHTTPClient()
 	auth := context.Background()
+	var delegatedTokenProvider datadog.DelegatedTokenProvider
 	// Check cloud_provider_type first - explicit config takes precedence over API keys
 	if cloudProviderType != "" {
 		// Allows for delegated token authentication
@@ -441,15 +444,17 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		)
 		switch cloudProviderType {
 		case "aws":
-			auth = context.WithValue(
-				auth,
-				datadog.ContextAWSVariables,
-				map[string]string{
-					datadog.AWSAccessKeyIdName:     awsAccessKeyId,
-					datadog.AWSSecretAccessKeyName: awsSecretAccessKey,
-					datadog.AWSSessionTokenName:    awsSessionToken,
-				},
-			)
+			var err error
+			delegatedTokenProvider, err = cloudauth.NewAWSProvider(cloudauth.AWSConfig{
+				Region:          cloudProviderRegion,
+				AccessKeyID:     awsAccessKeyId,
+				SecretAccessKey: awsSecretAccessKey,
+				SessionToken:    awsSessionToken,
+				HTTPClient:      datadogHTTPClient,
+			})
+			if err != nil {
+				return nil, diag.FromErr(err)
+			}
 		default:
 			return nil, diag.FromErr(errors.New("cloud_provider_type must be set to a valid value unless validate = false"))
 		}
@@ -555,17 +560,15 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		})
 	}
 
-	config.HTTPClient = utils.NewHTTPClient()
+	config.HTTPClient = datadogHTTPClient
 	// If cloud_provider_type is set, use cloud auth (takes precedence over API keys)
 	if cloudProviderType != "" {
 		switch cloudProviderType {
 		case "aws":
 			config.DelegatedTokenConfig = &datadog.DelegatedTokenConfig{
-				OrgUUID: orgUUID,
-				ProviderAuth: &datadog.AWSAuth{
-					AwsRegion: cloudProviderRegion,
-				},
-				Provider: "aws",
+				OrgUUID:      orgUUID,
+				ProviderAuth: delegatedTokenProvider,
+				Provider:     datadog.ProviderAWS,
 			}
 		}
 	}
