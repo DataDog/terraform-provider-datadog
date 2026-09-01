@@ -3,7 +3,7 @@ package fwprovider
 import (
 	"context"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -25,6 +25,7 @@ type organizationDataSourceModel struct {
 	ID          types.String                `tfsdk:"id"`
 	Name        types.String                `tfsdk:"name"`
 	PublicId    types.String                `tfsdk:"public_id"`
+	Uuid        types.String                `tfsdk:"uuid"`
 	Description types.String                `tfsdk:"description"`
 	Settings    []organizationSettingsModel `tfsdk:"settings"`
 }
@@ -66,14 +67,14 @@ type samlStrictModeModel struct {
 
 // organizationDataSource is the data source implementation
 type organizationDataSource struct {
-	Api  *datadogV1.OrganizationsApi
-	Auth context.Context
+	DDApi *utils.ApiInstances
+	Auth  context.Context
 }
 
 // Configure sets up the data source with provider data
 func (d *organizationDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
-	d.Api = providerData.DatadogApiInstances.GetOrganizationsApiV1()
+	d.DDApi = providerData.DatadogApiInstances
 	d.Auth = providerData.Auth
 }
 
@@ -94,6 +95,10 @@ func (d *organizationDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 			},
 			"public_id": schema.StringAttribute{
 				Description: "The public_id of the organization.",
+				Computed:    true,
+			},
+			"uuid": schema.StringAttribute{
+				Description: "The UUID of the organization.",
 				Computed:    true,
 			},
 			"description": schema.StringAttribute{
@@ -197,7 +202,7 @@ func (d *organizationDataSource) Read(ctx context.Context, req datasource.ReadRe
 	}
 
 	// List organizations accessible with current credentials
-	orgsResp, httpResp, err := d.Api.ListOrgs(d.Auth)
+	orgsResp, httpResp, err := d.DDApi.GetOrganizationsApiV1().ListOrgs(d.Auth)
 	if err != nil {
 		resp.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, "error getting organization"), ""))
 		return
@@ -225,6 +230,23 @@ func (d *organizationDataSource) Read(ctx context.Context, req datasource.ReadRe
 	state.Name = types.StringValue(org.GetName())
 	state.PublicId = types.StringValue(org.GetPublicId())
 	state.Description = types.StringValue(org.GetDescription())
+
+	// Get the organization UUID (only available via the v2 API). filter[name] is
+	// set to a value that is very unlikely to match a real org name so the
+	// response only includes the current org instead of the full managed-orgs
+	// list.
+	//
+	// Note: As of 2026-07-01, this filter has no effect due to a backend bug; this
+	// has been reported and should be fixed soon.
+	orgsV2Resp, httpResp, err := d.DDApi.GetOrganizationsApiV2().ListOrgs(
+		d.Auth,
+		*datadogV2.NewListOrgsOptionalParameters().WithFilterName("tf-dd-org-uuid-lookup"),
+	)
+	if err != nil {
+		resp.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, "error getting organization uuid"), ""))
+		return
+	}
+	state.Uuid = types.StringValue(orgsV2Resp.Data.GetId().String())
 
 	// Map settings
 	settings := org.GetSettings()

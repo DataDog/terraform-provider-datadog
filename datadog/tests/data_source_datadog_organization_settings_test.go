@@ -20,6 +20,7 @@ func TestAccDatadogOrganizationSettingsDatasource_basic(t *testing.T) {
 					resource.TestCheckResourceAttrSet("data.datadog_organization_settings.test", "id"),
 					resource.TestCheckResourceAttrSet("data.datadog_organization_settings.test", "name"),
 					resource.TestCheckResourceAttrSet("data.datadog_organization_settings.test", "public_id"),
+					resource.TestCheckResourceAttrSet("data.datadog_organization_settings.test", "uuid"),
 				),
 			},
 		},
@@ -69,6 +70,7 @@ func TestAccDatadogOrganizationSettingsDatasource_outputs(t *testing.T) {
 					// Verify data source attributes are set
 					resource.TestCheckResourceAttrSet("data.datadog_organization_settings.test", "name"),
 					resource.TestCheckResourceAttrSet("data.datadog_organization_settings.test", "public_id"),
+					resource.TestCheckResourceAttrSet("data.datadog_organization_settings.test", "uuid"),
 					// Verify settings can be accessed in outputs
 					resource.TestCheckResourceAttrSet("data.datadog_organization_settings.test", "settings.0.saml.0.enabled"),
 				),
@@ -93,6 +95,10 @@ output "org_name" {
 
 output "org_public_id" {
   value = data.datadog_organization_settings.test.public_id
+}
+
+output "org_uuid" {
+  value = data.datadog_organization_settings.test.uuid
 }
 
 output "saml_enabled" {
