@@ -14,15 +14,37 @@ var (
 	patternFollowingAlpha   = regexp.MustCompile(`([a-z0-9])([A-Z])`)
 	patternWhitespace       = regexp.MustCompile(`\W`)
 	patternDoubleUnderscore = regexp.MustCompile(`__+`)
+	patternNonAlphanumeric  = regexp.MustCompile(`[^a-zA-Z0-9]`)
 )
 
-// SnakeCase converts a camelCase or PascalCase identifier to snake_case.
+// SnakeCase converts a camelCase or PascalCase identifier to snake_case. It is
+// a port of utils.snake_case from datadog-api-client-go's bundled generator,
+// applying the same five operations in the same order.
 func SnakeCase(value string) string {
 	value = patternLeadingAlpha.ReplaceAllString(value, "${1}_${2}")
 	value = strings.ToLower(patternFollowingAlpha.ReplaceAllString(value, "${1}_${2}"))
 	value = patternWhitespace.ReplaceAllString(value, "_")
 	value = strings.TrimRight(value, "_")
 	return patternDoubleUnderscore.ReplaceAllString(value, "_")
+}
+
+// SdkClassName is a port of utils.class_name from datadog-api-client-go's
+// bundled generator (.generator/src/generator/utils.py):
+//
+//	value = re.sub(r'[^a-zA-Z0-9]', '', value)
+//	return value + "Api"
+//
+// It strips non-alphanumerics and does not re-capitalize, because the SDK relies
+// on tags already being PascalCase: "Org Groups" → "OrgGroupsApi" and "APM" →
+// "APMApi", while a lower-cased word stays lower ("org groups" → "orggroupsApi").
+// That last case is the point — capitalizing it would name a Go type the SDK
+// never generated.
+//
+// Deliberately not the TypeScript generator's tag_to_class_name (word-break, then
+// capitalize each word), which agrees on every PascalCase tag and diverges on any
+// other. Contrast SdkName, which lower-cases acronyms ("APM" → "Apm").
+func SdkClassName(tag string) string {
+	return patternNonAlphanumeric.ReplaceAllString(tag, "") + "Api"
 }
 
 // goKeywords is Go's full reserved-word set, the same list the SDK generator
