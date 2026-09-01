@@ -99,8 +99,6 @@ func (r *datastoreItemResource) Read(ctx context.Context, request resource.ReadR
 	// `item_key` while the API reads `itemKey`, so it is ignored and the
 	// response is the whole datastore. Without this, a deleted item is still
 	// found — as some other item — and the deletion is never detected.
-	// `filter` is a glob, so it can match more than one item and the exact
-	// key is selected below.
 	optionalParams := datadogV2.NewListDatastoreItemsOptionalParameters().WithFilter(itemKey)
 
 	resp, httpResp, err := r.Api.ListDatastoreItems(r.Auth, datastoreID, *optionalParams)
