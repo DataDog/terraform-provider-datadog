@@ -7902,6 +7902,138 @@ resource "datadog_observability_pipeline" "splunk_hec_metrics_dest" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_opentelemetryMetricsDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.opentelemetry_metrics_dest"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// Minimal config: only required fields
+				Config: `
+resource "datadog_observability_pipeline" "opentelemetry_metrics_dest" {
+  name = "opentelemetry-metrics-destination-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    destination {
+      id     = "opentelemetry-metrics-1"
+      inputs = ["source-1"]
+
+      opentelemetry {
+        http_client_uri_key = "DESTINATION_OTEL_HTTP_CLIENT_URI"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "opentelemetry-metrics-destination-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "opentelemetry-metrics-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.http_client_uri_key", "DESTINATION_OTEL_HTTP_CLIENT_URI"),
+				),
+			},
+			{
+				// Full config: TLS and disk buffer
+				Config: `
+resource "datadog_observability_pipeline" "opentelemetry_metrics_dest" {
+  name = "opentelemetry-metrics-destination-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    destination {
+      id     = "opentelemetry-metrics-1"
+      inputs = ["source-1"]
+
+      opentelemetry {
+        http_client_uri_key = "DESTINATION_OTEL_HTTP_CLIENT_URI"
+
+        tls {
+          crt_file = "/etc/ssl/certs/otel.crt"
+          ca_file  = "/etc/ssl/certs/ca.crt"
+          key_file = "/etc/ssl/private/otel.key"
+        }
+
+        buffer {
+          disk {
+            max_size  = 1073741824
+            when_full = "drop_newest"
+          }
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "opentelemetry-metrics-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.http_client_uri_key", "DESTINATION_OTEL_HTTP_CLIENT_URI"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.tls.0.crt_file", "/etc/ssl/certs/otel.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.tls.0.key_file", "/etc/ssl/private/otel.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.buffer.0.disk.0.max_size", "1073741824"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.buffer.0.disk.0.when_full", "drop_newest"),
+				),
+			},
+			{
+				// Update: switch to memory buffer
+				Config: `
+resource "datadog_observability_pipeline" "opentelemetry_metrics_dest" {
+  name = "opentelemetry-metrics-destination-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    destination {
+      id     = "opentelemetry-metrics-1"
+      inputs = ["source-1"]
+
+      opentelemetry {
+        http_client_uri_key = "DESTINATION_OTEL_HTTP_CLIENT_URI"
+
+        buffer {
+          memory {
+            max_events = 10000
+            when_full  = "block"
+          }
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.http_client_uri_key", "DESTINATION_OTEL_HTTP_CLIENT_URI"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.buffer.0.memory.0.max_events", "10000"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.buffer.0.memory.0.when_full", "block"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_generateMetricsV2Processor(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 

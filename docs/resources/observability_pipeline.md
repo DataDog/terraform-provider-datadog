@@ -125,6 +125,7 @@ Optional:
 - `microsoft_sentinel` (Block List) The `microsoft_sentinel` destination forwards logs to Microsoft Sentinel. (see [below for nested schema](#nestedblock--config--destination--microsoft_sentinel))
 - `new_relic` (Block List) The `new_relic` destination sends logs to the New Relic platform. (see [below for nested schema](#nestedblock--config--destination--new_relic))
 - `opensearch` (Block List) The `opensearch` destination writes logs to an OpenSearch cluster. (see [below for nested schema](#nestedblock--config--destination--opensearch))
+- `opentelemetry` (Block List) The `opentelemetry` destination forwards metrics using the OpenTelemetry Protocol (OTLP) over HTTP. (see [below for nested schema](#nestedblock--config--destination--opentelemetry))
 - `rsyslog` (Block List) The `rsyslog` destination forwards logs to an external `rsyslog` server over TCP or UDP using the syslog protocol. (see [below for nested schema](#nestedblock--config--destination--rsyslog))
 - `sentinel_one` (Block List) The `sentinel_one` destination sends logs to SentinelOne. (see [below for nested schema](#nestedblock--config--destination--sentinel_one))
 - `socket` (Block List) The `socket` destination sends logs over TCP or UDP to a remote server. (see [below for nested schema](#nestedblock--config--destination--socket))
@@ -1396,6 +1397,58 @@ Optional:
 - `dataset` (String) The data stream dataset for your logs. This groups logs by their source or application.
 - `dtype` (String) The data stream type for your logs. This determines how logs are categorized within the data stream.
 - `namespace` (String) The data stream namespace for your logs. This separates logs into different environments or domains.
+
+
+
+<a id="nestedblock--config--destination--opentelemetry"></a>
+### Nested Schema for `config.destination.opentelemetry`
+
+Optional:
+
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--opentelemetry--buffer))
+- `http_client_uri_key` (String) Environment variable name containing the URI of the OTLP HTTP endpoint to send metrics to.
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--opentelemetry--tls))
+
+<a id="nestedblock--config--destination--opentelemetry--buffer"></a>
+### Nested Schema for `config.destination.opentelemetry.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--opentelemetry--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--opentelemetry--buffer--memory))
+
+<a id="nestedblock--config--destination--opentelemetry--buffer--disk"></a>
+### Nested Schema for `config.destination.opentelemetry.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--opentelemetry--buffer--memory"></a>
+### Nested Schema for `config.destination.opentelemetry.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+
+<a id="nestedblock--config--destination--opentelemetry--tls"></a>
+### Nested Schema for `config.destination.opentelemetry.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
