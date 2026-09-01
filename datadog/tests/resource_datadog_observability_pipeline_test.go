@@ -1779,6 +1779,58 @@ resource "datadog_observability_pipeline" "gcs_dest_minimal" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_googleCloudStorageDestinationCompression(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.gcs_dest_compression"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "gcs_dest_compression" {
+  name = "gcs-destination-compression-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id = "gcs-destination-compression-1"
+      inputs = ["source-1"]
+      google_cloud_storage {
+        bucket        = "my-gcs-bucket"
+        key_prefix    = "logs/"
+        storage_class = "NEARLINE"
+
+        compression {
+          algorithm = "zstd"
+          level     = 12
+        }
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "gcs-destination-compression-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_cloud_storage.0.bucket", "my-gcs-bucket"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_cloud_storage.0.key_prefix", "logs/"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_cloud_storage.0.storage_class", "NEARLINE"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_cloud_storage.0.compression.0.algorithm", "zstd"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_cloud_storage.0.compression.0.level", "12"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_splunkHecDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	resourceName := "datadog_observability_pipeline.splunk_hec_dest"
@@ -2203,6 +2255,60 @@ resource "datadog_observability_pipeline" "azure_storage_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.container_name", "logs-container"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.blob_prefix", "logs/"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.connection_string_key", "AZURE_STORAGE_CONNECTION_STRING_IDENT"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_azureStorageDestinationCompression(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.azure_storage_dest_compression"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "azure_storage_dest_compression" {
+  name = "azure-storage-dest-compression-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "azure-storage-compression-1"
+      inputs = ["source-1"]
+
+      azure_storage {
+        container_name        = "logs-container"
+        blob_prefix           = "logs/"
+        connection_string_key = "AZURE_STORAGE_CONNECTION_STRING_IDENT"
+
+        compression {
+          algorithm = "zstd"
+          level     = 15
+        }
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "azure-storage-dest-compression-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "azure-storage-compression-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.container_name", "logs-container"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.blob_prefix", "logs/"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.connection_string_key", "AZURE_STORAGE_CONNECTION_STRING_IDENT"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.compression.0.algorithm", "zstd"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.compression.0.level", "15"),
 				),
 			},
 		},
@@ -5584,6 +5690,62 @@ resource "datadog_observability_pipeline" "amazon_s3_sse_kms" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.storage_class", "STANDARD"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.server_side_encryption", "aws:kms"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.ssekms_key_id", "arn:aws:kms:us-east-1:123456789012:key/mrk-abc123"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_amazonS3DestinationCompression(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.amazon_s3_compression"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "amazon_s3_compression" {
+  name = "amazon s3 compression pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id           = "s3-dest-compression-1"
+      inputs       = ["source-1"]
+
+      amazon_s3 {
+        bucket       = "my-logs-bucket"
+        region       = "us-east-1"
+        key_prefix   = "logs/"
+        storage_class = "STANDARD"
+
+        compression {
+          algorithm = "zstd"
+          level     = 9
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "s3-dest-compression-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.bucket", "my-logs-bucket"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.region", "us-east-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.key_prefix", "logs/"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.storage_class", "STANDARD"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.compression.0.algorithm", "zstd"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.compression.0.level", "9"),
 				),
 			},
 		},
