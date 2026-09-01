@@ -20,6 +20,12 @@ import (
 type methodSignature struct {
 	arguments []argumentSignature
 	options   string
+	// receiver is the API struct the method hangs off in the pinned SDK, e.g.
+	// "IncidentsApi". Retained so corroborate can check the derived receiver
+	// name, not just the argument list: a tag whose spelling defeats
+	// model.SdkClassName yields a plausible name for a type the SDK never
+	// generated, and nothing else in the pipeline notices (FR-005a).
+	receiver string
 }
 
 type argumentSignature struct {
@@ -84,6 +90,7 @@ func Load(dir string) (*Inventory, error) {
 					args = args[:len(args)-1]
 				}
 				sig.arguments = args
+				sig.receiver = receiver
 				inv.methods[fn.Name.Name] = sig
 			}
 		}
@@ -288,6 +295,15 @@ func (i *Inventory) corroborate(op *model.Operation) []model.Diagnostic {
 	}
 	var differences []string
 	derived := op.SDKBinding
+	// Skipped for an untagged operation: SdkClassName would derive the useless
+	// "Api" and drown out the real problem, which is the missing tag. Nothing
+	// currently rejects an empty Tag (parser.firstTag returns ""), despite
+	// data-model.md's validation table claiming the parser enforces it.
+	if op.Tag != "" {
+		if got := model.SdkClassName(op.Tag); got != pinned.receiver {
+			differences = append(differences, fmt.Sprintf("API struct derived %q from tag %q, pinned %q", got, op.Tag, pinned.receiver))
+		}
+	}
 	if got, want := renderArguments(derived.Required), renderArgumentSignatures(pinned.arguments); got != want {
 		differences = append(differences, fmt.Sprintf("required arguments derived [%s], pinned [%s]", got, want))
 	}

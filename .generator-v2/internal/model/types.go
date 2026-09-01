@@ -612,9 +612,9 @@ type LifecycleBindings struct {
 	// Search is the list call a singular data source uses to resolve one record
 	// by filter. It carries the list-call fields (ItemType/OptionalParamsType/
 	// Paginated), same as a plural Read.
-	Search     *SDKCall
-	Update     *SDKCall
-	Delete     *SDKCall
+	Search *SDKCall
+	Update *SDKCall
+	Delete *SDKCall
 	// UpdateUnsupported records that the tracking group declares no update role,
 	// so no endpoint can modify this resource in place (spec Edge Case). It states
 	// the lifecycle fact rather than the Terraform consequence — deciding that the
@@ -637,10 +637,8 @@ type SDKCall struct {
 	// segment after /api/ in Operation.Path (e.g. /api/v2/... → "datadogV2").
 	GoPackage string
 	// GoApiStruct is the API client struct name, e.g. "OrgGroupsApi".
-	// Rule: tag_to_class_name(Operation.Tag): replaces every non-alphanumeric
-	// character with a space, capitalizes each word and joins, then appends
-	// "Api". Preserves original casing within each word (so "APM" → "APMApi",
-	// not "ApmApi").
+	// Rule: SdkClassName(Operation.Tag) — strip every non-alphanumeric
+	// character, then append "Api", with no re-capitalization.
 	GoApiStruct string
 	// GoMethod is the method name on GoApiStruct, e.g. "CreateOrgGroup".
 	// Rule: Operation.OperationId, no transformation applied.
