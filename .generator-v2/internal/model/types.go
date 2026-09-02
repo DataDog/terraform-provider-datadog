@@ -354,6 +354,25 @@ type Schema struct {
 	// carrying one — mirroring how the SDK generator's child_models() prefers a
 	// $ref name over the parent-derived alternative name.
 	RefName string
+	// Provenance is non-nil only on a node produced by unioning the Create
+	// request, Update request and Read response bodies; nil on any
+	// single-direction schema.
+	Provenance *SchemaProvenance
+}
+
+// SchemaProvenance records which of the three bodies — Create request,
+// Update request, Read response — contributed a given node during a resource
+// schema merge.
+type SchemaProvenance struct {
+	// InRequest is true when the node is present in the Create or Update
+	// request body.
+	InRequest bool
+	// RequestRequired is true when the node is named in the Create body's
+	// Required list. The Update body is never consulted for requiredness — a
+	// PATCH body marks everything optional.
+	RequestRequired bool
+	// InResponse is true when the node is present in the Read response body.
+	InResponse bool
 }
 
 // OneOfSpec is the normalized representation of an OpenAPI oneOf. The envelope
@@ -494,6 +513,13 @@ type Attribute struct {
 	Default *Literal
 	// Validators is the fingerprintable validator list for this attribute.
 	Validators []ValidatorSpec
+	// PlanModifiers holds this attribute's plan modifiers: UseStateForUnknown()
+	// on an Optional+Computed attribute, RequiresReplace() on a
+	// request-settable one when no Update role exists. Never set on a
+	// Computed-only attribute — the server may change such a value during
+	// apply, so either modifier there would produce an inconsistent-result
+	// error or a spurious replacement.
+	PlanModifiers []PlanModifierSpec
 	// Description is always populated from the OpenAPI description (repo convention).
 	Description string
 	// Children holds nested attributes for nested blocks.
@@ -597,6 +623,17 @@ type Literal struct {
 // validator: the constructor plus its Go-source-rendered arguments.
 type ValidatorSpec struct {
 	// Name is the validator constructor, e.g. stringvalidator.LengthAtLeast.
+	Name string
+	// Args are the constructor arguments rendered as Go source expressions.
+	Args []string
+}
+
+// PlanModifierSpec is one plan modifier attached to a resource attribute,
+// rendered as a Go constructor call and typed per framework value kind
+// (planmodifier.Bool, planmodifier.Object, ...) derived from Attribute.GoType.
+type PlanModifierSpec struct {
+	// Name is the plan modifier constructor, e.g.
+	// stringplanmodifier.UseStateForUnknown or boolplanmodifier.RequiresReplace.
 	Name string
 	// Args are the constructor arguments rendered as Go source expressions.
 	Args []string

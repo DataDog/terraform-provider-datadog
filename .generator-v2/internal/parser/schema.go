@@ -652,7 +652,7 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 		// Sorted iteration keeps recursion (and any surfaced error) deterministic.
 		for _, key := range sortedPropertyKeys(s) {
 			child, err := n.normalizeProxyAt(s.Properties.GetOrZero(key), depth, schemaContext{
-				path:     childPath(ctx.path, key),
+				path:     model.ChildPath(ctx.path, key),
 				required: slices.Contains(s.Required, key),
 			})
 			if err != nil {
@@ -666,7 +666,7 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 		// Array: a single element schema, carried in out.Items.
 		if s.Items != nil && s.Items.IsA() {
 			item, err := n.normalizeProxyAt(s.Items.A, depth, schemaContext{
-				path:     childPath(ctx.path, "[]"),
+				path:     model.ChildPath(ctx.path, "[]"),
 				required: true,
 			})
 			if err != nil {
@@ -682,7 +682,7 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 		// represent, so carry an Unsupported sentinel for the check to reject.
 		if s.AdditionalProperties != nil && s.AdditionalProperties.IsA() {
 			value, err := n.normalizeProxyAt(s.AdditionalProperties.A, depth, schemaContext{
-				path:     childPath(ctx.path, "{}"),
+				path:     model.ChildPath(ctx.path, "{}"),
 				required: true,
 			})
 			if err != nil {
@@ -762,7 +762,7 @@ func (n *schemaNormalizer) normalizeOneOf(s *base.Schema, depth int, ctx schemaC
 		if err != nil {
 			return nil, fmt.Errorf("parser: %w", err)
 		}
-		variantPath := childPath(ctx.path, tfName)
+		variantPath := model.ChildPath(ctx.path, tfName)
 		variantSchema, err := n.normalizeProxyAt(proxy, depth, schemaContext{
 			path:     variantPath,
 			required: true,
@@ -784,7 +784,7 @@ func (n *schemaNormalizer) normalizeOneOf(s *base.Schema, depth int, ctx schemaC
 			GoName:       model.SdkName(tfName),
 			Schema:       variantSchema,
 			RefName:      source.refName,
-			ValueWrapped: oneOfValueWrapped(variantSchema),
+			ValueWrapped: model.OneOfValueWrapped(variantSchema),
 		})
 	}
 
@@ -926,7 +926,7 @@ func (n *schemaNormalizer) mergeOneOfSiblings(
 	// A type:object sibling carrying only required names is a constraint
 	// carrier, not a standalone Terraform object. General schema normalization
 	// correctly classifies an object with no properties as Unsupported, but
-	// retaining that sentinel here would cause mergeNormalizedSchemas to discard
+	// retaining that sentinel here would cause MergeNormalizedSchemas to discard
 	// the required constraint. Give this merge-only schema an empty object shape
 	// so its required names are applied to every object alternative.
 	if common.Kind == model.SchemaKindUnsupported && isRequiredOnlyObjectConstraint(commonRaw) {
@@ -934,7 +934,7 @@ func (n *schemaNormalizer) mergeOneOfSiblings(
 		common.Properties = make(map[string]*model.Schema)
 		common.Required = sortedRequired(commonRaw)
 	}
-	return mergeNormalizedSchemas(variant, common), nil
+	return model.MergeNormalizedSchemas(variant, common), nil
 }
 
 func isRequiredOnlyObjectConstraint(s *base.Schema) bool {
@@ -969,114 +969,6 @@ func oneOfSiblingSchema(s *base.Schema) (*base.Schema, bool) {
 		len(common.Enum) > 0 ||
 		common.Format != ""
 	return &common, hasConstraints
-}
-
-// mergeNormalizedSchemas intersects the subset of OpenAPI constraints retained
-// by model.Schema. A kind mismatch remains present as an Unsupported variant so
-// later validation can report that precise alternative instead of dropping it.
-func mergeNormalizedSchemas(variant, common *model.Schema) *model.Schema {
-	if variant == nil {
-		return common
-	}
-	if common == nil {
-		return variant
-	}
-	if common.Kind == model.SchemaKindUnsupported {
-		out := cloneSchema(common)
-		if out.Description == "" {
-			out.Description = variant.Description
-		}
-		return out
-	}
-	if variant.Kind == model.SchemaKindOneOf && variant.OneOf != nil {
-		for i := range variant.OneOf.Variants {
-			variant.OneOf.Variants[i].Schema = mergeNormalizedSchemas(variant.OneOf.Variants[i].Schema, common)
-			variant.OneOf.Variants[i].ValueWrapped = oneOfValueWrapped(variant.OneOf.Variants[i].Schema)
-		}
-		return variant
-	}
-	if variant.Kind == model.SchemaKindUnsupported {
-		if variant.UnsupportedReason != "" {
-			return variant
-		}
-		if common.Description == "" {
-			common.Description = variant.Description
-		}
-		return common
-	}
-	if variant.Kind != common.Kind {
-		return &model.Schema{
-			Kind:              model.SchemaKindUnsupported,
-			Description:       variant.Description,
-			UnsupportedReason: fmt.Sprintf("oneOf alternative kind %q conflicts with adjacent schema kind %q", variant.Kind, common.Kind),
-		}
-	}
-
-	switch variant.Kind {
-	case model.SchemaKindObject:
-		if variant.Properties == nil {
-			variant.Properties = make(map[string]*model.Schema)
-		}
-		for key, commonProperty := range common.Properties {
-			if property, exists := variant.Properties[key]; exists {
-				variant.Properties[key] = mergeNormalizedSchemas(property, commonProperty)
-			} else {
-				variant.Properties[key] = commonProperty
-			}
-		}
-		variant.Required = sortedUniqueStrings(append(variant.Required, common.Required...))
-	case model.SchemaKindArray, model.SchemaKindMap:
-		variant.Items = mergeNormalizedSchemas(variant.Items, common.Items)
-	case model.SchemaKindPrimitive:
-		if variant.Type != "" && common.Type != "" && variant.Type != common.Type {
-			return &model.Schema{
-				Kind:              model.SchemaKindUnsupported,
-				Description:       variant.Description,
-				UnsupportedReason: fmt.Sprintf("oneOf alternative type %q conflicts with adjacent type %q", variant.Type, common.Type),
-			}
-		}
-		if variant.Type == "" {
-			variant.Type = common.Type
-		}
-		if variant.Format != "" && common.Format != "" && variant.Format != common.Format {
-			return &model.Schema{
-				Kind:              model.SchemaKindUnsupported,
-				Description:       variant.Description,
-				UnsupportedReason: fmt.Sprintf("oneOf alternative format %q conflicts with adjacent format %q", variant.Format, common.Format),
-			}
-		}
-		if variant.Format == "" {
-			variant.Format = common.Format
-		}
-		switch {
-		case len(variant.Enum) == 0:
-			variant.Enum = append([]string(nil), common.Enum...)
-		case len(common.Enum) > 0:
-			intersection := intersectStrings(variant.Enum, common.Enum)
-			if len(intersection) == 0 {
-				return &model.Schema{
-					Kind:              model.SchemaKindUnsupported,
-					Description:       variant.Description,
-					UnsupportedReason: "oneOf alternative enum has no values in common with adjacent enum",
-				}
-			}
-			variant.Enum = intersection
-		}
-	}
-	variant.Sensitive = variant.Sensitive || common.Sensitive
-	return variant
-}
-
-func oneOfValueWrapped(schema *model.Schema) bool {
-	if schema == nil {
-		return false
-	}
-	switch schema.Kind {
-	case model.SchemaKindPrimitive, model.SchemaKindArray, model.SchemaKindMap:
-		return true
-	default:
-		return false
-	}
 }
 
 // normalizeAllOf flattens the bounded allOf subset used by the Datadog API
@@ -1139,7 +1031,7 @@ func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaC
 	}
 
 	if len(branches) == 1 {
-		out := cloneSchema(branches[0].schema)
+		out := model.CloneSchema(branches[0].schema)
 		if outerType != "" && !schemaKindMatchesType(out, outerType) {
 			return unsupportedSchema(fmt.Sprintf("allOf outer type %q conflicts with branch %d schema kind %q", outerType, branches[0].index, out.Kind)), nil
 		}
@@ -1202,7 +1094,7 @@ func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaC
 				)), nil
 			}
 			propertyBranch[name] = branch.index
-			out.Properties[name] = cloneSchema(child)
+			out.Properties[name] = model.CloneSchema(child)
 		}
 		for _, name := range branch.schema.Required {
 			required[name] = true
@@ -1432,82 +1324,6 @@ func nonNullTypes(types []string) []string {
 		}
 	}
 	return out
-}
-
-func childPath(parent, child string) string {
-	if parent == "" {
-		return child
-	}
-	if child == "[]" || child == "{}" {
-		return parent + child
-	}
-	return parent + "." + child
-}
-
-func sortedUniqueStrings(values []string) []string {
-	if len(values) == 0 {
-		return nil
-	}
-	sort.Strings(values)
-	return slices.Compact(values)
-}
-
-func intersectStrings(left, right []string) []string {
-	allowed := make(map[string]struct{}, len(right))
-	for _, value := range right {
-		allowed[value] = struct{}{}
-	}
-	var intersection []string
-	for _, value := range left {
-		if _, ok := allowed[value]; ok {
-			intersection = append(intersection, value)
-		}
-	}
-	return sortedUniqueStrings(intersection)
-}
-
-// cloneSchema returns a deep copy so applying allOf metadata never mutates a
-// normalized branch or any child reachable from it.
-func cloneSchema(s *model.Schema) *model.Schema {
-	if s == nil {
-		return nil
-	}
-	out := *s
-	out.Enum = append([]string(nil), s.Enum...)
-	out.Required = append([]string(nil), s.Required...)
-	out.Items = cloneSchema(s.Items)
-	if s.Properties != nil {
-		out.Properties = make(map[string]*model.Schema, len(s.Properties))
-		for name, child := range s.Properties {
-			out.Properties[name] = cloneSchema(child)
-		}
-	}
-	if s.Variants != nil {
-		out.Variants = make([]*model.Schema, len(s.Variants))
-		for i, variant := range s.Variants {
-			out.Variants[i] = cloneSchema(variant)
-		}
-	}
-	if s.OneOf != nil {
-		oneOf := *s.OneOf
-		oneOf.Variants = make([]model.OneOfVariant, len(s.OneOf.Variants))
-		for i, variant := range s.OneOf.Variants {
-			oneOf.Variants[i] = variant
-			oneOf.Variants[i].Schema = cloneSchema(variant.Schema)
-		}
-		if s.OneOf.Discriminator != nil {
-			discriminator := *s.OneOf.Discriminator
-			if s.OneOf.Discriminator.Mapping != nil {
-				discriminator.Mapping = make(map[string]string, len(s.OneOf.Discriminator.Mapping))
-				for key, value := range s.OneOf.Discriminator.Mapping {
-					discriminator.Mapping[key] = value
-				}
-			}
-			oneOf.Discriminator = &discriminator
-		}
-		out.OneOf = &oneOf
-	}
-	return &out
 }
 
 // classifyKind derives the SchemaKind from structure, not type alone. Precedence
