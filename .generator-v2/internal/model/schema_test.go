@@ -845,3 +845,121 @@ var _ = Describe("BuildResponseTree golden tree", func() {
 		Expect(tree).To(Equal(want))
 	})
 })
+
+// ---------------------------------------------------------------------------
+//  BuildResourceTree — presence flags derived from Provenance
+// ---------------------------------------------------------------------------
+
+// provSchema is a primitive schema stamped with Provenance, the shape a
+// resource schema merge produces and BuildResourceTree consumes.
+func provSchema(typ string, p SchemaProvenance) *Schema {
+	return &Schema{Kind: SchemaKindPrimitive, Type: typ, Provenance: &p}
+}
+
+var _ = Describe("BuildResourceTree presence flags", func() {
+	assertFlags := func(tree *AttributeTree, path string, required, optional, computed bool) {
+		GinkgoHelper()
+		a := attrByPath(tree, path)
+		Expect(a.Required).To(Equal(required), "Required at %q", path)
+		Expect(a.Optional).To(Equal(optional), "Optional at %q", path)
+		Expect(a.Computed).To(Equal(computed), "Computed at %q", path)
+	}
+
+	It("derives all four FR-034a flag combinations from Provenance", func() {
+		// required is children()'s own per-key check against the parent's
+		// Required list, not something read off each child's Provenance
+		// directly — a real merge keeps the two consistent (requiredFromCreate
+		// mirrors RequestRequired), so the fixture must too.
+		tree, _, err := BuildResourceTree(&Schema{
+			Kind:     SchemaKindObject,
+			Required: []string{"required_rw", "required_wo"},
+			Properties: map[string]*Schema{
+				"required_rw": provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true}),
+				"required_wo": provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: false}),
+				"server_dflt": provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}),
+				"write_only":  provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: false}),
+				"read_only":   provSchema("string", SchemaProvenance{InRequest: false, RequestRequired: false, InResponse: true}),
+			},
+		})
+		Expect(err).NotTo(HaveOccurred())
+
+		assertFlags(tree, "resource.required_rw", true, false, false)
+		assertFlags(tree, "resource.required_wo", true, false, false)
+		assertFlags(tree, "resource.server_dflt", false, true, true)
+		assertFlags(tree, "resource.write_only", false, true, false)
+		assertFlags(tree, "resource.read_only", false, false, true)
+	})
+
+	It("roots paths at \"resource.\" and recurses into nested objects the same as the other trees", func() {
+		tree, _, err := BuildResourceTree(objSchema(map[string]*Schema{
+			"config": {
+				Kind:       SchemaKindObject,
+				Required:   []string{"name"},
+				Provenance: &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true},
+				Properties: map[string]*Schema{
+					"name": provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true}),
+				},
+			},
+		}))
+		Expect(err).NotTo(HaveOccurred())
+		assertFlags(tree, "resource.config", false, true, true)
+		assertFlags(tree, "resource.config.name", true, false, false)
+	})
+
+	It("fails with MissingProvenanceError when a node carries none", func() {
+		_, _, err := BuildResourceTree(objSchema(map[string]*Schema{
+			"orphan": primSchema("string"),
+		}))
+		Expect(err).To(HaveOccurred())
+		var missing *MissingProvenanceError
+		Expect(errors.As(err, &missing)).To(BeTrue())
+		Expect(missing.Path).To(Equal("resource.orphan"))
+	})
+
+	It("never marks a oneOf variant block Required, and carries Computed only when the union is in the response", func() {
+		writeOnly := oneOfSchema("resource.choice_write", "WriteChoice", primitiveOneOfVariant("value_a", "string"))
+		writeOnly.Provenance = &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: false}
+
+		both := oneOfSchema("resource.choice_both", "BothChoice", primitiveOneOfVariant("value_b", "string"))
+		both.Provenance = &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}
+
+		readOnly := oneOfSchema("resource.choice_read", "ReadChoice", primitiveOneOfVariant("value_c", "string"))
+		readOnly.Provenance = &SchemaProvenance{InRequest: false, RequestRequired: false, InResponse: true}
+
+		tree, _, err := BuildResourceTree(objSchema(map[string]*Schema{
+			"choice_write": writeOnly,
+			"choice_both":  both,
+			"choice_read":  readOnly,
+		}))
+		Expect(err).NotTo(HaveOccurred())
+
+		assertFlags(tree, "resource.choice_write.value_a", false, true, false)
+		assertFlags(tree, "resource.choice_both.value_b", false, true, true)
+		assertFlags(tree, "resource.choice_read.value_c", false, false, true)
+
+		// The wrapped value inherits the enclosing union's Provenance, since a
+		// resource merge never deep-merges oneOf content. Selecting a variant
+		// makes its value Required whenever the union itself is
+		// request-settable — but never for a purely response-only union,
+		// where that would wrongly demand practitioner input for something
+		// the practitioner can never configure.
+		assertFlags(tree, "resource.choice_write.value_a.value", true, false, false)
+		assertFlags(tree, "resource.choice_both.value_b.value", true, false, false)
+		assertFlags(tree, "resource.choice_read.value_c.value", false, false, true)
+	})
+
+	It("threads the enclosing union's Provenance into an object alternative's own properties too", func() {
+		union := oneOfSchema("resource.choice", "Choice",
+			objectOneOfVariant("obj", map[string]*Schema{"name": primSchema("string")}),
+		)
+		union.Provenance = &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}
+
+		tree, _, err := BuildResourceTree(objSchema(map[string]*Schema{"choice": union}))
+		Expect(err).NotTo(HaveOccurred())
+
+		assertFlags(tree, "resource.choice.obj", false, true, true)
+		// "name" isn't in the object alternative's own (empty) Required list,
+		// so it falls back to the same Optional+Computed pairing as the block.
+		assertFlags(tree, "resource.choice.obj.name", false, true, true)
+	})
+})

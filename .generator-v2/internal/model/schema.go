@@ -16,15 +16,17 @@ const (
 	nestAttribute
 )
 
-// treeKind distinguishes the two entry points, which differ only in presence
-// flags: a response tree is state the provider reads back, so every node is
-// Computed, whereas a request tree is practitioner input, so every node is
-// Required or Optional instead.
+// treeKind distinguishes the three entry points, which differ only in
+// presence flags: a response tree is state the provider reads back, so every
+// node is Computed; a request tree is practitioner input, so every node is
+// Required or Optional instead; a resource tree derives Required, Optional,
+// or Computed (or both) per node from its Provenance.
 type treeKind int
 
 const (
 	responseTree treeKind = iota
 	requestTree
+	resourceTree
 )
 
 // oneOfValueField is the single child a non-object oneOf alternative exposes.
@@ -87,6 +89,19 @@ func (e *OneOfProjectionError) Error() string {
 
 func (e *OneOfProjectionError) Unwrap() error { return e.Err }
 
+// MissingProvenanceError reports a resource-tree node with no Provenance to
+// derive presence flags from. Every node a resource schema merge itself
+// produces carries one; the one shape that does not is the content nested
+// inside a oneOf alternative, which the merge clones verbatim rather than
+// walking.
+type MissingProvenanceError struct {
+	Path string
+}
+
+func (e *MissingProvenanceError) Error() string {
+	return fmt.Sprintf("model: cannot derive resource presence at %q: node carries no merge provenance", e.Path)
+}
+
 // BuildResponseTree converts a response-body schema into an AttributeTree,
 // rooting every attribute path at "response." and marking every node Computed.
 //
@@ -105,11 +120,25 @@ func BuildRequestTree(s *Schema) (*AttributeTree, []Diagnostic, error) {
 	return (&treeBuilder{kind: requestTree}).build(s, "request")
 }
 
+// BuildResourceTree converts a schema produced by a resource schema merge
+// into an AttributeTree rooted at "resource.". Each node's Required, Optional
+// and Computed flags come from its Provenance rather than from a single
+// request or response direction.
+func BuildResourceTree(s *Schema) (*AttributeTree, []Diagnostic, error) {
+	return (&treeBuilder{kind: resourceTree}).build(s, "resource")
+}
+
 // treeBuilder carries the state of one AttributeTree conversion. Only the entry
 // point's kind varies across a run; the recursion is otherwise a pure function of
 // the schema node, its path, and its nesting context.
 type treeBuilder struct {
 	kind treeKind
+	// oneOfProvenance is the enclosing union's Provenance while walking one of
+	// its own alternatives, resourceTree only. A resource schema merge clones
+	// a oneOf's content verbatim rather than walking it, so no node inside an
+	// alternative carries its own Provenance; applyPresence falls back to
+	// this one instead.
+	oneOfProvenance *SchemaProvenance
 }
 
 // build is the shared recursion behind both entry points, differing only in root.
@@ -182,7 +211,9 @@ func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, requir
 		Sensitive:   s.Sensitive,
 		Description: s.Description,
 	}
-	b.applyPresence(attr, required)
+	if err := b.applyPresence(attr, s, required); err != nil {
+		return nil, err
+	}
 
 	// A string enum becomes a OneOf validator; non-string enums produce none for now.
 	if s.Kind == SchemaKindPrimitive && s.Type == "string" && len(s.Enum) > 0 {
@@ -306,7 +337,9 @@ func (b *treeBuilder) envelope(s *Schema, path string, mode nestingMode, require
 	// The envelope is required only when its containing field demands a value and
 	// the union itself is neither optional nor nullable; a nullable union is
 	// represented by an absent envelope rather than a null variant.
-	b.applyPresence(attr, required && !envelope.Optional)
+	if err := b.applyPresence(attr, s, required && !envelope.Optional); err != nil {
+		return nil, err
+	}
 	return attr, nil
 }
 
@@ -362,7 +395,7 @@ func (b *treeBuilder) oneOfVariants(s *Schema, basePath string, mode nestingMode
 
 	blocks := make([]*Attribute, 0, len(ordered))
 	for _, variant := range ordered {
-		block, projected, err := b.oneOfVariant(envelope, variant, basePath, mode)
+		block, projected, err := b.oneOfVariant(s, envelope, variant, basePath, mode)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -375,8 +408,12 @@ func (b *treeBuilder) oneOfVariants(s *Schema, basePath string, mode nestingMode
 // oneOfVariant projects one alternative into its nested block. An object
 // alternative exposes its own fields; every other shape — scalar, list, map, or a
 // directly nested union — has no fields to expose, so it gets a single child named
-// "value" holding the alternative itself.
+// "value" holding the alternative itself. union is the schema of the oneOf node
+// itself, carrying the Provenance the block's own presence is derived from —
+// no alternative carries its own, since a resource schema merge clones a
+// oneOf's content verbatim rather than walking it.
 func (b *treeBuilder) oneOfVariant(
+	union *Schema,
 	envelope *OneOfEnvelope,
 	variant OneOfVariant,
 	basePath string,
@@ -409,7 +446,16 @@ func (b *treeBuilder) oneOfVariant(
 	// A variant is a choice, never a mandatory field: exactly-one selection is
 	// enforced by the envelope's validator and by request mapping, not by marking
 	// every branch Required.
-	b.applyPresence(block, false)
+	if err := b.applyPresence(block, union, false); err != nil {
+		return fail("", err)
+	}
+
+	// The alternative's own content carries no Provenance (see oneOfProvenance);
+	// restore whatever enclosing union was in scope once this one is walked, so
+	// a union nested inside another alternative still falls back to its own.
+	outerProvenance := b.oneOfProvenance
+	b.oneOfProvenance = union.Provenance
+	defer func() { b.oneOfProvenance = outerProvenance }()
 
 	valueWrapped := variant.Schema.Kind != SchemaKindObject
 	if valueWrapped {
@@ -446,14 +492,43 @@ func (b *treeBuilder) oneOfVariant(
 
 // applyPresence sets the framework presence flags. Response state is entirely
 // Computed; request input is Required when the schema says so and Optional
-// otherwise. Exactly one flag ends up set either way, as the framework requires.
-func (b *treeBuilder) applyPresence(a *Attribute, required bool) {
-	if b.kind == responseTree {
+// otherwise; resource input reads s.Provenance instead (falling back to
+// oneOfProvenance when s carries none), deriving Required, or Optional, or
+// Optional and Computed together, or Computed alone — the only one of the
+// three kinds that can set two flags at once. required is "is this required
+// by the Create body" for a node reached through an object's Required list,
+// but the oneOf wrapped-value call site instead passes it unconditionally
+// ("the value must be present when its variant is selected"), so resourceTree
+// only honors it alongside InRequest — a purely response-only union's wrapped
+// value must not come out Required just because it was hardcoded true.
+// Returns MissingProvenanceError if resourceTree finds neither source.
+func (b *treeBuilder) applyPresence(a *Attribute, s *Schema, required bool) error {
+	switch b.kind {
+	case responseTree:
 		a.Computed = true
-		return
+	case requestTree:
+		a.Required = required
+		a.Optional = !required
+	case resourceTree:
+		p := s.Provenance
+		if p == nil {
+			p = b.oneOfProvenance
+		}
+		if p == nil {
+			return &MissingProvenanceError{Path: a.Path}
+		}
+		switch {
+		case required && p.InRequest:
+			a.Required = true
+		case p.InRequest && p.InResponse:
+			a.Optional, a.Computed = true, true
+		case p.InRequest:
+			a.Optional = true
+		default:
+			a.Computed = true
+		}
 	}
-	a.Required = required
-	a.Optional = !required
+	return nil
 }
 
 // attributeForm rewrites a block framework type into its nested-attribute
