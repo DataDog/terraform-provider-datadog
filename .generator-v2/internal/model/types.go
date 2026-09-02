@@ -354,19 +354,15 @@ type Schema struct {
 	// carrying one — mirroring how the SDK generator's child_models() prefers a
 	// $ref name over the parent-derived alternative name.
 	RefName string
-	// Provenance is non-nil only on a node of the schema MergeResourceSchema
-	// produces by unioning the Create request, Update request and Read response
-	// bodies; nil everywhere else. That nil-ness is what distinguishes a
-	// merged schema from a single-direction one, so BuildResourceTree can reject
-	// an unmerged input rather than silently flag every node Computed.
+	// Provenance is non-nil only on a node produced by unioning the Create
+	// request, Update request and Read response bodies; nil on any
+	// single-direction schema.
 	Provenance *SchemaProvenance
 }
 
-// SchemaProvenance records which of the three bodies a resource schema merge
-// reads — Create request, Update request, Read response — contributed a node,
-// so BuildResourceTree can derive Terraform presence flags as a total function
-// of these three bits alone, with no further OpenAPI signal consulted. Set
-// only by MergeResourceSchema.
+// SchemaProvenance records which of the three bodies — Create request,
+// Update request, Read response — contributed a given node during a resource
+// schema merge.
 type SchemaProvenance struct {
 	// InRequest is true when the node is present in the Create or Update
 	// request body.
@@ -517,13 +513,12 @@ type Attribute struct {
 	Default *Literal
 	// Validators is the fingerprintable validator list for this attribute.
 	Validators []ValidatorSpec
-	// PlanModifiers is populated only by BuildResourceTree; empty for
-	// both data-source tree shapes. UseStateForUnknown() lands on an Optional +
-	// Computed attribute, RequiresReplace() on a request-settable one when the
-	// group resolves no Update role. Never populated on a Computed-only
-	// attribute — the server may change such a value during apply, so either
-	// modifier there produces an inconsistent-result error or a spurious
-	// replacement.
+	// PlanModifiers holds this attribute's plan modifiers: UseStateForUnknown()
+	// on an Optional+Computed attribute, RequiresReplace() on a
+	// request-settable one when no Update role exists. Never set on a
+	// Computed-only attribute — the server may change such a value during
+	// apply, so either modifier there would produce an inconsistent-result
+	// error or a spurious replacement.
 	PlanModifiers []PlanModifierSpec
 	// Description is always populated from the OpenAPI description (repo convention).
 	Description string
@@ -634,9 +629,7 @@ type ValidatorSpec struct {
 }
 
 // PlanModifierSpec is one plan modifier attached to a resource attribute,
-// rendered as a Go constructor call. Populated only by
-// BuildResourceTree, from the same resource flag matrix that derives
-// Required/Optional/Computed, and typed per framework value kind
+// rendered as a Go constructor call and typed per framework value kind
 // (planmodifier.Bool, planmodifier.Object, ...) derived from Attribute.GoType.
 type PlanModifierSpec struct {
 	// Name is the plan modifier constructor, e.g.
