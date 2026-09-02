@@ -1,3 +1,34 @@
+## 4.20.0 (September 2, 2026)
+
+### BUGFIXES
+* [datadog_team_notification_rule] Exclude team notification rule email if not provided in the resource definition by @jcharry in https://github.com/DataDog/terraform-provider-datadog/pull/4170
+### IMPROVEMENTS
+* [datadog_integration_aws_account] Add data source to look up config ID by AWS Account ID by @dhan0779 in https://github.com/DataDog/terraform-provider-datadog/pull/4156
+* [datadog_dashboard_v2] Add HostMap OpenAPI request formats by @Jiawen23 in https://github.com/DataDog/terraform-provider-datadog/pull/3992
+### FEATURES
+* [datadog_rum_exclusion_filter] Add resource for RUM exclusion filters by @Noham-Martin in https://github.com/DataDog/terraform-provider-datadog/pull/4158
+* [datadog_monitor_notification_rule] Add `bundle_config` to Monitor Notification Rule by @shaneyuandd in https://github.com/DataDog/terraform-provider-datadog/pull/4160
+* [datadog_rum_retention_quota] Add resource for RUM retention quota config by @katieed in https://github.com/DataDog/terraform-provider-datadog/pull/4167
+* [datadog_action_execution_policy] Add resource by @DMatheo in https://github.com/DataDog/terraform-provider-datadog/pull/4165
+* [datadog_tag_rule] Add resource for governance tag rules by @ivanovart in https://github.com/DataDog/terraform-provider-datadog/pull/4174
+* [datadog_observability_pipelines] Add opentelemetry metrics destination by @petere-datadog in https://github.com/DataDog/terraform-provider-datadog/pull/4182
+* [datadog_dashboard_v2] Validate widgets during plan by @Jiawen23 in https://github.com/DataDog/terraform-provider-datadog/pull/4063
+* [datadog_observability_pipeline] Add endpoint_target support to splunk_hec destination by @taylorchandleryoung in https://github.com/DataDog/terraform-provider-datadog/pull/4185
+* [datadog_status_page] Add status page resources by @sundaylaundry in https://github.com/DataDog/terraform-provider-datadog/pull/4180
+* [datadog_observability_pipelines] add zstd/compression to archive destinations by @20agbekodo in https://github.com/DataDog/terraform-provider-datadog/pull/3931
+
+## New Contributors
+* @Noham-Martin made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4158
+* @carlos-turiegano-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4173
+* @jcharry made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4170
+* @katieed made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4167
+* @DMatheo made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4165
+* @ivanovart made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4174
+* @kaankoseler made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4189
+* @sundaylaundry made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4180
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.19.0...v4.20.0
+
 
 ## 4.20.0 (September 2, 2026)
 
