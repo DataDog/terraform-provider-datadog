@@ -22,9 +22,13 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &OrgGroupPolicyResource{}
-	_ resource.ResourceWithImportState = &OrgGroupPolicyResource{}
+	_ resource.ResourceWithConfigure      = &OrgGroupPolicyResource{}
+	_ resource.ResourceWithImportState    = &OrgGroupPolicyResource{}
+	_ resource.ResourceWithValidateConfig = &OrgGroupPolicyResource{}
 )
+
+// Hardcoded until datadog-api-client-go generates ORGGROUPPOLICYPOLICYTYPE_ROLE.
+const orgGroupPolicyTypeRole = "role"
 
 type OrgGroupPolicyResource struct {
 	API  *datadogV2.OrgGroupsApi
@@ -83,7 +87,7 @@ func (r *OrgGroupPolicyResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"enforcement_tier": schema.StringAttribute{
 				Optional:    true,
 				Computed:    true,
-				Description: "The enforcement tier of the policy. `OVERRIDE_ALLOWED` means the policy is set but member orgs may mutate it. `GROUP_MANAGED` means the policy is strictly controlled and mutations are blocked for affected orgs. `DELEGATE` means each member org controls its own value.",
+				Description: "The enforcement tier of the policy. `OVERRIDE_ALLOWED` means the policy is set but member orgs may mutate it. `GROUP_MANAGED` means the policy is strictly controlled and mutations are blocked for affected orgs. `DELEGATE` means each member org controls its own value. `role` policies only support `GROUP_MANAGED`/`DELEGATE`; `DELEGATE` disables the role and is one-way.",
 				Validators: []validator.String{
 					stringvalidator.OneOf(
 						string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_OVERRIDE_ALLOWED),
@@ -98,10 +102,11 @@ func (r *OrgGroupPolicyResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"policy_type": schema.StringAttribute{
 				Optional:    true,
 				Computed:    true,
-				Description: "The type of the policy.",
+				Description: "The type of the policy. Valid values are `org_config`, `role`.",
 				Validators: []validator.String{
 					stringvalidator.OneOf(
 						string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ORG_CONFIG),
+						orgGroupPolicyTypeRole,
 					),
 				},
 				PlanModifiers: []planmodifier.String{
@@ -115,6 +120,26 @@ func (r *OrgGroupPolicyResource) Schema(_ context.Context, _ resource.SchemaRequ
 
 func (r *OrgGroupPolicyResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
+}
+
+// ValidateConfig catches role + OVERRIDE_ALLOWED at plan time; the API only 400s.
+func (r *OrgGroupPolicyResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
+	var config OrgGroupPolicyModel
+	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	if config.PolicyType.ValueString() != orgGroupPolicyTypeRole {
+		return
+	}
+	if config.EnforcementTier.ValueString() == string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_OVERRIDE_ALLOWED) {
+		response.Diagnostics.AddAttributeError(
+			frameworkPath.Root("enforcement_tier"),
+			"Invalid enforcement_tier for policy_type \"role\"",
+			"role policies only support GROUP_MANAGED and DELEGATE.",
+		)
+	}
 }
 
 func (r *OrgGroupPolicyResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
