@@ -102,7 +102,7 @@ func (r *OrgGroupPolicyResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"policy_type": schema.StringAttribute{
 				Optional:    true,
 				Computed:    true,
-				Description: "The type of the policy. Valid values are `org_config`, `role`.",
+				Description: "The type of the policy.",
 				Validators: []validator.String{
 					stringvalidator.OneOf(
 						string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ORG_CONFIG),
