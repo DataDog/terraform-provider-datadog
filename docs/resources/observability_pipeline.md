@@ -3222,6 +3222,7 @@ Required:
 Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address for the Splunk TCP receiver.
+- `max_connection_duration_secs` (Number) Maximum duration, in seconds, that a connection can remain open before it is closed. When unset, connections can remain open indefinitely.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--splunk_tcp--tls))
 
 <a id="nestedblock--config--source--splunk_tcp--tls"></a>
