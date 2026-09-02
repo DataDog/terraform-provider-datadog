@@ -114,6 +114,7 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 				}
 
 				var registrations []emit.GeneratedRegistration
+				var resourceRegistrations []emit.GeneratedRegistration
 				for _, op := range spec.Operations {
 					if op.Tracking == nil {
 						runReport.SkippedOperations = append(runReport.SkippedOperations, model.SkippedOperation{
@@ -142,6 +143,15 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 						continue
 					}
 
+					if op.Tracking.ArtifactKind == model.ArtifactKindResource {
+						entry, reg := generateResourceArtifact(op, outputRoot, check, accessors, sdkBindings)
+						runReport.Artifacts = append(runReport.Artifacts, entry)
+						if reg != nil {
+							resourceRegistrations = append(resourceRegistrations, *reg)
+						}
+						continue
+					}
+
 					entry, testEntry, exampleEntry, reg := generateArtifact(op, outputRoot, testsOutputRoot, examplesOutputRoot, emitTests, check, accessors, sdkBindings)
 					runReport.Artifacts = append(runReport.Artifacts, entry)
 					if testEntry != nil {
@@ -155,10 +165,16 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 					}
 				}
 
-				// Wire the generated data sources into the provider (register their
-				// constructors, retire any they overwrite). Surface the result after
-				// the report is written so a wiring I/O error still emits the report.
+				// Wire the generated data sources and resources into the provider
+				// (register their constructors, retire any they overwrite). Surface
+				// the result after the report is written so a wiring I/O error still
+				// emits the report.
 				wiringChanged, deferredErr = wireGeneratedDatasources(outputRoot, testsOutputRoot, registrations, check)
+				if deferredErr == nil {
+					var resourceWiringChanged bool
+					resourceWiringChanged, deferredErr = wireGeneratedResources(outputRoot, resourceRegistrations, check)
+					wiringChanged = wiringChanged || resourceWiringChanged
+				}
 
 				// Reconcile: retire generated data sources whose annotation is gone.
 				// Runs after wiring so the registry already holds this run's set; skip
@@ -295,22 +311,13 @@ func findProviderModuleRoot(outputRoot string) (string, error) {
 }
 
 // generateArtifact runs the full model→emit→write pipeline for one tracked
-// operation. On success it also returns the GeneratedRegistration the caller
-// uses to wire the data source into the provider; it is nil for a skipped or
+// data-source operation. On success it also returns the GeneratedRegistration
+// the caller uses to wire the data source into the provider; it is nil for a
 // failed artifact.
 func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examplesOutputRoot string, emitTests, check bool, accessors map[string]string, sdkBindings *sdkbinding.Inventory) (model.ArtifactReportEntry, *model.ArtifactReportEntry, *model.ArtifactReportEntry, *emit.GeneratedRegistration) {
 	entry := model.ArtifactReportEntry{
 		Name: op.Tracking.ArtifactName,
 		Kind: op.Tracking.ArtifactKind,
-	}
-
-	if op.Tracking.ArtifactKind != model.ArtifactKindDataSource {
-		entry.Status = model.ArtifactStatusSkipped
-		entry.Diagnostics = []model.Diagnostic{{
-			Severity: model.SeverityWarning,
-			Message:  fmt.Sprintf("resource generation not yet supported (kind=%s)", op.Tracking.ArtifactKind),
-		}}
-		return entry, nil, nil, nil
 	}
 
 	// Resolve the SDK oneOf wrapper, members and constructors before the schema is
@@ -397,6 +404,73 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examples
 	}
 
 	return entry, testEntry, exampleEntry, reg
+}
+
+// generateResourceArtifact runs the full model→emit→write pipeline for one
+// tracked resource operation. On success it also returns the
+// GeneratedRegistration the caller uses to wire the resource into the
+// provider; it is nil for a failed artifact.
+func generateResourceArtifact(op *model.Operation, outputRoot string, check bool, accessors map[string]string, sdkBindings *sdkbinding.Inventory) (model.ArtifactReportEntry, *emit.GeneratedRegistration) {
+	entry := model.ArtifactReportEntry{
+		Name: op.Tracking.ArtifactName,
+		Kind: op.Tracking.ArtifactKind,
+	}
+
+	// Bind each role operation independently: a oneOf can appear in any of the
+	// Create/Read/Update bodies the merge later unions, and binding per
+	// operation keeps an unresolvable union from failing more than this one
+	// artifact. Operations() is nil-safe and already dedupes; a groupless op
+	// falls back to binding itself.
+	roleOps := op.ResolvedGroup.Operations()
+	if len(roleOps) == 0 {
+		roleOps = []*model.Operation{op}
+	}
+	for _, roleOp := range roleOps {
+		if err := sdkbind.BindOperation(roleOp); err != nil {
+			return failEntry(entry, err), nil
+		}
+		diagnostics, err := sdkbinding.Bind(roleOp, sdkBindings)
+		if err != nil {
+			return failEntry(entry, err), nil
+		}
+		entry.Diagnostics = append(entry.Diagnostics, diagnostics...)
+	}
+
+	artifact, err := model.BuildArtifact(op)
+	if err != nil {
+		return failEntry(entry, err), nil
+	}
+	artifact.SourceFile = filepath.Join(outputRoot, "resource_datadog_"+artifact.Name+".go")
+	entry.Path = artifact.SourceFile
+	entry.Diagnostics = append(entry.Diagnostics, artifact.Diagnostics...)
+
+	view, err := emit.BuildResourceView(artifact)
+	if err != nil {
+		return failEntry(entry, err), nil
+	}
+	if err := emit.ApplyResourceAPIAccessor(&view, accessors); err != nil {
+		return failEntry(entry, err), nil
+	}
+	for _, d := range view.Dropped {
+		entry.Diagnostics = append(entry.Diagnostics, model.Diagnostic{Severity: d.Severity, Message: d.Message})
+	}
+
+	src, err := emit.RenderResource(view)
+	if err != nil {
+		return failEntry(entry, err), nil
+	}
+
+	status, err := emit.WriteFile(artifact.SourceFile, src, check)
+	if err != nil {
+		return failEntry(entry, err), nil
+	}
+	entry.Status = status
+
+	reg := &emit.GeneratedRegistration{
+		Constructor: emit.ResourceConstructor(artifact.Name),
+		Overwrites:  op.Tracking.Overwrites,
+	}
+	return entry, reg
 }
 
 // emitDatasourceExample writes the tfplugindocs input for a data source. Like
@@ -517,6 +591,57 @@ func wireGeneratedDatasources(outputRoot, testsOutputRoot string, regs []emit.Ge
 		}
 		changed = changed || wouldChange(tagStatus)
 	}
+
+	return changed, nil
+}
+
+// wireGeneratedResources registers each successfully generated resource's
+// constructor in resources_generated.go and, for one that overwrites a
+// hand-written resource, removes that resource from the framework Resources
+// slice.
+func wireGeneratedResources(outputRoot string, regs []emit.GeneratedRegistration, check bool) (changed bool, err error) {
+	// A run that generated no resources has nothing to register; leave the
+	// provider files untouched rather than conjuring an empty generatedResources.
+	if len(regs) == 0 {
+		return false, nil
+	}
+
+	providerPath := filepath.Join(outputRoot, "framework_provider.go")
+	genPath := filepath.Join(outputRoot, "resources_generated.go")
+	constructors := make([]string, 0, len(regs))
+	for _, reg := range regs {
+		constructors = append(constructors, reg.Constructor)
+		if reg.Overwrites == "" {
+			continue
+		}
+		status, removeErr := emit.RemoveHandwrittenResource(providerPath, reg.Overwrites, check)
+		if removeErr != nil {
+			return changed, removeErr
+		}
+		// RemoveHandwrittenResource reports Unchanged only when the target was
+		// not in the framework Resources slice. That is expected on a re-run
+		// where a prior run already retired it (its replacement is registered),
+		// but otherwise means the target never existed. Fail loudly so a
+		// mis-targeted overwrite is caught here rather than as a mux conflict.
+		if status == model.ArtifactStatusUnchanged {
+			already, regErr := emit.GeneratedResourceRegistered(genPath, reg.Constructor)
+			if regErr != nil {
+				return changed, regErr
+			}
+			if !already {
+				return changed, fmt.Errorf(
+					"generate: overwrites target %q not found in the framework Resources slice (%s); the generator can only retire hand-written framework resources",
+					reg.Overwrites, providerPath)
+			}
+		}
+		changed = changed || wouldChange(status)
+	}
+
+	status, err := emit.SyncGeneratedResources(genPath, constructors, check)
+	if err != nil {
+		return changed, err
+	}
+	changed = changed || wouldChange(status)
 
 	return changed, nil
 }

@@ -278,8 +278,14 @@ func New() provider.Provider {
 }
 
 func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resource {
+	// Hand-written and generator-v2 resources are kept in separate slices (see
+	// generatedResources) so regenerating does not churn this file.
+	all := make([]func() resource.Resource, 0, len(Resources)+len(generatedResources))
+	all = append(all, Resources...)
+	all = append(all, generatedResources...)
+
 	var wrappedResources []func() resource.Resource
-	for _, f := range Resources {
+	for _, f := range all {
 		r := f()
 		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&r) })
 	}

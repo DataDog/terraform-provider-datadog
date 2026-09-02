@@ -77,15 +77,27 @@ func singleV2ResultType(ft *ast.FuncType) string {
 // New<APIStruct> rule. This keeps provider aliases authoritative without making
 // the pinned SDK source a generation prerequisite.
 func ApplyAPIAccessor(view *DataSourceView, accessors map[string]string) error {
-	view.APIConstructor = ""
-	if acc, ok := accessors[view.APIStruct]; ok {
-		view.APIAccessor = acc
-		return nil
+	accessor, constructor, err := resolveAPIAccessor(view.SDKPackage, view.APIStruct, accessors)
+	view.APIAccessor, view.APIConstructor = accessor, constructor
+	return err
+}
+
+// ApplyResourceAPIAccessor is ApplyAPIAccessor for a ResourceView.
+func ApplyResourceAPIAccessor(view *ResourceView, accessors map[string]string) error {
+	accessor, constructor, err := resolveAPIAccessor(view.SDKPackage, view.APIStruct, accessors)
+	view.APIAccessor, view.APIConstructor = accessor, constructor
+	return err
+}
+
+// resolveAPIAccessor is the shared decision behind both ApplyAPIAccessor and
+// ApplyResourceAPIAccessor: exactly one of accessor and constructor is
+// returned non-empty on success.
+func resolveAPIAccessor(sdkPackage, apiStruct string, accessors map[string]string) (accessor, constructor string, err error) {
+	if acc, ok := accessors[apiStruct]; ok {
+		return acc, "", nil
 	}
-	view.APIAccessor = ""
-	if view.APIStruct == "" || view.APIStruct == "Api" {
-		return fmt.Errorf("resolve SDK API client %s.%s: OpenAPI operation has no usable API tag", view.SDKPackage, view.APIStruct)
+	if apiStruct == "" || apiStruct == "Api" {
+		return "", "", fmt.Errorf("resolve SDK API client %s.%s: OpenAPI operation has no usable API tag", sdkPackage, apiStruct)
 	}
-	view.APIConstructor = "New" + view.APIStruct
-	return nil
+	return "", "New" + apiStruct, nil
 }

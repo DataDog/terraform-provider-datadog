@@ -1,0 +1,134 @@
+openapi: 3.0.0
+info:
+  title: full CRUD, flat-scalar-only resource fixture (synthetic, not a real Datadog API)
+  version: 1.0.0
+paths:
+  /api/v2/things:
+    post:
+      operationId: CreateThing
+      tags: [Things]
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: thing
+        tf_description: A test-only flat-scalar resource.
+        group:
+          create: CreateThing
+          read: GetThing
+          update: UpdateThing
+          delete: DeleteThing
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThingCreateRequest'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingResponse'
+  /api/v2/things/{thing_id}:
+    get:
+      operationId: GetThing
+      tags: [Things]
+      parameters:
+      - name: thing_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingResponse'
+    patch:
+      operationId: UpdateThing
+      tags: [Things]
+      parameters:
+      - name: thing_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThingPatchRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingResponse'
+    delete:
+      operationId: DeleteThing
+      tags: [Things]
+      parameters:
+      - name: thing_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: no content
+components:
+  schemas:
+    ThingAttributes:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    ThingUpdateAttributes:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    ThingCreateData:
+      type: object
+      properties:
+        type:
+          type: string
+        attributes:
+          $ref: '#/components/schemas/ThingAttributes'
+    ThingPatchData:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          $ref: '#/components/schemas/ThingUpdateAttributes'
+    ThingResponseData:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          $ref: '#/components/schemas/ThingAttributes'
+    ThingCreateRequest:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ThingCreateData'
+    ThingPatchRequest:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ThingPatchData'
+    ThingResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ThingResponseData'
