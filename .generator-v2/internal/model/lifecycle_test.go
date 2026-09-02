@@ -51,9 +51,9 @@ var _ = Describe("buildResourceLifecycle", func() {
 		// diverge Create's own copy from it so the merge has a genuine
 		// cosmetic disagreement to reconcile and report.
 		op.ResolvedGroup.Read.ResponseSchema.Properties["name"].Description = "the response description"
-		op.RequestSchema = &Schema{Kind: SchemaKindObject, Properties: map[string]*Schema{
-			"name": {Kind: SchemaKindPrimitive, Type: "string", Description: "set on create only"},
-		}}
+		name := primSchema("string")
+		name.Description = "set on create only"
+		op.RequestSchema = objSchema(map[string]*Schema{"name": name})
 		op.ResolvedGroup.Update = nil // also exercise the lifecycle's own warning
 
 		art, err := BuildArtifact(op)
@@ -130,9 +130,7 @@ var _ = Describe("buildResourceLifecycle", func() {
 func incidentTypeResourceOp() *Operation {
 	// Every side agrees on the same one-field shape: these tests are about the
 	// CRUD lifecycle, not the merge, so the schema only needs to be valid.
-	field := &Schema{Kind: SchemaKindObject, Properties: map[string]*Schema{
-		"name": {Kind: SchemaKindPrimitive, Type: "string"},
-	}}
+	field := objSchema(map[string]*Schema{"name": primSchema("string")})
 	create := &Operation{
 		Path: "/api/v2/incidents/config/types", Method: "POST",
 		OperationId: "CreateIncidentType", Tag: "Incidents",
