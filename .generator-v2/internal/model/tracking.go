@@ -55,7 +55,9 @@ type OperationGroup struct {
 	// to resolve a single match. Never inferred; declared explicitly.
 	Search string `json:"search,omitempty"`
 	// Update is the operationId of the Update endpoint. May be omitted; the
-	// generator then marks all attributes ForceNew .
+	// generator then forces replacement on every request-settable attribute
+	// (RequiresReplace()) — never on one that is Computed-only, since there
+	// would be no endpoint to reconcile a server-side change through anyway.
 	Update string `json:"update,omitempty"`
 	// Delete is the operationId of the Delete endpoint.
 	Delete string `json:"delete,omitempty"`

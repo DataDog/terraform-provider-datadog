@@ -880,7 +880,7 @@ var _ = Describe("BuildResourceTree presence flags", func() {
 				"write_only":  provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: false}),
 				"read_only":   provSchema("string", SchemaProvenance{InRequest: false, RequestRequired: false, InResponse: true}),
 			},
-		})
+		}, false)
 		Expect(err).NotTo(HaveOccurred())
 
 		assertFlags(tree, "resource.required_rw", true, false, false)
@@ -900,7 +900,7 @@ var _ = Describe("BuildResourceTree presence flags", func() {
 					"name": provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true}),
 				},
 			},
-		}))
+		}), false)
 		Expect(err).NotTo(HaveOccurred())
 		assertFlags(tree, "resource.config", false, true, true)
 		assertFlags(tree, "resource.config.name", true, false, false)
@@ -909,7 +909,7 @@ var _ = Describe("BuildResourceTree presence flags", func() {
 	It("fails with MissingProvenanceError when a node carries none", func() {
 		_, _, err := BuildResourceTree(objSchema(map[string]*Schema{
 			"orphan": primSchema("string"),
-		}))
+		}), false)
 		Expect(err).To(HaveOccurred())
 		var missing *MissingProvenanceError
 		Expect(errors.As(err, &missing)).To(BeTrue())
@@ -930,7 +930,7 @@ var _ = Describe("BuildResourceTree presence flags", func() {
 			"choice_write": writeOnly,
 			"choice_both":  both,
 			"choice_read":  readOnly,
-		}))
+		}), false)
 		Expect(err).NotTo(HaveOccurred())
 
 		assertFlags(tree, "resource.choice_write.value_a", false, true, false)
@@ -954,7 +954,7 @@ var _ = Describe("BuildResourceTree presence flags", func() {
 		)
 		union.Provenance = &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}
 
-		tree, _, err := BuildResourceTree(objSchema(map[string]*Schema{"choice": union}))
+		tree, _, err := BuildResourceTree(objSchema(map[string]*Schema{"choice": union}), false)
 		Expect(err).NotTo(HaveOccurred())
 
 		assertFlags(tree, "resource.choice.obj", false, true, true)
@@ -976,7 +976,7 @@ var _ = Describe("BuildResourceTree presence flags", func() {
 		})
 		outer.Provenance = &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}
 
-		tree, _, err := BuildResourceTree(objSchema(map[string]*Schema{"choice": outer}))
+		tree, _, err := BuildResourceTree(objSchema(map[string]*Schema{"choice": outer}), false)
 		Expect(err).NotTo(HaveOccurred())
 
 		// Every level here — the outer block, the inner union's own wrapped
@@ -987,5 +987,93 @@ var _ = Describe("BuildResourceTree presence flags", func() {
 		assertFlags(tree, "resource.choice.nested.value", true, false, false)
 		assertFlags(tree, "resource.choice.nested.value.value_x", false, true, true)
 		assertFlags(tree, "resource.choice.nested.value.value_x.value", true, false, false)
+	})
+})
+
+// ---------------------------------------------------------------------------
+//  BuildResourceTree — plan modifiers
+// ---------------------------------------------------------------------------
+
+var _ = Describe("BuildResourceTree plan modifiers", func() {
+	It("emits UseStateForUnknown() only on Optional+Computed attributes, typed per GoType", func() {
+		schema := objSchema(map[string]*Schema{
+			"server_dflt_str":  provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}),
+			"server_dflt_bool": {Kind: SchemaKindPrimitive, Type: "boolean", Provenance: &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}},
+			"required":         provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true}),
+			"write_only":       provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: false}),
+			"read_only":        provSchema("string", SchemaProvenance{InRequest: false, RequestRequired: false, InResponse: true}),
+		})
+		// required's presence flags come from this list, not from its own
+		// Provenance.RequestRequired directly (see the note on the next test).
+		schema.Required = []string{"required"}
+
+		tree, _, err := BuildResourceTree(schema, false)
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(attrByPath(tree, "resource.server_dflt_str").PlanModifiers).To(Equal(
+			[]PlanModifierSpec{{Name: "stringplanmodifier.UseStateForUnknown"}}))
+		Expect(attrByPath(tree, "resource.server_dflt_bool").PlanModifiers).To(Equal(
+			[]PlanModifierSpec{{Name: "boolplanmodifier.UseStateForUnknown"}}))
+
+		// required is Required-only, write_only and read_only are never both
+		// Optional and Computed: none of the three gets UseStateForUnknown.
+		Expect(attrByPath(tree, "resource.required").PlanModifiers).To(BeEmpty())
+		Expect(attrByPath(tree, "resource.write_only").PlanModifiers).To(BeEmpty())
+		Expect(attrByPath(tree, "resource.read_only").PlanModifiers).To(BeEmpty())
+	})
+
+	It("emits RequiresReplace() on every request-settable attribute when the group resolves no Update role, never on Computed-only", func() {
+		schema := objSchema(map[string]*Schema{
+			"required":    provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true}),
+			"server_dflt": provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}),
+			"write_only":  provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: false}),
+			"read_only":   provSchema("string", SchemaProvenance{InRequest: false, RequestRequired: false, InResponse: true}),
+		})
+		schema.Required = []string{"required"}
+
+		tree, _, err := BuildResourceTree(schema, true)
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(attrByPath(tree, "resource.required").PlanModifiers).To(Equal(
+			[]PlanModifierSpec{{Name: "stringplanmodifier.RequiresReplace"}}))
+		// Optional+Computed and request-settable: both modifiers stack, in order.
+		Expect(attrByPath(tree, "resource.server_dflt").PlanModifiers).To(Equal([]PlanModifierSpec{
+			{Name: "stringplanmodifier.UseStateForUnknown"},
+			{Name: "stringplanmodifier.RequiresReplace"},
+		}))
+		Expect(attrByPath(tree, "resource.write_only").PlanModifiers).To(Equal(
+			[]PlanModifierSpec{{Name: "stringplanmodifier.RequiresReplace"}}))
+		// Computed-only: no endpoint could reconcile a forced replace anyway.
+		Expect(attrByPath(tree, "resource.read_only").PlanModifiers).To(BeEmpty())
+	})
+
+	It("omits RequiresReplace() entirely when the group resolves an Update role", func() {
+		tree, _, err := BuildResourceTree(objSchema(map[string]*Schema{
+			"write_only": provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: false}),
+		}), false)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(attrByPath(tree, "resource.write_only").PlanModifiers).To(BeEmpty())
+	})
+
+	It("types the modifier from GoType for list and object attributes too", func() {
+		tags := &Schema{
+			Kind:       SchemaKindArray,
+			Items:      primSchema("string"),
+			Provenance: &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true},
+		}
+		union := oneOfSchema("resource.choice", "Choice", primitiveOneOfVariant("v", "string"))
+		union.Provenance = &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}
+
+		tree, _, err := BuildResourceTree(objSchema(map[string]*Schema{
+			"tags":   tags,
+			"choice": union,
+		}), false)
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(attrByPath(tree, "resource.tags").PlanModifiers).To(Equal(
+			[]PlanModifierSpec{{Name: "listplanmodifier.UseStateForUnknown"}}))
+		// The oneOf envelope's own GoType is always types.Object.
+		Expect(attrByPath(tree, "resource.choice").PlanModifiers).To(Equal(
+			[]PlanModifierSpec{{Name: "objectplanmodifier.UseStateForUnknown"}}))
 	})
 })

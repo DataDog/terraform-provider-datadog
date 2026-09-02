@@ -123,9 +123,12 @@ func BuildRequestTree(s *Schema) (*AttributeTree, []Diagnostic, error) {
 // BuildResourceTree converts a schema produced by a resource schema merge
 // into an AttributeTree rooted at "resource.". Each node's Required, Optional
 // and Computed flags come from its Provenance rather than from a single
-// request or response direction.
-func BuildResourceTree(s *Schema) (*AttributeTree, []Diagnostic, error) {
-	return (&treeBuilder{kind: resourceTree}).build(s, "resource")
+// request or response direction, and each gets the plan modifiers that
+// follow from those flags plus updateUnsupported — true when the resource's
+// group resolves no Update role, so every request-settable attribute forces
+// replacement instead.
+func BuildResourceTree(s *Schema, updateUnsupported bool) (*AttributeTree, []Diagnostic, error) {
+	return (&treeBuilder{kind: resourceTree, updateUnsupported: updateUnsupported}).build(s, "resource")
 }
 
 // treeBuilder carries the state of one AttributeTree conversion. Only the entry
@@ -139,6 +142,10 @@ type treeBuilder struct {
 	// alternative carries its own Provenance; applyPresence falls back to
 	// this one instead.
 	oneOfProvenance *SchemaProvenance
+	// updateUnsupported is resourceTree's own input, fixed for the whole walk:
+	// true when the resource's group resolves no Update role, so every
+	// request-settable attribute gets RequiresReplace().
+	updateUnsupported bool
 }
 
 // build is the shared recursion behind both entry points, differing only in root.
@@ -494,16 +501,17 @@ func (b *treeBuilder) oneOfVariant(
 	}, nil
 }
 
-// applyPresence sets the framework presence flags. Response state is entirely
-// Computed; request input is Required when the schema says so and Optional
-// otherwise; resource input reads s.Provenance instead (falling back to
-// oneOfProvenance when s carries none), deriving Required, or Optional, or
-// Optional and Computed together, or Computed alone — the only one of the
-// three kinds that can set two flags at once. required is "is this required
-// by the Create body" for a node reached through an object's Required list,
-// but the oneOf wrapped-value call site instead passes it unconditionally
-// ("the value must be present when its variant is selected"), so resourceTree
-// only honors it alongside InRequest — a purely response-only union's wrapped
+// applyPresence sets the framework presence flags, and for resourceTree the
+// plan modifiers that follow from them. Response state is entirely Computed;
+// request input is Required when the schema says so and Optional otherwise;
+// resource input reads s.Provenance instead (falling back to oneOfProvenance
+// when s carries none), deriving Required, or Optional, or Optional and
+// Computed together, or Computed alone — the only one of the three kinds
+// that can set two flags at once. required is "is this required by the
+// Create body" for a node reached through an object's Required list, but the
+// oneOf wrapped-value call site instead passes it unconditionally ("the
+// value must be present when its variant is selected"), so resourceTree only
+// honors it alongside InRequest — a purely response-only union's wrapped
 // value must not come out Required just because it was hardcoded true.
 // Returns MissingProvenanceError if resourceTree finds neither source.
 func (b *treeBuilder) applyPresence(a *Attribute, s *Schema, required bool) error {
@@ -531,8 +539,64 @@ func (b *treeBuilder) applyPresence(a *Attribute, s *Schema, required bool) erro
 		default:
 			a.Computed = true
 		}
+		modifiers, err := b.resourcePlanModifiers(a)
+		if err != nil {
+			return err
+		}
+		a.PlanModifiers = modifiers
 	}
 	return nil
+}
+
+// resourcePlanModifiers derives a's plan modifiers from the presence flags
+// applyPresence just set on it: UseStateForUnknown() when both Optional and
+// Computed are set, RequiresReplace() when the attribute is request-settable
+// (Required or Optional) and updateUnsupported — never either one on a
+// Computed-only attribute, since the server may change such a value during
+// apply and there is no update endpoint to reconcile it through anyway. Both
+// are typed from a.GoType, so a Computed-only attribute never even looks one
+// up.
+func (b *treeBuilder) resourcePlanModifiers(a *Attribute) ([]PlanModifierSpec, error) {
+	useStateForUnknown := a.Optional && a.Computed
+	requiresReplace := b.updateUnsupported && (a.Required || a.Optional)
+	if !useStateForUnknown && !requiresReplace {
+		return nil, nil
+	}
+	pkg, err := planModifierPackage(a.GoType)
+	if err != nil {
+		return nil, err
+	}
+	var modifiers []PlanModifierSpec
+	if useStateForUnknown {
+		modifiers = append(modifiers, PlanModifierSpec{Name: pkg + ".UseStateForUnknown"})
+	}
+	if requiresReplace {
+		modifiers = append(modifiers, PlanModifierSpec{Name: pkg + ".RequiresReplace"})
+	}
+	return modifiers, nil
+}
+
+// planModifierPackage returns the terraform-plugin-framework planmodifier
+// subpackage for goType, e.g. "types.String" -> "stringplanmodifier".
+func planModifierPackage(goType string) (string, error) {
+	switch goType {
+	case "types.String":
+		return "stringplanmodifier", nil
+	case "types.Int64":
+		return "int64planmodifier", nil
+	case "types.Float64":
+		return "float64planmodifier", nil
+	case "types.Bool":
+		return "boolplanmodifier", nil
+	case "types.List":
+		return "listplanmodifier", nil
+	case "types.Map":
+		return "mapplanmodifier", nil
+	case "types.Object":
+		return "objectplanmodifier", nil
+	default:
+		return "", fmt.Errorf("model: no plan modifier package for GoType %q", goType)
+	}
 }
 
 // attributeForm rewrites a block framework type into its nested-attribute
