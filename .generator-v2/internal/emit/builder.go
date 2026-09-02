@@ -1649,7 +1649,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	b.filterByResponse = true
 	recordAttrs, recordBlocks, recordScalars, recordLists := b.walk(rootStruct, "", b.receiver, "state", env.leaves)
 
-	requestFields := buildRequestFields(env.leaves, &b.unsupported)
+	requestFields, requestUUID, requestTime := buildRequestFields(env.leaves, "state", "body.Data.Attributes", primary.GoPackage, &b.unsupported)
 	createArgs, createUUID, createStrconv := buildArgumentViews(lc.Create, &b.unsupported)
 	readArgs, readUUID, readStrconv := buildArgumentViews(lc.Read, &b.unsupported)
 	deleteArgs, deleteUUID, deleteStrconv := buildArgumentViews(lc.Delete, &b.unsupported)
@@ -1716,64 +1716,192 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		UsesValidators:       hasValidators(recordAttrs) || hasValidators(recordBlocks),
 		UsesPlanModifiers:    len(planModifierPkgs) > 0,
 		PlanModifierPackages: planModifierPkgs,
-		UsesUUID:             createUUID || readUUID || updateUUID || deleteUUID,
+		UsesUUID:             createUUID || readUUID || updateUUID || deleteUUID || requestUUID,
 		UsesStrconv:          createStrconv || readStrconv || updateStrconv || deleteStrconv,
+		UsesTime:             requestTime,
 		Dropped:              b.dropped,
 	}, nil
 }
 
 // buildRequestFields derives the RequestFieldView list a resource's Create and
-// Update bodies both use, one per top-level practitioner-settable (Required or
-// Optional) leaf of the flattened schema. A settable leaf that is not a plain
-// scalar (nested object, array, map, oneOf) or that carries an enum or a
-// format needing its own conversion (date-time, uuid) fails the artifact
-// rather than silently omitting a field the practitioner can configure but
-// the generated Create/Update would never send.
-func buildRequestFields(leaves []*model.Attribute, unsupported *[]UnsupportedNode) []RequestFieldView {
-	var out []RequestFieldView
-	for _, a := range leaves {
+// Update bodies both use, one per practitioner-settable (Required or Optional)
+// leaf or nested object of attrs, recursing into an object's own Children the
+// same way for a nested request value as for the top level (see
+// buildNestedRequestField). stateExpr is the Go expression attrs' own fields
+// are read off: "state" at the top level, or a nested object's own model
+// pointer ("state.Settings") one level down. target is the expression each
+// field's Set<GoField> is called on: "body.Data.Attributes" at the top level,
+// or an ancestor's own constructed local further down — precomputed onto each
+// RequestFieldView.Target since a template partial recursing into one nested
+// field cannot see its ancestors' own state. sdkPackage names the module
+// every New<Type>WithDefaults() call in the tree is qualified with.
+// usesUUID/usesTime report whether any leaf, at this level or nested below
+// it, needed the corresponding parse import.
+//
+// A settable leaf or object that this cannot yet map — an array, map, oneOf,
+// an enum or object with no named request-side SDK type (RequestModelRefName
+// empty — see model.Schema.RequestRefName), or a format this doesn't
+// recognize — fails the artifact rather than silently omitting a field the
+// practitioner can configure but the generated Create/Update would never send.
+func buildRequestFields(attrs []*model.Attribute, stateExpr, target, sdkPackage string, unsupported *[]UnsupportedNode) (fields []RequestFieldView, usesUUID, usesTime bool) {
+	for _, a := range attrs {
 		if !a.Required && !a.Optional {
 			continue // Computed-only: not request-settable.
 		}
 		tfName := tfNameOf(a.Path)
 		field := model.SdkName(tfName)
-		stateField := "state." + field
-		expr, ok := requestValueExpr(a, stateField)
-		if !ok {
+		childState := stateExpr + "." + field
+
+		if a.OneOf != nil {
 			*unsupported = append(*unsupported, UnsupportedNode{
-				Path: a.Path,
-				Reason: "request-settable field of this shape is not yet supported for a resource " +
-					"(only scalar string/bool/int64/float64 leaves without an enum or format)",
+				Path:   a.Path,
+				Reason: "a oneOf union is not yet settable on a resource request",
 			})
 			continue
 		}
-		rf := RequestFieldView{GoField: field, ValueExpr: expr, Required: a.Required}
-		if !a.Required {
-			rf.NullCheck = "!" + stateField + ".IsNull() && !" + stateField + ".IsUnknown()"
+		if a.TfType == "schema.SingleNestedBlock" || a.TfType == "schema.SingleNestedAttribute" {
+			rf, ok := buildNestedRequestField(a, field, childState, target, sdkPackage, unsupported)
+			if !ok {
+				continue
+			}
+			fields = append(fields, rf)
+			usesUUID, usesTime = usesUUID || hasParseCallPrefix(rf, "uuid."), usesTime || hasParseCallPrefix(rf, "time.")
+			continue
 		}
-		out = append(out, rf)
+
+		expr, parsedVar, parseCall, reason := requestValueExpr(a, childState, field, sdkPackage)
+		if reason != "" {
+			*unsupported = append(*unsupported, UnsupportedNode{Path: a.Path, Reason: reason})
+			continue
+		}
+		rf := RequestFieldView{GoField: field, Target: target, ValueExpr: expr, ParsedVar: parsedVar, ParseCall: parseCall, Required: a.Required}
+		if parsedVar != "" {
+			rf.TFName = tfName
+		}
+		if !a.Required {
+			rf.NullCheck = "!" + childState + ".IsNull() && !" + childState + ".IsUnknown()"
+		}
+		fields = append(fields, rf)
+		usesUUID, usesTime = usesUUID || strings.HasPrefix(parseCall, "uuid."), usesTime || strings.HasPrefix(parseCall, "time.")
 	}
-	return out
+	return fields, usesUUID, usesTime
 }
 
-// requestValueExpr returns the unwrapped Go value expression the SDK's
-// universal Set<Field>(v) setter takes for a's GoType, reading off stateField.
-// ok is false for anything not yet supported on the request side.
-func requestValueExpr(a *model.Attribute, stateField string) (expr string, ok bool) {
-	if a.IsEnum || a.Format != "" {
-		return "", false
+// buildNestedRequestField derives one object field's RequestFieldView: the
+// request-side SDK type to build via New<SDKType>WithDefaults() (see
+// BuildResourceView's doc comment; the same idiom applies at every nesting
+// depth, not only the root), and its own child fields, read off modelExpr —
+// a's own model pointer, reached through its parent so a doubly-nested field
+// resolves relative to its immediate parent rather than the top-level state.
+// target is where the constructed value is ultimately set, exactly as in
+// buildRequestFields.
+func buildNestedRequestField(a *model.Attribute, field, modelExpr, target, sdkPackage string, unsupported *[]UnsupportedNode) (RequestFieldView, bool) {
+	if a.RequestModelRefName == "" {
+		*unsupported = append(*unsupported, UnsupportedNode{
+			Path: a.Path,
+			Reason: "nested object has no named request-side SDK type (its schema was never reached " +
+				"through a $ref component in the Create or Update body)",
+		})
+		return RequestFieldView{}, false
 	}
+	nestedVar := lowerFirst(field) + "Value"
+	// The recursive call's own usesUUID/usesTime are discarded: the caller
+	// re-derives them from the returned tree via hasParseCallPrefix, since it
+	// needs the same aggregation whether this field came from this call or
+	// from a plain leaf.
+	childFields, _, _ := buildRequestFields(a.Children, modelExpr, nestedVar, sdkPackage, unsupported)
+	rf := RequestFieldView{
+		GoField:  field,
+		Target:   target,
+		Required: a.Required,
+		Nested: &RequestNestedView{
+			Constructor: sdkPackage + ".New" + a.RequestModelRefName + "WithDefaults()",
+			Var:         nestedVar,
+			ModelExpr:   modelExpr,
+			Fields:      childFields,
+		},
+	}
+	if !a.Required {
+		rf.NullCheck = modelExpr + " != nil"
+	}
+	return rf, true
+}
+
+// hasParseCallPrefix reports whether rf, or any field nested under it,
+// carries a ParseCall starting with prefix (e.g. "uuid." or "time."), used to
+// decide whether a nested subtree needs the corresponding import.
+func hasParseCallPrefix(rf RequestFieldView, prefix string) bool {
+	if strings.HasPrefix(rf.ParseCall, prefix) {
+		return true
+	}
+	if rf.Nested == nil {
+		return false
+	}
+	for _, child := range rf.Nested.Fields {
+		if hasParseCallPrefix(child, prefix) {
+			return true
+		}
+	}
+	return false
+}
+
+// requestValueExpr returns the unwrapped Go value expression a leaf's
+// Set<Field> setter takes, reading off stateExpr — directly for a plain
+// scalar, or via a ParsedVar/ParseCall pair (mirroring SDKArgumentView) when
+// the setter's type must first be recovered by a fallible parse (date-time,
+// uuid), in which case the parsed local is named from field so two parsed
+// siblings never collide. An enum leaf casts to its named SDK type, qualified
+// with sdkPackage since that type lives in the SDK, not the generated
+// package. reason is non-empty for anything not yet supported on the request
+// side, naming why.
+func requestValueExpr(a *model.Attribute, stateExpr, field, sdkPackage string) (expr, parsedVar, parseCall, reason string) {
+	if a.IsEnum {
+		if a.RequestModelRefName == "" {
+			return "", "", "", "enum leaf has no named request-side SDK type (its schema was never reached through a $ref component)"
+		}
+		return sdkPackage + "." + a.RequestModelRefName + "(" + stateExpr + ".ValueString())", "", "", ""
+	}
+
 	switch a.GoType {
 	case "types.String":
-		return stateField + ".ValueString()", true
+		switch a.Format {
+		case "":
+			return stateExpr + ".ValueString()", "", "", ""
+		case "date-time":
+			name := lowerFirst(field) + "Parsed"
+			return name, name, "time.Parse(time.RFC3339, " + stateExpr + ".ValueString())", ""
+		case "uuid":
+			name := lowerFirst(field) + "Parsed"
+			return name, name, "uuid.Parse(" + stateExpr + ".ValueString())", ""
+		default:
+			return "", "", "", fmt.Sprintf("string format %q is not yet supported on a resource request", a.Format)
+		}
 	case "types.Bool":
-		return stateField + ".ValueBool()", true
+		if a.Format != "" {
+			return "", "", "", fmt.Sprintf("bool format %q is not yet supported on a resource request", a.Format)
+		}
+		return stateExpr + ".ValueBool()", "", "", ""
 	case "types.Int64":
-		return stateField + ".ValueInt64()", true
+		switch a.Format {
+		case "", "int64":
+			return stateExpr + ".ValueInt64()", "", "", ""
+		case "int32":
+			return "int32(" + stateExpr + ".ValueInt64())", "", "", ""
+		default:
+			return "", "", "", fmt.Sprintf("integer format %q is not yet supported on a resource request", a.Format)
+		}
 	case "types.Float64":
-		return stateField + ".ValueFloat64()", true
+		switch a.Format {
+		case "", "double":
+			return stateExpr + ".ValueFloat64()", "", "", ""
+		case "float":
+			return "float32(" + stateExpr + ".ValueFloat64())", "", "", ""
+		default:
+			return "", "", "", fmt.Sprintf("number format %q is not yet supported on a resource request", a.Format)
+		}
 	default:
-		return "", false
+		return "", "", "", "request-settable field of this shape is not yet supported for a resource " +
+			"(arrays and maps are not yet supported)"
 	}
 }
 

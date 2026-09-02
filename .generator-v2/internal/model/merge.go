@@ -305,14 +305,15 @@ func (m *resourceMerger) mergeObject(create, update, read *Schema, createRequire
 	}
 	refName, description, enum, sensitive := m.cosmeticFields(create, update, read, path)
 	return &Schema{
-		Kind:        SchemaKindObject,
-		Properties:  properties,
-		Required:    requiredFromCreate(create),
-		RefName:     refName,
-		Description: description,
-		Enum:        enum,
-		Sensitive:   sensitive,
-		Provenance:  stampProvenance(create, update, read, createRequired),
+		Kind:           SchemaKindObject,
+		Properties:     properties,
+		Required:       requiredFromCreate(create),
+		RefName:        refName,
+		RequestRefName: pickRequestRefName(create, update),
+		Description:    description,
+		Enum:           enum,
+		Sensitive:      sensitive,
+		Provenance:     stampProvenance(create, update, read, createRequired),
 	}, nil
 }
 
@@ -339,13 +340,14 @@ func (m *resourceMerger) mergeCollection(kind SchemaKind, create, update, read *
 	}
 	refName, description, enum, sensitive := m.cosmeticFields(create, update, read, path)
 	return &Schema{
-		Kind:        kind,
-		Items:       items,
-		RefName:     refName,
-		Description: description,
-		Enum:        enum,
-		Sensitive:   sensitive,
-		Provenance:  stampProvenance(create, update, read, createRequired),
+		Kind:           kind,
+		Items:          items,
+		RefName:        refName,
+		RequestRefName: pickRequestRefName(create, update),
+		Description:    description,
+		Enum:           enum,
+		Sensitive:      sensitive,
+		Provenance:     stampProvenance(create, update, read, createRequired),
 	}, nil
 }
 
@@ -361,22 +363,40 @@ func (m *resourceMerger) mergePrimitive(create, update, read *Schema, createRequ
 	}
 	refName, description, enum, sensitive := m.cosmeticFields(create, update, read, path)
 	return &Schema{
-		Kind:        SchemaKindPrimitive,
-		Type:        typ,
-		Format:      format,
-		Enum:        enum,
-		RefName:     refName,
-		Description: description,
-		Sensitive:   sensitive,
-		Provenance:  stampProvenance(create, update, read, createRequired),
+		Kind:           SchemaKindPrimitive,
+		Type:           typ,
+		Format:         format,
+		Enum:           enum,
+		RefName:        refName,
+		RequestRefName: pickRequestRefName(create, update),
+		Description:    description,
+		Sensitive:      sensitive,
+		Provenance:     stampProvenance(create, update, read, createRequired),
 	}, nil
 }
 
 func (m *resourceMerger) mergeVerbatim(create, update, read *Schema, createRequired bool, path string) (*Schema, error) {
 	out := CloneSchema(preferredSchema(create, update, read))
 	out.RefName, out.Description, out.Enum, out.Sensitive = m.cosmeticFields(create, update, read, path)
+	out.RequestRefName = pickRequestRefName(create, update)
 	out.Provenance = stampProvenance(create, update, read, createRequired)
 	return out, nil
+}
+
+// pickRequestRefName returns the Create body's component name at this node,
+// falling back to Update's when Create doesn't reach it. Unlike RefName (see
+// cosmeticFields), this never prefers Read: a resource's response component is
+// routinely named differently from its request one for the same field (e.g.
+// "...Request" vs "...Response" suffixes), so Read's name cannot substitute
+// for it here.
+func pickRequestRefName(create, update *Schema) string {
+	if create != nil && create.RefName != "" {
+		return create.RefName
+	}
+	if update != nil && update.RefName != "" {
+		return update.RefName
+	}
+	return ""
 }
 
 // cosmeticFields reconciles the four fields treated as cosmetic —

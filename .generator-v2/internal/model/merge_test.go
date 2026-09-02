@@ -105,6 +105,9 @@ var _ = Describe("MergeResourceSchema", func() {
 		By("the root's own RefName differs across all three bodies; the Read response wins")
 		Expect(merged.RefName).To(Equal("IncidentTypeResponse"))
 
+		By("RequestRefName never prefers Read: the Create body's own name wins instead")
+		Expect(merged.RequestRefName).To(Equal("IncidentTypeCreateRequest"))
+
 		By("every reconciled cosmetic difference is recorded as an info diagnostic")
 		Expect(diags).NotTo(BeEmpty())
 		for _, d := range diags {
@@ -128,6 +131,48 @@ var _ = Describe("MergeResourceSchema", func() {
 		merged, _, err := MergeResourceSchema(group)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(attributesOf(merged)["name"].Provenance).To(Equal(&SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true}))
+	})
+
+	It("falls RequestRefName back to Update's component name when Create doesn't reach the node, and leaves it empty when neither does", func() {
+		createReq := jsonAPIBody("XCreateRequest", map[string]*Schema{
+			"name": {Kind: SchemaKindPrimitive, Type: "string"},
+		}, []string{"name"})
+		updateReq := jsonAPIBody("XUpdateRequest", map[string]*Schema{
+			"name": {Kind: SchemaKindPrimitive, Type: "string"},
+			"settings": {
+				Kind:    SchemaKindObject,
+				RefName: "XSettingsUpdateRequest",
+				Properties: map[string]*Schema{
+					"enabled": {Kind: SchemaKindPrimitive, Type: "boolean"},
+				},
+			},
+		}, nil)
+		readResp := jsonAPIBody("XResponse", map[string]*Schema{
+			"name": {Kind: SchemaKindPrimitive, Type: "string"},
+			"settings": {
+				Kind:    SchemaKindObject,
+				RefName: "XSettingsResponse",
+				Properties: map[string]*Schema{
+					"enabled": {Kind: SchemaKindPrimitive, Type: "boolean"},
+				},
+			},
+			// Present only in the response: RequestRefName must stay empty
+			// rather than borrow Read's name for a field the request never sets.
+			"audit": {Kind: SchemaKindObject, RefName: "XAuditResponse", Properties: map[string]*Schema{}},
+		}, nil)
+
+		group := &ResolvedGroup{
+			Create: &Operation{OperationId: "CreateX", RequestSchema: createReq},
+			Update: &Operation{OperationId: "UpdateX", RequestSchema: updateReq},
+			Read:   &Operation{OperationId: "GetX", ResponseSchema: readResp},
+		}
+
+		merged, _, err := MergeResourceSchema(group)
+		Expect(err).NotTo(HaveOccurred())
+		attrs := attributesOf(merged)
+
+		Expect(attrs["settings"].RequestRefName).To(Equal("XSettingsUpdateRequest"))
+		Expect(attrs["audit"].RequestRefName).To(BeEmpty())
 	})
 
 	It("never reads group.Search or a Create/Update response body", func() {

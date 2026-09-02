@@ -529,8 +529,13 @@ type ResourceView struct {
 	PlanModifierPackages []string
 	// UsesUUID and UsesStrconv add the google/uuid and strconv imports for a
 	// path argument that must be recovered by parsing (see SDKArgumentView).
+	// UsesUUID is also true when a request field needs a uuid.Parse (see
+	// RequestFieldView.ParseCall).
 	UsesUUID    bool
 	UsesStrconv bool
+	// UsesTime adds the "time" import for a date-time request field's
+	// time.Parse call (see RequestFieldView.ParseCall).
+	UsesTime bool
 
 	// Dropped lists response members skipped from the rendered view (e.g.
 	// relationships), surfaced as diagnostics in the run report.
@@ -553,18 +558,68 @@ type CRUDCallView struct {
 // via the SDK's universal Set<GoField>(v) setter — present for both a required
 // (non-pointer) and an optional (pointer) SDK field alike, which is what lets
 // one view serve both request types regardless of whether either SDK type
-// happens to keep the field required (see buildRequestFields).
+// happens to keep the field required (see buildRequestFields). Exactly one of
+// (ValueExpr) and Nested is populated: a leaf sets the parent's field
+// directly, an object field builds Nested's own value first.
 type RequestFieldView struct {
 	// GoField is the SDK setter suffix, e.g. "Name" for SetName.
 	GoField string
-	// ValueExpr reads the unwrapped Go value off the model, e.g.
-	// "state.Name.ValueString()".
-	ValueExpr string
-	// Required renders the call unconditionally; false guards it behind a
-	// null/unknown check on the model field.
+	// Target is the expression Set<GoField> is called on: "body.Data.Attributes"
+	// at the top level, or an ancestor's own RequestNestedView.Var one or more
+	// levels down. Precomputed here (rather than threaded through the
+	// template's recursion) because a template partial invoked on one nested
+	// field loses access to its ancestors' own state.
+	Target string
+	// Required renders the call unconditionally; false guards it behind
+	// NullCheck (a leaf) or a nil check on Nested's ModelExpr (an object).
 	Required bool
-	// NullCheck is the guard expression for a non-Required field, e.g.
+	// NullCheck is the guard expression for a non-Required leaf, e.g.
 	// "!state.Description.IsNull() && !state.Description.IsUnknown()". Empty
-	// when Required.
+	// for a Required leaf or for any Nested field (object fields guard on
+	// Nested.ModelExpr instead).
 	NullCheck string
+
+	// ValueExpr reads the unwrapped Go value a leaf's Set<GoField> takes, e.g.
+	// "state.Name.ValueString()" or, after a ParsedVar parse, the parsed
+	// local's own name. Empty when Nested is set.
+	ValueExpr string
+	// ParsedVar and ParseCall request a parse step before ValueExpr can be
+	// used, the same shape SDKArgumentView uses for a path argument: declare
+	// "<ParsedVar>, err := <ParseCall>", check err, then pass ParsedVar (which
+	// equals ValueExpr) to the setter. Empty when the model's own accessor
+	// already produces the setter's expected type.
+	ParsedVar string
+	ParseCall string
+	// TFName names the field in a parse-failure diagnostic. Set only when
+	// ParsedVar is.
+	TFName string
+
+	// Nested is set for an object field: the request-side SDK type to build
+	// via New<SDKType>WithDefaults(), and its own Set<GoField> calls
+	// (recursing through this same view). Nil for a leaf field.
+	Nested *RequestNestedView
+}
+
+// RequestNestedView is one nested object a resource's request body constructs
+// via New<SDKType>WithDefaults() before setting it on its parent — the same
+// idiom BuildResourceView's own doc comment describes for the request root,
+// applied recursively at every nesting depth.
+type RequestNestedView struct {
+	// Constructor is the fully package-qualified call building this node's
+	// zero value, e.g. "datadogV2.NewSettingsRequestWithDefaults()".
+	// Precomputed for the same reason Target is: the package name lives on
+	// ResourceView, out of reach once template recursion has descended past
+	// the top-level RequestFields range.
+	Constructor string
+	// Var is the local variable holding the constructed value.
+	Var string
+	// ModelExpr reads the model's own pointer to this nested value (e.g.
+	// "state.Settings"), read through the parent path so a field nested two
+	// levels deep reads "state.Settings.Retry" rather than "state.Retry".
+	// Fields' own ValueExpr/NullCheck are expressed relative to *ModelExpr
+	// (e.g. "state.Settings.Url.ValueString()"), not to Var: Var only ever
+	// holds the SDK value being built, never the source model.
+	ModelExpr string
+	// Fields are this nested object's own Set<GoField>(...) calls.
+	Fields []RequestFieldView
 }

@@ -226,6 +226,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, requir
 	// A string enum becomes a OneOf validator; non-string enums produce none for now.
 	if s.Kind == SchemaKindPrimitive && s.Type == "string" && len(s.Enum) > 0 {
 		attr.IsEnum = true
+		attr.RequestModelRefName = s.RequestRefName
 		args := make([]string, len(s.Enum))
 		for i, v := range s.Enum {
 			args[i] = strconv.Quote(v)
@@ -241,7 +242,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, requir
 		if err != nil {
 			return nil, err
 		}
-		attr.Children, attr.ModelRefName = children, s.RefName
+		attr.Children, attr.ModelRefName, attr.RequestModelRefName = children, s.RefName, s.RequestRefName
 
 	case SchemaKindArray:
 		switch s.Items.Kind {
@@ -251,7 +252,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, requir
 				return nil, err
 			}
 			// The element supplies the struct, so the element's component names it.
-			attr.Children, attr.ModelRefName = children, s.Items.RefName
+			attr.Children, attr.ModelRefName, attr.RequestModelRefName = children, s.Items.RefName, s.Items.RequestRefName
 		case SchemaKindOneOf:
 			// The list itself carries the envelope: its elements are variant
 			// blocks, so no attribute stands at the element path.

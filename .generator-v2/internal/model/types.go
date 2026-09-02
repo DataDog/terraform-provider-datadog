@@ -354,6 +354,16 @@ type Schema struct {
 	// carrying one — mirroring how the SDK generator's child_models() prefers a
 	// $ref name over the parent-derived alternative name.
 	RefName string
+	// RequestRefName is RefName's counterpart on the request side: the Create
+	// body's own component name at this node, falling back to Update's when
+	// Create doesn't reach it. Set only by a resource schema merge, alongside
+	// Provenance. It exists because RefName itself is cosmetically reconciled
+	// toward the Read response (FR-034c) and so cannot name a Create/Update-only
+	// component — the request-mapper needs the Create-side name to construct
+	// that component's Go type (e.g. New<RequestRefName>WithDefaults()), which
+	// commonly differs from the Read response's own component for the same
+	// field. Empty when every body that reaches this node left it inline.
+	RequestRefName string
 	// Provenance is non-nil only on a node produced by unioning the Create
 	// request, Update request and Read response bodies; nil on any
 	// single-direction schema.
@@ -541,6 +551,13 @@ type Attribute struct {
 	// differently-shaped objects reachable under the same property name produce one
 	// struct name and the artifact cannot compile.
 	ModelRefName string
+	// RequestModelRefName mirrors ModelRefName from Schema.RequestRefName
+	// instead of Schema.RefName: the request-side (Create/Update) component
+	// name, which a resource's cosmetic merge does not overwrite with the Read
+	// response's name the way ModelRefName is. Non-empty only for a
+	// request-settable object node (or a string enum leaf, naming its SDK enum
+	// type rather than a struct) reached through a resource schema merge.
+	RequestModelRefName string
 	// OneOf is non-nil when this attribute carries a synthetic oneOf envelope:
 	// either the envelope itself (a union at the root or an object property) or
 	// the collection whose element is a union. Children then holds the variant

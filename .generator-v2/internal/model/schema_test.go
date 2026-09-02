@@ -898,6 +898,35 @@ var _ = Describe("BuildResourceTree presence flags", func() {
 		Expect(attrByPath(tree, "resource.read_only").InResponse).To(BeTrue())
 	})
 
+	It("carries Schema.RequestRefName through as RequestModelRefName, for an object and for an enum leaf", func() {
+		settings := &Schema{
+			Kind:           SchemaKindObject,
+			RefName:        "SettingsResponse",
+			RequestRefName: "SettingsUpdateRequest",
+			Provenance:     &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true},
+			Properties: map[string]*Schema{
+				"enabled": provSchema("boolean", SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}),
+			},
+		}
+		priority := provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true})
+		priority.RefName = "PriorityResponse"
+		priority.RequestRefName = "PriorityCreateRequest"
+		priority.Enum = []string{"low", "high"}
+
+		tree, _, err := BuildResourceTree(&Schema{
+			Kind:     SchemaKindObject,
+			Required: []string{"priority"},
+			Properties: map[string]*Schema{
+				"settings": settings,
+				"priority": priority,
+			},
+		}, false)
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(attrByPath(tree, "resource.settings").RequestModelRefName).To(Equal("SettingsUpdateRequest"))
+		Expect(attrByPath(tree, "resource.priority").RequestModelRefName).To(Equal("PriorityCreateRequest"))
+	})
+
 	It("never emits Required together with Optional or Computed, and never emits zero flags, anywhere in the tree", func() {
 		union := oneOfSchema("resource.choice", "Choice", primitiveOneOfVariant("v", "string"))
 		union.Provenance = &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}

@@ -17,6 +17,9 @@ import (
 {{- if .UsesStrconv }}
 	"strconv"
 {{- end }}
+{{- if .UsesTime }}
+	"time"
+{{- end }}
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/{{ .SDKPackage }}"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -212,12 +215,59 @@ func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .GoNa
 */}}
 {{- define "requestFields" -}}
 {{- range .RequestFields }}
+{{ template "requestField" . }}
+{{- end }}
+{{- end -}}
+
+{{/*
+  requestField renders one Set<Field>(...) call — on .Target, precomputed by
+  buildRequestFields since a nested field's own template execution has no
+  access to its ancestors' state. Nested builds its own SDK value first (the
+  same New<Type>WithDefaults() idiom as the request root, applied
+  recursively) and recurses through its own Fields before setting it on
+  .Target; a leaf with ParsedVar recovers its value through a fallible parse
+  first; anything else is a direct conversion.
+*/}}
+{{- define "requestField" -}}
+{{- if .Nested }}
 {{- if .Required }}
-	body.Data.Attributes.Set{{ .GoField }}({{ .ValueExpr }})
+	{{ .Nested.Var }} := {{ .Nested.Constructor }}
+{{- range .Nested.Fields }}
+{{ template "requestField" . }}
+{{- end }}
+	{{ .Target }}.Set{{ .GoField }}(*{{ .Nested.Var }})
 {{- else }}
 	if {{ .NullCheck }} {
-		body.Data.Attributes.Set{{ .GoField }}({{ .ValueExpr }})
+		{{ .Nested.Var }} := {{ .Nested.Constructor }}
+{{- range .Nested.Fields }}
+{{ template "requestField" . }}
+{{- end }}
+		{{ .Target }}.Set{{ .GoField }}(*{{ .Nested.Var }})
 	}
 {{- end }}
+{{- else if .ParsedVar }}
+{{- if .Required }}
+	{{ .ParsedVar }}, err := {{ .ParseCall }}
+	if err != nil {
+		response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
+		return
+	}
+	{{ .Target }}.Set{{ .GoField }}({{ .ValueExpr }})
+{{- else }}
+	if {{ .NullCheck }} {
+		{{ .ParsedVar }}, err := {{ .ParseCall }}
+		if err != nil {
+			response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
+			return
+		}
+		{{ .Target }}.Set{{ .GoField }}({{ .ValueExpr }})
+	}
+{{- end }}
+{{- else if .Required }}
+	{{ .Target }}.Set{{ .GoField }}({{ .ValueExpr }})
+{{- else }}
+	if {{ .NullCheck }} {
+		{{ .Target }}.Set{{ .GoField }}({{ .ValueExpr }})
+	}
 {{- end }}
 {{- end -}}

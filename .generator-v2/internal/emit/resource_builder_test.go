@@ -73,14 +73,15 @@ var _ = Describe("BuildResourceView", func() {
 			TFName: "last_seen", TFType: "schema.StringAttribute", Description: "Last time this incident type was seen.", Computed: true,
 		}))
 
+		const attrsTarget = "body.Data.Attributes"
 		Expect(view.RequestFields).To(ConsistOf(
-			RequestFieldView{GoField: "Name", ValueExpr: "state.Name.ValueString()", Required: true},
+			RequestFieldView{GoField: "Name", Target: attrsTarget, ValueExpr: "state.Name.ValueString()", Required: true},
 			RequestFieldView{
-				GoField: "Description", ValueExpr: "state.Description.ValueString()",
+				GoField: "Description", Target: attrsTarget, ValueExpr: "state.Description.ValueString()",
 				NullCheck: "!state.Description.IsNull() && !state.Description.IsUnknown()",
 			},
 			RequestFieldView{
-				GoField: "InternalNote", ValueExpr: "state.InternalNote.ValueString()",
+				GoField: "InternalNote", Target: attrsTarget, ValueExpr: "state.InternalNote.ValueString()",
 				NullCheck: "!state.InternalNote.IsNull() && !state.InternalNote.IsUnknown()",
 			},
 		))
