@@ -484,7 +484,7 @@ var _ = Describe("NormalizeSchemas oneOf naming failures", func() {
 			Properties: map[string]*model.Schema{"shared": {Kind: model.SchemaKindPrimitive, Type: "string"}},
 		}
 
-		Expect(mergeNormalizedSchemas(unsupported, common)).To(BeIdenticalTo(unsupported))
+		Expect(model.MergeNormalizedSchemas(unsupported, common)).To(BeIdenticalTo(unsupported))
 		Expect(unsupported.UnsupportedReason).To(ContainSubstring("colliding variant name"))
 	})
 })
