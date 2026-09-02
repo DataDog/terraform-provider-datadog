@@ -232,12 +232,16 @@ func (e *SchemaMergeError) Error() string {
 }
 
 // MergeResourceSchema unions the Create request, Update request and Read
-// response bodies of group into one Schema tree stamped with Provenance at
-// every node (FR-034, FR-034b), the input BuildResourceTree turns into a
-// resource AttributeTree. Nodes are correlated by property name at equal
-// depth from each body's root, so a JSON:API data.attributes.<field> lines up
-// across all three even though the enclosing request/response components
-// differ by name.
+// response bodies of group into one Schema tree, the input BuildResourceTree
+// turns into a resource AttributeTree. Nodes are correlated by property name
+// at equal depth from each body's root, so a JSON:API data.attributes.<field>
+// lines up across all three even though the enclosing request/response
+// components differ by name; every correlated position is stamped with
+// Provenance (FR-034, FR-034b). The one exception is a OneOf/Unsupported/
+// RefCycle/DepthExceeded node (see mergeVerbatim): its own position is
+// stamped, but its subtree is cloned verbatim from the preferred side rather
+// than walked, so nodes inside it carry whatever Provenance (typically none)
+// they already had.
 //
 // group.Search and the Create/Update *response* bodies are never read: a
 // field only they carry would become Computed state that refresh can never
@@ -314,7 +318,7 @@ func (m *resourceMerger) mergeObject(create, update, read *Schema, createRequire
 		if read != nil {
 			childRead = read.Properties[key]
 		}
-		child, err := m.mergeNode(childCreate, childUpdate, childRead, childRequired, mergePath(path, key))
+		child, err := m.mergeNode(childCreate, childUpdate, childRead, childRequired, ChildPath(path, key))
 		if err != nil {
 			return nil, err
 		}
@@ -350,7 +354,7 @@ func (m *resourceMerger) mergeCollection(kind SchemaKind, create, update, read *
 	}
 	// An array/map element has no name of its own to appear in a parent's
 	// Required list, so it is never itself request-required.
-	items, err := m.mergeNode(childCreate, childUpdate, childRead, false, path+suffix)
+	items, err := m.mergeNode(childCreate, childUpdate, childRead, false, ChildPath(path, suffix))
 	if err != nil {
 		return nil, err
 	}
@@ -368,22 +372,13 @@ func (m *resourceMerger) mergeCollection(kind SchemaKind, create, update, read *
 
 func (m *resourceMerger) mergePrimitive(create, update, read *Schema, createRequired bool, path string) (*Schema, error) {
 	present := presentSchemas(create, update, read)
-	typ, format := present[0].Type, present[0].Format
-	for _, s := range present[1:] {
-		switch {
-		case s.Type == "":
-		case typ == "":
-			typ = s.Type
-		case s.Type != typ:
-			return nil, &SchemaMergeError{Path: path, Aspect: "type", Left: typ, Right: s.Type}
-		}
-		switch {
-		case s.Format == "":
-		case format == "":
-			format = s.Format
-		case s.Format != format:
-			return nil, &SchemaMergeError{Path: path, Aspect: "format", Left: format, Right: s.Format}
-		}
+	typ, err := reconcileField(path, "type", present, func(s *Schema) string { return s.Type })
+	if err != nil {
+		return nil, err
+	}
+	format, err := reconcileField(path, "format", present, func(s *Schema) string { return s.Format })
+	if err != nil {
+		return nil, err
 	}
 	refName, description, enum, sensitive := m.cosmeticFields(create, update, read, path)
 	return &Schema{
@@ -399,14 +394,7 @@ func (m *resourceMerger) mergePrimitive(create, update, read *Schema, createRequ
 }
 
 func (m *resourceMerger) mergeVerbatim(create, update, read *Schema, createRequired bool, path string) (*Schema, error) {
-	var preferred *Schema
-	for _, s := range []*Schema{read, create, update} {
-		if s != nil {
-			preferred = s
-			break
-		}
-	}
-	out := CloneSchema(preferred)
+	out := CloneSchema(preferredSchema(create, update, read))
 	out.RefName, out.Description, out.Enum, out.Sensitive = m.cosmeticFields(create, update, read, path)
 	out.Provenance = stampProvenance(create, update, read, createRequired)
 	return out, nil
@@ -449,13 +437,29 @@ func stampProvenance(create, update, read *Schema, createRequired bool) *SchemaP
 // SchemaMergeError naming the two conflicting spellings.
 func kindConflict(create, update, read *Schema, path string) (SchemaKind, error) {
 	present := presentSchemas(create, update, read)
-	kind := present[0].Kind
-	for _, s := range present[1:] {
-		if s.Kind != kind {
-			return "", &SchemaMergeError{Path: path, Aspect: "kind", Left: string(kind), Right: string(s.Kind)}
+	kind, err := reconcileField(path, "kind", present, func(s *Schema) string { return string(s.Kind) })
+	if err != nil {
+		return "", err
+	}
+	return SchemaKind(kind), nil
+}
+
+// reconcileField picks the one value every present body that sets it agrees
+// on for a structural aspect ("kind", "type", or "format") — skipping a body
+// that doesn't set it at all — and returns a SchemaMergeError naming both
+// spellings the moment two present bodies disagree.
+func reconcileField(path, aspect string, present []*Schema, get func(*Schema) string) (string, error) {
+	var value string
+	for _, s := range present {
+		switch v := get(s); {
+		case v == "":
+		case value == "":
+			value = v
+		case v != value:
+			return "", &SchemaMergeError{Path: path, Aspect: aspect, Left: value, Right: v}
 		}
 	}
-	return kind, nil
+	return value, nil
 }
 
 func presentSchemas(create, update, read *Schema) []*Schema {
@@ -487,9 +491,17 @@ func unionObjectKeys(create, update, read *Schema) []string {
 	return keys
 }
 
-func mergePath(parent, child string) string {
+// ChildPath joins parent and child into a dot-delimited schema path, e.g.
+// "data.attributes.name", except when child is the array/map element marker
+// ("[]"/"{}"), which appends without a dot. Shared by the parser's path
+// tracking, the SDK binding walk, and the resource schema merge below, so the
+// three stay spelled identically.
+func ChildPath(parent, child string) string {
 	if parent == "" {
 		return child
+	}
+	if child == "[]" || child == "{}" {
+		return parent + child
 	}
 	return parent + "." + child
 }
@@ -506,6 +518,23 @@ func requiredFromCreate(create *Schema) []string {
 // reports whether the present sides actually carried more than one distinct
 // non-empty value, so the caller knows whether a reconciliation happened or
 // every side already agreed.
+// preferenceOrder is the Read, Create, Update order FR-034c's cosmetic
+// reconciliation prefers throughout — read wins a disagreement, else create,
+// else update. Entries are nil when that side is absent; callers filter.
+func preferenceOrder(create, update, read *Schema) [3]*Schema {
+	return [3]*Schema{read, create, update}
+}
+
+// preferredSchema returns the first present side in preferenceOrder.
+func preferredSchema(create, update, read *Schema) *Schema {
+	for _, s := range preferenceOrder(create, update, read) {
+		if s != nil {
+			return s
+		}
+	}
+	return nil
+}
+
 func pickString(get func(*Schema) string, create, update, read *Schema) (value string, disagreed bool) {
 	seen := map[string]bool{}
 	for _, s := range presentSchemas(create, update, read) {
@@ -514,7 +543,7 @@ func pickString(get func(*Schema) string, create, update, read *Schema) (value s
 		}
 	}
 	disagreed = len(seen) > 1
-	for _, s := range []*Schema{read, create, update} {
+	for _, s := range preferenceOrder(create, update, read) {
 		if s == nil {
 			continue
 		}
