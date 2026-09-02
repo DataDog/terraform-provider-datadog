@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sort"
 	"strconv"
+	"strings"
 )
 
 // nestingMode tracks whether the current subtree nests as blocks or as attributes.
@@ -539,33 +540,28 @@ func (b *treeBuilder) applyPresence(a *Attribute, s *Schema, required bool) erro
 		default:
 			a.Computed = true
 		}
-		modifiers, err := b.resourcePlanModifiers(a)
-		if err != nil {
-			return err
-		}
-		a.PlanModifiers = modifiers
+		a.PlanModifiers = b.resourcePlanModifiers(a, p.InRequest)
 	}
 	return nil
 }
 
-// resourcePlanModifiers derives a's plan modifiers from the presence flags
-// applyPresence just set on it: UseStateForUnknown() when both Optional and
-// Computed are set, RequiresReplace() when the attribute is request-settable
-// (Required or Optional) and updateUnsupported — never either one on a
+// resourcePlanModifiers derives a's plan modifiers: UseStateForUnknown() when
+// applyPresence just set both Optional and Computed on it, RequiresReplace()
+// when requestSettable and updateUnsupported — never either one on a
 // Computed-only attribute, since the server may change such a value during
 // apply and there is no update endpoint to reconcile it through anyway. Both
 // are typed from a.GoType, so a Computed-only attribute never even looks one
-// up.
-func (b *treeBuilder) resourcePlanModifiers(a *Attribute) ([]PlanModifierSpec, error) {
+// up. requestSettable is the caller's Provenance.InRequest, not re-derived
+// from a.Required/a.Optional: those are true under the same condition today,
+// but only because applyPresence's presence switch happens to be exhaustive
+// and mutually exclusive — InRequest is the fact itself.
+func (b *treeBuilder) resourcePlanModifiers(a *Attribute, requestSettable bool) []PlanModifierSpec {
 	useStateForUnknown := a.Optional && a.Computed
-	requiresReplace := b.updateUnsupported && (a.Required || a.Optional)
+	requiresReplace := b.updateUnsupported && requestSettable
 	if !useStateForUnknown && !requiresReplace {
-		return nil, nil
+		return nil
 	}
-	pkg, err := planModifierPackage(a.GoType)
-	if err != nil {
-		return nil, err
-	}
+	pkg := planModifierPackage(a.GoType)
 	var modifiers []PlanModifierSpec
 	if useStateForUnknown {
 		modifiers = append(modifiers, PlanModifierSpec{Name: pkg + ".UseStateForUnknown"})
@@ -573,30 +569,15 @@ func (b *treeBuilder) resourcePlanModifiers(a *Attribute) ([]PlanModifierSpec, e
 	if requiresReplace {
 		modifiers = append(modifiers, PlanModifierSpec{Name: pkg + ".RequiresReplace"})
 	}
-	return modifiers, nil
+	return modifiers
 }
 
 // planModifierPackage returns the terraform-plugin-framework planmodifier
-// subpackage for goType, e.g. "types.String" -> "stringplanmodifier".
-func planModifierPackage(goType string) (string, error) {
-	switch goType {
-	case "types.String":
-		return "stringplanmodifier", nil
-	case "types.Int64":
-		return "int64planmodifier", nil
-	case "types.Float64":
-		return "float64planmodifier", nil
-	case "types.Bool":
-		return "boolplanmodifier", nil
-	case "types.List":
-		return "listplanmodifier", nil
-	case "types.Map":
-		return "mapplanmodifier", nil
-	case "types.Object":
-		return "objectplanmodifier", nil
-	default:
-		return "", fmt.Errorf("model: no plan modifier package for GoType %q", goType)
-	}
+// subpackage for goType, e.g. "types.String" -> "stringplanmodifier". goType
+// is always one of FrameworkType's seven possible outputs by the time it
+// reaches here, all following this same naming convention.
+func planModifierPackage(goType string) string {
+	return strings.ToLower(strings.TrimPrefix(goType, "types.")) + "planmodifier"
 }
 
 // attributeForm rewrites a block framework type into its nested-attribute
