@@ -717,6 +717,7 @@ Optional:
 - `custom_where` (String) Custom WHERE clause for the query.
 - `group_by_columns` (List of String) Columns to group results by.
 - `model_type_override` (String) Override for the model type. Valid values are `freshness`, `percentage`, `any`.
+- `sensitivity` (Number) Sensitivity of the anomaly detection model, expressed as a multiplier on the width of the predicted bounds. Higher values widen the bounds and produce fewer alerts; lower values tighten them and produce more alerts. Defaults to `3.0`.
 
 
 
