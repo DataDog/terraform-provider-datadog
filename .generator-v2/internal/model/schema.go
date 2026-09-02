@@ -540,6 +540,7 @@ func (b *treeBuilder) applyPresence(a *Attribute, s *Schema, required bool) erro
 		default:
 			a.Computed = true
 		}
+		a.InResponse = p.InResponse
 		a.PlanModifiers = b.resourcePlanModifiers(a, p.InRequest)
 	}
 	return nil

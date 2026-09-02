@@ -44,7 +44,30 @@ type {{ .Name }} struct {
 {{- if .Sensitive }}
 	Sensitive: true,
 {{- end }}
+{{- if .Validators }}
+	Validators: []validator.String{
+{{- range .Validators }}
+		{{ . }},
+{{- end }}
+	},
+{{- end }}
+{{ template "planModifiers" . }}
 },
+{{- end -}}
+
+{{/*
+  planModifiers renders the "PlanModifiers: [...]" field shared by a leaf
+  attribute and a block. Resource attributes only — a data source's AttrView
+  always carries an empty PlanModifiers, so this renders nothing there.
+*/}}
+{{- define "planModifiers" -}}
+{{- if .PlanModifiers }}
+	PlanModifiers: []planmodifier.{{ .PlanModifierType }}{
+{{- range .PlanModifiers }}
+		{{ . }}(),
+{{- end }}
+	},
+{{- end }}
 {{- end -}}
 
 {{/* nestedBody renders the Attributes/Blocks maps shared by both block kinds. */}}
@@ -73,11 +96,13 @@ Blocks: map[string]schema.Block{
 	NestedObject: schema.NestedBlockObject{
 {{ template "nestedBody" . }}
 	},
+{{ template "planModifiers" . }}
 },
 {{- else }}
 "{{ .TFName }}": schema.SingleNestedBlock{
 	Description: {{ printf "%q" .Description }},
 {{ template "nestedBody" . }}
+{{ template "planModifiers" . }}
 },
 {{- end }}
 {{- end -}}

@@ -508,6 +508,12 @@ type Attribute struct {
 	Computed  bool
 	Sensitive bool
 
+	// InResponse mirrors Schema.Provenance.InResponse, set only when building a
+	// resource tree; false everywhere else. Required alone can't answer this:
+	// a required, write-only field and a required field that is also read
+	// back both end up Required, with no other way to tell them apart.
+	InResponse bool
+
 	// Default is the optional default value, encoded as a Go expression.
 	Default *Literal
 	// Validators is the fingerprintable validator list for this attribute.

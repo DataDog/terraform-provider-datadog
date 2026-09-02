@@ -146,7 +146,7 @@ func hclFilterValue(tfType string) (string, bool) {
 // author fills in) to pass in replay mode.
 func RenderDataSourceTest(v DataSourceView) ([]byte, error) {
 	var buf bytes.Buffer
-	if err := dataSourceTemplates.ExecuteTemplate(&buf, "data_source_test", buildTestView(v)); err != nil {
+	if err := templates.ExecuteTemplate(&buf, "data_source_test", buildTestView(v)); err != nil {
 		return nil, fmt.Errorf("emit: executing data source test template for %q: %w", v.TypeName, err)
 	}
 

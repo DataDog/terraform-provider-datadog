@@ -771,6 +771,60 @@ type dataSourceBuilder struct {
 	// models" marker. envelopes accumulates one view per distinct envelope in first-use
 	// order, for the state mapper to walk.
 	oneOfRenders map[string]oneOfRender
+	// filterByResponse, when true, restricts walk to emitting a response-mapping
+	// assignment (StateAssignment/ListAssignment) only for a node with
+	// InResponse. Some attributes have no Get<Field>Ok accessor on the
+	// response type at all, so building an assignment for one would not
+	// compile; the schema attribute and model field are still emitted either
+	// way. False emits an assignment for every attribute unconditionally.
+	filterByResponse bool
+	// planModifierPkgs collects the distinct planmodifier subpackages
+	// (e.g. "stringplanmodifier") referenced by any attribute's PlanModifiers,
+	// resource walks only, for the template's import block.
+	planModifierPkgs map[string]struct{}
+}
+
+// responds reports whether walk should build a's response-mapping assignment.
+func (b *dataSourceBuilder) responds(a *model.Attribute) bool {
+	return !b.filterByResponse || a.InResponse
+}
+
+// planModifierViews renders a's plan modifiers for its AttrView and records
+// their subpackages on the builder, e.g. "stringplanmodifier.UseStateForUnknown"
+// records "stringplanmodifier". sliceType is the planmodifier.<T> element type
+// matching a.GoType (e.g. "types.String" -> "String"), which every plan
+// modifier subpackage names identically to its own type token. Returns zero
+// values when a carries none.
+func (b *dataSourceBuilder) planModifierViews(a *model.Attribute) (names []string, sliceType string) {
+	if len(a.PlanModifiers) == 0 {
+		return nil, ""
+	}
+	names = make([]string, len(a.PlanModifiers))
+	for i, pm := range a.PlanModifiers {
+		names[i] = pm.Name
+		if pkg, _, ok := strings.Cut(pm.Name, "."); ok {
+			if b.planModifierPkgs == nil {
+				b.planModifierPkgs = make(map[string]struct{})
+			}
+			b.planModifierPkgs[pkg] = struct{}{}
+		}
+	}
+	return names, strings.TrimPrefix(a.GoType, "types.")
+}
+
+// validatorViews renders a's validators for its AttrView, e.g.
+// `stringvalidator.OneOf("low", "high")`. Empty unless a is configurable
+// (Required or Optional) — a validator on a Computed-only attribute would
+// never run, since the practitioner never supplies a value for it to check.
+func validatorViews(a *model.Attribute) []string {
+	if len(a.Validators) == 0 || !(a.Required || a.Optional) {
+		return nil
+	}
+	out := make([]string, len(a.Validators))
+	for i, v := range a.Validators {
+		out[i] = v.Name + "(" + strings.Join(v.Args, ", ") + ")"
+	}
+	return out
 }
 
 // droppedEnvelopeMember is the info-diagnostic note for a JSON:API response
@@ -827,6 +881,10 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 	for _, a := range attrs {
 		tfName := tfNameOf(a.Path)
 		field := model.SdkName(tfName)
+		// A pure function of a alone, computed once regardless of which TfType
+		// case below fires (including the oneOf branch, which continues before
+		// reaching the switch).
+		pmNames, pmType := b.planModifierViews(a)
 
 		// A union is keyed on OneOf, not on TfType: an envelope arrives wearing the
 		// same schema.SingleNestedBlock as an ordinary nested object, and walking it
@@ -841,18 +899,22 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 			collection := isCollectionForm(a.TfType)
 			fields = append(fields, ModelFieldView{GoField: field, GoType: goType, TFName: tfName})
 			blockViews = append(blockViews, AttrView{
-				TFName:      tfName,
-				Description: a.Description,
-				Required:    a.Required,
-				Optional:    a.Optional,
-				Computed:    a.Computed,
-				Sensitive:   a.Sensitive,
-				IsBlock:     true,
-				ListBlock:   collection,
-				Blocks:      render.blocks,
+				TFName:           tfName,
+				Description:      a.Description,
+				Required:         a.Required,
+				Optional:         a.Optional,
+				Computed:         a.Computed,
+				Sensitive:        a.Sensitive,
+				IsBlock:          true,
+				ListBlock:        collection,
+				Blocks:           render.blocks,
+				PlanModifiers:    pmNames,
+				PlanModifierType: pmType,
 			})
-			lists = append(lists, oneOfListAssignment(
-				a.OneOf, render, tfName, receiver, lhsPrefix+"."+field, collection))
+			if b.responds(a) {
+				lists = append(lists, oneOfListAssignment(
+					a.OneOf, render, tfName, receiver, lhsPrefix+"."+field, collection))
+			}
 			continue
 		}
 
@@ -860,64 +922,77 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 		case "schema.StringAttribute", "schema.Int64Attribute",
 			"schema.Float64Attribute", "schema.BoolAttribute":
 			attrViews = append(attrViews, AttrView{
-				TFName:      tfName,
-				TFType:      a.TfType,
-				Description: a.Description,
-				Required:    a.Required,
-				Optional:    a.Optional,
-				Computed:    a.Computed,
-				Sensitive:   a.Sensitive,
+				TFName:           tfName,
+				TFType:           a.TfType,
+				Description:      a.Description,
+				Required:         a.Required,
+				Optional:         a.Optional,
+				Computed:         a.Computed,
+				Sensitive:        a.Sensitive,
+				Validators:       validatorViews(a),
+				PlanModifiers:    pmNames,
+				PlanModifierType: pmType,
 			})
 			fields = append(fields, ModelFieldView{GoField: field, GoType: a.GoType, TFName: tfName})
-			varName := leafVar(tfName)
-			scalars = append(scalars, StateAssignment{
-				Var:      varName,
-				GetterOk: getterOk(receiver, tfName),
-				LHS:      lhsPrefix + "." + field,
-				RHS:      guardedValue(a, varName),
-			})
+			if b.responds(a) {
+				varName := leafVar(tfName)
+				scalars = append(scalars, StateAssignment{
+					Var:      varName,
+					GetterOk: getterOk(receiver, tfName),
+					LHS:      lhsPrefix + "." + field,
+					RHS:      guardedValue(a, varName),
+				})
+			}
 
 		case "schema.ListAttribute":
 			attrViews = append(attrViews, AttrView{
-				TFName:      tfName,
-				TFType:      a.TfType,
-				ElementType: a.ElementType,
-				Description: a.Description,
-				Required:    a.Required,
-				Optional:    a.Optional,
-				Computed:    a.Computed,
-				Sensitive:   a.Sensitive,
+				TFName:           tfName,
+				TFType:           a.TfType,
+				ElementType:      a.ElementType,
+				Description:      a.Description,
+				Required:         a.Required,
+				Optional:         a.Optional,
+				Computed:         a.Computed,
+				Sensitive:        a.Sensitive,
+				PlanModifiers:    pmNames,
+				PlanModifierType: pmType,
 			})
 			fields = append(fields, ModelFieldView{GoField: field, GoType: a.GoType, TFName: tfName}) // types.List
-			lists = append(lists, ListAssignment{
-				Kind:          "primitive",
-				ContainerKind: "list",
-				LHS:           lhsPrefix + "." + field,
-				GetterOk:      getterOk(receiver, tfName),
-				Var:           leafVar(tfName),
-				ElementType:   a.ElementType,
-			})
+			if b.responds(a) {
+				lists = append(lists, ListAssignment{
+					Kind:          "primitive",
+					ContainerKind: "list",
+					LHS:           lhsPrefix + "." + field,
+					GetterOk:      getterOk(receiver, tfName),
+					Var:           leafVar(tfName),
+					ElementType:   a.ElementType,
+				})
+			}
 
 		case "schema.MapAttribute":
 			attrViews = append(attrViews, AttrView{
-				TFName:      tfName,
-				TFType:      a.TfType,
-				ElementType: a.ElementType,
-				Description: a.Description,
-				Required:    a.Required,
-				Optional:    a.Optional,
-				Computed:    a.Computed,
-				Sensitive:   a.Sensitive,
+				TFName:           tfName,
+				TFType:           a.TfType,
+				ElementType:      a.ElementType,
+				Description:      a.Description,
+				Required:         a.Required,
+				Optional:         a.Optional,
+				Computed:         a.Computed,
+				Sensitive:        a.Sensitive,
+				PlanModifiers:    pmNames,
+				PlanModifierType: pmType,
 			})
 			fields = append(fields, ModelFieldView{GoField: field, GoType: a.GoType, TFName: tfName})
-			lists = append(lists, ListAssignment{
-				Kind:          "primitive",
-				ContainerKind: "map",
-				LHS:           lhsPrefix + "." + field,
-				GetterOk:      getterOk(receiver, tfName),
-				Var:           leafVar(tfName),
-				ElementType:   a.ElementType,
-			})
+			if b.responds(a) {
+				lists = append(lists, ListAssignment{
+					Kind:          "primitive",
+					ContainerKind: "map",
+					LHS:           lhsPrefix + "." + field,
+					GetterOk:      getterOk(receiver, tfName),
+					Var:           leafVar(tfName),
+					ElementType:   a.ElementType,
+				})
+			}
 
 		case "schema.ListNestedBlock":
 			elemStruct, childStem := b.namer.nested(stem, a)
@@ -926,28 +1001,32 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 			fields = append(fields, ModelFieldView{GoField: field, GoType: "[]*" + elemStruct, TFName: tfName})
 			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, childStem, loopVar, elemVar, a.Children)
 			blockViews = append(blockViews, AttrView{
-				TFName:      tfName,
-				Description: a.Description,
-				Required:    a.Required,
-				Optional:    a.Optional,
-				Computed:    a.Computed,
-				Sensitive:   a.Sensitive,
-				IsBlock:     true,
-				ListBlock:   true,
-				Attributes:  childAttrs,
-				Blocks:      childBlocks,
+				TFName:           tfName,
+				Description:      a.Description,
+				Required:         a.Required,
+				Optional:         a.Optional,
+				Computed:         a.Computed,
+				Sensitive:        a.Sensitive,
+				IsBlock:          true,
+				ListBlock:        true,
+				Attributes:       childAttrs,
+				Blocks:           childBlocks,
+				PlanModifiers:    pmNames,
+				PlanModifierType: pmType,
 			})
-			lists = append(lists, ListAssignment{
-				Kind:       "object",
-				LHS:        lhsPrefix + "." + field,
-				GetterOk:   getterOk(receiver, tfName),
-				Var:        leafVar(tfName),
-				LoopVar:    loopVar,
-				ElemVar:    elemVar,
-				ElemStruct: elemStruct,
-				Scalars:    childScalars,
-				Lists:      childLists,
-			})
+			if b.responds(a) {
+				lists = append(lists, ListAssignment{
+					Kind:       "object",
+					LHS:        lhsPrefix + "." + field,
+					GetterOk:   getterOk(receiver, tfName),
+					Var:        leafVar(tfName),
+					LoopVar:    loopVar,
+					ElemVar:    elemVar,
+					ElemStruct: elemStruct,
+					Scalars:    childScalars,
+					Lists:      childLists,
+				})
+			}
 
 		case "schema.SingleNestedBlock":
 			childStruct, childStem := b.namer.nested(stem, a)
@@ -956,27 +1035,31 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 			fields = append(fields, ModelFieldView{GoField: field, GoType: "*" + childStruct, TFName: tfName})
 			childAttrs, childBlocks, childScalars, childLists := b.walk(childStruct, childStem, objVar, elemVar, a.Children)
 			blockViews = append(blockViews, AttrView{
-				TFName:      tfName,
-				Description: a.Description,
-				Required:    a.Required,
-				Optional:    a.Optional,
-				Computed:    a.Computed,
-				Sensitive:   a.Sensitive,
-				IsBlock:     true,
-				ListBlock:   false,
-				Attributes:  childAttrs,
-				Blocks:      childBlocks,
+				TFName:           tfName,
+				Description:      a.Description,
+				Required:         a.Required,
+				Optional:         a.Optional,
+				Computed:         a.Computed,
+				Sensitive:        a.Sensitive,
+				IsBlock:          true,
+				ListBlock:        false,
+				Attributes:       childAttrs,
+				Blocks:           childBlocks,
+				PlanModifiers:    pmNames,
+				PlanModifierType: pmType,
 			})
-			lists = append(lists, ListAssignment{
-				Kind:       "object_single",
-				LHS:        lhsPrefix + "." + field,
-				GetterOk:   getterOk(receiver, tfName),
-				Var:        objVar,
-				ElemVar:    elemVar,
-				ElemStruct: childStruct,
-				Scalars:    childScalars,
-				Lists:      childLists,
-			})
+			if b.responds(a) {
+				lists = append(lists, ListAssignment{
+					Kind:       "object_single",
+					LHS:        lhsPrefix + "." + field,
+					GetterOk:   getterOk(receiver, tfName),
+					Var:        objVar,
+					ElemVar:    elemVar,
+					ElemStruct: childStruct,
+					Scalars:    childScalars,
+					Lists:      childLists,
+				})
+			}
 
 		default:
 			b.unsupported = append(b.unsupported, UnsupportedNode{Path: a.Path, Reason: unsupportedReason(a.TfType)})
@@ -1504,4 +1587,206 @@ func lowerFirst(s string) string {
 // New<title dsGoName>DataSource match the provider's convention.
 func dsGoName(name string) string {
 	return lowerFirst("Datadog" + model.SdkName(name))
+}
+
+// checkResponseTypeMatches fails a resource whose role response type disagrees
+// with Read's: Create, Read and Update share one generated updateState
+// method, which cannot map two different SDK response types.
+func checkResponseTypeMatches(artifact, role, roleType, readType string) error {
+	if roleType == readType {
+		return nil
+	}
+	return fmt.Errorf(
+		"emit: resource %q: %s response type %q differs from Read's %q — a single updateState cannot map both",
+		artifact, role, roleType, readType)
+}
+
+// BuildResourceView assembles the render-ready view for a resource artifact.
+// It requires a.Schema to already hold the merged request/response tree; a
+// nil Schema fails outright rather than silently rendering an empty schema
+// and a Create/Read/Update that populate nothing.
+//
+// A request body (Create or Update) is built via
+// New<GoRequestType>WithDefaults() — which the SDK always generates, and
+// which pre-fills the JSON:API "type" discriminator — followed by
+// body.Data.Attributes.Set<Field>(...) calls. That setter call type-checks
+// regardless of whether the field happens to be required or optional in the
+// request's own Go type, because the SDK generates a uniform
+// Set<Field>(v <unwrapped type>) for both (see buildRequestFields). Only
+// scalar string/bool/int64/float64 leaves without an enum or format are
+// supported this way; a practitioner-settable nested object/array/map/oneOf,
+// or an enum/date-time leaf, fails the artifact rather than silently
+// generating a Create/Update that never sends it.
+func BuildResourceView(a *model.Artifact) (ResourceView, error) {
+	if a.Schema == nil {
+		return ResourceView{}, fmt.Errorf(
+			"emit: resource %q has no schema — buildResourceArtifact must run the request/response "+
+				"merge (MergeResourceSchema, BuildResourceTree) before emit", a.Name)
+	}
+	lc := a.Lifecycle
+	if lc == nil || lc.Create == nil || lc.Read == nil || lc.Delete == nil {
+		return ResourceView{}, fmt.Errorf("emit: resource %q is missing a required lifecycle binding (Create/Read/Delete)", a.Name)
+	}
+	if err := checkResponseTypeMatches(a.Name, "Create", lc.Create.GoResponseType, lc.Read.GoResponseType); err != nil {
+		return ResourceView{}, err
+	}
+	if lc.Update != nil {
+		if err := checkResponseTypeMatches(a.Name, "Update", lc.Update.GoResponseType, lc.Read.GoResponseType); err != nil {
+			return ResourceView{}, err
+		}
+	}
+
+	primary := lc.Read
+	goName := dsGoName(a.Name)
+	b := &dataSourceBuilder{receiver: "attributes", namer: modelNamer{base: goName}}
+
+	env := b.flattenEnvelope(a.Schema.Attributes, lc.IdStrategy, "resp.Data")
+	if len(b.unsupported) > 0 {
+		return ResourceView{}, &UnsupportedEmitError{Nodes: b.unsupported}
+	}
+
+	rootStruct := b.namer.qualify("ResourceModel")
+	b.filterByResponse = true
+	recordAttrs, recordBlocks, recordScalars, recordLists := b.walk(rootStruct, "", b.receiver, "state", env.leaves)
+
+	requestFields := buildRequestFields(env.leaves, &b.unsupported)
+	createArgs, createUUID, createStrconv := buildArgumentViews(lc.Create, &b.unsupported)
+	readArgs, readUUID, readStrconv := buildArgumentViews(lc.Read, &b.unsupported)
+	deleteArgs, deleteUUID, deleteStrconv := buildArgumentViews(lc.Delete, &b.unsupported)
+	var updateArgs []SDKArgumentView
+	var updateUUID, updateStrconv bool
+	if lc.Update != nil {
+		updateArgs, updateUUID, updateStrconv = buildArgumentViews(lc.Update, &b.unsupported)
+	}
+	if len(b.unsupported) > 0 {
+		return ResourceView{}, &UnsupportedEmitError{Nodes: b.unsupported}
+	}
+
+	b.models[0].Fields = append([]ModelFieldView{env.idField}, b.models[0].Fields...)
+	models, conflicts := dedupeModels(b.models)
+	if len(conflicts) > 0 {
+		return ResourceView{}, &UnsupportedEmitError{Nodes: conflicts}
+	}
+
+	assignments := recordScalars
+	if env.idAssign != nil {
+		assignments = append([]StateAssignment{*env.idAssign}, assignments...)
+	}
+
+	updateView := CRUDCallView{}
+	if lc.Update != nil {
+		updateView = CRUDCallView{
+			Method: lc.Update.GoMethod, GoRequestType: lc.Update.GoRequestType,
+			GoResponseType: lc.Update.GoResponseType, Arguments: updateArgs,
+		}
+	}
+
+	planModifierPkgs := sortedKeys(b.planModifierPkgs)
+
+	return ResourceView{
+		TypeName:    a.Name,
+		GoName:      goName,
+		Description: a.Description,
+		SDKPackage:  primary.GoPackage,
+		APIStruct:   primary.GoApiStruct,
+		APIAccessor: "Get" + primary.GoApiStruct + strings.TrimPrefix(primary.GoPackage, "datadog"),
+		Create: CRUDCallView{
+			Method: lc.Create.GoMethod, GoRequestType: lc.Create.GoRequestType,
+			GoResponseType: lc.Create.GoResponseType, Arguments: createArgs,
+		},
+		Read: CRUDCallView{
+			Method: lc.Read.GoMethod, GoResponseType: lc.Read.GoResponseType, Arguments: readArgs,
+		},
+		Update:            updateView,
+		UpdateUnsupported: lc.UpdateUnsupported,
+		Delete: CRUDCallView{
+			Method: lc.Delete.GoMethod, Arguments: deleteArgs,
+		},
+		RequestFields: requestFields,
+		Models:        models,
+		Schema:        SchemaView{Attributes: recordAttrs, Blocks: recordBlocks},
+		State: StateView{
+			ParamName:   "resp",
+			ParamType:   "*" + primary.GoPackage + "." + primary.GoResponseType,
+			Preamble:    env.preamble,
+			Assignments: assignments,
+			Lists:       recordLists,
+		},
+		UsesFmt:              len(b.oneOfRenders) > 0,
+		UsesValidators:       hasValidators(recordAttrs) || hasValidators(recordBlocks),
+		UsesPlanModifiers:    len(planModifierPkgs) > 0,
+		PlanModifierPackages: planModifierPkgs,
+		UsesUUID:             createUUID || readUUID || updateUUID || deleteUUID,
+		UsesStrconv:          createStrconv || readStrconv || updateStrconv || deleteStrconv,
+		Dropped:              b.dropped,
+	}, nil
+}
+
+// buildRequestFields derives the RequestFieldView list a resource's Create and
+// Update bodies both use, one per top-level practitioner-settable (Required or
+// Optional) leaf of the flattened schema. A settable leaf that is not a plain
+// scalar (nested object, array, map, oneOf) or that carries an enum or a
+// format needing its own conversion (date-time, uuid) fails the artifact
+// rather than silently omitting a field the practitioner can configure but
+// the generated Create/Update would never send.
+func buildRequestFields(leaves []*model.Attribute, unsupported *[]UnsupportedNode) []RequestFieldView {
+	var out []RequestFieldView
+	for _, a := range leaves {
+		if !a.Required && !a.Optional {
+			continue // Computed-only: not request-settable.
+		}
+		tfName := tfNameOf(a.Path)
+		field := model.SdkName(tfName)
+		stateField := "state." + field
+		expr, ok := requestValueExpr(a, stateField)
+		if !ok {
+			*unsupported = append(*unsupported, UnsupportedNode{
+				Path: a.Path,
+				Reason: "request-settable field of this shape is not yet supported for a resource " +
+					"(only scalar string/bool/int64/float64 leaves without an enum or format)",
+			})
+			continue
+		}
+		rf := RequestFieldView{GoField: field, ValueExpr: expr, Required: a.Required}
+		if !a.Required {
+			rf.NullCheck = "!" + stateField + ".IsNull() && !" + stateField + ".IsUnknown()"
+		}
+		out = append(out, rf)
+	}
+	return out
+}
+
+// requestValueExpr returns the unwrapped Go value expression the SDK's
+// universal Set<Field>(v) setter takes for a's GoType, reading off stateField.
+// ok is false for anything not yet supported on the request side.
+func requestValueExpr(a *model.Attribute, stateField string) (expr string, ok bool) {
+	if a.IsEnum || a.Format != "" {
+		return "", false
+	}
+	switch a.GoType {
+	case "types.String":
+		return stateField + ".ValueString()", true
+	case "types.Bool":
+		return stateField + ".ValueBool()", true
+	case "types.Int64":
+		return stateField + ".ValueInt64()", true
+	case "types.Float64":
+		return stateField + ".ValueFloat64()", true
+	default:
+		return "", false
+	}
+}
+
+// hasValidators reports whether any attribute in the tree, recursively,
+// carries a rendered Validators list.
+func hasValidators(attrs []AttrView) bool {
+	for _, a := range attrs {
+		if len(a.Validators) > 0 {
+			return true
+		}
+		if hasValidators(a.Attributes) || hasValidators(a.Blocks) {
+			return true
+		}
+	}
+	return false
 }

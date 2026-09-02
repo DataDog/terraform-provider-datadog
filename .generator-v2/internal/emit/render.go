@@ -41,9 +41,12 @@ var funcMap = template.FuncMap{
 	},
 }
 
-// dataSourceTemplates is the parsed template set: the singular and plural roots
-// plus the shared partials in data_source_common.go.tmpl.
-var dataSourceTemplates = template.Must(
+// templates is the parsed set of every "templates/*.go.tmpl" file: the
+// data-source singular/plural roots, the resource root, the acceptance-test
+// scaffold, and the shared partials in data_source_common.go.tmpl (schema
+// rendering, model structs, response mapping) that the resource root reuses
+// as-is.
+var templates = template.Must(
 	template.New("data_source").Funcs(funcMap).ParseFS(templateFS, "templates/*.go.tmpl"),
 )
 
@@ -63,13 +66,32 @@ func RenderDataSource(v DataSourceView) ([]byte, error) {
 	}
 
 	var buf bytes.Buffer
-	if err := dataSourceTemplates.ExecuteTemplate(&buf, name, v); err != nil {
+	if err := templates.ExecuteTemplate(&buf, name, v); err != nil {
 		return nil, fmt.Errorf("emit: executing %s template for %q: %w", name, v.TypeName, err)
 	}
 
 	formatted, err := format.Source(buf.Bytes())
 	if err != nil {
 		return nil, fmt.Errorf("emit: gofmt of generated data source %q: %w\n--- raw output ---\n%s", v.TypeName, err, buf.String())
+	}
+	return dropBlankLineAfterBrace(formatted), nil
+}
+
+// RenderResource executes the resource template for v and returns
+// gofmt-canonical Go source.
+func RenderResource(v ResourceView) ([]byte, error) {
+	if err := checkDuplicateFields(v.Models); err != nil {
+		return nil, fmt.Errorf("emit: resource %q: %w", v.TypeName, err)
+	}
+
+	var buf bytes.Buffer
+	if err := templates.ExecuteTemplate(&buf, "resource", v); err != nil {
+		return nil, fmt.Errorf("emit: executing resource template for %q: %w", v.TypeName, err)
+	}
+
+	formatted, err := format.Source(buf.Bytes())
+	if err != nil {
+		return nil, fmt.Errorf("emit: gofmt of generated resource %q: %w\n--- raw output ---\n%s", v.TypeName, err, buf.String())
 	}
 	return dropBlankLineAfterBrace(formatted), nil
 }

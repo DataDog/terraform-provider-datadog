@@ -888,6 +888,14 @@ var _ = Describe("BuildResourceTree presence flags", func() {
 		assertFlags(tree, "resource.server_dflt", false, true, true)
 		assertFlags(tree, "resource.write_only", false, true, false)
 		assertFlags(tree, "resource.read_only", false, false, true)
+
+		By("InResponse mirrors Provenance.InResponse regardless of which flag combination fired — " +
+			"rows 1 and 2 both collapse to Required, but only row 1 actually has a response getter")
+		Expect(attrByPath(tree, "resource.required_rw").InResponse).To(BeTrue())
+		Expect(attrByPath(tree, "resource.required_wo").InResponse).To(BeFalse())
+		Expect(attrByPath(tree, "resource.server_dflt").InResponse).To(BeTrue())
+		Expect(attrByPath(tree, "resource.write_only").InResponse).To(BeFalse())
+		Expect(attrByPath(tree, "resource.read_only").InResponse).To(BeTrue())
 	})
 
 	It("never emits Required together with Optional or Computed, and never emits zero flags, anywhere in the tree", func() {

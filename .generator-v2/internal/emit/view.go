@@ -266,6 +266,20 @@ type AttrView struct {
 	// schema.SingleNestedBlock when false. Ignored unless IsBlock.
 	ListBlock bool
 
+	// Validators renders the "Validators: []validator.String{...}" field, one
+	// rendered constructor call per entry (e.g. `stringvalidator.OneOf("a", "b")`).
+	// Always validator.String, the only validator kind this generator produces.
+	Validators []string
+	// PlanModifiers renders the "PlanModifiers: []planmodifier.<T>{...}" field,
+	// one rendered constructor call per entry (e.g. `stringplanmodifier.UseStateForUnknown`,
+	// with "()" appended by the template). Empty unless the underlying
+	// attribute carries plan modifiers.
+	PlanModifiers []string
+	// PlanModifierType is the planmodifier.<T> slice element type matching this
+	// attribute's GoType (e.g. "String", "Object", "List"). Empty unless
+	// PlanModifiers is non-empty.
+	PlanModifierType string
+
 	// Attributes and Blocks are the leaf and nested children of a block; both
 	// are empty for a leaf attribute.
 	Attributes []AttrView
@@ -474,4 +488,83 @@ type OneOfVariantAssignment struct {
 	// arrives in Lists with Kind "oneof", so recursion needs no extra channel.
 	Scalars []StateAssignment
 	Lists   []ListAssignment
+}
+
+// ResourceView is the render-ready data context for the resource template.
+type ResourceView struct {
+	TypeName    string
+	GoName      string
+	Description string
+
+	SDKPackage     string
+	APIStruct      string
+	APIAccessor    string
+	APIConstructor string
+
+	// Create, Read, Update and Delete describe the four lifecycle SDK calls.
+	// Update is the zero value when UpdateUnsupported.
+	Create CRUDCallView
+	Read   CRUDCallView
+	Update CRUDCallView
+	Delete CRUDCallView
+
+	// UpdateUnsupported means the group resolves no Update role: the generated
+	// Update method is a stub that errors rather than building a request the
+	// SDK has no endpoint for.
+	UpdateUnsupported bool
+
+	// RequestFields are the practitioner-settable (Required or Optional) leaves
+	// of the merged schema, shared verbatim by Create and Update: both send a
+	// SetX(...) call per field against their own request type (see
+	// buildRequestFields).
+	RequestFields []RequestFieldView
+
+	Models []ModelStructView
+	Schema SchemaView
+	State  StateView
+
+	UsesFmt              bool
+	UsesValidators       bool
+	UsesPlanModifiers    bool
+	PlanModifierPackages []string
+	// UsesUUID and UsesStrconv add the google/uuid and strconv imports for a
+	// path argument that must be recovered by parsing (see SDKArgumentView).
+	UsesUUID    bool
+	UsesStrconv bool
+
+	// Dropped lists response members skipped from the rendered view (e.g.
+	// relationships), surfaced as diagnostics in the run report.
+	Dropped []DroppedMember
+}
+
+// CRUDCallView describes one lifecycle SDK call. GoRequestType is empty for
+// Read and Delete, which send no body; GoResponseType is empty for Delete,
+// whose 204 response carries none.
+type CRUDCallView struct {
+	Method         string
+	GoRequestType  string
+	GoResponseType string
+	// Arguments are the positional SDK call arguments in call order (e.g. the
+	// terminal path id, aliased to "id").
+	Arguments []SDKArgumentView
+}
+
+// RequestFieldView is one field a resource's Create and Update bodies both set
+// via the SDK's universal Set<GoField>(v) setter — present for both a required
+// (non-pointer) and an optional (pointer) SDK field alike, which is what lets
+// one view serve both request types regardless of whether either SDK type
+// happens to keep the field required (see buildRequestFields).
+type RequestFieldView struct {
+	// GoField is the SDK setter suffix, e.g. "Name" for SetName.
+	GoField string
+	// ValueExpr reads the unwrapped Go value off the model, e.g.
+	// "state.Name.ValueString()".
+	ValueExpr string
+	// Required renders the call unconditionally; false guards it behind a
+	// null/unknown check on the model field.
+	Required bool
+	// NullCheck is the guard expression for a non-Required field, e.g.
+	// "!state.Description.IsNull() && !state.Description.IsUnknown()". Empty
+	// when Required.
+	NullCheck string
 }
