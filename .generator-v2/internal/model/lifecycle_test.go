@@ -37,10 +37,30 @@ var _ = Describe("buildResourceLifecycle", func() {
 		Expect(art.Diagnostics).To(BeEmpty())
 	})
 
-	It("leaves Schema nil until the request/response merge lands", func() {
+	It("builds Schema from the request/response merge", func() {
 		art, err := BuildArtifact(incidentTypeResourceOp())
 		Expect(err).NotTo(HaveOccurred())
-		Expect(art.Schema).To(BeNil())
+		Expect(art.Schema).NotTo(BeNil())
+		Expect(art.Schema.Attributes).To(HaveLen(1))
+		Expect(art.Schema.Attributes[0].Path).To(Equal("resource.name"))
+	})
+
+	It("surfaces the merge's own diagnostics onto the artifact, alongside the lifecycle's", func() {
+		op := incidentTypeResourceOp()
+		// Read/Update share one field schema; give it a Description, then
+		// diverge Create's own copy from it so the merge has a genuine
+		// cosmetic disagreement to reconcile and report.
+		op.ResolvedGroup.Read.ResponseSchema.Properties["name"].Description = "the response description"
+		op.RequestSchema = &Schema{Kind: SchemaKindObject, Properties: map[string]*Schema{
+			"name": {Kind: SchemaKindPrimitive, Type: "string", Description: "set on create only"},
+		}}
+		op.ResolvedGroup.Update = nil // also exercise the lifecycle's own warning
+
+		art, err := BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(art.Diagnostics).To(HaveLen(2), "one lifecycle warning, one merge reconciliation")
+		Expect(art.Diagnostics).To(ContainElement(HaveField("Severity", SeverityWarning)))
+		Expect(art.Diagnostics).To(ContainElement(HaveField("Severity", SeverityInfo)))
 	})
 
 	DescribeTable("a role the resource cannot do without fails the artifact by name",
@@ -108,20 +128,28 @@ var _ = Describe("buildResourceLifecycle", func() {
 // incident-type resource, with its group already resolved as the parser would
 // leave it.
 func incidentTypeResourceOp() *Operation {
+	// Every side agrees on the same one-field shape: these tests are about the
+	// CRUD lifecycle, not the merge, so the schema only needs to be valid.
+	field := &Schema{Kind: SchemaKindObject, Properties: map[string]*Schema{
+		"name": {Kind: SchemaKindPrimitive, Type: "string"},
+	}}
 	create := &Operation{
 		Path: "/api/v2/incidents/config/types", Method: "POST",
 		OperationId: "CreateIncidentType", Tag: "Incidents",
 		RequestRefName: "IncidentTypeCreateRequest", ResponseRefName: "IncidentTypeResponse",
+		RequestSchema: field,
 	}
 	read := &Operation{
 		Path: "/api/v2/incidents/config/types/{incident_type_id}", Method: "GET",
 		OperationId: "GetIncidentType", Tag: "Incidents",
 		ResponseRefName: "IncidentTypeResponse",
+		ResponseSchema:  field,
 	}
 	update := &Operation{
 		Path: "/api/v2/incidents/config/types/{incident_type_id}", Method: "PATCH",
 		OperationId: "UpdateIncidentType", Tag: "Incidents",
 		RequestRefName: "IncidentTypeUpdateRequest", ResponseRefName: "IncidentTypeResponse",
+		RequestSchema: field,
 	}
 	del := &Operation{
 		Path: "/api/v2/incidents/config/types/{incident_type_id}", Method: "DELETE",

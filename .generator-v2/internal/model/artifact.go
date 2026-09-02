@@ -59,23 +59,18 @@ func buildArtifact(op *Operation) (*Artifact, error) {
 	}
 }
 
-// buildResourceArtifact builds a full-CRUD resource from the tracking group (see
-// buildResourceLifecycle).
-//
-// Schema is deliberately left nil. A resource's tree is the union of the Create
-// request, Update request and Read response bodies (FR-034/FR-034b), which
-// T120-T124 build; there is no correct single-body tree to put here in the
-// meantime, and populating one from the response alone would mark every
-// attribute Computed and read as a working resource. The CLI still skips
-// kind=resource, so nothing consumes this artifact yet.
+// buildResourceArtifact builds a full-CRUD resource from the tracking group:
+// the lifecycle (see buildResourceLifecycle) and the schema, the union of the
+// Create request, Update request and Read response bodies (see
+// MergeResourceSchema, BuildResourceTree).
 func buildResourceArtifact(op *Operation) (*Artifact, error) {
 	// Create and Read are load-bearing for the schema, not the lifecycle: without
 	// Create nothing is ever Required and the whole schema silently becomes
 	// Optional, without Read nothing is ever Computed and refresh can never
 	// reconcile state (FR-034b). Delete is load-bearing for the lifecycle, since
-	// Terraform must be able to destroy what it created. Two of the three are
-	// therefore preconditions of the merge T124 will add here, so the guard runs
-	// before any sub-builder rather than inside one of them.
+	// Terraform must be able to destroy what it created. This is the sole guard
+	// for all three: it runs before any sub-builder, each of which assumes its
+	// preconditions already hold rather than re-checking them.
 	if err := requireResolvedRoles(op, GroupRoleCreate, GroupRoleRead, GroupRoleDelete); err != nil {
 		return nil, err
 	}
@@ -83,11 +78,22 @@ func buildResourceArtifact(op *Operation) (*Artifact, error) {
 	if err != nil {
 		return nil, err
 	}
+	merged, mergeDiags, err := MergeResourceSchema(op.ResolvedGroup)
+	if err != nil {
+		return nil, err
+	}
+	schema, treeDiags, err := BuildResourceTree(merged, lifecycle.UpdateUnsupported)
+	if err != nil {
+		return nil, err
+	}
+	diags = append(diags, mergeDiags...)
+	diags = append(diags, treeDiags...)
 	return &Artifact{
 		Name:        op.Tracking.ArtifactName,
 		Kind:        ArtifactKindResource,
 		Description: op.Tracking.TfDescription,
 		SourceFile:  sourceFileFor(ArtifactKindResource, op.Tracking.ArtifactName),
+		Schema:      schema,
 		Lifecycle:   lifecycle,
 		Diagnostics: diags,
 	}, nil

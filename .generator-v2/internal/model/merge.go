@@ -233,13 +233,10 @@ func (e *SchemaMergeError) Error() string {
 // repopulate — the search element can be a narrower shape than the by-id
 // record, and a create-response-only field is never seen again.
 //
-// It returns a plain error when group is nil or is missing a Create or Read
-// operation.
+// It assumes group.Create and group.Read are already known to resolve, the
+// same precondition buildResourceLifecycle assumes; buildResourceArtifact
+// enforces it once, before calling either.
 func MergeResourceSchema(group *ResolvedGroup) (*Schema, []Diagnostic, error) {
-	if group == nil || group.Create == nil || group.Read == nil {
-		return nil, nil, fmt.Errorf("model: MergeResourceSchema requires a resolved Create and Read operation")
-	}
-
 	var updateRequest *Schema
 	if group.Update != nil {
 		updateRequest = group.Update.RequestSchema

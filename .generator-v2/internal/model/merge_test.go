@@ -211,12 +211,4 @@ var _ = Describe("MergeResourceSchema", func() {
 		Expect(mergeErr.Aspect).To(Equal("kind"))
 		Expect([]string{mergeErr.Left, mergeErr.Right}).To(ConsistOf(string(SchemaKindPrimitive), string(SchemaKindObject)))
 	})
-
-	It("requires a resolved Create and Read operation", func() {
-		_, _, err := MergeResourceSchema(&ResolvedGroup{})
-		Expect(err).To(HaveOccurred())
-
-		_, _, err = MergeResourceSchema(&ResolvedGroup{Create: &Operation{}})
-		Expect(err).To(HaveOccurred())
-	})
 })

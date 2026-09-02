@@ -462,9 +462,8 @@ type Artifact struct {
 	// tracking extension's tf_description field; empty when the author omits it.
 	Description string
 	// Schema is the Terraform schema derived from the response (and request,
-	// for resources). It is nil on a resource until the request/response merge
-	// lands (FR-034, T120-T124): the lifecycle builds without it, and nothing
-	// consumes a resource artifact yet.
+	// for resources, the union of the Create request, Update request and Read
+	// response bodies).
 	Schema *AttributeTree
 	// Lifecycle holds the SDK call bindings. For data sources only Read is set
 	Lifecycle *LifecycleBindings
