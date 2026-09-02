@@ -30,18 +30,6 @@
 
 **Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.19.0...v4.20.0
 
-## New Contributors
-* @Noham-Martin made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4158
-* @carlos-turiegano-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4173
-* @jcharry made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4170
-* @katieed made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4167
-* @DMatheo made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4165
-* @ivanovart made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4174
-* @kaankoseler made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4189
-* @sundaylaundry made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4180
-
-**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.19.0...v4.20.0
-
 ## 4.19.0 (August 21, 2026)
 
 ### BUGFIXES
