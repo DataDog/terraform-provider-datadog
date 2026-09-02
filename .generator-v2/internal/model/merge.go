@@ -7,12 +7,7 @@ import (
 )
 
 // ----------------------------------------------------------------------------
-// Generic schema combination, lifted from the parser package. It was
-// originally private to parser's oneOf-sibling merge, but the resource schema
-// merge below needs the same primitives (CloneSchema, the sorted/intersect
-// helpers) and model cannot import parser — so this is the one place they
-// live, and parser now calls the exported names instead of holding its own
-// copy.
+// Schema combination helpers
 // ----------------------------------------------------------------------------
 
 // MergeNormalizedSchemas intersects the subset of OpenAPI constraints retained
@@ -21,11 +16,6 @@ import (
 // simultaneously, so enums intersect and a kind/type/format conflict makes the
 // alternative Unsupported rather than erroring, letting the affected variant
 // alone report that precise failure instead of the whole union being dropped.
-//
-// This is a different operation from MergeResourceSchema below, which unions
-// (rather than intersects) three independently-normalized bodies and raises
-// SchemaMergeError on a structural conflict rather than swallowing it — the two
-// merges answer different questions and intentionally do not share a policy.
 func MergeNormalizedSchemas(variant, common *Schema) *Schema {
 	if variant == nil {
 		return common
@@ -135,8 +125,8 @@ func OneOfValueWrapped(schema *Schema) bool {
 	}
 }
 
-// CloneSchema returns a deep copy so combining or reconciling schemas never
-// mutates a normalized branch, or any child reachable from it, in place.
+// CloneSchema returns a deep copy of s, including Items, Properties, Variants
+// and OneOf.
 func CloneSchema(s *Schema) *Schema {
 	if s == nil {
 		return nil
@@ -212,10 +202,6 @@ func intersectStrings(left, right []string) []string {
 // deeper, at the "[]"/"{}" path, since Items disagreement is just a Kind (or
 // Type/Format) mismatch one recursion step further down — no separate check
 // is needed for it.
-//
-// It fails only the artifact being merged, mirroring OneOfProjectionError's
-// scope: MergeResourceSchema aborts and the caller fails that one artifact
-// while unrelated artifacts continue.
 type SchemaMergeError struct {
 	// Path is the schema path where the bodies disagree, dot-delimited from
 	// the merged tree's root, with "[]"/"{}" for an array/map element.
@@ -232,26 +218,23 @@ func (e *SchemaMergeError) Error() string {
 }
 
 // MergeResourceSchema unions the Create request, Update request and Read
-// response bodies of group into one Schema tree, the input BuildResourceTree
-// turns into a resource AttributeTree. Nodes are correlated by property name
-// at equal depth from each body's root, so a JSON:API data.attributes.<field>
-// lines up across all three even though the enclosing request/response
-// components differ by name; every correlated position is stamped with
-// Provenance. The one exception is a OneOf/Unsupported/RefCycle/DepthExceeded
-// node (see mergeVerbatim): its own position is stamped, but its subtree is
-// cloned verbatim from the preferred side rather than walked, so nodes inside
-// it carry whatever Provenance (typically none) they already had.
+// response bodies of group into one Schema tree, stamping Provenance at every
+// correlated position. Nodes are correlated by property name at equal depth
+// from each body's root, so a JSON:API data.attributes.<field> lines up
+// across all three even though the enclosing request/response components
+// differ by name. The one exception is a OneOf/Unsupported/RefCycle/
+// DepthExceeded node (see mergeVerbatim): its own position is stamped, but
+// its subtree is cloned verbatim from the preferred side rather than walked,
+// so nodes inside it carry whatever Provenance (typically none) they already
+// had.
 //
 // group.Search and the Create/Update *response* bodies are never read: a
 // field only they carry would become Computed state that refresh can never
 // repopulate — the search element can be a narrower shape than the by-id
 // record, and a create-response-only field is never seen again.
 //
-// Callers must guard for a missing or dangling Create/Read role before
-// calling — that failure needs the operationId to name a useful diagnostic,
-// which this function does not have. MergeResourceSchema only guards against
-// the degenerate case of a nil group or missing Create/Read operation, and
-// returns a plain error for it.
+// It returns a plain error when group is nil or is missing a Create or Read
+// operation.
 func MergeResourceSchema(group *ResolvedGroup) (*Schema, []Diagnostic, error) {
 	if group == nil || group.Create == nil || group.Read == nil {
 		return nil, nil, fmt.Errorf("model: MergeResourceSchema requires a resolved Create and Read operation")
@@ -270,8 +253,8 @@ func MergeResourceSchema(group *ResolvedGroup) (*Schema, []Diagnostic, error) {
 	return merged, m.diagnostics, nil
 }
 
-// resourceMerger accumulates the info diagnostics MergeResourceSchema raises
-// while walking the three bodies.
+// resourceMerger accumulates the info diagnostics raised while walking the
+// three bodies.
 type resourceMerger struct {
 	diagnostics []Diagnostic
 }
@@ -492,9 +475,7 @@ func unionObjectKeys(create, update, read *Schema) []string {
 
 // ChildPath joins parent and child into a dot-delimited schema path, e.g.
 // "data.attributes.name", except when child is the array/map element marker
-// ("[]"/"{}"), which appends without a dot. Shared by the parser's path
-// tracking, the SDK binding walk, and the resource schema merge below, so the
-// three stay spelled identically.
+// ("[]"/"{}"), which appends without a dot.
 func ChildPath(parent, child string) string {
 	if parent == "" {
 		return child
@@ -512,10 +493,9 @@ func requiredFromCreate(create *Schema) []string {
 	return sortedUniqueStrings(append([]string(nil), create.Required...))
 }
 
-// preferenceOrder is the Read, Create, Update order the cosmetic
-// reconciliation below prefers throughout — read wins a disagreement, else
-// create, else update. Entries are nil when that side is absent; callers
-// filter.
+// preferenceOrder returns Read, Create, Update in that order — read wins a
+// disagreement, else create, else update. An entry is nil when that side is
+// absent.
 func preferenceOrder(create, update, read *Schema) [3]*Schema {
 	return [3]*Schema{read, create, update}
 }
