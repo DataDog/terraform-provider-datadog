@@ -78,6 +78,11 @@ var _ = Describe("buildResourceLifecycle", func() {
 			Expect(missing.Artifact).To(Equal("incident_type"))
 			Expect(missing.Kind).To(Equal(ArtifactKindResource))
 			Expect(err.Error()).To(Equal(wantMessage))
+
+			By("a sibling artifact in the same run still builds")
+			sibling, siblingErr := BuildArtifact(incidentTypeResourceOp())
+			Expect(siblingErr).NotTo(HaveOccurred())
+			Expect(sibling).NotTo(BeNil())
 		},
 		Entry("create omitted", func(g *ResolvedGroup) { g.Create = nil }, GroupRoleCreate,
 			`model: resource "incident_type": group.create is not declared; a resource cannot be generated without that operation`),
@@ -90,6 +95,12 @@ var _ = Describe("buildResourceLifecycle", func() {
 			g.Unresolved = []GroupReference{{Role: GroupRoleCreate, OperationId: "CreateIncidentTypeTypo"}}
 		}, GroupRoleCreate,
 			`model: resource "incident_type": group.create names operationId "CreateIncidentTypeTypo", `+
+				`which no operation in the spec declares; a resource cannot be generated without that operation`),
+		Entry("read dangling", func(g *ResolvedGroup) {
+			g.Read = nil
+			g.Unresolved = []GroupReference{{Role: GroupRoleRead, OperationId: "GetIncidentTypeTypo"}}
+		}, GroupRoleRead,
+			`model: resource "incident_type": group.read names operationId "GetIncidentTypeTypo", `+
 				`which no operation in the spec declares; a resource cannot be generated without that operation`),
 		Entry("update dangling — a typo must not silently become forced replacement", func(g *ResolvedGroup) {
 			g.Update = nil

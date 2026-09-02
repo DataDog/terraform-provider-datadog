@@ -40,16 +40,18 @@ var _ = Describe("MergeResourceSchema", func() {
 			"name":          {Kind: SchemaKindPrimitive, Type: "string", Description: "name (create)"},
 			"is_default":    {Kind: SchemaKindPrimitive, Type: "boolean"},
 			"internal_note": {Kind: SchemaKindPrimitive, Type: "string"},
+			"secret_token":  {Kind: SchemaKindPrimitive, Type: "string"},
 			"priority":      {Kind: SchemaKindPrimitive, Type: "string", Enum: []string{"low", "high"}},
 			"status":        {Kind: SchemaKindPrimitive, Type: "string", Enum: []string{"open", "closed"}},
-		}, []string{"name"})
+		}, []string{"name", "secret_token"})
 
 		// A PATCH body marking "priority" required is deliberately unusual: it
 		// proves RequestRequired reads the Create body's Required list only.
 		updateReq := jsonAPIBody("IncidentTypeUpdateRequest", map[string]*Schema{
-			"name":       {Kind: SchemaKindPrimitive, Type: "string"},
-			"is_default": {Kind: SchemaKindPrimitive, Type: "boolean"},
-			"priority":   {Kind: SchemaKindPrimitive, Type: "string", Enum: []string{"low", "high"}},
+			"name":            {Kind: SchemaKindPrimitive, Type: "string"},
+			"is_default":      {Kind: SchemaKindPrimitive, Type: "boolean"},
+			"priority":        {Kind: SchemaKindPrimitive, Type: "string", Enum: []string{"low", "high"}},
+			"extra_on_update": {Kind: SchemaKindPrimitive, Type: "string"},
 		}, []string{"priority"})
 
 		readResp := jsonAPIBody("IncidentTypeResponse", map[string]*Schema{
@@ -70,7 +72,7 @@ var _ = Describe("MergeResourceSchema", func() {
 
 		attrs := attributesOf(merged)
 
-		By("required in Create, present in Update, present in response -> Required")
+		By("required in Create, present in Update (but not required there), present in response -> Required; requiredness comes from Create alone")
 		Expect(attrs["name"].Provenance).To(Equal(&SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true}))
 		// Cosmetic: descriptions differ, Read response wins.
 		Expect(attrs["name"].Description).To(Equal("The incident type name."))
@@ -80,6 +82,12 @@ var _ = Describe("MergeResourceSchema", func() {
 
 		By("Create-only, absent from Update and the response -> write-only Optional")
 		Expect(attrs["internal_note"].Provenance).To(Equal(&SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: false}))
+
+		By("required in Create, absent from Update and the response -> write-only Required")
+		Expect(attrs["secret_token"].Provenance).To(Equal(&SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: false}))
+
+		By("absent from Create, present in Update only -> InRequest true via the Create∪Update union, not required")
+		Expect(attrs["extra_on_update"].Provenance).To(Equal(&SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: false}))
 
 		By("response-only -> Computed-only, and Format carries through untouched")
 		Expect(attrs["created_at"].Provenance).To(Equal(&SchemaProvenance{InRequest: false, RequestRequired: false, InResponse: true}))
@@ -179,6 +187,38 @@ var _ = Describe("MergeResourceSchema", func() {
 		Expect(mergeErr.Path).To(Equal("data.attributes.count"))
 		Expect(mergeErr.Aspect).To(Equal("type"))
 		Expect([]string{mergeErr.Left, mergeErr.Right}).To(ConsistOf("integer", "string"))
+
+		By("a sibling artifact in the same run still builds")
+		sibling, _, siblingErr := MergeResourceSchema(siblingGroup())
+		Expect(siblingErr).NotTo(HaveOccurred())
+		Expect(sibling).NotTo(BeNil())
+	})
+
+	It("fails with SchemaMergeError naming the path and both spellings on a primitive format conflict", func() {
+		createReq := jsonAPIBody("XCreateRequest", map[string]*Schema{
+			"seen_at": {Kind: SchemaKindPrimitive, Type: "string", Format: "date-time"},
+		}, nil)
+		readResp := jsonAPIBody("XResponse", map[string]*Schema{
+			"seen_at": {Kind: SchemaKindPrimitive, Type: "string", Format: "date"},
+		}, nil)
+
+		group := &ResolvedGroup{
+			Create: &Operation{OperationId: "CreateX", RequestSchema: createReq},
+			Read:   &Operation{OperationId: "GetX", ResponseSchema: readResp},
+		}
+
+		_, _, err := MergeResourceSchema(group)
+		Expect(err).To(HaveOccurred())
+		var mergeErr *SchemaMergeError
+		Expect(errors.As(err, &mergeErr)).To(BeTrue())
+		Expect(mergeErr.Path).To(Equal("data.attributes.seen_at"))
+		Expect(mergeErr.Aspect).To(Equal("format"))
+		Expect([]string{mergeErr.Left, mergeErr.Right}).To(ConsistOf("date-time", "date"))
+
+		By("a sibling artifact in the same run still builds")
+		sibling, _, siblingErr := MergeResourceSchema(siblingGroup())
+		Expect(siblingErr).NotTo(HaveOccurred())
+		Expect(sibling).NotTo(BeNil())
 	})
 
 	It("fails with SchemaMergeError on a Kind conflict, at the deeper path when it is inside an array element", func() {
@@ -210,5 +250,26 @@ var _ = Describe("MergeResourceSchema", func() {
 		Expect(mergeErr.Path).To(Equal("data.attributes.tags[]"))
 		Expect(mergeErr.Aspect).To(Equal("kind"))
 		Expect([]string{mergeErr.Left, mergeErr.Right}).To(ConsistOf(string(SchemaKindPrimitive), string(SchemaKindObject)))
+
+		By("a sibling artifact in the same run still builds")
+		sibling, _, siblingErr := MergeResourceSchema(siblingGroup())
+		Expect(siblingErr).NotTo(HaveOccurred())
+		Expect(sibling).NotTo(BeNil())
 	})
 })
+
+// siblingGroup is a minimal, always-mergeable group used to prove that a
+// structural conflict in one resource's merge leaves no state behind that
+// would affect another resource merged afterward in the same run.
+func siblingGroup() *ResolvedGroup {
+	createReq := jsonAPIBody("SiblingCreateRequest", map[string]*Schema{
+		"name": {Kind: SchemaKindPrimitive, Type: "string"},
+	}, []string{"name"})
+	readResp := jsonAPIBody("SiblingResponse", map[string]*Schema{
+		"name": {Kind: SchemaKindPrimitive, Type: "string"},
+	}, nil)
+	return &ResolvedGroup{
+		Create: &Operation{OperationId: "CreateSibling", RequestSchema: createReq},
+		Read:   &Operation{OperationId: "GetSibling", ResponseSchema: readResp},
+	}
+}

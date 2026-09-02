@@ -890,6 +890,44 @@ var _ = Describe("BuildResourceTree presence flags", func() {
 		assertFlags(tree, "resource.read_only", false, false, true)
 	})
 
+	It("never emits Required together with Optional or Computed, and never emits zero flags, anywhere in the tree", func() {
+		union := oneOfSchema("resource.choice", "Choice", primitiveOneOfVariant("v", "string"))
+		union.Provenance = &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}
+
+		tree, _, err := BuildResourceTree(&Schema{
+			Kind:     SchemaKindObject,
+			Required: []string{"required_rw", "required_wo"},
+			Properties: map[string]*Schema{
+				"required_rw": provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true}),
+				"required_wo": provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: false}),
+				"server_dflt": provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}),
+				"write_only":  provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: false}),
+				"read_only":   provSchema("string", SchemaProvenance{InRequest: false, RequestRequired: false, InResponse: true}),
+				"nested": {
+					Kind:       SchemaKindObject,
+					Provenance: &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true},
+					Properties: map[string]*Schema{
+						"inner": provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true}),
+					},
+				},
+				"choice": union,
+			},
+		}, false)
+		Expect(err).NotTo(HaveOccurred())
+
+		for _, a := range allAttrs(tree) {
+			flagCount := 0
+			for _, set := range []bool{a.Required, a.Optional, a.Computed} {
+				if set {
+					flagCount++
+				}
+			}
+			Expect(flagCount).NotTo(BeZero(), "attribute %q carries no presence flag at all", a.Path)
+			Expect(a.Required && (a.Optional || a.Computed)).To(
+				BeFalse(), "attribute %q carries Required together with Optional or Computed", a.Path)
+		}
+	})
+
 	It("roots paths at \"resource.\" and recurses into nested objects the same as the other trees", func() {
 		tree, _, err := BuildResourceTree(objSchema(map[string]*Schema{
 			"config": {
