@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/google/uuid"
@@ -67,6 +68,87 @@ func TestAccDatadogOrgGroupPolicy_Basic(t *testing.T) {
 			},
 		},
 	})
+}
+
+// TestAccDatadogOrgGroupPolicy_Role covers policy_type = "role". Unrecorded:
+// role policies are gated behind the org_groups_shared_roles feature flag,
+// which is staging-only as of writing (not yet in prod), so this cassette
+// can only be recorded against a staging org.
+func TestAccDatadogOrgGroupPolicy_Role(t *testing.T) {
+	if !isRecording() && !isReplaying() {
+		t.Skip("org_group requires a special test org setup not available in live CI runs")
+	}
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	orgGroupName := uniqueEntityName(ctx, t)
+	policyName := "finance_read_only"
+	permissionID := "1a2b3c4d-5e6f-7890-abcd-ef0123456789"
+	otherPermissionID := "2b3c4d5e-6f70-8901-bcde-f01234567890"
+	resourceName := "datadog_org_group_policy.role"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogOrgGroupPolicyDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, policyName, fmt.Sprintf(`{"permissions":["%s"]}`, permissionID), "GROUP_MANAGED"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogOrgGroupPolicyExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "policy_name", policyName),
+					resource.TestCheckResourceAttr(resourceName, "policy_type", "role"),
+					resource.TestCheckResourceAttr(resourceName, "enforcement_tier", "GROUP_MANAGED"),
+					resource.TestCheckResourceAttr(resourceName, "content", fmt.Sprintf(`{"permissions":["%s"]}`, permissionID)),
+				),
+			},
+			{
+				// Update the permissions set without changing enforcement_tier.
+				Config: testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, policyName, fmt.Sprintf(`{"permissions":["%s","%s"]}`, permissionID, otherPermissionID), "GROUP_MANAGED"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogOrgGroupPolicyExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "content", fmt.Sprintf(`{"permissions":["%s","%s"]}`, permissionID, otherPermissionID)),
+				),
+			},
+			{
+				// enforcement_tier = OVERRIDE_ALLOWED is invalid for role policies; caught at plan time.
+				Config:      testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, policyName, fmt.Sprintf(`{"permissions":["%s"]}`, permissionID), "OVERRIDE_ALLOWED"),
+				PlanOnly:    true,
+				ExpectError: regexp.MustCompile(`role policies only support GROUP_MANAGED and DELEGATE`),
+			},
+			{
+				// DELEGATE disables the shared role.
+				Config: testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, policyName, fmt.Sprintf(`{"permissions":["%s"]}`, permissionID), "DELEGATE"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogOrgGroupPolicyExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "enforcement_tier", "DELEGATE"),
+				),
+			},
+			{
+				// Disabling is one-way: the API rejects transitioning back to GROUP_MANAGED.
+				Config:      testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, policyName, fmt.Sprintf(`{"permissions":["%s"]}`, permissionID), "GROUP_MANAGED"),
+				ExpectError: regexp.MustCompile(`(?i)disabled role polic(y|ies) cannot be re-enabled`),
+			},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, policyName, content, enforcementTier string) string {
+	return fmt.Sprintf(`
+resource "datadog_org_group" "role" {
+  name = "%s"
+}
+
+resource "datadog_org_group_policy" "role" {
+  org_group_id     = datadog_org_group.role.id
+  policy_name      = "%s"
+  policy_type      = "role"
+  content          = jsonencode(%s)
+  enforcement_tier = "%s"
+}`, orgGroupName, policyName, content, enforcementTier)
 }
 
 func testAccCheckDatadogOrgGroupPolicyConfig(orgGroupName, policyName, content, enforcementTier string) string {

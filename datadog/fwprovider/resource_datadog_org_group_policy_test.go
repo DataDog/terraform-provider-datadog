@@ -1,0 +1,95 @@
+package fwprovider
+
+import (
+	"context"
+	"testing"
+
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-go/tftypes"
+)
+
+func orgGroupPolicyValidateConfigSchema() schema.Schema {
+	r := &OrgGroupPolicyResource{}
+	resp := &resource.SchemaResponse{}
+	r.Schema(context.Background(), resource.SchemaRequest{}, resp)
+	return resp.Schema
+}
+
+func orgGroupPolicyConfigValue(policyType, enforcementTier string) tftypes.Value {
+	objType := tftypes.Object{
+		AttributeTypes: map[string]tftypes.Type{
+			"id":               tftypes.String,
+			"org_group_id":     tftypes.String,
+			"policy_name":      tftypes.String,
+			"content":          tftypes.String,
+			"enforcement_tier": tftypes.String,
+			"policy_type":      tftypes.String,
+		},
+	}
+	return tftypes.NewValue(objType, map[string]tftypes.Value{
+		"id":               tftypes.NewValue(tftypes.String, nil),
+		"org_group_id":     tftypes.NewValue(tftypes.String, "a1b2c3d4-e5f6-7890-abcd-ef0123456789"),
+		"policy_name":      tftypes.NewValue(tftypes.String, "finance_read_only"),
+		"content":          tftypes.NewValue(tftypes.String, `{"permissions":["1a2b3c4d-5e6f-7890-abcd-ef0123456789"]}`),
+		"enforcement_tier": tftypes.NewValue(tftypes.String, enforcementTier),
+		"policy_type":      tftypes.NewValue(tftypes.String, policyType),
+	})
+}
+
+func TestOrgGroupPolicyValidateConfig_RoleRejectsOverrideAllowed(t *testing.T) {
+	s := orgGroupPolicyValidateConfigSchema()
+	r := &OrgGroupPolicyResource{}
+
+	req := resource.ValidateConfigRequest{
+		Config: tfsdk.Config{
+			Raw:    orgGroupPolicyConfigValue(orgGroupPolicyTypeRole, "OVERRIDE_ALLOWED"),
+			Schema: s,
+		},
+	}
+	resp := &resource.ValidateConfigResponse{}
+	r.ValidateConfig(context.Background(), req, resp)
+
+	if !resp.Diagnostics.HasError() {
+		t.Fatal("expected an error for policy_type=role with enforcement_tier=OVERRIDE_ALLOWED")
+	}
+}
+
+func TestOrgGroupPolicyValidateConfig_RoleAllowsGroupManagedAndDelegate(t *testing.T) {
+	s := orgGroupPolicyValidateConfigSchema()
+	r := &OrgGroupPolicyResource{}
+
+	for _, tier := range []string{"GROUP_MANAGED", "DELEGATE"} {
+		req := resource.ValidateConfigRequest{
+			Config: tfsdk.Config{
+				Raw:    orgGroupPolicyConfigValue(orgGroupPolicyTypeRole, tier),
+				Schema: s,
+			},
+		}
+		resp := &resource.ValidateConfigResponse{}
+		r.ValidateConfig(context.Background(), req, resp)
+
+		if resp.Diagnostics.HasError() {
+			t.Errorf("did not expect an error for policy_type=role with enforcement_tier=%s: %v", tier, resp.Diagnostics)
+		}
+	}
+}
+
+func TestOrgGroupPolicyValidateConfig_OrgConfigAllowsOverrideAllowed(t *testing.T) {
+	s := orgGroupPolicyValidateConfigSchema()
+	r := &OrgGroupPolicyResource{}
+
+	req := resource.ValidateConfigRequest{
+		Config: tfsdk.Config{
+			Raw:    orgGroupPolicyConfigValue("org_config", "OVERRIDE_ALLOWED"),
+			Schema: s,
+		},
+	}
+	resp := &resource.ValidateConfigResponse{}
+	r.ValidateConfig(context.Background(), req, resp)
+
+	if resp.Diagnostics.HasError() {
+		t.Errorf("did not expect an error for policy_type=org_config with enforcement_tier=OVERRIDE_ALLOWED: %v", resp.Diagnostics)
+	}
+}
