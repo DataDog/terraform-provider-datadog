@@ -35,7 +35,7 @@ func attributesOf(s *Schema) map[string]*Schema {
 }
 
 var _ = Describe("MergeResourceSchema", func() {
-	It("correlates by property position across three differently-named components and stamps the FR-034a provenance bits", func() {
+	It("correlates by property position across three differently-named components and stamps the provenance bits", func() {
 		createReq := jsonAPIBody("IncidentTypeCreateRequest", map[string]*Schema{
 			"name":          {Kind: SchemaKindPrimitive, Type: "string", Description: "name (create)"},
 			"is_default":    {Kind: SchemaKindPrimitive, Type: "boolean"},

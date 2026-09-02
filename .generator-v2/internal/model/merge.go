@@ -7,7 +7,7 @@ import (
 )
 
 // ----------------------------------------------------------------------------
-// Generic schema combination, lifted from the parser package (T120). It was
+// Generic schema combination, lifted from the parser package. It was
 // originally private to parser's oneOf-sibling merge, but the resource schema
 // merge below needs the same primitives (CloneSchema, the sorted/intersect
 // helpers) and model cannot import parser — so this is the one place they
@@ -202,7 +202,7 @@ func intersectStrings(left, right []string) []string {
 }
 
 // ----------------------------------------------------------------------------
-// Resource schema merge (T120, T121, FR-034)
+// Resource schema merge
 // ----------------------------------------------------------------------------
 
 // SchemaMergeError reports a structural disagreement among the Create request,
@@ -215,7 +215,7 @@ func intersectStrings(left, right []string) []string {
 //
 // It fails only the artifact being merged, mirroring OneOfProjectionError's
 // scope: MergeResourceSchema aborts and the caller fails that one artifact
-// while unrelated artifacts continue (FR-034c).
+// while unrelated artifacts continue.
 type SchemaMergeError struct {
 	// Path is the schema path where the bodies disagree, dot-delimited from
 	// the merged tree's root, with "[]"/"{}" for an array/map element.
@@ -237,19 +237,18 @@ func (e *SchemaMergeError) Error() string {
 // at equal depth from each body's root, so a JSON:API data.attributes.<field>
 // lines up across all three even though the enclosing request/response
 // components differ by name; every correlated position is stamped with
-// Provenance (FR-034, FR-034b). The one exception is a OneOf/Unsupported/
-// RefCycle/DepthExceeded node (see mergeVerbatim): its own position is
-// stamped, but its subtree is cloned verbatim from the preferred side rather
-// than walked, so nodes inside it carry whatever Provenance (typically none)
-// they already had.
+// Provenance. The one exception is a OneOf/Unsupported/RefCycle/DepthExceeded
+// node (see mergeVerbatim): its own position is stamped, but its subtree is
+// cloned verbatim from the preferred side rather than walked, so nodes inside
+// it carry whatever Provenance (typically none) they already had.
 //
 // group.Search and the Create/Update *response* bodies are never read: a
 // field only they carry would become Computed state that refresh can never
-// repopulate (FR-034b) — the search element can be a narrower shape than the
-// by-id record, and a create-response-only field is never seen again.
+// repopulate — the search element can be a narrower shape than the by-id
+// record, and a create-response-only field is never seen again.
 //
-// Callers must guard for a missing or dangling Create/Read role before calling
-// (T124) — that failure needs the operationId to name a useful diagnostic,
+// Callers must guard for a missing or dangling Create/Read role before
+// calling — that failure needs the operationId to name a useful diagnostic,
 // which this function does not have. MergeResourceSchema only guards against
 // the degenerate case of a nil group or missing Create/Read operation, and
 // returns a plain error for it.
@@ -294,9 +293,9 @@ func (m *resourceMerger) mergeNode(create, update, read *Schema, createRequired 
 	case SchemaKindPrimitive:
 		return m.mergePrimitive(create, update, read, createRequired, path)
 	default:
-		// OneOf, Unsupported, RefCycle, DepthExceeded: FR-034c's cosmetic list
-		// names RefName/Description/Enum/Sensitive, not oneOf-specific fields, so
-		// these kinds are not deep-merged — the merged node is the preferred
+		// OneOf, Unsupported, RefCycle, DepthExceeded: the cosmetic-reconciliation
+		// list names RefName/Description/Enum/Sensitive, not oneOf-specific fields,
+		// so these kinds are not deep-merged — the merged node is the preferred
 		// side's clone with those four fields reconciled the same way as every
 		// other kind.
 		return m.mergeVerbatim(create, update, read, createRequired, path)
@@ -400,7 +399,7 @@ func (m *resourceMerger) mergeVerbatim(create, update, read *Schema, createRequi
 	return out, nil
 }
 
-// cosmeticFields reconciles the four fields FR-034c treats as cosmetic —
+// cosmeticFields reconciles the four fields treated as cosmetic —
 // RefName and Description favoring the Read response, Enum members unioned
 // (never intersected: a validator must accept everything the response can
 // return, or refresh fails on a value the practitioner never chose), Sensitive
@@ -513,14 +512,10 @@ func requiredFromCreate(create *Schema) []string {
 	return sortedUniqueStrings(append([]string(nil), create.Required...))
 }
 
-// pickString returns get's value, preferring the Read side, then Create, then
-// Update, skipping an empty value even from the preferred side. disagreed
-// reports whether the present sides actually carried more than one distinct
-// non-empty value, so the caller knows whether a reconciliation happened or
-// every side already agreed.
-// preferenceOrder is the Read, Create, Update order FR-034c's cosmetic
-// reconciliation prefers throughout — read wins a disagreement, else create,
-// else update. Entries are nil when that side is absent; callers filter.
+// preferenceOrder is the Read, Create, Update order the cosmetic
+// reconciliation below prefers throughout — read wins a disagreement, else
+// create, else update. Entries are nil when that side is absent; callers
+// filter.
 func preferenceOrder(create, update, read *Schema) [3]*Schema {
 	return [3]*Schema{read, create, update}
 }
@@ -535,6 +530,11 @@ func preferredSchema(create, update, read *Schema) *Schema {
 	return nil
 }
 
+// pickString returns get's value, preferring the Read side, then Create, then
+// Update, skipping an empty value even from the preferred side. disagreed
+// reports whether the present sides actually carried more than one distinct
+// non-empty value, so the caller knows whether a reconciliation happened or
+// every side already agreed.
 func pickString(get func(*Schema) string, create, update, read *Schema) (value string, disagreed bool) {
 	seen := map[string]bool{}
 	for _, s := range presentSchemas(create, update, read) {
