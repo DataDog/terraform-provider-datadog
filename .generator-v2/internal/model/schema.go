@@ -450,11 +450,15 @@ func (b *treeBuilder) oneOfVariant(
 		return fail("", err)
 	}
 
-	// The alternative's own content carries no Provenance (see oneOfProvenance);
-	// restore whatever enclosing union was in scope once this one is walked, so
-	// a union nested inside another alternative still falls back to its own.
+	// The alternative's own content carries no Provenance (see oneOfProvenance).
+	// A directly nested union (variant.Schema.Kind == SchemaKindOneOf) has none
+	// of its own either, so leave the fallback as whatever enclosing union was
+	// already active rather than clobbering it to nil; restore it once this
+	// alternative is fully walked either way.
 	outerProvenance := b.oneOfProvenance
-	b.oneOfProvenance = union.Provenance
+	if union.Provenance != nil {
+		b.oneOfProvenance = union.Provenance
+	}
 	defer func() { b.oneOfProvenance = outerProvenance }()
 
 	valueWrapped := variant.Schema.Kind != SchemaKindObject

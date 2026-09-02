@@ -962,4 +962,30 @@ var _ = Describe("BuildResourceTree presence flags", func() {
 		// so it falls back to the same Optional+Computed pairing as the block.
 		assertFlags(tree, "resource.choice.obj.name", false, true, true)
 	})
+
+	It("keeps the outer union's Provenance as the fallback through a directly nested oneOf alternative", func() {
+		inner := oneOfSchema("resource.choice.nested.value", "InnerChoice", primitiveOneOfVariant("value_x", "string"))
+		// inner carries no Provenance of its own, exactly like a resource
+		// merge's verbatim clone of nested oneOf content.
+
+		outer := oneOfSchema("resource.choice", "OuterChoice", OneOfVariant{
+			TFName:       "nested",
+			GoName:       SdkName("nested"),
+			Schema:       inner,
+			ValueWrapped: true,
+		})
+		outer.Provenance = &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}
+
+		tree, _, err := BuildResourceTree(objSchema(map[string]*Schema{"choice": outer}))
+		Expect(err).NotTo(HaveOccurred())
+
+		// Every level here — the outer block, the inner union's own wrapped
+		// "value" position, and the inner variant block and its own wrapped
+		// value — has no Provenance of its own, and must all fall back to
+		// the outermost union's, not get clobbered to nil partway down.
+		assertFlags(tree, "resource.choice.nested", false, true, true)
+		assertFlags(tree, "resource.choice.nested.value", true, false, false)
+		assertFlags(tree, "resource.choice.nested.value.value_x", false, true, true)
+		assertFlags(tree, "resource.choice.nested.value.value_x.value", true, false, false)
+	})
 })
