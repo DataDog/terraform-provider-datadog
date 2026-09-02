@@ -125,17 +125,17 @@ func (b *binder) walk(s *model.Schema, sdkName, path string) {
 
 	case model.SchemaKindObject:
 		for _, name := range sortedKeys(s.Properties) {
-			b.walk(s.Properties[name], childModelName(sdkName, model.SdkName(name)), childPath(path, name))
+			b.walk(s.Properties[name], childModelName(sdkName, model.SdkName(name)), model.ChildPath(path, name))
 		}
 
 	case model.SchemaKindArray:
-		b.walk(s.Items, childModelName(sdkName, "Item"), childPath(path, "[]"))
+		b.walk(s.Items, childModelName(sdkName, "Item"), model.ChildPath(path, "[]"))
 
 	case model.SchemaKindMap:
 		// child_models only recurses into additionalProperties when the value is a
 		// $ref, so a map value is nameable through its own component name or not at
 		// all: pass no accumulated name and let the $ref rule above supply one.
-		b.walk(s.Items, "", childPath(path, "{}"))
+		b.walk(s.Items, "", model.ChildPath(path, "{}"))
 	}
 }
 
@@ -196,7 +196,7 @@ func (b *binder) bindUnion(spec *model.OneOfSpec, sdkName, path string) {
 		}
 
 		// An alternative may itself be a union, or contain one.
-		b.walk(v.Schema, v.RefName, childPath(unionPath, v.TFName))
+		b.walk(v.Schema, v.RefName, model.ChildPath(unionPath, v.TFName))
 	}
 }
 
@@ -208,18 +208,6 @@ func childModelName(parent, step string) string {
 		return ""
 	}
 	return parent + step
-}
-
-// childPath mirrors the parser's path spelling so a binding diagnostic points at
-// the same node a normalization diagnostic would.
-func childPath(parent, child string) string {
-	if parent == "" {
-		return child
-	}
-	if child == "[]" || child == "{}" {
-		return parent + child
-	}
-	return parent + "." + child
 }
 
 func sortedKeys(m map[string]*model.Schema) []string {

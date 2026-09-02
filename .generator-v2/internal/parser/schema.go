@@ -652,7 +652,7 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 		// Sorted iteration keeps recursion (and any surfaced error) deterministic.
 		for _, key := range sortedPropertyKeys(s) {
 			child, err := n.normalizeProxyAt(s.Properties.GetOrZero(key), depth, schemaContext{
-				path:     childPath(ctx.path, key),
+				path:     model.ChildPath(ctx.path, key),
 				required: slices.Contains(s.Required, key),
 			})
 			if err != nil {
@@ -666,7 +666,7 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 		// Array: a single element schema, carried in out.Items.
 		if s.Items != nil && s.Items.IsA() {
 			item, err := n.normalizeProxyAt(s.Items.A, depth, schemaContext{
-				path:     childPath(ctx.path, "[]"),
+				path:     model.ChildPath(ctx.path, "[]"),
 				required: true,
 			})
 			if err != nil {
@@ -682,7 +682,7 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 		// represent, so carry an Unsupported sentinel for the check to reject.
 		if s.AdditionalProperties != nil && s.AdditionalProperties.IsA() {
 			value, err := n.normalizeProxyAt(s.AdditionalProperties.A, depth, schemaContext{
-				path:     childPath(ctx.path, "{}"),
+				path:     model.ChildPath(ctx.path, "{}"),
 				required: true,
 			})
 			if err != nil {
@@ -762,7 +762,7 @@ func (n *schemaNormalizer) normalizeOneOf(s *base.Schema, depth int, ctx schemaC
 		if err != nil {
 			return nil, fmt.Errorf("parser: %w", err)
 		}
-		variantPath := childPath(ctx.path, tfName)
+		variantPath := model.ChildPath(ctx.path, tfName)
 		variantSchema, err := n.normalizeProxyAt(proxy, depth, schemaContext{
 			path:     variantPath,
 			required: true,
@@ -1324,16 +1324,6 @@ func nonNullTypes(types []string) []string {
 		}
 	}
 	return out
-}
-
-func childPath(parent, child string) string {
-	if parent == "" {
-		return child
-	}
-	if child == "[]" || child == "{}" {
-		return parent + child
-	}
-	return parent + "." + child
 }
 
 // classifyKind derives the SchemaKind from structure, not type alone. Precedence
