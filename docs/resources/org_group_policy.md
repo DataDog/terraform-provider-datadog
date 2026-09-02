@@ -25,6 +25,17 @@ resource "datadog_org_group_policy" "example" {
   content          = jsonencode({ "org_config" : false })
   enforcement_tier = "OVERRIDE_ALLOWED"
 }
+
+# Provisions a shared role with the given permissions into every member org.
+# role policies only support GROUP_MANAGED/DELEGATE; DELEGATE disables the
+# shared role and cannot be reversed.
+resource "datadog_org_group_policy" "role_example" {
+  org_group_id     = datadog_org_group.prod.id
+  policy_name      = "finance_read_only"
+  policy_type      = "role"
+  content          = jsonencode({ "permissions" : ["<permission-uuid>"] })
+  enforcement_tier = "GROUP_MANAGED"
+}
 ```
 
 ## Behavior notes
