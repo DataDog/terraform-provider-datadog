@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -38,13 +39,70 @@ func orgGroupPolicyConfigValue(policyType, enforcementTier string) tftypes.Value
 	})
 }
 
+func orgGroupPolicyStateValue(policyType, enforcementTier string) tftypes.Value {
+	objType := tftypes.Object{
+		AttributeTypes: map[string]tftypes.Type{
+			"id":               tftypes.String,
+			"org_group_id":     tftypes.String,
+			"policy_name":      tftypes.String,
+			"content":          tftypes.String,
+			"enforcement_tier": tftypes.String,
+			"policy_type":      tftypes.String,
+		},
+	}
+	return tftypes.NewValue(objType, map[string]tftypes.Value{
+		"id":               tftypes.NewValue(tftypes.String, "b2c3d4e5-f6a7-8901-bcde-f01234567890"),
+		"org_group_id":     tftypes.NewValue(tftypes.String, "a1b2c3d4-e5f6-7890-abcd-ef0123456789"),
+		"policy_name":      tftypes.NewValue(tftypes.String, "finance_read_only"),
+		"content":          tftypes.NewValue(tftypes.String, `{"permissions":["1a2b3c4d-5e6f-7890-abcd-ef0123456789"]}`),
+		"enforcement_tier": tftypes.NewValue(tftypes.String, enforcementTier),
+		"policy_type":      tftypes.NewValue(tftypes.String, policyType),
+	})
+}
+
+func TestOrgGroupPolicyDelete_RoleRejectsWhenNotDisabled(t *testing.T) {
+	s := orgGroupPolicyValidateConfigSchema()
+	r := &OrgGroupPolicyResource{}
+
+	req := resource.DeleteRequest{
+		State: tfsdk.State{
+			Raw:    orgGroupPolicyStateValue(string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ROLE), "GROUP_MANAGED"),
+			Schema: s,
+		},
+	}
+	resp := &resource.DeleteResponse{}
+	r.Delete(context.Background(), req, resp)
+
+	if !resp.Diagnostics.HasError() {
+		t.Fatal("expected an error deleting a role policy with enforcement_tier != DELEGATE")
+	}
+}
+
+func TestOrgGroupPolicyDelete_RoleAllowsWhenAlreadyDisabled(t *testing.T) {
+	s := orgGroupPolicyValidateConfigSchema()
+	r := &OrgGroupPolicyResource{}
+
+	req := resource.DeleteRequest{
+		State: tfsdk.State{
+			Raw:    orgGroupPolicyStateValue(string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ROLE), "DELEGATE"),
+			Schema: s,
+		},
+	}
+	resp := &resource.DeleteResponse{}
+	r.Delete(context.Background(), req, resp)
+
+	if resp.Diagnostics.HasError() {
+		t.Errorf("did not expect an error deleting an already-disabled role policy: %v", resp.Diagnostics)
+	}
+}
+
 func TestOrgGroupPolicyValidateConfig_RoleRejectsOverrideAllowed(t *testing.T) {
 	s := orgGroupPolicyValidateConfigSchema()
 	r := &OrgGroupPolicyResource{}
 
 	req := resource.ValidateConfigRequest{
 		Config: tfsdk.Config{
-			Raw:    orgGroupPolicyConfigValue(orgGroupPolicyTypeRole, "OVERRIDE_ALLOWED"),
+			Raw:    orgGroupPolicyConfigValue(string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ROLE), "OVERRIDE_ALLOWED"),
 			Schema: s,
 		},
 	}
@@ -63,7 +121,7 @@ func TestOrgGroupPolicyValidateConfig_RoleAllowsGroupManagedAndDelegate(t *testi
 	for _, tier := range []string{"GROUP_MANAGED", "DELEGATE"} {
 		req := resource.ValidateConfigRequest{
 			Config: tfsdk.Config{
-				Raw:    orgGroupPolicyConfigValue(orgGroupPolicyTypeRole, tier),
+				Raw:    orgGroupPolicyConfigValue(string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ROLE), tier),
 				Schema: s,
 			},
 		}

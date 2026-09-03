@@ -49,11 +49,11 @@ func TestAccDatadogOrgGroupPolicy_Basic(t *testing.T) {
 				),
 			},
 			{
-				// Changing policy_name must force replacement.
+				// policy_name is renamed in-place, not replaced.
 				Config: testAccCheckDatadogOrgGroupPolicyConfig(orgGroupName, replacementPolicyName, `{"org_config":true}`, "GROUP_MANAGED"),
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
-						plancheck.ExpectResourceAction(resourceName, plancheck.ResourceActionDestroyBeforeCreate),
+						plancheck.ExpectResourceAction(resourceName, plancheck.ResourceActionUpdate),
 					},
 				},
 				Check: resource.ComposeTestCheckFunc(
@@ -82,6 +82,7 @@ func TestAccDatadogOrgGroupPolicy_Role(t *testing.T) {
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	orgGroupName := uniqueEntityName(ctx, t)
 	policyName := "finance_read_only"
+	renamedPolicyName := "finance_read_write"
 	permissionID := "1a2b3c4d-5e6f-7890-abcd-ef0123456789"
 	otherPermissionID := "2b3c4d5e-6f70-8901-bcde-f01234567890"
 	resourceName := "datadog_org_group_policy.role"
@@ -109,14 +110,27 @@ func TestAccDatadogOrgGroupPolicy_Role(t *testing.T) {
 				),
 			},
 			{
+				// policy_name is renamed in-place for role policies too.
+				Config: testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, renamedPolicyName, fmt.Sprintf(`{"permissions":["%s","%s"]}`, permissionID, otherPermissionID), "GROUP_MANAGED"),
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction(resourceName, plancheck.ResourceActionUpdate),
+					},
+				},
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogOrgGroupPolicyExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "policy_name", renamedPolicyName),
+				),
+			},
+			{
 				// enforcement_tier = OVERRIDE_ALLOWED is invalid for role policies; caught at plan time.
-				Config:      testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, policyName, fmt.Sprintf(`{"permissions":["%s"]}`, permissionID), "OVERRIDE_ALLOWED"),
+				Config:      testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, renamedPolicyName, fmt.Sprintf(`{"permissions":["%s","%s"]}`, permissionID, otherPermissionID), "OVERRIDE_ALLOWED"),
 				PlanOnly:    true,
 				ExpectError: regexp.MustCompile(`role policies only support GROUP_MANAGED and DELEGATE`),
 			},
 			{
 				// DELEGATE disables the shared role.
-				Config: testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, policyName, fmt.Sprintf(`{"permissions":["%s"]}`, permissionID), "DELEGATE"),
+				Config: testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, renamedPolicyName, fmt.Sprintf(`{"permissions":["%s","%s"]}`, permissionID, otherPermissionID), "DELEGATE"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOrgGroupPolicyExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "enforcement_tier", "DELEGATE"),
@@ -124,7 +138,7 @@ func TestAccDatadogOrgGroupPolicy_Role(t *testing.T) {
 			},
 			{
 				// Disabling is one-way: the API rejects transitioning back to GROUP_MANAGED.
-				Config:      testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, policyName, fmt.Sprintf(`{"permissions":["%s"]}`, permissionID), "GROUP_MANAGED"),
+				Config:      testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, renamedPolicyName, fmt.Sprintf(`{"permissions":["%s","%s"]}`, permissionID, otherPermissionID), "GROUP_MANAGED"),
 				ExpectError: regexp.MustCompile(`(?i)disabled role polic(y|ies) cannot be re-enabled`),
 			},
 			{
@@ -203,12 +217,22 @@ func testAccCheckDatadogOrgGroupPolicyDestroy(accProvider *fwprovider.FrameworkP
 				return fmt.Errorf("org group policy ID is not a valid UUID: %w", err)
 			}
 
-			_, httpResp, err := apiInstances.GetOrgGroupsApiV2().GetOrgGroupPolicy(auth, id)
+			resp, httpResp, err := apiInstances.GetOrgGroupsApiV2().GetOrgGroupPolicy(auth, id)
 			if err != nil {
 				if httpResp != nil && httpResp.StatusCode == 404 {
 					continue
 				}
 				return fmt.Errorf("received an error retrieving org group policy: %w", err)
+			}
+
+			// role policies are never hard-deleted server-side; Delete() only succeeds
+			// once the policy is already disabled (enforcement_tier = DELEGATE), so
+			// "destroyed" means disabled, not 404.
+			if r.Primary.Attributes["policy_type"] == "role" {
+				if resp.Data.Attributes.GetEnforcementTier() == "DELEGATE" {
+					continue
+				}
+				return fmt.Errorf("role policy was not disabled on destroy")
 			}
 
 			return fmt.Errorf("org group policy still exists")

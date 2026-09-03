@@ -27,9 +27,6 @@ var (
 	_ resource.ResourceWithValidateConfig = &OrgGroupPolicyResource{}
 )
 
-// Hardcoded until datadog-api-client-go generates ORGGROUPPOLICYPOLICYTYPE_ROLE.
-const orgGroupPolicyTypeRole = "role"
-
 type OrgGroupPolicyResource struct {
 	API  *datadogV2.OrgGroupsApi
 	Auth context.Context
@@ -73,11 +70,8 @@ func (r *OrgGroupPolicyResource) Schema(_ context.Context, _ resource.SchemaRequ
 			},
 			"policy_name": schema.StringAttribute{
 				Required:    true,
-				Description: "The name of the policy.",
+				Description: "The name of the policy. This becomes the name of the resource created across orgs in the group (for example, for `role` policies, the name of the created role).",
 				Validators:  []validator.String{stringvalidator.LengthAtLeast(1)},
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
-				},
 			},
 			"content": schema.StringAttribute{
 				Required:    true,
@@ -87,7 +81,7 @@ func (r *OrgGroupPolicyResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"enforcement_tier": schema.StringAttribute{
 				Optional:    true,
 				Computed:    true,
-				Description: "The enforcement tier of the policy. `OVERRIDE_ALLOWED` means the policy is set but member orgs may mutate it. `GROUP_MANAGED` means the policy is strictly controlled and mutations are blocked for affected orgs. `DELEGATE` means each member org controls its own value. `role` policies only support `GROUP_MANAGED`/`DELEGATE`; `DELEGATE` disables the role and is one-way.",
+				Description: "The enforcement tier of the policy. `OVERRIDE_ALLOWED` means the policy is set but member orgs may mutate it. `GROUP_MANAGED` means the policy is strictly controlled and mutations are blocked for affected orgs. `DELEGATE` means each member org controls its own value. Not all policy types support every tier.",
 				Validators: []validator.String{
 					stringvalidator.OneOf(
 						string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_OVERRIDE_ALLOWED),
@@ -106,7 +100,7 @@ func (r *OrgGroupPolicyResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Validators: []validator.String{
 					stringvalidator.OneOf(
 						string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ORG_CONFIG),
-						orgGroupPolicyTypeRole,
+						string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ROLE),
 					),
 				},
 				PlanModifiers: []planmodifier.String{
@@ -130,7 +124,7 @@ func (r *OrgGroupPolicyResource) ValidateConfig(ctx context.Context, request res
 		return
 	}
 
-	if config.PolicyType.ValueString() != orgGroupPolicyTypeRole {
+	if config.PolicyType.ValueString() != string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ROLE) {
 		return
 	}
 	if config.EnforcementTier.ValueString() == string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_OVERRIDE_ALLOWED) {
@@ -250,6 +244,7 @@ func (r *OrgGroupPolicyResource) Update(ctx context.Context, request resource.Up
 
 	attributes := datadogV2.NewOrgGroupPolicyUpdateAttributes()
 	attributes.SetContent(content)
+	attributes.SetPolicyName(state.PolicyName.ValueString())
 	if !state.EnforcementTier.IsNull() && !state.EnforcementTier.IsUnknown() {
 		tier := datadogV2.OrgGroupPolicyEnforcementTier(state.EnforcementTier.ValueString())
 		attributes.SetEnforcementTier(tier)
@@ -285,6 +280,19 @@ func (r *OrgGroupPolicyResource) Delete(ctx context.Context, request resource.De
 	id, err := uuid.Parse(state.ID.ValueString())
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "org group policy ID must be a valid UUID"))
+		return
+	}
+
+	// role policies are never hard-deleted server-side (API returns 405). If it's already
+	// disabled (enforcement_tier = DELEGATE), there's nothing left for the API to do; just
+	// drop it from state. Otherwise reject and tell the user to disable it first.
+	if state.PolicyType.ValueString() == string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ROLE) {
+		if state.EnforcementTier.ValueString() != string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_DELEGATE) {
+			response.Diagnostics.AddError(
+				"role policies cannot be deleted",
+				`Set enforcement_tier = "DELEGATE" to disable this role policy before removing it from your configuration.`,
+			)
+		}
 		return
 	}
 
