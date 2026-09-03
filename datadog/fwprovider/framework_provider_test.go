@@ -18,6 +18,7 @@ func TestDefaultConfigureFuncRetryConfiguration(t *testing.T) {
 		HttpClientRetryBackoffMultiplier: types.Int64Value(7),
 		HttpClientRetryBackoffBase:       types.Int64Value(4),
 		HttpClientRetryMaxRetries:        types.Int64Value(5),
+		HttpClientRetryJitter:            types.Int64Value(9),
 	}
 
 	diags := defaultConfigureFunc(p, &provider.ConfigureRequest{}, config)
@@ -40,5 +41,8 @@ func TestDefaultConfigureFuncRetryConfiguration(t *testing.T) {
 	}
 	if got, want := retryConfig.MaxRetries, 5; got != want {
 		t.Errorf("MaxRetries = %d, want %d", got, want)
+	}
+	if got, want := retryConfig.RetryJitter, 9*time.Second; got != want {
+		t.Errorf("RetryJitter = %s, want %s", got, want)
 	}
 }
