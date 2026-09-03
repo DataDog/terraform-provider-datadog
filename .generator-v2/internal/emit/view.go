@@ -508,6 +508,15 @@ type ResourceView struct {
 	Update CRUDCallView
 	Delete CRUDCallView
 
+	// PathParameters are the parent-path attributes a sub-resource's four
+	// lifecycle calls all take, in path order. They are practitioner inputs that
+	// live in no request or response body, so ImportState has to split them out
+	// of a composite id rather than pass one through (T139). Empty for a
+	// top-level resource, whose only identity is id.
+	PathParameters []string
+	// UsesStrings selects the "strings" import, needed only by the composite
+	// ImportState a PathParameters resource renders.
+	UsesStrings bool
 	// UpdateUnsupported means the group resolves no Update role: the generated
 	// Update method is a stub that errors rather than building a request the
 	// SDK has no endpoint for.
@@ -554,6 +563,11 @@ type CRUDCallView struct {
 	// a parent, and a singleton PATCH has no path parameter at all yet still
 	// sends data.id.
 	BodyIDExpr string
+	// BodyIDPrep carries the id-parse declaration BodyIDExpr depends on, as a
+	// zero-or-one element slice so the argPrep partial can range it directly.
+	// Empty when the expression needs no parse, or when it reuses a path
+	// argument's local that argPrep has already declared.
+	BodyIDPrep []SDKArgumentView
 	// BodyIDTarget is the local BodyIDExpr is set on — the constructed data
 	// member, not the wrapper, since the wrapper's Data is not built yet at
 	// that point.

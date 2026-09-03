@@ -22,49 +22,12 @@ import (
 // the nullable spelling applies to simple_type in general, not to the oneOf
 // call site).
 //
-// The second result is false where the Python raises KeyError — an integer or
-// number carrying a format the SDK does not map — because there the SDK generator
-// itself cannot produce a type, so neither can a faithful derivation.
+// The rule itself now lives in model.SDKScalarGoType, so the request mapper can
+// reach it without importing this package: model is the leaf both depend on.
+// This stays as the name the oneOf binder reads, and as the record of which
+// upstream function it ports.
 func simpleType(s *model.Schema) (string, bool) {
-	if s == nil {
-		return "", false
-	}
-	switch s.Type {
-	case "integer":
-		switch s.Format {
-		case "", "int32":
-			return "int32", true
-		case "int64":
-			return "int64", true
-		default:
-			return "", false
-		}
-	case "number":
-		switch s.Format {
-		case "":
-			return "float", true
-		case "double":
-			return "float64", true
-		default:
-			return "", false
-		}
-	case "string":
-		// .get(type_format, "string"): an unmapped format falls back to string.
-		switch s.Format {
-		case "date", "date-time":
-			return "time.Time", true
-		case "binary":
-			return "_io.Reader", true
-		case "uuid":
-			return "uuid.UUID", true
-		default:
-			return "string", true
-		}
-	case "boolean":
-		return "bool", true
-	default:
-		return "", false
-	}
+	return model.SDKScalarGoType(s)
 }
 
 // memberBinding derives the SDK wrapper member for one alternative:

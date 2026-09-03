@@ -108,7 +108,29 @@ func bodyCall(op *Operation, aliasTerminalID bool) *SDKCall {
 	call.GoRequestType = op.RequestRefName
 	call.GoRequestDataType, call.GoRequestAttributesType = requestEnvelopeTypes(op.RequestSchema)
 	call.RequestDiscriminator = requestDiscriminator(op.RequestSchema)
+	call.RequestDeclaresID, call.RequestIDGoType = requestBodyID(op.RequestSchema)
 	return call
+}
+
+// requestBodyID reports whether this body's data member declares an id, and
+// the Go type the SDK's SetId then takes for it. A Terraform id is always a
+// string, so the type is what decides whether it can be sent verbatim or has
+// to be parsed first — and it has to come from the body, since a path
+// parameter naming the same record can carry a different type entirely.
+func requestBodyID(s *Schema) (declared bool, goType string) {
+	if s == nil {
+		return false, ""
+	}
+	data := s.Properties["data"]
+	if data == nil {
+		return false, ""
+	}
+	id := data.Properties["id"]
+	if id == nil {
+		return false, ""
+	}
+	goType, _ = SDKScalarGoType(id)
+	return true, goType
 }
 
 // requestDiscriminator reads the request body's JSON:API data.type member: the

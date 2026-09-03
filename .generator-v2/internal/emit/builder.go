@@ -342,7 +342,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 	recordAttrs, recordBlocks, recordScalars, recordLists := b.walk(rootStruct, "", b.receiver, "state", env.leaves)
 	leafFields := b.models[0].Fields
 
-	inputAttrs, inputFields := buildInputViews(inputLeaves)
+	inputAttrs, inputFields := b.buildInputViews(inputLeaves)
 	filterParams, filterUUID, filterStrconv := buildFilterParams(search, filterLeaves, &b.unsupported)
 	readArgs, readUUID, readStrconv := buildArgumentViews(read, &b.unsupported)
 	searchArgs, searchUUID, searchStrconv := buildArgumentViews(search, &b.unsupported)
@@ -418,7 +418,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 
 // buildInputViews turns Terraform input leaves into schema attributes and model
 // fields shared by singular and plural data sources.
-func buildInputViews(leaves []*model.Attribute) (attrs []AttrView, fields []ModelFieldView) {
+func (b *dataSourceBuilder) buildInputViews(leaves []*model.Attribute) (attrs []AttrView, fields []ModelFieldView) {
 	comment := "Query Parameters"
 	for _, leaf := range leaves {
 		if leaf.Required {
@@ -428,9 +428,11 @@ func buildInputViews(leaves []*model.Attribute) (attrs []AttrView, fields []Mode
 	}
 	for i, leaf := range leaves {
 		tfName := tfNameOf(leaf.Path)
+		planModifiers, planModifierType := b.planModifierViews(leaf)
 		attrs = append(attrs, AttrView{
 			TFName: tfName, TFType: leaf.TfType, Description: leaf.Description,
 			Required: leaf.Required, Optional: leaf.Optional,
+			PlanModifiers: planModifiers, PlanModifierType: planModifierType,
 		})
 		field := ModelFieldView{GoField: model.SdkName(tfName), GoType: leaf.GoType, TFName: tfName}
 		if i == 0 {
@@ -598,7 +600,7 @@ func sdkArgumentExpression(sdkPackage string, arg model.SDKArgument) (expr, pars
 // arguments.
 func idArgumentExpression(source, goType string) (expr, parsedVar, parseCall, reason string) {
 	value := source + ".ValueString()"
-	const name = "parsedId"
+	const name = parsedIDVar
 	switch goType {
 	case "string":
 		return value, "", "", ""
@@ -853,6 +855,36 @@ func droppedAuditField(path string) DroppedMember {
 // attributes whose name is already claimed by the envelope id. Flattening would
 // emit two attributes named "id"; the envelope id wins because it carries the
 // data source's Terraform identity.
+// dropPathParameterCollisions removes any hoisted attribute whose Terraform
+// name a path parameter already claims. The parameter is the practitioner's
+// input and is Required; the body's copy is the API echoing it back, so
+// surfacing both would declare one tfsdk tag twice and, where the echo is
+// readOnly, ask Terraform for an attribute that is both Required and Computed.
+func (b *dataSourceBuilder) dropPathParameterCollisions(leaves, pathInputs []*model.Attribute) []*model.Attribute {
+	claimed := make(map[string]bool, len(pathInputs))
+	for _, input := range pathInputs {
+		claimed[tfNameOf(input.Path)] = true
+	}
+	kept := leaves[:0]
+	for _, leaf := range leaves {
+		if claimed[tfNameOf(leaf.Path)] {
+			b.dropped = append(b.dropped, droppedPathParameterCollision(leaf.Path))
+			continue
+		}
+		kept = append(kept, leaf)
+	}
+	return kept
+}
+
+func droppedPathParameterCollision(path string) DroppedMember {
+	return DroppedMember{
+		Message: fmt.Sprintf(
+			"dropped %q: the same name is a path parameter, which the practitioner supplies and the API echoes back here",
+			path),
+		Severity: model.SeverityInfo,
+	}
+}
+
 func droppedIDCollision(path string) DroppedMember {
 	return DroppedMember{
 		Message:  fmt.Sprintf("dropped %q: collides with the envelope id surfaced as \"id\"", path),
@@ -1275,13 +1307,17 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 		unsupported = append(unsupported, UnsupportedNode{Path: "response", Reason: "missing results array block"})
 	}
 
-	inputAttrs, inputFields := buildInputViews(inputLeaves)
-	filterParams, filterUUID, filterStrconv := buildFilterParams(call, filterLeaves, &unsupported)
-	callArgs, usesUUID, usesStrconv := buildArgumentViews(call, &unsupported)
 	goName := dsGoName(a.Name)
 
-	// b hosts walk so list-of-object item fields generate their element structs.
+	// b hosts walk so list-of-object item fields generate their element structs,
+	// and buildInputViews so an input's plan-modifier package is registered for
+	// the import block — a resource's path parameters need that (T139), a
+	// plural data source's filters carry none.
 	b := &dataSourceBuilder{namer: modelNamer{base: goName}}
+
+	inputAttrs, inputFields := b.buildInputViews(inputLeaves)
+	filterParams, filterUUID, filterStrconv := buildFilterParams(call, filterLeaves, &unsupported)
+	callArgs, usesUUID, usesStrconv := buildArgumentViews(call, &unsupported)
 	scalarLeaves, nonScalars := flattenItemElement(itemsBlock, &unsupported, &dropped)
 
 	// The item element's own stem. call.ItemType is the response element's component
@@ -1647,9 +1683,31 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	goName := dsGoName(a.Name)
 	b := &dataSourceBuilder{receiver: "attributes", namer: modelNamer{base: goName}}
 
-	env := b.flattenEnvelope(a.Schema.Attributes, lc.IdStrategy, "resp.Data")
+	// Partition the tree the way the by-id data source already does: a required
+	// top-level leaf is a path parameter buildResourceArtifact surfaced, not part
+	// of the JSON:API envelope — which flattenEnvelope would otherwise drop as a
+	// stray sibling (T139).
+	var topLevel, pathInputs []*model.Attribute
+	for _, attr := range a.Schema.Attributes {
+		if attr.Required && isLeafType(attr.TfType) {
+			pathInputs = append(pathInputs, attr)
+			continue
+		}
+		topLevel = append(topLevel, attr)
+	}
+
+	env := b.flattenEnvelope(topLevel, lc.IdStrategy, "resp.Data")
 	if len(b.unsupported) > 0 {
 		return ResourceView{}, &UnsupportedEmitError{Nodes: b.unsupported}
+	}
+
+	// A path parameter wins over a same-named body attribute, the same way
+	// flattenEnvelope already reserves "id" against one. They are the same
+	// value — team/{team_id}/links takes team_id in the path and echoes it back
+	// as a readOnly attribute — and only the path copy is a practitioner input,
+	// so keeping both would emit one tfsdk tag twice (T139).
+	if len(pathInputs) > 0 {
+		env.leaves = b.dropPathParameterCollisions(env.leaves, pathInputs)
 	}
 
 	rootStruct := b.namer.qualify("ResourceModel")
@@ -1679,7 +1737,19 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		return ResourceView{}, &UnsupportedEmitError{Nodes: b.unsupported}
 	}
 
-	b.models[0].Fields = append([]ModelFieldView{env.idField}, b.models[0].Fields...)
+	// Path parameters sit beside id in the schema and the model, and never in
+	// the request or response mapping: the body carries neither a setter nor a
+	// getter for them, so they are deliberately not part of env.leaves.
+	pathAttrs, pathFields := b.buildInputViews(pathInputs)
+	pathParameterNames := make([]string, 0, len(pathAttrs))
+	for _, attr := range pathAttrs {
+		pathParameterNames = append(pathParameterNames, attr.TFName)
+	}
+	recordAttrs = append(pathAttrs, recordAttrs...)
+	b.models[0].Fields = append(
+		append([]ModelFieldView{env.idField}, pathFields...),
+		b.models[0].Fields...)
+
 	models, conflicts := dedupeModels(b.models)
 	if len(conflicts) > 0 {
 		return ResourceView{}, &UnsupportedEmitError{Nodes: conflicts}
@@ -1700,15 +1770,32 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		// A JSON:API update body identifies the record it patches, and the model's
 		// id attribute always holds that id (flattenEnvelope reserves it
 		// unconditionally), so an updatable resource always sets it. Deliberately
-		// not keyed on the path's parameters — a sub-resource path names a parent
-		// and a singleton PATCH names nothing, so path arity answers a different
-		// question — nor on env.idAssign, which says only whether the *response*
+		// not keyed on env.idAssign, which says only whether the *response*
 		// exposes an id to read back.
 		//
 		// Whether the SDK's own update type declares SetId is a per-role fact the
 		// merged tree cannot see today; T134 owns that.
-		updateView.BodyIDExpr = "state.ID.ValueString()"
+		bodyIDExpr, bodyIDPrep, reason := updateBodyIDExpr(lc.Update, updateArgs)
+		if reason != "" {
+			b.unsupported = append(b.unsupported, UnsupportedNode{
+				Path:   "sdk." + lc.Update.GoMethod + ".data.id",
+				Reason: reason,
+			})
+		}
+		updateView.BodyIDExpr = bodyIDExpr
+		updateView.BodyIDPrep = bodyIDPrep
 		updateView.BodyIDTarget = requestDataVar
+		if len(bodyIDPrep) > 0 {
+			u, str := parseCallImports(bodyIDPrep[0].ParseCall)
+			updateUUID, updateStrconv = updateUUID || u, updateStrconv || str
+		}
+	}
+
+	// The update body's id is resolved after the gate above (it needs
+	// updateArgs), so it gets its own check rather than emitting a body whose
+	// id is the wrong Go type.
+	if len(b.unsupported) > 0 {
+		return ResourceView{}, &UnsupportedEmitError{Nodes: b.unsupported}
 	}
 
 	planModifierPkgs := sortedKeys(b.planModifierPkgs)
@@ -1746,11 +1833,80 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		UsesValidators:       b.usesValidators,
 		UsesPlanModifiers:    len(planModifierPkgs) > 0,
 		PlanModifierPackages: planModifierPkgs,
+		PathParameters:       pathParameterNames,
+		UsesStrings:          len(pathParameterNames) > 0,
 		UsesUUID:             createUUID || readUUID || updateUUID || deleteUUID || requestUUID,
 		UsesStrconv:          createStrconv || readStrconv || updateStrconv || deleteStrconv,
 		UsesTime:             requestTime,
 		Dropped:              b.dropped,
 	}, nil
+}
+
+// pathIDGoType returns the Go type of call's id-aliased path argument, or ""
+// when the path names no id.
+func pathIDGoType(call *model.SDKCall) string {
+	for _, arg := range call.Arguments {
+		if arg.TFName == "id" {
+			return arg.GoType
+		}
+	}
+	return ""
+}
+
+// updateBodyIDExpr resolves how a JSON:API update body sets its data.id: the
+// expression, and — when the value has to be recovered by parsing the string
+// Terraform holds — the argument view whose declaration the argPrep partial
+// renders ahead of the body.
+//
+// The type comes from the body's own data.id, never from the path parameter
+// naming the same record: those genuinely differ. rum_replay_playlist takes an
+// int64 path id and a string data.id, so handing SetId the path argument's
+// already-parsed int64 local does not compile — the first shape of this fix
+// did exactly that. The path argument is still preferred when the two types do
+// agree, since its local is already declared and parsing the same string twice
+// under two names reads like a bug (T140).
+//
+// A borrowed argument is found by name, never by position: a sub-resource's
+// path names a parent first, so index 0 is not reliably the record id — the
+// mistake T133 spotted in the expression it replaced.
+func updateBodyIDExpr(call *model.SDKCall, args []SDKArgumentView) (expr string, prep []SDKArgumentView, reason string) {
+	// A body that declares no id has nothing to set, and the SDK generates no
+	// setter to call.
+	if !call.RequestDeclaresID {
+		return "", nil, ""
+	}
+	goType := call.RequestIDGoType
+	if goType == "" {
+		return "", nil, "the update body's data.id carries a format the SDK generator itself cannot type, so there is no expression to set it from"
+	}
+
+	// Reuse the path argument's own local when it is the same type, so the
+	// string is parsed once. Both lookups are by name rather than by position,
+	// and the model argument supplies the type its view does not carry.
+	if pathIDGoType(call) == goType {
+		for _, arg := range args {
+			if arg.TFName == "id" {
+				return arg.Expression, nil, ""
+			}
+		}
+	}
+
+	bodyExpr, parsedVar, parseCall, unsupportedReason := idArgumentExpression("state.ID", goType)
+	if unsupportedReason != "" {
+		return "", nil, unsupportedReason
+	}
+	if parsedVar == "" {
+		return bodyExpr, nil, ""
+	}
+	// The parsed local needs a name of its own: a path argument of a different
+	// type may already hold "parsedId" in this scope.
+	renamed := strings.Replace(bodyExpr, parsedIDVar, requestIDVar, 1)
+	return renamed, []SDKArgumentView{{
+		Expression: renamed,
+		ParsedVar:  requestIDVar,
+		ParseCall:  parseCall,
+		TFName:     "id",
+	}}, ""
 }
 
 // requestDataVar and requestAttributesVar name the locals a resource's Create
@@ -1761,6 +1917,12 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 const (
 	requestDataVar       = "bodyData"
 	requestAttributesVar = "bodyAttributes"
+	// requestIDVar holds the update body's data.id when it has to be parsed
+	// independently of the path argument, whose own local is parsedIDVar.
+	requestIDVar = "parsedBodyId"
+	// parsedIDVar is the local idArgumentExpression declares for an id-aliased
+	// path argument that has to be parsed.
+	parsedIDVar = "parsedId"
 )
 
 // buildRequestEnvelope derives how one role constructs its JSON:API request

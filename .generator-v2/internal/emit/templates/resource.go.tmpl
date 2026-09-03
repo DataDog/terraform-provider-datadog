@@ -17,6 +17,9 @@ import (
 {{- if .UsesStrconv }}
 	"strconv"
 {{- end }}
+{{- if .UsesStrings }}
+	"strings"
+{{- end }}
 {{- if .UsesTime }}
 	"time"
 {{- end }}
@@ -93,7 +96,22 @@ func (r *{{ .GoName }}Resource) Schema(_ context.Context, _ resource.SchemaReque
 }
 
 func (r *{{ .GoName }}Resource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+{{- if .PathParameters }}
+	parts := strings.SplitN(request.ID, ":", {{ len .PathParameters | add1 }})
+	if len(parts) != {{ len .PathParameters | add1 }} {
+		response.Diagnostics.AddError(
+			"unexpected import identifier",
+			`expected "{{ range .PathParameters }}<{{ . }}>:{{ end }}<id>", got: `+request.ID,
+		)
+		return
+	}
+{{- range $i, $name := .PathParameters }}
+	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("{{ $name }}"), parts[{{ $i }}])...)
+{{- end }}
+	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("id"), parts[{{ len .PathParameters }}])...)
+{{- else }}
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), request, response)
+{{- end }}
 }
 
 func (r *{{ .GoName }}Resource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
@@ -144,6 +162,7 @@ func (r *{{ .GoName }}Resource) Update(ctx context.Context, request resource.Upd
 	}
 
 {{ template "argPrep" .Update.Arguments }}
+{{ template "argPrep" .Update.BodyIDPrep }}
 {{ template "requestBody" .Update }}
 	resp, _, err := r.Api.{{ .Update.Method }}(r.Auth{{ range .Update.Arguments }}, {{ .Expression }}{{ end }}, *body)
 	if err != nil {

@@ -168,6 +168,195 @@ var _ = Describe("BuildResourceView", func() {
 			"constrains no values and declares no default"),
 	)
 
+	DescribeTable("resolves the update body's data.id from its own type, not the path parameter's",
+		func(pathGoType, pathFormat, bodyFormat string, wantExpr string, wantRendered, wantAbsent []string) {
+			op := incidentTypeResourceOperation(true)
+			for _, role := range []*model.Operation{op.ResolvedGroup.Read, op.ResolvedGroup.Update, op.ResolvedGroup.Delete} {
+				role.SDKBinding.Required[0].GoType = pathGoType
+				schema := prim("string", "The incident type ID.")
+				if pathGoType == "int64" {
+					schema = prim("integer", "The incident type ID.")
+				}
+				schema.Format = pathFormat
+				role.SDKBinding.Required[0].Schema = schema
+			}
+			bodyID := op.ResolvedGroup.Update.RequestSchema.Properties["data"].Properties["id"]
+			bodyID.Format = bodyFormat
+
+			art, err := model.BuildArtifact(op)
+			Expect(err).NotTo(HaveOccurred())
+			view, err := BuildResourceView(art)
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(view.Update.BodyIDExpr).To(Equal(wantExpr))
+			Expect(view.Update.BodyIDTarget).To(Equal("bodyData"))
+
+			src := string(mustRenderResource(view))
+			for _, want := range wantRendered {
+				Expect(src).To(ContainSubstring(want))
+			}
+			for _, absent := range wantAbsent {
+				Expect(src).NotTo(ContainSubstring(absent))
+			}
+		},
+		Entry("both plain strings: the attribute is sent verbatim",
+			"string", "", "", "state.ID.ValueString()",
+			[]string{"bodyData.SetId(state.ID.ValueString())"},
+			[]string{"parsedBodyId"}),
+		Entry("both uuid: the path argument's local is reused, so the string is parsed once",
+			"uuid.UUID", "uuid", "uuid", "parsedId",
+			[]string{"parsedId, err := uuid.Parse(state.ID.ValueString())", "bodyData.SetId(parsedId)"},
+			[]string{"parsedBodyId"}),
+		Entry("int64 path, string body: the path local is the wrong type, so the attribute is used",
+			"int64", "", "", "state.ID.ValueString()",
+			[]string{"parsedId, err := strconv.ParseInt(state.ID.ValueString(), 10, 64)", "bodyData.SetId(state.ID.ValueString())"},
+			[]string{"bodyData.SetId(parsedId)"}),
+		Entry("string path, uuid body: the body parses independently, under its own name",
+			"string", "", "uuid", "parsedBodyId",
+			[]string{"parsedBodyId, err := uuid.Parse(state.ID.ValueString())", "bodyData.SetId(parsedBodyId)"},
+			[]string{"parsedId,"}),
+	)
+
+	It("calls no setter when the update body declares no id", func() {
+		By("the SDK generates SetId only for a declared property, so calling it would not compile")
+		op := incidentTypeResourceOperation(true)
+		delete(op.ResolvedGroup.Update.RequestSchema.Properties["data"].Properties, "id")
+
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		view, err := BuildResourceView(art)
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(view.Update.BodyIDExpr).To(BeEmpty())
+		Expect(string(mustRenderResource(view))).NotTo(ContainSubstring("SetId("))
+	})
+
+	Context("a sub-resource whose path names a parent", func() {
+		// The team_id shape: every lifecycle call takes it, no body carries it.
+		subResource := func() *model.Operation {
+			op := incidentTypeResourceOperation(true)
+			parent := model.SDKArgument{
+				Name: "team_id", GoName: "teamId", GoType: "string", Location: "path",
+				Description: "The team's identifier.", Schema: prim("string", "The team's identifier."),
+			}
+			for _, role := range []*model.Operation{
+				op.ResolvedGroup.Create, op.ResolvedGroup.Read,
+				op.ResolvedGroup.Update, op.ResolvedGroup.Delete,
+			} {
+				role.Path = "/api/v2/team/{team_id}/incident-types"
+				var existing []model.SDKArgument
+				if role.SDKBinding != nil {
+					existing = role.SDKBinding.Required
+				}
+				// A collection POST names only the parent; the other three also
+				// name the record.
+				if role.Method != "POST" {
+					role.Path += "/{incident_type_id}"
+				}
+				role.SDKBinding = &model.SDKOperationBinding{
+					Required: append([]model.SDKArgument{parent}, existing...),
+				}
+			}
+			return op
+		}
+
+		It("surfaces the parent as a required force-new attribute the calls can read", func() {
+			art, err := model.BuildArtifact(subResource())
+			Expect(err).NotTo(HaveOccurred())
+			view, err := BuildResourceView(art)
+			Expect(err).NotTo(HaveOccurred())
+
+			By("re-parenting a child is a replace, not an update")
+			Expect(attrByPath(schemaTree(view), "team_id")).To(Equal(AttrView{
+				TFName: "team_id", TFType: "schema.StringAttribute",
+				Description: "The team's identifier.", Required: true,
+				PlanModifiers: []string{"stringplanmodifier.RequiresReplace"}, PlanModifierType: "String",
+			}))
+
+			By("the model declares the field every lifecycle call reads")
+			Expect(view.Models[0].Fields).To(ContainElement(
+				ModelFieldView{GoField: "TeamId", GoType: "types.String", TFName: "team_id", Comment: "SDK call parameters"}))
+
+			By("and it stays out of the body: no setter exists for it, and no getter reads it back")
+			for _, field := range view.Create.Envelope.Fields {
+				Expect(field.GoField).NotTo(Equal("TeamId"))
+			}
+			for _, assignment := range view.State.Assignments {
+				Expect(assignment.LHS).NotTo(Equal("state.TeamId"))
+			}
+		})
+
+		It("splits a composite id on import", func() {
+			art, err := model.BuildArtifact(subResource())
+			Expect(err).NotTo(HaveOccurred())
+			view, err := BuildResourceView(art)
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(view.PathParameters).To(Equal([]string{"team_id"}))
+			src := string(mustRenderResource(view))
+			Expect(src).To(ContainSubstring(`parts := strings.SplitN(request.ID, ":", 2)`))
+			Expect(src).To(ContainSubstring(`expected "<team_id>:<id>"`))
+			Expect(src).To(ContainSubstring(`path.Root("team_id"), parts[0]`))
+			Expect(src).To(ContainSubstring(`path.Root("id"), parts[1]`))
+			By("passthrough is only right for a resource whose whole identity is id")
+			Expect(src).NotTo(ContainSubstring("ImportStatePassthroughID"))
+		})
+
+		It("drops a body attribute the parent path parameter already claims", func() {
+			By("team/{team_id}/links takes team_id in the path and echoes it back readOnly; only the path copy is an input")
+			op := subResource()
+			for _, role := range []*model.Operation{op.ResolvedGroup.Create, op.ResolvedGroup.Read, op.ResolvedGroup.Update} {
+				if role.RequestSchema != nil {
+					role.RequestSchema.Properties["data"].Properties["attributes"].
+						Properties["team_id"] = prim("string", "ID of the team.")
+				}
+				if role.ResponseSchema != nil {
+					role.ResponseSchema.Properties["data"].Properties["attributes"].
+						Properties["team_id"] = prim("string", "ID of the team.")
+				}
+			}
+
+			art, err := model.BuildArtifact(op)
+			Expect(err).NotTo(HaveOccurred())
+			view, err := BuildResourceView(art)
+			Expect(err).NotTo(HaveOccurred())
+
+			By("exactly one team_id survives, and it is the required path parameter")
+			var teamIDFields int
+			for _, field := range view.Models[0].Fields {
+				if field.TFName == "team_id" {
+					teamIDFields++
+				}
+			}
+			Expect(teamIDFields).To(Equal(1))
+			Expect(attrByPath(schemaTree(view), "team_id").Required).To(BeTrue())
+			Expect(view.Dropped).To(ContainElement(HaveField("Message",
+				ContainSubstring(`dropped "response.team_id": the same name is a path parameter`))))
+		})
+
+		It("fails when the roles disagree about the parent's type", func() {
+			op := subResource()
+			op.ResolvedGroup.Delete.SDKBinding.Required[0].Schema = prim("integer", "The team's identifier.")
+
+			_, err := model.BuildArtifact(op)
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(ContainSubstring("conflicting Terraform types"))
+		})
+	})
+
+	It("uses id passthrough when the resource has no parent path parameter", func() {
+		art, err := model.BuildArtifact(incidentTypeResourceOperation(true))
+		Expect(err).NotTo(HaveOccurred())
+		view, err := BuildResourceView(art)
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(view.PathParameters).To(BeEmpty())
+		Expect(view.UsesStrings).To(BeFalse())
+		src := string(mustRenderResource(view))
+		Expect(src).To(ContainSubstring("resource.ImportStatePassthroughID(ctx, path.Root(\"id\"), request, response)"))
+		Expect(src).NotTo(ContainSubstring(`"strings"`))
+	})
+
 	It("fails the artifact when a request envelope level names no SDK component", func() {
 		By("an inline data member leaves nothing to construct, and so nothing to set the JSON:API type discriminator on")
 		op := incidentTypeResourceOperation(true)
@@ -338,14 +527,20 @@ func incidentTypeResourceOperation(withUpdate bool) *model.Operation {
 	// The envelope levels carry their own component names, as a real spec's do:
 	// the SDK generates a model per $ref, and T138's request mapper constructs
 	// each level from that model's own New<Type>WithDefaults().
-	body := func(a *model.Schema, dataRefName string) *model.Schema {
-		// A real JSON:API envelope carries the "type" discriminator beside
-		// "attributes", constrained to a single value by its own component —
-		// which is what lets the request mapper send it (T143).
+	// A real JSON:API envelope carries the "type" discriminator beside
+	// "attributes", constrained to a single value by its own component — which
+	// is what lets the request mapper send it (T143). withID selects whether
+	// data also names the record: a PATCH body and a response do, a POST body
+	// does not, and that is what decides whether SetId is called at all (T140).
+	body := func(a *model.Schema, dataRefName string, withID bool) *model.Schema {
 		discriminator := prim("string", "Incident type resource type.")
 		discriminator.RefName = "IncidentTypeType"
 		discriminator.Enum = []string{"incident_types"}
-		data := obj(map[string]*model.Schema{"attributes": a, "type": discriminator})
+		members := map[string]*model.Schema{"attributes": a, "type": discriminator}
+		if withID {
+			members["id"] = prim("string", "The incident type ID.")
+		}
+		data := obj(members)
 		data.RefName = dataRefName
 		return obj(map[string]*model.Schema{"data": data})
 	}
@@ -363,13 +558,13 @@ func incidentTypeResourceOperation(withUpdate bool) *model.Operation {
 		Path: "/api/v2/incidents/config/types", Method: "POST",
 		OperationId: "CreateIncidentType", Tag: "Incidents",
 		RequestRefName: "IncidentTypeCreateRequest", ResponseRefName: "IncidentTypeResponse",
-		RequestSchema: body(attrs([]string{"name"}, true, true, false, "IncidentTypeAttributes"), "IncidentTypeCreateData"),
+		RequestSchema: body(attrs([]string{"name"}, true, true, false, "IncidentTypeAttributes"), "IncidentTypeCreateData", false),
 	}
 	read := &model.Operation{
 		Path: "/api/v2/incidents/config/types/{incident_type_id}", Method: "GET",
 		OperationId: "GetIncidentType", Tag: "Incidents",
 		ResponseRefName: "IncidentTypeResponse",
-		ResponseSchema:  body(attrs(nil, true, false, true, "IncidentTypeAttributes"), "IncidentTypeData"),
+		ResponseSchema:  body(attrs(nil, true, false, true, "IncidentTypeAttributes"), "IncidentTypeData", true),
 		SDKBinding:      idBinding(),
 	}
 	del := &model.Operation{
@@ -389,7 +584,7 @@ func incidentTypeResourceOperation(withUpdate bool) *model.Operation {
 			Path: "/api/v2/incidents/config/types/{incident_type_id}", Method: "PATCH",
 			OperationId: "UpdateIncidentType", Tag: "Incidents",
 			RequestRefName: "IncidentTypeUpdateRequest", ResponseRefName: "IncidentTypeResponse",
-			RequestSchema: body(attrs(nil, true, false, false, "IncidentTypeUpdateAttributes"), "IncidentTypeUpdateData"),
+			RequestSchema: body(attrs(nil, true, false, false, "IncidentTypeUpdateAttributes"), "IncidentTypeUpdateData", true),
 			SDKBinding:    idBinding(),
 		}
 		create.ResolvedGroup.Update = update

@@ -797,6 +797,21 @@ type SDKCall struct {
 	// the operation sends no body, or when "data" is inline and so has no SDK
 	// component to construct.
 	GoRequestDataType string
+	// RequestDeclaresID records that the body's data member declares an id at
+	// all. A body that does not must not call SetId: the SDK generates that
+	// setter only for a declared property, so an update body without one does
+	// not compile against it (part of what T134 records for okta_account).
+	RequestDeclaresID bool
+	// RequestIDGoType is the Go type the SDK's SetId takes on this body's data
+	// member, derived from the data.id schema via SDKScalarGoType, e.g.
+	// "string" or "uuid.UUID". Empty when the body declares no id, or when its
+	// format is one the SDK generator itself cannot type.
+	//
+	// It is read from the body rather than borrowed from the path parameter
+	// because the two genuinely differ: rum_replay_playlist takes an int64 path
+	// id and a string data.id, so binding the path argument's already-parsed
+	// local to SetId does not compile (T140).
+	RequestIDGoType string
 	// RequestDiscriminator describes the request body's JSON:API data.type
 	// member. Nil when the operation sends no body or the data component
 	// declares no type property.

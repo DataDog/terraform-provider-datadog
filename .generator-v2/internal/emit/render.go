@@ -20,6 +20,9 @@ var templateFS embed.FS
 // redundant fields out of the struct.
 var funcMap = template.FuncMap{
 	"title": upperFirst,
+	// add1 turns a path-parameter count into the composite import id's field
+	// count, which is one greater: the parents, then the record id.
+	"add1": func(n int) int { return n + 1 },
 	// hashExpr strips "Pointer" from a ValueExpr, e.g. "ValueStringPointer()" → "ValueString()".
 	"hashExpr": func(valueExpr string) string {
 		return strings.Replace(valueExpr, "Pointer()", "()", 1)

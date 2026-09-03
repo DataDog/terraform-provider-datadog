@@ -90,6 +90,30 @@ func buildResourceArtifact(op *Operation) (*Artifact, error) {
 	}
 	diags = append(diags, mergeDiags...)
 	diags = append(diags, treeDiags...)
+
+	// A sub-resource's parent id lives only in the path, so the request/response
+	// merge never sees it — yet every one of the four lifecycle calls takes it,
+	// and the practitioner has to supply it. Surface it as a top-level attribute,
+	// exactly as a by-id data source already does for its own path arguments
+	// (buildSingularByIdArtifact). mergeRequiredInputLeaves is the agreement
+	// check: all four roles must describe the parameter the same way, or the
+	// artifact fails rather than binding one role's spelling to another's call.
+	pathInputs, err := mergeRequiredInputLeaves(
+		argumentsOf(lifecycle.Create), argumentsOf(lifecycle.Read),
+		argumentsOf(lifecycle.Update), argumentsOf(lifecycle.Delete))
+	if err != nil {
+		return nil, err
+	}
+	for _, input := range pathInputs {
+		// Re-parenting a child under a different parent is a replace, not an
+		// update: the API offers no endpoint that moves one. FR-034d already owns
+		// this modifier; a path parameter is simply a new source for it, so it is
+		// applied here rather than in BuildResourceTree, which only ever sees the
+		// body.
+		input.PlanModifiers = []PlanModifierSpec{{Name: PlanModifierPackage(input.GoType) + ".RequiresReplace"}}
+	}
+	schema.Attributes = append(pathInputs, schema.Attributes...)
+
 	return &Artifact{
 		Name:        op.Tracking.ArtifactName,
 		Kind:        ArtifactKindResource,
@@ -418,6 +442,15 @@ func applySDKBinding(call *SDKCall, op *Operation, aliasTerminalID bool) {
 		arg.TFName = SnakeCase(arg.Name)
 		call.OptionalArguments = append(call.OptionalArguments, arg)
 	}
+}
+
+// argumentsOf returns a call's positional arguments, tolerating a nil call so
+// a resource with no Update role still contributes its other three.
+func argumentsOf(call *SDKCall) []SDKArgument {
+	if call == nil {
+		return nil
+	}
+	return call.Arguments
 }
 
 func buildRequiredInputLeaves(arguments []SDKArgument) ([]*Attribute, error) {
