@@ -90,6 +90,7 @@ resource "datadog_observability_pipeline" "test" {
 Optional:
 
 - `destination` (Block List) List of destinations. (see [below for nested schema](#nestedblock--config--destination))
+- `end_to_end_acknowledgements` (Boolean) Enables end-to-end event delivery confirmation for the pipeline. When enabled, sources confirm receipt only after all destinations have successfully received the events. Requires Observability Pipelines Worker 2.14 or later. All configured sources must support this behavior.
 - `pipeline_type` (String) The type of data being ingested. Defaults to `logs` if not specified. Valid values are `logs`, `metrics`.
 - `processor_group` (Block List) A processor group containing common configuration and nested processors. (see [below for nested schema](#nestedblock--config--processor_group))
 - `source` (Block List) List of sources. (see [below for nested schema](#nestedblock--config--source))
