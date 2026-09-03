@@ -92,26 +92,26 @@ func TestAccDatadogOrgGroupPolicy_Role(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogOrgGroupPolicyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, policyName, fmt.Sprintf(`{"permissions":["%s"]}`, permissionID), "GROUP_MANAGED"),
+				Config: testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, policyName, fmt.Sprintf(`{"permissions":[%q]}`, permissionID), "GROUP_MANAGED"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOrgGroupPolicyExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "policy_name", policyName),
 					resource.TestCheckResourceAttr(resourceName, "policy_type", "role"),
 					resource.TestCheckResourceAttr(resourceName, "enforcement_tier", "GROUP_MANAGED"),
-					resource.TestCheckResourceAttr(resourceName, "content", fmt.Sprintf(`{"permissions":["%s"]}`, permissionID)),
+					resource.TestCheckResourceAttr(resourceName, "content", fmt.Sprintf(`{"permissions":[%q]}`, permissionID)),
 				),
 			},
 			{
 				// Update the permissions set without changing enforcement_tier.
-				Config: testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, policyName, fmt.Sprintf(`{"permissions":["%s","%s"]}`, permissionID, otherPermissionID), "GROUP_MANAGED"),
+				Config: testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, policyName, fmt.Sprintf(`{"permissions":[%q,%q]}`, permissionID, otherPermissionID), "GROUP_MANAGED"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOrgGroupPolicyExists(providers.frameworkProvider, resourceName),
-					resource.TestCheckResourceAttr(resourceName, "content", fmt.Sprintf(`{"permissions":["%s","%s"]}`, permissionID, otherPermissionID)),
+					resource.TestCheckResourceAttr(resourceName, "content", fmt.Sprintf(`{"permissions":[%q,%q]}`, permissionID, otherPermissionID)),
 				),
 			},
 			{
 				// policy_name is renamed in-place for role policies too.
-				Config: testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, renamedPolicyName, fmt.Sprintf(`{"permissions":["%s","%s"]}`, permissionID, otherPermissionID), "GROUP_MANAGED"),
+				Config: testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, renamedPolicyName, fmt.Sprintf(`{"permissions":[%q,%q]}`, permissionID, otherPermissionID), "GROUP_MANAGED"),
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
 						plancheck.ExpectResourceAction(resourceName, plancheck.ResourceActionUpdate),
@@ -124,13 +124,13 @@ func TestAccDatadogOrgGroupPolicy_Role(t *testing.T) {
 			},
 			{
 				// enforcement_tier = OVERRIDE_ALLOWED is invalid for role policies; caught at plan time.
-				Config:      testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, renamedPolicyName, fmt.Sprintf(`{"permissions":["%s","%s"]}`, permissionID, otherPermissionID), "OVERRIDE_ALLOWED"),
+				Config:      testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, renamedPolicyName, fmt.Sprintf(`{"permissions":[%q,%q]}`, permissionID, otherPermissionID), "OVERRIDE_ALLOWED"),
 				PlanOnly:    true,
 				ExpectError: regexp.MustCompile(`role policies only support GROUP_MANAGED and DELEGATE`),
 			},
 			{
 				// DELEGATE disables the shared role.
-				Config: testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, renamedPolicyName, fmt.Sprintf(`{"permissions":["%s","%s"]}`, permissionID, otherPermissionID), "DELEGATE"),
+				Config: testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, renamedPolicyName, fmt.Sprintf(`{"permissions":[%q,%q]}`, permissionID, otherPermissionID), "DELEGATE"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOrgGroupPolicyExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "enforcement_tier", "DELEGATE"),
@@ -138,7 +138,7 @@ func TestAccDatadogOrgGroupPolicy_Role(t *testing.T) {
 			},
 			{
 				// Disabling is one-way: the API rejects transitioning back to GROUP_MANAGED.
-				Config:      testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, renamedPolicyName, fmt.Sprintf(`{"permissions":["%s","%s"]}`, permissionID, otherPermissionID), "GROUP_MANAGED"),
+				Config:      testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, renamedPolicyName, fmt.Sprintf(`{"permissions":[%q,%q]}`, permissionID, otherPermissionID), "GROUP_MANAGED"),
 				ExpectError: regexp.MustCompile(`(?i)disabled role polic(y|ies) cannot be re-enabled`),
 			},
 			{
