@@ -743,6 +743,24 @@ type SDKCall struct {
 	// NOTE: Schema has no Name field; the model-builder must read this from the
 	// raw libopenapi node, not from Operation.ResponseSchema.
 	GoResponseType string
+	// GoRequestDataType is the SDK type of the request body's JSON:API "data"
+	// member, e.g. "IncidentTypeCreateData". Rule: the RefName of the "data"
+	// property on Operation.RequestSchema. It is read per role rather than off
+	// the merged tree, because the merge reconciles RefName toward the Read
+	// response and Create's and Update's data components routinely differ.
+	//
+	// The request mapper needs it because New<GoRequestType>WithDefaults() —
+	// the request *wrapper*'s constructor — returns the zero struct: it does
+	// not build Data, so the JSON:API "type" discriminator the API requires is
+	// only ever set by New<GoRequestDataType>WithDefaults() (T138). Empty when
+	// the operation sends no body, or when "data" is inline and so has no SDK
+	// component to construct.
+	GoRequestDataType string
+	// GoRequestAttributesType is the SDK type of the request body's
+	// data.attributes member, e.g. "IncidentTypeAttributes", derived the same
+	// way and for the same reason. Empty when the envelope carries no
+	// attributes object (a relationships-only or id-only body).
+	GoRequestAttributesType string
 	// Arguments are the required positional SDK arguments in call order.
 	Arguments []SDKArgument
 	// OptionalArguments bind Terraform filters to OptionalParamsType setters.

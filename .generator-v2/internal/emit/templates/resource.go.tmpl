@@ -104,8 +104,7 @@ func (r *{{ .GoName }}Resource) Create(ctx context.Context, request resource.Cre
 	}
 
 {{ template "argPrep" .Create.Arguments }}
-	body := {{ .SDKPackage }}.New{{ .Create.GoRequestType }}WithDefaults()
-{{ template "requestFields" . }}
+{{ template "requestBody" .Create }}
 	resp, _, err := r.Api.{{ .Create.Method }}(r.Auth{{ range .Create.Arguments }}, {{ .Expression }}{{ end }}, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating {{ .TypeName }}"))
@@ -145,11 +144,7 @@ func (r *{{ .GoName }}Resource) Update(ctx context.Context, request resource.Upd
 	}
 
 {{ template "argPrep" .Update.Arguments }}
-	body := {{ .SDKPackage }}.New{{ .Update.GoRequestType }}WithDefaults()
-{{- with .Update.BodyIDExpr }}
-	body.Data.SetId({{ . }})
-{{- end }}
-{{ template "requestFields" . }}
+{{ template "requestBody" .Update }}
 	resp, _, err := r.Api.{{ .Update.Method }}(r.Auth{{ range .Update.Arguments }}, {{ .Expression }}{{ end }}, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating {{ .TypeName }}"))
@@ -212,13 +207,52 @@ func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .GoNa
 {{- end -}}
 
 {{/*
+  requestBody builds one role's JSON:API request body a level at a time, each
+  level from its own New<Type>WithDefaults(). Innermost first, so every level
+  is populated before the level above takes it by value:
+
+      bodyAttributes := pkg.New<Attrs>WithDefaults()   // request fields set here
+      bodyData       := pkg.New<Data>WithDefaults()    // sets the "type" discriminator
+      bodyData.SetAttributes(*bodyAttributes)
+      body           := pkg.New<Request>WithDefaults()
+      body.SetData(*bodyData)
+
+  The wrapper's own constructor cannot stand in for the inner ones: it returns
+  the zero struct, so reaching through it (body.Data.Attributes.Set<F>(...))
+  leaves "type" empty — which the API rejects — and panics outright where the
+  wrapper declares Data as a pointer (T138).
+
+  Takes one CRUDCallView: Create and Update construct different SDK types, so
+  each renders its own envelope, and the envelope carries the SDK package and
+  the field list the partial needs.
+*/}}
+{{- define "requestBody" -}}
+{{- $call := . }}
+{{- with .Envelope }}
+{{- if .AttributesVar }}
+	{{ .AttributesVar }} := {{ .SDKPackage }}.New{{ .AttributesType }}WithDefaults()
+{{ template "requestFields" .Fields }}
+{{- end }}
+	{{ .DataVar }} := {{ .SDKPackage }}.New{{ .DataType }}WithDefaults()
+{{- if .AttributesVar }}
+	{{ .DataVar }}.SetAttributes(*{{ .AttributesVar }})
+{{- end }}
+{{- with $call.BodyIDExpr }}
+	{{ $call.BodyIDTarget }}.SetId({{ . }})
+{{- end }}
+	body := {{ .SDKPackage }}.New{{ $call.GoRequestType }}WithDefaults()
+	body.SetData(*{{ .DataVar }})
+{{- end }}
+{{- end -}}
+
+{{/*
   requestFields renders the Set<Field>(...) calls Create and Update both use to
-  populate body.Data.Attributes, guarding every non-Required field on
-  null/unknown. Required fields are sent unconditionally: the framework
+  populate the constructed attributes local, guarding every non-Required field
+  on null/unknown. Required fields are sent unconditionally: the framework
   guarantees a plan value for them.
 */}}
 {{- define "requestFields" -}}
-{{- range .RequestFields }}
+{{- range . }}
 {{ template "requestField" . }}
 {{- end }}
 {{- end -}}

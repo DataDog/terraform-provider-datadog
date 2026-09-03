@@ -37,15 +37,27 @@ var _ = Describe("BuildResourceView", func() {
 
 		Expect(view.Create).To(Equal(CRUDCallView{
 			Method: "CreateIncidentType", GoRequestType: "IncidentTypeCreateRequest", GoResponseType: "IncidentTypeResponse",
+			Envelope: &RequestEnvelopeView{
+				SDKPackage: "datadogV2", Fields: view.Create.Envelope.Fields,
+				DataVar: "bodyData", DataType: "IncidentTypeCreateData",
+				AttributesVar: "bodyAttributes", AttributesType: "IncidentTypeAttributes",
+			},
 		}))
 		Expect(view.Read).To(Equal(CRUDCallView{
 			Method: "GetIncidentType", GoResponseType: "IncidentTypeResponse",
 			Arguments: []SDKArgumentView{{Expression: "state.ID.ValueString()", TFName: "id"}},
 		}))
+		By("Update builds its own envelope: a PATCH's data and attributes components are distinct types from Create's")
 		Expect(view.Update).To(Equal(CRUDCallView{
 			Method: "UpdateIncidentType", GoRequestType: "IncidentTypeUpdateRequest", GoResponseType: "IncidentTypeResponse",
-			Arguments:  []SDKArgumentView{{Expression: "state.ID.ValueString()", TFName: "id"}},
-			BodyIDExpr: "state.ID.ValueString()",
+			Arguments:    []SDKArgumentView{{Expression: "state.ID.ValueString()", TFName: "id"}},
+			BodyIDExpr:   "state.ID.ValueString()",
+			BodyIDTarget: "bodyData",
+			Envelope: &RequestEnvelopeView{
+				SDKPackage: "datadogV2", Fields: view.Create.Envelope.Fields,
+				DataVar: "bodyData", DataType: "IncidentTypeUpdateData",
+				AttributesVar: "bodyAttributes", AttributesType: "IncidentTypeUpdateAttributes",
+			},
 		}))
 		Expect(view.Delete).To(Equal(CRUDCallView{
 			Method:    "DeleteIncidentType",
@@ -74,8 +86,8 @@ var _ = Describe("BuildResourceView", func() {
 			TFName: "last_seen", TFType: "schema.StringAttribute", Description: "Last time this incident type was seen.", Computed: true,
 		}))
 
-		const attrsTarget = "body.Data.Attributes"
-		Expect(view.RequestFields).To(ConsistOf(
+		const attrsTarget = "bodyAttributes"
+		Expect(view.Create.Envelope.Fields).To(ConsistOf(
 			RequestFieldView{GoField: "Name", Target: attrsTarget, ValueExpr: "state.Name.ValueString()", Required: true},
 			RequestFieldView{
 				GoField: "Description", Target: attrsTarget, ValueExpr: "state.Description.ValueString()",
@@ -93,6 +105,30 @@ var _ = Describe("BuildResourceView", func() {
 			Expect(a.LHS).NotTo(Equal("state.InternalNote"))
 		}
 		Expect(view.State.Assignments).To(ContainElement(HaveField("LHS", "state.LastSeen")))
+	})
+
+	It("fails the artifact when a request envelope level names no SDK component", func() {
+		By("an inline data member leaves nothing to construct, and so nothing to set the JSON:API type discriminator on")
+		op := incidentTypeResourceOperation(true)
+		op.ResolvedGroup.Create.RequestSchema.Properties["data"].RefName = ""
+
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+
+		_, err = BuildResourceView(art)
+		Expect(err).To(HaveOccurred())
+		Expect(err.Error()).To(ContainSubstring(`Create request body for resource "incident_type" leaves its JSON:API "data" member inline`))
+
+		By("and an inline attributes member, when the body has attributes to set")
+		op = incidentTypeResourceOperation(true)
+		op.ResolvedGroup.Update.RequestSchema.Properties["data"].Properties["attributes"].RefName = ""
+
+		art, err = model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+
+		_, err = BuildResourceView(art)
+		Expect(err).To(HaveOccurred())
+		Expect(err.Error()).To(ContainSubstring("Update request body for resource \"incident_type\" has settable attributes but leaves data.attributes inline"))
 	})
 
 	It("degrades to the forced-replacement stub when the group resolves no Update role", func() {
@@ -160,8 +196,19 @@ var _ = Describe("RenderResource", func() {
 
 		out := string(src)
 		Expect(out).To(ContainSubstring(`func (r *datadogIncidentTypeResource) Create(`))
-		Expect(out).To(ContainSubstring(`body := datadogV2.NewIncidentTypeCreateRequestWithDefaults()`))
-		Expect(out).To(ContainSubstring(`body.Data.Attributes.SetName(state.Name.ValueString())`))
+		By("Create builds the envelope innermost-first, so the data component's own constructor sets the JSON:API type discriminator (T138)")
+		for _, want := range []string{
+			"bodyAttributes := datadogV2.NewIncidentTypeAttributesWithDefaults()",
+			"bodyData := datadogV2.NewIncidentTypeCreateDataWithDefaults()",
+			"bodyData.SetAttributes(*bodyAttributes)",
+			"body := datadogV2.NewIncidentTypeCreateRequestWithDefaults()",
+			"body.SetData(*bodyData)",
+		} {
+			Expect(out).To(ContainSubstring(want))
+		}
+		By("and never reaches through the wrapper, which would leave that discriminator empty")
+		Expect(out).NotTo(ContainSubstring("body.Data.Attributes."))
+		Expect(out).To(ContainSubstring(`bodyAttributes.SetName(state.Name.ValueString())`))
 		Expect(out).To(ContainSubstring(`if !state.Description.IsNull() && !state.Description.IsUnknown() {`))
 		Expect(out).To(ContainSubstring(`resp, _, err := r.Api.CreateIncidentType(r.Auth, *body)`))
 
@@ -170,8 +217,14 @@ var _ = Describe("RenderResource", func() {
 		Expect(out).To(ContainSubstring(`response.State.RemoveResource(ctx)`))
 
 		Expect(out).To(ContainSubstring(`func (r *datadogIncidentTypeResource) Update(`))
-		Expect(out).To(ContainSubstring(`body := datadogV2.NewIncidentTypeUpdateRequestWithDefaults()`))
-		Expect(out).To(ContainSubstring(`body.Data.SetId(state.ID.ValueString())`))
+		for _, want := range []string{
+			"bodyAttributes := datadogV2.NewIncidentTypeUpdateAttributesWithDefaults()",
+			"bodyData := datadogV2.NewIncidentTypeUpdateDataWithDefaults()",
+			"body := datadogV2.NewIncidentTypeUpdateRequestWithDefaults()",
+		} {
+			Expect(out).To(ContainSubstring(want))
+		}
+		Expect(out).To(ContainSubstring(`bodyData.SetId(state.ID.ValueString())`))
 		Expect(out).To(ContainSubstring(`r.Api.UpdateIncidentType(r.Auth, state.ID.ValueString(), *body)`))
 
 		Expect(out).To(ContainSubstring(`func (r *datadogIncidentTypeResource) Delete(`))
@@ -203,7 +256,7 @@ var _ = Describe("RenderResource", func() {
 // and "last_seen" is response-only. withUpdate selects whether the group
 // resolves an Update role.
 func incidentTypeResourceOperation(withUpdate bool) *model.Operation {
-	attrs := func(required []string, description, internalNote, lastSeen bool) *model.Schema {
+	attrs := func(required []string, description, internalNote, lastSeen bool, attrsRefName string) *model.Schema {
 		props := map[string]*model.Schema{
 			"name": prim("string", "Name of the incident type."),
 		}
@@ -218,10 +271,16 @@ func incidentTypeResourceOperation(withUpdate bool) *model.Operation {
 		}
 		s := obj(props)
 		s.Required = required
+		s.RefName = attrsRefName
 		return s
 	}
-	body := func(a *model.Schema) *model.Schema {
-		return obj(map[string]*model.Schema{"data": obj(map[string]*model.Schema{"attributes": a})})
+	// The envelope levels carry their own component names, as a real spec's do:
+	// the SDK generates a model per $ref, and T138's request mapper constructs
+	// each level from that model's own New<Type>WithDefaults().
+	body := func(a *model.Schema, dataRefName string) *model.Schema {
+		data := obj(map[string]*model.Schema{"attributes": a})
+		data.RefName = dataRefName
+		return obj(map[string]*model.Schema{"data": data})
 	}
 
 	// idBinding resolves the terminal "{incident_type_id}" path segment as the
@@ -237,13 +296,13 @@ func incidentTypeResourceOperation(withUpdate bool) *model.Operation {
 		Path: "/api/v2/incidents/config/types", Method: "POST",
 		OperationId: "CreateIncidentType", Tag: "Incidents",
 		RequestRefName: "IncidentTypeCreateRequest", ResponseRefName: "IncidentTypeResponse",
-		RequestSchema: body(attrs([]string{"name"}, true, true, false)),
+		RequestSchema: body(attrs([]string{"name"}, true, true, false, "IncidentTypeAttributes"), "IncidentTypeCreateData"),
 	}
 	read := &model.Operation{
 		Path: "/api/v2/incidents/config/types/{incident_type_id}", Method: "GET",
 		OperationId: "GetIncidentType", Tag: "Incidents",
 		ResponseRefName: "IncidentTypeResponse",
-		ResponseSchema:  body(attrs(nil, true, false, true)),
+		ResponseSchema:  body(attrs(nil, true, false, true, "IncidentTypeAttributes"), "IncidentTypeData"),
 		SDKBinding:      idBinding(),
 	}
 	del := &model.Operation{
@@ -263,7 +322,7 @@ func incidentTypeResourceOperation(withUpdate bool) *model.Operation {
 			Path: "/api/v2/incidents/config/types/{incident_type_id}", Method: "PATCH",
 			OperationId: "UpdateIncidentType", Tag: "Incidents",
 			RequestRefName: "IncidentTypeUpdateRequest", ResponseRefName: "IncidentTypeResponse",
-			RequestSchema: body(attrs(nil, true, false, false)),
+			RequestSchema: body(attrs(nil, true, false, false, "IncidentTypeUpdateAttributes"), "IncidentTypeUpdateData"),
 			SDKBinding:    idBinding(),
 		}
 		create.ResolvedGroup.Update = update

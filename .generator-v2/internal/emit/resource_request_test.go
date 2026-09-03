@@ -20,13 +20,13 @@ var _ = Describe("BuildResourceView request mapping", func() {
 		Expect(err).NotTo(HaveOccurred())
 
 		By("a top-level required enum casts to its named SDK type")
-		priority := requestFieldByGoField(view.RequestFields, "Priority")
+		priority := requestFieldByGoField(view.Create.Envelope.Fields, "Priority")
 		Expect(priority.Required).To(BeTrue())
 		Expect(priority.Nested).To(BeNil())
 		Expect(priority.ValueExpr).To(Equal("datadogV2.WidgetPriority(state.Priority.ValueString())"))
 
 		By("a date-time leaf parses before the setter, guarded on the field's own null check")
-		expiresAt := requestFieldByGoField(view.RequestFields, "ExpiresAt")
+		expiresAt := requestFieldByGoField(view.Create.Envelope.Fields, "ExpiresAt")
 		Expect(expiresAt.Required).To(BeFalse())
 		Expect(expiresAt.NullCheck).To(Equal("!state.ExpiresAt.IsNull() && !state.ExpiresAt.IsUnknown()"))
 		Expect(expiresAt.ParsedVar).To(Equal("expiresAtParsed"))
@@ -34,16 +34,16 @@ var _ = Describe("BuildResourceView request mapping", func() {
 		Expect(expiresAt.ValueExpr).To(Equal("expiresAtParsed"))
 
 		By("a uuid leaf parses the same way")
-		externalID := requestFieldByGoField(view.RequestFields, "ExternalId")
+		externalID := requestFieldByGoField(view.Create.Envelope.Fields, "ExternalId")
 		Expect(externalID.ParsedVar).To(Equal("externalIdParsed"))
 		Expect(externalID.ParseCall).To(Equal("uuid.Parse(state.ExternalId.ValueString())"))
 
 		By("an int32-formatted integer casts down from the model's int64")
-		retries := requestFieldByGoField(view.RequestFields, "Retries")
+		retries := requestFieldByGoField(view.Create.Envelope.Fields, "Retries")
 		Expect(retries.ValueExpr).To(Equal("int32(state.Retries.ValueInt64())"))
 
 		By("a nested object builds its own SDK value via WithDefaults(), guarded on the model's own nil check")
-		settings := requestFieldByGoField(view.RequestFields, "Settings")
+		settings := requestFieldByGoField(view.Create.Envelope.Fields, "Settings")
 		Expect(settings.Required).To(BeFalse())
 		Expect(settings.NullCheck).To(Equal("state.Settings != nil"))
 		Expect(settings.Nested).NotTo(BeNil())
@@ -76,17 +76,17 @@ var _ = Describe("BuildResourceView request mapping", func() {
 		for _, want := range []string{
 			`"time"`,
 			`"github.com/google/uuid"`,
-			`body.Data.Attributes.SetPriority(datadogV2.WidgetPriority(state.Priority.ValueString()))`,
+			`bodyAttributes.SetPriority(datadogV2.WidgetPriority(state.Priority.ValueString()))`,
 			`expiresAtParsed, err := time.Parse(time.RFC3339, state.ExpiresAt.ValueString())`,
 			`externalIdParsed, err := uuid.Parse(state.ExternalId.ValueString())`,
-			`body.Data.Attributes.SetRetries(int32(state.Retries.ValueInt64()))`,
+			`bodyAttributes.SetRetries(int32(state.Retries.ValueInt64()))`,
 			`if state.Settings != nil {`,
 			`settingsValue := datadogV2.NewWidgetSettingsCreateRequestWithDefaults()`,
 			`settingsValue.SetUrl(state.Settings.Url.ValueString())`,
 			`limitsValue := datadogV2.NewWidgetLimitsRequestWithDefaults()`,
 			`limitsValue.SetMax(int32(state.Settings.Limits.Max.ValueInt64()))`,
 			`settingsValue.SetLimits(*limitsValue)`,
-			`body.Data.Attributes.SetSettings(*settingsValue)`,
+			`bodyAttributes.SetSettings(*settingsValue)`,
 		} {
 			Expect(out).To(ContainSubstring(want), "generated resource missing %q:\n%s", want, out)
 		}
@@ -164,7 +164,7 @@ var _ = Describe("BuildResourceView request mapping", func() {
 		Expect(err).NotTo(HaveOccurred())
 
 		By("a primitive list decodes via ElementsAs into a native Go slice")
-		tags := requestFieldByGoField(view.RequestFields, "Tags")
+		tags := requestFieldByGoField(view.Create.Envelope.Fields, "Tags")
 		Expect(tags.Required).To(BeFalse())
 		Expect(tags.Collection).NotTo(BeNil())
 		Expect(tags.Collection.Kind).To(Equal("primitive"))
@@ -172,12 +172,12 @@ var _ = Describe("BuildResourceView request mapping", func() {
 		Expect(tags.Collection.ConvertCall).To(Equal("state.Tags.ElementsAs(ctx, &tagsElements, false)"))
 
 		By("a primitive map decodes into a native Go map")
-		limits := requestFieldByGoField(view.RequestFields, "LimitsByRegion")
+		limits := requestFieldByGoField(view.Create.Envelope.Fields, "LimitsByRegion")
 		Expect(limits.Collection.Kind).To(Equal("primitive"))
 		Expect(limits.Collection.ConvertType).To(Equal("map[string]int64"))
 
 		By("a list of objects builds one request element per already-decoded state element")
-		recipients := requestFieldByGoField(view.RequestFields, "Recipients")
+		recipients := requestFieldByGoField(view.Create.Envelope.Fields, "Recipients")
 		Expect(recipients.Collection.Kind).To(Equal("object"))
 		Expect(recipients.Collection.RangeExpr).To(Equal("state.Recipients"))
 		Expect(recipients.Collection.Constructor).To(Equal("datadogV2.NewRecipientRequestWithDefaults()"))
@@ -194,15 +194,15 @@ var _ = Describe("BuildResourceView request mapping", func() {
 		for _, want := range []string{
 			`var tagsElements []string`,
 			`state.Tags.ElementsAs(ctx, &tagsElements, false)`,
-			`body.Data.Attributes.SetTags(tagsElements)`,
+			`bodyAttributes.SetTags(tagsElements)`,
 			`var limitsByRegionElements map[string]int64`,
-			`body.Data.Attributes.SetLimitsByRegion(limitsByRegionElements)`,
+			`bodyAttributes.SetLimitsByRegion(limitsByRegionElements)`,
 			`var recipientsElements []datadogV2.RecipientRequest`,
 			`for _, recipientsItem := range state.Recipients {`,
 			`recipientsElement := datadogV2.NewRecipientRequestWithDefaults()`,
 			`recipientsElement.SetEmail(recipientsItem.Email.ValueString())`,
 			`recipientsElements = append(recipientsElements, *recipientsElement)`,
-			`body.Data.Attributes.SetRecipients(recipientsElements)`,
+			`bodyAttributes.SetRecipients(recipientsElements)`,
 		} {
 			Expect(out).To(ContainSubstring(want), "generated resource missing %q:\n%s", want, out)
 		}
@@ -269,9 +269,10 @@ func widgetResourceOperation() *model.Operation {
 			Required: []string{"url"},
 		}
 	}
-	attrs := func(required []string, settingsRefName, limitsRefName string) *model.Schema {
+	attrs := func(required []string, attrsRefName, settingsRefName, limitsRefName string) *model.Schema {
 		return &model.Schema{
 			Kind:     model.SchemaKindObject,
+			RefName:  attrsRefName,
 			Required: required,
 			Properties: map[string]*model.Schema{
 				"priority": {
@@ -285,9 +286,13 @@ func widgetResourceOperation() *model.Operation {
 			},
 		}
 	}
-	body := func(a *model.Schema) *model.Schema {
+	// Each envelope level names its own component, as a real spec's does: the
+	// SDK generates one model per $ref, and the request mapper builds each
+	// level from that model's own New<Type>WithDefaults() (T138).
+	body := func(a *model.Schema, dataRefName string) *model.Schema {
 		return &model.Schema{Kind: model.SchemaKindObject, Properties: map[string]*model.Schema{
-			"data": {Kind: model.SchemaKindObject, Properties: map[string]*model.Schema{"attributes": a}},
+			"data": {Kind: model.SchemaKindObject, RefName: dataRefName,
+				Properties: map[string]*model.Schema{"attributes": a}},
 		}}
 	}
 	idBinding := func() *model.SDKOperationBinding {
@@ -300,13 +305,13 @@ func widgetResourceOperation() *model.Operation {
 		Path: "/api/v2/widgets", Method: "POST",
 		OperationId: "CreateWidget", Tag: "Widgets",
 		RequestRefName: "WidgetCreateRequest", ResponseRefName: "WidgetResponse",
-		RequestSchema: body(attrs([]string{"priority"}, "WidgetSettingsCreateRequest", "WidgetLimitsRequest")),
+		RequestSchema: body(attrs([]string{"priority"}, "WidgetCreateAttributes", "WidgetSettingsCreateRequest", "WidgetLimitsRequest"), "WidgetCreateData"),
 	}
 	read := &model.Operation{
 		Path: "/api/v2/widgets/{widget_id}", Method: "GET",
 		OperationId: "GetWidget", Tag: "Widgets",
 		ResponseRefName: "WidgetResponse",
-		ResponseSchema:  body(attrs(nil, "WidgetSettingsResponse", "WidgetLimitsResponse")),
+		ResponseSchema:  body(attrs(nil, "WidgetResponseAttributes", "WidgetSettingsResponse", "WidgetLimitsResponse"), "WidgetResponseData"),
 		SDKBinding:      idBinding(),
 	}
 	del := &model.Operation{
@@ -318,7 +323,7 @@ func widgetResourceOperation() *model.Operation {
 		Path: "/api/v2/widgets/{widget_id}", Method: "PATCH",
 		OperationId: "UpdateWidget", Tag: "Widgets",
 		RequestRefName: "WidgetUpdateRequest", ResponseRefName: "WidgetResponse",
-		RequestSchema: body(attrs(nil, "WidgetSettingsUpdateRequest", "WidgetLimitsRequest")),
+		RequestSchema: body(attrs(nil, "WidgetUpdateAttributes", "WidgetSettingsUpdateRequest", "WidgetLimitsRequest"), "WidgetUpdateData"),
 		SDKBinding:    idBinding(),
 	}
 

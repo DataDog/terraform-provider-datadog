@@ -103,5 +103,31 @@ func buildResourceLifecycle(op *Operation) (*LifecycleBindings, []Diagnostic, er
 func bodyCall(op *Operation, aliasTerminalID bool) *SDKCall {
 	call := sdkCall(op, aliasTerminalID)
 	call.GoRequestType = op.RequestRefName
+	call.GoRequestDataType, call.GoRequestAttributesType = requestEnvelopeTypes(op.RequestSchema)
 	return call
+}
+
+// requestEnvelopeTypes reads the JSON:API envelope's own component names off a
+// request body: the "data" member's, and — when the envelope carries one —
+// data.attributes'. Both come from this operation's own request schema rather
+// than from the merged tree, because the merge reconciles RefName toward the
+// Read response (FR-034c) and a resource's Create and Update data components
+// are routinely distinct types.
+//
+// A missing name means the body left that level inline, so the SDK generated
+// no component to construct; the caller decides what to do about it, since a
+// body with settable attributes cannot be built without one but a body with
+// none can (T138).
+func requestEnvelopeTypes(s *Schema) (dataType, attributesType string) {
+	if s == nil {
+		return "", ""
+	}
+	data := s.Properties["data"]
+	if data == nil {
+		return "", ""
+	}
+	if attributes := data.Properties["attributes"]; attributes != nil {
+		attributesType = attributes.RefName
+	}
+	return data.RefName, attributesType
 }

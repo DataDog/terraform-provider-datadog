@@ -513,12 +513,6 @@ type ResourceView struct {
 	// SDK has no endpoint for.
 	UpdateUnsupported bool
 
-	// RequestFields are the practitioner-settable (Required or Optional) leaves
-	// of the merged schema, shared verbatim by Create and Update: both send a
-	// SetX(...) call per field against their own request type (see
-	// buildRequestFields).
-	RequestFields []RequestFieldView
-
 	Models []ModelStructView
 	Schema SchemaView
 	State  StateView
@@ -560,6 +554,53 @@ type CRUDCallView struct {
 	// a parent, and a singleton PATCH has no path parameter at all yet still
 	// sends data.id.
 	BodyIDExpr string
+	// BodyIDTarget is the local BodyIDExpr is set on — the constructed data
+	// member, not the wrapper, since the wrapper's Data is not built yet at
+	// that point.
+	BodyIDTarget string
+	// Envelope describes how this role builds its JSON:API request body. Nil
+	// for a call that sends none (Read, Delete).
+	Envelope *RequestEnvelopeView
+}
+
+// RequestEnvelopeView is the recipe for constructing one role's JSON:API
+// request body, level by level, each from its own New<Type>WithDefaults().
+//
+// It exists because the wrapper's constructor is not enough: the SDK emits
+// New<T>WithDefaults() for every model, but a request wrapper's version
+// returns the zero struct, so reaching straight through it
+// (body.Data.Attributes.Set<F>(...)) leaves the JSON:API "type" discriminator
+// empty — the API rejects that — and panics outright where the wrapper
+// declares Data as a pointer. The discriminator is assigned by the *data*
+// component's own constructor, so the data level has to be built rather than
+// reached through (T138).
+//
+// The variable names are fixed rather than derived: both are local to one
+// lifecycle method, and prefixing with "body" keeps them clear of the
+// attribute-derived locals buildRequestFields allocates from leaf names.
+// T136 replaces all of those with one allocator; these join it then.
+type RequestEnvelopeView struct {
+	// SDKPackage qualifies every constructor this envelope renders. It is
+	// carried here rather than read off the root view because the partial that
+	// renders an envelope is handed one CRUDCallView, not the whole view.
+	SDKPackage string
+	// Fields are the Set<Field>(...) calls that populate AttributesVar. Today
+	// Create and Update share one slice, derived once from the merged tree;
+	// T134 replaces that with a per-role intersection, and this is the field it
+	// will differ on.
+	Fields []RequestFieldView
+	// DataVar is the local holding the constructed data member.
+	DataVar string
+	// DataType is the SDK component behind DataVar, e.g.
+	// "IncidentTypeCreateData" — the constructor that sets the discriminator.
+	DataType string
+	// AttributesVar is the local holding the constructed attributes member,
+	// and the target every RequestFieldView at the top level sets on. Empty
+	// when this body has no settable attributes, in which case the attributes
+	// level is not constructed at all.
+	AttributesVar string
+	// AttributesType is the SDK component behind AttributesVar.
+	AttributesType string
 }
 
 // RequestFieldView is one field a resource's Create and Update bodies both set
@@ -573,9 +614,9 @@ type CRUDCallView struct {
 type RequestFieldView struct {
 	// GoField is the SDK setter suffix, e.g. "Name" for SetName.
 	GoField string
-	// Target is the expression Set<GoField> is called on: "body.Data.Attributes"
-	// at the top level, or an ancestor's own RequestNestedView.Var one or more
-	// levels down. Precomputed here (rather than threaded through the
+	// Target is the expression Set<GoField> is called on: the constructed
+	// attributes local ("bodyAttributes") at the top level, or an ancestor's
+	// own RequestNestedView.Var one or more levels down. Precomputed here (rather than threaded through the
 	// template's recursion) because a template partial invoked on one nested
 	// field loses access to its ancestors' own state.
 	Target string

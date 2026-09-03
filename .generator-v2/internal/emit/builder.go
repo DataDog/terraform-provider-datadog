@@ -1610,13 +1610,16 @@ func checkResponseTypeMatches(artifact, role, roleType, readType string) error {
 // nil Schema fails outright rather than silently rendering an empty schema
 // and a Create/Read/Update that populate nothing.
 //
-// A request body (Create or Update) is built via
-// New<GoRequestType>WithDefaults() — which the SDK always generates, and
-// which pre-fills the JSON:API "type" discriminator — followed by
-// body.Data.Attributes.Set<Field>(...) calls. That setter call type-checks
-// regardless of whether the field happens to be required or optional in the
-// request's own Go type, because the SDK generates a uniform
-// Set<Field>(v <unwrapped type>) for both (see buildRequestFields). Only
+// A request body (Create or Update) is built one JSON:API level at a time,
+// each from its own New<Type>WithDefaults() (see buildRequestEnvelope): the
+// wrapper's own constructor returns the zero struct, so only the data
+// component's constructor sets the "type" discriminator, and reaching through
+// the wrapper panics outright where it declares Data as a pointer (T138).
+// The attributes level is then populated with Set<Field>(...) calls against
+// the constructed local. That setter call type-checks regardless of whether
+// the field happens to be required or optional in the request's own Go type,
+// because the SDK generates a uniform Set<Field>(v <unwrapped type>) for both
+// (see buildRequestFields). Only
 // scalar string/bool/int64/float64 leaves without an enum or format are
 // supported this way; a practitioner-settable nested object/array/map/oneOf,
 // or an enum/date-time leaf, fails the artifact rather than silently
@@ -1653,7 +1656,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	b.filterByResponse = true
 	recordAttrs, recordBlocks, recordScalars, recordLists := b.walk(rootStruct, "", b.receiver, "state", env.leaves)
 
-	requestFields, requestUUID, requestTime := buildRequestFields(env.leaves, "state", "body.Data.Attributes", primary.GoPackage, &b.unsupported)
+	requestFields, requestUUID, requestTime := buildRequestFields(env.leaves, "state", requestAttributesVar, primary.GoPackage, &b.unsupported)
 	createArgs, createUUID, createStrconv := buildArgumentViews(lc.Create, &b.unsupported)
 	readArgs, readUUID, readStrconv := buildArgumentViews(lc.Read, &b.unsupported)
 	deleteArgs, deleteUUID, deleteStrconv := buildArgumentViews(lc.Delete, &b.unsupported)
@@ -1662,6 +1665,16 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	if lc.Update != nil {
 		updateArgs, updateUUID, updateStrconv = buildArgumentViews(lc.Update, &b.unsupported)
 	}
+
+	// Both envelopes are built here, before the gate below, so a level with no
+	// SDK component fails the artifact rather than leaving a nil Envelope that
+	// the template would silently render as an empty request body.
+	createEnvelope := buildRequestEnvelope(a.Name, "Create", primary.GoPackage, lc.Create, requestFields, &b.unsupported)
+	var updateEnvelope *RequestEnvelopeView
+	if lc.Update != nil {
+		updateEnvelope = buildRequestEnvelope(a.Name, "Update", primary.GoPackage, lc.Update, requestFields, &b.unsupported)
+	}
+
 	if len(b.unsupported) > 0 {
 		return ResourceView{}, &UnsupportedEmitError{Nodes: b.unsupported}
 	}
@@ -1682,6 +1695,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		updateView = CRUDCallView{
 			Method: lc.Update.GoMethod, GoRequestType: lc.Update.GoRequestType,
 			GoResponseType: lc.Update.GoResponseType, Arguments: updateArgs,
+			Envelope: updateEnvelope,
 		}
 		// A JSON:API update body identifies the record it patches, and the model's
 		// id attribute always holds that id (flattenEnvelope reserves it
@@ -1694,6 +1708,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		// Whether the SDK's own update type declares SetId is a per-role fact the
 		// merged tree cannot see today; T134 owns that.
 		updateView.BodyIDExpr = "state.ID.ValueString()"
+		updateView.BodyIDTarget = requestDataVar
 	}
 
 	planModifierPkgs := sortedKeys(b.planModifierPkgs)
@@ -1708,6 +1723,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		Create: CRUDCallView{
 			Method: lc.Create.GoMethod, GoRequestType: lc.Create.GoRequestType,
 			GoResponseType: lc.Create.GoResponseType, Arguments: createArgs,
+			Envelope: createEnvelope,
 		},
 		Read: CRUDCallView{
 			Method: lc.Read.GoMethod, GoResponseType: lc.Read.GoResponseType, Arguments: readArgs,
@@ -1717,9 +1733,8 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		Delete: CRUDCallView{
 			Method: lc.Delete.GoMethod, Arguments: deleteArgs,
 		},
-		RequestFields: requestFields,
-		Models:        models,
-		Schema:        SchemaView{Attributes: recordAttrs, Blocks: recordBlocks},
+		Models: models,
+		Schema: SchemaView{Attributes: recordAttrs, Blocks: recordBlocks},
 		State: StateView{
 			ParamName:   "resp",
 			ParamType:   "*" + primary.GoPackage + "." + primary.GoResponseType,
@@ -1738,6 +1753,63 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	}, nil
 }
 
+// requestDataVar and requestAttributesVar name the locals a resource's Create
+// and Update bodies build their JSON:API envelope into. They are fixed rather
+// than derived: each is local to one lifecycle method, and the "body" prefix
+// keeps them clear of the attribute-derived locals buildRequestFields
+// allocates from leaf names (T136 folds all of these into one allocator).
+const (
+	requestDataVar       = "bodyData"
+	requestAttributesVar = "bodyAttributes"
+)
+
+// buildRequestEnvelope derives how one role constructs its JSON:API request
+// body. Every level is built from its own New<Type>WithDefaults() rather than
+// reached through the wrapper's, because the wrapper's constructor returns the
+// zero struct: it never builds Data, so the "type" discriminator — which only
+// the data component's own constructor assigns — would stay empty and the API
+// would reject the body, and where the wrapper declares Data as a pointer the
+// reach-through dereferences nil at apply time (T138).
+//
+// A level with no SDK component to construct fails the artifact rather than
+// falling back to the reach-through, which would compile and then misbehave at
+// runtime — the failure mode this whole function exists to remove. The
+// attributes level is exempt when the body sets no attributes, since it is
+// then not constructed at all.
+func buildRequestEnvelope(artifact, role, sdkPackage string, call *model.SDKCall, fields []RequestFieldView, unsupported *[]UnsupportedNode) *RequestEnvelopeView {
+	if call == nil {
+		return nil
+	}
+	if call.GoRequestDataType == "" {
+		*unsupported = append(*unsupported, UnsupportedNode{
+			Path: "sdk." + call.GoMethod + ".data",
+			Reason: fmt.Sprintf(
+				"%s request body for resource %q leaves its JSON:API \"data\" member inline, so there is no SDK component to construct it from and the \"type\" discriminator cannot be set",
+				role, artifact),
+		})
+		return nil
+	}
+	envelope := &RequestEnvelopeView{
+		SDKPackage: sdkPackage, Fields: fields,
+		DataVar: requestDataVar, DataType: call.GoRequestDataType,
+	}
+	if len(fields) == 0 {
+		return envelope
+	}
+	if call.GoRequestAttributesType == "" {
+		*unsupported = append(*unsupported, UnsupportedNode{
+			Path: "sdk." + call.GoMethod + ".data.attributes",
+			Reason: fmt.Sprintf(
+				"%s request body for resource %q has settable attributes but leaves data.attributes inline, so there is no SDK component to construct them on",
+				role, artifact),
+		})
+		return nil
+	}
+	envelope.AttributesVar = requestAttributesVar
+	envelope.AttributesType = call.GoRequestAttributesType
+	return envelope
+}
+
 // buildRequestFields derives the RequestFieldView list a resource's Create and
 // Update bodies both use, one per practitioner-settable (Required or Optional)
 // leaf or nested object of attrs, recursing into an object's own Children the
@@ -1745,7 +1817,8 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 // buildNestedRequestField). stateExpr is the Go expression attrs' own fields
 // are read off: "state" at the top level, or a nested object's own model
 // pointer ("state.Settings") one level down. target is the expression each
-// field's Set<GoField> is called on: "body.Data.Attributes" at the top level,
+// field's Set<GoField> is called on: the constructed attributes local
+// (requestAttributesVar) at the top level,
 // or an ancestor's own constructed local further down — precomputed onto each
 // RequestFieldView.Target since a template partial recursing into one nested
 // field cannot see its ancestors' own state. sdkPackage names the module

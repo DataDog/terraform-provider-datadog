@@ -51,12 +51,24 @@ func TestGenerateCreatesAndRegistersResource(t *testing.T) {
 		"func (r *datadogThingResource) Read(",
 		"func (r *datadogThingResource) Update(",
 		"func (r *datadogThingResource) Delete(",
+		// The JSON:API envelope is built level by level, each from its own
+		// New<Type>WithDefaults(), so the data component's constructor sets the
+		// "type" discriminator the API requires (T138).
+		"bodyAttributes := datadogV2.NewThingAttributesWithDefaults()",
+		"bodyAttributes.SetName(state.Name.ValueString())",
+		"bodyData := datadogV2.NewThingCreateDataWithDefaults()",
+		"bodyData.SetAttributes(*bodyAttributes)",
 		"body := datadogV2.NewThingCreateRequestWithDefaults()",
-		"body.Data.Attributes.SetName(state.Name.ValueString())",
+		"body.SetData(*bodyData)",
 	} {
 		if !strings.Contains(generated, want) {
 			t.Errorf("generated resource missing %q:\n%s", want, generated)
 		}
+	}
+	// Reaching through the wrapper is what left the discriminator empty; it
+	// must not come back.
+	if strings.Contains(generated, "body.Data.Attributes.") {
+		t.Errorf("generated resource reaches through the request wrapper instead of building the envelope:\n%s", generated)
 	}
 
 	registered := mustRead(t, filepath.Join(dir, "resources_generated.go"))
