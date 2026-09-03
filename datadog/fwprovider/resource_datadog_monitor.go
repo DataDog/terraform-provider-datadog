@@ -264,11 +264,69 @@ type DataQualityQuery struct {
 }
 
 type DataQualityMonitorOptions struct {
-	CustomSql         types.String `tfsdk:"custom_sql"`
-	CustomWhere       types.String `tfsdk:"custom_where"`
-	GroupByColumns    types.List   `tfsdk:"group_by_columns"`
-	CrontabOverride   types.String `tfsdk:"crontab_override"`
-	ModelTypeOverride types.String `tfsdk:"model_type_override"`
+	CustomSql         types.String  `tfsdk:"custom_sql"`
+	CustomWhere       types.String  `tfsdk:"custom_where"`
+	GroupByColumns    types.List    `tfsdk:"group_by_columns"`
+	CrontabOverride   types.String  `tfsdk:"crontab_override"`
+	ModelTypeOverride types.String  `tfsdk:"model_type_override"`
+	Sensitivity       types.Float64 `tfsdk:"sensitivity"`
+
+	SourceToTargetConfig []DataQualitySourceToTargetConfig `tfsdk:"source_to_target_config"`
+	ModelConfiguration   []DataQualityModelConfiguration   `tfsdk:"model_configuration"`
+}
+
+type DataQualitySourceToTargetConfig struct {
+	Source     []DataQualityEntityMetricConfig `tfsdk:"source"`
+	Target     []DataQualityEntityMetricConfig `tfsdk:"target"`
+	DiffType   types.String                    `tfsdk:"diff_type"`
+	EntityType types.String                    `tfsdk:"entity_type"`
+}
+
+type DataQualityEntityMetricConfig struct {
+	EntityId       types.String `tfsdk:"entity_id"`
+	EntityType     types.String `tfsdk:"entity_type"`
+	CustomSql      types.String `tfsdk:"custom_sql"`
+	CustomWhere    types.String `tfsdk:"custom_where"`
+	GroupByColumns types.List   `tfsdk:"group_by_columns"`
+}
+
+// dataQualityEntityMetricConfigBlock describes one side of a source to target
+// comparison. Source and target are identical, so they share this definition.
+func dataQualityEntityMetricConfigBlock() schema.NestedBlockObject {
+	return schema.NestedBlockObject{
+		Attributes: map[string]schema.Attribute{
+			"entity_id": schema.StringAttribute{
+				Required:    true,
+				Description: "Identifier of the data entity to measure.",
+			},
+			"entity_type": schema.StringAttribute{
+				Required:    true,
+				Description: "Type of the data entity to measure.",
+			},
+			"custom_sql": schema.StringAttribute{
+				Optional:    true,
+				Description: "Custom SQL query used to compute the measure for this entity.",
+			},
+			"custom_where": schema.StringAttribute{
+				Optional:    true,
+				Description: "Custom WHERE clause applied when computing the measure for this entity.",
+			},
+			"group_by_columns": schema.ListAttribute{
+				Optional:    true,
+				ElementType: types.StringType,
+				Description: "Columns to group results by when computing the measure for this entity.",
+			},
+		},
+	}
+}
+
+type DataQualityModelConfiguration struct {
+	AutoResolveDays         types.Int32   `tfsdk:"auto_resolve_days"`
+	EnableFlatlineDetection types.Bool    `tfsdk:"enable_flatline_detection"`
+	Function                types.String  `tfsdk:"function"`
+	MinLowerBoundSize       types.Float64 `tfsdk:"min_lower_bound_size"`
+	MinUpperBoundSize       types.Float64 `tfsdk:"min_upper_bound_size"`
+	ModelBoundsOverride     types.String  `tfsdk:"model_bounds_override"`
 }
 
 type DataJobsQuery struct {
@@ -1188,6 +1246,80 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 													Optional:    true,
 													Description: "Override for the model type. Valid values are `freshness`, `percentage`, `any`.",
 												},
+												"sensitivity": schema.Float64Attribute{
+													Optional:    true,
+													Description: "Sensitivity of the anomaly detection model, expressed as a multiplier on the width of the predicted bounds. Higher values widen the bounds and produce fewer alerts; lower values tighten them and produce more alerts. Defaults to `3.0`.",
+												},
+											},
+											Blocks: map[string]schema.Block{
+												"source_to_target_config": schema.ListNestedBlock{
+													Description: "Compare the same measure across two data entities and alert on the difference between them.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"diff_type": schema.StringAttribute{
+																Required:    true,
+																Description: "How the difference between the source and target measures is computed. Valid values are `absolute`, `diff_percent`.",
+															},
+															"entity_type": schema.StringAttribute{
+																Required:    true,
+																Description: "Type of the data entities being compared.",
+															},
+														},
+														Blocks: map[string]schema.Block{
+															"source": schema.ListNestedBlock{
+																Description: "Measure configuration for the source entity.",
+																Validators: []validator.List{
+																	listvalidator.SizeAtMost(1),
+																},
+																NestedObject: dataQualityEntityMetricConfigBlock(),
+															},
+															"target": schema.ListNestedBlock{
+																Description: "Measure configuration for the target entity.",
+																Validators: []validator.List{
+																	listvalidator.SizeAtMost(1),
+																},
+																NestedObject: dataQualityEntityMetricConfigBlock(),
+															},
+														},
+													},
+												},
+												"model_configuration": schema.ListNestedBlock{
+													Description: "Tuning options for the anomaly detection model used by the monitor.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"auto_resolve_days": schema.Int32Attribute{
+																Optional:    true,
+																Description: "Number of days after which an open alert is automatically resolved. When unset, alerts stay open until the measure returns within bounds.",
+															},
+															"enable_flatline_detection": schema.BoolAttribute{
+																Optional:    true,
+																Description: "Whether to alert when the measure stops changing entirely. Defaults to `true`.",
+															},
+															"function": schema.StringAttribute{
+																Optional:    true,
+																Description: "Function applied to the measure before it is compared against the predicted bounds. Valid values are `DIFF`, `DIFF_PERCENT`.",
+															},
+															"min_lower_bound_size": schema.Float64Attribute{
+																Optional:    true,
+																Description: "Minimum distance between the predicted value and the lower bound. Widening the lower bound to at least this size suppresses alerts on small downward deviations. When unset, no minimum is enforced.",
+															},
+															"min_upper_bound_size": schema.Float64Attribute{
+																Optional:    true,
+																Description: "Minimum distance between the predicted value and the upper bound. Widening the upper bound to at least this size suppresses alerts on small upward deviations. When unset, no minimum is enforced.",
+															},
+															"model_bounds_override": schema.StringAttribute{
+																Optional:    true,
+																Description: "Restricts which predicted bound the monitor alerts on. When unset, the monitor alerts on both. Valid values are `UPPER_ONLY`, `LOWER_ONLY`.",
+															},
+														},
+													},
+												},
 											},
 										},
 									},
@@ -1950,6 +2082,13 @@ func (r *monitorResource) buildDataQualityQueryStruct(ctx context.Context, dataQ
 			if !opt.ModelTypeOverride.IsNull() {
 				monitorOptsReq.SetModelTypeOverride(datadogV1.MonitorFormulaAndFunctionDataQualityModelTypeOverride(opt.ModelTypeOverride.ValueString()))
 			}
+			fwutils.SetOptFloat64(opt.Sensitivity, monitorOptsReq.SetSensitivity)
+			if len(opt.SourceToTargetConfig) > 0 {
+				monitorOptsReq.SetSourceToTargetConfig(*r.buildDataQualitySourceToTargetConfig(ctx, opt.SourceToTargetConfig[0]))
+			}
+			if len(opt.ModelConfiguration) > 0 {
+				monitorOptsReq.SetModelConfiguration(*r.buildDataQualityModelConfiguration(opt.ModelConfiguration[0]))
+			}
 			dataQualityQueryReq.SetMonitorOptions(monitorOptsReq)
 		}
 		variableReq.MonitorFormulaAndFunctionDataQualityQueryDefinition = &dataQualityQueryReq
@@ -2695,6 +2834,17 @@ func (r *monitorResource) buildDataQualityQueryState(ctx context.Context, dataQu
 			CustomSql:       fwutils.ToTerraformStr(monitorOpts.GetCustomSqlOk()),
 			CustomWhere:     fwutils.ToTerraformStr(monitorOpts.GetCustomWhereOk()),
 			CrontabOverride: fwutils.ToTerraformStr(monitorOpts.GetCrontabOverrideOk()),
+			Sensitivity:     fwutils.ToTerraformFloat64(monitorOpts.GetSensitivityOk()),
+		}
+		if sourceToTarget, ok := monitorOpts.GetSourceToTargetConfigOk(); ok && sourceToTarget != nil {
+			monitorOptsState.SourceToTargetConfig = []DataQualitySourceToTargetConfig{
+				*r.buildDataQualitySourceToTargetConfigState(ctx, sourceToTarget),
+			}
+		}
+		if modelConfiguration, ok := monitorOpts.GetModelConfigurationOk(); ok && modelConfiguration != nil {
+			monitorOptsState.ModelConfiguration = []DataQualityModelConfiguration{
+				*buildDataQualityModelConfigurationState(modelConfiguration),
+			}
 		}
 		if groupByCols, ok := monitorOpts.GetGroupByColumnsOk(); ok && groupByCols != nil {
 			monitorOptsState.GroupByColumns, _ = types.ListValueFrom(ctx, types.StringType, groupByCols)
@@ -2705,6 +2855,103 @@ func (r *monitorResource) buildDataQualityQueryState(ctx context.Context, dataQu
 		dataQualityQueryState.MonitorOptions = []DataQualityMonitorOptions{monitorOptsState}
 	}
 	return &dataQualityQueryState
+}
+
+func (r *monitorResource) buildDataQualityEntityMetricConfig(ctx context.Context, cfg DataQualityEntityMetricConfig) datadogV1.MonitorFormulaAndFunctionDataQualityEntityMetricConfig {
+	req := datadogV1.NewMonitorFormulaAndFunctionDataQualityEntityMetricConfig(cfg.EntityId.ValueString(), cfg.EntityType.ValueString())
+	fwutils.SetOptString(cfg.CustomSql, req.SetCustomSql)
+	fwutils.SetOptString(cfg.CustomWhere, req.SetCustomWhere)
+	fwutils.SetOptStringList(cfg.GroupByColumns, req.SetGroupByColumns, ctx)
+	return *req
+}
+
+func (r *monitorResource) buildDataQualitySourceToTargetConfig(ctx context.Context, cfg DataQualitySourceToTargetConfig) *datadogV1.MonitorFormulaAndFunctionDataQualitySourceToTargetConfig {
+	var source, target datadogV1.MonitorFormulaAndFunctionDataQualityEntityMetricConfig
+	if len(cfg.Source) > 0 {
+		source = r.buildDataQualityEntityMetricConfig(ctx, cfg.Source[0])
+	}
+	if len(cfg.Target) > 0 {
+		target = r.buildDataQualityEntityMetricConfig(ctx, cfg.Target[0])
+	}
+	return datadogV1.NewMonitorFormulaAndFunctionDataQualitySourceToTargetConfig(
+		datadogV1.MonitorFormulaAndFunctionDataQualityDiffType(cfg.DiffType.ValueString()),
+		cfg.EntityType.ValueString(),
+		source,
+		target,
+	)
+}
+
+func (r *monitorResource) buildDataQualityModelConfiguration(cfg DataQualityModelConfiguration) *datadogV1.MonitorFormulaAndFunctionDataQualityModelConfiguration {
+	req := datadogV1.NewMonitorFormulaAndFunctionDataQualityModelConfiguration()
+	fwutils.SetOptInt32(cfg.AutoResolveDays, req.SetAutoResolveDays)
+	// Unlike the SDKv2 path, which cannot tell an omitted bool from false and so
+	// defaults the attribute to true, a null here means "not configured" and an
+	// explicit false is sent as-is.
+	fwutils.SetOptBool(cfg.EnableFlatlineDetection, req.SetEnableFlatlineDetection)
+	if !cfg.Function.IsNull() {
+		req.SetFunction(datadogV1.MonitorFormulaAndFunctionDataQualityDiffFunction(cfg.Function.ValueString()))
+	}
+	fwutils.SetOptFloat64(cfg.MinLowerBoundSize, req.SetMinLowerBoundSize)
+	fwutils.SetOptFloat64(cfg.MinUpperBoundSize, req.SetMinUpperBoundSize)
+	if !cfg.ModelBoundsOverride.IsNull() {
+		req.SetModelBoundsOverride(datadogV1.MonitorFormulaAndFunctionDataQualityModelBoundsOverride(cfg.ModelBoundsOverride.ValueString()))
+	}
+	return req
+}
+
+func buildDataQualityEntityMetricConfigState(ctx context.Context, cfg *datadogV1.MonitorFormulaAndFunctionDataQualityEntityMetricConfig) []DataQualityEntityMetricConfig {
+	state := DataQualityEntityMetricConfig{
+		EntityId:    fwutils.ToTerraformStr(cfg.GetEntityIdOk()),
+		EntityType:  fwutils.ToTerraformStr(cfg.GetEntityTypeOk()),
+		CustomSql:   fwutils.ToTerraformStr(cfg.GetCustomSqlOk()),
+		CustomWhere: fwutils.ToTerraformStr(cfg.GetCustomWhereOk()),
+		// A typed null, not the zero value: a types.List with no element type is
+		// not a valid null and the framework rejects it when writing state.
+		GroupByColumns: types.ListNull(types.StringType),
+	}
+	if groupByCols, ok := cfg.GetGroupByColumnsOk(); ok && groupByCols != nil {
+		state.GroupByColumns, _ = types.ListValueFrom(ctx, types.StringType, groupByCols)
+	}
+	return []DataQualityEntityMetricConfig{state}
+}
+
+func (r *monitorResource) buildDataQualitySourceToTargetConfigState(ctx context.Context, cfg *datadogV1.MonitorFormulaAndFunctionDataQualitySourceToTargetConfig) *DataQualitySourceToTargetConfig {
+	state := DataQualitySourceToTargetConfig{
+		DiffType:   types.StringNull(),
+		EntityType: fwutils.ToTerraformStr(cfg.GetEntityTypeOk()),
+	}
+	// Enum getters return their own named pointer type, which ToTerraformStr does
+	// not match, so it would silently yield null. Convert explicitly.
+	if diffType, ok := cfg.GetDiffTypeOk(); ok && diffType != nil {
+		state.DiffType = types.StringValue(string(*diffType))
+	}
+	if source, ok := cfg.GetSourceOk(); ok && source != nil {
+		state.Source = buildDataQualityEntityMetricConfigState(ctx, source)
+	}
+	if target, ok := cfg.GetTargetOk(); ok && target != nil {
+		state.Target = buildDataQualityEntityMetricConfigState(ctx, target)
+	}
+	return &state
+}
+
+func buildDataQualityModelConfigurationState(cfg *datadogV1.MonitorFormulaAndFunctionDataQualityModelConfiguration) *DataQualityModelConfiguration {
+	state := &DataQualityModelConfiguration{
+		AutoResolveDays:         fwutils.ToTerraformInt32(cfg.GetAutoResolveDaysOk()),
+		EnableFlatlineDetection: fwutils.ToTerraformBool(cfg.GetEnableFlatlineDetectionOk()),
+		Function:                types.StringNull(),
+		MinLowerBoundSize:       fwutils.ToTerraformFloat64(cfg.GetMinLowerBoundSizeOk()),
+		MinUpperBoundSize:       fwutils.ToTerraformFloat64(cfg.GetMinUpperBoundSizeOk()),
+		ModelBoundsOverride:     types.StringNull(),
+	}
+	// See buildDataQualitySourceToTargetConfigState: enum getters need an explicit
+	// conversion rather than ToTerraformStr.
+	if function, ok := cfg.GetFunctionOk(); ok && function != nil {
+		state.Function = types.StringValue(string(*function))
+	}
+	if boundsOverride, ok := cfg.GetModelBoundsOverrideOk(); ok && boundsOverride != nil {
+		state.ModelBoundsOverride = types.StringValue(string(*boundsOverride))
+	}
+	return state
 }
 
 func (r *monitorResource) buildDataJobsQueryState(dataJobsQ *datadogV1.MonitorFormulaAndFunctionDataJobsQueryDefinition) *DataJobsQuery {
