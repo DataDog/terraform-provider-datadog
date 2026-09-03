@@ -1591,7 +1591,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																			NestedObject: schema.NestedBlockObject{
 																				Blocks: map[string]schema.Block{
 																					"custom": schema.ListNestedBlock{
-																						Description: "Pattern detection using a custom regular expression.",
+																						Description: "Pattern detection using a custom regular expression. Exactly one of `custom` or `library` must be specified.",
 																						NestedObject: schema.NestedBlockObject{
 																							Attributes: map[string]schema.Attribute{
 																								"rule": schema.StringAttribute{
@@ -1606,6 +1606,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																						},
 																						Validators: []validator.List{
 																							listvalidator.SizeAtMost(1),
+																							listvalidator.ExactlyOneOf(frameworkPath.MatchRelative().AtParent().AtName("library")),
 																						},
 																					},
 																					"library": schema.ListNestedBlock{
@@ -1634,6 +1635,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																				},
 																			},
 																			Validators: []validator.List{
+																				listvalidator.IsRequired(),
 																				listvalidator.SizeAtMost(1),
 																			},
 																		},
@@ -1642,7 +1644,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																			NestedObject: schema.NestedBlockObject{
 																				Blocks: map[string]schema.Block{
 																					"include": schema.ListNestedBlock{
-																						Description: "Explicitly include these fields for scanning.",
+																						Description: "Explicitly include these fields for scanning. Exactly one of `include`, `exclude`, or `all` must be specified.",
 																						NestedObject: schema.NestedBlockObject{
 																							Attributes: map[string]schema.Attribute{
 																								"fields": schema.ListAttribute{
@@ -1654,6 +1656,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																						},
 																						Validators: []validator.List{
 																							listvalidator.SizeAtMost(1),
+																							listvalidator.ExactlyOneOf(
+																								frameworkPath.MatchRelative().AtParent().AtName("exclude"),
+																								frameworkPath.MatchRelative().AtParent().AtName("all"),
+																							),
 																						},
 																					},
 																					"exclude": schema.ListNestedBlock{
@@ -1680,6 +1686,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																				},
 																			},
 																			Validators: []validator.List{
+																				listvalidator.IsRequired(),
 																				listvalidator.SizeAtMost(1),
 																			},
 																		},
@@ -1688,7 +1695,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																			NestedObject: schema.NestedBlockObject{
 																				Blocks: map[string]schema.Block{
 																					"redact": schema.ListNestedBlock{
-																						Description: "Redacts the matched value.",
+																						Description: "Redacts the matched value. Exactly one of `redact`, `hash`, or `partial_redact` must be specified.",
 																						NestedObject: schema.NestedBlockObject{
 																							Attributes: map[string]schema.Attribute{
 																								"replace": schema.StringAttribute{
@@ -1699,6 +1706,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																						},
 																						Validators: []validator.List{
 																							listvalidator.SizeAtMost(1),
+																							listvalidator.ExactlyOneOf(
+																								frameworkPath.MatchRelative().AtParent().AtName("hash"),
+																								frameworkPath.MatchRelative().AtParent().AtName("partial_redact"),
+																							),
 																						},
 																					},
 																					"hash": schema.ListNestedBlock{
@@ -1731,6 +1742,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																				},
 																			},
 																			Validators: []validator.List{
+																				listvalidator.IsRequired(),
 																				listvalidator.SizeAtMost(1),
 																			},
 																		},

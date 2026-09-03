@@ -1,4 +1,4 @@
-## 4.20.0 (September 1, 2026)
+## 4.20.0 (September 2, 2026)
 
 ### BUGFIXES
 * [datadog_team_notification_rule] Exclude team notification rule email if not provided in the resource definition by @jcharry in https://github.com/DataDog/terraform-provider-datadog/pull/4170

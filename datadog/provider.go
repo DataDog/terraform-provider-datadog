@@ -195,6 +195,12 @@ func Provider() *schema.Provider {
 					return diags
 				},
 			},
+			"http_client_retry_jitter": {
+				Type:         schema.TypeInt,
+				Optional:     true,
+				Description:  "The maximum random delay added to each HTTP request retry. Defaults to 0 seconds.",
+				ValidateFunc: validation.IntAtLeast(0),
+			},
 			"default_tags": {
 				Type:        schema.TypeList,
 				Optional:    true,
@@ -521,6 +527,16 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		if err == nil {
 			fVal, _ := strconv.Atoi(envVal)
 			config.RetryConfiguration.MaxRetries = fVal
+		}
+	}
+
+	if retryJitterInterface, ok := d.GetOk("http_client_retry_jitter"); ok {
+		config.RetryConfiguration.RetryJitter = time.Duration(retryJitterInterface.(int)) * time.Second
+	} else {
+		envVal, err := utils.GetMultiEnvVar(utils.DDHTTPRetryJitter)
+		if err == nil {
+			vInt, _ := strconv.Atoi(envVal)
+			config.RetryConfiguration.RetryJitter = time.Duration(vInt) * time.Second
 		}
 	}
 

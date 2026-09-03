@@ -262,6 +262,7 @@ type ProviderSchema struct {
 	HttpClientRetryBackoffMultiplier types.Int64  `tfsdk:"http_client_retry_backoff_multiplier"`
 	HttpClientRetryBackoffBase       types.Int64  `tfsdk:"http_client_retry_backoff_base"`
 	HttpClientRetryMaxRetries        types.Int64  `tfsdk:"http_client_retry_max_retries"`
+	HttpClientRetryJitter            types.Int64  `tfsdk:"http_client_retry_jitter"`
 	DefaultTags                      []DefaultTag `tfsdk:"default_tags"`
 	IgnoreTagKeys                    types.Set    `tfsdk:"ignore_tag_keys"`
 }
@@ -391,6 +392,10 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			"http_client_retry_max_retries": schema.Int64Attribute{
 				Optional:    true,
 				Description: "The HTTP request maximum retry number. Defaults to 3.",
+			},
+			"http_client_retry_jitter": schema.Int64Attribute{
+				Optional:    true,
+				Description: "The maximum random delay added to each HTTP request retry. Defaults to 0 seconds.",
 			},
 			"ignore_tag_keys": schema.SetAttribute{
 				Optional:    true,
@@ -541,6 +546,14 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 		}
 	}
 
+	if config.HttpClientRetryJitter.IsNull() {
+		retryJitter, err := utils.GetMultiEnvVar(utils.DDHTTPRetryJitter)
+		if err == nil {
+			v, _ := strconv.Atoi(retryJitter)
+			config.HttpClientRetryJitter = types.Int64Value(int64(v))
+		}
+	}
+
 	// Configure defaults for booleans.
 	// Remove this once fully migrated to framework
 	if config.Validate.IsNull() {
@@ -562,6 +575,7 @@ func (p *FrameworkProvider) ValidateConfigValues(ctx context.Context, config *Pr
 	// Init validators we need for purposes of config validation only
 	oneOfStringValidator := stringvalidator.OneOf("true", "false")
 	int64AtLeastValidator := int64validator.AtLeast(1)
+	int64NonNegativeValidator := int64validator.AtLeast(0)
 	int64BetweenValidator := int64validator.Between(1, 5)
 
 	if !config.Validate.IsNull() {
@@ -591,6 +605,12 @@ func (p *FrameworkProvider) ValidateConfigValues(ctx context.Context, config *Pr
 	if !config.HttpClientRetryMaxRetries.IsNull() {
 		res := validator.Int64Response{}
 		int64BetweenValidator.ValidateInt64(ctx, validator.Int64Request{ConfigValue: config.HttpClientRetryMaxRetries}, &res)
+		diags.Append(res.Diagnostics...)
+	}
+
+	if !config.HttpClientRetryJitter.IsNull() {
+		res := validator.Int64Response{}
+		int64NonNegativeValidator.ValidateInt64(ctx, validator.Int64Request{ConfigValue: config.HttpClientRetryJitter}, &res)
 		diags.Append(res.Diagnostics...)
 	}
 
@@ -913,6 +933,10 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 
 		if !config.HttpClientRetryMaxRetries.IsNull() {
 			ddClientConfig.RetryConfiguration.MaxRetries = int(config.HttpClientRetryMaxRetries.ValueInt64())
+		}
+
+		if !config.HttpClientRetryJitter.IsNull() {
+			ddClientConfig.RetryConfiguration.RetryJitter = time.Duration(config.HttpClientRetryJitter.ValueInt64()) * time.Second
 		}
 	}
 

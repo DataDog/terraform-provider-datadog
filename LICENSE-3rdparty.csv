@@ -4,6 +4,7 @@ go.sum,cloud.google.com/go/bigquery,Apache-2.0,2014 Google LLC
 go.sum,cloud.google.com/go/datastore,Apache-2.0,2014 Google LLC
 go.sum,github.com/BurntSushi/toml,MIT,2013 TOML authors
 go.sum,github.com/BurntSushi/xgb,BSD-3-Clause,2009 The XGB Authors
+go.sum,github.com/DataDog/datadog-api-client-go/auth/aws,Apache-2.0,"2019-Present Datadog, Inc."
 go.sum,github.com/DataDog/datadog-api-client-go/v2,Apache-2.0,"2019-Present Datadog, Inc."
 go.sum,github.com/DataDog/datadog-go,MIT,"2015 Datadog, Inc"
 go.sum,github.com/DataDog/dd-trace-go,Apache-2.0 OR BSD-3-Clause,"2016-Present Datadog, Inc."
@@ -16,6 +17,19 @@ go.sum,github.com/apparentlymart/go-textseg,MIT and Apache-2.0 and Unicode-DFS-2
 go.sum,github.com/armon/go-radix,MIT,2014 Armon Dadgar
 go.sum,github.com/aslakhellesoy/gox,MPL-2.0,
 go.sum,github.com/aws/aws-sdk-go,Apache-2.0,2014-2015 Stripe Inc. and 2015 Amazon.com Inc.
+go.sum,github.com/aws/aws-sdk-go-v2,Apache-2.0,"2015 Amazon.com, Inc. or its affiliates; 2014-2015 Stripe, Inc."
+go.sum,github.com/aws/aws-sdk-go-v2/config,Apache-2.0,"Amazon.com, Inc. or its affiliates"
+go.sum,github.com/aws/aws-sdk-go-v2/credentials,Apache-2.0,"Amazon.com, Inc. or its affiliates"
+go.sum,github.com/aws/aws-sdk-go-v2/feature/ec2/imds,Apache-2.0,"Amazon.com, Inc. or its affiliates"
+go.sum,github.com/aws/aws-sdk-go-v2/internal/configsources,Apache-2.0,"Amazon.com, Inc. or its affiliates"
+go.sum,github.com/aws/aws-sdk-go-v2/internal/endpoints/v2,Apache-2.0,"Amazon.com, Inc. or its affiliates"
+go.sum,github.com/aws/aws-sdk-go-v2/internal/ini,Apache-2.0,"Amazon.com, Inc. or its affiliates"
+go.sum,github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding,Apache-2.0,"Amazon.com, Inc. or its affiliates"
+go.sum,github.com/aws/aws-sdk-go-v2/service/internal/presigned-url,Apache-2.0,"Amazon.com, Inc. or its affiliates"
+go.sum,github.com/aws/aws-sdk-go-v2/service/sso,Apache-2.0,"Amazon.com, Inc. or its affiliates"
+go.sum,github.com/aws/aws-sdk-go-v2/service/ssooidc,Apache-2.0,"Amazon.com, Inc. or its affiliates"
+go.sum,github.com/aws/aws-sdk-go-v2/service/sts,Apache-2.0,"Amazon.com, Inc. or its affiliates"
+go.sum,github.com/aws/smithy-go,Apache-2.0,"Amazon.com, Inc. or its affiliates"
 go.sum,github.com/bgentry/go-netrc,MIT,2010 Fazlul Shahriar and 2014 Blake Gentry
 go.sum,github.com/bgentry/speakeasy,MIT,2017 Blake Gentry
 go.sum,github.com/bitfield/gotestdox,MIT,2022 John Arundel
@@ -291,4 +305,3 @@ go.sum,github.com/tidwall/gjson,MIT,2016 Josh Baker
 go.sum,github.com/tidwall/match,MIT,2016 Josh Baker
 go.sum,github.com/tidwall/pretty,MIT,2017 Josh Baker
 go.sum,github.com/tidwall/sjson,MIT,2016 Josh Baker
-
