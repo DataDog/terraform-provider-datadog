@@ -41,9 +41,18 @@ func resourceDatadogSloCorrection() *schema.Resource {
 					Description:   "Ending time of the correction in epoch seconds. Required for one time corrections, but optional if `rrule` is specified",
 				},
 				"slo_id": {
-					Type:        schema.TypeString,
-					Required:    true,
-					Description: "ID of the SLO that this correction will be applied to.",
+					Type:         schema.TypeString,
+					Optional:     true,
+					ForceNew:     true,
+					ExactlyOneOf: []string{"slo_id", "slo_query"},
+					Description:  "ID of the single SLO that this correction will be applied to.",
+				},
+				"slo_query": {
+					Type:         schema.TypeString,
+					Optional:     true,
+					ForceNew:     true,
+					ExactlyOneOf: []string{"slo_id", "slo_query"},
+					Description:  "Query that matches the SLOs this correction will be applied to.",
 				},
 				"start": {
 					Type:        schema.TypeInt,
@@ -84,7 +93,12 @@ func buildDatadogSloCorrection(d *schema.ResourceData) *datadogV1.SLOCorrectionC
 		attributes.SetEnd(int64(end.(int)))
 	}
 
-	attributes.SetSloId(d.Get("slo_id").(string))
+	if sloID, ok := d.GetOk("slo_id"); ok {
+		attributes.SetSloId(sloID.(string))
+	}
+	if sloQuery, ok := d.GetOk("slo_query"); ok {
+		attributes.SetSloQuery(sloQuery.(string))
+	}
 
 	if timezone, ok := d.GetOk("timezone"); ok {
 		attributes.SetTimezone(timezone.(string))
@@ -166,8 +180,13 @@ func updateSLOCorrectionState(d *schema.ResourceData, sloCorrectionData *datadog
 				return diag.FromErr(err)
 			}
 		}
-		if sloID, ok := sloCorrectionAttributes.GetSloIdOk(); ok {
+		if sloID, ok := sloCorrectionAttributes.GetSloIdOk(); ok && sloID != nil {
 			if err := d.Set("slo_id", *sloID); err != nil {
+				return diag.FromErr(err)
+			}
+		}
+		if sloQuery, ok := sloCorrectionAttributes.GetSloQueryOk(); ok && sloQuery != nil {
+			if err := d.Set("slo_query", *sloQuery); err != nil {
 				return diag.FromErr(err)
 			}
 		}
