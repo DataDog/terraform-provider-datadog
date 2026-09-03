@@ -70,8 +70,23 @@ func (r *OrgGroupPolicyResource) Schema(_ context.Context, _ resource.SchemaRequ
 			},
 			"policy_name": schema.StringAttribute{
 				Required:    true,
-				Description: "The name of the policy. This becomes the name of the resource created across orgs in the group (for example, for `role` policies, the name of the created role).",
+				Description: "The name of the policy. This becomes the name of the resource created across orgs in the group (for example, for `role` policies, the name of the created role). Can be renamed in place for `role` policies; renaming an `org_config` policy replaces the resource.",
 				Validators:  []validator.String{stringvalidator.LengthAtLeast(1)},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplaceIf(
+						func(ctx context.Context, req planmodifier.StringRequest, resp *stringplanmodifier.RequiresReplaceIfFuncResponse) {
+							var policyType types.String
+							diags := req.State.GetAttribute(ctx, frameworkPath.Root("policy_type"), &policyType)
+							resp.Diagnostics.Append(diags...)
+							if diags.HasError() {
+								return
+							}
+							resp.RequiresReplace = policyType.ValueString() != string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ROLE)
+						},
+						"Renaming requires replacing the resource unless policy_type is \"role\"; the API only supports in-place rename for role policies.",
+						"Renaming requires replacing the resource unless `policy_type` is `role`; the API only supports in-place rename for `role` policies.",
+					),
+				},
 			},
 			"content": schema.StringAttribute{
 				Required:    true,

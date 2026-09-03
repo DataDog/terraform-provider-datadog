@@ -49,11 +49,12 @@ func TestAccDatadogOrgGroupPolicy_Basic(t *testing.T) {
 				),
 			},
 			{
-				// policy_name is renamed in-place, not replaced.
+				// org_config policies cannot be renamed in place; the API rejects the
+				// update, so a policy_name change forces a replace.
 				Config: testAccCheckDatadogOrgGroupPolicyConfig(orgGroupName, replacementPolicyName, `{"org_config":true}`, "GROUP_MANAGED"),
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
-						plancheck.ExpectResourceAction(resourceName, plancheck.ResourceActionUpdate),
+						plancheck.ExpectResourceAction(resourceName, plancheck.ResourceActionReplace),
 					},
 				},
 				Check: resource.ComposeTestCheckFunc(

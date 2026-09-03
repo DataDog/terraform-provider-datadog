@@ -32,7 +32,7 @@ Changing `enforcement_tier` to `"GROUP_MANAGED"` automatically deletes every ove
 
 `role` policies only support `GROUP_MANAGED` and `DELEGATE` for `enforcement_tier`; `OVERRIDE_ALLOWED` is rejected. Setting `enforcement_tier` to `"DELEGATE"` disables the shared role and cannot be reversed — the API rejects transitioning a `DELEGATE` `role` policy back to `GROUP_MANAGED`.
 
-`policy_name` can be changed in place for both `org_config` and `role` policies without replacing the resource.
+`policy_name` can be changed in place for `role` policies without replacing the resource. Renaming an `org_config` policy is not supported by the API and forces a replace.
 
 `role` policies cannot be deleted. `terraform destroy` (or removing the resource from configuration) only succeeds once the policy is already disabled (`enforcement_tier = "DELEGATE"`); otherwise it fails with an error asking you to disable it first. On success the resource is removed from state, but the disabled policy itself is not deleted server-side.
 
