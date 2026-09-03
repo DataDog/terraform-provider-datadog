@@ -78,6 +78,15 @@ HCL↔JSON serialization, schema registration, and docs generation.
 - `datadog_dashboard` / `datadog_powerpack` — **Original** SDKv2 resources (maintained for backward compatibility)
 - `datadog_dashboard_v2` / `datadog_powerpack_v2` — **FieldSpec engine** resources (all new development)
 
+### Legacy `datadog_dashboard` (`datadog/resource_datadog_dashboard.go`)
+
+For top-level dashboard fields that round-trip through the V1 API (including values carried in `AdditionalProperties` when typed client models lag the API), updates must touch **both**:
+
+- **`buildDatadogDashboard`** — Terraform config (`schema.ResourceData`) → `datadogV1.Dashboard` JSON for create/update.
+- **`updateDashboardState`** — GET response → Terraform state (`d.Set`).
+
+If only the build path is updated, acceptance tests and refresh can fail because state no longer matches the API.
+
 ### Package layout
 
 | File | Contents |
