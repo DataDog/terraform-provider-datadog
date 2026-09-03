@@ -51,6 +51,7 @@ data "datadog_action_connection" "my_connection" {
 - `service_now` (Block, Read-only) Configuration for a ServiceNow connection (see [below for nested schema](#nestedblock--service_now))
 - `split` (Block, Read-only) Configuration for a Split connection (see [below for nested schema](#nestedblock--split))
 - `statsig` (Block, Read-only) Configuration for a Statsig connection (see [below for nested schema](#nestedblock--statsig))
+- `tags` (Set of String) Tags associated with the connection.
 - `virus_total` (Block, Read-only) Configuration for a VirusTotal connection (see [below for nested schema](#nestedblock--virus_total))
 
 <a id="nestedblock--anthropic"></a>
