@@ -20,6 +20,21 @@ func BuildArtifact(op *Operation) (*Artifact, error) {
 	if op == nil || op.Tracking == nil {
 		return nil, fmt.Errorf("model: BuildArtifact requires a tracked operation")
 	}
+	artifact, err := buildArtifact(op)
+	if err != nil {
+		return nil, err
+	}
+	// A group reference naming an operationId the spec does not declare is an
+	// author error the run report must show, even when the artifact still builds
+	// without that role.
+	if diags := unresolvedGroupDiagnostics(op); len(diags) > 0 {
+		artifact.Diagnostics = append(diags, artifact.Diagnostics...)
+	}
+	return artifact, nil
+}
+
+// buildArtifact selects the builder for op's cardinality and lookup shape.
+func buildArtifact(op *Operation) (*Artifact, error) {
 	if op.Tracking.Cardinality == CardinalityPlural {
 		return buildPluralArtifact(op)
 	}
@@ -107,7 +122,7 @@ func buildSingularSearchArtifact(op *Operation) (*Artifact, error) {
 // same element shape the search returns); the search side adds Optional filters
 // from the list op's query parameters and the list call, alongside the by-id Read.
 func buildSingularBothArtifact(op *Operation) (*Artifact, error) {
-	searchOp := op.SearchOp
+	searchOp := op.ResolvedGroup.Op(GroupRoleSearch)
 	if searchOp == nil {
 		return nil, fmt.Errorf("model: data source %q declares group.search %q but no such operation exists",
 			op.Tracking.ArtifactName, op.Tracking.Group.Search)
@@ -160,6 +175,32 @@ func buildSingularBothArtifact(op *Operation) (*Artifact, error) {
 		},
 		Diagnostics: diags,
 	}, nil
+}
+
+// unresolvedGroupDiagnostics reports every group reference whose operationId
+// matches no operation in the spec, so an author's typo is never dropped
+// silently.
+//
+// It reports rather than fails, because whether a dangling reference is fatal
+// depends on the role: a builder that cannot proceed without one fails the
+// artifact itself with a message naming the role (buildSingularBothArtifact
+// does exactly that for a dangling group.search, and the resource lifecycle
+// builder will for the CRUD roles), and those returns never reach here. What is
+// left for this to surface is the remainder — a reference to a role this
+// artifact shape does not consume, which would otherwise vanish unnoticed.
+func unresolvedGroupDiagnostics(op *Operation) []Diagnostic {
+	if op.ResolvedGroup == nil || len(op.ResolvedGroup.Unresolved) == 0 {
+		return nil
+	}
+	diags := make([]Diagnostic, 0, len(op.ResolvedGroup.Unresolved))
+	for _, ref := range op.ResolvedGroup.Unresolved {
+		diags = append(diags, Diagnostic{
+			Severity: SeverityWarning,
+			Message: fmt.Sprintf("artifact %q: group.%s names operationId %q, which no operation in the spec declares; that role is unbound",
+				op.Tracking.ArtifactName, ref.Role, ref.OperationId),
+		})
+	}
+	return diags
 }
 
 // sourceFileFor is the output path for a data-source artifact name.

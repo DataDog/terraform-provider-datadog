@@ -270,9 +270,24 @@ var _ = Describe("BuildArtifact singular search", func() {
 
 		It("fails when group.search names an operation that does not exist", func() {
 			op := bothDatastoreOp()
-			op.SearchOp = nil // simulate an unknown operationId
+			op.ResolvedGroup.Search = nil // simulate an unknown operationId
 			_, err := BuildArtifact(op)
 			Expect(err).To(HaveOccurred())
+		})
+
+		It("warns about a group reference the parser could not resolve", func() {
+			op := bothDatastoreOp()
+			op.ResolvedGroup.Unresolved = []GroupReference{
+				{Role: GroupRoleUpdate, OperationId: "UpdateDatastoreTypo"},
+			}
+			art, err := BuildArtifact(op)
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(art.Diagnostics).To(ContainElement(Diagnostic{
+				Severity: SeverityWarning,
+				Message: `artifact "datastore": group.update names operationId "UpdateDatastoreTypo", ` +
+					`which no operation in the spec declares; that role is unbound`,
+			}))
 		})
 
 		It("produces a deeply-equal artifact across two runs", func() {
@@ -360,7 +375,7 @@ func searchPowerpackOp() *Operation {
 }
 
 // bothDatastoreOp is an id-optional singular data source: the tracked op is the
-// by-id GET (group.read), and SearchOp points at the list GET (group.search)
+// by-id GET (group.read), and the resolved group's search role points at the list GET (group.search)
 // carrying one scalar filter.
 func bothDatastoreOp() *Operation {
 	listOp := &Operation{
@@ -388,7 +403,7 @@ func bothDatastoreOp() *Operation {
 		Tag:                 "Datastores",
 		ResponseRefName:     "Datastore",
 		ResponseDataRefName: "Datastore", // same as the list element → stays "both"
-		SearchOp:            listOp,
+		ResolvedGroup:       &ResolvedGroup{Search: listOp},
 		Tracking: &TrackingFieldMetadata{
 			ArtifactKind: ArtifactKindDataSource,
 			ArtifactName: "datastore",
@@ -431,7 +446,7 @@ func bothApiKeyOp() *Operation {
 		Tag:                 "KeyManagement",
 		ResponseRefName:     "APIKeyResponse",
 		ResponseDataRefName: "FullAPIKey",
-		SearchOp:            listOp,
+		ResolvedGroup:       &ResolvedGroup{Search: listOp},
 		Tracking: &TrackingFieldMetadata{
 			ArtifactKind: ArtifactKindDataSource,
 			ArtifactName: "api_key",

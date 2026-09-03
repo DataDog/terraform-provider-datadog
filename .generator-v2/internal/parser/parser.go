@@ -66,9 +66,10 @@ func WithTrackingFieldName(name string) Option {
 // not silently produce partial output.
 //
 // LoadSpec populates Path, Method, OperationId, Tag and Tracking on each
-// Operation, then runs NormalizeSchemas to fill RequestSchema and
-// ResponseSchema for every tracked operation's CRUD group. The result is a
-// fully-populated *model.Spec or an actionable error.
+// Operation, runs ResolveOperationGroups to wire each tracking group's
+// operationIds to the operations they name, then runs NormalizeSchemas to fill
+// RequestSchema and ResponseSchema for every tracked operation and its group.
+// The result is a fully-populated *model.Spec or an actionable error.
 func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 	cfg := loadConfig{maxDepth: DefaultMaxDepth, trackingFieldName: DefaultTrackingFieldName}
 	for _, opt := range opts {
@@ -155,6 +156,10 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 	if err := CheckDuplicateArtifactNames(spec); err != nil {
 		return nil, err
 	}
+
+	// Groups are resolved before normalization: it walks the operations a group
+	// points at, which only exist as pointers once every operation is enumerated.
+	ResolveOperationGroups(spec)
 
 	if err := NormalizeSchemas(spec, rawOps, cfg.maxDepth, cfg.trackingFieldName); err != nil {
 		return nil, err
