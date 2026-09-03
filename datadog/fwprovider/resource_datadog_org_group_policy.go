@@ -70,7 +70,7 @@ func (r *OrgGroupPolicyResource) Schema(_ context.Context, _ resource.SchemaRequ
 			},
 			"policy_name": schema.StringAttribute{
 				Required:    true,
-				Description: "The name of the policy. This becomes the name of the resource created across orgs in the group (for example, for `role` policies, the name of the created role). Can be renamed in place for `role` policies; renaming an `org_config` policy replaces the resource.",
+				Description: "The name of the policy.",
 				Validators:  []validator.String{stringvalidator.LengthAtLeast(1)},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplaceIf(
@@ -96,7 +96,7 @@ func (r *OrgGroupPolicyResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"enforcement_tier": schema.StringAttribute{
 				Optional:    true,
 				Computed:    true,
-				Description: "The enforcement tier of the policy. `OVERRIDE_ALLOWED` means the policy is set but member orgs may mutate it. `GROUP_MANAGED` means the policy is strictly controlled and mutations are blocked for affected orgs. `DELEGATE` means each member org controls its own value. Not all policy types support every tier.",
+				Description: "The enforcement tier of the policy. `OVERRIDE_ALLOWED` means the policy is set but member orgs may mutate it. `GROUP_MANAGED` means the policy is strictly controlled and mutations are blocked for affected orgs. `DELEGATE` means each member org controls its own value.",
 				Validators: []validator.String{
 					stringvalidator.OneOf(
 						string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_OVERRIDE_ALLOWED),

@@ -68,11 +68,11 @@ Changing `enforcement_tier` to `"GROUP_MANAGED"` automatically deletes every ove
 
 - `content` (String) The policy content as a JSON-encoded string.
 - `org_group_id` (String) The UUID of the org group this policy belongs to. Must be a valid UUID.
-- `policy_name` (String) The name of the policy. This becomes the name of the resource created across orgs in the group (for example, for `role` policies, the name of the created role). Can be renamed in place for `role` policies; renaming an `org_config` policy replaces the resource. String length must be at least 1.
+- `policy_name` (String) The name of the policy. String length must be at least 1.
 
 ### Optional
 
-- `enforcement_tier` (String) The enforcement tier of the policy. `OVERRIDE_ALLOWED` means the policy is set but member orgs may mutate it. `GROUP_MANAGED` means the policy is strictly controlled and mutations are blocked for affected orgs. `DELEGATE` means each member org controls its own value. Not all policy types support every tier. Valid values are `OVERRIDE_ALLOWED`, `GROUP_MANAGED`, `DELEGATE`.
+- `enforcement_tier` (String) The enforcement tier of the policy. `OVERRIDE_ALLOWED` means the policy is set but member orgs may mutate it. `GROUP_MANAGED` means the policy is strictly controlled and mutations are blocked for affected orgs. `DELEGATE` means each member org controls its own value. Valid values are `OVERRIDE_ALLOWED`, `GROUP_MANAGED`, `DELEGATE`.
 - `policy_type` (String) The type of the policy. Valid values are `org_config`, `role`.
 
 ### Read-Only
