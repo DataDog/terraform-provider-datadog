@@ -315,6 +315,36 @@ type SDKOperationBinding struct {
 	OptionalParamsType string
 }
 
+// RequestDiscriminator describes a request body's JSON:API "data.type" member,
+// which the API requires and rejects the body without.
+//
+// It exists because the pinned SDK supplies that value only when the OpenAPI
+// type schema declares a `default`: New<Data>WithDefaults() assigns a property
+// exactly when the SDK generator's own predicate holds (see Schema.HasDefault).
+// Three of the thirteen resources that currently compile declare none, so the
+// generated code has to send the value itself (T143).
+type RequestDiscriminator struct {
+	// GoType is the SDK type the value converts to, e.g. "PlaylistDataType" —
+	// the type property's own component name. Empty when the property is
+	// inline, in which case the SDK's name for it is positional and this
+	// generator does not guess it.
+	GoType string
+	// Values are the allowed values. Exactly one means the discriminator is
+	// determined and the generated code can send it; more than one means the
+	// spec does not say which a request should carry, and none means the type
+	// is an unconstrained string.
+	Values []string
+	// SDKDefaulted reports that New<Data>WithDefaults() already assigns the
+	// property, so a body that cannot name the value itself is still valid.
+	SDKDefaulted bool
+}
+
+// Determined reports whether the generated code can send the discriminator
+// itself: the value is unambiguous and its SDK type is nameable.
+func (d *RequestDiscriminator) Determined() bool {
+	return d != nil && d.GoType != "" && len(d.Values) == 1
+}
+
 // SDKArgument binds one SDK method argument or options setter to an OpenAPI
 // parameter and, after artifact construction, its Terraform model field.
 type SDKArgument struct {
@@ -354,6 +384,17 @@ type Schema struct {
 	Format string
 	// Enum holds the allowed values, if constrained.
 	Enum []string
+	// HasDefault records that the schema declares a `default`, and ReadOnly that
+	// it declares `readOnly: true`. Neither reaches the Terraform schema; both
+	// exist because together they reproduce the pinned SDK generator's own
+	// predicate for whether New<Model>WithDefaults() pre-assigns a property
+	// (model_simple.j2: `spec.default is defined and type not object/array and
+	// not readOnly`). The request mapper needs that answer for the JSON:API
+	// "type" discriminator, whose value the generated code must send even when
+	// the SDK does not supply it (T143). Re-deriving the SDK generator's rule
+	// from the same OpenAPI input is FR-005a's prescribed route.
+	HasDefault bool
+	ReadOnly   bool
 	// Sensitive is true when the schema is annotated sensitive: true.
 	Sensitive bool
 	// Description is the OpenAPI description, populated during NormalizeSchemas.
@@ -756,6 +797,10 @@ type SDKCall struct {
 	// the operation sends no body, or when "data" is inline and so has no SDK
 	// component to construct.
 	GoRequestDataType string
+	// RequestDiscriminator describes the request body's JSON:API data.type
+	// member. Nil when the operation sends no body or the data component
+	// declares no type property.
+	RequestDiscriminator *RequestDiscriminator
 	// GoRequestAttributesType is the SDK type of the request body's
 	// data.attributes member, e.g. "IncidentTypeAttributes", derived the same
 	// way and for the same reason. Empty when the envelope carries no

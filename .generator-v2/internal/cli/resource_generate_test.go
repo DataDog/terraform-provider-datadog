@@ -52,11 +52,13 @@ func TestGenerateCreatesAndRegistersResource(t *testing.T) {
 		"func (r *datadogThingResource) Update(",
 		"func (r *datadogThingResource) Delete(",
 		// The JSON:API envelope is built level by level, each from its own
-		// New<Type>WithDefaults(), so the data component's constructor sets the
-		// "type" discriminator the API requires (T138).
+		// New<Type>WithDefaults() (T138), and the "type" discriminator the API
+		// requires is sent explicitly rather than left to the SDK's own default,
+		// which the spec here does not declare (T143).
 		"bodyAttributes := datadogV2.NewThingAttributesWithDefaults()",
 		"bodyAttributes.SetName(state.Name.ValueString())",
 		"bodyData := datadogV2.NewThingCreateDataWithDefaults()",
+		`bodyData.SetType(datadogV2.ThingType("things"))`,
 		"bodyData.SetAttributes(*bodyAttributes)",
 		"body := datadogV2.NewThingCreateRequestWithDefaults()",
 		"body.SetData(*bodyData)",

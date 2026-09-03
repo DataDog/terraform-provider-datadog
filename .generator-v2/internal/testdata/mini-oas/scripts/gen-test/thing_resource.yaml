@@ -92,11 +92,19 @@ components:
           type: string
         description:
           type: string
+    ThingType:
+      description: Thing resource type.
+      enum:
+      - things
+      example: things
+      type: string
+      x-enum-varnames:
+      - THINGS
     ThingCreateData:
       type: object
       properties:
         type:
-          type: string
+          $ref: '#/components/schemas/ThingType'
         attributes:
           $ref: '#/components/schemas/ThingAttributes'
     ThingPatchData:
@@ -105,7 +113,7 @@ components:
         id:
           type: string
         type:
-          type: string
+          $ref: '#/components/schemas/ThingType'
         attributes:
           $ref: '#/components/schemas/ThingUpdateAttributes'
     ThingResponseData:

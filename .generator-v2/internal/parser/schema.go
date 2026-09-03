@@ -634,6 +634,8 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 		Type:        firstType(s),
 		Format:      s.Format,
 		Enum:        enumValues(s),
+		HasDefault:  s.Default != nil,
+		ReadOnly:    s.ReadOnly != nil && *s.ReadOnly,
 		Sensitive:   n.isSensitive(s),
 		Description: s.Description,
 		// The component name that led here, retained because the Datadog go-sdk

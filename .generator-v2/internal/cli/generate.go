@@ -373,7 +373,7 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examples
 		return failEntry(entry, err), nil, nil, nil
 	}
 
-	status, err := emit.WriteFile(artifact.SourceFile, src, check)
+	status, err := emit.WriteArtifactSource(artifact.SourceFile, src, check, op.Tracking.Overwrites != "")
 	if err != nil {
 		return failEntry(entry, err), nil, nil, nil
 	}
@@ -461,7 +461,7 @@ func generateResourceArtifact(op *model.Operation, outputRoot string, check bool
 		return failEntry(entry, err), nil
 	}
 
-	status, err := emit.WriteFile(artifact.SourceFile, src, check)
+	status, err := emit.WriteArtifactSource(artifact.SourceFile, src, check, op.Tracking.Overwrites != "")
 	if err != nil {
 		return failEntry(entry, err), nil
 	}

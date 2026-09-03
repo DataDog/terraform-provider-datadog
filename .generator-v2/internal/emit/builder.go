@@ -1793,6 +1793,26 @@ func buildRequestEnvelope(artifact, role, sdkPackage string, call *model.SDKCall
 		SDKPackage: sdkPackage, Fields: fields,
 		DataVar: requestDataVar, DataType: call.GoRequestDataType,
 	}
+
+	// Send the discriminator explicitly wherever the spec determines it. Where
+	// it does not, the body is only valid if the SDK's own constructor supplies
+	// it; otherwise the request would go out with "type":"" and be rejected, so
+	// fail the artifact rather than emit that.
+	switch d := call.RequestDiscriminator; {
+	case d == nil:
+		// No type property on the data component: not a discriminated envelope.
+	case d.Determined():
+		envelope.TypeExpr = fmt.Sprintf("%s.%s(%q)", sdkPackage, d.GoType, d.Values[0])
+	case d.SDKDefaulted:
+		// The pinned SDK assigns it in New<Data>WithDefaults().
+	default:
+		*unsupported = append(*unsupported, UnsupportedNode{
+			Path:   "sdk." + call.GoMethod + ".data.type",
+			Reason: discriminatorReason(role, artifact, d),
+		})
+		return nil
+	}
+
 	if len(fields) == 0 {
 		return envelope
 	}
@@ -1808,6 +1828,38 @@ func buildRequestEnvelope(artifact, role, sdkPackage string, call *model.SDKCall
 	envelope.AttributesVar = requestAttributesVar
 	envelope.AttributesType = call.GoRequestAttributesType
 	return envelope
+}
+
+// discriminatorReason explains why a request body cannot name its JSON:API
+// type, distinguishing the three causes: the spec offers several values and
+// does not say which a request carries, it constrains none at all, or the
+// property is inline and so has no component name to convert through. Each is
+// a different fix for the spec author, so each reads differently.
+func discriminatorReason(role, artifact string, d *model.RequestDiscriminator) string {
+	switch {
+	case len(d.Values) > 1:
+		return fmt.Sprintf(
+			"%s request body for resource %q cannot set the JSON:API \"type\" discriminator: its schema allows %s and declares no default, so the spec does not say which value a request carries",
+			role, artifact, strings.Join(quoteAll(d.Values), " or "))
+	case len(d.Values) == 0:
+		return fmt.Sprintf(
+			"%s request body for resource %q cannot set the JSON:API \"type\" discriminator: its schema constrains no values and declares no default",
+			role, artifact)
+	default:
+		return fmt.Sprintf(
+			"%s request body for resource %q cannot set the JSON:API \"type\" discriminator to %q: the property is inline, so it has no SDK component name to convert the value through",
+			role, artifact, d.Values[0])
+	}
+}
+
+// quoteAll renders values for an error message, so a reader can tell an empty
+// string or a stray space from a real value.
+func quoteAll(values []string) []string {
+	out := make([]string, 0, len(values))
+	for _, v := range values {
+		out = append(out, fmt.Sprintf("%q", v))
+	}
+	return out
 }
 
 // buildRequestFields derives the RequestFieldView list a resource's Create and

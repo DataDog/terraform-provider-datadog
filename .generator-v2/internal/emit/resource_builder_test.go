@@ -40,6 +40,7 @@ var _ = Describe("BuildResourceView", func() {
 			Envelope: &RequestEnvelopeView{
 				SDKPackage: "datadogV2", Fields: view.Create.Envelope.Fields,
 				DataVar: "bodyData", DataType: "IncidentTypeCreateData",
+				TypeExpr:      `datadogV2.IncidentTypeType("incident_types")`,
 				AttributesVar: "bodyAttributes", AttributesType: "IncidentTypeAttributes",
 			},
 		}))
@@ -56,6 +57,7 @@ var _ = Describe("BuildResourceView", func() {
 			Envelope: &RequestEnvelopeView{
 				SDKPackage: "datadogV2", Fields: view.Create.Envelope.Fields,
 				DataVar: "bodyData", DataType: "IncidentTypeUpdateData",
+				TypeExpr:      `datadogV2.IncidentTypeType("incident_types")`,
 				AttributesVar: "bodyAttributes", AttributesType: "IncidentTypeUpdateAttributes",
 			},
 		}))
@@ -106,6 +108,65 @@ var _ = Describe("BuildResourceView", func() {
 		}
 		Expect(view.State.Assignments).To(ContainElement(HaveField("LHS", "state.LastSeen")))
 	})
+
+	It("sends the JSON:API type discriminator explicitly when the spec determines it", func() {
+		op := incidentTypeResourceOperation(true)
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		view, err := BuildResourceView(art)
+		Expect(err).NotTo(HaveOccurred())
+
+		By("both roles convert the value through the type property's own component")
+		Expect(view.Create.Envelope.TypeExpr).To(Equal(`datadogV2.IncidentTypeType("incident_types")`))
+		Expect(view.Update.Envelope.TypeExpr).To(Equal(`datadogV2.IncidentTypeType("incident_types")`))
+
+		src, err := RenderResource(view)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(string(src)).To(ContainSubstring(`bodyData.SetType(datadogV2.IncidentTypeType("incident_types"))`))
+	})
+
+	It("leaves the discriminator to the SDK when the value is ambiguous but defaulted", func() {
+		By("a two-member enum does not say which value a request carries, so only a spec default can settle it")
+		op := incidentTypeResourceOperation(true)
+		for _, role := range []*model.Operation{op.ResolvedGroup.Create, op.ResolvedGroup.Update} {
+			typeProperty := role.RequestSchema.Properties["data"].Properties["type"]
+			typeProperty.Enum = []string{"incident_types", "incident_type"}
+			typeProperty.HasDefault = true
+		}
+
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		view, err := BuildResourceView(art)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(view.Create.Envelope.TypeExpr).To(BeEmpty())
+		Expect(string(mustRenderResource(view))).NotTo(ContainSubstring("bodyData.SetType("))
+	})
+
+	DescribeTable("fails the artifact when neither the spec nor the SDK determines the discriminator",
+		func(mutate func(*model.Schema), wantMessage string) {
+			op := incidentTypeResourceOperation(true)
+			mutate(op.ResolvedGroup.Create.RequestSchema.Properties["data"].Properties["type"])
+
+			art, err := model.BuildArtifact(op)
+			Expect(err).NotTo(HaveOccurred())
+
+			_, err = BuildResourceView(art)
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(ContainSubstring(wantMessage))
+		},
+		Entry("several allowed values and no default",
+			func(s *model.Schema) { s.Enum = []string{"incident_types", "incident_type"} },
+			`allows "incident_types" or "incident_type" and declares no default, so the spec does not say which value a request carries`),
+		Entry("no allowed values and no default",
+			func(s *model.Schema) { s.Enum = nil },
+			"constrains no values and declares no default"),
+		Entry("an inline type property has no component name to convert through",
+			func(s *model.Schema) { s.RefName = "" },
+			`the property is inline, so it has no SDK component name to convert the value through`),
+		Entry("a default the SDK skips because the property is readOnly",
+			func(s *model.Schema) { s.Enum = nil; s.HasDefault = true; s.ReadOnly = true },
+			"constrains no values and declares no default"),
+	)
 
 	It("fails the artifact when a request envelope level names no SDK component", func() {
 		By("an inline data member leaves nothing to construct, and so nothing to set the JSON:API type discriminator on")
@@ -278,7 +339,13 @@ func incidentTypeResourceOperation(withUpdate bool) *model.Operation {
 	// the SDK generates a model per $ref, and T138's request mapper constructs
 	// each level from that model's own New<Type>WithDefaults().
 	body := func(a *model.Schema, dataRefName string) *model.Schema {
-		data := obj(map[string]*model.Schema{"attributes": a})
+		// A real JSON:API envelope carries the "type" discriminator beside
+		// "attributes", constrained to a single value by its own component —
+		// which is what lets the request mapper send it (T143).
+		discriminator := prim("string", "Incident type resource type.")
+		discriminator.RefName = "IncidentTypeType"
+		discriminator.Enum = []string{"incident_types"}
+		data := obj(map[string]*model.Schema{"attributes": a, "type": discriminator})
 		data.RefName = dataRefName
 		return obj(map[string]*model.Schema{"data": data})
 	}
@@ -364,4 +431,12 @@ func attrByPath(tree *AttributeTreeLike, tfName string) AttrView {
 	got, ok := find(tree.Attributes)
 	Expect(ok).To(BeTrue(), "no attribute named %q", tfName)
 	return got
+}
+
+// mustRenderResource renders a view, failing the spec rather than returning an
+// error, for assertions whose subject is the rendered text.
+func mustRenderResource(view ResourceView) []byte {
+	src, err := RenderResource(view)
+	Expect(err).NotTo(HaveOccurred())
+	return src
 }

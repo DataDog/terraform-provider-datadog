@@ -1,6 +1,9 @@
 package model
 
-import "fmt"
+import (
+	"fmt"
+	"slices"
+)
 
 // MissingRoleError reports an artifact whose tracking group does not resolve a
 // role its shape cannot do without. It names the role, and the operationId when
@@ -104,7 +107,36 @@ func bodyCall(op *Operation, aliasTerminalID bool) *SDKCall {
 	call := sdkCall(op, aliasTerminalID)
 	call.GoRequestType = op.RequestRefName
 	call.GoRequestDataType, call.GoRequestAttributesType = requestEnvelopeTypes(op.RequestSchema)
+	call.RequestDiscriminator = requestDiscriminator(op.RequestSchema)
 	return call
+}
+
+// requestDiscriminator reads the request body's JSON:API data.type member: the
+// SDK type its value converts to, the values the spec allows, and whether the
+// pinned SDK's New<Data>WithDefaults() already assigns it.
+//
+// SDKDefaulted reproduces the SDK generator's own predicate rather than reading
+// the generated source (FR-005a): model_simple.j2 assigns a property in
+// WithDefaults() exactly when it declares a default, is neither object nor
+// array, and is not readOnly. A discriminator is always a string, so only the
+// default and readOnly halves can vary here.
+func requestDiscriminator(s *Schema) *RequestDiscriminator {
+	if s == nil {
+		return nil
+	}
+	data := s.Properties["data"]
+	if data == nil {
+		return nil
+	}
+	typeProperty := data.Properties["type"]
+	if typeProperty == nil {
+		return nil
+	}
+	return &RequestDiscriminator{
+		GoType:       typeProperty.RefName,
+		Values:       slices.Clone(typeProperty.Enum),
+		SDKDefaulted: typeProperty.HasDefault && !typeProperty.ReadOnly,
+	}
 }
 
 // requestEnvelopeTypes reads the JSON:API envelope's own component names off a

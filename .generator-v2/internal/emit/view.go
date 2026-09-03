@@ -592,8 +592,17 @@ type RequestEnvelopeView struct {
 	// DataVar is the local holding the constructed data member.
 	DataVar string
 	// DataType is the SDK component behind DataVar, e.g.
-	// "IncidentTypeCreateData" — the constructor that sets the discriminator.
+	// "IncidentTypeCreateData".
 	DataType string
+	// TypeExpr is the JSON:API discriminator the body sends, as a Go
+	// expression, e.g. `datadogV2.PlaylistDataType("rum_replay_playlist")`.
+	// It is emitted whenever the spec determines the value, rather than only
+	// where the SDK's own constructor omits it: an explicit SetType states the
+	// wire contract in the generated code and cannot regress when a spec drops
+	// a `default` — which is exactly how three resources came to post an empty
+	// type (T143). Empty when the data component declares no type property, or
+	// when the value is ambiguous and the SDK supplies it.
+	TypeExpr string
 	// AttributesVar is the local holding the constructed attributes member,
 	// and the target every RequestFieldView at the top level sets on. Empty
 	// when this body has no settable attributes, in which case the attributes

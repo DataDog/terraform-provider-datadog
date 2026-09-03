@@ -212,7 +212,8 @@ func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .GoNa
   is populated before the level above takes it by value:
 
       bodyAttributes := pkg.New<Attrs>WithDefaults()   // request fields set here
-      bodyData       := pkg.New<Data>WithDefaults()    // sets the "type" discriminator
+      bodyData       := pkg.New<Data>WithDefaults()
+      bodyData.SetType(pkg.<TypeEnum>("<value>"))     // the JSON:API discriminator
       bodyData.SetAttributes(*bodyAttributes)
       body           := pkg.New<Request>WithDefaults()
       body.SetData(*bodyData)
@@ -234,6 +235,9 @@ func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .GoNa
 {{ template "requestFields" .Fields }}
 {{- end }}
 	{{ .DataVar }} := {{ .SDKPackage }}.New{{ .DataType }}WithDefaults()
+{{- with .TypeExpr }}
+	{{ $call.Envelope.DataVar }}.SetType({{ . }})
+{{- end }}
 {{- if .AttributesVar }}
 	{{ .DataVar }}.SetAttributes(*{{ .AttributesVar }})
 {{- end }}
