@@ -157,9 +157,9 @@ func (d *datadogApmRetentionFilterDataSource) updateState(ctx context.Context, s
 			filterModel.Metadata = metadataModel
 		}
 		if tags, ok := filter.GetTagsOk(); ok && tags != nil {
-			var listDiags diag.Diagnostics
-			filterModel.Tags, listDiags = types.ListValueFrom(ctx, types.StringType, *tags)
-			diags.Append(listDiags...)
+			var collectionDiags diag.Diagnostics
+			filterModel.Tags, collectionDiags = types.ListValueFrom(ctx, types.StringType, *tags)
+			diags.Append(collectionDiags...)
 		} else {
 			filterModel.Tags = types.ListNull(types.StringType)
 		}

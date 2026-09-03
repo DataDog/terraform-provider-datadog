@@ -59,7 +59,7 @@ func buildTestView(v DataSourceView) testView {
 		Plural:       v.Cardinality == Plural,
 		// A singular by-id data source resolves on the id; everything else
 		// (singular search/both, plural) resolves on optional filters.
-		LookupByID: v.Cardinality != Plural && !v.Searchable,
+		LookupByID: v.Cardinality != Plural && v.ByID && !v.Searchable,
 	}
 	tv.CassettePath = "datadog/tests/cassettes/" + tv.FuncName + ".yaml"
 

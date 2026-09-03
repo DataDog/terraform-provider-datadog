@@ -96,6 +96,12 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationTemplate", true)
 	config.SetUnstableOperationEnabled("v2.ListIncidentNotificationTemplates", true)
 
+	// Enable IncidentPostmortemTemplate
+	config.SetUnstableOperationEnabled("v2.CreateIncidentPostmortemTemplate", true)
+	config.SetUnstableOperationEnabled("v2.GetIncidentPostmortemTemplate", true)
+	config.SetUnstableOperationEnabled("v2.UpdateIncidentPostmortemTemplate", true)
+	config.SetUnstableOperationEnabled("v2.DeleteIncidentPostmortemTemplate", true)
+
 	config.SetUnstableOperationEnabled("v2.ListIncidentUserDefinedFields", true)
 	config.SetUnstableOperationEnabled("v2.CreateIncidentUserDefinedField", true)
 	config.SetUnstableOperationEnabled("v2.GetIncidentUserDefinedField", true)
@@ -176,6 +182,25 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.CreateTagIndexingRuleExemption", true)
 	config.SetUnstableOperationEnabled("v2.GetTagIndexingRuleExemption", true)
 	config.SetUnstableOperationEnabled("v2.DeleteTagIndexingRuleExemption", true)
+
+	// Enable Governance Controls
+	config.SetUnstableOperationEnabled("v2.GetGovernanceControl", true)
+	config.SetUnstableOperationEnabled("v2.UpdateGovernanceControl", true)
+	config.SetUnstableOperationEnabled("v2.GetGovernanceControlNotificationSettings", true)
+	config.SetUnstableOperationEnabled("v2.UpdateGovernanceControlNotificationSettings", true)
+
+	// Enable Governance Tag Rules
+	config.SetUnstableOperationEnabled("v2.CreateTagRule", true)
+	config.SetUnstableOperationEnabled("v2.GetTagRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateTagRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteTagRule", true)
+
+	// Enable Execution Policies
+	config.SetUnstableOperationEnabled("v2.CreateExecutionPolicy", true)
+	config.SetUnstableOperationEnabled("v2.GetExecutionPolicy", true)
+	config.SetUnstableOperationEnabled("v2.UpdateExecutionPolicy", true)
+	config.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
+	config.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
 
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true

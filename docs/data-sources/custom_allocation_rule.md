@@ -18,7 +18,6 @@ Use this data source to retrieve information about an existing custom allocation
 ### Optional
 
 - `rule_id` (Number) The ID of the custom allocation rule to retrieve.
-- `strategy` (Block, Optional) (see [below for nested schema](#nestedblock--strategy))
 
 ### Read-Only
 
@@ -31,16 +30,24 @@ Use this data source to retrieve information about an existing custom allocation
 - `providernames` (List of String) List of cloud providers the rule applies to (e.g., `aws`, `azure`, `gcp`).
 - `rejected` (Boolean) Whether the rule was rejected by Datadog due to runtime errors. This field can be updated well after the rule was created. If rejected this rule is treated as disabled until modified where the rejection status is reset.
 - `rule_name` (String) The unique name of the custom allocation rule.
+- `strategy` (Block, Read-only) (see [below for nested schema](#nestedblock--strategy))
 - `type` (String) The type of the custom allocation rule. This is always `shared` currently.
 - `updated` (String) The timestamp (in ISO 8601 format) when the rule was last updated.
 - `version` (String) The version number of the rule.
 
+<a id="nestedblock--costs_to_allocate"></a>
+### Nested Schema for `costs_to_allocate`
+
+Read-Only:
+
+- `condition` (String) The condition used to match tags. Valid values are `=`, `!=`, `is`, `is not`, `like`, `in`, `not in`.
+- `tag` (String) The tag key used in the filter.
+- `value` (String) The tag value used in the filter (for single-value conditions).
+- `values` (List of String) The list of tag values used in the filter (for multi-value conditions like `in` or `not_in`).
+
+
 <a id="nestedblock--strategy"></a>
 ### Nested Schema for `strategy`
-
-Optional:
-
-- `based_on_timeseries` (Block, Optional) (see [below for nested schema](#nestedblock--strategy--based_on_timeseries))
 
 Read-Only:
 
@@ -48,14 +55,11 @@ Read-Only:
 - `allocated_by_filters` (Block List) (see [below for nested schema](#nestedblock--strategy--allocated_by_filters))
 - `allocated_by_tag_keys` (List of String) List of tag keys used to allocate costs.
 - `based_on_costs` (Block List) (see [below for nested schema](#nestedblock--strategy--based_on_costs))
+- `based_on_timeseries` (Block, Read-only) (see [below for nested schema](#nestedblock--strategy--based_on_timeseries))
 - `evaluate_grouped_by_filters` (Block List) (see [below for nested schema](#nestedblock--strategy--evaluate_grouped_by_filters))
 - `evaluate_grouped_by_tag_keys` (List of String) List of tag keys used to group costs before allocation.
 - `granularity` (String) The granularity level for cost allocation (`daily` or `monthly`).
 - `method` (String) The allocation method. Valid values are `even`, `proportional`, `proportional_timeseries`, or `percent`.
-
-<a id="nestedblock--strategy--based_on_timeseries"></a>
-### Nested Schema for `strategy.based_on_timeseries`
-
 
 <a id="nestedblock--strategy--allocated_by"></a>
 ### Nested Schema for `strategy.allocated_by`
@@ -97,20 +101,16 @@ Read-Only:
 - `values` (List of String) The list of tag values used in the filter (for multi-value conditions like `in` or `not_in`).
 
 
-<a id="nestedblock--strategy--evaluate_grouped_by_filters"></a>
-### Nested Schema for `strategy.evaluate_grouped_by_filters`
+<a id="nestedblock--strategy--based_on_timeseries"></a>
+### Nested Schema for `strategy.based_on_timeseries`
 
 Read-Only:
 
-- `condition` (String) The condition used to match tags. Valid values are `=`, `!=`, `is`, `is not`, `like`, `in`, `not in`.
-- `tag` (String) The tag key used in the filter.
-- `value` (String) The tag value used in the filter (for single-value conditions).
-- `values` (List of String) The list of tag values used in the filter (for multi-value conditions like `in` or `not_in`).
+- `json` (String) The timeseries query that determines the allocation proportions, encoded as a JSON object. Set when `method` is `proportional_timeseries`.
 
 
-
-<a id="nestedblock--costs_to_allocate"></a>
-### Nested Schema for `costs_to_allocate`
+<a id="nestedblock--strategy--evaluate_grouped_by_filters"></a>
+### Nested Schema for `strategy.evaluate_grouped_by_filters`
 
 Read-Only:
 

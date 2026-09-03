@@ -71,11 +71,21 @@ func singleV2ResultType(ft *ast.FuncType) string {
 	return sel.Sel.Name
 }
 
-// ApplyAPIAccessor overrides view.APIAccessor with the accessor the provider
-// actually exposes for view.APIStruct when accessors resolved one; absent a match
-// it leaves the builder's derived name in place.
-func ApplyAPIAccessor(view *DataSourceView, accessors map[string]string) {
+// ApplyAPIAccessor configures view to use the provider's existing ApiInstances
+// accessor when one returns view.APIStruct. If no accessor exists, it derives
+// the Go client constructor using the SDK generator's deterministic
+// New<APIStruct> rule. This keeps provider aliases authoritative without making
+// the pinned SDK source a generation prerequisite.
+func ApplyAPIAccessor(view *DataSourceView, accessors map[string]string) error {
+	view.APIConstructor = ""
 	if acc, ok := accessors[view.APIStruct]; ok {
 		view.APIAccessor = acc
+		return nil
 	}
+	view.APIAccessor = ""
+	if view.APIStruct == "" || view.APIStruct == "Api" {
+		return fmt.Errorf("resolve SDK API client %s.%s: OpenAPI operation has no usable API tag", view.SDKPackage, view.APIStruct)
+	}
+	view.APIConstructor = "New" + view.APIStruct
+	return nil
 }

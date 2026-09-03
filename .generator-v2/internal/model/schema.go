@@ -194,9 +194,8 @@ func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, requir
 		attr.Validators = []ValidatorSpec{{Name: "stringvalidator.OneOf", Args: args}}
 	}
 
-	// Recurse into nested shapes, or record a primitive collection's element type.
-	// FrameworkType already validated array/map elements, so the final branch of
-	// each switch is primitive.
+	// Recurse into object shapes, or record the recursive element type for a
+	// collection chain that terminates in a primitive.
 	switch s.Kind {
 	case SchemaKindObject:
 		children, err := b.children(s, path+".", mode)

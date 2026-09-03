@@ -2,10 +2,15 @@ package fwprovider
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"regexp"
 	"strconv"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -64,6 +69,10 @@ type strategyModel struct {
 	EvaluateGroupedByFilters []*evaluateGroupedByFiltersModel `tfsdk:"evaluate_grouped_by_filters"`
 	BasedOnTimeseries        *basedOnTimeseriesModel          `tfsdk:"based_on_timeseries"`
 }
+
+type basedOnTimeseriesModel struct {
+	Json jsontypes.Normalized `tfsdk:"json"`
+}
 type allocatedByModel struct {
 	Percentage    types.Float64         `tfsdk:"percentage"`
 	AllocatedTags []*allocatedTagsModel `tfsdk:"allocated_tags"`
@@ -94,7 +103,111 @@ type evaluateGroupedByFiltersModel struct {
 	Values    types.List   `tfsdk:"values"`
 }
 
-type basedOnTimeseriesModel struct {
+// queryNameRegex matches a bare query-name reference in a formula (e.g. `query1`).
+// Formulas may also be arithmetic expressions (e.g. `query1 / query2`); those are
+// not resolved against query names.
+var queryNameRegex = regexp.MustCompile(`^[A-Za-z_][A-Za-z0-9_]*$`)
+
+// basedOnTimeseriesValidator performs structural validation on the
+// `based_on_timeseries` JSON document. It deliberately does NOT enumerate valid
+// `data_source` values, and does NOT require a `query` field: compound sources
+// such as `aggregate_augmented_query` carry `base_query`/`augment_query` instead.
+type basedOnTimeseriesValidator struct{}
+
+func (v basedOnTimeseriesValidator) Description(ctx context.Context) string {
+	return "Ensures based_on_timeseries is a well-formed formulas-and-functions request"
+}
+
+func (v basedOnTimeseriesValidator) MarkdownDescription(ctx context.Context) string {
+	return "Ensures `based_on_timeseries` is a well-formed formulas-and-functions request"
+}
+
+func (v basedOnTimeseriesValidator) ValidateString(ctx context.Context, req validator.StringRequest, resp *validator.StringResponse) {
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
+		return
+	}
+
+	var doc map[string]interface{}
+	if err := json.Unmarshal([]byte(req.ConfigValue.ValueString()), &doc); err != nil {
+		resp.Diagnostics.AddAttributeError(req.Path, "Invalid based_on_timeseries",
+			fmt.Sprintf("must be a JSON object: %v", err))
+		return
+	}
+
+	if rf, ok := doc["response_format"]; ok {
+		if s, _ := rf.(string); s != "timeseries" {
+			resp.Diagnostics.AddAttributeError(req.Path, "Invalid response_format",
+				fmt.Sprintf("must be \"timeseries\", got %q", s))
+		}
+	}
+
+	rawQueries, ok := doc["queries"]
+	if !ok {
+		resp.Diagnostics.AddAttributeError(req.Path, "Missing queries",
+			"based_on_timeseries must contain a `queries` array")
+		return
+	}
+	queries, ok := rawQueries.([]interface{})
+	if !ok || len(queries) == 0 {
+		resp.Diagnostics.AddAttributeError(req.Path, "Invalid queries",
+			"`queries` must be a non-empty array")
+		return
+	}
+
+	names := make(map[string]bool, len(queries))
+	for i, rawQuery := range queries {
+		query, ok := rawQuery.(map[string]interface{})
+		if !ok {
+			resp.Diagnostics.AddAttributeError(req.Path, "Invalid query",
+				fmt.Sprintf("queries[%d] must be an object", i))
+			continue
+		}
+		name, _ := query["name"].(string)
+		switch {
+		case name == "":
+			resp.Diagnostics.AddAttributeError(req.Path, "Missing query name",
+				fmt.Sprintf("queries[%d] must have a non-empty `name`", i))
+		case names[name]:
+			resp.Diagnostics.AddAttributeError(req.Path, "Duplicate query name",
+				fmt.Sprintf("query name %q is used more than once", name))
+		default:
+			names[name] = true
+		}
+		if ds, _ := query["data_source"].(string); ds == "" {
+			resp.Diagnostics.AddAttributeError(req.Path, "Missing data_source",
+				fmt.Sprintf("queries[%d] must have a non-empty `data_source`", i))
+		}
+	}
+
+	rawFormulas, ok := doc["formulas"]
+	if !ok {
+		return
+	}
+	formulas, ok := rawFormulas.([]interface{})
+	if !ok {
+		resp.Diagnostics.AddAttributeError(req.Path, "Invalid formulas",
+			"`formulas` must be an array")
+		return
+	}
+	for i, rawFormula := range formulas {
+		formula, ok := rawFormula.(map[string]interface{})
+		if !ok {
+			resp.Diagnostics.AddAttributeError(req.Path, "Invalid formula",
+				fmt.Sprintf("formulas[%d] must be an object", i))
+			continue
+		}
+		expr, _ := formula["formula"].(string)
+		if expr == "" {
+			resp.Diagnostics.AddAttributeError(req.Path, "Missing formula",
+				fmt.Sprintf("formulas[%d] must have a non-empty `formula`", i))
+			continue
+		}
+		// Only a bare identifier is resolved; arithmetic expressions are left alone.
+		if queryNameRegex.MatchString(expr) && !names[expr] {
+			resp.Diagnostics.AddAttributeError(req.Path, "Unknown query reference",
+				fmt.Sprintf("formulas[%d] references query %q, which is not defined in `queries`", i, expr))
+		}
+	}
 }
 
 // filterValueListValidator validates each filter in a list
@@ -306,8 +419,16 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 						Description: "The granularity level for cost allocation. Valid values are `daily` or `monthly`.",
 					},
 					"method": schema.StringAttribute{
-						Optional:    true,
-						Description: "The allocation method. Valid values are `even`, `proportional`, `proportional_timeseries`, or `percent`.",
+						Optional: true,
+						Validators: []validator.String{
+							stringvalidator.OneOf(
+								"even",
+								"percent",
+								"proportional",
+								"proportional_timeseries",
+							),
+						},
+						Description: "The allocation method.",
 					},
 					"allocated_by_tag_keys": schema.ListAttribute{
 						Optional:    true,
@@ -426,7 +547,20 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 						},
 					},
 					"based_on_timeseries": schema.SingleNestedBlock{
-						Attributes: map[string]schema.Attribute{},
+						Attributes: map[string]schema.Attribute{
+							"json": schema.StringAttribute{
+								Optional:   true,
+								Computed:   true,
+								CustomType: jsontypes.NormalizedType{},
+								Validators: []validator.String{
+									basedOnTimeseriesValidator{},
+								},
+								Description: "The timeseries query that determines the allocation proportions, encoded as a JSON object. " +
+									"Required when `method` is `proportional_timeseries`. " +
+									"Uses Datadog's formulas-and-functions request format with `queries`, `formulas`, and `response_format` keys. " +
+									"Build it with `jsonencode()`. The set of supported `data_source` values is defined by the API, not by this provider.",
+							},
+						},
 					},
 				},
 			},
@@ -464,7 +598,7 @@ func (r *datadogCustomAllocationRuleResource) Read(ctx context.Context, request 
 		return
 	}
 
-	r.updateState(ctx, &state, &resp)
+	r.updateState(ctx, &state, &resp, &response.Diagnostics)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -485,14 +619,14 @@ func (r *datadogCustomAllocationRuleResource) Create(ctx context.Context, reques
 
 	resp, _, err := r.Api.CreateCustomAllocationRule(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DatadogCustomAllocationRule"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating DatadogCustomAllocationRule"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
+	r.updateState(ctx, &state, &resp, &response.Diagnostics)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -529,14 +663,14 @@ func (r *datadogCustomAllocationRuleResource) Update(ctx context.Context, reques
 
 	resp, _, err := r.Api.UpdateCustomAllocationRule(r.Auth, id, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DatadogCustomAllocationRule"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating DatadogCustomAllocationRule"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
+	r.updateState(ctx, &state, &resp, &response.Diagnostics)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -565,7 +699,7 @@ func (r *datadogCustomAllocationRuleResource) Delete(ctx context.Context, reques
 	}
 }
 
-func (r *datadogCustomAllocationRuleResource) updateState(ctx context.Context, state *datadogCustomAllocationRuleModel, resp *datadogV2.ArbitraryRuleResponse) {
+func (r *datadogCustomAllocationRuleResource) updateState(ctx context.Context, state *datadogCustomAllocationRuleModel, resp *datadogV2.ArbitraryRuleResponse, diags *diag.Diagnostics) {
 	if data, ok := resp.GetDataOk(); ok {
 		if id, ok := data.GetIdOk(); ok {
 			state.ID = types.StringValue(*id)
@@ -735,9 +869,15 @@ func (r *datadogCustomAllocationRuleResource) updateState(ctx context.Context, s
 						strategyTf.BasedOnCosts = append(strategyTf.BasedOnCosts, &basedOnCostsTfItem)
 					}
 				}
-				if _, ok := strategy.GetBasedOnTimeseriesOk(); ok {
-					basedOnTimeseriesTf := basedOnTimeseriesModel{}
-					strategyTf.BasedOnTimeseries = &basedOnTimeseriesTf
+				if basedOnTimeseries, ok := strategy.GetBasedOnTimeseriesOk(); ok && len(*basedOnTimeseries) > 0 {
+					basedOnTimeseriesJson, err := json.Marshal(*basedOnTimeseries)
+					if err != nil {
+						diags.AddError("error marshalling based_on_timeseries", err.Error())
+					} else {
+						strategyTf.BasedOnTimeseries = &basedOnTimeseriesModel{
+							Json: jsontypes.NewNormalizedValue(string(basedOnTimeseriesJson)),
+						}
+					}
 				}
 				if evaluateGroupedByFilters, ok := strategy.GetEvaluateGroupedByFiltersOk(); ok && len(*evaluateGroupedByFilters) > 0 {
 
@@ -925,8 +1065,16 @@ func (r *datadogCustomAllocationRuleResource) buildDatadogCustomAllocationRuleRe
 			strategy.SetEvaluateGroupedByFilters(evaluateGroupedByFilters)
 		}
 
-		var basedOnTimeseries map[string]interface{}
-		strategy.BasedOnTimeseries = basedOnTimeseries
+		if state.Strategy.BasedOnTimeseries != nil &&
+			!state.Strategy.BasedOnTimeseries.Json.IsNull() &&
+			!state.Strategy.BasedOnTimeseries.Json.IsUnknown() {
+			var basedOnTimeseries map[string]interface{}
+			if err := json.Unmarshal([]byte(state.Strategy.BasedOnTimeseries.Json.ValueString()), &basedOnTimeseries); err != nil {
+				diags.AddError("error parsing based_on_timeseries", err.Error())
+			} else {
+				strategy.SetBasedOnTimeseries(basedOnTimeseries)
+			}
+		}
 		attributes.SetStrategy(strategy)
 	}
 

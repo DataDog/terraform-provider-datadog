@@ -115,7 +115,7 @@ func (r *openapiApiResource) Create(ctx context.Context, request resource.Create
 	params := datadogV2.NewCreateOpenAPIOptionalParameters().WithOpenapiSpecFile(bodyReader)
 	resp, _, err := r.Api.CreateOpenAPI(r.Auth, *params)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving OpenapiApi"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating OpenapiApi"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -147,7 +147,7 @@ func (r *openapiApiResource) Update(ctx context.Context, request resource.Update
 
 	resp, _, err := r.Api.UpdateOpenAPI(r.Auth, uuid, *params)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving OpenapiApi"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating OpenapiApi"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {

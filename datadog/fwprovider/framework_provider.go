@@ -57,15 +57,18 @@ var Resources = []func() resource.Resource{
 	NewIntegrationGcpResource,
 	NewIntegrationGcpStsResource,
 	NewCloudInventorySyncConfigResource,
+	NewGovernanceControlResource,
 	NewIpAllowListResource,
 	NewMonitorNotificationRuleResource,
 	NewSecurityNotificationRuleResource,
 	NewRestrictionPolicyResource,
 	NewRumApplicationResource,
+	NewRumExclusionFilterResource,
 	NewRumMetricResource,
 	NewRumRetentionFilterResource,
 	NewRumRetentionFiltersOrderResource,
 	NewSamlIdpMetadataResource,
+	NewRumRetentionQuotaResource,
 	NewSecurityFindingsMuteRuleResource,
 	NewSecurityFindingsMuteRulesOrderResource,
 	NewSecurityFindingsDueDateRuleResource,
@@ -83,6 +86,7 @@ var Resources = []func() resource.Resource{
 	NewSyntheticsGlobalVariableResource,
 	NewSyntheticsPrivateLocationResource,
 	NewSyntheticsSuiteResource,
+	NewTagRuleResource,
 	NewTeamLinkResource,
 	NewTeamMembershipResource,
 	NewTeamNotificationRuleResource,
@@ -97,6 +101,7 @@ var Resources = []func() resource.Resource{
 	NewServiceAccountResource,
 	NewWebhookResource,
 	NewWebhookCustomVariableResource,
+	NewWebhookOauth2ClientCredentialsResource,
 	NewLogsCustomDestinationResource,
 	NewLogsRestrictionQueryResource,
 	NewTenantBasedHandleResource,
@@ -104,6 +109,7 @@ var Resources = []func() resource.Resource{
 	NewAppsecWafCustomRuleResource,
 	NewWorkflowsWebhookHandleResource,
 	NewActionConnectionResource,
+	NewActionExecutionPolicyResource,
 	NewWorkflowAutomationResource,
 	NewAppBuilderAppResource,
 	NewObservabilitPipelineResource,
@@ -146,11 +152,16 @@ var Resources = []func() resource.Resource{
 	NewReferenceTableResource,
 	NewDatastoreResource,
 	NewDatastoreItemResource,
+	NewStatusPageResource,
+	NewStatusPageComponentResource,
+	NewStatusPageDegradationTemplateResource,
+	NewStatusPageMaintenanceTemplateResource,
 }
 
 var Datasources = []func() datasource.DataSource{
 	NewAPIKeyDataSource,
 	NewAwsAvailableNamespacesDataSource,
+	NewAwsIntegrationAccountDataSource,
 	NewAwsIntegrationExternalIDDataSource,
 	NewAwsIntegrationIAMPermissionsDataSource,
 	NewAwsIntegrationIAMPermissionsStandardDataSource,
@@ -211,6 +222,14 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogCurrentUserDataSource,
 	NewDatadogDatastoreDataSource,
 	NewDatastoreItemDataSource,
+	NewStatusPageDataSource,
+	NewStatusPagesDataSource,
+	NewStatusPageComponentDataSource,
+	NewStatusPageComponentsDataSource,
+	NewStatusPageDegradationTemplateDataSource,
+	NewStatusPageDegradationTemplatesDataSource,
+	NewStatusPageMaintenanceTemplateDataSource,
+	NewStatusPageMaintenanceTemplatesDataSource,
 }
 
 // FrameworkProvider struct
@@ -692,6 +711,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateWebIntegrationAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteWebIntegrationAccount", true)
 
+	// Enable Governance Tag Rules
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateTagRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetTagRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateTagRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteTagRule", true)
+
 	// Enable Logs Restriction Queries
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateRestrictionQuery", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetRestrictionQuery", true)
@@ -734,6 +759,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentNotificationTemplate", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationTemplate", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListIncidentNotificationTemplates", true)
+
+	// Enable IncidentPostmortemTemplate
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateIncidentPostmortemTemplate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetIncidentPostmortemTemplate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentPostmortemTemplate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentPostmortemTemplate", true)
 
 	// Enable OrgGroup
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateOrgGroup", true)
@@ -810,6 +841,19 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetTagIndexingRuleExemption", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteTagIndexingRuleExemption", true)
 
+	// Enable Governance Controls
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetGovernanceControl", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateGovernanceControl", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetGovernanceControlNotificationSettings", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateGovernanceControlNotificationSettings", true)
+
+	// Enable Execution Policies
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateExecutionPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetExecutionPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateExecutionPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
+
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
 		if parseErr != nil {
@@ -849,9 +893,13 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	if httpClientRetryEnabled {
 		ddClientConfig.RetryConfiguration.EnableRetry = httpClientRetryEnabled
 
-		if !config.HttpClientRetryBackoffMultiplier.IsNull() {
-			timeout := time.Duration(config.HttpClientRetryBackoffMultiplier.ValueInt64()) * time.Second
+		if !config.HttpClientRetryTimeout.IsNull() {
+			timeout := time.Duration(config.HttpClientRetryTimeout.ValueInt64()) * time.Second
 			ddClientConfig.RetryConfiguration.HTTPRetryTimeout = timeout
+		}
+
+		if !config.HttpClientRetryBackoffMultiplier.IsNull() {
+			ddClientConfig.RetryConfiguration.BackOffMultiplier = float64(config.HttpClientRetryBackoffMultiplier.ValueInt64())
 		}
 
 		if !config.HttpClientRetryBackoffBase.IsNull() {

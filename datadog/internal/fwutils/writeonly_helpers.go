@@ -35,6 +35,31 @@ type WriteOnlySecretConfig struct {
 	OriginalDescription  string
 	WriteOnlyDescription string
 	TriggerDescription   string
+	// ParentBlocks scopes the three attributes under static nested blocks, e.g.
+	// []string{"authentication", "basic"}. Empty means the resource root.
+	ParentBlocks []string
+}
+
+func (secretConfig WriteOnlySecretConfig) attrPath(attributeName string) frameworkPath.Path {
+	if len(secretConfig.ParentBlocks) == 0 {
+		return frameworkPath.Root(attributeName)
+	}
+	attributePath := frameworkPath.Root(secretConfig.ParentBlocks[0])
+	for _, blockName := range secretConfig.ParentBlocks[1:] {
+		attributePath = attributePath.AtName(blockName)
+	}
+	return attributePath.AtName(attributeName)
+}
+
+func (secretConfig WriteOnlySecretConfig) attrExpression(attributeName string) frameworkPath.Expression {
+	if len(secretConfig.ParentBlocks) == 0 {
+		return frameworkPath.MatchRoot(attributeName)
+	}
+	attributeExpression := frameworkPath.MatchRoot(secretConfig.ParentBlocks[0])
+	for _, blockName := range secretConfig.ParentBlocks[1:] {
+		attributeExpression = attributeExpression.AtName(blockName)
+	}
+	return attributeExpression.AtName(attributeName)
 }
 
 // CreateWriteOnlySecretAttributes generates three attributes for dual-mode secret support:
@@ -50,11 +75,11 @@ func CreateWriteOnlySecretAttributes(config WriteOnlySecretConfig) map[string]sc
 			Sensitive:   true,
 			Validators: []validator.String{
 				stringvalidator.ExactlyOneOf(
-					frameworkPath.MatchRoot(config.OriginalAttr),
-					frameworkPath.MatchRoot(config.WriteOnlyAttr),
+					config.attrExpression(config.OriginalAttr),
+					config.attrExpression(config.WriteOnlyAttr),
 				),
 				stringvalidator.PreferWriteOnlyAttribute(
-					frameworkPath.MatchRoot(config.WriteOnlyAttr),
+					config.attrExpression(config.WriteOnlyAttr),
 				),
 			},
 		},
@@ -65,11 +90,11 @@ func CreateWriteOnlySecretAttributes(config WriteOnlySecretConfig) map[string]sc
 			WriteOnly:   true,
 			Validators: []validator.String{
 				stringvalidator.ExactlyOneOf(
-					frameworkPath.MatchRoot(config.OriginalAttr),
-					frameworkPath.MatchRoot(config.WriteOnlyAttr),
+					config.attrExpression(config.OriginalAttr),
+					config.attrExpression(config.WriteOnlyAttr),
 				),
 				stringvalidator.AlsoRequires(
-					frameworkPath.MatchRoot(config.TriggerAttr),
+					config.attrExpression(config.TriggerAttr),
 				),
 			},
 		},
@@ -79,7 +104,7 @@ func CreateWriteOnlySecretAttributes(config WriteOnlySecretConfig) map[string]sc
 			Validators: []validator.String{
 				stringvalidator.LengthAtLeast(1),
 				stringvalidator.AlsoRequires(frameworkPath.Expressions{
-					frameworkPath.MatchRoot(config.WriteOnlyAttr),
+					config.attrExpression(config.WriteOnlyAttr),
 				}...),
 			},
 		},
@@ -116,7 +141,7 @@ func (h *WriteOnlySecretHandler) GetSecretForCreate(ctx context.Context, config 
 
 	// Check write-only attribute first (only exists in config, never in plan/state)
 	var writeOnlySecret types.String
-	result.Diagnostics.Append(config.GetAttribute(ctx, frameworkPath.Root(h.Config.WriteOnlyAttr), &writeOnlySecret)...)
+	result.Diagnostics.Append(config.GetAttribute(ctx, h.Config.attrPath(h.Config.WriteOnlyAttr), &writeOnlySecret)...)
 	if result.Diagnostics.HasError() {
 		return result
 	}
@@ -129,7 +154,7 @@ func (h *WriteOnlySecretHandler) GetSecretForCreate(ctx context.Context, config 
 
 	// Fall back to plaintext attribute
 	var plaintextSecret types.String
-	result.Diagnostics.Append(config.GetAttribute(ctx, frameworkPath.Root(h.Config.OriginalAttr), &plaintextSecret)...)
+	result.Diagnostics.Append(config.GetAttribute(ctx, h.Config.attrPath(h.Config.OriginalAttr), &plaintextSecret)...)
 	if result.Diagnostics.HasError() {
 		return result
 	}
@@ -159,7 +184,7 @@ func (h *WriteOnlySecretHandler) GetSecretForUpdate(ctx context.Context, config 
 
 	// Check if write-only secret is present in config
 	var writeOnlySecret types.String
-	result.Diagnostics.Append(config.GetAttribute(ctx, frameworkPath.Root(h.Config.WriteOnlyAttr), &writeOnlySecret)...)
+	result.Diagnostics.Append(config.GetAttribute(ctx, h.Config.attrPath(h.Config.WriteOnlyAttr), &writeOnlySecret)...)
 	if result.Diagnostics.HasError() {
 		return result
 	}
@@ -176,8 +201,8 @@ func (h *WriteOnlySecretHandler) GetSecretForUpdate(ctx context.Context, config 
 		// Pattern 1: API supports partial updates
 		// Only return secret if version trigger changed
 		var planVersion, priorVersion types.String
-		result.Diagnostics.Append(req.Plan.GetAttribute(ctx, frameworkPath.Root(h.Config.TriggerAttr), &planVersion)...)
-		result.Diagnostics.Append(req.State.GetAttribute(ctx, frameworkPath.Root(h.Config.TriggerAttr), &priorVersion)...)
+		result.Diagnostics.Append(req.Plan.GetAttribute(ctx, h.Config.attrPath(h.Config.TriggerAttr), &planVersion)...)
+		result.Diagnostics.Append(req.State.GetAttribute(ctx, h.Config.attrPath(h.Config.TriggerAttr), &priorVersion)...)
 		if result.Diagnostics.HasError() {
 			return result
 		}
@@ -195,7 +220,7 @@ func (h *WriteOnlySecretHandler) GetSecretForUpdate(ctx context.Context, config 
 
 	// Fall back to plaintext attribute
 	var plaintextSecret types.String
-	result.Diagnostics.Append(config.GetAttribute(ctx, frameworkPath.Root(h.Config.OriginalAttr), &plaintextSecret)...)
+	result.Diagnostics.Append(config.GetAttribute(ctx, h.Config.attrPath(h.Config.OriginalAttr), &plaintextSecret)...)
 	if result.Diagnostics.HasError() {
 		return result
 	}

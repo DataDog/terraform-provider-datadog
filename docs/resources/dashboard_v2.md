@@ -159,6 +159,7 @@ resource "datadog_dashboard_v2" "free_dashboard" {
 - `template_variable` (Block List) The list of template variables for this dashboard. (see [below for nested schema](#nestedblock--template_variable))
 - `template_variable_preset` (Block List) The list of selectable template variable presets for this dashboard. (see [below for nested schema](#nestedblock--template_variable_preset))
 - `url` (String) The URL of the dashboard.
+- `validate` (Boolean) Whether to send widgets to the Datadog API to validate widget configuration and query values during `terraform plan`. Defaults to `true`. Setting this to `false` skips only the Datadog API validation; local Terraform schema and checks for conflicting fields still run.
 - `widget` (Block List) The list of widgets to display on the dashboard. (see [below for nested schema](#nestedblock--widget))
 
 ### Read-Only
@@ -677,6 +678,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--query--event_query))
@@ -706,6 +708,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--bar_chart_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.bar_chart_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--bar_chart_definition--request--query--apm_resource_stats_query"></a>
@@ -1939,6 +1963,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query))
@@ -1968,6 +1993,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--change_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.change_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--change_definition--request--query--apm_resource_stats_query"></a>
@@ -3431,9 +3478,32 @@ Optional:
 
 Optional:
 
+- `apm_metrics_query` (Block List, Max: 1) APM metrics query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--histogram_query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) APM resource stats query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--histogram_query--apm_resource_stats_query))
 - `event_query` (Block List, Max: 1) Event query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--histogram_query--event_query))
 - `metric_query` (Block List, Max: 1) Metric query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--histogram_query--metric_query))
+
+<a id="nestedblock--widget--distribution_definition--request--histogram_query--apm_metrics_query"></a>
+### Nested Schema for `widget.distribution_definition.request.histogram_query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
+
 
 <a id="nestedblock--widget--distribution_definition--request--histogram_query--apm_resource_stats_query"></a>
 ### Nested Schema for `widget.distribution_definition.request.histogram_query.apm_resource_stats_query`
@@ -3649,6 +3719,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--query--event_query))
@@ -3678,6 +3749,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--distribution_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.distribution_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--distribution_definition--request--query--apm_resource_stats_query"></a>
@@ -4998,6 +5091,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query))
@@ -5027,6 +5121,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--geomap_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.geomap_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--geomap_definition--request--query--apm_resource_stats_query"></a>
@@ -6342,6 +6458,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--query--event_query))
@@ -6371,6 +6488,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--bar_chart_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.bar_chart_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--bar_chart_definition--request--query--apm_resource_stats_query"></a>
@@ -7604,6 +7743,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--event_query))
@@ -7633,6 +7773,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--query--apm_resource_stats_query"></a>
@@ -9096,9 +9258,32 @@ Optional:
 
 Optional:
 
+- `apm_metrics_query` (Block List, Max: 1) APM metrics query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) APM resource stats query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--apm_resource_stats_query))
 - `event_query` (Block List, Max: 1) Event query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--event_query))
 - `metric_query` (Block List, Max: 1) Metric query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--metric_query))
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.request.histogram_query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
+
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--apm_resource_stats_query"></a>
 ### Nested Schema for `widget.group_definition.widget.distribution_definition.request.histogram_query.apm_resource_stats_query`
@@ -9314,6 +9499,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--query--event_query))
@@ -9343,6 +9529,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request--query--apm_resource_stats_query"></a>
@@ -10663,6 +10871,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query))
@@ -10692,6 +10901,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--apm_resource_stats_query"></a>
@@ -11510,7 +11741,7 @@ Optional:
 - `legend_size` (String) The size of the legend displayed in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `marker` (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `heatmap_definition` block. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--marker))
-- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request))
+- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--time))
 - `title` (String) The title of the widget.
@@ -11563,6 +11794,7 @@ Optional:
 
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--formula))
+- `histogram_request` (Block List, Max: 1) Histogram request for distribution of point values. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--histogram_request))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query))
 - `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--process_query))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
@@ -11745,6 +11977,51 @@ Optional:
 
 
 
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--histogram_request"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.histogram_request`
+
+Required:
+
+- `histogram_query` (Block List, Min: 1, Max: 1) Singular metric query for a histogram-mode heatmap request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--histogram_request--histogram_query))
+
+Optional:
+
+- `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--histogram_request--style))
+
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--histogram_request--histogram_query"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.histogram_request.histogram_query`
+
+Required:
+
+- `metric_query` (Block List, Min: 1, Max: 1) Metric query for distribution of point values. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--histogram_request--histogram_query--metric_query))
+
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--histogram_request--histogram_query--metric_query"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.histogram_request.histogram_query.metric_query`
+
+Required:
+
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--histogram_request--style"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.histogram_request.style`
+
+Optional:
+
+- `order_by` (String) How to order series. Valid values are `tags`, `values`.
+- `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+
+
+
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query"></a>
 ### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.log_query`
 
@@ -11829,6 +12106,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--event_query))
@@ -11858,6 +12136,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--query--apm_resource_stats_query"></a>
@@ -12754,7 +13054,7 @@ Optional:
 - `no_metric_hosts` (Boolean) A Boolean indicating whether to show nodes with no metrics.
 - `node_type` (String) The type of node used. Valid values are `host`, `container`.
 - `notes` (String) Notes/description text for the host map widget.
-- `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request))
+- `request` (Block List, Max: 1) A request using the legacy metric format, the infrastructure-backed format, or the DDSQL data-projection format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request))
 - `scope` (List of String) The list of tags used to filter the map.
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--style))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--time))
@@ -12778,8 +13078,1749 @@ Optional:
 
 Optional:
 
+- `child` (Block List, Max: 1) Optional child request for one level of hierarchical visualization. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child))
+- `conditional_formats` (Block List) Conditional formatting rules applied to fill values. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--conditional_formats))
+- `enrichment` (Block List) Metric or event queries joined to the entity set. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment))
 - `fill` (Block List, Max: 1) The query used to fill the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill))
+- `filter` (String) Filter string for the entity set in tag format, such as `env:prod`.
+- `group_by` (Block List) Ordered grouping hierarchy for infrastructure entities. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--group_by))
+- `limit` (Number) Maximum number of rows to return from the DDSQL data-projection request.
+- `no_group_hosts` (Boolean) Whether to hide entities that have no group assignment.
+- `no_metric_hosts` (Boolean) Whether to hide entities that have no enrichment data.
+- `node_type` (String) Infrastructure entity type to visualize. Valid values are `host`, `container`, `pod`, `cluster`.
+- `projection` (Block List, Max: 1) Mapping from published-dataset columns to host map dimensions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--projection))
+- `query` (Block List, Max: 1) Published-dataset query used by the DDSQL data-projection request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--query))
+- `request_type` (String) Identifies an infrastructure-backed or DDSQL data-projection host map request. Valid values are `infrastructure_hostmap`, `data_projection`.
 - `size` (Block List, Max: 1) The query used to size the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size))
+- `style` (Block List, Max: 1) Style configuration for the infrastructure host map. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--style))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child`
+
+Required:
+
+- `enrichment` (Block List, Min: 1) Metric or event queries joined to the entity set. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment))
+- `node_type` (String) Infrastructure entity type to visualize. Valid values are `host`, `container`, `pod`, `cluster`.
+- `request_type` (String) Identifies an infrastructure-backed host map request. Valid values are `infrastructure_hostmap`.
+
+Optional:
+
+- `conditional_formats` (Block List) Conditional formatting rules applied to fill values. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--conditional_formats))
+- `filter` (String) Filter string for the entity set in tag format, such as `env:prod`.
+- `group_by` (Block List) Ordered grouping hierarchy for infrastructure entities. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--group_by))
+- `no_group_hosts` (Boolean) Whether to hide entities that have no group assignment.
+- `no_metric_hosts` (Boolean) Whether to hide entities that have no enrichment data.
+- `style` (Block List, Max: 1) Style configuration for the infrastructure host map. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--style))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment`
+
+Required:
+
+- `formula` (Block List, Min: 1) Formulas that operate on queries and drive visual dimensions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula))
+- `query` (Block List, Min: 1) Queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query))
+- `response_format` (String) Response format for the scalar formula request. Valid values are `scalar`.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.formula`
+
+Required:
+
+- `dimension` (String) Visual dimension driven by the formula. Valid values are `node`, `fill`, `size`.
+- `formula_expression` (String) String expression built from queries, formulas, and functions.
+
+Optional:
+
+- `alias` (String) Expression alias.
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula--number_format))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) The definition of `NumberFormatUnitScale` object. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.formula.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String) The name of the unit.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query`
+
+Optional:
+
+- `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--apm_metrics_query))
+- `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--cloud_cost_query))
+- `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query))
+- `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--metric_query))
+- `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--process_query))
+- `product_analytics_extended_query` (Block List, Max: 1) The Product Analytics Extended query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query))
+- `retention_query` (Block List, Max: 1) The retention query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query))
+- `slo_query` (Block List, Max: 1) The SLO query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--slo_query))
+- `user_journey_query` (Block List, Max: 1) The User Journey query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--apm_dependency_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.apm_dependency_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `operation_name` (String) Name of operation on service.
+- `resource_name` (String) APM resource.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.apm_resource_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (List of String) Array of fields to group results by.
+- `operation_name` (String) Name of operation on service.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) Query for Cloud Cost data.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by_fields))
+- `indexes` (List of String) An array of index names to query in the stream. Omit or use `[]` to query all indexes at once.
+- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--search))
+- `storage` (String) Option for storage location. Feature in Private Beta.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--metric_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.metric_query`
+
+Required:
+
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.process_query`
+
+Required:
+
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
+- `metric` (String) The process metric name.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
+- `limit` (Number) The number of hits to return.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+- `tag_filters` (List of String) An array of tags to filter by.
+- `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query`
+
+Required:
+
+- `compute` (Block List, Min: 1, Max: 1) Compute configuration for the Product Analytics Extended query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--compute))
+- `data_source` (String) Data source for Product Analytics Extended queries. Valid values are `product_analytics_extended`.
+- `name` (String) Name of the query for use in formulas.
+- `query` (Block List, Min: 1, Max: 1) Base Product Analytics event query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--query))
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--audience_filters))
+- `group_by` (Block List) Group by configuration for the Product Analytics Extended query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--group_by))
+- `indexes` (List of String) Event indexes to query. Use `*` to query all indexes.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation method for the Product Analytics Extended query. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) Fixed-width time bucket interval in milliseconds. Mutually exclusive with `rollup`.
+- `metric` (String) Measurable attribute to compute.
+- `name` (String) Name of the compute for use in formulas.
+- `rollup` (Block List, Max: 1) Calendar-aligned time bucket. Mutually exclusive with `interval`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--compute--rollup))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--compute--rollup"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query.compute.rollup`
+
+Required:
+
+- `type` (String) Type of calendar interval. Valid values are `day`, `week`, `month`, `year`, `quarter`, `minute`, `hour`.
+
+Optional:
+
+- `alignment` (String) Alignment of the calendar interval.
+- `quantity` (Number) Quantity of the calendar interval.
+- `timezone` (String) Timezone for the calendar interval.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query.query`
+
+Required:
+
+- `data_source` (String) Data source for the Product Analytics event query. Valid values are `product_analytics`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the Product Analytics event query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--query--search))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--query--search"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query.query.search`
+
+Required:
+
+- `query` (String) Product Analytics event search query used to filter views or actions.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--audience_filters"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--audience_filters--user))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--audience_filters--account"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--audience_filters--segment"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--audience_filters--user"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query.group_by`
+
+Required:
+
+- `facet` (String) Facet name to group by.
+
+Optional:
+
+- `limit` (Number) Maximum number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
+- `sort` (Block List, Max: 1) Options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--group_by--sort))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--group_by--sort"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.retention_query`
+
+Required:
+
+- `compute` (Block List, Min: 1, Max: 1) Compute configuration for the retention query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--compute))
+- `data_source` (String) Data source for retention queries. Valid values are `product_analytics_retention`.
+- `name` (String) Name of the query for use in formulas.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the retention query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search))
+
+Optional:
+
+- `group_by` (Block List) Group by configuration for the retention query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--group_by))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.retention_query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation for the retention query, including standard event aggregations and `pcNN` percentiles.
+- `metric` (String) Metric for the retention computation. Valid values are `__dd.retention`, `__dd.retention_rate`.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.retention_query.search`
+
+Required:
+
+- `cohort_criteria` (Block List, Min: 1, Max: 1) Criteria used to construct the retention cohort. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--cohort_criteria))
+- `retention_entity` (String) Entity tracked for retention. Valid values are `@usr.id`, `@account.id`.
+- `return_condition` (String) Condition for counting an entity as returned. Valid values are `conversion_on`, `conversion_on_or_after`.
+
+Optional:
+
+- `filters` (Block List, Max: 1) Filters for the retention search. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--filters))
+- `return_criteria` (Block List, Max: 1) Criteria used to identify return activity. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--return_criteria))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--cohort_criteria"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.retention_query.search.cohort_criteria`
+
+Required:
+
+- `base_query` (Block List, Min: 1, Max: 1) Base Product Analytics event query for cohort membership. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--cohort_criteria--base_query))
+- `time_interval` (Block List, Min: 1, Max: 1) Time interval used to build the cohort. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--cohort_criteria--time_interval))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--cohort_criteria--base_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.retention_query.search.cohort_criteria.base_query`
+
+Required:
+
+- `data_source` (String) Data source for the Product Analytics event query. Valid values are `product_analytics`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the Product Analytics event query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--cohort_criteria--base_query--search))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--cohort_criteria--base_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.retention_query.search.cohort_criteria.base_query.search`
+
+Required:
+
+- `query` (String) Product Analytics event search query used to filter views or actions.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--cohort_criteria--time_interval"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.retention_query.search.cohort_criteria.time_interval`
+
+Required:
+
+- `type` (String) Type of cohort time interval. Valid values are `calendar`.
+- `value` (Block List, Min: 1, Max: 1) Calendar interval used to build the cohort. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--cohort_criteria--time_interval--value))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--cohort_criteria--time_interval--value"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.retention_query.search.cohort_criteria.time_interval.value`
+
+Required:
+
+- `type` (String) Type of calendar interval. Valid values are `day`, `week`, `month`, `year`, `quarter`, `minute`, `hour`.
+
+Optional:
+
+- `alignment` (String) Alignment of the calendar interval.
+- `quantity` (Number) Quantity of the calendar interval.
+- `timezone` (String) Timezone for the calendar interval.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--filters"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.retention_query.search.filters`
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--filters--audience_filters))
+- `string_filter` (String) String filter for the retention query.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--filters--audience_filters"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.retention_query.search.filters.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--filters--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--filters--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--filters--audience_filters--user))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--filters--audience_filters--account"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.retention_query.search.filters.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--filters--audience_filters--segment"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.retention_query.search.filters.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--filters--audience_filters--user"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.retention_query.search.filters.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--return_criteria"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.retention_query.search.return_criteria`
+
+Required:
+
+- `base_query` (Block List, Min: 1, Max: 1) Base Product Analytics event query for return activity. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--return_criteria--base_query))
+
+Optional:
+
+- `time_interval` (Block List, Max: 1) Time interval for the return criteria. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--return_criteria--time_interval))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--return_criteria--base_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.retention_query.search.return_criteria.base_query`
+
+Required:
+
+- `data_source` (String) Data source for the Product Analytics event query. Valid values are `product_analytics`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the Product Analytics event query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--return_criteria--base_query--search))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--return_criteria--base_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.retention_query.search.return_criteria.base_query.search`
+
+Required:
+
+- `query` (String) Product Analytics event search query used to filter views or actions.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--return_criteria--time_interval"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.retention_query.search.return_criteria.time_interval`
+
+Required:
+
+- `type` (String) Type of return interval. Valid values are `fixed`.
+- `unit` (String) Unit of the return interval. Valid values are `day`, `week`, `month`.
+- `value` (Number) Value of the return interval.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.retention_query.group_by`
+
+Required:
+
+- `facet` (String) Facet to group by.
+- `target` (String) Target for the retention group by. Valid values are `cohort`, `return_period`.
+
+Optional:
+
+- `limit` (Number) Maximum number of groups.
+- `should_exclude_missing` (Boolean) Whether to exclude missing values.
+- `sort` (Block List, Max: 1) Sort configuration for retention group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--group_by--sort))
+- `source` (String) Source field for the retention group by.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--retention_query--group_by--sort"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.retention_query.group_by.sort`
+
+Optional:
+
+- `order` (String) Sort order for retention group by results. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--slo_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query measures.
+
+Optional:
+
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.user_journey_query`
+
+Required:
+
+- `compute` (Block List, Min: 1, Max: 1) Compute configuration for the User Journey query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--compute))
+- `data_source` (String) Data source for User Journey queries. Valid values are `product_analytics_journey`.
+- `name` (String) Name of the query for use in formulas.
+- `search` (Block List, Min: 1, Max: 1) User journey search configuration. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search))
+
+Optional:
+
+- `group_by` (Block List) Group by configuration for the User Journey query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--group_by))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.user_journey_query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation method for the User Journey query. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) Time bucket interval in milliseconds for timeseries queries.
+- `metric` (String) Metric for the User Journey computation. Valid values are `__dd.conversion`, `__dd.conversion_rate`, `__dd.time_to_convert`.
+- `target` (Block List, Max: 1) Journey target to compute. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--compute--target))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--compute--target"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.user_journey_query.compute.target`
+
+Required:
+
+- `type` (String) Target type.
+
+Optional:
+
+- `end` (String) End node of the target range.
+- `start` (String) Start node of the target range.
+- `value` (String) Target node value.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.user_journey_query.search`
+
+Required:
+
+- `expression` (String) Expression describing the journey between nodes.
+- `node_objects` (String) JSON object mapping journey node names to Product Analytics base queries.
+
+Optional:
+
+- `filters` (Block List, Max: 1) Filters for the user journey search. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters))
+- `join_keys` (Block List, Max: 1) Join keys for the user journey query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--join_keys))
+- `step_aliases` (String) JSON object mapping journey step names to display aliases.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.user_journey_query.search.filters`
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--audience_filters))
+- `graph_filter` (Block List) Graph filters for the user journey search. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--graph_filter))
+- `string_filter` (String) String filter for the user journey search.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--audience_filters"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.user_journey_query.search.filters.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--audience_filters--user))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--audience_filters--account"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.user_journey_query.search.filters.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--audience_filters--segment"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.user_journey_query.search.filters.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--audience_filters--user"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.user_journey_query.search.filters.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--graph_filter"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.user_journey_query.search.filters.graph_filter`
+
+Optional:
+
+- `name` (String) Graph filter name.
+- `operator` (String) Graph filter operator.
+- `target` (Block List, Max: 1) Target for the graph filter. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--graph_filter--target))
+- `value` (Number) Graph filter value.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--graph_filter--target"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.user_journey_query.search.filters.graph_filter.target`
+
+Required:
+
+- `type` (String) Target type.
+
+Optional:
+
+- `end` (String) End node of the target range.
+- `start` (String) Start node of the target range.
+- `value` (String) Target node value.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--join_keys"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.user_journey_query.search.join_keys`
+
+Required:
+
+- `primary` (String) Primary join key.
+
+Optional:
+
+- `secondary` (List of String) Secondary join keys.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.user_journey_query.group_by`
+
+Required:
+
+- `facet` (String) Facet name to group by.
+
+Optional:
+
+- `limit` (Number) Maximum number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
+- `sort` (Block List, Max: 1) Options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--group_by--sort))
+- `target` (Block List, Max: 1) Journey target to group. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--group_by--target))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--group_by--sort"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.user_journey_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--group_by--target"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.user_journey_query.group_by.target`
+
+Required:
+
+- `type` (String) Target type.
+
+Optional:
+
+- `end` (String) End node of the target range.
+- `start` (String) Start node of the target range.
+- `value` (String) Target node value.
+
+
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--conditional_formats"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.conditional_formats`
+
+Required:
+
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- `value` (Number) A value for the comparator.
+
+Optional:
+
+- `custom_bg_color` (String) The color palette to apply to the background, same values available as palette.
+- `custom_fg_color` (String) The color palette to apply to the foreground, same values available as palette.
+- `hide_value` (Boolean) Setting this to True hides values.
+- `image_url` (String) Displays an image as the background.
+- `metric` (String) The metric from the request to correlate with this conditional format.
+- `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.group_by`
+
+Required:
+
+- `column` (String) Column name from the entity table, such as `cloud_provider`, `tags`, or `labels`.
+
+Optional:
+
+- `key` (String) Key within the column for nested attribute types, such as `service` within `tags`.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--style"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.style`
+
+Optional:
+
+- `fill_max` (Number) Maximum value for the fill color scale. Omit to use automatic scaling.
+- `fill_min` (Number) Minimum value for the fill color scale. Omit to use automatic scaling.
+- `palette` (String) Color palette name or alias.
+- `palette_flip` (Boolean) Whether to invert the color palette.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--conditional_formats"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.conditional_formats`
+
+Required:
+
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- `value` (Number) A value for the comparator.
+
+Optional:
+
+- `custom_bg_color` (String) The color palette to apply to the background, same values available as palette.
+- `custom_fg_color` (String) The color palette to apply to the foreground, same values available as palette.
+- `hide_value` (Boolean) Setting this to True hides values.
+- `image_url` (String) Displays an image as the background.
+- `metric` (String) The metric from the request to correlate with this conditional format.
+- `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment`
+
+Required:
+
+- `formula` (Block List, Min: 1) Formulas that operate on queries and drive visual dimensions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula))
+- `query` (Block List, Min: 1) Queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query))
+- `response_format` (String) Response format for the scalar formula request. Valid values are `scalar`.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.formula`
+
+Required:
+
+- `dimension` (String) Visual dimension driven by the formula. Valid values are `node`, `fill`, `size`.
+- `formula_expression` (String) String expression built from queries, formulas, and functions.
+
+Optional:
+
+- `alias` (String) Expression alias.
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula--number_format))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) The definition of `NumberFormatUnitScale` object. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.formula.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String) The name of the unit.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query`
+
+Optional:
+
+- `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--apm_metrics_query))
+- `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--cloud_cost_query))
+- `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query))
+- `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--metric_query))
+- `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--process_query))
+- `product_analytics_extended_query` (Block List, Max: 1) The Product Analytics Extended query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query))
+- `retention_query` (Block List, Max: 1) The retention query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query))
+- `slo_query` (Block List, Max: 1) The SLO query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--slo_query))
+- `user_journey_query` (Block List, Max: 1) The User Journey query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--apm_dependency_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.apm_dependency_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `operation_name` (String) Name of operation on service.
+- `resource_name` (String) APM resource.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.apm_resource_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (List of String) Array of fields to group results by.
+- `operation_name` (String) Name of operation on service.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) Query for Cloud Cost data.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--group_by_fields))
+- `indexes` (List of String) An array of index names to query in the stream. Omit or use `[]` to query all indexes at once.
+- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--search))
+- `storage` (String) Option for storage location. Feature in Private Beta.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--metric_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.metric_query`
+
+Required:
+
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.process_query`
+
+Required:
+
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
+- `metric` (String) The process metric name.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
+- `limit` (Number) The number of hits to return.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+- `tag_filters` (List of String) An array of tags to filter by.
+- `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query`
+
+Required:
+
+- `compute` (Block List, Min: 1, Max: 1) Compute configuration for the Product Analytics Extended query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--compute))
+- `data_source` (String) Data source for Product Analytics Extended queries. Valid values are `product_analytics_extended`.
+- `name` (String) Name of the query for use in formulas.
+- `query` (Block List, Min: 1, Max: 1) Base Product Analytics event query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--query))
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--audience_filters))
+- `group_by` (Block List) Group by configuration for the Product Analytics Extended query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--group_by))
+- `indexes` (List of String) Event indexes to query. Use `*` to query all indexes.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation method for the Product Analytics Extended query. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) Fixed-width time bucket interval in milliseconds. Mutually exclusive with `rollup`.
+- `metric` (String) Measurable attribute to compute.
+- `name` (String) Name of the compute for use in formulas.
+- `rollup` (Block List, Max: 1) Calendar-aligned time bucket. Mutually exclusive with `interval`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--compute--rollup))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--compute--rollup"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query.compute.rollup`
+
+Required:
+
+- `type` (String) Type of calendar interval. Valid values are `day`, `week`, `month`, `year`, `quarter`, `minute`, `hour`.
+
+Optional:
+
+- `alignment` (String) Alignment of the calendar interval.
+- `quantity` (Number) Quantity of the calendar interval.
+- `timezone` (String) Timezone for the calendar interval.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query.query`
+
+Required:
+
+- `data_source` (String) Data source for the Product Analytics event query. Valid values are `product_analytics`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the Product Analytics event query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--query--search))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--query--search"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query.query.search`
+
+Required:
+
+- `query` (String) Product Analytics event search query used to filter views or actions.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--audience_filters"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--audience_filters--user))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--audience_filters--account"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--audience_filters--segment"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--audience_filters--user"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query.group_by`
+
+Required:
+
+- `facet` (String) Facet name to group by.
+
+Optional:
+
+- `limit` (Number) Maximum number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
+- `sort` (Block List, Max: 1) Options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--group_by--sort))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--group_by--sort"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.retention_query`
+
+Required:
+
+- `compute` (Block List, Min: 1, Max: 1) Compute configuration for the retention query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--compute))
+- `data_source` (String) Data source for retention queries. Valid values are `product_analytics_retention`.
+- `name` (String) Name of the query for use in formulas.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the retention query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search))
+
+Optional:
+
+- `group_by` (Block List) Group by configuration for the retention query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--group_by))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.retention_query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation for the retention query, including standard event aggregations and `pcNN` percentiles.
+- `metric` (String) Metric for the retention computation. Valid values are `__dd.retention`, `__dd.retention_rate`.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.retention_query.search`
+
+Required:
+
+- `cohort_criteria` (Block List, Min: 1, Max: 1) Criteria used to construct the retention cohort. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--cohort_criteria))
+- `retention_entity` (String) Entity tracked for retention. Valid values are `@usr.id`, `@account.id`.
+- `return_condition` (String) Condition for counting an entity as returned. Valid values are `conversion_on`, `conversion_on_or_after`.
+
+Optional:
+
+- `filters` (Block List, Max: 1) Filters for the retention search. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--filters))
+- `return_criteria` (Block List, Max: 1) Criteria used to identify return activity. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--return_criteria))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--cohort_criteria"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.retention_query.search.cohort_criteria`
+
+Required:
+
+- `base_query` (Block List, Min: 1, Max: 1) Base Product Analytics event query for cohort membership. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--cohort_criteria--base_query))
+- `time_interval` (Block List, Min: 1, Max: 1) Time interval used to build the cohort. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--cohort_criteria--time_interval))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--cohort_criteria--base_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.retention_query.search.cohort_criteria.base_query`
+
+Required:
+
+- `data_source` (String) Data source for the Product Analytics event query. Valid values are `product_analytics`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the Product Analytics event query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--cohort_criteria--base_query--search))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--cohort_criteria--base_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.retention_query.search.cohort_criteria.base_query.search`
+
+Required:
+
+- `query` (String) Product Analytics event search query used to filter views or actions.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--cohort_criteria--time_interval"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.retention_query.search.cohort_criteria.time_interval`
+
+Required:
+
+- `type` (String) Type of cohort time interval. Valid values are `calendar`.
+- `value` (Block List, Min: 1, Max: 1) Calendar interval used to build the cohort. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--cohort_criteria--time_interval--value))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--cohort_criteria--time_interval--value"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.retention_query.search.cohort_criteria.time_interval.value`
+
+Required:
+
+- `type` (String) Type of calendar interval. Valid values are `day`, `week`, `month`, `year`, `quarter`, `minute`, `hour`.
+
+Optional:
+
+- `alignment` (String) Alignment of the calendar interval.
+- `quantity` (Number) Quantity of the calendar interval.
+- `timezone` (String) Timezone for the calendar interval.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--filters"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.retention_query.search.filters`
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--filters--audience_filters))
+- `string_filter` (String) String filter for the retention query.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--filters--audience_filters"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.retention_query.search.filters.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--filters--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--filters--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--filters--audience_filters--user))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--filters--audience_filters--account"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.retention_query.search.filters.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--filters--audience_filters--segment"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.retention_query.search.filters.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--filters--audience_filters--user"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.retention_query.search.filters.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--return_criteria"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.retention_query.search.return_criteria`
+
+Required:
+
+- `base_query` (Block List, Min: 1, Max: 1) Base Product Analytics event query for return activity. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--return_criteria--base_query))
+
+Optional:
+
+- `time_interval` (Block List, Max: 1) Time interval for the return criteria. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--return_criteria--time_interval))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--return_criteria--base_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.retention_query.search.return_criteria.base_query`
+
+Required:
+
+- `data_source` (String) Data source for the Product Analytics event query. Valid values are `product_analytics`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the Product Analytics event query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--return_criteria--base_query--search))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--return_criteria--base_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.retention_query.search.return_criteria.base_query.search`
+
+Required:
+
+- `query` (String) Product Analytics event search query used to filter views or actions.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--search--return_criteria--time_interval"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.retention_query.search.return_criteria.time_interval`
+
+Required:
+
+- `type` (String) Type of return interval. Valid values are `fixed`.
+- `unit` (String) Unit of the return interval. Valid values are `day`, `week`, `month`.
+- `value` (Number) Value of the return interval.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.retention_query.group_by`
+
+Required:
+
+- `facet` (String) Facet to group by.
+- `target` (String) Target for the retention group by. Valid values are `cohort`, `return_period`.
+
+Optional:
+
+- `limit` (Number) Maximum number of groups.
+- `should_exclude_missing` (Boolean) Whether to exclude missing values.
+- `sort` (Block List, Max: 1) Sort configuration for retention group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--group_by--sort))
+- `source` (String) Source field for the retention group by.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--retention_query--group_by--sort"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.retention_query.group_by.sort`
+
+Optional:
+
+- `order` (String) Sort order for retention group by results. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--slo_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query measures.
+
+Optional:
+
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.user_journey_query`
+
+Required:
+
+- `compute` (Block List, Min: 1, Max: 1) Compute configuration for the User Journey query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--compute))
+- `data_source` (String) Data source for User Journey queries. Valid values are `product_analytics_journey`.
+- `name` (String) Name of the query for use in formulas.
+- `search` (Block List, Min: 1, Max: 1) User journey search configuration. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--search))
+
+Optional:
+
+- `group_by` (Block List) Group by configuration for the User Journey query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--group_by))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.user_journey_query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation method for the User Journey query. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) Time bucket interval in milliseconds for timeseries queries.
+- `metric` (String) Metric for the User Journey computation. Valid values are `__dd.conversion`, `__dd.conversion_rate`, `__dd.time_to_convert`.
+- `target` (Block List, Max: 1) Journey target to compute. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--compute--target))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--compute--target"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.user_journey_query.compute.target`
+
+Required:
+
+- `type` (String) Target type.
+
+Optional:
+
+- `end` (String) End node of the target range.
+- `start` (String) Start node of the target range.
+- `value` (String) Target node value.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.user_journey_query.search`
+
+Required:
+
+- `expression` (String) Expression describing the journey between nodes.
+- `node_objects` (String) JSON object mapping journey node names to Product Analytics base queries.
+
+Optional:
+
+- `filters` (Block List, Max: 1) Filters for the user journey search. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters))
+- `join_keys` (Block List, Max: 1) Join keys for the user journey query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--join_keys))
+- `step_aliases` (String) JSON object mapping journey step names to display aliases.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.user_journey_query.search.filters`
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--audience_filters))
+- `graph_filter` (Block List) Graph filters for the user journey search. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--graph_filter))
+- `string_filter` (String) String filter for the user journey search.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--audience_filters"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.user_journey_query.search.filters.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--audience_filters--user))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--audience_filters--account"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.user_journey_query.search.filters.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--audience_filters--segment"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.user_journey_query.search.filters.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--audience_filters--user"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.user_journey_query.search.filters.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--graph_filter"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.user_journey_query.search.filters.graph_filter`
+
+Optional:
+
+- `name` (String) Graph filter name.
+- `operator` (String) Graph filter operator.
+- `target` (Block List, Max: 1) Target for the graph filter. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--graph_filter--target))
+- `value` (Number) Graph filter value.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--graph_filter--target"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.user_journey_query.search.filters.graph_filter.target`
+
+Required:
+
+- `type` (String) Target type.
+
+Optional:
+
+- `end` (String) End node of the target range.
+- `start` (String) Start node of the target range.
+- `value` (String) Target node value.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--join_keys"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.user_journey_query.search.join_keys`
+
+Required:
+
+- `primary` (String) Primary join key.
+
+Optional:
+
+- `secondary` (List of String) Secondary join keys.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.user_journey_query.group_by`
+
+Required:
+
+- `facet` (String) Facet name to group by.
+
+Optional:
+
+- `limit` (Number) Maximum number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
+- `sort` (Block List, Max: 1) Options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--group_by--sort))
+- `target` (Block List, Max: 1) Journey target to group. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--group_by--target))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--group_by--sort"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.user_journey_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--user_journey_query--group_by--target"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.user_journey_query.group_by.target`
+
+Required:
+
+- `type` (String) Target type.
+
+Optional:
+
+- `end` (String) End node of the target range.
+- `start` (String) Start node of the target range.
+- `value` (String) Target node value.
+
+
+
+
+
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill"></a>
 ### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill`
@@ -13053,6 +15094,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--query--event_query))
@@ -13082,6 +15124,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--query--apm_resource_stats_query"></a>
@@ -13907,6 +15971,120 @@ Optional:
 
 
 
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.group_by`
+
+Required:
+
+- `column` (String) Column name from the entity table, such as `cloud_provider`, `tags`, or `labels`.
+
+Optional:
+
+- `key` (String) Key within the column for nested attribute types, such as `service` within `tags`.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--projection"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.projection`
+
+Required:
+
+- `dimension` (Block List, Min: 1) Column-to-dimension mappings for the host map projection. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension))
+- `type` (String) Type of the host map projection. Valid values are `hostmap`.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Source column name from the dataset.
+- `dimension` (String) Visual dimension driven by the dataset column. Valid values are `node`, `fill`, `size`, `group`.
+
+Optional:
+
+- `alias` (String) Alias used to label the column instead of its name.
+- `number_format` (Block List, Max: 1) Number formatting options for the projected column. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.projection.dimension.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) The definition of `NumberFormatUnitScale` object. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.projection.dimension.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String) The name of the unit.
+
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.query`
+
+Required:
+
+- `data_source` (String) Identifies this as a published-dataset list query. Valid values are `dataset`.
+- `dataset_id` (String) ID of the published dataset to query.
+- `dataset_provider` (String) Product page that published the dataset. Valid values are `ddsql_query`.
+
+Optional:
+
+- `filter` (String) Filter applied to the dataset rows using events-style search syntax.
+- `limit` (Number) Maximum number of rows to return from the dataset query.
+- `sort` (Block List, Max: 1) Sort configuration for the dataset query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--query--sort))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--query--sort"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.query.sort`
+
+Required:
+
+- `field` (Block List, Min: 1) List of fields to sort the dataset rows by, applied in order. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--query--sort--field))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--query--sort--field"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.query.sort.field`
+
+Required:
+
+- `name` (String) Name of the field to sort on.
+- `order` (String) Sort direction for the field. Valid values are `asc`, `desc`.
+
+
+
+
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size"></a>
 ### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size`
 
@@ -14179,6 +16357,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--query--event_query))
@@ -14208,6 +16387,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--query--apm_resource_stats_query"></a>
@@ -15031,6 +17232,17 @@ Optional:
 - `interval` (Number) Define the time interval in seconds.
 
 
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--style"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.style`
+
+Optional:
+
+- `fill_max` (Number) Maximum value for the fill color scale. Omit to use automatic scaling.
+- `fill_min` (Number) Minimum value for the fill color scale. Omit to use automatic scaling.
+- `palette` (String) Color palette name or alias.
+- `palette_flip` (Boolean) Whether to invert the color palette.
 
 
 
@@ -16183,6 +18395,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query))
@@ -16212,6 +18425,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--query--apm_resource_stats_query"></a>
@@ -17570,6 +19805,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query))
@@ -17599,6 +19835,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--apm_resource_stats_query"></a>
@@ -19105,6 +21363,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query))
@@ -19134,6 +21393,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query"></a>
@@ -20104,6 +22385,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--query--event_query))
@@ -20133,6 +22415,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--query--apm_resource_stats_query"></a>
@@ -21231,6 +23535,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--query--event_query))
@@ -21260,6 +23565,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--query--apm_resource_stats_query"></a>
@@ -22777,6 +25104,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query))
@@ -22806,6 +25134,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--apm_resource_stats_query"></a>
@@ -24312,6 +26662,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query))
@@ -24341,6 +26692,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--apm_resource_stats_query"></a>
@@ -25616,6 +27989,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query))
@@ -25645,6 +28019,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--apm_resource_stats_query"></a>
@@ -26616,9 +29012,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for the Topology request ('service_map' or 'data_streams').
+- `data_source` (String) The data source for the Topology request. Valid values are `service_map`, `data_streams`.
 - `filters` (List of String) Your environment and primary tag (or `*` if enabled for your account).
-- `service` (String) Name of the service.
+- `service` (String) Name of the service. Leave this empty and use `query_string` instead.
+
+Optional:
+
+- `query_string` (String) A search string for filtering services. When set, this replaces the `service` field.
 
 
 
@@ -26857,6 +29257,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query))
@@ -26886,6 +29287,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--treemap_definition--request--query--apm_resource_stats_query"></a>
@@ -27724,9 +30147,32 @@ Optional:
 
 Optional:
 
+- `apm_metrics_query` (Block List, Max: 1) APM metrics query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) APM resource stats query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--apm_resource_stats_query))
 - `event_query` (Block List, Max: 1) Event query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--event_query))
 - `metric_query` (Block List, Max: 1) Metric query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--metric_query))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.histogram_request.histogram_query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
+
 
 <a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--apm_resource_stats_query"></a>
 ### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.histogram_request.histogram_query.apm_resource_stats_query`
@@ -28196,6 +30642,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--event_query))
@@ -28225,6 +30672,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--apm_resource_stats_query"></a>
@@ -29369,6 +31838,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--event_query))
@@ -29398,6 +31868,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--apm_resource_stats_query"></a>
@@ -30320,7 +32812,7 @@ Optional:
 - `legend_size` (String) The size of the legend displayed in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `marker` (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `heatmap_definition` block. (see [below for nested schema](#nestedblock--widget--heatmap_definition--marker))
-- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--heatmap_definition--request))
+- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--heatmap_definition--time))
 - `title` (String) The title of the widget.
@@ -30373,6 +32865,7 @@ Optional:
 
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula))
+- `histogram_request` (Block List, Max: 1) Histogram request for distribution of point values. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--histogram_request))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--log_query))
 - `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--process_query))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
@@ -30555,6 +33048,51 @@ Optional:
 
 
 
+<a id="nestedblock--widget--heatmap_definition--request--histogram_request"></a>
+### Nested Schema for `widget.heatmap_definition.request.histogram_request`
+
+Required:
+
+- `histogram_query` (Block List, Min: 1, Max: 1) Singular metric query for a histogram-mode heatmap request. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--histogram_request--histogram_query))
+
+Optional:
+
+- `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--histogram_request--style))
+
+<a id="nestedblock--widget--heatmap_definition--request--histogram_request--histogram_query"></a>
+### Nested Schema for `widget.heatmap_definition.request.histogram_request.histogram_query`
+
+Required:
+
+- `metric_query` (Block List, Min: 1, Max: 1) Metric query for distribution of point values. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--histogram_request--histogram_query--metric_query))
+
+<a id="nestedblock--widget--heatmap_definition--request--histogram_request--histogram_query--metric_query"></a>
+### Nested Schema for `widget.heatmap_definition.request.histogram_request.histogram_query.metric_query`
+
+Required:
+
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
+
+
+
+<a id="nestedblock--widget--heatmap_definition--request--histogram_request--style"></a>
+### Nested Schema for `widget.heatmap_definition.request.histogram_request.style`
+
+Optional:
+
+- `order_by` (String) How to order series. Valid values are `tags`, `values`.
+- `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+
+
+
 <a id="nestedblock--widget--heatmap_definition--request--log_query"></a>
 ### Nested Schema for `widget.heatmap_definition.request.log_query`
 
@@ -30639,6 +33177,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--event_query))
@@ -30668,6 +33207,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--heatmap_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.heatmap_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--heatmap_definition--request--query--apm_resource_stats_query"></a>
@@ -31564,7 +34125,7 @@ Optional:
 - `no_metric_hosts` (Boolean) A Boolean indicating whether to show nodes with no metrics.
 - `node_type` (String) The type of node used. Valid values are `host`, `container`.
 - `notes` (String) Notes/description text for the host map widget.
-- `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request))
+- `request` (Block List, Max: 1) A request using the legacy metric format, the infrastructure-backed format, or the DDSQL data-projection format. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request))
 - `scope` (List of String) The list of tags used to filter the map.
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--style))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--hostmap_definition--time))
@@ -31588,8 +34149,1749 @@ Optional:
 
 Optional:
 
+- `child` (Block List, Max: 1) Optional child request for one level of hierarchical visualization. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child))
+- `conditional_formats` (Block List) Conditional formatting rules applied to fill values. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--conditional_formats))
+- `enrichment` (Block List) Metric or event queries joined to the entity set. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment))
 - `fill` (Block List, Max: 1) The query used to fill the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill))
+- `filter` (String) Filter string for the entity set in tag format, such as `env:prod`.
+- `group_by` (Block List) Ordered grouping hierarchy for infrastructure entities. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--group_by))
+- `limit` (Number) Maximum number of rows to return from the DDSQL data-projection request.
+- `no_group_hosts` (Boolean) Whether to hide entities that have no group assignment.
+- `no_metric_hosts` (Boolean) Whether to hide entities that have no enrichment data.
+- `node_type` (String) Infrastructure entity type to visualize. Valid values are `host`, `container`, `pod`, `cluster`.
+- `projection` (Block List, Max: 1) Mapping from published-dataset columns to host map dimensions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--projection))
+- `query` (Block List, Max: 1) Published-dataset query used by the DDSQL data-projection request. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--query))
+- `request_type` (String) Identifies an infrastructure-backed or DDSQL data-projection host map request. Valid values are `infrastructure_hostmap`, `data_projection`.
 - `size` (Block List, Max: 1) The query used to size the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size))
+- `style` (Block List, Max: 1) Style configuration for the infrastructure host map. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--style))
+
+<a id="nestedblock--widget--hostmap_definition--request--child"></a>
+### Nested Schema for `widget.hostmap_definition.request.child`
+
+Required:
+
+- `enrichment` (Block List, Min: 1) Metric or event queries joined to the entity set. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment))
+- `node_type` (String) Infrastructure entity type to visualize. Valid values are `host`, `container`, `pod`, `cluster`.
+- `request_type` (String) Identifies an infrastructure-backed host map request. Valid values are `infrastructure_hostmap`.
+
+Optional:
+
+- `conditional_formats` (Block List) Conditional formatting rules applied to fill values. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--conditional_formats))
+- `filter` (String) Filter string for the entity set in tag format, such as `env:prod`.
+- `group_by` (Block List) Ordered grouping hierarchy for infrastructure entities. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--group_by))
+- `no_group_hosts` (Boolean) Whether to hide entities that have no group assignment.
+- `no_metric_hosts` (Boolean) Whether to hide entities that have no enrichment data.
+- `style` (Block List, Max: 1) Style configuration for the infrastructure host map. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--style))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment`
+
+Required:
+
+- `formula` (Block List, Min: 1) Formulas that operate on queries and drive visual dimensions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--formula))
+- `query` (Block List, Min: 1) Queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query))
+- `response_format` (String) Response format for the scalar formula request. Valid values are `scalar`.
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--formula"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.formula`
+
+Required:
+
+- `dimension` (String) Visual dimension driven by the formula. Valid values are `node`, `fill`, `size`.
+- `formula_expression` (String) String expression built from queries, formulas, and functions.
+
+Optional:
+
+- `alias` (String) Expression alias.
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--formula--number_format))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--formula--number_format"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) The definition of `NumberFormatUnitScale` object. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.formula.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String) The name of the unit.
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query`
+
+Optional:
+
+- `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--apm_metrics_query))
+- `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--cloud_cost_query))
+- `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query))
+- `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--metric_query))
+- `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--process_query))
+- `product_analytics_extended_query` (Block List, Max: 1) The Product Analytics Extended query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query))
+- `retention_query` (Block List, Max: 1) The retention query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query))
+- `slo_query` (Block List, Max: 1) The SLO query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--slo_query))
+- `user_journey_query` (Block List, Max: 1) The User Journey query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--apm_dependency_stats_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.apm_dependency_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `operation_name` (String) Name of operation on service.
+- `resource_name` (String) APM resource.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--apm_metrics_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.apm_resource_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (List of String) Array of fields to group results by.
+- `operation_name` (String) Name of operation on service.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--cloud_cost_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) Query for Cloud Cost data.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by_fields))
+- `indexes` (List of String) An array of index names to query in the stream. Omit or use `[]` to query all indexes at once.
+- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--search))
+- `storage` (String) Option for storage location. Feature in Private Beta.
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--compute"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--search"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--metric_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.metric_query`
+
+Required:
+
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--process_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.process_query`
+
+Required:
+
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
+- `metric` (String) The process metric name.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
+- `limit` (Number) The number of hits to return.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+- `tag_filters` (List of String) An array of tags to filter by.
+- `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query`
+
+Required:
+
+- `compute` (Block List, Min: 1, Max: 1) Compute configuration for the Product Analytics Extended query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--compute))
+- `data_source` (String) Data source for Product Analytics Extended queries. Valid values are `product_analytics_extended`.
+- `name` (String) Name of the query for use in formulas.
+- `query` (Block List, Min: 1, Max: 1) Base Product Analytics event query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--query))
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--audience_filters))
+- `group_by` (Block List) Group by configuration for the Product Analytics Extended query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--group_by))
+- `indexes` (List of String) Event indexes to query. Use `*` to query all indexes.
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--compute"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation method for the Product Analytics Extended query. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) Fixed-width time bucket interval in milliseconds. Mutually exclusive with `rollup`.
+- `metric` (String) Measurable attribute to compute.
+- `name` (String) Name of the compute for use in formulas.
+- `rollup` (Block List, Max: 1) Calendar-aligned time bucket. Mutually exclusive with `interval`. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--compute--rollup))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--compute--rollup"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query.compute.rollup`
+
+Required:
+
+- `type` (String) Type of calendar interval. Valid values are `day`, `week`, `month`, `year`, `quarter`, `minute`, `hour`.
+
+Optional:
+
+- `alignment` (String) Alignment of the calendar interval.
+- `quantity` (Number) Quantity of the calendar interval.
+- `timezone` (String) Timezone for the calendar interval.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query.query`
+
+Required:
+
+- `data_source` (String) Data source for the Product Analytics event query. Valid values are `product_analytics`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the Product Analytics event query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--query--search))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--query--search"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query.query.search`
+
+Required:
+
+- `query` (String) Product Analytics event search query used to filter views or actions.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--audience_filters"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--audience_filters--user))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--audience_filters--account"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--audience_filters--segment"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--audience_filters--user"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--group_by"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query.group_by`
+
+Required:
+
+- `facet` (String) Facet name to group by.
+
+Optional:
+
+- `limit` (Number) Maximum number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
+- `sort` (Block List, Max: 1) Options for sorting group by results. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--group_by--sort))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--product_analytics_extended_query--group_by--sort"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.product_analytics_extended_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.retention_query`
+
+Required:
+
+- `compute` (Block List, Min: 1, Max: 1) Compute configuration for the retention query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--compute))
+- `data_source` (String) Data source for retention queries. Valid values are `product_analytics_retention`.
+- `name` (String) Name of the query for use in formulas.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the retention query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search))
+
+Optional:
+
+- `group_by` (Block List) Group by configuration for the retention query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--group_by))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--compute"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.retention_query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation for the retention query, including standard event aggregations and `pcNN` percentiles.
+- `metric` (String) Metric for the retention computation. Valid values are `__dd.retention`, `__dd.retention_rate`.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.retention_query.search`
+
+Required:
+
+- `cohort_criteria` (Block List, Min: 1, Max: 1) Criteria used to construct the retention cohort. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--cohort_criteria))
+- `retention_entity` (String) Entity tracked for retention. Valid values are `@usr.id`, `@account.id`.
+- `return_condition` (String) Condition for counting an entity as returned. Valid values are `conversion_on`, `conversion_on_or_after`.
+
+Optional:
+
+- `filters` (Block List, Max: 1) Filters for the retention search. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--filters))
+- `return_criteria` (Block List, Max: 1) Criteria used to identify return activity. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--return_criteria))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--cohort_criteria"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.retention_query.search.cohort_criteria`
+
+Required:
+
+- `base_query` (Block List, Min: 1, Max: 1) Base Product Analytics event query for cohort membership. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--cohort_criteria--base_query))
+- `time_interval` (Block List, Min: 1, Max: 1) Time interval used to build the cohort. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--cohort_criteria--time_interval))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--cohort_criteria--base_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.retention_query.search.cohort_criteria.base_query`
+
+Required:
+
+- `data_source` (String) Data source for the Product Analytics event query. Valid values are `product_analytics`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the Product Analytics event query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--cohort_criteria--base_query--search))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--cohort_criteria--base_query--search"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.retention_query.search.cohort_criteria.base_query.search`
+
+Required:
+
+- `query` (String) Product Analytics event search query used to filter views or actions.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--cohort_criteria--time_interval"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.retention_query.search.cohort_criteria.time_interval`
+
+Required:
+
+- `type` (String) Type of cohort time interval. Valid values are `calendar`.
+- `value` (Block List, Min: 1, Max: 1) Calendar interval used to build the cohort. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--cohort_criteria--time_interval--value))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--cohort_criteria--time_interval--value"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.retention_query.search.cohort_criteria.time_interval.value`
+
+Required:
+
+- `type` (String) Type of calendar interval. Valid values are `day`, `week`, `month`, `year`, `quarter`, `minute`, `hour`.
+
+Optional:
+
+- `alignment` (String) Alignment of the calendar interval.
+- `quantity` (Number) Quantity of the calendar interval.
+- `timezone` (String) Timezone for the calendar interval.
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--filters"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.retention_query.search.filters`
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--filters--audience_filters))
+- `string_filter` (String) String filter for the retention query.
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--filters--audience_filters"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.retention_query.search.filters.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--filters--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--filters--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--filters--audience_filters--user))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--filters--audience_filters--account"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.retention_query.search.filters.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--filters--audience_filters--segment"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.retention_query.search.filters.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--filters--audience_filters--user"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.retention_query.search.filters.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--return_criteria"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.retention_query.search.return_criteria`
+
+Required:
+
+- `base_query` (Block List, Min: 1, Max: 1) Base Product Analytics event query for return activity. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--return_criteria--base_query))
+
+Optional:
+
+- `time_interval` (Block List, Max: 1) Time interval for the return criteria. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--return_criteria--time_interval))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--return_criteria--base_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.retention_query.search.return_criteria.base_query`
+
+Required:
+
+- `data_source` (String) Data source for the Product Analytics event query. Valid values are `product_analytics`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the Product Analytics event query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--return_criteria--base_query--search))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--return_criteria--base_query--search"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.retention_query.search.return_criteria.base_query.search`
+
+Required:
+
+- `query` (String) Product Analytics event search query used to filter views or actions.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--search--return_criteria--time_interval"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.retention_query.search.return_criteria.time_interval`
+
+Required:
+
+- `type` (String) Type of return interval. Valid values are `fixed`.
+- `unit` (String) Unit of the return interval. Valid values are `day`, `week`, `month`.
+- `value` (Number) Value of the return interval.
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--group_by"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.retention_query.group_by`
+
+Required:
+
+- `facet` (String) Facet to group by.
+- `target` (String) Target for the retention group by. Valid values are `cohort`, `return_period`.
+
+Optional:
+
+- `limit` (Number) Maximum number of groups.
+- `should_exclude_missing` (Boolean) Whether to exclude missing values.
+- `sort` (Block List, Max: 1) Sort configuration for retention group by results. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--group_by--sort))
+- `source` (String) Source field for the retention group by.
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--retention_query--group_by--sort"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.retention_query.group_by.sort`
+
+Optional:
+
+- `order` (String) Sort order for retention group by results. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--slo_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query measures.
+
+Optional:
+
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.user_journey_query`
+
+Required:
+
+- `compute` (Block List, Min: 1, Max: 1) Compute configuration for the User Journey query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--compute))
+- `data_source` (String) Data source for User Journey queries. Valid values are `product_analytics_journey`.
+- `name` (String) Name of the query for use in formulas.
+- `search` (Block List, Min: 1, Max: 1) User journey search configuration. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search))
+
+Optional:
+
+- `group_by` (Block List) Group by configuration for the User Journey query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--group_by))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--compute"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.user_journey_query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation method for the User Journey query. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) Time bucket interval in milliseconds for timeseries queries.
+- `metric` (String) Metric for the User Journey computation. Valid values are `__dd.conversion`, `__dd.conversion_rate`, `__dd.time_to_convert`.
+- `target` (Block List, Max: 1) Journey target to compute. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--compute--target))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--compute--target"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.user_journey_query.compute.target`
+
+Required:
+
+- `type` (String) Target type.
+
+Optional:
+
+- `end` (String) End node of the target range.
+- `start` (String) Start node of the target range.
+- `value` (String) Target node value.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.user_journey_query.search`
+
+Required:
+
+- `expression` (String) Expression describing the journey between nodes.
+- `node_objects` (String) JSON object mapping journey node names to Product Analytics base queries.
+
+Optional:
+
+- `filters` (Block List, Max: 1) Filters for the user journey search. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters))
+- `join_keys` (Block List, Max: 1) Join keys for the user journey query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--join_keys))
+- `step_aliases` (String) JSON object mapping journey step names to display aliases.
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.user_journey_query.search.filters`
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--audience_filters))
+- `graph_filter` (Block List) Graph filters for the user journey search. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--graph_filter))
+- `string_filter` (String) String filter for the user journey search.
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--audience_filters"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.user_journey_query.search.filters.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--audience_filters--user))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--audience_filters--account"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.user_journey_query.search.filters.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--audience_filters--segment"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.user_journey_query.search.filters.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--audience_filters--user"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.user_journey_query.search.filters.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--graph_filter"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.user_journey_query.search.filters.graph_filter`
+
+Optional:
+
+- `name` (String) Graph filter name.
+- `operator` (String) Graph filter operator.
+- `target` (Block List, Max: 1) Target for the graph filter. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--graph_filter--target))
+- `value` (Number) Graph filter value.
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--filters--graph_filter--target"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.user_journey_query.search.filters.graph_filter.target`
+
+Required:
+
+- `type` (String) Target type.
+
+Optional:
+
+- `end` (String) End node of the target range.
+- `start` (String) Start node of the target range.
+- `value` (String) Target node value.
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--search--join_keys"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.user_journey_query.search.join_keys`
+
+Required:
+
+- `primary` (String) Primary join key.
+
+Optional:
+
+- `secondary` (List of String) Secondary join keys.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--group_by"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.user_journey_query.group_by`
+
+Required:
+
+- `facet` (String) Facet name to group by.
+
+Optional:
+
+- `limit` (Number) Maximum number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
+- `sort` (Block List, Max: 1) Options for sorting group by results. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--group_by--sort))
+- `target` (Block List, Max: 1) Journey target to group. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--group_by--target))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--group_by--sort"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.user_journey_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--user_journey_query--group_by--target"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.user_journey_query.group_by.target`
+
+Required:
+
+- `type` (String) Target type.
+
+Optional:
+
+- `end` (String) End node of the target range.
+- `start` (String) Start node of the target range.
+- `value` (String) Target node value.
+
+
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--conditional_formats"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.conditional_formats`
+
+Required:
+
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- `value` (Number) A value for the comparator.
+
+Optional:
+
+- `custom_bg_color` (String) The color palette to apply to the background, same values available as palette.
+- `custom_fg_color` (String) The color palette to apply to the foreground, same values available as palette.
+- `hide_value` (Boolean) Setting this to True hides values.
+- `image_url` (String) Displays an image as the background.
+- `metric` (String) The metric from the request to correlate with this conditional format.
+- `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--group_by"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.group_by`
+
+Required:
+
+- `column` (String) Column name from the entity table, such as `cloud_provider`, `tags`, or `labels`.
+
+Optional:
+
+- `key` (String) Key within the column for nested attribute types, such as `service` within `tags`.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--style"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.style`
+
+Optional:
+
+- `fill_max` (Number) Maximum value for the fill color scale. Omit to use automatic scaling.
+- `fill_min` (Number) Minimum value for the fill color scale. Omit to use automatic scaling.
+- `palette` (String) Color palette name or alias.
+- `palette_flip` (Boolean) Whether to invert the color palette.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--conditional_formats"></a>
+### Nested Schema for `widget.hostmap_definition.request.conditional_formats`
+
+Required:
+
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- `value` (Number) A value for the comparator.
+
+Optional:
+
+- `custom_bg_color` (String) The color palette to apply to the background, same values available as palette.
+- `custom_fg_color` (String) The color palette to apply to the foreground, same values available as palette.
+- `hide_value` (Boolean) Setting this to True hides values.
+- `image_url` (String) Displays an image as the background.
+- `metric` (String) The metric from the request to correlate with this conditional format.
+- `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment`
+
+Required:
+
+- `formula` (Block List, Min: 1) Formulas that operate on queries and drive visual dimensions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--formula))
+- `query` (Block List, Min: 1) Queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query))
+- `response_format` (String) Response format for the scalar formula request. Valid values are `scalar`.
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--formula"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.formula`
+
+Required:
+
+- `dimension` (String) Visual dimension driven by the formula. Valid values are `node`, `fill`, `size`.
+- `formula_expression` (String) String expression built from queries, formulas, and functions.
+
+Optional:
+
+- `alias` (String) Expression alias.
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--formula--number_format))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--formula--number_format"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) The definition of `NumberFormatUnitScale` object. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--formula--number_format--unit"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.formula.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String) The name of the unit.
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query`
+
+Optional:
+
+- `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--apm_metrics_query))
+- `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--cloud_cost_query))
+- `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--event_query))
+- `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--metric_query))
+- `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--process_query))
+- `product_analytics_extended_query` (Block List, Max: 1) The Product Analytics Extended query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query))
+- `retention_query` (Block List, Max: 1) The retention query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query))
+- `slo_query` (Block List, Max: 1) The SLO query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--slo_query))
+- `user_journey_query` (Block List, Max: 1) The User Journey query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--apm_dependency_stats_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.apm_dependency_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `operation_name` (String) Name of operation on service.
+- `resource_name` (String) APM resource.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--apm_metrics_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.apm_resource_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (List of String) Array of fields to group results by.
+- `operation_name` (String) Name of operation on service.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--cloud_cost_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) Query for Cloud Cost data.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--event_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--group_by_fields))
+- `indexes` (List of String) An array of index names to query in the stream. Omit or use `[]` to query all indexes at once.
+- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--search))
+- `storage` (String) Option for storage location. Feature in Private Beta.
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--compute"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--group_by"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--search"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--metric_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.metric_query`
+
+Required:
+
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--process_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.process_query`
+
+Required:
+
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
+- `metric` (String) The process metric name.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
+- `limit` (Number) The number of hits to return.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+- `tag_filters` (List of String) An array of tags to filter by.
+- `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query`
+
+Required:
+
+- `compute` (Block List, Min: 1, Max: 1) Compute configuration for the Product Analytics Extended query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--compute))
+- `data_source` (String) Data source for Product Analytics Extended queries. Valid values are `product_analytics_extended`.
+- `name` (String) Name of the query for use in formulas.
+- `query` (Block List, Min: 1, Max: 1) Base Product Analytics event query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--query))
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--audience_filters))
+- `group_by` (Block List) Group by configuration for the Product Analytics Extended query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--group_by))
+- `indexes` (List of String) Event indexes to query. Use `*` to query all indexes.
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--compute"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation method for the Product Analytics Extended query. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) Fixed-width time bucket interval in milliseconds. Mutually exclusive with `rollup`.
+- `metric` (String) Measurable attribute to compute.
+- `name` (String) Name of the compute for use in formulas.
+- `rollup` (Block List, Max: 1) Calendar-aligned time bucket. Mutually exclusive with `interval`. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--compute--rollup))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--compute--rollup"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query.compute.rollup`
+
+Required:
+
+- `type` (String) Type of calendar interval. Valid values are `day`, `week`, `month`, `year`, `quarter`, `minute`, `hour`.
+
+Optional:
+
+- `alignment` (String) Alignment of the calendar interval.
+- `quantity` (Number) Quantity of the calendar interval.
+- `timezone` (String) Timezone for the calendar interval.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query.query`
+
+Required:
+
+- `data_source` (String) Data source for the Product Analytics event query. Valid values are `product_analytics`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the Product Analytics event query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--query--search))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--query--search"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query.query.search`
+
+Required:
+
+- `query` (String) Product Analytics event search query used to filter views or actions.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--audience_filters"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--audience_filters--user))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--audience_filters--account"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--audience_filters--segment"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--audience_filters--user"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--group_by"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query.group_by`
+
+Required:
+
+- `facet` (String) Facet name to group by.
+
+Optional:
+
+- `limit` (Number) Maximum number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
+- `sort` (Block List, Max: 1) Options for sorting group by results. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--group_by--sort))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--product_analytics_extended_query--group_by--sort"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.product_analytics_extended_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.retention_query`
+
+Required:
+
+- `compute` (Block List, Min: 1, Max: 1) Compute configuration for the retention query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--compute))
+- `data_source` (String) Data source for retention queries. Valid values are `product_analytics_retention`.
+- `name` (String) Name of the query for use in formulas.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the retention query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search))
+
+Optional:
+
+- `group_by` (Block List) Group by configuration for the retention query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--group_by))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--compute"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.retention_query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation for the retention query, including standard event aggregations and `pcNN` percentiles.
+- `metric` (String) Metric for the retention computation. Valid values are `__dd.retention`, `__dd.retention_rate`.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.retention_query.search`
+
+Required:
+
+- `cohort_criteria` (Block List, Min: 1, Max: 1) Criteria used to construct the retention cohort. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--cohort_criteria))
+- `retention_entity` (String) Entity tracked for retention. Valid values are `@usr.id`, `@account.id`.
+- `return_condition` (String) Condition for counting an entity as returned. Valid values are `conversion_on`, `conversion_on_or_after`.
+
+Optional:
+
+- `filters` (Block List, Max: 1) Filters for the retention search. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--filters))
+- `return_criteria` (Block List, Max: 1) Criteria used to identify return activity. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--return_criteria))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--cohort_criteria"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.retention_query.search.cohort_criteria`
+
+Required:
+
+- `base_query` (Block List, Min: 1, Max: 1) Base Product Analytics event query for cohort membership. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--cohort_criteria--base_query))
+- `time_interval` (Block List, Min: 1, Max: 1) Time interval used to build the cohort. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--cohort_criteria--time_interval))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--cohort_criteria--base_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.retention_query.search.cohort_criteria.base_query`
+
+Required:
+
+- `data_source` (String) Data source for the Product Analytics event query. Valid values are `product_analytics`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the Product Analytics event query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--cohort_criteria--base_query--search))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--cohort_criteria--base_query--search"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.retention_query.search.cohort_criteria.base_query.search`
+
+Required:
+
+- `query` (String) Product Analytics event search query used to filter views or actions.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--cohort_criteria--time_interval"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.retention_query.search.cohort_criteria.time_interval`
+
+Required:
+
+- `type` (String) Type of cohort time interval. Valid values are `calendar`.
+- `value` (Block List, Min: 1, Max: 1) Calendar interval used to build the cohort. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--cohort_criteria--time_interval--value))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--cohort_criteria--time_interval--value"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.retention_query.search.cohort_criteria.time_interval.value`
+
+Required:
+
+- `type` (String) Type of calendar interval. Valid values are `day`, `week`, `month`, `year`, `quarter`, `minute`, `hour`.
+
+Optional:
+
+- `alignment` (String) Alignment of the calendar interval.
+- `quantity` (Number) Quantity of the calendar interval.
+- `timezone` (String) Timezone for the calendar interval.
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--filters"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.retention_query.search.filters`
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--filters--audience_filters))
+- `string_filter` (String) String filter for the retention query.
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--filters--audience_filters"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.retention_query.search.filters.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--filters--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--filters--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--filters--audience_filters--user))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--filters--audience_filters--account"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.retention_query.search.filters.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--filters--audience_filters--segment"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.retention_query.search.filters.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--filters--audience_filters--user"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.retention_query.search.filters.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--return_criteria"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.retention_query.search.return_criteria`
+
+Required:
+
+- `base_query` (Block List, Min: 1, Max: 1) Base Product Analytics event query for return activity. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--return_criteria--base_query))
+
+Optional:
+
+- `time_interval` (Block List, Max: 1) Time interval for the return criteria. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--return_criteria--time_interval))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--return_criteria--base_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.retention_query.search.return_criteria.base_query`
+
+Required:
+
+- `data_source` (String) Data source for the Product Analytics event query. Valid values are `product_analytics`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the Product Analytics event query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--return_criteria--base_query--search))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--return_criteria--base_query--search"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.retention_query.search.return_criteria.base_query.search`
+
+Required:
+
+- `query` (String) Product Analytics event search query used to filter views or actions.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--search--return_criteria--time_interval"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.retention_query.search.return_criteria.time_interval`
+
+Required:
+
+- `type` (String) Type of return interval. Valid values are `fixed`.
+- `unit` (String) Unit of the return interval. Valid values are `day`, `week`, `month`.
+- `value` (Number) Value of the return interval.
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--group_by"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.retention_query.group_by`
+
+Required:
+
+- `facet` (String) Facet to group by.
+- `target` (String) Target for the retention group by. Valid values are `cohort`, `return_period`.
+
+Optional:
+
+- `limit` (Number) Maximum number of groups.
+- `should_exclude_missing` (Boolean) Whether to exclude missing values.
+- `sort` (Block List, Max: 1) Sort configuration for retention group by results. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--group_by--sort))
+- `source` (String) Source field for the retention group by.
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--retention_query--group_by--sort"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.retention_query.group_by.sort`
+
+Optional:
+
+- `order` (String) Sort order for retention group by results. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--slo_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query measures.
+
+Optional:
+
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.user_journey_query`
+
+Required:
+
+- `compute` (Block List, Min: 1, Max: 1) Compute configuration for the User Journey query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--compute))
+- `data_source` (String) Data source for User Journey queries. Valid values are `product_analytics_journey`.
+- `name` (String) Name of the query for use in formulas.
+- `search` (Block List, Min: 1, Max: 1) User journey search configuration. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--search))
+
+Optional:
+
+- `group_by` (Block List) Group by configuration for the User Journey query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--group_by))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--compute"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.user_journey_query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation method for the User Journey query. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) Time bucket interval in milliseconds for timeseries queries.
+- `metric` (String) Metric for the User Journey computation. Valid values are `__dd.conversion`, `__dd.conversion_rate`, `__dd.time_to_convert`.
+- `target` (Block List, Max: 1) Journey target to compute. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--compute--target))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--compute--target"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.user_journey_query.compute.target`
+
+Required:
+
+- `type` (String) Target type.
+
+Optional:
+
+- `end` (String) End node of the target range.
+- `start` (String) Start node of the target range.
+- `value` (String) Target node value.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--search"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.user_journey_query.search`
+
+Required:
+
+- `expression` (String) Expression describing the journey between nodes.
+- `node_objects` (String) JSON object mapping journey node names to Product Analytics base queries.
+
+Optional:
+
+- `filters` (Block List, Max: 1) Filters for the user journey search. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters))
+- `join_keys` (Block List, Max: 1) Join keys for the user journey query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--join_keys))
+- `step_aliases` (String) JSON object mapping journey step names to display aliases.
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.user_journey_query.search.filters`
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--audience_filters))
+- `graph_filter` (Block List) Graph filters for the user journey search. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--graph_filter))
+- `string_filter` (String) String filter for the user journey search.
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--audience_filters"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.user_journey_query.search.filters.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--audience_filters--user))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--audience_filters--account"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.user_journey_query.search.filters.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--audience_filters--segment"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.user_journey_query.search.filters.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--audience_filters--user"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.user_journey_query.search.filters.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--graph_filter"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.user_journey_query.search.filters.graph_filter`
+
+Optional:
+
+- `name` (String) Graph filter name.
+- `operator` (String) Graph filter operator.
+- `target` (Block List, Max: 1) Target for the graph filter. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--graph_filter--target))
+- `value` (Number) Graph filter value.
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--filters--graph_filter--target"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.user_journey_query.search.filters.graph_filter.target`
+
+Required:
+
+- `type` (String) Target type.
+
+Optional:
+
+- `end` (String) End node of the target range.
+- `start` (String) Start node of the target range.
+- `value` (String) Target node value.
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--search--join_keys"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.user_journey_query.search.join_keys`
+
+Required:
+
+- `primary` (String) Primary join key.
+
+Optional:
+
+- `secondary` (List of String) Secondary join keys.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--group_by"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.user_journey_query.group_by`
+
+Required:
+
+- `facet` (String) Facet name to group by.
+
+Optional:
+
+- `limit` (Number) Maximum number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
+- `sort` (Block List, Max: 1) Options for sorting group by results. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--group_by--sort))
+- `target` (Block List, Max: 1) Journey target to group. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--group_by--target))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--group_by--sort"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.user_journey_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--user_journey_query--group_by--target"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.user_journey_query.group_by.target`
+
+Required:
+
+- `type` (String) Target type.
+
+Optional:
+
+- `end` (String) End node of the target range.
+- `start` (String) Start node of the target range.
+- `value` (String) Target node value.
+
+
+
+
+
 
 <a id="nestedblock--widget--hostmap_definition--request--fill"></a>
 ### Nested Schema for `widget.hostmap_definition.request.fill`
@@ -31863,6 +36165,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--query--event_query))
@@ -31892,6 +36195,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--fill--query--apm_metrics_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.fill.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--hostmap_definition--request--fill--query--apm_resource_stats_query"></a>
@@ -32717,6 +37042,120 @@ Optional:
 
 
 
+<a id="nestedblock--widget--hostmap_definition--request--group_by"></a>
+### Nested Schema for `widget.hostmap_definition.request.group_by`
+
+Required:
+
+- `column` (String) Column name from the entity table, such as `cloud_provider`, `tags`, or `labels`.
+
+Optional:
+
+- `key` (String) Key within the column for nested attribute types, such as `service` within `tags`.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--projection"></a>
+### Nested Schema for `widget.hostmap_definition.request.projection`
+
+Required:
+
+- `dimension` (Block List, Min: 1) Column-to-dimension mappings for the host map projection. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--projection--dimension))
+- `type` (String) Type of the host map projection. Valid values are `hostmap`.
+
+<a id="nestedblock--widget--hostmap_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.hostmap_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Source column name from the dataset.
+- `dimension` (String) Visual dimension driven by the dataset column. Valid values are `node`, `fill`, `size`, `group`.
+
+Optional:
+
+- `alias` (String) Alias used to label the column instead of its name.
+- `number_format` (Block List, Max: 1) Number formatting options for the projected column. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--hostmap_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.hostmap_definition.request.projection.dimension.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) The definition of `NumberFormatUnitScale` object. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.hostmap_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.hostmap_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.hostmap_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.hostmap_definition.request.projection.dimension.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String) The name of the unit.
+
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--query"></a>
+### Nested Schema for `widget.hostmap_definition.request.query`
+
+Required:
+
+- `data_source` (String) Identifies this as a published-dataset list query. Valid values are `dataset`.
+- `dataset_id` (String) ID of the published dataset to query.
+- `dataset_provider` (String) Product page that published the dataset. Valid values are `ddsql_query`.
+
+Optional:
+
+- `filter` (String) Filter applied to the dataset rows using events-style search syntax.
+- `limit` (Number) Maximum number of rows to return from the dataset query.
+- `sort` (Block List, Max: 1) Sort configuration for the dataset query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--query--sort))
+
+<a id="nestedblock--widget--hostmap_definition--request--query--sort"></a>
+### Nested Schema for `widget.hostmap_definition.request.query.sort`
+
+Required:
+
+- `field` (Block List, Min: 1) List of fields to sort the dataset rows by, applied in order. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--query--sort--field))
+
+<a id="nestedblock--widget--hostmap_definition--request--query--sort--field"></a>
+### Nested Schema for `widget.hostmap_definition.request.query.sort.field`
+
+Required:
+
+- `name` (String) Name of the field to sort on.
+- `order` (String) Sort direction for the field. Valid values are `asc`, `desc`.
+
+
+
+
 <a id="nestedblock--widget--hostmap_definition--request--size"></a>
 ### Nested Schema for `widget.hostmap_definition.request.size`
 
@@ -32989,6 +37428,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--query--event_query))
@@ -33018,6 +37458,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--size--query--apm_metrics_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--query--apm_resource_stats_query"></a>
@@ -33841,6 +38303,17 @@ Optional:
 - `interval` (Number) Define the time interval in seconds.
 
 
+
+
+<a id="nestedblock--widget--hostmap_definition--request--style"></a>
+### Nested Schema for `widget.hostmap_definition.request.style`
+
+Optional:
+
+- `fill_max` (Number) Maximum value for the fill color scale. Omit to use automatic scaling.
+- `fill_min` (Number) Minimum value for the fill color scale. Omit to use automatic scaling.
+- `palette` (String) Color palette name or alias.
+- `palette_flip` (Boolean) Whether to invert the color palette.
 
 
 
@@ -35077,6 +39550,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--event_query))
@@ -35106,6 +39580,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--query_table_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.query_table_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--query_table_definition--request--query--apm_resource_stats_query"></a>
@@ -36464,6 +40960,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query))
@@ -36493,6 +40990,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--query_value_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.query_value_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--query_value_definition--request--query--apm_resource_stats_query"></a>
@@ -37999,6 +42518,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query))
@@ -38028,6 +42548,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--apm_metrics_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query"></a>
@@ -38998,6 +43540,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--query--event_query))
@@ -39027,6 +43570,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--x--query--apm_metrics_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.x.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--x--query--apm_resource_stats_query"></a>
@@ -40125,6 +44690,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--query--event_query))
@@ -40154,6 +44720,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--query--apm_metrics_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--query--apm_resource_stats_query"></a>
@@ -41619,6 +46207,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query))
@@ -41648,6 +46237,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.change_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--apm_resource_stats_query"></a>
@@ -42720,6 +47331,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query))
@@ -42749,6 +47361,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.geomap_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--apm_resource_stats_query"></a>
@@ -43913,6 +48547,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query))
@@ -43942,6 +48577,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--apm_resource_stats_query"></a>
@@ -45300,6 +49957,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query))
@@ -45329,6 +49987,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--apm_resource_stats_query"></a>
@@ -46271,6 +50951,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query))
@@ -46300,6 +50981,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.scatterplot_table.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query"></a>
@@ -47270,6 +51973,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--query--event_query))
@@ -47299,6 +52003,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.x.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--query--apm_resource_stats_query"></a>
@@ -48397,6 +53123,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--query--event_query))
@@ -48426,6 +53153,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.y.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--query--apm_resource_stats_query"></a>
@@ -49758,6 +54507,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query))
@@ -49787,6 +54537,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--apm_resource_stats_query"></a>
@@ -51293,6 +56065,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query))
@@ -51322,6 +56095,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--apm_resource_stats_query"></a>
@@ -52597,6 +57392,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query))
@@ -52626,6 +57422,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--apm_resource_stats_query"></a>
@@ -53707,6 +58525,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query))
@@ -53736,6 +58555,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--apm_resource_stats_query"></a>
@@ -54989,6 +59830,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query))
@@ -55018,6 +59860,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--sunburst_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--sunburst_definition--request--query--apm_resource_stats_query"></a>
@@ -56524,6 +61388,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query))
@@ -56553,6 +61418,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--timeseries_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--timeseries_definition--request--query--apm_resource_stats_query"></a>
@@ -57828,6 +62715,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query))
@@ -57857,6 +62745,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--toplist_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.toplist_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--toplist_definition--request--query--apm_resource_stats_query"></a>
@@ -58828,9 +63738,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for the Topology request ('service_map' or 'data_streams').
+- `data_source` (String) The data source for the Topology request. Valid values are `service_map`, `data_streams`.
 - `filters` (List of String) Your environment and primary tag (or `*` if enabled for your account).
-- `service` (String) Name of the service.
+- `service` (String) Name of the service. Leave this empty and use `query_string` instead.
+
+Optional:
+
+- `query_string` (String) A search string for filtering services. When set, this replaces the `service` field.
 
 
 
@@ -59069,6 +63983,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--event_query))
@@ -59098,6 +64013,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--treemap_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.treemap_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--treemap_definition--request--query--apm_resource_stats_query"></a>
@@ -59936,9 +64873,32 @@ Optional:
 
 Optional:
 
+- `apm_metrics_query` (Block List, Max: 1) APM metrics query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) APM resource stats query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--apm_resource_stats_query))
 - `event_query` (Block List, Max: 1) Event query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--event_query))
 - `metric_query` (Block List, Max: 1) Metric query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--metric_query))
+
+<a id="nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--apm_metrics_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.histogram_request.histogram_query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
+
 
 <a id="nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--apm_resource_stats_query"></a>
 ### Nested Schema for `widget.wildcard_definition.request.histogram_request.histogram_query.apm_resource_stats_query`
@@ -60408,6 +65368,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--event_query))
@@ -60437,6 +65398,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--wildcard_definition--request--timeseries_request--query--apm_resource_stats_query"></a>
@@ -61581,6 +66564,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--event_query))
@@ -61610,6 +66594,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--wildcard_definition--request--treemap_request--query--apm_resource_stats_query"></a>

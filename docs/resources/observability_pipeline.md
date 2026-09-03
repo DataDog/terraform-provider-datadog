@@ -125,6 +125,7 @@ Optional:
 - `microsoft_sentinel` (Block List) The `microsoft_sentinel` destination forwards logs to Microsoft Sentinel. (see [below for nested schema](#nestedblock--config--destination--microsoft_sentinel))
 - `new_relic` (Block List) The `new_relic` destination sends logs to the New Relic platform. (see [below for nested schema](#nestedblock--config--destination--new_relic))
 - `opensearch` (Block List) The `opensearch` destination writes logs to an OpenSearch cluster. (see [below for nested schema](#nestedblock--config--destination--opensearch))
+- `opentelemetry` (Block List) The `opentelemetry` destination forwards metrics using the OpenTelemetry Protocol (OTLP) over HTTP. (see [below for nested schema](#nestedblock--config--destination--opentelemetry))
 - `rsyslog` (Block List) The `rsyslog` destination forwards logs to an external `rsyslog` server over TCP or UDP using the syslog protocol. (see [below for nested schema](#nestedblock--config--destination--rsyslog))
 - `sentinel_one` (Block List) The `sentinel_one` destination sends logs to SentinelOne. (see [below for nested schema](#nestedblock--config--destination--sentinel_one))
 - `socket` (Block List) The `socket` destination sends logs over TCP or UDP to a remote server. (see [below for nested schema](#nestedblock--config--destination--socket))
@@ -200,6 +201,9 @@ Optional:
 
 - `auth` (Block List) AWS authentication credentials used for accessing AWS services. If omitted, the system's default credentials are used (for example, the IAM role and environment variables). (see [below for nested schema](#nestedblock--config--destination--amazon_s3--auth))
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--amazon_s3--buffer))
+- `compression` (Block List) Compression configuration for archived logs. When omitted, the worker default (gzip) is used. (see [below for nested schema](#nestedblock--config--destination--amazon_s3--compression))
+- `server_side_encryption` (String) The server-side encryption algorithm used when storing objects in S3. Valid values: `aws:kms`, `AES256`. Valid values are `aws:kms`, `AES256`.
+- `ssekms_key_id` (String) ID of the AWS KMS key to use for SSE-KMS encryption. Only applies when `server_side_encryption` is `aws:kms`.
 
 <a id="nestedblock--config--destination--amazon_s3--auth"></a>
 ### Nested Schema for `config.destination.amazon_s3.auth`
@@ -237,6 +241,15 @@ Optional:
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
 - `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
+
+
+<a id="nestedblock--config--destination--amazon_s3--compression"></a>
+### Nested Schema for `config.destination.amazon_s3.compression`
+
+Required:
+
+- `algorithm` (String) Compression algorithm. One of `gzip` or `zstd`. Valid values are `gzip`, `zstd`.
+- `level` (Number) Compression level. Applies to `gzip` (1-9) and `zstd` (1-21).
 
 
 
@@ -407,6 +420,7 @@ Optional:
 
 - `blob_prefix` (String) Optional prefix for blobs written to the container.
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--azure_storage--buffer))
+- `compression` (Block List) Compression configuration for archived logs. When omitted, the worker default (gzip) is used. (see [below for nested schema](#nestedblock--config--destination--azure_storage--compression))
 - `connection_string_key` (String) Name of the environment variable or secret that holds the Azure Storage connection string.
 
 <a id="nestedblock--config--destination--azure_storage--buffer"></a>
@@ -435,6 +449,15 @@ Optional:
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
 - `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
+
+
+<a id="nestedblock--config--destination--azure_storage--compression"></a>
+### Nested Schema for `config.destination.azure_storage.compression`
+
+Required:
+
+- `algorithm` (String) Compression algorithm. One of `gzip` or `zstd`. Valid values are `gzip`, `zstd`.
+- `level` (Number) Compression level. Applies to `gzip` (1-9) and `zstd` (1-21).
 
 
 
@@ -891,6 +914,7 @@ Optional:
 - `acl` (String) Access control list setting for objects written to the bucket.
 - `auth` (Block List) Google Cloud credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--auth))
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--buffer))
+- `compression` (Block List) Compression configuration for archived logs. When omitted, the worker default (gzip) is used. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--compression))
 - `key_prefix` (String) Optional prefix for object keys within the GCS bucket.
 - `metadata` (Block List) Custom metadata key-value pairs added to each object. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--metadata))
 
@@ -928,6 +952,15 @@ Optional:
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
 - `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
+
+
+<a id="nestedblock--config--destination--google_cloud_storage--compression"></a>
+### Nested Schema for `config.destination.google_cloud_storage.compression`
+
+Required:
+
+- `algorithm` (String) Compression algorithm. One of `gzip` or `zstd`. Valid values are `gzip`, `zstd`.
+- `level` (Number) Compression level. Applies to `gzip` (1-9) and `zstd` (1-21).
 
 
 <a id="nestedblock--config--destination--google_cloud_storage--metadata"></a>
@@ -1367,6 +1400,58 @@ Optional:
 
 
 
+<a id="nestedblock--config--destination--opentelemetry"></a>
+### Nested Schema for `config.destination.opentelemetry`
+
+Optional:
+
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--opentelemetry--buffer))
+- `http_client_uri_key` (String) Environment variable name containing the URI of the OTLP HTTP endpoint to send metrics to.
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--opentelemetry--tls))
+
+<a id="nestedblock--config--destination--opentelemetry--buffer"></a>
+### Nested Schema for `config.destination.opentelemetry.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--opentelemetry--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--opentelemetry--buffer--memory))
+
+<a id="nestedblock--config--destination--opentelemetry--buffer--disk"></a>
+### Nested Schema for `config.destination.opentelemetry.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--opentelemetry--buffer--memory"></a>
+### Nested Schema for `config.destination.opentelemetry.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+
+<a id="nestedblock--config--destination--opentelemetry--tls"></a>
+### Nested Schema for `config.destination.opentelemetry.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+
+
+
 <a id="nestedblock--config--destination--rsyslog"></a>
 ### Nested Schema for `config.destination.rsyslog`
 
@@ -1549,8 +1634,9 @@ Required:
 
 Optional:
 
-- `auto_extract_timestamp` (Boolean) If `true`, Splunk tries to extract timestamps from incoming log events.
+- `auto_extract_timestamp` (Boolean) If `true`, Splunk tries to extract timestamps from incoming log events. If `false`, Splunk assigns the time the event was received. Only applies when `endpoint_target` is `event`; cannot be `true` when `endpoint_target` is `raw`.
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--splunk_hec--buffer))
+- `endpoint_target` (String) The Splunk HEC endpoint to send events to. Use `event` to send structured events to the `/event` endpoint, or `raw` to send the raw message to the `/raw` endpoint. Valid values are `event`, `raw`.
 - `endpoint_url_key` (String) Name of the environment variable or secret that holds the Splunk HEC endpoint URL.
 - `index` (String) Optional name of the Splunk index where logs are written.
 - `indexed_fields` (List of String) List of log field names to send as indexed fields to Splunk HEC. Available only when `encoding` is `json`.

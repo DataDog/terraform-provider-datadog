@@ -138,6 +138,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_cloud_inventory_sync_config_test":                            "cloud-inventory",
 	"tests/resource_datadog_cloud_workload_security_agent_rule_test":                     "cloud_workload_security",
 	"tests/resource_datadog_action_connection_test":                                      "action_connection",
+	"tests/resource_datadog_action_execution_policy_test":                                "execution_policy",
 	"tests/resource_datadog_agentless_scanning_aws_scan_options_test":                    "agentless-scanning",
 	"tests/resource_datadog_agentless_scanning_azure_scan_options_test":                  "agentless-scanning",
 	"tests/resource_datadog_agentless_scanning_gcp_scan_options_test":                    "agentless-scanning",
@@ -187,11 +188,15 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_v2_test":                                           "dashboards",
 	"tests/resource_datadog_dashboard_v2_timeseries_event_query_test":                    "dashboards",
 	"tests/resource_datadog_dashboard_v2_funnel_test":                                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_hostmap_infrastructure_test":                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_hostmap_ddsql_test":                             "dashboards",
+	"tests/resource_datadog_dashboard_v2_heatmap_histogram_test":                         "dashboards",
 	"tests/resource_datadog_dashboard_v2_bar_chart_test":                                 "dashboards",
 	"tests/resource_datadog_dashboard_v2_sankey_test":                                    "dashboards",
 	"tests/resource_datadog_dashboard_v2_wildcard_test":                                  "dashboards",
 	"tests/resource_datadog_dashboard_v2_point_plot_test":                                "dashboards",
 	"tests/resource_datadog_dashboard_v2_distribution_histogram_test":                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_apm_metrics_query_test":                         "dashboards",
 	"tests/resource_datadog_dashboard_v2_wildcard_histogram_test":                        "dashboards",
 	"tests/resource_datadog_dashboard_v2_toplist_sort_test":                              "dashboards",
 	"tests/resource_datadog_dashboard_v2_toplist_display_test":                           "dashboards",
@@ -250,6 +255,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_integration_aws_log_collection_test":                         "integration-aws",
 	"tests/resource_datadog_integration_aws_tag_filter_test":                             "integration-aws",
 	"tests/resource_datadog_integration_aws_test":                                        "integration-aws",
+	"tests/data_source_datadog_integration_aws_account_test":                             "integration-aws",
 	"tests/resource_datadog_integration_aws_account_test":                                "integration-aws",
 	"tests/resource_datadog_integration_aws_account_ccm_config_test":                     "integration-aws",
 	"tests/resource_datadog_integration_aws_event_bridge_test":                           "integration-aws",
@@ -355,6 +361,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_user_test":                                                   "users",
 	"tests/resource_datadog_user_role_test":                                              "roles",
 	"tests/resource_datadog_webhook_custom_variable_test":                                "webhook_custom_variable",
+	"tests/resource_datadog_webhook_oauth2_client_credentials_test":                      "webhook_oauth2_client_credentials",
 	"tests/resource_datadog_webhook_test":                                                "webhook",
 	"tests/resource_datadog_workflow_automation_test":                                    "workflow_automation",
 	"tests/resource_datadog_compliance_resource_evaluation_filter_test":                  "resource_filters",
@@ -364,6 +371,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_tag_pipeline_ruleset_test":                                   "tag-pipeline",
 	"tests/data_source_datadog_tag_pipeline_ruleset_test":                                "tag-pipeline",
 	"tests/resource_datadog_tag_pipeline_rulesets_test":                                  "tag-pipeline",
+	"tests/resource_datadog_tag_rule_test":                                               "tag-rules",
 	"tests/resource_datadog_app_key_registration_test":                                   "app_key_registration",
 	"tests/resource_datadog_aws_cur_config_test":                                         "cost-management",
 	"tests/resource_datadog_gcp_uc_config_test":                                          "cost-management",
@@ -379,6 +387,11 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_incident_user_defined_field_test":                            "incidents",
 	"tests/resource_datadog_incident_user_defined_role_test":                             "incidents",
 	"tests/resource_datadog_deployment_gate_test":                                        "deployment-gates",
+	"tests/resource_datadog_governance_control_test":                                     "governance-console",
+	"tests/resource_datadog_status_page_test":                                            "status-page",
+	"tests/resource_datadog_status_page_component_test":                                  "status-page",
+	"tests/resource_datadog_status_page_degradation_template_test":                       "status-page",
+	"tests/resource_datadog_status_page_maintenance_template_test":                       "status-page",
 }
 
 // getEndpointTagValue traverses callstack frames to find the test function that invoked this call;
@@ -541,7 +554,7 @@ func restoreClock(t *testing.T) clockwork.FakeClock {
 		t.Logf("Could not load clock: %v", err)
 		return setClock(t)
 	}
-	now, err := time.Parse(time.RFC3339Nano, string(data))
+	now, err := time.Parse(time.RFC3339Nano, strings.TrimSpace(string(data)))
 	if err != nil {
 		t.Fatalf("Could not parse clock date: %v", err)
 	}
@@ -568,7 +581,7 @@ func restoreClockWithName(t *testing.T, name string) clockwork.FakeClock {
 		t.Logf("Could not load clock for %s: %v", name, err)
 		return setClock(t)
 	}
-	now, err := time.Parse(time.RFC3339Nano, string(data))
+	now, err := time.Parse(time.RFC3339Nano, strings.TrimSpace(string(data)))
 	if err != nil {
 		t.Fatalf("Could not parse clock date: %v", err)
 	}

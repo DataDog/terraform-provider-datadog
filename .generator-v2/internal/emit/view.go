@@ -50,8 +50,17 @@ type DataSourceView struct {
 	// "IncidentsApi".
 	APIStruct string
 	// APIAccessor is the FrameworkProvider accessor returning that client, e.g.
-	// "GetIncidentsApiV2".
+	// "GetIncidentsApiV2". It is set when ApiInstances already exposes the API.
 	APIAccessor string
+	// APIConstructor is the pinned SDK constructor used when ApiInstances does
+	// not expose APIStruct, e.g. "NewCaseManagementApi". Exactly one of
+	// APIAccessor and APIConstructor is populated after accessor resolution.
+	APIConstructor string
+	// UsesUUID adds the google/uuid import and SDK-input parsing blocks.
+	UsesUUID bool
+	// UsesStrconv adds the strconv import for id-bound SDK-input parsing blocks
+	// (e.g. an integer path parameter aliased to the string "id" attribute).
+	UsesStrconv bool
 
 	// ByID and Searchable select how a singular data source resolves its one
 	// record, driving the Read body and the "id" attribute: ByID only → by-id
@@ -161,6 +170,8 @@ type SDKReadView struct {
 	// ResponseType is the SDK response type returned by a singular Method, e.g.
 	// "IncidentTypeResponse". It names the updateState receiver.
 	ResponseType string
+	// Arguments are required positional SDK call arguments in call order.
+	Arguments []SDKArgumentView
 
 	// The fields below are plural-only.
 
@@ -175,6 +186,21 @@ type SDKReadView struct {
 	// Filters maps each optional query parameter from the model onto the
 	// request's optional-parameters struct.
 	Filters []FilterParamView
+	// HashInputs includes every Terraform input that identifies the returned
+	// record or collection, both required positional arguments and optional filters.
+	HashInputs []FilterParamView
+}
+
+// SDKArgumentView is one rendered positional SDK call argument. An argument
+// that must be recovered by parsing a string (a uuid-typed argument, or any
+// non-string argument aliased from the always-string "id" attribute) carries
+// a preparation variable and the call that parses it; all other scalar
+// arguments render Expression directly at the call site.
+type SDKArgumentView struct {
+	Expression string
+	ParsedVar  string
+	ParseCall  string
+	TFName     string
 }
 
 // FilterParamView maps one optional query parameter from the Terraform model
@@ -191,6 +217,17 @@ type FilterParamView struct {
 	// ValueExpr is the model accessor producing the SDK value, e.g.
 	// "ValueStringPointer()".
 	ValueExpr string
+	// Setter is the SDK With* method. Empty retains the legacy direct-field form
+	// used by parser-shaped unit fixtures without resolved SDK bindings.
+	Setter string
+	// ParsedVar and ParseCall request a parse preparation inside the filter's
+	// non-null guard before ValueExpr is passed to Setter. They are populated only
+	// when the pinned SDK setter accepts a type (uuid.UUID) that must be recovered
+	// from the filter's string-typed model field.
+	ParsedVar string
+	ParseCall string
+	// TFName is the Terraform attribute name used in parse diagnostics.
+	TFName string
 }
 
 // SchemaView is the attribute/block split rendered into the Schema method. The
@@ -291,9 +328,10 @@ type StateView struct {
 	// ItemFields are the item struct's literal fields ("<GoField>: <RHS>"),
 	// evaluated against the loop variable "item".
 	ItemFields []StateAssignment
-	// ItemLists are the item's list-valued assignments, rendered by "renderList"
-	// after the struct literal (they cannot sit in the literal: a primitive list
-	// is a two-value ListValueFrom, an object list is a loop).
+	// ItemLists are the item's collection-valued assignments, rendered by
+	// "renderList" after the struct literal (they cannot sit in the literal: a
+	// primitive-terminal collection uses a two-value ValueFrom helper, while an
+	// object list uses a loop).
 	ItemLists []ListAssignment
 }
 
@@ -320,7 +358,8 @@ type StateAssignment struct {
 // Lists (its nested list fields); an object_single maps one nested object into a
 // generated model pointer, assigned once instead of looped; and a oneof unwraps an
 // SDK oneOf wrapper through OneOf. All forms are guarded by an Ok-getter so an
-// absent field stays null.
+// absent field stays null. Primitive-terminal collections retain whether they
+// are lists or maps so the matching framework conversion helper is rendered.
 //
 // A oneOf envelope rides this type rather than a parallel one because it needs
 // exactly the same placement plumbing — it can appear at the top level, inside a
@@ -330,6 +369,9 @@ type ListAssignment struct {
 	// Kind is "primitive", "object", "object_single" (a single nested object,
 	// assigned once rather than appended in a loop), or "oneof" (see OneOf).
 	Kind string
+	// ContainerKind is "list" or "map" for Kind == "primitive". It selects
+	// the framework ValueFrom and Null constructors used by the template.
+	ContainerKind string
 	// LHS is the assignment target, e.g. "state.VisibleModules" (top level) or
 	// "entriesModel.TagFilters" (nested element field).
 	LHS string
@@ -338,8 +380,9 @@ type ListAssignment struct {
 	GetterOk string
 	// Var is the local bound from GetterOk (a pointer to the slice).
 	Var string
-	// ElementType is the framework element type for a primitive list, e.g.
-	// "types.StringType". Empty for an object list.
+	// ElementType is the framework element type for a primitive-terminal
+	// collection, e.g. "types.ListType{ElemType: types.StringType}". Empty for
+	// an object list.
 	ElementType string
 
 	// The fields below back an object list (Kind == "object").
