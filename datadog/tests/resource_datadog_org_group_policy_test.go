@@ -84,8 +84,8 @@ func TestAccDatadogOrgGroupPolicy_Role(t *testing.T) {
 	orgGroupName := uniqueEntityName(ctx, t)
 	policyName := "finance_read_only"
 	renamedPolicyName := "finance_read_write"
-	permissionID := "1a2b3c4d-5e6f-7890-abcd-ef0123456789"
-	otherPermissionID := "2b3c4d5e-6f70-8901-bcde-f01234567890"
+	permissionID := "d99415a4-dc4d-11e8-b4b1-4f9e475593a0"      // logs_read_index_data
+	otherPermissionID := "d99443a8-dc4d-11e8-b4b2-9f5f4b0b2f5a" // logs_modify_indexes
 	resourceName := "datadog_org_group_policy.role"
 
 	resource.Test(t, resource.TestCase{
@@ -140,7 +140,7 @@ func TestAccDatadogOrgGroupPolicy_Role(t *testing.T) {
 			{
 				// Disabling is one-way: the API rejects transitioning back to GROUP_MANAGED.
 				Config:      testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, renamedPolicyName, fmt.Sprintf(`{"permissions":[%q,%q]}`, permissionID, otherPermissionID), "GROUP_MANAGED"),
-				ExpectError: regexp.MustCompile(`(?i)disabled role polic(y|ies) cannot be re-enabled`),
+				ExpectError: regexp.MustCompile(`(?is)disabled role polic(y|ies)\s+cannot be re-enabled`),
 			},
 			{
 				ResourceName:      resourceName,
