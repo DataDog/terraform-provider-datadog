@@ -139,9 +139,10 @@ func TestAccDatadogOrgGroupPolicy_Role(t *testing.T) {
 				),
 			},
 			{
-				// Disabling is one-way: the API rejects transitioning back to GROUP_MANAGED.
+				// Disabling is one-way: the provider rejects transitioning back to
+				// GROUP_MANAGED before ever calling the API.
 				Config:      testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, renamedPolicyName, fmt.Sprintf(`{"permissions":[%q,%q]}`, permissionID, otherPermissionID), "GROUP_MANAGED"),
-				ExpectError: regexp.MustCompile(`(?is)disabled role polic(y|ies)\s+cannot be re-enabled`),
+				ExpectError: regexp.MustCompile(`(?is)cannot be\s+transitioned back`),
 			},
 			{
 				ResourceName:      resourceName,

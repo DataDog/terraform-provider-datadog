@@ -256,6 +256,17 @@ func (r *OrgGroupPolicyResource) Update(ctx context.Context, request resource.Up
 		return
 	}
 
+	if priorState.PolicyType.ValueString() == string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ROLE) &&
+		priorState.EnforcementTier.ValueString() == string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_DELEGATE) &&
+		state.EnforcementTier.ValueString() != string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_DELEGATE) {
+		response.Diagnostics.AddAttributeError(
+			frameworkPath.Root("enforcement_tier"),
+			"Cannot re-enable a disabled role policy",
+			"This role policy was disabled (enforcement_tier = \"DELEGATE\") and cannot be transitioned back to GROUP_MANAGED or OVERRIDE_ALLOWED.",
+		)
+		return
+	}
+
 	var content map[string]interface{}
 	if err := json.Unmarshal([]byte(state.Content.ValueString()), &content); err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "content must be valid JSON"))
