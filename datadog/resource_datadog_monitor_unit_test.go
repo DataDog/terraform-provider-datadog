@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"math"
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
@@ -167,6 +168,22 @@ func TestBuildDataQualityModelConfiguration(t *testing.T) {
 				assert.False(t, c.HasAutoResolveDays())
 				assert.False(t, c.HasMinLowerBoundSize())
 				assert.False(t, c.HasMinUpperBoundSize())
+			},
+		},
+		{
+			// Terraform's TypeInt is a platform int, so a value past int32 must be
+			// dropped rather than wrapped round to a negative day count.
+			name: "auto_resolve_days beyond int32 does not wrap",
+			data: map[string]interface{}{"auto_resolve_days": math.MaxInt32 + 1},
+			want: func(c *datadogV1.MonitorFormulaAndFunctionDataQualityModelConfiguration) {
+				assert.False(t, c.HasAutoResolveDays())
+			},
+		},
+		{
+			name: "auto_resolve_days at the int32 boundary is kept",
+			data: map[string]interface{}{"auto_resolve_days": math.MaxInt32},
+			want: func(c *datadogV1.MonitorFormulaAndFunctionDataQualityModelConfiguration) {
+				assert.Equal(t, int32(math.MaxInt32), c.GetAutoResolveDays())
 			},
 		},
 	}

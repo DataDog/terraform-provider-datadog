@@ -5,12 +5,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"sort"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
@@ -1236,9 +1239,10 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 											Elem: &schema.Resource{
 												Schema: map[string]*schema.Schema{
 													"auto_resolve_days": {
-														Type:        schema.TypeInt,
-														Optional:    true,
-														Description: "Number of days after which an open alert is automatically resolved. When unset, alerts stay open until the measure returns within bounds.",
+														Type:             schema.TypeInt,
+														Optional:         true,
+														ValidateDiagFunc: validation.ToDiagFunc(validation.IntBetween(math.MinInt32, math.MaxInt32)),
+														Description:      "Number of days after which an open alert is automatically resolved. When unset, alerts stay open until the measure returns within bounds.",
 													},
 													"enable_flatline_detection": {
 														Type:     schema.TypeBool,
@@ -1982,10 +1986,16 @@ func getOptionalFloat(data map[string]interface{}, fieldName string) (float64, b
 }
 
 // getOptionalInt32 safely extracts an optional int field from a map, treating a zero
-// value as unset.
+// value as unset. Terraform's TypeInt is a platform int, so the range is checked
+// before narrowing: an out-of-range value is reported as unset rather than wrapping
+// to a negative one. The schema rejects those before they reach here, so this is
+// defence in depth for other callers.
 func getOptionalInt32(data map[string]interface{}, fieldName string) (int32, bool) {
 	val, ok := data[fieldName].(int)
-	return int32(val), ok && val != 0
+	if !ok || val == 0 || val < math.MinInt32 || val > math.MaxInt32 {
+		return 0, false
+	}
+	return int32(val), true
 }
 
 // getSingleNestedBlock returns the sole element of a MaxItems:1 block, if present.
