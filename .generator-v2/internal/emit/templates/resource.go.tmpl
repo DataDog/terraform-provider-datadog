@@ -103,6 +103,7 @@ func (r *{{ .GoName }}Resource) Create(ctx context.Context, request resource.Cre
 		return
 	}
 
+{{ template "argPrep" .Create.Arguments }}
 	body := {{ .SDKPackage }}.New{{ .Create.GoRequestType }}WithDefaults()
 {{ template "requestFields" . }}
 	resp, _, err := r.Api.{{ .Create.Method }}(r.Auth{{ range .Create.Arguments }}, {{ .Expression }}{{ end }}, *body)
@@ -120,6 +121,7 @@ func (r *{{ .GoName }}Resource) Read(ctx context.Context, request resource.ReadR
 		return
 	}
 
+{{ template "argPrep" .Read.Arguments }}
 	resp, httpResp, err := r.Api.{{ .Read.Method }}(r.Auth{{ range .Read.Arguments }}, {{ .Expression }}{{ end }})
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
@@ -142,9 +144,10 @@ func (r *{{ .GoName }}Resource) Update(ctx context.Context, request resource.Upd
 		return
 	}
 
+{{ template "argPrep" .Update.Arguments }}
 	body := {{ .SDKPackage }}.New{{ .Update.GoRequestType }}WithDefaults()
-{{- if .Update.Arguments }}
-	body.Data.SetId({{ (index .Update.Arguments 0).Expression }})
+{{- with .Update.BodyIDExpr }}
+	body.Data.SetId({{ . }})
 {{- end }}
 {{ template "requestFields" . }}
 	resp, _, err := r.Api.{{ .Update.Method }}(r.Auth{{ range .Update.Arguments }}, {{ .Expression }}{{ end }}, *body)
@@ -163,6 +166,7 @@ func (r *{{ .GoName }}Resource) Delete(ctx context.Context, request resource.Del
 		return
 	}
 
+{{ template "argPrep" .Delete.Arguments }}
 	httpResp, err := r.Api.{{ .Delete.Method }}(r.Auth{{ range .Delete.Arguments }}, {{ .Expression }}{{ end }})
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
@@ -225,8 +229,9 @@ func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .GoNa
   access to its ancestors' state. Nested builds its own SDK value first (the
   same New<Type>WithDefaults() idiom as the request root, applied
   recursively) and recurses through its own Fields before setting it on
-  .Target; a leaf with ParsedVar recovers its value through a fallible parse
-  first; anything else is a direct conversion.
+  .Target; Collection converts or constructs a list/map value first (see
+  requestCollectionValue); a leaf with ParsedVar recovers its value through a
+  fallible parse first; anything else is a direct conversion.
 */}}
 {{- define "requestField" -}}
 {{- if .Nested }}
@@ -243,6 +248,16 @@ func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .GoNa
 {{ template "requestField" . }}
 {{- end }}
 		{{ .Target }}.Set{{ .GoField }}(*{{ .Nested.Var }})
+	}
+{{- end }}
+{{- else if .Collection }}
+{{- if .Required }}
+{{ template "requestCollectionValue" . }}
+	{{ .Target }}.Set{{ .GoField }}({{ .Collection.ConvertVar }})
+{{- else }}
+	if {{ .NullCheck }} {
+{{ template "requestCollectionValue" . }}
+		{{ .Target }}.Set{{ .GoField }}({{ .Collection.ConvertVar }})
 	}
 {{- end }}
 {{- else if .ParsedVar }}
@@ -268,6 +283,35 @@ func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .GoNa
 {{- else }}
 	if {{ .NullCheck }} {
 		{{ .Target }}.Set{{ .GoField }}({{ .ValueExpr }})
+	}
+{{- end }}
+{{- end -}}
+
+{{/*
+  requestCollectionValue leaves .Collection.ConvertVar holding the value a
+  collection field's own Set<Field> call takes, one of two ways depending on
+  Kind: "primitive" decodes state's own types.List/types.Map into a native Go
+  slice/map via ElementsAs (T129); "object" builds one request element per
+  already-decoded state element via a per-element construction loop (T130),
+  mirroring renderList's object branch (data_source_common.go.tmpl) in
+  reverse. Split from requestField since both its Required and optional
+  branches need this, wrapping only the guard differently.
+*/}}
+{{- define "requestCollectionValue" -}}
+{{- if eq .Collection.Kind "primitive" }}
+	var {{ .Collection.ConvertVar }} {{ .Collection.ConvertType }}
+	response.Diagnostics.Append({{ .Collection.ConvertCall }}...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+{{- else }}
+	var {{ .Collection.ConvertVar }} []{{ .Collection.ElementGoType }}
+	for _, {{ .Collection.LoopVar }} := range {{ .Collection.RangeExpr }} {
+		{{ .Collection.ElemVar }} := {{ .Collection.Constructor }}
+{{- range .Collection.Fields }}
+{{ template "requestField" . }}
+{{- end }}
+		{{ .Collection.ConvertVar }} = append({{ .Collection.ConvertVar }}, *{{ .Collection.ElemVar }})
 	}
 {{- end }}
 {{- end -}}

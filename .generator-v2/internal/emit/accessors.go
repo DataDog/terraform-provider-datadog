@@ -6,6 +6,8 @@ import (
 	"go/parser"
 	"go/token"
 	"strings"
+
+	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
 // ResolveAPIAccessors parses the provider's ApiInstances helper at path and maps
@@ -87,6 +89,15 @@ func ApplyResourceAPIAccessor(view *ResourceView, accessors map[string]string) e
 	accessor, constructor, err := resolveAPIAccessor(view.SDKPackage, view.APIStruct, accessors)
 	view.APIAccessor, view.APIConstructor = accessor, constructor
 	return err
+}
+
+// defaultAPIAccessor is the FrameworkProvider accessor a call resolves to by
+// convention, e.g. "GetTeamsApiV2". It is the fallback ApplyAPIAccessor and
+// ApplyResourceAPIAccessor then overwrite from the provider's real ApiInstances
+// helper, so the Get<Struct><V1|V2> spelling lives here beside that lookup
+// rather than being respelled at each view builder.
+func defaultAPIAccessor(call *model.SDKCall) string {
+	return "Get" + call.GoApiStruct + strings.TrimPrefix(call.GoPackage, "datadog")
 }
 
 // resolveAPIAccessor is the shared decision behind both ApplyAPIAccessor and

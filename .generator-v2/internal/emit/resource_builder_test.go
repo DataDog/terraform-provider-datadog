@@ -44,7 +44,8 @@ var _ = Describe("BuildResourceView", func() {
 		}))
 		Expect(view.Update).To(Equal(CRUDCallView{
 			Method: "UpdateIncidentType", GoRequestType: "IncidentTypeUpdateRequest", GoResponseType: "IncidentTypeResponse",
-			Arguments: []SDKArgumentView{{Expression: "state.ID.ValueString()", TFName: "id"}},
+			Arguments:  []SDKArgumentView{{Expression: "state.ID.ValueString()", TFName: "id"}},
+			BodyIDExpr: "state.ID.ValueString()",
 		}))
 		Expect(view.Delete).To(Equal(CRUDCallView{
 			Method:    "DeleteIncidentType",

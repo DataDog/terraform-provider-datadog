@@ -62,13 +62,7 @@ func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.R
 	var optionalParams {{ .SDKPackage }}.{{ .Read.OptionalParamsType }}
 {{- range .Read.Filters }}
 	if !state.{{ .StateField }}.IsNull() {
-{{- if .ParsedVar }}
-		{{ .ParsedVar }}, err := {{ .ParseCall }}
-		if err != nil {
-			response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
-			return
-		}
-{{- end }}
+{{ template "argParse" . }}
 {{- if .Setter }}
 		optionalParams.{{ .Setter }}({{ .ValueExpr }})
 {{- else }}
@@ -77,15 +71,7 @@ func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.R
 	}
 {{- end }}
 {{ end }}
-{{- range .Read.Arguments }}
-{{- if .ParsedVar }}
-	{{ .ParsedVar }}, err := {{ .ParseCall }}
-	if err != nil {
-		response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
-		return
-	}
-{{- end }}
-{{- end }}
+{{ template "argPrep" .Read.Arguments }}
 	var items []{{ .SDKPackage }}.{{ .Read.ItemType }}
 {{- if .Read.Paginated }}
 	result, cancel := d.Api.{{ .Read.Method }}WithPagination(d.Auth{{ range .Read.Arguments }}, {{ .Expression }}{{ end }}{{ if .Read.OptionalParamsType }}, optionalParams{{ end }})

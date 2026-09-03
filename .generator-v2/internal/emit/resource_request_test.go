@@ -114,10 +114,10 @@ var _ = Describe("BuildResourceView request mapping", func() {
 		Expect(found).To(BeTrue())
 	})
 
-	It("fails a request-settable array with a clear diagnostic", func() {
+	It("fails a request-settable array whose element has a format, naming the element path", func() {
 		op := widgetResourceOperation()
 		attributes := op.RequestSchema.Properties["data"].Properties["attributes"]
-		attributes.Properties["tags"] = arrSchema(prim("string", ""))
+		attributes.Properties["tags"] = arrSchema(&model.Schema{Kind: model.SchemaKindPrimitive, Type: "string", Format: "date-time"})
 
 		art, err := model.BuildArtifact(op)
 		Expect(err).NotTo(HaveOccurred())
@@ -128,12 +128,84 @@ var _ = Describe("BuildResourceView request mapping", func() {
 		Expect(errors.As(err, &unsupported)).To(BeTrue())
 		found := false
 		for _, n := range unsupported.Nodes {
-			if strings.Contains(n.Path, "tags") {
-				Expect(n.Reason).To(ContainSubstring("arrays"))
+			if strings.Contains(n.Path, "tags[]") {
+				Expect(n.Reason).To(ContainSubstring("date-time"))
 				found = true
 			}
 		}
 		Expect(found).To(BeTrue())
+	})
+
+	It("builds a primitive list, a primitive map and a list of objects, and renders valid Go", func() {
+		op := widgetResourceOperation()
+		attributes := op.RequestSchema.Properties["data"].Properties["attributes"]
+		attributes.Properties["tags"] = arrSchema(prim("string", ""))
+		attributes.Properties["limits_by_region"] = &model.Schema{
+			Kind:  model.SchemaKindMap,
+			Items: prim("integer", "int64"),
+		}
+		attributes.Properties["recipients"] = &model.Schema{
+			Kind: model.SchemaKindArray,
+			Items: &model.Schema{
+				Kind:     model.SchemaKindObject,
+				RefName:  "RecipientRequest",
+				Required: []string{"email"},
+				Properties: map[string]*model.Schema{
+					"email": prim("string", ""),
+					"name":  prim("string", ""),
+				},
+			},
+		}
+
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+
+		view, err := BuildResourceView(art)
+		Expect(err).NotTo(HaveOccurred())
+
+		By("a primitive list decodes via ElementsAs into a native Go slice")
+		tags := requestFieldByGoField(view.RequestFields, "Tags")
+		Expect(tags.Required).To(BeFalse())
+		Expect(tags.Collection).NotTo(BeNil())
+		Expect(tags.Collection.Kind).To(Equal("primitive"))
+		Expect(tags.Collection.ConvertType).To(Equal("[]string"))
+		Expect(tags.Collection.ConvertCall).To(Equal("state.Tags.ElementsAs(ctx, &tagsElements, false)"))
+
+		By("a primitive map decodes into a native Go map")
+		limits := requestFieldByGoField(view.RequestFields, "LimitsByRegion")
+		Expect(limits.Collection.Kind).To(Equal("primitive"))
+		Expect(limits.Collection.ConvertType).To(Equal("map[string]int64"))
+
+		By("a list of objects builds one request element per already-decoded state element")
+		recipients := requestFieldByGoField(view.RequestFields, "Recipients")
+		Expect(recipients.Collection.Kind).To(Equal("object"))
+		Expect(recipients.Collection.RangeExpr).To(Equal("state.Recipients"))
+		Expect(recipients.Collection.Constructor).To(Equal("datadogV2.NewRecipientRequestWithDefaults()"))
+		email := requestFieldByGoField(recipients.Collection.Fields, "Email")
+		Expect(email.Required).To(BeTrue())
+		Expect(email.ValueExpr).To(Equal("recipientsItem.Email.ValueString()"))
+
+		src, err := RenderResource(view)
+		Expect(err).NotTo(HaveOccurred())
+		_, err = format.Source(src)
+		Expect(err).NotTo(HaveOccurred(), "rendered output must already be gofmt-canonical Go:\n%s", src)
+
+		out := string(src)
+		for _, want := range []string{
+			`var tagsElements []string`,
+			`state.Tags.ElementsAs(ctx, &tagsElements, false)`,
+			`body.Data.Attributes.SetTags(tagsElements)`,
+			`var limitsByRegionElements map[string]int64`,
+			`body.Data.Attributes.SetLimitsByRegion(limitsByRegionElements)`,
+			`var recipientsElements []datadogV2.RecipientRequest`,
+			`for _, recipientsItem := range state.Recipients {`,
+			`recipientsElement := datadogV2.NewRecipientRequestWithDefaults()`,
+			`recipientsElement.SetEmail(recipientsItem.Email.ValueString())`,
+			`recipientsElements = append(recipientsElements, *recipientsElement)`,
+			`body.Data.Attributes.SetRecipients(recipientsElements)`,
+		} {
+			Expect(out).To(ContainSubstring(want), "generated resource missing %q:\n%s", want, out)
+		}
 	})
 })
 
@@ -149,7 +221,6 @@ func requestFieldByGoField(fields []RequestFieldView, goField string) RequestFie
 	Fail("no request field named " + goField)
 	return RequestFieldView{}
 }
-
 
 func arrSchema(item *model.Schema) *model.Schema {
 	return &model.Schema{Kind: model.SchemaKindArray, Items: item}

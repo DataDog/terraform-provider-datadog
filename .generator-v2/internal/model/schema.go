@@ -224,7 +224,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, requir
 	}
 
 	// A string enum becomes a OneOf validator; non-string enums produce none for now.
-	if s.Kind == SchemaKindPrimitive && s.Type == "string" && len(s.Enum) > 0 {
+	if s.Kind == SchemaKindPrimitive && isStringEnum(s) {
 		attr.IsEnum = true
 		attr.RequestModelRefName = s.RequestRefName
 		args := make([]string, len(s.Enum))
@@ -262,11 +262,11 @@ func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, requir
 			}
 			attr.Children, attr.OneOf = variants, envelope
 		default:
-			elem, err := ElementType(s.Items)
+			var err error
+			attr.ElementType, attr.ElementFormat, attr.ElementIsEnum, err = elementInfo(s.Items)
 			if err != nil {
 				return nil, err
 			}
-			attr.ElementType = elem
 		}
 
 	case SchemaKindMap:
@@ -286,15 +286,35 @@ func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, requir
 			}
 			attr.Children, attr.OneOf = variants, envelope
 		default:
-			elem, err := ElementType(s.Items)
+			var err error
+			attr.ElementType, attr.ElementFormat, attr.ElementIsEnum, err = elementInfo(s.Items)
 			if err != nil {
 				return nil, err
 			}
-			attr.ElementType = elem
 		}
 	}
 
 	return attr, nil
+}
+
+// isStringEnum reports whether s is a string constrained to a fixed set of
+// values — the same predicate that promotes a primitive attribute itself to
+// IsEnum, reused here for a collection element (see elementInfo).
+func isStringEnum(s *Schema) bool {
+	return s.Type == "string" && len(s.Enum) > 0
+}
+
+// elementInfo derives a ListAttribute/MapAttribute's element triple: the
+// framework attr.Type expression ElementType renders as, and, since that
+// generic mapping collapses a date-time or enum string element to the same
+// "types.StringType" as a plain one, the element's own Format and enum-ness
+// alongside it — see Attribute.ElementFormat/ElementIsEnum.
+func elementInfo(items *Schema) (elementType, format string, isEnum bool, err error) {
+	elementType, err = ElementType(items)
+	if err != nil {
+		return "", "", false, err
+	}
+	return elementType, items.Format, isStringEnum(items), nil
 }
 
 // children builds one child attribute per property of parent, each pathed
@@ -563,7 +583,7 @@ func (b *treeBuilder) resourcePlanModifiers(a *Attribute, requestSettable bool) 
 	if !useStateForUnknown && !requiresReplace {
 		return nil
 	}
-	pkg := planModifierPackage(a.GoType)
+	pkg := PlanModifierPackage(a.GoType)
 	var modifiers []PlanModifierSpec
 	if useStateForUnknown {
 		modifiers = append(modifiers, PlanModifierSpec{Name: pkg + ".UseStateForUnknown"})
@@ -574,11 +594,13 @@ func (b *treeBuilder) resourcePlanModifiers(a *Attribute, requestSettable bool) 
 	return modifiers
 }
 
-// planModifierPackage returns the terraform-plugin-framework planmodifier
+// PlanModifierPackage returns the terraform-plugin-framework planmodifier
 // subpackage for goType, e.g. "types.String" -> "stringplanmodifier". goType
 // is always one of FrameworkType's seven possible outputs by the time it
-// reaches here, all following this same naming convention.
-func planModifierPackage(goType string) string {
+// reaches here, all following this same naming convention. Exported so the
+// emitter's import block derives the subpackage by the same rule that spelled
+// it into PlanModifierSpec.Name, rather than parsing it back out of that name.
+func PlanModifierPackage(goType string) string {
 	return strings.ToLower(strings.TrimPrefix(goType, "types.")) + "planmodifier"
 }
 

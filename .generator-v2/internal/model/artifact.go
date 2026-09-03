@@ -68,9 +68,11 @@ func buildResourceArtifact(op *Operation) (*Artifact, error) {
 	// Create nothing is ever Required and the whole schema silently becomes
 	// Optional, without Read nothing is ever Computed and refresh can never
 	// reconcile state (FR-034b). Delete is load-bearing for the lifecycle, since
-	// Terraform must be able to destroy what it created. This is the sole guard
-	// for all three: it runs before any sub-builder, each of which assumes its
-	// preconditions already hold rather than re-checking them.
+	// Terraform must be able to destroy what it created. This is the guard for
+	// all three within this package: it runs before any sub-builder, each of
+	// which assumes its preconditions already hold rather than re-checking them.
+	// emit.BuildResourceView re-asserts them at its own package boundary, since
+	// it is exported and cannot assume this builder produced its input.
 	if err := requireResolvedRoles(op, GroupRoleCreate, GroupRoleRead, GroupRoleDelete); err != nil {
 		return nil, err
 	}

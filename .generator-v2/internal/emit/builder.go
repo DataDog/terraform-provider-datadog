@@ -395,7 +395,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 		Description: a.Description,
 		SDKPackage:  primary.GoPackage,
 		APIStruct:   primary.GoApiStruct,
-		APIAccessor: "Get" + primary.GoApiStruct + strings.TrimPrefix(primary.GoPackage, "datadog"),
+		APIAccessor: defaultAPIAccessor(primary),
 		UsesUUID:    readUUID || searchUUID || filterUUID,
 		UsesStrconv: readStrconv || searchStrconv || filterStrconv,
 		ByID:        byID,
@@ -782,6 +782,11 @@ type dataSourceBuilder struct {
 	// (e.g. "stringplanmodifier") referenced by any attribute's PlanModifiers,
 	// resource walks only, for the template's import block.
 	planModifierPkgs map[string]struct{}
+	// usesValidators records that some attribute rendered a validator, for the
+	// template's import block. Set during the walk by validatorViews, the same
+	// way planModifierPkgs is, so both "does the template need this import"
+	// answers come from the one pass that knows.
+	usesValidators bool
 }
 
 // responds reports whether walk should build a's response-mapping assignment.
@@ -802,13 +807,11 @@ func (b *dataSourceBuilder) planModifierViews(a *model.Attribute) (names []strin
 	names = make([]string, len(a.PlanModifiers))
 	for i, pm := range a.PlanModifiers {
 		names[i] = pm.Name
-		if pkg, _, ok := strings.Cut(pm.Name, "."); ok {
-			if b.planModifierPkgs == nil {
-				b.planModifierPkgs = make(map[string]struct{})
-			}
-			b.planModifierPkgs[pkg] = struct{}{}
-		}
 	}
+	if b.planModifierPkgs == nil {
+		b.planModifierPkgs = make(map[string]struct{})
+	}
+	b.planModifierPkgs[model.PlanModifierPackage(a.GoType)] = struct{}{}
 	return names, strings.TrimPrefix(a.GoType, "types.")
 }
 
@@ -816,7 +819,7 @@ func (b *dataSourceBuilder) planModifierViews(a *model.Attribute) (names []strin
 // `stringvalidator.OneOf("low", "high")`. Empty unless a is configurable
 // (Required or Optional) — a validator on a Computed-only attribute would
 // never run, since the practitioner never supplies a value for it to check.
-func validatorViews(a *model.Attribute) []string {
+func (b *dataSourceBuilder) validatorViews(a *model.Attribute) []string {
 	if len(a.Validators) == 0 || !(a.Required || a.Optional) {
 		return nil
 	}
@@ -824,6 +827,7 @@ func validatorViews(a *model.Attribute) []string {
 	for i, v := range a.Validators {
 		out[i] = v.Name + "(" + strings.Join(v.Args, ", ") + ")"
 	}
+	b.usesValidators = true
 	return out
 }
 
@@ -929,7 +933,7 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 				Optional:         a.Optional,
 				Computed:         a.Computed,
 				Sensitive:        a.Sensitive,
-				Validators:       validatorViews(a),
+				Validators:       b.validatorViews(a),
 				PlanModifiers:    pmNames,
 				PlanModifierType: pmType,
 			})
@@ -1432,7 +1436,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 		Description: a.Description,
 		SDKPackage:  call.GoPackage,
 		APIStruct:   call.GoApiStruct,
-		APIAccessor: "Get" + call.GoApiStruct + strings.TrimPrefix(call.GoPackage, "datadog"),
+		APIAccessor: defaultAPIAccessor(call),
 		UsesUUID:    usesUUID || filterUUID,
 		UsesStrconv: usesStrconv || filterStrconv,
 		Read: SDKReadView{
@@ -1679,6 +1683,17 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 			Method: lc.Update.GoMethod, GoRequestType: lc.Update.GoRequestType,
 			GoResponseType: lc.Update.GoResponseType, Arguments: updateArgs,
 		}
+		// A JSON:API update body identifies the record it patches, and the model's
+		// id attribute always holds that id (flattenEnvelope reserves it
+		// unconditionally), so an updatable resource always sets it. Deliberately
+		// not keyed on the path's parameters — a sub-resource path names a parent
+		// and a singleton PATCH names nothing, so path arity answers a different
+		// question — nor on env.idAssign, which says only whether the *response*
+		// exposes an id to read back.
+		//
+		// Whether the SDK's own update type declares SetId is a per-role fact the
+		// merged tree cannot see today; T134 owns that.
+		updateView.BodyIDExpr = "state.ID.ValueString()"
 	}
 
 	planModifierPkgs := sortedKeys(b.planModifierPkgs)
@@ -1689,7 +1704,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		Description: a.Description,
 		SDKPackage:  primary.GoPackage,
 		APIStruct:   primary.GoApiStruct,
-		APIAccessor: "Get" + primary.GoApiStruct + strings.TrimPrefix(primary.GoPackage, "datadog"),
+		APIAccessor: defaultAPIAccessor(primary),
 		Create: CRUDCallView{
 			Method: lc.Create.GoMethod, GoRequestType: lc.Create.GoRequestType,
 			GoResponseType: lc.Create.GoResponseType, Arguments: createArgs,
@@ -1713,7 +1728,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 			Lists:       recordLists,
 		},
 		UsesFmt:              len(b.oneOfRenders) > 0,
-		UsesValidators:       hasValidators(recordAttrs) || hasValidators(recordBlocks),
+		UsesValidators:       b.usesValidators,
 		UsesPlanModifiers:    len(planModifierPkgs) > 0,
 		PlanModifierPackages: planModifierPkgs,
 		UsesUUID:             createUUID || readUUID || updateUUID || deleteUUID || requestUUID,
@@ -1738,11 +1753,14 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 // usesUUID/usesTime report whether any leaf, at this level or nested below
 // it, needed the corresponding parse import.
 //
-// A settable leaf or object that this cannot yet map — an array, map, oneOf,
-// an enum or object with no named request-side SDK type (RequestModelRefName
-// empty — see model.Schema.RequestRefName), or a format this doesn't
-// recognize — fails the artifact rather than silently omitting a field the
-// practitioner can configure but the generated Create/Update would never send.
+// A settable leaf, object or collection that this cannot yet map — a oneOf, a
+// map of objects (no request-side SDK component name to build from exists for
+// one yet), an object with no named request-side SDK type (RequestModelRefName
+// empty — see model.Schema.RequestRefName), a collection element with that
+// same gap, a format on a collection element (a list of date-time, a list of
+// enum strings), or a leaf format this doesn't recognize — fails the artifact
+// rather than silently omitting a field the practitioner can configure but the
+// generated Create/Update would never send.
 func buildRequestFields(attrs []*model.Attribute, stateExpr, target, sdkPackage string, unsupported *[]UnsupportedNode) (fields []RequestFieldView, usesUUID, usesTime bool) {
 	for _, a := range attrs {
 		if !a.Required && !a.Optional {
@@ -1759,14 +1777,42 @@ func buildRequestFields(attrs []*model.Attribute, stateExpr, target, sdkPackage 
 			})
 			continue
 		}
-		if a.TfType == "schema.SingleNestedBlock" || a.TfType == "schema.SingleNestedAttribute" {
-			rf, ok := buildNestedRequestField(a, field, childState, target, sdkPackage, unsupported)
+
+		switch a.TfType {
+		case "schema.SingleNestedBlock", "schema.SingleNestedAttribute":
+			rf, nestedUUID, nestedTime, ok := buildNestedRequestField(a, field, childState, target, sdkPackage, unsupported)
 			if !ok {
 				continue
 			}
 			fields = append(fields, rf)
-			usesUUID, usesTime = usesUUID || hasParseCallPrefix(rf, "uuid."), usesTime || hasParseCallPrefix(rf, "time.")
+			usesUUID, usesTime = usesUUID || nestedUUID, usesTime || nestedTime
 			continue
+
+		case "schema.ListAttribute", "schema.MapAttribute":
+			rf, reason := buildPrimitiveCollectionField(a, tfName, field, childState, target)
+			if reason != "" {
+				*unsupported = append(*unsupported, UnsupportedNode{Path: elementPath(a), Reason: reason})
+				continue
+			}
+			fields = append(fields, rf)
+			continue
+
+		case "schema.ListNestedBlock", "schema.ListNestedAttribute":
+			rf, nestedUUID, nestedTime, ok := buildObjectCollectionField(a, tfName, field, childState, target, sdkPackage, unsupported)
+			if !ok {
+				continue
+			}
+			fields = append(fields, rf)
+			usesUUID, usesTime = usesUUID || nestedUUID, usesTime || nestedTime
+			continue
+
+			// schema.MapNestedAttribute (a map of objects) has no case here: the
+			// state-model walk this same tree feeds (BuildResourceView's call to
+			// b.walk) has no MapNestedAttribute branch of its own yet and fails
+			// the artifact first with its own "map-of-object not yet supported"
+			// (unsupportedReason), for every attribute of that shape regardless of
+			// whether it is request-settable — so a dedicated rejection here could
+			// never fire on its own and would only ever duplicate that one.
 		}
 
 		expr, parsedVar, parseCall, reason := requestValueExpr(a, childState, field, sdkPackage)
@@ -1779,7 +1825,7 @@ func buildRequestFields(attrs []*model.Attribute, stateExpr, target, sdkPackage 
 			rf.TFName = tfName
 		}
 		if !a.Required {
-			rf.NullCheck = "!" + childState + ".IsNull() && !" + childState + ".IsUnknown()"
+			rf.NullCheck = notNullOrUnknown(childState)
 		}
 		fields = append(fields, rf)
 		usesUUID, usesTime = usesUUID || strings.HasPrefix(parseCall, "uuid."), usesTime || strings.HasPrefix(parseCall, "time.")
@@ -1794,23 +1840,21 @@ func buildRequestFields(attrs []*model.Attribute, stateExpr, target, sdkPackage 
 // a's own model pointer, reached through its parent so a doubly-nested field
 // resolves relative to its immediate parent rather than the top-level state.
 // target is where the constructed value is ultimately set, exactly as in
-// buildRequestFields.
-func buildNestedRequestField(a *model.Attribute, field, modelExpr, target, sdkPackage string, unsupported *[]UnsupportedNode) (RequestFieldView, bool) {
+// buildRequestFields. usesUUID/usesTime are its subtree's own parse-import
+// needs, returned rather than recovered by the caller so one aggregation
+// serves both this branch and the plain-leaf one.
+func buildNestedRequestField(a *model.Attribute, field, modelExpr, target, sdkPackage string, unsupported *[]UnsupportedNode) (rf RequestFieldView, usesUUID, usesTime, ok bool) {
 	if a.RequestModelRefName == "" {
 		*unsupported = append(*unsupported, UnsupportedNode{
 			Path: a.Path,
 			Reason: "nested object has no named request-side SDK type (its schema was never reached " +
 				"through a $ref component in the Create or Update body)",
 		})
-		return RequestFieldView{}, false
+		return RequestFieldView{}, false, false, false
 	}
 	nestedVar := lowerFirst(field) + "Value"
-	// The recursive call's own usesUUID/usesTime are discarded: the caller
-	// re-derives them from the returned tree via hasParseCallPrefix, since it
-	// needs the same aggregation whether this field came from this call or
-	// from a plain leaf.
-	childFields, _, _ := buildRequestFields(a.Children, modelExpr, nestedVar, sdkPackage, unsupported)
-	rf := RequestFieldView{
+	childFields, usesUUID, usesTime := buildRequestFields(a.Children, modelExpr, nestedVar, sdkPackage, unsupported)
+	rf = RequestFieldView{
 		GoField:  field,
 		Target:   target,
 		Required: a.Required,
@@ -1824,25 +1868,142 @@ func buildNestedRequestField(a *model.Attribute, field, modelExpr, target, sdkPa
 	if !a.Required {
 		rf.NullCheck = modelExpr + " != nil"
 	}
-	return rf, true
+	return rf, usesUUID, usesTime, true
 }
 
-// hasParseCallPrefix reports whether rf, or any field nested under it,
-// carries a ParseCall starting with prefix (e.g. "uuid." or "time."), used to
-// decide whether a nested subtree needs the corresponding import.
-func hasParseCallPrefix(rf RequestFieldView, prefix string) bool {
-	if strings.HasPrefix(rf.ParseCall, prefix) {
-		return true
+// buildPrimitiveCollectionField derives a primitive-terminal list or map
+// field's RequestFieldView (FR-034, T129). State's own field there is the
+// framework's raw types.List/types.Map value (see buildRequestFields'
+// ModelFieldView), which the SDK's uniform Set<Field>([]<T>) /
+// Set<Field>(map[string]<T>) setter cannot take directly, so it is decoded
+// into a native Go slice/map via ElementsAs first — a
+// diag.Diagnostics-returning, ctx-taking conversion (see
+// RequestCollectionView for why this is a sibling of ParsedVar/ParseCall
+// rather than a widening of it). reason is non-empty when the element itself
+// isn't yet supported (a format or enum on it, or an element kind
+// ElementType cannot map to a native Go type, e.g. a nested collection),
+// naming why, the same (T, reason) shape requestValueExpr uses for a leaf.
+func buildPrimitiveCollectionField(a *model.Attribute, tfName, field, childState, target string) (rf RequestFieldView, reason string) {
+	goElem, reason := primitiveElementGoType(a)
+	if reason != "" {
+		return RequestFieldView{}, reason
 	}
-	if rf.Nested == nil {
-		return false
+
+	convertType := "[]" + goElem
+	if isMapType(a.TfType) {
+		convertType = "map[string]" + goElem
 	}
-	for _, child := range rf.Nested.Fields {
-		if hasParseCallPrefix(child, prefix) {
-			return true
-		}
+	convertVar := leafVar(tfName) + "Elements"
+	rf = RequestFieldView{
+		GoField:  field,
+		Target:   target,
+		Required: a.Required,
+		Collection: &RequestCollectionView{
+			Kind:        "primitive",
+			ConvertVar:  convertVar,
+			ConvertType: convertType,
+			ConvertCall: childState + ".ElementsAs(ctx, &" + convertVar + ", false)",
+		},
 	}
-	return false
+	if !a.Required {
+		rf.NullCheck = notNullOrUnknown(childState)
+	}
+	return rf, ""
+}
+
+// primitiveElementGoType maps a primitive collection's element to the native
+// Go type ElementsAs decodes into, rejecting anything the request side
+// cannot yet recover the SDK's own typed value for: a format or enum on the
+// element (a list of date-time, a list of enum strings — ElementType's
+// generic attr.Type mapping collapses these to the same "types.StringType"
+// as a plain string, which is why ElementFormat/ElementIsEnum exist
+// separately), or an element ElementType doesn't reduce to one of the four
+// bare scalar forms (notably a collection of collections). reason is
+// non-empty for anything not yet supported, naming why.
+func primitiveElementGoType(a *model.Attribute) (goType, reason string) {
+	if a.ElementFormat != "" {
+		return "", fmt.Sprintf("collection element format %q is not yet supported on a resource request", a.ElementFormat)
+	}
+	if a.ElementIsEnum {
+		return "", "a collection of enum strings is not yet supported on a resource request"
+	}
+	switch a.ElementType {
+	case "types.StringType":
+		return "string", ""
+	case "types.Int64Type":
+		return "int64", ""
+	case "types.Float64Type":
+		return "float64", ""
+	case "types.BoolType":
+		return "bool", ""
+	default:
+		return "", fmt.Sprintf("collection element type %q is not yet supported on a resource request", a.ElementType)
+	}
+}
+
+// elementPath names a collection attribute's element for a diagnostic, via
+// the same "[]"/"{}" markers model.ChildPath already appends for a nested
+// collection's own child paths (model.Attribute.Path).
+func elementPath(a *model.Attribute) string {
+	if isMapType(a.TfType) {
+		return model.ChildPath(a.Path, "{}")
+	}
+	return model.ChildPath(a.Path, "[]")
+}
+
+// notNullOrUnknown guards a non-Required framework value field (expr, e.g.
+// "state.Tags") against being sent to the SDK unset or still unresolved.
+func notNullOrUnknown(expr string) string {
+	return "!" + expr + ".IsNull() && !" + expr + ".IsUnknown()"
+}
+
+// buildObjectCollectionField derives a list-of-objects field's
+// RequestFieldView (FR-034, T130). The framework's own Get(ctx, &state) has
+// already decoded a ListNestedBlock/ListNestedAttribute into a native
+// []*<ElemModel> slice, the same way it decodes a lone nested object into a
+// *Model pointer (see buildNestedRequestField) — so, unlike the primitive
+// case, no ElementsAs conversion applies here. Each already-decoded element
+// instead becomes its own request value, built one at a time via
+// New<RequestModelRefName>WithDefaults() and appended to a native Go slice
+// before the parent's setter is called, mirroring the response side's
+// renderList object branch (data_source_common.go.tmpl) in reverse. Element
+// type resolution needs no work here: BuildResourceTree already stamps
+// RequestModelRefName from the element's own component (model/schema.go),
+// reaching through the array exactly as ModelRefName does. usesUUID/usesTime
+// are the element subtree's own parse-import needs, aggregated the same way
+// buildNestedRequestField's are.
+func buildObjectCollectionField(a *model.Attribute, tfName, field, childState, target, sdkPackage string, unsupported *[]UnsupportedNode) (rf RequestFieldView, usesUUID, usesTime, ok bool) {
+	if a.RequestModelRefName == "" {
+		*unsupported = append(*unsupported, UnsupportedNode{
+			Path: elementPath(a),
+			Reason: "list element has no named request-side SDK type (its schema was never reached " +
+				"through a $ref component in the Create or Update body)",
+		})
+		return RequestFieldView{}, false, false, false
+	}
+
+	base := leafVar(tfName)
+	loopVar, elemVar := base+"Item", base+"Element"
+	childFields, usesUUID, usesTime := buildRequestFields(a.Children, loopVar, elemVar, sdkPackage, unsupported)
+	rf = RequestFieldView{
+		GoField:  field,
+		Target:   target,
+		Required: a.Required,
+		Collection: &RequestCollectionView{
+			Kind:          "object",
+			ConvertVar:    base + "Elements",
+			RangeExpr:     childState,
+			LoopVar:       loopVar,
+			ElemVar:       elemVar,
+			Constructor:   sdkPackage + ".New" + a.RequestModelRefName + "WithDefaults()",
+			ElementGoType: sdkPackage + "." + a.RequestModelRefName,
+			Fields:        childFields,
+		},
+	}
+	if !a.Required {
+		rf.NullCheck = childState + " != nil"
+	}
+	return rf, usesUUID, usesTime, true
 }
 
 // requestValueExpr returns the unwrapped Go value expression a leaf's
@@ -1900,21 +2061,6 @@ func requestValueExpr(a *model.Attribute, stateExpr, field, sdkPackage string) (
 			return "", "", "", fmt.Sprintf("number format %q is not yet supported on a resource request", a.Format)
 		}
 	default:
-		return "", "", "", "request-settable field of this shape is not yet supported for a resource " +
-			"(arrays and maps are not yet supported)"
+		return "", "", "", fmt.Sprintf("request-settable field of GoType %q is not yet supported on a resource request", a.GoType)
 	}
-}
-
-// hasValidators reports whether any attribute in the tree, recursively,
-// carries a rendered Validators list.
-func hasValidators(attrs []AttrView) bool {
-	for _, a := range attrs {
-		if len(a.Validators) > 0 {
-			return true
-		}
-		if hasValidators(a.Attributes) || hasValidators(a.Blocks) {
-			return true
-		}
-	}
-	return false
 }

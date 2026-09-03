@@ -70,22 +70,6 @@ func SyncGeneratedResources(path string, constructors []string, check bool) (mod
 	return writeGeneratedResources(path, set, check)
 }
 
-// RemoveGeneratedResource deletes constructor from path's generatedResources
-// slice, the set-difference inverse of SyncGeneratedResources's union. It is
-// idempotent: an already-absent constructor (or a missing file) reports
-// Unchanged. It honors check mode.
-func RemoveGeneratedResource(path, constructor string, check bool) (model.ArtifactStatus, error) {
-	set, err := registeredResourceSet(path)
-	if err != nil {
-		return model.ArtifactStatusFailed, err
-	}
-	if _, ok := set[constructor]; !ok {
-		return model.ArtifactStatusUnchanged, nil
-	}
-	delete(set, constructor)
-	return writeGeneratedResources(path, set, check)
-}
-
 // registeredResourceSet reads the constructor identifiers currently in the
 // generatedResources file at path into a set; a missing file yields an empty
 // set.

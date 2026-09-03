@@ -419,9 +419,10 @@ func generateResourceArtifact(op *model.Operation, outputRoot string, check bool
 	// Bind each role operation independently: a oneOf can appear in any of the
 	// Create/Read/Update bodies the merge later unions, and binding per
 	// operation keeps an unresolvable union from failing more than this one
-	// artifact. Operations() is nil-safe and already dedupes; a groupless op
-	// falls back to binding itself.
-	roleOps := op.ResolvedGroup.Operations()
+	// artifact. Only the CRUD quad is bound; Operations documents why Search is
+	// not. A groupless op falls back to binding itself.
+	roleOps := op.ResolvedGroup.Operations(
+		model.GroupRoleCreate, model.GroupRoleRead, model.GroupRoleUpdate, model.GroupRoleDelete)
 	if len(roleOps) == 0 {
 		roleOps = []*model.Operation{op}
 	}

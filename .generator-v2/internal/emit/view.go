@@ -552,6 +552,14 @@ type CRUDCallView struct {
 	// Arguments are the positional SDK call arguments in call order (e.g. the
 	// terminal path id, aliased to "id").
 	Arguments []SDKArgumentView
+	// BodyIDExpr is the expression assigned to the JSON:API request body's
+	// data.id, set on Update only and empty when the body carries no id. It is
+	// decided here rather than in the template because the two facts the
+	// template could see — that the path has parameters, and what those
+	// parameters are — answer a different question: a sub-resource's path names
+	// a parent, and a singleton PATCH has no path parameter at all yet still
+	// sends data.id.
+	BodyIDExpr string
 }
 
 // RequestFieldView is one field a resource's Create and Update bodies both set
@@ -559,8 +567,9 @@ type CRUDCallView struct {
 // (non-pointer) and an optional (pointer) SDK field alike, which is what lets
 // one view serve both request types regardless of whether either SDK type
 // happens to keep the field required (see buildRequestFields). Exactly one of
-// (ValueExpr) and Nested is populated: a leaf sets the parent's field
-// directly, an object field builds Nested's own value first.
+// ValueExpr, Nested and Collection is populated: a leaf sets the parent's
+// field directly, an object field builds Nested's own value first, and a
+// list/map field builds Collection's value first.
 type RequestFieldView struct {
 	// GoField is the SDK setter suffix, e.g. "Name" for SetName.
 	GoField string
@@ -598,6 +607,12 @@ type RequestFieldView struct {
 	// via New<SDKType>WithDefaults(), and its own Set<GoField> calls
 	// (recursing through this same view). Nil for a leaf field.
 	Nested *RequestNestedView
+
+	// Collection is set for a list/map field: either a primitive-terminal
+	// collection, decoded via ElementsAs, or a list-of-objects one, built one
+	// element at a time (see RequestCollectionView). Nil for a leaf or a
+	// single-object field.
+	Collection *RequestCollectionView
 }
 
 // RequestNestedView is one nested object a resource's request body constructs
@@ -621,5 +636,73 @@ type RequestNestedView struct {
 	// holds the SDK value being built, never the source model.
 	ModelExpr string
 	// Fields are this nested object's own Set<GoField>(...) calls.
+	Fields []RequestFieldView
+}
+
+// RequestCollectionView is a list/map field a resource's request body builds
+// before handing it to the parent's Set<GoField>(v) setter, one of two ways
+// depending on Kind:
+//
+//   - "primitive" (T129): state's own field is the framework's raw
+//     types.List/types.Map value (see ModelFieldView), which the setter
+//     cannot take directly, so it is decoded into a native Go slice/map via
+//     ElementsAs first — a diag.Diagnostics-returning, ctx-taking
+//     conversion, unlike RequestFieldView's ParsedVar/ParseCall pair, which
+//     mirrors SDKArgumentView's single-valued (T, error) idiom instead.
+//     Widening that pair to sometimes return diagnostics would leak this
+//     shape into SDKArgumentView's own path-argument parsing, which has
+//     nothing to do with ctx or the framework's diagnostics; a sibling pair
+//     keeps the two idioms — and their callers — apart.
+//   - "object" (T130): the framework's own Get(ctx, &state) has already
+//     decoded a ListNestedBlock/ListNestedAttribute into a native
+//     []*<ElemModel> slice, the same way it decodes a lone nested object
+//     into a *Model pointer (see RequestNestedView.ModelExpr) — so no
+//     ElementsAs applies. Each already-decoded element instead becomes its
+//     own request value, built one at a time and appended to a native Go
+//     slice before the setter is called, mirroring the response side's
+//     renderList object branch (data_source_common.go.tmpl) in reverse.
+type RequestCollectionView struct {
+	// Kind is "primitive" or "object", selecting which of the two strategies
+	// above the requestField template renders.
+	Kind string
+
+	// ConvertVar is the local variable that ends up holding the value passed
+	// to Set<GoField>: the ElementsAs target for a primitive collection, or
+	// the accumulator slice appended to on each loop iteration for an object
+	// one.
+	ConvertVar string
+	// ConvertType declares ConvertVar's Go type. For Kind == "primitive" it
+	// is the ElementsAs target type, e.g. "[]string" or "map[string]int64".
+	// Empty for Kind == "object", which instead declares "[]" + ElementGoType
+	// (ElementGoType alone can't double as ConvertType there: the template
+	// needs the bare element type both for the slice declaration and,
+	// unprefixed, nowhere else, so one field suffices without forcing a
+	// "[]"-stripping step on the "primitive" side).
+	ConvertType string
+	// ConvertCall is the ElementsAs call itself for Kind == "primitive", e.g.
+	// "state.Tags.ElementsAs(ctx, &tagsElements, false)". Empty for Kind ==
+	// "object".
+	ConvertCall string
+
+	// RangeExpr is the already-decoded state slice a Kind == "object"
+	// collection ranges over, e.g. "state.Tags". Empty for Kind ==
+	// "primitive".
+	RangeExpr string
+	// LoopVar is the per-element loop variable (a *<ElemModel> pointer).
+	// Empty for Kind == "primitive".
+	LoopVar string
+	// ElemVar is the local holding one constructed request element inside
+	// the loop. Empty for Kind == "primitive".
+	ElemVar string
+	// Constructor builds ElemVar's zero value, e.g.
+	// "datadogV2.NewTagItemWithDefaults()". Empty for Kind == "primitive".
+	Constructor string
+	// ElementGoType is the constructed element's SDK type, package-qualified,
+	// used to declare ConvertVar's slice ("[]" + ElementGoType). Empty for
+	// Kind == "primitive".
+	ElementGoType string
+	// Fields are ElemVar's own Set<GoField>(...) calls, recursing through
+	// RequestFieldView the same way RequestNestedView.Fields does. Empty for
+	// Kind == "primitive".
 	Fields []RequestFieldView
 }

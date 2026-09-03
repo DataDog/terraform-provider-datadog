@@ -245,21 +245,37 @@ func (g *ResolvedGroup) UnresolvedId(role GroupRole) string {
 	return ""
 }
 
-// Operations returns every distinct operation the group resolved to, in
-// create/read/search/update/delete order. An operation filling two roles — a
-// group whose read and search name the same endpoint, say — appears once.
-// Nil-safe, and the order is document-independent, which is what every
+// Operations returns every distinct operation the group resolved to for the
+// named roles, in create/read/search/update/delete order regardless of the order
+// the roles are given; passing none means all five. An operation filling two
+// roles — a group whose read and search name the same endpoint, say — appears
+// once. Nil-safe, and the order is document-independent, which is what every
 // consumer needs for deterministic output.
-func (g *ResolvedGroup) Operations() []*Operation {
+//
+// The filtering form exists because a resource consumes only the CRUD quad:
+// Search backs a data-source lookup and no resource path reads it, so binding
+// it would walk a list response for nothing and let a failure there fail an
+// artifact that body never contributes to.
+func (g *ResolvedGroup) Operations(roles ...GroupRole) []*Operation {
 	if g == nil {
 		return nil
 	}
+	want := func(GroupRole) bool { return true }
+	if len(roles) > 0 {
+		want = func(r GroupRole) bool { return slices.Contains(roles, r) }
+	}
 	ops := make([]*Operation, 0, 5)
-	for _, op := range []*Operation{g.Create, g.Read, g.Search, g.Update, g.Delete} {
-		if op == nil || slices.Contains(ops, op) {
+	for _, roled := range []struct {
+		role GroupRole
+		op   *Operation
+	}{
+		{GroupRoleCreate, g.Create}, {GroupRoleRead, g.Read}, {GroupRoleSearch, g.Search},
+		{GroupRoleUpdate, g.Update}, {GroupRoleDelete, g.Delete},
+	} {
+		if roled.op == nil || !want(roled.role) || slices.Contains(ops, roled.op) {
 			continue
 		}
-		ops = append(ops, op)
+		ops = append(ops, roled.op)
 	}
 	return ops
 }
@@ -505,6 +521,16 @@ type Attribute struct {
 	// Set only for ListAttribute/MapAttribute collection chains ending in a
 	// primitive; empty for everything else.
 	ElementType string
+	// ElementFormat and ElementIsEnum carry the element schema's own OpenAPI
+	// format and enum-ness for a ListAttribute/MapAttribute collection chain
+	// ending in a primitive — information ElementType's generic attr.Type
+	// mapping otherwise discards (a list of date-time strings and a plain
+	// list of strings both map to "types.StringType"). The resource request
+	// mapper needs them to reject, rather than silently degrade, a
+	// format/enum element it cannot yet recover the SDK's own typed value
+	// for. Empty/false for anything but such a collection.
+	ElementFormat string
+	ElementIsEnum bool
 	// Format is the OpenAPI format (e.g. "date-time"). It distinguishes SDK
 	// getters whose Go return type differs from the bare scalar: a date-time
 	// string getter returns time.Time, not string.
@@ -656,9 +682,10 @@ type ValidatorSpec struct {
 type PlanModifierSpec struct {
 	// Name is the plan modifier constructor, e.g.
 	// stringplanmodifier.UseStateForUnknown or boolplanmodifier.RequiresReplace.
+	// No modifier the resource tree emits takes arguments, and the template
+	// renders every one as Name(); add an Args field here together with the
+	// template support if that ever stops being true.
 	Name string
-	// Args are the constructor arguments rendered as Go source expressions.
-	Args []string
 }
 
 // LifecycleBindings maps Terraform lifecycle methods to their SDK calls. For a

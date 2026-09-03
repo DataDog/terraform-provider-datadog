@@ -262,3 +262,28 @@ func (d *{{ .GoName }}DataSource) Metadata(_ context.Context, request datasource
 	response.TypeName = "{{ .TypeName }}"
 }
 {{- end -}}
+
+{{/*
+  argParse declares the local for ONE SDK call argument or query filter that must
+  be recovered by parsing (a uuid- or integer-typed value behind a Terraform
+  string), and bails with a diagnostic when it does not parse. Defined over a
+  single item rather than a slice so it serves both the argument sites, which
+  range, and the filter sites, which are already inside a per-filter range —
+  SDKArgumentView and FilterParamView both carry the ParsedVar/ParseCall/TFName
+  trio it reads. Renders nothing when no parse is needed; go/format fixes the
+  indentation, so the same body serves a nested call site too.
+*/}}
+{{- define "argParse" -}}
+{{- if .ParsedVar }}
+	{{ .ParsedVar }}, err := {{ .ParseCall }}
+	if err != nil {
+		response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
+		return
+	}
+{{- end }}
+{{- end -}}
+
+{{/* argPrep applies argParse across a whole argument slice. */}}
+{{- define "argPrep" -}}
+{{- range . }}{{ template "argParse" . }}{{ end }}
+{{- end -}}
