@@ -716,8 +716,64 @@ Optional:
 - `custom_sql` (String) Custom SQL query for the monitor.
 - `custom_where` (String) Custom WHERE clause for the query.
 - `group_by_columns` (List of String) Columns to group results by.
+- `model_configuration` (Block List, Max: 1) Tuning options for the anomaly detection model used by the monitor. (see [below for nested schema](#nestedblock--variables--data_quality_query--monitor_options--model_configuration))
 - `model_type_override` (String) Override for the model type. Valid values are `freshness`, `percentage`, `any`.
 - `sensitivity` (Number) Sensitivity of the anomaly detection model, expressed as a multiplier on the width of the predicted bounds. Higher values widen the bounds and produce fewer alerts; lower values tighten them and produce more alerts. Defaults to `3.0`.
+- `source_to_target_config` (Block List, Max: 1) Compare the same measure across two data entities and alert on the difference between them. (see [below for nested schema](#nestedblock--variables--data_quality_query--monitor_options--source_to_target_config))
+
+<a id="nestedblock--variables--data_quality_query--monitor_options--model_configuration"></a>
+### Nested Schema for `variables.data_quality_query.monitor_options.model_configuration`
+
+Optional:
+
+- `auto_resolve_days` (Number) Number of days after which an open alert is automatically resolved. When unset, alerts stay open until the measure returns within bounds.
+- `enable_flatline_detection` (Boolean) Whether to alert when the measure stops changing entirely. Defaults to `true`. Defaults to `true`.
+- `function` (String) Function applied to the measure before it is compared against the predicted bounds. Valid values are `DIFF`, `DIFF_PERCENT`.
+- `min_lower_bound_size` (Number) Minimum distance between the predicted value and the lower bound. Widening the lower bound to at least this size suppresses alerts on small downward deviations. When unset, no minimum is enforced.
+- `min_upper_bound_size` (Number) Minimum distance between the predicted value and the upper bound. Widening the upper bound to at least this size suppresses alerts on small upward deviations. When unset, no minimum is enforced.
+- `model_bounds_override` (String) Restricts which predicted bound the monitor alerts on. When unset, the monitor alerts on both. Valid values are `UPPER_ONLY`, `LOWER_ONLY`.
+
+
+<a id="nestedblock--variables--data_quality_query--monitor_options--source_to_target_config"></a>
+### Nested Schema for `variables.data_quality_query.monitor_options.source_to_target_config`
+
+Required:
+
+- `diff_type` (String) How the difference between the source and target measures is computed. Valid values are `absolute`, `diff_percent`.
+- `entity_type` (String) Type of the data entities being compared.
+- `source` (Block List, Min: 1, Max: 1) Measure configuration for the source entity. (see [below for nested schema](#nestedblock--variables--data_quality_query--monitor_options--source_to_target_config--source))
+- `target` (Block List, Min: 1, Max: 1) Measure configuration for the target entity. (see [below for nested schema](#nestedblock--variables--data_quality_query--monitor_options--source_to_target_config--target))
+
+<a id="nestedblock--variables--data_quality_query--monitor_options--source_to_target_config--source"></a>
+### Nested Schema for `variables.data_quality_query.monitor_options.source_to_target_config.source`
+
+Required:
+
+- `entity_id` (String) Identifier of the data entity to measure.
+- `entity_type` (String) Type of the data entity to measure.
+
+Optional:
+
+- `custom_sql` (String) Custom SQL query used to compute the measure for this entity.
+- `custom_where` (String) Custom WHERE clause applied when computing the measure for this entity.
+- `group_by_columns` (List of String) Columns to group results by when computing the measure for this entity.
+
+
+<a id="nestedblock--variables--data_quality_query--monitor_options--source_to_target_config--target"></a>
+### Nested Schema for `variables.data_quality_query.monitor_options.source_to_target_config.target`
+
+Required:
+
+- `entity_id` (String) Identifier of the data entity to measure.
+- `entity_type` (String) Type of the data entity to measure.
+
+Optional:
+
+- `custom_sql` (String) Custom SQL query used to compute the measure for this entity.
+- `custom_where` (String) Custom WHERE clause applied when computing the measure for this entity.
+- `group_by_columns` (List of String) Columns to group results by when computing the measure for this entity.
+
+
 
 
 
