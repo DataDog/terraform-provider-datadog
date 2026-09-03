@@ -2905,6 +2905,9 @@ func buildDataQualityEntityMetricConfigState(ctx context.Context, cfg *datadogV1
 		EntityType:  fwutils.ToTerraformStr(cfg.GetEntityTypeOk()),
 		CustomSql:   fwutils.ToTerraformStr(cfg.GetCustomSqlOk()),
 		CustomWhere: fwutils.ToTerraformStr(cfg.GetCustomWhereOk()),
+		// A typed null, not the zero value: a types.List with no element type is
+		// not a valid null and the framework rejects it when writing state.
+		GroupByColumns: types.ListNull(types.StringType),
 	}
 	if groupByCols, ok := cfg.GetGroupByColumnsOk(); ok && groupByCols != nil {
 		state.GroupByColumns, _ = types.ListValueFrom(ctx, types.StringType, groupByCols)
@@ -2914,8 +2917,13 @@ func buildDataQualityEntityMetricConfigState(ctx context.Context, cfg *datadogV1
 
 func (r *monitorResource) buildDataQualitySourceToTargetConfigState(ctx context.Context, cfg *datadogV1.MonitorFormulaAndFunctionDataQualitySourceToTargetConfig) *DataQualitySourceToTargetConfig {
 	state := DataQualitySourceToTargetConfig{
-		DiffType:   fwutils.ToTerraformStr(cfg.GetDiffTypeOk()),
+		DiffType:   types.StringNull(),
 		EntityType: fwutils.ToTerraformStr(cfg.GetEntityTypeOk()),
+	}
+	// Enum getters return their own named pointer type, which ToTerraformStr does
+	// not match, so it would silently yield null. Convert explicitly.
+	if diffType, ok := cfg.GetDiffTypeOk(); ok && diffType != nil {
+		state.DiffType = types.StringValue(string(*diffType))
 	}
 	if source, ok := cfg.GetSourceOk(); ok && source != nil {
 		state.Source = buildDataQualityEntityMetricConfigState(ctx, source)
@@ -2927,14 +2935,23 @@ func (r *monitorResource) buildDataQualitySourceToTargetConfigState(ctx context.
 }
 
 func buildDataQualityModelConfigurationState(cfg *datadogV1.MonitorFormulaAndFunctionDataQualityModelConfiguration) *DataQualityModelConfiguration {
-	return &DataQualityModelConfiguration{
+	state := &DataQualityModelConfiguration{
 		AutoResolveDays:         fwutils.ToTerraformInt32(cfg.GetAutoResolveDaysOk()),
 		EnableFlatlineDetection: fwutils.ToTerraformBool(cfg.GetEnableFlatlineDetectionOk()),
-		Function:                fwutils.ToTerraformStr(cfg.GetFunctionOk()),
+		Function:                types.StringNull(),
 		MinLowerBoundSize:       fwutils.ToTerraformFloat64(cfg.GetMinLowerBoundSizeOk()),
 		MinUpperBoundSize:       fwutils.ToTerraformFloat64(cfg.GetMinUpperBoundSizeOk()),
-		ModelBoundsOverride:     fwutils.ToTerraformStr(cfg.GetModelBoundsOverrideOk()),
+		ModelBoundsOverride:     types.StringNull(),
 	}
+	// See buildDataQualitySourceToTargetConfigState: enum getters need an explicit
+	// conversion rather than ToTerraformStr.
+	if function, ok := cfg.GetFunctionOk(); ok && function != nil {
+		state.Function = types.StringValue(string(*function))
+	}
+	if boundsOverride, ok := cfg.GetModelBoundsOverrideOk(); ok && boundsOverride != nil {
+		state.ModelBoundsOverride = types.StringValue(string(*boundsOverride))
+	}
+	return state
 }
 
 func (r *monitorResource) buildDataJobsQueryState(dataJobsQ *datadogV1.MonitorFormulaAndFunctionDataJobsQueryDefinition) *DataJobsQuery {
