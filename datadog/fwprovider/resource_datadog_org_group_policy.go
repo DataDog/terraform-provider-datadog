@@ -229,6 +229,11 @@ func (r *OrgGroupPolicyResource) Update(ctx context.Context, request resource.Up
 	if response.Diagnostics.HasError() {
 		return
 	}
+	var priorState OrgGroupPolicyModel
+	response.Diagnostics.Append(request.State.Get(ctx, &priorState)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 
 	id, err := uuid.Parse(state.ID.ValueString())
 	if err != nil {
@@ -244,7 +249,9 @@ func (r *OrgGroupPolicyResource) Update(ctx context.Context, request resource.Up
 
 	attributes := datadogV2.NewOrgGroupPolicyUpdateAttributes()
 	attributes.SetContent(content)
-	attributes.SetPolicyName(state.PolicyName.ValueString())
+	if state.PolicyName.ValueString() != priorState.PolicyName.ValueString() {
+		attributes.SetPolicyName(state.PolicyName.ValueString())
+	}
 	if !state.EnforcementTier.IsNull() && !state.EnforcementTier.IsUnknown() {
 		tier := datadogV2.OrgGroupPolicyEnforcementTier(state.EnforcementTier.ValueString())
 		attributes.SetEnforcementTier(tier)

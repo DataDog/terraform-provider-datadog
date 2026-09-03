@@ -78,6 +78,7 @@ func TestAccDatadogOrgGroupPolicy_Role(t *testing.T) {
 	if !isRecording() && !isReplaying() {
 		t.Skip("org_group requires a special test org setup not available in live CI runs")
 	}
+	skipIfNoCassette(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	orgGroupName := uniqueEntityName(ctx, t)
