@@ -40,30 +40,29 @@ var _ = Describe("BuildResourceView", func() {
 			Envelope: &RequestEnvelopeView{
 				SDKPackage: "datadogV2", Fields: view.Create.Envelope.Fields,
 				DataVar: "bodyData", DataType: "IncidentTypeCreateData",
-				TypeExpr:      `datadogV2.IncidentTypeType("incident_types")`,
-				AttributesVar: "bodyAttributes", AttributesType: "IncidentTypeAttributes",
+				TypeExpr:       `datadogV2.IncidentTypeType("incident_types")`,
+				AttributesType: "IncidentTypeAttributes",
 			},
 		}))
 		Expect(view.Read).To(Equal(CRUDCallView{
 			Method: "GetIncidentType", GoResponseType: "IncidentTypeResponse",
-			Arguments: []SDKArgumentView{{Expression: "state.ID.ValueString()", TFName: "id"}},
+			Arguments: []SDKArgumentView{{Expression: "state.ID.ValueString()", TFName: "id", GoType: "string"}},
 		}))
 		By("Update builds its own envelope: a PATCH's data and attributes components are distinct types from Create's")
 		Expect(view.Update).To(Equal(CRUDCallView{
 			Method: "UpdateIncidentType", GoRequestType: "IncidentTypeUpdateRequest", GoResponseType: "IncidentTypeResponse",
-			Arguments:    []SDKArgumentView{{Expression: "state.ID.ValueString()", TFName: "id"}},
-			BodyIDExpr:   "state.ID.ValueString()",
-			BodyIDTarget: "bodyData",
+			Arguments: []SDKArgumentView{{Expression: "state.ID.ValueString()", TFName: "id", GoType: "string"}},
 			Envelope: &RequestEnvelopeView{
 				SDKPackage: "datadogV2", Fields: view.Create.Envelope.Fields,
 				DataVar: "bodyData", DataType: "IncidentTypeUpdateData",
-				TypeExpr:      `datadogV2.IncidentTypeType("incident_types")`,
-				AttributesVar: "bodyAttributes", AttributesType: "IncidentTypeUpdateAttributes",
+				TypeExpr:       `datadogV2.IncidentTypeType("incident_types")`,
+				IDExpr:         "state.ID.ValueString()",
+				AttributesType: "IncidentTypeUpdateAttributes",
 			},
 		}))
 		Expect(view.Delete).To(Equal(CRUDCallView{
 			Method:    "DeleteIncidentType",
-			Arguments: []SDKArgumentView{{Expression: "state.ID.ValueString()", TFName: "id"}},
+			Arguments: []SDKArgumentView{{Expression: "state.ID.ValueString()", TFName: "id", GoType: "string"}},
 		}))
 
 		By("required in Create, present in Update and the response -> Required, request-settable")
@@ -188,8 +187,8 @@ var _ = Describe("BuildResourceView", func() {
 			view, err := BuildResourceView(art)
 			Expect(err).NotTo(HaveOccurred())
 
-			Expect(view.Update.BodyIDExpr).To(Equal(wantExpr))
-			Expect(view.Update.BodyIDTarget).To(Equal("bodyData"))
+			Expect(view.Update.Envelope.IDExpr).To(Equal(wantExpr))
+			Expect(view.Update.Envelope.DataVar).To(Equal("bodyData"))
 
 			src := string(mustRenderResource(view))
 			for _, want := range wantRendered {
@@ -227,7 +226,7 @@ var _ = Describe("BuildResourceView", func() {
 		view, err := BuildResourceView(art)
 		Expect(err).NotTo(HaveOccurred())
 
-		Expect(view.Update.BodyIDExpr).To(BeEmpty())
+		Expect(view.Update.Envelope.IDExpr).To(BeEmpty())
 		Expect(string(mustRenderResource(view))).NotTo(ContainSubstring("SetId("))
 	})
 
@@ -292,7 +291,8 @@ var _ = Describe("BuildResourceView", func() {
 			view, err := BuildResourceView(art)
 			Expect(err).NotTo(HaveOccurred())
 
-			Expect(view.PathParameters).To(Equal([]string{"team_id"}))
+			Expect(view.Import.Parts).To(Equal([]string{"team_id", "id"}))
+			Expect(view.Import.Format).To(Equal("<team_id>:<id>"))
 			src := string(mustRenderResource(view))
 			Expect(src).To(ContainSubstring(`parts := strings.SplitN(request.ID, ":", 2)`))
 			Expect(src).To(ContainSubstring(`expected "<team_id>:<id>"`))
@@ -330,8 +330,9 @@ var _ = Describe("BuildResourceView", func() {
 			}
 			Expect(teamIDFields).To(Equal(1))
 			Expect(attrByPath(schemaTree(view), "team_id").Required).To(BeTrue())
+			By("named at its real schema location, like every other reserved-name drop")
 			Expect(view.Dropped).To(ContainElement(HaveField("Message",
-				ContainSubstring(`dropped "response.team_id": the same name is a path parameter`))))
+				ContainSubstring(`dropped "resource.data.attributes.team_id": the same name is a path parameter`))))
 		})
 
 		It("fails when the roles disagree about the parent's type", func() {
@@ -350,8 +351,8 @@ var _ = Describe("BuildResourceView", func() {
 		view, err := BuildResourceView(art)
 		Expect(err).NotTo(HaveOccurred())
 
-		Expect(view.PathParameters).To(BeEmpty())
-		Expect(view.UsesStrings).To(BeFalse())
+		Expect(view.Import.Parts).To(Equal([]string{"id"}))
+		Expect(view.Import.Composite()).To(BeFalse())
 		src := string(mustRenderResource(view))
 		Expect(src).To(ContainSubstring("resource.ImportStatePassthroughID(ctx, path.Root(\"id\"), request, response)"))
 		Expect(src).NotTo(ContainSubstring(`"strings"`))

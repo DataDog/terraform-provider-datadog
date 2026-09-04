@@ -110,7 +110,7 @@ func buildResourceArtifact(op *Operation) (*Artifact, error) {
 		// this modifier; a path parameter is simply a new source for it, so it is
 		// applied here rather than in BuildResourceTree, which only ever sees the
 		// body.
-		input.PlanModifiers = []PlanModifierSpec{{Name: PlanModifierPackage(input.GoType) + ".RequiresReplace"}}
+		input.PlanModifiers = []PlanModifierSpec{RequiresReplaceSpec(input.GoType)}
 	}
 	schema.Attributes = append(pathInputs, schema.Attributes...)
 
@@ -472,7 +472,7 @@ func buildRequiredInputLeaves(arguments []SDKArgument) ([]*Attribute, error) {
 		}
 		leaves = append(leaves, &Attribute{
 			Path: arg.TFName, TfType: tfType, GoType: goType, Format: arg.Schema.Format,
-			Required: true, Description: description,
+			Required: true, Description: description, FromPathParameter: true,
 		})
 	}
 	return leaves, nil

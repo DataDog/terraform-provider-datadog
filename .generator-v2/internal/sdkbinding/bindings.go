@@ -237,42 +237,22 @@ func parameterGoType(schema *model.Schema) (string, error) {
 	return "", fmt.Errorf("schema kind %s has no Go SDK parameter type", schema.Kind)
 }
 
+// parameterSimpleType is the Go type the SDK generator gives a scalar
+// parameter. The mapping itself is model.SDKScalarGoType, the single port of
+// formatter.simple_type; this adds only the two distinctions this caller needs
+// on top of it — whether the schema was a scalar at all, and an error naming
+// the format for an integer or number the SDK generator itself cannot type.
 func parameterSimpleType(schema *model.Schema) (typeName string, recognized bool, err error) {
 	switch schema.Type {
-	case "integer":
-		switch schema.Format {
-		case "", "int32":
-			return "int32", true, nil
-		case "int64":
-			return "int64", true, nil
-		default:
-			return "", true, fmt.Errorf("integer format %q is not mapped by the Go SDK generator", schema.Format)
-		}
-	case "number":
-		switch schema.Format {
-		case "":
-			return "float", true, nil
-		case "double":
-			return "float64", true, nil
-		default:
-			return "", true, fmt.Errorf("number format %q is not mapped by the Go SDK generator", schema.Format)
-		}
-	case "string":
-		switch schema.Format {
-		case "date", "date-time":
-			return "time.Time", true, nil
-		case "binary":
-			return "_io.Reader", true, nil
-		case "uuid":
-			return "uuid.UUID", true, nil
-		default:
-			return "string", true, nil
-		}
-	case "boolean":
-		return "bool", true, nil
+	case "integer", "number", "string", "boolean":
 	default:
 		return "", false, nil
 	}
+	typeName, ok := model.SDKScalarGoType(schema)
+	if !ok {
+		return "", true, fmt.Errorf("%s format %q is not mapped by the Go SDK generator", schema.Type, schema.Format)
+	}
+	return typeName, true, nil
 }
 
 func variableName(openAPIName string) string {

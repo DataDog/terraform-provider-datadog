@@ -201,6 +201,12 @@ type SDKArgumentView struct {
 	ParsedVar  string
 	ParseCall  string
 	TFName     string
+	// GoType is the SDK parameter's Go type. The request mapper needs it to
+	// decide whether an update body's data.id can reuse this argument's local
+	// or has to parse its own, and carrying it here keeps that a single
+	// by-name lookup rather than one over the views and a second over the
+	// model arguments they came from.
+	GoType string
 }
 
 // FilterParamView maps one optional query parameter from the Terraform model
@@ -508,15 +514,10 @@ type ResourceView struct {
 	Update CRUDCallView
 	Delete CRUDCallView
 
-	// PathParameters are the parent-path attributes a sub-resource's four
-	// lifecycle calls all take, in path order. They are practitioner inputs that
-	// live in no request or response body, so ImportState has to split them out
-	// of a composite id rather than pass one through (T139). Empty for a
-	// top-level resource, whose only identity is id.
-	PathParameters []string
-	// UsesStrings selects the "strings" import, needed only by the composite
-	// ImportState a PathParameters resource renders.
-	UsesStrings bool
+	// Import describes how ImportState recovers the resource's identity. It is
+	// derived in Go rather than in the template so the part count, the expected
+	// format string and the id's own position are decided once (T139).
+	Import ImportView
 	// UpdateUnsupported means the group resolves no Update role: the generated
 	// Update method is a stub that errors rather than building a request the
 	// SDK has no endpoint for.
@@ -555,27 +556,32 @@ type CRUDCallView struct {
 	// Arguments are the positional SDK call arguments in call order (e.g. the
 	// terminal path id, aliased to "id").
 	Arguments []SDKArgumentView
-	// BodyIDExpr is the expression assigned to the JSON:API request body's
-	// data.id, set on Update only and empty when the body carries no id. It is
-	// decided here rather than in the template because the two facts the
-	// template could see — that the path has parameters, and what those
-	// parameters are — answer a different question: a sub-resource's path names
-	// a parent, and a singleton PATCH has no path parameter at all yet still
-	// sends data.id.
-	BodyIDExpr string
-	// BodyIDPrep carries the id-parse declaration BodyIDExpr depends on, as a
-	// zero-or-one element slice so the argPrep partial can range it directly.
-	// Empty when the expression needs no parse, or when it reuses a path
-	// argument's local that argPrep has already declared.
-	BodyIDPrep []SDKArgumentView
-	// BodyIDTarget is the local BodyIDExpr is set on — the constructed data
-	// member, not the wrapper, since the wrapper's Data is not built yet at
-	// that point.
-	BodyIDTarget string
 	// Envelope describes how this role builds its JSON:API request body. Nil
 	// for a call that sends none (Read, Delete).
 	Envelope *RequestEnvelopeView
 }
+
+// ImportView describes how a resource recovers its identity from a terraform
+// import id.
+//
+// A top-level resource passes the id straight through. A sub-resource's
+// identity is its parent path parameters plus its own id, so the import id is
+// composite and has to be split — which makes "which segment is which" a fact
+// with several readers: the part count, the per-segment SetAttribute calls, and
+// the format string a bad id is reported against. Deriving all of them here
+// keeps the id's position from being spelled three different ways in the
+// template.
+type ImportView struct {
+	// Parts are the attributes the import id carries, in order: each parent
+	// path parameter, then "id". A single element means passthrough.
+	Parts []string
+	// Format is the id shape a failure message quotes, e.g. "<team_id>:<id>".
+	Format string
+}
+
+// Composite reports whether the import id carries more than the resource's own
+// id, and so has to be split.
+func (v ImportView) Composite() bool { return len(v.Parts) > 1 }
 
 // RequestEnvelopeView is the recipe for constructing one role's JSON:API
 // request body, level by level, each from its own New<Type>WithDefaults().
@@ -598,7 +604,7 @@ type RequestEnvelopeView struct {
 	// carried here rather than read off the root view because the partial that
 	// renders an envelope is handed one CRUDCallView, not the whole view.
 	SDKPackage string
-	// Fields are the Set<Field>(...) calls that populate AttributesVar. Today
+	// Fields are the Set<Field>(...) calls that populate the attributes local. Today
 	// Create and Update share one slice, derived once from the merged tree;
 	// T134 replaces that with a per-role intersection, and this is the field it
 	// will differ on.
@@ -617,12 +623,24 @@ type RequestEnvelopeView struct {
 	// type (T143). Empty when the data component declares no type property, or
 	// when the value is ambiguous and the SDK supplies it.
 	TypeExpr string
-	// AttributesVar is the local holding the constructed attributes member,
-	// and the target every RequestFieldView at the top level sets on. Empty
-	// when this body has no settable attributes, in which case the attributes
-	// level is not constructed at all.
-	AttributesVar string
-	// AttributesType is the SDK component behind AttributesVar.
+	// IDExpr is the expression assigned to data.id, and IDPrep the parse
+	// declaration it depends on — nil when the expression needs no parse, or
+	// when it reuses a path argument's local that argPrep already declared.
+	// Both are empty unless the body declares an id: a create has no record
+	// yet, and the SDK generates SetId only for a declared property.
+	//
+	// They live here beside TypeExpr because data.id and data.type are two
+	// members of the same envelope level, and the whole point of this view is
+	// that one place decides which local each member is set on.
+	IDExpr string
+	IDPrep *SDKArgumentView
+	// AttributesType is the SDK component of the attributes member, and doubles
+	// as the test for whether this body has an attributes level at all: it is
+	// set exactly when there are fields to put there. The local it is
+	// constructed into is named by the requestAttributesVar constant, which the
+	// template reads through a func of the same name, because
+	// RequestFieldView.Target is precomputed from it in Go and the two spellings
+	// must not diverge.
 	AttributesType string
 }
 

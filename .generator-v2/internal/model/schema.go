@@ -145,7 +145,10 @@ type treeBuilder struct {
 	oneOfProvenance *SchemaProvenance
 	// updateUnsupported is resourceTree's own input, fixed for the whole walk:
 	// true when the resource's group resolves no Update role, so every
-	// request-settable attribute gets RequiresReplace().
+	// request-settable attribute gets RequiresReplace(). A path parameter also
+	// gets it, unconditionally and from model/artifact.go, since no endpoint
+	// re-parents a child — so RequiresReplace() is not by itself evidence that the
+	// group resolved no Update role.
 	updateUnsupported bool
 }
 
@@ -583,71 +586,24 @@ func (b *treeBuilder) resourcePlanModifiers(a *Attribute, requestSettable bool) 
 	if !useStateForUnknown && !requiresReplace {
 		return nil
 	}
-	pkg := PlanModifierPackage(a.GoType)
 	var modifiers []PlanModifierSpec
 	if useStateForUnknown {
-		modifiers = append(modifiers, PlanModifierSpec{Name: pkg + ".UseStateForUnknown"})
+		modifiers = append(modifiers, PlanModifierSpec{Name: PlanModifierPackage(a.GoType) + ".UseStateForUnknown"})
 	}
 	if requiresReplace {
-		modifiers = append(modifiers, PlanModifierSpec{Name: pkg + ".RequiresReplace"})
+		modifiers = append(modifiers, RequiresReplaceSpec(a.GoType))
 	}
 	return modifiers
 }
 
-// SDKScalarGoType ports the Datadog go-sdk generator's own scalar type rule
-// (.generator/src/generator/formatter.py simple_type, with
-// render_nullable=False): the Go type its generated code uses for a scalar
-// schema, derived from type+format rather than looked up in the generated
-// package (FR-005a).
-//
-// The second result is false where the Python raises KeyError — an integer or
-// number carrying a format the SDK does not map — because there the SDK
-// generator itself cannot produce a type, so neither can a faithful
-// derivation. An unmapped *string* format falls back to string, mirroring the
-// upstream .get(type_format, "string").
-//
-// It lives here, in the package both the oneOf binder and the request mapper
-// already import, because it is the one answer several callers need and had
-// begun to re-derive separately (T137a).
-func SDKScalarGoType(s *Schema) (string, bool) {
-	if s == nil {
-		return "", false
-	}
-	switch s.Type {
-	case "integer":
-		switch s.Format {
-		case "", "int32":
-			return "int32", true
-		case "int64":
-			return "int64", true
-		default:
-			return "", false
-		}
-	case "number":
-		switch s.Format {
-		case "":
-			return "float", true
-		case "double":
-			return "float64", true
-		default:
-			return "", false
-		}
-	case "string":
-		switch s.Format {
-		case "date", "date-time":
-			return "time.Time", true
-		case "binary":
-			return "_io.Reader", true
-		case "uuid":
-			return "uuid.UUID", true
-		default:
-			return "string", true
-		}
-	case "boolean":
-		return "bool", true
-	default:
-		return "", false
-	}
+// RequiresReplaceSpec is the RequiresReplace() plan modifier for an attribute
+// of goType. It is the single spelling of that modifier, shared by the two
+// places that decide an attribute forces replacement: a request-settable body
+// field when the group resolves no Update role (above), and a path parameter,
+// which forces replacement whatever the Update role is because no endpoint
+// re-parents a child (model/artifact.go).
+func RequiresReplaceSpec(goType string) PlanModifierSpec {
+	return PlanModifierSpec{Name: PlanModifierPackage(goType) + ".RequiresReplace"}
 }
 
 // PlanModifierPackage returns the terraform-plugin-framework planmodifier

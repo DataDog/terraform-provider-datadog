@@ -591,13 +591,24 @@ type Attribute struct {
 	// back both end up Required, with no other way to tell them apart.
 	InResponse bool
 
+	// FromPathParameter marks an attribute that came from an operation's path
+	// rather than from any request or response body — a sub-resource's parent
+	// id. It exists for the same reason InResponse does: Required alone cannot
+	// answer it, since a required body field and a required path parameter both
+	// come out Required. Emit needs the distinction to keep the parameter out of
+	// the request and response mappings, to reserve its name, and to put it in
+	// the composite import id, and inferring it from shape instead holds only
+	// while no body ever contributes a top-level required leaf.
+	FromPathParameter bool
+
 	// Default is the optional default value, encoded as a Go expression.
 	Default *Literal
 	// Validators is the fingerprintable validator list for this attribute.
 	Validators []ValidatorSpec
 	// PlanModifiers holds this attribute's plan modifiers: UseStateForUnknown()
 	// on an Optional+Computed attribute, RequiresReplace() on a
-	// request-settable one when no Update role exists. Never set on a
+	// request-settable one when no Update role exists, and RequiresReplace()
+	// unconditionally on a path parameter, which no endpoint re-parents. Never set on a
 	// Computed-only attribute — the server may change such a value during
 	// apply, so either modifier there would produce an inconsistent-result
 	// error or a spurious replacement.

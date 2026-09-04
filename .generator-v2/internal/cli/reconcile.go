@@ -12,12 +12,6 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
-// generatedMarker aliases emit.GeneratedMarker, the single definition of
-// tfgen's proof of ownership. Retirement (below) and the write path
-// (emit.WriteArtifactSource) must agree on it: one deletes a file only when it
-// carries the marker, the other replaces one only then.
-const generatedMarker = emit.GeneratedMarker
-
 // testAccFuncRe captures an exported acceptance-test function name in a generated
 // _test.go, e.g. "TestAccDatadogTeamDataSource". A recorded cassette uses the
 // function name as its file-name prefix.
@@ -63,7 +57,7 @@ func retireArtifact(name, outputRoot, testsOutputRoot, docsRoot, examplesOutputR
 	src, err := os.ReadFile(goPath)
 	switch {
 	case err == nil:
-		if !strings.Contains(string(src), generatedMarker) {
+		if !emit.IsGeneratedSource(src) {
 			entry.Status = model.ArtifactStatusRetireBlocked
 			entry.Diagnostics = []model.Diagnostic{{Severity: model.SeverityWarning,
 				Message: fmt.Sprintf("refusing to retire %s: not tfgen-generated (missing the generated-code marker)", goPath)}}
@@ -223,7 +217,7 @@ func generatedArtifactNames(outputRoot string) (map[string]string, error) {
 		if err != nil {
 			return nil, err
 		}
-		if !strings.Contains(string(data), generatedMarker) {
+		if !emit.IsGeneratedSource(data) {
 			continue
 		}
 		name := strings.TrimSuffix(strings.TrimPrefix(filepath.Base(path), "data_source_datadog_"), ".go")

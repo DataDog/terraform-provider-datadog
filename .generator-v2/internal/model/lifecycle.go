@@ -103,85 +103,54 @@ func buildResourceLifecycle(op *Operation) (*LifecycleBindings, []Diagnostic, er
 // bodyCall resolves the SDK binding for an operation that sends a request body,
 // which a read or a delete never does. aliasTerminalID is false for a create,
 // which has no id yet, and true for an update, whose path names the record.
+//
+// It also reads the four facts the request mapper needs about this body's
+// JSON:API envelope, all off this operation's own RequestSchema rather than off
+// the merged tree: the merge reconciles RefName toward the Read response
+// (FR-034c), and a resource's Create and Update data components are routinely
+// distinct types, so per-role is the only correct source.
 func bodyCall(op *Operation, aliasTerminalID bool) *SDKCall {
 	call := sdkCall(op, aliasTerminalID)
 	call.GoRequestType = op.RequestRefName
-	call.GoRequestDataType, call.GoRequestAttributesType = requestEnvelopeTypes(op.RequestSchema)
-	call.RequestDiscriminator = requestDiscriminator(op.RequestSchema)
-	call.RequestDeclaresID, call.RequestIDGoType = requestBodyID(op.RequestSchema)
+
+	data := envelopeData(op.RequestSchema)
+	if data == nil {
+		return call
+	}
+	// An empty component name means the body left that level inline, so the SDK
+	// generated nothing to construct it from; emit decides what that costs,
+	// since a body with settable attributes cannot be built without one but a
+	// body with none can (T138).
+	call.GoRequestDataType = data.RefName
+	if attributes := data.Properties["attributes"]; attributes != nil {
+		call.GoRequestAttributesType = attributes.RefName
+	}
+	// A Terraform id is always a string, so the declared type is what decides
+	// whether it can be sent verbatim or has to be parsed first (T140).
+	if id := data.Properties["id"]; id != nil {
+		call.RequestDeclaresID = true
+		call.RequestIDGoType, _ = SDKScalarGoType(id)
+	}
+	// SDKDefaulted reproduces the SDK generator's own predicate rather than
+	// reading the generated source (FR-005a): model_simple.j2 assigns a property
+	// in WithDefaults() exactly when it declares a default, is neither object nor
+	// array, and is not readOnly. A discriminator is always a string, so only the
+	// default and readOnly halves can vary (T143).
+	if discriminator := data.Properties["type"]; discriminator != nil {
+		call.RequestDiscriminator = &RequestDiscriminator{
+			GoType:       discriminator.RefName,
+			Values:       slices.Clone(discriminator.Enum),
+			SDKDefaulted: discriminator.HasDefault && !discriminator.ReadOnly,
+		}
+	}
 	return call
 }
 
-// requestBodyID reports whether this body's data member declares an id, and
-// the Go type the SDK's SetId then takes for it. A Terraform id is always a
-// string, so the type is what decides whether it can be sent verbatim or has
-// to be parsed first — and it has to come from the body, since a path
-// parameter naming the same record can carry a different type entirely.
-func requestBodyID(s *Schema) (declared bool, goType string) {
-	if s == nil {
-		return false, ""
-	}
-	data := s.Properties["data"]
-	if data == nil {
-		return false, ""
-	}
-	id := data.Properties["id"]
-	if id == nil {
-		return false, ""
-	}
-	goType, _ = SDKScalarGoType(id)
-	return true, goType
-}
-
-// requestDiscriminator reads the request body's JSON:API data.type member: the
-// SDK type its value converts to, the values the spec allows, and whether the
-// pinned SDK's New<Data>WithDefaults() already assigns it.
-//
-// SDKDefaulted reproduces the SDK generator's own predicate rather than reading
-// the generated source (FR-005a): model_simple.j2 assigns a property in
-// WithDefaults() exactly when it declares a default, is neither object nor
-// array, and is not readOnly. A discriminator is always a string, so only the
-// default and readOnly halves can vary here.
-func requestDiscriminator(s *Schema) *RequestDiscriminator {
+// envelopeData resolves a body's JSON:API "data" member, the level every
+// envelope fact hangs off. Nil for an absent body or one that is not enveloped.
+func envelopeData(s *Schema) *Schema {
 	if s == nil {
 		return nil
 	}
-	data := s.Properties["data"]
-	if data == nil {
-		return nil
-	}
-	typeProperty := data.Properties["type"]
-	if typeProperty == nil {
-		return nil
-	}
-	return &RequestDiscriminator{
-		GoType:       typeProperty.RefName,
-		Values:       slices.Clone(typeProperty.Enum),
-		SDKDefaulted: typeProperty.HasDefault && !typeProperty.ReadOnly,
-	}
-}
-
-// requestEnvelopeTypes reads the JSON:API envelope's own component names off a
-// request body: the "data" member's, and — when the envelope carries one —
-// data.attributes'. Both come from this operation's own request schema rather
-// than from the merged tree, because the merge reconciles RefName toward the
-// Read response (FR-034c) and a resource's Create and Update data components
-// are routinely distinct types.
-//
-// A missing name means the body left that level inline, so the SDK generated
-// no component to construct; the caller decides what to do about it, since a
-// body with settable attributes cannot be built without one but a body with
-// none can (T138).
-func requestEnvelopeTypes(s *Schema) (dataType, attributesType string) {
-	if s == nil {
-		return "", ""
-	}
-	data := s.Properties["data"]
-	if data == nil {
-		return "", ""
-	}
-	if attributes := data.Properties["attributes"]; attributes != nil {
-		attributesType = attributes.RefName
-	}
-	return data.RefName, attributesType
+	return s.Properties["data"]
 }

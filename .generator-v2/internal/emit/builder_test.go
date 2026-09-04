@@ -168,8 +168,8 @@ var _ = Describe("BuildDataSourceView", func() {
 		Expect(err).NotTo(HaveOccurred())
 		Expect(view.UsesUUID).To(BeTrue())
 		Expect(view.Read.Arguments).To(Equal([]SDKArgumentView{
-			{Expression: "state.AccountId.ValueInt64()", TFName: "account_id"},
-			{Expression: "parsedId", ParsedVar: "parsedId", ParseCall: "uuid.Parse(state.ID.ValueString())", TFName: "id"},
+			{Expression: "state.AccountId.ValueInt64()", TFName: "account_id", GoType: "int64"},
+			{Expression: "parsedId", ParsedVar: "parsedId", ParseCall: "uuid.Parse(state.ID.ValueString())", TFName: "id", GoType: "uuid.UUID"},
 		}))
 
 		rendered, err := RenderDataSource(view)
@@ -192,7 +192,7 @@ var _ = Describe("BuildDataSourceView", func() {
 		Expect(err).NotTo(HaveOccurred())
 		Expect(view.UsesStrconv).To(BeTrue())
 		Expect(view.Read.Arguments).To(Equal([]SDKArgumentView{
-			{Expression: "parsedId", ParsedVar: "parsedId", ParseCall: "strconv.ParseInt(state.ID.ValueString(), 10, 64)", TFName: "id"},
+			{Expression: "parsedId", ParsedVar: "parsedId", ParseCall: "strconv.ParseInt(state.ID.ValueString(), 10, 64)", TFName: "id", GoType: "int64"},
 		}))
 
 		rendered, err := RenderDataSource(view)

@@ -13,22 +13,8 @@ import (
 //
 //	.generator/src/generator/templates/model_oneof.j2  (member + constructor shape)
 //	.generator/src/generator/openapi.py     type_to_go, get_name
-//	.generator/src/generator/formatter.py   simple_type
+//	.generator/src/generator/formatter.py   simple_type (now model.SDKScalarGoType)
 //	.generator/src/generator/utils.py       upperfirst
-
-// simpleType ports formatter.simple_type with render_nullable=False, which is how
-// model_oneof.j2 calls it (`get_type(oneOf)` passes no render_nullable, so a
-// nullable alternative is NOT spelled datadog.Nullable<T> in a wrapper member —
-// the nullable spelling applies to simple_type in general, not to the oneOf
-// call site).
-//
-// The rule itself now lives in model.SDKScalarGoType, so the request mapper can
-// reach it without importing this package: model is the leaf both depend on.
-// This stays as the name the oneOf binder reads, and as the record of which
-// upstream function it ports.
-func simpleType(s *model.Schema) (string, bool) {
-	return model.SDKScalarGoType(s)
-}
 
 // memberBinding derives the SDK wrapper member for one alternative:
 // `(get_name(oneOf) or get_type(oneOf))|upperfirst` from model_oneof.j2, plus
@@ -62,7 +48,7 @@ func memberBinding(v model.OneOfVariant) (name string, pointer bool, err error) 
 			"anonymous enum alternative has no SDK member name (the go-sdk generator " +
 				"cannot name it either); promote it to a named schema component")
 	}
-	spelling, ok := simpleType(v.Schema)
+	spelling, ok := model.SDKScalarGoType(v.Schema)
 	if !ok {
 		return "", false, fmt.Errorf(
 			"anonymous %s alternative has no SDK member name; replace the inline "+
