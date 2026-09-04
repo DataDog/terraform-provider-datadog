@@ -222,7 +222,7 @@ func resourceDatadogSensitiveDataScannerRuleRead(ctx context.Context, d *schema.
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	resp, httpResp, err := apiInstances.GetSensitiveDataScannerApiV2().ListScanningGroups(auth)
+	resp, httpResp, err := apiInstances.ListSensitiveDataScannerGroups(auth)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			// Delete the resource from the local state since it doesn't exist anymore in the actual state
@@ -294,6 +294,7 @@ func resourceDatadogSensitiveDataScannerRuleCreate(ctx context.Context, d *schem
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResp, "error creating SensitiveDataScannerRule")
 	}
+	apiInstances.InvalidateSensitiveDataScannerConfigCache()
 	if err := utils.CheckForUnparsed(resp); err != nil {
 		return diag.FromErr(err)
 	}
@@ -484,6 +485,7 @@ func resourceDatadogSensitiveDataScannerRuleUpdate(ctx context.Context, d *schem
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResp, "error updating SensitiveDataScannerRule")
 	}
+	apiInstances.InvalidateSensitiveDataScannerConfigCache()
 	if err := utils.CheckForUnparsed(resp); err != nil {
 		return diag.FromErr(err)
 	}
@@ -507,10 +509,12 @@ func resourceDatadogSensitiveDataScannerRuleDelete(ctx context.Context, d *schem
 	if err != nil {
 		// API returns 404 when the specific rule id doesn't exist through DELETE request.
 		if httpResp != nil && httpResp.StatusCode == 404 {
+			apiInstances.InvalidateSensitiveDataScannerConfigCache()
 			return nil
 		}
 		return utils.TranslateClientErrorDiag(err, httpResp, "error deleting SensitiveDataScannerRule")
 	}
+	apiInstances.InvalidateSensitiveDataScannerConfigCache()
 
 	return nil
 }
