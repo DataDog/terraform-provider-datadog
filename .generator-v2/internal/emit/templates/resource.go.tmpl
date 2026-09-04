@@ -241,9 +241,9 @@ func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .GoNa
   leaves "type" empty — which the API rejects — and panics outright where the
   wrapper declares Data as a pointer (T138).
 
-  Takes one CRUDCallView: Create and Update construct different SDK types, so
-  each renders its own envelope, and the envelope carries the SDK package and
-  the field list the partial needs.
+  Takes one CRUDCallView: Create and Update construct different SDK types and
+  declare different fields, so each renders its own envelope, and the envelope
+  carries the SDK package and that role's own field list.
 */}}
 {{- define "requestBody" -}}
 {{- $requestType := .GoRequestType }}
@@ -271,9 +271,9 @@ func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .GoNa
 {{- end -}}
 
 {{/*
-  requestFields renders the Set<Field>(...) calls Create and Update both use to
-  populate the constructed attributes local, guarding every non-Required field
-  on null/unknown. Required fields are sent unconditionally: the framework
+  requestFields renders the Set<Field>(...) calls that populate one role's
+  constructed attributes local, guarding every non-Required field on
+  null/unknown. Required fields are sent unconditionally: the framework
   guarantees a plan value for them.
 */}}
 {{- define "requestFields" -}}

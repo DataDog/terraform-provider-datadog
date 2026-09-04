@@ -3,6 +3,7 @@ package emit
 import (
 	"errors"
 	"go/format"
+	"strings"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -53,7 +54,7 @@ var _ = Describe("BuildResourceView", func() {
 			Method: "UpdateIncidentType", GoRequestType: "IncidentTypeUpdateRequest", GoResponseType: "IncidentTypeResponse",
 			Arguments: []SDKArgumentView{{Expression: "state.ID.ValueString()", TFName: "id", GoType: "string"}},
 			Envelope: &RequestEnvelopeView{
-				SDKPackage: "datadogV2", Fields: view.Create.Envelope.Fields,
+				SDKPackage: "datadogV2", Fields: view.Update.Envelope.Fields,
 				DataVar: "bodyData", DataType: "IncidentTypeUpdateData",
 				TypeExpr:       `datadogV2.IncidentTypeType("incident_types")`,
 				IDExpr:         "state.ID.ValueString()",
@@ -98,7 +99,27 @@ var _ = Describe("BuildResourceView", func() {
 				GoField: "InternalNote", Target: attrsTarget, ValueExpr: "state.InternalNote.ValueString()",
 				NullCheck: "!state.InternalNote.IsNull() && !state.InternalNote.IsUnknown()",
 			},
+			RequestFieldView{
+				GoField: "ResolutionPlaybook", Target: attrsTarget, ValueExpr: "state.ResolutionPlaybook.ValueString()",
+				NullCheck: "!state.ResolutionPlaybook.IsNull() && !state.ResolutionPlaybook.IsUnknown()",
+			},
 		))
+
+		By("the Update body sets only what it declares: internal_note is Create-only, and IncidentTypeUpdateAttributes has no SetInternalNote to call (T134)")
+		By("while resolution_playbook, which both bodies declare under a camelCase property name, is matched across the snake_case attribute tree and kept")
+		Expect(view.Update.Envelope.Fields).To(ConsistOf(
+			RequestFieldView{GoField: "Name", Target: attrsTarget, ValueExpr: "state.Name.ValueString()", Required: true},
+			RequestFieldView{
+				GoField: "Description", Target: attrsTarget, ValueExpr: "state.Description.ValueString()",
+				NullCheck: "!state.Description.IsNull() && !state.Description.IsUnknown()",
+			},
+			RequestFieldView{
+				GoField: "ResolutionPlaybook", Target: attrsTarget, ValueExpr: "state.ResolutionPlaybook.ValueString()",
+				NullCheck: "!state.ResolutionPlaybook.IsNull() && !state.ResolutionPlaybook.IsUnknown()",
+			},
+		))
+		By("dropping it from the request is not a diagnostic — a create-only field is the ordinary shape of a PATCH body")
+		Expect(view.Dropped).NotTo(ContainElement(HaveField("Message", ContainSubstring("internal_note"))))
 
 		Expect(view.State.ParamType).To(Equal("*datadogV2.IncidentTypeResponse"))
 		By("the write-only field never gets a response assignment — its accessor does not exist on the response type")
@@ -478,6 +499,14 @@ var _ = Describe("RenderResource", func() {
 		Expect(out).To(ContainSubstring(`bodyData.SetId(state.ID.ValueString())`))
 		Expect(out).To(ContainSubstring(`r.Api.UpdateIncidentType(r.Auth, state.ID.ValueString(), *body)`))
 
+		By("Update sets only the fields its own request type declares — IncidentTypeUpdateAttributes has no SetInternalNote, so emitting one would not compile (T134)")
+		Expect(out).To(ContainSubstring(`bodyAttributes.SetInternalNote(state.InternalNote.ValueString())`))
+		Expect(strings.Count(out, "SetInternalNote(")).To(Equal(1), "the create-only field must be set by Create alone")
+		updateOnward := out[strings.Index(out, `func (r *datadogIncidentTypeResource) Update(`):]
+		Expect(updateOnward).NotTo(ContainSubstring("SetInternalNote("))
+		By("while a field both bodies declare is still set by both")
+		Expect(updateOnward).To(ContainSubstring(`bodyAttributes.SetName(state.Name.ValueString())`))
+
 		Expect(out).To(ContainSubstring(`func (r *datadogIncidentTypeResource) Delete(`))
 		Expect(out).To(ContainSubstring(`r.Api.DeleteIncidentType(r.Auth, state.ID.ValueString())`))
 
@@ -510,6 +539,10 @@ func incidentTypeResourceOperation(withUpdate bool) *model.Operation {
 	attrs := func(required []string, description, internalNote, lastSeen bool, attrsRefName string) *model.Schema {
 		props := map[string]*model.Schema{
 			"name": prim("string", "Name of the incident type."),
+			// camelCase on purpose, as much of the real v2 spec is: the request
+			// schema keeps this spelling while the attribute tree snake_cases
+			// it, and roleChild has to match across that (T134).
+			"resolutionPlaybook": prim("string", "Link to the resolution playbook."),
 		}
 		if description {
 			props["description"] = prim("string", "Description of the incident type.")

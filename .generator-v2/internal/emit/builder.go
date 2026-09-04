@@ -3,6 +3,7 @@ package emit
 import (
 	"fmt"
 	"go/token"
+	"slices"
 	"sort"
 	"strings"
 	"unicode"
@@ -1700,7 +1701,14 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	b.filterByResponse = true
 	recordAttrs, recordBlocks, recordScalars, recordLists := b.walk(rootStruct, "", b.receiver, "state", env.leaves)
 
-	requestFields, requestUUID, requestTime := buildRequestFields(env.leaves, "state", requestAttributesVar, primary.GoPackage, &b.unsupported)
+	// Each body-sending role gets its own field list, walked against its own
+	// data.attributes schema. One shared list would be wrong in both
+	// directions: the merged tree's request side is the union of the two
+	// bodies (FR-034b), so it names fields a given body may not declare — and
+	// the SDK generates Set<Field> only on the request type that declares it,
+	// so a create-only field set on an update body does not compile (T134).
+	createFields, requestUUID, requestTime := buildRequestFields(
+		env.leaves, lc.Create.RequestAttributesSchema, "state", requestAttributesVar, primary.GoPackage, &b.unsupported)
 	createArgs, createUUID, createStrconv := buildArgumentViews(lc.Create, &b.unsupported)
 	readArgs, readUUID, readStrconv := buildArgumentViews(lc.Read, &b.unsupported)
 	deleteArgs, deleteUUID, deleteStrconv := buildArgumentViews(lc.Delete, &b.unsupported)
@@ -1708,17 +1716,30 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	// gate below, so a level with no SDK component or an untypable body id
 	// fails the artifact rather than rendering a request body that is silently
 	// empty or ill-typed.
-	createEnvelope := buildRequestEnvelope(a.Name, "Create", primary.GoPackage, lc.Create, requestFields, &b.unsupported)
+	createEnvelope := buildRequestEnvelope(a.Name, "Create", primary.GoPackage, lc.Create, createFields, &b.unsupported)
 
 	updateView := CRUDCallView{}
 	var updateUUID, updateStrconv bool
 	if lc.Update != nil {
 		updateArgs, uuidArg, strconvArg := buildArgumentViews(lc.Update, &b.unsupported)
 		updateUUID, updateStrconv = uuidArg, strconvArg
+		// The two walks cover the same merged tree, so a node neither body can
+		// map is found by both; the artifact should name it once, and its count
+		// should be a count of problems rather than of walks.
+		var updateUnsupported []UnsupportedNode
+		updateFields, updateFieldsUUID, updateFieldsTime := buildRequestFields(
+			env.leaves, lc.Update.RequestAttributesSchema, "state", requestAttributesVar, primary.GoPackage, &updateUnsupported)
+		for _, n := range updateUnsupported {
+			if !slices.Contains(b.unsupported, n) {
+				b.unsupported = append(b.unsupported, n)
+			}
+		}
+		requestUUID = requestUUID || updateFieldsUUID
+		requestTime = requestTime || updateFieldsTime
 		updateView = CRUDCallView{
 			Method: lc.Update.GoMethod, GoRequestType: lc.Update.GoRequestType,
 			GoResponseType: lc.Update.GoResponseType, Arguments: updateArgs,
-			Envelope: buildRequestEnvelope(a.Name, "Update", primary.GoPackage, lc.Update, requestFields, &b.unsupported),
+			Envelope: buildRequestEnvelope(a.Name, "Update", primary.GoPackage, lc.Update, updateFields, &b.unsupported),
 		}
 		// A JSON:API update body identifies the record it patches. Deliberately
 		// not keyed on env.idAssign, which says only whether the *response*
@@ -1900,6 +1921,9 @@ const (
 // runtime — the failure mode this whole function exists to remove. The
 // attributes level is exempt when the body sets no attributes, since it is
 // then not constructed at all.
+//
+// fields is this role's own list, not the artifact's: two roles reaching here
+// with different lists is the normal case (T134).
 func buildRequestEnvelope(artifact, role, sdkPackage string, call *model.SDKCall, fields []RequestFieldView, unsupported *[]UnsupportedNode) *RequestEnvelopeView {
 	if call == nil {
 		return nil
@@ -1985,15 +2009,18 @@ func quoteAll(values []string) []string {
 	return out
 }
 
-// buildRequestFields derives the RequestFieldView list a resource's Create and
-// Update bodies both use, one per practitioner-settable (Required or Optional)
-// leaf or nested object of attrs, recursing into an object's own Children the
+// buildRequestFields derives one role's RequestFieldView list, one per
+// practitioner-settable (Required or Optional) leaf or nested object of attrs
+// that role's own body declares, recursing into an object's own Children the
 // same way for a nested request value as for the top level (see
-// buildNestedRequestField). stateExpr is the Go expression attrs' own fields
-// are read off: "state" at the top level, or a nested object's own model
-// pointer ("state.Settings") one level down. target is the expression each
-// field's Set<GoField> is called on: the constructed attributes local
-// (requestAttributesVar) at the top level,
+// buildNestedRequestField). It is called once per body-sending role rather than
+// once per artifact: role is that body's own data.attributes schema, against
+// which attrs — whose request side is the *union* of the Create and Update
+// bodies (FR-034b) — is narrowed by roleChild. stateExpr is the Go expression
+// attrs' own fields are read off: "state" at the top level, or a nested
+// object's own model pointer ("state.Settings") one level down. target is the
+// expression each field's Set<GoField> is called on: the constructed
+// attributes local (requestAttributesVar) at the top level,
 // or an ancestor's own constructed local further down — precomputed onto each
 // RequestFieldView.Target since a template partial recursing into one nested
 // field cannot see its ancestors' own state. sdkPackage names the module
@@ -2008,13 +2035,20 @@ func quoteAll(values []string) []string {
 // same gap, a format on a collection element (a list of date-time, a list of
 // enum strings), or a leaf format this doesn't recognize — fails the artifact
 // rather than silently omitting a field the practitioner can configure but the
-// generated Create/Update would never send.
-func buildRequestFields(attrs []*model.Attribute, stateExpr, target, sdkPackage string, unsupported *[]UnsupportedNode) (fields []RequestFieldView, usesUUID, usesTime bool) {
+// generated Create/Update would never send. A field this role simply does not
+// declare is different in kind and is skipped silently, before any of those
+// checks: a create-only field is the ordinary shape of a PATCH body, not a gap
+// in the generator.
+func buildRequestFields(attrs []*model.Attribute, role *model.Schema, stateExpr, target, sdkPackage string, unsupported *[]UnsupportedNode) (fields []RequestFieldView, usesUUID, usesTime bool) {
 	for _, a := range attrs {
 		if !a.Required && !a.Optional {
 			continue // Computed-only: not request-settable.
 		}
 		tfName := tfNameOf(a.Path)
+		roleChildSchema, declared := roleChild(role, a)
+		if !declared {
+			continue // Present in the other request body only; this one has no setter for it.
+		}
 		field := model.SdkName(tfName)
 		childState := stateExpr + "." + field
 
@@ -2028,7 +2062,7 @@ func buildRequestFields(attrs []*model.Attribute, stateExpr, target, sdkPackage 
 
 		switch a.TfType {
 		case "schema.SingleNestedBlock", "schema.SingleNestedAttribute":
-			rf, nestedUUID, nestedTime, ok := buildNestedRequestField(a, field, childState, target, sdkPackage, unsupported)
+			rf, nestedUUID, nestedTime, ok := buildNestedRequestField(a, roleChildSchema, field, childState, target, sdkPackage, unsupported)
 			if !ok {
 				continue
 			}
@@ -2046,7 +2080,7 @@ func buildRequestFields(attrs []*model.Attribute, stateExpr, target, sdkPackage 
 			continue
 
 		case "schema.ListNestedBlock", "schema.ListNestedAttribute":
-			rf, nestedUUID, nestedTime, ok := buildObjectCollectionField(a, tfName, field, childState, target, sdkPackage, unsupported)
+			rf, nestedUUID, nestedTime, ok := buildObjectCollectionField(a, roleChildSchema, tfName, field, childState, target, sdkPackage, unsupported)
 			if !ok {
 				continue
 			}
@@ -2081,6 +2115,34 @@ func buildRequestFields(attrs []*model.Attribute, stateExpr, target, sdkPackage 
 	return fields, usesUUID, usesTime
 }
 
+// roleChild resolves one role body's own schema node for attribute a at the
+// current level, and reports whether that body declares it at all.
+//
+// The lookup is by a.OpenAPIName — the property's own name, kept by the
+// attribute walk precisely so it need not be recovered from the Terraform Path,
+// which SnakeCase has already normalized and cannot invert. The returned node
+// is the level whose properties line up with a.Children: a nested object is
+// that level itself, while a collection carries it on Items.
+//
+// declared is false only when the role's body demonstrably describes an object
+// here and does not declare a — the one case a merged-tree attribute must not
+// be set on this role, because the SDK generated no setter for it. Every other
+// shape keeps the attribute: a nil role (the caller is not narrowing), a level
+// this generator cannot read as an object, and a node with no property name of
+// its own all mean "unknown", and guessing "absent" there would silently drop a
+// field the practitioner can configure. A body left inline, with no SDK
+// component to construct at all, is still caught by buildRequestEnvelope.
+func roleChild(role *model.Schema, a *model.Attribute) (child *model.Schema, declared bool) {
+	if role == nil || len(role.Properties) == 0 || a.OpenAPIName == "" {
+		return nil, true
+	}
+	child, declared = role.Properties[a.OpenAPIName]
+	if child != nil && child.Items != nil {
+		child = child.Items
+	}
+	return child, declared
+}
+
 // buildNestedRequestField derives one object field's RequestFieldView: the
 // request-side SDK type to build via New<SDKType>WithDefaults() (see
 // BuildResourceView's doc comment; the same idiom applies at every nesting
@@ -2088,10 +2150,11 @@ func buildRequestFields(attrs []*model.Attribute, stateExpr, target, sdkPackage 
 // a's own model pointer, reached through its parent so a doubly-nested field
 // resolves relative to its immediate parent rather than the top-level state.
 // target is where the constructed value is ultimately set, exactly as in
-// buildRequestFields. usesUUID/usesTime are its subtree's own parse-import
-// needs, returned rather than recovered by the caller so one aggregation
-// serves both this branch and the plain-leaf one.
-func buildNestedRequestField(a *model.Attribute, field, modelExpr, target, sdkPackage string, unsupported *[]UnsupportedNode) (rf RequestFieldView, usesUUID, usesTime, ok bool) {
+// buildRequestFields, and role is this object's own node in the calling role's
+// request schema, which its children are narrowed against. usesUUID/usesTime
+// are its subtree's own parse-import needs, returned rather than recovered by
+// the caller so one aggregation serves both this branch and the plain-leaf one.
+func buildNestedRequestField(a *model.Attribute, role *model.Schema, field, modelExpr, target, sdkPackage string, unsupported *[]UnsupportedNode) (rf RequestFieldView, usesUUID, usesTime, ok bool) {
 	if a.RequestModelRefName == "" {
 		*unsupported = append(*unsupported, UnsupportedNode{
 			Path: a.Path,
@@ -2101,7 +2164,7 @@ func buildNestedRequestField(a *model.Attribute, field, modelExpr, target, sdkPa
 		return RequestFieldView{}, false, false, false
 	}
 	nestedVar := lowerFirst(field) + "Value"
-	childFields, usesUUID, usesTime := buildRequestFields(a.Children, modelExpr, nestedVar, sdkPackage, unsupported)
+	childFields, usesUUID, usesTime := buildRequestFields(a.Children, role, modelExpr, nestedVar, sdkPackage, unsupported)
 	rf = RequestFieldView{
 		GoField:  field,
 		Target:   target,
@@ -2217,10 +2280,12 @@ func notNullOrUnknown(expr string) string {
 // renderList object branch (data_source_common.go.tmpl) in reverse. Element
 // type resolution needs no work here: BuildResourceTree already stamps
 // RequestModelRefName from the element's own component (model/schema.go),
-// reaching through the array exactly as ModelRefName does. usesUUID/usesTime
+// reaching through the array exactly as ModelRefName does. role is this list's
+// own node in the calling role's request schema; the element's fields are
+// narrowed against role.Items, which elementRole reaches through. usesUUID/usesTime
 // are the element subtree's own parse-import needs, aggregated the same way
 // buildNestedRequestField's are.
-func buildObjectCollectionField(a *model.Attribute, tfName, field, childState, target, sdkPackage string, unsupported *[]UnsupportedNode) (rf RequestFieldView, usesUUID, usesTime, ok bool) {
+func buildObjectCollectionField(a *model.Attribute, role *model.Schema, tfName, field, childState, target, sdkPackage string, unsupported *[]UnsupportedNode) (rf RequestFieldView, usesUUID, usesTime, ok bool) {
 	if a.RequestModelRefName == "" {
 		*unsupported = append(*unsupported, UnsupportedNode{
 			Path: elementPath(a),
@@ -2232,7 +2297,7 @@ func buildObjectCollectionField(a *model.Attribute, tfName, field, childState, t
 
 	base := leafVar(tfName)
 	loopVar, elemVar := base+"Item", base+"Element"
-	childFields, usesUUID, usesTime := buildRequestFields(a.Children, loopVar, elemVar, sdkPackage, unsupported)
+	childFields, usesUUID, usesTime := buildRequestFields(a.Children, role, loopVar, elemVar, sdkPackage, unsupported)
 	rf = RequestFieldView{
 		GoField:  field,
 		Target:   target,

@@ -604,10 +604,9 @@ type RequestEnvelopeView struct {
 	// carried here rather than read off the root view because the partial that
 	// renders an envelope is handed one CRUDCallView, not the whole view.
 	SDKPackage string
-	// Fields are the Set<Field>(...) calls that populate the attributes local. Today
-	// Create and Update share one slice, derived once from the merged tree;
-	// T134 replaces that with a per-role intersection, and this is the field it
-	// will differ on.
+	// Fields are the Set<Field>(...) calls that populate the attributes local.
+	// Each role has its own slice, narrowed to what its own body declares — see
+	// model.SDKCall.RequestAttributesSchema for why they differ (T134).
 	Fields []RequestFieldView
 	// DataVar is the local holding the constructed data member.
 	DataVar string
@@ -644,11 +643,11 @@ type RequestEnvelopeView struct {
 	AttributesType string
 }
 
-// RequestFieldView is one field a resource's Create and Update bodies both set
-// via the SDK's universal Set<GoField>(v) setter — present for both a required
-// (non-pointer) and an optional (pointer) SDK field alike, which is what lets
-// one view serve both request types regardless of whether either SDK type
-// happens to keep the field required (see buildRequestFields). Exactly one of
+// RequestFieldView is one field of one role's request body, set via the SDK's
+// universal Set<GoField>(v) setter — emitted for both a required (non-pointer)
+// and an optional (pointer) SDK field alike, so the same view shape serves
+// either request type. Which fields a role gets at all is buildRequestFields'
+// decision, not this view's. Exactly one of
 // ValueExpr, Nested and Collection is populated: a leaf sets the parent's
 // field directly, an object field builds Nested's own value first, and a
 // list/map field builds Collection's value first.

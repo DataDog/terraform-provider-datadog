@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
@@ -15,6 +14,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/emit"
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/parser"
+	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/providermod"
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/sdkbind"
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/sdkbinding"
 )
@@ -28,8 +28,6 @@ var errCheckFailed = fmt.Errorf("check: one or more files would change")
 // than the working directory, so it lands on the real file wherever tfgen is run
 // from.
 const apiInstancesHelperRelPath = "../internal/utils/api_instances_helper.go"
-
-const datadogV2SDKPackage = "github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 
 func newGenerateCmd(flags *globalFlags) *cobra.Command {
 	var check bool
@@ -102,7 +100,7 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 				// best-effort corroboration only: a cold cache, missing package, or new
 				// endpoint must not prevent generation before the SDK update lands.
 				var sdkBindings *sdkbinding.Inventory
-				sdkPackageDir, sdkDirErr := resolveSDKPackageDir(outputRoot)
+				sdkPackageDir, sdkDirErr := providermod.SDKPackageDir(outputRoot)
 				if sdkDirErr != nil {
 					cmd.PrintErrln("tfgen: pinned SDK corroboration unavailable; generating from OpenAPI bindings:", sdkDirErr)
 				} else {
@@ -251,63 +249,6 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 	cmd.PersistentFlags().StringVar(&retire, "retire", "", "Comma-separated artifact names to retire without generating (deletes files + registration)")
 
 	return cmd
-}
-
-// resolveSDKPackageDir asks the provider module selected by outputRoot for the
-// pinned datadogV2 package directory. Tests often render into a temporary output
-// root, so the current checkout is a fallback when that root is outside a Go
-// module.
-func resolveSDKPackageDir(outputRoot string) (string, error) {
-	moduleRoot, err := findProviderModuleRoot(outputRoot)
-	if err != nil {
-		return "", err
-	}
-
-	goList := exec.Command("go", "list", "-f={{.Dir}}", datadogV2SDKPackage)
-	goList.Dir = moduleRoot
-	var stderr bytes.Buffer
-	goList.Stderr = &stderr
-	output, err := goList.Output()
-	if err != nil {
-		return "", fmt.Errorf("go list %s from %s: %w: %s", datadogV2SDKPackage, moduleRoot, err, strings.TrimSpace(stderr.String()))
-	}
-	dir := strings.TrimSpace(string(output))
-	if dir == "" {
-		return "", fmt.Errorf("go list %s from %s returned an empty directory", datadogV2SDKPackage, moduleRoot)
-	}
-	return dir, nil
-}
-
-func findProviderModuleRoot(outputRoot string) (string, error) {
-	var starts []string
-	if outputRoot != "" {
-		absoluteOutputRoot, err := filepath.Abs(outputRoot)
-		if err != nil {
-			return "", fmt.Errorf("resolve output root %s: %w", outputRoot, err)
-		}
-		starts = append(starts, absoluteOutputRoot)
-	}
-	workingDir, err := os.Getwd()
-	if err != nil {
-		return "", fmt.Errorf("get working directory: %w", err)
-	}
-	starts = append(starts, workingDir)
-
-	for _, start := range starts {
-		for dir := start; ; dir = filepath.Dir(dir) {
-			goMod, readErr := os.ReadFile(filepath.Join(dir, "go.mod"))
-			if readErr == nil &&
-				bytes.Contains(goMod, []byte("module github.com/terraform-providers/terraform-provider-datadog")) &&
-				bytes.Contains(goMod, []byte("github.com/DataDog/datadog-api-client-go/v2")) {
-				return dir, nil
-			}
-			parent := filepath.Dir(dir)
-			if parent == dir {
-				break
-			}
-		}
-	}
-	return "", fmt.Errorf("could not find the terraform-provider-datadog module containing the pinned datadog-api-client-go dependency")
 }
 
 // generateArtifact runs the full model→emit→write pipeline for one tracked

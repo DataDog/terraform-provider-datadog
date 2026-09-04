@@ -820,26 +820,26 @@ var _ = Describe("BuildResponseTree golden tree", func() {
 		Expect(err).NotTo(HaveOccurred())
 
 		want := &AttributeTree{Attributes: []*Attribute{
-			{Path: "response.cfg", TfType: "schema.MapNestedAttribute", GoType: "types.Map", Computed: true,
+			{Path: "response.cfg", OpenAPIName: "cfg", TfType: "schema.MapNestedAttribute", GoType: "types.Map", Computed: true,
 				Children: []*Attribute{
-					{Path: "response.cfg{}.settings", TfType: "schema.SingleNestedAttribute", GoType: "types.Object", Computed: true,
+					{Path: "response.cfg{}.settings", OpenAPIName: "settings", TfType: "schema.SingleNestedAttribute", GoType: "types.Object", Computed: true,
 						Children: []*Attribute{
-							{Path: "response.cfg{}.settings.x", TfType: "schema.StringAttribute", GoType: "types.String", Computed: true},
+							{Path: "response.cfg{}.settings.x", OpenAPIName: "x", TfType: "schema.StringAttribute", GoType: "types.String", Computed: true},
 						}},
 				}},
-			{Path: "response.id", TfType: "schema.StringAttribute", GoType: "types.String", Computed: true},
-			{Path: "response.items", TfType: "schema.ListNestedBlock", GoType: "types.List", Computed: true,
+			{Path: "response.id", OpenAPIName: "id", TfType: "schema.StringAttribute", GoType: "types.String", Computed: true},
+			{Path: "response.items", OpenAPIName: "items", TfType: "schema.ListNestedBlock", GoType: "types.List", Computed: true,
 				Children: []*Attribute{
-					{Path: "response.items[].name", TfType: "schema.StringAttribute", GoType: "types.String", Computed: true},
+					{Path: "response.items[].name", OpenAPIName: "name", TfType: "schema.StringAttribute", GoType: "types.String", Computed: true},
 				}},
-			{Path: "response.meta", TfType: "schema.MapAttribute", GoType: "types.Map", ElementType: "types.StringType", Computed: true},
-			{Path: "response.options", TfType: "schema.SingleNestedBlock", GoType: "types.Object", Computed: true,
+			{Path: "response.meta", OpenAPIName: "meta", TfType: "schema.MapAttribute", GoType: "types.Map", ElementType: "types.StringType", Computed: true},
+			{Path: "response.options", OpenAPIName: "options", TfType: "schema.SingleNestedBlock", GoType: "types.Object", Computed: true,
 				Children: []*Attribute{
-					{Path: "response.options.notify", TfType: "schema.BoolAttribute", GoType: "types.Bool", Computed: true},
+					{Path: "response.options.notify", OpenAPIName: "notify", TfType: "schema.BoolAttribute", GoType: "types.Bool", Computed: true},
 				}},
-			{Path: "response.status", TfType: "schema.StringAttribute", GoType: "types.String", Computed: true, IsEnum: true,
+			{Path: "response.status", OpenAPIName: "status", TfType: "schema.StringAttribute", GoType: "types.String", Computed: true, IsEnum: true,
 				Validators: []ValidatorSpec{{Name: "stringvalidator.OneOf", Args: []string{`"ok"`, `"warn"`, `"alert"`}}}},
-			{Path: "response.tags", TfType: "schema.ListAttribute", GoType: "types.List", ElementType: "types.StringType", Computed: true},
+			{Path: "response.tags", OpenAPIName: "tags", TfType: "schema.ListAttribute", GoType: "types.List", ElementType: "types.StringType", Computed: true},
 		}}
 
 		Expect(tree).To(Equal(want))

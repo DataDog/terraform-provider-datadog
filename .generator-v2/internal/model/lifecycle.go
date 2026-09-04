@@ -104,11 +104,12 @@ func buildResourceLifecycle(op *Operation) (*LifecycleBindings, []Diagnostic, er
 // which a read or a delete never does. aliasTerminalID is false for a create,
 // which has no id yet, and true for an update, whose path names the record.
 //
-// It also reads the four facts the request mapper needs about this body's
-// JSON:API envelope, all off this operation's own RequestSchema rather than off
-// the merged tree: the merge reconciles RefName toward the Read response
-// (FR-034c), and a resource's Create and Update data components are routinely
-// distinct types, so per-role is the only correct source.
+// It also reads what the request mapper needs about this body's JSON:API
+// envelope, all off this operation's own RequestSchema rather than off the
+// merged tree: the merge reconciles RefName toward the Read response (FR-034c)
+// and unions the two request bodies' fields (FR-034b), while a resource's
+// Create and Update components are routinely distinct types that declare
+// different fields — so per-role is the only correct source.
 func bodyCall(op *Operation, aliasTerminalID bool) *SDKCall {
 	call := sdkCall(op, aliasTerminalID)
 	call.GoRequestType = op.RequestRefName
@@ -122,8 +123,11 @@ func bodyCall(op *Operation, aliasTerminalID bool) *SDKCall {
 	// since a body with settable attributes cannot be built without one but a
 	// body with none can (T138).
 	call.GoRequestDataType = data.RefName
+	// The attributes node is kept whole, not just its component name, so the
+	// request mapper can narrow the merged tree against it (T134).
 	if attributes := data.Properties["attributes"]; attributes != nil {
 		call.GoRequestAttributesType = attributes.RefName
+		call.RequestAttributesSchema = attributes
 	}
 	// A Terraform id is always a string, so the declared type is what decides
 	// whether it can be sent verbatim or has to be parsed first (T140).

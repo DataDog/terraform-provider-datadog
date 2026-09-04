@@ -591,6 +591,18 @@ type Attribute struct {
 	// back both end up Required, with no other way to tell them apart.
 	InResponse bool
 
+	// OpenAPIName is the property name this attribute was built from, before
+	// SnakeCase normalized it for Terraform (e.g. "hostTagsLists" behind the
+	// "host_tags_lists" Path). Empty for a node with no property name of its
+	// own: a root, or an array/map element.
+	//
+	// It exists so a consumer can look this node up in an OpenAPI schema by
+	// exact key. Re-deriving the key from Path is not possible — SnakeCase
+	// collapses several spellings onto one — and the resource request mapper
+	// needs exactly that lookup, to ask whether one role's request body
+	// declares this field (see emit.roleChild).
+	OpenAPIName string
+
 	// FromPathParameter marks an attribute that came from an operation's path
 	// rather than from any request or response body — a sub-resource's parent
 	// id. It exists for the same reason InResponse does: Required alone cannot
@@ -832,6 +844,21 @@ type SDKCall struct {
 	// way and for the same reason. Empty when the envelope carries no
 	// attributes object (a relationships-only or id-only body).
 	GoRequestAttributesType string
+	// RequestAttributesSchema is this role's own data.attributes node, kept so
+	// the request mapper can narrow the merged tree to the fields *this* body
+	// declares. The merged schema's request side is the union of the Create and
+	// Update bodies (FR-034b), which is right for the Terraform schema — a
+	// field settable on either belongs in it — and wrong for the mapper: the
+	// SDK generates Set<Field> only on the request type that declares the
+	// field, so setting a create-only field on an update body does not compile
+	// (T134: OktaAccountUpdateRequestAttributes has no SetName).
+	//
+	// It carries presence only. The per-role *component names* a nested object
+	// or a oneOf must be constructed from are deliberately not read off it:
+	// those need a Create/Update/Read triple of SDK bindings per node, which is
+	// T099's, and Schema.RequestRefName remains the (Create-first) name emit
+	// uses until that lands.
+	RequestAttributesSchema *Schema
 	// Arguments are the required positional SDK arguments in call order.
 	Arguments []SDKArgument
 	// OptionalArguments bind Terraform filters to OptionalParamsType setters.

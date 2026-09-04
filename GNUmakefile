@@ -110,6 +110,17 @@ tfgen-test:
 	cd .generator-v2 && $(GO) test ./internal/... ./cmd/tfgen/... -race -cover
 	@echo "tfgen tests passed"
 
+# Run the tfgen module's integration-tagged tests: the SDK-binding corroboration
+# and the generated-code compile gate. Both shell out and both need the PROVIDER
+# module's dependency graph on disk, so populate that cache first — the compile
+# gate runs with GOPROXY=off and will otherwise report a cold cache as a broken
+# checkout. internal/testdata is named explicitly because the go tool excludes
+# any directory called testdata from a ./... expansion. T080 wires this into CI.
+tfgen-test-integration:
+	$(GO) mod download
+	cd .generator-v2 && $(GO) test -tags=integration ./internal/... ./internal/testdata/ -count=1
+	@echo "tfgen integration tests passed"
+
 update-go-client:
 	echo "Updating the Zorkian client to ${ZORKIAN_VERSION} and the API Client to ${API_CLIENT_VERSION}"
 	go get github.com/zorkian/go-datadog-api@$(ZORKIAN_VERSION)
@@ -140,4 +151,4 @@ check-docs: docs
 		echo "Success: No generated documentation changes detected"; \
 	fi
 
-.PHONY: build dev-build dev-clean check-docs docs test testall testacc tfgen-build tfgen-test cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile license-check sweep
+.PHONY: build dev-build dev-clean check-docs docs test testall testacc tfgen-build tfgen-test tfgen-test-integration cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile license-check sweep

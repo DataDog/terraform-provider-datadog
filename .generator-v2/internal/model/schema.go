@@ -345,6 +345,11 @@ func (b *treeBuilder) children(parent *Schema, prefix string, mode nestingMode) 
 		if err != nil {
 			return nil, err
 		}
+		// Keep the property's own OpenAPI name. SnakeCase is not injective —
+		// hostTags, host_tags and host-tags all collapse to host_tags — so a
+		// consumer that needs to find this node again in an OpenAPI schema
+		// cannot invert the Path, and guessing would silently pick a sibling.
+		child.OpenAPIName = key
 		children = append(children, child)
 	}
 	return children, nil
