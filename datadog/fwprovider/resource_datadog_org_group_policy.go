@@ -25,6 +25,7 @@ var (
 	_ resource.ResourceWithConfigure      = &OrgGroupPolicyResource{}
 	_ resource.ResourceWithImportState    = &OrgGroupPolicyResource{}
 	_ resource.ResourceWithValidateConfig = &OrgGroupPolicyResource{}
+	_ resource.ResourceWithModifyPlan     = &OrgGroupPolicyResource{}
 )
 
 type OrgGroupPolicyResource struct {
@@ -74,15 +75,7 @@ func (r *OrgGroupPolicyResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Validators:  []validator.String{stringvalidator.LengthAtLeast(1)},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplaceIf(
-						func(ctx context.Context, req planmodifier.StringRequest, resp *stringplanmodifier.RequiresReplaceIfFuncResponse) {
-							var policyType types.String
-							diags := req.State.GetAttribute(ctx, frameworkPath.Root("policy_type"), &policyType)
-							resp.Diagnostics.Append(diags...)
-							if diags.HasError() {
-								return
-							}
-							resp.RequiresReplace = policyType.ValueString() != string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ROLE)
-						},
+						orgGroupPolicyNameRequiresReplaceIf,
 						"Renaming requires replacing the resource unless policy_type is \"role\"; the API only supports in-place rename for role policies.",
 						"Renaming requires replacing the resource unless `policy_type` is `role`; the API only supports in-place rename for `role` policies.",
 					),
@@ -129,6 +122,50 @@ func (r *OrgGroupPolicyResource) Schema(_ context.Context, _ resource.SchemaRequ
 
 func (r *OrgGroupPolicyResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
+}
+
+// orgGroupPolicyNameRequiresReplaceIf forces a replace on policy_name changes
+// unless policy_type is "role"; the API only supports in-place rename for role policies.
+func orgGroupPolicyNameRequiresReplaceIf(ctx context.Context, req planmodifier.StringRequest, resp *stringplanmodifier.RequiresReplaceIfFuncResponse) {
+	var policyType types.String
+	diags := req.State.GetAttribute(ctx, frameworkPath.Root("policy_type"), &policyType)
+	resp.Diagnostics.Append(diags...)
+	if diags.HasError() {
+		return
+	}
+	resp.RequiresReplace = policyType.ValueString() != string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ROLE)
+}
+
+// ModifyPlan catches a DELEGATE -> non-DELEGATE transition on a role policy at
+// plan time; without this, Update() is the only place that rejects it, so the
+// error only surfaces at apply.
+func (r *OrgGroupPolicyResource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
+	if request.State.Raw.IsNull() {
+		return
+	}
+	var priorState OrgGroupPolicyModel
+	response.Diagnostics.Append(request.State.Get(ctx, &priorState)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+	if priorState.PolicyType.ValueString() != string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ROLE) ||
+		priorState.EnforcementTier.ValueString() != string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_DELEGATE) {
+		return
+	}
+
+	var plan OrgGroupPolicyModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+	if !plan.EnforcementTier.IsNull() && !plan.EnforcementTier.IsUnknown() &&
+		plan.EnforcementTier.ValueString() != string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_DELEGATE) {
+		response.Diagnostics.AddAttributeError(
+			frameworkPath.Root("enforcement_tier"),
+			"Cannot re-enable a disabled role policy",
+			"This role policy was disabled (enforcement_tier = \"DELEGATE\") and cannot be transitioned back to GROUP_MANAGED or OVERRIDE_ALLOWED.",
+		)
+	}
 }
 
 // ValidateConfig catches role + OVERRIDE_ALLOWED at plan time; the API only 400s.
@@ -258,6 +295,7 @@ func (r *OrgGroupPolicyResource) Update(ctx context.Context, request resource.Up
 
 	if priorState.PolicyType.ValueString() == string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ROLE) &&
 		priorState.EnforcementTier.ValueString() == string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_DELEGATE) &&
+		!state.EnforcementTier.IsNull() && !state.EnforcementTier.IsUnknown() &&
 		state.EnforcementTier.ValueString() != string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_DELEGATE) {
 		response.Diagnostics.AddAttributeError(
 			frameworkPath.Root("enforcement_tier"),

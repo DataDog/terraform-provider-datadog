@@ -88,6 +88,7 @@ func TestAccDatadogOrgGroupPolicy_Role(t *testing.T) {
 	permissionID := "d99415a4-dc4d-11e8-b4b1-4f9e475593a0"      // logs_read_index_data
 	otherPermissionID := "d99443a8-dc4d-11e8-b4b2-9f5f4b0b2f5a" // logs_modify_indexes
 	resourceName := "datadog_org_group_policy.role"
+	var roleResourceID string
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
@@ -136,6 +137,14 @@ func TestAccDatadogOrgGroupPolicy_Role(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOrgGroupPolicyExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "enforcement_tier", "DELEGATE"),
+					func(s *terraform.State) error {
+						rs, ok := s.RootModule().Resources[resourceName]
+						if !ok {
+							return fmt.Errorf("resource not found: %s", resourceName)
+						}
+						roleResourceID = rs.Primary.ID
+						return nil
+					},
 				),
 			},
 			{
@@ -149,8 +158,45 @@ func TestAccDatadogOrgGroupPolicy_Role(t *testing.T) {
 				ImportState:       true,
 				ImportStateVerify: true,
 			},
+			{
+				// Removing only the policy (org group stays) exercises the
+				// CheckDestroy DELEGATE branch: Delete() succeeds without an API
+				// call, and the policy remains server-side, still DELEGATE.
+				Config: testAccCheckDatadogOrgGroupPolicyRoleOnlyGroupConfig(orgGroupName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogOrgGroupPolicyStillDisabled(providers.frameworkProvider, &roleResourceID),
+				),
+			},
 		},
 	})
+}
+
+func testAccCheckDatadogOrgGroupPolicyStillDisabled(accProvider *fwprovider.FrameworkProvider, priorResourceID *string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
+
+		id, err := uuid.Parse(*priorResourceID)
+		if err != nil {
+			return fmt.Errorf("org group policy ID is not a valid UUID: %w", err)
+		}
+
+		resp, _, err := apiInstances.GetOrgGroupsApiV2().GetOrgGroupPolicy(auth, id)
+		if err != nil {
+			return fmt.Errorf("received an error retrieving role policy after removing it from configuration: %w", err)
+		}
+		if resp.Data.Attributes.GetEnforcementTier() != "DELEGATE" {
+			return fmt.Errorf("expected role policy to remain DELEGATE server-side after removal from configuration, got %q", resp.Data.Attributes.GetEnforcementTier())
+		}
+		return nil
+	}
+}
+
+func testAccCheckDatadogOrgGroupPolicyRoleOnlyGroupConfig(orgGroupName string) string {
+	return fmt.Sprintf(`
+resource "datadog_org_group" "role" {
+  name = "%s"
+}`, orgGroupName)
 }
 
 func testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, policyName, content, enforcementTier string) string {
