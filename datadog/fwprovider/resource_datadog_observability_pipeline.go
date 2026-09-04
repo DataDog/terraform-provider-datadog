@@ -546,8 +546,9 @@ type generatedMetricValue struct {
 }
 
 type splunkTcpSourceModel struct {
-	AddressKey types.String                                `tfsdk:"address_key"`
-	Tls        []observability_pipeline.MtlsServerTlsModel `tfsdk:"tls"`
+	AddressKey                types.String                                `tfsdk:"address_key"`
+	MaxConnectionDurationSecs types.Int64                                 `tfsdk:"max_connection_duration_secs"`
+	Tls                       []observability_pipeline.MtlsServerTlsModel `tfsdk:"tls"`
 }
 
 type gcsDestinationModel struct {
@@ -1075,6 +1076,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												"address_key": schema.StringAttribute{
 													Optional:    true,
 													Description: "Name of the environment variable or secret that holds the listen address for the Splunk TCP receiver.",
+												},
+												"max_connection_duration_secs": schema.Int64Attribute{
+													Optional:    true,
+													Description: "Maximum duration, in seconds, that a connection can remain open before it is closed. When unset, connections can remain open indefinitely.",
 												},
 											},
 											Blocks: map[string]schema.Block{
@@ -6059,6 +6064,9 @@ func expandSplunkTcpSource(src *splunkTcpSourceModel, id string) datadogV2.Obser
 	if !src.AddressKey.IsNull() {
 		s.SetAddressKey(src.AddressKey.ValueString())
 	}
+	if !src.MaxConnectionDurationSecs.IsNull() {
+		s.SetMaxConnectionDurationSecs(src.MaxConnectionDurationSecs.ValueInt64())
+	}
 	s.Tls = observability_pipeline.ExpandMtlsServerTls(src.Tls)
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
@@ -6073,6 +6081,9 @@ func flattenSplunkTcpSource(src *datadogV2.ObservabilityPipelineSplunkTcpSource)
 	out := &splunkTcpSourceModel{}
 	if v, ok := src.GetAddressKeyOk(); ok {
 		out.AddressKey = types.StringValue(*v)
+	}
+	if v, ok := src.GetMaxConnectionDurationSecsOk(); ok {
+		out.MaxConnectionDurationSecs = types.Int64Value(*v)
 	}
 	if src.Tls != nil {
 		out.Tls = observability_pipeline.FlattenMtlsServerTls(src.Tls)
