@@ -64,6 +64,7 @@ resource "datadog_logs_index" "sample_index" {
 - `disable_daily_limit` (Boolean) If true, disables the daily limit and sets `daily_limit` to null. If false, enables the daily limit. When creating an index, if this attribute is omitted, the daily limit is enabled by default. When updating an index, if this attribute is omitted, the existing value is preserved. Providing a `daily_limit` value does not re-enable the limit if it was previously disabled unless `disable_daily_limit` is explicitly set to false.
 - `exclusion_filter` (Block List) List of exclusion filters. (see [below for nested schema](#nestedblock--exclusion_filter))
 - `flex_retention_days` (Number) The total number of days logs are stored in Standard and Flex Tier before being deleted from the index.
+- `prevent_deletion` (Boolean) If true, the logs index cannot be deleted. Defaults to `false`.
 - `retention_days` (Number) The number of days logs are stored in Standard Tier before aging into the Flex Tier or being deleted from the index.
 - `tags` (Set of String) A list of tags for this index. Tags must be in `key:value` format. If default tags are present at the provider level, they will be added to this resource.
 
