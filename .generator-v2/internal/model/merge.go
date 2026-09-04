@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"maps"
 	"slices"
 	"sort"
 )
@@ -154,16 +155,7 @@ func CloneSchema(s *Schema) *Schema {
 			oneOf.Variants[i] = variant
 			oneOf.Variants[i].Schema = CloneSchema(variant.Schema)
 		}
-		if s.OneOf.Discriminator != nil {
-			discriminator := *s.OneOf.Discriminator
-			if s.OneOf.Discriminator.Mapping != nil {
-				discriminator.Mapping = make(map[string]string, len(s.OneOf.Discriminator.Mapping))
-				for key, value := range s.OneOf.Discriminator.Mapping {
-					discriminator.Mapping[key] = value
-				}
-			}
-			oneOf.Discriminator = &discriminator
-		}
+		oneOf.Discriminator = cloneDiscriminator(s.OneOf.Discriminator)
 		out.OneOf = &oneOf
 	}
 	return &out
@@ -272,12 +264,13 @@ func (m *resourceMerger) mergeNode(create, update, read *Schema, createRequired 
 		return m.mergeCollection(kind, create, update, read, createRequired, path)
 	case SchemaKindPrimitive:
 		return m.mergePrimitive(create, update, read, createRequired, path)
+	case SchemaKindOneOf:
+		return m.mergeOneOf(create, update, read, createRequired, path)
 	default:
-		// OneOf, Unsupported, RefCycle, DepthExceeded: the cosmetic-reconciliation
-		// list names RefName/Description/Enum/Sensitive, not oneOf-specific fields,
-		// so these kinds are not deep-merged — the merged node is the preferred
-		// side's clone with those four fields reconciled the same way as every
-		// other kind.
+		// Unsupported, RefCycle, DepthExceeded: nothing under such a node is
+		// representable, so there is no subtree worth correlating — the merged
+		// node is the preferred side's clone with the four cosmetic fields
+		// reconciled the same way as every other kind.
 		return m.mergeVerbatim(create, update, read, createRequired, path)
 	}
 }
@@ -591,4 +584,279 @@ func anySensitive(create, update, read *Schema) (sensitive, disagreed bool) {
 		}
 	}
 	return sawTrue, sawTrue && sawFalse
+}
+
+// ----------------------------------------------------------------------------
+// oneOf merge
+// ----------------------------------------------------------------------------
+
+// OneOfMergeError reports a union the Create request, Update request and Read
+// response bodies describe in ways that cannot be correlated into one
+// Terraform envelope: the bodies list alternatives that do not line up even
+// after their CRUD-role suffixes are removed, or one body names two
+// alternatives that collapse onto the same stripped name.
+//
+// It is the oneOf analogue of SchemaMergeError, and exists for the same
+// reason: the merged tree carries exactly one public name per variant block,
+// so when the bodies disagree about what the alternatives *are* the generator
+// must say so at the union's path rather than pick a side (FR-034c, T099c).
+type OneOfMergeError struct {
+	// Path is the union's schema path in the merged tree.
+	Path string
+	// Reason states what could not be correlated.
+	Reason string
+	// Create, Update and Read are each body's alternatives as that body spells
+	// them, sorted; nil when the body does not reach this node. They are the
+	// pre-strip names deliberately: a maintainer reading this needs to see what
+	// the specification says, not what the correlation made of it.
+	Create, Update, Read []string
+}
+
+func (e *OneOfMergeError) Error() string {
+	return fmt.Sprintf(
+		"model: resource schema merge cannot correlate the oneOf at %q: %s (create: %v, update: %v, read: %v)",
+		e.Path, e.Reason, e.Create, e.Update, e.Read)
+}
+
+// mergeOneOf unions the three bodies' spellings of one union.
+//
+// A union is deep-merged, unlike the other non-object kinds, because its
+// alternatives are ordinary objects whose own properties differ by role
+// exactly as a plain nested object's do: IntegrationAccountBasicAuthRequest
+// declares a required password, ...Update an optional one and ...Response none
+// at all. Cloning whichever body won the preference order would drop the
+// request-only fields silently and leave the practitioner unable to configure
+// a credential the API demands (T099b), so each correlated alternative goes
+// back through mergeNode and comes out with Provenance at every property, the
+// same as any other subtree.
+//
+// The name the alternatives correlate under is also the name the variant block
+// is published under, so the two cannot drift (T099c). See correlateOneOf for
+// how it is chosen.
+//
+// The SDK binding the merged node carries — OneOfSpec.SDKType and each
+// variant's SDKField/SDKConstructor/SDKPointer — stays the preferred (Read)
+// body's, for the same reason RefName does: it is the binding the *response*
+// mapper needs. Each request mapper reads its own role's binding off that
+// role's own request schema, which sdkbind has already annotated (see
+// SDKCall.RequestAttributesSchema and emit's buildRequestFields).
+func (m *resourceMerger) mergeOneOf(create, update, read *Schema, createRequired bool, path string) (*Schema, error) {
+	// A node classified oneOf but carrying no normalized union has no
+	// alternatives to correlate. That is a parser-side defect the projection
+	// reports with its own actionable message, so hand it on untouched rather
+	// than shadowing it with a correlation failure.
+	for _, s := range presentSchemas(create, update, read) {
+		if s.OneOf == nil {
+			return m.mergeVerbatim(create, update, read, createRequired, path)
+		}
+	}
+
+	sides, names, err := correlateOneOf(create, update, read, path)
+	if err != nil {
+		return nil, err
+	}
+	// The preferred body does not change per alternative — only the lookup key
+	// does — so resolve it once.
+	preferred := sides.preferred()
+
+	spec := &OneOfSpec{Variants: make([]OneOfVariant, 0, len(names))}
+	for _, name := range names {
+		altCreate, altUpdate, altRead := sides.create[name].Schema, sides.update[name].Schema, sides.read[name].Schema
+		if altCreate == nil && altUpdate == nil && altRead == nil {
+			// mergeNode has no side to prefer and would clone nil. The
+			// projection raises the same complaint one layer down, but only
+			// for a tree it can still walk.
+			return nil, &OneOfMergeError{
+				Path:   path,
+				Reason: fmt.Sprintf("alternative %q has no normalized schema in any body", name),
+			}
+		}
+		// An alternative is a choice, never an entry in an enclosing object's
+		// required list, so it is never itself request-required — the same
+		// reasoning mergeCollection applies to an element.
+		merged, err := m.mergeNode(altCreate, altUpdate, altRead, false, ChildPath(path, name))
+		if err != nil {
+			return nil, err
+		}
+		source := preferred[name]
+		spec.Variants = append(spec.Variants, OneOfVariant{
+			TFName:         name,
+			GoName:         SdkName(name),
+			Schema:         merged,
+			RefName:        source.RefName,
+			SDKField:       source.SDKField,
+			SDKConstructor: source.SDKConstructor,
+			SDKPointer:     source.SDKPointer,
+			ValueWrapped:   OneOfValueWrapped(merged),
+		})
+	}
+
+	preferredSpec := preferredSchema(create, update, read).OneOf
+	// Name is the envelope's generated-model identity, so it is stripped for
+	// the same reason a variant's block name is: a resource that later gains an
+	// Update endpoint must not rename a struct it already emitted.
+	spec.Name = StripOneOfRoleSuffix(preferredSpec.Name)
+	spec.Path = preferredSpec.Path
+	spec.RefName = preferredSpec.RefName
+	spec.SDKType = preferredSpec.SDKType
+	spec.Discriminator = cloneDiscriminator(preferredSpec.Discriminator)
+	// Absence is permitted wherever any body permits it: a union the Read
+	// response may omit must not make refresh fail. The Create body's own
+	// requirement travels separately, as the enclosing object's required list
+	// (see treeBuilder.envelope).
+	for _, s := range presentSchemas(create, update, read) {
+		spec.Optional = spec.Optional || s.OneOf.Optional
+		spec.Nullable = spec.Nullable || s.OneOf.Nullable
+	}
+
+	refName, description, enum, sensitive := m.cosmeticFields(create, update, read, path)
+	return &Schema{
+		Kind:           SchemaKindOneOf,
+		OneOf:          spec,
+		RefName:        refName,
+		RequestRefName: pickRequestRefName(create, update),
+		Description:    description,
+		Enum:           enum,
+		Sensitive:      sensitive,
+		Provenance:     stampProvenance(create, update, read, createRequired),
+	}, nil
+}
+
+// correlateOneOf lines the three bodies' alternatives up under one name each,
+// returning a create/update/read triple of name-keyed alternatives plus the
+// sorted names they agreed on. A body that does not reach the union has a nil
+// map, which reads as "no opinion" rather than "no alternatives".
+//
+// The bodies' own names are tried first. When every body that reaches the
+// union spells its alternatives identically, that spelling is already
+// role-independent and is published verbatim — which is both the common case
+// and the only way an alternative legitimately ending in "Update" survives.
+// Only once the bodies have failed to agree is StripOneOfRoleSuffix brought
+// in, and then it is applied to every side so the comparison stays symmetric.
+func correlateOneOf(create, update, read *Schema, path string) (sides oneOfSides, names []string, err error) {
+	for _, strip := range []bool{false, true} {
+		if sides, err = indexOneOfSides(create, update, read, path, strip); err != nil {
+			return sides, nil, err
+		}
+		if names = sides.names(); sides.agree(len(names)) {
+			return sides, names, nil
+		}
+	}
+	return sides, nil, &OneOfMergeError{
+		Path: path,
+		Reason: "the bodies that reach this union do not list the same alternatives, " +
+			"even after their CRUD-role suffixes are removed",
+		Create: alternativeNames(create),
+		Update: alternativeNames(update),
+		Read:   alternativeNames(read),
+	}
+}
+
+// oneOfSides holds the three bodies' alternatives keyed by the name they are
+// being correlated under. A nil map is a body that does not reach the union —
+// "no opinion", not "no alternatives".
+type oneOfSides struct{ create, update, read map[string]OneOfVariant }
+
+func indexOneOfSides(create, update, read *Schema, path string, strip bool) (oneOfSides, error) {
+	var sides oneOfSides
+	var err error
+	if sides.create, err = oneOfAlternativesByName(create, path, strip); err != nil {
+		return sides, err
+	}
+	if sides.update, err = oneOfAlternativesByName(update, path, strip); err != nil {
+		return sides, err
+	}
+	sides.read, err = oneOfAlternativesByName(read, path, strip)
+	return sides, err
+}
+
+// preferred returns the body whose alternatives supply the merged node's
+// cosmetic and SDK-facing fields: Read, then Create, then Update — the same
+// rule preferenceOrder states for schemas.
+func (s oneOfSides) preferred() map[string]OneOfVariant {
+	switch {
+	case s.read != nil:
+		return s.read
+	case s.create != nil:
+		return s.create
+	default:
+		return s.update
+	}
+}
+
+// names is every alternative any body carries, sorted so the merged variant
+// order cannot depend on which body was walked first.
+func (s oneOfSides) names() []string {
+	all := map[string]struct{}{}
+	for _, side := range []map[string]OneOfVariant{s.create, s.update, s.read} {
+		for name := range side {
+			all[name] = struct{}{}
+		}
+	}
+	return slices.Sorted(maps.Keys(all))
+}
+
+// agree reports whether every body that reaches the union carries all of the
+// alternatives. Each side's names are unique by construction, so having the
+// full count is the same as having the full set.
+func (s oneOfSides) agree(total int) bool {
+	for _, side := range []map[string]OneOfVariant{s.create, s.update, s.read} {
+		if side != nil && len(side) != total {
+			return false
+		}
+	}
+	return true
+}
+
+// oneOfAlternativesByName indexes one body's alternatives by name, optionally
+// role-stripped, rejecting a body whose own alternatives collapse onto one
+// name — two spellings of one variant block cannot both be published.
+func oneOfAlternativesByName(s *Schema, path string, strip bool) (map[string]OneOfVariant, error) {
+	if s == nil {
+		return nil, nil
+	}
+	out := make(map[string]OneOfVariant, len(s.OneOf.Variants))
+	for _, variant := range s.OneOf.Variants {
+		name := variant.TFName
+		if strip {
+			name = StripOneOfRoleSuffix(name)
+		}
+		if _, duplicate := out[name]; duplicate {
+			return nil, &OneOfMergeError{
+				Path:   path,
+				Reason: fmt.Sprintf("one body has two alternatives whose role-independent name is %q", name),
+			}
+		}
+		out[name] = variant
+	}
+	return out, nil
+}
+
+// alternativeNames lists one body's alternatives as that body spells them,
+// for a diagnostic. Nil when the body does not reach the union.
+func alternativeNames(s *Schema) []string {
+	if s == nil || s.OneOf == nil {
+		return nil
+	}
+	names := make([]string, 0, len(s.OneOf.Variants))
+	for _, variant := range s.OneOf.Variants {
+		names = append(names, variant.TFName)
+	}
+	return sortedUniqueStrings(names)
+}
+
+// cloneDiscriminator deep-copies a union's discriminator so the merged spec
+// does not share a Mapping with the body it was preferred from.
+func cloneDiscriminator(d *OneOfDiscriminator) *OneOfDiscriminator {
+	if d == nil {
+		return nil
+	}
+	out := *d
+	if d.Mapping != nil {
+		out.Mapping = make(map[string]string, len(d.Mapping))
+		for key, value := range d.Mapping {
+			out.Mapping[key] = value
+		}
+	}
+	return &out
 }

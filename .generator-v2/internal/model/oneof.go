@@ -99,3 +99,55 @@ func ValidateOneOfVariantNames(path string, variants []OneOfVariant) error {
 	sort.Strings(duplicates)
 	return &OneOfVariantNameCollisionError{Path: path, Name: duplicates[0]}
 }
+
+// oneOfRoleSuffix is one CRUD-role marker the Datadog v2 API appends to a
+// component name, in both the spellings a name can arrive in: PascalCase for
+// an OpenAPI component, snake_case for a Terraform variant block.
+type oneOfRoleSuffix struct{ pascal, snake string }
+
+var oneOfRoleSuffixes = []oneOfRoleSuffix{
+	{"Response", "_response"},
+	{"Request", "_request"},
+	{"Update", "_update"},
+	{"Create", "_create"},
+}
+
+// StripOneOfRoleSuffix removes the trailing run of CRUD-role markers from an
+// OpenAPI-derived union or alternative name, accepting either the PascalCase
+// spelling of a component ("IntegrationAccountBasicAuthRequest") or the
+// snake_case spelling of a Terraform variant block
+// ("integration_account_basic_auth_request"), and returning the same casing it
+// was given.
+//
+// It exists because one logical union is up to three OpenAPI components — the
+// Create body's, the Update body's and the Read response's — and a resource's
+// merged schema has to correlate them and then expose exactly one public name
+// for the set. Which body won the merge must not be visible in the Terraform
+// schema (FR-012e, T099c).
+//
+// The run is stripped rather than a single suffix because the markers compose:
+// downtime spells one alternative "DowntimeScheduleRecurrencesCreateRequest",
+// "…RecurrencesUpdateRequest" and "…RecurrencesResponse", which only reduce to
+// a common stem once both markers are gone. Stripping stops at whatever it
+// cannot remove, so a component actually named "Request" keeps its name.
+//
+// Stripping is lossy by construction — an alternative legitimately named
+// "…Update" reduces the same way — which is why mergeOneOf reaches for it only
+// after the bodies have failed to agree on a name by themselves.
+func StripOneOfRoleSuffix(name string) string {
+	for stripped := true; stripped; {
+		stripped = false
+		for _, suffix := range oneOfRoleSuffixes {
+			for _, candidate := range []string{suffix.pascal, suffix.snake} {
+				if trimmed, ok := strings.CutSuffix(name, candidate); ok && trimmed != "" {
+					name, stripped = trimmed, true
+					break
+				}
+			}
+			if stripped {
+				break
+			}
+		}
+	}
+	return name
+}

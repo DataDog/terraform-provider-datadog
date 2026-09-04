@@ -319,6 +319,17 @@ func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .GoNa
 		{{ .Target }}.Set{{ .GoField }}({{ .Collection.ConvertVar }})
 	}
 {{- end }}
+{{- else if .OneOf }}
+	if {{ .NullCheck }} {
+{{ template "requestOneOfValue" .OneOf }}
+		{{ .Target }}.Set{{ .GoField }}({{ .OneOf.Var }})
+	}{{ if .Required }} else {
+		response.Diagnostics.AddError(
+			{{ printf "Invalid %s" .OneOf.TFName | printf "%q" }},
+			fmt.Sprintf({{ printf "%q" .OneOf.SelectionMessage }}, 0),
+		)
+		return
+	}{{ end }}
 {{- else if .ParsedVar }}
 {{- if .Required }}
 	{{ .ParsedVar }}, err := {{ .ParseCall }}
@@ -373,4 +384,58 @@ func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .GoNa
 		{{ .Collection.ConvertVar }} = append({{ .Collection.ConvertVar }}, *{{ .Collection.ElemVar }})
 	}
 {{- end }}
+{{- end -}}
+
+{{/*
+  requestOneOfValue leaves .Var holding the SDK oneOf wrapper a union field's
+  own Set<Field> call takes. It renders inside the caller's
+  "if <envelope> != nil" block, so both locals it declares are scoped to the one
+  envelope and every variant read is already past the envelope's own nil check.
+
+  Every variant block is inspected and the selections counted, then exactly one
+  is required — the request-side mirror of renderOneOf's match counting, and
+  deliberately not the SDK's own behaviour: MarshalJSON serializes the first
+  non-nil member, so a configuration that selected two branches would silently
+  send one of them. The check runs before the SDK call, so an invalid selection
+  costs no request (FR-012b). Absence of the envelope itself is the caller's
+  business: permitted for an optional or nullable union, rejected with the same
+  message and a count of zero for a required one.
+
+  An object alternative builds its member with New<Member>WithDefaults() and
+  populates it through the ordinary requestField partial, narrowed to what this
+  role's own alternative declares. A value-wrapped one has no member to build:
+  the SDK member is the scalar itself, so the block's single "value" child is
+  converted (parsed first where the format demands it) and its address taken.
+*/}}
+{{- define "requestOneOfValue" -}}
+	var {{ .Var }} {{ .SDKType }}
+	{{ .MatchVar }} := 0
+{{- range .Variants }}
+	if {{ .ModelExpr }} != nil {
+{{- if .Value }}
+{{- if .Value.ParsedVar }}
+		{{ .Value.ParsedVar }}, err := {{ .Value.ParseCall }}
+		if err != nil {
+			response.Diagnostics.AddError({{ printf "Invalid %s" .Value.TFName | printf "%q" }}, err.Error())
+			return
+		}
+{{- end }}
+		{{ .ElemVar }} := {{ .Value.ValueExpr }}
+{{- else }}
+		{{ .ElemVar }} := {{ .Constructor }}
+{{- range .Fields }}
+{{ template "requestField" . }}
+{{- end }}
+{{- end }}
+		{{ $.Var }} = {{ .WrapCall }}
+		{{ $.MatchVar }}++
+	}
+{{- end }}
+	if {{ .MatchVar }} != 1 {
+		response.Diagnostics.AddError(
+			{{ printf "Invalid %s" .TFName | printf "%q" }},
+			fmt.Sprintf({{ printf "%q" .SelectionMessage }}, {{ .MatchVar }}),
+		)
+		return
+	}
 {{- end -}}

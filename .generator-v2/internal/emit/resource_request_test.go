@@ -92,10 +92,68 @@ var _ = Describe("BuildResourceView request mapping", func() {
 		}
 	})
 
-	It("fails a request-settable oneOf with a diagnostic naming it, distinct from the generic unsupported-shape message", func() {
+	It("constructs each role's own component, not whichever one the merge preferred", func() {
 		op := widgetResourceOperation()
-		attributes := op.RequestSchema.Properties["data"].Properties["attributes"]
-		attributes.Properties["auth"] = oneOfSchemaForTest()
+		// The Read response is preferred for RefName and the Create body for
+		// RequestRefName, so a merged-tree name can only ever be one of the two
+		// request components. Give the enum and the list element role-specific
+		// spellings too, alongside the nested objects the fixture already
+		// spells differently, and every one of them has to come from the role's
+		// own schema (T099a, closing the half T134 deferred).
+		attributesOf := func(body *model.Schema) *model.Schema {
+			return body.Properties["data"].Properties["attributes"]
+		}
+		group := op.ResolvedGroup
+		for _, side := range []struct {
+			body    *model.Schema
+			enum    string
+			element string
+		}{
+			{group.Create.RequestSchema, "WidgetPriorityCreate", "WidgetTargetCreateRequest"},
+			{group.Update.RequestSchema, "WidgetPriorityUpdate", "WidgetTargetUpdateRequest"},
+			{group.Read.ResponseSchema, "WidgetPriorityResponse", "WidgetTargetResponse"},
+		} {
+			properties := attributesOf(side.body).Properties
+			properties["priority"].RefName = side.enum
+			properties["targets"] = arrSchema(&model.Schema{
+				Kind: model.SchemaKindObject, RefName: side.element,
+				Properties: map[string]*model.Schema{"host": {Kind: model.SchemaKindPrimitive, Type: "string"}},
+			})
+		}
+
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		view, err := BuildResourceView(art)
+		Expect(err).NotTo(HaveOccurred())
+
+		By("a nested object")
+		Expect(requestFieldByGoField(view.Create.Envelope.Fields, "Settings").Nested.Constructor).To(
+			Equal("datadogV2.NewWidgetSettingsCreateRequestWithDefaults()"))
+		Expect(requestFieldByGoField(view.Update.Envelope.Fields, "Settings").Nested.Constructor).To(
+			Equal("datadogV2.NewWidgetSettingsUpdateRequestWithDefaults()"))
+
+		By("an enum leaf")
+		Expect(requestFieldByGoField(view.Create.Envelope.Fields, "Priority").ValueExpr).To(
+			Equal("datadogV2.WidgetPriorityCreate(state.Priority.ValueString())"))
+		Expect(requestFieldByGoField(view.Update.Envelope.Fields, "Priority").ValueExpr).To(
+			Equal("datadogV2.WidgetPriorityUpdate(state.Priority.ValueString())"))
+
+		By("a list element")
+		Expect(requestFieldByGoField(view.Create.Envelope.Fields, "Targets").Collection.ElementGoType).To(
+			Equal("datadogV2.WidgetTargetCreateRequest"))
+		Expect(requestFieldByGoField(view.Update.Envelope.Fields, "Targets").Collection.ElementGoType).To(
+			Equal("datadogV2.WidgetTargetUpdateRequest"))
+	})
+
+	It("fails a oneOf whose SDK wrapper the binding pass never resolved, rather than emitting an unnamed type", func() {
+		op := widgetResourceOperation()
+		for _, body := range []*model.Schema{
+			op.ResolvedGroup.Create.RequestSchema,
+			op.ResolvedGroup.Update.RequestSchema,
+			op.ResolvedGroup.Read.ResponseSchema,
+		} {
+			body.Properties["data"].Properties["attributes"].Properties["auth"] = oneOfSchemaForTest()
+		}
 
 		art, err := model.BuildArtifact(op)
 		Expect(err).NotTo(HaveOccurred())
@@ -108,6 +166,7 @@ var _ = Describe("BuildResourceView request mapping", func() {
 		for _, n := range unsupported.Nodes {
 			if strings.Contains(n.Path, "auth") {
 				Expect(n.Reason).To(ContainSubstring("oneOf"))
+				Expect(n.Reason).To(ContainSubstring("SDK wrapper type"))
 				found = true
 			}
 		}

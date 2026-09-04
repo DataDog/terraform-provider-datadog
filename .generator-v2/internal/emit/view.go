@@ -694,6 +694,89 @@ type RequestFieldView struct {
 	// element at a time (see RequestCollectionView). Nil for a leaf or a
 	// single-object field.
 	Collection *RequestCollectionView
+
+	// OneOf is set for a oneOf field: the selected variant is expanded into
+	// this role's own SDK wrapper before the setter takes it. Nil for every
+	// other shape.
+	OneOf *RequestOneOfView
+}
+
+// RequestOneOfView is the recipe for turning a Terraform oneOf envelope back
+// into the Datadog go-sdk wrapper one role's request body declares.
+//
+// It is the request-side mirror of OneOfAssignment: where the response mapper
+// counts the wrapper members that came back populated, this counts the variant
+// blocks the practitioner configured, and both refuse to proceed on anything
+// but exactly one. Selection is deliberately not left to the SDK, whose
+// MarshalJSON serializes the first non-nil member: a configuration that
+// selected two branches would silently send one of them (FR-012b, FR-012c).
+//
+// Every SDK identity here — the wrapper type, and each variant's member
+// constructor — is this *role's* own, read off the role's request schema
+// rather than off the merged tree. The three bodies declare three distinct
+// wrappers for one logical union (…AuthenticationRequest, …Update, …Response),
+// and the merged envelope carries the Read response's (T099a).
+type RequestOneOfView struct {
+	// TFName is the envelope attribute's Terraform name, the diagnostic's summary.
+	TFName string
+	// SDKType is the package-qualified wrapper this role's setter takes, e.g.
+	// "datadogV2.ElasticCloudIntegrationAccountAuthenticationRequest".
+	SDKType string
+	// Var is the local holding the constructed wrapper, and MatchVar the
+	// selection counter guarding it. Both are declared inside the enclosing
+	// RequestFieldView.NullCheck block, so they are scoped to one envelope.
+	Var      string
+	MatchVar string
+	// SelectionMessage is the detail a failed selection reports, with a single
+	// %d for the count, e.g. `data.attributes.auth: exactly one of "basic" or
+	// "token" must be set, got 2`. It is assembled here, and rendered as a
+	// quoted Go literal, so no variant name or schema path can escape the
+	// string it lands in.
+	SelectionMessage string
+	// Variants are the alternatives in envelope order.
+	Variants []RequestOneOfVariantView
+}
+
+// RequestOneOfVariantView is one alternative's expansion: how to tell it was
+// selected, how to build its SDK member, and how to wrap that member in the
+// union.
+type RequestOneOfVariantView struct {
+	// TFName is the variant block's Terraform name.
+	TFName string
+	// ModelExpr is the envelope model's pointer to this variant's block, e.g.
+	// "state.Authentication.BasicAuth". Non-nil selects the variant — the same
+	// test a nested object field uses, for the same reason (see
+	// RequestNestedView.ModelExpr).
+	ModelExpr string
+	// ElemVar is the local holding the SDK member before it is wrapped.
+	ElemVar string
+	// Constructor builds an object alternative's member, e.g.
+	// "datadogV2.NewIntegrationAccountBasicAuthRequestWithDefaults()". Empty
+	// for a value-wrapped alternative, whose member is the value itself.
+	Constructor string
+	// Fields populate an object alternative's member, narrowed to what this
+	// role's own alternative declares. Empty for a value-wrapped one.
+	Fields []RequestFieldView
+	// Value is set for a value-wrapped alternative: the SDK member *is* the
+	// scalar, so it is converted straight out of the block's single "value"
+	// child rather than constructed.
+	Value *RequestOneOfValueView
+	// WrapCall is the SDK convenience constructor applied to ElemVar, e.g.
+	// "datadogV2.IntegrationAccountBasicAuthRequestAsElasticCloudIntegrationAccountAuthenticationRequest(basicAuthValue)".
+	WrapCall string
+}
+
+// RequestOneOfValueView converts a value-wrapped alternative's single "value"
+// child into the scalar the SDK member is. It carries the same
+// ParsedVar/ParseCall pair a leaf RequestFieldView does, for the same reason: a
+// date-time or uuid value has to survive a fallible parse before it can be
+// handed to the SDK.
+type RequestOneOfValueView struct {
+	ValueExpr string
+	ParsedVar string
+	ParseCall string
+	// TFName names the value in a parse-failure diagnostic.
+	TFName string
 }
 
 // RequestNestedView is one nested object a resource's request body constructs

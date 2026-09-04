@@ -853,11 +853,14 @@ type SDKCall struct {
 	// field, so setting a create-only field on an update body does not compile
 	// (T134: OktaAccountUpdateRequestAttributes has no SetName).
 	//
-	// It carries presence only. The per-role *component names* a nested object
-	// or a oneOf must be constructed from are deliberately not read off it:
-	// those need a Create/Update/Read triple of SDK bindings per node, which is
-	// T099's, and Schema.RequestRefName remains the (Create-first) name emit
-	// uses until that lands.
+	// It carries the per-role *names* too, not just presence (T099). A nested
+	// object's component, a list element's, an enum leaf's SDK type and a
+	// oneOf's wrapper plus each alternative's `<Member>As<Union>` constructor
+	// are all read off this node rather than off the merged tree, because the
+	// merged tree spells one name where the SDK declares two or three
+	// (…SettingsRequest vs …SettingsUpdate; …AuthenticationRequest vs …Update
+	// vs …Response). sdkbind annotates request roots as well as response ones,
+	// so the bindings are already here; no per-node triple was needed.
 	RequestAttributesSchema *Schema
 	// Arguments are the required positional SDK arguments in call order.
 	Arguments []SDKArgument

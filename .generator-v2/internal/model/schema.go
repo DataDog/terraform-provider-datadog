@@ -169,8 +169,10 @@ func (b *treeBuilder) build(s *Schema, root string) (*AttributeTree, []Diagnosti
 		tree.Attributes = attrs
 		return tree, nil, nil
 	}
-	// A body root is always present, so it is required when it is input at all.
-	attr, err := b.attribute(s, root, nestBlock, true)
+	// A body root is always present, so it is required when it is input at
+	// all — except a union, which states its own optionality (a root has no
+	// enclosing object whose required list could say otherwise).
+	attr, err := b.attribute(s, root, nestBlock, !rootUnionOptional(s))
 	if err != nil {
 		return nil, nil, err
 	}
@@ -371,10 +373,19 @@ func (b *treeBuilder) envelope(s *Schema, path string, mode nestingMode, require
 		Children:    variants,
 		OneOf:       envelope,
 	}
-	// The envelope is required only when its containing field demands a value and
-	// the union itself is neither optional nor nullable; a nullable union is
-	// represented by an absent envelope rather than a null variant.
-	if err := b.applyPresence(attr, s, required && !envelope.Optional); err != nil {
+	// The envelope is required only when its containing field demands a value
+	// and the union may not be absent; a nullable union is represented by an
+	// absent envelope rather than a null variant.
+	//
+	// Deliberately keyed on Nullable alone. OneOf.Optional would be the wrong
+	// second term: on a single-direction tree it restates `required` (the
+	// parser sets it from the same enclosing required list), and on a resource
+	// tree mergeOneOf has already OR-ed it across three bodies into the
+	// different fact "some body may omit this" — so reading it would demote
+	// every union the Read response happens to leave out of its own required
+	// list. The one place Optional genuinely carries something `required` does
+	// not is a body root, and build consults it there (see rootUnionOptional).
+	if err := b.applyPresence(attr, s, required && !s.OneOf.Nullable); err != nil {
 		return nil, err
 	}
 	return attr, nil
@@ -446,9 +457,10 @@ func (b *treeBuilder) oneOfVariants(s *Schema, basePath string, mode nestingMode
 // alternative exposes its own fields; every other shape — scalar, list, map, or a
 // directly nested union — has no fields to expose, so it gets a single child named
 // "value" holding the alternative itself. union is the schema of the oneOf node
-// itself, carrying the Provenance the block's own presence is derived from —
-// no alternative carries its own, since a resource schema merge clones a
-// oneOf's content verbatim rather than walking it.
+// itself, carrying the Provenance the block's own presence is derived from: a
+// variant block is a choice, so its presence is the union's, not its own. Its
+// *children* do carry their own, since mergeOneOf walks each correlated
+// alternative through mergeNode like any other subtree (T099b).
 func (b *treeBuilder) oneOfVariant(
 	union *Schema,
 	envelope *OneOfEnvelope,
@@ -648,3 +660,11 @@ func singleNestedForm(mode nestingMode) string {
 // Deriving it from the envelope's name (rather than from the use site) is what
 // lets two uses of one reusable union share a single generated model.
 func oneOfModelName(name string) string { return name + "Model" }
+
+// rootUnionOptional reports whether a schema standing at a body root is a
+// union its own OpenAPI field left optional. It is the one presence fact a
+// root cannot get from an enclosing object's required list, because it has no
+// enclosing object.
+func rootUnionOptional(s *Schema) bool {
+	return s.Kind == SchemaKindOneOf && s.OneOf != nil && (s.OneOf.Optional || s.OneOf.Nullable)
+}

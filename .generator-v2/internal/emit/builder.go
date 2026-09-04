@@ -1707,7 +1707,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	// bodies (FR-034b), so it names fields a given body may not declare — and
 	// the SDK generates Set<Field> only on the request type that declares it,
 	// so a create-only field set on an update body does not compile (T134).
-	createFields, requestUUID, requestTime := buildRequestFields(
+	createFields, requestImps := buildRequestFields(
 		env.leaves, lc.Create.RequestAttributesSchema, "state", requestAttributesVar, primary.GoPackage, &b.unsupported)
 	createArgs, createUUID, createStrconv := buildArgumentViews(lc.Create, &b.unsupported)
 	readArgs, readUUID, readStrconv := buildArgumentViews(lc.Read, &b.unsupported)
@@ -1727,15 +1727,14 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		// map is found by both; the artifact should name it once, and its count
 		// should be a count of problems rather than of walks.
 		var updateUnsupported []UnsupportedNode
-		updateFields, updateFieldsUUID, updateFieldsTime := buildRequestFields(
+		updateFields, updateImps := buildRequestFields(
 			env.leaves, lc.Update.RequestAttributesSchema, "state", requestAttributesVar, primary.GoPackage, &updateUnsupported)
 		for _, n := range updateUnsupported {
 			if !slices.Contains(b.unsupported, n) {
 				b.unsupported = append(b.unsupported, n)
 			}
 		}
-		requestUUID = requestUUID || updateFieldsUUID
-		requestTime = requestTime || updateFieldsTime
+		requestImps = requestImps.or(updateImps)
 		updateView = CRUDCallView{
 			Method: lc.Update.GoMethod, GoRequestType: lc.Update.GoRequestType,
 			GoResponseType: lc.Update.GoResponseType, Arguments: updateArgs,
@@ -1813,14 +1812,19 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 			Assignments: assignments,
 			Lists:       recordLists,
 		},
-		UsesFmt:              len(b.oneOfRenders) > 0,
+		// fmt is reached from a oneOf's ambiguous-match diagnostic on the
+		// response side and from its exactly-one selection check on the
+		// request side. A union only the request bodies carry never reaches
+		// oneOfRenders — the state walk filters by response — so the request
+		// walk's own answer is needed too.
+		UsesFmt:              len(b.oneOfRenders) > 0 || requestImps.fmt,
 		UsesValidators:       b.usesValidators,
 		UsesPlanModifiers:    len(planModifierPkgs) > 0,
 		PlanModifierPackages: planModifierPkgs,
 		Import:               buildImportView(pathAttrs),
-		UsesUUID:             createUUID || readUUID || updateUUID || deleteUUID || requestUUID,
+		UsesUUID:             createUUID || readUUID || updateUUID || deleteUUID || requestImps.uuid,
 		UsesStrconv:          createStrconv || readStrconv || updateStrconv || deleteStrconv,
-		UsesTime:             requestTime,
+		UsesTime:             requestImps.time,
 		Dropped:              b.dropped,
 	}, nil
 }
@@ -2039,7 +2043,20 @@ func quoteAll(values []string) []string {
 // declare is different in kind and is skipped silently, before any of those
 // checks: a create-only field is the ordinary shape of a PATCH body, not a gap
 // in the generator.
-func buildRequestFields(attrs []*model.Attribute, role *model.Schema, stateExpr, target, sdkPackage string, unsupported *[]UnsupportedNode) (fields []RequestFieldView, usesUUID, usesTime bool) {
+// requestImports records the imports one request subtree's generated code
+// needs. It is accumulated on the way out of the walk that builds the subtree,
+// never re-derived from the finished view: the branch that emits a time.Parse
+// or a fmt.Sprintf is the only one that knows it did, and a second traversal
+// would have to be kept in step with every future RequestFieldView shape by
+// hand — silently dropping an import, and so an artifact's compile, when it
+// was not.
+type requestImports struct{ uuid, time, fmt bool }
+
+func (i requestImports) or(other requestImports) requestImports {
+	return requestImports{i.uuid || other.uuid, i.time || other.time, i.fmt || other.fmt}
+}
+
+func buildRequestFields(attrs []*model.Attribute, role *model.Schema, stateExpr, target, sdkPackage string, unsupported *[]UnsupportedNode) (fields []RequestFieldView, imports requestImports) {
 	for _, a := range attrs {
 		if !a.Required && !a.Optional {
 			continue // Computed-only: not request-settable.
@@ -2053,21 +2070,23 @@ func buildRequestFields(attrs []*model.Attribute, role *model.Schema, stateExpr,
 		childState := stateExpr + "." + field
 
 		if a.OneOf != nil {
-			*unsupported = append(*unsupported, UnsupportedNode{
-				Path:   a.Path,
-				Reason: "a oneOf union is not yet settable on a resource request",
-			})
+			rf, oneOfImports, ok := buildOneOfRequestField(a, roleChildSchema, tfName, field, childState, target, sdkPackage, unsupported)
+			if !ok {
+				continue
+			}
+			fields = append(fields, rf)
+			imports = imports.or(oneOfImports)
 			continue
 		}
 
 		switch a.TfType {
 		case "schema.SingleNestedBlock", "schema.SingleNestedAttribute":
-			rf, nestedUUID, nestedTime, ok := buildNestedRequestField(a, roleChildSchema, field, childState, target, sdkPackage, unsupported)
+			rf, nested, ok := buildNestedRequestField(a, roleChildSchema, field, childState, target, sdkPackage, unsupported)
 			if !ok {
 				continue
 			}
 			fields = append(fields, rf)
-			usesUUID, usesTime = usesUUID || nestedUUID, usesTime || nestedTime
+			imports = imports.or(nested)
 			continue
 
 		case "schema.ListAttribute", "schema.MapAttribute":
@@ -2080,12 +2099,12 @@ func buildRequestFields(attrs []*model.Attribute, role *model.Schema, stateExpr,
 			continue
 
 		case "schema.ListNestedBlock", "schema.ListNestedAttribute":
-			rf, nestedUUID, nestedTime, ok := buildObjectCollectionField(a, roleChildSchema, tfName, field, childState, target, sdkPackage, unsupported)
+			rf, element, ok := buildObjectCollectionField(a, roleChildSchema, tfName, field, childState, target, sdkPackage, unsupported)
 			if !ok {
 				continue
 			}
 			fields = append(fields, rf)
-			usesUUID, usesTime = usesUUID || nestedUUID, usesTime || nestedTime
+			imports = imports.or(element)
 			continue
 
 			// schema.MapNestedAttribute (a map of objects) has no case here: the
@@ -2097,7 +2116,7 @@ func buildRequestFields(attrs []*model.Attribute, role *model.Schema, stateExpr,
 			// never fire on its own and would only ever duplicate that one.
 		}
 
-		expr, parsedVar, parseCall, reason := requestValueExpr(a, childState, field, sdkPackage)
+		expr, parsedVar, parseCall, reason := requestValueExpr(a, roleChildSchema, childState, field, sdkPackage)
 		if reason != "" {
 			*unsupported = append(*unsupported, UnsupportedNode{Path: a.Path, Reason: reason})
 			continue
@@ -2110,9 +2129,10 @@ func buildRequestFields(attrs []*model.Attribute, role *model.Schema, stateExpr,
 			rf.NullCheck = notNullOrUnknown(childState)
 		}
 		fields = append(fields, rf)
-		usesUUID, usesTime = usesUUID || strings.HasPrefix(parseCall, "uuid."), usesTime || strings.HasPrefix(parseCall, "time.")
+		imports.uuid = imports.uuid || strings.HasPrefix(parseCall, "uuid.")
+		imports.time = imports.time || strings.HasPrefix(parseCall, "time.")
 	}
-	return fields, usesUUID, usesTime
+	return fields, imports
 }
 
 // roleChild resolves one role body's own schema node for attribute a at the
@@ -2151,26 +2171,28 @@ func roleChild(role *model.Schema, a *model.Attribute) (child *model.Schema, dec
 // resolves relative to its immediate parent rather than the top-level state.
 // target is where the constructed value is ultimately set, exactly as in
 // buildRequestFields, and role is this object's own node in the calling role's
-// request schema, which its children are narrowed against. usesUUID/usesTime
+// request schema — which both names the component to construct (see
+// roleRequestRefName) and narrows its children. usesUUID/usesTime
 // are its subtree's own parse-import needs, returned rather than recovered by
 // the caller so one aggregation serves both this branch and the plain-leaf one.
-func buildNestedRequestField(a *model.Attribute, role *model.Schema, field, modelExpr, target, sdkPackage string, unsupported *[]UnsupportedNode) (rf RequestFieldView, usesUUID, usesTime, ok bool) {
-	if a.RequestModelRefName == "" {
+func buildNestedRequestField(a *model.Attribute, role *model.Schema, field, modelExpr, target, sdkPackage string, unsupported *[]UnsupportedNode) (rf RequestFieldView, imports requestImports, ok bool) {
+	refName := roleRequestRefName(a, role)
+	if refName == "" {
 		*unsupported = append(*unsupported, UnsupportedNode{
 			Path: a.Path,
 			Reason: "nested object has no named request-side SDK type (its schema was never reached " +
 				"through a $ref component in the Create or Update body)",
 		})
-		return RequestFieldView{}, false, false, false
+		return RequestFieldView{}, requestImports{}, false
 	}
 	nestedVar := lowerFirst(field) + "Value"
-	childFields, usesUUID, usesTime := buildRequestFields(a.Children, role, modelExpr, nestedVar, sdkPackage, unsupported)
+	childFields, imports := buildRequestFields(a.Children, role, modelExpr, nestedVar, sdkPackage, unsupported)
 	rf = RequestFieldView{
 		GoField:  field,
 		Target:   target,
 		Required: a.Required,
 		Nested: &RequestNestedView{
-			Constructor: sdkPackage + ".New" + a.RequestModelRefName + "WithDefaults()",
+			Constructor: sdkPackage + ".New" + refName + "WithDefaults()",
 			Var:         nestedVar,
 			ModelExpr:   modelExpr,
 			Fields:      childFields,
@@ -2179,7 +2201,7 @@ func buildNestedRequestField(a *model.Attribute, role *model.Schema, field, mode
 	if !a.Required {
 		rf.NullCheck = modelExpr + " != nil"
 	}
-	return rf, usesUUID, usesTime, true
+	return rf, imports, true
 }
 
 // buildPrimitiveCollectionField derives a primitive-terminal list or map
@@ -2275,29 +2297,29 @@ func notNullOrUnknown(expr string) string {
 // *Model pointer (see buildNestedRequestField) — so, unlike the primitive
 // case, no ElementsAs conversion applies here. Each already-decoded element
 // instead becomes its own request value, built one at a time via
-// New<RequestModelRefName>WithDefaults() and appended to a native Go slice
-// before the parent's setter is called, mirroring the response side's
-// renderList object branch (data_source_common.go.tmpl) in reverse. Element
-// type resolution needs no work here: BuildResourceTree already stamps
-// RequestModelRefName from the element's own component (model/schema.go),
-// reaching through the array exactly as ModelRefName does. role is this list's
-// own node in the calling role's request schema; the element's fields are
-// narrowed against role.Items, which elementRole reaches through. usesUUID/usesTime
-// are the element subtree's own parse-import needs, aggregated the same way
-// buildNestedRequestField's are.
-func buildObjectCollectionField(a *model.Attribute, role *model.Schema, tfName, field, childState, target, sdkPackage string, unsupported *[]UnsupportedNode) (rf RequestFieldView, usesUUID, usesTime, ok bool) {
-	if a.RequestModelRefName == "" {
+// New<Element>WithDefaults() and appended to a native Go slice before the
+// parent's setter is called, mirroring the response side's renderList object
+// branch (data_source_common.go.tmpl) in reverse. role is the *element's* own
+// node in the calling role's request schema — roleChild reaches through the
+// array before handing it over, exactly as BuildResourceTree reaches through
+// it when stamping RequestModelRefName — so it both names the element
+// component (see roleRequestRefName) and narrows the element's fields.
+// usesUUID/usesTime are the element subtree's own parse-import needs,
+// aggregated the same way buildNestedRequestField's are.
+func buildObjectCollectionField(a *model.Attribute, role *model.Schema, tfName, field, childState, target, sdkPackage string, unsupported *[]UnsupportedNode) (rf RequestFieldView, imports requestImports, ok bool) {
+	refName := roleRequestRefName(a, role)
+	if refName == "" {
 		*unsupported = append(*unsupported, UnsupportedNode{
 			Path: elementPath(a),
 			Reason: "list element has no named request-side SDK type (its schema was never reached " +
 				"through a $ref component in the Create or Update body)",
 		})
-		return RequestFieldView{}, false, false, false
+		return RequestFieldView{}, requestImports{}, false
 	}
 
 	base := leafVar(tfName)
 	loopVar, elemVar := base+"Item", base+"Element"
-	childFields, usesUUID, usesTime := buildRequestFields(a.Children, role, loopVar, elemVar, sdkPackage, unsupported)
+	childFields, imports := buildRequestFields(a.Children, role, loopVar, elemVar, sdkPackage, unsupported)
 	rf = RequestFieldView{
 		GoField:  field,
 		Target:   target,
@@ -2308,15 +2330,15 @@ func buildObjectCollectionField(a *model.Attribute, role *model.Schema, tfName, 
 			RangeExpr:     childState,
 			LoopVar:       loopVar,
 			ElemVar:       elemVar,
-			Constructor:   sdkPackage + ".New" + a.RequestModelRefName + "WithDefaults()",
-			ElementGoType: sdkPackage + "." + a.RequestModelRefName,
+			Constructor:   sdkPackage + ".New" + refName + "WithDefaults()",
+			ElementGoType: sdkPackage + "." + refName,
 			Fields:        childFields,
 		},
 	}
 	if !a.Required {
 		rf.NullCheck = childState + " != nil"
 	}
-	return rf, usesUUID, usesTime, true
+	return rf, imports, true
 }
 
 // requestValueExpr returns the unwrapped Go value expression a leaf's
@@ -2328,12 +2350,13 @@ func buildObjectCollectionField(a *model.Attribute, role *model.Schema, tfName, 
 // with sdkPackage since that type lives in the SDK, not the generated
 // package. reason is non-empty for anything not yet supported on the request
 // side, naming why.
-func requestValueExpr(a *model.Attribute, stateExpr, field, sdkPackage string) (expr, parsedVar, parseCall, reason string) {
+func requestValueExpr(a *model.Attribute, role *model.Schema, stateExpr, field, sdkPackage string) (expr, parsedVar, parseCall, reason string) {
 	if a.IsEnum {
-		if a.RequestModelRefName == "" {
+		refName := roleRequestRefName(a, role)
+		if refName == "" {
 			return "", "", "", "enum leaf has no named request-side SDK type (its schema was never reached through a $ref component)"
 		}
-		return sdkPackage + "." + a.RequestModelRefName + "(" + stateExpr + ".ValueString())", "", "", ""
+		return sdkPackage + "." + refName + "(" + stateExpr + ".ValueString())", "", "", ""
 	}
 
 	switch a.GoType {
@@ -2376,4 +2399,188 @@ func requestValueExpr(a *model.Attribute, stateExpr, field, sdkPackage string) (
 	default:
 		return "", "", "", fmt.Sprintf("request-settable field of GoType %q is not yet supported on a resource request", a.GoType)
 	}
+}
+
+// buildOneOfRequestField derives one union field's RequestFieldView: how the
+// configured variant block becomes the SDK oneOf wrapper this role's setter
+// takes (T099).
+//
+// role is this union's own node in the *calling role's* request schema, and it
+// is the source of every SDK identity here — see RequestOneOfView for why the
+// merged tree cannot supply them. The merged tree still supplies the Terraform
+// side: which blocks exist, what they are called, and what fields they hold.
+// The two are correlated on the name mergeOneOf published, never on position.
+func buildOneOfRequestField(
+	a *model.Attribute,
+	role *model.Schema,
+	tfName, field, modelExpr, target, sdkPackage string,
+	unsupported *[]UnsupportedNode,
+) (rf RequestFieldView, imports requestImports, ok bool) {
+	env := a.OneOf
+	fail := func(reason string) (RequestFieldView, requestImports, bool) {
+		*unsupported = append(*unsupported, UnsupportedNode{Path: env.Path, Reason: reason})
+		return RequestFieldView{}, requestImports{}, false
+	}
+
+	if isCollectionForm(a.TfType) {
+		return fail("a collection whose element is a oneOf union is not yet settable on a resource request; " +
+			"the union itself is supported at its own position")
+	}
+	if role == nil || role.OneOf == nil {
+		return fail("this role's own request body does not describe a oneOf union here, so the SDK oneOf " +
+			"wrapper to build cannot be resolved")
+	}
+	if role.OneOf.SDKType == "" {
+		return fail("this role's oneOf union has no resolved SDK wrapper type (internal/sdkbind left it empty)")
+	}
+
+	roleVariants := make(map[string]model.OneOfVariant, len(role.OneOf.Variants))
+	for _, v := range role.OneOf.Variants {
+		roleVariants[model.StripOneOfRoleSuffix(v.TFName)] = v
+	}
+
+	view := &RequestOneOfView{
+		TFName:   tfName,
+		SDKType:  sdkPackage + "." + role.OneOf.SDKType,
+		Var:      lowerFirst(field) + "Union",
+		MatchVar: lowerFirst(field) + "Matches",
+		Variants: make([]RequestOneOfVariantView, 0, len(env.Variants)),
+	}
+	names := make([]string, 0, len(env.Variants))
+
+	for _, v := range env.Variants {
+		roleVariant, declared := roleVariants[v.TFName]
+		if !declared {
+			// mergeOneOf refuses to correlate bodies whose alternative sets
+			// differ, so this cannot come from a specification; reaching it
+			// means the merged envelope and the role schema disagree, and
+			// dropping the branch would silently discard a configurable one.
+			return fail(fmt.Sprintf("variant %q is in the merged schema but not in this role's own union", v.TFName))
+		}
+		if roleVariant.SDKConstructor == "" {
+			return fail(fmt.Sprintf("variant %q has no SDK convenience constructor for this role's wrapper", v.TFName))
+		}
+		variant, variantImports, reason := oneOfRequestVariant(v, roleVariant, modelExpr, sdkPackage, unsupported)
+		if reason != "" {
+			return fail(reason)
+		}
+		view.Variants = append(view.Variants, variant)
+		imports = imports.or(variantImports)
+		names = append(names, v.TFName)
+	}
+	view.SelectionMessage = fmt.Sprintf(
+		"%s: exactly one of %s must be set, got %%d", env.Path, strings.Join(quoteAll(names), " or "))
+
+	// The envelope pointer is guarded even when the union is required: an
+	// absent block is reported, never dereferenced. That is the same guard a
+	// nested object renders, so it travels on the same field.
+	rf = RequestFieldView{
+		GoField:   field,
+		Target:    target,
+		Required:  a.Required,
+		NullCheck: modelExpr + " != nil",
+		OneOf:     view,
+	}
+	// The selection diagnostic is a fmt.Sprintf.
+	return rf, imports.or(requestImports{fmt: true}), true
+}
+
+// oneOfRequestVariant derives one alternative's expansion. v is the merged
+// tree's projection (the Terraform blocks and their fields) and roleVariant
+// this role's own binding for the same alternative (its SDK member and
+// constructor); reason is non-empty for a shape the request path cannot build.
+func oneOfRequestVariant(
+	v model.OneOfEnvelopeVariant,
+	roleVariant model.OneOfVariant,
+	modelExpr, sdkPackage string,
+	unsupported *[]UnsupportedNode,
+) (RequestOneOfVariantView, requestImports, string) {
+	blockExpr := modelExpr + "." + v.GoField
+	elemVar := lowerFirst(v.GoField) + "Variant"
+	variant := RequestOneOfVariantView{TFName: v.TFName, ModelExpr: blockExpr, ElemVar: elemVar}
+	// The SDK takes an address for every member except a free-form object,
+	// which it emits as an already-nil-able bare map.
+	argument := elemVar
+	if !roleVariant.SDKPointer {
+		argument = "*" + elemVar
+	}
+
+	if !v.ValueWrapped {
+		variant.Constructor = sdkPackage + ".New" + roleVariant.SDKField + "WithDefaults()"
+		fields, imports := buildRequestFields(
+			v.Attribute.Children, roleVariant.Schema, blockExpr, elemVar, sdkPackage, unsupported)
+		variant.Fields = fields
+		variant.WrapCall = sdkPackage + "." + roleVariant.SDKConstructor + "(" + argument + ")"
+		return variant, imports, ""
+	}
+
+	// A value-wrapped alternative's SDK member *is* the value, so there is
+	// nothing to construct and nothing to set on: the single "value" child is
+	// converted and its address taken. The read path draws the same line for
+	// the same reason (see oneOfValueVariant) — a list or map alternative has
+	// no scalar to dereference.
+	if len(v.Attribute.Children) != 1 {
+		return variant, requestImports{}, fmt.Sprintf(
+			"variant %q is value-wrapped but has %d children, expected exactly one",
+			v.TFName, len(v.Attribute.Children))
+	}
+	value := v.Attribute.Children[0]
+	if !isLeafType(value.TfType) {
+		return variant, requestImports{}, fmt.Sprintf(
+			"variant %q wraps a %s, and the request path can only convert a scalar into an SDK oneOf member; "+
+				"give the alternative a named schema component so it becomes an object variant",
+			v.TFName, value.TfType)
+	}
+	valueField := model.SdkName(tfNameOf(value.Path))
+	expr, parsedVar, parseCall, reason := requestValueExpr(value, roleVariant.Schema, blockExpr+"."+valueField, valueField, sdkPackage)
+	if reason != "" {
+		return variant, requestImports{}, fmt.Sprintf("variant %q: %s", v.TFName, reason)
+	}
+	if !roleVariant.SDKPointer {
+		return variant, requestImports{}, fmt.Sprintf(
+			"variant %q is a scalar the SDK declares unpointered, which only a free-form object member is; "+
+				"the generator has no address to take", v.TFName)
+	}
+	// The member is the scalar itself, so the local holds a value and the
+	// constructor takes its address — never the "*elemVar" an object member's
+	// unpointered case would want.
+	variant.WrapCall = sdkPackage + "." + roleVariant.SDKConstructor + "(&" + elemVar + ")"
+	variant.Value = &RequestOneOfValueView{
+		ValueExpr: expr, ParsedVar: parsedVar, ParseCall: parseCall, TFName: tfNameOf(value.Path),
+	}
+	return variant, requestImports{
+		uuid: strings.HasPrefix(parseCall, "uuid."),
+		time: strings.HasPrefix(parseCall, "time."),
+	}, ""
+}
+
+// roleRequestRefName is the SDK component to construct at this node *for the
+// role being rendered*, and it answers roleChild's two outcomes differently.
+//
+// When roleChild resolved a node, that node's own RefName is the answer — even
+// when it is empty. An empty RefName is this body saying it declared the schema
+// inline, so the SDK generated no component to construct, and the caller's
+// "no named request-side SDK type" diagnostic is correct. Substituting the
+// merged name there would re-create the very miscompile this function exists to
+// prevent: Schema.RequestRefName is Create-first and Update-fallback (see
+// pickRequestRefName), so the merged tree spells one name where the SDK
+// declares two — …SettingsRequest for the POST and …SettingsUpdate for the
+// PATCH. Measured on the corpus, the one artifact the substitution kept alive
+// was the one it miscompiled, casting to a CampaignStatus its request setter
+// takes as a plain string.
+//
+// A nil node is the other outcome: roleChild reports "unknown" rather than
+// "absent" wherever it cannot line the two trees up at all — a caller that is
+// not narrowing, a level this generator cannot read as an object, an attribute
+// with no OpenAPI name of its own. There the merged name is the only name there
+// is.
+//
+// This is the same fact, and the same mechanism, as the per-role oneOf binding
+// (T099a); T134 landed the per-role *field set* on this seam and left the names
+// to here.
+func roleRequestRefName(a *model.Attribute, role *model.Schema) string {
+	if role != nil {
+		return role.RefName
+	}
+	return a.RequestModelRefName
 }
