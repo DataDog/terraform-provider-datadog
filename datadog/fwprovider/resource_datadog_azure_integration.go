@@ -4,10 +4,12 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
@@ -15,7 +17,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -28,6 +33,11 @@ var (
 )
 
 var integrationAzureMutex = sync.Mutex{}
+
+var integrationAzureDisplayNameValidator = stringvalidator.RegexMatches(
+	regexp.MustCompile(`\S`),
+	"display_name must contain at least one non-whitespace character",
+)
 
 type integrationAzureResource struct {
 	Api  *datadogV1.AzureIntegrationApi
@@ -49,6 +59,7 @@ type integrationAzureModel struct {
 	ResourceCollectionEnabled types.Bool                     `tfsdk:"resource_collection_enabled"`
 	CspmEnabled               types.Bool                     `tfsdk:"cspm_enabled"`
 	CustomMetricsEnabled      types.Bool                     `tfsdk:"custom_metrics_enabled"`
+	DisplayName               types.String                   `tfsdk:"display_name"`
 	HostFilters               types.String                   `tfsdk:"host_filters"`
 	TenantName                types.String                   `tfsdk:"tenant_name"`
 	MetricsEnabled            types.Bool                     `tfsdk:"metrics_enabled"`
@@ -91,6 +102,16 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 				Optional:    true,
 				Description: "Your Azure web application secret key. Required unless `secretless_auth_enabled` is set to `true`.",
 				Sensitive:   true,
+			},
+			"display_name": schema.StringAttribute{
+				Optional:    true,
+				Description: "The display name of the Azure app registration. This value is sent only when the integration is created. Changing it recreates the integration.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+				Validators: []validator.String{
+					integrationAzureDisplayNameValidator,
+				},
 			},
 			"tenant_name": schema.StringAttribute{
 				Required:    true,
@@ -249,6 +270,7 @@ func (r *integrationAzureResource) Create(ctx context.Context, request resource.
 	defer integrationAzureMutex.Unlock()
 
 	body := r.buildIntegrationAzureRequestBody(ctx, &state, state.TenantName.ValueString(), state.ClientId.ValueString(), false)
+	addAzureIntegrationDisplayName(body, state.DisplayName)
 
 	_, _, err := r.Api.CreateAzureIntegration(r.Auth, *body)
 	if err != nil {
@@ -451,4 +473,17 @@ func (r *integrationAzureResource) buildIntegrationAzureRequestBody(ctx context.
 		}
 	}
 	return datadogDefinition
+}
+
+// addAzureIntegrationDisplayName adds the create-only display name to the API
+// client model. The generated client does not expose this field yet, but its
+// AdditionalProperties map is serialized into the request body.
+func addAzureIntegrationDisplayName(body *datadogV1.AzureAccount, displayName types.String) {
+	if displayName.IsNull() || displayName.IsUnknown() {
+		return
+	}
+	if body.AdditionalProperties == nil {
+		body.AdditionalProperties = make(map[string]interface{})
+	}
+	body.AdditionalProperties["display_name"] = displayName.ValueString()
 }
