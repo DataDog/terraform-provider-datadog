@@ -28,6 +28,14 @@ Auto-created overrides show up in the [`datadog_org_group_policy_overrides`](htt
 
 Changing `enforcement_tier` to `"GROUP_MANAGED"` automatically deletes every override associated with this policy server-side. Any `datadog_org_group_policy_override` resources pointing at this policy must be removed from configuration in the same commit. Otherwise, Terraform's next apply will try to recreate the server-deleted overrides and fail with a `FailedPrecondition` error.
 
+### `role` policies
+
+`role` policies only support `GROUP_MANAGED` and `DELEGATE` for `enforcement_tier`; `OVERRIDE_ALLOWED` is rejected. Setting `enforcement_tier` to `"DELEGATE"` disables the shared role and cannot be reversed — the API rejects transitioning a `DELEGATE` `role` policy back to `GROUP_MANAGED`.
+
+`policy_name` can be changed in place for `role` policies without replacing the resource. Renaming an `org_config` policy is not supported by the API and forces a replace.
+
+`role` policies cannot be deleted. `terraform destroy` (or removing the resource from configuration) only succeeds once the policy is already disabled (`enforcement_tier = "DELEGATE"`); otherwise it fails with an error asking you to disable it first. On success the resource is removed from state, but the disabled policy itself is not deleted server-side.
+
 {{ .SchemaMarkdown | trimspace }}
 
 ## Import
