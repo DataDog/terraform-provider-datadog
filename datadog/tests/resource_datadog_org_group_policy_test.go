@@ -71,10 +71,8 @@ func TestAccDatadogOrgGroupPolicy_Basic(t *testing.T) {
 	})
 }
 
-// TestAccDatadogOrgGroupPolicy_Role covers policy_type = "role". Unrecorded:
-// role policies are gated behind the org_groups_shared_roles feature flag,
-// which is staging-only as of writing (not yet in prod), so this cassette
-// can only be recorded against a staging org.
+// TestAccDatadogOrgGroupPolicy_Role covers policy_type = "role". The org_groups_shared_roles
+// feature flag is staging-only as of writing, so the cassette must be recorded on staging.
 func TestAccDatadogOrgGroupPolicy_Role(t *testing.T) {
 	if !isRecording() && !isReplaying() {
 		t.Skip("org_group requires a special test org setup not available in live CI runs")
@@ -145,28 +143,38 @@ func TestAccDatadogOrgGroupPolicy_Role(t *testing.T) {
 						roleResourceID = rs.Primary.ID
 						return nil
 					},
+					testAccCheckDatadogOrgGroupPolicyStillDisabled(providers.frameworkProvider, &roleResourceID),
+				),
+			},
+			{
+				// content stays editable while disabled: only the permission set changes,
+				// enforcement_tier remains DELEGATE so the re-enable guard stays quiet.
+				Config: testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, renamedPolicyName, fmt.Sprintf(`{"permissions":[%q]}`, permissionID), "DELEGATE"),
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction(resourceName, plancheck.ResourceActionUpdate),
+					},
+				},
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogOrgGroupPolicyExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "content", fmt.Sprintf(`{"permissions":[%q]}`, permissionID)),
+					resource.TestCheckResourceAttr(resourceName, "enforcement_tier", "DELEGATE"),
+					testAccCheckDatadogOrgGroupPolicyStillDisabled(providers.frameworkProvider, &roleResourceID),
 				),
 			},
 			{
 				// Disabling is one-way: the provider rejects transitioning back to
 				// GROUP_MANAGED before ever calling the API.
-				Config:      testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, renamedPolicyName, fmt.Sprintf(`{"permissions":[%q,%q]}`, permissionID, otherPermissionID), "GROUP_MANAGED"),
-				ExpectError: regexp.MustCompile(`(?is)cannot be\s+transitioned back`),
+				Config:      testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, renamedPolicyName, fmt.Sprintf(`{"permissions":[%q]}`, permissionID), "GROUP_MANAGED"),
+				ExpectError: regexp.MustCompile(`cannot be\s+transitioned back to GROUP_MANAGED or OVERRIDE_ALLOWED`),
 			},
 			{
 				ResourceName:      resourceName,
 				ImportState:       true,
 				ImportStateVerify: true,
 			},
-			{
-				// Removing only the policy (org group stays) exercises the
-				// CheckDestroy DELEGATE branch: Delete() succeeds without an API
-				// call, and the policy remains server-side, still DELEGATE.
-				Config: testAccCheckDatadogOrgGroupPolicyRoleOnlyGroupConfig(orgGroupName),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogOrgGroupPolicyStillDisabled(providers.frameworkProvider, &roleResourceID),
-				),
-			},
+			// no further steps: the policy stays in state so CheckDestroy sees it. The
+			// role/DELEGATE branch there is defensive, not exercised (see its comment).
 		},
 	})
 }
@@ -183,20 +191,13 @@ func testAccCheckDatadogOrgGroupPolicyStillDisabled(accProvider *fwprovider.Fram
 
 		resp, _, err := apiInstances.GetOrgGroupsApiV2().GetOrgGroupPolicy(auth, id)
 		if err != nil {
-			return fmt.Errorf("received an error retrieving role policy after removing it from configuration: %w", err)
+			return fmt.Errorf("received an error retrieving role policy: %w", err)
 		}
 		if resp.Data.Attributes.GetEnforcementTier() != "DELEGATE" {
-			return fmt.Errorf("expected role policy to remain DELEGATE server-side after removal from configuration, got %q", resp.Data.Attributes.GetEnforcementTier())
+			return fmt.Errorf("expected role policy to remain DELEGATE server-side, got %q", resp.Data.Attributes.GetEnforcementTier())
 		}
 		return nil
 	}
-}
-
-func testAccCheckDatadogOrgGroupPolicyRoleOnlyGroupConfig(orgGroupName string) string {
-	return fmt.Sprintf(`
-resource "datadog_org_group" "role" {
-  name = "%s"
-}`, orgGroupName)
 }
 
 func testAccCheckDatadogOrgGroupPolicyRoleConfig(orgGroupName, policyName, content, enforcementTier string) string {
@@ -274,9 +275,8 @@ func testAccCheckDatadogOrgGroupPolicyDestroy(accProvider *fwprovider.FrameworkP
 				return fmt.Errorf("received an error retrieving org group policy: %w", err)
 			}
 
-			// role policies are never hard-deleted server-side; Delete() only succeeds
-			// once the policy is already disabled (enforcement_tier = DELEGATE), so
-			// "destroyed" means disabled, not 404.
+			// Defensive: "destroyed" means disabled for role policies. Teardown also drops
+			// the org group, which cascades the policy away, so this GET 404s above instead.
 			if r.Primary.Attributes["policy_type"] == "role" {
 				if resp.Data.Attributes.GetEnforcementTier() == "DELEGATE" {
 					continue

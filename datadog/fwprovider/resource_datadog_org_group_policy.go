@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -136,9 +137,61 @@ func orgGroupPolicyNameRequiresReplaceIf(ctx context.Context, req planmodifier.S
 	resp.RequiresReplace = policyType.ValueString() != string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ROLE)
 }
 
-// ModifyPlan catches a DELEGATE -> non-DELEGATE transition on a role policy at
-// plan time; without this, Update() is the only place that rejects it, so the
-// error only surfaces at apply.
+// roleDelegateReEnableDiagnostic rejects transitioning a role policy back out of DELEGATE
+// once disabled. Used by ModifyPlan (plan time) and Update (apply time).
+func roleDelegateReEnableDiagnostic(priorState, plan OrgGroupPolicyModel) diag.Diagnostic {
+	if priorState.PolicyType.ValueString() != string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ROLE) ||
+		priorState.EnforcementTier.ValueString() != string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_DELEGATE) {
+		return nil
+	}
+	// A replace means plan.EnforcementTier belongs to the new policy, not the disabled one.
+	// Detected from values: ModifyPlan's response.RequiresReplace is always empty on entry.
+	if replacingAttrChanged(priorState.PolicyType, plan.PolicyType) ||
+		replacingAttrChanged(priorState.OrgGroupID, plan.OrgGroupID) {
+		return nil
+	}
+	newEnforcementTier := plan.EnforcementTier
+	if newEnforcementTier.IsNull() || newEnforcementTier.IsUnknown() ||
+		newEnforcementTier.ValueString() == string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_DELEGATE) {
+		return nil
+	}
+	return diag.NewAttributeErrorDiagnostic(
+		frameworkPath.Root("enforcement_tier"),
+		"Cannot re-enable a disabled role policy",
+		"This role policy was disabled (enforcement_tier = \"DELEGATE\") and cannot be transitioned back to GROUP_MANAGED or OVERRIDE_ALLOWED.",
+	)
+}
+
+// replacingAttrChanged reports whether a RequiresReplace attribute may differ from prior
+// state. Unknown counts as changed (org_group_id has no UseStateForUnknown); null does not.
+func replacingAttrChanged(prior, planned types.String) bool {
+	if planned.IsUnknown() {
+		return true
+	}
+	if planned.IsNull() {
+		return false
+	}
+	return planned.ValueString() != prior.ValueString()
+}
+
+// roleEnforcementTierDiagnostic rejects OVERRIDE_ALLOWED on a role policy. Used by
+// ValidateConfig, and by Create/Update since `terraform apply <planfile>` skips it.
+func roleEnforcementTierDiagnostic(policyType, enforcementTier types.String) diag.Diagnostic {
+	if policyType.ValueString() != string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ROLE) {
+		return nil
+	}
+	if enforcementTier.ValueString() != string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_OVERRIDE_ALLOWED) {
+		return nil
+	}
+	return diag.NewAttributeErrorDiagnostic(
+		frameworkPath.Root("enforcement_tier"),
+		"Invalid enforcement_tier for policy_type \"role\"",
+		"role policies only support GROUP_MANAGED and DELEGATE.",
+	)
+}
+
+// ModifyPlan catches a DELEGATE -> non-DELEGATE transition on a role policy at plan time;
+// otherwise only Update() rejects it and the error surfaces at apply.
 func (r *OrgGroupPolicyResource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
 	if request.State.Raw.IsNull() {
 		return
@@ -148,27 +201,19 @@ func (r *OrgGroupPolicyResource) ModifyPlan(ctx context.Context, request resourc
 	if response.Diagnostics.HasError() {
 		return
 	}
-	if priorState.PolicyType.ValueString() != string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ROLE) ||
-		priorState.EnforcementTier.ValueString() != string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_DELEGATE) {
-		return
-	}
 
 	var plan OrgGroupPolicyModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
-	if !plan.EnforcementTier.IsNull() && !plan.EnforcementTier.IsUnknown() &&
-		plan.EnforcementTier.ValueString() != string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_DELEGATE) {
-		response.Diagnostics.AddAttributeError(
-			frameworkPath.Root("enforcement_tier"),
-			"Cannot re-enable a disabled role policy",
-			"This role policy was disabled (enforcement_tier = \"DELEGATE\") and cannot be transitioned back to GROUP_MANAGED or OVERRIDE_ALLOWED.",
-		)
+	if d := roleDelegateReEnableDiagnostic(priorState, plan); d != nil {
+		response.Diagnostics.Append(d)
 	}
 }
 
 // ValidateConfig catches role + OVERRIDE_ALLOWED at plan time; the API only 400s.
+// Skipped by `terraform apply <planfile>`, so Create/Update also run this check.
 func (r *OrgGroupPolicyResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
 	var config OrgGroupPolicyModel
 	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
@@ -176,15 +221,8 @@ func (r *OrgGroupPolicyResource) ValidateConfig(ctx context.Context, request res
 		return
 	}
 
-	if config.PolicyType.ValueString() != string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ROLE) {
-		return
-	}
-	if config.EnforcementTier.ValueString() == string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_OVERRIDE_ALLOWED) {
-		response.Diagnostics.AddAttributeError(
-			frameworkPath.Root("enforcement_tier"),
-			"Invalid enforcement_tier for policy_type \"role\"",
-			"role policies only support GROUP_MANAGED and DELEGATE.",
-		)
+	if d := roleEnforcementTierDiagnostic(config.PolicyType, config.EnforcementTier); d != nil {
+		response.Diagnostics.Append(d)
 	}
 }
 
@@ -192,6 +230,11 @@ func (r *OrgGroupPolicyResource) Create(ctx context.Context, request resource.Cr
 	var state OrgGroupPolicyModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
+		return
+	}
+
+	if d := roleEnforcementTierDiagnostic(state.PolicyType, state.EnforcementTier); d != nil {
+		response.Diagnostics.Append(d)
 		return
 	}
 
@@ -293,15 +336,14 @@ func (r *OrgGroupPolicyResource) Update(ctx context.Context, request resource.Up
 		return
 	}
 
-	if priorState.PolicyType.ValueString() == string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ROLE) &&
-		priorState.EnforcementTier.ValueString() == string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_DELEGATE) &&
-		!state.EnforcementTier.IsNull() && !state.EnforcementTier.IsUnknown() &&
-		state.EnforcementTier.ValueString() != string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_DELEGATE) {
-		response.Diagnostics.AddAttributeError(
-			frameworkPath.Root("enforcement_tier"),
-			"Cannot re-enable a disabled role policy",
-			"This role policy was disabled (enforcement_tier = \"DELEGATE\") and cannot be transitioned back to GROUP_MANAGED or OVERRIDE_ALLOWED.",
-		)
+	// Tier validity first, matching plan-time order (ValidateConfig runs before ModifyPlan),
+	// so an invalid tier reports the invalid value rather than "cannot re-enable".
+	if d := roleEnforcementTierDiagnostic(state.PolicyType, state.EnforcementTier); d != nil {
+		response.Diagnostics.Append(d)
+		return
+	}
+	if d := roleDelegateReEnableDiagnostic(priorState, state); d != nil {
+		response.Diagnostics.Append(d)
 		return
 	}
 
@@ -354,12 +396,12 @@ func (r *OrgGroupPolicyResource) Delete(ctx context.Context, request resource.De
 		return
 	}
 
-	// role policies are never hard-deleted server-side (API returns 405). If it's already
-	// disabled (enforcement_tier = DELEGATE), there's nothing left for the API to do; just
-	// drop it from state. Otherwise reject and tell the user to disable it first.
+	// role policies are never hard-deleted server-side (API returns 405). Already disabled
+	// (DELEGATE) means just drop from state; otherwise reject and require disabling first.
 	if state.PolicyType.ValueString() == string(datadogV2.ORGGROUPPOLICYPOLICYTYPE_ROLE) {
 		if state.EnforcementTier.ValueString() != string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_DELEGATE) {
-			response.Diagnostics.AddError(
+			response.Diagnostics.AddAttributeError(
+				frameworkPath.Root("enforcement_tier"),
 				"role policies cannot be deleted",
 				`Set enforcement_tier = "DELEGATE" to disable this role policy before removing it from your configuration.`,
 			)
