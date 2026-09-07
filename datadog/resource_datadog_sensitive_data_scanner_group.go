@@ -418,16 +418,15 @@ func resourceDatadogSensitiveDataScannerGroupDelete(ctx context.Context, d *sche
 	metaVar := datadogV2.NewSensitiveDataScannerMetaVersionOnlyWithDefaults()
 	body.SetMeta(*metaVar)
 
+	defer apiInstances.InvalidateSensitiveDataScannerConfigCache()
 	_, httpResp, err := apiInstances.GetSensitiveDataScannerApiV2().DeleteScanningGroup(auth, id, *body)
 	if err != nil {
 		// API returns 404 when the specific group id doesn't exist through DELETE request.
 		if httpResp != nil && httpResp.StatusCode == 404 {
-			apiInstances.InvalidateSensitiveDataScannerConfigCache()
 			return nil
 		}
 		return utils.TranslateClientErrorDiag(err, httpResp, "error deleting SensitiveDataScannerGroup")
 	}
-	apiInstances.InvalidateSensitiveDataScannerConfigCache()
 
 	return nil
 }
