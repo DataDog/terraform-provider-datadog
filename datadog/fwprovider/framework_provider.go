@@ -74,6 +74,8 @@ var Resources = []func() resource.Resource{
 	NewSecurityFindingsDueDateRulesOrderResource,
 	NewSecurityFindingsTicketCreationRuleResource,
 	NewSecurityFindingsTicketCreationRulesOrderResource,
+	NewSecurityFindingsSeverityModifierRuleResource,
+	NewSecurityFindingsSeverityModifierRulesOrderResource,
 	NewSensitiveDataScannerGroupOrder,
 	NewServiceAccountApplicationKeyResource,
 	NewServiceAccessTokenResource,
