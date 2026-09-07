@@ -505,16 +505,15 @@ func resourceDatadogSensitiveDataScannerRuleDelete(ctx context.Context, d *schem
 	id := d.Id()
 	body := datadogV2.NewSensitiveDataScannerRuleDeleteRequestWithDefaults()
 
+	defer apiInstances.InvalidateSensitiveDataScannerConfigCache()
 	_, httpResp, err := apiInstances.GetSensitiveDataScannerApiV2().DeleteScanningRule(auth, id, *body)
 	if err != nil {
 		// API returns 404 when the specific rule id doesn't exist through DELETE request.
 		if httpResp != nil && httpResp.StatusCode == 404 {
-			apiInstances.InvalidateSensitiveDataScannerConfigCache()
 			return nil
 		}
 		return utils.TranslateClientErrorDiag(err, httpResp, "error deleting SensitiveDataScannerRule")
 	}
-	apiInstances.InvalidateSensitiveDataScannerConfigCache()
 
 	return nil
 }
