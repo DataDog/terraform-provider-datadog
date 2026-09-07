@@ -850,6 +850,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationTicketCreationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationTicketCreationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationTicketCreationRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationSeverityModifierRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationSeverityModifierRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationSeverityModifierRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationSeverityModifierRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationSeverityModifierRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationSeverityModifierRules", true)
 
 	// Enable Tag Indexing Rules & Exemptions
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateTagIndexingRule", true)
