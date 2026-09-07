@@ -195,13 +195,26 @@ func readRulesOrder[Resp any, Rule any](
 }
 
 // reorderSecurityFindingsAutomationRules submits a reorder request for the given rule IDs.
-func reorderSecurityFindingsAutomationRules[I any, Req any](
+//
+// PLANNED SPEC CHANGE (https://github.com/DataDog/datadog-api-spec/pull/6634): the security findings automation
+// OpenAPI spec is being updated so every reorder endpoint (mute, due date, ticket creation) gets its own separate
+// response type. Once this PR is merged and datadog-api-client-go is re-generated,
+// ReorderSecurityFindingsAutomationMuteRules/DueDateRules/TicketCreationRules will each start returning a new
+// *ReorderResponse type instead of reusing the *ReorderRequest type. That is expected to break compilation at
+// exactly one line in each of resource_datadog_security_findings_{mute,due_date,ticket_creation}_rules_order.go:
+// the `getRespItems` closure passed into this function, which is currently typed as the request type.
+//
+// If you encounter this compile error after bumping the API client version: this function's signature already
+// supports Req != Resp, so the fix is simple: update the affected closure's parameter type from the old
+// *ReorderRequest name to the new *ReorderResponse type. You can reach out in #k9-automation-and-notifications if
+// anything is unclear or the if spec change is different than expected.
+func reorderSecurityFindingsAutomationRules[I any, Req any, Resp any](
 	auth context.Context,
 	ruleIDs []string,
 	makeItem func(uuid.UUID) I,
 	makeRequest func([]I) Req,
-	reorderFn func(context.Context, Req) (Req, *http.Response, error),
-	getRespItems func(Req) []I,
+	reorderFn func(context.Context, Req) (Resp, *http.Response, error),
+	getRespItems func(Resp) []I,
 	getID func(I) string,
 ) ([]string, diag.Diagnostics) {
 	var diags diag.Diagnostics

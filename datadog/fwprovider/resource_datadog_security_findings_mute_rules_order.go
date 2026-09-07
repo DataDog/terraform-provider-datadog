@@ -83,6 +83,8 @@ func (r *securityFindingsMuteRulesOrderResource) applyOrder(ctx context.Context,
 			return *datadogV2.NewMuteRuleReorderRequest(items)
 		},
 		r.Api.ReorderSecurityFindingsAutomationMuteRules,
+		// NOTE: This is expected to break compilation in an upcoming client version bump, see the comment on
+		// reorderSecurityFindingsAutomationRules in resource_datadog_security_findings_automation_common.go.
 		func(resp datadogV2.MuteRuleReorderRequest) []datadogV2.MuteRuleReorderItem { return resp.GetData() },
 		func(item datadogV2.MuteRuleReorderItem) string { return item.GetId().String() },
 	)

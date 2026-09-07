@@ -83,6 +83,8 @@ func (r *securityFindingsDueDateRulesOrderResource) applyOrder(ctx context.Conte
 			return *datadogV2.NewDueDateRuleReorderRequest(items)
 		},
 		r.Api.ReorderSecurityFindingsAutomationDueDateRules,
+		// NOTE: This is expected to break compilation in an upcoming client version bump, see the comment on
+		// reorderSecurityFindingsAutomationRules in resource_datadog_security_findings_automation_common.go.
 		func(resp datadogV2.DueDateRuleReorderRequest) []datadogV2.DueDateRuleReorderItem {
 			return resp.GetData()
 		},
