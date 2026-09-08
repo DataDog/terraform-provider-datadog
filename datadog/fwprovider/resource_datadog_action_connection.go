@@ -7,10 +7,13 @@ import (
 	"io"
 	"net/http"
 	"reflect"
+	"regexp"
+	"sort"
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -20,24 +23,64 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 var (
 	_ resource.ResourceWithConfigure        = &actionConnectionResource{}
 	_ resource.ResourceWithImportState      = &actionConnectionResource{}
+	_ resource.ResourceWithModifyPlan       = &actionConnectionResource{}
 	_ resource.ResourceWithConfigValidators = &actionConnectionResource{}
 	_ resource.ResourceWithValidateConfig   = &actionConnectionResource{}
+
+	actionConnectionTagPattern = regexp.MustCompile(`^[A-Za-z0-9._/-]+:[A-Za-z0-9._/-]+$`)
 )
 
+type actionConnectionTagValidator struct{}
+
+func (actionConnectionTagValidator) Description(_ context.Context) string {
+	return "must be a non-reserved tag in `key:value` format"
+}
+
+func (v actionConnectionTagValidator) MarkdownDescription(ctx context.Context) string {
+	return v.Description(ctx)
+}
+
+func (v actionConnectionTagValidator) ValidateString(ctx context.Context, request validator.StringRequest, response *validator.StringResponse) {
+	if request.ConfigValue.IsNull() || request.ConfigValue.IsUnknown() {
+		return
+	}
+
+	tag := request.ConfigValue.ValueString()
+	if !isValidActionConnectionTag(tag) {
+		response.Diagnostics.AddAttributeError(request.Path, "Invalid action connection tag", v.Description(ctx))
+	}
+}
+
+func isValidActionConnectionTag(tag string) bool {
+	return actionConnectionTagPattern.MatchString(tag) && !strings.HasPrefix(tag, "default:")
+}
+
 type actionConnectionResource struct {
-	Api  *datadogV2.ActionConnectionApi
-	Auth context.Context
+	Api         *datadogV2.ActionConnectionApi
+	Auth        context.Context
+	DefaultTags map[string]string
 }
 
 type connectionResourceModel struct {
+	connectionModel
+	EffectiveTags types.Set `tfsdk:"effective_tags"`
+}
+
+type connectionDatasourceModel struct {
+	connectionModel
+}
+
+type connectionModel struct {
 	ID           types.String                 `tfsdk:"id"`
 	Name         types.String                 `tfsdk:"name"`
+	Tags         types.Set                    `tfsdk:"tags"`
 	AWS          *awsConnectionModel          `tfsdk:"aws"`
 	Anthropic    *apiTokenConnectionModel     `tfsdk:"anthropic"`
 	Asana        *asanaConnectionModel        `tfsdk:"asana"`
@@ -435,6 +478,7 @@ func (r *actionConnectionResource) Configure(_ context.Context, request resource
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetActionConnectionApiV2()
 	r.Auth = providerData.Auth
+	r.DefaultTags = providerData.DefaultTags
 }
 
 // contains simple validations that can be done by the framework
@@ -598,6 +642,19 @@ func (r *actionConnectionResource) Schema(_ context.Context, _ resource.SchemaRe
 			"name": schema.StringAttribute{
 				Required:    true,
 				Description: "Name of the connection",
+			},
+			"tags": schema.SetAttribute{
+				Optional:    true,
+				Description: "User-defined tags associated with the connection. Each tag must follow the `key:value` format. The `default` tag key is reserved. See also `effective_tags`, which includes provider-level `default_tags`.",
+				ElementType: types.StringType,
+				Validators: []validator.Set{
+					setvalidator.ValueStringsAre(actionConnectionTagValidator{}),
+				},
+			},
+			"effective_tags": schema.SetAttribute{
+				Computed:    true,
+				Description: "Tags associated with the connection, including those inherited from the provider's `default_tags` configuration.",
+				ElementType: types.StringType,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -793,6 +850,55 @@ func replaceActionConnectionIfFieldRemoved(_ context.Context, request planmodifi
 	response.RequiresReplace = request.PlanValue.IsNull()
 }
 
+func (r *actionConnectionResource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
+	if request.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan connectionResourceModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+
+	var state connectionResourceModel
+	if !request.State.Raw.IsNull() {
+		response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	}
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	effectiveTags, diags := fwutils.CombineTags(ctx, plan.Tags, r.DefaultTags)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+	if plan.Tags.IsNull() && len(r.DefaultTags) == 0 &&
+		(state.EffectiveTags.IsNull() || state.EffectiveTags.IsUnknown() || len(state.EffectiveTags.Elements()) == 0) {
+		effectiveTags = types.SetNull(types.StringType)
+	}
+
+	if !effectiveTags.IsNull() {
+		var tags []string
+		response.Diagnostics.Append(effectiveTags.ElementsAs(ctx, &tags, false)...)
+		if response.Diagnostics.HasError() {
+			return
+		}
+		for _, tag := range tags {
+			if !isValidActionConnectionTag(tag) {
+				response.Diagnostics.AddAttributeError(
+					path.Root("effective_tags"),
+					"Invalid action connection tag",
+					fmt.Sprintf("Tag %q must be a non-reserved tag in `key:value` format.", tag),
+				)
+			}
+		}
+	}
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	response.Diagnostics.Append(response.Plan.SetAttribute(ctx, path.Root("effective_tags"), effectiveTags)...)
+}
+
 func (r *actionConnectionResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), request, response)
 }
@@ -805,7 +911,7 @@ func (r *actionConnectionResource) Create(ctx context.Context, request resource.
 		return
 	}
 
-	createRequest, err := connectionModelToCreateApiRequest(plan)
+	createRequest, err := connectionModelToCreateApiRequest(ctx, plan)
 	if err != nil {
 		response.Diagnostics.AddError("Could not build create connection request", err.Error())
 		return
@@ -858,6 +964,8 @@ func (r *actionConnectionResource) Read(ctx context.Context, request resource.Re
 		return
 	}
 
+	connModel.Tags = state.Tags
+
 	diags = response.State.Set(ctx, connModel)
 	response.Diagnostics.Append(diags...)
 }
@@ -878,7 +986,7 @@ func (r *actionConnectionResource) Update(ctx context.Context, request resource.
 		return
 	}
 
-	updateRequest, err := connectionModelToUpdateApiRequest(plan, oldState)
+	updateRequest, err := connectionModelToUpdateApiRequest(ctx, plan, oldState)
 	if err != nil {
 		response.Diagnostics.AddError("Could not build update connection request", err.Error())
 		return
@@ -934,13 +1042,17 @@ func (r *actionConnectionResource) Delete(ctx context.Context, request resource.
 	}
 }
 
-func apiResponseToConnectionModel(connection datadogV2.GetActionConnectionResponse) (*connectionResourceModel, error) {
+func apiResponseToConnectionModel(ctx context.Context, connection datadogV2.GetActionConnectionResponse) (*connectionResourceModel, error) {
 	connModel := &connectionResourceModel{
-		ID: types.StringPointerValue(connection.Data.Id),
+		connectionModel: connectionModel{
+			ID: types.StringPointerValue(connection.Data.Id),
+		},
 	}
 
 	attributes := connection.Data.Attributes
 	connModel.Name = types.StringValue(attributes.Name)
+	connModel.Tags = fwutils.ToTerraformSetString(ctx, attributes.GetTagsOk)
+	connModel.EffectiveTags = connModel.Tags
 
 	if attributes.Integration.AWSIntegration != nil {
 		awsAttr := attributes.Integration.AWSIntegration
@@ -1162,9 +1274,10 @@ func actionConnectionCredentialString(credential map[string]interface{}, name st
 	return types.StringValue(value)
 }
 
-func connectionModelToCreateApiRequest(connectionModel connectionResourceModel) (*datadogV2.CreateActionConnectionRequest, error) {
+func connectionModelToCreateApiRequest(ctx context.Context, connectionModel connectionResourceModel) (*datadogV2.CreateActionConnectionRequest, error) {
 	attributes := datadogV2.NewActionConnectionAttributesWithDefaults()
 	attributes.SetName(connectionModel.Name.ValueString())
+	setActionConnectionTags(ctx, connectionModel.EffectiveTags, attributes.SetTags)
 
 	if connectionModel.AWS != nil {
 		assumeRoleParams := datadogV2.NewAWSAssumeRole(
@@ -1245,9 +1358,21 @@ func connectionModelToCreateApiRequest(connectionModel connectionResourceModel) 
 	return req, nil
 }
 
-func connectionModelToUpdateApiRequest(plan, oldState connectionResourceModel) (*datadogV2.UpdateActionConnectionRequest, error) {
+func setActionConnectionTags(ctx context.Context, tags types.Set, set func([]string)) {
+	if tags.IsNull() || tags.IsUnknown() {
+		return
+	}
+
+	var values []string
+	tags.ElementsAs(ctx, &values, false)
+	sort.Strings(values)
+	set(values)
+}
+
+func connectionModelToUpdateApiRequest(ctx context.Context, plan, oldState connectionResourceModel) (*datadogV2.UpdateActionConnectionRequest, error) {
 	attributes := datadogV2.NewActionConnectionAttributesUpdate()
 	attributes.SetName(plan.Name.ValueString())
+	setActionConnectionTags(ctx, plan.EffectiveTags, attributes.SetTags)
 
 	if plan.AWS != nil {
 		assumeRoleParams := datadogV2.NewAWSAssumeRoleUpdate(datadogV2.AWSASSUMEROLETYPE_AWSASSUMEROLE)
@@ -1573,7 +1698,7 @@ func readConnection(authCtx context.Context, api *datadogV2.ActionConnectionApi,
 		return nil, httpResponse.StatusCode, fmt.Errorf("connection not found")
 	}
 
-	connModel, err := apiResponseToConnectionModel(conn)
+	connModel, err := apiResponseToConnectionModel(authCtx, conn)
 	if err != nil {
 		return nil, httpResponse.StatusCode, err
 	}
