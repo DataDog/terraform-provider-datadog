@@ -9,10 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
-// A for_each/count resource can be validated by Terraform core before its instances are
-// expanded, at which point each.value (and anything derived from it, like components) is
-// unknown. Regression test for the Value Conversion Error reported in
-// https://github.com/DataDog/terraform-provider-datadog/issues/4220.
 func TestStatusPageComponentValidateConfigSkipsWhenNotFullyKnown(t *testing.T) {
 	t.Parallel()
 
