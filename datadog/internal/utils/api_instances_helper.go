@@ -10,6 +10,8 @@ type ApiInstances struct {
 	// HttpClient
 	HttpClient *datadog.APIClient
 
+	sensitiveDataScannerConfigCache sensitiveDataScannerConfigCache
+
 	// V1 APIs
 	authenticationApiV1                   *datadogV1.AuthenticationApi
 	awsIntegrationApiV1                   *datadogV1.AWSIntegrationApi

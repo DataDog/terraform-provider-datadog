@@ -316,7 +316,7 @@ func resourceDatadogSensitiveDataScannerGroupRead(ctx context.Context, d *schema
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
-	resp, httpResponse, err := apiInstances.GetSensitiveDataScannerApiV2().ListScanningGroups(auth)
+	resp, httpResponse, err := apiInstances.ListSensitiveDataScannerGroups(auth)
 
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error calling ListScanningGroups")
@@ -347,6 +347,7 @@ func resourceDatadogSensitiveDataScannerGroupCreate(ctx context.Context, d *sche
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResp, "error creating SensitiveDataScannerGroup")
 	}
+	apiInstances.InvalidateSensitiveDataScannerConfigCache()
 	if err := utils.CheckForUnparsed(resp); err != nil {
 		return diag.FromErr(err)
 	}
@@ -382,6 +383,7 @@ func resourceDatadogSensitiveDataScannerGroupUpdate(ctx context.Context, d *sche
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResp, "error updating SensitiveDataScannerGroup")
 	}
+	apiInstances.InvalidateSensitiveDataScannerConfigCache()
 	if err := utils.CheckForUnparsed(resp); err != nil {
 		return diag.FromErr(err)
 	}
@@ -416,6 +418,7 @@ func resourceDatadogSensitiveDataScannerGroupDelete(ctx context.Context, d *sche
 	metaVar := datadogV2.NewSensitiveDataScannerMetaVersionOnlyWithDefaults()
 	body.SetMeta(*metaVar)
 
+	defer apiInstances.InvalidateSensitiveDataScannerConfigCache()
 	_, httpResp, err := apiInstances.GetSensitiveDataScannerApiV2().DeleteScanningGroup(auth, id, *body)
 	if err != nil {
 		// API returns 404 when the specific group id doesn't exist through DELETE request.
