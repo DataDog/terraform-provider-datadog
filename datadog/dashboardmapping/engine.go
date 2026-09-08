@@ -1822,11 +1822,9 @@ func (ctx mapBuildContext) block(key string, index int) mapBuildContext {
 }
 
 func (ctx mapBuildContext) explicitlyConfiguredZero(data map[string]interface{}, field FieldSpec) bool {
-	if _, present := data[field.HCLKey]; present {
-		return true
-	}
 	if ctx.rawConfig == nil {
-		return false
+		_, present := data[field.HCLKey]
+		return present
 	}
 	value, diags := ctx.rawConfig.GetRawConfigAt(ctx.path.GetAttr(field.HCLKey))
 	if diags.HasError() || !value.IsKnown() || value.IsNull() {

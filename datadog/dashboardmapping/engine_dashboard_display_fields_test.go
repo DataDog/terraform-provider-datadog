@@ -7,6 +7,7 @@ import (
 
 	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func TestDashboardDisplayFieldsRoundTrip(t *testing.T) {
@@ -88,5 +89,26 @@ func TestDashboardOptionalFalseRawConfig(t *testing.T) {
 				t.Fatalf("configured=%v: unexpected result %v", configured, got)
 			}
 		})
+	}
+}
+
+func TestDashboardUnsetDisplayFieldsSDKData(t *testing.T) {
+	d := schema.TestResourceDataRaw(t, map[string]*schema.Schema{
+		"widget": {Type: schema.TypeList, Optional: true, Elem: &schema.Resource{Schema: AllWidgetSDKv2Schema(false)}},
+	}, map[string]interface{}{
+		"widget": []interface{}{map[string]interface{}{
+			"manage_status_definition": []interface{}{map[string]interface{}{"query": "tag:service:example"}},
+		}},
+	})
+	widget := d.Get("widget").([]interface{})[0].(map[string]interface{})
+	rawConfig := rawConfigAtFunc(func(cty.Path) (cty.Value, diag.Diagnostics) {
+		return cty.NullVal(cty.Bool), nil
+	})
+	got := BuildWidgetEngineJSONFromMapWithRawConfig(widget, rawConfig, cty.GetAttrPath("widget").IndexInt(0))
+	definition := got["definition"].(map[string]interface{})
+	for _, field := range []string{"show_status", "show_investigation", "count", "start"} {
+		if _, present := definition[field]; present {
+			t.Errorf("unset %s must remain omitted; got %v", field, definition[field])
+		}
 	}
 }
