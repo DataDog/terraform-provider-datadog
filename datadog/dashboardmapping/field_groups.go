@@ -283,6 +283,8 @@ var formulaAndFunctionEventQueryGroupBySortFields = []FieldSpec{
 
 // formulaAndFunctionEventQueryGroupByFields corresponds to FormulaAndFunctionEventQueryGroupBy.
 var formulaAndFunctionEventQueryGroupByFields = []FieldSpec{
+	{HCLKey: "should_exclude_missing", Type: TypeBool, OmitEmpty: true, PreserveZero: true,
+		Description: "Whether to exclude events missing the group-by facet."},
 	{HCLKey: "facet", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "The event facet."},
 	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true,
@@ -1864,6 +1866,12 @@ var sloListSortFields = []FieldSpec{
 // sloListQueryFields corresponds to OpenAPI
 // components/schemas/SLOListWidgetQuery.
 var sloListQueryFields = []FieldSpec{
+	{HCLKey: "rollup", Type: TypeBlock, OmitEmpty: true,
+		Description: "Calendar rollup configuration for the SLO list.",
+		Children: []FieldSpec{
+			{HCLKey: "type", Type: TypeString, Required: true,
+				Description: "The calendar rollup type, for example `month`."},
+		}},
 	{HCLKey: "query_string", Type: TypeString, OmitEmpty: false, Required: true, Description: "Widget query."},
 	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true, Description: "Maximum number of results to display in the table."},
 	// sort: TypeBlockList (can be multiple)
