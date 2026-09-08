@@ -1,0 +1,4 @@
+schema-version: v1
+kind: mergegate
+rules:
+  - require: all-files-are-owned
