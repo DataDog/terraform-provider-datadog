@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 892
+        content_length: 910
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_WithMonitorOptions-local-1770661996","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","monitor_options":{"crontab_override":"0 0 * * *","custom_sql":"SELECT * FROM table","custom_where":"database = 'production'","group_by_columns":["column1","column2"],"model_type_override":"freshness"},"name":"query1","schema_version":"0.0.1","scope":"database:production"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
+            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_WithMonitorOptions-local-1788879051","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","monitor_options":{"crontab_override":"0 0 * * *","custom_sql":"SELECT * FROM table","custom_where":"database = 'production'","group_by_columns":["column1","column2"],"model_type_override":"freshness","sensitivity":2.5},"name":"query1","schema_version":"0.0.1","scope":"database:production"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
         form: {}
         headers:
             Accept:
@@ -23,9 +23,9 @@ interactions:
         url: https://api.datadoghq.com/api/v1/monitor/validate
         method: POST
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 3
@@ -37,20 +37,20 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 50.489459ms
+        duration: 118.764333ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 892
+        content_length: 910
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_WithMonitorOptions-local-1770661996","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","monitor_options":{"crontab_override":"0 0 * * *","custom_sql":"SELECT * FROM table","custom_where":"database = 'production'","group_by_columns":["column1","column2"],"model_type_override":"freshness"},"name":"query1","schema_version":"0.0.1","scope":"database:production"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
+            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_WithMonitorOptions-local-1788879051","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","monitor_options":{"crontab_override":"0 0 * * *","custom_sql":"SELECT * FROM table","custom_where":"database = 'production'","group_by_columns":["column1","column2"],"model_type_override":"freshness","sensitivity":2.5},"name":"query1","schema_version":"0.0.1","scope":"database:production"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
         form: {}
         headers:
             Accept:
@@ -60,9 +60,9 @@ interactions:
         url: https://api.datadoghq.com/api/v1/monitor/validate
         method: POST
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 3
@@ -74,20 +74,20 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 87.717458ms
+        duration: 75.367917ms
     - id: 2
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 869
+        content_length: 887
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_WithMonitorOptions-local-1770661996","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","monitor_options":{"crontab_override":"0 0 * * *","custom_sql":"SELECT * FROM table","custom_where":"database = 'production'","group_by_columns":["column1","column2"],"model_type_override":"freshness"},"name":"query1","schema_version":"0.0.1","scope":"database:production"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
+            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_WithMonitorOptions-local-1788879051","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","monitor_options":{"crontab_override":"0 0 * * *","custom_sql":"SELECT * FROM table","custom_where":"database = 'production'","group_by_columns":["column1","column2"],"model_type_override":"freshness","sensitivity":2.5},"name":"query1","schema_version":"0.0.1","scope":"database:production"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
         form: {}
         headers:
             Accept:
@@ -97,21 +97,22 @@ interactions:
         url: https://api.datadoghq.com/api/v1/monitor
         method: POST
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
         trailer: {}
         content_length: -1
         uncompressed: true
         body: |
-            {"id":25571040,"org_id":2,"type":"data-quality alert","name":"tf-TestAccDatadogMonitor_DataQuality_WithMonitorOptions-local-1770661996","message":"Data quality threshold exceeded","tags":[],"query":"formula(\"query1\").last(\"30m\") > 1000","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000.0},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","monitor_options":{"crontab_override":"0 0 * * *","custom_sql":"SELECT * FROM table","custom_where":"database = 'production'","group_by_columns":["column1","column2"],"model_type_override":"freshness"},"name":"query1","schema_version":"0.0.1","scope":"database:production"}],"notify_audit":false,"silenced":{},"avalanche_window":10},"multi":false,"created_at":1770661998000,"created":"2026-02-09T18:33:18.288200+00:00","modified":"2026-02-09T18:33:18.288200+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Peter Kalmakis","handle":"peter.kalmakis@datadoghq.com","email":"peter.kalmakis@datadoghq.com","id":39408},"run_as":null,"restricted":false}
+            {"id":320047263,"org_id":321813,"type":"data-quality alert","name":"tf-TestAccDatadogMonitor_DataQuality_WithMonitorOptions-local-1788879051","message":"Data quality threshold exceeded","tags":[],"query":"formula(\"query1\").last(\"30m\") > 1000","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000.0},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","monitor_options":{"crontab_override":"0 0 * * *","custom_sql":"SELECT * FROM table","custom_where":"database = 'production'","group_by_columns":["column1","column2"],"model_type_override":"freshness","sensitivity":2.5},"name":"query1","schema_version":"0.0.1","scope":"database:production"}],"notify_audit":false,"silenced":{}},"multi":false,"created_at":1788879052000,"created":"2026-09-08T14:50:52.442853+00:00","modified":"2026-09-08T14:50:52.442853+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 159.108167ms
+        duration: 225.850333ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -128,49 +129,50 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/25571040
+        url: https://api.datadoghq.com/api/v1/monitor/320047263
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
         trailer: {}
         content_length: -1
         uncompressed: true
         body: |
-            {"id":25571040,"org_id":2,"type":"data-quality alert","name":"tf-TestAccDatadogMonitor_DataQuality_WithMonitorOptions-local-1770661996","message":"Data quality threshold exceeded","tags":[],"query":"formula(\"query1\").last(\"30m\") > 1000","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000.0},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","monitor_options":{"crontab_override":"0 0 * * *","custom_sql":"SELECT * FROM table","custom_where":"database = 'production'","group_by_columns":["column1","column2"],"model_type_override":"freshness"},"name":"query1","schema_version":"0.0.1","scope":"database:production"}],"notify_audit":false,"silenced":{},"avalanche_window":10},"multi":false,"created_at":1770661998000,"created":"2026-02-09T18:33:18.288200+00:00","modified":"2026-02-09T18:33:18.288200+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Peter Kalmakis","email":"peter.kalmakis@datadoghq.com","handle":"peter.kalmakis@datadoghq.com","id":39408},"run_as":null,"restricted":false}
+            {"id":320047263,"org_id":321813,"type":"data-quality alert","name":"tf-TestAccDatadogMonitor_DataQuality_WithMonitorOptions-local-1788879051","message":"Data quality threshold exceeded","tags":[],"query":"formula(\"query1\").last(\"30m\") > 1000","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000.0},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","monitor_options":{"crontab_override":"0 0 * * *","custom_sql":"SELECT * FROM table","custom_where":"database = 'production'","group_by_columns":["column1","column2"],"model_type_override":"freshness","sensitivity":2.5},"name":"query1","schema_version":"0.0.1","scope":"database:production"}],"notify_audit":false,"silenced":{}},"multi":false,"created_at":1788879052000,"created":"2026-09-08T14:50:52.442853+00:00","modified":"2026-09-08T14:50:52.442853+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 123.639166ms
+        duration: 116.229917ms
     - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 892
+        content_length: 910
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_WithMonitorOptions-local-1770661996","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","monitor_options":{"crontab_override":"0 0 * * *","custom_sql":"SELECT * FROM table","custom_where":"database = 'production'","group_by_columns":["column1","column2"],"model_type_override":"freshness"},"name":"query1","schema_version":"0.0.1","scope":"database:production"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
+            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_WithMonitorOptions-local-1788879051","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","monitor_options":{"crontab_override":"0 0 * * *","custom_sql":"SELECT * FROM table","custom_where":"database = 'production'","group_by_columns":["column1","column2"],"model_type_override":"freshness","sensitivity":2.5},"name":"query1","schema_version":"0.0.1","scope":"database:production"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/25571040/validate
+        url: https://api.datadoghq.com/api/v1/monitor/320047263/validate
         method: POST
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 3
@@ -182,7 +184,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 65.831792ms
+        duration: 578.376291ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -199,49 +201,50 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/25571040?with_assets=true
+        url: https://api.datadoghq.com/api/v1/monitor/320047263?with_assets=true
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
         trailer: {}
         content_length: -1
         uncompressed: true
         body: |
-            {"id":25571040,"org_id":2,"type":"data-quality alert","name":"tf-TestAccDatadogMonitor_DataQuality_WithMonitorOptions-local-1770661996","message":"Data quality threshold exceeded","tags":[],"query":"formula(\"query1\").last(\"30m\") > 1000","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000.0},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","monitor_options":{"crontab_override":"0 0 * * *","custom_sql":"SELECT * FROM table","custom_where":"database = 'production'","group_by_columns":["column1","column2"],"model_type_override":"freshness"},"name":"query1","schema_version":"0.0.1","scope":"database:production"}],"notify_audit":false,"silenced":{},"avalanche_window":10},"multi":false,"created_at":1770661998000,"created":"2026-02-09T18:33:18.288200+00:00","modified":"2026-02-09T18:33:18.288200+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Peter Kalmakis","email":"peter.kalmakis@datadoghq.com","handle":"peter.kalmakis@datadoghq.com","id":39408},"run_as":null,"restricted":false}
+            {"id":320047263,"org_id":321813,"type":"data-quality alert","name":"tf-TestAccDatadogMonitor_DataQuality_WithMonitorOptions-local-1788879051","message":"Data quality threshold exceeded","tags":[],"query":"formula(\"query1\").last(\"30m\") > 1000","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000.0},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","monitor_options":{"crontab_override":"0 0 * * *","custom_sql":"SELECT * FROM table","custom_where":"database = 'production'","group_by_columns":["column1","column2"],"model_type_override":"freshness","sensitivity":2.5},"name":"query1","schema_version":"0.0.1","scope":"database:production"}],"notify_audit":false,"silenced":{}},"multi":false,"created_at":1788879052000,"created":"2026-09-08T14:50:52.442853+00:00","modified":"2026-09-08T14:50:52.442853+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 162.979708ms
+        duration: 82.919084ms
     - id: 6
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 892
+        content_length: 910
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_WithMonitorOptions-local-1770661996","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","monitor_options":{"crontab_override":"0 0 * * *","custom_sql":"SELECT * FROM table","custom_where":"database = 'production'","group_by_columns":["column1","column2"],"model_type_override":"freshness"},"name":"query1","schema_version":"0.0.1","scope":"database:production"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
+            {"draft_status":"published","message":"Data quality threshold exceeded","name":"tf-TestAccDatadogMonitor_DataQuality_WithMonitorOptions-local-1788879051","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":1000},"variables":[{"data_source":"data_quality_metrics","filter":"search for column where `database:production AND table:users`","group_by":["entity_id"],"measure":"row_count","monitor_options":{"crontab_override":"0 0 * * *","custom_sql":"SELECT * FROM table","custom_where":"database = 'production'","group_by_columns":["column1","column2"],"model_type_override":"freshness","sensitivity":2.5},"name":"query1","schema_version":"0.0.1","scope":"database:production"}]},"priority":null,"query":"formula(\"query1\").last(\"30m\") \u003e 1000","restricted_roles":null,"tags":[],"type":"data-quality alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/25571040/validate
+        url: https://api.datadoghq.com/api/v1/monitor/320047263/validate
         method: POST
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 3
@@ -253,7 +256,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 61.438167ms
+        duration: 88.808041ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -270,24 +273,25 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/25571040
+        url: https://api.datadoghq.com/api/v1/monitor/320047263
         method: DELETE
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
         trailer: {}
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_monitor_id":25571040}
+            {"deleted_monitor_id":320047263}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 252.436125ms
+        duration: 228.770708ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -304,13 +308,14 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/25571040
+        url: https://api.datadoghq.com/api/v1/monitor/320047263
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
         trailer: {}
         content_length: -1
         uncompressed: true
@@ -320,4 +325,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 96.001875ms
+        duration: 63.09275ms
