@@ -165,6 +165,11 @@ func (r *statusPageComponentResource) Configure(_ context.Context, request resou
 }
 
 func (r *statusPageComponentResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
+	if !request.Config.Raw.IsFullyKnown() {
+		// for_each/count instances can validate before expansion, with components still unknown.
+		return
+	}
+
 	var cfg statusPageComponentModel
 	response.Diagnostics.Append(request.Config.Get(ctx, &cfg)...)
 	if response.Diagnostics.HasError() {
