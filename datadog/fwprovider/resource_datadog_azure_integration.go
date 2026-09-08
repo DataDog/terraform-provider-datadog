@@ -34,10 +34,13 @@ var (
 
 var integrationAzureMutex = sync.Mutex{}
 
-var integrationAzureDisplayNameValidator = stringvalidator.RegexMatches(
-	regexp.MustCompile(`\S`),
-	"display_name must contain at least one non-whitespace character",
-)
+var integrationAzureDisplayNameValidators = []validator.String{
+	stringvalidator.RegexMatches(
+		regexp.MustCompile(`\S`),
+		"display_name must contain at least one non-whitespace character",
+	),
+	stringvalidator.LengthAtMost(256),
+}
 
 type integrationAzureResource struct {
 	Api  *datadogV1.AzureIntegrationApi
@@ -109,9 +112,7 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
-				Validators: []validator.String{
-					integrationAzureDisplayNameValidator,
-				},
+				Validators: integrationAzureDisplayNameValidators,
 			},
 			"tenant_name": schema.StringAttribute{
 				Required:    true,

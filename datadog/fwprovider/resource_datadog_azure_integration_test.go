@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"encoding/json"
+	"strings"
 	"testing"
 
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
@@ -19,15 +20,19 @@ func TestIntegrationAzureDisplayNameValidator(t *testing.T) {
 	}{
 		{name: "nonblank", displayName: "datadog-azure-integration"},
 		{name: "blank", displayName: " \t\n", wantError: true},
+		{name: "maximum length", displayName: strings.Repeat("a", 256)},
+		{name: "too long", displayName: strings.Repeat("a", 257), wantError: true},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			var response validator.StringResponse
-			integrationAzureDisplayNameValidator.ValidateString(context.Background(), validator.StringRequest{
-				Path:        frameworkPath.Root("display_name"),
-				ConfigValue: types.StringValue(test.displayName),
-			}, &response)
+			for _, displayNameValidator := range integrationAzureDisplayNameValidators {
+				displayNameValidator.ValidateString(context.Background(), validator.StringRequest{
+					Path:        frameworkPath.Root("display_name"),
+					ConfigValue: types.StringValue(test.displayName),
+				}, &response)
+			}
 
 			require.Equal(t, test.wantError, response.Diagnostics.HasError())
 		})
