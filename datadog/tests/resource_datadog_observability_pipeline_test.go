@@ -773,6 +773,7 @@ resource "datadog_observability_pipeline" "quota_overflow" {
       amazon_s3 {
         bucket        = "my-overflow-bucket"
         region        = "us-east-1"
+        key_prefix    = "overflow"
         storage_class = "STANDARD"
       }
     }
