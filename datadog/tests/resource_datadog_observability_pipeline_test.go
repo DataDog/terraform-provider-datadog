@@ -1562,10 +1562,15 @@ resource "datadog_observability_pipeline" "splunk_tcp" {
       id = "splunk-tcp-source-1"
       
       splunk_tcp {
+        address_key                  = "SPLUNK_TCP_ADDRESS"
+        max_connection_duration_secs = 3600
+
         tls {
-          crt_file = "/etc/ssl/certs/tcp.crt"
-          ca_file  = "/etc/ssl/certs/tcp.ca"
-          key_file = "/etc/ssl/private/tcp.key"
+          crt_file           = "/etc/ssl/certs/tcp.crt"
+          ca_file            = "/etc/ssl/certs/tcp.ca"
+          key_file           = "/etc/ssl/private/tcp.key"
+          key_pass_key       = "SPLUNK_TCP_TLS_KEY_PASSPHRASE"
+          verify_certificate = true
         }
       }
     }
@@ -1583,9 +1588,44 @@ resource "datadog_observability_pipeline" "splunk_tcp" {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "splunk-tcp-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.address_key", "SPLUNK_TCP_ADDRESS"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.max_connection_duration_secs", "3600"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.tls.0.crt_file", "/etc/ssl/certs/tcp.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.tls.0.ca_file", "/etc/ssl/certs/tcp.ca"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.tls.0.key_file", "/etc/ssl/private/tcp.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.tls.0.key_pass_key", "SPLUNK_TCP_TLS_KEY_PASSPHRASE"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.tls.0.verify_certificate", "true"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "splunk_tcp" {
+  name = "splunk-tcp-pipeline"
+
+  config {
+    source {
+      id = "splunk-tcp-source-1"
+
+      splunk_tcp {
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["splunk-tcp-source-1"]
+
+      datadog_logs {
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "splunk-tcp-source-1"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.address_key"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.max_connection_duration_secs"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.tls.#"),
 				),
 			},
 		},
