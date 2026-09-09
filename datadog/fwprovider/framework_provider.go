@@ -67,6 +67,7 @@ var Resources = []func() resource.Resource{
 	NewRumMetricResource,
 	NewRumRetentionFilterResource,
 	NewRumRetentionFiltersOrderResource,
+	NewSamlIdpMetadataResource,
 	NewRumRetentionQuotaResource,
 	NewSecurityFindingsMuteRuleResource,
 	NewSecurityFindingsMuteRulesOrderResource,
