@@ -66,14 +66,10 @@ func (d *{{ .GoName }}DataSource) Schema(_ context.Context, _ datasource.SchemaR
 {{- range .Schema.Attributes }}
 {{ template "schemaAttribute" . }}
 {{- end }}
-		},
-{{- if .Schema.Blocks }}
-		Blocks: map[string]schema.Block{
 {{- range .Schema.Blocks }}
-{{ template "schemaBlock" . }}
+{{ template "schemaNestedAttribute" . }}
 {{- end }}
 		},
-{{- end }}
 	}
 }
 

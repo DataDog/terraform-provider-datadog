@@ -203,6 +203,62 @@ var _ = Describe("BuildDataSourceView", func() {
 		Expect(src).To(ContainSubstring(`GetIncidentType(d.Auth, parsedId)`))
 	})
 
+	// A terminal path parameter that is a $ref to an enum component, which the
+	// SDK binds to a named string type of its own. GetSBOM's asset_type and
+	// GetPermanentRetentionFilter's permanent_rf_id are the shapes in the spec.
+	It("recovers an enum-typed id through the SDK's validating constructor", func() {
+		op := incidentTypeOperation()
+		op.Path = "/api/v2/security/sboms/{asset_type}"
+		op.SDKBinding = &model.SDKOperationBinding{Required: []model.SDKArgument{
+			{Name: "asset_type", GoName: "assetType", GoType: "AssetType", Location: "path",
+				Schema: &model.Schema{
+					Kind: model.SchemaKindPrimitive, Type: "string",
+					Enum: []string{"Repository", "Image", "Host"},
+				}},
+		}}
+
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		view, err := BuildDataSourceView(art)
+		Expect(err).NotTo(HaveOccurred())
+
+		By("the constructor returns (*T, error), so the argument dereferences the local")
+		Expect(view.Read.Arguments).To(Equal([]SDKArgumentView{{
+			Expression: "*parsedId", ParsedVar: "parsedId",
+			ParseCall: "datadogV2.NewAssetTypeFromValue(state.ID.ValueString())",
+			TFName:    "id", GoType: "AssetType",
+		}}))
+
+		By("neither uuid nor strconv is pulled in for a conversion that uses neither")
+		Expect(view.UsesUUID).To(BeFalse())
+		Expect(view.UsesStrconv).To(BeFalse())
+
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		src := string(rendered)
+		Expect(src).To(ContainSubstring(`parsedId, err := datadogV2.NewAssetTypeFromValue(state.ID.ValueString())`))
+		Expect(src).To(ContainSubstring(`response.Diagnostics.AddError("Invalid id", err.Error())`))
+		Expect(src).To(ContainSubstring(`GetIncidentType(d.Auth, *parsedId)`))
+	})
+
+	// The enum branch keys off the schema's enum members, not the Go spelling, so
+	// a named non-enum type is rejected rather than handed a constructor the SDK
+	// never generated.
+	It("still rejects an id-aliased argument of a named non-enum type", func() {
+		op := incidentTypeOperation()
+		op.Path = "/api/v2/incident-types/{incident_type_id}"
+		op.SDKBinding = &model.SDKOperationBinding{Required: []model.SDKArgument{
+			{Name: "incident_type_id", GoName: "incidentTypeId", GoType: "SomeStruct", Location: "path",
+				Schema: &model.Schema{Kind: model.SchemaKindPrimitive, Type: "string"}},
+		}}
+
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		_, err = BuildDataSourceView(art)
+		Expect(err).To(MatchError(ContainSubstring(
+			"id-bound SDK argument type SomeStruct is outside scalar-first support")))
+	})
+
 	It("renders a resolved singleton call without inventing an id argument", func() {
 		op := incidentTypeOperation()
 		op.Path = "/api/v2/incidents/config/types/default"
@@ -861,7 +917,7 @@ func costBudgetOperation() *model.Operation {
 }
 
 var _ = Describe("BuildDataSourceView singular nested arrays", func() {
-	It("hoists an object array into a ListNestedBlock and recurses into nested object arrays", func() {
+	It("hoists an object array into a ListNestedAttribute and recurses into nested object arrays", func() {
 		view, err := BuildDataSourceView(mustArtifact(costBudgetOperation()))
 		Expect(err).NotTo(HaveOccurred())
 
@@ -1360,7 +1416,7 @@ func pluralNestedOperation() *model.Operation {
 }
 
 var _ = Describe("BuildDataSourceView plural nested arrays", func() {
-	It("renders an object array in an item as a ListNestedBlock with a generated element struct", func() {
+	It("renders an object array in an item as a ListNestedAttribute with a generated element struct", func() {
 		view, err := BuildDataSourceView(mustArtifact(pluralNestedOperation()))
 		Expect(err).NotTo(HaveOccurred())
 
@@ -1467,7 +1523,7 @@ func retentionFilterOperation() *model.Operation {
 }
 
 var _ = Describe("BuildDataSourceView singular nested objects", func() {
-	It("hoists a bare object under attributes into a SingleNestedBlock", func() {
+	It("hoists a bare object under attributes into a SingleNestedAttribute", func() {
 		view, err := BuildDataSourceView(mustArtifact(retentionFilterOperation()))
 		Expect(err).NotTo(HaveOccurred())
 
@@ -1476,7 +1532,7 @@ var _ = Describe("BuildDataSourceView singular nested objects", func() {
 			blocks[b.TFName] = b
 		}
 		Expect(blocks).To(HaveKey("filter"))
-		Expect(blocks["filter"].ListBlock).To(BeFalse(), "a bare object is a SingleNestedBlock, not a list block")
+		Expect(blocks["filter"].ListBlock).To(BeFalse(), "a bare object is a SingleNestedAttribute, not a list block")
 	})
 
 	It("generates one model struct per object level, parent first", func() {
@@ -1606,7 +1662,7 @@ func pluralObjectOperation() *model.Operation {
 }
 
 var _ = Describe("BuildDataSourceView plural nested objects", func() {
-	It("renders a bare object in an item as a SingleNestedBlock with a generated struct", func() {
+	It("renders a bare object in an item as a SingleNestedAttribute with a generated struct", func() {
 		view, err := BuildDataSourceView(mustArtifact(pluralObjectOperation()))
 		Expect(err).NotTo(HaveOccurred())
 

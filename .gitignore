@@ -13,6 +13,9 @@ website/.vagrant
 website/.bundle
 website/build
 website/node_modules
+.agents/
+.claude/
+.specify/
 .vagrant/
 *.backup
 ./*.tfstate

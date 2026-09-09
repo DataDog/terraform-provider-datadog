@@ -52,7 +52,7 @@
       "sensitive": {
         "type": "boolean",
         "default": false,
-        "description": "When attached to a Schema Object, marks the attribute as Terraform-sensitive (suppressed in plan output)."
+        "description": "When present on a Schema Object, explicitly controls whether the attribute is Terraform-sensitive (suppressed in plan output). When omitted, writeOnly: true or x-secret: true defaults the attribute to sensitive; an explicit false overrides that inference on the same schema node."
       },
       "skip": {
         "type": "boolean",
@@ -97,4 +97,3 @@
       }
     ]
   }
-  

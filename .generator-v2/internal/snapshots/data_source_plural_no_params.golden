@@ -58,11 +58,10 @@ func (d *datadogDatastoresDataSource) Schema(_ context.Context, _ datasource.Sch
 		Description: "Use this data source to retrieve information about existing Datadog datastores.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
-		},
-		Blocks: map[string]schema.Block{
-			"datastores": schema.ListNestedBlock{
+
+			"datastores": schema.ListNestedAttribute{
 				Description: "An array of datastore objects containing their configurations and metadata.",
-				NestedObject: schema.NestedBlockObject{
+				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"creator_user_id": schema.Int64Attribute{
 							Description: "The numeric ID of the user who created the datastore.",

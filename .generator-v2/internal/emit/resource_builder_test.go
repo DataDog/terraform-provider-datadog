@@ -468,6 +468,9 @@ var _ = Describe("RenderResource", func() {
 
 		out := string(src)
 		Expect(out).To(ContainSubstring(`func (r *datadogIncidentTypeResource) Create(`))
+		By("decoding request fields from configuration so omitted computed nested attributes remain null instead of becoming unknown native Go values")
+		Expect(out).To(ContainSubstring("response.Diagnostics.Append(request.Config.Get(ctx, &state)...)"))
+		Expect(out).NotTo(ContainSubstring("response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)"))
 		By("Create builds the envelope innermost-first, so the data component's own constructor sets the JSON:API type discriminator (T138)")
 		for _, want := range []string{
 			"bodyAttributes := datadogV2.NewIncidentTypeAttributesWithDefaults()",
@@ -489,6 +492,8 @@ var _ = Describe("RenderResource", func() {
 		Expect(out).To(ContainSubstring(`response.State.RemoveResource(ctx)`))
 
 		Expect(out).To(ContainSubstring(`func (r *datadogIncidentTypeResource) Update(`))
+		By("recovering the computed resource ID from prior state after decoding the desired configuration")
+		Expect(out).To(ContainSubstring(`response.Diagnostics.Append(request.State.GetAttribute(ctx, path.Root("id"), &state.ID)...)`))
 		for _, want := range []string{
 			"bodyAttributes := datadogV2.NewIncidentTypeUpdateAttributesWithDefaults()",
 			"bodyData := datadogV2.NewIncidentTypeUpdateDataWithDefaults()",
@@ -629,7 +634,9 @@ func incidentTypeResourceOperation(withUpdate bool) *model.Operation {
 // schemaTree flattens a ResourceView's rendered schema attributes for
 // attrByPath, which descends AttrView.Attributes/Blocks by TFName.
 func schemaTree(v ResourceView) *AttributeTreeLike {
-	return &AttributeTreeLike{Attributes: v.Schema.Attributes}
+	attrs := append([]AttrView{}, v.Schema.Attributes...)
+	attrs = append(attrs, v.Schema.Blocks...)
+	return &AttributeTreeLike{Attributes: attrs}
 }
 
 // AttributeTreeLike adapts a []AttrView so attrByPath (an *AttributeTree

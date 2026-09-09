@@ -56,8 +56,8 @@ type {{ .Name }} struct {
 {{- end -}}
 
 {{/*
-  planModifiers renders the "PlanModifiers: [...]" field shared by a leaf
-  attribute and a block. Resource attributes only — a data source's AttrView
+  planModifiers renders the "PlanModifiers: [...]" field shared by a leaf and
+  a nested attribute. Resource attributes only — a data source's AttrView
   always carries an empty PlanModifiers, so this renders nothing there.
 */}}
 {{- define "planModifiers" -}}
@@ -70,38 +70,71 @@ type {{ .Name }} struct {
 {{- end }}
 {{- end -}}
 
-{{/* nestedBody renders the Attributes/Blocks maps shared by both block kinds. */}}
+{{/* objectValidators renders validators attached to a nested object attribute. */}}
+{{- define "objectValidators" -}}
+{{- if .ObjectValidators }}
+	Validators: []validator.Object{
+{{- range .ObjectValidators }}
+		{{ . }},
+{{- end }}
+	},
+{{- end }}
+{{- end -}}
+
+{{/* nestedBody renders one combined Attributes map for a nested attribute. */}}
 {{- define "nestedBody" -}}
-{{- if .Attributes }}
+{{- if or .Attributes .Blocks }}
 Attributes: map[string]schema.Attribute{
 {{- range .Attributes }}
 {{ template "schemaAttribute" . }}
 {{- end }}
-},
-{{- end }}
-{{- if .Blocks }}
-Blocks: map[string]schema.Block{
 {{- range .Blocks }}
-{{ template "schemaBlock" . }}
+{{ template "schemaNestedAttribute" . }}
 {{- end }}
 },
 {{- end }}
 {{- end -}}
 
-{{/* schemaBlock renders one nested block, recursing through nestedBody. */}}
-{{- define "schemaBlock" -}}
+{{/* schemaNestedAttribute renders one nested attribute recursively. */}}
+{{- define "schemaNestedAttribute" -}}
 {{- if .ListBlock }}
-"{{ .TFName }}": schema.ListNestedBlock{
+"{{ .TFName }}": schema.ListNestedAttribute{
 	Description: {{ printf "%q" .Description }},
-	NestedObject: schema.NestedBlockObject{
+	NestedObject: schema.NestedAttributeObject{
 {{ template "nestedBody" . }}
 	},
+{{- if .Required }}
+	Required: true,
+{{- end }}
+{{- if .Optional }}
+	Optional: true,
+{{- end }}
+{{- if .Computed }}
+	Computed: true,
+{{- end }}
+{{- if .Sensitive }}
+	Sensitive: true,
+{{- end }}
+{{ template "objectValidators" . }}
 {{ template "planModifiers" . }}
 },
 {{- else }}
-"{{ .TFName }}": schema.SingleNestedBlock{
+"{{ .TFName }}": schema.SingleNestedAttribute{
 	Description: {{ printf "%q" .Description }},
 {{ template "nestedBody" . }}
+{{- if .Required }}
+	Required: true,
+{{- end }}
+{{- if .Optional }}
+	Optional: true,
+{{- end }}
+{{- if .Computed }}
+	Computed: true,
+{{- end }}
+{{- if .Sensitive }}
+	Sensitive: true,
+{{- end }}
+{{ template "objectValidators" . }}
 {{ template "planModifiers" . }}
 },
 {{- end }}
@@ -134,8 +167,18 @@ if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
 }
 {{- else if eq .Kind "object" -}}
 if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+	{{- if .PreserveExisting }}
+	{{ .ExistingVar }} := {{ .LHS }}
+	{{ .LHS }} = nil
+	for {{ .LoopIndex }}, {{ .LoopVar }} := range *{{ .Var }} {
+		{{ .ElemVar }} := &{{ .ElemStruct }}{}
+		if len({{ .ExistingVar }}) > {{ .LoopIndex }} && {{ .ExistingVar }}[{{ .LoopIndex }}] != nil {
+			{{ .ElemVar }} = {{ .ExistingVar }}[{{ .LoopIndex }}]
+		}
+	{{- else }}
 	for _, {{ .LoopVar }} := range *{{ .Var }} {
 		{{ .ElemVar }} := &{{ .ElemStruct }}{}
+	{{- end }}
 {{- range .Scalars }}
 		if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
 			{{ .LHS }} = {{ .RHS }}
@@ -149,7 +192,14 @@ if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
 }
 {{- else if eq .Kind "object_single" -}}
 if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+	{{- if .PreserveExisting }}
+	{{ .ElemVar }} := {{ .LHS }}
+	if {{ .ElemVar }} == nil {
+		{{ .ElemVar }} = &{{ .ElemStruct }}{}
+	}
+	{{- else }}
 	{{ .ElemVar }} := &{{ .ElemStruct }}{}
+	{{- end }}
 {{- range .Scalars }}
 	if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
 		{{ .LHS }} = {{ .RHS }}
@@ -180,7 +230,13 @@ if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
 {{- define "renderOneOf" -}}
 if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
 {{- if .Collection }}
+	{{- if .PreserveExisting }}
+	{{ .ExistingVar }} := {{ .LHS }}
+	{{ .LHS }} = nil
+	for {{ .LoopIndex }}, {{ .LoopVar }} := range *{{ .Var }} {
+	{{- else }}
 	for _, {{ .LoopVar }} := range *{{ .Var }} {
+	{{- end }}
 		{{ template "oneOfBody" . }}
 	}
 {{- else }}
@@ -199,6 +255,17 @@ if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
 {{- range .Variants }}
 if {{ .SDKVar }} := {{ $.Receiver }}.{{ .SDKField }}; {{ .SDKVar }} != nil {
 	{{ .ModelVar }} := &{{ .GoModel }}{}
+	{{- if $.PreserveExisting }}
+	{{- if $.Collection }}
+	if len({{ $.ExistingVar }}) > {{ $.LoopIndex }} && {{ $.ExistingVar }}[{{ $.LoopIndex }}] != nil && {{ $.ExistingVar }}[{{ $.LoopIndex }}].{{ .GoField }} != nil {
+		{{ .ModelVar }} = {{ $.ExistingVar }}[{{ $.LoopIndex }}].{{ .GoField }}
+	}
+	{{- else }}
+	if {{ $.LHS }} != nil && {{ $.LHS }}.{{ .GoField }} != nil {
+		{{ .ModelVar }} = {{ $.LHS }}.{{ .GoField }}
+	}
+	{{- end }}
+	{{- end }}
 {{- with .Value }}
 	{{ .LHS }} = {{ .RHS }}
 {{- end }}

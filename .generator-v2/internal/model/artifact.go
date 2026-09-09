@@ -2,6 +2,8 @@ package model
 
 import (
 	"fmt"
+	"maps"
+	"slices"
 	"strings"
 )
 
@@ -31,7 +33,45 @@ func BuildArtifact(op *Operation) (*Artifact, error) {
 	if diags := unresolvedGroupDiagnostics(op); len(diags) > 0 {
 		artifact.Diagnostics = append(diags, artifact.Diagnostics...)
 	}
+	artifact.UnstableOperations = unstableOperationKeys(op)
 	return artifact, nil
+}
+
+// UnstableOperationKey is the identifier the SDK gates a beta endpoint on:
+// the API version segment of its path joined to its operationId, e.g.
+// "v2.GetTwilioIntegrationAccount". It is the same spelling
+// SetUnstableOperationEnabled takes.
+func UnstableOperationKey(op *Operation) string {
+	return versionSegment(op.Path) + "." + op.OperationId
+}
+
+// unstableOperationKeys collects the x-unstable operations an artifact calls,
+// sorted and deduplicated. It reads the resolved group rather than the built
+// lifecycle because the two can differ — a group role may resolve to an
+// operation the artifact's kind does not bind a call for — and because the
+// annotated operation itself counts whether or not the group names it.
+//
+// It is deliberately kind-agnostic: an x-unstable GET behind a data source is
+// disabled exactly like a resource's create.
+func unstableOperationKeys(op *Operation) []string {
+	seen := map[string]struct{}{}
+	add := func(o *Operation) {
+		if o != nil && o.Unstable {
+			seen[UnstableOperationKey(o)] = struct{}{}
+		}
+	}
+	add(op)
+	if g := op.ResolvedGroup; g != nil {
+		for _, role := range []*Operation{g.Create, g.Read, g.Search, g.Update, g.Delete} {
+			add(role)
+		}
+	}
+	if len(seen) == 0 {
+		return nil
+	}
+	keys := slices.Collect(maps.Keys(seen))
+	slices.Sort(keys)
+	return keys
 }
 
 // buildArtifact selects the builder for op's kind, cardinality and lookup shape.

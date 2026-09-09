@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/pb33f/libopenapi/datamodel/high/base"
@@ -18,28 +19,11 @@ type RefCycle struct {
 	Path []string
 }
 
-// RefCycleError reports one or more $ref cycles found while loading a spec. It
-// implements error so LoadSpec can fail fast, and exposes the offending refs so
-// callers can inspect them. The message names the OpenAPI path of the offending
-// $ref (e.g. "#/components/schemas/Node").
-type RefCycleError struct {
-	Cycles []RefCycle
-}
-
-func (e *RefCycleError) Error() string {
-	first := e.Cycles[0]
-	msg := fmt.Sprintf("parser: circular $ref at %s (cycle: %s)", first.Ref, strings.Join(first.Path, " -> "))
-	if len(e.Cycles) > 1 {
-		msg += fmt.Sprintf(" (and %d more)", len(e.Cycles)-1)
-	}
-	return msg
-}
-
 // MaxDepthError reports that $ref expansion hit the --max-depth bound before a
 // path terminated. Ref is the $ref that would have pushed past the limit, Chain
 // is the path of $refs leading to it, and MaxDepth is the bound that was hit. It
-// is returned instead of a *RefCycleError so callers can tell "too deep" from a
-// genuine cycle via errors.As.
+// A cycle is not reported this way — it terminates the walk rather than failing
+// it — so this error means "too deep", never "circular".
 type MaxDepthError struct {
 	Ref      string
 	Chain    []string
@@ -224,12 +208,9 @@ func (w *cycleWalker) recordCycle(ref string) {
 	}
 	w.reported[ref] = true
 
-	start := 0
-	for i, r := range w.stack {
-		if r == ref {
-			start = i
-			break
-		}
+	start := slices.Index(w.stack, ref)
+	if start < 0 {
+		start = 0
 	}
 	path := append([]string{}, w.stack[start:]...)
 	path = append(path, ref)

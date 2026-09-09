@@ -1,11 +1,14 @@
 package model
 
-// This file ports the parts of the Datadog go-sdk generator that decide the Go
-// type its generated code uses for a scalar schema. Like identifier.go, every
-// rule here is a re-derivation from the pinned generator's own source — never a
-// lookup of the generated package, and never reflection (FR-005a). Upstream:
+import "strings"
+
+// This file ports the parts of the Datadog go-sdk generator that decide how its
+// generated code spells a scalar schema. Like identifier.go, every rule here is
+// a re-derivation from the pinned generator's own source — never a lookup of the
+// generated package, and never reflection (FR-005a). Upstream:
 //
-//	.generator/src/generator/formatter.py  simple_type
+//	.generator/src/generator/formatter.py         simple_type
+//	.generator/src/generator/templates/model_enum.j2
 
 // SDKScalarGoType ports the Datadog go-sdk generator's own scalar type rule
 // (.generator/src/generator/formatter.py simple_type, with
@@ -64,4 +67,25 @@ func SDKScalarGoType(s *Schema) (string, bool) {
 	default:
 		return "", false
 	}
+}
+
+// SDKEnumFromValueConstructor names the validating constructor the SDK declares
+// for an enum component, from templates/model_enum.j2:
+//
+//	func New{{ name }}FromValue(v {{ model|simple_type }}) (*{{ name }}, error)
+//
+// where name is the component's Go type. The second result is false for a
+// composite spelling, which names no component and so has no constructor.
+func SDKEnumFromValueConstructor(goType string) (string, bool) {
+	if !IsBareSDKTypeName(goType) {
+		return "", false
+	}
+	return "New" + goType + "FromValue", true
+}
+
+// IsBareSDKTypeName reports whether goType names a component rather than being a
+// composite spelling. The punctuation set covers every composite the binder
+// produces: [] slice, * pointer, {} interface or struct literal, . qualifier.
+func IsBareSDKTypeName(goType string) bool {
+	return goType != "" && !strings.ContainsAny(goType, "[]*{}.")
 }

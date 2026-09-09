@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/pb33f/libopenapi"
+	"github.com/pb33f/libopenapi/datamodel"
 	v3 "github.com/pb33f/libopenapi/datamodel/high/v3"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
@@ -59,11 +60,11 @@ func WithTrackingFieldName(name string) Option {
 // methods is enumerated and the resulting slice is sorted by (path, method) so
 // downstream iteration — and generated output — is deterministic.
 //
-// Before enumerating, LoadSpec resolves the component schema graph and fails
-// fast: a circular $ref returns a typed *RefCycleError naming the offending
-// $ref, and a $ref chain deeper than the --max-depth bound (WithMaxDepth,
-// default DefaultMaxDepth) returns an error. A spec that cannot be resolved must
-// not silently produce partial output.
+// Before enumerating, LoadSpec checks the component schema graph against the
+// --max-depth bound (WithMaxDepth, default DefaultMaxDepth) and fails on a
+// deeper chain. A circular $ref does not fail the load: it is a property of one
+// component, so the normalizer classifies it per node and only the artifacts
+// that expand it fail.
 //
 // LoadSpec populates Path, Method, OperationId, Tag and Tracking on each
 // Operation, runs ResolveOperationGroups to wire each tracking group's
@@ -81,7 +82,21 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 		return nil, fmt.Errorf("reading spec %q: %w", path, err)
 	}
 
-	doc, err := libopenapi.NewDocument(data)
+	// SkipCircularReferenceCheck hands cycle handling to the normalizer. Left on,
+	// libopenapi refuses to build the model at all when any component anywhere in
+	// the document is cyclic — including components no annotated operation
+	// reaches — which aborts the whole run before a single artifact is built.
+	// tfgen classifies a cycle per node instead (model.SchemaKindRefCycle), so
+	// only the artifacts that actually reach one fail.
+	// Start from the library's defaults and flip one field. A bare
+	// &DocumentConfiguration{} is not the same thing: NewDocumentConfiguration
+	// turns on TransformSiblingRefs, MergeReferencedProperties and PreserveLocal,
+	// and a zero value silently disables all three — which is what normalizes a
+	// $ref carrying sibling keywords into the synthetic allOf the normalizer
+	// expects.
+	docCfg := datamodel.NewDocumentConfiguration()
+	docCfg.SkipCircularReferenceCheck = true
+	doc, err := libopenapi.NewDocumentWithConfiguration(data, docCfg)
 	if err != nil {
 		return nil, fmt.Errorf("parsing spec %q: %w", path, err)
 	}
@@ -103,15 +118,12 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 		Hash:       specHash(data),
 	}
 
-	// Fail fast on an unresolvable schema graph before enumerating anything:
-	// circular $refs surface as a typed *RefCycleError, and expansion past
-	// --max-depth as a depth error (contracts/cli.md).
-	cycles, err := DetectComponentRefCycles(spec.Components, cfg.maxDepth)
-	if err != nil {
+	// Cycles found on the way are not errors: the walker's own stack check stops
+	// the recursion, and a re-entered $ref is classified per node during
+	// normalization (model.SchemaKindRefCycle) so it fails only the artifacts
+	// that expand it. Only a chain longer than --max-depth is fatal here.
+	if _, err := DetectComponentRefCycles(spec.Components, cfg.maxDepth); err != nil {
 		return nil, err
-	}
-	if len(cycles) > 0 {
-		return nil, &RefCycleError{Cycles: cycles}
 	}
 
 	// rawOps maps each projected model.Operation back to the libopenapi
@@ -138,6 +150,7 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 					OperationId: op.OperationId,
 					Tag:         firstTag(op.Tags),
 					Tracking:    tracking,
+					Unstable:    declaresUnstable(op),
 				}
 				spec.Operations = append(spec.Operations, mop)
 				rawOps[mop] = op
@@ -181,4 +194,19 @@ func firstTag(tags []string) string {
 func specHash(data []byte) string {
 	sum := sha256.Sum256(data)
 	return hex.EncodeToString(sum[:])
+}
+
+// unstableExtension is the OpenAPI extension the Datadog spec marks a beta
+// endpoint with. Unlike the tracking field it is not configurable: it is the
+// spec's own vocabulary, and the pinned SDK keys its enable-list off the same
+// operations.
+const unstableExtension = "x-unstable"
+
+// declaresUnstable reports whether op carries x-unstable. Only presence matters
+// — the value is a prose beta notice — so the node is never decoded.
+func declaresUnstable(op *v3.Operation) bool {
+	if op == nil || op.Extensions == nil {
+		return false
+	}
+	return op.Extensions.GetOrZero(unstableExtension) != nil
 }

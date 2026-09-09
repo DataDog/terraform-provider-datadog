@@ -173,6 +173,16 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 					resourceWiringChanged, deferredErr = wireGeneratedResources(outputRoot, resourceRegistrations, check)
 					wiringChanged = wiringChanged || resourceWiringChanged
 				}
+				// One registry for both kinds: the SDK gates a beta endpoint on the
+				// operation, not on what the operation was generated into, so an
+				// x-unstable GET behind a data source needs enabling exactly like a
+				// resource's create.
+				if deferredErr == nil {
+					var unstableChanged bool
+					unstableChanged, deferredErr = wireUnstableOperations(
+						outputRoot, check, registrations, resourceRegistrations)
+					wiringChanged = wiringChanged || unstableChanged
+				}
 
 				// Reconcile: retire generated data sources whose annotation is gone.
 				// Runs after wiring so the registry already holds this run's set; skip
@@ -328,9 +338,11 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examples
 	}
 
 	reg := &emit.GeneratedRegistration{
-		Constructor: emit.DatasourceConstructor(artifact.Name),
-		Overwrites:  op.Tracking.Overwrites,
+		Constructor:        emit.DatasourceConstructor(artifact.Name),
+		Overwrites:         op.Tracking.Overwrites,
+		UnstableOperations: artifact.UnstableOperations,
 	}
+	entry.Diagnostics = append(entry.Diagnostics, unstableOperationDiagnostics(artifact)...)
 	// A generated test must also be registered in testFiles2EndpointTags or it
 	// t.Fatals at startup. Carry the key + tag only when a test was emitted, so a
 	// run without --emit-tests never touches provider_test.go. Fall back to the
@@ -409,10 +421,27 @@ func generateResourceArtifact(op *model.Operation, outputRoot string, check bool
 	entry.Status = status
 
 	reg := &emit.GeneratedRegistration{
-		Constructor: emit.ResourceConstructor(artifact.Name),
-		Overwrites:  op.Tracking.Overwrites,
+		Constructor:        emit.ResourceConstructor(artifact.Name),
+		Overwrites:         op.Tracking.Overwrites,
+		UnstableOperations: artifact.UnstableOperations,
 	}
+	entry.Diagnostics = append(entry.Diagnostics, unstableOperationDiagnostics(artifact)...)
 	return entry, reg
+}
+
+// unstableOperationDiagnostics explains why unstable_operations_generated.go
+// changed on this run, naming the operations the artifact needs enabled. Empty
+// for an artifact whose operations are all stable.
+func unstableOperationDiagnostics(artifact *model.Artifact) []model.Diagnostic {
+	if len(artifact.UnstableOperations) == 0 {
+		return nil
+	}
+	return []model.Diagnostic{{
+		Severity: model.SeverityInfo,
+		Message: fmt.Sprintf(
+			"enabled %d unstable operation(s) the artifact calls: %s",
+			len(artifact.UnstableOperations), strings.Join(artifact.UnstableOperations, ", ")),
+	}}
 }
 
 // emitDatasourceExample writes the tfplugindocs input for a data source. Like
@@ -535,6 +564,29 @@ func wireGeneratedDatasources(outputRoot, testsOutputRoot string, regs []emit.Ge
 	}
 
 	return changed, nil
+}
+
+// wireUnstableOperations merges the x-unstable operations of every successfully
+// generated artifact into the provider's tfgen-owned registry. A run that
+// produced none leaves the file alone rather than writing an empty slice, so a
+// spec with no beta endpoints never creates one.
+func wireUnstableOperations(outputRoot string, check bool, regGroups ...[]emit.GeneratedRegistration) (changed bool, err error) {
+	var keys []string
+	for _, regs := range regGroups {
+		for _, reg := range regs {
+			keys = append(keys, reg.UnstableOperations...)
+		}
+	}
+	if len(keys) == 0 {
+		return false, nil
+	}
+
+	path := filepath.Join(outputRoot, "unstable_operations_generated.go")
+	status, err := emit.SyncUnstableOperations(path, keys, check)
+	if err != nil {
+		return false, err
+	}
+	return status != model.ArtifactStatusUnchanged, nil
 }
 
 // wireGeneratedResources registers each successfully generated resource's

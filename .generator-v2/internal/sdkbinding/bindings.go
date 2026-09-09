@@ -284,7 +284,24 @@ func (i *Inventory) corroborate(op *model.Operation) []model.Diagnostic {
 			differences = append(differences, fmt.Sprintf("API struct derived %q from tag %q, pinned %q", got, op.Tag, pinned.receiver))
 		}
 	}
-	if got, want := renderArguments(derived.Required), renderArgumentSignatures(pinned.arguments); got != want {
+	// The SDK method includes the request body as its final positional argument,
+	// while SDKBinding intentionally contains only path and query parameters.
+	// Corroborate the body through the separately derived RequestRefName, then
+	// compare the remaining positional arguments like-for-like.
+	pinnedArguments := pinned.arguments
+	if op.RequestRefName != "" {
+		switch {
+		case len(pinnedArguments) == 0:
+			differences = append(differences, fmt.Sprintf("request body type derived %q, absent from pinned SDK", op.RequestRefName))
+		default:
+			pinnedBody := pinnedArguments[len(pinnedArguments)-1]
+			pinnedArguments = pinnedArguments[:len(pinnedArguments)-1]
+			if pinnedBody.typeName != op.RequestRefName {
+				differences = append(differences, fmt.Sprintf("request body type derived %q, pinned %q", op.RequestRefName, pinnedBody.typeName))
+			}
+		}
+	}
+	if got, want := renderArguments(derived.Required), renderArgumentSignatures(pinnedArguments); got != want {
 		differences = append(differences, fmt.Sprintf("required arguments derived [%s], pinned [%s]", got, want))
 	}
 	if derived.OptionalParamsType != pinned.options {

@@ -145,7 +145,7 @@ var _ = Describe("BuildResponseTree / BuildRequestTree path root and shape", fun
 		Expect(tree.Attributes).To(HaveLen(1))
 		root := tree.Attributes[0]
 		Expect(root.Path).To(Equal("response"))
-		Expect(root.TfType).To(Equal("schema.ListNestedBlock"))
+		Expect(root.TfType).To(Equal("schema.ListNestedAttribute"))
 		Expect(root.GoType).To(Equal("types.List"))
 		Expect(root.Children).To(HaveLen(1))
 		Expect(root.Children[0].Path).To(Equal("response[].name"))
@@ -235,13 +235,13 @@ var _ = Describe("BuildResponseTree type delegation and composites", func() {
 		Expect(tags.Children).To(BeEmpty())
 	})
 
-	It("builds array<object> as a ListNestedBlock with [] element children and no ElementType", func() {
+	It("builds array<object> as a ListNestedAttribute with [] element children and no ElementType", func() {
 		tree, _, err := BuildResponseTree(objSchema(map[string]*Schema{
 			"items": arrSchema(objSchema(map[string]*Schema{"name": primSchema("string")})),
 		}))
 		Expect(err).NotTo(HaveOccurred())
 		items := attrByPath(tree, "response.items")
-		Expect(items.TfType).To(Equal("schema.ListNestedBlock"))
+		Expect(items.TfType).To(Equal("schema.ListNestedAttribute"))
 		Expect(items.GoType).To(Equal("types.List"))
 		Expect(items.ElementType).To(Equal(""))
 		Expect(pathsOf(items.Children)).To(Equal([]string{"response.items[].name"}))
@@ -288,13 +288,13 @@ var _ = Describe("BuildResponseTree type delegation and composites", func() {
 		Expect(pathsOf(configs.Children)).To(Equal([]string{"response.configs{}.x"}))
 	})
 
-	It("builds a nested object (no map ancestor) as a SingleNestedBlock with .key children", func() {
+	It("builds a nested object (no map ancestor) as a SingleNestedAttribute with .key children", func() {
 		tree, _, err := BuildResponseTree(objSchema(map[string]*Schema{
 			"options": objSchema(map[string]*Schema{"notify": primSchema("boolean")}),
 		}))
 		Expect(err).NotTo(HaveOccurred())
 		options := attrByPath(tree, "response.options")
-		Expect(options.TfType).To(Equal("schema.SingleNestedBlock"))
+		Expect(options.TfType).To(Equal("schema.SingleNestedAttribute"))
 		Expect(options.GoType).To(Equal("types.Object"))
 		Expect(pathsOf(options.Children)).To(Equal([]string{"response.options.notify"}))
 		Expect(options.Children[0].TfType).To(Equal("schema.BoolAttribute"))
@@ -340,10 +340,10 @@ var _ = Describe("BuildResponseTree nesting-form context switch", func() {
 			})),
 		}))
 		Expect(err).NotTo(HaveOccurred())
-		Expect(attrByPath(tree, "response.outer").TfType).To(Equal("schema.SingleNestedBlock"))
-		Expect(attrByPath(tree, "response.outer.inner").TfType).To(Equal("schema.SingleNestedBlock"))
-		Expect(attrByPath(tree, "response.list").TfType).To(Equal("schema.ListNestedBlock"))
-		Expect(attrByPath(tree, "response.list[].elem").TfType).To(Equal("schema.SingleNestedBlock"))
+		Expect(attrByPath(tree, "response.outer").TfType).To(Equal("schema.SingleNestedAttribute"))
+		Expect(attrByPath(tree, "response.outer.inner").TfType).To(Equal("schema.SingleNestedAttribute"))
+		Expect(attrByPath(tree, "response.list").TfType).To(Equal("schema.ListNestedAttribute"))
+		Expect(attrByPath(tree, "response.list[].elem").TfType).To(Equal("schema.SingleNestedAttribute"))
 	})
 })
 
@@ -549,7 +549,7 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 				primitiveOneOfVariant("string", "string"),
 			),
 			"response",
-			"schema.SingleNestedBlock",
+			"schema.SingleNestedAttribute",
 			false,
 			true,
 			"response",
@@ -558,9 +558,9 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 			"response.string",
 			"response.string.value",
 		)
-		Expect(attrByPath(tree, "response.boolean").TfType).To(Equal("schema.SingleNestedBlock"))
+		Expect(attrByPath(tree, "response.boolean").TfType).To(Equal("schema.SingleNestedAttribute"))
 		Expect(attrByPath(tree, "response.boolean.value").TfType).To(Equal("schema.BoolAttribute"))
-		Expect(attrByPath(tree, "response.string").TfType).To(Equal("schema.SingleNestedBlock"))
+		Expect(attrByPath(tree, "response.string").TfType).To(Equal("schema.SingleNestedAttribute"))
 		Expect(attrByPath(tree, "response.string.value").TfType).To(Equal("schema.StringAttribute"))
 	})
 
@@ -576,7 +576,7 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 				),
 			}),
 			"response.choice",
-			"schema.SingleNestedBlock",
+			"schema.SingleNestedAttribute",
 			false,
 			true,
 			"response.choice",
@@ -585,9 +585,9 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 			"response.choice.string",
 			"response.choice.string.value",
 		)
-		Expect(attrByPath(tree, "response.choice.object").TfType).To(Equal("schema.SingleNestedBlock"))
+		Expect(attrByPath(tree, "response.choice.object").TfType).To(Equal("schema.SingleNestedAttribute"))
 		Expect(attrByPath(tree, "response.choice.object.name").TfType).To(Equal("schema.StringAttribute"))
-		Expect(attrByPath(tree, "response.choice.string").TfType).To(Equal("schema.SingleNestedBlock"))
+		Expect(attrByPath(tree, "response.choice.string").TfType).To(Equal("schema.SingleNestedAttribute"))
 		Expect(attrByPath(tree, "response.choice.string.value").TfType).To(Equal("schema.StringAttribute"))
 	})
 
@@ -605,7 +605,7 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 				}),
 			}),
 			"response.container.choice",
-			"schema.SingleNestedBlock",
+			"schema.SingleNestedAttribute",
 			false,
 			true,
 			"response.container.choice",
@@ -631,7 +631,7 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 				elementPath+".string",
 				elementPath+".string.value",
 			)
-			variantType := "schema.SingleNestedBlock"
+			variantType := "schema.SingleNestedAttribute"
 			if tfType == "schema.MapNestedAttribute" {
 				variantType = "schema.SingleNestedAttribute"
 			}
@@ -648,7 +648,7 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 				primitiveOneOfVariant("boolean", "boolean"),
 				primitiveOneOfVariant("string", "string"),
 			)),
-			"schema.ListNestedBlock",
+			"schema.ListNestedAttribute",
 			"response.choices[]",
 		),
 		Entry(
@@ -688,7 +688,7 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 				primitiveOneOfVariant("boolean", "boolean"),
 				primitiveOneOfVariant("string", "string"),
 			)),
-			"schema.ListNestedBlock",
+			"schema.ListNestedAttribute",
 			"response[]",
 		),
 		Entry(
@@ -714,7 +714,7 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 				primitiveOneOfVariant("string", "string"),
 			),
 			"request",
-			"schema.SingleNestedBlock",
+			"schema.SingleNestedAttribute",
 			true,
 			false,
 			"request",
@@ -742,7 +742,7 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 				})),
 			}),
 			"response.containers[].choice",
-			"schema.SingleNestedBlock",
+			"schema.SingleNestedAttribute",
 			[]string{
 				"response.containers[].choice",
 				"response.containers[].choice.boolean",
@@ -793,7 +793,7 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 			BuildResponseTree,
 			outer,
 			"response",
-			"schema.SingleNestedBlock",
+			"schema.SingleNestedAttribute",
 			false,
 			true,
 			"response",
@@ -828,12 +828,12 @@ var _ = Describe("BuildResponseTree golden tree", func() {
 						}},
 				}},
 			{Path: "response.id", OpenAPIName: "id", TfType: "schema.StringAttribute", GoType: "types.String", Computed: true},
-			{Path: "response.items", OpenAPIName: "items", TfType: "schema.ListNestedBlock", GoType: "types.List", Computed: true,
+			{Path: "response.items", OpenAPIName: "items", TfType: "schema.ListNestedAttribute", GoType: "types.List", Computed: true,
 				Children: []*Attribute{
 					{Path: "response.items[].name", OpenAPIName: "name", TfType: "schema.StringAttribute", GoType: "types.String", Computed: true},
 				}},
 			{Path: "response.meta", OpenAPIName: "meta", TfType: "schema.MapAttribute", GoType: "types.Map", ElementType: "types.StringType", Computed: true},
-			{Path: "response.options", OpenAPIName: "options", TfType: "schema.SingleNestedBlock", GoType: "types.Object", Computed: true,
+			{Path: "response.options", OpenAPIName: "options", TfType: "schema.SingleNestedAttribute", GoType: "types.Object", Computed: true,
 				Children: []*Attribute{
 					{Path: "response.options.notify", OpenAPIName: "notify", TfType: "schema.BoolAttribute", GoType: "types.Bool", Computed: true},
 				}},

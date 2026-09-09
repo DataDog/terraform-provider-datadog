@@ -24,6 +24,11 @@ const jsonMediaType = "application/json"
 // endpoint's page/limit query parameters and result-array property.
 const paginationExtension = "x-pagination"
 
+// secretExtension is Datadog's schema-level credential marker. It is separate
+// from the generator tracking extension and defaults Terraform attributes to
+// sensitive when no explicit tracking override is present.
+const secretExtension = "x-secret"
+
 // defaultResultsPath is the JSON:API convention for the response property
 // holding a list's elements, used when no x-pagination resultsPath is declared.
 const defaultResultsPath = "data"
@@ -133,6 +138,10 @@ type schemaNormalizer struct {
 	components        *v3.Components
 	maxDepth          int
 	trackingFieldName string
+	// refStack is the $ref chain currently being expanded, in order. A $ref that
+	// re-enters the chain closes a cycle, which normalizeProxyAt turns into a
+	// terminal node instead of recursing forever.
+	refStack []string
 }
 
 // schemaContext carries information that is not available after a SchemaProxy
@@ -575,6 +584,20 @@ func (n *schemaNormalizer) normalizeProxyAt(proxy *base.SchemaProxy, depth int, 
 		// depth counts $ref edges already followed; the >= bound matches cycles.go.
 		// Exhausting the budget is not a cycle — cycles.go finds those independently
 		// of depth — so it gets its own kind and says how to lift the limit.
+		// A $ref already being expanded closes a cycle. Terminate here, before the
+		// depth check, so a genuine cycle is never misreported as a chain that
+		// merely ran out of budget — the two have different remedies, and only
+		// the depth one is fixable with a flag.
+		if i := slices.Index(n.refStack, ref); i >= 0 {
+			cycle := append(append([]string{}, n.refStack[i:]...), ref)
+			return &model.Schema{
+				Kind: model.SchemaKindRefCycle,
+				UnsupportedReason: fmt.Sprintf(
+					"circular $ref: %s re-enters a schema already being expanded (cycle: %s)",
+					ref, strings.Join(cycle, " -> "),
+				),
+			}, nil
+		}
 		if n.maxDepth > 0 && depth >= n.maxDepth {
 			return &model.Schema{
 				Kind: model.SchemaKindDepthExceeded,
@@ -588,6 +611,8 @@ func (n *schemaNormalizer) normalizeProxyAt(proxy *base.SchemaProxy, depth int, 
 		if err != nil {
 			return nil, err
 		}
+		n.pushRef(ref)
+		defer n.popRef()
 		return n.normalizeProxyAt(target, depth+1, ctx)
 	}
 	// libopenapi represents a $ref with sibling keywords as a synthetic allOf.
@@ -597,6 +622,16 @@ func (n *schemaNormalizer) normalizeProxyAt(proxy *base.SchemaProxy, depth int, 
 		ctx.refName = lastRefSegment(ref)
 	}
 	return n.normalizeSchema(proxy.Schema(), depth, ctx)
+}
+
+// pushRef and popRef maintain the expansion chain. They are balanced by a defer
+// in normalizeProxyAt, so the chain unwinds even when a branch errors.
+func (n *schemaNormalizer) pushRef(ref string) {
+	n.refStack = append(n.refStack, ref)
+}
+
+func (n *schemaNormalizer) popRef() {
+	n.refStack = n.refStack[:len(n.refStack)-1]
 }
 
 // resolveRef returns the proxy a "#/components/schemas/<name>" ref points to, or
@@ -635,7 +670,7 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 		Format:      s.Format,
 		Enum:        enumValues(s),
 		HasDefault:  s.Default != nil,
-		ReadOnly:    s.ReadOnly != nil && *s.ReadOnly,
+		ReadOnly:    schemaReadOnly(s),
 		Sensitive:   n.isSensitive(s),
 		Description: s.Description,
 		// The component name that led here, retained because the Datadog go-sdk
@@ -973,12 +1008,67 @@ func oneOfSiblingSchema(s *base.Schema) (*base.Schema, bool) {
 	return &common, hasConstraints
 }
 
+// allOfAnnotations accumulates the metadata an allOf node carries outside its
+// structural branches: what the outer node declares, unioned with what each
+// annotation-only branch declared before being skipped. A skipped branch
+// asserts nothing about the value, but it still carries metadata the model
+// records, so dropping it would lose those fields silently.
+//
+// normalizeAllOf builds its result on two paths that owe the same fields; one
+// carrier applied by both keeps them from drifting.
+type allOfAnnotations struct {
+	// outerDescription is the allOf node's own, and outranks any branch's — hence
+	// the two fields rather than one.
+	outerDescription string
+	// branchDescription is the first absorbed branch's, used only as a fallback.
+	branchDescription string
+	sensitive         bool
+	readOnly          bool
+	hasDefault        bool
+}
+
+func (n *schemaNormalizer) outerAnnotations(s *base.Schema) allOfAnnotations {
+	return allOfAnnotations{
+		outerDescription: s.Description,
+		sensitive:        n.isSensitive(s),
+		readOnly:         schemaReadOnly(s),
+		hasDefault:       s.Default != nil,
+	}
+}
+
+// absorb unions one skipped annotation-only branch into the carrier. It reads
+// the branch's normalized form rather than the raw schema: normalizeSchema sets
+// these four fields before dispatching on kind, and an annotation-only branch
+// has no kind case that would overwrite them.
+func (a *allOfAnnotations) absorb(branch *model.Schema) {
+	if a.branchDescription == "" {
+		a.branchDescription = branch.Description
+	}
+	a.sensitive = a.sensitive || branch.Sensitive
+	a.readOnly = a.readOnly || branch.ReadOnly
+	a.hasDefault = a.hasDefault || branch.HasDefault
+}
+
+// applyTo unions the collected metadata onto a built result.
+func (a allOfAnnotations) applyTo(out *model.Schema) {
+	out.Sensitive = out.Sensitive || a.sensitive
+	out.ReadOnly = out.ReadOnly || a.readOnly
+	out.HasDefault = out.HasDefault || a.hasDefault
+	switch {
+	case a.outerDescription != "":
+		out.Description = a.outerDescription
+	case a.branchDescription != "":
+		out.Description = a.branchDescription
+	}
+}
+
 // normalizeAllOf flattens the bounded allOf subset used by the Datadog API
 // spec. A single structural branch is a metadata overlay; multiple structural
 // branches must all be objects with disjoint properties. Annotation-only
-// branches are ignored structurally but may supply a local description or
-// sensitive marker. Anything outside that subset becomes an Unsupported schema
-// with a reason so only the affected artifact fails later in the model layer.
+// branches are ignored structurally, but whatever metadata they declare is
+// still unioned onto the result (see allOfAnnotations). Anything outside that
+// subset becomes an Unsupported schema with a reason, so only the affected
+// artifact fails later in the model layer.
 func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaContext) (*model.Schema, error) {
 	if reason := unsupportedAllOfOuterStructure(s); reason != "" {
 		return unsupportedSchema(reason), nil
@@ -989,8 +1079,7 @@ func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaC
 		schema *model.Schema
 	}
 	branches := make([]structuralBranch, 0, len(s.AllOf))
-	annotationDescription := ""
-	sensitive := n.isSensitive(s)
+	annotations := n.outerAnnotations(s)
 
 	for i, proxy := range s.AllOf {
 		branch, err := n.normalizeProxyAt(proxy, depth, ctx)
@@ -1006,10 +1095,7 @@ func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaC
 			return nil, err
 		}
 		if branch.Kind == model.SchemaKindUnsupported && branch.UnsupportedReason == "" && n.isAnnotationOnlySchema(raw) {
-			if annotationDescription == "" && raw.Description != "" {
-				annotationDescription = raw.Description
-			}
-			sensitive = sensitive || n.isSensitive(raw)
+			annotations.absorb(branch)
 			continue
 		}
 
@@ -1046,13 +1132,7 @@ func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaC
 			}
 			out.Required = unionRequired(out.Required, s.Required)
 		}
-		out.Sensitive = out.Sensitive || sensitive
-		switch {
-		case s.Description != "":
-			out.Description = s.Description
-		case annotationDescription != "":
-			out.Description = annotationDescription
-		}
+		annotations.applyTo(out)
 		return out, nil
 	}
 
@@ -1064,16 +1144,12 @@ func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaC
 	}
 
 	out := &model.Schema{
-		Kind:        model.SchemaKindObject,
-		Type:        "object",
-		Properties:  make(map[string]*model.Schema),
-		Sensitive:   sensitive,
-		Description: s.Description,
-		RefName:     ctx.refName,
+		Kind:       model.SchemaKindObject,
+		Type:       "object",
+		Properties: make(map[string]*model.Schema),
+		RefName:    ctx.refName,
 	}
-	if out.Description == "" {
-		out.Description = annotationDescription
-	}
+	annotations.applyTo(out)
 
 	propertyBranch := make(map[string]int)
 	required := make(map[string]bool, len(s.Required))
@@ -1204,16 +1280,37 @@ func unsupportedAllOfOuterStructure(s *base.Schema) string {
 }
 
 // isAnnotationOnlySchema recognizes the sibling-only branch libopenapi creates
-// for an OpenAPI 3.0 $ref with description/example siblings, plus the same form
-// when authored explicitly. A completely empty schema is not an annotation: it
-// remains an arbitrary/untyped value and must not be discarded.
+// for an OpenAPI 3.0 $ref with siblings, plus the same form when authored
+// explicitly. It is the residual of hasStructuralOrConstraintKeywords: a schema
+// that asserts nothing cannot narrow the value, so ignoring it structurally is
+// safe whatever else it declares.
+//
+// A residual rather than a second allow-list, deliberately: a keyword named in
+// neither list would poison its node to Unsupported, and the ones that qualify
+// here — nullable, readOnly, writeOnly, deprecated, $comment, xml, externalDocs,
+// $id, $anchor — are open-ended enough that any enumeration goes stale.
+//
+// The one exclusion is a completely empty schema, which is an arbitrary untyped
+// value rather than an annotation and must not be discarded. declaresKeyword is
+// exactly that exclusion.
 func (n *schemaNormalizer) isAnnotationOnlySchema(s *base.Schema) bool {
 	if s == nil || hasStructuralOrConstraintKeywords(s) {
 		return false
 	}
-	hasExtension := s.Extensions != nil && orderedmap.Len(s.Extensions) > 0
-	return s.Title != "" || s.Description != "" || s.Example != nil || len(s.Examples) > 0 ||
-		s.Default != nil || hasExtension || n.isSensitive(s)
+	return declaresKeyword(s)
+}
+
+// declaresKeyword reports whether a schema writes any keyword at all, read from
+// the node the document was parsed from so that no keyword needs naming here.
+// An absent node is treated as declaring nothing, which keeps the conservative
+// answer (structural, therefore Unsupported) rather than silently dropping a
+// branch this cannot see into.
+func declaresKeyword(s *base.Schema) bool {
+	low := s.GoLow()
+	if low == nil || low.RootNode == nil {
+		return false
+	}
+	return len(low.RootNode.Content) > 0
 }
 
 // hasStructuralOrConstraintKeywords distinguishes schemas that narrow values
@@ -1278,7 +1375,19 @@ func hasStructuralOrConstraintKeywords(s *base.Schema) bool {
 	if len(s.Enum) > 0 || s.Const != nil {
 		return true
 	}
+	// String-content keywords. JSON Schema 2019-09 calls these annotations, but
+	// they describe how to decode the value, so keep them on the conservative
+	// side of the split alongside contentSchema.
+	if s.ContentEncoding != "" || s.ContentMediaType != "" {
+		return true
+	}
 	return s.DynamicRef != "" || s.ContentSchema != nil
+}
+
+// schemaReadOnly reads readOnly through its nil pointer, which libopenapi uses
+// to distinguish "declared false" from "not declared".
+func schemaReadOnly(s *base.Schema) bool {
+	return s.ReadOnly != nil && *s.ReadOnly
 }
 
 func unsupportedSchema(reason string) *model.Schema {
@@ -1454,21 +1563,53 @@ func sortedRequired(s *base.Schema) []string {
 	return req
 }
 
-// isSensitive reports whether the schema node's tracking extension sets
-// sensitive: true. A malformed value is treated as not-sensitive.
+// isSensitive derives Terraform sensitivity from the explicit tracking
+// annotation when present. Otherwise, OpenAPI writeOnly and Datadog's x-secret
+// extension default the field to sensitive so an omitted generator annotation
+// cannot expose a credential in Terraform plans or diffs.
 func (n *schemaNormalizer) isSensitive(s *base.Schema) bool {
+	if explicit, ok := n.explicitSensitivity(s); ok {
+		return explicit
+	}
+	return schemaWriteOnly(s) || boolExtension(s, secretExtension)
+}
+
+// explicitSensitivity distinguishes an omitted annotation from an explicit
+// false. That lets maintainers override the safe OpenAPI-derived default in
+// either direction. A malformed annotation is treated as absent so x-secret or
+// writeOnly can still prevent accidental disclosure.
+func (n *schemaNormalizer) explicitSensitivity(s *base.Schema) (bool, bool) {
 	if s.Extensions == nil {
-		return false
+		return false, false
 	}
 	node := s.Extensions.GetOrZero(n.trackingFieldName)
 	if node == nil {
-		return false
+		return false, false
 	}
 	var ext struct {
-		Sensitive bool `yaml:"sensitive"`
+		Sensitive *bool `yaml:"sensitive"`
 	}
-	if err := node.Decode(&ext); err != nil {
+	if err := node.Decode(&ext); err != nil || ext.Sensitive == nil {
+		return false, false
+	}
+	return *ext.Sensitive, true
+}
+
+func schemaWriteOnly(s *base.Schema) bool {
+	return s.WriteOnly != nil && *s.WriteOnly
+}
+
+// boolExtension reads a boolean Schema Object extension. Missing, false, and
+// malformed values all return false; only an explicit true opts into the
+// extension's behavior.
+func boolExtension(s *base.Schema, name string) bool {
+	if s.Extensions == nil {
 		return false
 	}
-	return ext.Sensitive
+	node := s.Extensions.GetOrZero(name)
+	if node == nil {
+		return false
+	}
+	var value bool
+	return node.Decode(&value) == nil && value
 }

@@ -19,6 +19,16 @@ var _ = Describe("BuildResourceView request mapping", func() {
 		view, err := BuildResourceView(art)
 		Expect(err).NotTo(HaveOccurred())
 
+		By("nested containers use protocol-v6 attributes and carry the resource presence matrix")
+		settingsSchema := attrByPath(schemaTree(view), "settings")
+		Expect(settingsSchema.IsBlock).To(BeTrue())
+		Expect(settingsSchema.ListBlock).To(BeFalse())
+		Expect(settingsSchema.Optional).To(BeTrue())
+		Expect(settingsSchema.Computed).To(BeTrue())
+		Expect(settingsSchema.PlanModifiers).To(Equal(
+			[]string{"objectplanmodifier.UseStateForUnknown"}))
+		Expect(settingsSchema.PlanModifierType).To(Equal("Object"))
+
 		By("a top-level required enum casts to its named SDK type")
 		priority := requestFieldByGoField(view.Create.Envelope.Fields, "Priority")
 		Expect(priority.Required).To(BeTrue())
@@ -76,6 +86,8 @@ var _ = Describe("BuildResourceView request mapping", func() {
 		for _, want := range []string{
 			`"time"`,
 			`"github.com/google/uuid"`,
+			`"settings": schema.SingleNestedAttribute{`,
+			`objectplanmodifier.UseStateForUnknown()`,
 			`bodyAttributes.SetPriority(datadogV2.WidgetPriority(state.Priority.ValueString()))`,
 			`expiresAtParsed, err := time.Parse(time.RFC3339, state.ExpiresAt.ValueString())`,
 			`externalIdParsed, err := uuid.Parse(state.ExternalId.ValueString())`,
@@ -90,6 +102,7 @@ var _ = Describe("BuildResourceView request mapping", func() {
 		} {
 			Expect(out).To(ContainSubstring(want), "generated resource missing %q:\n%s", want, out)
 		}
+		Expect(out).NotTo(ContainSubstring(`Blocks: map[string]schema.Block`))
 	})
 
 	It("constructs each role's own component, not whichever one the merge preferred", func() {

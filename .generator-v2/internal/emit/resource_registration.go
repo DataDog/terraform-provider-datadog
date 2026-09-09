@@ -1,10 +1,8 @@
 package emit
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
-	"go/format"
 	"os"
 	"regexp"
 	"slices"
@@ -74,35 +72,13 @@ func SyncGeneratedResources(path string, constructors []string, check bool) (mod
 // generatedResources file at path into a set; a missing file yields an empty
 // set.
 func registeredResourceSet(path string) (map[string]struct{}, error) {
-	set := map[string]struct{}{}
-	existing, err := os.ReadFile(path)
-	if err != nil && !errors.Is(err, os.ErrNotExist) {
-		return nil, err
-	}
-	for _, c := range resourceConstructorRe.FindAllString(string(existing), -1) {
-		set[c] = struct{}{}
-	}
-	return set, nil
+	return registeredSetMatching(path, resourceConstructorRe, identity)
 }
 
 // writeGeneratedResources renders the generatedResources file from a set of
 // constructors (sorted, gofmt-canonicalized) and writes it through WriteFile.
 func writeGeneratedResources(path string, set map[string]struct{}, check bool) (model.ArtifactStatus, error) {
-	var buf bytes.Buffer
-	buf.WriteString(generatedResourcesHeader)
-	buf.WriteByte('\n')
-	for _, c := range sortedKeys(set) {
-		buf.WriteByte('\t')
-		buf.WriteString(c)
-		buf.WriteString(",\n")
-	}
-	buf.WriteString("}\n")
-
-	src, err := format.Source(buf.Bytes())
-	if err != nil {
-		return model.ArtifactStatusFailed, fmt.Errorf("emit: gofmt of generatedResources: %w", err)
-	}
-	return WriteFile(path, src, check)
+	return writeGeneratedSet(path, generatedResourcesHeader, renderIdentifier, set, check)
 }
 
 // resourcesSliceHeader is the line opening the hand-written Resources slice in

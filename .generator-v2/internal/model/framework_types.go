@@ -4,21 +4,21 @@ import "fmt"
 
 // FrameworkType maps a schema node to its framework type strings: tfType is the
 // schema.* symbol (e.g. schema.StringAttribute), goType the types.* value (e.g.
-// types.String). Objects map to the block form (the builder rewrites to attribute
-// form where needed); unrepresentable kinds return an error naming the offender.
+// types.String). Object containers use nested attributes: generated schemas are
+// protocol-v6-native and have no legacy SDK block syntax to preserve.
 //
 // A oneOf node has no entry of its own: its Terraform shape is a synthetic
 // envelope whose form depends on where the union sits, so the attribute-tree
 // builder decides it. A collection *of* unions does have an entry — the list or
 // map is representable regardless of what its elements are, and it nests the
-// element's variant blocks the same way it would an object's properties.
+// element's variant attributes the same way it would an object's properties.
 func FrameworkType(s *Schema) (tfType, goType string, err error) {
 	switch s.Kind {
 	case SchemaKindPrimitive:
 		return primitiveFrameworkType(s)
 
 	case SchemaKindObject:
-		return "schema.SingleNestedBlock", "types.Object", nil
+		return "schema.SingleNestedAttribute", "types.Object", nil
 
 	case SchemaKindArray:
 		if s.Items == nil {
@@ -28,9 +28,9 @@ func FrameworkType(s *Schema) (tfType, goType string, err error) {
 		case SchemaKindPrimitive, SchemaKindArray, SchemaKindMap:
 			return "schema.ListAttribute", "types.List", nil
 		case SchemaKindObject, SchemaKindOneOf:
-			return "schema.ListNestedBlock", "types.List", nil
+			return "schema.ListNestedAttribute", "types.List", nil
 		default:
-			return "", "", fmt.Errorf("model: array element kind %q is not representable", s.Items.Kind)
+			return "", "", fmt.Errorf("model: array element kind %q is not representable%s", s.Items.Kind, reasonSuffix(s.Items))
 		}
 
 	case SchemaKindMap:
@@ -43,11 +43,11 @@ func FrameworkType(s *Schema) (tfType, goType string, err error) {
 		case SchemaKindObject, SchemaKindOneOf:
 			return "schema.MapNestedAttribute", "types.Map", nil
 		default:
-			return "", "", fmt.Errorf("model: map value kind %q is not representable", s.Items.Kind)
+			return "", "", fmt.Errorf("model: map value kind %q is not representable%s", s.Items.Kind, reasonSuffix(s.Items))
 		}
 
 	default:
-		return "", "", fmt.Errorf("model: schema kind %q is not representable", s.Kind)
+		return "", "", fmt.Errorf("model: schema kind %q is not representable%s", s.Kind, reasonSuffix(s))
 	}
 }
 
@@ -106,4 +106,23 @@ func ElementType(elem *Schema) (string, error) {
 	default:
 		return "", fmt.Errorf("model: collection element kind %q has no framework element type", elem.Kind)
 	}
+}
+
+// reasonSuffix appends a node's own explanation to a "not representable" error
+// when it carries one. A ref_cycle or depth-exceeded node names the chain that
+// produced it, which is the only part of the message a reader can act on.
+func reasonSuffix(s *Schema) string {
+	if s == nil {
+		return ""
+	}
+	return reasonText(s.UnsupportedReason)
+}
+
+// reasonText is the shared spelling of an appended reason, so the messages
+// FrameworkType builds and the one UnsupportedKindError builds cannot drift.
+func reasonText(reason string) string {
+	if reason == "" {
+		return ""
+	}
+	return ": " + reason
 }

@@ -28,6 +28,11 @@ type GeneratedRegistration struct {
 	// EndpointTag is the normalized OpenAPI tag registered as the test's map
 	// value; empty exactly when TestFileKey is.
 	EndpointTag string
+	// UnstableOperations are the x-unstable SDK keys this artifact calls, which
+	// the provider must enable for any of its calls to reach the API. Carried
+	// here because enabling them is wiring, and because only a successfully
+	// generated artifact should contribute entries.
+	UnstableOperations []string
 }
 
 // DatasourceConstructor returns the exported constructor a generated data source
@@ -142,33 +147,57 @@ func RemoveGeneratedDatasource(path, constructor string, check bool) (model.Arti
 // generatedDatasources file at path into a set; a missing file yields an empty
 // set.
 func registeredSet(path string) (map[string]struct{}, error) {
-	set := map[string]struct{}{}
-	existing, err := os.ReadFile(path)
-	if err != nil && !errors.Is(err, os.ErrNotExist) {
-		return nil, err
-	}
-	for _, c := range datasourceConstructorRe.FindAllString(string(existing), -1) {
-		set[c] = struct{}{}
-	}
-	return set, nil
+	return registeredSetMatching(path, datasourceConstructorRe, identity)
 }
 
 // writeGeneratedDatasources renders the generatedDatasources file from a set of
 // constructors (sorted, gofmt-canonicalized) and writes it through WriteFile.
 func writeGeneratedDatasources(path string, set map[string]struct{}, check bool) (model.ArtifactStatus, error) {
+	return writeGeneratedSet(path, generatedDatasourcesHeader, renderIdentifier, set, check)
+}
+
+// identity returns s unchanged; it is the unwrap function for a
+// registeredSetMatching call whose regex already captures the bare token.
+func identity(s string) string { return s }
+
+// renderIdentifier formats a bare Go identifier as one line of a generated
+// slice literal.
+func renderIdentifier(s string) string {
+	return "\t" + s + ",\n"
+}
+
+// registeredSetMatching reads the tokens re matches in the file at path,
+// unwraps each one, and returns them as a set; a missing file yields an empty
+// set. SyncGeneratedDatasources, SyncGeneratedResources and
+// SyncUnstableOperations all round-trip a generated slice file through this
+// extract/union/rewrite shape.
+func registeredSetMatching(path string, re *regexp.Regexp, unwrap func(string) string) (map[string]struct{}, error) {
+	set := map[string]struct{}{}
+	existing, err := os.ReadFile(path)
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
+		return nil, err
+	}
+	for _, m := range re.FindAllString(string(existing), -1) {
+		set[unwrap(m)] = struct{}{}
+	}
+	return set, nil
+}
+
+// writeGeneratedSet renders header, one render(key) line per sorted key in
+// set, and a closing brace, gofmt-canonicalizes the result, and writes it
+// through WriteFile.
+func writeGeneratedSet(path, header string, render func(string) string, set map[string]struct{}, check bool) (model.ArtifactStatus, error) {
 	var buf bytes.Buffer
-	buf.WriteString(generatedDatasourcesHeader)
+	buf.WriteString(header)
 	buf.WriteByte('\n')
-	for _, c := range sortedKeys(set) {
-		buf.WriteByte('\t')
-		buf.WriteString(c)
-		buf.WriteString(",\n")
+	for _, k := range sortedKeys(set) {
+		buf.WriteString(render(k))
 	}
 	buf.WriteString("}\n")
 
 	src, err := format.Source(buf.Bytes())
 	if err != nil {
-		return model.ArtifactStatusFailed, fmt.Errorf("emit: gofmt of generatedDatasources: %w", err)
+		return model.ArtifactStatusFailed, fmt.Errorf("emit: gofmt of %s: %w", path, err)
 	}
 	return WriteFile(path, src, check)
 }

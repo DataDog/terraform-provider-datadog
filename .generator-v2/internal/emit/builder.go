@@ -38,12 +38,12 @@ func (e *UnsupportedEmitError) Error() string {
 const envelopeReceiver = "attributes"
 
 // oneOfEnvelope renders one union at one use site: it returns the nested variant
-// blocks to hang under the union's own block, and the Go type of the field that
+// attributes to hang under the union's own attribute, and the Go type of the field that
 // holds the envelope model.
 //
-// Models and block views are cached on the envelope's parser-assigned Name, so two
+// Models and nested views are cached on the envelope's parser-assigned Name, so two
 // uses of one reusable oneOf component yield a single generated model and
-// identical schema rather than one copy per use site. The blocks are
+// identical schema rather than one copy per use site. The nested views are
 // cached too, not just the models: they are a pure function of the envelope's
 // variants, which are shared, so recomputing them could only introduce drift.
 //
@@ -98,14 +98,15 @@ func (b *dataSourceBuilder) oneOfEnvelope(a *model.Attribute) oneOfRender {
 		}
 
 		render.blocks = append(render.blocks, AttrView{
-			TFName:      v.TFName,
-			Description: v.Attribute.Description,
-			Optional:    v.Attribute.Optional,
-			Computed:    v.Attribute.Computed,
-			Sensitive:   v.Attribute.Sensitive,
-			IsBlock:     true,
-			Attributes:  attrs,
-			Blocks:      blocks,
+			TFName:           v.TFName,
+			Description:      v.Attribute.Description,
+			Optional:         v.Attribute.Optional,
+			Computed:         v.Attribute.Computed,
+			Sensitive:        v.Attribute.Sensitive,
+			IsBlock:          true,
+			Attributes:       attrs,
+			Blocks:           blocks,
+			ObjectValidators: b.oneOfVariantValidators(env, v),
 		})
 		envFields = append(envFields, ModelFieldView{
 			GoField: v.GoField,
@@ -184,7 +185,7 @@ func (b *dataSourceBuilder) oneOfValueVariant(
 }
 
 // oneOfRender is one envelope's render-ready output, cached per envelope name.
-// Both halves are a function of the envelope alone: the schema blocks because the
+// Both halves are a function of the envelope alone: the schema attributes because the
 // variants are shared, and the variant assignments because they are expressed
 // against variant-derived locals and carry GoField rather than a site-specific LHS.
 type oneOfRender struct {
@@ -200,25 +201,29 @@ func oneOfListAssignment(
 	render oneOfRender,
 	tfName, receiver, lhs string,
 	collection bool,
+	preserveExisting bool,
 ) ListAssignment {
 	outer := leafVar(tfName)
 	assignment := &OneOfAssignment{
-		Path:       env.Path,
-		SDKType:    env.SDKType,
-		GoModel:    render.goModel,
-		LHS:        lhs,
-		GetterOk:   getterOk(receiver, tfName),
-		Var:        outer,
-		Receiver:   outer,
-		ModelVar:   outer + "Envelope",
-		MatchVar:   outer + "Matches",
-		Optional:   env.Optional,
-		Collection: collection,
-		Variants:   render.variants,
+		Path:             env.Path,
+		SDKType:          env.SDKType,
+		GoModel:          render.goModel,
+		LHS:              lhs,
+		GetterOk:         getterOk(receiver, tfName),
+		Var:              outer,
+		Receiver:         outer,
+		ModelVar:         outer + "Envelope",
+		MatchVar:         outer + "Matches",
+		Optional:         env.Optional,
+		PreserveExisting: preserveExisting,
+		Collection:       collection,
+		Variants:         render.variants,
 	}
 	if collection {
 		// The members are read off each element, not off the slice pointer.
 		assignment.LoopVar = outer + "Item"
+		assignment.LoopIndex = outer + "Index"
+		assignment.ExistingVar = outer + "Existing"
 		assignment.Receiver = assignment.LoopVar
 	}
 	return ListAssignment{Kind: "oneof", LHS: lhs, GetterOk: assignment.GetterOk, Var: outer, OneOf: assignment}
@@ -563,7 +568,7 @@ func sdkArgumentExpression(sdkPackage string, arg model.SDKArgument) (expr, pars
 	// way a uuid-typed id already is, rather than by dispatching on the
 	// OpenAPI parameter's own (here irrelevant) schema type below.
 	if arg.TFName == "id" {
-		return idArgumentExpression(source, arg.GoType, parsedIDVar)
+		return idArgumentExpression(sdkPackage, source, parsedIDVar, arg.GoType, len(arg.Schema.Enum) > 0)
 	}
 
 	var value string
@@ -589,7 +594,9 @@ func sdkArgumentExpression(sdkPackage string, arg model.SDKArgument) (expr, pars
 		name := "parsed" + model.SdkName(arg.TFName)
 		return name, name, "uuid.Parse(" + value + ")", ""
 	}
-	if strings.ContainsAny(arg.GoType, "[]*{}.") || arg.GoType == "interface{}" {
+	// A named component type is cast directly; the attribute's own validator has
+	// already rejected a non-member by the time the cast runs.
+	if !model.IsBareSDKTypeName(arg.GoType) {
 		return "", "", "", fmt.Sprintf("SDK argument type %s is outside scalar-first support", arg.GoType)
 	}
 	return sdkPackage + "." + arg.GoType + "(" + value + ")", "", "", ""
@@ -600,7 +607,7 @@ func sdkArgumentExpression(sdkPackage string, arg model.SDKArgument) (expr, pars
 // it directly; every other type is recovered by parsing that string, mirroring
 // the uuid.UUID case sdkArgumentExpression already handles for non-id
 // arguments.
-func idArgumentExpression(source, goType, name string) (expr, parsedVar, parseCall, reason string) {
+func idArgumentExpression(sdkPackage, source, name, goType string, hasEnum bool) (expr, parsedVar, parseCall, reason string) {
 	value := source + ".ValueString()"
 	switch goType {
 	case "string":
@@ -617,6 +624,14 @@ func idArgumentExpression(source, goType, name string) (expr, parsedVar, parseCa
 		return goType + "(" + name + ")", name, "strconv.ParseFloat(" + value + ", 64)", ""
 	case "bool":
 		return name, name, "strconv.ParseBool(" + value + ")", ""
+	}
+
+	// An enum-typed parameter arrives spelled as its component's Go type, so it
+	// misses the "string" case above. The validating constructor recovers it —
+	// unlike a non-id argument, the id carries no validator of its own, so an
+	// unparseable value has to fail here. It returns a pointer, hence the deref.
+	if constructor, ok := model.SDKEnumFromValueConstructor(goType); ok && hasEnum {
+		return "*" + name, name, sdkPackage + "." + constructor + "(" + value + ")", ""
 	}
 	return "", "", "", fmt.Sprintf("id-bound SDK argument type %s is outside scalar-first support", goType)
 }
@@ -658,7 +673,7 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 		}
 		b.dropped = append(b.dropped, droppedEnvelopeMember(attr.Path))
 	}
-	if data == nil || data.TfType != "schema.SingleNestedBlock" {
+	if data == nil || data.TfType != "schema.SingleNestedAttribute" {
 		b.unsupported = append(b.unsupported, UnsupportedNode{
 			Path:   "response",
 			Reason: "expected a JSON:API envelope with a data object {data:{...}}",
@@ -691,7 +706,7 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 		})
 		return nil
 	}
-	if attributes.TfType != "schema.SingleNestedBlock" {
+	if attributes.TfType != "schema.SingleNestedAttribute" {
 		b.unsupported = append(b.unsupported, UnsupportedNode{
 			Path:   attributes.Path,
 			Reason: "envelope attributes must be an object",
@@ -700,7 +715,7 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 	}
 
 	// Hoist the attribute children to top-level paths: scalar leaves, typed list/map
-	// attributes, list-of-object blocks, and bare nested objects are in scope.
+	// attributes, object-list attributes, and bare nested objects are in scope.
 	leaves := make([]*model.Attribute, 0, len(attributes.Children))
 	for _, child := range attributes.Children {
 		if isAuditField(tfNameOf(child.Path)) {
@@ -794,11 +809,14 @@ type dataSourceBuilder struct {
 	// (e.g. "stringplanmodifier") referenced by any attribute's PlanModifiers,
 	// resource walks only, for the template's import block.
 	planModifierPkgs map[string]struct{}
-	// usesValidators records that some attribute rendered a validator, for the
-	// template's import block. Set during the walk by validatorViews, the same
-	// way planModifierPkgs is, so both "does the template need this import"
-	// answers come from the one pass that knows.
-	usesValidators bool
+	// usesStringValidators records that some scalar attribute rendered a string
+	// validator, for the template's import block. Set during the walk by
+	// validatorViews, the same way planModifierPkgs is.
+	usesStringValidators bool
+	// usesObjectValidators records oneOf selection validators separately from
+	// scalar string validators so the template imports only the validator
+	// constructor packages the generated artifact actually references.
+	usesObjectValidators bool
 }
 
 // responds reports whether walk should build a's response-mapping assignment.
@@ -839,8 +857,32 @@ func (b *dataSourceBuilder) validatorViews(a *model.Attribute) []string {
 	for i, v := range a.Validators {
 		out[i] = v.Name + "(" + strings.Join(v.Args, ", ") + ")"
 	}
-	b.usesValidators = true
+	b.usesStringValidators = true
 	return out
+}
+
+// oneOfVariantValidators returns an ExactlyOneOf validator for a configurable
+// variant. The framework validator automatically includes the attribute it is
+// attached to, so only sibling paths are passed. It defers when any candidate
+// is unknown, which lets Terraform planning proceed without treating an unknown
+// value as absent, while rejecting zero or multiple known selections before
+// request.Plan.Get attempts to decode a nested model.
+func (b *dataSourceBuilder) oneOfVariantValidators(env *model.OneOfEnvelope, current model.OneOfEnvelopeVariant) []string {
+	if !current.Attribute.Optional {
+		return nil
+	}
+
+	expressions := make([]string, 0, len(env.Variants)-1)
+	for _, candidate := range env.Variants {
+		if candidate.TFName == current.TFName {
+			continue
+		}
+		expressions = append(expressions,
+			fmt.Sprintf("path.MatchRelative().AtParent().AtName(%q)", candidate.TFName))
+	}
+
+	b.usesObjectValidators = true
+	return []string{"objectvalidator.ExactlyOneOf(" + strings.Join(expressions, ", ") + ")"}
 }
 
 // droppedEnvelopeMember is the info-diagnostic note for a JSON:API response
@@ -894,7 +936,7 @@ func droppedPathParameterCollision(path string) DroppedMember {
 // element); lhsPrefix is the model target the assignments write into ("state", or
 // the per-element accumulator). It returns the schema attr/block views plus the
 // scalar and list state assignments for the caller to place, recursing through
-// nested blocks.
+// nested attributes.
 //
 // stem is this struct's own naming stem, which its children accumulate from when
 // their schema is inline (modelname.go). It is separate from structName because
@@ -918,7 +960,7 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 		pmNames, pmType := b.planModifierViews(a)
 
 		// A union is keyed on OneOf, not on TfType: an envelope arrives wearing the
-		// same schema.SingleNestedBlock as an ordinary nested object, and walking it
+		// same schema.SingleNestedAttribute as an ordinary nested object, and walking it
 		// as one would emit Get<Variant>Ok getters the SDK oneOf wrapper does not have.
 		if a.OneOf != nil {
 			render := b.oneOfEnvelope(a)
@@ -944,7 +986,7 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 			})
 			if b.responds(a) {
 				lists = append(lists, oneOfListAssignment(
-					a.OneOf, render, tfName, receiver, lhsPrefix+"."+field, collection))
+					a.OneOf, render, tfName, receiver, lhsPrefix+"."+field, collection, b.filterByResponse))
 			}
 			continue
 		}
@@ -991,12 +1033,13 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 			fields = append(fields, ModelFieldView{GoField: field, GoType: a.GoType, TFName: tfName}) // types.List
 			if b.responds(a) {
 				lists = append(lists, ListAssignment{
-					Kind:          "primitive",
-					ContainerKind: "list",
-					LHS:           lhsPrefix + "." + field,
-					GetterOk:      getterOk(receiver, tfName),
-					Var:           leafVar(tfName),
-					ElementType:   a.ElementType,
+					Kind:             "primitive",
+					ContainerKind:    "list",
+					LHS:              lhsPrefix + "." + field,
+					GetterOk:         getterOk(receiver, tfName),
+					Var:              leafVar(tfName),
+					ElementType:      a.ElementType,
+					PreserveExisting: b.filterByResponse,
 				})
 			}
 
@@ -1025,7 +1068,7 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 				})
 			}
 
-		case "schema.ListNestedBlock":
+		case "schema.ListNestedAttribute":
 			elemStruct, childStem := b.namer.nested(stem, a)
 			base := lowerFirst(field)
 			loopVar, elemVar := base+"Item", base+"Model"
@@ -1047,19 +1090,22 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 			})
 			if b.responds(a) {
 				lists = append(lists, ListAssignment{
-					Kind:       "object",
-					LHS:        lhsPrefix + "." + field,
-					GetterOk:   getterOk(receiver, tfName),
-					Var:        leafVar(tfName),
-					LoopVar:    loopVar,
-					ElemVar:    elemVar,
-					ElemStruct: elemStruct,
-					Scalars:    childScalars,
-					Lists:      childLists,
+					Kind:             "object",
+					LHS:              lhsPrefix + "." + field,
+					GetterOk:         getterOk(receiver, tfName),
+					Var:              leafVar(tfName),
+					LoopVar:          loopVar,
+					LoopIndex:        base + "Index",
+					ExistingVar:      base + "Existing",
+					ElemVar:          elemVar,
+					ElemStruct:       elemStruct,
+					Scalars:          childScalars,
+					Lists:            childLists,
+					PreserveExisting: b.filterByResponse,
 				})
 			}
 
-		case "schema.SingleNestedBlock":
+		case "schema.SingleNestedAttribute":
 			childStruct, childStem := b.namer.nested(stem, a)
 			objVar := leafVar(tfName)
 			elemVar := lowerFirst(field) + "Model"
@@ -1081,14 +1127,15 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 			})
 			if b.responds(a) {
 				lists = append(lists, ListAssignment{
-					Kind:       "object_single",
-					LHS:        lhsPrefix + "." + field,
-					GetterOk:   getterOk(receiver, tfName),
-					Var:        objVar,
-					ElemVar:    elemVar,
-					ElemStruct: childStruct,
-					Scalars:    childScalars,
-					Lists:      childLists,
+					Kind:             "object_single",
+					LHS:              lhsPrefix + "." + field,
+					GetterOk:         getterOk(receiver, tfName),
+					Var:              objVar,
+					ElemVar:          elemVar,
+					ElemStruct:       childStruct,
+					Scalars:          childScalars,
+					Lists:            childLists,
+					PreserveExisting: b.filterByResponse,
 				})
 			}
 
@@ -1121,10 +1168,10 @@ func isLeafType(tfType string) bool {
 
 // isArrayType reports whether tfType is one of the array attribute forms the
 // envelope hoists into list machinery: a collection-of-primitive (ListAttribute)
-// or an array-of-object (ListNestedBlock).
+// or an array-of-object (ListNestedAttribute).
 func isArrayType(tfType string) bool {
 	switch tfType {
-	case "schema.ListAttribute", "schema.ListNestedBlock":
+	case "schema.ListAttribute", "schema.ListNestedAttribute":
 		return true
 	default:
 		return false
@@ -1135,8 +1182,8 @@ func isArrayType(tfType string) bool {
 func isMapType(tfType string) bool { return tfType == "schema.MapAttribute" }
 
 // isObjectType reports whether tfType is a bare nested object the envelope
-// hoists into single-object machinery (schema.SingleNestedBlock).
-func isObjectType(tfType string) bool { return tfType == "schema.SingleNestedBlock" }
+// hoists into single-object machinery (schema.SingleNestedAttribute).
+func isObjectType(tfType string) bool { return tfType == "schema.SingleNestedAttribute" }
 
 // auditFields are server-managed audit attributes dropped from the top level of a
 // generated data source: their timestamps and actor handles add schema noise
@@ -1252,8 +1299,6 @@ func unsupportedReason(tfType string) string {
 	switch tfType {
 	case "schema.MapNestedAttribute":
 		return "map-of-object not yet supported"
-	case "schema.SingleNestedAttribute", "schema.ListNestedAttribute":
-		return "nested-attribute form not yet supported"
 	default:
 		return fmt.Sprintf("attribute type %q not yet supported", tfType)
 	}
@@ -1279,14 +1324,14 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 	}
 
 	// Partition the top-level schema: required/optional leaves are SDK inputs, the lone
-	// ListNestedBlock is the items block (the model already dropped response
+	// ListNestedAttribute is the items container (the model already dropped response
 	// metadata siblings, keeping only the results array).
 	var inputLeaves, filterLeaves []*model.Attribute
 	var itemsBlock *model.Attribute
 	if a.Schema != nil {
 		for _, attr := range a.Schema.Attributes {
 			switch {
-			case attr.TfType == "schema.ListNestedBlock":
+			case attr.TfType == "schema.ListNestedAttribute":
 				itemsBlock = attr
 			case (attr.Required || attr.Optional) && isLeafType(attr.TfType):
 				inputLeaves = append(inputLeaves, attr)
@@ -1349,8 +1394,8 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 
 	// Non-scalar attributes append after the scalars and map after the literal via
 	// ItemLists, read off item.Attributes: primitive-terminal lists/maps as leaf
-	// attributes, list-of-object as a ListNestedBlock, and a bare object as a
-	// SingleNestedBlock — object forms have their element struct walked.
+	// attributes, list-of-object as a ListNestedAttribute, and a bare object as a
+	// SingleNestedAttribute — object forms have their element struct walked.
 	var itemBlocks []AttrView
 	var itemLists []ListAssignment
 	for _, n := range nonScalars {
@@ -1377,7 +1422,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 				Blocks:      render.blocks,
 			})
 			itemLists = append(itemLists, oneOfListAssignment(
-				n.OneOf, render, tfName, "item.Attributes", "r."+field, collection))
+				n.OneOf, render, tfName, "item.Attributes", "r."+field, collection, false))
 			continue
 		}
 
@@ -1394,7 +1439,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 			itemLists = append(itemLists, ListAssignment{
 				Kind: "primitive", ContainerKind: containerKind, LHS: "r." + field, GetterOk: getter, Var: leafVar(tfName), ElementType: n.ElementType,
 			})
-		case "schema.ListNestedBlock":
+		case "schema.ListNestedAttribute":
 			// itemStem, not "": these hang off the item element, so an inline child
 			// accumulates from the item struct the same way it would under walk.
 			elemStruct, childStem := b.namer.nested(itemStem, n)
@@ -1411,7 +1456,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 				LoopVar: loopVar, ElemVar: elemVar, ElemStruct: elemStruct,
 				Scalars: childScalars, Lists: childLists,
 			})
-		case "schema.SingleNestedBlock":
+		case "schema.SingleNestedAttribute":
 			elemStruct, childStem := b.namer.nested(itemStem, n)
 			objVar := leafVar(tfName)
 			elemVar := lowerFirst(model.SdkName(tfName)) + "Model"
@@ -1537,7 +1582,7 @@ func flattenItemElement(block *model.Attribute, unsupported *[]UnsupportedNode, 
 			}
 			scalars = append(scalars, itemElementLeaf{attr: child, chain: itemGetter("item", tfNameOf(child.Path))})
 		case "attributes":
-			if child.TfType != "schema.SingleNestedBlock" {
+			if child.TfType != "schema.SingleNestedAttribute" {
 				*unsupported = append(*unsupported, UnsupportedNode{Path: child.Path, Reason: "envelope attributes must be an object"})
 				continue
 			}
@@ -1818,7 +1863,9 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		// oneOfRenders — the state walk filters by response — so the request
 		// walk's own answer is needed too.
 		UsesFmt:              len(b.oneOfRenders) > 0 || requestImps.fmt,
-		UsesValidators:       b.usesValidators,
+		UsesValidators:       b.usesStringValidators || b.usesObjectValidators,
+		UsesStringValidators: b.usesStringValidators,
+		UsesObjectValidators: b.usesObjectValidators,
 		UsesPlanModifiers:    len(planModifierPkgs) > 0,
 		PlanModifierPackages: planModifierPkgs,
 		Import:               buildImportView(pathAttrs),
@@ -1867,7 +1914,11 @@ func setUpdateBodyID(envelope *RequestEnvelopeView, call *model.SDKCall, args []
 
 	// Otherwise the body parses under a name of its own, since a path argument
 	// of a different type may already hold parsedIDVar in this scope.
-	expr, parsedVar, parseCall, unsupportedReason := idArgumentExpression("state.ID", goType, requestIDVar)
+	// hasEnum is always false here: RequestIDGoType comes from SDKScalarGoType,
+	// which reads type and format only, so an enum-typed data.id arrives
+	// spelled "string" and never reaches the enum branch below.
+	expr, parsedVar, parseCall, unsupportedReason := idArgumentExpression(
+		call.GoPackage, "state.ID", requestIDVar, goType, false)
 	if unsupportedReason != "" {
 		return unsupportedReason
 	}
@@ -2292,7 +2343,7 @@ func notNullOrUnknown(expr string) string {
 
 // buildObjectCollectionField derives a list-of-objects field's
 // RequestFieldView (FR-034, T130). The framework's own Get(ctx, &state) has
-// already decoded a ListNestedBlock/ListNestedAttribute into a native
+// already decoded a ListNestedAttribute into a native
 // []*<ElemModel> slice, the same way it decodes a lone nested object into a
 // *Model pointer (see buildNestedRequestField) — so, unlike the primitive
 // case, no ElementsAs conversion applies here. Each already-decoded element

@@ -50,3 +50,24 @@ var _ = Describe("SDKScalarGoType (port of formatter.simple_type)", func() {
 		Expect(got).To(Equal("string"))
 	})
 })
+
+var _ = Describe("SDKEnumFromValueConstructor (port of model_enum.j2)", func() {
+	DescribeTable("the constructor name the SDK declares for an enum component",
+		func(goType, want string, wantOK bool) {
+			got, ok := SDKEnumFromValueConstructor(goType)
+			Expect(ok).To(Equal(wantOK))
+			Expect(got).To(Equal(want))
+		},
+		// The two real path-parameter enums that reached this rule.
+		Entry("AssetType", "AssetType", "NewAssetTypeFromValue", true),
+		Entry("RumPermanentRetentionFilterID",
+			"RumPermanentRetentionFilterID", "NewRumPermanentRetentionFilterIDFromValue", true),
+		// The SDK declares New<T>FromValue only for a named component, so every
+		// composite spelling has no constructor rather than an invented one.
+		Entry("a qualified name", "datadogV2.AssetType", "", false),
+		Entry("a slice", "[]AssetType", "", false),
+		Entry("a pointer", "*AssetType", "", false),
+		Entry("the empty interface", "interface{}", "", false),
+		Entry("an empty spelling", "", "", false),
+	)
+})

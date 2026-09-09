@@ -125,7 +125,7 @@ type OneOfEnvelopeView struct {
 
 // OneOfVariantView is one alternative of a OneOfEnvelopeView.
 type OneOfVariantView struct {
-	// TFName is the nested block name; GoField the pointer field on the envelope
+	// TFName is the nested attribute name; GoField the pointer field on the envelope
 	// model whose non-nil-ness selects this variant.
 	TFName  string
 	GoField string
@@ -247,13 +247,14 @@ type SchemaView struct {
 }
 
 // AttrView is one node of the Terraform schema tree. A leaf renders a typed
-// schema.*Attribute; a block (IsBlock) renders a schema.*NestedBlock and
-// recurses through its own Attributes and Blocks.
+// schema.*Attribute; a nested container (IsBlock) renders a
+// schema.*NestedAttribute and recurses through its own Attributes and Blocks.
 type AttrView struct {
 	// TFName is the Terraform attribute key, snake_case, e.g. "link_count".
 	TFName string
 	// TFType is the framework attribute type token for a leaf, e.g.
-	// "schema.StringAttribute". Ignored for blocks (ListBlock picks the type).
+	// "schema.StringAttribute". Ignored for nested containers (ListBlock picks
+	// the type).
 	TFType string
 	// ElementType is the framework attr.Type rendered on a schema.ListAttribute,
 	// e.g. "types.StringType". Non-empty only for a collection-of-primitive leaf.
@@ -266,16 +267,21 @@ type AttrView struct {
 	Computed  bool
 	Sensitive bool
 
-	// IsBlock marks a nested object/list, rendered under a Blocks map.
+	// IsBlock marks a nested object/list. The historical name is retained in
+	// the internal view, but templates render it in an Attributes map.
 	IsBlock bool
-	// ListBlock renders schema.ListNestedBlock when true and
-	// schema.SingleNestedBlock when false. Ignored unless IsBlock.
+	// ListBlock renders schema.ListNestedAttribute when true and
+	// schema.SingleNestedAttribute when false. Ignored unless IsBlock.
 	ListBlock bool
 
 	// Validators renders the "Validators: []validator.String{...}" field, one
 	// rendered constructor call per entry (e.g. `stringvalidator.OneOf("a", "b")`).
 	// Always validator.String, the only validator kind this generator produces.
 	Validators []string
+	// ObjectValidators renders validators for a nested object attribute. oneOf
+	// variants use this to enforce exactly-one selection during configuration
+	// validation, before an unknown planned object can reach model decoding.
+	ObjectValidators []string
 	// PlanModifiers renders the "PlanModifiers: []planmodifier.<T>{...}" field,
 	// one rendered constructor call per entry (e.g. `stringplanmodifier.UseStateForUnknown`,
 	// with "()" appended by the template). Empty unless the underlying
@@ -286,7 +292,7 @@ type AttrView struct {
 	// PlanModifiers is non-empty.
 	PlanModifierType string
 
-	// Attributes and Blocks are the leaf and nested children of a block; both
+	// Attributes and Blocks are the leaf and nested children of a container; both
 	// are empty for a leaf attribute.
 	Attributes []AttrView
 	Blocks     []AttrView
@@ -404,11 +410,19 @@ type ListAssignment struct {
 	// collection, e.g. "types.ListType{ElemType: types.StringType}". Empty for
 	// an object list.
 	ElementType string
+	// PreserveExisting is enabled for resource response mapping so fields the
+	// request owns but the API never returns survive a nested-model rebuild.
+	PreserveExisting bool
 
 	// The fields below back an object list (Kind == "object").
 
 	// LoopVar is the per-element loop variable, e.g. "entriesItem".
 	LoopVar string
+	// LoopIndex and ExistingVar let object collections retain request-only
+	// fields from the corresponding configured element while rebuilding the
+	// response-backed list.
+	LoopIndex   string
+	ExistingVar string
 	// ElemVar is the per-element model accumulator, e.g. "entriesModel".
 	ElemVar string
 	// ElemStruct is the generated nested model struct, e.g. "EntriesModel".
@@ -457,10 +471,17 @@ type OneOfAssignment struct {
 	// Optional permits zero populated members, which is how an absent nullable
 	// union arrives. When false, zero members is an error.
 	Optional bool
+	// PreserveExisting retains the previously selected variant model when the
+	// response selects that same variant, preserving request-only leaves.
+	PreserveExisting bool
 	// Collection marks a list whose element is an envelope; LoopVar is then the
 	// per-element local.
 	Collection bool
 	LoopVar    string
+	// LoopIndex and ExistingVar serve the same positional preservation purpose
+	// as their ListAssignment counterparts for collection-shaped unions.
+	LoopIndex   string
+	ExistingVar string
 	// Variants are the alternatives, ordered by Terraform variant name.
 	Variants []OneOfVariantAssignment
 }
@@ -529,6 +550,8 @@ type ResourceView struct {
 
 	UsesFmt              bool
 	UsesValidators       bool
+	UsesStringValidators bool
+	UsesObjectValidators bool
 	UsesPlanModifiers    bool
 	PlanModifierPackages []string
 	// UsesUUID and UsesStrconv add the google/uuid and strconv imports for a

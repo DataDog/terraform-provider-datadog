@@ -6,8 +6,8 @@ import (
 )
 
 // FrameworkType is the context-blind type table: one schema node in, its two
-// framework type strings out. Objects always map to the block form here — the
-// builder rewrites to attribute form, not this function (see schema_test.go).
+// framework type strings out. New protocol-v6 schemas use nested attributes for
+// object containers so callers never need a compatibility-only block form.
 var _ = Describe("FrameworkType", func() {
 
 	DescribeTable("maps a representable schema node to its framework type strings",
@@ -38,9 +38,9 @@ var _ = Describe("FrameworkType", func() {
 		Entry("a boolean primitive becomes BoolAttribute / types.Bool",
 			&Schema{Kind: SchemaKindPrimitive, Type: "boolean"},
 			"schema.BoolAttribute", "types.Bool"),
-		Entry("an object becomes SingleNestedBlock / types.Object (block-default, context-blind)",
+		Entry("an object becomes SingleNestedAttribute / types.Object",
 			&Schema{Kind: SchemaKindObject},
-			"schema.SingleNestedBlock", "types.Object"),
+			"schema.SingleNestedAttribute", "types.Object"),
 		Entry("an array of primitive becomes ListAttribute / types.List",
 			&Schema{Kind: SchemaKindArray, Items: &Schema{Kind: SchemaKindPrimitive, Type: "string"}},
 			"schema.ListAttribute", "types.List"),
@@ -50,9 +50,9 @@ var _ = Describe("FrameworkType", func() {
 		Entry("an array of map becomes ListAttribute / types.List",
 			arrSchema(mapSchema(primSchema("string"))),
 			"schema.ListAttribute", "types.List"),
-		Entry("an array of object becomes ListNestedBlock / types.List",
+		Entry("an array of object becomes ListNestedAttribute / types.List",
 			&Schema{Kind: SchemaKindArray, Items: &Schema{Kind: SchemaKindObject}},
-			"schema.ListNestedBlock", "types.List"),
+			"schema.ListNestedAttribute", "types.List"),
 		Entry("a map of primitive becomes MapAttribute / types.Map",
 			&Schema{Kind: SchemaKindMap, Items: &Schema{Kind: SchemaKindPrimitive, Type: "string"}},
 			"schema.MapAttribute", "types.Map"),
@@ -65,10 +65,10 @@ var _ = Describe("FrameworkType", func() {
 		Entry("a map of object becomes MapNestedAttribute / types.Map",
 			&Schema{Kind: SchemaKindMap, Items: &Schema{Kind: SchemaKindObject}},
 			"schema.MapNestedAttribute", "types.Map"),
-		Entry("an array of oneOf nests its element's variant blocks, like an array of object",
+		Entry("an array of oneOf nests its element's variant attributes, like an array of object",
 			&Schema{Kind: SchemaKindArray, Items: &Schema{Kind: SchemaKindOneOf}},
-			"schema.ListNestedBlock", "types.List"),
-		Entry("a map of oneOf nests its value's variant blocks, like a map of object",
+			"schema.ListNestedAttribute", "types.List"),
+		Entry("a map of oneOf nests its value's variant attributes, like a map of object",
 			&Schema{Kind: SchemaKindMap, Items: &Schema{Kind: SchemaKindOneOf}},
 			"schema.MapNestedAttribute", "types.Map"),
 	)
@@ -85,6 +85,20 @@ var _ = Describe("FrameworkType", func() {
 			&Schema{Kind: SchemaKindRefCycle}, "ref_cycle"),
 		Entry("an unsupported node has no framework equivalent",
 			&Schema{Kind: SchemaKindUnsupported}, "unsupported"),
+		// The reason is the actionable half of the message: a cycle names the
+		// chain that produced it. Reached through a list or a map the node is not
+		// the one being mapped, so its explanation has to be carried across.
+		Entry("a cyclic node carries its own explanation",
+			&Schema{Kind: SchemaKindRefCycle, UnsupportedReason: "circular $ref: A -> B -> A"},
+			"circular $ref: A -> B -> A"),
+		Entry("a cyclic array element carries its explanation",
+			&Schema{Kind: SchemaKindArray, Items: &Schema{
+				Kind: SchemaKindRefCycle, UnsupportedReason: "circular $ref: A -> B -> A"}},
+			"circular $ref: A -> B -> A"),
+		Entry("a cyclic map value carries its explanation",
+			&Schema{Kind: SchemaKindMap, Items: &Schema{
+				Kind: SchemaKindRefCycle, UnsupportedReason: "circular $ref: A -> B -> A"}},
+			"circular $ref: A -> B -> A"),
 		Entry("a primitive with an unrecognized type names that type",
 			&Schema{Kind: SchemaKindPrimitive, Type: "decimal"}, "decimal"),
 		Entry("a primitive with an empty type cannot be mapped",

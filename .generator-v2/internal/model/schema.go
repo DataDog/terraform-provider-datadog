@@ -7,9 +7,10 @@ import (
 	"strings"
 )
 
-// nestingMode tracks whether the current subtree nests as blocks or as attributes.
-// Inside a map<object> value blocks are forbidden, so the builder switches to
-// nestAttribute and rewrites block forms to their attribute counterparts.
+// nestingMode is retained for the map<object> projection boundary. Generated
+// protocol-v6 schemas use nested attributes in every context, so both modes now
+// produce attribute forms; keeping the boundary explicit leaves map-specific
+// traversal and diagnostics intact.
 type nestingMode int
 
 const (
@@ -46,15 +47,8 @@ type UnsupportedKindError struct {
 }
 
 func (e *UnsupportedKindError) Error() string {
-	if e.Reason != "" {
-		return fmt.Sprintf(
-			"model: cannot build attribute at %q: schema kind %q is not representable: %s",
-			e.Path,
-			e.Kind,
-			e.Reason,
-		)
-	}
-	return fmt.Sprintf("model: cannot build attribute at %q: schema kind %q is not representable", e.Path, e.Kind)
+	return fmt.Sprintf("model: cannot build attribute at %q: schema kind %q is not representable%s",
+		e.Path, e.Kind, reasonText(e.Reason))
 }
 
 // OneOfProjectionError reports a union that cannot be projected into a Terraform
@@ -210,8 +204,8 @@ func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, requir
 	if err != nil {
 		return nil, err
 	}
-	// Inside a map value the framework forbids blocks, so rewrite block forms to
-	// attribute forms (leaf types are unaffected).
+	// Preserve the map-value projection boundary and normalize any legacy block
+	// form a caller might supply (leaf types are unaffected).
 	if mode == nestAttribute {
 		tfType = attributeForm(tfType)
 	}
@@ -260,7 +254,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, requir
 			attr.Children, attr.ModelRefName, attr.RequestModelRefName = children, s.Items.RefName, s.Items.RequestRefName
 		case SchemaKindOneOf:
 			// The list itself carries the envelope: its elements are variant
-			// blocks, so no attribute stands at the element path.
+			// attributes, so no separate attribute stands at the element path.
 			variants, envelope, err := b.oneOfVariants(s.Items, path+"[]", mode)
 			if err != nil {
 				return nil, err
@@ -392,11 +386,11 @@ func (b *treeBuilder) envelope(s *Schema, path string, mode nestingMode, require
 }
 
 // oneOfVariants projects the alternatives of a normalized union into one nested
-// block each, pathed under basePath, and returns them with the envelope metadata
+// attribute each, pathed under basePath, and returns them with the envelope metadata
 // the emit layer needs. basePath is the union's own schema path: the envelope
 // attribute's path for a root or property union, and the element path
 // ("choices[]", "choices{}") when the union is a collection's element — in that
-// case the collection attribute carries the envelope and these blocks are its
+// case the collection attribute carries the envelope and these attributes are its
 // children directly.
 func (b *treeBuilder) oneOfVariants(s *Schema, basePath string, mode nestingMode) ([]*Attribute, *OneOfEnvelope, error) {
 	spec := s.OneOf
@@ -453,7 +447,7 @@ func (b *treeBuilder) oneOfVariants(s *Schema, basePath string, mode nestingMode
 	return blocks, envelope, nil
 }
 
-// oneOfVariant projects one alternative into its nested block. An object
+// oneOfVariant projects one alternative into its nested attribute. An object
 // alternative exposes its own fields; every other shape — scalar, list, map, or a
 // directly nested union — has no fields to expose, so it gets a single child named
 // "value" holding the alternative itself. union is the schema of the oneOf node
@@ -633,8 +627,8 @@ func PlanModifierPackage(goType string) string {
 	return strings.ToLower(strings.TrimPrefix(goType, "types.")) + "planmodifier"
 }
 
-// attributeForm rewrites a block framework type into its nested-attribute
-// counterpart, leaving leaf and already-attribute forms alone.
+// attributeForm rewrites compatibility block forms into their protocol-v6
+// nested-attribute counterparts, leaving leaf and attribute forms alone.
 func attributeForm(tfType string) string {
 	switch tfType {
 	case "schema.SingleNestedBlock":
@@ -647,13 +641,10 @@ func attributeForm(tfType string) string {
 }
 
 // singleNestedForm is the single-nested framework type valid in mode's nesting
-// world. Envelopes and variant blocks are always single-nested: the envelope holds
+// world. Envelopes and variant attributes are always single-nested: the envelope holds
 // one variant, the variant one alternative.
-func singleNestedForm(mode nestingMode) string {
-	if mode == nestAttribute {
-		return "schema.SingleNestedAttribute"
-	}
-	return "schema.SingleNestedBlock"
+func singleNestedForm(_ nestingMode) string {
+	return "schema.SingleNestedAttribute"
 }
 
 // oneOfModelName is the generated Go struct name for an envelope or variant.

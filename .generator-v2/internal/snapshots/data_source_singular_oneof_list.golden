@@ -77,13 +77,12 @@ func (d *datadogIncidentTypeDataSource) Schema(_ context.Context, _ datasource.S
 				Description: "Name of the incident type.",
 				Computed:    true,
 			},
-		},
-		Blocks: map[string]schema.Block{
-			"notifications": schema.ListNestedBlock{
+
+			"notifications": schema.ListNestedAttribute{
 				Description: "Every configured notification.",
-				NestedObject: schema.NestedBlockObject{
-					Blocks: map[string]schema.Block{
-						"string": schema.SingleNestedBlock{
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"string": schema.SingleNestedAttribute{
 							Description: "A raw notification target.",
 
 							Attributes: map[string]schema.Attribute{
@@ -92,9 +91,10 @@ func (d *datadogIncidentTypeDataSource) Schema(_ context.Context, _ datasource.S
 									Computed:    true,
 								},
 							},
+							Computed: true,
 						},
 
-						"webhook_notification": schema.SingleNestedBlock{
+						"webhook_notification": schema.SingleNestedAttribute{
 							Description: "",
 
 							Attributes: map[string]schema.Attribute{
@@ -107,9 +107,11 @@ func (d *datadogIncidentTypeDataSource) Schema(_ context.Context, _ datasource.S
 									Computed:    true,
 								},
 							},
+							Computed: true,
 						},
 					},
 				},
+				Computed: true,
 			},
 		},
 	}

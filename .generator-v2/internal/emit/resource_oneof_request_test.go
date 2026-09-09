@@ -91,6 +91,53 @@ func threeRoleUnionOperation() *model.Operation {
 }
 
 var _ = Describe("BuildResourceView oneOf request expansion", func() {
+	It("attaches plan-time exactly-one validation to every configurable variant", func() {
+		op := threeRoleUnionOperation()
+		for _, role := range []*model.Operation{op.ResolvedGroup.Create, op.ResolvedGroup.Update, op.ResolvedGroup.Read} {
+			union := role.RequestSchema
+			if role == op.ResolvedGroup.Read {
+				union = role.ResponseSchema
+			}
+			auth := union.Properties["data"].Properties["attributes"].Properties["auth"]
+			auth.OneOf.Variants = append(auth.OneOf.Variants, model.OneOfVariant{
+				TFName: "string", GoName: "String",
+				Schema:       &model.Schema{Kind: model.SchemaKindPrimitive, Type: "string"},
+				ValueWrapped: true,
+			})
+		}
+
+		view := buildUnionView(op)
+		auth := blockByName(view.Schema.Blocks, "auth")
+		stringVariant := blockByName(auth.Blocks, "string")
+		basicVariant := blockByName(auth.Blocks, "widget_basic_auth")
+
+		Expect(stringVariant.ObjectValidators).To(Equal([]string{
+			`objectvalidator.ExactlyOneOf(path.MatchRelative().AtParent().AtName("widget_basic_auth"))`,
+		}))
+		Expect(basicVariant.ObjectValidators).To(Equal([]string{
+			`objectvalidator.ExactlyOneOf(path.MatchRelative().AtParent().AtName("string"))`,
+		}))
+		Expect(view.UsesObjectValidators).To(BeTrue())
+
+		src, err := RenderResource(view)
+		Expect(err).NotTo(HaveOccurred())
+		out := string(src)
+		Expect(out).To(ContainSubstring(`"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"`))
+		Expect(out).To(ContainSubstring(`Validators: []validator.Object{`))
+		Expect(out).To(ContainSubstring(
+			`objectvalidator.ExactlyOneOf(path.MatchRelative().AtParent().AtName("widget_basic_auth")),`))
+	})
+
+	It("requires the sole variant without inventing a sibling path", func() {
+		view := buildUnionView(threeRoleUnionOperation())
+		auth := blockByName(view.Schema.Blocks, "auth")
+		variant := blockByName(auth.Blocks, "widget_basic_auth")
+
+		Expect(variant.ObjectValidators).To(Equal([]string{
+			`objectvalidator.ExactlyOneOf()`,
+		}))
+	})
+
 	It("expands the selected variant into each role's own SDK wrapper, not the merged tree's", func() {
 		view := buildUnionView(threeRoleUnionOperation())
 
@@ -157,6 +204,18 @@ var _ = Describe("BuildResourceView oneOf request expansion", func() {
 		check := strings.Index(out, "authMatches != 1")
 		Expect(check).To(BeNumerically(">", 0))
 		Expect(check).To(BeNumerically("<", strings.Index(out, "r.Api.CreateWidget(")))
+	})
+
+	It("preserves request-only fields when the response selects the configured variant", func() {
+		view := buildUnionView(threeRoleUnionOperation())
+		src, err := RenderResource(view)
+		Expect(err).NotTo(HaveOccurred())
+
+		out := string(src)
+		Expect(out).To(ContainSubstring(`if state.Auth != nil && state.Auth.WidgetBasicAuth != nil {`))
+		Expect(out).To(ContainSubstring(`widgetBasicAuthModel = state.Auth.WidgetBasicAuth`))
+		Expect(out).To(ContainSubstring(`settingsModel := state.Settings`))
+		Expect(out).To(ContainSubstring(`if settingsModel == nil {`))
 	})
 
 	It("converts a value-wrapped scalar alternative straight into the SDK member", func() {

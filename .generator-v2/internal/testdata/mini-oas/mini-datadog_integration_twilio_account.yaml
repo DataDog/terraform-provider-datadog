@@ -216,6 +216,15 @@ paths:
         - integrations_read
       description: Get a Twilio integration account.
       operationId: GetTwilioIntegrationAccount
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: integration_twilio_account
+        tf_description: Provides a Datadog Twilio integration account resource.
+        group:
+          create: CreateTwilioIntegrationAccount
+          read: GetTwilioIntegrationAccount
+          update: UpdateTwilioIntegrationAccount
+          delete: DeleteTwilioIntegrationAccount
       x-unstable: '**Note**: This endpoint is in public beta.
 
         If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).'

@@ -110,6 +110,10 @@ type Operation struct {
 	Tag string
 	// Tracking is the decoded tracking-field extension
 	Tracking *TrackingFieldMetadata
+	// Unstable records that the operation declares x-unstable. Only its presence
+	// is kept: the extension's value is a human-readable beta notice, while the
+	// SDK gates the call on the operation id alone.
+	Unstable bool
 	// RequestSchema is the resolved request body schema, if any.
 	RequestSchema *Schema
 	// RequestRefName is the last path segment of the request body $ref, e.g.
@@ -395,7 +399,8 @@ type Schema struct {
 	// from the same OpenAPI input is FR-005a's prescribed route.
 	HasDefault bool
 	ReadOnly   bool
-	// Sensitive is true when the schema is annotated sensitive: true.
+	// Sensitive is true when explicitly annotated sensitive or inferred from an
+	// unoverridden OpenAPI writeOnly / Datadog x-secret marker.
 	Sensitive bool
 	// Description is the OpenAPI description, populated during NormalizeSchemas.
 	Description string
@@ -540,6 +545,12 @@ type Artifact struct {
 	// e.g. query parameters dropped from a plural data source's filter set. The
 	// artifact still emits; the run report surfaces these as info.
 	Diagnostics []Diagnostic
+	// UnstableOperations are the SDK keys ("v2.GetTwilioIntegrationAccount") of
+	// every x-unstable operation this artifact calls, sorted and deduplicated.
+	// The pinned SDK defaults each to disabled, so a generated artifact that
+	// names any of these fails every call at runtime until the provider enables
+	// them. Empty for an artifact whose operations are all stable.
+	UnstableOperations []string
 }
 
 // AttributeTree is the root of the Terraform schema tree for one artifact.
@@ -547,7 +558,7 @@ type AttributeTree struct {
 	Attributes []*Attribute
 }
 
-// Attribute mirrors a Terraform Plugin Framework attribute or nested block
+// Attribute mirrors a Terraform Plugin Framework attribute or nested container
 // one-to-one. The emitter walks this tree to produce the Schema() method body.
 type Attribute struct {
 	// Path is the dot-delimited attribute path, e.g. spec.replicas. It doubles
@@ -627,7 +638,7 @@ type Attribute struct {
 	PlanModifiers []PlanModifierSpec
 	// Description is always populated from the OpenAPI description (repo convention).
 	Description string
-	// Children holds nested attributes for nested blocks.
+	// Children holds the child attributes of a nested container.
 	Children []*Attribute
 	// ModelRefName is the OpenAPI component name that supplied the *object* schema
 	// backing this attribute's generated model struct: the node's own schema for an
@@ -651,17 +662,17 @@ type Attribute struct {
 	// OneOf is non-nil when this attribute carries a synthetic oneOf envelope:
 	// either the envelope itself (a union at the root or an object property) or
 	// the collection whose element is a union. Children then holds the variant
-	// blocks, and OneOf holds the naming and SDK-binding metadata the emit layer
+	// attributes, and OneOf holds the naming and SDK-binding metadata the emit layer
 	// needs to map them.
 	OneOf *OneOfEnvelope
 }
 
 // OneOfEnvelope is the Terraform projection of a parser-normalized OneOfSpec: the
-// synthetic block holding one nested variant block per non-null alternative,
+// synthetic attribute holding one nested variant attribute per non-null alternative,
 // exactly one of which is selected whenever the envelope is present.
 //
 // It hangs off the Attribute standing at the union's position in the tree; that
-// attribute's Children are the projected variant blocks, in the same order as
+// attribute's Children are the projected variant attributes, in the same order as
 // Variants. Terraform concerns live here rather than on OneOfSpec so that
 // OpenAPI normalization stays free of them.
 type OneOfEnvelope struct {

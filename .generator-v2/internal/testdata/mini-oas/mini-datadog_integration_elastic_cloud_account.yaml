@@ -84,7 +84,8 @@ paths:
       x-codegen-request-body-name: body
       x-datadog-tf-generator:
         artifact_kind: resource
-        artifact_name: elastic_cloud
+        artifact_name: integration_elastic_cloud
+        tf_description: Provide a Datadog Elastic Cloud integration account resource.
         group:
           create: CreateElasticCloudIntegrationAccount
           read: GetElasticCloudIntegrationAccount
