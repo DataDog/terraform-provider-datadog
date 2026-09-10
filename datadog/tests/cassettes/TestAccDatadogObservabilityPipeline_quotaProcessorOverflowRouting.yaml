@@ -1,0 +1,107 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 656
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"bucket":"my-overflow-bucket","id":"s3-overflow-dest","inputs":["quota-processor.overflow_events"],"key_prefix":"overflow/","region":"us-east-1","storage_class":"STANDARD","type":"amazon_s3"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"quota-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"quota-processor","include":"*","limit":{"enforce":"events","limit":1000},"name":"overflowQuota","overflow_action":"overflow_routing","type":"quota"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"quota-overflow-pipeline"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 975
+        uncompressed: false
+        body: |
+            {"data":{"id":"8230a242-ad27-11f1-a2ef-da7ad0900002","type":"pipelines","attributes":{"name":"quota-overflow-pipeline","config":{"destinations":[{"bucket":"my-overflow-bucket","id":"s3-overflow-dest","inputs":["quota-processor.overflow_events"],"key_prefix":"overflow/","region":"us-east-1","storage_class":"STANDARD","type":"amazon_s3"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"quota-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"quota-processor","include":"*","limit":{"enforce":"events","limit":1000},"name":"overflowQuota","overflow_action":"overflow_routing","type":"quota"}]}],"processors":[{"enabled":true,"id":"quota-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"quota-processor","include":"*","limit":{"enforce":"events","limit":1000},"name":"overflowQuota","overflow_action":"overflow_routing","type":"quota"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 877.134584ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/8230a242-ad27-11f1-a2ef-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 975
+        uncompressed: false
+        body: |
+            {"data":{"id":"8230a242-ad27-11f1-a2ef-da7ad0900002","type":"pipelines","attributes":{"name":"quota-overflow-pipeline","config":{"destinations":[{"bucket":"my-overflow-bucket","id":"s3-overflow-dest","inputs":["quota-processor.overflow_events"],"key_prefix":"overflow/","region":"us-east-1","storage_class":"STANDARD","type":"amazon_s3"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"quota-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"quota-processor","include":"*","limit":{"enforce":"events","limit":1000},"name":"overflowQuota","overflow_action":"overflow_routing","type":"quota"}]}],"processors":[{"enabled":true,"id":"quota-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"quota-processor","include":"*","limit":{"enforce":"events","limit":1000},"name":"overflowQuota","overflow_action":"overflow_routing","type":"quota"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 316.891334ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/8230a242-ad27-11f1-a2ef-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 468.853709ms
