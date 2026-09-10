@@ -747,15 +747,17 @@ resource "datadog_observability_pipeline" "quota_overflow" {
 
     processor_group {
       id      = "quota-group-1"
+      enabled = true
+      include = "*"
       inputs  = ["source-1"]
 
       processor {
         id      = "quota-processor"
-        inputs  = ["quota-group-1"]
+        enabled = true
+        include = "*"
 
         quota {
           name            = "overflowQuota"
-          drop_events     = false
           overflow_action = "overflow_routing"
 
           limit {
