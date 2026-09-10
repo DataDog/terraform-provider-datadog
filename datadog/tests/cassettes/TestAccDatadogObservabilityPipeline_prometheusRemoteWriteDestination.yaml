@@ -1,0 +1,212 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 364
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"auth_strategy":"none","endpoint_url_key":"PROMETHEUS_ENDPOINT_URL","id":"prometheus-remote-write-1","inputs":["source-1"],"type":"prometheus_remote_write"}],"pipeline_type":"metrics","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"prometheus-remote-write-destination-pipeline"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 446
+        uncompressed: false
+        body: |
+            {"data":{"id":"49a9beb6-ad5b-11f1-bdf6-da7ad0900002","type":"pipelines","attributes":{"name":"prometheus-remote-write-destination-pipeline","config":{"destinations":[{"auth_strategy":"none","endpoint_url_key":"PROMETHEUS_ENDPOINT_URL","id":"prometheus-remote-write-1","inputs":["source-1"],"type":"prometheus_remote_write"}],"pipeline_type":"metrics","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 853.443334ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/49a9beb6-ad5b-11f1-bdf6-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 446
+        uncompressed: false
+        body: |
+            {"data":{"id":"49a9beb6-ad5b-11f1-bdf6-da7ad0900002","type":"pipelines","attributes":{"name":"prometheus-remote-write-destination-pipeline","config":{"destinations":[{"auth_strategy":"none","endpoint_url_key":"PROMETHEUS_ENDPOINT_URL","id":"prometheus-remote-write-1","inputs":["source-1"],"type":"prometheus_remote_write"}],"pipeline_type":"metrics","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 453.912167ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/49a9beb6-ad5b-11f1-bdf6-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 446
+        uncompressed: false
+        body: |
+            {"data":{"id":"49a9beb6-ad5b-11f1-bdf6-da7ad0900002","type":"pipelines","attributes":{"name":"prometheus-remote-write-destination-pipeline","config":{"destinations":[{"auth_strategy":"none","endpoint_url_key":"PROMETHEUS_ENDPOINT_URL","id":"prometheus-remote-write-1","inputs":["source-1"],"type":"prometheus_remote_write"}],"pipeline_type":"metrics","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 358.672916ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 709
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"auth_strategy":"bearer","buffer":{"max_size":1073741824,"type":"disk","when_full":"drop_newest"},"default_namespace":"custom_namespace","endpoint_url_key":"PROMETHEUS_ENDPOINT_URL","id":"prometheus-remote-write-1","inputs":["source-1"],"tenant_id":"tenant-1","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/prometheus.crt","key_file":"/etc/ssl/private/prometheus.key","server_name":"prometheus.example.com"},"token_key":"PROMETHEUS_TOKEN","type":"prometheus_remote_write"}],"pipeline_type":"metrics","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"prometheus-remote-write-destination-pipeline"},"id":"","type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/49a9beb6-ad5b-11f1-bdf6-da7ad0900002
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 783
+        uncompressed: false
+        body: |
+            {"data":{"id":"49a9beb6-ad5b-11f1-bdf6-da7ad0900002","type":"pipelines","attributes":{"name":"prometheus-remote-write-destination-pipeline","config":{"destinations":[{"auth_strategy":"bearer","buffer":{"max_size":1073741824,"type":"disk","when_full":"drop_newest"},"default_namespace":"custom_namespace","endpoint_url_key":"PROMETHEUS_ENDPOINT_URL","id":"prometheus-remote-write-1","inputs":["source-1"],"tenant_id":"tenant-1","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/prometheus.crt","key_file":"/etc/ssl/private/prometheus.key","server_name":"prometheus.example.com"},"token_key":"PROMETHEUS_TOKEN","type":"prometheus_remote_write"}],"pipeline_type":"metrics","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 1.016713542s
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/49a9beb6-ad5b-11f1-bdf6-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 783
+        uncompressed: false
+        body: |
+            {"data":{"id":"49a9beb6-ad5b-11f1-bdf6-da7ad0900002","type":"pipelines","attributes":{"name":"prometheus-remote-write-destination-pipeline","config":{"destinations":[{"auth_strategy":"bearer","buffer":{"max_size":1073741824,"type":"disk","when_full":"drop_newest"},"default_namespace":"custom_namespace","endpoint_url_key":"PROMETHEUS_ENDPOINT_URL","id":"prometheus-remote-write-1","inputs":["source-1"],"tenant_id":"tenant-1","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/prometheus.crt","key_file":"/etc/ssl/private/prometheus.key","server_name":"prometheus.example.com"},"token_key":"PROMETHEUS_TOKEN","type":"prometheus_remote_write"}],"pipeline_type":"metrics","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 302.648666ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/49a9beb6-ad5b-11f1-bdf6-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 727.284708ms

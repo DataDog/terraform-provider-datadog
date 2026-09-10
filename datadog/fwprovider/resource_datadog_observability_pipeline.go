@@ -84,6 +84,7 @@ type destinationModel struct {
 	HttpClientDestination             []*httpClientDestinationModel                                    `tfsdk:"http_client"`
 	CloudPremDestination              []*observability_pipeline.CloudPremDestinationModel              `tfsdk:"cloud_prem"`
 	KafkaDestination                  []*observability_pipeline.KafkaDestinationModel                  `tfsdk:"kafka"`
+	PrometheusRemoteWriteDestination  []*observability_pipeline.PrometheusRemoteWriteDestinationModel  `tfsdk:"prometheus_remote_write"`
 }
 
 type datadogMetricsDestinationModel struct {
@@ -107,25 +108,26 @@ type httpClientDestinationCompressionModel struct {
 }
 
 type sourceModel struct {
-	Id                       types.String                                       `tfsdk:"id"`
-	DatadogAgentSource       []*datadogAgentSourceModel                         `tfsdk:"datadog_agent"`
-	KafkaSource              []*kafkaSourceModel                                `tfsdk:"kafka"`
-	RsyslogSource            []*rsyslogSourceModel                              `tfsdk:"rsyslog"`
-	SyslogNgSource           []*syslogNgSourceModel                             `tfsdk:"syslog_ng"`
-	SumoLogicSource          []*sumoLogicSourceModel                            `tfsdk:"sumo_logic"`
-	FluentdSource            []*fluentdSourceModel                              `tfsdk:"fluentd"`
-	FluentBitSource          []*fluentBitSourceModel                            `tfsdk:"fluent_bit"`
-	HttpServerSource         []*httpServerSourceModel                           `tfsdk:"http_server"`
-	AmazonS3Source           []*amazonS3SourceModel                             `tfsdk:"amazon_s3"`
-	SplunkHecSource          []*splunkHecSourceModel                            `tfsdk:"splunk_hec"`
-	SplunkTcpSource          []*splunkTcpSourceModel                            `tfsdk:"splunk_tcp"`
-	AmazonDataFirehoseSource []*amazonDataFirehoseSourceModel                   `tfsdk:"amazon_data_firehose"`
-	HttpClientSource         []*httpClientSourceModel                           `tfsdk:"http_client"`
-	GooglePubSubSource       []*googlePubSubSourceModel                         `tfsdk:"google_pubsub"`
-	LogstashSource           []*logstashSourceModel                             `tfsdk:"logstash"`
-	SocketSource             []*observability_pipeline.SocketSourceModel        `tfsdk:"socket"`
-	OpentelemetrySource      []*observability_pipeline.OpentelemetrySourceModel `tfsdk:"opentelemetry"`
-	WebsocketSource          []*observability_pipeline.WebsocketSourceModel     `tfsdk:"websocket"`
+	Id                          types.String                                               `tfsdk:"id"`
+	DatadogAgentSource          []*datadogAgentSourceModel                                 `tfsdk:"datadog_agent"`
+	KafkaSource                 []*kafkaSourceModel                                        `tfsdk:"kafka"`
+	RsyslogSource               []*rsyslogSourceModel                                      `tfsdk:"rsyslog"`
+	SyslogNgSource              []*syslogNgSourceModel                                     `tfsdk:"syslog_ng"`
+	SumoLogicSource             []*sumoLogicSourceModel                                    `tfsdk:"sumo_logic"`
+	FluentdSource               []*fluentdSourceModel                                      `tfsdk:"fluentd"`
+	FluentBitSource             []*fluentBitSourceModel                                    `tfsdk:"fluent_bit"`
+	HttpServerSource            []*httpServerSourceModel                                   `tfsdk:"http_server"`
+	AmazonS3Source              []*amazonS3SourceModel                                     `tfsdk:"amazon_s3"`
+	SplunkHecSource             []*splunkHecSourceModel                                    `tfsdk:"splunk_hec"`
+	SplunkTcpSource             []*splunkTcpSourceModel                                    `tfsdk:"splunk_tcp"`
+	AmazonDataFirehoseSource    []*amazonDataFirehoseSourceModel                           `tfsdk:"amazon_data_firehose"`
+	HttpClientSource            []*httpClientSourceModel                                   `tfsdk:"http_client"`
+	GooglePubSubSource          []*googlePubSubSourceModel                                 `tfsdk:"google_pubsub"`
+	LogstashSource              []*logstashSourceModel                                     `tfsdk:"logstash"`
+	SocketSource                []*observability_pipeline.SocketSourceModel                `tfsdk:"socket"`
+	OpentelemetrySource         []*observability_pipeline.OpentelemetrySourceModel         `tfsdk:"opentelemetry"`
+	WebsocketSource             []*observability_pipeline.WebsocketSourceModel             `tfsdk:"websocket"`
+	PrometheusRemoteWriteSource []*observability_pipeline.PrometheusRemoteWriteSourceModel `tfsdk:"prometheus_remote_write"`
 }
 
 type logstashSourceModel struct {
@@ -1235,9 +1237,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											},
 										},
 									},
-									"socket":        observability_pipeline.SocketSourceSchema(),
-									"opentelemetry": observability_pipeline.OpentelemetrySourceSchema(),
-									"websocket":     observability_pipeline.WebsocketSourceSchema(),
+									"socket":                  observability_pipeline.SocketSourceSchema(),
+									"opentelemetry":           observability_pipeline.OpentelemetrySourceSchema(),
+									"websocket":               observability_pipeline.WebsocketSourceSchema(),
+									"prometheus_remote_write": observability_pipeline.PrometheusRemoteWriteSourceSchema(),
 								},
 							},
 						},
@@ -2865,6 +2868,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									"clickhouse":                observability_pipeline.ClickhouseDestinationSchema(),
 									"cloud_prem":                observability_pipeline.CloudPremDestinationSchema(),
 									"kafka":                     observability_pipeline.KafkaDestinationSchema(),
+									"prometheus_remote_write":   observability_pipeline.PrometheusRemoteWriteDestinationSchema(),
 								},
 							},
 						},
@@ -3129,6 +3133,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 			}
 			config.Sources = append(config.Sources, item)
 		}
+		for _, p := range sourceBlock.PrometheusRemoteWriteSource {
+			config.Sources = append(config.Sources, observability_pipeline.ExpandPrometheusRemoteWriteSource(p, sourceId))
+		}
 	}
 
 	// Processors - iterate through processor groups
@@ -3227,6 +3234,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		}
 		for _, d := range dest.KafkaDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandKafkaDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+		}
+		for _, d := range dest.PrometheusRemoteWriteDestination {
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandPrometheusRemoteWriteDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
 	}
 
@@ -3333,6 +3343,10 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		} else if w := observability_pipeline.FlattenWebsocketSource(src.ObservabilityPipelineWebsocketSource); w != nil {
 			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineWebsocketSource.GetId())
 			sourceBlock.WebsocketSource = append(sourceBlock.WebsocketSource, w)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if p := observability_pipeline.FlattenPrometheusRemoteWriteSource(src.ObservabilityPipelinePrometheusRemoteWriteSource); p != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelinePrometheusRemoteWriteSource.GetId())
+			sourceBlock.PrometheusRemoteWriteSource = append(sourceBlock.PrometheusRemoteWriteSource, p)
 			outCfg.Sources = append(outCfg.Sources, sourceBlock)
 		}
 	}
@@ -3487,6 +3501,11 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineKafkaDestination.GetId())
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineKafkaDestination.GetInputs())
 			destBlock.KafkaDestination = append(destBlock.KafkaDestination, kafka)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if promRW := observability_pipeline.FlattenPrometheusRemoteWriteDestination(d.ObservabilityPipelinePrometheusRemoteWriteDestination); promRW != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelinePrometheusRemoteWriteDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelinePrometheusRemoteWriteDestination.GetInputs())
+			destBlock.PrometheusRemoteWriteDestination = append(destBlock.PrometheusRemoteWriteDestination, promRW)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
 		}
 	}
