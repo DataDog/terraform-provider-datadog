@@ -563,10 +563,10 @@ func (r *referenceTableResource) updateState(ctx context.Context, state *referen
 	}
 
 	if description, ok := attributes.GetDescriptionOk(); ok {
-		if *description != "" {
-			state.Description = types.StringValue(*description)
-		} else {
+		if *description == "" && state.Description.IsNull() {
 			state.Description = types.StringNull()
+		} else {
+			state.Description = types.StringValue(*description)
 		}
 	}
 
