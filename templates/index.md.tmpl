@@ -17,4 +17,28 @@ Use the navigation to the left to read about the available resources.
 
 {{tffile "examples/provider/provider.tf"}}
 
+## AWS Workload Identity Federation
+
+Organizations configured for AWS Workload Identity Federation can authenticate
+without Datadog API or application keys and without passing AWS credentials to
+Terraform:
+
+```terraform
+provider "datadog" {
+  org_uuid            = var.datadog_org_uuid
+  cloud_provider_type = "aws"
+}
+```
+
+The provider uses the AWS SDK default credential chain. This includes standard
+sources such as environment credentials, shared configuration and credential
+files, IAM Identity Center (SSO), web identity, ECS task roles, EC2 instance
+roles, and assume-role profiles. For example, after logging in locally with
+`aws sso login --profile sandbox`, run Terraform with `AWS_PROFILE=sandbox`.
+
+Explicit `aws_access_key_id`, `aws_secret_access_key`, and `aws_session_token`
+values remain supported but are not required. Workload Identity Federation must
+be enabled for the Datadog organization, and its identity or intake mapping must
+match the AWS identity resolved by the credential chain.
+
 {{ .SchemaMarkdown | trimspace }}
