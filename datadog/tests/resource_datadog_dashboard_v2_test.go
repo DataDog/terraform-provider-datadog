@@ -105,3 +105,44 @@ func TestAccDatadogDashboardV2Change_import(t *testing.T) {
 	config, name := dashboardV2Config(datadogDashboardChangeConfigImport, "datadog_dashboard.change_dashboard")
 	testAccDatadogDashboardV2WidgetUtilImport(t, "TestAccDatadogDashboardChange_import", config, name)
 }
+
+// DefaultTimeframe — dashboard-level live/fixed timeframe block (TypeOneOf schema)
+const datadogDashboardV2DefaultTimeframeConfig = `
+resource "datadog_dashboard_v2" "default_timeframe_dashboard" {
+  title       = "{{uniq}}"
+  layout_type = "ordered"
+  description = "Created using the Datadog provider in Terraform"
+
+  default_timeframe {
+    live {
+      unit  = "week"
+      value = 1
+    }
+  }
+
+  widget {
+    note_definition {
+      content = "Widget 1"
+    }
+  }
+}
+`
+
+var datadogDashboardV2DefaultTimeframeAsserts = []string{
+	"title = {{uniq}}",
+	"layout_type = ordered",
+	"description = Created using the Datadog provider in Terraform",
+	"default_timeframe.# = 1",
+	"default_timeframe.0.live.# = 1",
+	"default_timeframe.0.live.0.unit = week",
+	"default_timeframe.0.live.0.value = 1",
+	"widget.# = 1",
+}
+
+func TestAccDatadogDashboardV2DefaultTimeframe(t *testing.T) {
+	testAccDatadogDashboardV2WidgetUtil(t, "TestAccDatadogDashboardDefaultTimeframe", datadogDashboardV2DefaultTimeframeConfig, "datadog_dashboard_v2.default_timeframe_dashboard", datadogDashboardV2DefaultTimeframeAsserts)
+}
+
+func TestAccDatadogDashboardV2DefaultTimeframe_import(t *testing.T) {
+	testAccDatadogDashboardV2WidgetUtilImport(t, "TestAccDatadogDashboardDefaultTimeframe_import", datadogDashboardV2DefaultTimeframeConfig, "datadog_dashboard_v2.default_timeframe_dashboard")
+}

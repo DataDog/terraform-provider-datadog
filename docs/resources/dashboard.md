@@ -740,6 +740,7 @@ resource "datadog_dashboard" "free_dashboard" {
 ### Optional
 
 - `dashboard_lists` (Set of Number) A list of dashboard lists this dashboard belongs to. This attribute should not be set if managing the corresponding dashboard lists using Terraform as it causes inconsistent behavior.
+- `default_timeframe` (Block List, Max: 1) The default timeframe applied when opening the dashboard. Set to `null` to disable after it has been configured. (see [below for nested schema](#nestedblock--default_timeframe))
 - `description` (String) The description of the dashboard.
 - `is_read_only` (Boolean, Deprecated) Whether this dashboard is read-only. **Deprecated.** This field is deprecated and non-functional. Use `restricted_roles` instead to define which roles are required to edit the dashboard. Defaults to `false`.
 - `notify_list` (Set of String) The list of handles for the users to notify when changes are made to this dashboard.
@@ -756,6 +757,33 @@ resource "datadog_dashboard" "free_dashboard" {
 
 - `dashboard_lists_removed` (Set of Number) A list of dashboard lists this dashboard should be removed from. Internal only.
 - `id` (String) The ID of this resource.
+
+<a id="nestedblock--default_timeframe"></a>
+### Nested Schema for `default_timeframe`
+
+Optional:
+
+- `fixed` (Block List, Max: 1) A fixed timeframe applied when opening the dashboard. (see [below for nested schema](#nestedblock--default_timeframe--fixed))
+- `live` (Block List, Max: 1) A live timeframe applied when opening the dashboard. (see [below for nested schema](#nestedblock--default_timeframe--live))
+
+<a id="nestedblock--default_timeframe--fixed"></a>
+### Nested Schema for `default_timeframe.fixed`
+
+Required:
+
+- `from` (Number) Start time in milliseconds since epoch.
+- `to` (Number) End time in milliseconds since epoch.
+
+
+<a id="nestedblock--default_timeframe--live"></a>
+### Nested Schema for `default_timeframe.live`
+
+Required:
+
+- `unit` (String) Unit of the live timeframe span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the live timeframe span.
+
+
 
 <a id="nestedblock--tab"></a>
 ### Nested Schema for `tab`
