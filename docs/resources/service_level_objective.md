@@ -246,7 +246,7 @@ Required:
 
 Optional:
 
-- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `data_source` (String) The data source for metrics queries. Valid values are `metrics`. Defaults to `"metrics"`.
 
 
 
@@ -297,7 +297,7 @@ Required:
 
 Optional:
 
-- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `data_source` (String) The data source for metrics queries. Valid values are `metrics`. Defaults to `"metrics"`.
 
 ## Import
 
