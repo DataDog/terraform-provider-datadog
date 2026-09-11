@@ -27,16 +27,22 @@ import (
 const (
 	awsWifPersonaMappingCreateTimeout     = 2 * time.Minute
 	awsWifPersonaMappingVisibilityTimeout = 30 * time.Second
+
+	// The authoritative backend parser is cloudconfig.ParseARNPattern in
+	// domains/aaa/external_authn/internal/libs/cloudconfig/arn_parser.go. It
+	// currently supports only the aws partition and this resource character set.
+	awsWifArnAccountIDPattern   = `[0-9]{12}`
+	awsWifArnNamePattern        = `[A-Za-z0-9_.@-]+`
+	awsWifArnPathSegmentPattern = `[A-Za-z0-9_.:@-]+`
+	awsWifStsCallerPattern      = `sts::` + awsWifArnAccountIDPattern + `:(?:assumed-role/` + awsWifArnNamePattern + `/(?:` + awsWifArnNamePattern + `|\*)|federated-user/` + awsWifArnNamePattern + `)`
+	awsWifIamUserCallerPattern  = `iam::` + awsWifArnAccountIDPattern + `:user/(?:` + awsWifArnPathSegmentPattern + `/)*` + awsWifArnNamePattern + `(?:/\*)?`
 )
 
 var (
 	_ resource.ResourceWithConfigure   = &awsWifPersonaMappingResource{}
 	_ resource.ResourceWithImportState = &awsWifPersonaMappingResource{}
 
-	// Keep the accepted partition and resource characters aligned with the Cloud
-	// Authentication API, while limiting resource types to identities that AWS
-	// STS GetCallerIdentity can return.
-	awsWifArnPattern = regexp.MustCompile(`^arn:aws:(?:sts::[0-9]{12}:(?:assumed-role/(?:[A-Za-z0-9_.\-:@]+/)+(?:[A-Za-z0-9_.\-:@]+|\*)|federated-user/[A-Za-z0-9_.\-:@]+)|iam::[0-9]{12}:user/(?:[A-Za-z0-9_.\-:@]+/)*[A-Za-z0-9_.\-:@]+(?:/\*)?)$`)
+	awsWifArnPattern = regexp.MustCompile(`^arn:aws:(?:` + awsWifStsCallerPattern + `|` + awsWifIamUserCallerPattern + `)$`)
 )
 
 type awsWifPersonaMappingResource struct {
@@ -65,7 +71,7 @@ func (r *awsWifPersonaMappingResource) Schema(_ context.Context, _ resource.Sche
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"account_identifier": schema.StringAttribute{
-				Description: "The email or handle of the Datadog user or service account that the AWS principal authenticates as. Prefer the `id` exported by `datadog_service_account`, which is also the service account handle.",
+				Description: "The email or handle of the Datadog user or service account that the AWS principal authenticates as. For a Terraform-managed service account, prefer the stable UUID exported by `datadog_service_account.id`; Datadog accepts it as the service account identifier.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -150,16 +156,32 @@ func (r *awsWifPersonaMappingResource) Create(ctx context.Context, request resou
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, ""))
 		return
 	}
-	if err := utils.CheckForUnparsed(apiResponse); err != nil {
-		response.Diagnostics.AddError("response contains unparsed object", err.Error())
-		return
-	}
-
+	unparsedErr := utils.CheckForUnparsed(apiResponse)
 	createdData := apiResponse.GetData()
 	mappingID := createdData.GetId()
-	r.updateState(&state, &apiResponse)
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	if unparsedErr == nil {
+		r.updateState(&state, &apiResponse)
+	} else if mappingID != "" {
+		// Preserve enough state to track and destroy a mapping when the SDK can
+		// still expose its ID from an otherwise unparsed public-beta response.
+		state.ID = types.StringValue(mappingID)
+		createdAttributes := createdData.GetAttributes()
+		if accountUUID := createdAttributes.GetAccountUuid(); accountUUID != "" {
+			state.AccountUUID = types.StringValue(accountUUID)
+		}
+	}
+	if mappingID != "" {
+		response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	}
 	if response.Diagnostics.HasError() {
+		return
+	}
+	if unparsedErr != nil {
+		response.Diagnostics.AddError("response contains unparsed object", unparsedErr.Error())
+		return
+	}
+	if mappingID == "" {
+		response.Diagnostics.AddError("response contains no mapping ID", "The API created an AWS WIF persona mapping but returned an empty ID, so Terraform cannot track it.")
 		return
 	}
 

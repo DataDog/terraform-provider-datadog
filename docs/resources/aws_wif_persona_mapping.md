@@ -36,7 +36,7 @@ resource "datadog_aws_wif_persona_mapping" "terraform" {
 
 ### Required
 
-- `account_identifier` (String) The email or handle of the Datadog user or service account that the AWS principal authenticates as. Prefer the `id` exported by `datadog_service_account`, which is also the service account handle. String length must be at least 1.
+- `account_identifier` (String) The email or handle of the Datadog user or service account that the AWS principal authenticates as. For a Terraform-managed service account, prefer the stable UUID exported by `datadog_service_account.id`; Datadog accepts it as the service account identifier. String length must be at least 1.
 - `arn_pattern` (String) The AWS caller ARN pattern allowed to authenticate. Currently, only the `aws` partition is supported. For role-based authentication, use the STS assumed-role ARN returned by `aws sts get-caller-identity`, not the IAM role ARN shown in the AWS console. A pattern may contain one wildcard only, as a trailing `/*` after a specific resource, for example `arn:aws:sts::123456789012:assumed-role/terraform-runner/*`. Must be an AWS GetCallerIdentity ARN supported by Datadog for an IAM user, assumed role, or federated user; a wildcard is allowed only as one trailing /* after a specific resource.
 
 ### Read-Only

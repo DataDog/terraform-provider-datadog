@@ -1,13 +1,17 @@
 package fwprovider
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -87,12 +91,17 @@ func TestAwsWifArnPattern(t *testing.T) {
 		},
 		{
 			name:  "special characters supported by the API",
-			value: "arn:aws:sts::123456789012:assumed-role/team.blue_prod@terraform/session-name:ci",
+			value: "arn:aws:sts::123456789012:assumed-role/team.blue_prod@terraform/session-name_ci",
 			valid: true,
 		},
 		{
 			name:  "AWS name characters not supported by the API",
 			value: "arn:aws:sts::123456789012:assumed-role/team+blue=prod,ops@terraform/session+name=ci,1",
+			valid: false,
+		},
+		{
+			name:  "colon is not valid in an STS name",
+			value: "arn:aws:sts::123456789012:assumed-role/terraform-runner/session:name",
 			valid: false,
 		},
 		{
@@ -166,12 +175,112 @@ func TestAwsWifArnPattern(t *testing.T) {
 	}
 }
 
+func TestAwsWifPersonaMappingCreatePreservesStateOnPostCreateFailure(t *testing.T) {
+	const (
+		mappingID         = "7c405332-7033-40d2-a046-a27a075a22cd"
+		accountIdentifier = "service-account-id"
+		accountUUID       = "0bd557d2-6ed0-423e-9654-c0e1cd376abc"
+		arnPattern        = "arn:aws:sts::123456789012:assumed-role/terraform-runner/*"
+	)
+
+	tests := []struct {
+		name         string
+		responseType string
+		wantGet      bool
+	}{
+		{
+			name:         "visibility GET fails",
+			responseType: "aws_cloud_auth_config",
+			wantGet:      true,
+		},
+		{
+			name:         "POST response contains an unparsed type",
+			responseType: "future_aws_cloud_auth_config",
+			wantGet:      false,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			ctx := context.Background()
+			sawGet := false
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, request *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				switch {
+				case request.Method == http.MethodPost && request.URL.Path == "/api/v2/cloud_auth/aws/persona_mapping":
+					w.WriteHeader(http.StatusCreated)
+					fmt.Fprintf(w, `{"data":{"id":%q,"type":%q,"attributes":{"account_identifier":%q,"account_uuid":%q,"arn_pattern":%q}}}`,
+						mappingID, test.responseType, accountIdentifier, accountUUID, arnPattern)
+				case request.Method == http.MethodGet && request.URL.Path == "/api/v2/cloud_auth/aws/persona_mapping/"+mappingID:
+					sawGet = true
+					w.WriteHeader(http.StatusForbidden)
+					fmt.Fprint(w, `{"errors":[{"detail":"visibility failed"}]}`)
+				default:
+					t.Errorf("unexpected request: %s %s", request.Method, request.URL.Path)
+					w.WriteHeader(http.StatusNotFound)
+				}
+			}))
+			defer server.Close()
+
+			config := datadog.NewConfiguration()
+			config.Servers = datadog.ServerConfigurations{{URL: server.URL}}
+			config.OperationServers = nil
+			config.HTTPClient = server.Client()
+			config.SetUnstableOperationEnabled("v2.CreateAWSCloudAuthPersonaMapping", true)
+			config.SetUnstableOperationEnabled("v2.GetAWSCloudAuthPersonaMapping", true)
+			r := &awsWifPersonaMappingResource{
+				Api:  datadogV2.NewCloudAuthenticationApi(datadog.NewAPIClient(config)),
+				Auth: ctx,
+			}
+
+			var schemaResponse resource.SchemaResponse
+			r.Schema(ctx, resource.SchemaRequest{}, &schemaResponse)
+			planned := awsWifPersonaMappingModel{
+				ID:                types.StringUnknown(),
+				AccountIdentifier: types.StringValue(accountIdentifier),
+				AccountUUID:       types.StringUnknown(),
+				ArnPattern:        types.StringValue(arnPattern),
+			}
+			plan := tfsdk.Plan{Schema: schemaResponse.Schema}
+			if diags := plan.Set(ctx, &planned); diags.HasError() {
+				t.Fatalf("building plan: %v", diags.Errors())
+			}
+
+			response := resource.CreateResponse{State: tfsdk.State{Raw: plan.Raw, Schema: schemaResponse.Schema}}
+			r.Create(ctx, resource.CreateRequest{Plan: plan}, &response)
+			if !response.Diagnostics.HasError() {
+				t.Fatal("Create returned no error diagnostic")
+			}
+			if sawGet != test.wantGet {
+				t.Fatalf("visibility GET called = %t, want %t", sawGet, test.wantGet)
+			}
+
+			var state awsWifPersonaMappingModel
+			if diags := response.State.Get(ctx, &state); diags.HasError() {
+				t.Fatalf("reading response state: %v", diags.Errors())
+			}
+			if got := state.ID.ValueString(); got != mappingID {
+				t.Fatalf("id = %q, want %q", got, mappingID)
+			}
+			if got := state.AccountIdentifier.ValueString(); got != accountIdentifier {
+				t.Fatalf("account_identifier = %q, want %q", got, accountIdentifier)
+			}
+			if got := state.AccountUUID.ValueString(); got != accountUUID {
+				t.Fatalf("account_uuid = %q, want %q", got, accountUUID)
+			}
+			if got := state.ArnPattern.ValueString(); got != arnPattern {
+				t.Fatalf("arn_pattern = %q, want %q", got, arnPattern)
+			}
+		})
+	}
+}
+
 func TestAwsWifPersonaMappingUpdateState(t *testing.T) {
 	apiResponse := newAwsWifPersonaMappingResponse(
 		"mapping-id",
 		"service-account-handle",
 		"account-uuid",
-		"arn:aws:iam::123456789012:role/terraform-runner",
+		"arn:aws:sts::123456789012:assumed-role/terraform-runner/session-name",
 	)
 	resource := &awsWifPersonaMappingResource{}
 
