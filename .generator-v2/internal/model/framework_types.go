@@ -4,14 +4,9 @@ import "fmt"
 
 // FrameworkType maps a schema node to its framework type strings: tfType is the
 // schema.* symbol (e.g. schema.StringAttribute), goType the types.* value (e.g.
-// types.String). Object containers use nested attributes: generated schemas are
-// protocol-v6-native and have no legacy SDK block syntax to preserve.
-//
-// A oneOf node has no entry of its own: its Terraform shape is a synthetic
-// envelope whose form depends on where the union sits, so the attribute-tree
-// builder decides it. A collection *of* unions does have an entry — the list or
-// map is representable regardless of what its elements are, and it nests the
-// element's variant attributes the same way it would an object's properties.
+// types.String). Objects map to nested attributes, never to block syntax. A
+// oneOf node has no entry — its shape depends on where the union sits — but a
+// collection of unions does, nesting the variants like an object's properties.
 func FrameworkType(s *Schema) (tfType, goType string, err error) {
 	switch s.Kind {
 	case SchemaKindPrimitive:
@@ -70,9 +65,9 @@ func primitiveFrameworkType(s *Schema) (tfType, goType string, err error) {
 }
 
 // ElementType recursively maps a collection element/value schema to its
-// framework attr.Type (for example types.StringType or
-// types.MapType{ElemType: types.ListType{ElemType: types.StringType}}). Objects
-// still nest via Children and therefore have no attr.Type expression here.
+// framework attr.Type expression, e.g.
+// types.MapType{ElemType: types.ListType{ElemType: types.StringType}}. Objects
+// nest via Children instead and have no attr.Type expression here.
 func ElementType(elem *Schema) (string, error) {
 	if elem == nil {
 		return "", fmt.Errorf("model: collection has nil element, no element type to map")
@@ -108,8 +103,8 @@ func ElementType(elem *Schema) (string, error) {
 	}
 }
 
-// reasonText is the shared spelling of an appended reason, so the messages
-// FrameworkType builds and the one UnsupportedKindError builds cannot drift.
+// reasonText renders an optional error reason as ": <reason>", or "" when the
+// reason is empty.
 func reasonText(reason string) string {
 	if reason == "" {
 		return ""

@@ -11,12 +11,11 @@ import (
 // Schema combination helpers
 // ----------------------------------------------------------------------------
 
-// MergeNormalizedSchemas intersects the subset of OpenAPI constraints retained
-// by Schema. It combines a oneOf alternative with the constraints declared
-// adjacent to the oneOf keyword (its "sibling" schema) — both must hold
-// simultaneously, so enums intersect and a kind/type/format conflict makes the
-// alternative Unsupported rather than erroring, letting the affected variant
-// alone report that precise failure instead of the whole union being dropped.
+// MergeNormalizedSchemas intersects the constraints of a oneOf alternative with
+// those declared adjacent to the oneOf keyword. Both must hold at once, so
+// enums intersect and a kind/type/format conflict yields an Unsupported schema
+// carrying the reason rather than an error, confining the failure to the one
+// affected alternative.
 func MergeNormalizedSchemas(variant, common *Schema) *Schema {
 	if variant == nil {
 		return common
@@ -111,9 +110,8 @@ func MergeNormalizedSchemas(variant, common *Schema) *Schema {
 }
 
 // OneOfValueWrapped reports whether a oneOf alternative's Terraform variant
-// model wraps its value in a single "value" field (every primitive, array and
-// map alternative) rather than exposing its own fields directly (every object
-// alternative).
+// model wraps its value in a single "value" field (primitive, array and map
+// alternatives) rather than exposing its own fields directly (objects).
 func OneOfValueWrapped(schema *Schema) bool {
 	if schema == nil {
 		return false
@@ -189,11 +187,8 @@ func intersectStrings(left, right []string) []string {
 
 // SchemaMergeError reports a structural disagreement among the Create request,
 // Update request and Read response bodies at one schema path: a differing
-// Kind, primitive Type, or Format. An element/value shape conflict (an array
-// or map whose element disagrees) surfaces as this same error one level
-// deeper, at the "[]"/"{}" path, since Items disagreement is just a Kind (or
-// Type/Format) mismatch one recursion step further down — no separate check
-// is needed for it.
+// Kind, primitive Type, or Format. An array/map element conflict surfaces as
+// this same error one recursion deeper, at the "[]"/"{}" path.
 type SchemaMergeError struct {
 	// Path is the schema path where the bodies disagree, dot-delimited from
 	// the merged tree's root, with "[]"/"{}" for an array/map element.
@@ -211,23 +206,12 @@ func (e *SchemaMergeError) Error() string {
 
 // MergeResourceSchema unions the Create request, Update request and Read
 // response bodies of group into one Schema tree, stamping Provenance at every
-// correlated position. Nodes are correlated by property name at equal depth
-// from each body's root, so a JSON:API data.attributes.<field> lines up
-// across all three even though the enclosing request/response components
-// differ by name. The one exception is a OneOf/Unsupported/RefCycle/
-// DepthExceeded node (see mergeVerbatim): its own position is stamped, but
-// its subtree is cloned verbatim from the preferred side rather than walked,
-// so nodes inside it carry whatever Provenance (typically none) they already
-// had.
-//
-// group.Search and the Create/Update *response* bodies are never read: a
-// field only they carry would become Computed state that refresh can never
-// repopulate — the search element can be a narrower shape than the by-id
-// record, and a create-response-only field is never seen again.
-//
-// It assumes group.Create and group.Read are already known to resolve, the
-// same precondition buildResourceLifecycle assumes; buildResourceArtifact
-// enforces it once, before calling either.
+// correlated position. Nodes correlate by property name at equal depth from
+// each body's root; a OneOf/Unsupported/RefCycle/DepthExceeded node instead has
+// its subtree cloned verbatim from the preferred side (see mergeVerbatim).
+// group.Search and the Create/Update responses are never read: a field only
+// they carry would become Computed state refresh can never repopulate. Assumes
+// group.Create and group.Read resolve.
 func MergeResourceSchema(group *ResolvedGroup) (*Schema, []Diagnostic, error) {
 	var updateRequest *Schema
 	if group.Update != nil {
@@ -268,9 +252,8 @@ func (m *resourceMerger) mergeNode(create, update, read *Schema, createRequired 
 		return m.mergeOneOf(create, update, read, createRequired, path)
 	default:
 		// Unsupported, RefCycle, DepthExceeded: nothing under such a node is
-		// representable, so there is no subtree worth correlating — the merged
-		// node is the preferred side's clone with the four cosmetic fields
-		// reconciled the same way as every other kind.
+		// representable, so there is no subtree worth correlating — the merged node
+		// is the preferred side's clone.
 		return m.mergeVerbatim(create, update, read, createRequired, path)
 	}
 }
@@ -314,7 +297,7 @@ func (m *resourceMerger) mergeObject(create, update, read *Schema, createRequire
 
 // stampCommon fills the fields every merged node carries whatever its kind: the
 // cosmetic trio (RefName, Description, Enum, Sensitive), the request-side
-// component name, and the provenance stamp. It returns out so a merge can
+// component name, and the provenance stamp. It returns out, so a merge can
 // construct its kind-specific fields and stamp the rest in one expression.
 func (m *resourceMerger) stampCommon(out, create, update, read *Schema, createRequired bool, path string) *Schema {
 	out.RefName, out.Description, out.Enum, out.Sensitive = m.cosmeticFields(create, update, read, path)
@@ -373,11 +356,9 @@ func (m *resourceMerger) mergeVerbatim(create, update, read *Schema, createRequi
 }
 
 // pickRequestRefName returns the Create body's component name at this node,
-// falling back to Update's when Create doesn't reach it. Unlike RefName (see
-// cosmeticFields), this never prefers Read: a resource's response component is
-// routinely named differently from its request one for the same field (e.g.
-// "...Request" vs "...Response" suffixes), so Read's name cannot substitute
-// for it here.
+// falling back to Update's. Unlike RefName it never prefers Read: a response
+// component is routinely named differently from the request one for the same
+// field ("...Request" vs "...Response"), so Read's name cannot substitute.
 func pickRequestRefName(create, update *Schema) string {
 	if create != nil && create.RefName != "" {
 		return create.RefName
@@ -388,11 +369,10 @@ func pickRequestRefName(create, update *Schema) string {
 	return ""
 }
 
-// cosmeticFields reconciles the four fields treated as cosmetic —
-// RefName and Description favoring the Read response, Enum members unioned
-// (never intersected: a validator must accept everything the response can
-// return, or refresh fails on a value the practitioner never chose), Sensitive
-// the disjunction — and records one info Diagnostic when the present bodies
+// cosmeticFields reconciles the four cosmetic fields — RefName and Description
+// favoring the Read response, Enum members unioned (never intersected: a
+// validator must accept everything the response can return), Sensitive the
+// disjunction — and records one info Diagnostic when the present bodies
 // actually disagreed on any of them.
 func (m *resourceMerger) cosmeticFields(create, update, read *Schema, path string) (refName, description string, enum []string, sensitive bool) {
 	var refDisagree, descDisagree, enumDisagree, sensDisagree bool
@@ -541,16 +521,14 @@ func pickString(get func(*Schema) string, create, update, read *Schema) (value s
 }
 
 // unionEnum unions the Enum members of every present side. disagreed reports
-// whether at least two sides carried enum members and at least one of them
-// was missing a member another side had — a side whose own deduped enum is
-// already the same size as the union necessarily equals it, since it is a
-// subset by construction.
+// whether at least two sides carried enum members and at least one of them was
+// missing a member another side had.
 func unionEnum(create, update, read *Schema) (values []string, disagreed bool) {
 	var all []string
 	withEnum := 0
-	// A side's own deduped enum is a subset of the union by construction, so a
-	// side smaller than the union is missing a member another side had. Tracking
-	// the largest side here avoids re-deduping every side in a second pass.
+	// A side's deduped enum is a subset of the union by construction, so a side
+	// smaller than the union is missing a member another side had; tracking the
+	// largest here avoids re-deduping every side in a second pass.
 	maxDeduped := 0
 	for _, s := range presentSchemas(create, update, read) {
 		if len(s.Enum) == 0 {
@@ -590,20 +568,14 @@ func anySensitive(create, update, read *Schema) (sensitive, disagreed bool) {
 // Terraform envelope: the bodies list alternatives that do not line up even
 // after their CRUD-role suffixes are removed, or one body names two
 // alternatives that collapse onto the same stripped name.
-//
-// It is the oneOf analogue of SchemaMergeError, and exists for the same
-// reason: the merged tree carries exactly one public name per variant block,
-// so when the bodies disagree about what the alternatives *are* the generator
-// must say so at the union's path rather than pick a side (FR-034c, T099c).
 type OneOfMergeError struct {
 	// Path is the union's schema path in the merged tree.
 	Path string
 	// Reason states what could not be correlated.
 	Reason string
 	// Create, Update and Read are each body's alternatives as that body spells
-	// them, sorted; nil when the body does not reach this node. They are the
-	// pre-strip names deliberately: a maintainer reading this needs to see what
-	// the specification says, not what the correlation made of it.
+	// them, sorted; nil when the body does not reach this node. Deliberately the
+	// pre-strip names, so the message shows what the specification says.
 	Create, Update, Read []string
 }
 
@@ -613,33 +585,18 @@ func (e *OneOfMergeError) Error() string {
 		e.Path, e.Reason, e.Create, e.Update, e.Read)
 }
 
-// mergeOneOf unions the three bodies' spellings of one union.
-//
-// A union is deep-merged, unlike the other non-object kinds, because its
-// alternatives are ordinary objects whose own properties differ by role
-// exactly as a plain nested object's do: IntegrationAccountBasicAuthRequest
-// declares a required password, ...Update an optional one and ...Response none
-// at all. Cloning whichever body won the preference order would drop the
-// request-only fields silently and leave the practitioner unable to configure
-// a credential the API demands (T099b), so each correlated alternative goes
-// back through mergeNode and comes out with Provenance at every property, the
-// same as any other subtree.
-//
-// The name the alternatives correlate under is also the name the variant block
-// is published under, so the two cannot drift (T099c). See correlateOneOf for
-// how it is chosen.
-//
-// The SDK binding the merged node carries — OneOfSpec.SDKType and each
-// variant's SDKField/SDKConstructor/SDKPointer — stays the preferred (Read)
-// body's, for the same reason RefName does: it is the binding the *response*
-// mapper needs. Each request mapper reads its own role's binding off that
-// role's own request schema, which sdkbind has already annotated (see
-// SDKCall.RequestAttributesSchema and emit's buildRequestFields).
+// mergeOneOf unions the three bodies' spellings of one union. Unlike the other
+// non-object kinds it is deep-merged, because its alternatives are objects
+// whose properties differ by role exactly as a nested object's do (a password
+// required on Create, optional on Update, absent on the response), so each
+// correlated alternative goes back through mergeNode and comes out with
+// Provenance at every property. The name alternatives correlate under is also
+// the name the variant block is published under, so the two cannot drift. The
+// SDK binding stays the preferred (Read) body's, as RefName does.
 func (m *resourceMerger) mergeOneOf(create, update, read *Schema, createRequired bool, path string) (*Schema, error) {
 	// A node classified oneOf but carrying no normalized union has no
-	// alternatives to correlate. That is a parser-side defect the projection
-	// reports with its own actionable message, so hand it on untouched rather
-	// than shadowing it with a correlation failure.
+	// alternatives to correlate. That defect is reported elsewhere with its own
+	// actionable message, so hand it on untouched.
 	for _, s := range presentSchemas(create, update, read) {
 		if s.OneOf == nil {
 			return m.mergeVerbatim(create, update, read, createRequired, path)
@@ -658,17 +615,14 @@ func (m *resourceMerger) mergeOneOf(create, update, read *Schema, createRequired
 	for _, name := range names {
 		altCreate, altUpdate, altRead := sides.create[name].Schema, sides.update[name].Schema, sides.read[name].Schema
 		if altCreate == nil && altUpdate == nil && altRead == nil {
-			// mergeNode has no side to prefer and would clone nil. The
-			// projection raises the same complaint one layer down, but only
-			// for a tree it can still walk.
+			// mergeNode has no side to prefer and would clone nil.
 			return nil, &OneOfMergeError{
 				Path:   path,
 				Reason: fmt.Sprintf("alternative %q has no normalized schema in any body", name),
 			}
 		}
 		// An alternative is a choice, never an entry in an enclosing object's
-		// required list, so it is never itself request-required — the same
-		// reasoning mergeCollection applies to an element.
+		// required list, so it is never itself request-required.
 		merged, err := m.mergeNode(altCreate, altUpdate, altRead, false, ChildPath(path, name))
 		if err != nil {
 			return nil, err
@@ -687,9 +641,9 @@ func (m *resourceMerger) mergeOneOf(create, update, read *Schema, createRequired
 	}
 
 	preferredSpec := preferredSchema(create, update, read).OneOf
-	// Name is the envelope's generated-model identity, so it is stripped for
-	// the same reason a variant's block name is: a resource that later gains an
-	// Update endpoint must not rename a struct it already emitted.
+	// Name is the envelope's generated-model identity, stripped for the same
+	// reason a variant's block name is: a resource that later gains an Update
+	// endpoint must not rename a struct it already emitted.
 	spec.Name = StripOneOfRoleSuffix(preferredSpec.Name)
 	spec.Path = preferredSpec.Path
 	spec.RefName = preferredSpec.RefName
@@ -697,8 +651,7 @@ func (m *resourceMerger) mergeOneOf(create, update, read *Schema, createRequired
 	spec.Discriminator = cloneDiscriminator(preferredSpec.Discriminator)
 	// Absence is permitted wherever any body permits it: a union the Read
 	// response may omit must not make refresh fail. The Create body's own
-	// requirement travels separately, as the enclosing object's required list
-	// (see treeBuilder.envelope).
+	// requirement travels separately, in the enclosing object's required list.
 	for _, s := range presentSchemas(create, update, read) {
 		spec.Optional = spec.Optional || s.OneOf.Optional
 		spec.Nullable = spec.Nullable || s.OneOf.Nullable
@@ -712,15 +665,11 @@ func (m *resourceMerger) mergeOneOf(create, update, read *Schema, createRequired
 
 // correlateOneOf lines the three bodies' alternatives up under one name each,
 // returning a create/update/read triple of name-keyed alternatives plus the
-// sorted names they agreed on. A body that does not reach the union has a nil
-// map, which reads as "no opinion" rather than "no alternatives".
-//
-// The bodies' own names are tried first. When every body that reaches the
-// union spells its alternatives identically, that spelling is already
-// role-independent and is published verbatim — which is both the common case
-// and the only way an alternative legitimately ending in "Update" survives.
-// Only once the bodies have failed to agree is StripOneOfRoleSuffix brought
-// in, and then it is applied to every side so the comparison stays symmetric.
+// sorted names they agreed on. A nil map is a body that does not reach the
+// union. The bodies' own names are tried first, since a spelling every body
+// shares is already role-independent; only if they disagree is
+// StripOneOfRoleSuffix applied, to every side at once so the comparison stays
+// symmetric.
 func correlateOneOf(create, update, read *Schema, path string) (sides oneOfSides, names []string, err error) {
 	for _, strip := range []bool{false, true} {
 		if sides, err = indexOneOfSides(create, update, read, path, strip); err != nil {

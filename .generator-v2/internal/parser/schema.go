@@ -16,21 +16,20 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
-// jsonMediaType is the only request/response content type the generator
-// normalizes; selecting one keeps the projected schema deterministic.
+// jsonMediaType is the only request/response content type normalized; picking
+// exactly one keeps the projected schema deterministic.
 const jsonMediaType = "application/json"
 
 // paginationExtension is the OpenAPI vendor extension describing a list
 // endpoint's page/limit query parameters and result-array property.
 const paginationExtension = "x-pagination"
 
-// secretExtension is Datadog's schema-level credential marker. It is separate
-// from the generator tracking extension and defaults Terraform attributes to
-// sensitive when no explicit tracking override is present.
+// secretExtension is Datadog's schema-level credential marker. It defaults an
+// attribute to sensitive unless the tracking extension overrides it.
 const secretExtension = "x-secret"
 
-// defaultResultsPath is the JSON:API convention for the response property
-// holding a list's elements, used when no x-pagination resultsPath is declared.
+// defaultResultsPath is the JSON:API response property holding a list's
+// elements, used when x-pagination declares no resultsPath.
 const defaultResultsPath = "data"
 
 // UnresolvableRefError reports a $ref whose target component is missing from
@@ -44,10 +43,10 @@ func (e *UnresolvableRefError) Error() string {
 	return fmt.Sprintf("parser: unresolvable $ref %q: target not found in #/components/schemas", e.Ref)
 }
 
-// asUnresolvableRefError converts a BuildV3Model error reporting a missing $ref
-// target into a typed *UnresolvableRefError, or returns nil for any other error.
-// libopenapi drops the body that references a missing local component, so the
-// dangling ref never reaches NormalizeSchemas — this catches it at the build step.
+// asUnresolvableRefError converts a BuildV3Model indexing error about a missing
+// $ref target into a typed *UnresolvableRefError, returning nil for any other
+// error. libopenapi drops the body referencing a missing local component, so
+// the dangling ref has to be caught here rather than during normalization.
 func asUnresolvableRefError(err error) *UnresolvableRefError {
 	var idxErr *index.IndexingError
 	if !errors.As(err, &idxErr) {
@@ -79,20 +78,11 @@ func backtickedToken(s string) (string, bool) {
 }
 
 // NormalizeSchemas fills RequestSchema and ResponseSchema on every tracked
-// operation and on every operation its CRUD group resolved to, extracting their
-// bodies from rawOps.
-//
-// It requires ResolveOperationGroups to have run first — that pass turns the
-// group's operationIds into the *model.Operation pointers walked here. LoadSpec
-// calls the two in order.
-//
-// Request uses the application/json requestBody; response uses the
-// application/json body of the lowest-numbered 2xx code that has one. A missing
-// body leaves the field nil. $refs resolve through spec.Components up to maxDepth
-// edges, beyond which a node is SchemaKindRefCycle; a missing target yields
-// *UnresolvableRefError. Local oneOf naming failures become
-// SchemaKindUnsupported nodes carrying their reason so unrelated operations can
-// still normalize. Untracked, ungrouped operations are left untouched.
+// operation and on every operation its resolved group names, reading from
+// rawOps the application/json requestBody and the application/json body of the
+// lowest-numbered 2xx code that has one. A missing body leaves the field nil, a
+// missing $ref target yields *UnresolvableRefError, and a local oneOf naming
+// failure becomes an Unsupported node. Requires ResolveOperationGroups first.
 func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operation, maxDepth int, trackingFieldName string) error {
 	if spec == nil {
 		return nil
@@ -103,11 +93,10 @@ func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operatio
 		trackingFieldName: trackingFieldName,
 	}
 
-	// Roots are tracked operations; each fills its own bodies and its group's,
-	// which may themselves be untracked. The tracked operation is filled whether
-	// or not its group names it, so a group that references only other operations
-	// — or no group at all — still leaves the annotated operation's own request
-	// and response trees populated. filled dedups operations shared across groups.
+	// Each tracked operation fills its own bodies and its group's, which may
+	// themselves be untracked, so an operation whose group does not name it —
+	// or that has no group — still gets its own trees populated. filled dedups
+	// operations shared across groups.
 	filled := make(map[*model.Operation]bool)
 	fill := func(target *model.Operation) error {
 		if filled[target] {
@@ -133,20 +122,20 @@ func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operatio
 }
 
 // schemaNormalizer holds the per-pass state: the component set for $ref
-// resolution, the depth bound, and the sensitive-marking extension key.
+// resolution, the depth bound, and the tracking extension key.
 type schemaNormalizer struct {
 	components        *v3.Components
 	maxDepth          int
 	trackingFieldName string
-	// refStack is the $ref chain currently being expanded, in order. A $ref that
-	// re-enters the chain closes a cycle, which normalizeProxyAt turns into a
-	// terminal node instead of recursing forever.
+	// refStack is the $ref chain currently being expanded, in order. A $ref
+	// re-entering the chain closes a cycle, which becomes a terminal node
+	// instead of recursing forever.
 	refStack []string
 }
 
-// schemaContext carries information that is not available after a SchemaProxy
-// has been resolved. oneOf normalization needs all three values to retain
-// component identity and to give inline/nested unions deterministic paths.
+// schemaContext carries what a resolved SchemaProxy no longer knows: the node's
+// path, whether its parent declared it required, and the component name it came
+// from. oneOf normalization needs all three.
 type schemaContext struct {
 	path     string
 	required bool
@@ -154,18 +143,16 @@ type schemaContext struct {
 }
 
 // fillOperation normalizes raw's request and 2xx response bodies into op,
-// leaving a field nil when its body is absent. It also captures query
-// parameters, pagination, and the list element type, which feed the plural
-// data-source path and are harmless to the singular and resource paths.
+// leaving a field nil when its body is absent, and also captures path/query
+// parameters, pagination, and the list element type.
 func (n *schemaNormalizer) fillOperation(op *model.Operation, raw *v3.Operation) error {
 	if op == nil || raw == nil {
 		return nil
 	}
 	if reqProxy := requestBodySchemaProxy(raw); reqProxy != nil {
 		required := raw.RequestBody.Required != nil && *raw.RequestBody.Required
-		// Capture the request type name before normalizeProxy follows the $ref and
-		// discards it — the mirror of ResponseRefName below. It is the SDK root the
-		// oneOf binding pass walks from on the request side.
+		// Retain the component name before normalizeProxy follows the $ref and
+		// discards it.
 		if ref, ok := schemaRef(reqProxy); ok {
 			op.RequestRefName = lastRefSegment(ref)
 		}
@@ -188,10 +175,9 @@ func (n *schemaNormalizer) fillOperation(op *model.Operation, raw *v3.Operation)
 	if respProxy == nil {
 		return nil
 	}
-	// Capture the response type name from the top-level body proxy before
-	// normalizeProxy follows the $ref and discards it. OpenAPI 3.0 $ref siblings
-	// arrive as a synthetic single-structural-branch allOf, so look through that
-	// overlay as well. An inline/composed/absent body leaves ResponseRefName empty.
+	// The same capture on the response side. A 3.0 $ref-with-siblings arrives
+	// as a synthetic single-structural-branch allOf, so look through that
+	// overlay too; an inline, composed or absent body leaves the name empty.
 	responseRefName, err := n.referenceNameThroughOverlay(respProxy)
 	if err != nil {
 		return err
@@ -209,12 +195,10 @@ func (n *schemaNormalizer) fillOperation(op *model.Operation, raw *v3.Operation)
 	return n.retainResponseDataRef(op, respProxy)
 }
 
-// fillParameters normalizes raw's in:path and in:query parameters onto the
-// corresponding operation fields, sorted by name. libopenapi resolves $ref parameters (e.g.
-// #/components/parameters/PageNumber) during its build, so each parameter
+// fillParameters normalizes raw's in:path and in:query parameters onto op,
+// sorted by name. libopenapi has already resolved $ref parameters, so each
 // arrives with Name and Schema populated; the inner schema is normalized like a
-// body so type/format/enum/array come through. Raw bracketed names
-// (filter[keyword]) are preserved.
+// body. Raw bracketed names (filter[keyword]) are preserved.
 func (n *schemaNormalizer) fillParameters(op *model.Operation, raw *v3.Operation) error {
 	for index, p := range raw.Parameters {
 		if p == nil || (p.In != "query" && p.In != "path") || p.Name == "" {
@@ -271,9 +255,9 @@ func decodePagination(raw *v3.Operation) *model.Pagination {
 }
 
 // retainItemRef records op.ItemRefName: the last $ref segment of the
-// results-array element schema. The results property is op.Pagination.ResultsPath
-// when present, else the JSON:API default "data". A property that is not an array
-// (e.g. a get-by-id "data" object) leaves ItemRefName empty.
+// results-array element schema. The results property is
+// op.Pagination.ResultsPath when set, else "data". A non-array property (e.g. a
+// by-id "data" object) leaves ItemRefName empty.
 func (n *schemaNormalizer) retainItemRef(op *model.Operation, respProxy *base.SchemaProxy) error {
 	resultsPath := defaultResultsPath
 	if op.Pagination != nil && op.Pagination.ResultsPath != "" {
@@ -298,12 +282,10 @@ func (n *schemaNormalizer) retainItemRef(op *model.Operation, respProxy *base.Sc
 	return nil
 }
 
-// retainResponseDataRef records op.ResponseDataRefName: the last $ref segment of a
-// by-id response's "data" property when that property is a single object
-// reference (e.g. "FullAPIKey"). A list response whose "data" resolves to an
-// array leaves the field empty even when that array is referenced (retainItemRef
-// covers it). This lets the model detect a "both" data source whose by-id record
-// shape diverges from its list element shape.
+// retainResponseDataRef records op.ResponseDataRefName: the last $ref segment
+// of a by-id response's "data" property when that property is a single object
+// reference (e.g. "FullAPIKey"). A "data" resolving to an array leaves it
+// empty even when the array is referenced; retainItemRef covers that case.
 func (n *schemaNormalizer) retainResponseDataRef(op *model.Operation, respProxy *base.SchemaProxy) error {
 	data, err := n.findPropertyProxy(respProxy, defaultResultsPath)
 	if err != nil || data == nil {
@@ -324,9 +306,9 @@ func (n *schemaNormalizer) retainResponseDataRef(op *model.Operation, respProxy 
 	return nil
 }
 
-// referenceNameThroughOverlay returns the last segment of a direct $ref or of
-// the sole structural branch in an allOf metadata overlay. Multi-branch object
-// compositions deliberately have no single SDK type identity.
+// referenceNameThroughOverlay returns the last segment of a direct $ref, or of
+// the sole structural branch of an allOf metadata overlay. A multi-branch
+// composition has no single type identity, so it returns "".
 func (n *schemaNormalizer) referenceNameThroughOverlay(proxy *base.SchemaProxy) (string, error) {
 	for proxy != nil {
 		if proxy.IsReference() {
@@ -341,8 +323,8 @@ func (n *schemaNormalizer) referenceNameThroughOverlay(proxy *base.SchemaProxy) 
 	return "", nil
 }
 
-// resolveOverlayToSchema resolves refs and unwraps single-structural-branch
-// allOf metadata overlays until it reaches the schema that owns the shape.
+// resolveOverlayToSchema follows refs and unwraps single-structural-branch
+// allOf overlays until it reaches the schema that owns the shape.
 func (n *schemaNormalizer) resolveOverlayToSchema(proxy *base.SchemaProxy) (*base.Schema, error) {
 	return n.resolveOverlayToSchemaAt(proxy, 0, make(map[string]bool))
 }
@@ -376,9 +358,9 @@ func (n *schemaNormalizer) resolveOverlayToSchemaAt(proxy *base.SchemaProxy, dep
 	return n.resolveOverlayToSchemaAt(branch, depth, onStack)
 }
 
-// singleAllOfStructuralBranch finds a unique non-annotation branch. It returns
-// ok=false for schemas that are not overlays (including genuine multi-branch
-// compositions), so callers never invent a single SDK identity for a composite.
+// singleAllOfStructuralBranch returns the unique non-annotation branch of an
+// allOf. ok=false for anything that is not such an overlay, including a genuine
+// multi-branch composition, which has no single identity.
 func (n *schemaNormalizer) singleAllOfStructuralBranch(s *base.Schema) (*base.SchemaProxy, bool, error) {
 	return n.singleAllOfStructuralBranchAt(s, 0, make(map[string]bool))
 }
@@ -405,10 +387,9 @@ func (n *schemaNormalizer) singleAllOfStructuralBranchAt(s *base.Schema, depth i
 }
 
 // findPropertyProxy finds a named property through refs and allOf object
-// composition. Strict duplicate-property rejection happens during normalization;
-// this helper stays conservative and returns no identity if raw branches expose
-// the property more than once. Ref depth and the active path are bounded like
-// schema normalization so malformed recursive compositions cannot loop here.
+// composition. It stays conservative: if more than one branch exposes the
+// property it returns nothing. Ref depth and the active ref path are bounded so
+// a malformed recursive composition cannot loop here.
 func (n *schemaNormalizer) findPropertyProxy(proxy *base.SchemaProxy, name string) (*base.SchemaProxy, error) {
 	return n.findPropertyProxyAt(proxy, name, 0, make(map[string]bool))
 }
@@ -458,9 +439,9 @@ func (n *schemaNormalizer) findPropertyProxyAt(proxy *base.SchemaProxy, name str
 	return found, nil
 }
 
-// resolveToSchema follows a schema proxy through one or more $ref hops to its
-// underlying *base.Schema, mirroring normalizeProxy's resolution but returning
-// the raw libopenapi node so callers can read $ref names the model discards.
+// resolveToSchema follows a proxy through its $ref hops to the underlying
+// *base.Schema, returning the raw libopenapi node so callers can read $ref
+// names the normalized model discards.
 func (n *schemaNormalizer) resolveToSchema(proxy *base.SchemaProxy) (*base.Schema, error) {
 	return n.resolveToSchemaAt(proxy, 0, make(map[string]bool))
 }
@@ -541,16 +522,11 @@ func responseBodySchemaProxy(op *v3.Operation) *base.SchemaProxy {
 }
 
 // schemaRef returns the $ref a proxy points at, and whether it has one at all.
-//
-// libopenapi's high-level IsReference/GetReference cover a bare $ref, but a node
-// that writes $ref alongside other keywords — {$ref: TokenName, example: "x"},
-// which the Datadog spec does — is reported as a non-reference with an empty
-// reference, leaving a schema carrying only the siblings and therefore no type.
-// OpenAPI 3.0 says keywords beside a $ref are ignored, so the reference is the
-// whole meaning of such a node; the low-level model still records it.
-//
-// Every "is this a reference?" test in this file goes through here, so a sibling
-// can never cost a node its type, its component name, or its SDK type name.
+// IsReference/GetReference cover a bare $ref, but a node writing $ref alongside
+// other keywords — which the Datadog spec does — is reported as a non-reference
+// with an empty reference, leaving a schema that carries only the siblings and
+// so has no type. Per OpenAPI 3.0 those siblings are ignored, so the reference
+// recorded in the low-level model is the node's whole meaning.
 func schemaRef(proxy *base.SchemaProxy) (string, bool) {
 	if proxy == nil {
 		return "", false
@@ -570,8 +546,8 @@ func schemaRef(proxy *base.SchemaProxy) (string, bool) {
 
 // normalizeProxyAt normalizes one schema proxy, resolving a $ref through the
 // component set and counting it against the depth budget. The first component
-// name is retained in ctx before resolution, since libopenapi's resolved schema
-// no longer identifies the component that supplied a oneOf envelope.
+// name of the chain is retained in ctx before resolution, since the resolved
+// schema no longer identifies the component it came from.
 func (n *schemaNormalizer) normalizeProxyAt(proxy *base.SchemaProxy, depth int, ctx schemaContext) (*model.Schema, error) {
 	if proxy == nil {
 		return nil, nil
@@ -581,13 +557,11 @@ func (n *schemaNormalizer) normalizeProxyAt(proxy *base.SchemaProxy, depth int, 
 		if ctx.refName == "" {
 			ctx.refName = lastRefSegment(ref)
 		}
-		// depth counts $ref edges already followed; the >= bound matches cycles.go.
-		// Exhausting the budget is not a cycle — cycles.go finds those independently
-		// of depth — so it gets its own kind and says how to lift the limit.
-		// A $ref already being expanded closes a cycle. Terminate here, before the
-		// depth check, so a genuine cycle is never misreported as a chain that
-		// merely ran out of budget — the two have different remedies, and only
-		// the depth one is fixable with a flag.
+		// depth counts $ref edges already followed. A $ref already being
+		// expanded closes a cycle: terminate here, before the depth check, so a
+		// genuine cycle is never misreported as merely running out of budget.
+		// The two get different kinds, and only the depth one is fixable by
+		// raising the flag.
 		if i := slices.Index(n.refStack, ref); i >= 0 {
 			cycle := append(append([]string{}, n.refStack[i:]...), ref)
 			return &model.Schema{
@@ -611,15 +585,14 @@ func (n *schemaNormalizer) normalizeProxyAt(proxy *base.SchemaProxy, depth int, 
 		if err != nil {
 			return nil, err
 		}
-		// Balanced by the defer so the expansion chain unwinds even when a
-		// branch errors.
+		// Popped by the defer, so the chain unwinds even when a branch errors.
 		n.refStack = append(n.refStack, ref)
 		defer func() { n.refStack = n.refStack[:len(n.refStack)-1] }()
 		return n.normalizeProxyAt(target, depth+1, ctx)
 	}
-	// libopenapi represents a $ref with sibling keywords as a synthetic allOf.
-	// Retain the referenced component identity, but normalize that synthetic
-	// composition so supported sibling metadata is not discarded.
+	// A $ref with sibling keywords is a synthetic allOf: retain the referenced
+	// component identity, but still normalize the composition so supported
+	// sibling metadata is not discarded.
 	if ref, ok := schemaRef(proxy); ok && ctx.refName == "" {
 		ctx.refName = lastRefSegment(ref)
 	}
@@ -643,16 +616,16 @@ func (n *schemaNormalizer) resolveRef(ref string) (*base.SchemaProxy, error) {
 	return target, nil
 }
 
-// normalizeSchema converts a resolved *base.Schema into a model.Schema:
+// normalizeSchema converts a resolved *base.Schema into a model.Schema,
 // classifying its kind from structure and carrying Type, Format, Enum, Required
 // and Sensitive. Children recurse at the same depth — only $refs cost depth.
 func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schemaContext) (*model.Schema, error) {
 	if s == nil {
 		return nil, nil
 	}
-	// oneOf is the Terraform envelope when composition keywords are adjacent.
-	// Its sibling merge normalizes the bounded allOf subset once and applies the
-	// resulting intersection to every alternative.
+	// allOf flattens here only without an adjacent oneOf; when both are
+	// present oneOf wins, and its sibling merge applies the allOf intersection
+	// to every alternative instead.
 	if len(s.OneOf) == 0 && len(s.AllOf) > 0 {
 		return n.normalizeAllOf(s, depth, ctx)
 	}
@@ -665,15 +638,15 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 		ReadOnly:    schemaReadOnly(s),
 		Sensitive:   n.isSensitive(s),
 		Description: s.Description,
-		// The component name that led here, retained because the Datadog go-sdk
-		// names its generated model after it. ctx carries the first $ref of the
-		// chain; a node reached inline leaves this empty.
+		// The component name that led here — the go-sdk names its generated
+		// model after it. ctx carries the first $ref of the chain; a node
+		// reached inline leaves this empty.
 		RefName: ctx.refName,
 	}
 
-	// The kind (set above by classifyKind) decides which children to recurse into
-	// and where to store them. Primitive and Unsupported have no children, so they
-	// have no case and fall through with only the scalar fields already set.
+	// Kind decides which children to recurse into and where to store them.
+	// Primitive and Unsupported have none, so they have no case and keep only
+	// the scalar fields set above.
 	switch out.Kind {
 	case model.SchemaKindObject:
 		// Object: walk every named property into out.Properties, keyed by name.
@@ -707,8 +680,8 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 	case model.SchemaKindMap:
 		// Map: dynamic keys sharing one value schema (additionalProperties),
 		// carried in out.Items. A boolean `additionalProperties: true` declares
-		// no value schema — its values are unconstrained, which TF cannot
-		// represent, so carry an Unsupported sentinel for the check to reject.
+		// no value schema, so its values are unconstrained — which TF cannot
+		// represent, hence an Unsupported sentinel.
 		if s.AdditionalProperties != nil && s.AdditionalProperties.IsA() {
 			value, err := n.normalizeProxyAt(s.AdditionalProperties.A, depth, schemaContext{
 				path:     model.ChildPath(ctx.path, "{}"),
@@ -753,17 +726,17 @@ type oneOfAlternativeSource struct {
 	refName string
 }
 
-// normalizeOneOf builds the parser-facing union model while the raw OpenAPI
-// proxies are still available. This is the only point at which component
-// references, discriminator mappings and sibling constraints can all be
-// associated with the same alternative without guessing downstream.
+// normalizeOneOf builds the union model while the raw OpenAPI proxies are
+// still available — the only point at which component references, discriminator
+// mappings and sibling constraints can be tied to the same alternative without
+// guessing. Null-only alternatives are dropped onto the union's Nullable flag.
 func (n *schemaNormalizer) normalizeOneOf(s *base.Schema, depth int, ctx schemaContext) (*model.OneOfSpec, error) {
 	union := &model.OneOfSpec{
 		Name: oneOfEnvelopeName(ctx),
 		Path: ctx.path,
-		// Kept apart from Name so the SDK binding pass can tell a component-backed
-		// union (whose wrapper is this name) from an inline one (whose wrapper it
-		// must derive from the SDK root), without inspecting Name's spelling.
+		// Kept apart from Name so a component-backed union (wrapper = this
+		// name) stays distinguishable from an inline one (wrapper derived from
+		// the SDK root) without inspecting Name's spelling.
 		RefName:       ctx.refName,
 		Optional:      !ctx.required,
 		Nullable:      schemaAllowsNull(s),
@@ -826,9 +799,9 @@ func (n *schemaNormalizer) normalizeOneOf(s *base.Schema, depth int, ctx schemaC
 	return union, nil
 }
 
-// inspectOneOfVariants follows reference chains only far enough to retain
-// the outer component name and inspect naming/nullability metadata. The normal
-// normalization pass still owns depth handling and schema conversion.
+// inspectOneOfVariants follows reference chains just far enough to retain the
+// outer component name and read naming/nullability metadata; depth handling and
+// schema conversion stay with the normal normalization pass.
 func (n *schemaNormalizer) inspectOneOfVariants(proxy *base.SchemaProxy, depth int) (oneOfAlternativeSource, error) {
 	var source oneOfAlternativeSource
 	for proxy != nil {
@@ -849,10 +822,9 @@ func (n *schemaNormalizer) inspectOneOfVariants(proxy *base.SchemaProxy, depth i
 			continue
 		}
 
-		// A transformed $ref-with-siblings is not a high-level reference. Retain
-		// its component identity for variant naming, then inspect through the
-		// synthetic allOf so nullability comes from the referenced shape while
-		// normal normalization still preserves supported sibling metadata.
+		// A transformed $ref-with-siblings is not a high-level reference:
+		// retain its component identity for variant naming, then look through
+		// the synthetic allOf so nullability comes from the referenced shape.
 		if ref, ok := schemaRef(proxy); ok {
 			if source.ref == "" {
 				source.ref = ref
@@ -934,10 +906,10 @@ func discriminatorNameForRef(discriminator *base.Discriminator, ref, refName str
 	return ""
 }
 
-// mergeOneOfSiblings applies the constraints adjacent to oneOf to an
-// alternative. Normalizing a shallow copy without oneOf lets the existing
-// object/array/map/primitive code process those siblings using the variant's
-// canonical path.
+// mergeOneOfSiblings applies the constraints adjacent to oneOf to one
+// alternative: it normalizes a shallow copy of the parent with oneOf stripped —
+// so the ordinary object/array/map/primitive code handles the siblings, at the
+// variant's own path — and merges the result into the variant.
 func (n *schemaNormalizer) mergeOneOfSiblings(
 	parent *base.Schema,
 	variant *model.Schema,
@@ -953,11 +925,10 @@ func (n *schemaNormalizer) mergeOneOfSiblings(
 		return nil, err
 	}
 	// A type:object sibling carrying only required names is a constraint
-	// carrier, not a standalone Terraform object. General schema normalization
-	// correctly classifies an object with no properties as Unsupported, but
-	// retaining that sentinel here would cause MergeNormalizedSchemas to discard
-	// the required constraint. Give this merge-only schema an empty object shape
-	// so its required names are applied to every object alternative.
+	// carrier, not a standalone object. Normalization classifies a propertyless
+	// object as Unsupported, and MergeNormalizedSchemas would then drop the
+	// constraint, so give it an empty object shape instead and its required
+	// names reach every object alternative.
 	if common.Kind == model.SchemaKindUnsupported && isRequiredOnlyObjectConstraint(commonRaw) {
 		common.Kind = model.SchemaKindObject
 		common.Properties = make(map[string]*model.Schema)
@@ -1001,16 +972,12 @@ func oneOfSiblingSchema(s *base.Schema) (*base.Schema, bool) {
 }
 
 // allOfAnnotations accumulates the metadata an allOf node carries outside its
-// structural branches: what the outer node declares, unioned with what each
-// annotation-only branch declared before being skipped. A skipped branch
-// asserts nothing about the value, but it still carries metadata the model
-// records, so dropping it would lose those fields silently.
-//
-// normalizeAllOf builds its result on two paths that owe the same fields; one
-// carrier applied by both keeps them from drifting.
+// structural branches: the outer node's own, unioned with each annotation-only
+// branch's before that branch is skipped. A skipped branch asserts nothing
+// about the value but still declares metadata that would otherwise be lost.
 type allOfAnnotations struct {
-	// outerDescription is the allOf node's own, and outranks any branch's — hence
-	// the two fields rather than one.
+	// outerDescription is the allOf node's own and outranks any branch's,
+	// hence two fields rather than one.
 	outerDescription string
 	// branchDescription is the first absorbed branch's, used only as a fallback.
 	branchDescription string
@@ -1028,10 +995,10 @@ func (n *schemaNormalizer) outerAnnotations(s *base.Schema) allOfAnnotations {
 	}
 }
 
-// absorb unions one skipped annotation-only branch into the carrier. It reads
-// the branch's normalized form rather than the raw schema: normalizeSchema sets
-// these four fields before dispatching on kind, and an annotation-only branch
-// has no kind case that would overwrite them.
+// absorb unions one skipped annotation-only branch into the carrier, reading
+// the branch's normalized form: normalizeSchema sets these four fields before
+// dispatching on kind, and an annotation-only branch has no kind case that
+// would overwrite them.
 func (a *allOfAnnotations) absorb(branch *model.Schema) {
 	if a.branchDescription == "" {
 		a.branchDescription = branch.Description
@@ -1054,13 +1021,11 @@ func (a allOfAnnotations) applyTo(out *model.Schema) {
 	}
 }
 
-// normalizeAllOf flattens the bounded allOf subset used by the Datadog API
-// spec. A single structural branch is a metadata overlay; multiple structural
-// branches must all be objects with disjoint properties. Annotation-only
-// branches are ignored structurally, but whatever metadata they declare is
-// still unioned onto the result (see allOfAnnotations). Anything outside that
-// subset becomes an Unsupported schema with a reason, so only the affected
-// artifact fails later in the model layer.
+// normalizeAllOf flattens the supported allOf subset: a single structural
+// branch is a metadata overlay; several structural branches must all be objects
+// with disjoint properties. Annotation-only branches are skipped structurally
+// but their metadata is unioned in. Anything outside the subset becomes an
+// Unsupported schema carrying a reason rather than an error.
 func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaContext) (*model.Schema, error) {
 	if reason := unsupportedAllOfOuterStructure(s); reason != "" {
 		return unsupportedSchema(reason), nil
@@ -1179,10 +1144,10 @@ func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaC
 	return out, nil
 }
 
-// applyAllOfScalarConstraints applies the scalar constraints the normalized
-// model understands. Two enum declarations are intersected; incompatible
-// formats and empty enum intersections remain unsupported rather than silently
-// widening the generated Terraform schema.
+// applyAllOfScalarConstraints folds the outer format and enum into out,
+// returning a reason string when they cannot apply. Two enums are intersected;
+// a conflicting format or an empty intersection is unsupported rather than a
+// silently widened schema.
 func applyAllOfScalarConstraints(out *model.Schema, outer *base.Schema, branchIndex int) string {
 	if outer.Format == "" && len(outer.Enum) == 0 {
 		return ""
@@ -1249,11 +1214,10 @@ func unionRequired(left, right []string) []string {
 	return out
 }
 
-// unsupportedAllOfOuterStructure rejects combinations whose structure lives
-// both outside and inside allOf. The current Datadog subset uses only an outer
-// type assertion plus annotation/constraint metadata; merging outer properties,
-// variants, arrays, or maps would require broader JSON Schema intersection
-// semantics.
+// unsupportedAllOfOuterStructure rejects nodes whose structure lives both
+// outside and inside the allOf. Only an outer type assertion plus
+// annotation/constraint metadata is supported; merging outer properties,
+// variants, arrays or maps would need full JSON Schema intersection semantics.
 func unsupportedAllOfOuterStructure(s *base.Schema) string {
 	switch {
 	case len(s.OneOf) > 0:
@@ -1271,20 +1235,12 @@ func unsupportedAllOfOuterStructure(s *base.Schema) string {
 	}
 }
 
-// isAnnotationOnlySchema recognizes the sibling-only branch libopenapi creates
-// for an OpenAPI 3.0 $ref with siblings, plus the same form when authored
-// explicitly. It is the residual of hasStructuralOrConstraintKeywords: a schema
-// that asserts nothing cannot narrow the value, so ignoring it structurally is
-// safe whatever else it declares.
-//
-// A residual rather than a second allow-list, deliberately: a keyword named in
-// neither list would poison its node to Unsupported, and the ones that qualify
-// here — nullable, readOnly, writeOnly, deprecated, $comment, xml, externalDocs,
-// $id, $anchor — are open-ended enough that any enumeration goes stale.
-//
-// The one exclusion is a completely empty schema, which is an arbitrary untyped
-// value rather than an annotation and must not be discarded. declaresKeyword is
-// exactly that exclusion.
+// isAnnotationOnlySchema recognizes a branch that asserts nothing about the
+// value — libopenapi's sibling-only branch for a 3.0 $ref with siblings, or the
+// same form authored by hand. It is the residual of
+// hasStructuralOrConstraintKeywords, not a second allow-list, since the
+// qualifying keywords (nullable, readOnly, deprecated, xml, …) are open-ended.
+// declaresKeyword excludes the empty schema: an untyped value, not annotation.
 func isAnnotationOnlySchema(s *base.Schema) bool {
 	if s == nil || hasStructuralOrConstraintKeywords(s) {
 		return false
@@ -1292,11 +1248,10 @@ func isAnnotationOnlySchema(s *base.Schema) bool {
 	return declaresKeyword(s)
 }
 
-// declaresKeyword reports whether a schema writes any keyword at all, read from
-// the node the document was parsed from so that no keyword needs naming here.
-// An absent node is treated as declaring nothing, which keeps the conservative
-// answer (structural, therefore Unsupported) rather than silently dropping a
-// branch this cannot see into.
+// declaresKeyword reports whether a schema writes any keyword at all, read off
+// the node the document was parsed from so no keyword needs naming here. An
+// absent node counts as declaring nothing, which keeps the conservative answer
+// (structural, therefore Unsupported).
 func declaresKeyword(s *base.Schema) bool {
 	low := s.GoLow()
 	if low == nil || low.RootNode == nil {
@@ -1305,10 +1260,9 @@ func declaresKeyword(s *base.Schema) bool {
 	return len(low.RootNode.Content) > 0
 }
 
-// hasStructuralOrConstraintKeywords distinguishes schemas that narrow values
-// from genuine metadata-only overlays. Keep this deliberately conservative:
-// accepting an unknown assertion here would discard it and widen the generated
-// Terraform schema.
+// hasStructuralOrConstraintKeywords reports whether a schema narrows values, as
+// opposed to being a metadata-only overlay. Deliberately conservative: missing
+// an assertion here would discard it and widen the generated schema.
 func hasStructuralOrConstraintKeywords(s *base.Schema) bool {
 	// Type and composition keywords.
 	if len(s.Type) > 0 || len(s.AllOf) > 0 || len(s.OneOf) > 0 || len(s.AnyOf) > 0 {
@@ -1367,9 +1321,8 @@ func hasStructuralOrConstraintKeywords(s *base.Schema) bool {
 	if len(s.Enum) > 0 || s.Const != nil {
 		return true
 	}
-	// String-content keywords. JSON Schema 2019-09 calls these annotations, but
-	// they describe how to decode the value, so keep them on the conservative
-	// side of the split alongside contentSchema.
+	// String-content keywords. JSON Schema 2019-09 calls these annotations,
+	// but they say how to decode the value, so treat them as constraints.
 	if s.ContentEncoding != "" || s.ContentMediaType != "" {
 		return true
 	}
@@ -1377,7 +1330,7 @@ func hasStructuralOrConstraintKeywords(s *base.Schema) bool {
 }
 
 // schemaReadOnly reads readOnly through its nil pointer, which libopenapi uses
-// to distinguish "declared false" from "not declared".
+// to separate "declared false" from "not declared".
 func schemaReadOnly(s *base.Schema) bool {
 	return s.ReadOnly != nil && *s.ReadOnly
 }
@@ -1429,15 +1382,12 @@ func nonNullTypes(types []string) []string {
 	return out
 }
 
-// classifyKind derives the SchemaKind from structure, not type alone. Precedence
-// (first match wins, since a node can satisfy several at once):
-// anyOf → unsupported; oneOf → one_of; properties → object; type:array+items →
-// array; additionalProperties → map; a concrete scalar type → primitive; anything
-// else (free-form/empty object, typeless leaf, itemless array) → unsupported.
-//
-// oneOf and anyOf are intentionally distinct: oneOf is normalized into a typed
-// envelope, while anyOf remains unsupported so its artifact fails rather than
-// inheriting oneOf's exactly-one semantics.
+// classifyKind derives the SchemaKind from structure, not type alone. First
+// match wins, since a node can satisfy several at once: anyOf → unsupported;
+// oneOf → one_of; properties → object; type:array with items → array;
+// additionalProperties → map; a concrete scalar type → primitive; anything else
+// (free-form object, typeless leaf, itemless array) → unsupported. anyOf stays
+// unsupported rather than inheriting oneOf's exactly-one semantics.
 func classifyKind(s *base.Schema) model.SchemaKind {
 	switch {
 	case len(s.AnyOf) > 0:
@@ -1459,9 +1409,9 @@ func classifyKind(s *base.Schema) model.SchemaKind {
 		// A concrete scalar leaf (string, integer, number, boolean).
 		return model.SchemaKindPrimitive
 	default:
-		// No representable type or structure: a free-form/empty object
-		// (type:object with no properties), a typeless leaf (empty schema {}),
-		// an itemless array, etc. TF cannot emit these — reject, don't guess.
+		// No representable type or structure: a free-form object (type:object
+		// with no properties), a typeless leaf (empty schema {}), an itemless
+		// array. TF cannot emit these — reject rather than guess.
 		return model.SchemaKindUnsupported
 	}
 }
@@ -1476,9 +1426,9 @@ func isMap(s *base.Schema) bool {
 	return ap.IsA() || (ap.IsB() && ap.B)
 }
 
-// collectionElement preserves recursively typed collection shapes. Terraform
-// attr.Type values can represent list/map chains such as list(list(string)) and
-// map(list(string)); only a missing element schema needs an Unsupported sentinel.
+// collectionElement passes a collection's element schema through unchanged —
+// nested chains like list(list(string)) are representable — substituting an
+// Unsupported sentinel only when the element schema is missing.
 func collectionElement(elem *model.Schema) *model.Schema {
 	if elem == nil {
 		return &model.Schema{Kind: model.SchemaKindUnsupported}
@@ -1492,10 +1442,9 @@ func hasType(s *base.Schema, t string) bool {
 	return slices.Contains(s.Type, t)
 }
 
-// isRepresentablePrimitive reports whether the schema's declared type is a
-// concrete scalar Terraform can emit. A node with no type — or one that reached
-// here with a non-scalar type, e.g. an itemless array — is not a primitive; it
-// is unsupported. The source spec is 3.0, so a single firstType suffices.
+// isRepresentablePrimitive reports whether the declared type is a concrete
+// scalar Terraform can emit. A node with no type, or one reaching here with a
+// non-scalar type (e.g. an itemless array), is not a primitive.
 func isRepresentablePrimitive(s *base.Schema) bool {
 	switch firstType(s) {
 	case "string", "integer", "number", "boolean":
@@ -1506,8 +1455,7 @@ func isRepresentablePrimitive(s *base.Schema) bool {
 }
 
 // firstType returns the schema's first non-null declared type, or "" when the
-// schema is untyped/null-only. Nullability is represented on OneOfSpec rather
-// than as a primitive alternative.
+// schema is untyped or null-only; nullability is carried on OneOfSpec instead.
 func firstType(s *base.Schema) string {
 	for _, typ := range s.Type {
 		if typ != "null" {
@@ -1556,9 +1504,8 @@ func sortedRequired(s *base.Schema) []string {
 }
 
 // isSensitive derives Terraform sensitivity from the explicit tracking
-// annotation when present. Otherwise, OpenAPI writeOnly and Datadog's x-secret
-// extension default the field to sensitive so an omitted generator annotation
-// cannot expose a credential in Terraform plans or diffs.
+// annotation when present; otherwise writeOnly or x-secret default the field to
+// sensitive, so an omitted annotation cannot expose a credential in a plan.
 func (n *schemaNormalizer) isSensitive(s *base.Schema) bool {
 	if explicit, ok := n.explicitSensitivity(s); ok {
 		return explicit
@@ -1567,9 +1514,8 @@ func (n *schemaNormalizer) isSensitive(s *base.Schema) bool {
 }
 
 // explicitSensitivity distinguishes an omitted annotation from an explicit
-// false. That lets maintainers override the safe OpenAPI-derived default in
-// either direction. A malformed annotation is treated as absent so x-secret or
-// writeOnly can still prevent accidental disclosure.
+// false, so the derived default can be overridden in either direction. A
+// malformed annotation counts as absent, leaving x-secret/writeOnly in force.
 func (n *schemaNormalizer) explicitSensitivity(s *base.Schema) (bool, bool) {
 	if s.Extensions == nil {
 		return false, false
@@ -1591,9 +1537,8 @@ func schemaWriteOnly(s *base.Schema) bool {
 	return s.WriteOnly != nil && *s.WriteOnly
 }
 
-// boolExtension reads a boolean Schema Object extension. Missing, false, and
-// malformed values all return false; only an explicit true opts into the
-// extension's behavior.
+// boolExtension reads a boolean Schema Object extension. Missing, false and
+// malformed values all return false; only an explicit true opts in.
 func boolExtension(s *base.Schema, name string) bool {
 	if s.Extensions == nil {
 		return false

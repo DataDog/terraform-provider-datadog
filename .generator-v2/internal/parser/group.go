@@ -4,22 +4,11 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
-// ResolveOperationGroups wires every tracked operation's declared group to the
-// operations it names, filling Operation.ResolvedGroup: create/read/update/
-// delete for a resource lifecycle, read (by-id) and/or search (list) for a data
-// source. An operation carrying no tracking field, or tracking metadata with no
-// group, is left with a nil ResolvedGroup.
-//
-// Resolution is a whole-spec pass rather than a per-operation one because a
-// group routinely references an operation that appears later in the document,
-// and one that carries no tracking field of its own (only the annotated
-// operation does).
-//
-// It never fails the run. An operationId matching no operation in the spec is
-// recorded in ResolvedGroup.Unresolved and leaves that role nil, so the
-// artifact and lifecycle builders can fail exactly the artifact that depends on
-// it while unrelated artifacts continue (FR-012). Calling it twice on the same
-// spec produces the same result.
+// ResolveOperationGroups fills Operation.ResolvedGroup for every tracked
+// operation, replacing the group's declared operationIds with the operations
+// they name; a whole-spec pass because a group routinely names an operation
+// declared later. Never fails: an operationId matching nothing is recorded in
+// ResolvedGroup.Unresolved and leaves that role nil. Idempotent.
 func ResolveOperationGroups(spec *model.Spec) {
 	if spec == nil {
 		return
@@ -57,11 +46,10 @@ func resolveGroup(decl *model.OperationGroup, byID map[string]*model.Operation) 
 	return g
 }
 
-// indexOperationsByID indexes operations by operationId, skipping the unnamed
-// ones (an operationId is optional in OpenAPI, but a group can only reference an
-// operation that has one). OpenAPI requires operationIds to be unique, so a
-// duplicate is a malformed document; the last of a duplicate pair wins, which
-// LoadSpec's (path, method) sort makes deterministic.
+// indexOperationsByID indexes operations by operationId, skipping unnamed ones
+// (an operationId is optional, but a group can only name an operation that has
+// one). Duplicate ids are malformed input; the last one wins, made
+// deterministic by the (path, method) sort applied before this runs.
 func indexOperationsByID(ops []*model.Operation) map[string]*model.Operation {
 	byID := make(map[string]*model.Operation, len(ops))
 	for _, op := range ops {

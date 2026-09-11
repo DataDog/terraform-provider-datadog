@@ -13,17 +13,14 @@ import (
 //go:embed templates/*.go.tmpl
 var templateFS embed.FS
 
-// funcMap holds template helpers. By design these are presentation helpers,
-// not arbitrary derivation: a View arrives fully populated. The type-derived
-// helpers (hashExpr, fmtVerb) are the exception — they compute the non-pointer
-// accessor and printf verb from a FilterParamView.ValueExpr, keeping those two
-// redundant fields out of the struct.
+// funcMap holds template helpers. All are presentation-only except hashExpr
+// and fmtVerb, which derive the non-pointer accessor and the printf verb from
+// a FilterParamView.ValueExpr instead of storing them as extra fields.
 var funcMap = template.FuncMap{
 	"title": upperFirst,
 	// requestAttributesVar names the local a resource's request fields are set
-	// on. It is a constant, not a derivation: RequestFieldView.Target is
-	// precomputed from the same constant in Go, so the template must spell it
-	// identically or the two disagree.
+	// on. RequestFieldView.Target is precomputed from the same constant, so
+	// the template must spell it identically or the two disagree.
 	"requestAttributesVar": func() string { return requestAttributesVar },
 	// hashExpr strips "Pointer" from a ValueExpr, e.g. "ValueStringPointer()" → "ValueString()".
 	"hashExpr": func(valueExpr string) string {
@@ -49,17 +46,13 @@ var funcMap = template.FuncMap{
 // templates is the parsed set of every "templates/*.go.tmpl" file: the
 // data-source singular/plural roots, the resource root, the acceptance-test
 // scaffold, and the shared partials in data_source_common.go.tmpl (schema
-// rendering, model structs, response mapping) that the resource root reuses
-// as-is.
+// rendering, model structs, response mapping).
 var templates = template.Must(
 	template.New("data_source").Funcs(funcMap).ParseFS(templateFS, "templates/*.go.tmpl"),
 )
 
 // RenderDataSource executes the singular or plural data-source template for v
 // and returns gofmt-canonical Go source.
-//
-// NOTE: this is a minimal execution harness so the templates are runnable and
-// testable on their own.
 func RenderDataSource(v DataSourceView) ([]byte, error) {
 	if err := checkDuplicateFields(v.Models); err != nil {
 		return nil, fmt.Errorf("emit: data source %q: %w", v.TypeName, err)
@@ -102,9 +95,8 @@ func RenderResource(v ResourceView) ([]byte, error) {
 }
 
 // checkDuplicateFields rejects duplicate Go model names and a model struct that
-// declares the same Terraform name twice. Either shape produces generated code
-// that does not compile, so failing here keeps a broken artifact from being
-// written and reported as created.
+// declares the same Terraform name twice; either shape produces generated code
+// that does not compile.
 func checkDuplicateFields(models []ModelStructView) error {
 	modelNames := make(map[string]bool, len(models))
 	for _, m := range models {
@@ -125,10 +117,8 @@ func checkDuplicateFields(models []ModelStructView) error {
 }
 
 // dropBlankLineAfterBrace removes blank lines that immediately follow a line
-// ending in "{". gofmt does not strip these, but idiomatic Go never opens a
-// block with a blank line; centralizing the rule here keeps the templates free
-// of whitespace-control noise. Blank lines after any other line (e.g. the
-// group separator before a "// Results" comment) are preserved.
+// ending in "{" — gofmt leaves those, but idiomatic Go never opens a block with
+// a blank line. Blank lines after any other line are preserved.
 func dropBlankLineAfterBrace(src []byte) []byte {
 	lines := bytes.Split(src, []byte("\n"))
 	out := make([][]byte, 0, len(lines))

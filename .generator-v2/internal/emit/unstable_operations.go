@@ -8,9 +8,8 @@ import (
 )
 
 // unstableOperationRe matches one quoted "v<n>.<OperationId>" entry. The
-// generated file holds nothing else shaped like it, so it recovers the
-// already-registered set from the file's current contents the way
-// resourceConstructorRe does for resources_generated.go.
+// generated file holds nothing else shaped like it, so the already-registered
+// set can be recovered from the file's current contents.
 var unstableOperationRe = regexp.MustCompile(`"v[0-9]+\.[A-Za-z0-9_]+"`)
 
 // generatedUnstableOperationsHeader is everything in
@@ -31,9 +30,8 @@ var generatedUnstableOperations = []string{`
 
 // SyncUnstableOperations rewrites path's generatedUnstableOperations slice to
 // hold the union of the keys already registered there and the ones passed in,
-// sorted and de-duplicated. Merging rather than replacing is what keeps a
-// partial --include run from disabling operations it did not regenerate this
-// time. It honors check mode through WriteFile.
+// sorted and de-duplicated. Merging rather than replacing keeps a partial run
+// from disabling operations it did not regenerate. Honors check mode.
 func SyncUnstableOperations(path string, keys []string, check bool) (model.ArtifactStatus, error) {
 	set, err := registeredSetMatching(path, unstableOperationRe, unquote)
 	if err != nil {

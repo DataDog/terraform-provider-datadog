@@ -1,11 +1,8 @@
-// Package model defines the generator's internal data model: the in-memory
-// types that flow from the parser, through schema conversion, into the
-// emitter and the run report. These types are deliberately decoupled from
-// both the OpenAPI input format and the Terraform Plugin Framework output
-//
-// The single exception is Spec.Components, which retains a handle to the
-// libopenapi component set so that schemas can be lazily resolved without
-// re-parsing the spec.
+// Package model defines the generator's internal data model: the types that
+// flow from the parser, through schema conversion, into the emitter and the run
+// report. They are decoupled from both the OpenAPI input and the Terraform
+// Plugin Framework output, the one exception being Spec.Components, which keeps
+// a libopenapi handle so schemas can be resolved lazily.
 package model
 
 import (
@@ -18,9 +15,7 @@ import (
 // ----------------------------------------------------------------------------
 // Enumerations
 //
-// Internal-only enums (SchemaKind,GenerationStage) use stable lowercase
-// tokens for debuggability.
-//
+// Internal-only enums use stable lowercase string tokens.
 // ----------------------------------------------------------------------------
 
 // ArtifactKind distinguishes a read-only data source from a full-CRUD resource.
@@ -32,16 +27,10 @@ const (
 )
 
 // SchemaKind classifies a normalized Schema node by structure. Primitive,
-// Object, Array and Map are directly emittable as Terraform attributes. OneOf
-// requires a synthetic envelope described by Schema.OneOf. RefCycle,
-// DepthExceeded and Unsupported are fatal — the builder fails the artifact rather
-// than emitting a types.Dynamic escape hatch.
-//
-// RefCycle and DepthExceeded are deliberately distinct: a cycle is a property of
-// the document that no flag can fix, whereas exhausting --max-depth says only
-// that the walk stopped early, and raising the limit may resolve the node.
-// Reporting the latter as a cycle sends the reader hunting for a cycle that does
-// not exist.
+// Object, Array and Map are directly emittable as Terraform attributes; OneOf
+// needs the synthetic envelope in Schema.OneOf; RefCycle, DepthExceeded and
+// Unsupported are fatal. The three failures stay distinct because only
+// DepthExceeded may resolve when --max-depth is raised.
 type SchemaKind string
 
 const (
@@ -54,9 +43,8 @@ const (
 	SchemaKindDepthExceeded SchemaKind = "depth_exceeded" // $ref expansion stopped at --max-depth; not a cycle
 	SchemaKindUnsupported   SchemaKind = "unsupported"    // no representable type/structure, or anyOf; always rejected
 
-	// SchemaKindVariant is retained as a source-compatibility alias for code
-	// written before the parser populated Schema.OneOf directly. New code should
-	// use SchemaKindOneOf.
+	// SchemaKindVariant is a source-compatibility alias for SchemaKindOneOf,
+	// which new code should use instead.
 	SchemaKindVariant = SchemaKindOneOf
 )
 
@@ -70,7 +58,8 @@ const (
 	CardinalityPlural   Cardinality = "plural"
 )
 
-// IdStrategy describes how the Terraform resource ID is derived from the API response.
+// IdStrategy describes how the Terraform resource ID is derived from the API
+// response.
 type IdStrategy string
 
 const (
@@ -110,16 +99,14 @@ type Operation struct {
 	Tag string
 	// Tracking is the decoded tracking-field extension
 	Tracking *TrackingFieldMetadata
-	// Unstable records that the operation declares x-unstable. Only its presence
-	// is kept: the extension's value is a human-readable beta notice, while the
-	// SDK gates the call on the operation id alone.
+	// Unstable records that the operation declares x-unstable. Only presence is
+	// kept; the extension's value is just a human-readable beta notice.
 	Unstable bool
 	// RequestSchema is the resolved request body schema, if any.
 	RequestSchema *Schema
 	// RequestRefName is the last path segment of the request body $ref, e.g.
-	// "TeamCreateRequest" — the SDK Go request type, and the root the SDK oneOf
-	// binding pass walks from on the request side. Empty when the body is inline
-	// or absent.
+	// "TeamCreateRequest" — the SDK Go request type. Empty when the body is
+	// inline or absent.
 	RequestRefName string
 	// ResponseSchema is the resolved 2xx response schema, if any.
 	ResponseSchema *Schema
@@ -128,13 +115,11 @@ type Operation struct {
 	// body is inline or absent.
 	ResponseRefName string
 	// QueryParams are the operation's in:query parameters, normalized and sorted
-	// by name. Populated for every operation; the plural data-source path turns
-	// the scalar ones into filters. DeclarationOrder retains the original OpenAPI
-	// position so SDK binding can reproduce the client generator's call order.
+	// by name. DeclarationOrder retains each one's original OpenAPI position.
 	QueryParams []QueryParam
 	// PathParams are the operation's in:path parameters, normalized and sorted
-	// by name. DeclarationOrder retains their position relative to required query
-	// parameters, matching the Go client generator's parameter walk.
+	// by name. DeclarationOrder retains their position relative to required
+	// query parameters.
 	PathParams []QueryParam
 	// Pagination is the decoded x-pagination extension, or nil when the
 	// operation declares none.
@@ -145,19 +130,14 @@ type Operation struct {
 	ItemRefName string
 	// ResponseDataRefName is the last $ref segment of a by-id response's "data"
 	// property when it is a single object reference, e.g. "FullAPIKey" — the SDK
-	// Go record type. Empty for list responses (whose "data" is an array; see
-	// ItemRefName) or an inline data object. Lets a "both" data source detect when
-	// its by-id record shape diverges from its list element shape.
+	// Go record type. Empty for a list response (whose "data" is an array; see
+	// ItemRefName) or an inline data object.
 	ResponseDataRefName string
-	// ResolvedGroup is Tracking.Group with every declared operationId replaced by
-	// the operation it names, filled by parser.ResolveOperationGroups. It is nil
-	// on an operation that declares no group, and on hand-built test operations
-	// that never went through the parser.
+	// ResolvedGroup is Tracking.Group with every declared operationId replaced
+	// by the operation it names. Nil when the operation declares no group.
 	ResolvedGroup *ResolvedGroup
-	// SDKBinding is the call signature derived from the OpenAPI operation using
-	// the Go SDK generator's naming and ordering rules. The CLI fills it before
-	// artifact construction. Tests that build parser-shaped operations directly
-	// may leave it nil and exercise the legacy call shape.
+	// SDKBinding is the call signature derived from the operation using the Go
+	// SDK generator's naming and ordering rules. Nil until it is resolved.
 	SDKBinding *SDKOperationBinding
 }
 
@@ -174,18 +154,12 @@ const (
 )
 
 // ResolvedGroup is an OperationGroup with every declared operationId replaced by
-// the *Operation it names — the CRUD lifecycle for a resource, the by-id read
-// and/or the list search for a data source. It is produced by
-// parser.ResolveOperationGroups once the whole spec is enumerated, because a
-// group may reference an operation that appears later in the document (or that
-// carries no tracking field of its own).
-//
-// A role is nil both when the annotation left it out and when the operationId
-// it named matches no operation in the spec; Unresolved is what distinguishes
-// the two, listing only the latter. Resolution never fails the run:
-// FR-012 requires an unrepresentable annotation to fail its own artifact while
-// unrelated artifacts continue, so the unresolved references travel with the
-// operation for the artifact and lifecycle builders to act on.
+// the *Operation it names. It is resolved only once the whole spec is
+// enumerated, since a group may reference an operation appearing later. A role
+// is nil both when the annotation omitted it and when the operationId it named
+// matched nothing; Unresolved lists only the latter. Resolution never fails the
+// run, so an unresolvable reference travels with the operation and fails only
+// its own artifact.
 type ResolvedGroup struct {
 	Create *Operation
 	Read   *Operation
@@ -206,13 +180,10 @@ type GroupReference struct {
 	OperationId string
 }
 
-// Op returns the operation resolved for role. It is nil when the annotation
-// omitted that role, when the operationId it named matched no operation, and
-// when the group was never resolved — and it is nil-safe on the receiver, so a
-// caller holding a possibly-groupless operation can write
-// op.ResolvedGroup.Op(GroupRoleSearch) with no guard of its own. Every role is
-// reached this same way: the safety seam belongs to the group, not to whichever
-// role happened to acquire callers first.
+// Op returns the operation resolved for role, and nil when the annotation
+// omitted that role, when the operationId it named matched nothing, or when the
+// group was never resolved. Nil-safe on the receiver, so a caller holding a
+// possibly-groupless operation needs no guard of its own.
 func (g *ResolvedGroup) Op(role GroupRole) *Operation {
 	if g == nil {
 		return nil
@@ -232,11 +203,9 @@ func (g *ResolvedGroup) Op(role GroupRole) *Operation {
 	return nil
 }
 
-// UnresolvedId returns the operationId the annotation declared for role when that
-// reference resolved to nothing, and "" when the role was simply never declared.
-// It is the counterpart to Op: Op answers "which operation", this answers "and if
-// none, what did the author write". Both are nil-safe on the receiver for the
-// same reason — the safety seam belongs to the group.
+// UnresolvedId returns the operationId the annotation declared for role when
+// that reference resolved to nothing, and "" when the role was never declared
+// at all. Nil-safe on the receiver, like Op.
 func (g *ResolvedGroup) UnresolvedId(role GroupRole) string {
 	if g == nil {
 		return ""
@@ -250,16 +219,11 @@ func (g *ResolvedGroup) UnresolvedId(role GroupRole) string {
 }
 
 // Operations returns every distinct operation the group resolved to for the
-// named roles, in create/read/search/update/delete order regardless of the order
-// the roles are given; passing none means all five. An operation filling two
-// roles — a group whose read and search name the same endpoint, say — appears
-// once. Nil-safe, and the order is document-independent, which is what every
-// consumer needs for deterministic output.
-//
-// The filtering form exists because a resource consumes only the CRUD quad:
-// Search backs a data-source lookup and no resource path reads it, so binding
-// it would walk a list response for nothing and let a failure there fail an
-// artifact that body never contributes to.
+// named roles, always in create/read/search/update/delete order whatever order
+// the roles are given in; passing none means all five. An operation filling two
+// roles — read and search naming the same endpoint, say — appears once.
+// Nil-safe, and document-independent. Filtering exists because a resource
+// consumes only the CRUD quad; Search backs a data-source lookup instead.
 func (g *ResolvedGroup) Operations(roles ...GroupRole) []*Operation {
 	if g == nil {
 		return nil
@@ -284,10 +248,9 @@ func (g *ResolvedGroup) Operations(roles ...GroupRole) []*Operation {
 	return ops
 }
 
-// QueryParam is one normalized OpenAPI path or query parameter (the historical
-// name is retained to avoid broad churn). Its inner schema is normalized like a
-// request/response body, and Name preserves raw spelling such as
-// "filter[keyword]".
+// QueryParam is one normalized OpenAPI path or query parameter. Its inner
+// schema is normalized like a request/response body, and Name preserves the
+// raw spelling, e.g. "filter[keyword]".
 type QueryParam struct {
 	Name        string
 	Required    bool
@@ -320,31 +283,26 @@ type SDKOperationBinding struct {
 }
 
 // RequestDiscriminator describes a request body's JSON:API "data.type" member,
-// which the API requires and rejects the body without.
-//
-// It exists because the pinned SDK supplies that value only when the OpenAPI
-// type schema declares a `default`: New<Data>WithDefaults() assigns a property
-// exactly when the SDK generator's own predicate holds (see Schema.HasDefault).
-// Three of the thirteen resources that currently compile declare none, so the
-// generated code has to send the value itself (T143).
+// which the API requires and rejects the body without. The pinned SDK's
+// New<Data>WithDefaults() supplies the value only when the OpenAPI type schema
+// declares a `default` (see Schema.HasDefault); otherwise the generated code
+// must send it itself.
 type RequestDiscriminator struct {
 	// GoType is the SDK type the value converts to, e.g. "PlaylistDataType" —
 	// the type property's own component name. Empty when the property is
-	// inline, in which case the SDK's name for it is positional and this
-	// generator does not guess it.
+	// inline, whose SDK name is positional and not guessed here.
 	GoType string
 	// Values are the allowed values. Exactly one means the discriminator is
-	// determined and the generated code can send it; more than one means the
-	// spec does not say which a request should carry, and none means the type
-	// is an unconstrained string.
+	// determined and generated code can send it; more than one means the spec
+	// does not say which; none means the type is an unconstrained string.
 	Values []string
 	// SDKDefaulted reports that New<Data>WithDefaults() already assigns the
 	// property, so a body that cannot name the value itself is still valid.
 	SDKDefaulted bool
 }
 
-// Determined reports whether the generated code can send the discriminator
-// itself: the value is unambiguous and its SDK type is nameable.
+// Determined reports whether generated code can send the discriminator itself:
+// the value is unambiguous and its SDK type is nameable.
 func (d *RequestDiscriminator) Determined() bool {
 	return d != nil && d.GoType != "" && len(d.Values) == 1
 }
@@ -372,13 +330,11 @@ type Schema struct {
 	Required []string
 	// Items is populated for arrays only.
 	Items *Schema
-	// OneOf is populated when Kind is SchemaKindOneOf. It carries the stable
-	// Terraform envelope identity, its non-null alternatives, and the metadata
-	// required to bind those alternatives to the generated SDK wrapper.
+	// OneOf is populated when Kind is SchemaKindOneOf, carrying the envelope
+	// identity, its non-null alternatives and their SDK binding metadata.
 	OneOf *OneOfSpec
-	// Variants is the parser's legacy oneOf representation. It remains only as a
-	// source-compatibility bridge; NormalizeSchemas leaves it empty and new model
-	// and emit code must consume OneOf instead.
+	// Variants is the parser's legacy oneOf representation; NormalizeSchemas
+	// leaves it empty.
 	//
 	// Deprecated: use OneOf.Variants.
 	Variants []*Schema
@@ -388,15 +344,11 @@ type Schema struct {
 	Format string
 	// Enum holds the allowed values, if constrained.
 	Enum []string
-	// HasDefault records that the schema declares a `default`, and ReadOnly that
-	// it declares `readOnly: true`. Neither reaches the Terraform schema; both
-	// exist because together they reproduce the pinned SDK generator's own
-	// predicate for whether New<Model>WithDefaults() pre-assigns a property
-	// (model_simple.j2: `spec.default is defined and type not object/array and
-	// not readOnly`). The request mapper needs that answer for the JSON:API
-	// "type" discriminator, whose value the generated code must send even when
-	// the SDK does not supply it (T143). Re-deriving the SDK generator's rule
-	// from the same OpenAPI input is FR-005a's prescribed route.
+	// HasDefault records that the schema declares a `default`, ReadOnly that it
+	// declares `readOnly: true`. Neither reaches the Terraform schema; together
+	// they reproduce the pinned SDK generator's predicate for whether
+	// New<Model>WithDefaults() pre-assigns a property (`default` defined, type
+	// not object/array, not readOnly).
 	HasDefault bool
 	ReadOnly   bool
 	// Sensitive is true when explicitly annotated sensitive or inferred from an
@@ -405,30 +357,23 @@ type Schema struct {
 	// Description is the OpenAPI description, populated during NormalizeSchemas.
 	Description string
 	// UnsupportedReason explains why a node with Kind == SchemaKindUnsupported
-	// cannot be represented. It is retained so the affected artifact can fail
-	// with the parser's actionable local diagnostic without aborting spec loading
-	// or preventing unrelated artifacts from being generated.
+	// cannot be represented, so the affected artifact can fail with a local
+	// diagnostic instead of aborting spec loading.
 	UnsupportedReason string
 	// RefName is the OpenAPI component name that supplied this node, e.g.
-	// "ActionConnectionAttributes"; empty for an inline schema. It is the identity
-	// the Datadog go-sdk names its generated model after, so the SDK binding pass
-	// walks the normalized tree and restarts its name accumulation at every node
-	// carrying one — mirroring how the SDK generator's child_models() prefers a
-	// $ref name over the parent-derived alternative name.
+	// "ActionConnectionAttributes"; empty for an inline schema. The Datadog
+	// go-sdk names its generated models after it, so SDK name accumulation
+	// restarts at every node carrying one, preferring it over a parent-derived
+	// alternative name.
 	RefName string
-	// RequestRefName is RefName's counterpart on the request side: the Create
-	// body's own component name at this node, falling back to Update's when
-	// Create doesn't reach it. Set only by a resource schema merge, alongside
-	// Provenance. It exists because RefName itself is cosmetically reconciled
-	// toward the Read response (FR-034c) and so cannot name a Create/Update-only
-	// component — the request-mapper needs the Create-side name to construct
-	// that component's Go type (e.g. New<RequestRefName>WithDefaults()), which
-	// commonly differs from the Read response's own component for the same
-	// field. Empty when every body that reaches this node left it inline.
+	// RequestRefName is RefName's request-side counterpart: the Create body's
+	// own component name at this node, falling back to Update's when Create
+	// does not reach it. Set only by a resource schema merge, which reconciles
+	// RefName itself toward the Read response and so cannot leave it naming a
+	// Create-only component. Empty when every body left this node inline.
 	RequestRefName string
 	// Provenance is non-nil only on a node produced by unioning the Create
-	// request, Update request and Read response bodies; nil on any
-	// single-direction schema.
+	// request, Update request and Read response bodies.
 	Provenance *SchemaProvenance
 }
 
@@ -458,14 +403,12 @@ type OneOfSpec struct {
 	// Path is the canonical request/response schema path used for diagnostics
 	// and as an input to inline envelope naming.
 	Path string
-	// RefName is the OpenAPI component name of the union node itself, empty for an
-	// inline union. It is deliberately separate from Name: Name is a Terraform
-	// identity that falls back to a path-derived spelling, which must never be
-	// mistaken for an SDK type.
+	// RefName is the OpenAPI component name of the union node itself, empty for
+	// an inline union. Separate from Name, which falls back to a path-derived
+	// spelling and so must never be mistaken for an SDK type.
 	RefName string
 	// SDKType is the Datadog go-sdk oneOf wrapper struct for this union, e.g.
-	// "ActionConnectionIntegration". It is resolved by the SDK binding pass
-	// (internal/sdkbind) after normalization and stays empty until then.
+	// "ActionConnectionIntegration". Empty until the SDK binding pass runs.
 	SDKType string
 	// Optional permits the whole envelope to be absent because the containing
 	// OpenAPI field is not required.
@@ -506,10 +449,9 @@ type OneOfVariant struct {
 	// SDKConstructor is the generated SDK convenience constructor for this
 	// alternative, when the SDK exposes one.
 	SDKConstructor string
-	// SDKPointer is true when the wrapper member and its convenience constructor
-	// take a pointer, which is every alternative except a free-form object: the SDK
-	// emits that one as a bare map, already nil-able. Mappers must not take the
-	// address of a member the SDK left unpointered.
+	// SDKPointer is true when the wrapper member and its convenience
+	// constructor take a pointer — every alternative except a free-form object,
+	// which the SDK emits as a bare, already-nil-able map.
 	SDKPointer bool
 	// ValueWrapped is true for primitive, list, and map alternatives, whose
 	// Terraform variant model exposes a single field named value. Object
@@ -527,15 +469,15 @@ type Artifact struct {
 	// Name is the Terraform-facing artifact name (without the datadog_ prefix).
 	Name string
 	Kind ArtifactKind
-	// Cardinality selects the singular vs plural data-source shape; the emit
-	// builder routes on it. Empty for resources.
+	// Cardinality selects the singular vs plural data-source shape. Empty for
+	// resources.
 	Cardinality Cardinality
 	// Description is the artifact's top-level schema doc string, from the
 	// tracking extension's tf_description field; empty when the author omits it.
 	Description string
-	// Schema is the Terraform schema derived from the response (and request,
-	// for resources, the union of the Create request, Update request and Read
-	// response bodies).
+	// Schema is the Terraform schema derived from the response, or for a
+	// resource from the union of the Create request, Update request and Read
+	// response bodies.
 	Schema *AttributeTree
 	// Lifecycle holds the SDK call bindings. For data sources only Read is set
 	Lifecycle *LifecycleBindings
@@ -543,13 +485,12 @@ type Artifact struct {
 	SourceFile string
 	// Diagnostics carries non-fatal notes raised while building the artifact,
 	// e.g. query parameters dropped from a plural data source's filter set. The
-	// artifact still emits; the run report surfaces these as info.
+	// artifact still emits.
 	Diagnostics []Diagnostic
 	// UnstableOperations are the SDK keys ("v2.GetTwilioIntegrationAccount") of
 	// every x-unstable operation this artifact calls, sorted and deduplicated.
-	// The pinned SDK defaults each to disabled, so a generated artifact that
-	// names any of these fails every call at runtime until the provider enables
-	// them. Empty for an artifact whose operations are all stable.
+	// The pinned SDK defaults each to disabled, so every such call fails at
+	// runtime until the provider enables them. Empty when all are stable.
 	UnstableOperations []string
 }
 
@@ -559,7 +500,7 @@ type AttributeTree struct {
 }
 
 // Attribute mirrors a Terraform Plugin Framework attribute or nested container
-// one-to-one. The emitter walks this tree to produce the Schema() method body.
+// one-to-one.
 type Attribute struct {
 	// Path is the dot-delimited attribute path, e.g. spec.replicas. It doubles
 	// as the per-attribute hook ID anchor.
@@ -568,19 +509,14 @@ type Attribute struct {
 	TfType string
 	// GoType is the corresponding model-struct type, e.g. types.String.
 	GoType string
-	// ElementType is the framework attr.Type for a list/map element value,
-	// e.g. "types.StringType" or "types.ListType{ElemType: types.StringType}".
-	// Set only for ListAttribute/MapAttribute collection chains ending in a
-	// primitive; empty for everything else.
+	// ElementType is the framework attr.Type for a list/map element value, e.g.
+	// "types.StringType" or "types.ListType{ElemType: types.StringType}". Set
+	// only for a collection chain ending in a primitive; empty otherwise.
 	ElementType string
-	// ElementFormat and ElementIsEnum carry the element schema's own OpenAPI
-	// format and enum-ness for a ListAttribute/MapAttribute collection chain
-	// ending in a primitive — information ElementType's generic attr.Type
-	// mapping otherwise discards (a list of date-time strings and a plain
-	// list of strings both map to "types.StringType"). The resource request
-	// mapper needs them to reject, rather than silently degrade, a
-	// format/enum element it cannot yet recover the SDK's own typed value
-	// for. Empty/false for anything but such a collection.
+	// ElementFormat and ElementIsEnum carry a collection element's own OpenAPI
+	// format and enum-ness, which ElementType's generic attr.Type mapping
+	// discards (a list of date-time strings and a plain list of strings both
+	// map to "types.StringType"). Empty/false for anything else.
 	ElementFormat string
 	ElementIsEnum bool
 	// Format is the OpenAPI format (e.g. "date-time"). It distinguishes SDK
@@ -596,32 +532,22 @@ type Attribute struct {
 	Computed  bool
 	Sensitive bool
 
-	// InResponse mirrors Schema.Provenance.InResponse, set only when building a
-	// resource tree; false everywhere else. Required alone can't answer this:
-	// a required, write-only field and a required field that is also read
-	// back both end up Required, with no other way to tell them apart.
+	// InResponse mirrors Schema.Provenance.InResponse, set only for a resource
+	// tree. Required alone cannot answer it: a required write-only field and a
+	// required field that is also read back both come out Required.
 	InResponse bool
 
 	// OpenAPIName is the property name this attribute was built from, before
 	// SnakeCase normalized it for Terraform (e.g. "hostTagsLists" behind the
 	// "host_tags_lists" Path). Empty for a node with no property name of its
-	// own: a root, or an array/map element.
-	//
-	// It exists so a consumer can look this node up in an OpenAPI schema by
-	// exact key. Re-deriving the key from Path is not possible — SnakeCase
-	// collapses several spellings onto one — and the resource request mapper
-	// needs exactly that lookup, to ask whether one role's request body
-	// declares this field (see emit.roleChild).
+	// own: a root, or an array/map element. It is kept because SnakeCase
+	// collapses several spellings onto one, so Path cannot be inverted.
 	OpenAPIName string
 
 	// FromPathParameter marks an attribute that came from an operation's path
 	// rather than from any request or response body — a sub-resource's parent
-	// id. It exists for the same reason InResponse does: Required alone cannot
-	// answer it, since a required body field and a required path parameter both
-	// come out Required. Emit needs the distinction to keep the parameter out of
-	// the request and response mappings, to reserve its name, and to put it in
-	// the composite import id, and inferring it from shape instead holds only
-	// while no body ever contributes a top-level required leaf.
+	// id. Like InResponse it is not derivable from Required, since a required
+	// body field and a required path parameter both come out Required.
 	FromPathParameter bool
 
 	// Default is the optional default value, encoded as a Go expression.
@@ -629,68 +555,56 @@ type Attribute struct {
 	// Validators is the fingerprintable validator list for this attribute.
 	Validators []ValidatorSpec
 	// PlanModifiers holds this attribute's plan modifiers: UseStateForUnknown()
-	// on an Optional+Computed attribute, RequiresReplace() on a
-	// request-settable one when no Update role exists, and RequiresReplace()
-	// unconditionally on a path parameter, which no endpoint re-parents. Never set on a
-	// Computed-only attribute — the server may change such a value during
-	// apply, so either modifier there would produce an inconsistent-result
-	// error or a spurious replacement.
+	// on an Optional+Computed attribute, and RequiresReplace() on a
+	// request-settable one when no Update role exists or unconditionally on a
+	// path parameter. Never set on a Computed-only attribute, where the server
+	// may change the value during apply and either modifier would misfire.
 	PlanModifiers []PlanModifierSpec
-	// Description is always populated from the OpenAPI description (repo convention).
+	// Description is always populated from the OpenAPI description.
 	Description string
 	// Children holds the child attributes of a nested container.
 	Children []*Attribute
-	// ModelRefName is the OpenAPI component name that supplied the *object* schema
-	// backing this attribute's generated model struct: the node's own schema for an
+	// ModelRefName is the OpenAPI component name that supplied the *object*
+	// schema backing this attribute's model struct: the node's own schema for an
 	// object, its element schema for an array or map of objects. Empty when that
-	// schema was inline, and empty for a leaf, which has no struct.
-	//
-	// It exists so emit can name a nested model after its component rather than
-	// after the property that happens to point at it — the same preference the SDK
-	// generator's child_models() applies (get_name(schema) or alternative_name) and
-	// that oneOf envelope naming already applies via OneOfSpec.Name. Without it, two
-	// differently-shaped objects reachable under the same property name produce one
-	// struct name and the artifact cannot compile.
+	// schema was inline, and for a leaf, which has no struct. Naming the struct
+	// after the component rather than the property that points at it keeps two
+	// differently-shaped objects under one property name from colliding.
 	ModelRefName string
 	// RequestModelRefName mirrors ModelRefName from Schema.RequestRefName
-	// instead of Schema.RefName: the request-side (Create/Update) component
-	// name, which a resource's cosmetic merge does not overwrite with the Read
-	// response's name the way ModelRefName is. Non-empty only for a
-	// request-settable object node (or a string enum leaf, naming its SDK enum
-	// type rather than a struct) reached through a resource schema merge.
+	// rather than Schema.RefName: the request-side (Create/Update) component
+	// name, which a resource merge does not overwrite with the Read response's.
+	// Non-empty only for a request-settable object node, or a string enum leaf
+	// naming its SDK enum type, reached through a resource schema merge.
 	RequestModelRefName string
 	// OneOf is non-nil when this attribute carries a synthetic oneOf envelope:
 	// either the envelope itself (a union at the root or an object property) or
 	// the collection whose element is a union. Children then holds the variant
-	// attributes, and OneOf holds the naming and SDK-binding metadata the emit layer
-	// needs to map them.
+	// attributes, and OneOf their naming and SDK-binding metadata.
 	OneOf *OneOfEnvelope
 }
 
-// OneOfEnvelope is the Terraform projection of a parser-normalized OneOfSpec: the
-// synthetic attribute holding one nested variant attribute per non-null alternative,
-// exactly one of which is selected whenever the envelope is present.
-//
-// It hangs off the Attribute standing at the union's position in the tree; that
-// attribute's Children are the projected variant attributes, in the same order as
-// Variants. Terraform concerns live here rather than on OneOfSpec so that
-// OpenAPI normalization stays free of them.
+// OneOfEnvelope is the Terraform projection of a normalized OneOfSpec: the
+// synthetic attribute holding one nested variant attribute per non-null
+// alternative, exactly one of which is selected whenever the envelope is
+// present. It hangs off the Attribute standing at the union's position, whose
+// Children are the projected variant attributes in the same order as Variants.
 type OneOfEnvelope struct {
-	// Name is the parser-assigned envelope identity (OneOfSpec.Name): the OpenAPI
+	// Name is the parser-assigned envelope identity (OneOfSpec.Name): the
 	// component name for a reusable union, a deterministic path-derived name for
-	// an inline one. Two uses of the same component share a Name, which is what
-	// lets emit generate one model per envelope instead of one per use site.
+	// an inline one. Two uses of one component share a Name, so one model is
+	// generated per envelope rather than per use site.
 	Name string
 	// GoModel is the generated Go struct holding one pointer field per variant.
 	GoModel string
 	// SDKType is the Datadog go-sdk oneOf wrapper struct this envelope maps to,
-	// carried through from OneOfSpec. It is a separate identity from Name and
-	// GoModel: an inline union's envelope name is path-derived and names no SDK
-	// struct. Empty until the SDK binding pass has run.
+	// carried through from OneOfSpec. A separate identity from Name and GoModel:
+	// an inline union's path-derived name names no SDK struct. Empty until the
+	// SDK binding pass has run.
 	SDKType string
-	// Path is the union's own schema path, used by validators and diagnostics. For
-	// a collection of unions it is the element path (e.g. "response.choices[]"),
-	// which is not the path of any attribute in the tree.
+	// Path is the union's own schema path. For a collection of unions it is the
+	// element path (e.g. "response.choices[]"), which is the path of no
+	// attribute in the tree.
 	Path string
 	// Optional permits the whole envelope to be absent because its containing
 	// OpenAPI field is optional or nullable. When false, exactly one variant must
@@ -700,7 +614,7 @@ type OneOfEnvelope struct {
 	// response mapping rather than by practitioner configuration.
 	Computed bool
 	// Variants are the projected non-null alternatives, ordered by TFName so
-	// neither OpenAPI alternative order nor map iteration can reach the output.
+	// neither OpenAPI order nor map iteration can reach the output.
 	Variants []OneOfEnvelopeVariant
 }
 
@@ -714,25 +628,23 @@ type OneOfEnvelopeVariant struct {
 	// GoModel is the generated Go struct for this variant's own fields.
 	GoModel string
 	// SDKField is the Datadog go-sdk wrapper member whose presence selects this
-	// alternative, and SDKConstructor the SDK convenience constructor for it. Both
-	// are carried through from the parser's OneOfVariant and stay empty until the
-	// SDK binding pass resolves them: the projection never derives an SDK identity
-	// from a Terraform name, since the two conventions differ (a variant named
-	// aws_integration binds to the SDK's AWSIntegration, not AwsIntegration).
+	// alternative, and SDKConstructor the SDK convenience constructor for it.
+	// Both are carried through from the parser, never derived from a Terraform
+	// name: a variant named aws_integration binds to AWSIntegration, not
+	// AwsIntegration. Empty until the SDK binding pass resolves them.
 	SDKField       string
 	SDKConstructor string
 	// SDKPointer is true when the SDK wrapper member and its convenience
 	// constructor take a pointer — every alternative except a free-form object,
 	// which the SDK emits as a bare, already-nil-able map.
 	SDKPointer bool
-	// ValueWrapped is true for every non-object alternative — scalar, list, map, or
-	// a directly nested union — whose block holds a single child named "value".
-	// Object alternatives expose their own fields directly instead.
+	// ValueWrapped is true for every non-object alternative — scalar, list, map,
+	// or a directly nested union — whose block holds a single child named
+	// "value". Object alternatives expose their own fields directly instead.
 	ValueWrapped bool
-	// Attribute is this variant's projected block: the same pointer as the
-	// envelope-carrying attribute's Children entry at this index. Children drives
-	// schema rendering; this field lets the mapper reach a block without
-	// re-deriving the ordering.
+	// Attribute is this variant's projected block — the same pointer as the
+	// envelope-carrying attribute's Children entry at this index. Children
+	// drives schema rendering; this reaches a block without re-deriving order.
 	Attribute *Attribute
 }
 
@@ -756,10 +668,8 @@ type ValidatorSpec struct {
 // (planmodifier.Bool, planmodifier.Object, ...) derived from Attribute.GoType.
 type PlanModifierSpec struct {
 	// Name is the plan modifier constructor, e.g.
-	// stringplanmodifier.UseStateForUnknown or boolplanmodifier.RequiresReplace.
-	// No modifier the resource tree emits takes arguments, and the template
-	// renders every one as Name(); add an Args field here together with the
-	// template support if that ever stops being true.
+	// stringplanmodifier.UseStateForUnknown. No modifier the resource tree emits
+	// takes arguments, and the template renders every one as Name().
 	Name string
 }
 
@@ -777,13 +687,9 @@ type LifecycleBindings struct {
 	Update *SDKCall
 	Delete *SDKCall
 	// UpdateUnsupported records that the tracking group declares no update role,
-	// so no endpoint can modify this resource in place (spec Edge Case). It states
-	// the lifecycle fact rather than the Terraform consequence — deciding that the
-	// consequence is RequiresReplace on every practitioner-settable attribute is
-	// the schema builder's job (FR-034d, T123).
-	//
-	// It is not derivable from Update == nil, which is also true of every data
-	// source; the flag is false there, which is the honest answer.
+	// so no endpoint can modify this resource in place. Not derivable from
+	// Update == nil, which is also true of every data source, where this flag is
+	// false.
 	UpdateUnsupported bool
 	IdStrategy        IdStrategy
 }
@@ -805,46 +711,29 @@ type SDKCall struct {
 	// Rule: Operation.OperationId, no transformation applied.
 	GoMethod string
 	// GoRequestType is the SDK request body type, e.g. "OrgGroupCreateRequest".
-	// Rule: last path component of the requestBody $ref
-	// (e.g. "#/components/schemas/OrgGroupCreateRequest" → "OrgGroupCreateRequest").
-	// Empty when the operation takes no request body (e.g. DELETE, GET-by-ID).
-	// NOTE: Schema has no Name field; the model-builder must read this from the
-	// raw libopenapi node, not from Operation.RequestSchema.
+	// Rule: last path component of the requestBody $ref. Empty when the
+	// operation takes no request body (e.g. DELETE, GET-by-ID).
 	GoRequestType string
 	// GoResponseType is the SDK response type, e.g. "OrgGroupResponse".
-	// Rule: last path component of the 2xx response schema $ref
-	// (e.g. "#/components/schemas/OrgGroupResponse" → "OrgGroupResponse").
-	// Empty when the operation returns no body (e.g. 204 No Content).
-	// NOTE: Schema has no Name field; the model-builder must read this from the
-	// raw libopenapi node, not from Operation.ResponseSchema.
+	// Rule: last path component of the 2xx response schema $ref. Empty when the
+	// operation returns no body (e.g. 204 No Content).
 	GoResponseType string
 	// GoRequestDataType is the SDK type of the request body's JSON:API "data"
-	// member, e.g. "IncidentTypeCreateData". Rule: the RefName of the "data"
-	// property on Operation.RequestSchema. It is read per role rather than off
-	// the merged tree, because the merge reconciles RefName toward the Read
-	// response and Create's and Update's data components routinely differ.
-	//
-	// The request mapper needs it because New<GoRequestType>WithDefaults() —
-	// the request *wrapper*'s constructor — returns the zero struct: it does
-	// not build Data, so the JSON:API "type" discriminator the API requires is
-	// only ever set by New<GoRequestDataType>WithDefaults() (T138). Empty when
-	// the operation sends no body, or when "data" is inline and so has no SDK
-	// component to construct.
+	// member, e.g. "IncidentTypeCreateData": the RefName of RequestSchema's
+	// "data" property, read per role since Create's and Update's routinely
+	// differ. Only its New<...>WithDefaults() sets the "type" discriminator —
+	// the wrapper's returns a zero struct without building Data. Empty when the
+	// operation sends no body, or "data" is inline and names no SDK component.
 	GoRequestDataType string
 	// RequestDeclaresID records that the body's data member declares an id at
 	// all. A body that does not must not call SetId: the SDK generates that
-	// setter only for a declared property, so an update body without one does
-	// not compile against it (part of what T134 records for okta_account).
+	// setter only for a declared property, so the call would not compile.
 	RequestDeclaresID bool
 	// RequestIDGoType is the Go type the SDK's SetId takes on this body's data
 	// member, derived from the data.id schema via SDKScalarGoType, e.g.
-	// "string" or "uuid.UUID". Empty when the body declares no id, or when its
-	// format is one the SDK generator itself cannot type.
-	//
-	// It is read from the body rather than borrowed from the path parameter
-	// because the two genuinely differ: rum_replay_playlist takes an int64 path
-	// id and a string data.id, so binding the path argument's already-parsed
-	// local to SetId does not compile (T140).
+	// "string" or "uuid.UUID". Empty when the body declares no id, or its
+	// format is one the SDK generator cannot type. Read from the body, not
+	// borrowed from the path parameter: an int64 path id can carry a string id.
 	RequestIDGoType string
 	// RequestDiscriminator describes the request body's JSON:API data.type
 	// member. Nil when the operation sends no body or the data component
@@ -852,26 +741,16 @@ type SDKCall struct {
 	RequestDiscriminator *RequestDiscriminator
 	// GoRequestAttributesType is the SDK type of the request body's
 	// data.attributes member, e.g. "IncidentTypeAttributes", derived the same
-	// way and for the same reason. Empty when the envelope carries no
-	// attributes object (a relationships-only or id-only body).
+	// way. Empty when the envelope carries no attributes object.
 	GoRequestAttributesType string
-	// RequestAttributesSchema is this role's own data.attributes node, kept so
-	// the request mapper can narrow the merged tree to the fields *this* body
-	// declares. The merged schema's request side is the union of the Create and
-	// Update bodies (FR-034b), which is right for the Terraform schema — a
-	// field settable on either belongs in it — and wrong for the mapper: the
-	// SDK generates Set<Field> only on the request type that declares the
-	// field, so setting a create-only field on an update body does not compile
-	// (T134: OktaAccountUpdateRequestAttributes has no SetName).
-	//
-	// It carries the per-role *names* too, not just presence (T099). A nested
-	// object's component, a list element's, an enum leaf's SDK type and a
-	// oneOf's wrapper plus each alternative's `<Member>As<Union>` constructor
-	// are all read off this node rather than off the merged tree, because the
-	// merged tree spells one name where the SDK declares two or three
-	// (…SettingsRequest vs …SettingsUpdate; …AuthenticationRequest vs …Update
-	// vs …Response). sdkbind annotates request roots as well as response ones,
-	// so the bindings are already here; no per-node triple was needed.
+	// RequestAttributesSchema is this role's own data.attributes node, which
+	// narrows the merged tree to the fields *this* body declares and carries
+	// the per-role SDK names (nested and element components, enum types, oneOf
+	// wrappers and their `<Member>As<Union>` constructors). The merged request
+	// side is the union of the Create and Update bodies, which is right for the
+	// Terraform schema and wrong here: the SDK generates Set<Field> only on the
+	// body that declares the field, and spells one merged name where the SDK
+	// declares two or three (…SettingsRequest vs …SettingsUpdate).
 	RequestAttributesSchema *Schema
 	// Arguments are the required positional SDK arguments in call order.
 	Arguments []SDKArgument
@@ -880,14 +759,14 @@ type SDKCall struct {
 
 	// The fields below back a plural data-source list call.
 
-	// ItemType is the SDK element type yielded by the list call, e.g. "Team"
-	// (from Operation.ItemRefName). The non-paginated read collects resp.Data
-	// into []<ItemType>; the paginated read yields PaginationResult[<ItemType>].
+	// ItemType is the SDK element type yielded by the list call, e.g. "Team".
+	// A non-paginated read collects resp.Data into []<ItemType>; a paginated
+	// one yields PaginationResult[<ItemType>].
 	ItemType string
 	// OptionalParamsType is the SDK optional-parameters struct, e.g.
 	// "ListTeamsOptionalParameters" (<GoMethod>OptionalParameters). Empty when
-	// the endpoint declares no query parameters, in which case the list call
-	// takes no optional-parameters argument.
+	// the endpoint declares no query parameters, and the call then takes no
+	// optional-parameters argument.
 	OptionalParamsType string
 	// Paginated selects the "<GoMethod>WithPagination" iterator form, set when
 	// the operation declares an x-pagination extension.
@@ -897,9 +776,7 @@ type SDKCall struct {
 // ----------------------------------------------------------------------------
 // Run-report types
 //
-// Field names and JSON tags mirror contracts/run-report.schema.json so
-// report.WriteJSON can marshal a RunReport straight to the structured output
-// CI gates on.
+// Field names and JSON tags mirror contracts/run-report.schema.json.
 // ----------------------------------------------------------------------------
 
 // ArtifactStatus is the terminal state of an artifact in a generate run.
@@ -917,11 +794,10 @@ const (
 	// ArtifactStatusRetireBlocked marks an orphaned artifact left in place because
 	// a recorded cassette (or a missing generated marker) makes deletion unsafe.
 	ArtifactStatusRetireBlocked ArtifactStatus = "retire_blocked"
-	// ArtifactStatusRegistrationRetired marks a stale registration dropped on its
-	// own: the constructor was still listed in datasources_generated.go but its
-	// generated files were already gone, so only the registration line changed.
-	// The entry's Constructor carries the removed identifier, since no file
-	// remains to recover the artifact name from.
+	// ArtifactStatusRegistrationRetired marks a stale registration dropped on
+	// its own: the constructor was still listed in datasources_generated.go but
+	// its generated files were already gone, so only the registration line
+	// changed. Constructor carries the removed identifier.
 	ArtifactStatusRegistrationRetired ArtifactStatus = "registration_retired"
 )
 
@@ -976,8 +852,8 @@ type ArtifactReportEntry struct {
 	// OrphanedHooks lists hook functions declared but no longer referenced.
 	OrphanedHooks []string `json:"orphaned_hooks,omitempty"`
 	// Constructor is set only on registration_retired entries: the removed
-	// registration identifier. It is authoritative because the artifact name
-	// cannot be recovered once the generated files are gone.
+	// registration identifier, authoritative because the artifact name cannot
+	// be recovered once the generated files are gone.
 	Constructor string `json:"constructor,omitempty"`
 }
 

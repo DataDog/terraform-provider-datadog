@@ -7,10 +7,9 @@ import (
 	"strings"
 )
 
-// testView is the render context for the acceptance-test template. Like
-// DataSourceView it is fully derived in Go so the template carries only layout:
-// buildTestView turns a rendered data source into the handful of facts the
-// scaffold needs (names, the lookup shape, the filter attributes to seed).
+// testView is the render context for the acceptance-test template, fully
+// derived in Go so the template carries only layout: names, the lookup shape,
+// and the filter attributes to seed.
 type testView struct {
 	// FuncName is the Go test function, e.g. "TestAccDatadogTeamsDatasource". It
 	// doubles as the recorded cassette's base name (t.Name()).
@@ -141,9 +140,8 @@ func hclFilterValue(tfType string) (string, bool) {
 }
 
 // RenderDataSourceTest executes the acceptance-test template for v and returns
-// gofmt-canonical Go source. The generated test is a scaffold: it compiles and
-// runs, but needs a recorded cassette (and the seed resources / assertions the
-// author fills in) to pass in replay mode.
+// gofmt-canonical Go source. The result is a scaffold: it compiles and runs,
+// but needs a recorded cassette, seed resources and assertions to pass replay.
 func RenderDataSourceTest(v DataSourceView) ([]byte, error) {
 	var buf bytes.Buffer
 	if err := templates.ExecuteTemplate(&buf, "data_source_test", buildTestView(v)); err != nil {

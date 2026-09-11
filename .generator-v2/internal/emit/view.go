@@ -1,13 +1,8 @@
 // Package emit turns the generator's internal model into Terraform provider
-// Go source. It owns the code templates and the pipeline that walks
-// deterministically-sorted Artifacts, renders each through the matching
-// template, canonicalizes the result with go/format, and writes it.
-//
-// The templates never derive anything: naming, attribute partitioning, SDK-call
-// resolution, and state mapping are all computed in Go and handed to the
-// template as a fully-populated *View. That split is deliberate :
-// it keeps the .tmpl files flat enough to read and grep, and it keeps the
-// fiddly logic in code that unit tests can pin down.
+// Go source: it owns the code templates, renders each Artifact through the
+// matching one, canonicalizes the result with go/format, and writes it.
+// Templates derive nothing — naming, attribute partitioning, SDK-call
+// resolution and state mapping all arrive precomputed on a *View.
 package emit
 
 import "github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
@@ -25,11 +20,8 @@ const (
 )
 
 // DataSourceView is the render-ready data context for a data-source template.
-//
-// Every field is derived from a *model.Artifact by the emit builder; the
-// templates contain only iteration and layout. Keeping derivation out of the
-// templates is what lets the same recursive partials serve both the singular
-// and plural shapes.
+// Every field is derived from a *model.Artifact, which is what lets one set of
+// recursive partials serve both the singular and plural shapes.
 type DataSourceView struct {
 	// Cardinality picks the singular or plural template.
 	Cardinality Cardinality
@@ -40,7 +32,7 @@ type DataSourceView struct {
 	// the Go type names <GoName>DataSource and <GoName>DataSourceModel and,
 	// title-cased, the New<GoName>DataSource constructor.
 	GoName string
-	// Description is the schema-level data-source descriptiond
+	// Description is the schema-level data-source description.
 	Description string
 
 	// SDKPackage is the versioned datadog-api-client-go package selector, e.g.
@@ -98,13 +90,11 @@ type DataSourceView struct {
 	Dropped []DroppedMember
 }
 
-// OneOfEnvelopeView is one generated oneOf envelope: the Terraform model that
-// holds one pointer per alternative, and the Datadog go-sdk wrapper it maps to.
-//
-// The two identities are deliberately separate: GoModel is derived from
-// the envelope's Terraform name, which for an inline union is path-derived and
-// names no SDK type, while SDKType is what internal/sdkbind resolved by walking
-// the operation's SDK root.
+// OneOfEnvelopeView is one generated oneOf envelope: the Terraform model
+// holding one pointer per alternative, and the go-sdk wrapper it maps to. The
+// two identities stay separate because GoModel comes from the envelope's
+// Terraform name — path-derived for an inline union, naming no SDK type —
+// while SDKType is resolved by walking the operation's SDK root.
 type OneOfEnvelopeView struct {
 	// Name is the parser's envelope identity, the key this view is deduplicated on.
 	Name string
@@ -145,9 +135,8 @@ type OneOfVariantView struct {
 	// expressed against them, so they must be used verbatim by the mapper.
 	SDKVar   string
 	ModelVar string
-	// Scalars and Lists are this variant's field assignments, derived by the same
-	// walk that produced its model struct. Not rendered yet — the mapper adds the partial
-	// that consumes them.
+	// Scalars and Lists are this variant's field assignments, derived by the
+	// same walk that produced its model struct.
 	Scalars []StateAssignment
 	Lists   []ListAssignment
 }
@@ -201,11 +190,9 @@ type SDKArgumentView struct {
 	ParsedVar  string
 	ParseCall  string
 	TFName     string
-	// GoType is the SDK parameter's Go type. The request mapper needs it to
-	// decide whether an update body's data.id can reuse this argument's local
-	// or has to parse its own, and carrying it here keeps that a single
-	// by-name lookup rather than one over the views and a second over the
-	// model arguments they came from.
+	// GoType is the SDK parameter's Go type, used to decide whether an update
+	// body's data.id can reuse this argument's parsed local or must parse its
+	// own.
 	GoType string
 }
 
@@ -223,8 +210,8 @@ type FilterParamView struct {
 	// ValueExpr is the model accessor producing the SDK value, e.g.
 	// "ValueStringPointer()".
 	ValueExpr string
-	// Setter is the SDK With* method. Empty retains the legacy direct-field form
-	// used by parser-shaped unit fixtures without resolved SDK bindings.
+	// Setter is the SDK With* method. Empty renders a direct field assignment
+	// instead, the form used when no SDK bindings were resolved.
 	Setter string
 	// ParsedVar and ParseCall request a parse preparation inside the filter's
 	// non-null guard before ValueExpr is passed to Setter. They are populated only
@@ -267,8 +254,7 @@ type AttrView struct {
 	Computed  bool
 	Sensitive bool
 
-	// IsBlock marks a nested object/list. The historical name is retained in
-	// the internal view, but templates render it in an Attributes map.
+	// IsBlock marks a nested object/list; templates render it in an Attributes map.
 	IsBlock bool
 	// ListBlock renders schema.ListNestedAttribute when true and
 	// schema.SingleNestedAttribute when false. Ignored unless IsBlock.
@@ -280,10 +266,9 @@ type AttrView struct {
 	// serves both with ValidatorType naming the element type.
 	Validators []string
 	// ValidatorType is the validator.<T> slice element type for Validators
-	// ("String" for a leaf, "Object" for a nested object attribute, whose oneOf
-	// variants enforce exactly-one selection during configuration validation,
-	// before an unknown planned object can reach model decoding). Empty unless
-	// Validators is non-empty.
+	// ("String" for a leaf, "Object" for a nested object attribute, whose
+	// variants enforce exactly-one selection at configuration-validation time).
+	// Empty unless Validators is non-empty.
 	ValidatorType string
 	// PlanModifiers renders the "PlanModifiers: []planmodifier.<T>{...}" field,
 	// one rendered constructor call per entry (e.g. `stringplanmodifier.UseStateForUnknown`,
@@ -326,10 +311,9 @@ type ModelFieldView struct {
 }
 
 // StateView is what the generated updateState method writes back into the
-// model. The assignment expressions themselves are produced by the
-// response-mapper builder; this view only carries them so the template
-// can lay them out. Singular data sources use Preamble + Assignments; plural
-// data sources use the Item* / IDHashExpr fields.
+// model. It only carries the assignment expressions so the template can lay
+// them out. Singular data sources use Preamble + Assignments; plural ones use
+// the Item* / IDHashExpr fields.
 type StateView struct {
 	// ParamName / ParamType are the updateState record parameter for a singular
 	// data source: ("resp", "*pkg.XResponse") when the record is a by-id response,
@@ -364,14 +348,11 @@ type StateView struct {
 	ItemLists []ListAssignment
 }
 
-// StateAssignment is a single assignment rendered in updateState. For a
-// singular assignment LHS is the full target ("state.Name") and RHS the value
-// expression; for a plural item field LHS is the struct field name ("Handle").
-//
-// Var and GetterOk back the guarded singular form: Var is the local bound from
-// the SDK's optional getter GetterOk (e.g. "name" from "attributes.GetNameOk()"),
-// and RHS reads through it (e.g. "types.StringValue(*name)"). They are empty for
-// plural item fields, which render unguarded.
+// StateAssignment is a single assignment rendered in updateState. LHS is the
+// full target ("state.Name") for a singular assignment, or just the field name
+// ("Handle") for a plural item field. Var is bound from the SDK optional getter
+// GetterOk and RHS reads through it ("types.StringValue(*name)"); both are
+// empty for plural item fields, which render unguarded.
 type StateAssignment struct {
 	LHS      string
 	RHS      string
@@ -379,21 +360,12 @@ type StateAssignment struct {
 	GetterOk string
 }
 
-// ListAssignment is one non-scalar state assignment rendered by the updateState
-// "renderList" partial. Despite the name it covers every shape that is not a bare
-// leaf: a primitive list maps the SDK slice into a types.List via
-// types.ListValueFrom; an object list loops the SDK elements into a generated
-// nested model slice, recursing through Scalars (the element's leaf fields) and
-// Lists (its nested list fields); an object_single maps one nested object into a
-// generated model pointer, assigned once instead of looped; and a oneof unwraps an
-// SDK oneOf wrapper through OneOf. All forms are guarded by an Ok-getter so an
-// absent field stays null. Primitive-terminal collections retain whether they
-// are lists or maps so the matching framework conversion helper is rendered.
-//
-// A oneOf envelope rides this type rather than a parallel one because it needs
-// exactly the same placement plumbing — it can appear at the top level, inside a
-// nested object, inside a list element, or inside another envelope's variant — and
-// duplicating that composition for one extra shape would be the larger cost.
+// ListAssignment is one non-scalar state assignment rendered by updateState's
+// "renderList" partial: a primitive list/map converted via types.ListValueFrom,
+// an object list looped into a generated nested-model slice (recursing through
+// Scalars and Lists), an object_single assigned once, or a oneof unwrapped
+// through OneOf. All forms are guarded by an Ok-getter so an absent field stays
+// null. Envelopes ride this type to reuse its nesting/placement plumbing.
 type ListAssignment struct {
 	// Kind is "primitive", "object", "object_single" (a single nested object,
 	// assigned once rather than appended in a loop), or "oneof" (see OneOf).
@@ -439,15 +411,11 @@ type ListAssignment struct {
 	OneOf *OneOfAssignment
 }
 
-// OneOfAssignment maps one Datadog go-sdk oneOf wrapper into one generated
-// Terraform envelope model.
-//
-// The generated code inspects *every* wrapper member rather than taking the first
-// non-nil one: the SDK's own MarshalJSON and GetActualInstance are first-match, and
-// the contract requires zero, multiple, or unparsed to be reported at the union's schema
-// path instead of silently resolving to one branch. Exactly one populated member
-// assigns the envelope; anything else either leaves it absent (permitted only when
-// Optional) or raises a diagnostic.
+// OneOfAssignment maps one go-sdk oneOf wrapper into one generated Terraform
+// envelope model. The generated code inspects every wrapper member rather than
+// taking the first non-nil one, so zero, multiple or unparsed members are
+// reported at the union's schema path instead of silently resolving to one
+// branch. Zero populated members is an error unless Optional.
 type OneOfAssignment struct {
 	// Path is the union's schema path, named in every diagnostic this emits.
 	Path string
@@ -489,13 +457,11 @@ type OneOfAssignment struct {
 	Variants []OneOfVariantAssignment
 }
 
-// OneOfVariantAssignment unwraps one alternative of a OneOfAssignment.
-//
-// Every field here is a function of the envelope alone, never of the site using it,
-// so one reusable oneOf component's variant bodies are computed once and shared.
-// That is why the envelope-model target is carried as GoField and composed with the
-// enclosing OneOfAssignment.ModelVar at render time rather than being a
-// precomputed LHS: the model var differs per use site, the field does not.
+// OneOfVariantAssignment unwraps one alternative of a OneOfAssignment. Every
+// field is a function of the envelope alone, never of the use site, so one
+// reusable variant body is computed once and shared: the envelope-model target
+// is carried as GoField and composed with the enclosing
+// OneOfAssignment.ModelVar at render time.
 type OneOfVariantAssignment struct {
 	// SDKField is the wrapper member whose non-nil-ness selects this alternative,
 	// and SDKVar the local bound to it. SDKPointer is false only for a free-form
@@ -538,9 +504,9 @@ type ResourceView struct {
 	Update CRUDCallView
 	Delete CRUDCallView
 
-	// Import describes how ImportState recovers the resource's identity. It is
-	// derived in Go rather than in the template so the part count, the expected
-	// format string and the id's own position are decided once (T139).
+	// Import describes how ImportState recovers the resource's identity: the
+	// part count, the expected format string and the id's own position are
+	// decided once here rather than in the template.
 	Import ImportView
 	// UpdateUnsupported means the group resolves no Update role: the generated
 	// Update method is a stub that errors rather than building a request the
@@ -588,15 +554,10 @@ type CRUDCallView struct {
 }
 
 // ImportView describes how a resource recovers its identity from a terraform
-// import id.
-//
-// A top-level resource passes the id straight through. A sub-resource's
-// identity is its parent path parameters plus its own id, so the import id is
-// composite and has to be split — which makes "which segment is which" a fact
-// with several readers: the part count, the per-segment SetAttribute calls, and
-// the format string a bad id is reported against. Deriving all of them here
-// keeps the id's position from being spelled three different ways in the
-// template.
+// import id. A top-level resource passes the id straight through; a
+// sub-resource's identity is its parent path parameters plus its own id, so the
+// import id is composite and has to be split. The part count, the per-segment
+// SetAttribute calls and the quoted format string all derive from one place.
 type ImportView struct {
 	// Parts are the attributes the import id carries, in order: each parent
 	// path parameter, then "id". A single element means passthrough.
@@ -610,81 +571,57 @@ type ImportView struct {
 func (v ImportView) Composite() bool { return len(v.Parts) > 1 }
 
 // RequestEnvelopeView is the recipe for constructing one role's JSON:API
-// request body, level by level, each from its own New<Type>WithDefaults().
-//
-// It exists because the wrapper's constructor is not enough: the SDK emits
-// New<T>WithDefaults() for every model, but a request wrapper's version
-// returns the zero struct, so reaching straight through it
-// (body.Data.Attributes.Set<F>(...)) leaves the JSON:API "type" discriminator
-// empty — the API rejects that — and panics outright where the wrapper
-// declares Data as a pointer. The discriminator is assigned by the *data*
-// component's own constructor, so the data level has to be built rather than
-// reached through (T138).
-//
-// The variable names are fixed rather than derived: both are local to one
-// lifecycle method, and prefixing with "body" keeps them clear of the
-// attribute-derived locals buildRequestFields allocates from leaf names.
-// T136 replaces all of those with one allocator; these join it then.
+// request body, level by level, each from its own New<Type>WithDefaults(). The
+// data level is built rather than reached through: a request wrapper's
+// constructor returns the zero struct, so body.Data.Attributes.Set<F>(...)
+// leaves the JSON:API "type" discriminator empty and panics where Data is a
+// pointer — only the data component's own constructor assigns the type.
 type RequestEnvelopeView struct {
 	// SDKPackage qualifies every constructor this envelope renders. It is
 	// carried here rather than read off the root view because the partial that
 	// renders an envelope is handed one CRUDCallView, not the whole view.
 	SDKPackage string
-	// Fields are the Set<Field>(...) calls that populate the attributes local.
-	// Each role has its own slice, narrowed to what its own body declares — see
-	// model.SDKCall.RequestAttributesSchema for why they differ (T134).
+	// Fields are the Set<Field>(...) calls that populate the attributes local,
+	// narrowed to what this role's own body declares.
 	Fields []RequestFieldView
 	// DataVar is the local holding the constructed data member.
 	DataVar string
 	// DataType is the SDK component behind DataVar, e.g.
 	// "IncidentTypeCreateData".
 	DataType string
-	// TypeExpr is the JSON:API discriminator the body sends, as a Go
-	// expression, e.g. `datadogV2.PlaylistDataType("rum_replay_playlist")`.
-	// It is emitted whenever the spec determines the value, rather than only
-	// where the SDK's own constructor omits it: an explicit SetType states the
-	// wire contract in the generated code and cannot regress when a spec drops
-	// a `default` — which is exactly how three resources came to post an empty
-	// type (T143). Empty when the data component declares no type property, or
-	// when the value is ambiguous and the SDK supplies it.
+	// TypeExpr is the JSON:API discriminator the body sends, as a Go expression,
+	// e.g. `datadogV2.PlaylistDataType("rum_replay_playlist")`. It is emitted
+	// whenever the spec determines the value, so a spec that drops a `default`
+	// cannot silently post an empty type. Empty when the data component
+	// declares no type property, or when the SDK supplies an ambiguous one.
 	TypeExpr string
 	// IDExpr is the expression assigned to data.id, and IDPrep the parse
 	// declaration it depends on — nil when the expression needs no parse, or
 	// when it reuses a path argument's local that argPrep already declared.
 	// Both are empty unless the body declares an id: a create has no record
 	// yet, and the SDK generates SetId only for a declared property.
-	//
-	// They live here beside TypeExpr because data.id and data.type are two
-	// members of the same envelope level, and the whole point of this view is
-	// that one place decides which local each member is set on.
 	IDExpr string
 	IDPrep *SDKArgumentView
 	// AttributesType is the SDK component of the attributes member, and doubles
 	// as the test for whether this body has an attributes level at all: it is
-	// set exactly when there are fields to put there. The local it is
-	// constructed into is named by the requestAttributesVar constant, which the
-	// template reads through a func of the same name, because
-	// RequestFieldView.Target is precomputed from it in Go and the two spellings
-	// must not diverge.
+	// set exactly when there are fields to put there. The local it is built
+	// into is named by the requestAttributesVar constant, read by the template
+	// through a func of the same name so it cannot diverge from Target.
 	AttributesType string
 }
 
 // RequestFieldView is one field of one role's request body, set via the SDK's
-// universal Set<GoField>(v) setter — emitted for both a required (non-pointer)
-// and an optional (pointer) SDK field alike, so the same view shape serves
-// either request type. Which fields a role gets at all is buildRequestFields'
-// decision, not this view's. Exactly one of
-// ValueExpr, Nested and Collection is populated: a leaf sets the parent's
-// field directly, an object field builds Nested's own value first, and a
-// list/map field builds Collection's value first.
+// Set<GoField>(v) setter — one view shape serves a required (non-pointer) and
+// an optional (pointer) SDK field alike. Exactly one of ValueExpr, Nested and
+// Collection is populated: a leaf sets the parent's field directly, an object
+// field builds Nested's own value first, a list/map field Collection's.
 type RequestFieldView struct {
 	// GoField is the SDK setter suffix, e.g. "Name" for SetName.
 	GoField string
 	// Target is the expression Set<GoField> is called on: the constructed
 	// attributes local ("bodyAttributes") at the top level, or an ancestor's
-	// own RequestNestedView.Var one or more levels down. Precomputed here (rather than threaded through the
-	// template's recursion) because a template partial invoked on one nested
-	// field loses access to its ancestors' own state.
+	// own RequestNestedView.Var one or more levels down. Precomputed because a
+	// partial invoked on one nested field cannot see its ancestors' state.
 	Target string
 	// Required renders the call unconditionally; false guards it behind
 	// NullCheck (a leaf) or a nil check on Nested's ModelExpr (an object).
@@ -728,20 +665,11 @@ type RequestFieldView struct {
 }
 
 // RequestOneOfView is the recipe for turning a Terraform oneOf envelope back
-// into the Datadog go-sdk wrapper one role's request body declares.
-//
-// It is the request-side mirror of OneOfAssignment: where the response mapper
-// counts the wrapper members that came back populated, this counts the variant
-// blocks the practitioner configured, and both refuse to proceed on anything
-// but exactly one. Selection is deliberately not left to the SDK, whose
-// MarshalJSON serializes the first non-nil member: a configuration that
-// selected two branches would silently send one of them (FR-012b, FR-012c).
-//
-// Every SDK identity here — the wrapper type, and each variant's member
-// constructor — is this *role's* own, read off the role's request schema
-// rather than off the merged tree. The three bodies declare three distinct
-// wrappers for one logical union (…AuthenticationRequest, …Update, …Response),
-// and the merged envelope carries the Read response's (T099a).
+// into the go-sdk wrapper one role's request body declares. Mirroring
+// OneOfAssignment, it counts the variant blocks configured and refuses anything
+// but exactly one, since the SDK's MarshalJSON would silently send the first
+// non-nil member. Every SDK identity here is this role's own: the three bodies
+// declare three distinct wrappers for one logical union.
 type RequestOneOfView struct {
 	// TFName is the envelope attribute's Terraform name, the diagnostic's summary.
 	TFName string
@@ -755,9 +683,8 @@ type RequestOneOfView struct {
 	MatchVar string
 	// SelectionMessage is the detail a failed selection reports, with a single
 	// %d for the count, e.g. `data.attributes.auth: exactly one of "basic" or
-	// "token" must be set, got 2`. It is assembled here, and rendered as a
-	// quoted Go literal, so no variant name or schema path can escape the
-	// string it lands in.
+	// "token" must be set, got 2`. It is assembled here and rendered as a
+	// quoted Go literal, so no variant name or schema path can escape it.
 	SelectionMessage string
 	// Variants are the alternatives in envelope order.
 	Variants []RequestOneOfVariantView
@@ -794,9 +721,8 @@ type RequestOneOfVariantView struct {
 
 // RequestOneOfValueView converts a value-wrapped alternative's single "value"
 // child into the scalar the SDK member is. It carries the same
-// ParsedVar/ParseCall pair a leaf RequestFieldView does, for the same reason: a
-// date-time or uuid value has to survive a fallible parse before it can be
-// handed to the SDK.
+// ParsedVar/ParseCall pair a leaf RequestFieldView does, because a date-time or
+// uuid value has to survive a fallible parse before the SDK can take it.
 type RequestOneOfValueView struct {
 	ValueExpr string
 	ParsedVar string
@@ -807,50 +733,31 @@ type RequestOneOfValueView struct {
 
 // RequestNestedView is one nested object a resource's request body constructs
 // via New<SDKType>WithDefaults() before setting it on its parent — the same
-// idiom BuildResourceView's own doc comment describes for the request root,
-// applied recursively at every nesting depth.
+// idiom as the request root, applied at every nesting depth.
 type RequestNestedView struct {
 	// Constructor is the fully package-qualified call building this node's
 	// zero value, e.g. "datadogV2.NewSettingsRequestWithDefaults()".
-	// Precomputed for the same reason Target is: the package name lives on
-	// ResourceView, out of reach once template recursion has descended past
-	// the top-level RequestFields range.
+	// Precomputed because the package name lives on ResourceView, out of reach
+	// once template recursion has descended past the top-level fields.
 	Constructor string
 	// Var is the local variable holding the constructed value.
 	Var string
-	// ModelExpr reads the model's own pointer to this nested value (e.g.
-	// "state.Settings"), read through the parent path so a field nested two
-	// levels deep reads "state.Settings.Retry" rather than "state.Retry".
-	// Fields' own ValueExpr/NullCheck are expressed relative to *ModelExpr
-	// (e.g. "state.Settings.Url.ValueString()"), not to Var: Var only ever
-	// holds the SDK value being built, never the source model.
+	// ModelExpr reads the model's own pointer to this nested value, through the
+	// parent path, so a field nested two levels deep reads
+	// "state.Settings.Retry" rather than "state.Retry". Fields' own
+	// ValueExpr/NullCheck are expressed relative to *ModelExpr, not to Var:
+	// Var only ever holds the SDK value being built, never the source model.
 	ModelExpr string
 	// Fields are this nested object's own Set<GoField>(...) calls.
 	Fields []RequestFieldView
 }
 
-// RequestCollectionView is a list/map field a resource's request body builds
-// before handing it to the parent's Set<GoField>(v) setter, one of two ways
-// depending on Kind:
-//
-//   - "primitive" (T129): state's own field is the framework's raw
-//     types.List/types.Map value (see ModelFieldView), which the setter
-//     cannot take directly, so it is decoded into a native Go slice/map via
-//     ElementsAs first — a diag.Diagnostics-returning, ctx-taking
-//     conversion, unlike RequestFieldView's ParsedVar/ParseCall pair, which
-//     mirrors SDKArgumentView's single-valued (T, error) idiom instead.
-//     Widening that pair to sometimes return diagnostics would leak this
-//     shape into SDKArgumentView's own path-argument parsing, which has
-//     nothing to do with ctx or the framework's diagnostics; a sibling pair
-//     keeps the two idioms — and their callers — apart.
-//   - "object" (T130): the framework's own Get(ctx, &state) has already
-//     decoded a ListNestedBlock/ListNestedAttribute into a native
-//     []*<ElemModel> slice, the same way it decodes a lone nested object
-//     into a *Model pointer (see RequestNestedView.ModelExpr) — so no
-//     ElementsAs applies. Each already-decoded element instead becomes its
-//     own request value, built one at a time and appended to a native Go
-//     slice before the setter is called, mirroring the response side's
-//     renderList object branch (data_source_common.go.tmpl) in reverse.
+// RequestCollectionView is a list/map field a request body builds before
+// handing it to the parent's Set<GoField>(v) setter. "primitive" holds a raw
+// types.List/types.Map the setter cannot take, so it is decoded into a native
+// slice/map via ElementsAs, which reports diagnostics. "object" is already
+// decoded into []*<ElemModel> by the framework, so each element becomes its
+// own request value, appended one at a time.
 type RequestCollectionView struct {
 	// Kind is "primitive" or "object", selecting which of the two strategies
 	// above the requestField template renders.
@@ -863,11 +770,7 @@ type RequestCollectionView struct {
 	ConvertVar string
 	// ConvertType declares ConvertVar's Go type. For Kind == "primitive" it
 	// is the ElementsAs target type, e.g. "[]string" or "map[string]int64".
-	// Empty for Kind == "object", which instead declares "[]" + ElementGoType
-	// (ElementGoType alone can't double as ConvertType there: the template
-	// needs the bare element type both for the slice declaration and,
-	// unprefixed, nowhere else, so one field suffices without forcing a
-	// "[]"-stripping step on the "primitive" side).
+	// Empty for Kind == "object", which instead declares "[]" + ElementGoType.
 	ConvertType string
 	// ConvertCall is the ElementsAs call itself for Kind == "primitive", e.g.
 	// "state.Tags.ElementsAs(ctx, &tagsElements, false)". Empty for Kind ==

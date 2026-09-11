@@ -21,10 +21,9 @@ type methodSignature struct {
 	arguments []argumentSignature
 	options   string
 	// receiver is the API struct the method hangs off in the pinned SDK, e.g.
-	// "IncidentsApi". Retained so corroborate can check the derived receiver
-	// name, not just the argument list: a tag whose spelling defeats
-	// model.SdkClassName yields a plausible name for a type the SDK never
-	// generated, and nothing else in the pipeline notices (FR-005a).
+	// "IncidentsApi". Kept so corroborate can also check the derived receiver
+	// name: a tag that defeats model.SdkClassName yields a plausible name for a
+	// type the SDK never generated.
 	receiver string
 }
 
@@ -41,9 +40,9 @@ type Inventory struct {
 	setters map[string]map[string]argumentSignature
 }
 
-// Load parses the generated SDK API files in dir for optional corroboration.
-// Callers must treat an unavailable inventory as non-fatal because the OpenAPI
-// derivation is the authoritative generation input.
+// Load builds an Inventory from the api_*.go files in dir, collecting each
+// <Tag>Api method (minus ctx and a trailing variadic options argument) and each
+// single-argument With* setter on an *OptionalParameters type.
 func Load(dir string) (*Inventory, error) {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
@@ -103,11 +102,10 @@ type orderedParameter struct {
 	location  string
 }
 
-// Bind derives op's SDK call binding from OpenAPI using the Datadog Go client
-// generator's parameter, naming, and type rules. When inventory is present and
-// contains the same endpoint, a disagreement is returned as a warning while the
-// derived binding remains authoritative. A missing inventory or endpoint is an
-// ordinary successful binding.
+// Bind derives op.SDKBinding from OpenAPI using the Datadog Go client
+// generator's parameter, naming and type rules. With an inventory holding the
+// same endpoint, a disagreement comes back as a warning diagnostic while the
+// derived binding stands; a missing inventory or endpoint binds cleanly.
 func Bind(op *model.Operation, inventory *Inventory) ([]model.Diagnostic, error) {
 	if op == nil {
 		return nil, nil
@@ -192,9 +190,8 @@ func deriveArgument(parameter model.QueryParam, location string) (model.SDKArgum
 }
 
 // parameterGoType ports generator.openapi.type_to_go as used by
-// get_type_for_parameter. The scalar and named-enum cases are the generation
-// path tfgen currently emits; collection/object spellings keep corroboration
-// faithful for parameters the scalar-first emitter later drops.
+// get_type_for_parameter: scalars first, then a $ref's own component name, then
+// recursive []T and map[string]T spellings. An anonymous enum has no SDK type.
 func parameterGoType(schema *model.Schema) (string, error) {
 	if schema == nil {
 		return "", fmt.Errorf("parameter has no schema")
@@ -237,11 +234,10 @@ func parameterGoType(schema *model.Schema) (string, error) {
 	return "", fmt.Errorf("schema kind %s has no Go SDK parameter type", schema.Kind)
 }
 
-// parameterSimpleType is the Go type the SDK generator gives a scalar
-// parameter. The mapping itself is model.SDKScalarGoType, the single port of
-// formatter.simple_type; this adds only the two distinctions this caller needs
-// on top of it — whether the schema was a scalar at all, and an error naming
-// the format for an integer or number the SDK generator itself cannot type.
+// parameterSimpleType returns the Go type the SDK generator gives a scalar
+// parameter, via model.SDKScalarGoType. recognized is false for a non-scalar
+// schema; a scalar whose format the SDK does not map returns an error naming
+// it.
 func parameterSimpleType(schema *model.Schema) (typeName string, recognized bool, err error) {
 	switch schema.Type {
 	case "integer", "number", "string", "boolean":
@@ -276,18 +272,16 @@ func (i *Inventory) corroborate(op *model.Operation) []model.Diagnostic {
 	var differences []string
 	derived := op.SDKBinding
 	// Skipped for an untagged operation: SdkClassName would derive the useless
-	// "Api" and drown out the real problem, which is the missing tag. Nothing
-	// currently rejects an empty Tag (parser.firstTag returns ""), despite
-	// data-model.md's validation table claiming the parser enforces it.
+	// "Api" and drown out the real problem, the missing tag. Nothing currently
+	// rejects an empty Tag.
 	if op.Tag != "" {
 		if got := model.SdkClassName(op.Tag); got != pinned.receiver {
 			differences = append(differences, fmt.Sprintf("API struct derived %q from tag %q, pinned %q", got, op.Tag, pinned.receiver))
 		}
 	}
-	// The SDK method includes the request body as its final positional argument,
-	// while SDKBinding intentionally contains only path and query parameters.
-	// Corroborate the body through the separately derived RequestRefName, then
-	// compare the remaining positional arguments like-for-like.
+	// The SDK method's final positional argument is the request body, which
+	// SDKBinding omits; check it against RequestRefName and pop it before
+	// comparing the remaining arguments like-for-like.
 	pinnedArguments := pinned.arguments
 	if op.RequestRefName != "" {
 		switch {

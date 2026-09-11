@@ -1,12 +1,9 @@
 {{/*
-  Shared partials for the data-source templates. These define the pieces that
-  are identical between the singular and plural shapes: the Go model structs,
-  the recursive schema attribute/block rendering, and the type / constructor /
-  Configure / Metadata boilerplate.
+  Partials shared by the singular and plural data-source templates: model
+  structs, recursive schema rendering, and the type/constructor boilerplate.
 
-  Whitespace here is intentionally loose: every rendered file is run through
-  go/format, which fixes all indentation and trailing space. Templates only
-  need to emit syntactically valid Go.
+  Whitespace is loose on purpose — every rendered file goes through go/format,
+  so these only need to emit syntactically valid Go.
 */}}
 
 {{/* modelStructs renders every Go struct in .Models, parent first. */}}
@@ -127,13 +124,10 @@ Attributes: map[string]schema.Attribute{
 {{- end -}}
 
 {{/*
-  updateStateBody is the body of a state mapper: it projects the already-decoded
-  response into state, returning diagnostics rather than writing them so it stays
-  free of the request/response types and can fail at a specific schema path.
-
-  Shared by the singular data source's updateState and the resource's, which
-  differ only in the receiver and model type their signature names — so each root
-  spells its own signature and delegates the body here.
+  updateStateBody projects an already-decoded response into state, returning
+  diagnostics rather than writing them so it can fail at a specific schema
+  path. Callers differ only in the receiver and model type their signature
+  names, so each spells its own signature and delegates the body here.
 */}}
 {{- define "updateStateBody" -}}
 	var diags diag.Diagnostics
@@ -152,12 +146,10 @@ Attributes: map[string]schema.Attribute{
 {{- end -}}
 
 {{/*
-  renderList projects one SDK collection into state. The primitive branch reports
-  the conversion's own diagnostics instead of discarding them, and converts under
-  the caller's ctx: a state mapper has no business minting context.Background(),
-  and a failed ListValueFrom used to leave a zero value in state silently. Each
-  branch opens its own `if` block, so the block-scoped listDiags cannot collide
-  with a sibling or nested list.
+  renderList projects one SDK collection into state. The primitive branch
+  converts under the caller's ctx and appends the conversion's own diagnostics
+  rather than discarding them. Each branch opens its own `if` block, so the
+  block-scoped collectionDiags cannot collide with a sibling or nested list.
 */}}
 {{- define "renderList" -}}
 {{- if eq .Kind "primitive" -}}
@@ -228,15 +220,10 @@ if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
 
 {{/*
   renderOneOf unwraps one SDK oneOf wrapper into its Terraform envelope model.
-
-  Every member is inspected and the matches counted; the envelope is only assigned
-  when exactly one matched. This is deliberately not the SDK's own behaviour —
-  MarshalJSON and GetActualInstance both return the first non-nil member — because
-  the contract requires zero, multiple, or an unparsed payload to be reported at the
-  union's schema path rather than silently resolving to one branch.
-
-  The wrapper itself is reached through an ordinary Ok-getter; only its members are
-  plain fields, which is why they are read with `:=` rather than Get<Field>Ok.
+  Every member is inspected and the matches counted, and the envelope is
+  assigned only when exactly one matched, so zero, multiple, or an unparsed
+  payload is reported at the union's schema path. Members are plain fields, not
+  Ok-getters, so they are read with `:=`.
 */}}
 {{- define "renderOneOf" -}}
 if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
@@ -342,14 +329,12 @@ func (d *{{ .GoName }}DataSource) Metadata(_ context.Context, request datasource
 {{- end -}}
 
 {{/*
-  argParse declares the local for ONE SDK call argument or query filter that must
-  be recovered by parsing (a uuid- or integer-typed value behind a Terraform
-  string), and bails with a diagnostic when it does not parse. Defined over a
-  single item rather than a slice so it serves both the argument sites, which
-  range, and the filter sites, which are already inside a per-filter range —
-  SDKArgumentView and FilterParamView both carry the ParsedVar/ParseCall/TFName
-  trio it reads. Renders nothing when no parse is needed; go/format fixes the
-  indentation, so the same body serves a nested call site too.
+  argParse declares the local for ONE argument or query filter recovered by
+  parsing (a uuid or integer behind a Terraform string), bailing with a
+  diagnostic when it does not parse. Defined over a single item so it serves
+  both the argument sites and the filter sites already inside a range; it reads
+  the ParsedVar/ParseCall/TFName trio, and renders nothing when no parse is
+  needed.
 */}}
 {{- define "argParse" -}}
 {{- if .ParsedVar }}

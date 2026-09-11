@@ -11,8 +11,8 @@ import (
 )
 
 // ResolveAPIAccessors parses the provider's ApiInstances helper at path and maps
-// each V2 SDK API struct to the accessor method that returns it, e.g. "RUMApi" ->
-// "GetRumApiV2". It is the source of truth for accessor names, which diverge from
+// each V2 SDK API struct to the accessor method returning it, e.g. "RUMApi" ->
+// "GetRumApiV2". Names are read rather than derived because they diverge from
 // the struct name for a few APIs (RUM, APM, Observability Pipelines).
 func ResolveAPIAccessors(path string) (map[string]string, error) {
 	fset := token.NewFileSet()
@@ -73,11 +73,10 @@ func singleV2ResultType(ft *ast.FuncType) string {
 	return sel.Sel.Name
 }
 
-// ApplyAPIAccessor configures view to use the provider's existing ApiInstances
-// accessor when one returns view.APIStruct. If no accessor exists, it derives
-// the Go client constructor using the SDK generator's deterministic
-// New<APIStruct> rule. This keeps provider aliases authoritative without making
-// the pinned SDK source a generation prerequisite.
+// ApplyAPIAccessor points view at the provider's existing ApiInstances accessor
+// when one returns view.APIStruct, and otherwise derives the client constructor
+// from the SDK's deterministic New<APIStruct> rule — so provider aliases win
+// without the pinned SDK source being needed.
 func ApplyAPIAccessor(view *DataSourceView, accessors map[string]string) error {
 	accessor, constructor, err := resolveAPIAccessor(view.SDKPackage, view.APIStruct, accessors)
 	view.APIAccessor, view.APIConstructor = accessor, constructor
@@ -91,19 +90,16 @@ func ApplyResourceAPIAccessor(view *ResourceView, accessors map[string]string) e
 	return err
 }
 
-// defaultAPIAccessor is the FrameworkProvider accessor a call resolves to by
+// defaultAPIAccessor is the Get<Struct><V1|V2> accessor a call resolves to by
 // convention, e.g. "GetTeamsApiV2". It seeds a freshly built view so rendering
-// is valid before accessor resolution runs; ApplyAPIAccessor and
-// ApplyResourceAPIAccessor then overwrite it from the provider's real
-// ApiInstances helper. The Get<Struct><V1|V2> spelling therefore lives here
-// beside that lookup rather than being respelled at each view builder.
+// is valid before accessor resolution overwrites it from the provider's real
+// ApiInstances helper.
 func defaultAPIAccessor(call *model.SDKCall) string {
 	return "Get" + call.GoApiStruct + strings.TrimPrefix(call.GoPackage, "datadog")
 }
 
-// resolveAPIAccessor is the shared decision behind both ApplyAPIAccessor and
-// ApplyResourceAPIAccessor: exactly one of accessor and constructor is
-// returned non-empty on success.
+// resolveAPIAccessor returns exactly one of accessor and constructor non-empty
+// on success; an operation with no usable API tag is an error.
 func resolveAPIAccessor(sdkPackage, apiStruct string, accessors map[string]string) (accessor, constructor string, err error) {
 	if acc, ok := accessors[apiStruct]; ok {
 		return acc, "", nil

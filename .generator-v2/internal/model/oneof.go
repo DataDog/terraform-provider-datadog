@@ -110,28 +110,12 @@ var oneOfRoleSuffixes = []string{
 	"Create", "_create",
 }
 
-// StripOneOfRoleSuffix removes the trailing run of CRUD-role markers from an
-// OpenAPI-derived union or alternative name, accepting either the PascalCase
-// spelling of a component ("IntegrationAccountBasicAuthRequest") or the
-// snake_case spelling of a Terraform variant block
-// ("integration_account_basic_auth_request"), and returning the same casing it
-// was given.
-//
-// It exists because one logical union is up to three OpenAPI components — the
-// Create body's, the Update body's and the Read response's — and a resource's
-// merged schema has to correlate them and then expose exactly one public name
-// for the set. Which body won the merge must not be visible in the Terraform
-// schema (FR-012e, T099c).
-//
-// The run is stripped rather than a single suffix because the markers compose:
-// downtime spells one alternative "DowntimeScheduleRecurrencesCreateRequest",
-// "…RecurrencesUpdateRequest" and "…RecurrencesResponse", which only reduce to
-// a common stem once both markers are gone. Stripping stops at whatever it
-// cannot remove, so a component actually named "Request" keeps its name.
-//
-// Stripping is lossy by construction — an alternative legitimately named
-// "…Update" reduces the same way — which is why mergeOneOf reaches for it only
-// after the bodies have failed to agree on a name by themselves.
+// StripOneOfRoleSuffix removes the trailing run of CRUD-role markers from a
+// union or alternative name, in either PascalCase or snake_case, returning the
+// casing it was given. The whole run goes because markers compose
+// ("DowntimeScheduleRecurrencesCreateRequest"), and stripping stops at what it
+// cannot remove, so a name that is only "Request" survives. Lossy: an
+// alternative genuinely named "…Update" reduces the same way.
 func StripOneOfRoleSuffix(name string) string {
 stripping:
 	for {

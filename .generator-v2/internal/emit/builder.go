@@ -19,8 +19,7 @@ type UnsupportedNode struct {
 }
 
 // UnsupportedEmitError aggregates every UnsupportedNode found while walking one
-// artifact's tree. It reports valid Terraform the emit path does not yet
-// implement, separate from the upstream check that rejects unrepresentable schemas.
+// artifact's tree: valid Terraform the emit path does not implement yet.
 type UnsupportedEmitError struct {
 	Nodes []UnsupportedNode
 }
@@ -33,37 +32,28 @@ func (e *UnsupportedEmitError) Error() string {
 	return fmt.Sprintf("emit: %d unsupported node(s): %s", len(e.Nodes), strings.Join(parts, "; "))
 }
 
-// envelopeReceiver is the local the flattened state-mapper reads hoisted leaves
-// off, established by the StateView preamble "attributes := resp.Data.GetAttributes()".
+// envelopeReceiver is the local the flattened state mapper reads hoisted leaves
+// off, declared by the StateView preamble.
 const envelopeReceiver = "attributes"
 
-// oneOfEnvelope renders one union at one use site: it returns the nested variant
-// attributes to hang under the union's own attribute, and the Go type of the field that
-// holds the envelope model.
-//
-// Models and nested views are cached on the envelope's parser-assigned Name, so two
-// uses of one reusable oneOf component yield a single generated model and
-// identical schema rather than one copy per use site. The nested views are
-// cached too, not just the models: they are a pure function of the envelope's
-// variants, which are shared, so recomputing them could only introduce drift.
-//
-// A variant's own fields go through the same walk as any nested object, which is
-// what produces its model struct and its field assignments. The assignments are
-// carried on the returned OneOfVariantView rather than placed here: the mapper has
-// to unwrap the SDK member before they can run, and that lands separately.
+// oneOfEnvelope renders one union: the variant blocks to hang under the union's
+// attribute, plus the Go model name of the envelope struct. The whole render is
+// cached on the envelope's Name, so two uses of one reusable oneOf component
+// yield a single model and identical schema. A variant's own fields go through
+// walk like any nested object; its assignments ride on the returned
+// OneOfVariantAssignment because the mapper must unwrap the SDK member first.
 func (b *dataSourceBuilder) oneOfEnvelope(a *model.Attribute) oneOfRender {
 	env := a.OneOf
 	if cached, ok := b.oneOfRenders[env.Name]; ok {
 		return cached
 	}
 
-	// The model layer names an envelope and its variants without knowing which
-	// artifact will render them — a reusable union has no single owner — so emit
-	// applies the artifact scope here, at the one point that does know.
+	// The model layer names an envelope without knowing which artifact renders
+	// it — a reusable union has no single owner — so scope the name here.
 	envModel := b.namer.qualify(env.GoModel)
 
-	// Reserve the envelope's struct slot before walking the variants so it precedes
-	// their structs in Models, matching how walk orders a parent before its children.
+	// Reserve the envelope's struct slot before walking the variants so it
+	// precedes theirs in Models, as walk orders a parent before its children.
 	envIdx := len(b.models)
 	b.models = append(b.models, ModelStructView{Name: envModel})
 
@@ -88,7 +78,7 @@ func (b *dataSourceBuilder) oneOfEnvelope(a *model.Attribute) oneOfRender {
 		if v.ValueWrapped {
 			// The SDK member of a non-object alternative *is* the value — a *string,
 			// not a struct with getters — so its single "value" field is assigned by
-			// dereferencing the member rather than reading through Get<Field>Ok.
+			// dereferencing the member, not through Get<Field>Ok.
 			attrs, blocks = b.oneOfValueVariant(env, v, variantModel, sdkVar, modelVar, &assign)
 		} else {
 			var scalars []StateAssignment
@@ -126,14 +116,11 @@ func (b *dataSourceBuilder) oneOfEnvelope(a *model.Attribute) oneOfRender {
 	return render
 }
 
-// oneOfValueVariant handles a value-wrapped alternative: the variant model has a
-// single "value" field, and the SDK member it comes from is the value itself.
-//
-// The walk cannot serve this case — it would emit SDKVar.GetValueOk(), and a
-// *string has no methods — so the schema attribute is built here and the
-// assignment dereferences the member directly. A value-wrapped alternative whose
-// value is not a scalar (a list or map alternative) has no such dereference and is
-// recorded unsupported rather than mis-assigned.
+// oneOfValueVariant handles a value-wrapped alternative, whose variant model
+// has a single "value" field read straight off the SDK member. walk cannot
+// serve it — it would emit SDKVar.GetValueOk() on a *string — so the attribute
+// is built here and the assignment dereferences the member. A non-scalar value
+// (a list or map alternative) has nothing to dereference: unsupported.
 func (b *dataSourceBuilder) oneOfValueVariant(
 	env *model.OneOfEnvelope,
 	v model.OneOfEnvelopeVariant,
@@ -173,8 +160,8 @@ func (b *dataSourceBuilder) oneOfValueVariant(
 		Computed:    value.Computed,
 		Sensitive:   value.Sensitive,
 	}}
-	// The variant still needs its own one-field model struct; walk would normally
-	// have appended it, and the envelope's field points at it either way.
+	// The variant still needs the one-field model struct walk would have
+	// appended; the envelope's field points at it either way.
 	b.models = append(b.models, ModelStructView{
 		Name:   variantModel,
 		Fields: []ModelFieldView{{GoField: goField, GoType: value.GoType, TFName: tfName}},
@@ -187,9 +174,8 @@ func (b *dataSourceBuilder) oneOfValueVariant(
 }
 
 // oneOfRender is one envelope's render-ready output, cached per envelope name.
-// Both halves are a function of the envelope alone: the schema attributes because the
-// variants are shared, and the variant assignments because they are expressed
-// against variant-derived locals and carry GoField rather than a site-specific LHS.
+// Both halves depend on the envelope alone: the variants are shared, and their
+// assignments name variant-derived locals and a GoField, never a site LHS.
 type oneOfRender struct {
 	blocks   []AttrView
 	variants []OneOfVariantAssignment
@@ -197,7 +183,7 @@ type oneOfRender struct {
 }
 
 // oneOfListAssignment builds the site-specific assignment that unwraps an
-// envelope's SDK wrapper into its model, given the render shared across use sites.
+// envelope's SDK wrapper into its model, from the render shared across sites.
 func oneOfListAssignment(
 	env *model.OneOfEnvelope,
 	render oneOfRender,
@@ -232,10 +218,8 @@ func oneOfListAssignment(
 }
 
 // oneOfFieldType returns the Go type of the model field holding an envelope,
-// given the Terraform form of the attribute the envelope hangs off: a pointer for
-// a union at its own position, a slice for a collection whose element is a union.
-// It reports false for a form the emit path does not represent yet, so the caller
-// fails the artifact rather than dropping the union.
+// from the Terraform form the envelope hangs off: a pointer for a union at its
+// own position, a slice for a collection of unions. False for any other form.
 func oneOfFieldType(tfType, envelopeModel string) (string, bool) {
 	switch tfType {
 	case "schema.SingleNestedBlock", "schema.SingleNestedAttribute":
@@ -253,9 +237,8 @@ func isCollectionForm(tfType string) bool {
 	return tfType == "schema.ListNestedBlock" || tfType == "schema.ListNestedAttribute"
 }
 
-// unsupportedOneOfPlacement explains a union the emit path cannot place yet, named
-// by the Terraform form it arrived in rather than by its schema kind, since that is
-// what the emitter would have had to render.
+// unsupportedOneOfPlacement explains a union the emit path cannot place yet,
+// naming the Terraform form it arrived in rather than its schema kind.
 func unsupportedOneOfPlacement(env *model.OneOfEnvelope, tfType string) UnsupportedNode {
 	return UnsupportedNode{
 		Path: env.Path,
@@ -268,12 +251,10 @@ func unsupportedOneOfPlacement(env *model.OneOfEnvelope, tfType string) Unsuppor
 }
 
 // BuildDataSourceView derives the singular DataSourceView from a.Schema and
-// a.Lifecycle. It resolves the SDK-call bindings onto the view, then runs a
-// flattening pass that recognizes the singular JSON:API envelope
-// ({data:{id,type,attributes}}) and hoists data.attributes.* to top-level
-// computed attributes. The walk is fail-slow: every binding or envelope problem
-// it finds is collected and returned together as a *UnsupportedEmitError, in
-// which case the view is discarded.
+// a.Lifecycle: it resolves the SDK-call bindings, then flattens the singular
+// JSON:API envelope ({data:{id,type,attributes}}), hoisting data.attributes.*
+// to top-level computed attributes. Fail-slow — every binding or envelope
+// problem collects into one *UnsupportedEmitError and the view is discarded.
 func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 	if a.Cardinality == model.CardinalityPlural {
 		return buildPluralView(a)
@@ -344,9 +325,8 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 	}
 
 	// env is non-nil here: flattenEnvelope records an unsupported node (caught
-	// above) on every failure path. Walk the hoisted leaves into the root struct.
-	// The root's stem is empty: its inline children accumulate from the artifact base
-	// alone, so a top-level "foo" object becomes <base>FooModel.
+	// above) on every failure path. The root's stem is empty, so its inline
+	// children accumulate from the artifact base alone: "foo" -> <base>FooModel.
 	recordAttrs, recordBlocks, recordScalars, recordLists := b.walk(rootStruct, "", b.receiver, "state", env.leaves)
 	leafFields := b.models[0].Fields
 
@@ -544,9 +524,7 @@ func buildFilterParams(call *model.SDKCall, leaves []*model.Attribute, unsupport
 }
 
 // parseCallImports reports which extra import a ParseCall expression needs,
-// based on the parse function it calls. It is the one place that maps a parse
-// call to its import, so the data-source argument path and the resource request
-// mapper cannot drift apart on which prefixes they recognize.
+// switching on the package prefix of the parse function it calls.
 func parseCallImports(parseCall string) (usesUUID, usesStrconv, usesTime bool) {
 	switch {
 	case strings.HasPrefix(parseCall, "uuid."):
@@ -567,12 +545,9 @@ func sdkArgumentExpression(sdkPackage string, arg model.SDKArgument) (expr, pars
 	field := goFieldName(arg.TFName)
 	source := "state." + field
 
-	// The id-aliased argument's backing model field is always types.String —
-	// Terraform's resource identity is always a string — regardless of what
-	// type the path parameter it stands in for actually is. Any non-string
-	// Go type must therefore be recovered by parsing the string id, the same
-	// way a uuid-typed id already is, rather than by dispatching on the
-	// OpenAPI parameter's own (here irrelevant) schema type below.
+	// The id-aliased argument's model field is always types.String, whatever the
+	// path parameter's own type, so a non-string Go type has to be recovered by
+	// parsing that string rather than by the schema-type switch below.
 	if arg.TFName == "id" {
 		return idArgumentExpression(sdkPackage, source, parsedIDVar, arg.GoType, len(arg.Schema.Enum) > 0)
 	}
@@ -600,8 +575,8 @@ func sdkArgumentExpression(sdkPackage string, arg model.SDKArgument) (expr, pars
 		name := "parsed" + model.SdkName(arg.TFName)
 		return name, name, "uuid.Parse(" + value + ")", ""
 	}
-	// A named component type is cast directly; the attribute's own validator has
-	// already rejected a non-member by the time the cast runs.
+	// A named component type is cast directly; the attribute's own validator
+	// rejected a non-member before the cast runs.
 	if !model.IsBareSDKTypeName(arg.GoType) {
 		return "", "", "", fmt.Sprintf("SDK argument type %s is outside scalar-first support", arg.GoType)
 	}
@@ -609,10 +584,8 @@ func sdkArgumentExpression(sdkPackage string, arg model.SDKArgument) (expr, pars
 }
 
 // idArgumentExpression binds an SDK argument aliased from the "id" attribute,
-// whose model field is always types.String. A string-typed SDK argument reads
-// it directly; every other type is recovered by parsing that string, mirroring
-// the uuid.UUID case sdkArgumentExpression already handles for non-id
-// arguments.
+// whose model field is always types.String. A string-typed argument reads it
+// directly; every other type is recovered by parsing that string.
 func idArgumentExpression(sdkPackage, source, name, goType string, hasEnum bool) (expr, parsedVar, parseCall, reason string) {
 	value := source + ".ValueString()"
 	switch goType {
@@ -632,10 +605,9 @@ func idArgumentExpression(sdkPackage, source, name, goType string, hasEnum bool)
 		return name, name, "strconv.ParseBool(" + value + ")", ""
 	}
 
-	// An enum-typed parameter arrives spelled as its component's Go type, so it
-	// misses the "string" case above. The validating constructor recovers it —
-	// unlike a non-id argument, the id carries no validator of its own, so an
-	// unparseable value has to fail here. It returns a pointer, hence the deref.
+	// An enum-typed parameter is spelled as its component's Go type, so it misses
+	// the "string" case above. The validating constructor recovers it — the id
+	// carries no validator of its own — and returns a pointer, hence the deref.
 	if constructor, ok := model.SDKEnumFromValueConstructor(goType); ok && hasEnum {
 		return "*" + name, name, sdkPackage + "." + constructor + "(" + value + ")", ""
 	}
@@ -652,20 +624,15 @@ type flattenedEnvelope struct {
 	preamble []string
 }
 
-// flattenEnvelope recognizes the singular JSON:API envelope at the response root
-// and reshapes it for the walk. It expects a top-level "data" object whose members
-// are a subset of {id, type, attributes}, with "attributes" an object of leaves
-// only. It hoists each attribute leaf to a top-level path ("response.<leaf>"),
-// surfaces "id" from id_strategy (data.id only), and drops "type". Anything outside
-// the recognized envelope is appended to b.unsupported and the result is nil.
+// flattenEnvelope recognizes the singular JSON:API envelope at the response
+// root and reshapes it for the walk: a top-level "data" object whose members
+// are a subset of {id, type, attributes}. Each attributes child is hoisted to
+// "response.<leaf>", "id" is surfaced (data.id strategy only), "type" dropped.
+// Anything unrecognized appends to b.unsupported and the result is nil.
 func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrategy model.IdStrategy, rootExpr string, reserved ...*model.Attribute) *flattenedEnvelope {
-	// A JSON:API response carries sideloading and request metadata beside the
-	// primary resource: "included" (the hydrated targets of data.relationships),
-	// "meta", "links". None of it is the resource's own state — no hand-written
-	// artifact in the provider surfaces any of it — so drop those siblings the same
-	// way data.relationships is dropped below, rather than failing on a shape that
-	// is in fact recognized. Dropping "included" also keeps its element union out
-	// of the view; that union is the reason these responses need a decision at all.
+	// Siblings of "data" ("included", "meta", "links") are sideloading and request
+	// metadata, not the resource's own state, so they are dropped the same way
+	// data.relationships is below rather than failing a recognized shape.
 	reservedNames := map[string]func(string) DroppedMember{"id": droppedIDCollision}
 	for _, attr := range reserved {
 		reservedNames[tfNameOf(attr.Path)] = droppedPathParameterCollision
@@ -728,12 +695,9 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 			b.dropped = append(b.dropped, droppedAuditField(child.Path))
 			continue
 		}
-		// The root model reserves id for Terraform identity — so an id under
-		// attributes collides even when the response has no data.id getter — and
-		// reserves each path parameter the caller passed, which the practitioner
-		// supplies and the API merely echoes back here (T139). One gate for every
-		// name the root claims, so a new claim cannot be honored in one place and
-		// missed in another.
+		// The root model claims "id" for Terraform identity (even when the response
+		// has no data.id getter) and each path parameter the caller passed, which
+		// the API merely echoes back here. One gate for every claimed name.
 		if note, claimed := reservedNames[tfNameOf(child.Path)]; claimed {
 			b.dropped = append(b.dropped, note(child.Path))
 			continue
@@ -785,43 +749,35 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 	}
 }
 
-// dataSourceBuilder accumulates the cross-cutting outputs of one walk: the Go
-// model structs (parent before child), the per-leaf state assignments, and the
-// unsupported-node collector. receiver is the getter root the state-mapper reads
-// leaves off (e.g. "attributes" for the flattened envelope).
+// dataSourceBuilder accumulates the cross-cutting outputs of one walk: model
+// structs (parent before child), unsupported nodes, dropped members and import
+// flags. receiver is the getter root leaves are read off, e.g. "attributes".
 type dataSourceBuilder struct {
 	receiver string
 	// namer scopes every model struct name to this artifact and derives nested
-	// names from their OpenAPI component. See modelname.go.
+	// names from their OpenAPI component.
 	namer       modelNamer
 	models      []ModelStructView
 	unsupported []UnsupportedNode
 	// dropped notes envelope members skipped from the attributes-only view
 	// (e.g. relationships), surfaced as diagnostics rather than failures.
 	dropped []DroppedMember
-	// oneOfBlocks caches the variant block views of each envelope already rendered,
-	// keyed on the parser's envelope Name, and doubles as the "already emitted its
-	// models" marker. envelopes accumulates one view per distinct envelope in first-use
-	// order, for the state mapper to walk.
+	// oneOfRenders caches each envelope's render, keyed on the parser's envelope
+	// Name, and doubles as the "already emitted its models" marker.
 	oneOfRenders map[string]oneOfRender
-	// filterByResponse, when true, restricts walk to emitting a response-mapping
-	// assignment (StateAssignment/ListAssignment) only for a node with
-	// InResponse. Some attributes have no Get<Field>Ok accessor on the
-	// response type at all, so building an assignment for one would not
-	// compile; the schema attribute and model field are still emitted either
-	// way. False emits an assignment for every attribute unconditionally.
+	// filterByResponse, when true, makes walk emit a response-mapping assignment
+	// only for a node with InResponse, since an attribute absent from the response
+	// type has no Get<Field>Ok to call. Its schema attribute and model field are
+	// emitted either way. False assigns every attribute unconditionally.
 	filterByResponse bool
 	// planModifierPkgs collects the distinct planmodifier subpackages
-	// (e.g. "stringplanmodifier") referenced by any attribute's PlanModifiers,
-	// resource walks only, for the template's import block.
+	// (e.g. "stringplanmodifier") any attribute's PlanModifiers reference.
 	planModifierPkgs map[string]struct{}
 	// usesStringValidators records that some scalar attribute rendered a string
-	// validator, for the template's import block. Set during the walk by
-	// validatorViews, the same way planModifierPkgs is.
+	// validator, for the template's import block.
 	usesStringValidators bool
-	// usesObjectValidators records oneOf selection validators separately from
-	// scalar string validators so the template imports only the validator
-	// constructor packages the generated artifact actually references.
+	// usesObjectValidators records oneOf selection validators, kept separate from
+	// the string ones so only the referenced constructor packages are imported.
 	usesObjectValidators bool
 }
 
@@ -831,11 +787,9 @@ func (b *dataSourceBuilder) responds(a *model.Attribute) bool {
 }
 
 // planModifierViews renders a's plan modifiers for its AttrView and records
-// their subpackages on the builder, e.g. "stringplanmodifier.UseStateForUnknown"
-// records "stringplanmodifier". sliceType is the planmodifier.<T> element type
-// matching a.GoType (e.g. "types.String" -> "String"), which every plan
-// modifier subpackage names identically to its own type token. Returns zero
-// values when a carries none.
+// their subpackages on the builder ("stringplanmodifier.UseStateForUnknown"
+// records "stringplanmodifier"). sliceType is the planmodifier.<T> element type
+// matching a.GoType ("types.String" -> "String"). Zero values if a has none.
 func (b *dataSourceBuilder) planModifierViews(a *model.Attribute) (names []string, sliceType string) {
 	if len(a.PlanModifiers) == 0 {
 		return nil, ""
@@ -853,8 +807,7 @@ func (b *dataSourceBuilder) planModifierViews(a *model.Attribute) (names []strin
 
 // validatorViews renders a's validators for its AttrView, e.g.
 // `stringvalidator.OneOf("low", "high")`. Empty unless a is configurable
-// (Required or Optional) — a validator on a Computed-only attribute would
-// never run, since the practitioner never supplies a value for it to check.
+// (Required or Optional), since a Computed-only validator would never run.
 func (b *dataSourceBuilder) validatorViews(a *model.Attribute) (names []string, elemType string) {
 	if len(a.Validators) == 0 || !(a.Required || a.Optional) {
 		return nil, ""
@@ -868,11 +821,9 @@ func (b *dataSourceBuilder) validatorViews(a *model.Attribute) (names []string, 
 }
 
 // oneOfVariantValidators returns an ExactlyOneOf validator for a configurable
-// variant. The framework validator automatically includes the attribute it is
-// attached to, so only sibling paths are passed. It defers when any candidate
-// is unknown, which lets Terraform planning proceed without treating an unknown
-// value as absent, while rejecting zero or multiple known selections before
-// request.Plan.Get attempts to decode a nested model.
+// variant. Only sibling paths are passed: the framework validator already
+// includes the attribute it is attached to. It defers while any candidate is
+// unknown, so planning is not blocked, and otherwise rejects zero or several.
 func (b *dataSourceBuilder) oneOfVariantValidators(env *model.OneOfEnvelope, current model.OneOfEnvelopeVariant) (names []string, elemType string) {
 	if !current.Attribute.Optional {
 		return nil, ""
@@ -909,10 +860,9 @@ func droppedAuditField(path string) DroppedMember {
 	}
 }
 
-// droppedIDCollision is the warning-diagnostic note for a member promoted out of
-// attributes whose name is already claimed by the envelope id. Flattening would
-// emit two attributes named "id"; the envelope id wins because it carries the
-// data source's Terraform identity.
+// droppedIDCollision is the warning-diagnostic note for a member promoted out
+// of attributes whose name the envelope id already claims: flattening would
+// emit two attributes named "id", and the identity-carrying envelope id wins.
 func droppedIDCollision(path string) DroppedMember {
 	return DroppedMember{
 		Message:  fmt.Sprintf("dropped %q: collides with the envelope id surfaced as \"id\"", path),
@@ -921,11 +871,9 @@ func droppedIDCollision(path string) DroppedMember {
 }
 
 // droppedPathParameterCollision is the info-diagnostic note for a member
-// promoted out of attributes whose name a path parameter already claims. The
-// parameter is the practitioner's input and is Required; the body's copy is the
-// API echoing it back, so surfacing both would declare one tfsdk tag twice and,
-// where the echo is readOnly, ask Terraform for an attribute that is both
-// Required and Computed.
+// promoted out of attributes whose name a path parameter already claims.
+// Surfacing both would declare one tfsdk tag twice and, where the echo is
+// readOnly, ask for an attribute that is at once Required and Computed.
 func droppedPathParameterCollision(path string) DroppedMember {
 	return DroppedMember{
 		Message: fmt.Sprintf(
@@ -936,22 +884,12 @@ func droppedPathParameterCollision(path string) DroppedMember {
 }
 
 // walk processes one struct's worth of attributes in tree order, reserving the
-// struct's slot in b.models up front so a parent precedes its children, then
-// filling its fields as it goes. receiver is the SDK getter root the state mapper
-// reads off ("attributes" at the record root, the loop variable inside a list
-// element); lhsPrefix is the model target the assignments write into ("state", or
-// the per-element accumulator). It returns the schema attr/block views plus the
-// scalar and list state assignments for the caller to place, recursing through
-// nested attributes.
-//
-// stem is this struct's own naming stem, which its children accumulate from when
-// their schema is inline (modelname.go). It is separate from structName because
-// structName is already qualified and suffixed, and a stem must be neither.
-//
-// The same struct may be reserved twice when one OpenAPI component is reached from
-// two properties: each site needs its own assignments, which are expressed against
-// site-specific receivers and LHS prefixes, so both walks run. dedupeModels
-// collapses the duplicate declarations afterwards.
+// struct's slot in b.models up front so a parent precedes its children, and
+// recursing into nested attributes. receiver is the SDK getter root, lhsPrefix
+// the model target assignments write into, and stem the naming stem inline
+// children accumulate from — unqualified and unsuffixed, unlike structName. One
+// component reached from two properties is walked twice, since each site needs
+// its own receiver and LHS; dedupeModels collapses the duplicates.
 func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, attrs []*model.Attribute) (attrViews, blockViews []AttrView, scalars []StateAssignment, lists []ListAssignment) {
 	idx := len(b.models)
 	b.models = append(b.models, ModelStructView{Name: structName})
@@ -960,14 +898,13 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 	for _, a := range attrs {
 		tfName := tfNameOf(a.Path)
 		field := model.SdkName(tfName)
-		// A pure function of a alone, computed once regardless of which TfType
-		// case below fires (including the oneOf branch, which continues before
-		// reaching the switch).
+		// A function of a alone, so computed before the oneOf branch, which
+		// returns without reaching the switch.
 		pmNames, pmType := b.planModifierViews(a)
 
-		// A union is keyed on OneOf, not on TfType: an envelope arrives wearing the
-		// same schema.SingleNestedAttribute as an ordinary nested object, and walking it
-		// as one would emit Get<Variant>Ok getters the SDK oneOf wrapper does not have.
+		// A union is keyed on OneOf, not TfType: an envelope wears the same
+		// schema.SingleNestedAttribute as a nested object, and walking it as one
+		// would emit Get<Variant>Ok getters the SDK oneOf wrapper lacks.
 		if a.OneOf != nil {
 			render := b.oneOfEnvelope(a)
 			goType, ok := oneOfFieldType(a.TfType, render.goModel)
@@ -1173,9 +1110,8 @@ func isLeafType(tfType string) bool {
 	}
 }
 
-// isArrayType reports whether tfType is one of the array attribute forms the
-// envelope hoists into list machinery: a collection-of-primitive (ListAttribute)
-// or an array-of-object (ListNestedAttribute).
+// isArrayType reports whether tfType is a collection-of-primitive
+// (ListAttribute) or an array-of-object (ListNestedAttribute).
 func isArrayType(tfType string) bool {
 	switch tfType {
 	case "schema.ListAttribute", "schema.ListNestedAttribute":
@@ -1192,9 +1128,8 @@ func isMapType(tfType string) bool { return tfType == "schema.MapAttribute" }
 // hoists into single-object machinery (schema.SingleNestedAttribute).
 func isObjectType(tfType string) bool { return tfType == "schema.SingleNestedAttribute" }
 
-// auditFields are server-managed audit attributes dropped from the top level of a
-// generated data source: their timestamps and actor handles add schema noise
-// without configuration value.
+// auditFields are server-managed timestamps and actor handles, dropped from the
+// top level of a generated data source as schema noise.
 var auditFields = map[string]bool{
 	"created_at":  true,
 	"updated_at":  true,
@@ -1237,20 +1172,17 @@ func leafVar(tfName string) string {
 	case "state", "attributes", "ok", "d", "data", "resp", "items", "ctx":
 		return v + "Value"
 	}
-	// A property named "type" — common in JSON:API payloads and in every
-	// action_connection oneOf variant — would otherwise emit `if type, ok := ...`,
-	// which is not Go. The SDK generator solves this by suffixing "Var"; reuse its
-	// rule rather than a second scheme. The shadow suffix above stays "Value"
-	// because it answers a different question (colliding with a local the template
-	// declares, not with the language).
+	// A property named "type" would otherwise emit `if type, ok := ...`, which is
+	// not Go; the SDK generator's own rule suffixes "Var". The shadow suffix above
+	// stays "Value" because it answers a different question: colliding with a
+	// local the template declares rather than with the language.
 	return model.EscapeReservedKeyword(v)
 }
 
-// guardedValue wraps a guarded assignment's local (bound from an Ok-getter, so a
-// pointer) in the types.*Value constructor matching the model field's GoType. A
-// date-time or UUID pointer renders via .String(); a named enum pointer is
-// dereferenced and cast back to string; integers are cast to int64 as the
-// framework expects.
+// guardedValue wraps a guarded assignment's local — bound from an Ok-getter,
+// so a pointer — in the types.*Value constructor matching the model field's
+// GoType. A date-time or UUID renders via .String(), an enum is dereferenced
+// and cast back to string, integers are cast to int64 as the framework wants.
 func guardedValue(a *model.Attribute, varName string) string {
 	switch a.GoType {
 	case "types.String":
@@ -1274,11 +1206,9 @@ func guardedValue(a *model.Attribute, varName string) string {
 }
 
 // wrapValue wraps an SDK getter chain in the types.*Value constructor matching
-// the model field's GoType, casting integers to int64 as the framework expects.
-// For strings it also reconciles getters whose Go return type is not a bare
-// string: date-time and UUID getters return stringer values (rendered via
-// .String()) and enum getters return named string types (cast back with
-// string(...)).
+// the model field's GoType, casting integers to int64. Strings whose getter
+// does not return a bare string are reconciled first: date-time and UUID
+// getters return stringers (.String()), enum getters named types (string(…)).
 func wrapValue(a *model.Attribute, chain string) string {
 	switch a.GoType {
 	case "types.String":
@@ -1311,13 +1241,11 @@ func unsupportedReason(tfType string) string {
 	}
 }
 
-// buildPluralView derives the plural DataSourceView from a plural Artifact: the
-// scalar query params become Optional filters, and the results-array element
-// (a JSON:API envelope) is flattened — "id" read off the loop variable,
-// "attributes.*" off item.Attributes, "type" dropped — into one item struct
-// projected per element. The walk is fail-slow: unsupported filter or
-// item-element nodes are collected and returned together as an
-// *UnsupportedEmitError, in which case the view is discarded.
+// buildPluralView derives the plural DataSourceView: scalar query params become
+// Optional filters, and the results-array element (a JSON:API envelope) is
+// flattened into one item struct projected per element — "id" read off the loop
+// variable, "attributes.*" off item.Attributes, "type" dropped. Fail-slow: bad
+// filter or item nodes collect into one *UnsupportedEmitError, discarding view.
 func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 	var unsupported []UnsupportedNode
 	var dropped []DroppedMember
@@ -1356,10 +1284,9 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 
 	goName := dsGoName(a.Name)
 
-	// b hosts walk so list-of-object item fields generate their element structs,
-	// and buildInputViews so an input's plan-modifier package is registered for
-	// the import block — a resource's path parameters need that (T139), a
-	// plural data source's filters carry none.
+	// b hosts walk, so list-of-object item fields generate their element structs,
+	// and buildInputViews, so an input's plan-modifier package is registered for
+	// the import block (a plural data source's filters carry none).
 	b := &dataSourceBuilder{namer: modelNamer{base: goName}}
 
 	inputAttrs, inputFields := b.buildInputViews(inputLeaves)
@@ -1367,13 +1294,10 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 	callArgs, usesUUID, usesStrconv := buildArgumentViews(call, &unsupported)
 	scalarLeaves, nonScalars := flattenItemElement(itemsBlock, &unsupported, &dropped)
 
-	// The item element's own stem. call.ItemType is the response element's component
-	// name, so it plays the same role here that ModelRefName plays under walk: the
-	// item struct is named after its component, and the item's inline children
-	// accumulate from it.
-	// Verbatim, like any other component name: ItemType is already a Go type name
-	// (it is spelled as call.GoPackage + "." + call.ItemType elsewhere), so SdkName
-	// would only mangle its acronyms.
+	// The item element's own stem: call.ItemType is the response element's
+	// component name, so the item struct is named after it and the item's inline
+	// children accumulate from it. Taken verbatim — ItemType is already a Go type
+	// name, so SdkName would only mangle its acronyms.
 	var itemStem string
 	if call != nil {
 		itemStem = call.ItemType
@@ -1400,9 +1324,8 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 	}
 
 	// Non-scalar attributes append after the scalars and map after the literal via
-	// ItemLists, read off item.Attributes: primitive-terminal lists/maps as leaf
-	// attributes, list-of-object as a ListNestedAttribute, and a bare object as a
-	// SingleNestedAttribute — object forms have their element struct walked.
+	// ItemLists, read off item.Attributes: primitive lists/maps as leaf
+	// attributes, list-of-object and bare object as nested ones, element walked.
 	var itemBlocks []AttrView
 	var itemLists []ListAssignment
 	for _, n := range nonScalars {
@@ -1480,9 +1403,8 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 			})
 
 		default:
-			// This switch had no default, so an item attribute in any other form was
-			// dropped without a field, a block or a diagnostic. Fail instead: silently
-			// omitting a representable attribute is not an acceptable outcome.
+			// Fail rather than omit a representable attribute with no field, block
+			// or diagnostic.
 			unsupported = append(unsupported, UnsupportedNode{Path: n.Path, Reason: unsupportedReason(n.TfType)})
 		}
 	}
@@ -1631,9 +1553,9 @@ func itemGetter(receiver, name string) string {
 	return receiver + ".Get" + model.SdkName(name) + "()"
 }
 
-// goFieldName is the exported Go struct field name for a TF attribute. It is
-// model.SdkName except for "id", which becomes "ID" to match Go's initialism
-// convention (and the hand-written models) — the SDK getter still reads GetId().
+// goFieldName is the exported Go struct field name for a TF attribute:
+// model.SdkName, except "id" becomes "ID" for Go's initialism convention. The
+// SDK getter is unaffected and still reads GetId().
 func goFieldName(tfName string) string {
 	if tfName == "id" {
 		return "ID"
@@ -1669,16 +1591,15 @@ func lowerFirst(s string) string {
 }
 
 // dsGoName is the lowerCamel identifier base for a generated data source, e.g.
-// "datadogTeam". Every generated data source is uniformly Datadog-prefixed so the
-// struct <dsGoName>DataSource, model <dsGoName>DataSourceModel, and constructor
-// New<title dsGoName>DataSource match the provider's convention.
+// "datadogTeam". The Datadog prefix is unconditional, so <dsGoName>DataSource,
+// <dsGoName>DataSourceModel and New<title dsGoName>DataSource all line up.
 func dsGoName(name string) string {
 	return lowerFirst("Datadog" + model.SdkName(name))
 }
 
 // checkResponseTypeMatches fails a resource whose role response type disagrees
-// with Read's: Create, Read and Update share one generated updateState
-// method, which cannot map two different SDK response types.
+// with Read's: Create, Read and Update share one generated updateState method,
+// which cannot map two different SDK response types.
 func checkResponseTypeMatches(artifact, role, roleType, readType string) error {
 	if roleType == readType {
 		return nil
@@ -1689,24 +1610,12 @@ func checkResponseTypeMatches(artifact, role, roleType, readType string) error {
 }
 
 // BuildResourceView assembles the render-ready view for a resource artifact.
-// It requires a.Schema to already hold the merged request/response tree; a
-// nil Schema fails outright rather than silently rendering an empty schema
-// and a Create/Read/Update that populate nothing.
-//
-// A request body (Create or Update) is built one JSON:API level at a time,
-// each from its own New<Type>WithDefaults() (see buildRequestEnvelope): the
-// wrapper's own constructor returns the zero struct, so only the data
-// component's constructor sets the "type" discriminator, and reaching through
-// the wrapper panics outright where it declares Data as a pointer (T138).
-// The attributes level is then populated with Set<Field>(...) calls against
-// the constructed local. That setter call type-checks regardless of whether
-// the field happens to be required or optional in the request's own Go type,
-// because the SDK generates a uniform Set<Field>(v <unwrapped type>) for both
-// (see buildRequestFields). Only
-// scalar string/bool/int64/float64 leaves without an enum or format are
-// supported this way; a practitioner-settable nested object/array/map/oneOf,
-// or an enum/date-time leaf, fails the artifact rather than silently
-// generating a Create/Update that never sends it.
+// a.Schema must already hold the merged request/response tree; a nil Schema
+// fails outright rather than rendering an empty schema and a CRUD that
+// populates nothing. A request body is built one JSON:API level at a time, each
+// from its own New<Type>WithDefaults(), then populated with Set<Field>(...)
+// calls against the constructed local. Anything the request path cannot map
+// fails the artifact rather than generating a body that never sends it.
 func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	if a.Schema == nil {
 		return ResourceView{}, fmt.Errorf(
@@ -1730,11 +1639,9 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	goName := dsGoName(a.Name)
 	b := &dataSourceBuilder{receiver: "attributes", namer: modelNamer{base: goName}}
 
-	// Split the path parameters buildResourceArtifact surfaced back out of the
-	// tree: they are not part of the JSON:API envelope, which flattenEnvelope
-	// would otherwise drop them from as stray siblings (T139). The split reads
-	// the attribute's own origin rather than inferring it from Required, which
-	// would also catch a top-level required body leaf.
+	// Split the path parameters back out: they are not part of the JSON:API
+	// envelope, so flattenEnvelope would drop them as stray siblings. Keyed on
+	// the attribute's origin, not on Required, which a body leaf also sets.
 	var topLevel, pathInputs []*model.Attribute
 	for _, attr := range a.Schema.Attributes {
 		if attr.FromPathParameter {
@@ -1754,20 +1661,17 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	recordAttrs, recordBlocks, recordScalars, recordLists := b.walk(rootStruct, "", b.receiver, "state", env.leaves)
 
 	// Each body-sending role gets its own field list, walked against its own
-	// data.attributes schema. One shared list would be wrong in both
-	// directions: the merged tree's request side is the union of the two
-	// bodies (FR-034b), so it names fields a given body may not declare — and
-	// the SDK generates Set<Field> only on the request type that declares it,
-	// so a create-only field set on an update body does not compile (T134).
+	// data.attributes schema. A shared list cannot work: the merged tree's
+	// request side is the union of both bodies, and the SDK generates Set<Field>
+	// only on the request type declaring it, so a create-only field set on an
+	// update body would not compile.
 	createFields, requestImps := buildRequestFields(
 		env.leaves, lc.Create.RequestAttributesSchema, "state", requestAttributesVar, primary.GoPackage, &b.unsupported)
 	createArgs, createUUID, createStrconv := buildArgumentViews(lc.Create, &b.unsupported)
 	readArgs, readUUID, readStrconv := buildArgumentViews(lc.Read, &b.unsupported)
 	deleteArgs, deleteUUID, deleteStrconv := buildArgumentViews(lc.Delete, &b.unsupported)
-	// The Create envelope, and the whole Update side, are resolved before the
-	// gate below, so a level with no SDK component or an untypable body id
-	// fails the artifact rather than rendering a request body that is silently
-	// empty or ill-typed.
+	// Resolved before the gate below, so a level with no SDK component or an
+	// untypable body id fails rather than rendering an empty or ill-typed body.
 	createEnvelope := buildRequestEnvelope(a.Name, "Create", primary.GoPackage, lc.Create, createFields, &b.unsupported)
 
 	updateView := CRUDCallView{}
@@ -1775,9 +1679,8 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	if lc.Update != nil {
 		updateArgs, uuidArg, strconvArg := buildArgumentViews(lc.Update, &b.unsupported)
 		updateUUID, updateStrconv = uuidArg, strconvArg
-		// The two walks cover the same merged tree, so a node neither body can
-		// map is found by both; the artifact should name it once, and its count
-		// should be a count of problems rather than of walks.
+		// Both walks cover the same merged tree, so a node neither body can map
+		// is found twice; dedupe so the count counts problems, not walks.
 		var updateUnsupported []UnsupportedNode
 		updateFields, updateImps := buildRequestFields(
 			env.leaves, lc.Update.RequestAttributesSchema, "state", requestAttributesVar, primary.GoPackage, &updateUnsupported)
@@ -1792,10 +1695,8 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 			GoResponseType: lc.Update.GoResponseType, Arguments: updateArgs,
 			Envelope: buildRequestEnvelope(a.Name, "Update", primary.GoPackage, lc.Update, updateFields, &b.unsupported),
 		}
-		// A JSON:API update body identifies the record it patches. Deliberately
-		// not keyed on env.idAssign, which says only whether the *response*
-		// exposes an id to read back; setUpdateBodyID reads whether the body
-		// itself declares one, and of what type.
+		// Keyed on whether the body itself declares an id, and of what type —
+		// not on env.idAssign, which describes only the response side.
 		if envelope := updateView.Envelope; envelope != nil {
 			if reason := setUpdateBodyID(envelope, lc.Update, updateArgs); reason != "" {
 				b.unsupported = append(b.unsupported, UnsupportedNode{
@@ -1814,9 +1715,9 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		return ResourceView{}, &UnsupportedEmitError{Nodes: b.unsupported}
 	}
 
-	// Path parameters sit beside id in the schema and the model, and never in
-	// the request or response mapping: the body carries neither a setter nor a
-	// getter for them, so they are deliberately not part of env.leaves.
+	// Path parameters sit beside id in the schema and the model but never in the
+	// request or response mapping: the body has neither a setter nor a getter
+	// for them, so they are not part of env.leaves.
 	pathAttrs, pathFields := b.buildInputViews(pathInputs)
 	recordAttrs = append(pathAttrs, recordAttrs...)
 	b.models[0].Fields = append(
@@ -1864,11 +1765,10 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 			Assignments: assignments,
 			Lists:       recordLists,
 		},
-		// fmt is reached from a oneOf's ambiguous-match diagnostic on the
-		// response side and from its exactly-one selection check on the
-		// request side. A union only the request bodies carry never reaches
-		// oneOfRenders — the state walk filters by response — so the request
-		// walk's own answer is needed too.
+		// fmt comes from a oneOf's ambiguous-match diagnostic on the response
+		// side and its exactly-one selection check on the request side. A
+		// request-only union never reaches oneOfRenders, since the state walk
+		// filters by response, hence the second term.
 		UsesFmt:              len(b.oneOfRenders) > 0 || requestImps.fmt,
 		UsesValidators:       b.usesStringValidators || b.usesObjectValidators,
 		UsesStringValidators: b.usesStringValidators,
@@ -1884,24 +1784,14 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 }
 
 // setUpdateBodyID fills in how a JSON:API update body sets its data.id: the
-// expression, and — when the value has to be recovered by parsing the string
-// Terraform holds — the argument view whose declaration the argPrep partial
-// renders ahead of the body.
-//
-// The type comes from the body's own data.id, never from the path parameter
-// naming the same record: those genuinely differ. rum_replay_playlist takes an
-// int64 path id and a string data.id, so handing SetId the path argument's
-// already-parsed int64 local does not compile — the first shape of this fix
-// did exactly that. The path argument is still preferred when the two types do
-// agree, since its local is already declared and parsing the same string twice
-// under two names reads like a bug (T140).
-//
-// A borrowed argument is found by name, never by position: a sub-resource's
-// path names a parent first, so index 0 is not reliably the record id — the
-// mistake T133 spotted in the expression it replaced.
+// expression, plus the argument view declaring a parsed local when the value
+// must be recovered from the string Terraform holds. The type comes from the
+// body's own data.id, never from the path parameter naming the same record
+// (rum_replay_playlist pairs an int64 path id with a string data.id); the path
+// argument's local is reused only when the types agree, found by name, since a
+// sub-resource's path names a parent first and index 0 is not the record id.
 func setUpdateBodyID(envelope *RequestEnvelopeView, call *model.SDKCall, args []SDKArgumentView) (reason string) {
-	// A body that declares no id has nothing to set, and the SDK generates no
-	// setter to call.
+	// A body declaring no id has nothing to set, and no generated setter.
 	if !call.RequestDeclaresID {
 		return ""
 	}
@@ -1910,8 +1800,8 @@ func setUpdateBodyID(envelope *RequestEnvelopeView, call *model.SDKCall, args []
 		return "the update body's data.id carries a format the SDK generator itself cannot type, so there is no expression to set it from"
 	}
 
-	// Reuse the path argument's own local when it is the same type, so the
-	// string is parsed once. The lookup is by name, never by position.
+	// Reuse the path argument's local when the type matches, so the string is
+	// parsed once. By name, never by position.
 	for _, arg := range args {
 		if arg.TFName == "id" && arg.GoType == goType {
 			envelope.IDExpr = arg.Expression
@@ -1920,10 +1810,9 @@ func setUpdateBodyID(envelope *RequestEnvelopeView, call *model.SDKCall, args []
 	}
 
 	// Otherwise the body parses under a name of its own, since a path argument
-	// of a different type may already hold parsedIDVar in this scope.
-	// hasEnum is always false here: RequestIDGoType comes from SDKScalarGoType,
-	// which reads type and format only, so an enum-typed data.id arrives
-	// spelled "string" and never reaches the enum branch below.
+	// of another type may already hold parsedIDVar here. hasEnum is always
+	// false: RequestIDGoType reads type and format only, so an enum-typed
+	// data.id arrives spelled "string".
 	expr, parsedVar, parseCall, unsupportedReason := idArgumentExpression(
 		call.GoPackage, "state.ID", requestIDVar, goType, false)
 	if unsupportedReason != "" {
@@ -1936,10 +1825,9 @@ func setUpdateBodyID(envelope *RequestEnvelopeView, call *model.SDKCall, args []
 	return ""
 }
 
-// buildImportView derives how ImportState recovers identity: the ordered
-// segments of the import id, and the shape a failure message quotes. The id is
-// always the last segment, decided here rather than in the template so its
-// several readers cannot disagree.
+// buildImportView derives how ImportState recovers identity: the path
+// parameters in order, then "id", plus the "<a>:<b>" format a failure message
+// quotes.
 func buildImportView(pathAttrs []AttrView) ImportView {
 	parts := make([]string, 0, len(pathAttrs)+1)
 	for _, attr := range pathAttrs {
@@ -1955,15 +1843,14 @@ func buildImportView(pathAttrs []AttrView) ImportView {
 }
 
 // requestDataVar and requestAttributesVar name the locals a resource's Create
-// and Update bodies build their JSON:API envelope into. They are fixed rather
-// than derived: each is local to one lifecycle method, and the "body" prefix
-// keeps them clear of the attribute-derived locals buildRequestFields
-// allocates from leaf names (T136 folds all of these into one allocator).
+// and Update bodies build their JSON:API envelope into. Fixed, not derived:
+// each is local to one lifecycle method, and the "body" prefix keeps them clear
+// of the locals buildRequestFields allocates from leaf names.
 const (
 	requestDataVar       = "bodyData"
 	requestAttributesVar = "bodyAttributes"
-	// requestIDVar holds the update body's data.id when it has to be parsed
-	// independently of the path argument, whose own local is parsedIDVar.
+	// requestIDVar holds the update body's data.id when it must be parsed
+	// independently of the path argument, whose local is parsedIDVar.
 	requestIDVar = "parsedBodyId"
 	// parsedIDVar is the local idArgumentExpression declares for an id-aliased
 	// path argument that has to be parsed.
@@ -1971,21 +1858,12 @@ const (
 )
 
 // buildRequestEnvelope derives how one role constructs its JSON:API request
-// body. Every level is built from its own New<Type>WithDefaults() rather than
-// reached through the wrapper's, because the wrapper's constructor returns the
-// zero struct: it never builds Data, so the "type" discriminator — which only
-// the data component's own constructor assigns — would stay empty and the API
-// would reject the body, and where the wrapper declares Data as a pointer the
-// reach-through dereferences nil at apply time (T138).
-//
-// A level with no SDK component to construct fails the artifact rather than
-// falling back to the reach-through, which would compile and then misbehave at
-// runtime — the failure mode this whole function exists to remove. The
-// attributes level is exempt when the body sets no attributes, since it is
-// then not constructed at all.
-//
-// fields is this role's own list, not the artifact's: two roles reaching here
-// with different lists is the normal case (T134).
+// body. Every level is built from its own New<Type>WithDefaults(): the
+// wrapper's constructor returns the zero struct and never builds Data, so the
+// "type" discriminator only the data component assigns would stay empty, and
+// reaching through a pointer Data dereferences nil at apply time. A level with
+// no SDK component therefore fails the artifact instead of falling back —
+// except the attributes level, which is not constructed when fields is empty.
 func buildRequestEnvelope(artifact, role, sdkPackage string, call *model.SDKCall, fields []RequestFieldView, unsupported *[]UnsupportedNode) *RequestEnvelopeView {
 	if call == nil {
 		return nil
@@ -2004,10 +1882,9 @@ func buildRequestEnvelope(artifact, role, sdkPackage string, call *model.SDKCall
 		DataVar: requestDataVar, DataType: call.GoRequestDataType,
 	}
 
-	// Send the discriminator explicitly wherever the spec determines it. Where
-	// it does not, the body is only valid if the SDK's own constructor supplies
-	// it; otherwise the request would go out with "type":"" and be rejected, so
-	// fail the artifact rather than emit that.
+	// Send the discriminator explicitly wherever the spec determines it; where it
+	// does not, the SDK's own constructor must supply it, or the request would go
+	// out with "type":"" and be rejected.
 	switch d := call.RequestDiscriminator; {
 	case d == nil:
 		// No type property on the data component: not a discriminated envelope.
@@ -2040,10 +1917,9 @@ func buildRequestEnvelope(artifact, role, sdkPackage string, call *model.SDKCall
 }
 
 // discriminatorReason explains why a request body cannot name its JSON:API
-// type, distinguishing the three causes: the spec offers several values and
-// does not say which a request carries, it constrains none at all, or the
-// property is inline and so has no component name to convert through. Each is
-// a different fix for the spec author, so each reads differently.
+// type, distinguishing three causes: the spec allows several values and names
+// no default, it constrains none at all, or the property is inline and so has
+// no component name to convert through.
 func discriminatorReason(role, artifact string, d *model.RequestDiscriminator) string {
 	switch {
 	case len(d.Values) > 1:
@@ -2061,8 +1937,8 @@ func discriminatorReason(role, artifact string, d *model.RequestDiscriminator) s
 	}
 }
 
-// quoteAll renders values for an error message, so a reader can tell an empty
-// string or a stray space from a real value.
+// quoteAll %q-quotes values for an error message, so a reader can tell an
+// empty string or a stray space from a real value.
 func quoteAll(values []string) []string {
 	out := make([]string, 0, len(values))
 	for _, v := range values {
@@ -2071,49 +1947,24 @@ func quoteAll(values []string) []string {
 	return out
 }
 
-// buildRequestFields derives one role's RequestFieldView list, one per
-// practitioner-settable (Required or Optional) leaf or nested object of attrs
-// that role's own body declares, recursing into an object's own Children the
-// same way for a nested request value as for the top level (see
-// buildNestedRequestField). It is called once per body-sending role rather than
-// once per artifact: role is that body's own data.attributes schema, against
-// which attrs — whose request side is the *union* of the Create and Update
-// bodies (FR-034b) — is narrowed by roleChild. stateExpr is the Go expression
-// attrs' own fields are read off: "state" at the top level, or a nested
-// object's own model pointer ("state.Settings") one level down. target is the
-// expression each field's Set<GoField> is called on: the constructed
-// attributes local (requestAttributesVar) at the top level,
-// or an ancestor's own constructed local further down — precomputed onto each
-// RequestFieldView.Target since a template partial recursing into one nested
-// field cannot see its ancestors' own state. sdkPackage names the module
-// every New<Type>WithDefaults() call in the tree is qualified with.
-// usesUUID/usesTime report whether any leaf, at this level or nested below
-// it, needed the corresponding parse import.
-//
-// A settable leaf, object or collection that this cannot yet map — a oneOf, a
-// map of objects (no request-side SDK component name to build from exists for
-// one yet), an object with no named request-side SDK type (RequestModelRefName
-// empty — see model.Schema.RequestRefName), a collection element with that
-// same gap, a format on a collection element (a list of date-time, a list of
-// enum strings), or a leaf format this doesn't recognize — fails the artifact
-// rather than silently omitting a field the practitioner can configure but the
-// generated Create/Update would never send. A field this role simply does not
-// declare is different in kind and is skipped silently, before any of those
-// checks: a create-only field is the ordinary shape of a PATCH body, not a gap
-// in the generator.
 // requestImports records the imports one request subtree's generated code
 // needs. It is accumulated on the way out of the walk that builds the subtree,
-// never re-derived from the finished view: the branch that emits a time.Parse
-// or a fmt.Sprintf is the only one that knows it did, and a second traversal
-// would have to be kept in step with every future RequestFieldView shape by
-// hand — silently dropping an import, and so an artifact's compile, when it
-// was not.
+// never re-derived from the finished view: only the branch emitting a
+// time.Parse or fmt.Sprintf knows that it did.
 type requestImports struct{ uuid, time, fmt bool }
 
 func (i requestImports) or(other requestImports) requestImports {
 	return requestImports{i.uuid || other.uuid, i.time || other.time, i.fmt || other.fmt}
 }
 
+// buildRequestFields derives one role's RequestFieldView list, one per
+// practitioner-settable (Required or Optional) attribute of attrs that role's
+// own body declares, recursing into an object's Children at every depth. role
+// is that body's own data.attributes schema, which roleChild narrows attrs —
+// the union of both request sides — against: an attribute the role omits is
+// skipped silently, one it declares but this cannot map fails the artifact.
+// stateExpr is what attrs' fields are read off, target what each Set<GoField>
+// is called on, precomputed because a recursing partial cannot see ancestors.
 func buildRequestFields(attrs []*model.Attribute, role *model.Schema, stateExpr, target, sdkPackage string, unsupported *[]UnsupportedNode) (fields []RequestFieldView, imports requestImports) {
 	for _, a := range attrs {
 		if !a.Required && !a.Optional {
@@ -2165,13 +2016,9 @@ func buildRequestFields(attrs []*model.Attribute, role *model.Schema, stateExpr,
 			imports = imports.or(element)
 			continue
 
-			// schema.MapNestedAttribute (a map of objects) has no case here: the
-			// state-model walk this same tree feeds (BuildResourceView's call to
-			// b.walk) has no MapNestedAttribute branch of its own yet and fails
-			// the artifact first with its own "map-of-object not yet supported"
-			// (unsupportedReason), for every attribute of that shape regardless of
-			// whether it is request-settable — so a dedicated rejection here could
-			// never fire on its own and would only ever duplicate that one.
+			// schema.MapNestedAttribute (a map of objects) has no case here: walk
+			// over the same tree already fails the artifact with its own
+			// "map-of-object not yet supported", so this could only duplicate it.
 		}
 
 		expr, parsedVar, parseCall, reason := requestValueExpr(a, roleChildSchema, childState, field, sdkPackage)
@@ -2194,23 +2041,14 @@ func buildRequestFields(attrs []*model.Attribute, role *model.Schema, stateExpr,
 	return fields, imports
 }
 
-// roleChild resolves one role body's own schema node for attribute a at the
-// current level, and reports whether that body declares it at all.
-//
-// The lookup is by a.OpenAPIName — the property's own name, kept by the
-// attribute walk precisely so it need not be recovered from the Terraform Path,
-// which SnakeCase has already normalized and cannot invert. The returned node
-// is the level whose properties line up with a.Children: a nested object is
-// that level itself, while a collection carries it on Items.
-//
-// declared is false only when the role's body demonstrably describes an object
-// here and does not declare a — the one case a merged-tree attribute must not
-// be set on this role, because the SDK generated no setter for it. Every other
-// shape keeps the attribute: a nil role (the caller is not narrowing), a level
-// this generator cannot read as an object, and a node with no property name of
-// its own all mean "unknown", and guessing "absent" there would silently drop a
-// field the practitioner can configure. A body left inline, with no SDK
-// component to construct at all, is still caught by buildRequestEnvelope.
+// roleChild resolves one role body's schema node for attribute a at the current
+// level, and reports whether that body declares it at all. The lookup is by
+// a.OpenAPIName, since SnakeCase cannot be inverted from the Terraform path;
+// the node returned is the level whose properties line up with a.Children, so a
+// collection is reached through Items. declared is false only when the role
+// demonstrably describes an object here and omits a. Every other shape — a nil
+// role, a level unreadable as an object, an attribute with no OpenAPI name —
+// means "unknown" and keeps the attribute rather than dropping it silently.
 func roleChild(role *model.Schema, a *model.Attribute) (child *model.Schema, declared bool) {
 	if role == nil || len(role.Properties) == 0 || a.OpenAPIName == "" {
 		return nil, true
@@ -2223,17 +2061,11 @@ func roleChild(role *model.Schema, a *model.Attribute) (child *model.Schema, dec
 }
 
 // buildNestedRequestField derives one object field's RequestFieldView: the
-// request-side SDK type to build via New<SDKType>WithDefaults() (see
-// BuildResourceView's doc comment; the same idiom applies at every nesting
-// depth, not only the root), and its own child fields, read off modelExpr —
-// a's own model pointer, reached through its parent so a doubly-nested field
-// resolves relative to its immediate parent rather than the top-level state.
-// target is where the constructed value is ultimately set, exactly as in
-// buildRequestFields, and role is this object's own node in the calling role's
-// request schema — which both names the component to construct (see
-// roleRequestRefName) and narrows its children. usesUUID/usesTime
-// are its subtree's own parse-import needs, returned rather than recovered by
-// the caller so one aggregation serves both this branch and the plain-leaf one.
+// request-side SDK type to build via New<SDKType>WithDefaults(), plus its child
+// fields read off modelExpr — a's own model pointer, so a doubly-nested field
+// resolves against its immediate parent, not the top-level state. role is this
+// object's node in the calling role's request schema, which both names the
+// component and narrows its children; imports are the subtree's own needs.
 func buildNestedRequestField(a *model.Attribute, role *model.Schema, field, modelExpr, target, sdkPackage string, unsupported *[]UnsupportedNode) (rf RequestFieldView, imports requestImports, ok bool) {
 	refName := roleRequestRefName(a, role)
 	if refName == "" {
@@ -2264,17 +2096,11 @@ func buildNestedRequestField(a *model.Attribute, role *model.Schema, field, mode
 }
 
 // buildPrimitiveCollectionField derives a primitive-terminal list or map
-// field's RequestFieldView (FR-034, T129). State's own field there is the
-// framework's raw types.List/types.Map value (see buildRequestFields'
-// ModelFieldView), which the SDK's uniform Set<Field>([]<T>) /
-// Set<Field>(map[string]<T>) setter cannot take directly, so it is decoded
-// into a native Go slice/map via ElementsAs first — a
-// diag.Diagnostics-returning, ctx-taking conversion (see
-// RequestCollectionView for why this is a sibling of ParsedVar/ParseCall
-// rather than a widening of it). reason is non-empty when the element itself
-// isn't yet supported (a format or enum on it, or an element kind
-// ElementType cannot map to a native Go type, e.g. a nested collection),
-// naming why, the same (T, reason) shape requestValueExpr uses for a leaf.
+// field's RequestFieldView. State holds the framework's raw types.List /
+// types.Map, which the SDK's Set<Field>([]<T>) / Set<Field>(map[string]<T>)
+// cannot take, so it is first decoded into a native Go slice or map via
+// ElementsAs — a ctx-taking, diag.Diagnostics-returning conversion. reason is
+// non-empty when the element itself is unsupported, naming why.
 func buildPrimitiveCollectionField(a *model.Attribute, tfName, field, childState, target string) (rf RequestFieldView, reason string) {
 	goElem, reason := primitiveElementGoType(a)
 	if reason != "" {
@@ -2303,15 +2129,11 @@ func buildPrimitiveCollectionField(a *model.Attribute, tfName, field, childState
 	return rf, ""
 }
 
-// primitiveElementGoType maps a primitive collection's element to the native
-// Go type ElementsAs decodes into, rejecting anything the request side
-// cannot yet recover the SDK's own typed value for: a format or enum on the
-// element (a list of date-time, a list of enum strings — ElementType's
-// generic attr.Type mapping collapses these to the same "types.StringType"
-// as a plain string, which is why ElementFormat/ElementIsEnum exist
-// separately), or an element ElementType doesn't reduce to one of the four
-// bare scalar forms (notably a collection of collections). reason is
-// non-empty for anything not yet supported, naming why.
+// primitiveElementGoType maps a primitive collection's element to the native Go
+// type ElementsAs decodes into, rejecting whatever the request side cannot
+// recover a typed SDK value for: a format or enum on the element — ElementType
+// collapses those to plain "types.StringType", hence the separate
+// ElementFormat/ElementIsEnum — or an element outside the four scalar forms.
 func primitiveElementGoType(a *model.Attribute) (goType, reason string) {
 	if a.ElementFormat != "" {
 		return "", fmt.Sprintf("collection element format %q is not yet supported on a resource request", a.ElementFormat)
@@ -2333,9 +2155,8 @@ func primitiveElementGoType(a *model.Attribute) (goType, reason string) {
 	}
 }
 
-// elementPath names a collection attribute's element for a diagnostic, via
-// the same "[]"/"{}" markers model.ChildPath already appends for a nested
-// collection's own child paths (model.Attribute.Path).
+// elementPath names a collection attribute's element for a diagnostic, using
+// the same "[]"/"{}" markers model.ChildPath appends to child paths.
 func elementPath(a *model.Attribute) string {
 	if isMapType(a.TfType) {
 		return model.ChildPath(a.Path, "{}")
@@ -2350,21 +2171,12 @@ func notNullOrUnknown(expr string) string {
 }
 
 // buildObjectCollectionField derives a list-of-objects field's
-// RequestFieldView (FR-034, T130). The framework's own Get(ctx, &state) has
-// already decoded a ListNestedAttribute into a native
-// []*<ElemModel> slice, the same way it decodes a lone nested object into a
-// *Model pointer (see buildNestedRequestField) — so, unlike the primitive
-// case, no ElementsAs conversion applies here. Each already-decoded element
-// instead becomes its own request value, built one at a time via
-// New<Element>WithDefaults() and appended to a native Go slice before the
-// parent's setter is called, mirroring the response side's renderList object
-// branch (data_source_common.go.tmpl) in reverse. role is the *element's* own
-// node in the calling role's request schema — roleChild reaches through the
-// array before handing it over, exactly as BuildResourceTree reaches through
-// it when stamping RequestModelRefName — so it both names the element
-// component (see roleRequestRefName) and narrows the element's fields.
-// usesUUID/usesTime are the element subtree's own parse-import needs,
-// aggregated the same way buildNestedRequestField's are.
+// RequestFieldView. Get(ctx, &state) has already decoded a ListNestedAttribute
+// into a native []*<ElemModel>, so no ElementsAs applies here: each element is
+// instead built via New<Element>WithDefaults() and appended to a Go slice
+// before the parent's setter runs. role is the *element's* own node in the
+// calling role's request schema — roleChild reaches through the array first —
+// so it both names the element component and narrows the element's fields.
 func buildObjectCollectionField(a *model.Attribute, role *model.Schema, tfName, field, childState, target, sdkPackage string, unsupported *[]UnsupportedNode) (rf RequestFieldView, imports requestImports, ok bool) {
 	refName := roleRequestRefName(a, role)
 	if refName == "" {
@@ -2401,14 +2213,11 @@ func buildObjectCollectionField(a *model.Attribute, role *model.Schema, tfName, 
 }
 
 // requestValueExpr returns the unwrapped Go value expression a leaf's
-// Set<Field> setter takes, reading off stateExpr — directly for a plain
-// scalar, or via a ParsedVar/ParseCall pair (mirroring SDKArgumentView) when
-// the setter's type must first be recovered by a fallible parse (date-time,
-// uuid), in which case the parsed local is named from field so two parsed
-// siblings never collide. An enum leaf casts to its named SDK type, qualified
-// with sdkPackage since that type lives in the SDK, not the generated
-// package. reason is non-empty for anything not yet supported on the request
-// side, naming why.
+// Set<Field> setter takes, read off stateExpr: directly for a plain scalar, or
+// via a ParsedVar/ParseCall pair when the type needs a fallible parse
+// (date-time, uuid), the local named from field so siblings cannot collide. An
+// enum leaf casts to its named SDK type, qualified with sdkPackage. reason is
+// non-empty for anything unsupported on the request side, naming why.
 func requestValueExpr(a *model.Attribute, role *model.Schema, stateExpr, field, sdkPackage string) (expr, parsedVar, parseCall, reason string) {
 	if a.IsEnum {
 		refName := roleRequestRefName(a, role)
@@ -2462,13 +2271,10 @@ func requestValueExpr(a *model.Attribute, role *model.Schema, stateExpr, field, 
 
 // buildOneOfRequestField derives one union field's RequestFieldView: how the
 // configured variant block becomes the SDK oneOf wrapper this role's setter
-// takes (T099).
-//
-// role is this union's own node in the *calling role's* request schema, and it
-// is the source of every SDK identity here — see RequestOneOfView for why the
-// merged tree cannot supply them. The merged tree still supplies the Terraform
-// side: which blocks exist, what they are called, and what fields they hold.
-// The two are correlated on the name mergeOneOf published, never on position.
+// takes. role, this union's node in the *calling role's* request schema, is the
+// source of every SDK identity; the merged tree supplies the Terraform side
+// (which blocks exist, their names and fields). The two are correlated on the
+// name mergeOneOf published, never on position.
 func buildOneOfRequestField(
 	a *model.Attribute,
 	role *model.Schema,
@@ -2511,9 +2317,8 @@ func buildOneOfRequestField(
 		roleVariant, declared := roleVariants[v.TFName]
 		if !declared {
 			// mergeOneOf refuses to correlate bodies whose alternative sets
-			// differ, so this cannot come from a specification; reaching it
-			// means the merged envelope and the role schema disagree, and
-			// dropping the branch would silently discard a configurable one.
+			// differ, so this means the merged envelope and the role schema
+			// disagree; dropping the branch would discard a configurable one.
 			return fail(fmt.Sprintf("variant %q is in the merged schema but not in this role's own union", v.TFName))
 		}
 		if roleVariant.SDKConstructor == "" {
@@ -2530,9 +2335,9 @@ func buildOneOfRequestField(
 	view.SelectionMessage = fmt.Sprintf(
 		"%s: exactly one of %s must be set, got %%d", env.Path, strings.Join(quoteAll(names), " or "))
 
-	// The envelope pointer is guarded even when the union is required: an
-	// absent block is reported, never dereferenced. That is the same guard a
-	// nested object renders, so it travels on the same field.
+	// The envelope pointer is guarded even when the union is required, so an
+	// absent block is reported rather than dereferenced. Same guard as a nested
+	// object, so it travels on the same field.
 	rf = RequestFieldView{
 		GoField:   field,
 		Target:    target,
@@ -2545,9 +2350,9 @@ func buildOneOfRequestField(
 }
 
 // oneOfRequestVariant derives one alternative's expansion. v is the merged
-// tree's projection (the Terraform blocks and their fields) and roleVariant
-// this role's own binding for the same alternative (its SDK member and
-// constructor); reason is non-empty for a shape the request path cannot build.
+// tree's projection (the Terraform blocks and their fields), roleVariant this
+// role's binding for the same alternative (its SDK member and constructor).
+// reason is non-empty for a shape the request path cannot build.
 func oneOfRequestVariant(
 	v model.OneOfEnvelopeVariant,
 	roleVariant model.OneOfVariant,
@@ -2573,11 +2378,9 @@ func oneOfRequestVariant(
 		return variant, imports, ""
 	}
 
-	// A value-wrapped alternative's SDK member *is* the value, so there is
-	// nothing to construct and nothing to set on: the single "value" child is
-	// converted and its address taken. The read path draws the same line for
-	// the same reason (see oneOfValueVariant) — a list or map alternative has
-	// no scalar to dereference.
+	// A value-wrapped alternative's SDK member *is* the value: nothing to
+	// construct and nothing to set on, so the single "value" child is converted
+	// and its address taken. A list or map alternative has no scalar to take.
 	if len(v.Attribute.Children) != 1 {
 		return variant, requestImports{}, fmt.Sprintf(
 			"variant %q is value-wrapped but has %d children, expected exactly one",
@@ -2601,8 +2404,7 @@ func oneOfRequestVariant(
 				"the generator has no address to take", v.TFName)
 	}
 	// The member is the scalar itself, so the local holds a value and the
-	// constructor takes its address — never the "*elemVar" an object member's
-	// unpointered case would want.
+	// constructor takes its address, never the "*elemVar" of the object case.
 	variant.WrapCall = sdkPackage + "." + roleVariant.SDKConstructor + "(&" + elemVar + ")"
 	variant.Value = &RequestOneOfValueView{
 		ValueExpr: expr, ParsedVar: parsedVar, ParseCall: parseCall, TFName: tfNameOf(value.Path),
@@ -2612,29 +2414,13 @@ func oneOfRequestVariant(
 }
 
 // roleRequestRefName is the SDK component to construct at this node *for the
-// role being rendered*, and it answers roleChild's two outcomes differently.
-//
-// When roleChild resolved a node, that node's own RefName is the answer — even
-// when it is empty. An empty RefName is this body saying it declared the schema
-// inline, so the SDK generated no component to construct, and the caller's
-// "no named request-side SDK type" diagnostic is correct. Substituting the
-// merged name there would re-create the very miscompile this function exists to
-// prevent: Schema.RequestRefName is Create-first and Update-fallback (see
-// pickRequestRefName), so the merged tree spells one name where the SDK
-// declares two — …SettingsRequest for the POST and …SettingsUpdate for the
-// PATCH. Measured on the corpus, the one artifact the substitution kept alive
-// was the one it miscompiled, casting to a CampaignStatus its request setter
-// takes as a plain string.
-//
-// A nil node is the other outcome: roleChild reports "unknown" rather than
-// "absent" wherever it cannot line the two trees up at all — a caller that is
-// not narrowing, a level this generator cannot read as an object, an attribute
-// with no OpenAPI name of its own. There the merged name is the only name there
-// is.
-//
-// This is the same fact, and the same mechanism, as the per-role oneOf binding
-// (T099a); T134 landed the per-role *field set* on this seam and left the names
-// to here.
+// role being rendered*, answering roleChild's two outcomes differently. When
+// roleChild resolved a node, that node's own RefName is the answer even when
+// empty — empty means this body declared the schema inline, so the SDK
+// generated no component and the caller's diagnostic is correct. The merged
+// a.RequestModelRefName is Create-first with Update fallback, so substituting
+// it would spell one name where the SDK declares two. Only for a nil node,
+// where roleChild means "unknown", is the merged name the only name there is.
 func roleRequestRefName(a *model.Attribute, role *model.Schema) string {
 	if role != nil {
 		return role.RefName

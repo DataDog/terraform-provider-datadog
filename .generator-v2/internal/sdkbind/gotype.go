@@ -7,27 +7,16 @@ import (
 )
 
 // This file ports the parts of the Datadog go-sdk generator that decide what a
-// oneOf wrapper's members are called. Everything here is a re-derivation from the
-// pinned generator's own source — never a lookup of the generated package, and
-// never reflection. The upstream sources are:
-//
-//	.generator/src/generator/templates/model_oneof.j2  (member + constructor shape)
-//	.generator/src/generator/openapi.py     type_to_go, get_name
-//	.generator/src/generator/formatter.py   simple_type (now model.SDKScalarGoType)
-//	.generator/src/generator/utils.py       upperfirst
+// oneOf wrapper's members are called — re-derived from the pinned generator's
+// source, never a lookup or reflection over the generated package. Upstream:
+// templates/model_oneof.j2 (member + constructor shape), openapi.py type_to_go
+// and get_name, formatter.py simple_type, utils.py upperfirst.
 
-// memberBinding derives the SDK wrapper member for one alternative:
-// `(get_name(oneOf) or get_type(oneOf))|upperfirst` from model_oneof.j2, plus
-// whether that member is a pointer.
-//
-// A referenced alternative is named after its component — `get_name` wins over
-// the Go type spelling for the *name* even where simple_type would also answer —
-// so a variant Terraform calls aws_integration binds to the SDK's AWSIntegration
-// rather than to AwsIntegration.
-//
-// Every alternative is a pointer except a free-form object, which the SDK emits as
-// a bare map because it is already nil-able (model_oneof.j2's
-// isAdditionalPropertiesContainer).
+// memberBinding derives the SDK wrapper member for one alternative —
+// `(get_name(oneOf) or get_type(oneOf))|upperfirst` — and whether it is a
+// pointer. get_name wins for a referenced alternative, so a variant Terraform
+// calls aws_integration binds to AWSIntegration, not AwsIntegration. Every
+// alternative is a pointer except a free-form object, emitted as a bare map.
 func memberBinding(v model.OneOfVariant) (name string, pointer bool, err error) {
 	if v.Schema == nil {
 		return "", false, fmt.Errorf("alternative has no normalized schema")
@@ -38,12 +27,11 @@ func memberBinding(v model.OneOfVariant) (name string, pointer bool, err error) 
 		return model.UpperFirst(v.RefName), pointer, nil
 	}
 
-	// Anonymous alternative: the member name is its Go type spelling, so it exists
-	// only for the shapes type_to_go can spell as a Go identifier.
+	// Anonymous alternative: the member name is its Go type spelling, so it
+	// exists only for shapes type_to_go can spell as a Go identifier.
 	if len(v.Schema.Enum) > 0 {
-		// type_to_go skips simple_type when a schema has an enum and then finds no
-		// name, reaching `raise ValueError(f"Unknown type {type_}")`. The SDK cannot
-		// generate this wrapper at all.
+		// type_to_go skips simple_type for an enum schema and then finds no name,
+		// raising "Unknown type": the SDK cannot generate this wrapper at all.
 		return "", false, fmt.Errorf(
 			"anonymous enum alternative has no SDK member name (the go-sdk generator " +
 				"cannot name it either); promote it to a named schema component")
@@ -56,10 +44,9 @@ func memberBinding(v model.OneOfVariant) (name string, pointer bool, err error) 
 			describeKind(v.Schema))
 	}
 	name = model.UpperFirst(spelling)
-	// upperfirst of a qualified or composite spelling (time.Time, uuid.UUID,
-	// []Foo, map[string]Foo) is not a Go identifier, so the SDK would emit a
-	// wrapper that does not compile — meaning the specification never contains one.
-	// Fail here rather than derive a plausible name for a member that cannot exist.
+	// upperfirst of a qualified or composite spelling (time.Time, []Foo,
+	// map[string]Foo) is not a Go identifier, so no such SDK member exists. Fail
+	// rather than derive a plausible name for a member that cannot exist.
 	if !isGoIdentifier(name) {
 		return "", false, fmt.Errorf(
 			"anonymous alternative of Go type %q would yield the SDK member %q, which is not a "+

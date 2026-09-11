@@ -3,31 +3,20 @@ package model
 import "strings"
 
 // This file ports the parts of the Datadog go-sdk generator that decide how its
-// generated code spells a scalar schema. Like identifier.go, every rule here is
-// a re-derivation from the pinned generator's own source — never a lookup of the
-// generated package, and never reflection (FR-005a). Upstream:
+// generated code spells a scalar schema. Every rule here is re-derived from the
+// pinned generator's own source — never a lookup of the generated package, and
+// never reflection. Upstream:
 //
-//	.generator/src/generator/formatter.py         simple_type
-//	.generator/src/generator/templates/model_enum.j2
+//  .generator/src/generator/formatter.py         simple_type
+//  .generator/src/generator/templates/model_enum.j2
 
-// SDKScalarGoType ports the Datadog go-sdk generator's own scalar type rule
-// (.generator/src/generator/formatter.py simple_type, with
-// render_nullable=False): the Go type its generated code uses for a scalar
-// schema, derived from type+format rather than looked up in the generated
-// package (FR-005a).
-//
-// The second result is false where the Python raises KeyError — an integer or
-// number carrying a format the SDK does not map — because there the SDK
-// generator itself cannot produce a type, so neither can a faithful
-// derivation. An unmapped *string* format falls back to string, mirroring the
+// SDKScalarGoType returns the Go type datadog-api-client-go's generated code
+// uses for a scalar schema, derived from type+format rather than looked up in
+// the generated package (a port of formatter.py simple_type with
+// render_nullable=False). The second result is false where the Python raises
+// KeyError — an integer or number carrying a format the SDK does not map — so
+// an unmapped *string* format still falls back to string, mirroring the
 // upstream .get(type_format, "string").
-//
-// It lives in model — the package every caller already imports — because it is
-// the one answer several of them need and had begun to re-derive separately:
-// the oneOf binder (internal/sdkbind), the parameter binder
-// (internal/sdkbinding) and the resource request mapper all now route here
-// (T137a). It sits beside the other ports of the SDK generator's naming rules
-// rather than in schema.go, which speaks Terraform rather than SDK.
 func SDKScalarGoType(s *Schema) (string, bool) {
 	if s == nil {
 		return "", false

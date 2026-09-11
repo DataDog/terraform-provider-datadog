@@ -14,8 +14,8 @@ func ResourceConstructor(name string) string {
 }
 
 // resourceConstructorRe matches a New<...>Resource constructor identifier.
-// resources_generated.go holds nothing else that fits the pattern, so it
-// safely recovers the already-registered set from the file's current contents.
+// resources_generated.go holds nothing else that fits the pattern, so the
+// already-registered set can be recovered from its current contents.
 var resourceConstructorRe = regexp.MustCompile(`New[A-Za-z0-9_]+Resource`)
 
 // GeneratedResourceRegistered reports whether constructor already appears in
@@ -26,9 +26,7 @@ func GeneratedResourceRegistered(path, constructor string) (bool, error) {
 
 // RegisteredGeneratedResources returns the constructor identifiers currently
 // registered in the generatedResources file at path, sorted and de-duplicated.
-// A missing file yields an empty slice. wireGeneratedResources reads the set
-// once to tell an idempotent re-run, where a prior run already retired the
-// overwrites target, from a target that never existed.
+// A missing file yields an empty slice.
 func RegisteredGeneratedResources(path string) ([]string, error) {
 	set, err := registeredResourceSet(path)
 	if err != nil {
@@ -55,9 +53,8 @@ var generatedResources = []func() resource.Resource{`
 
 // SyncGeneratedResources rewrites path's generatedResources slice to hold the
 // union of the constructors already registered there and the ones passed in,
-// sorted and de-duplicated. Merging (rather than replacing) keeps a partial
-// --include run from dropping resources it did not regenerate this time. It
-// honors check mode through WriteFile.
+// sorted and de-duplicated. Merging rather than replacing keeps a partial run
+// from dropping resources it did not regenerate. Honors check mode.
 func SyncGeneratedResources(path string, constructors []string, check bool) (model.ArtifactStatus, error) {
 	set, err := registeredResourceSet(path)
 	if err != nil {
@@ -83,17 +80,15 @@ func writeGeneratedResources(path string, set map[string]struct{}, check bool) (
 }
 
 // resourcesSliceHeader is the line opening the hand-written Resources slice in
-// framework_provider.go. RemoveHandwrittenResource scopes its line removal to
-// this block so a like-named entry in another slice (e.g. Datasources) is
-// never touched.
+// framework_provider.go. Line removal is scoped to this block so a like-named
+// entry in another slice (e.g. Datasources) is never touched.
 const resourcesSliceHeader = "var Resources = []func() resource.Resource{"
 
-// RemoveHandwrittenResource deletes constructor from the hand-written
-// Resources slice in framework_provider.go (the file at path) — the slice a
-// generated resource supersedes when its spec sets overwrites. The removal is
-// scoped to the Resources block so a like-named Datasources entry is never
-// touched, and it is idempotent: an already-absent constructor reports
-// Unchanged. It honors check mode by not writing.
+// RemoveHandwrittenResource deletes constructor from the hand-written Resources
+// slice in framework_provider.go (the file at path). The removal is scoped to
+// the Resources block so a like-named Datasources entry is never touched, and
+// it is idempotent: an already-absent constructor reports Unchanged. Check mode
+// does not write.
 func RemoveHandwrittenResource(path, constructor string, check bool) (model.ArtifactStatus, error) {
 	return removeFromSliceBlock(path, resourcesSliceHeader, "Resources slice", constructor, check)
 }

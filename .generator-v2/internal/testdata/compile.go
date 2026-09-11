@@ -1,9 +1,7 @@
 // Package testdata holds the generator's end-to-end test infrastructure: the
 // fixture catalogue, the golden-output assertions, and the compile gate below.
-//
-// It lives under a directory named testdata, so the go tool skips it when
-// expanding ./... — deliberate, since nothing here is production code — while
-// an explicit import still resolves it normally.
+// The directory name makes the go tool skip it when expanding ./..., while an
+// explicit import still resolves it normally.
 package testdata
 
 import (
@@ -24,13 +22,9 @@ import (
 // duration of a compile.
 type StagedFile struct {
 	// ProviderPath is the destination, relative to the provider module root,
-	// e.g. "datadog/fwprovider/resource_datadog_okta_account.go". Using the
-	// artifact's real path is what makes the check faithful: a generated
-	// artifact that carries `overwrites` is meant to replace the hand-written
-	// file at that path, and staging it there compiles exactly the package the
-	// practitioner would get. Whether such a takeover is *authorized* is not
-	// this gate's business — emit.WriteArtifactSource already refuses an
-	// unauthorized one (FR-003/FR-031).
+	// e.g. "datadog/fwprovider/resource_datadog_okta_account.go". Staging at
+	// the artifact's real path compiles exactly the package a practitioner
+	// would get, including one where the artifact replaces a hand-written file.
 	ProviderPath string
 	// SourcePath is the generated file on disk, as written by the generator.
 	SourcePath string
@@ -39,9 +33,8 @@ type StagedFile struct {
 // CompileResult reports what the Go compiler made of the staged files.
 type CompileResult struct {
 	// Diagnostics is the compiler's own output, empty when the build succeeded.
-	// It is returned rather than asserted on here because a caller may be
-	// checking that a build *fails* with a particular message — FR-021's
-	// deliberately broken hook fixture is exactly that case.
+	// Returned rather than asserted on here, since a caller may be checking
+	// that a build fails with a particular message.
 	Diagnostics string
 }
 
@@ -50,25 +43,14 @@ type CompileResult struct {
 // cannot disagree.
 func (r CompileResult) OK() bool { return r.Diagnostics == "" }
 
-// Compile type-checks files against the provider module, and is the enforcement
-// point for FR-019: every generated artifact must compile with no manual edits.
-//
-// It runs `go build -overlay`, which maps each staged path onto its generated
-// content for that one invocation. Three properties make this the right
-// mechanism, and none of them holds for a copied tree or a synthesized module:
-// the generated code is compiled as a member of package fwprovider, so it sees
-// the FrameworkProvider and utils declarations it references; it resolves the
-// pinned SDK and terraform-plugin-framework through the provider's own go.mod,
-// which the generator module deliberately does not require; and it never writes
-// to the checkout, so a failing gate leaves nothing behind to clean up.
-//
-// A returned error means the gate could not run — no provider module, no go
-// tool, an unreadable staged file, or a provider checkout that does not build
-// on its own. That last one is a control build, and it is what separates "this
-// artifact is broken" from "this environment is broken": without it a stale
-// module cache or an unrelated compile error in the provider would be reported
-// as a defect in the generated code. A build failure attributable to the staged
-// files is not an error; it comes back as CompileResult{OK: false}.
+// Compile type-checks the staged files against the provider module with
+// `go build -overlay`, which maps each staged path onto its generated content
+// for one invocation: the code compiles as a real member of its provider
+// package, resolves the SDK and plugin framework through the provider's go.mod,
+// and writes nothing into the checkout. A control build of the same packages
+// runs first, so an error — no provider module, no go tool, an unreadable
+// staged file, a checkout that does not build on its own — means the gate could
+// not run; a failure from the staged files is a non-OK CompileResult instead.
 func Compile(files []StagedFile) (CompileResult, error) {
 	if len(files) == 0 {
 		return CompileResult{}, fmt.Errorf("compile gate: no files staged")
@@ -127,12 +109,10 @@ func stagedPackages(files []StagedFile) ([]string, error) {
 	return slices.Sorted(maps.Keys(seen)), nil
 }
 
-// baselineDone memoizes the control build per provider root and package set.
-// Every fixture in a run stages into the same package, so re-proving that the
-// checkout builds would otherwise pay for a full type-check of the provider per
-// fixture. The failure is cached too: a broken checkout should fail every
-// fixture fast rather than rebuild for each one. The mutex also serialises
-// concurrent first calls, which for one identical control build is what we want.
+// baselineDone memoizes the control build per (provider root, package set), so
+// a run of many fixtures staging into the same package type-checks the provider
+// once. Failures are cached too, so a broken checkout fails every fixture fast.
+// The mutex also serialises concurrent first calls into one control build.
 var (
 	baselineMu   sync.Mutex
 	baselineDone = map[string]error{}
@@ -170,9 +150,8 @@ func writeOverlay(dir, providerRoot string, files []StagedFile) (string, error) 
 			return "", fmt.Errorf("resolve staged source %s: %w", f.SourcePath, absErr)
 		}
 		// Stat it rather than trusting the path: go build reports a missing
-		// overlay source as an error against the package, which this gate would
-		// then attribute to the artifact — the one diagnosis it must never
-		// produce.
+		// overlay source as an error against the package, which the gate would
+		// then misattribute to the artifact.
 		if _, statErr := os.Stat(source); statErr != nil {
 			return "", fmt.Errorf("staged source %s: %w", f.SourcePath, statErr)
 		}
@@ -194,9 +173,8 @@ func writeOverlay(dir, providerRoot string, files []StagedFile) (string, error) 
 }
 
 // build runs go build in the provider module and returns its combined output.
-// GOPROXY=off keeps the gate hermetic (FR-027): a dependency missing from the
-// module cache fails loudly here instead of being fetched from the network
-// mid-test.
+// GOPROXY=off keeps the gate hermetic: a dependency missing from the module
+// cache fails loudly here instead of being fetched from the network mid-test.
 func build(providerRoot string, packages []string, extraArgs ...string) (string, error) {
 	args := append([]string{"build"}, extraArgs...)
 	args = append(args, packages...)

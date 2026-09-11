@@ -1,14 +1,8 @@
-// Package providermod locates the terraform-provider-datadog module this
-// generator targets.
-//
-// The generator is a separate module rooted at .generator-v2/ and deliberately
-// requires neither the provider nor the pinned datadog-api-client-go (plan.md's
-// dependency-placement row; FR-005a's rationale depends on keeping it that
-// way). So everything that has to reach the provider's own dependency graph —
-// resolving the pinned datadogV2 package to corroborate a derived SDK binding,
-// or compiling a generated artifact against it (FR-019) — must first find that
-// module on disk. One package owns that lookup, so the generate path and the
-// test gate cannot end up disagreeing about which checkout they mean.
+// Package providermod finds the terraform-provider-datadog module on disk and
+// queries it about the pinned datadog-api-client-go. This generator is a
+// separate module requiring neither, so anything needing the provider's own
+// dependency graph — resolving the datadogV2 package, compiling a generated
+// artifact against it — must locate that checkout first.
 package providermod
 
 import (
@@ -27,20 +21,15 @@ const (
 	sdkPackage = sdkModule + "/api/datadogV2"
 )
 
-// moduleDecl and the sdkModule requirement are the two markers a candidate
-// go.mod must carry, and both are load-bearing. The generator's own go.mod
-// declares "module <provider path>/generator", which contains moduleDecl as a
-// prefix, so a moduleDecl-only walk would stop on .generator-v2 — the nearest
-// go.mod to every caller in this module. The SDK requirement is what tells the
-// two apart, and it is worth checking on its own account too: a checkout that
-// declares the module without requiring the SDK cannot build a generated
-// artifact anyway.
+// moduleDecl is one of the two markers a candidate go.mod must carry; the
+// sdkModule requirement is the other. Both are needed because this generator's
+// own go.mod declares "module <provider path>/generator", which contains
+// moduleDecl as a prefix — only the SDK requirement tells the two apart.
 const moduleDecl = "module github.com/terraform-providers/terraform-provider-datadog"
 
-// Root returns the provider module's root directory. It searches upward from
-// hint first, then from the working directory, so a caller that renders into a
-// temporary output root still resolves against the checkout it was invoked
-// from. hint may be empty.
+// Root returns the provider module's root directory, searching upward from hint
+// (which may be empty) and then from the working directory, so a caller
+// rendering into a temporary output root still resolves the real checkout.
 func Root(hint string) (string, error) {
 	if hint != "" {
 		absoluteHint, err := filepath.Abs(hint)
@@ -79,25 +68,21 @@ func findUp(dir string) (string, bool) {
 	}
 }
 
-// SDKPackageDir asks the provider module selected by hint where the pinned
-// datadogV2 package is unpacked. It is resolved through that module rather than
-// this one precisely because this one does not require the SDK.
+// SDKPackageDir returns the directory of the pinned datadogV2 package, as
+// resolved by the provider module found from hint.
 func SDKPackageDir(hint string) (string, error) {
 	return goList(hint, "-f={{.Dir}}", sdkPackage)
 }
 
-// SDKModuleDir is SDKPackageDir's module-level counterpart: the root of the
-// pinned datadog-api-client-go checkout, which is where the SDK's own bundled
-// generator lives (the source FR-005a permits reading to corroborate a
-// derivation).
+// SDKModuleDir returns the root of the pinned datadog-api-client-go module,
+// where the SDK's own bundled generator lives.
 func SDKModuleDir(hint string) (string, error) {
 	return goList(hint, "-m", "-f={{.Dir}}", sdkModule)
 }
 
-// goList runs `go list` inside the provider module and returns its single-line
-// output. Every query about the pinned SDK goes through here, so none of them
-// can accidentally resolve against the generator module — which requires no SDK
-// and would answer differently.
+// goList runs `go list` with cmd.Dir at the provider module root and returns
+// its trimmed single-line output, erroring on an empty result. Running it there
+// keeps the query off the generator module, which requires no SDK.
 func goList(hint string, args ...string) (string, error) {
 	moduleRoot, err := Root(hint)
 	if err != nil {

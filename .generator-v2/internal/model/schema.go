@@ -7,11 +7,9 @@ import (
 	"strings"
 )
 
-// treeKind distinguishes the three entry points, which differ only in
-// presence flags: a response tree is state the provider reads back, so every
-// node is Computed; a request tree is practitioner input, so every node is
-// Required or Optional instead; a resource tree derives Required, Optional,
-// or Computed (or both) per node from its Provenance.
+// treeKind selects how presence flags are assigned: responseTree marks every
+// node Computed, requestTree marks each Required or Optional, resourceTree
+// derives the flags per node from its Provenance.
 type treeKind int
 
 const (
@@ -20,15 +18,12 @@ const (
 	resourceTree
 )
 
-// oneOfValueField is the single child a non-object oneOf alternative exposes.
-// A scalar, list, map, or directly nested union has no fields of its own to
-// surface, so its variant block wraps the whole alternative under this name.
+// oneOfValueField is the single child name a non-object oneOf alternative
+// (scalar, list, map, or nested union) wraps its whole value under.
 const oneOfValueField = "value"
 
 // UnsupportedKindError reports a schema kind that cannot become a Terraform
-// attribute — anyOf (classified unsupported), a ref_cycle, or any other
-// unsupported node. The attribute-tree builder fails the artifact when it reaches
-// one rather than emitting a types.Dynamic escape hatch.
+// attribute: a ref_cycle, an anyOf, or any other node classified unsupported.
 type UnsupportedKindError struct {
 	Path   string
 	Kind   SchemaKind
@@ -41,10 +36,8 @@ func (e *UnsupportedKindError) Error() string {
 }
 
 // OneOfProjectionError reports a union that cannot be projected into a Terraform
-// envelope. It names the envelope, the offending alternative and the schema path
-// so a maintainer can find the union in the OpenAPI document, and it wraps the
-// underlying per-alternative failure when there is one. A oneOf is never dropped
-// from the tree: either it projects, or its artifact fails with this error.
+// envelope, naming the envelope, the offending alternative and the schema path,
+// and wrapping the underlying per-alternative failure when there is one.
 type OneOfProjectionError struct {
 	// Envelope is the generated envelope name (OneOfSpec.Name).
 	Envelope string
@@ -74,10 +67,8 @@ func (e *OneOfProjectionError) Error() string {
 func (e *OneOfProjectionError) Unwrap() error { return e.Err }
 
 // MissingProvenanceError reports a resource-tree node with no Provenance to
-// derive presence flags from. Every node a resource schema merge itself
-// produces carries one; the one shape that does not is the content nested
-// inside a oneOf alternative, which the merge clones verbatim rather than
-// walking.
+// derive presence flags from. A merge gives every node it walks one; content
+// inside a oneOf alternative is cloned verbatim and so has none.
 type MissingProvenanceError struct {
 	Path string
 }
@@ -88,57 +79,47 @@ func (e *MissingProvenanceError) Error() string {
 
 // BuildResponseTree converts a response-body schema into an AttributeTree,
 // rooting every attribute path at "response." and marking every node Computed.
-//
-// The returned diagnostics are the non-fatal notes raised during the walk; the
-// conversion currently produces none, since every node either projects into the
-// tree or fails the artifact.
+// The diagnostics are the walk's non-fatal notes; none are produced today,
+// since a node either projects or errors.
 func BuildResponseTree(s *Schema) (*AttributeTree, []Diagnostic, error) {
 	return (&treeBuilder{kind: responseTree}).build(s, "response")
 }
 
 // BuildRequestTree converts a request-body schema into an AttributeTree, rooting
 // every attribute path at "request." and marking each node Required or Optional
-// rather than Computed. Like BuildResponseTree it returns the diagnostics raised
-// during the walk.
+// rather than Computed.
 func BuildRequestTree(s *Schema) (*AttributeTree, []Diagnostic, error) {
 	return (&treeBuilder{kind: requestTree}).build(s, "request")
 }
 
-// BuildResourceTree converts a schema produced by a resource schema merge
-// into an AttributeTree rooted at "resource.". Each node's Required, Optional
-// and Computed flags come from its Provenance rather than from a single
-// request or response direction, and each gets the plan modifiers that
-// follow from those flags plus updateUnsupported — true when the resource's
-// group resolves no Update role, so every request-settable attribute forces
-// replacement instead.
+// BuildResourceTree converts a merged resource schema into an AttributeTree
+// rooted at "resource.". Presence flags come from each node's Provenance, and
+// plan modifiers follow from those flags plus updateUnsupported — when true,
+// every request-settable attribute gets RequiresReplace().
 func BuildResourceTree(s *Schema, updateUnsupported bool) (*AttributeTree, []Diagnostic, error) {
 	return (&treeBuilder{kind: resourceTree, updateUnsupported: updateUnsupported}).build(s, "resource")
 }
 
-// treeBuilder carries the state of one AttributeTree conversion. Only the entry
-// point's kind varies across a run; the recursion is otherwise a pure function of
-// the schema node, its path, and its nesting context.
+// treeBuilder carries the state of one AttributeTree conversion; the recursion
+// is otherwise a function of the schema node, its path and its nesting context.
 type treeBuilder struct {
 	kind treeKind
 	// oneOfProvenance is the enclosing union's Provenance while walking one of
-	// its own alternatives, resourceTree only. A resource schema merge clones
-	// a oneOf's content verbatim rather than walking it, so no node inside an
-	// alternative carries its own Provenance; applyPresence falls back to
-	// this one instead.
+	// its alternatives, resourceTree only. A merge clones a oneOf's content
+	// verbatim, so nodes inside an alternative carry none of their own and
+	// applyPresence falls back to this.
 	oneOfProvenance *SchemaProvenance
-	// updateUnsupported is resourceTree's own input, fixed for the whole walk:
-	// true when the resource's group resolves no Update role, so every
-	// request-settable attribute gets RequiresReplace(). A path parameter also
-	// gets it, unconditionally and from model/artifact.go, since no endpoint
-	// re-parents a child — so RequiresReplace() is not by itself evidence that the
-	// group resolved no Update role.
+	// updateUnsupported is fixed for the whole walk: true when no Update role
+	// exists, so every request-settable attribute gets RequiresReplace(). Path
+	// parameters get it unconditionally elsewhere, so its presence on an
+	// attribute does not imply this flag.
 	updateUnsupported bool
 }
 
-// build is the shared recursion behind both entry points, differing only in root.
-// A root object explodes its properties into top-level attributes; any other kind
-// — including a bare union or a collection of unions — becomes one attribute at
-// Path == root. A nil schema yields an empty tree.
+// build converts s into a tree rooted at root. A root object explodes its
+// properties into top-level attributes; any other kind — a bare union or a
+// collection included — becomes one attribute at Path == root. A nil schema
+// yields an empty tree.
 func (b *treeBuilder) build(s *Schema, root string) (*AttributeTree, []Diagnostic, error) {
 	tree := &AttributeTree{}
 	if s == nil {
@@ -152,9 +133,9 @@ func (b *treeBuilder) build(s *Schema, root string) (*AttributeTree, []Diagnosti
 		tree.Attributes = attrs
 		return tree, nil, nil
 	}
-	// A body root is always present, so it is required when it is input at
-	// all — except a union, which states its own optionality (a root has no
-	// enclosing object whose required list could say otherwise).
+	// A body root is always present, so it is required whenever it is input —
+	// except a union, which states its own optionality, there being no
+	// enclosing object's required list to consult.
 	attr, err := b.attribute(s, root, !rootUnionOptional(s))
 	if err != nil {
 		return nil, nil, err
@@ -163,21 +144,19 @@ func (b *treeBuilder) build(s *Schema, root string) (*AttributeTree, []Diagnosti
 	return tree, nil, nil
 }
 
-// attribute converts one schema node at path into an Attribute, recursing into its
-// properties, element, or value schema. required says whether the node must be
-// configured (a request-tree concern only).
-// Every non-representable kind fails here rather than being skipped, so no marked
-// field can disappear from the generated schema.
+// attribute converts one schema node at path into an Attribute, recursing into
+// its properties, element or value schema. required says whether the node must
+// be configured. A non-representable kind errors rather than being skipped, so
+// no field can silently vanish from the schema.
 func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribute, error) {
-	// A union has no framework type of its own: it projects into a synthetic
-	// envelope whose form depends on where it sits, so it is handled separately.
+	// A union has no framework type of its own; it projects into a synthetic
+	// envelope instead.
 	if s.Kind == SchemaKindOneOf {
 		return b.envelope(s, path, required)
 	}
 
-	// The remaining non-representable kinds (anyOf and other unsupported nodes,
-	// ref_cycle) have no Terraform representation: fail the artifact here rather
-	// than emit garbage.
+	// The remaining kinds (unsupported, ref_cycle, depth_exceeded) have no
+	// Terraform representation.
 	switch s.Kind {
 	case SchemaKindPrimitive, SchemaKindObject, SchemaKindArray, SchemaKindMap:
 		// representable — continue
@@ -193,8 +172,6 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 	if err != nil {
 		return nil, err
 	}
-	// Preserve the map-value projection boundary and normalize any legacy block
-	// form a caller might supply (leaf types are unaffected).
 
 	attr := &Attribute{
 		Path:        path,
@@ -208,7 +185,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 		return nil, err
 	}
 
-	// A string enum becomes a OneOf validator; non-string enums produce none for now.
+	// A string enum gets a stringvalidator.OneOf; other enums get no validator.
 	if s.Kind == SchemaKindPrimitive && isStringEnum(s) {
 		attr.IsEnum = true
 		attr.RequestModelRefName = s.RequestRefName
@@ -219,8 +196,8 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 		attr.Validators = []ValidatorSpec{{Name: "stringvalidator.OneOf", Args: args}}
 	}
 
-	// Recurse into object shapes, or record the recursive element type for a
-	// collection chain that terminates in a primitive.
+	// Recurse into object shapes, or record the element type for a collection
+	// chain terminating in a primitive.
 	switch s.Kind {
 	case SchemaKindObject:
 		children, err := b.children(s, path+".")
@@ -236,11 +213,11 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 			if err != nil {
 				return nil, err
 			}
-			// The element supplies the struct, so the element's component names it.
+			// The element supplies the struct, so it names it.
 			attr.Children, attr.ModelRefName, attr.RequestModelRefName = children, s.Items.RefName, s.Items.RequestRefName
 		case SchemaKindOneOf:
-			// The list itself carries the envelope: its elements are variant
-			// attributes, so no separate attribute stands at the element path.
+			// The list carries the envelope, so its children are the variant
+			// attributes and no attribute stands at the element path.
 			variants, envelope, err := b.oneOfVariants(s.Items, path+"[]")
 			if err != nil {
 				return nil, err
@@ -282,17 +259,14 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 }
 
 // isStringEnum reports whether s is a string constrained to a fixed set of
-// values — the same predicate that promotes a primitive attribute itself to
-// IsEnum, reused here for a collection element (see elementInfo).
+// values.
 func isStringEnum(s *Schema) bool {
 	return s.Type == "string" && len(s.Enum) > 0
 }
 
-// elementInfo derives a ListAttribute/MapAttribute's element triple: the
-// framework attr.Type expression ElementType renders as, and, since that
-// generic mapping collapses a date-time or enum string element to the same
-// "types.StringType" as a plain one, the element's own Format and enum-ness
-// alongside it — see Attribute.ElementFormat/ElementIsEnum.
+// elementInfo derives a collection's element triple: the attr.Type expression,
+// plus the element's own Format and enum-ness, which that expression would
+// otherwise lose (a date-time or enum string maps to plain types.StringType).
 func elementInfo(items *Schema) (elementType, format string, isEnum bool, err error) {
 	elementType, err = ElementType(items)
 	if err != nil {
@@ -302,9 +276,8 @@ func elementInfo(items *Schema) (elementType, format string, isEnum bool, err er
 }
 
 // children builds one child attribute per property of parent, each pathed
-// prefix+key. Keys are visited sorted, making recursion deterministic and the
-// result Path-sorted. Required-ness comes from the parent's required list, which
-// only reaches the output in a request tree.
+// prefix+SnakeCase(key). Keys are visited sorted, so the result is Path-sorted
+// and the recursion deterministic. Required-ness comes from parent.Required.
 func (b *treeBuilder) children(parent *Schema, prefix string) ([]*Attribute, error) {
 	props := parent.Properties
 	keys := make([]string, 0, len(props))
@@ -320,24 +293,23 @@ func (b *treeBuilder) children(parent *Schema, prefix string) ([]*Attribute, err
 
 	children := make([]*Attribute, 0, len(props))
 	for _, key := range keys {
-		// Terraform attribute names must be snake_case; SnakeCase normalizes camelCase
-		// OAS names and is idempotent on already-snake names (SdkName recovers the getter).
+		// Terraform attribute names must be snake_case; SnakeCase is idempotent
+		// on names already in that form.
 		child, err := b.attribute(props[key], prefix+SnakeCase(key), required[key])
 		if err != nil {
 			return nil, err
 		}
-		// Keep the property's own OpenAPI name. SnakeCase is not injective —
-		// hostTags, host_tags and host-tags all collapse to host_tags — so a
-		// consumer that needs to find this node again in an OpenAPI schema
-		// cannot invert the Path, and guessing would silently pick a sibling.
+		// Keep the raw OpenAPI key: SnakeCase is not injective (hostTags,
+		// host_tags and host-tags all give host_tags), so Path cannot be
+		// inverted back to it.
 		child.OpenAPIName = key
 		children = append(children, child)
 	}
 	return children, nil
 }
 
-// envelope projects a union standing at its own position in the tree — the schema
-// root, or an object property — into the synthetic block that holds its variants.
+// envelope projects a union standing at its own position in the tree — a root
+// or an object property — into the synthetic block holding its variants.
 func (b *treeBuilder) envelope(s *Schema, path string, required bool) (*Attribute, error) {
 	variants, envelope, err := b.oneOfVariants(s, path)
 	if err != nil {
@@ -352,31 +324,22 @@ func (b *treeBuilder) envelope(s *Schema, path string, required bool) (*Attribut
 		Children:    variants,
 		OneOf:       envelope,
 	}
-	// The envelope is required only when its containing field demands a value
-	// and the union may not be absent; a nullable union is represented by an
-	// absent envelope rather than a null variant.
-	//
-	// Deliberately keyed on Nullable alone. OneOf.Optional would be the wrong
-	// second term: on a single-direction tree it restates `required` (the
-	// parser sets it from the same enclosing required list), and on a resource
-	// tree mergeOneOf has already OR-ed it across three bodies into the
-	// different fact "some body may omit this" — so reading it would demote
-	// every union the Read response happens to leave out of its own required
-	// list. The one place Optional genuinely carries something `required` does
-	// not is a body root, and build consults it there (see rootUnionOptional).
+	// Required only when the containing field demands a value and the union may
+	// not be absent — a nullable union is an absent envelope, not a null
+	// variant. Keyed on Nullable alone: OneOf.Optional either restates
+	// `required`, or (on a resource tree) has been OR-ed across three bodies
+	// into the weaker "some body may omit this". Only a root reads it.
 	if err := b.applyPresence(attr, s, required && !s.OneOf.Nullable); err != nil {
 		return nil, err
 	}
 	return attr, nil
 }
 
-// oneOfVariants projects the alternatives of a normalized union into one nested
-// attribute each, pathed under basePath, and returns them with the envelope metadata
-// the emit layer needs. basePath is the union's own schema path: the envelope
-// attribute's path for a root or property union, and the element path
-// ("choices[]", "choices{}") when the union is a collection's element — in that
-// case the collection attribute carries the envelope and these attributes are its
-// children directly.
+// oneOfVariants projects a normalized union's alternatives into one nested
+// attribute each and returns them with the envelope metadata. basePath is the
+// union's own schema path: the envelope attribute's path for a root or property
+// union, the element path ("choices[]", "choices{}") for a collection's
+// element, where the collection attribute carries the envelope itself.
 func (b *treeBuilder) oneOfVariants(s *Schema, basePath string) ([]*Attribute, *OneOfEnvelope, error) {
 	spec := s.OneOf
 	if spec == nil {
@@ -405,17 +368,16 @@ func (b *treeBuilder) oneOfVariants(s *Schema, basePath string) ([]*Attribute, *
 		GoModel: oneOfModelName(spec.Name),
 		SDKType: spec.SDKType,
 		Path:    basePath,
-		// A nullable union maps to an absent envelope, so it is as optional as one
-		// whose containing field is optional.
+		// A nullable union maps to an absent envelope, so it is as optional
+		// as one whose containing field is optional.
 		Optional: spec.Optional || spec.Nullable,
 		Computed: b.kind == responseTree,
 		Variants: make([]OneOfEnvelopeVariant, 0, len(spec.Variants)),
 	}
 
-	// Order by Terraform name so neither OpenAPI alternative order nor a caller's
-	// construction order can reach the generated schema. The parser already sorts;
-	// sorting a copy here keeps the projection correct for any caller without
-	// mutating the spec.
+	// Order by Terraform name so no OpenAPI or caller construction order reaches
+	// the output. The parser already sorts; a copy is sorted here so any caller
+	// is correct without the spec being mutated.
 	ordered := make([]OneOfVariant, len(spec.Variants))
 	copy(ordered, spec.Variants)
 	sort.Slice(ordered, func(i, j int) bool { return ordered[i].TFName < ordered[j].TFName })
@@ -433,13 +395,10 @@ func (b *treeBuilder) oneOfVariants(s *Schema, basePath string) ([]*Attribute, *
 }
 
 // oneOfVariant projects one alternative into its nested attribute. An object
-// alternative exposes its own fields; every other shape — scalar, list, map, or a
-// directly nested union — has no fields to expose, so it gets a single child named
-// "value" holding the alternative itself. union is the schema of the oneOf node
-// itself, carrying the Provenance the block's own presence is derived from: a
-// variant block is a choice, so its presence is the union's, not its own. Its
-// *children* do carry their own, since mergeOneOf walks each correlated
-// alternative through mergeNode like any other subtree (T099b).
+// alternative exposes its own fields; every other shape gets a single child
+// named "value" holding the alternative itself. The block's presence derives
+// from union's Provenance, not its own, a variant being a choice; its children
+// do carry their own.
 func (b *treeBuilder) oneOfVariant(
 	union *Schema,
 	envelope *OneOfEnvelope,
@@ -470,18 +429,16 @@ func (b *treeBuilder) oneOfVariant(
 		Sensitive:   variant.Schema.Sensitive,
 		Description: variant.Schema.Description,
 	}
-	// A variant is a choice, never a mandatory field: exactly-one selection is
-	// enforced by the envelope's validator and by request mapping, not by marking
-	// every branch Required.
+	// A variant is a choice, never mandatory: exactly-one selection is enforced
+	// by the envelope's validator, not by marking every branch Required.
 	if err := b.applyPresence(block, union, false); err != nil {
 		return fail("", err)
 	}
 
-	// The alternative's own content carries no Provenance (see oneOfProvenance).
-	// A directly nested union (variant.Schema.Kind == SchemaKindOneOf) has none
-	// of its own either, so leave the fallback as whatever enclosing union was
-	// already active rather than clobbering it to nil; restore it once this
-	// alternative is fully walked either way.
+	// The alternative's content carries no Provenance, so publish the union's as
+	// the fallback. A directly nested union has none either: keep whatever
+	// enclosing union was active rather than clobbering it to nil. Restored on
+	// the way out either way.
 	outerProvenance := b.oneOfProvenance
 	if union.Provenance != nil {
 		b.oneOfProvenance = union.Provenance
@@ -521,19 +478,13 @@ func (b *treeBuilder) oneOfVariant(
 	}, nil
 }
 
-// applyPresence sets the framework presence flags, and for resourceTree the
-// plan modifiers that follow from them. Response state is entirely Computed;
-// request input is Required when the schema says so and Optional otherwise;
-// resource input reads s.Provenance instead (falling back to oneOfProvenance
-// when s carries none), deriving Required, or Optional, or Optional and
-// Computed together, or Computed alone — the only one of the three kinds
-// that can set two flags at once. required is "is this required by the
-// Create body" for a node reached through an object's Required list, but the
-// oneOf wrapped-value call site instead passes it unconditionally ("the
-// value must be present when its variant is selected"), so resourceTree only
-// honors it alongside InRequest — a purely response-only union's wrapped
-// value must not come out Required just because it was hardcoded true.
-// Returns MissingProvenanceError if resourceTree finds neither source.
+// applyPresence sets a's presence flags, plus resourceTree's plan modifiers.
+// responseTree is all Computed; requestTree is Required per `required` and
+// Optional otherwise; resourceTree reads s.Provenance (falling back to
+// b.oneOfProvenance) and is the only kind that can set two flags at once
+// (Optional+Computed). resourceTree honors `required` only alongside InRequest,
+// since the oneOf wrapped-value call site passes it unconditionally. Returns
+// MissingProvenanceError when resourceTree finds no Provenance at all.
 func (b *treeBuilder) applyPresence(a *Attribute, s *Schema, required bool) error {
 	switch b.kind {
 	case responseTree:
@@ -565,16 +516,12 @@ func (b *treeBuilder) applyPresence(a *Attribute, s *Schema, required bool) erro
 	return nil
 }
 
-// resourcePlanModifiers derives a's plan modifiers: UseStateForUnknown() when
-// applyPresence just set both Optional and Computed on it, RequiresReplace()
-// when requestSettable and updateUnsupported — never either one on a
-// Computed-only attribute, since the server may change such a value during
-// apply and there is no update endpoint to reconcile it through anyway. Both
-// are typed from a.GoType, so a Computed-only attribute never even looks one
-// up. requestSettable is the caller's Provenance.InRequest, not re-derived
-// from a.Required/a.Optional: those are true under the same condition today,
-// but only because applyPresence's presence switch happens to be exhaustive
-// and mutually exclusive — InRequest is the fact itself.
+// resourcePlanModifiers derives a's plan modifiers, typed from a.GoType:
+// UseStateForUnknown() when a is both Optional and Computed, RequiresReplace()
+// when requestSettable and updateUnsupported. A Computed-only attribute gets
+// neither, since the server may change such a value during apply.
+// requestSettable is the caller's Provenance.InRequest — the fact itself rather
+// than a re-derivation from a.Required/a.Optional.
 func (b *treeBuilder) resourcePlanModifiers(a *Attribute, requestSettable bool) []PlanModifierSpec {
 	useStateForUnknown := a.Optional && a.Computed
 	requiresReplace := b.updateUnsupported && requestSettable
@@ -592,34 +539,26 @@ func (b *treeBuilder) resourcePlanModifiers(a *Attribute, requestSettable bool) 
 }
 
 // RequiresReplaceSpec is the RequiresReplace() plan modifier for an attribute
-// of goType. It is the single spelling of that modifier, shared by the two
-// places that decide an attribute forces replacement: a request-settable body
-// field when the group resolves no Update role (above), and a path parameter,
-// which forces replacement whatever the Update role is because no endpoint
-// re-parents a child (model/artifact.go).
+// of goType — the single spelling of that modifier.
 func RequiresReplaceSpec(goType string) PlanModifierSpec {
 	return PlanModifierSpec{Name: PlanModifierPackage(goType) + ".RequiresReplace"}
 }
 
-// PlanModifierPackage returns the terraform-plugin-framework planmodifier
-// subpackage for goType, e.g. "types.String" -> "stringplanmodifier". goType
-// is always one of FrameworkType's seven possible outputs by the time it
-// reaches here, all following this same naming convention. Exported so the
-// emitter's import block derives the subpackage by the same rule that spelled
-// it into PlanModifierSpec.Name, rather than parsing it back out of that name.
+// PlanModifierPackage returns the planmodifier subpackage for goType, e.g.
+// "types.String" -> "stringplanmodifier". Every GoType FrameworkType produces
+// follows this convention.
 func PlanModifierPackage(goType string) string {
 	return strings.ToLower(strings.TrimPrefix(goType, "types.")) + "planmodifier"
 }
 
 // oneOfModelName is the generated Go struct name for an envelope or variant.
-// Deriving it from the envelope's name (rather than from the use site) is what
-// lets two uses of one reusable union share a single generated model.
+// Deriving it from the envelope name rather than the use site lets two uses of
+// one reusable union share a single model.
 func oneOfModelName(name string) string { return name + "Model" }
 
-// rootUnionOptional reports whether a schema standing at a body root is a
-// union its own OpenAPI field left optional. It is the one presence fact a
-// root cannot get from an enclosing object's required list, because it has no
-// enclosing object.
+// rootUnionOptional reports whether s is a union its own OpenAPI field left
+// optional or nullable — the one presence fact a body root cannot read off an
+// enclosing object's required list, having no enclosing object.
 func rootUnionOptional(s *Schema) bool {
 	return s.Kind == SchemaKindOneOf && s.OneOf != nil && (s.OneOf.Optional || s.OneOf.Nullable)
 }

@@ -11,14 +11,13 @@ import (
 type MissingRoleError struct {
 	// Artifact is the Terraform artifact name from the tracking field.
 	Artifact string
-	// Kind selects the noun the message uses. Which roles are mandatory depends
-	// on the artifact's shape, so the error has to say which shape it judged.
+	// Kind selects the noun the message uses, and says which shape was judged,
+	// since which roles are mandatory depends on it.
 	Kind ArtifactKind
 	// Role is the group role that did not resolve.
 	Role GroupRole
 	// OperationId is the unresolved reference when the annotation named one, and
-	// empty when the role was never declared. The two are different author
-	// errors and read differently.
+	// empty when the role was never declared — two different author errors.
 	OperationId string
 }
 
@@ -37,9 +36,7 @@ func (e *MissingRoleError) Error() string {
 
 // requireResolvedRoles fails op's artifact unless every listed role resolves to
 // an operation, whether it was omitted or named an operationId that matched
-// nothing. Callers name the roles their shape cannot do without, which is a
-// property of the shape rather than of any one sub-builder — so this runs before
-// the schema and the lifecycle are built, not inside either.
+// nothing. Callers name the roles their shape cannot do without.
 func requireResolvedRoles(op *Operation, roles ...GroupRole) error {
 	for _, role := range roles {
 		if op.ResolvedGroup.Op(role) != nil {
@@ -56,15 +53,12 @@ func requireResolvedRoles(op *Operation, roles ...GroupRole) error {
 }
 
 // buildResourceLifecycle resolves the CRUD SDK calls for a resource and reports
-// how a missing update role was handled. It assumes Create, Read and Delete are
-// already known to resolve; buildResourceArtifact enforces that before calling.
-//
-// Update is the one role whose absence is a lifecycle decision rather than a
-// precondition, which is why it is settled here. An undeclared update degrades:
-// the resource is still generated, and UpdateUnsupported tells the schema builder
-// to force replacement on every practitioner-settable attribute (FR-034d, T123).
-// A declared-but-dangling update fails instead — treating a typo as an absence
-// would silently make every subsequent change destructive.
+// how a missing update role was handled; it assumes Create, Read and Delete
+// already resolve. An undeclared update degrades: the resource is still
+// generated, and UpdateUnsupported tells the schema builder to force
+// replacement on every practitioner-settable attribute. A declared-but-dangling
+// update fails instead — treating a typo as an absence would silently make
+// every subsequent change destructive.
 func buildResourceLifecycle(op *Operation) (*LifecycleBindings, []Diagnostic, error) {
 	g := op.ResolvedGroup
 	bindings := &LifecycleBindings{
@@ -102,14 +96,10 @@ func buildResourceLifecycle(op *Operation) (*LifecycleBindings, []Diagnostic, er
 
 // bodyCall resolves the SDK binding for an operation that sends a request body,
 // which a read or a delete never does. aliasTerminalID is false for a create,
-// which has no id yet, and true for an update, whose path names the record.
-//
-// It also reads what the request mapper needs about this body's JSON:API
-// envelope, all off this operation's own RequestSchema rather than off the
-// merged tree: the merge reconciles RefName toward the Read response (FR-034c)
-// and unions the two request bodies' fields (FR-034b), while a resource's
-// Create and Update components are routinely distinct types that declare
-// different fields — so per-role is the only correct source.
+// which has no id yet, and true for an update, whose path names the record. The
+// envelope facts it reads come off this operation's own RequestSchema, never the
+// merged tree: a resource's Create and Update components are routinely distinct
+// types declaring different fields, so per-role is the only correct source.
 func bodyCall(op *Operation, aliasTerminalID bool) *SDKCall {
 	call := sdkCall(op, aliasTerminalID)
 	call.GoRequestType = op.RequestRefName
@@ -119,27 +109,27 @@ func bodyCall(op *Operation, aliasTerminalID bool) *SDKCall {
 		return call
 	}
 	// An empty component name means the body left that level inline, so the SDK
-	// generated nothing to construct it from; emit decides what that costs,
-	// since a body with settable attributes cannot be built without one but a
-	// body with none can (T138).
+	// generated nothing to construct it from; what that costs is decided
+	// downstream, since a body with settable attributes cannot be built without
+	// one but a body with none can.
 	call.GoRequestDataType = data.RefName
 	// The attributes node is kept whole, not just its component name, so the
-	// request mapper can narrow the merged tree against it (T134).
+	// request mapper can narrow the merged tree against it.
 	if attributes := data.Properties["attributes"]; attributes != nil {
 		call.GoRequestAttributesType = attributes.RefName
 		call.RequestAttributesSchema = attributes
 	}
 	// A Terraform id is always a string, so the declared type is what decides
-	// whether it can be sent verbatim or has to be parsed first (T140).
+	// whether it can be sent verbatim or has to be parsed first.
 	if id := data.Properties["id"]; id != nil {
 		call.RequestDeclaresID = true
 		call.RequestIDGoType, _ = SDKScalarGoType(id)
 	}
 	// SDKDefaulted reproduces the SDK generator's own predicate rather than
-	// reading the generated source (FR-005a): model_simple.j2 assigns a property
-	// in WithDefaults() exactly when it declares a default, is neither object nor
+	// reading the generated source: model_simple.j2 assigns a property in
+	// WithDefaults() exactly when it declares a default, is neither object nor
 	// array, and is not readOnly. A discriminator is always a string, so only the
-	// default and readOnly halves can vary (T143).
+	// default and readOnly halves can vary.
 	if discriminator := data.Properties["type"]; discriminator != nil {
 		call.RequestDiscriminator = &RequestDiscriminator{
 			GoType:       discriminator.RefName,

@@ -1,23 +1,8 @@
-// Package sdkbind resolves the Datadog go-sdk bindings for every OpenAPI oneOf
-// reachable from a normalized operation: the generated wrapper struct, and for
-// each alternative the wrapper member that selects it plus the convenience
-// constructor that builds it.
-//
-// It runs after parser normalization and before the Terraform projection, and it
-// writes only into OneOfSpec.SDKType and OneOfVariant.SDKField/SDKConstructor/
-// SDKPointer. The fields model.BuildResponseTree carries through onto each
-// OneOfEnvelope.
-//
-// Method of record : every name here is **re-derived** by reimplementing the go-sdk
-// generator's own logic over the same OpenAPI input. gotype.go holds the naming rules;
-// this file holds the walk that decides which generated model a union lives in.
-//
-// The walk exists because a wrapper's identity is positional, not local. The SDK
-// generator's child_models() names a model after its $ref component when it has
-// one, and otherwise after the accumulated path from the enclosing named model,
-// parent name plus camel_case(property), plus "Item" per array step. A Terraform
-// envelope name must never stand in for that: an inline union's envelope name is
-// path-derived for generated-model stability and names no SDK struct.
+// Package sdkbind resolves the go-sdk bindings for every OpenAPI oneOf
+// reachable from a normalized operation, writing OneOfSpec.SDKType and each
+// variant's SDKField/SDKConstructor/SDKPointer. Names are re-derived by
+// reimplementing the go-sdk generator's logic: gotype.go holds the naming
+// rules, this file the walk deciding which generated model a union lives in.
 package sdkbind
 
 import (
@@ -29,25 +14,17 @@ import (
 )
 
 // BindOperation resolves the SDK oneOf bindings for every union reachable from
-// op's request and response schemas, mutating the normalized schemas in place. It
-// is idempotent: re-running it over an already-bound operation recomputes the same
-// values.
-//
-// Failures are collected rather than returned on first sight, and the returned
-// *UnresolvedBindingError names the artifact, the operation, and every union path
-// and alternative it could not bind. Because binding is per operation, one
-// artifact's unresolvable union cannot stop another artifact from generating.
-//
-// A position whose SDK model name cannot be determined is walked *past*, not
-// abandoned: only a union actually standing at such a position fails, so an
-// unnameable branch holding no union costs nothing.
+// op's request and response schemas, mutating them in place; idempotent.
+// Failures are collected rather than returned on first sight: the returned
+// *UnresolvedBindingError names every union path and alternative it could not
+// bind. A position with no derivable model name is walked past, not abandoned.
 func BindOperation(op *model.Operation) error {
 	if op == nil {
 		return nil
 	}
 	b := &binder{visited: make(map[visitKey]bool)}
-	// Each body root is the SDK type the operation's method signature names, which
-	// is where the SDK generator's own naming starts too.
+	// Each body root is the SDK type named in the operation's method signature,
+	// where the SDK generator's own naming starts too.
 	b.walk(op.RequestSchema, op.RequestRefName, "request")
 	b.walk(op.ResponseSchema, op.ResponseRefName, "response")
 
@@ -61,10 +38,8 @@ func BindOperation(op *model.Operation) error {
 	}
 }
 
-// BindSpec binds every operation in spec, returning one error per operation that
-// had an unresolvable union, keyed by operation. It exists for callers that want
-// to bind the whole spec up front; the generate path binds per artifact so a
-// failure lands on that artifact's report entry.
+// BindSpec binds every operation in spec, returning a map from operation to its
+// unresolvable-union error, or nil when all of them bound cleanly.
 func BindSpec(spec *model.Spec) map[*model.Operation]error {
 	if spec == nil {
 		return nil
@@ -83,12 +58,11 @@ func BindSpec(spec *model.Spec) map[*model.Operation]error {
 
 type binder struct {
 	failures []Failure
-	// visited guards termination over the normalized graph, which is a DAG rather
-	// than a tree: mergeOneOfSiblings shares one sibling-constraint node across
-	// every alternative it was merged into. Keying on (node, SDK name) rather than
-	// on the node alone keeps a shared node bound correctly when two positions give
-	// it two different SDK names, instead of letting whichever position was walked
-	// first decide for both.
+	// visited guards termination: the normalized graph is a DAG, not a tree,
+	// since one sibling-constraint node can be shared across the alternatives it
+	// was merged into. Keying on (node, SDK name) rather than the node alone
+	// lets a shared node bind correctly when two positions name it differently,
+	// instead of letting whichever was walked first decide for both.
 	visited map[visitKey]bool
 }
 
@@ -97,18 +71,17 @@ type visitKey struct {
 	sdkName string
 }
 
-// walk descends s, carrying the name of the generated SDK model this node lives
-// in. sdkName is empty at a position whose model the rules cannot name; the walk
-// continues so that only a union standing there fails.
-//
-// This mirrors openapi.child_models: a $ref restarts the name, an object property
-// appends camel_case(key), and an array element appends "Item".
+// walk descends s carrying sdkName, the generated SDK model this node lives in,
+// mirroring openapi.child_models: a $ref restarts the name, an object property
+// appends camel_case(key), an array element appends "Item". sdkName is empty at
+// a position the rules cannot name, and the walk continues anyway so that only
+// a union actually standing there fails.
 func (b *binder) walk(s *model.Schema, sdkName, path string) {
 	if s == nil {
 		return
 	}
-	// get_name(schema) or alternative_name: a component name always wins over the
-	// name accumulated from the parent.
+	// get_name(schema): a component name always wins over the name accumulated
+	// from the parent.
 	if s.RefName != "" {
 		sdkName = s.RefName
 	}
@@ -132,23 +105,22 @@ func (b *binder) walk(s *model.Schema, sdkName, path string) {
 		b.walk(s.Items, childModelName(sdkName, "Item"), model.ChildPath(path, "[]"))
 
 	case model.SchemaKindMap:
-		// child_models only recurses into additionalProperties when the value is a
-		// $ref, so a map value is nameable through its own component name or not at
-		// all: pass no accumulated name and let the $ref rule above supply one.
+		// child_models only recurses into additionalProperties for a $ref, so a
+		// map value is nameable through its own component name or not at all:
+		// pass no accumulated name and let the $ref rule above supply one.
 		b.walk(s.Items, "", model.ChildPath(path, "{}"))
 	}
 }
 
-// bindUnion resolves one union's wrapper and members. The wrapper is the generated
-// model the union node itself became: its component name when it has one, else the
+// bindUnion resolves one union's wrapper and members. The wrapper is the model
+// the union node itself became: its component name when it has one, else the
 // name the walk accumulated (model_oneof.j2's `name`).
 func (b *binder) bindUnion(spec *model.OneOfSpec, sdkName, path string) {
 	if spec == nil {
 		return
 	}
-	// Prefer the union's own component name over the accumulated one. They agree
-	// wherever both exist — the walk sets sdkName from the same RefName — but the
-	// spec's copy is the identity the parser recorded, so read it directly.
+	// Prefer the union's own component name. It agrees with the accumulated one
+	// wherever both exist, but is the identity the parser recorded.
 	wrapper := spec.RefName
 	if wrapper == "" {
 		wrapper = sdkName
@@ -166,9 +138,9 @@ func (b *binder) bindUnion(spec *model.OneOfSpec, sdkName, path string) {
 				"property path, which does not resolve here); replace the inline oneOf with a " +
 				"$ref to a named schema component",
 		})
-		// Still bind the members below: their names do not depend on the wrapper, and
-		// reporting one wrapper failure is more useful than also reporting every
-		// alternative as unbound.
+		// Members are still bound below: their names do not depend on the
+		// wrapper, so one wrapper failure beats also reporting every alternative
+		// as unbound.
 	}
 	spec.SDKType = wrapper
 
@@ -186,9 +158,8 @@ func (b *binder) bindUnion(spec *model.OneOfSpec, sdkName, path string) {
 		}
 		v.SDKField = member
 		v.SDKPointer = pointer
-		// model_oneof.j2 emits `<Member>As<Union>` for every alternative,
-		// unconditionally — so this is never optional, and an empty wrapper name
-		// leaves it empty rather than half-formed.
+		// model_oneof.j2 emits `<Member>As<Union>` for every alternative; with no
+		// wrapper name, leave it empty rather than half-formed.
 		if wrapper != "" {
 			v.SDKConstructor = member + "As" + wrapper
 		} else {
@@ -200,9 +171,9 @@ func (b *binder) bindUnion(spec *model.OneOfSpec, sdkName, path string) {
 	}
 }
 
-// childModelName appends one path step to an accumulated SDK model name. An empty
-// parent stays empty: child_models has no name to build on either, so the child is
-// unnameable rather than named after the step alone.
+// childModelName appends one path step to an accumulated SDK model name. An
+// empty parent stays empty: the child is unnameable rather than named after the
+// step alone.
 func childModelName(parent, step string) string {
 	if parent == "" {
 		return ""
@@ -241,8 +212,7 @@ type Failure struct {
 }
 
 // UnresolvedBindingError reports every SDK oneOf binding an operation could not
-// resolve. It names the artifact, operation, union path and alternative so the
-// diagnostic is actionable without reading the specification.
+// resolve, naming the artifact, operation, union path and alternative.
 type UnresolvedBindingError struct {
 	Artifact  string
 	Operation string
