@@ -36,7 +36,7 @@ var _ = Describe("data-source templates", func() {
 		Entry("plural no-params (datastores)", "data_source_plural_no_params.golden", datastoresView),
 		Entry("singular nested object (apm_retention_filter)", "data_source_singular_object.golden", retentionFilterView),
 		Entry("plural nested object (gizmos)", "data_source_plural_object.golden", pluralObjectView),
-		// The oneOf goldens pin the envelope's schema blocks and model structs. Their
+		// The oneOf goldens pin the envelope's nested attributes and model structs. Their
 		// updateState is deliberately still mapping-free: the mapper lands next, and the diff
 		// this golden produces then is the review surface for that change.
 		Entry("singular oneOf envelope", "data_source_singular_oneof.golden", oneOfEnvelopeView),
@@ -119,7 +119,7 @@ func teamSingularView() DataSourceView {
 
 // costBudgetView is the cost_budget singular data source built end-to-end through
 // the emit builder; its golden proves recursive array-of-object hoisting — entries
-// rendered as a schema.ListNestedBlock holding a nested tag_filters ListNestedBlock,
+// rendered as a schema.ListNestedAttribute holding a nested tag_filters ListNestedAttribute,
 // mapped through nested guarded loops. The shared fixture lives in builder_test.go.
 func costBudgetView() DataSourceView {
 	GinkgoHelper()
@@ -128,7 +128,7 @@ func costBudgetView() DataSourceView {
 
 // pluralNestedView is the synthetic widgets plural data source built end-to-end;
 // its golden proves an object array inside a list item renders as a nested
-// ListNestedBlock and maps through a per-element loop after the item literal. The
+// ListNestedAttribute and maps through a per-element loop after the item literal. The
 // shared fixture lives in builder_test.go.
 func pluralNestedView() DataSourceView {
 	GinkgoHelper()
@@ -137,14 +137,14 @@ func pluralNestedView() DataSourceView {
 
 // retentionFilterView is the apm retention filter singular data source built
 // end-to-end; its golden proves a bare object under attributes renders as a
-// schema.SingleNestedBlock with a guarded, recursive object_single state mapping.
+// schema.SingleNestedAttribute with a guarded, recursive object_single state mapping.
 func retentionFilterView() DataSourceView {
 	GinkgoHelper()
 	return mustView(retentionFilterOperation())
 }
 
 // pluralObjectView is the synthetic gizmos plural data source built end-to-end; its
-// golden proves a bare object inside a list item renders as a SingleNestedBlock and
+// golden proves a bare object inside a list item renders as a SingleNestedAttribute and
 // maps via an object_single ItemList after the item literal.
 func pluralObjectView() DataSourceView {
 	GinkgoHelper()

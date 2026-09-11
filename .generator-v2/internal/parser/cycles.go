@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/pb33f/libopenapi/datamodel/high/base"
@@ -18,28 +19,10 @@ type RefCycle struct {
 	Path []string
 }
 
-// RefCycleError reports one or more $ref cycles found while loading a spec. It
-// implements error so LoadSpec can fail fast, and exposes the offending refs so
-// callers can inspect them. The message names the OpenAPI path of the offending
-// $ref (e.g. "#/components/schemas/Node").
-type RefCycleError struct {
-	Cycles []RefCycle
-}
-
-func (e *RefCycleError) Error() string {
-	first := e.Cycles[0]
-	msg := fmt.Sprintf("parser: circular $ref at %s (cycle: %s)", first.Ref, strings.Join(first.Path, " -> "))
-	if len(e.Cycles) > 1 {
-		msg += fmt.Sprintf(" (and %d more)", len(e.Cycles)-1)
-	}
-	return msg
-}
-
-// MaxDepthError reports that $ref expansion hit the --max-depth bound before a
-// path terminated. Ref is the $ref that would have pushed past the limit, Chain
-// is the path of $refs leading to it, and MaxDepth is the bound that was hit. It
-// is returned instead of a *RefCycleError so callers can tell "too deep" from a
-// genuine cycle via errors.As.
+// MaxDepthError reports that $ref expansion hit the maxDepth bound before a
+// path terminated: Ref would have pushed past the limit, Chain is the $ref path
+// leading to it. A cycle never produces this error — it terminates the walk
+// instead of failing it — so this always means "too deep", never "circular".
 type MaxDepthError struct {
 	Ref      string
 	Chain    []string
@@ -51,17 +34,11 @@ func (e *MaxDepthError) Error() string {
 		e.MaxDepth, e.Ref, strings.Join(e.Chain, " -> "))
 }
 
-// DetectRefCycles walks the schema graph rooted at root. It follows $ref
-// references and every structural child (properties, items, prefixItems,
-// allOf/oneOf/anyOf, not, additionalProperties) and reports each distinct $ref
-// cycle. Callers mark cyclic schemas as terminal (model.SchemaKindRefCycle)
-// rather than expanding them forever.
-//
-// maxDepth bounds how many $ref edges may be followed on a single path: an
-// acyclic chain longer than maxDepth returns an error, guarding against
-// pathological or unbounded specs (the --max-depth flag). maxDepth <= 0 disables
-// that bound. Cycles are still found, since a re-entered $ref terminates the
-// walk regardless of depth.
+// DetectRefCycles walks the schema graph from root, following $refs and every
+// structural child (properties, items, prefixItems, allOf/oneOf/anyOf, not,
+// additionalProperties), and returns each distinct $ref cycle. maxDepth bounds
+// the $ref edges on one path — a longer acyclic chain is a *MaxDepthError, and
+// maxDepth <= 0 disables the bound — but cycles are found at any depth.
 func DetectRefCycles(root *base.SchemaProxy, maxDepth int) ([]RefCycle, error) {
 	w := newCycleWalker(maxDepth)
 	if err := w.walkProxy("", root); err != nil {
@@ -70,12 +47,11 @@ func DetectRefCycles(root *base.SchemaProxy, maxDepth int) ([]RefCycle, error) {
 	return w.cycles, nil
 }
 
-// DetectComponentRefCycles runs cycle detection across every component schema,
-// seeding each with its own "#/components/schemas/<name>" ref so a component
-// that references itself (directly or transitively) is detected even though its
-// top-level node is a definition rather than a $ref. The seed does not count
-// toward maxDepth, only the $ref edges followed from it do. Detection state is
-// shared across components, so each schema's subtree is walked at most once.
+// DetectComponentRefCycles runs cycle detection over every component schema,
+// seeding each with its own "#/components/schemas/<name>" so a component that
+// references itself is found even though its top node is a definition, not a
+// $ref. The seed costs no depth. Walker state is shared across components, so
+// each subtree is walked at most once.
 func DetectComponentRefCycles(components *v3.Components, maxDepth int) ([]RefCycle, error) {
 	if components == nil || components.Schemas == nil {
 		return nil, nil
@@ -89,11 +65,10 @@ func DetectComponentRefCycles(components *v3.Components, maxDepth int) ([]RefCyc
 	return w.cycles, nil
 }
 
-// cycleWalker is a three-color DFS over the schema graph: refs on stack are
-// "gray" (re-entry is a cycle), refs in done are "black" (subtree fully
-// explored, safe to prune). depth counts only the $ref edges currently on the
-// path, so the maxDepth bound is independent of whether the walk was seeded
-// with a component's own ref.
+// cycleWalker is a three-color DFS: refs on stack are gray (re-entry closes a
+// cycle), refs in done are black (subtree fully explored, safe to prune). depth
+// counts only the $ref edges on the current path, so the bound is unaffected by
+// a seed ref.
 type cycleWalker struct {
 	maxDepth int
 	depth    int             // count of $ref edges on the current path
@@ -113,16 +88,11 @@ func newCycleWalker(maxDepth int) *cycleWalker {
 	}
 }
 
-// walkProxy descends into the schemaProxy for cycle detection. The ref argument distinguishes the
-// two ways a node is reached:
-//
-//   - ref != "": schemaProxy is a named component definition and ref is its canonical
-//     "#/components/schemas/<name>". It seeds the cycle stack (so the component
-//     can be detected referencing itself) but is not a $ref edge, so it does not
-//     consume depth budget.
-//   - ref == "": schemaProxy is a child node. If it is a $ref, it is followed as a
-//     depth-counted edge; otherwise it is an inline schema, which has no
-//     identity and cannot start a cycle, so the walkProxy simply descends into it.
+// walkProxy descends into schemaProxy. A non-empty ref means schemaProxy is the
+// named component definition for that ref: it seeds the cycle stack but is not
+// a $ref edge and costs no depth. An empty ref means a child node — followed as
+// a depth-counted edge when it is a $ref, otherwise descended into inline,
+// since an inline schema has no identity and cannot start a cycle.
 func (w *cycleWalker) walkProxy(ref string, schemaProxy *base.SchemaProxy) error {
 	if schemaProxy == nil {
 		return nil
@@ -145,11 +115,10 @@ func (w *cycleWalker) walkProxy(ref string, schemaProxy *base.SchemaProxy) error
 	return walkErr
 }
 
-// enter handles a node on the path. It reports a cycle (and skips) when ref is
-// already on the stack, skips refs whose subtree is already explored, and
-// errors if the depth bound would be exceeded. Cycle and done checks take
-// precedence over the depth bound so a cyclic spec is reported as a cycle,
-// never as a depth error. It returns whether the caller should walk ref's children.
+// enter pushes ref onto the path and reports whether to walk its children. It
+// records a cycle and skips when ref is already on the stack, skips a ref whose
+// subtree is explored, and errors on the depth bound. Cycle and done checks
+// come first, so a cyclic spec is reported as a cycle, never as a depth error.
 func (w *cycleWalker) enter(ref string, edge bool) (bool, error) {
 	if w.onStack[ref] {
 		w.recordCycle(ref)
@@ -224,12 +193,9 @@ func (w *cycleWalker) recordCycle(ref string) {
 	}
 	w.reported[ref] = true
 
-	start := 0
-	for i, r := range w.stack {
-		if r == ref {
-			start = i
-			break
-		}
+	start := slices.Index(w.stack, ref)
+	if start < 0 {
+		start = 0
 	}
 	path := append([]string{}, w.stack[start:]...)
 	path = append(path, ref)
