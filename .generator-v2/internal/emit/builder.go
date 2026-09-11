@@ -44,7 +44,12 @@ const envelopeReceiver = "attributes"
 // OneOfVariantAssignment because the mapper must unwrap the SDK member first.
 func (b *dataSourceBuilder) oneOfEnvelope(a *model.Attribute) oneOfRender {
 	env := a.OneOf
-	if cached, ok := b.oneOfRenders[env.Name]; ok {
+	// Schema views containing write-only configuration carry an absolute
+	// ParentBlocks path, so the same reusable union reached at two resource
+	// locations needs one render per location. Model declarations remain
+	// deduplicated by dedupeModels after the walk.
+	cacheKey := env.Name + "\x00" + a.Path
+	if cached, ok := b.oneOfRenders[cacheKey]; ok {
 		return cached
 	}
 
@@ -89,16 +94,17 @@ func (b *dataSourceBuilder) oneOfEnvelope(a *model.Attribute) oneOfRender {
 
 		variantValidators, variantValidatorType := b.oneOfVariantValidators(env, v)
 		render.blocks = append(render.blocks, AttrView{
-			TFName:        v.TFName,
-			Description:   v.Attribute.Description,
-			Optional:      v.Attribute.Optional,
-			Computed:      v.Attribute.Computed,
-			Sensitive:     v.Attribute.Sensitive,
-			IsBlock:       true,
-			Attributes:    attrs,
-			Blocks:        blocks,
-			Validators:    variantValidators,
-			ValidatorType: variantValidatorType,
+			TFName:              v.TFName,
+			Description:         v.Attribute.Description,
+			Optional:            v.Attribute.Optional,
+			Computed:            v.Attribute.Computed,
+			Sensitive:           v.Attribute.Sensitive,
+			IsBlock:             true,
+			Attributes:          attrs,
+			Blocks:              blocks,
+			HasWriteOnlySecrets: hasWriteOnlySecrets(attrs),
+			Validators:          variantValidators,
+			ValidatorType:       variantValidatorType,
 		})
 		envFields = append(envFields, ModelFieldView{
 			GoField: v.GoField,
@@ -112,7 +118,7 @@ func (b *dataSourceBuilder) oneOfEnvelope(a *model.Attribute) oneOfRender {
 	if b.oneOfRenders == nil {
 		b.oneOfRenders = make(map[string]oneOfRender)
 	}
-	b.oneOfRenders[env.Name] = render
+	b.oneOfRenders[cacheKey] = render
 	return render
 }
 
@@ -190,22 +196,24 @@ func oneOfListAssignment(
 	tfName, receiver, lhs string,
 	collection bool,
 	preserveExisting bool,
+	preserveConfiguredPresence bool,
 ) ListAssignment {
 	outer := leafVar(tfName)
 	assignment := &OneOfAssignment{
-		Path:             env.Path,
-		SDKType:          env.SDKType,
-		GoModel:          render.goModel,
-		LHS:              lhs,
-		GetterOk:         getterOk(receiver, tfName),
-		Var:              outer,
-		Receiver:         outer,
-		ModelVar:         outer + "Envelope",
-		MatchVar:         outer + "Matches",
-		Optional:         env.Optional,
-		PreserveExisting: preserveExisting,
-		Collection:       collection,
-		Variants:         render.variants,
+		Path:                       env.Path,
+		SDKType:                    env.SDKType,
+		GoModel:                    render.goModel,
+		LHS:                        lhs,
+		GetterOk:                   getterOk(receiver, tfName),
+		Var:                        outer,
+		Receiver:                   outer,
+		ModelVar:                   outer + "Envelope",
+		MatchVar:                   outer + "Matches",
+		Optional:                   env.Optional,
+		PreserveExisting:           preserveExisting,
+		PreserveConfiguredPresence: preserveConfiguredPresence,
+		Collection:                 collection,
+		Variants:                   render.variants,
 	}
 	if collection {
 		// The members are read off each element, not off the slice pointer.
@@ -779,6 +787,11 @@ type dataSourceBuilder struct {
 	// usesObjectValidators records oneOf selection validators, kept separate from
 	// the string ones so only the referenced constructor packages are imported.
 	usesObjectValidators bool
+	// writeOnlySecrets is populated by the resource schema walk in stable tree
+	// order. Data-source walks never append because resource-only model metadata
+	// is the sole selector.
+	writeOnlySecrets []WriteOnlySecretView
+	writeOnlySeen    map[string]struct{}
 }
 
 // responds reports whether walk should build a's response-mapping assignment.
@@ -898,6 +911,16 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 	for _, a := range attrs {
 		tfName := tfNameOf(a.Path)
 		field := model.SdkName(tfName)
+		if a.WriteOnlySecret {
+			secret := buildWriteOnlySecretView(a, b.namer.base)
+			attrViews = append(attrViews, AttrView{TFName: tfName, WriteOnlySecret: &secret})
+			fields = append(fields,
+				ModelFieldView{GoField: model.SdkName(secret.WriteOnlyAttr), GoType: "types.String", TFName: secret.WriteOnlyAttr},
+				ModelFieldView{GoField: model.SdkName(secret.TriggerAttr), GoType: "types.String", TFName: secret.TriggerAttr},
+			)
+			b.collectWriteOnlySecret(secret)
+			continue
+		}
 		// A function of a alone, so computed before the oneOf branch, which
 		// returns without reaching the switch.
 		pmNames, pmType := b.planModifierViews(a)
@@ -915,21 +938,22 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 			collection := isCollectionForm(a.TfType)
 			fields = append(fields, ModelFieldView{GoField: field, GoType: goType, TFName: tfName})
 			blockViews = append(blockViews, AttrView{
-				TFName:           tfName,
-				Description:      a.Description,
-				Required:         a.Required,
-				Optional:         a.Optional,
-				Computed:         a.Computed,
-				Sensitive:        a.Sensitive,
-				IsBlock:          true,
-				ListBlock:        collection,
-				Blocks:           render.blocks,
-				PlanModifiers:    pmNames,
-				PlanModifierType: pmType,
+				TFName:              tfName,
+				Description:         a.Description,
+				Required:            a.Required,
+				Optional:            a.Optional,
+				Computed:            a.Computed,
+				Sensitive:           a.Sensitive,
+				IsBlock:             true,
+				ListBlock:           collection,
+				Blocks:              render.blocks,
+				HasWriteOnlySecrets: false,
+				PlanModifiers:       pmNames,
+				PlanModifierType:    pmType,
 			})
 			if b.responds(a) {
 				lists = append(lists, oneOfListAssignment(
-					a.OneOf, render, tfName, receiver, lhsPrefix+"."+field, collection, b.filterByResponse))
+					a.OneOf, render, tfName, receiver, lhsPrefix+"."+field, collection, b.filterByResponse, a.PreserveConfiguredPresence))
 			}
 			continue
 		}
@@ -1019,33 +1043,35 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 			fields = append(fields, ModelFieldView{GoField: field, GoType: "[]*" + elemStruct, TFName: tfName})
 			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, childStem, loopVar, elemVar, a.Children)
 			blockViews = append(blockViews, AttrView{
-				TFName:           tfName,
-				Description:      a.Description,
-				Required:         a.Required,
-				Optional:         a.Optional,
-				Computed:         a.Computed,
-				Sensitive:        a.Sensitive,
-				IsBlock:          true,
-				ListBlock:        true,
-				Attributes:       childAttrs,
-				Blocks:           childBlocks,
-				PlanModifiers:    pmNames,
-				PlanModifierType: pmType,
+				TFName:              tfName,
+				Description:         a.Description,
+				Required:            a.Required,
+				Optional:            a.Optional,
+				Computed:            a.Computed,
+				Sensitive:           a.Sensitive,
+				IsBlock:             true,
+				ListBlock:           true,
+				Attributes:          childAttrs,
+				Blocks:              childBlocks,
+				HasWriteOnlySecrets: hasWriteOnlySecrets(childAttrs),
+				PlanModifiers:       pmNames,
+				PlanModifierType:    pmType,
 			})
 			if b.responds(a) {
 				lists = append(lists, ListAssignment{
-					Kind:             "object",
-					LHS:              lhsPrefix + "." + field,
-					GetterOk:         getterOk(receiver, tfName),
-					Var:              leafVar(tfName),
-					LoopVar:          loopVar,
-					LoopIndex:        base + "Index",
-					ExistingVar:      base + "Existing",
-					ElemVar:          elemVar,
-					ElemStruct:       elemStruct,
-					Scalars:          childScalars,
-					Lists:            childLists,
-					PreserveExisting: b.filterByResponse,
+					Kind:                       "object",
+					LHS:                        lhsPrefix + "." + field,
+					GetterOk:                   getterOk(receiver, tfName),
+					Var:                        leafVar(tfName),
+					LoopVar:                    loopVar,
+					LoopIndex:                  base + "Index",
+					ExistingVar:                base + "Existing",
+					ElemVar:                    elemVar,
+					ElemStruct:                 elemStruct,
+					Scalars:                    childScalars,
+					Lists:                      childLists,
+					PreserveExisting:           b.filterByResponse,
+					PreserveConfiguredPresence: a.PreserveConfiguredPresence,
 				})
 			}
 
@@ -1056,30 +1082,32 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 			fields = append(fields, ModelFieldView{GoField: field, GoType: "*" + childStruct, TFName: tfName})
 			childAttrs, childBlocks, childScalars, childLists := b.walk(childStruct, childStem, objVar, elemVar, a.Children)
 			blockViews = append(blockViews, AttrView{
-				TFName:           tfName,
-				Description:      a.Description,
-				Required:         a.Required,
-				Optional:         a.Optional,
-				Computed:         a.Computed,
-				Sensitive:        a.Sensitive,
-				IsBlock:          true,
-				ListBlock:        false,
-				Attributes:       childAttrs,
-				Blocks:           childBlocks,
-				PlanModifiers:    pmNames,
-				PlanModifierType: pmType,
+				TFName:              tfName,
+				Description:         a.Description,
+				Required:            a.Required,
+				Optional:            a.Optional,
+				Computed:            a.Computed,
+				Sensitive:           a.Sensitive,
+				IsBlock:             true,
+				ListBlock:           false,
+				Attributes:          childAttrs,
+				Blocks:              childBlocks,
+				HasWriteOnlySecrets: hasWriteOnlySecrets(childAttrs),
+				PlanModifiers:       pmNames,
+				PlanModifierType:    pmType,
 			})
 			if b.responds(a) {
 				lists = append(lists, ListAssignment{
-					Kind:             "object_single",
-					LHS:              lhsPrefix + "." + field,
-					GetterOk:         getterOk(receiver, tfName),
-					Var:              objVar,
-					ElemVar:          elemVar,
-					ElemStruct:       childStruct,
-					Scalars:          childScalars,
-					Lists:            childLists,
-					PreserveExisting: b.filterByResponse,
+					Kind:                       "object_single",
+					LHS:                        lhsPrefix + "." + field,
+					GetterOk:                   getterOk(receiver, tfName),
+					Var:                        objVar,
+					ElemVar:                    elemVar,
+					ElemStruct:                 childStruct,
+					Scalars:                    childScalars,
+					Lists:                      childLists,
+					PreserveExisting:           b.filterByResponse,
+					PreserveConfiguredPresence: a.PreserveConfiguredPresence,
 				})
 			}
 
@@ -1090,6 +1118,183 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 
 	b.models[idx].Fields = fields
 	return attrViews, blockViews, scalars, lists
+}
+
+func writeOnlyContainment(inherited, tfType string) string {
+	if inherited != "" {
+		return inherited
+	}
+	switch tfType {
+	case "schema.ListAttribute", "schema.ListNestedAttribute", "schema.ListNestedBlock":
+		return "list"
+	case "schema.MapAttribute", "schema.MapNestedAttribute":
+		return "map"
+	case "schema.SetAttribute", "schema.SetNestedAttribute", "schema.SetNestedBlock":
+		return "set"
+	default:
+		return ""
+	}
+}
+
+func unsupportedWriteOnlyContainment(path, category string) UnsupportedNode {
+	return UnsupportedNode{
+		Path:   path,
+		Reason: fmt.Sprintf("write-only secret nested beneath a %s is not supported", category),
+	}
+}
+
+func unsupportedWriteOnlyCollision(path, name string) UnsupportedNode {
+	return UnsupportedNode{
+		Path:   path,
+		Reason: fmt.Sprintf("write-only companion name collision with %q", name),
+	}
+}
+
+func unsupportedWriteOnlyIdentifierCollision(path, otherPath, identifier string) UnsupportedNode {
+	return UnsupportedNode{
+		Path: path,
+		Reason: fmt.Sprintf(
+			"write-only handler identifier %q collides with write-only field %q",
+			identifier,
+			otherPath,
+		),
+	}
+}
+
+// validateWriteOnlySecrets checks the complete, unflattened resource tree so
+// diagnostics retain their canonical OpenAPI-derived paths. Expansion later in
+// walk can stay a single-purpose transformation instead of duplicating these
+// support-boundary checks after paths have been rewritten for rendering.
+func validateWriteOnlySecrets(attributes []*model.Attribute) []UnsupportedNode {
+	var unsupported []UnsupportedNode
+	handlerIdentifiers := make(map[string]string)
+	var walk func([]*model.Attribute, string)
+	walk = func(nodes []*model.Attribute, containment string) {
+		siblingNames := make(map[string]struct{}, len(nodes))
+		for _, sibling := range nodes {
+			siblingNames[tfNameOf(sibling.Path)] = struct{}{}
+		}
+
+		for _, attribute := range nodes {
+			if attribute.WriteOnlySecret {
+				switch {
+				case containment != "":
+					unsupported = append(unsupported, unsupportedWriteOnlyContainment(attribute.Path, containment))
+				case attribute.TfType != "schema.StringAttribute":
+					unsupported = append(unsupported, UnsupportedNode{
+						Path:   attribute.Path,
+						Reason: "write-only secret support is limited to string attributes",
+					})
+				default:
+					name := tfNameOf(attribute.Path)
+					companionCollision := false
+					for _, companion := range []string{name + "_wo", name + "_wo_version"} {
+						if _, exists := siblingNames[companion]; exists {
+							unsupported = append(unsupported, unsupportedWriteOnlyCollision(attribute.Path, companion))
+							companionCollision = true
+							break
+						}
+					}
+					if !companionCollision {
+						identifier := writeOnlyLocalStem(writeOnlyParentBlocks(attribute.Path), name)
+						if otherPath, exists := handlerIdentifiers[identifier]; exists && otherPath != attribute.Path {
+							unsupported = append(unsupported,
+								unsupportedWriteOnlyIdentifierCollision(attribute.Path, otherPath, identifier))
+						} else {
+							handlerIdentifiers[identifier] = attribute.Path
+						}
+					}
+				}
+			}
+
+			childContainment := writeOnlyContainment(containment, attribute.TfType)
+			walk(attribute.Children, childContainment)
+			if attribute.OneOf != nil {
+				for _, variant := range attribute.OneOf.Variants {
+					walk(variant.Attribute.Children, childContainment)
+				}
+			}
+		}
+	}
+	walk(attributes, "")
+	return unsupported
+}
+
+func hasWriteOnlySecrets(attributes []AttrView) bool {
+	for _, attribute := range attributes {
+		if attribute.WriteOnlySecret != nil {
+			return true
+		}
+	}
+	return false
+}
+
+func buildWriteOnlySecretView(attribute *model.Attribute, artifactBase string) WriteOnlySecretView {
+	tfName := tfNameOf(attribute.Path)
+	sdkField := model.SdkName(attribute.OpenAPIName)
+	if sdkField == "" {
+		sdkField = model.SdkName(tfName)
+	}
+	description := strings.TrimSpace(attribute.WriteOnlyDescription)
+	if description == "" {
+		description = strings.TrimSpace(attribute.Description)
+	}
+	if description != "" {
+		description += " "
+	}
+	writeOnlyAttr := tfName + "_wo"
+	parentBlocks := writeOnlyParentBlocks(attribute.Path)
+	localStem := writeOnlyLocalStem(parentBlocks, tfName)
+	return WriteOnlySecretView{
+		OriginalAttr:         tfName,
+		WriteOnlyAttr:        writeOnlyAttr,
+		TriggerAttr:          tfName + "_wo_version",
+		SDKField:             sdkField,
+		ParentBlocks:         parentBlocks,
+		RequiredOnCreate:     attribute.SecretRequiredOnCreate,
+		RequiredOnUpdate:     attribute.SecretRequiredOnUpdate,
+		WriteOnlyDescription: description + "This write-only value is not stored in Terraform state.",
+		TriggerDescription:   "Version trigger for " + writeOnlyAttr + " rotation.",
+		ConfigVar:            artifactBase + upperFirst(localStem) + "WriteOnlySecretConfig",
+		HandlerVar:           localStem + "WriteOnlySecretHandler",
+		ResultVar:            localStem + "SecretResult",
+	}
+}
+
+func (b *dataSourceBuilder) collectWriteOnlySecret(secret WriteOnlySecretView) {
+	if b.writeOnlySeen == nil {
+		b.writeOnlySeen = make(map[string]struct{})
+	}
+	pathKey := strings.Join(append(append([]string(nil), secret.ParentBlocks...), secret.OriginalAttr), ".")
+	if _, exists := b.writeOnlySeen[pathKey]; exists {
+		return
+	}
+	b.writeOnlySeen[pathKey] = struct{}{}
+	b.writeOnlySecrets = append(b.writeOnlySecrets, secret)
+}
+
+func writeOnlyLocalStem(parentBlocks []string, tfName string) string {
+	path := append(append([]string(nil), parentBlocks...), tfName)
+	return lowerFirst(model.SdkName(strings.Join(path, "_")))
+}
+
+func writeOnlyParentBlocks(attributePath string) []string {
+	const attributesMarker = ".data.attributes."
+	if index := strings.Index(attributePath, attributesMarker); index >= 0 {
+		attributePath = attributePath[index+len(attributesMarker):]
+	} else {
+		attributePath = strings.TrimPrefix(attributePath, "resource.")
+		attributePath = strings.TrimPrefix(attributePath, "response.")
+	}
+	segments := strings.Split(attributePath, ".")
+	if len(segments) <= 1 {
+		return nil
+	}
+	parents := make([]string, 0, len(segments)-1)
+	for _, segment := range segments[:len(segments)-1] {
+		parents = append(parents, stripMarkers(segment))
+	}
+	return parents
 }
 
 // getterOk builds the SDK optional getter reading name off receiver, e.g.
@@ -1352,7 +1557,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 				Blocks:      render.blocks,
 			})
 			itemLists = append(itemLists, oneOfListAssignment(
-				n.OneOf, render, tfName, "item.Attributes", "r."+field, collection, false))
+				n.OneOf, render, tfName, "item.Attributes", "r."+field, collection, false, false))
 			continue
 		}
 
@@ -1634,6 +1839,9 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 			return ResourceView{}, err
 		}
 	}
+	if unsupported := validateWriteOnlySecrets(a.Schema.Attributes); len(unsupported) > 0 {
+		return ResourceView{}, &UnsupportedEmitError{Nodes: unsupported}
+	}
 
 	primary := lc.Read
 	goName := dsGoName(a.Name)
@@ -1667,6 +1875,8 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	// update body would not compile.
 	createFields, requestImps := buildRequestFields(
 		env.leaves, lc.Create.RequestAttributesSchema, "state", requestAttributesVar, primary.GoPackage, &b.unsupported)
+	createWriteOnlySecrets := writeOnlySecretsForFields(
+		b.writeOnlySecrets, createFields, "GetSecretForCreate(ctx, &request.Config)")
 	createArgs, createUUID, createStrconv := buildArgumentViews(lc.Create, &b.unsupported)
 	readArgs, readUUID, readStrconv := buildArgumentViews(lc.Read, &b.unsupported)
 	deleteArgs, deleteUUID, deleteStrconv := buildArgumentViews(lc.Delete, &b.unsupported)
@@ -1694,6 +1904,8 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 			Method: lc.Update.GoMethod, GoRequestType: lc.Update.GoRequestType,
 			GoResponseType: lc.Update.GoResponseType, Arguments: updateArgs,
 			Envelope: buildRequestEnvelope(a.Name, "Update", primary.GoPackage, lc.Update, updateFields, &b.unsupported),
+			WriteOnlySecrets: writeOnlySecretsForFields(
+				b.writeOnlySecrets, updateFields, "GetSecretForUpdate(ctx, &request.Config, &request)"),
 		}
 		// Keyed on whether the body itself declares an id, and of what type —
 		// not on env.idAssign, which describes only the response side.
@@ -1746,7 +1958,8 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		Create: CRUDCallView{
 			Method: lc.Create.GoMethod, GoRequestType: lc.Create.GoRequestType,
 			GoResponseType: lc.Create.GoResponseType, Arguments: createArgs,
-			Envelope: createEnvelope,
+			Envelope: createEnvelope, WriteOnlySecrets: createWriteOnlySecrets,
+			NormalizeUnknowns: buildUnknownNormalizations(env.leaves, "state"),
 		},
 		Read: CRUDCallView{
 			Method: lc.Read.GoMethod, GoResponseType: lc.Read.GoResponseType, Arguments: readArgs,
@@ -1757,7 +1970,12 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 			Method: lc.Delete.GoMethod, Arguments: deleteArgs,
 		},
 		Models: models,
-		Schema: SchemaView{Attributes: recordAttrs, Blocks: recordBlocks},
+		Schema: SchemaView{
+			Attributes:          recordAttrs,
+			Blocks:              recordBlocks,
+			HasWriteOnlySecrets: hasWriteOnlySecrets(recordAttrs),
+			IncludeResourceID:   true,
+		},
 		State: StateView{
 			ParamName:   "resp",
 			ParamType:   "*" + primary.GoPackage + "." + primary.GoResponseType,
@@ -1779,6 +1997,8 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		UsesUUID:             createUUID || readUUID || updateUUID || deleteUUID || requestImps.uuid,
 		UsesStrconv:          createStrconv || readStrconv || updateStrconv || deleteStrconv,
 		UsesTime:             requestImps.time,
+		WriteOnlySecrets:     b.writeOnlySecrets,
+		UsesWriteOnly:        len(b.writeOnlySecrets) > 0,
 		Dropped:              b.dropped,
 	}, nil
 }
@@ -1977,6 +2197,15 @@ func buildRequestFields(attrs []*model.Attribute, role *model.Schema, stateExpr,
 		}
 		field := model.SdkName(tfName)
 		childState := stateExpr + "." + field
+		if a.WriteOnlySecret {
+			secret := buildWriteOnlySecretView(a, "")
+			fields = append(fields, RequestFieldView{
+				GoField:         secret.SDKField,
+				Target:          target,
+				WriteOnlyResult: secret.ResultVar,
+			})
+			continue
+		}
 
 		if a.OneOf != nil {
 			rf, oneOfImports, ok := buildOneOfRequestField(a, roleChildSchema, tfName, field, childState, target, sdkPackage, unsupported)
@@ -2039,6 +2268,103 @@ func buildRequestFields(attrs []*model.Attribute, role *model.Schema, stateExpr,
 		imports.time = imports.time || t
 	}
 	return fields, imports
+}
+
+func writeOnlySecretsForFields(all []WriteOnlySecretView, fields []RequestFieldView, getterCall string) []WriteOnlySecretView {
+	used := make(map[string]struct{})
+	var collect func([]RequestFieldView)
+	collect = func(nodes []RequestFieldView) {
+		for _, field := range nodes {
+			if field.WriteOnlyResult != "" {
+				used[field.WriteOnlyResult] = struct{}{}
+			}
+			if field.Nested != nil {
+				collect(field.Nested.Fields)
+			}
+			if field.Collection != nil {
+				collect(field.Collection.Fields)
+			}
+			if field.OneOf != nil {
+				for _, variant := range field.OneOf.Variants {
+					collect(variant.Fields)
+				}
+			}
+		}
+	}
+	collect(fields)
+	if len(used) == 0 {
+		return nil
+	}
+
+	result := make([]WriteOnlySecretView, 0, len(used))
+	for _, secret := range all {
+		if _, exists := used[secret.ResultVar]; !exists {
+			continue
+		}
+		secret.GetterCall = getterCall
+		result = append(result, secret)
+	}
+	return result
+}
+
+func buildUnknownNormalizations(attributes []*model.Attribute, stateExpr string) []UnknownNormalizationView {
+	var result []UnknownNormalizationView
+	for _, attribute := range attributes {
+		if attribute.WriteOnlySecret {
+			continue
+		}
+		field := model.SdkName(tfNameOf(attribute.Path))
+		expr := stateExpr + "." + field
+
+		switch attribute.TfType {
+		case "schema.SingleNestedBlock", "schema.SingleNestedAttribute":
+			children := buildUnknownNormalizations(attribute.Children, expr)
+			if len(children) != 0 {
+				result = append(result, UnknownNormalizationView{Kind: "object", Expr: expr, Children: children})
+			}
+			continue
+		case "schema.ListNestedBlock", "schema.ListNestedAttribute":
+			itemVar := leafVar(field + "Item")
+			children := buildUnknownNormalizations(attribute.Children, itemVar)
+			if len(children) != 0 {
+				result = append(result, UnknownNormalizationView{
+					Kind: "list_object", Expr: expr, ItemVar: itemVar, Children: children,
+				})
+			}
+			continue
+		}
+
+		if !attribute.Computed {
+			continue
+		}
+		nullExpr := computedNullExpr(attribute)
+		if nullExpr != "" {
+			result = append(result, UnknownNormalizationView{Kind: "value", Expr: expr, NullExpr: nullExpr})
+		}
+	}
+	return result
+}
+
+func computedNullExpr(attribute *model.Attribute) string {
+	switch attribute.GoType {
+	case "types.String":
+		return "types.StringNull()"
+	case "types.Bool":
+		return "types.BoolNull()"
+	case "types.Int64":
+		return "types.Int64Null()"
+	case "types.Float64":
+		return "types.Float64Null()"
+	case "types.List":
+		if attribute.ElementType != "" {
+			return "types.ListNull(" + attribute.ElementType + ")"
+		}
+	case "types.Map":
+		if attribute.ElementType != "" {
+			return "types.MapNull(" + attribute.ElementType + ")"
+		}
+	}
+	return ""
 }
 
 // roleChild resolves one role body's schema node for attribute a at the current

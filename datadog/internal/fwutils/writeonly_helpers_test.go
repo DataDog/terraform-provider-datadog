@@ -3,6 +3,7 @@ package fwutils
 import (
 	"context"
 	"fmt"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -486,5 +487,225 @@ func TestGetSecretForCreateFromNestedBlock(t *testing.T) {
 				t.Errorf("Value = %q, want %q", result.Value, tc.wantValue)
 			}
 		})
+	}
+}
+
+// modeOnlySecretConfig uses reflection so this red test remains executable
+// before T156 adds the Mode and Required contract to WriteOnlySecretConfig.
+// A missing field is reported as the intended contract failure rather than a
+// package compilation error that would hide the rest of the provider suite.
+func modeOnlySecretConfig(t *testing.T, required bool) WriteOnlySecretConfig {
+	t.Helper()
+	config := WriteOnlySecretConfig{
+		OriginalAttr:         "api_key",
+		WriteOnlyAttr:        "api_key_wo",
+		TriggerAttr:          "api_key_wo_version",
+		OriginalDescription:  "The API key for the account.",
+		WriteOnlyDescription: "Write-only API key for the account.",
+		TriggerDescription:   "Version for `api_key_wo` rotation.",
+	}
+	value := reflect.ValueOf(&config).Elem()
+	mode := value.FieldByName("Mode")
+	if !mode.IsValid() {
+		t.Fatal("WriteOnlySecretConfig is missing Mode; T156 must add WriteOnlySecretModeOnly")
+	}
+	switch mode.Kind() {
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		mode.SetInt(1)
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		mode.SetUint(1)
+	default:
+		t.Fatalf("WriteOnlySecretConfig.Mode must be an integer-backed enum, got %s", mode.Kind())
+	}
+	requiredField := value.FieldByName("Required")
+	if !requiredField.IsValid() {
+		t.Fatal("WriteOnlySecretConfig is missing Required")
+	}
+	if requiredField.Kind() != reflect.Bool {
+		t.Fatalf("WriteOnlySecretConfig.Required must be bool, got %s", requiredField.Kind())
+	}
+	requiredField.SetBool(required)
+	return config
+}
+
+func modeOnlyValue(secret, version *string) tftypes.Value {
+	stringValue := func(value *string) tftypes.Value {
+		if value == nil {
+			return tftypes.NewValue(tftypes.String, nil)
+		}
+		return tftypes.NewValue(tftypes.String, *value)
+	}
+	objectType := tftypes.Object{AttributeTypes: map[string]tftypes.Type{
+		"api_key_wo":         tftypes.String,
+		"api_key_wo_version": tftypes.String,
+	}}
+	return tftypes.NewValue(objectType, map[string]tftypes.Value{
+		"api_key_wo":         stringValue(secret),
+		"api_key_wo_version": stringValue(version),
+	})
+}
+
+func TestCreateWriteOnlySecretAttributesModeOnly(t *testing.T) {
+	for _, required := range []bool{false, true} {
+		t.Run(fmt.Sprintf("required=%t", required), func(t *testing.T) {
+			config := modeOnlySecretConfig(t, required)
+			attrs := CreateWriteOnlySecretAttributes(config)
+
+			if len(attrs) != 2 {
+				t.Fatalf("mode-only schema must expose exactly _wo and _wo_version, got keys %#v", reflect.ValueOf(attrs).MapKeys())
+			}
+			if _, exists := attrs[config.OriginalAttr]; exists {
+				t.Fatalf("mode-only schema must not expose plaintext attribute %q", config.OriginalAttr)
+			}
+			writeOnly, ok := attrs[config.WriteOnlyAttr].(schema.StringAttribute)
+			if !ok {
+				t.Fatalf("%s must be schema.StringAttribute, got %T", config.WriteOnlyAttr, attrs[config.WriteOnlyAttr])
+			}
+			version, ok := attrs[config.TriggerAttr].(schema.StringAttribute)
+			if !ok {
+				t.Fatalf("%s must be schema.StringAttribute, got %T", config.TriggerAttr, attrs[config.TriggerAttr])
+			}
+			if !writeOnly.WriteOnly || writeOnly.Sensitive || writeOnly.Computed {
+				t.Errorf("_wo flags = WriteOnly:%t Sensitive:%t Computed:%t; want true, false, false", writeOnly.WriteOnly, writeOnly.Sensitive, writeOnly.Computed)
+			}
+			if required {
+				if !writeOnly.Required || writeOnly.Optional || !version.Required || version.Optional {
+					t.Errorf("required mode-only pair must make both attributes Required: _wo=%#v version=%#v", writeOnly, version)
+				}
+				return
+			}
+			if !writeOnly.Optional || writeOnly.Required || !version.Optional || version.Required {
+				t.Errorf("optional mode-only pair must make both attributes Optional: _wo=%#v version=%#v", writeOnly, version)
+			}
+			writeOnlyValidators := validatorDescriptions(t, writeOnly)
+			versionValidators := validatorDescriptions(t, version)
+			if !strings.Contains(writeOnlyValidators, `"[api_key_wo_version]"`) {
+				t.Errorf("optional _wo must require its version, got:\n%s", writeOnlyValidators)
+			}
+			if !strings.Contains(versionValidators, `"[api_key_wo]"`) {
+				t.Errorf("optional version must require _wo, got:\n%s", versionValidators)
+			}
+		})
+	}
+}
+
+func TestCreateWriteOnlySecretAttributesModeOnlyValidNestedSchema(t *testing.T) {
+	config := modeOnlySecretConfig(t, false)
+	config.ParentBlocks = []string{"authentication", "basic"}
+	basicAttributes := CreateWriteOnlySecretAttributes(config)
+	basicAttributes["username"] = schema.StringAttribute{
+		Optional:    true,
+		Computed:    true,
+		Description: "Readable username returned by the API.",
+	}
+
+	testSchema := schema.Schema{
+		Attributes: map[string]schema.Attribute{
+			"authentication": schema.SingleNestedAttribute{
+				Required:    true,
+				Description: "Authentication configuration.",
+				Attributes: map[string]schema.Attribute{
+					"basic": schema.SingleNestedAttribute{
+						Optional:    true,
+						Description: "Basic authentication configuration.",
+						Attributes:  basicAttributes,
+					},
+				},
+			},
+		},
+	}
+
+	if diagnostics := testSchema.ValidateImplementation(context.Background()); diagnostics.HasError() {
+		t.Fatalf("mode-only nested resource schema must pass framework validation: %v", diagnostics)
+	}
+}
+
+func TestWriteOnlySecretHandlerModeOnlyReadsConfigurationWithoutPlaintextFallback(t *testing.T) {
+	config := modeOnlySecretConfig(t, false)
+	testSchema := schema.Schema{Attributes: CreateWriteOnlySecretAttributes(config)}
+	handler := &WriteOnlySecretHandler{Config: config}
+
+	for _, tc := range []struct {
+		name      string
+		secret    *string
+		wantSet   bool
+		wantValue string
+	}{
+		{name: "configured write-only value", secret: ptr("configuration-only-secret"), wantSet: true, wantValue: "configuration-only-secret"},
+		{name: "optional secret omitted"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			tfConfig := &tfsdk.Config{Raw: modeOnlyValue(tc.secret, ptr("1")), Schema: testSchema}
+			result := handler.GetSecretForCreate(context.Background(), tfConfig)
+			if result.Diagnostics.HasError() {
+				t.Fatalf("mode-only Create must not look up absent plaintext attribute: %v", result.Diagnostics)
+			}
+			if result.ShouldSetValue != tc.wantSet || result.Value != tc.wantValue {
+				t.Errorf("result = (%t, %q), want (%t, %q)", result.ShouldSetValue, result.Value, tc.wantSet, tc.wantValue)
+			}
+		})
+	}
+}
+
+func TestWriteOnlySecretHandlerModeOnlyUpdateRotation(t *testing.T) {
+	config := modeOnlySecretConfig(t, false)
+	testSchema := schema.Schema{Attributes: CreateWriteOnlySecretAttributes(config)}
+	handler := &WriteOnlySecretHandler{Config: config}
+
+	for _, tc := range []struct {
+		name         string
+		priorVersion string
+		planVersion  string
+		wantSet      bool
+	}{
+		{name: "unchanged version omits secret", priorVersion: "1", planVersion: "1", wantSet: false},
+		{name: "changed version rotates once", priorVersion: "1", planVersion: "2", wantSet: true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			tfConfig := &tfsdk.Config{Raw: modeOnlyValue(ptr("rotated-secret"), ptr(tc.planVersion)), Schema: testSchema}
+			request := &resource.UpdateRequest{
+				State: tfsdk.State{Raw: modeOnlyValue(nil, ptr(tc.priorVersion)), Schema: testSchema},
+				Plan:  tfsdk.Plan{Raw: modeOnlyValue(nil, ptr(tc.planVersion)), Schema: testSchema},
+			}
+			result := handler.GetSecretForUpdate(context.Background(), tfConfig, request)
+			if result.Diagnostics.HasError() {
+				t.Fatalf("unexpected diagnostics: %v", result.Diagnostics)
+			}
+			if result.ShouldSetValue != tc.wantSet {
+				t.Errorf("ShouldSetValue = %t, want %t", result.ShouldSetValue, tc.wantSet)
+			}
+			if tc.wantSet && result.Value != "rotated-secret" {
+				t.Errorf("Value = %q, want rotated-secret", result.Value)
+			}
+		})
+	}
+}
+
+func TestWriteOnlySecretHandlerModeOnlyRequiredUpdateRejectsMissingSecret(t *testing.T) {
+	config := modeOnlySecretConfig(t, false)
+	testSchema := schema.Schema{Attributes: CreateWriteOnlySecretAttributes(config)}
+	handler := &WriteOnlySecretHandler{Config: config, SecretRequiredOnUpdate: true}
+	tfConfig := &tfsdk.Config{Raw: modeOnlyValue(nil, nil), Schema: testSchema}
+	request := &resource.UpdateRequest{
+		State: tfsdk.State{Raw: modeOnlyValue(nil, nil), Schema: testSchema},
+		Plan:  tfsdk.Plan{Raw: modeOnlyValue(nil, nil), Schema: testSchema},
+	}
+
+	result := handler.GetSecretForUpdate(context.Background(), tfConfig, request)
+
+	if !result.Diagnostics.HasError() {
+		t.Fatal("required Update secret omission must return an error diagnostic")
+	}
+	if result.ShouldSetValue {
+		t.Fatal("missing required Update secret must not be sent")
+	}
+	for _, diagnostic := range result.Diagnostics {
+		message := diagnostic.Summary() + " " + diagnostic.Detail()
+		if !strings.Contains(message, "api_key_wo") {
+			t.Errorf("diagnostic must identify api_key_wo, got %q", message)
+		}
+		if strings.Contains(message, "configuration-only-secret") {
+			t.Errorf("diagnostic exposed a secret value: %q", message)
+		}
 	}
 }

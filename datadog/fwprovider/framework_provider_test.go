@@ -4,9 +4,27 @@ import (
 	"testing"
 	"time"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
+
+func TestEnableGeneratedUnstableOperations(t *testing.T) {
+	originalOperations := generatedUnstableOperations
+	generatedUnstableOperations = []string{"v2.CreateElasticCloudIntegrationAccount"}
+	t.Cleanup(func() {
+		generatedUnstableOperations = originalOperations
+	})
+
+	config := datadog.NewConfiguration()
+
+	EnableGeneratedUnstableOperations(config)
+
+	const operation = "v2.CreateElasticCloudIntegrationAccount"
+	if !config.IsUnstableOperationEnabled(operation) {
+		t.Fatalf("generated operation %q was not enabled", operation)
+	}
+}
 
 func TestDefaultConfigureFuncRetryConfiguration(t *testing.T) {
 	p := New().(*FrameworkProvider)

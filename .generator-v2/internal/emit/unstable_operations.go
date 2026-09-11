@@ -25,7 +25,7 @@ const generatedUnstableOperationsHeader = `package fwprovider
 // the operations it produced into the existing set (union, sorted) so a scoped
 // --include run never drops entries another artifact needs. Do not edit by hand.
 //
-// enrichFrameworkProviderConfig enables each of these on the client config.
+// EnableGeneratedUnstableOperations enables each of these on the client config.
 var generatedUnstableOperations = []string{`
 
 // SyncUnstableOperations rewrites path's generatedUnstableOperations slice to
