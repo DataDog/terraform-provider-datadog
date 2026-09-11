@@ -239,3 +239,81 @@ func serviceAccountApplicationKeyExistsHelper(auth context.Context, s *terraform
 	}
 	return nil
 }
+
+// TestAccServiceAccountApplicationKey_ActionsApiAccess tests the preview Actions API access feature
+func TestAccServiceAccountApplicationKey_ActionsApiAccess(t *testing.T) {
+	t.Parallel()
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+	resourceName := "datadog_service_account_application_key.foo"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogServiceAccountApplicationKeyDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogServiceAccountApplicationKeyWithActionsApiAccess(uniq, true),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogServiceAccountApplicationKeyExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", uniq),
+					resource.TestCheckResourceAttr(resourceName, "enable_actions_api_access", "true"),
+					resource.TestCheckResourceAttrSet(resourceName, "key"),
+					resource.TestCheckResourceAttrPair(
+						resourceName, "service_account_id", "datadog_service_account.bar", "id"),
+					testAccCheckDatadogServiceAccountApplicationKeyActionsApiRegistered(providers.frameworkProvider, resourceName, true),
+				),
+			},
+			{
+				Config: testAccCheckDatadogServiceAccountApplicationKeyWithActionsApiAccess(uniq, false),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogServiceAccountApplicationKeyExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", uniq),
+					resource.TestCheckResourceAttr(resourceName, "enable_actions_api_access", "false"),
+					resource.TestCheckResourceAttrSet(resourceName, "key"),
+					resource.TestCheckResourceAttrPair(
+						resourceName, "service_account_id", "datadog_service_account.bar", "id"),
+					testAccCheckDatadogServiceAccountApplicationKeyActionsApiRegistered(providers.frameworkProvider, resourceName, false),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogServiceAccountApplicationKeyWithActionsApiAccess(uniq string, enableActionsApi bool) string {
+	return fmt.Sprintf(`
+resource "datadog_service_account" "bar" {
+	email = "new@example.com"
+	name  = "testTerraformServiceAccountApplicationKeys"
+}
+
+resource "datadog_service_account_application_key" "foo" {
+    service_account_id = datadog_service_account.bar.id
+    name = "%s"
+	enable_actions_api_access = %t
+}`, uniq, enableActionsApi)
+}
+
+func testAccCheckDatadogServiceAccountApplicationKeyActionsApiRegistered(accProvider *fwprovider.FrameworkProvider, n string, expectedRegistered bool) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
+		if err := serviceAccountApplicationKeyActionsApiRegisteredHelper(auth, s, apiInstances, n, expectedRegistered); err != nil {
+			return err
+		}
+		return nil
+	}
+}
+
+func serviceAccountApplicationKeyActionsApiRegisteredHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances, name string, expectedRegistered bool) error {
+	id := s.RootModule().Resources[name].Primary.ID
+	_, _, err := apiInstances.GetActionConnectionApiV2().GetAppKeyRegistration(ctx, id)
+	isRegistered := err == nil
+
+	if isRegistered != expectedRegistered {
+		return fmt.Errorf("service account application key Actions API registration status %t does not match expected %t", isRegistered, expectedRegistered)
+	}
+	return nil
+}
