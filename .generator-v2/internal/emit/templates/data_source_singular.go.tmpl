@@ -143,19 +143,7 @@ func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.R
   datadog/fwprovider/data_source_datadog_azure_uc_config.go.
 */}}
 func (d *{{ .GoName }}DataSource) updateState(ctx context.Context, state *{{ .GoName }}DataSourceModel, {{ .State.ParamName }} {{ .State.ParamType }}) diag.Diagnostics {
-	var diags diag.Diagnostics
-{{- range .State.Preamble }}
-	{{ . }}
-{{- end }}
-{{- range .State.Assignments }}
-	if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
-		{{ .LHS }} = {{ .RHS }}
-	}
-{{- end }}
-{{- range .State.Lists }}
-	{{ template "renderList" . }}
-{{- end }}
-	return diags
+{{- template "updateStateBody" . }}
 }
 {{- end -}}
 

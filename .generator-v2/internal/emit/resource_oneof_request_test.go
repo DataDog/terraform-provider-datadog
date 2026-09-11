@@ -111,10 +111,10 @@ var _ = Describe("BuildResourceView oneOf request expansion", func() {
 		stringVariant := blockByName(auth.Blocks, "string")
 		basicVariant := blockByName(auth.Blocks, "widget_basic_auth")
 
-		Expect(stringVariant.ObjectValidators).To(Equal([]string{
+		Expect(stringVariant.Validators).To(Equal([]string{
 			`objectvalidator.ExactlyOneOf(path.MatchRelative().AtParent().AtName("widget_basic_auth"))`,
 		}))
-		Expect(basicVariant.ObjectValidators).To(Equal([]string{
+		Expect(basicVariant.Validators).To(Equal([]string{
 			`objectvalidator.ExactlyOneOf(path.MatchRelative().AtParent().AtName("string"))`,
 		}))
 		Expect(view.UsesObjectValidators).To(BeTrue())
@@ -133,7 +133,7 @@ var _ = Describe("BuildResourceView oneOf request expansion", func() {
 		auth := blockByName(view.Schema.Blocks, "auth")
 		variant := blockByName(auth.Blocks, "widget_basic_auth")
 
-		Expect(variant.ObjectValidators).To(Equal([]string{
+		Expect(variant.Validators).To(Equal([]string{
 			`objectvalidator.ExactlyOneOf()`,
 		}))
 	})

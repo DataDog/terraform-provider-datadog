@@ -276,13 +276,22 @@ func (m *resourceMerger) mergeNode(create, update, read *Schema, createRequired 
 }
 
 func (m *resourceMerger) mergeObject(create, update, read *Schema, createRequired bool, path string) (*Schema, error) {
+	// The create body's required list is consulted once per property, so index
+	// it up front rather than rescanning the slice for every key.
+	createRequiredKeys := map[string]struct{}{}
+	if create != nil {
+		for _, key := range create.Required {
+			createRequiredKeys[key] = struct{}{}
+		}
+	}
+
 	properties := make(map[string]*Schema)
 	for _, key := range unionObjectKeys(create, update, read) {
 		var childCreate, childUpdate, childRead *Schema
 		childRequired := false
 		if create != nil {
 			childCreate = create.Properties[key]
-			childRequired = slices.Contains(create.Required, key)
+			_, childRequired = createRequiredKeys[key]
 		}
 		if update != nil {
 			childUpdate = update.Properties[key]
@@ -296,18 +305,22 @@ func (m *resourceMerger) mergeObject(create, update, read *Schema, createRequire
 		}
 		properties[key] = child
 	}
-	refName, description, enum, sensitive := m.cosmeticFields(create, update, read, path)
-	return &Schema{
-		Kind:           SchemaKindObject,
-		Properties:     properties,
-		Required:       requiredFromCreate(create),
-		RefName:        refName,
-		RequestRefName: pickRequestRefName(create, update),
-		Description:    description,
-		Enum:           enum,
-		Sensitive:      sensitive,
-		Provenance:     stampProvenance(create, update, read, createRequired),
-	}, nil
+	return m.stampCommon(&Schema{
+		Kind:       SchemaKindObject,
+		Properties: properties,
+		Required:   requiredFromCreate(create),
+	}, create, update, read, createRequired, path), nil
+}
+
+// stampCommon fills the fields every merged node carries whatever its kind: the
+// cosmetic trio (RefName, Description, Enum, Sensitive), the request-side
+// component name, and the provenance stamp. It returns out so a merge can
+// construct its kind-specific fields and stamp the rest in one expression.
+func (m *resourceMerger) stampCommon(out, create, update, read *Schema, createRequired bool, path string) *Schema {
+	out.RefName, out.Description, out.Enum, out.Sensitive = m.cosmeticFields(create, update, read, path)
+	out.RequestRefName = pickRequestRefName(create, update)
+	out.Provenance = stampProvenance(create, update, read, createRequired)
+	return out
 }
 
 func (m *resourceMerger) mergeCollection(kind SchemaKind, create, update, read *Schema, createRequired bool, path string) (*Schema, error) {
@@ -331,17 +344,10 @@ func (m *resourceMerger) mergeCollection(kind SchemaKind, create, update, read *
 	if err != nil {
 		return nil, err
 	}
-	refName, description, enum, sensitive := m.cosmeticFields(create, update, read, path)
-	return &Schema{
-		Kind:           kind,
-		Items:          items,
-		RefName:        refName,
-		RequestRefName: pickRequestRefName(create, update),
-		Description:    description,
-		Enum:           enum,
-		Sensitive:      sensitive,
-		Provenance:     stampProvenance(create, update, read, createRequired),
-	}, nil
+	return m.stampCommon(&Schema{
+		Kind:  kind,
+		Items: items,
+	}, create, update, read, createRequired, path), nil
 }
 
 func (m *resourceMerger) mergePrimitive(create, update, read *Schema, createRequired bool, path string) (*Schema, error) {
@@ -354,26 +360,16 @@ func (m *resourceMerger) mergePrimitive(create, update, read *Schema, createRequ
 	if err != nil {
 		return nil, err
 	}
-	refName, description, enum, sensitive := m.cosmeticFields(create, update, read, path)
-	return &Schema{
-		Kind:           SchemaKindPrimitive,
-		Type:           typ,
-		Format:         format,
-		Enum:           enum,
-		RefName:        refName,
-		RequestRefName: pickRequestRefName(create, update),
-		Description:    description,
-		Sensitive:      sensitive,
-		Provenance:     stampProvenance(create, update, read, createRequired),
-	}, nil
+	return m.stampCommon(&Schema{
+		Kind:   SchemaKindPrimitive,
+		Type:   typ,
+		Format: format,
+	}, create, update, read, createRequired, path), nil
 }
 
 func (m *resourceMerger) mergeVerbatim(create, update, read *Schema, createRequired bool, path string) (*Schema, error) {
 	out := CloneSchema(preferredSchema(create, update, read))
-	out.RefName, out.Description, out.Enum, out.Sensitive = m.cosmeticFields(create, update, read, path)
-	out.RequestRefName = pickRequestRefName(create, update)
-	out.Provenance = stampProvenance(create, update, read, createRequired)
-	return out, nil
+	return m.stampCommon(out, create, update, read, createRequired, path), nil
 }
 
 // pickRequestRefName returns the Create body's component name at this node,
@@ -550,28 +546,27 @@ func pickString(get func(*Schema) string, create, update, read *Schema) (value s
 // already the same size as the union necessarily equals it, since it is a
 // subset by construction.
 func unionEnum(create, update, read *Schema) (values []string, disagreed bool) {
-	present := presentSchemas(create, update, read)
 	var all []string
 	withEnum := 0
-	for _, s := range present {
-		if len(s.Enum) > 0 {
-			withEnum++
-			all = append(all, s.Enum...)
+	// A side's own deduped enum is a subset of the union by construction, so a
+	// side smaller than the union is missing a member another side had. Tracking
+	// the largest side here avoids re-deduping every side in a second pass.
+	maxDeduped := 0
+	for _, s := range presentSchemas(create, update, read) {
+		if len(s.Enum) == 0 {
+			continue
+		}
+		withEnum++
+		all = append(all, s.Enum...)
+		if n := len(sortedUniqueStrings(slices.Clone(s.Enum))); n > maxDeduped {
+			maxDeduped = n
 		}
 	}
 	values = sortedUniqueStrings(all)
 	if withEnum < 2 {
 		return values, false
 	}
-	for _, s := range present {
-		if len(s.Enum) == 0 {
-			continue
-		}
-		if len(sortedUniqueStrings(append([]string(nil), s.Enum...))) != len(values) {
-			return values, true
-		}
-	}
-	return values, false
+	return values, maxDeduped != len(values)
 }
 
 func anySensitive(create, update, read *Schema) (sensitive, disagreed bool) {
@@ -709,17 +704,10 @@ func (m *resourceMerger) mergeOneOf(create, update, read *Schema, createRequired
 		spec.Nullable = spec.Nullable || s.OneOf.Nullable
 	}
 
-	refName, description, enum, sensitive := m.cosmeticFields(create, update, read, path)
-	return &Schema{
-		Kind:           SchemaKindOneOf,
-		OneOf:          spec,
-		RefName:        refName,
-		RequestRefName: pickRequestRefName(create, update),
-		Description:    description,
-		Enum:           enum,
-		Sensitive:      sensitive,
-		Provenance:     stampProvenance(create, update, read, createRequired),
-	}, nil
+	return m.stampCommon(&Schema{
+		Kind:  SchemaKindOneOf,
+		OneOf: spec,
+	}, create, update, read, createRequired, path), nil
 }
 
 // correlateOneOf lines the three bodies' alternatives up under one name each,

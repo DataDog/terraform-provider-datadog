@@ -61,10 +61,8 @@ func unstableOperationKeys(op *Operation) []string {
 		}
 	}
 	add(op)
-	if g := op.ResolvedGroup; g != nil {
-		for _, role := range []*Operation{g.Create, g.Read, g.Search, g.Update, g.Delete} {
-			add(role)
-		}
+	for _, role := range op.ResolvedGroup.Operations() {
+		add(role)
 	}
 	if len(seen) == 0 {
 		return nil
@@ -417,7 +415,7 @@ func buildItemsBlock(op *Operation) (*Attribute, []Diagnostic, error) {
 			break
 		}
 	}
-	attr, err := (&treeBuilder{kind: responseTree}).attribute(arr, "response."+resultsPath, nestBlock, required)
+	attr, err := (&treeBuilder{kind: responseTree}).attribute(arr, "response."+resultsPath, required)
 	return attr, nil, err
 }
 

@@ -7,17 +7,6 @@ import (
 	"strings"
 )
 
-// nestingMode is retained for the map<object> projection boundary. Generated
-// protocol-v6 schemas use nested attributes in every context, so both modes now
-// produce attribute forms; keeping the boundary explicit leaves map-specific
-// traversal and diagnostics intact.
-type nestingMode int
-
-const (
-	nestBlock nestingMode = iota
-	nestAttribute
-)
-
 // treeKind distinguishes the three entry points, which differ only in
 // presence flags: a response tree is state the provider reads back, so every
 // node is Computed; a request tree is practitioner input, so every node is
@@ -156,7 +145,7 @@ func (b *treeBuilder) build(s *Schema, root string) (*AttributeTree, []Diagnosti
 		return tree, nil, nil
 	}
 	if s.Kind == SchemaKindObject {
-		attrs, err := b.children(s, root+".", nestBlock)
+		attrs, err := b.children(s, root+".")
 		if err != nil {
 			return nil, nil, err
 		}
@@ -166,7 +155,7 @@ func (b *treeBuilder) build(s *Schema, root string) (*AttributeTree, []Diagnosti
 	// A body root is always present, so it is required when it is input at
 	// all — except a union, which states its own optionality (a root has no
 	// enclosing object whose required list could say otherwise).
-	attr, err := b.attribute(s, root, nestBlock, !rootUnionOptional(s))
+	attr, err := b.attribute(s, root, !rootUnionOptional(s))
 	if err != nil {
 		return nil, nil, err
 	}
@@ -175,15 +164,15 @@ func (b *treeBuilder) build(s *Schema, root string) (*AttributeTree, []Diagnosti
 }
 
 // attribute converts one schema node at path into an Attribute, recursing into its
-// properties, element, or value schema. mode threads the nesting world down, and
-// required says whether the node must be configured (a request-tree concern only).
+// properties, element, or value schema. required says whether the node must be
+// configured (a request-tree concern only).
 // Every non-representable kind fails here rather than being skipped, so no marked
 // field can disappear from the generated schema.
-func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, required bool) (*Attribute, error) {
+func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribute, error) {
 	// A union has no framework type of its own: it projects into a synthetic
 	// envelope whose form depends on where it sits, so it is handled separately.
 	if s.Kind == SchemaKindOneOf {
-		return b.envelope(s, path, mode, required)
+		return b.envelope(s, path, required)
 	}
 
 	// The remaining non-representable kinds (anyOf and other unsupported nodes,
@@ -206,9 +195,6 @@ func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, requir
 	}
 	// Preserve the map-value projection boundary and normalize any legacy block
 	// form a caller might supply (leaf types are unaffected).
-	if mode == nestAttribute {
-		tfType = attributeForm(tfType)
-	}
 
 	attr := &Attribute{
 		Path:        path,
@@ -237,7 +223,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, requir
 	// collection chain that terminates in a primitive.
 	switch s.Kind {
 	case SchemaKindObject:
-		children, err := b.children(s, path+".", mode)
+		children, err := b.children(s, path+".")
 		if err != nil {
 			return nil, err
 		}
@@ -246,7 +232,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, requir
 	case SchemaKindArray:
 		switch s.Items.Kind {
 		case SchemaKindObject:
-			children, err := b.children(s.Items, path+"[].", mode)
+			children, err := b.children(s.Items, path+"[].")
 			if err != nil {
 				return nil, err
 			}
@@ -255,7 +241,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, requir
 		case SchemaKindOneOf:
 			// The list itself carries the envelope: its elements are variant
 			// attributes, so no separate attribute stands at the element path.
-			variants, envelope, err := b.oneOfVariants(s.Items, path+"[]", mode)
+			variants, envelope, err := b.oneOfVariants(s.Items, path+"[]")
 			if err != nil {
 				return nil, err
 			}
@@ -271,15 +257,14 @@ func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, requir
 	case SchemaKindMap:
 		switch s.Items.Kind {
 		case SchemaKindObject:
-			// A map<object> is a NestedAttributeObject; force everything beneath it
-			// into attribute form regardless of the incoming mode.
-			children, err := b.children(s.Items, path+"{}.", nestAttribute)
+			// A map<object> is a NestedAttributeObject.
+			children, err := b.children(s.Items, path+"{}.")
 			if err != nil {
 				return nil, err
 			}
 			attr.Children, attr.ModelRefName = children, s.Items.RefName
 		case SchemaKindOneOf:
-			variants, envelope, err := b.oneOfVariants(s.Items, path+"{}", nestAttribute)
+			variants, envelope, err := b.oneOfVariants(s.Items, path+"{}")
 			if err != nil {
 				return nil, err
 			}
@@ -320,7 +305,7 @@ func elementInfo(items *Schema) (elementType, format string, isEnum bool, err er
 // prefix+key. Keys are visited sorted, making recursion deterministic and the
 // result Path-sorted. Required-ness comes from the parent's required list, which
 // only reaches the output in a request tree.
-func (b *treeBuilder) children(parent *Schema, prefix string, mode nestingMode) ([]*Attribute, error) {
+func (b *treeBuilder) children(parent *Schema, prefix string) ([]*Attribute, error) {
 	props := parent.Properties
 	keys := make([]string, 0, len(props))
 	for k := range props {
@@ -337,7 +322,7 @@ func (b *treeBuilder) children(parent *Schema, prefix string, mode nestingMode) 
 	for _, key := range keys {
 		// Terraform attribute names must be snake_case; SnakeCase normalizes camelCase
 		// OAS names and is idempotent on already-snake names (SdkName recovers the getter).
-		child, err := b.attribute(props[key], prefix+SnakeCase(key), mode, required[key])
+		child, err := b.attribute(props[key], prefix+SnakeCase(key), required[key])
 		if err != nil {
 			return nil, err
 		}
@@ -353,14 +338,14 @@ func (b *treeBuilder) children(parent *Schema, prefix string, mode nestingMode) 
 
 // envelope projects a union standing at its own position in the tree — the schema
 // root, or an object property — into the synthetic block that holds its variants.
-func (b *treeBuilder) envelope(s *Schema, path string, mode nestingMode, required bool) (*Attribute, error) {
-	variants, envelope, err := b.oneOfVariants(s, path, mode)
+func (b *treeBuilder) envelope(s *Schema, path string, required bool) (*Attribute, error) {
+	variants, envelope, err := b.oneOfVariants(s, path)
 	if err != nil {
 		return nil, err
 	}
 	attr := &Attribute{
 		Path:        path,
-		TfType:      singleNestedForm(mode),
+		TfType:      "schema.SingleNestedAttribute",
 		GoType:      "types.Object",
 		Sensitive:   s.Sensitive,
 		Description: s.Description,
@@ -392,7 +377,7 @@ func (b *treeBuilder) envelope(s *Schema, path string, mode nestingMode, require
 // ("choices[]", "choices{}") when the union is a collection's element — in that
 // case the collection attribute carries the envelope and these attributes are its
 // children directly.
-func (b *treeBuilder) oneOfVariants(s *Schema, basePath string, mode nestingMode) ([]*Attribute, *OneOfEnvelope, error) {
+func (b *treeBuilder) oneOfVariants(s *Schema, basePath string) ([]*Attribute, *OneOfEnvelope, error) {
 	spec := s.OneOf
 	if spec == nil {
 		return nil, nil, &UnsupportedKindError{
@@ -437,7 +422,7 @@ func (b *treeBuilder) oneOfVariants(s *Schema, basePath string, mode nestingMode
 
 	blocks := make([]*Attribute, 0, len(ordered))
 	for _, variant := range ordered {
-		block, projected, err := b.oneOfVariant(s, envelope, variant, basePath, mode)
+		block, projected, err := b.oneOfVariant(s, envelope, variant, basePath)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -460,7 +445,6 @@ func (b *treeBuilder) oneOfVariant(
 	envelope *OneOfEnvelope,
 	variant OneOfVariant,
 	basePath string,
-	mode nestingMode,
 ) (*Attribute, OneOfEnvelopeVariant, error) {
 	fail := func(reason string, err error) (*Attribute, OneOfEnvelopeVariant, error) {
 		return nil, OneOfEnvelopeVariant{}, &OneOfProjectionError{
@@ -481,7 +465,7 @@ func (b *treeBuilder) oneOfVariant(
 	path := basePath + "." + variant.TFName
 	block := &Attribute{
 		Path:        path,
-		TfType:      singleNestedForm(mode),
+		TfType:      "schema.SingleNestedAttribute",
 		GoType:      "types.Object",
 		Sensitive:   variant.Schema.Sensitive,
 		Description: variant.Schema.Description,
@@ -507,13 +491,13 @@ func (b *treeBuilder) oneOfVariant(
 	valueWrapped := variant.Schema.Kind != SchemaKindObject
 	if valueWrapped {
 		// The wrapped value is present whenever its variant is selected.
-		value, err := b.attribute(variant.Schema, path+"."+oneOfValueField, mode, true)
+		value, err := b.attribute(variant.Schema, path+"."+oneOfValueField, true)
 		if err != nil {
 			return fail("", err)
 		}
 		block.Children = []*Attribute{value}
 	} else {
-		children, err := b.children(variant.Schema, path+".", mode)
+		children, err := b.children(variant.Schema, path+".")
 		if err != nil {
 			return fail("", err)
 		}
@@ -625,26 +609,6 @@ func RequiresReplaceSpec(goType string) PlanModifierSpec {
 // it into PlanModifierSpec.Name, rather than parsing it back out of that name.
 func PlanModifierPackage(goType string) string {
 	return strings.ToLower(strings.TrimPrefix(goType, "types.")) + "planmodifier"
-}
-
-// attributeForm rewrites compatibility block forms into their protocol-v6
-// nested-attribute counterparts, leaving leaf and attribute forms alone.
-func attributeForm(tfType string) string {
-	switch tfType {
-	case "schema.SingleNestedBlock":
-		return "schema.SingleNestedAttribute"
-	case "schema.ListNestedBlock":
-		return "schema.ListNestedAttribute"
-	default:
-		return tfType
-	}
-}
-
-// singleNestedForm is the single-nested framework type valid in mode's nesting
-// world. Envelopes and variant attributes are always single-nested: the envelope holds
-// one variant, the variant one alternative.
-func singleNestedForm(_ nestingMode) string {
-	return "schema.SingleNestedAttribute"
 }
 
 // oneOfModelName is the generated Go struct name for an envelope or variant.

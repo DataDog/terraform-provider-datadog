@@ -30,7 +30,7 @@ func FrameworkType(s *Schema) (tfType, goType string, err error) {
 		case SchemaKindObject, SchemaKindOneOf:
 			return "schema.ListNestedAttribute", "types.List", nil
 		default:
-			return "", "", fmt.Errorf("model: array element kind %q is not representable%s", s.Items.Kind, reasonSuffix(s.Items))
+			return "", "", fmt.Errorf("model: array element kind %q is not representable%s", s.Items.Kind, reasonText(s.Items.UnsupportedReason))
 		}
 
 	case SchemaKindMap:
@@ -43,11 +43,11 @@ func FrameworkType(s *Schema) (tfType, goType string, err error) {
 		case SchemaKindObject, SchemaKindOneOf:
 			return "schema.MapNestedAttribute", "types.Map", nil
 		default:
-			return "", "", fmt.Errorf("model: map value kind %q is not representable%s", s.Items.Kind, reasonSuffix(s.Items))
+			return "", "", fmt.Errorf("model: map value kind %q is not representable%s", s.Items.Kind, reasonText(s.Items.UnsupportedReason))
 		}
 
 	default:
-		return "", "", fmt.Errorf("model: schema kind %q is not representable%s", s.Kind, reasonSuffix(s))
+		return "", "", fmt.Errorf("model: schema kind %q is not representable%s", s.Kind, reasonText(s.UnsupportedReason))
 	}
 }
 
@@ -106,16 +106,6 @@ func ElementType(elem *Schema) (string, error) {
 	default:
 		return "", fmt.Errorf("model: collection element kind %q has no framework element type", elem.Kind)
 	}
-}
-
-// reasonSuffix appends a node's own explanation to a "not representable" error
-// when it carries one. A ref_cycle or depth-exceeded node names the chain that
-// produced it, which is the only part of the message a reader can act on.
-func reasonSuffix(s *Schema) string {
-	if s == nil {
-		return ""
-	}
-	return reasonText(s.UnsupportedReason)
 }
 
 // reasonText is the shared spelling of an appended reason, so the messages

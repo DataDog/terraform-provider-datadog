@@ -21,7 +21,7 @@ type RefCycle struct {
 
 // MaxDepthError reports that $ref expansion hit the --max-depth bound before a
 // path terminated. Ref is the $ref that would have pushed past the limit, Chain
-// is the path of $refs leading to it, and MaxDepth is the bound that was hit. It
+// is the path of $refs leading to it, and MaxDepth is the bound that was hit.
 // A cycle is not reported this way — it terminates the walk rather than failing
 // it — so this error means "too deep", never "circular".
 type MaxDepthError struct {

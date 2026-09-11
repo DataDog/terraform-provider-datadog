@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"time"
 
@@ -180,7 +181,7 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 				if deferredErr == nil {
 					var unstableChanged bool
 					unstableChanged, deferredErr = wireUnstableOperations(
-						outputRoot, check, registrations, resourceRegistrations)
+						outputRoot, check, slices.Concat(registrations, resourceRegistrations))
 					wiringChanged = wiringChanged || unstableChanged
 				}
 
@@ -275,22 +276,13 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examples
 	// projected, since the projection carries those bindings onto each envelope
 	// rather than deriving them. Binding is per operation, so an unresolvable union
 	// fails only this artifact.
-	if err := sdkbind.BindOperation(op); err != nil {
-		return failEntry(entry, err), nil, nil, nil
+	bindOps := []*model.Operation{op}
+	if searchOp := op.ResolvedGroup.Op(model.GroupRoleSearch); searchOp != nil && searchOp != op {
+		bindOps = append(bindOps, searchOp)
 	}
-	bindingDiagnostics, err := sdkbinding.Bind(op, sdkBindings)
+	bindingDiagnostics, err := bindOperations(bindOps, sdkBindings)
 	if err != nil {
 		return failEntry(entry, err), nil, nil, nil
-	}
-	if searchOp := op.ResolvedGroup.Op(model.GroupRoleSearch); searchOp != nil && searchOp != op {
-		if err := sdkbind.BindOperation(searchOp); err != nil {
-			return failEntry(entry, err), nil, nil, nil
-		}
-		searchDiagnostics, err := sdkbinding.Bind(searchOp, sdkBindings)
-		if err != nil {
-			return failEntry(entry, err), nil, nil, nil
-		}
-		bindingDiagnostics = append(bindingDiagnostics, searchDiagnostics...)
 	}
 
 	artifact, err := model.BuildArtifact(op)
@@ -379,16 +371,11 @@ func generateResourceArtifact(op *model.Operation, outputRoot string, check bool
 	if len(roleOps) == 0 {
 		roleOps = []*model.Operation{op}
 	}
-	for _, roleOp := range roleOps {
-		if err := sdkbind.BindOperation(roleOp); err != nil {
-			return failEntry(entry, err), nil
-		}
-		diagnostics, err := sdkbinding.Bind(roleOp, sdkBindings)
-		if err != nil {
-			return failEntry(entry, err), nil
-		}
-		entry.Diagnostics = append(entry.Diagnostics, diagnostics...)
+	bindingDiagnostics, err := bindOperations(roleOps, sdkBindings)
+	if err != nil {
+		return failEntry(entry, err), nil
 	}
+	entry.Diagnostics = append(entry.Diagnostics, bindingDiagnostics...)
 
 	artifact, err := model.BuildArtifact(op)
 	if err != nil {
@@ -427,6 +414,27 @@ func generateResourceArtifact(op *model.Operation, outputRoot string, check bool
 	}
 	entry.Diagnostics = append(entry.Diagnostics, unstableOperationDiagnostics(artifact)...)
 	return entry, reg
+}
+
+// bindOperations resolves the SDK bindings for each operation in ops and
+// returns the non-fatal diagnostics they produced. Binding is per operation, so
+// an unresolvable union fails only the artifact being generated — which is why
+// both the data-source path (the read op, plus a distinct search op) and the
+// resource path (the CRUD quad) funnel through here rather than each repeating
+// the bind/err pair per role.
+func bindOperations(ops []*model.Operation, inv *sdkbinding.Inventory) ([]model.Diagnostic, error) {
+	var diags []model.Diagnostic
+	for _, op := range ops {
+		if err := sdkbind.BindOperation(op); err != nil {
+			return nil, err
+		}
+		opDiags, err := sdkbinding.Bind(op, inv)
+		if err != nil {
+			return nil, err
+		}
+		diags = append(diags, opDiags...)
+	}
+	return diags, nil
 }
 
 // unstableOperationDiagnostics explains why unstable_operations_generated.go
@@ -496,58 +504,107 @@ func emitDatasourceTest(entry *model.ArtifactReportEntry, view emit.DataSourceVi
 	return &model.ArtifactReportEntry{Name: name, Kind: entry.Kind, Status: status, Path: path}
 }
 
-// wireGeneratedDatasources registers the run's generated data sources in the
+// generatedKind describes the provider-side registry one kind of generated
+// artifact wires itself into. Data sources and resources share the whole
+// registration shape — rewrite the tfgen-owned slice, retire each overwritten
+// hand-written constructor — and differ only by these hooks.
+type generatedKind struct {
+	// sliceName is the hand-written framework slice the kind retires from, as
+	// framework_provider.go names it.
+	sliceName string
+	// genFileName is the tfgen-owned registry file's base name.
+	genFileName string
+	// retireHint completes the "can only retire hand-written framework ..."
+	// error, which names the kind and any registry the generator cannot reach.
+	retireHint string
+
+	removeHandwritten func(path, constructor string, check bool) (model.ArtifactStatus, error)
+	registered        func(path string) ([]string, error)
+	sync              func(path string, constructors []string, check bool) (model.ArtifactStatus, error)
+}
+
+var (
+	datasourceKind = generatedKind{
+		sliceName:         "Datasources",
+		genFileName:       "datasources_generated.go",
+		retireHint:        "data sources, not SDKv2 entries in provider.go's DataSourcesMap",
+		removeHandwritten: emit.RemoveHandwrittenDatasource,
+		registered:        emit.RegisteredGeneratedDatasources,
+		sync:              emit.SyncGeneratedDatasources,
+	}
+	resourceKind = generatedKind{
+		sliceName:         "Resources",
+		genFileName:       "resources_generated.go",
+		retireHint:        "resources",
+		removeHandwritten: emit.RemoveHandwrittenResource,
+		registered:        emit.RegisteredGeneratedResources,
+		sync:              emit.SyncGeneratedResources,
+	}
+)
+
+// wireGenerated registers the run's generated constructors of one kind in the
 // provider and retires the hand-written ones they overwrite. It rewrites the
-// generatedDatasources slice with every generated constructor and, for each
-// artifact whose spec set overwrites, removes the named hand-written constructor
-// from the Datasources slice. Each generated test is also registered in
-// provider_test.go's testFiles2EndpointTags map (under testsOutputRoot). It reports
-// whether any of those files would change (so --check can fail) and honors check
-// mode by not writing.
-func wireGeneratedDatasources(outputRoot, testsOutputRoot string, regs []emit.GeneratedRegistration, check bool) (changed bool, err error) {
-	// A run that generated no data sources has nothing to register; leave the
-	// provider files untouched rather than conjuring an empty generatedDatasources.
+// tfgen-owned registry slice with every generated constructor and, for each
+// artifact whose spec set overwrites, removes the named hand-written
+// constructor from the framework slice. It reports whether any of those files
+// would change (so --check can fail) and honors check mode by not writing.
+func wireGenerated(outputRoot string, k generatedKind, regs []emit.GeneratedRegistration, check bool) (changed bool, err error) {
+	// A run that generated nothing of this kind has nothing to register; leave
+	// the provider files untouched rather than conjuring an empty slice.
 	if len(regs) == 0 {
 		return false, nil
 	}
 
 	providerPath := filepath.Join(outputRoot, "framework_provider.go")
-	genPath := filepath.Join(outputRoot, "datasources_generated.go")
+	genPath := filepath.Join(outputRoot, k.genFileName)
+
+	// The already-registered set only changes when sync runs, below, so read it
+	// once up front rather than re-reading and re-scanning the registry for
+	// every overwriting artifact.
+	registered, err := k.registered(genPath)
+	if err != nil {
+		return false, err
+	}
+
 	constructors := make([]string, 0, len(regs))
 	for _, reg := range regs {
 		constructors = append(constructors, reg.Constructor)
 		if reg.Overwrites == "" {
 			continue
 		}
-		status, removeErr := emit.RemoveHandwrittenDatasource(providerPath, reg.Overwrites, check)
+		status, removeErr := k.removeHandwritten(providerPath, reg.Overwrites, check)
 		if removeErr != nil {
 			return changed, removeErr
 		}
-		// RemoveHandwrittenDatasource reports Unchanged only when the target was
-		// not in the framework Datasources slice. That is expected on a re-run
-		// where a prior run already retired it (its replacement is registered),
-		// but otherwise means the target never existed — a typo, or an SDKv2
-		// DataSourcesMap entry the generator cannot retire. Fail loudly so a
-		// mis-targeted overwrite is caught here rather than as a mux conflict.
-		if status == model.ArtifactStatusUnchanged {
-			already, regErr := emit.GeneratedDatasourceRegistered(genPath, reg.Constructor)
-			if regErr != nil {
-				return changed, regErr
-			}
-			if !already {
-				return changed, fmt.Errorf(
-					"generate: overwrites target %q not found in the framework Datasources slice (%s); the generator can only retire hand-written framework data sources, not SDKv2 entries in provider.go's DataSourcesMap",
-					reg.Overwrites, providerPath)
-			}
+		// removeHandwritten reports Unchanged only when the target was not in
+		// the framework slice. That is expected on a re-run where a prior run
+		// already retired it (its replacement is registered), but otherwise
+		// means the target never existed — a typo, or an entry in a registry the
+		// generator cannot reach. Fail loudly so a mis-targeted overwrite is
+		// caught here rather than as a mux conflict.
+		if status == model.ArtifactStatusUnchanged && !slices.Contains(registered, reg.Constructor) {
+			return changed, fmt.Errorf(
+				"generate: overwrites target %q not found in the framework %s slice (%s); the generator can only retire hand-written framework %s",
+				reg.Overwrites, k.sliceName, providerPath, k.retireHint)
 		}
 		changed = changed || wouldChange(status)
 	}
 
-	status, err := emit.SyncGeneratedDatasources(genPath, constructors, check)
+	status, err := k.sync(genPath, constructors, check)
 	if err != nil {
 		return changed, err
 	}
-	changed = changed || wouldChange(status)
+	return changed || wouldChange(status), nil
+}
+
+// wireGeneratedDatasources registers the run's generated data sources and, on
+// top of the shared registration, records each generated test in
+// provider_test.go's testFiles2EndpointTags map (under testsOutputRoot).
+func wireGeneratedDatasources(outputRoot, testsOutputRoot string, regs []emit.GeneratedRegistration, check bool) (changed bool, err error) {
+	changed, err = wireGenerated(outputRoot, datasourceKind, regs, check)
+	if err != nil {
+		return changed, err
+	}
 
 	// Register each generated test in provider_test.go's testFiles2EndpointTags
 	// map. Only regs with a test emitted this run carry a TestFileKey.
@@ -566,16 +623,22 @@ func wireGeneratedDatasources(outputRoot, testsOutputRoot string, regs []emit.Ge
 	return changed, nil
 }
 
+// wireGeneratedResources registers each successfully generated resource's
+// constructor in resources_generated.go and, for one that overwrites a
+// hand-written resource, removes that resource from the framework Resources
+// slice.
+func wireGeneratedResources(outputRoot string, regs []emit.GeneratedRegistration, check bool) (changed bool, err error) {
+	return wireGenerated(outputRoot, resourceKind, regs, check)
+}
+
 // wireUnstableOperations merges the x-unstable operations of every successfully
 // generated artifact into the provider's tfgen-owned registry. A run that
 // produced none leaves the file alone rather than writing an empty slice, so a
 // spec with no beta endpoints never creates one.
-func wireUnstableOperations(outputRoot string, check bool, regGroups ...[]emit.GeneratedRegistration) (changed bool, err error) {
+func wireUnstableOperations(outputRoot string, check bool, regs []emit.GeneratedRegistration) (changed bool, err error) {
 	var keys []string
-	for _, regs := range regGroups {
-		for _, reg := range regs {
-			keys = append(keys, reg.UnstableOperations...)
-		}
+	for _, reg := range regs {
+		keys = append(keys, reg.UnstableOperations...)
 	}
 	if len(keys) == 0 {
 		return false, nil
@@ -587,57 +650,6 @@ func wireUnstableOperations(outputRoot string, check bool, regGroups ...[]emit.G
 		return false, err
 	}
 	return status != model.ArtifactStatusUnchanged, nil
-}
-
-// wireGeneratedResources registers each successfully generated resource's
-// constructor in resources_generated.go and, for one that overwrites a
-// hand-written resource, removes that resource from the framework Resources
-// slice.
-func wireGeneratedResources(outputRoot string, regs []emit.GeneratedRegistration, check bool) (changed bool, err error) {
-	// A run that generated no resources has nothing to register; leave the
-	// provider files untouched rather than conjuring an empty generatedResources.
-	if len(regs) == 0 {
-		return false, nil
-	}
-
-	providerPath := filepath.Join(outputRoot, "framework_provider.go")
-	genPath := filepath.Join(outputRoot, "resources_generated.go")
-	constructors := make([]string, 0, len(regs))
-	for _, reg := range regs {
-		constructors = append(constructors, reg.Constructor)
-		if reg.Overwrites == "" {
-			continue
-		}
-		status, removeErr := emit.RemoveHandwrittenResource(providerPath, reg.Overwrites, check)
-		if removeErr != nil {
-			return changed, removeErr
-		}
-		// RemoveHandwrittenResource reports Unchanged only when the target was
-		// not in the framework Resources slice. That is expected on a re-run
-		// where a prior run already retired it (its replacement is registered),
-		// but otherwise means the target never existed. Fail loudly so a
-		// mis-targeted overwrite is caught here rather than as a mux conflict.
-		if status == model.ArtifactStatusUnchanged {
-			already, regErr := emit.GeneratedResourceRegistered(genPath, reg.Constructor)
-			if regErr != nil {
-				return changed, regErr
-			}
-			if !already {
-				return changed, fmt.Errorf(
-					"generate: overwrites target %q not found in the framework Resources slice (%s); the generator can only retire hand-written framework resources",
-					reg.Overwrites, providerPath)
-			}
-		}
-		changed = changed || wouldChange(status)
-	}
-
-	status, err := emit.SyncGeneratedResources(genPath, constructors, check)
-	if err != nil {
-		return changed, err
-	}
-	changed = changed || wouldChange(status)
-
-	return changed, nil
 }
 
 // wouldChange reports whether a write status represents a file that was (or, in

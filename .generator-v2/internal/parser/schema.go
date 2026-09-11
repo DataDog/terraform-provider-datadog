@@ -393,7 +393,7 @@ func (n *schemaNormalizer) singleAllOfStructuralBranchAt(s *base.Schema, depth i
 		if err != nil {
 			return nil, false, err
 		}
-		if n.isAnnotationOnlySchema(raw) {
+		if isAnnotationOnlySchema(raw) {
 			continue
 		}
 		if structural != nil {
@@ -611,8 +611,10 @@ func (n *schemaNormalizer) normalizeProxyAt(proxy *base.SchemaProxy, depth int, 
 		if err != nil {
 			return nil, err
 		}
-		n.pushRef(ref)
-		defer n.popRef()
+		// Balanced by the defer so the expansion chain unwinds even when a
+		// branch errors.
+		n.refStack = append(n.refStack, ref)
+		defer func() { n.refStack = n.refStack[:len(n.refStack)-1] }()
 		return n.normalizeProxyAt(target, depth+1, ctx)
 	}
 	// libopenapi represents a $ref with sibling keywords as a synthetic allOf.
@@ -622,16 +624,6 @@ func (n *schemaNormalizer) normalizeProxyAt(proxy *base.SchemaProxy, depth int, 
 		ctx.refName = lastRefSegment(ref)
 	}
 	return n.normalizeSchema(proxy.Schema(), depth, ctx)
-}
-
-// pushRef and popRef maintain the expansion chain. They are balanced by a defer
-// in normalizeProxyAt, so the chain unwinds even when a branch errors.
-func (n *schemaNormalizer) pushRef(ref string) {
-	n.refStack = append(n.refStack, ref)
-}
-
-func (n *schemaNormalizer) popRef() {
-	n.refStack = n.refStack[:len(n.refStack)-1]
 }
 
 // resolveRef returns the proxy a "#/components/schemas/<name>" ref points to, or
@@ -1094,7 +1086,7 @@ func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaC
 		if err != nil {
 			return nil, err
 		}
-		if branch.Kind == model.SchemaKindUnsupported && branch.UnsupportedReason == "" && n.isAnnotationOnlySchema(raw) {
+		if branch.Kind == model.SchemaKindUnsupported && branch.UnsupportedReason == "" && isAnnotationOnlySchema(raw) {
 			annotations.absorb(branch)
 			continue
 		}
@@ -1293,7 +1285,7 @@ func unsupportedAllOfOuterStructure(s *base.Schema) string {
 // The one exclusion is a completely empty schema, which is an arbitrary untyped
 // value rather than an annotation and must not be discarded. declaresKeyword is
 // exactly that exclusion.
-func (n *schemaNormalizer) isAnnotationOnlySchema(s *base.Schema) bool {
+func isAnnotationOnlySchema(s *base.Schema) bool {
 	if s == nil || hasStructuralOrConstraintKeywords(s) {
 		return false
 	}

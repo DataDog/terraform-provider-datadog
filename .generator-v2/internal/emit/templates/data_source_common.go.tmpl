@@ -32,6 +32,19 @@ type {{ .Name }} struct {
 {{- if .ElementType }}
 	ElementType: {{ .ElementType }},
 {{- end }}
+{{- template "presenceFlags" . }}
+{{- template "validators" . }}
+{{ template "planModifiers" . }}
+},
+{{- end -}}
+
+{{/*
+  presenceFlags renders the Required/Optional/Computed/Sensitive fields shared
+  by a leaf attribute and both nested-attribute forms. Only the flags that are
+  set are emitted, so a data source's computed-only attribute stays as terse as
+  it was hand-written.
+*/}}
+{{- define "presenceFlags" -}}
 {{- if .Required }}
 	Required: true,
 {{- end }}
@@ -44,15 +57,6 @@ type {{ .Name }} struct {
 {{- if .Sensitive }}
 	Sensitive: true,
 {{- end }}
-{{- if .Validators }}
-	Validators: []validator.String{
-{{- range .Validators }}
-		{{ . }},
-{{- end }}
-	},
-{{- end }}
-{{ template "planModifiers" . }}
-},
 {{- end -}}
 
 {{/*
@@ -70,11 +74,15 @@ type {{ .Name }} struct {
 {{- end }}
 {{- end -}}
 
-{{/* objectValidators renders validators attached to a nested object attribute. */}}
-{{- define "objectValidators" -}}
-{{- if .ObjectValidators }}
-	Validators: []validator.Object{
-{{- range .ObjectValidators }}
+{{/*
+  validators renders the "Validators: []validator.<T>{...}" field for a leaf or
+  a nested object attribute; ValidatorType names the element type, so one
+  partial serves both.
+*/}}
+{{- define "validators" -}}
+{{- if .Validators }}
+	Validators: []validator.{{ .ValidatorType }}{
+{{- range .Validators }}
 		{{ . }},
 {{- end }}
 	},
@@ -103,41 +111,44 @@ Attributes: map[string]schema.Attribute{
 	NestedObject: schema.NestedAttributeObject{
 {{ template "nestedBody" . }}
 	},
-{{- if .Required }}
-	Required: true,
-{{- end }}
-{{- if .Optional }}
-	Optional: true,
-{{- end }}
-{{- if .Computed }}
-	Computed: true,
-{{- end }}
-{{- if .Sensitive }}
-	Sensitive: true,
-{{- end }}
-{{ template "objectValidators" . }}
+{{- template "presenceFlags" . }}
+{{ template "validators" . }}
 {{ template "planModifiers" . }}
 },
 {{- else }}
 "{{ .TFName }}": schema.SingleNestedAttribute{
 	Description: {{ printf "%q" .Description }},
 {{ template "nestedBody" . }}
-{{- if .Required }}
-	Required: true,
-{{- end }}
-{{- if .Optional }}
-	Optional: true,
-{{- end }}
-{{- if .Computed }}
-	Computed: true,
-{{- end }}
-{{- if .Sensitive }}
-	Sensitive: true,
-{{- end }}
-{{ template "objectValidators" . }}
+{{- template "presenceFlags" . }}
+{{ template "validators" . }}
 {{ template "planModifiers" . }}
 },
 {{- end }}
+{{- end -}}
+
+{{/*
+  updateStateBody is the body of a state mapper: it projects the already-decoded
+  response into state, returning diagnostics rather than writing them so it stays
+  free of the request/response types and can fail at a specific schema path.
+
+  Shared by the singular data source's updateState and the resource's, which
+  differ only in the receiver and model type their signature names — so each root
+  spells its own signature and delegates the body here.
+*/}}
+{{- define "updateStateBody" -}}
+	var diags diag.Diagnostics
+{{- range .State.Preamble }}
+	{{ . }}
+{{- end }}
+{{- range .State.Assignments }}
+	if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+		{{ .LHS }} = {{ .RHS }}
+	}
+{{- end }}
+{{- range .State.Lists }}
+	{{ template "renderList" . }}
+{{- end }}
+	return diags
 {{- end -}}
 
 {{/*

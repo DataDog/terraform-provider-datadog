@@ -97,16 +97,18 @@ func (b *dataSourceBuilder) oneOfEnvelope(a *model.Attribute) oneOfRender {
 			assign.Scalars, assign.Lists = scalars, lists
 		}
 
+		variantValidators, variantValidatorType := b.oneOfVariantValidators(env, v)
 		render.blocks = append(render.blocks, AttrView{
-			TFName:           v.TFName,
-			Description:      v.Attribute.Description,
-			Optional:         v.Attribute.Optional,
-			Computed:         v.Attribute.Computed,
-			Sensitive:        v.Attribute.Sensitive,
-			IsBlock:          true,
-			Attributes:       attrs,
-			Blocks:           blocks,
-			ObjectValidators: b.oneOfVariantValidators(env, v),
+			TFName:        v.TFName,
+			Description:   v.Attribute.Description,
+			Optional:      v.Attribute.Optional,
+			Computed:      v.Attribute.Computed,
+			Sensitive:     v.Attribute.Sensitive,
+			IsBlock:       true,
+			Attributes:    attrs,
+			Blocks:        blocks,
+			Validators:    variantValidators,
+			ValidatorType: variantValidatorType,
 		})
 		envFields = append(envFields, ModelFieldView{
 			GoField: v.GoField,
@@ -491,7 +493,7 @@ func buildArgumentViews(call *model.SDKCall, unsupported *[]UnsupportedNode) ([]
 			Expression: expr, ParsedVar: parsedVar, ParseCall: parseCall,
 			TFName: arg.TFName, GoType: arg.GoType,
 		})
-		u, s := parseCallImports(parseCall)
+		u, s, _ := parseCallImports(parseCall)
 		usesUUID, usesStrconv = usesUUID || u, usesStrconv || s
 	}
 	return views, usesUUID, usesStrconv
@@ -533,7 +535,7 @@ func buildFilterParams(call *model.SDKCall, leaves []*model.Attribute, unsupport
 		}
 		if parsedVar != "" {
 			param.ParsedVar, param.ParseCall, param.TFName = parsedVar, parseCall, tfName
-			u, s := parseCallImports(parseCall)
+			u, s, _ := parseCallImports(parseCall)
 			usesUUID, usesStrconv = usesUUID || u, usesStrconv || s
 		}
 		params = append(params, param)
@@ -542,15 +544,19 @@ func buildFilterParams(call *model.SDKCall, leaves []*model.Attribute, unsupport
 }
 
 // parseCallImports reports which extra import a ParseCall expression needs,
-// based on the parse function it calls.
-func parseCallImports(parseCall string) (usesUUID, usesStrconv bool) {
+// based on the parse function it calls. It is the one place that maps a parse
+// call to its import, so the data-source argument path and the resource request
+// mapper cannot drift apart on which prefixes they recognize.
+func parseCallImports(parseCall string) (usesUUID, usesStrconv, usesTime bool) {
 	switch {
 	case strings.HasPrefix(parseCall, "uuid."):
-		return true, false
+		return true, false, false
 	case strings.HasPrefix(parseCall, "strconv."):
-		return false, true
+		return false, true, false
+	case strings.HasPrefix(parseCall, "time."):
+		return false, false, true
 	default:
-		return false, false
+		return false, false, false
 	}
 }
 
@@ -849,16 +855,16 @@ func (b *dataSourceBuilder) planModifierViews(a *model.Attribute) (names []strin
 // `stringvalidator.OneOf("low", "high")`. Empty unless a is configurable
 // (Required or Optional) — a validator on a Computed-only attribute would
 // never run, since the practitioner never supplies a value for it to check.
-func (b *dataSourceBuilder) validatorViews(a *model.Attribute) []string {
+func (b *dataSourceBuilder) validatorViews(a *model.Attribute) (names []string, elemType string) {
 	if len(a.Validators) == 0 || !(a.Required || a.Optional) {
-		return nil
+		return nil, ""
 	}
-	out := make([]string, len(a.Validators))
+	names = make([]string, len(a.Validators))
 	for i, v := range a.Validators {
-		out[i] = v.Name + "(" + strings.Join(v.Args, ", ") + ")"
+		names[i] = v.Name + "(" + strings.Join(v.Args, ", ") + ")"
 	}
 	b.usesStringValidators = true
-	return out
+	return names, "String"
 }
 
 // oneOfVariantValidators returns an ExactlyOneOf validator for a configurable
@@ -867,9 +873,9 @@ func (b *dataSourceBuilder) validatorViews(a *model.Attribute) []string {
 // is unknown, which lets Terraform planning proceed without treating an unknown
 // value as absent, while rejecting zero or multiple known selections before
 // request.Plan.Get attempts to decode a nested model.
-func (b *dataSourceBuilder) oneOfVariantValidators(env *model.OneOfEnvelope, current model.OneOfEnvelopeVariant) []string {
+func (b *dataSourceBuilder) oneOfVariantValidators(env *model.OneOfEnvelope, current model.OneOfEnvelopeVariant) (names []string, elemType string) {
 	if !current.Attribute.Optional {
-		return nil
+		return nil, ""
 	}
 
 	expressions := make([]string, 0, len(env.Variants)-1)
@@ -882,7 +888,7 @@ func (b *dataSourceBuilder) oneOfVariantValidators(env *model.OneOfEnvelope, cur
 	}
 
 	b.usesObjectValidators = true
-	return []string{"objectvalidator.ExactlyOneOf(" + strings.Join(expressions, ", ") + ")"}
+	return []string{"objectvalidator.ExactlyOneOf(" + strings.Join(expressions, ", ") + ")"}, "Object"
 }
 
 // droppedEnvelopeMember is the info-diagnostic note for a JSON:API response
@@ -994,6 +1000,7 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 		switch a.TfType {
 		case "schema.StringAttribute", "schema.Int64Attribute",
 			"schema.Float64Attribute", "schema.BoolAttribute":
+			leafValidators, leafValidatorType := b.validatorViews(a)
 			attrViews = append(attrViews, AttrView{
 				TFName:           tfName,
 				TFType:           a.TfType,
@@ -1002,7 +1009,8 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 				Optional:         a.Optional,
 				Computed:         a.Computed,
 				Sensitive:        a.Sensitive,
-				Validators:       b.validatorViews(a),
+				Validators:       leafValidators,
+				ValidatorType:    leafValidatorType,
 				PlanModifiers:    pmNames,
 				PlanModifierType: pmType,
 			})
@@ -1033,13 +1041,12 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 			fields = append(fields, ModelFieldView{GoField: field, GoType: a.GoType, TFName: tfName}) // types.List
 			if b.responds(a) {
 				lists = append(lists, ListAssignment{
-					Kind:             "primitive",
-					ContainerKind:    "list",
-					LHS:              lhsPrefix + "." + field,
-					GetterOk:         getterOk(receiver, tfName),
-					Var:              leafVar(tfName),
-					ElementType:      a.ElementType,
-					PreserveExisting: b.filterByResponse,
+					Kind:          "primitive",
+					ContainerKind: "list",
+					LHS:           lhsPrefix + "." + field,
+					GetterOk:      getterOk(receiver, tfName),
+					Var:           leafVar(tfName),
+					ElementType:   a.ElementType,
 				})
 			}
 
@@ -1797,7 +1804,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 				})
 			}
 			if envelope.IDPrep != nil {
-				u, str := parseCallImports(envelope.IDPrep.ParseCall)
+				u, str, _ := parseCallImports(envelope.IDPrep.ParseCall)
 				updateUUID, updateStrconv = updateUUID || u, updateStrconv || str
 			}
 		}
@@ -2180,8 +2187,9 @@ func buildRequestFields(attrs []*model.Attribute, role *model.Schema, stateExpr,
 			rf.NullCheck = notNullOrUnknown(childState)
 		}
 		fields = append(fields, rf)
-		imports.uuid = imports.uuid || strings.HasPrefix(parseCall, "uuid.")
-		imports.time = imports.time || strings.HasPrefix(parseCall, "time.")
+		u, _, t := parseCallImports(parseCall)
+		imports.uuid = imports.uuid || u
+		imports.time = imports.time || t
 	}
 	return fields, imports
 }
@@ -2599,10 +2607,8 @@ func oneOfRequestVariant(
 	variant.Value = &RequestOneOfValueView{
 		ValueExpr: expr, ParsedVar: parsedVar, ParseCall: parseCall, TFName: tfNameOf(value.Path),
 	}
-	return variant, requestImports{
-		uuid: strings.HasPrefix(parseCall, "uuid."),
-		time: strings.HasPrefix(parseCall, "time."),
-	}, ""
+	u, _, t := parseCallImports(parseCall)
+	return variant, requestImports{uuid: u, time: t}, ""
 }
 
 // roleRequestRefName is the SDK component to construct at this node *for the

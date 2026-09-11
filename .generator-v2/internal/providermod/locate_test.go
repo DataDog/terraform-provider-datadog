@@ -19,7 +19,7 @@ var _ = Describe("Root", func() {
 		goMod, err := os.ReadFile(filepath.Join(root, "go.mod"))
 		Expect(err).NotTo(HaveOccurred())
 		Expect(string(goMod)).To(ContainSubstring(moduleDecl))
-		Expect(string(goMod)).To(ContainSubstring(sdkRequirement))
+		Expect(string(goMod)).To(ContainSubstring(sdkModule))
 		Expect(filepath.Base(root)).NotTo(Equal(".generator-v2"))
 		Expect(root).To(BeADirectory())
 	})

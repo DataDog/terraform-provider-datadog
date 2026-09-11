@@ -23,21 +23,19 @@ import (
 // sdkPackage is the pinned SDK's versioned API package, the one every generated
 // artifact imports.
 const (
-	sdkPackage = "github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	sdkModule  = "github.com/DataDog/datadog-api-client-go/v2"
+	sdkPackage = sdkModule + "/api/datadogV2"
 )
 
-// moduleDecl and sdkRequirement are the two markers a candidate go.mod must
-// carry, and both are load-bearing. The generator's own go.mod declares
-// "module <provider path>/generator", which contains moduleDecl as a prefix, so
-// a moduleDecl-only walk would stop on .generator-v2 — the nearest go.mod to
-// every caller in this module. The SDK requirement is what tells the two apart,
-// and it is worth checking on its own account too: a checkout that declares the
-// module without requiring the SDK cannot build a generated artifact anyway.
-const (
-	moduleDecl     = "module github.com/terraform-providers/terraform-provider-datadog"
-	sdkRequirement = "github.com/DataDog/datadog-api-client-go/v2"
-)
+// moduleDecl and the sdkModule requirement are the two markers a candidate
+// go.mod must carry, and both are load-bearing. The generator's own go.mod
+// declares "module <provider path>/generator", which contains moduleDecl as a
+// prefix, so a moduleDecl-only walk would stop on .generator-v2 — the nearest
+// go.mod to every caller in this module. The SDK requirement is what tells the
+// two apart, and it is worth checking on its own account too: a checkout that
+// declares the module without requiring the SDK cannot build a generated
+// artifact anyway.
+const moduleDecl = "module github.com/terraform-providers/terraform-provider-datadog"
 
 // Root returns the provider module's root directory. It searches upward from
 // hint first, then from the working directory, so a caller that renders into a
@@ -70,7 +68,7 @@ func findUp(dir string) (string, bool) {
 		goMod, err := os.ReadFile(filepath.Join(dir, "go.mod"))
 		if err == nil &&
 			bytes.Contains(goMod, []byte(moduleDecl)) &&
-			bytes.Contains(goMod, []byte(sdkRequirement)) {
+			bytes.Contains(goMod, []byte(sdkModule)) {
 			return dir, true
 		}
 		parent := filepath.Dir(dir)

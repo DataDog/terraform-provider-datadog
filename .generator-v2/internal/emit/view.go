@@ -274,14 +274,17 @@ type AttrView struct {
 	// schema.SingleNestedAttribute when false. Ignored unless IsBlock.
 	ListBlock bool
 
-	// Validators renders the "Validators: []validator.String{...}" field, one
+	// Validators renders the "Validators: []validator.<T>{...}" field, one
 	// rendered constructor call per entry (e.g. `stringvalidator.OneOf("a", "b")`).
-	// Always validator.String, the only validator kind this generator produces.
+	// An attribute is either a leaf or a nested object, never both, so one list
+	// serves both with ValidatorType naming the element type.
 	Validators []string
-	// ObjectValidators renders validators for a nested object attribute. oneOf
-	// variants use this to enforce exactly-one selection during configuration
-	// validation, before an unknown planned object can reach model decoding.
-	ObjectValidators []string
+	// ValidatorType is the validator.<T> slice element type for Validators
+	// ("String" for a leaf, "Object" for a nested object attribute, whose oneOf
+	// variants enforce exactly-one selection during configuration validation,
+	// before an unknown planned object can reach model decoding). Empty unless
+	// Validators is non-empty.
+	ValidatorType string
 	// PlanModifiers renders the "PlanModifiers: []planmodifier.<T>{...}" field,
 	// one rendered constructor call per entry (e.g. `stringplanmodifier.UseStateForUnknown`,
 	// with "()" appended by the template). Empty unless the underlying

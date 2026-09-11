@@ -100,16 +100,14 @@ func ValidateOneOfVariantNames(path string, variants []OneOfVariant) error {
 	return &OneOfVariantNameCollisionError{Path: path, Name: duplicates[0]}
 }
 
-// oneOfRoleSuffix is one CRUD-role marker the Datadog v2 API appends to a
-// component name, in both the spellings a name can arrive in: PascalCase for
-// an OpenAPI component, snake_case for a Terraform variant block.
-type oneOfRoleSuffix struct{ pascal, snake string }
-
-var oneOfRoleSuffixes = []oneOfRoleSuffix{
-	{"Response", "_response"},
-	{"Request", "_request"},
-	{"Update", "_update"},
-	{"Create", "_create"},
+// oneOfRoleSuffixes are the CRUD-role markers the Datadog v2 API appends to a
+// component name, in both the spellings a name can arrive in: PascalCase for an
+// OpenAPI component, snake_case for a Terraform variant block.
+var oneOfRoleSuffixes = []string{
+	"Response", "_response",
+	"Request", "_request",
+	"Update", "_update",
+	"Create", "_create",
 }
 
 // StripOneOfRoleSuffix removes the trailing run of CRUD-role markers from an
@@ -135,19 +133,14 @@ var oneOfRoleSuffixes = []oneOfRoleSuffix{
 // "…Update" reduces the same way — which is why mergeOneOf reaches for it only
 // after the bodies have failed to agree on a name by themselves.
 func StripOneOfRoleSuffix(name string) string {
-	for stripped := true; stripped; {
-		stripped = false
+stripping:
+	for {
 		for _, suffix := range oneOfRoleSuffixes {
-			for _, candidate := range []string{suffix.pascal, suffix.snake} {
-				if trimmed, ok := strings.CutSuffix(name, candidate); ok && trimmed != "" {
-					name, stripped = trimmed, true
-					break
-				}
-			}
-			if stripped {
-				break
+			if trimmed, ok := strings.CutSuffix(name, suffix); ok && trimmed != "" {
+				name = trimmed
+				continue stripping
 			}
 		}
+		return name
 	}
-	return name
 }

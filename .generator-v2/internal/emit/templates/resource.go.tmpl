@@ -195,19 +195,7 @@ func (r *{{ .GoName }}Resource) Delete(ctx context.Context, request resource.Del
 // types and can fail at a specific schema path. Shared by Create, Read and
 // Update, which all resolve the same response type.
 func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .GoName }}ResourceModel, {{ .State.ParamName }} {{ .State.ParamType }}) diag.Diagnostics {
-	var diags diag.Diagnostics
-{{- range .State.Preamble }}
-	{{ . }}
-{{- end }}
-{{- range .State.Assignments }}
-	if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
-		{{ .LHS }} = {{ .RHS }}
-	}
-{{- end }}
-{{- range .State.Lists }}
-	{{ template "renderList" . }}
-{{- end }}
-	return diags
+{{- template "updateStateBody" . }}
 }
 {{- end -}}
 
@@ -295,33 +283,7 @@ func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .GoNa
   fallible parse first; anything else is a direct conversion.
 */}}
 {{- define "requestField" -}}
-{{- if .Nested }}
-{{- if .Required }}
-	{{ .Nested.Var }} := {{ .Nested.Constructor }}
-{{- range .Nested.Fields }}
-{{ template "requestField" . }}
-{{- end }}
-	{{ .Target }}.Set{{ .GoField }}(*{{ .Nested.Var }})
-{{- else }}
-	if {{ .NullCheck }} {
-		{{ .Nested.Var }} := {{ .Nested.Constructor }}
-{{- range .Nested.Fields }}
-{{ template "requestField" . }}
-{{- end }}
-		{{ .Target }}.Set{{ .GoField }}(*{{ .Nested.Var }})
-	}
-{{- end }}
-{{- else if .Collection }}
-{{- if .Required }}
-{{ template "requestCollectionValue" . }}
-	{{ .Target }}.Set{{ .GoField }}({{ .Collection.ConvertVar }})
-{{- else }}
-	if {{ .NullCheck }} {
-{{ template "requestCollectionValue" . }}
-		{{ .Target }}.Set{{ .GoField }}({{ .Collection.ConvertVar }})
-	}
-{{- end }}
-{{- else if .OneOf }}
+{{- if .OneOf }}
 	if {{ .NullCheck }} {
 {{ template "requestOneOfValue" .OneOf }}
 		{{ .Target }}.Set{{ .GoField }}({{ .OneOf.Var }})
@@ -332,8 +294,32 @@ func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .GoNa
 		)
 		return
 	}{{ end }}
+{{- else if .Required }}
+{{ template "requestFieldBody" . }}
+{{- else }}
+	if {{ .NullCheck }} {
+{{ template "requestFieldBody" . }}
+	}
+{{- end }}
+{{- end -}}
+
+{{/*
+  requestFieldBody is the field's mapping itself, with no presence guard. An
+  optional field is the same body inside "if <not null or unknown>", so
+  requestField renders this once and wraps it; gofmt fixes up the indentation
+  either way, which is why one body serves both.
+*/}}
+{{- define "requestFieldBody" -}}
+{{- if .Nested }}
+	{{ .Nested.Var }} := {{ .Nested.Constructor }}
+{{- range .Nested.Fields }}
+{{ template "requestField" . }}
+{{- end }}
+	{{ .Target }}.Set{{ .GoField }}(*{{ .Nested.Var }})
+{{- else if .Collection }}
+{{ template "requestCollectionValue" . }}
+	{{ .Target }}.Set{{ .GoField }}({{ .Collection.ConvertVar }})
 {{- else if .ParsedVar }}
-{{- if .Required }}
 	{{ .ParsedVar }}, err := {{ .ParseCall }}
 	if err != nil {
 		response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
@@ -341,21 +327,7 @@ func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .GoNa
 	}
 	{{ .Target }}.Set{{ .GoField }}({{ .ValueExpr }})
 {{- else }}
-	if {{ .NullCheck }} {
-		{{ .ParsedVar }}, err := {{ .ParseCall }}
-		if err != nil {
-			response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
-			return
-		}
-		{{ .Target }}.Set{{ .GoField }}({{ .ValueExpr }})
-	}
-{{- end }}
-{{- else if .Required }}
 	{{ .Target }}.Set{{ .GoField }}({{ .ValueExpr }})
-{{- else }}
-	if {{ .NullCheck }} {
-		{{ .Target }}.Set{{ .GoField }}({{ .ValueExpr }})
-	}
 {{- end }}
 {{- end -}}
 
@@ -366,8 +338,8 @@ func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .GoNa
   slice/map via ElementsAs (T129); "object" builds one request element per
   already-decoded state element via a per-element construction loop (T130),
   mirroring renderList's object branch (data_source_common.go.tmpl) in
-  reverse. Split from requestField since both its Required and optional
-  branches need this, wrapping only the guard differently.
+  reverse. Split from requestFieldBody so the collection value and the
+  Set<Field> call that consumes it stay adjacent.
 */}}
 {{- define "requestCollectionValue" -}}
 {{- if eq .Collection.Kind "primitive" }}

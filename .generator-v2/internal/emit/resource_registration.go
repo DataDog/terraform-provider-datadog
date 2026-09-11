@@ -1,12 +1,7 @@
 package emit
 
 import (
-	"errors"
-	"fmt"
-	"os"
 	"regexp"
-	"slices"
-	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
@@ -26,14 +21,20 @@ var resourceConstructorRe = regexp.MustCompile(`New[A-Za-z0-9_]+Resource`)
 // GeneratedResourceRegistered reports whether constructor already appears in
 // the generatedResources file at path (a missing file reports false).
 func GeneratedResourceRegistered(path, constructor string) (bool, error) {
-	data, err := os.ReadFile(path)
+	return generatedRegistered(path, resourceConstructorRe, constructor)
+}
+
+// RegisteredGeneratedResources returns the constructor identifiers currently
+// registered in the generatedResources file at path, sorted and de-duplicated.
+// A missing file yields an empty slice. wireGeneratedResources reads the set
+// once to tell an idempotent re-run, where a prior run already retired the
+// overwrites target, from a target that never existed.
+func RegisteredGeneratedResources(path string) ([]string, error) {
+	set, err := registeredResourceSet(path)
 	if err != nil {
-		if errors.Is(err, os.ErrNotExist) {
-			return false, nil
-		}
-		return false, err
+		return nil, err
 	}
-	return slices.Contains(resourceConstructorRe.FindAllString(string(data), -1), constructor), nil
+	return sortedKeys(set), nil
 }
 
 // generatedResourcesHeader is everything in resources_generated.go up to and
@@ -94,46 +95,5 @@ const resourcesSliceHeader = "var Resources = []func() resource.Resource{"
 // touched, and it is idempotent: an already-absent constructor reports
 // Unchanged. It honors check mode by not writing.
 func RemoveHandwrittenResource(path, constructor string, check bool) (model.ArtifactStatus, error) {
-	original, err := os.ReadFile(path)
-	if err != nil {
-		return model.ArtifactStatusFailed, err
-	}
-
-	lines := strings.Split(string(original), "\n")
-	start := -1
-	for i, line := range lines {
-		if strings.TrimSpace(line) == resourcesSliceHeader {
-			start = i
-			break
-		}
-	}
-	if start == -1 {
-		return model.ArtifactStatusFailed, fmt.Errorf("emit: %s: Resources slice not found", path)
-	}
-	end := -1
-	for i := start + 1; i < len(lines); i++ {
-		if strings.TrimSpace(lines[i]) == "}" {
-			end = i
-			break
-		}
-	}
-	if end == -1 {
-		return model.ArtifactStatusFailed, fmt.Errorf("emit: %s: Resources slice is not terminated", path)
-	}
-
-	target := constructor + ","
-	out := make([]string, 0, len(lines))
-	removed := false
-	for i, line := range lines {
-		if i > start && i < end && !removed && strings.TrimSpace(line) == target {
-			removed = true
-			continue
-		}
-		out = append(out, line)
-	}
-	if !removed {
-		return model.ArtifactStatusUnchanged, nil
-	}
-
-	return WriteFile(path, []byte(strings.Join(out, "\n")), check)
+	return removeFromSliceBlock(path, resourcesSliceHeader, "Resources slice", constructor, check)
 }

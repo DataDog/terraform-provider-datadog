@@ -92,10 +92,11 @@ func ApplyResourceAPIAccessor(view *ResourceView, accessors map[string]string) e
 }
 
 // defaultAPIAccessor is the FrameworkProvider accessor a call resolves to by
-// convention, e.g. "GetTeamsApiV2". It is the fallback ApplyAPIAccessor and
-// ApplyResourceAPIAccessor then overwrite from the provider's real ApiInstances
-// helper, so the Get<Struct><V1|V2> spelling lives here beside that lookup
-// rather than being respelled at each view builder.
+// convention, e.g. "GetTeamsApiV2". It seeds a freshly built view so rendering
+// is valid before accessor resolution runs; ApplyAPIAccessor and
+// ApplyResourceAPIAccessor then overwrite it from the provider's real
+// ApiInstances helper. The Get<Struct><V1|V2> spelling therefore lives here
+// beside that lookup rather than being respelled at each view builder.
 func defaultAPIAccessor(call *model.SDKCall) string {
 	return "Get" + call.GoApiStruct + strings.TrimPrefix(call.GoPackage, "datadog")
 }

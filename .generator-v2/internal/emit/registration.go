@@ -64,6 +64,14 @@ var datasourceConstructorRe = regexp.MustCompile(`New[A-Za-z0-9_]+DataSource`)
 // run already retired the overwrites target, from an overwrites target that
 // never existed in the framework Datasources slice.
 func GeneratedDatasourceRegistered(path, constructor string) (bool, error) {
+	return generatedRegistered(path, datasourceConstructorRe, constructor)
+}
+
+// generatedRegistered reports whether constructor appears among the tokens re
+// matches in the generated slice file at path (a missing file reports false).
+// GeneratedDatasourceRegistered and GeneratedResourceRegistered differ only by
+// the constructor pattern they look for.
+func generatedRegistered(path string, re *regexp.Regexp, constructor string) (bool, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
@@ -71,7 +79,7 @@ func GeneratedDatasourceRegistered(path, constructor string) (bool, error) {
 		}
 		return false, err
 	}
-	return slices.Contains(datasourceConstructorRe.FindAllString(string(data), -1), constructor), nil
+	return slices.Contains(re.FindAllString(string(data), -1), constructor), nil
 }
 
 // RegisteredGeneratedDatasources returns the constructor identifiers currently
@@ -79,16 +87,9 @@ func GeneratedDatasourceRegistered(path, constructor string) (bool, error) {
 // A missing file yields an empty slice. The reconcile pass uses it to find
 // orphans: registered constructors no longer backed by an annotation.
 func RegisteredGeneratedDatasources(path string) ([]string, error) {
-	data, err := os.ReadFile(path)
+	set, err := registeredSet(path)
 	if err != nil {
-		if errors.Is(err, os.ErrNotExist) {
-			return nil, nil
-		}
 		return nil, err
-	}
-	set := map[string]struct{}{}
-	for _, c := range datasourceConstructorRe.FindAllString(string(data), -1) {
-		set[c] = struct{}{}
 	}
 	return sortedKeys(set), nil
 }
@@ -224,31 +225,24 @@ const datasourcesSliceHeader = "var Datasources = []func() datasource.DataSource
 // touched, and it is idempotent: an already-absent constructor reports Unchanged.
 // It honors check mode by not writing.
 func RemoveHandwrittenDatasource(path, constructor string, check bool) (model.ArtifactStatus, error) {
+	return removeFromSliceBlock(path, datasourcesSliceHeader, "Datasources slice", constructor, check)
+}
+
+// removeFromSliceBlock deletes the line holding constructor from the slice
+// literal that header opens in the file at path. The removal is scoped to that
+// block so a like-named entry in another slice is never touched, and it is
+// idempotent: an already-absent constructor reports Unchanged. It honors check
+// mode by not writing. label names the block in error messages.
+func removeFromSliceBlock(path, header, label, constructor string, check bool) (model.ArtifactStatus, error) {
 	original, err := os.ReadFile(path)
 	if err != nil {
 		return model.ArtifactStatusFailed, err
 	}
 
 	lines := strings.Split(string(original), "\n")
-	start := -1
-	for i, line := range lines {
-		if strings.TrimSpace(line) == datasourcesSliceHeader {
-			start = i
-			break
-		}
-	}
-	if start == -1 {
-		return model.ArtifactStatusFailed, fmt.Errorf("emit: %s: Datasources slice not found", path)
-	}
-	end := -1
-	for i := start + 1; i < len(lines); i++ {
-		if strings.TrimSpace(lines[i]) == "}" {
-			end = i
-			break
-		}
-	}
-	if end == -1 {
-		return model.ArtifactStatusFailed, fmt.Errorf("emit: %s: Datasources slice is not terminated", path)
+	start, end, err := literalBlockBounds(lines, path, header, label)
+	if err != nil {
+		return model.ArtifactStatusFailed, err
 	}
 
 	target := constructor + ","
@@ -266,6 +260,29 @@ func RemoveHandwrittenDatasource(path, constructor string, check bool) (model.Ar
 	}
 
 	return WriteFile(path, []byte(strings.Join(out, "\n")), check)
+}
+
+// literalBlockBounds returns the line indices of the slice or map literal that
+// header opens and of its closing brace. Entries hold no braces of their own,
+// so the first "}" after the header terminates the block. label names the block
+// in error messages.
+func literalBlockBounds(lines []string, path, header, label string) (start, end int, err error) {
+	start = -1
+	for i, line := range lines {
+		if strings.TrimSpace(line) == header {
+			start = i
+			break
+		}
+	}
+	if start == -1 {
+		return 0, 0, fmt.Errorf("emit: %s: %s not found", path, label)
+	}
+	for i := start + 1; i < len(lines); i++ {
+		if strings.TrimSpace(lines[i]) == "}" {
+			return start, i, nil
+		}
+	}
+	return 0, 0, fmt.Errorf("emit: %s: %s is not terminated", path, label)
 }
 
 // endpointTagsMapHeader is the line opening the hand-written testFiles2EndpointTags
@@ -293,22 +310,7 @@ func NormalizeEndpointTag(tag string) string {
 // header and its closing brace. Map values hold no braces, so the first "}" after
 // the header terminates the block.
 func endpointTagsBlock(lines []string, path string) (start, end int, err error) {
-	start = -1
-	for i, line := range lines {
-		if strings.TrimSpace(line) == endpointTagsMapHeader {
-			start = i
-			break
-		}
-	}
-	if start == -1 {
-		return 0, 0, fmt.Errorf("emit: %s: testFiles2EndpointTags map not found", path)
-	}
-	for i := start + 1; i < len(lines); i++ {
-		if strings.TrimSpace(lines[i]) == "}" {
-			return start, i, nil
-		}
-	}
-	return 0, 0, fmt.Errorf("emit: %s: testFiles2EndpointTags map is not terminated", path)
+	return literalBlockBounds(lines, path, endpointTagsMapHeader, "testFiles2EndpointTags map")
 }
 
 // RegisteredEndpointTags returns the testFiles2EndpointTags entries in path.
