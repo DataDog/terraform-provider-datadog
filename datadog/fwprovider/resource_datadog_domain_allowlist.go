@@ -74,7 +74,7 @@ func (r *domainAllowlistResource) Read(ctx context.Context, request resource.Rea
 
 	resp, httpResp, err := r.Api.GetDomainAllowlist(r.Auth)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, ""), "error getting team permission setting"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, ""), "error getting domain allowlist"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
