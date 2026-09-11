@@ -128,6 +128,49 @@ var _ = Describe("MergeResourceSchema", func() {
 		Entry("required by both roles", true, true),
 	)
 
+	DescribeTable("rejects write-only fields absent from one request lifecycle role",
+		func(createHasSecret, updateHasSecret bool, missingRole string) {
+			createAttributes := map[string]*Schema{}
+			updateAttributes := map[string]*Schema{}
+			if createHasSecret {
+				createAttributes["password"] = secretSchema(true, false)
+			}
+			if updateHasSecret {
+				updateAttributes["password"] = secretSchema(true, false)
+			}
+
+			_, _, err := MergeResourceSchema(&ResolvedGroup{
+				Create: &Operation{OperationId: "CreateAccount", RequestSchema: jsonAPIBody(
+					"AccountCreateRequest", createAttributes, nil)},
+				Update: &Operation{OperationId: "UpdateAccount", RequestSchema: jsonAPIBody(
+					"AccountUpdateRequest", updateAttributes, nil)},
+				Read: &Operation{OperationId: "GetAccount", ResponseSchema: jsonAPIBody(
+					"AccountResponse", map[string]*Schema{}, nil)},
+			})
+
+			Expect(err).To(HaveOccurred())
+			var lifecycleErr *WriteOnlyLifecycleError
+			Expect(errors.As(err, &lifecycleErr)).To(BeTrue())
+			Expect(err.Error()).To(ContainSubstring("data.attributes.password"))
+			Expect(err.Error()).To(ContainSubstring(missingRole))
+		},
+		Entry("Create-only secret", true, false, "Update"),
+		Entry("Update-only secret", false, true, "Create"),
+	)
+
+	It("rejects a write-only field when the resource has no Update role", func() {
+		_, _, err := MergeResourceSchema(&ResolvedGroup{
+			Create: &Operation{OperationId: "CreateAccount", RequestSchema: jsonAPIBody(
+				"AccountCreateRequest", map[string]*Schema{"password": secretSchema(true, false)}, nil)},
+			Read: &Operation{OperationId: "GetAccount", ResponseSchema: jsonAPIBody(
+				"AccountResponse", map[string]*Schema{}, nil)},
+		})
+
+		var lifecycleErr *WriteOnlyLifecycleError
+		Expect(errors.As(err, &lifecycleErr)).To(BeTrue())
+		Expect(lifecycleErr.MissingRole).To(Equal("Update"))
+	})
+
 	It("suppresses a request write-only field returned by Read and emits one deterministic value-free warning", func() {
 		requestPassword := secretSchema(true, false)
 		requestPassword.Description = "configured-secret-must-not-appear"

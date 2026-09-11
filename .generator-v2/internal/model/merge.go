@@ -212,6 +212,22 @@ func (e *SchemaMergeError) Error() string {
 	return fmt.Sprintf("model: resource schema merge conflict at %q: %s %q vs %q", e.Path, e.Aspect, e.Left, e.Right)
 }
 
+// WriteOnlyLifecycleError reports a write-only field that cannot be routed
+// through both request-writing lifecycle roles. Exposing its Terraform pair
+// would otherwise accept a secret that one of Create or Update never sends.
+type WriteOnlyLifecycleError struct {
+	Path        string
+	MissingRole string
+}
+
+func (e *WriteOnlyLifecycleError) Error() string {
+	return fmt.Sprintf(
+		"model: write-only field %q is missing from the %s request; write-only fields must be present in both Create and Update",
+		e.Path,
+		e.MissingRole,
+	)
+}
+
 // MergeResourceSchema unions the Create request, Update request and Read
 // response bodies of group into one Schema tree, stamping Provenance at every
 // correlated position. Nodes correlate by property name at equal depth from
@@ -303,6 +319,12 @@ func (m *resourceMerger) warnWriteOnlyResponseConflict(path string) {
 // caller from each enclosing request object's Required list (a node cannot
 // answer either fact about itself).
 func (m *resourceMerger) mergeNode(create, update, read *Schema, createRequired, updateRequired bool, path string) (*Schema, error) {
+	if create != nil && create.WriteOnlySecret && update == nil {
+		return nil, &WriteOnlyLifecycleError{Path: path, MissingRole: "Update"}
+	}
+	if update != nil && update.WriteOnlySecret && create == nil {
+		return nil, &WriteOnlyLifecycleError{Path: path, MissingRole: "Create"}
+	}
 	kind, err := kindConflict(create, update, read, path)
 	if err != nil {
 		return nil, err
