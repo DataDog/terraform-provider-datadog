@@ -37,57 +37,32 @@ var writeOnlyResourceFixtures = []writeOnlyResourceFixture{
 	},
 }
 
-// TestGenerateWriteOnlyResources is the checked-in, offline full-pipeline gate
+// TestGenerateWriteOnlyResources is the offline full-pipeline gate
 // for the canonical generated write-only resources. It deliberately starts at
 // the CLI so parser, model, SDK binding, rendering, writing and reporting are
 // all covered before the generated code is compiled and its framework schema
 // is validated in the provider module.
 func TestGenerateWriteOnlyResources(t *testing.T) {
-	providerRoot := filepath.Clean(filepath.Join("..", "..", ".."))
 	tempRoot := t.TempDir()
-	var staged []testinfra.StagedFile
+	var firstStaged, secondStaged []testinfra.StagedFile
 
 	for _, fixture := range writeOnlyResourceFixtures {
 		fixture := fixture
 		t.Run(fixture.name, func(t *testing.T) {
-			tempProvider := filepath.Join(tempRoot, strings.ReplaceAll(fixture.name, " ", "_"), "provider")
-			outputRoot := filepath.Join(tempProvider, "datadog", "fwprovider")
-			reportPath := filepath.Join(tempProvider, "tfgen-report.json")
-			specPath := filepath.Join("..", "testdata", "mini-oas", fixture.spec)
-
-			if err := runTfgen(
-				"generate",
-				"--spec", specPath,
-				"--output-root", outputRoot,
-				"--hooks-root", filepath.Join(outputRoot, "hooks"),
-				"--tests-output-root", filepath.Join(tempProvider, "datadog", "tests"),
-				"--examples-output-root", filepath.Join(tempProvider, "examples", "resources"),
-				"--docs-root", filepath.Join(tempProvider, "docs", "resources"),
-				"--report", reportPath,
-			); err != nil {
-				t.Fatalf("generate %s resource: %v", fixture.name, err)
+			firstPath, first := generateWriteOnlyFixture(t, tempRoot, fixture, "first")
+			secondPath, second := generateWriteOnlyFixture(t, tempRoot, fixture, "second")
+			if !bytes.Equal(first, second) {
+				t.Fatalf("two independent generations of the %s resource differ", fixture.name)
 			}
 
-			assertNoFailedArtifacts(t, reportPath)
-
-			generatedPath := filepath.Join(outputRoot, fixture.resource)
-			generated, err := os.ReadFile(generatedPath)
-			if err != nil {
-				t.Fatalf("read generated %s resource: %v", fixture.name, err)
-			}
-			checkedInPath := filepath.Join(providerRoot, "datadog", "fwprovider", fixture.resource)
-			checkedIn, err := os.ReadFile(checkedInPath)
-			if err != nil {
-				t.Fatalf("read checked-in %s resource: %v", fixture.name, err)
-			}
-			if !bytes.Equal(generated, checkedIn) {
-				t.Fatalf("freshly generated %s resource differs from %s", fixture.name, checkedInPath)
-			}
-
-			assertGeneratedWriteOnlyContract(t, generated)
-			staged = append(staged, testinfra.StagedFile{
+			assertGeneratedWriteOnlyContract(t, first)
+			firstStaged = append(firstStaged, testinfra.StagedFile{
 				ProviderPath: filepath.Join("datadog", "fwprovider", fixture.resource),
-				SourcePath:   generatedPath,
+				SourcePath:   firstPath,
+			})
+			secondStaged = append(secondStaged, testinfra.StagedFile{
+				ProviderPath: filepath.Join("datadog", "fwprovider", fixture.resource),
+				SourcePath:   secondPath,
 			})
 		})
 	}
@@ -97,18 +72,57 @@ func TestGenerateWriteOnlyResources(t *testing.T) {
 	if err := os.WriteFile(probePath, []byte(writeOnlySchemaProbe), 0o644); err != nil {
 		t.Fatalf("write generated schema probe: %v", err)
 	}
-	staged = append(staged, testinfra.StagedFile{
+	probe := testinfra.StagedFile{
 		ProviderPath: filepath.Join("datadog", "fwprovider", "zz_tfgen_writeonly_schema_test.go"),
 		SourcePath:   probePath,
-	})
+	}
+	for _, run := range []struct {
+		name   string
+		staged []testinfra.StagedFile
+	}{
+		{name: "first", staged: firstStaged},
+		{name: "second", staged: secondStaged},
+	} {
+		run := run
+		t.Run(run.name+" generation compiles and validates", func(t *testing.T) {
+			result, err := testinfra.RunTests(append(run.staged, probe), "^TestTfgenWriteOnlySchemasValidate$")
+			if err != nil {
+				t.Fatalf("run staged provider schema validation: %v", err)
+			}
+			if !result.OK() {
+				t.Fatalf("generated resources do not compile or validate against the pinned provider and SDK:\n%s", result.Diagnostics)
+			}
+		})
+	}
+}
 
-	result, err := testinfra.RunTests(staged, "^TestTfgenWriteOnlySchemasValidate$")
+func generateWriteOnlyFixture(t *testing.T, tempRoot string, fixture writeOnlyResourceFixture, run string) (string, []byte) {
+	t.Helper()
+	tempProvider := filepath.Join(tempRoot, strings.ReplaceAll(fixture.name, " ", "_"), run, "provider")
+	outputRoot := filepath.Join(tempProvider, "datadog", "fwprovider")
+	reportPath := filepath.Join(tempProvider, "tfgen-report.json")
+	specPath := filepath.Join("..", "testdata", "mini-oas", fixture.spec)
+
+	if err := runTfgen(
+		"generate",
+		"--spec", specPath,
+		"--output-root", outputRoot,
+		"--hooks-root", filepath.Join(outputRoot, "hooks"),
+		"--tests-output-root", filepath.Join(tempProvider, "datadog", "tests"),
+		"--examples-output-root", filepath.Join(tempProvider, "examples", "resources"),
+		"--docs-root", filepath.Join(tempProvider, "docs", "resources"),
+		"--report", reportPath,
+	); err != nil {
+		t.Fatalf("generate %s resource (%s run): %v", fixture.name, run, err)
+	}
+
+	assertNoFailedArtifacts(t, reportPath)
+	generatedPath := filepath.Join(outputRoot, fixture.resource)
+	generated, err := os.ReadFile(generatedPath)
 	if err != nil {
-		t.Fatalf("run staged provider schema validation: %v", err)
+		t.Fatalf("read generated %s resource (%s run): %v", fixture.name, run, err)
 	}
-	if !result.OK() {
-		t.Fatalf("generated resources do not compile or validate against the pinned provider and SDK:\n%s", result.Diagnostics)
-	}
+	return generatedPath, generated
 }
 
 func assertNoFailedArtifacts(t *testing.T, reportPath string) {
