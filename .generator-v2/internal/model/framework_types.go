@@ -4,21 +4,16 @@ import "fmt"
 
 // FrameworkType maps a schema node to its framework type strings: tfType is the
 // schema.* symbol (e.g. schema.StringAttribute), goType the types.* value (e.g.
-// types.String). Objects map to the block form (the builder rewrites to attribute
-// form where needed); unrepresentable kinds return an error naming the offender.
-//
-// A oneOf node has no entry of its own: its Terraform shape is a synthetic
-// envelope whose form depends on where the union sits, so the attribute-tree
-// builder decides it. A collection *of* unions does have an entry — the list or
-// map is representable regardless of what its elements are, and it nests the
-// element's variant blocks the same way it would an object's properties.
+// types.String). Objects map to nested attributes, never to block syntax. A
+// oneOf node has no entry — its shape depends on where the union sits — but a
+// collection of unions does, nesting the variants like an object's properties.
 func FrameworkType(s *Schema) (tfType, goType string, err error) {
 	switch s.Kind {
 	case SchemaKindPrimitive:
 		return primitiveFrameworkType(s)
 
 	case SchemaKindObject:
-		return "schema.SingleNestedBlock", "types.Object", nil
+		return "schema.SingleNestedAttribute", "types.Object", nil
 
 	case SchemaKindArray:
 		if s.Items == nil {
@@ -28,9 +23,9 @@ func FrameworkType(s *Schema) (tfType, goType string, err error) {
 		case SchemaKindPrimitive, SchemaKindArray, SchemaKindMap:
 			return "schema.ListAttribute", "types.List", nil
 		case SchemaKindObject, SchemaKindOneOf:
-			return "schema.ListNestedBlock", "types.List", nil
+			return "schema.ListNestedAttribute", "types.List", nil
 		default:
-			return "", "", fmt.Errorf("model: array element kind %q is not representable", s.Items.Kind)
+			return "", "", fmt.Errorf("model: array element kind %q is not representable%s", s.Items.Kind, reasonText(s.Items.UnsupportedReason))
 		}
 
 	case SchemaKindMap:
@@ -43,11 +38,11 @@ func FrameworkType(s *Schema) (tfType, goType string, err error) {
 		case SchemaKindObject, SchemaKindOneOf:
 			return "schema.MapNestedAttribute", "types.Map", nil
 		default:
-			return "", "", fmt.Errorf("model: map value kind %q is not representable", s.Items.Kind)
+			return "", "", fmt.Errorf("model: map value kind %q is not representable%s", s.Items.Kind, reasonText(s.Items.UnsupportedReason))
 		}
 
 	default:
-		return "", "", fmt.Errorf("model: schema kind %q is not representable", s.Kind)
+		return "", "", fmt.Errorf("model: schema kind %q is not representable%s", s.Kind, reasonText(s.UnsupportedReason))
 	}
 }
 
@@ -70,9 +65,9 @@ func primitiveFrameworkType(s *Schema) (tfType, goType string, err error) {
 }
 
 // ElementType recursively maps a collection element/value schema to its
-// framework attr.Type (for example types.StringType or
-// types.MapType{ElemType: types.ListType{ElemType: types.StringType}}). Objects
-// still nest via Children and therefore have no attr.Type expression here.
+// framework attr.Type expression, e.g.
+// types.MapType{ElemType: types.ListType{ElemType: types.StringType}}. Objects
+// nest via Children instead and have no attr.Type expression here.
 func ElementType(elem *Schema) (string, error) {
 	if elem == nil {
 		return "", fmt.Errorf("model: collection has nil element, no element type to map")
@@ -106,4 +101,13 @@ func ElementType(elem *Schema) (string, error) {
 	default:
 		return "", fmt.Errorf("model: collection element kind %q has no framework element type", elem.Kind)
 	}
+}
+
+// reasonText renders an optional error reason as ": <reason>", or "" when the
+// reason is empty.
+func reasonText(reason string) string {
+	if reason == "" {
+		return ""
+	}
+	return ": " + reason
 }

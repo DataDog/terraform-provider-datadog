@@ -97,7 +97,7 @@ func (r *securityFindingsTicketCreationRuleResource) Schema(_ context.Context, _
 						Validators:  []validator.String{uuidValidator},
 					},
 					"fields": schema.StringAttribute{
-						Description: "A JSON-encoded object of custom fields of the Jira issue to create. For the list of available fields, see the [Jira documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-createmeta-projectidorkey-issuetypes-issuetypeid-get).",
+						Description: "A JSON-encoded object of target-specific fields for the created ticket. For `target` `jira`, the custom fields of the Jira issue; for the list of available fields, see the [Jira documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-createmeta-projectidorkey-issuetypes-issuetypeid-get). For `target` `linear`, the optional keys `linear_project_id` (string, the identifier of the Linear project the issue is created in) and `linear_label_ids` (list of strings, the identifiers of the Linear labels applied to the issue).",
 						Optional:    true,
 						CustomType:  jsontypes.NormalizedType{},
 					},

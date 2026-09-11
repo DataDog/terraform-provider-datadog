@@ -1,0 +1,98 @@
+# Two annotated data sources in one document. `tree` reaches a self-referential
+# component through its response; `leaf` does not. Generating this spec must fail
+# `tree` alone and still produce `leaf`, which is what makes a cycle a property of
+# one artifact rather than of the document.
+openapi: 3.0.0
+info:
+  title: Cyclic and acyclic artifacts
+  version: 1.0.0
+paths:
+  /api/v2/trees/{id}:
+    get:
+      operationId: GetTree
+      tags:
+      - Trees
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: tree
+        group:
+          read: GetTree
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TreeResponse'
+  /api/v2/leaves/{id}:
+    get:
+      operationId: GetLeaf
+      tags:
+      - Trees
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: leaf
+        group:
+          read: GetLeaf
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeafResponse'
+components:
+  schemas:
+    TreeResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/TreeData'
+    TreeData:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          $ref: '#/components/schemas/TreeAttributes'
+    TreeAttributes:
+      type: object
+      properties:
+        name:
+          type: string
+        # The cycle: a node whose child is another node of the same component.
+        child:
+          $ref: '#/components/schemas/TreeAttributes'
+    LeafResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/LeafData'
+    LeafData:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        attributes:
+          $ref: '#/components/schemas/LeafAttributes'
+    LeafAttributes:
+      type: object
+      properties:
+        name:
+          type: string

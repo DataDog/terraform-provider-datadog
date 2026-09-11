@@ -1,6 +1,11 @@
 package model
 
-import "testing"
+import (
+	"testing"
+
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
+)
 
 // TestSdkName locks in the naive PascalCase translation: split on underscores,
 // Title-case each segment (first rune upper, the rest lower), and never
@@ -71,3 +76,23 @@ func TestSdkNameIdempotent(t *testing.T) {
 		})
 	}
 }
+
+// The sdkClassName table is a Ginkgo spec in an otherwise stdlib-testing file:
+// the package's bootstrap already runs both, and colocating it with the function
+// it covers matters more than uniformity here (research §9 tracks migrating the
+// rest of this file).
+var _ = Describe("SdkClassName", func() {
+	// Every expectation is the output datadog-api-client-go's utils.class_name
+	// produces for the same input, so a maintainer can verify against the Python.
+	DescribeTable("strips non-alphanumerics and appends Api without re-capitalizing",
+		func(tag, want string) { Expect(SdkClassName(tag)).To(Equal(want)) },
+		Entry("a single word gains only the suffix", "Incidents", "IncidentsApi"),
+		Entry("a PascalCase multi-word tag loses its spaces", "Org Groups", "OrgGroupsApi"),
+		Entry("an acronym is preserved, not folded", "APM", "APMApi"),
+		Entry("a lower-cased word stays lower-cased", "org groups", "orggroupsApi"),
+		Entry("punctuation is stripped without creating a capital",
+			"cloud-cost.management", "cloudcostmanagementApi"),
+		Entry("digits survive", "AWS Logs Integration v2", "AWSLogsIntegrationv2Api"),
+		Entry("an empty tag still yields the suffix", "", "Api"),
+	)
+})

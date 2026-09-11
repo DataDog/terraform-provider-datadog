@@ -72,11 +72,10 @@ func (d *datadogTeamsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Description: "When true, only returns teams the current user belongs to.",
 				Optional:    true,
 			},
-		},
-		Blocks: map[string]schema.Block{
-			"teams": schema.ListNestedBlock{
+
+			"teams": schema.ListNestedAttribute{
 				Description: "List of teams",
-				NestedObject: schema.NestedBlockObject{
+				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"description": schema.StringAttribute{
 							Description: "Free-form markdown description/content for the team's homepage.",

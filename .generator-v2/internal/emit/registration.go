@@ -15,10 +15,10 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
-// GeneratedRegistration records how one successfully generated data source is
-// wired into the framework provider: the generated constructor to register in
-// generatedDatasources, and the hand-written constructor it overwrites (removed
-// from the Datasources slice), empty when the data source is purely additive.
+// GeneratedRegistration records how one generated data source is wired into the
+// framework provider: the generated constructor to register, and the
+// hand-written constructor it overwrites (removed from the Datasources slice,
+// empty when the data source is purely additive).
 type GeneratedRegistration struct {
 	Constructor string
 	Overwrites  string
@@ -28,6 +28,9 @@ type GeneratedRegistration struct {
 	// EndpointTag is the normalized OpenAPI tag registered as the test's map
 	// value; empty exactly when TestFileKey is.
 	EndpointTag string
+	// UnstableOperations are the x-unstable SDK keys this artifact calls, which
+	// the provider must enable for any of its calls to reach the API.
+	UnstableOperations []string
 }
 
 // DatasourceConstructor returns the exported constructor a generated data source
@@ -37,12 +40,11 @@ func DatasourceConstructor(name string) string {
 	return "New" + upperFirst(dsGoName(name)) + "DataSource"
 }
 
-// RegistrationRetirementName derives a filesystem- and branch-safe artifact name
-// for a registration-only retirement, whose generated files are already gone so
-// its real artifact name can no longer be read back. It strips the New/DataSource
-// affixes from the constructor and snake-cases the remainder, e.g.
-// NewDatadogTeamDataSource -> datadog_team. The result only labels the split
-// directory; the constructor stays authoritative for editing the registry.
+// RegistrationRetirementName derives a filesystem-safe artifact name from a
+// constructor, for a retirement whose generated files are already gone so the
+// real artifact name can no longer be read back. It strips the New/DataSource
+// affixes and snake-cases the rest, e.g. NewDatadogTeamDataSource ->
+// datadog_team. The name only labels output; the constructor stays canonical.
 func RegistrationRetirementName(constructor string) string {
 	base := strings.TrimSuffix(strings.TrimPrefix(constructor, "New"), "DataSource")
 	return model.SnakeCase(base)
@@ -55,10 +57,13 @@ var datasourceConstructorRe = regexp.MustCompile(`New[A-Za-z0-9_]+DataSource`)
 
 // GeneratedDatasourceRegistered reports whether constructor already appears in
 // the generatedDatasources file at path (a missing file reports false).
-// wireGeneratedDatasources uses it to tell an idempotent re-run, where a prior
-// run already retired the overwrites target, from an overwrites target that
-// never existed in the framework Datasources slice.
 func GeneratedDatasourceRegistered(path, constructor string) (bool, error) {
+	return generatedRegistered(path, datasourceConstructorRe, constructor)
+}
+
+// generatedRegistered reports whether constructor appears among the tokens re
+// matches in the generated slice file at path (a missing file reports false).
+func generatedRegistered(path string, re *regexp.Regexp, constructor string) (bool, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
@@ -66,24 +71,16 @@ func GeneratedDatasourceRegistered(path, constructor string) (bool, error) {
 		}
 		return false, err
 	}
-	return slices.Contains(datasourceConstructorRe.FindAllString(string(data), -1), constructor), nil
+	return slices.Contains(re.FindAllString(string(data), -1), constructor), nil
 }
 
 // RegisteredGeneratedDatasources returns the constructor identifiers currently
-// registered in the generatedDatasources file at path, sorted and de-duplicated.
-// A missing file yields an empty slice. The reconcile pass uses it to find
-// orphans: registered constructors no longer backed by an annotation.
+// registered in the generatedDatasources file at path, sorted and
+// de-duplicated. A missing file yields an empty slice.
 func RegisteredGeneratedDatasources(path string) ([]string, error) {
-	data, err := os.ReadFile(path)
+	set, err := registeredSet(path)
 	if err != nil {
-		if errors.Is(err, os.ErrNotExist) {
-			return nil, nil
-		}
 		return nil, err
-	}
-	set := map[string]struct{}{}
-	for _, c := range datasourceConstructorRe.FindAllString(string(data), -1) {
-		set[c] = struct{}{}
 	}
 	return sortedKeys(set), nil
 }
@@ -105,11 +102,10 @@ import "github.com/hashicorp/terraform-plugin-framework/datasource"
 // Datasources.
 var generatedDatasources = []func() datasource.DataSource{`
 
-// SyncGeneratedDatasources rewrites path's generatedDatasources slice to hold the
-// union of the constructors already registered there and the ones passed in,
-// sorted and de-duplicated. Merging (rather than replacing) keeps a partial
-// --include run from dropping data sources it did not regenerate this time. It
-// honors check mode through WriteFile.
+// SyncGeneratedDatasources rewrites path's generatedDatasources slice to hold
+// the union of the constructors already registered there and the ones passed
+// in, sorted and de-duplicated. Merging rather than replacing keeps a partial
+// run from dropping data sources it did not regenerate. Honors check mode.
 func SyncGeneratedDatasources(path string, constructors []string, check bool) (model.ArtifactStatus, error) {
 	set, err := registeredSet(path)
 	if err != nil {
@@ -121,11 +117,11 @@ func SyncGeneratedDatasources(path string, constructors []string, check bool) (m
 	return writeGeneratedDatasources(path, set, check)
 }
 
-// RemoveGeneratedDatasource deletes constructor from path's generatedDatasources
-// slice, the set-difference inverse of SyncGeneratedDatasources's union. The
-// scoped per-branch retire uses it to drop exactly one registration while leaving
-// the rest of the base file intact. It is idempotent: an already-absent
-// constructor (or a missing file) reports Unchanged. It honors check mode.
+// RemoveGeneratedDatasource deletes constructor from path's
+// generatedDatasources slice, the set-difference inverse of
+// SyncGeneratedDatasources's union, leaving every other entry intact.
+// Idempotent: an already-absent constructor (or a missing file) reports
+// Unchanged. Honors check mode.
 func RemoveGeneratedDatasource(path, constructor string, check bool) (model.ArtifactStatus, error) {
 	set, err := registeredSet(path)
 	if err != nil {
@@ -142,33 +138,56 @@ func RemoveGeneratedDatasource(path, constructor string, check bool) (model.Arti
 // generatedDatasources file at path into a set; a missing file yields an empty
 // set.
 func registeredSet(path string) (map[string]struct{}, error) {
-	set := map[string]struct{}{}
-	existing, err := os.ReadFile(path)
-	if err != nil && !errors.Is(err, os.ErrNotExist) {
-		return nil, err
-	}
-	for _, c := range datasourceConstructorRe.FindAllString(string(existing), -1) {
-		set[c] = struct{}{}
-	}
-	return set, nil
+	return registeredSetMatching(path, datasourceConstructorRe, identity)
 }
 
 // writeGeneratedDatasources renders the generatedDatasources file from a set of
 // constructors (sorted, gofmt-canonicalized) and writes it through WriteFile.
 func writeGeneratedDatasources(path string, set map[string]struct{}, check bool) (model.ArtifactStatus, error) {
+	return writeGeneratedSet(path, generatedDatasourcesHeader, renderIdentifier, set, check)
+}
+
+// identity returns s unchanged; it is the unwrap function for a
+// registeredSetMatching call whose regex already captures the bare token.
+func identity(s string) string { return s }
+
+// renderIdentifier formats a bare Go identifier as one line of a generated
+// slice literal.
+func renderIdentifier(s string) string {
+	return "\t" + s + ",\n"
+}
+
+// registeredSetMatching reads the tokens re matches in the file at path,
+// unwraps each one, and returns them as a set; a missing file yields an empty
+// set. It is the extract half of the extract/union/rewrite round trip the Sync*
+// functions perform on a generated slice file.
+func registeredSetMatching(path string, re *regexp.Regexp, unwrap func(string) string) (map[string]struct{}, error) {
+	set := map[string]struct{}{}
+	existing, err := os.ReadFile(path)
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
+		return nil, err
+	}
+	for _, m := range re.FindAllString(string(existing), -1) {
+		set[unwrap(m)] = struct{}{}
+	}
+	return set, nil
+}
+
+// writeGeneratedSet renders header, one render(key) line per sorted key in
+// set, and a closing brace, gofmt-canonicalizes the result, and writes it
+// through WriteFile.
+func writeGeneratedSet(path, header string, render func(string) string, set map[string]struct{}, check bool) (model.ArtifactStatus, error) {
 	var buf bytes.Buffer
-	buf.WriteString(generatedDatasourcesHeader)
+	buf.WriteString(header)
 	buf.WriteByte('\n')
-	for _, c := range sortedKeys(set) {
-		buf.WriteByte('\t')
-		buf.WriteString(c)
-		buf.WriteString(",\n")
+	for _, k := range sortedKeys(set) {
+		buf.WriteString(render(k))
 	}
 	buf.WriteString("}\n")
 
 	src, err := format.Source(buf.Bytes())
 	if err != nil {
-		return model.ArtifactStatusFailed, fmt.Errorf("emit: gofmt of generatedDatasources: %w", err)
+		return model.ArtifactStatusFailed, fmt.Errorf("emit: gofmt of %s: %w", path, err)
 	}
 	return WriteFile(path, src, check)
 }
@@ -184,42 +203,34 @@ func sortedKeys(set map[string]struct{}) []string {
 }
 
 // datasourcesSliceHeader is the line opening the hand-written Datasources slice
-// in framework_provider.go. RemoveHandwrittenDatasource scopes its line removal
-// to this block so a like-named entry in another slice is never touched.
+// in framework_provider.go. Line removal is scoped to this block so a
+// like-named entry in another slice is never touched.
 const datasourcesSliceHeader = "var Datasources = []func() datasource.DataSource{"
 
 // RemoveHandwrittenDatasource deletes constructor from the hand-written
-// Datasources slice in framework_provider.go (the file at path) — the slice a
-// generated data source supersedes when its spec sets overwrites. The removal is
+// Datasources slice in framework_provider.go (the file at path). The removal is
 // scoped to the Datasources block so a like-named Resources entry is never
-// touched, and it is idempotent: an already-absent constructor reports Unchanged.
-// It honors check mode by not writing.
+// touched, and it is idempotent: an already-absent constructor reports
+// Unchanged. Check mode does not write.
 func RemoveHandwrittenDatasource(path, constructor string, check bool) (model.ArtifactStatus, error) {
+	return removeFromSliceBlock(path, datasourcesSliceHeader, "Datasources slice", constructor, check)
+}
+
+// removeFromSliceBlock deletes the line holding constructor from the slice
+// literal that header opens in the file at path, scoped to that block so a
+// like-named entry in another slice is never touched. Idempotent: an
+// already-absent constructor reports Unchanged. label names the block in error
+// messages; check mode does not write.
+func removeFromSliceBlock(path, header, label, constructor string, check bool) (model.ArtifactStatus, error) {
 	original, err := os.ReadFile(path)
 	if err != nil {
 		return model.ArtifactStatusFailed, err
 	}
 
 	lines := strings.Split(string(original), "\n")
-	start := -1
-	for i, line := range lines {
-		if strings.TrimSpace(line) == datasourcesSliceHeader {
-			start = i
-			break
-		}
-	}
-	if start == -1 {
-		return model.ArtifactStatusFailed, fmt.Errorf("emit: %s: Datasources slice not found", path)
-	}
-	end := -1
-	for i := start + 1; i < len(lines); i++ {
-		if strings.TrimSpace(lines[i]) == "}" {
-			end = i
-			break
-		}
-	}
-	if end == -1 {
-		return model.ArtifactStatusFailed, fmt.Errorf("emit: %s: Datasources slice is not terminated", path)
+	start, end, err := literalBlockBounds(lines, path, header, label)
+	if err != nil {
+		return model.ArtifactStatusFailed, err
 	}
 
 	target := constructor + ","
@@ -239,52 +250,58 @@ func RemoveHandwrittenDatasource(path, constructor string, check bool) (model.Ar
 	return WriteFile(path, []byte(strings.Join(out, "\n")), check)
 }
 
-// endpointTagsMapHeader is the line opening the hand-written testFiles2EndpointTags
-// map in provider_test.go. Insert/RemoveEndpointTag scope their edit to this block
-// so a like-named key in another map is never touched.
-const endpointTagsMapHeader = "var testFiles2EndpointTags = map[string]string{"
-
-// EndpointTagTestKey returns the testFiles2EndpointTags key for a generated data
-// source's acceptance test: "tests/data_source_datadog_<name>_test". The tests/
-// prefix and missing .go suffix match the convention getEndpointTagValue keys on
-// (it appends "datadog/" and ".go" before comparing).
-func EndpointTagTestKey(name string) string {
-	return "tests/data_source_datadog_" + name + "_test"
-}
-
-// NormalizeEndpointTag maps an OpenAPI tag to the map's value form: lowercase with
-// spaces turned to hyphens, matching existing entries ("Cloud Workload Security"
-// -> "cloud-workload-security"). An empty tag normalizes to empty; the caller
-// substitutes a non-empty fallback.
-func NormalizeEndpointTag(tag string) string {
-	return strings.ToLower(strings.ReplaceAll(tag, " ", "-"))
-}
-
-// endpointTagsBlock returns the line indices of the testFiles2EndpointTags map
-// header and its closing brace. Map values hold no braces, so the first "}" after
-// the header terminates the block.
-func endpointTagsBlock(lines []string, path string) (start, end int, err error) {
+// literalBlockBounds returns the line indices of the slice or map literal that
+// header opens and of its closing brace. Entries hold no braces of their own,
+// so the first "}" after the header terminates the block. label names the block
+// in error messages.
+func literalBlockBounds(lines []string, path, header, label string) (start, end int, err error) {
 	start = -1
 	for i, line := range lines {
-		if strings.TrimSpace(line) == endpointTagsMapHeader {
+		if strings.TrimSpace(line) == header {
 			start = i
 			break
 		}
 	}
 	if start == -1 {
-		return 0, 0, fmt.Errorf("emit: %s: testFiles2EndpointTags map not found", path)
+		return 0, 0, fmt.Errorf("emit: %s: %s not found", path, label)
 	}
 	for i := start + 1; i < len(lines); i++ {
 		if strings.TrimSpace(lines[i]) == "}" {
 			return start, i, nil
 		}
 	}
-	return 0, 0, fmt.Errorf("emit: %s: testFiles2EndpointTags map is not terminated", path)
+	return 0, 0, fmt.Errorf("emit: %s: %s is not terminated", path, label)
 }
 
-// RegisteredEndpointTags returns the testFiles2EndpointTags entries in path.
-// A missing file yields an empty map. Split uses this reader to reconstruct each
-// per-artifact provider_test.go from the base map plus or minus one exact key.
+// endpointTagsMapHeader is the line opening the hand-written
+// testFiles2EndpointTags map in provider_test.go. Edits are scoped to this
+// block so a like-named key in another map is never touched.
+const endpointTagsMapHeader = "var testFiles2EndpointTags = map[string]string{"
+
+// EndpointTagTestKey returns the testFiles2EndpointTags key for a generated
+// data source's acceptance test: "tests/data_source_datadog_<name>_test". The
+// tests/ prefix and missing .go suffix match what getEndpointTagValue keys on
+// (it appends "datadog/" and ".go" before comparing).
+func EndpointTagTestKey(name string) string {
+	return "tests/data_source_datadog_" + name + "_test"
+}
+
+// NormalizeEndpointTag lowercases an OpenAPI tag and turns its spaces into
+// hyphens ("Cloud Workload Security" -> "cloud-workload-security"). An empty
+// tag normalizes to empty; the caller substitutes a fallback.
+func NormalizeEndpointTag(tag string) string {
+	return strings.ToLower(strings.ReplaceAll(tag, " ", "-"))
+}
+
+// endpointTagsBlock returns the line indices of the testFiles2EndpointTags map
+// header and its closing brace.
+func endpointTagsBlock(lines []string, path string) (start, end int, err error) {
+	return literalBlockBounds(lines, path, endpointTagsMapHeader, "testFiles2EndpointTags map")
+}
+
+// RegisteredEndpointTags returns the testFiles2EndpointTags entries in path. A
+// missing file, or a map written as an empty one-line literal, yields an empty
+// map.
 func RegisteredEndpointTags(path string) (map[string]string, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
@@ -325,14 +342,12 @@ func RegisteredEndpointTags(path string) (map[string]string, error) {
 	return tags, nil
 }
 
-// InsertEndpointTag sets `"<key>": "<value>",` in the testFiles2EndpointTags map in
-// provider_test.go (the file at path), scoped between endpointTagsMapHeader and its
-// closing brace. An existing entry for key is rewritten in place (minimal diff, no
-// duplicate); a new key is appended just before the closing brace. gofmt
-// canonicalizes the result; WriteFile decides Created/Updated/Unchanged and honors
-// check mode, so a re-run rebuilding the identical file is idempotently Unchanged. A
-// missing file is a hard error: a test was emitted, so the map must exist — failing
-// here beats a t.Fatal at test time.
+// InsertEndpointTag sets `"<key>": "<value>",` in the testFiles2EndpointTags
+// map in provider_test.go (the file at path), scoped between
+// endpointTagsMapHeader and its closing brace: an existing entry for key is
+// rewritten in place, a new key appended just before the brace. The result is
+// gofmt-canonicalized, so a re-run rebuilding the identical file is Unchanged.
+// A missing file is a hard error.
 func InsertEndpointTag(path, key, value string, check bool) (model.ArtifactStatus, error) {
 	original, err := os.ReadFile(path)
 	if err != nil {
@@ -368,10 +383,10 @@ func InsertEndpointTag(path, key, value string, check bool) (model.ArtifactStatu
 	return WriteFile(path, src, check)
 }
 
-// RemoveEndpointTag deletes the entry keyed by key from the testFiles2EndpointTags
-// map, scoped to the block, idempotent (an absent key or a missing file reports
-// Unchanged). It gofmt-canonicalizes and honors check mode. Retire/reconcile use it,
-// so a missing provider_test.go is tolerated rather than fatal.
+// RemoveEndpointTag deletes the entry keyed by key from the
+// testFiles2EndpointTags map, scoped to the block. Idempotent: an absent key or
+// a missing file reports Unchanged. It gofmt-canonicalizes and honors check
+// mode.
 func RemoveEndpointTag(path, key string, check bool) (model.ArtifactStatus, error) {
 	original, err := os.ReadFile(path)
 	if err != nil {

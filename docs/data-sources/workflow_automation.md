@@ -30,5 +30,14 @@ data "datadog_workflow_automation" "my_workflow" {
 - `description` (String) Description of the workflow.
 - `name` (String) Name of the workflow.
 - `published` (Boolean) Set the workflow to published or unpublished. Workflows in an unpublished state are only executable through manual runs. Automatic triggers such as Schedule do not execute the workflow until it is published.
+- `run_as` (Attributes) Identity used to run the workflow. (see [below for nested schema](#nestedatt--run_as))
 - `spec_json` (String) The spec defines what the workflow does.
 - `tags` (Set of String) Tags of the workflow.
+
+<a id="nestedatt--run_as"></a>
+### Nested Schema for `run_as`
+
+Read-Only:
+
+- `id` (String) Service account identifier when the workflow runs as a service account.
+- `type` (String) Type of identity used to run the workflow. `owner` uses the workflow owner, `initiator` uses the user who starts the execution, and `service_account` uses the account specified by `id`.

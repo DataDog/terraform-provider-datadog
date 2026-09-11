@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"runtime"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -278,8 +279,11 @@ func New() provider.Provider {
 }
 
 func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resource {
-	var wrappedResources []func() resource.Resource
-	for _, f := range Resources {
+	// Hand-written and generator-v2 resources are kept in separate slices (see
+	// generatedResources) so regenerating does not churn this file. The two
+	// conditional resources below leave room for themselves in the capacity.
+	wrappedResources := make([]func() resource.Resource, 0, len(Resources)+len(generatedResources)+2)
+	for _, f := range slices.Concat(Resources, generatedResources) {
 		r := f()
 		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&r) })
 	}
@@ -300,12 +304,8 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	// Hand-written and generator-v2 data sources are kept in separate slices
 	// (see generatedDatasources) so regenerating does not churn this file.
-	all := make([]func() datasource.DataSource, 0, len(Datasources)+len(generatedDatasources))
-	all = append(all, Datasources...)
-	all = append(all, generatedDatasources...)
-
-	var wrappedDatasources []func() datasource.DataSource
-	for _, f := range all {
+	wrappedDatasources := make([]func() datasource.DataSource, 0, len(Datasources)+len(generatedDatasources))
+	for _, f := range slices.Concat(Datasources, generatedDatasources) {
 		r := f()
 		wrappedDatasources = append(wrappedDatasources, func() datasource.DataSource { return NewFrameworkDatasourceWrapper(&r) })
 	}

@@ -192,6 +192,34 @@ var _ = Describe("NormalizeSchemas field carrying", func() {
 		Expect(op.RequestSchema.Sensitive).To(BeTrue())
 	})
 
+	It("defaults x-secret and writeOnly fields to Sensitive while honoring an explicit annotation", func() {
+		properties := opByID(spec, "CreateSensitive").RequestSchema.Properties
+
+		Expect(properties["x_secret"].Sensitive).To(BeTrue())
+		Expect(properties["write_only"].Sensitive).To(BeTrue())
+		Expect(properties["x_secret_false"].Sensitive).To(BeFalse())
+		Expect(properties["x_secret_malformed"].Sensitive).To(BeFalse())
+		Expect(properties["write_only_false"].Sensitive).To(BeFalse())
+		Expect(properties["explicit_false"].Sensitive).To(BeFalse())
+		Expect(properties["plain"].Sensitive).To(BeFalse())
+	})
+
+	It("marks the unannotated Elastic Cloud password sensitive from its OpenAPI secret markers", func() {
+		elastic, err := LoadSpec(filepath.Join(
+			"../testdata/mini-oas",
+			"mini-datadog_integration_elastic_cloud_account.yaml",
+		))
+		Expect(err).NotTo(HaveOccurred())
+
+		request := opByID(elastic, "CreateElasticCloudIntegrationAccount").RequestSchema
+		authentication := request.Properties["data"].Properties["attributes"].Properties["authentication"]
+		Expect(authentication.OneOf).NotTo(BeNil())
+		Expect(authentication.OneOf.Variants).To(HaveLen(1))
+		password := authentication.OneOf.Variants[0].Schema.Properties["password"]
+		Expect(password).NotTo(BeNil())
+		Expect(password.Sensitive).To(BeTrue())
+	})
+
 	It("leaves Sensitive=false when no sensitive extension is present on the schema", func() {
 		op := opByID(spec, "CreatePrimitive")
 		Expect(op.RequestSchema.Sensitive).To(BeFalse())
@@ -484,7 +512,7 @@ var _ = Describe("NormalizeSchemas oneOf naming failures", func() {
 			Properties: map[string]*model.Schema{"shared": {Kind: model.SchemaKindPrimitive, Type: "string"}},
 		}
 
-		Expect(mergeNormalizedSchemas(unsupported, common)).To(BeIdenticalTo(unsupported))
+		Expect(model.MergeNormalizedSchemas(unsupported, common)).To(BeIdenticalTo(unsupported))
 		Expect(unsupported.UnsupportedReason).To(ContainSubstring("colliding variant name"))
 	})
 })
@@ -1038,7 +1066,37 @@ var _ = Describe("NormalizeSchemas $ref with sibling keywords", func() {
 		Entry("$ref + example + description", "multi", model.SchemaKindPrimitive, "string"),
 		Entry("a bare $ref (control)", "plain", model.SchemaKindPrimitive, "string"),
 		Entry("$ref to an object + example", "nested", model.SchemaKindObject, "object"),
+		Entry("$ref + readOnly", "guarded_object", model.SchemaKindObject, "object"),
+		Entry("$ref + nullable", "nullable_ref", model.SchemaKindPrimitive, "string"),
+		Entry("$ref + an unmodelled keyword", "unmodelled", model.SchemaKindPrimitive, "string"),
+		Entry("$ref + default", "defaulted", model.SchemaKindPrimitive, "string"),
 	)
+
+	// The property under test is "declares no assertion", never "names this
+	// keyword" — the entries above are sampled spec shapes, not the coverage.
+	It("does not lose the referenced schema behind a sibling it does not model", func() {
+		guarded := props["guarded_object"]
+		Expect(guarded.RefName).To(Equal("UrlParam"))
+		Expect(guarded.Properties).To(HaveKey("name"))
+		Expect(guarded.Required).To(ConsistOf("name", "value"))
+	})
+
+	// The one exclusion: an empty branch declares nothing, so it stays an
+	// arbitrary untyped value instead of being skipped as an annotation.
+	It("still rejects an allOf carrying an empty branch", func() {
+		Expect(props["empty_branch"].Kind).To(Equal(model.SchemaKindUnsupported))
+	})
+
+	// A skipped branch asserts nothing, but the metadata it declares is still
+	// recorded, so it has to be lifted rather than dropped with the branch.
+	It("lifts readOnly and default out of the skipped annotation branch", func() {
+		Expect(props["guarded_object"].ReadOnly).To(BeTrue())
+		Expect(props["defaulted"].HasDefault).To(BeTrue())
+
+		By("without inventing either on a node that declares neither")
+		Expect(props["plain"].ReadOnly).To(BeFalse())
+		Expect(props["plain"].HasDefault).To(BeFalse())
+	})
 
 	It("keeps the referenced enum when a sibling is present", func() {
 		Expect(props["kind"].Kind).To(Equal(model.SchemaKindPrimitive))
