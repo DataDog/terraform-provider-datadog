@@ -1101,9 +1101,10 @@ Required:
 
 Optional:
 
-- `auth_strategy` (String) HTTP authentication strategy. Valid values are `none`, `basic`, `bearer`.
+- `auth_strategy` (String) HTTP authentication strategy. Valid values are `none`, `basic`, `bearer`, `custom`.
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--http_client--buffer))
 - `compression` (Block List) Compression configuration for HTTP requests. (see [below for nested schema](#nestedblock--config--destination--http_client--compression))
+- `custom_key` (String) Name of the environment variable or secret that holds the custom authentication header value. Used with the `custom` auth strategy.
 - `password_key` (String) Name of the environment variable or secret that holds the password.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--http_client--tls))
 - `token_key` (String) Name of the environment variable or secret that holds the authentication token.
@@ -1874,8 +1875,10 @@ Optional:
 - `display_name` (String) A human-friendly name for this processor.
 - `enrichment_table` (Block List) The `enrichment_table` processor enriches logs using a static CSV file or GeoIP database. (see [below for nested schema](#nestedblock--config--processor_group--processor--enrichment_table))
 - `filter` (Block List) The `filter` processor allows conditional processing of logs based on a Datadog search query. Logs that match the `include` query are passed through; others are discarded. (see [below for nested schema](#nestedblock--config--processor_group--processor--filter))
-- `generate_datadog_metrics` (Block List) The `generate_datadog_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_datadog_metrics))
-- `generate_metrics` (Block List) The `generate_metrics` processor creates custom metrics from logs. The generated metrics must be routed to a metrics destination using the input `<processor-id>.metrics`. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_metrics))
+- `generate_datadog_metrics` (Block List, Deprecated) The `generate_datadog_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields.
+
+**Deprecated:** This processor is deprecated, you should now use the `generate_metrics` processor. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_datadog_metrics))
+- `generate_metrics` (Block List) The `generate_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields. There must be a destination whose `inputs` reference this processor with the `<processor-id>.metrics` suffix to route the generated metrics. All destination types normally supported for `metrics` pipelines are also supported as metrics destinations in `logs` pipelines. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_metrics))
 - `metric_tags` (Block List) The `metric_tags` processor filters metrics based on their tags using Datadog tag key patterns. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_tags))
 - `ocsf_mapper` (Block List) The `ocsf_mapper` processor transforms logs into the OCSF schema using predefined library mappings or custom mapping configuration. (see [below for nested schema](#nestedblock--config--processor_group--processor--ocsf_mapper))
 - `parse_grok` (Block List) The `parse_grok` processor extracts structured fields from unstructured log messages using Grok patterns. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok))
@@ -2367,7 +2370,7 @@ Optional:
 - `drop_events` (Boolean) Whether to drop events exceeding the limit.
 - `ignore_when_missing_partitions` (Boolean) Whether to ignore when partition fields are missing.
 - `limit` (Block List) (see [below for nested schema](#nestedblock--config--processor_group--processor--quota--limit))
-- `overflow_action` (String) The action to take when the quota is exceeded: `drop`, `no_action`, or `overflow_routing`.
+- `overflow_action` (String) The action to take when the quota is exceeded: `drop`, `no_action`, or `overflow_routing`. When `overflow_routing` is used, there must be a destination whose `inputs` reference this processor with the `<processor-id>.overflow_events` suffix to route the overflowing events. Only the following destination types support overflow inputs: `amazon_s3_generic`, `amazon_s3`, `google_cloud_storage`, and `azure_storage`.
 - `override` (Block List) The overrides for field-specific quotas. (see [below for nested schema](#nestedblock--config--processor_group--processor--quota--override))
 - `partition_fields` (List of String) List of partition fields.
 - `too_many_buckets_action` (String) The action to take when the max number of buckets is exceeded: `drop`, `no_action`, or `overflow_routing`.
