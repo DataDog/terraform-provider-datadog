@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1110
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2GeomapRequestParity-local-1784747004","widgets":[{"definition":{"requests":[{"conditional_formats":[{"comparator":"\u003e","hide_value":false,"palette":"white_on_green","value":1000}],"formulas":[{"formula":"query1"}],"queries":[{"compute":{"aggregation":"count"},"data_source":"rum","indexes":["*"],"name":"query1","search":{"query":"@type:session"}}],"response_format":"scalar","sort":{"count":250,"order_by":[{"name":"country","order":"desc","type":"group"}]}},{"columns":[{"field":"@network.client.geoip.location.latitude","width":"auto"},{"field":"@network.client.geoip.location.longitude","width":"auto"}],"query":{"data_source":"logs_stream","query_string":"","storage":"hot"},"response_format":"event_list","style":{"color_by":"status"},"text_formats":[{"match":{"type":"is","value":"error"},"palette":"white_on_red"}]}],"style":{"palette":"hostmap_blues","palette_flip":false},"title":"Regional traffic","type":"geomap","view":{"focus":"WORLD"}}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"t9u-4wr-ygy","title":"tf-TestAccDatadogDashboardV2GeomapRequestParity-local-1784747004","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/t9u-4wr-ygy/tf-testaccdatadogdashboardv2geomaprequestparity-local-1784747004","template_variables":[],"widgets":[{"definition":{"requests":[{"conditional_formats":[{"comparator":">","hide_value":false,"palette":"white_on_green","value":1000}],"formulas":[{"formula":"query1"}],"queries":[{"compute":{"aggregation":"count"},"data_source":"rum","indexes":["*"],"name":"query1","search":{"query":"@type:session"}}],"response_format":"scalar","sort":{"count":250,"order_by":[{"name":"country","order":"desc","type":"group"}]}},{"columns":[{"field":"@network.client.geoip.location.latitude","width":"auto"},{"field":"@network.client.geoip.location.longitude","width":"auto"}],"query":{"data_source":"logs_stream","query_string":"","storage":"hot"},"response_format":"event_list","style":{"color_by":"status"},"text_formats":[{"match":{"type":"is","value":"error"},"palette":"white_on_red"}]}],"style":{"palette":"hostmap_blues","palette_flip":false},"title":"Regional traffic","type":"geomap","view":{"focus":"WORLD"}},"id":8581802064584886}],"notify_list":[],"created_at":"2026-07-22T19:03:28.375764+00:00","modified_at":"2026-07-22T19:03:28.375764+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 337.233875ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/t9u-4wr-ygy
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"t9u-4wr-ygy","title":"tf-TestAccDatadogDashboardV2GeomapRequestParity-local-1784747004","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/t9u-4wr-ygy/tf-testaccdatadogdashboardv2geomaprequestparity-local-1784747004","template_variables":[],"widgets":[{"definition":{"requests":[{"conditional_formats":[{"comparator":">","hide_value":false,"palette":"white_on_green","value":1000}],"formulas":[{"formula":"query1"}],"queries":[{"compute":{"aggregation":"count"},"data_source":"rum","indexes":["*"],"name":"query1","search":{"query":"@type:session"}}],"response_format":"scalar","sort":{"count":250,"order_by":[{"name":"country","order":"desc","type":"group"}]}},{"columns":[{"field":"@network.client.geoip.location.latitude","width":"auto"},{"field":"@network.client.geoip.location.longitude","width":"auto"}],"query":{"data_source":"logs_stream","query_string":"","storage":"hot"},"response_format":"event_list","style":{"color_by":"status"},"text_formats":[{"match":{"type":"is","value":"error"},"palette":"white_on_red"}]}],"style":{"palette":"hostmap_blues","palette_flip":false},"title":"Regional traffic","type":"geomap","view":{"focus":"WORLD"}},"id":8581802064584886}],"notify_list":[],"created_at":"2026-07-22T19:03:28.375764+00:00","modified_at":"2026-07-22T19:03:28.375764+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 217.282459ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/t9u-4wr-ygy
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"t9u-4wr-ygy","title":"tf-TestAccDatadogDashboardV2GeomapRequestParity-local-1784747004","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/t9u-4wr-ygy/tf-testaccdatadogdashboardv2geomaprequestparity-local-1784747004","template_variables":[],"widgets":[{"definition":{"requests":[{"conditional_formats":[{"comparator":">","hide_value":false,"palette":"white_on_green","value":1000}],"formulas":[{"formula":"query1"}],"queries":[{"compute":{"aggregation":"count"},"data_source":"rum","indexes":["*"],"name":"query1","search":{"query":"@type:session"}}],"response_format":"scalar","sort":{"count":250,"order_by":[{"name":"country","order":"desc","type":"group"}]}},{"columns":[{"field":"@network.client.geoip.location.latitude","width":"auto"},{"field":"@network.client.geoip.location.longitude","width":"auto"}],"query":{"data_source":"logs_stream","query_string":"","storage":"hot"},"response_format":"event_list","style":{"color_by":"status"},"text_formats":[{"match":{"type":"is","value":"error"},"palette":"white_on_red"}]}],"style":{"palette":"hostmap_blues","palette_flip":false},"title":"Regional traffic","type":"geomap","view":{"focus":"WORLD"}},"id":8581802064584886}],"notify_list":[],"created_at":"2026-07-22T19:03:28.375764+00:00","modified_at":"2026-07-22T19:03:28.375764+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 157.279917ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/t9u-4wr-ygy
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"t9u-4wr-ygy","title":"tf-TestAccDatadogDashboardV2GeomapRequestParity-local-1784747004","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/t9u-4wr-ygy/tf-testaccdatadogdashboardv2geomaprequestparity-local-1784747004","template_variables":[],"widgets":[{"definition":{"requests":[{"conditional_formats":[{"comparator":">","hide_value":false,"palette":"white_on_green","value":1000}],"formulas":[{"formula":"query1"}],"queries":[{"compute":{"aggregation":"count"},"data_source":"rum","indexes":["*"],"name":"query1","search":{"query":"@type:session"}}],"response_format":"scalar","sort":{"count":250,"order_by":[{"name":"country","order":"desc","type":"group"}]}},{"columns":[{"field":"@network.client.geoip.location.latitude","width":"auto"},{"field":"@network.client.geoip.location.longitude","width":"auto"}],"query":{"data_source":"logs_stream","query_string":"","storage":"hot"},"response_format":"event_list","style":{"color_by":"status"},"text_formats":[{"match":{"type":"is","value":"error"},"palette":"white_on_red"}]}],"style":{"palette":"hostmap_blues","palette_flip":false},"title":"Regional traffic","type":"geomap","view":{"focus":"WORLD"}},"id":8581802064584886}],"notify_list":[],"created_at":"2026-07-22T19:03:28.375764+00:00","modified_at":"2026-07-22T19:03:28.375764+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 198.663084ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/t9u-4wr-ygy
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"t9u-4wr-ygy"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 848.228583ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/t9u-4wr-ygy
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID t9u-4wr-ygy not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 145.11275ms
