@@ -33,7 +33,10 @@ var (
 	_ resource.ResourceWithConfigure   = &awsWifPersonaMappingResource{}
 	_ resource.ResourceWithImportState = &awsWifPersonaMappingResource{}
 
-	awsWifArnPattern = regexp.MustCompile(`^arn:aws:(sts|iam)::[a-z0-9]+:(assumed-role|role|group|user|federated-user|instance-profile|\w+-provider|policy)(/[a-zA-Z0-9_.\-:@]+)+(?:/\*)?$`)
+	// Keep the accepted partition and resource characters aligned with the Cloud
+	// Authentication API, while limiting resource types to identities that AWS
+	// STS GetCallerIdentity can return.
+	awsWifArnPattern = regexp.MustCompile(`^arn:aws:(?:sts::[0-9]{12}:(?:assumed-role/(?:[A-Za-z0-9_.\-:@]+/)+(?:[A-Za-z0-9_.\-:@]+|\*)|federated-user/[A-Za-z0-9_.\-:@]+)|iam::[0-9]{12}:user/(?:[A-Za-z0-9_.\-:@]+/)*[A-Za-z0-9_.\-:@]+(?:/\*)?)$`)
 )
 
 type awsWifPersonaMappingResource struct {
@@ -58,7 +61,7 @@ func (r *awsWifPersonaMappingResource) Metadata(_ context.Context, _ resource.Me
 
 func (r *awsWifPersonaMappingResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides an AWS Workload Identity Federation (WIF) persona mapping. The mapping allows an AWS IAM principal matching `arn_pattern` to authenticate as the Datadog user or service account identified by `account_identifier`. The AWS account in the ARN must already be integrated with Datadog. Creating the initial mapping requires API and application credentials with the Workload Identity Federation write permission; a provider already using WIF cannot bootstrap its own mapping.",
+		Description: "Provides an AWS Workload Identity Federation (WIF) persona mapping. The mapping allows an AWS IAM principal matching `arn_pattern` to authenticate as the Datadog user or service account identified by `account_identifier`. The AWS account in the ARN must already be integrated with Datadog. The identity creating the mapping must have every permission assigned to the target identity. Creating the initial mapping requires API and application credentials with the Workload Identity Federation write permission; a provider already using WIF cannot bootstrap its own mapping. This resource uses a public beta API and is subject to change.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"account_identifier": schema.StringAttribute{
@@ -76,13 +79,13 @@ func (r *awsWifPersonaMappingResource) Schema(_ context.Context, _ resource.Sche
 				Computed:    true,
 			},
 			"arn_pattern": schema.StringAttribute{
-				Description: "The AWS IAM or STS ARN pattern allowed to authenticate. A pattern may contain one wildcard only, as a trailing `/*` after a specific resource, for example `arn:aws:sts::123456789012:assumed-role/terraform-runner/*`.",
+				Description: "The AWS caller ARN pattern allowed to authenticate. Currently, only the `aws` partition is supported. For role-based authentication, use the STS assumed-role ARN returned by `aws sts get-caller-identity`, not the IAM role ARN shown in the AWS console. A pattern may contain one wildcard only, as a trailing `/*` after a specific resource, for example `arn:aws:sts::123456789012:assumed-role/terraform-runner/*`.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 				Validators: []validator.String{
-					stringvalidator.RegexMatches(awsWifArnPattern, "must be a supported AWS IAM or STS ARN; a wildcard is allowed only as one trailing /* after a specific resource"),
+					stringvalidator.RegexMatches(awsWifArnPattern, "must be an AWS GetCallerIdentity ARN supported by Datadog for an IAM user, assumed role, or federated user; a wildcard is allowed only as one trailing /* after a specific resource"),
 				},
 			},
 		},
@@ -154,10 +157,19 @@ func (r *awsWifPersonaMappingResource) Create(ctx context.Context, request resou
 
 	createdData := apiResponse.GetData()
 	mappingID := createdData.GetId()
+	r.updateState(&state, &apiResponse)
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
 	err = retry.RetryContext(ctx, awsWifPersonaMappingVisibilityTimeout, func() *retry.RetryError {
 		var readResponse datadogV2.AWSCloudAuthPersonaMappingResponse
 		readResponse, httpResponse, err = r.Api.GetAWSCloudAuthPersonaMapping(r.Auth, mappingID)
 		if err == nil {
+			if unparsedErr := utils.CheckForUnparsed(readResponse); unparsedErr != nil {
+				return retry.NonRetryableError(fmt.Errorf("response contains unparsed object: %w", unparsedErr))
+			}
 			apiResponse = readResponse
 			return nil
 		}

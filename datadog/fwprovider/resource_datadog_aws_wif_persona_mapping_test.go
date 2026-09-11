@@ -71,8 +71,8 @@ func TestAwsWifArnPattern(t *testing.T) {
 		valid bool
 	}{
 		{
-			name:  "exact IAM role",
-			value: "arn:aws:iam::123456789012:role/terraform-runner",
+			name:  "exact IAM user",
+			value: "arn:aws:iam::123456789012:user/terraform-runner",
 			valid: true,
 		},
 		{
@@ -81,9 +81,44 @@ func TestAwsWifArnPattern(t *testing.T) {
 			valid: true,
 		},
 		{
-			name:  "single trailing wildcard",
+			name:  "assumed role with trailing wildcard",
 			value: "arn:aws:sts::123456789012:assumed-role/terraform-runner/*",
 			valid: true,
+		},
+		{
+			name:  "special characters supported by the API",
+			value: "arn:aws:sts::123456789012:assumed-role/team.blue_prod@terraform/session-name:ci",
+			valid: true,
+		},
+		{
+			name:  "AWS name characters not supported by the API",
+			value: "arn:aws:sts::123456789012:assumed-role/team+blue=prod,ops@terraform/session+name=ci,1",
+			valid: false,
+		},
+		{
+			name:  "federated user",
+			value: "arn:aws:sts::123456789012:federated-user/terraform-runner",
+			valid: true,
+		},
+		{
+			name:  "IAM role is not a caller ARN",
+			value: "arn:aws:iam::123456789012:role/terraform-runner",
+			valid: false,
+		},
+		{
+			name:  "mismatched STS resource type",
+			value: "arn:aws:sts::123456789012:group/terraform-runners",
+			valid: false,
+		},
+		{
+			name:  "mismatched IAM resource type",
+			value: "arn:aws:iam::123456789012:assumed-role/terraform-runner/session-name",
+			valid: false,
+		},
+		{
+			name:  "account ID must contain 12 digits",
+			value: "arn:aws:sts::12345:assumed-role/terraform-runner/session-name",
+			valid: false,
 		},
 		{
 			name:  "wildcard without a specific resource",
@@ -106,8 +141,18 @@ func TestAwsWifArnPattern(t *testing.T) {
 			valid: false,
 		},
 		{
-			name:  "unsupported partition",
-			value: "arn:aws-us-gov:iam::123456789012:role/terraform-runner",
+			name:  "China partition is not supported by the API",
+			value: "arn:aws-cn:sts::123456789012:assumed-role/terraform-runner/session-name",
+			valid: false,
+		},
+		{
+			name:  "GovCloud partition is not supported by the API",
+			value: "arn:aws-us-gov:sts::123456789012:assumed-role/terraform-runner/session-name",
+			valid: false,
+		},
+		{
+			name:  "ISO partition is not supported by the API",
+			value: "arn:aws-iso:sts::123456789012:assumed-role/terraform-runner/session-name",
 			valid: false,
 		},
 	}
