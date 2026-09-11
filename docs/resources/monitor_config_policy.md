@@ -35,7 +35,7 @@ resource "datadog_monitor_config_policy" "downtime_example" {
 
 ### Required
 
-- `policy_type` (String) The monitor config policy type Valid values are `tag`, `downtime`.
+- `policy_type` (String) The monitor config policy type. Valid values are `tag`, `downtime`.
 
 ### Optional
 
