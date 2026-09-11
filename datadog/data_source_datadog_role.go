@@ -35,6 +35,14 @@ func dataSourceDatadogRole() *schema.Resource {
 					Type:        schema.TypeInt,
 					Computed:    true,
 				},
+				"permissions": {
+					Description: "Map of permissions granted to this role, keyed by permission name and returning the permission ID.",
+					Type:        schema.TypeMap,
+					Computed:    true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+				},
 			}
 		},
 	}
@@ -82,13 +90,46 @@ func dataSourceDatadogRoleRead(ctx context.Context, d *schema.ResourceData, meta
 	}
 
 	r := roles[roleIndex]
-	d.SetId(r.GetId())
-	if err := d.Set("name", r.Attributes.GetName()); err != nil {
-		return diag.FromErr(err)
+	roleID := r.GetId()
+	d.SetId(roleID)
+
+	roleResp, httpResp, err := apiInstances.GetRolesApiV2().GetRole(auth, roleID)
+	if err != nil {
+		return utils.TranslateClientErrorDiag(err, httpResp, "error getting role details")
 	}
-	if err := d.Set("user_count", r.Attributes.GetUserCount()); err != nil {
+
+	if err := utils.CheckForUnparsed(roleResp); err != nil {
 		return diag.FromErr(err)
 	}
 
+	roleData := roleResp.GetData()
+	if err := d.Set("name", roleData.Attributes.GetName()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("user_count", roleData.Attributes.GetUserCount()); err != nil {
+		return diag.FromErr(err)
+	}
+
+	permResp, httpResp, err := apiInstances.GetRolesApiV2().ListRolePermissions(auth, roleID)
+	if err != nil {
+		return utils.TranslateClientErrorDiag(err, httpResp, "error getting role permissions")
+	}
+
+	if err := utils.CheckForUnparsed(permResp); err != nil {
+		return diag.FromErr(err)
+	}
+
+	return updateRolePermissionsStateDataSource(ctx, d, permResp.GetData(), apiInstances)
+}
+
+func updateRolePermissionsStateDataSource(ctx context.Context, d *schema.ResourceData, rolePerms []datadogV2.Permission, apiInstances *utils.ApiInstances) diag.Diagnostics {
+	permsMap := make(map[string]string)
+	for _, perm := range rolePerms {
+		permsMap[perm.Attributes.GetName()] = perm.GetId()
+	}
+
+	if err := d.Set("permissions", permsMap); err != nil {
+		return diag.FromErr(err)
+	}
 	return nil
 }
