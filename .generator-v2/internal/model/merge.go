@@ -25,12 +25,14 @@ func MergeNormalizedSchemas(variant, common *Schema) *Schema {
 	}
 	if common.Kind == SchemaKindUnsupported {
 		out := CloneSchema(common)
+		out.WriteOnlySecret = out.WriteOnlySecret || variant.WriteOnlySecret
 		if out.Description == "" {
 			out.Description = variant.Description
 		}
 		return out
 	}
 	if variant.Kind == SchemaKindOneOf && variant.OneOf != nil {
+		variant.WriteOnlySecret = variant.WriteOnlySecret || common.WriteOnlySecret
 		for i := range variant.OneOf.Variants {
 			variant.OneOf.Variants[i].Schema = MergeNormalizedSchemas(variant.OneOf.Variants[i].Schema, common)
 			variant.OneOf.Variants[i].ValueWrapped = OneOfValueWrapped(variant.OneOf.Variants[i].Schema)
@@ -38,6 +40,7 @@ func MergeNormalizedSchemas(variant, common *Schema) *Schema {
 		return variant
 	}
 	if variant.Kind == SchemaKindUnsupported {
+		variant.WriteOnlySecret = variant.WriteOnlySecret || common.WriteOnlySecret
 		if variant.UnsupportedReason != "" {
 			return variant
 		}
@@ -50,6 +53,7 @@ func MergeNormalizedSchemas(variant, common *Schema) *Schema {
 		return &Schema{
 			Kind:              SchemaKindUnsupported,
 			Description:       variant.Description,
+			WriteOnlySecret:   variant.WriteOnlySecret || common.WriteOnlySecret,
 			UnsupportedReason: fmt.Sprintf("oneOf alternative kind %q conflicts with adjacent schema kind %q", variant.Kind, common.Kind),
 		}
 	}
@@ -74,6 +78,7 @@ func MergeNormalizedSchemas(variant, common *Schema) *Schema {
 			return &Schema{
 				Kind:              SchemaKindUnsupported,
 				Description:       variant.Description,
+				WriteOnlySecret:   variant.WriteOnlySecret || common.WriteOnlySecret,
 				UnsupportedReason: fmt.Sprintf("oneOf alternative type %q conflicts with adjacent type %q", variant.Type, common.Type),
 			}
 		}
@@ -84,6 +89,7 @@ func MergeNormalizedSchemas(variant, common *Schema) *Schema {
 			return &Schema{
 				Kind:              SchemaKindUnsupported,
 				Description:       variant.Description,
+				WriteOnlySecret:   variant.WriteOnlySecret || common.WriteOnlySecret,
 				UnsupportedReason: fmt.Sprintf("oneOf alternative format %q conflicts with adjacent format %q", variant.Format, common.Format),
 			}
 		}
@@ -99,6 +105,7 @@ func MergeNormalizedSchemas(variant, common *Schema) *Schema {
 				return &Schema{
 					Kind:              SchemaKindUnsupported,
 					Description:       variant.Description,
+					WriteOnlySecret:   variant.WriteOnlySecret || common.WriteOnlySecret,
 					UnsupportedReason: "oneOf alternative enum has no values in common with adjacent enum",
 				}
 			}
@@ -106,6 +113,7 @@ func MergeNormalizedSchemas(variant, common *Schema) *Schema {
 		}
 	}
 	variant.Sensitive = variant.Sensitive || common.Sensitive
+	variant.WriteOnlySecret = variant.WriteOnlySecret || common.WriteOnlySecret
 	return variant
 }
 
@@ -218,8 +226,11 @@ func MergeResourceSchema(group *ResolvedGroup) (*Schema, []Diagnostic, error) {
 		updateRequest = group.Update.RequestSchema
 	}
 
-	m := &resourceMerger{}
-	merged, err := m.mergeNode(group.Create.RequestSchema, updateRequest, group.Read.ResponseSchema, false, "")
+	m := &resourceMerger{
+		artifact:        resourceArtifactName(group),
+		warnedWriteOnly: make(map[string]struct{}),
+	}
+	merged, err := m.mergeNode(group.Create.RequestSchema, updateRequest, group.Read.ResponseSchema, false, false, "")
 	if err != nil {
 		return nil, nil, err
 	}
@@ -229,60 +240,113 @@ func MergeResourceSchema(group *ResolvedGroup) (*Schema, []Diagnostic, error) {
 // resourceMerger accumulates the info diagnostics raised while walking the
 // three bodies.
 type resourceMerger struct {
-	diagnostics []Diagnostic
+	artifact        string
+	diagnostics     []Diagnostic
+	warnedWriteOnly map[string]struct{}
+}
+
+func resourceArtifactName(group *ResolvedGroup) string {
+	for _, operation := range []*Operation{group.Create, group.Update, group.Read, group.Delete, group.Search} {
+		if operation != nil && operation.Tracking != nil && operation.Tracking.ArtifactName != "" {
+			return operation.Tracking.ArtifactName
+		}
+	}
+	return ""
+}
+
+// writeOnlyMetadata selects generated write-only behavior only from request
+// roles. Sensitivity remains an independent cosmetic field, and a response-only
+// writeOnly marker therefore cannot opt a resource or data source into generated
+// write-only handling.
+func (m *resourceMerger) writeOnlyMetadata(
+	create, update, read *Schema,
+	createRequired, updateRequired bool,
+	path string,
+) (writeOnly, requiredOnCreate, requiredOnUpdate bool, description string) {
+	writeOnly = create != nil && create.WriteOnlySecret || update != nil && update.WriteOnlySecret
+	if !writeOnly {
+		return false, false, false, ""
+	}
+	requiredOnCreate = create != nil && createRequired
+	requiredOnUpdate = update != nil && updateRequired
+	for _, request := range []*Schema{create, update} {
+		if request != nil && request.WriteOnlySecret && request.Description != "" {
+			description = request.Description
+			break
+		}
+	}
+	if read != nil {
+		m.warnWriteOnlyResponseConflict(path)
+	}
+	return writeOnly, requiredOnCreate, requiredOnUpdate, description
+}
+
+func (m *resourceMerger) warnWriteOnlyResponseConflict(path string) {
+	key := m.artifact + "\x00" + path
+	if _, exists := m.warnedWriteOnly[key]; exists {
+		return
+	}
+	m.warnedWriteOnly[key] = struct{}{}
+	m.diagnostics = append(m.diagnostics, Diagnostic{
+		Severity: SeverityWarning,
+		Message: fmt.Sprintf(
+			"resource %q: request write-only field %q is also present in the Read response; suppressing response mapping",
+			m.artifact,
+			path,
+		),
+	})
 }
 
 // mergeNode combines the three bodies' schemas at one correlated tree
 // position. create/update/read are nil when that body does not reach this
-// position; createRequired is fixed by the caller from the enclosing object's
-// Create-body Required list (a node cannot answer this about itself).
-func (m *resourceMerger) mergeNode(create, update, read *Schema, createRequired bool, path string) (*Schema, error) {
+// position; createRequired and updateRequired are fixed independently by the
+// caller from each enclosing request object's Required list (a node cannot
+// answer either fact about itself).
+func (m *resourceMerger) mergeNode(create, update, read *Schema, createRequired, updateRequired bool, path string) (*Schema, error) {
 	kind, err := kindConflict(create, update, read, path)
 	if err != nil {
 		return nil, err
 	}
 	switch kind {
 	case SchemaKindObject:
-		return m.mergeObject(create, update, read, createRequired, path)
+		return m.mergeObject(create, update, read, createRequired, updateRequired, path)
 	case SchemaKindArray, SchemaKindMap:
-		return m.mergeCollection(kind, create, update, read, createRequired, path)
+		return m.mergeCollection(kind, create, update, read, createRequired, updateRequired, path)
 	case SchemaKindPrimitive:
-		return m.mergePrimitive(create, update, read, createRequired, path)
+		return m.mergePrimitive(create, update, read, createRequired, updateRequired, path)
 	case SchemaKindOneOf:
-		return m.mergeOneOf(create, update, read, createRequired, path)
+		return m.mergeOneOf(create, update, read, createRequired, updateRequired, path)
 	default:
 		// Unsupported, RefCycle, DepthExceeded: nothing under such a node is
 		// representable, so there is no subtree worth correlating — the merged node
 		// is the preferred side's clone.
-		return m.mergeVerbatim(create, update, read, createRequired, path)
+		return m.mergeVerbatim(create, update, read, createRequired, updateRequired, path)
 	}
 }
 
-func (m *resourceMerger) mergeObject(create, update, read *Schema, createRequired bool, path string) (*Schema, error) {
-	// The create body's required list is consulted once per property, so index
-	// it up front rather than rescanning the slice for every key.
-	createRequiredKeys := map[string]struct{}{}
-	if create != nil {
-		for _, key := range create.Required {
-			createRequiredKeys[key] = struct{}{}
-		}
-	}
+func (m *resourceMerger) mergeObject(create, update, read *Schema, createRequired, updateRequired bool, path string) (*Schema, error) {
+	// Each body's required list is consulted once per property, so index both
+	// up front rather than rescanning the slices for every key.
+	createRequiredKeys := requiredKeySet(create)
+	updateRequiredKeys := requiredKeySet(update)
 
 	properties := make(map[string]*Schema)
 	for _, key := range unionObjectKeys(create, update, read) {
 		var childCreate, childUpdate, childRead *Schema
-		childRequired := false
+		childCreateRequired := false
+		childUpdateRequired := false
 		if create != nil {
 			childCreate = create.Properties[key]
-			_, childRequired = createRequiredKeys[key]
+			_, childCreateRequired = createRequiredKeys[key]
 		}
 		if update != nil {
 			childUpdate = update.Properties[key]
+			_, childUpdateRequired = updateRequiredKeys[key]
 		}
 		if read != nil {
 			childRead = read.Properties[key]
 		}
-		child, err := m.mergeNode(childCreate, childUpdate, childRead, childRequired, ChildPath(path, key))
+		child, err := m.mergeNode(childCreate, childUpdate, childRead, childCreateRequired, childUpdateRequired, ChildPath(path, key))
 		if err != nil {
 			return nil, err
 		}
@@ -292,21 +356,37 @@ func (m *resourceMerger) mergeObject(create, update, read *Schema, createRequire
 		Kind:       SchemaKindObject,
 		Properties: properties,
 		Required:   requiredFromCreate(create),
-	}, create, update, read, createRequired, path), nil
+	}, create, update, read, createRequired, updateRequired, path), nil
+}
+
+// requiredKeySet indexes a body's Required list for O(1) membership tests. A
+// nil body yields a nil set, which reads as "requires nothing".
+func requiredKeySet(s *Schema) map[string]struct{} {
+	if s == nil {
+		return nil
+	}
+	keys := make(map[string]struct{}, len(s.Required))
+	for _, key := range s.Required {
+		keys[key] = struct{}{}
+	}
+	return keys
 }
 
 // stampCommon fills the fields every merged node carries whatever its kind: the
 // cosmetic trio (RefName, Description, Enum, Sensitive), the request-side
-// component name, and the provenance stamp. It returns out, so a merge can
-// construct its kind-specific fields and stamp the rest in one expression.
-func (m *resourceMerger) stampCommon(out, create, update, read *Schema, createRequired bool, path string) *Schema {
+// component name, the write-only quartet, and the provenance stamp. It returns
+// out, so a merge can construct its kind-specific fields and stamp the rest in
+// one expression.
+func (m *resourceMerger) stampCommon(out, create, update, read *Schema, createRequired, updateRequired bool, path string) *Schema {
 	out.RefName, out.Description, out.Enum, out.Sensitive = m.cosmeticFields(create, update, read, path)
 	out.RequestRefName = pickRequestRefName(create, update)
-	out.Provenance = stampProvenance(create, update, read, createRequired)
+	out.WriteOnlySecret, out.SecretRequiredOnCreate, out.SecretRequiredOnUpdate, out.WriteOnlyDescription =
+		m.writeOnlyMetadata(create, update, read, createRequired, updateRequired, path)
+	out.Provenance = stampProvenance(create, update, read, createRequired, out.WriteOnlySecret)
 	return out
 }
 
-func (m *resourceMerger) mergeCollection(kind SchemaKind, create, update, read *Schema, createRequired bool, path string) (*Schema, error) {
+func (m *resourceMerger) mergeCollection(kind SchemaKind, create, update, read *Schema, createRequired, updateRequired bool, path string) (*Schema, error) {
 	var childCreate, childUpdate, childRead *Schema
 	if create != nil {
 		childCreate = create.Items
@@ -323,17 +403,17 @@ func (m *resourceMerger) mergeCollection(kind SchemaKind, create, update, read *
 	}
 	// An array/map element has no name of its own to appear in a parent's
 	// Required list, so it is never itself request-required.
-	items, err := m.mergeNode(childCreate, childUpdate, childRead, false, ChildPath(path, suffix))
+	items, err := m.mergeNode(childCreate, childUpdate, childRead, false, false, ChildPath(path, suffix))
 	if err != nil {
 		return nil, err
 	}
 	return m.stampCommon(&Schema{
 		Kind:  kind,
 		Items: items,
-	}, create, update, read, createRequired, path), nil
+	}, create, update, read, createRequired, updateRequired, path), nil
 }
 
-func (m *resourceMerger) mergePrimitive(create, update, read *Schema, createRequired bool, path string) (*Schema, error) {
+func (m *resourceMerger) mergePrimitive(create, update, read *Schema, createRequired, updateRequired bool, path string) (*Schema, error) {
 	present := presentSchemas(create, update, read)
 	typ, err := reconcileField(path, "type", present, func(s *Schema) string { return s.Type })
 	if err != nil {
@@ -347,12 +427,12 @@ func (m *resourceMerger) mergePrimitive(create, update, read *Schema, createRequ
 		Kind:   SchemaKindPrimitive,
 		Type:   typ,
 		Format: format,
-	}, create, update, read, createRequired, path), nil
+	}, create, update, read, createRequired, updateRequired, path), nil
 }
 
-func (m *resourceMerger) mergeVerbatim(create, update, read *Schema, createRequired bool, path string) (*Schema, error) {
+func (m *resourceMerger) mergeVerbatim(create, update, read *Schema, createRequired, updateRequired bool, path string) (*Schema, error) {
 	out := CloneSchema(preferredSchema(create, update, read))
-	return m.stampCommon(out, create, update, read, createRequired, path), nil
+	return m.stampCommon(out, create, update, read, createRequired, updateRequired, path), nil
 }
 
 // pickRequestRefName returns the Create body's component name at this node,
@@ -393,11 +473,11 @@ func (m *resourceMerger) cosmeticFields(create, update, read *Schema, path strin
 	return refName, description, enum, sensitive
 }
 
-func stampProvenance(create, update, read *Schema, createRequired bool) *SchemaProvenance {
+func stampProvenance(create, update, read *Schema, createRequired, writeOnly bool) *SchemaProvenance {
 	return &SchemaProvenance{
 		InRequest:       create != nil || update != nil,
 		RequestRequired: createRequired,
-		InResponse:      read != nil,
+		InResponse:      read != nil && !writeOnly,
 	}
 }
 
@@ -593,13 +673,13 @@ func (e *OneOfMergeError) Error() string {
 // Provenance at every property. The name alternatives correlate under is also
 // the name the variant block is published under, so the two cannot drift. The
 // SDK binding stays the preferred (Read) body's, as RefName does.
-func (m *resourceMerger) mergeOneOf(create, update, read *Schema, createRequired bool, path string) (*Schema, error) {
+func (m *resourceMerger) mergeOneOf(create, update, read *Schema, createRequired, updateRequired bool, path string) (*Schema, error) {
 	// A node classified oneOf but carrying no normalized union has no
 	// alternatives to correlate. That defect is reported elsewhere with its own
 	// actionable message, so hand it on untouched.
 	for _, s := range presentSchemas(create, update, read) {
 		if s.OneOf == nil {
-			return m.mergeVerbatim(create, update, read, createRequired, path)
+			return m.mergeVerbatim(create, update, read, createRequired, updateRequired, path)
 		}
 	}
 
@@ -623,7 +703,7 @@ func (m *resourceMerger) mergeOneOf(create, update, read *Schema, createRequired
 		}
 		// An alternative is a choice, never an entry in an enclosing object's
 		// required list, so it is never itself request-required.
-		merged, err := m.mergeNode(altCreate, altUpdate, altRead, false, ChildPath(path, name))
+		merged, err := m.mergeNode(altCreate, altUpdate, altRead, false, false, ChildPath(path, name))
 		if err != nil {
 			return nil, err
 		}
@@ -660,7 +740,7 @@ func (m *resourceMerger) mergeOneOf(create, update, read *Schema, createRequired
 	return m.stampCommon(&Schema{
 		Kind:  SchemaKindOneOf,
 		OneOf: spec,
-	}, create, update, read, createRequired, path), nil
+	}, create, update, read, createRequired, updateRequired, path), nil
 }
 
 // correlateOneOf lines the three bodies' alternatives up under one name each,

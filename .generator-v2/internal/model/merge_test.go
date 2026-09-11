@@ -2,6 +2,8 @@ package model
 
 import (
 	"errors"
+	"reflect"
+	"strings"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -34,7 +36,148 @@ func attributesOf(s *Schema) map[string]*Schema {
 	return s.Properties["data"].Properties["attributes"].Properties
 }
 
+// setTestBoolField/testBoolField keep T153 executable before T154 adds the
+// write-only metadata fields. The intended red result is a Ginkgo failure that
+// names the missing contract, not a Go compilation error that obscures it.
+func setTestBoolField(target any, name string, value bool) {
+	GinkgoHelper()
+	field := reflect.ValueOf(target).Elem().FieldByName(name)
+	Expect(field.IsValid()).To(BeTrue(), "%T is missing %s metadata", target, name)
+	Expect(field.CanSet()).To(BeTrue(), "%T.%s cannot be set", target, name)
+	Expect(field.Kind()).To(Equal(reflect.Bool), "%T.%s must be boolean", target, name)
+	field.SetBool(value)
+}
+
+func testBoolField(target any, name string) bool {
+	GinkgoHelper()
+	field := reflect.ValueOf(target).Elem().FieldByName(name)
+	Expect(field.IsValid()).To(BeTrue(), "%T is missing %s metadata", target, name)
+	Expect(field.Kind()).To(Equal(reflect.Bool), "%T.%s must be boolean", target, name)
+	return field.Bool()
+}
+
+func secretSchema(writeOnly, sensitive bool) *Schema {
+	schema := &Schema{Kind: SchemaKindPrimitive, Type: "string", Sensitive: sensitive}
+	if writeOnly {
+		setTestBoolField(schema, "WriteOnlySecret", true)
+	}
+	return schema
+}
+
 var _ = Describe("MergeResourceSchema", func() {
+	DescribeTable("selects generated write-only handling only from a request-role writeOnly marker",
+		func(createWriteOnly, updateWriteOnly, readWriteOnly, requestSensitive, wantWriteOnly, wantSensitive bool) {
+			createReq := jsonAPIBody("AccountCreateRequest", map[string]*Schema{
+				"password": secretSchema(createWriteOnly, requestSensitive),
+			}, nil)
+			updateReq := jsonAPIBody("AccountUpdateRequest", map[string]*Schema{
+				"password": secretSchema(updateWriteOnly, requestSensitive),
+			}, nil)
+			readResp := jsonAPIBody("AccountResponse", map[string]*Schema{
+				"password": secretSchema(readWriteOnly, readWriteOnly),
+			}, nil)
+
+			merged, _, err := MergeResourceSchema(&ResolvedGroup{
+				Create: &Operation{OperationId: "CreateAccount", RequestSchema: createReq},
+				Update: &Operation{OperationId: "UpdateAccount", RequestSchema: updateReq},
+				Read:   &Operation{OperationId: "GetAccount", ResponseSchema: readResp},
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			password := attributesOf(merged)["password"]
+			Expect(testBoolField(password, "WriteOnlySecret")).To(Equal(wantWriteOnly))
+			Expect(password.Sensitive).To(Equal(wantSensitive))
+		},
+		Entry("Create writeOnly:true selects it", true, false, false, false, true, false),
+		Entry("Update writeOnly:true selects it", false, true, false, false, true, false),
+		Entry("request x-secret/tracking-sensitive does not select it", false, false, false, true, false, true),
+		Entry("response writeOnly:true does not select it", false, false, true, false, false, true),
+		Entry("no marker selects neither behavior", false, false, false, false, false, false),
+	)
+
+	DescribeTable("records write-only requiredness independently for Create and Update",
+		func(createRequired, updateRequired bool) {
+			createReq := jsonAPIBody("AccountCreateRequest", map[string]*Schema{
+				"password": secretSchema(true, false),
+			}, nil)
+			updateReq := jsonAPIBody("AccountUpdateRequest", map[string]*Schema{
+				"password": secretSchema(true, false),
+			}, nil)
+			if createRequired {
+				createReq.Properties["data"].Properties["attributes"].Required = []string{"password"}
+			}
+			if updateRequired {
+				updateReq.Properties["data"].Properties["attributes"].Required = []string{"password"}
+			}
+
+			merged, _, err := MergeResourceSchema(&ResolvedGroup{
+				Create: &Operation{OperationId: "CreateAccount", RequestSchema: createReq},
+				Update: &Operation{OperationId: "UpdateAccount", RequestSchema: updateReq},
+				Read: &Operation{OperationId: "GetAccount", ResponseSchema: jsonAPIBody(
+					"AccountResponse", map[string]*Schema{}, nil)},
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			password := attributesOf(merged)["password"]
+			Expect(testBoolField(password, "SecretRequiredOnCreate")).To(Equal(createRequired))
+			Expect(testBoolField(password, "SecretRequiredOnUpdate")).To(Equal(updateRequired))
+		},
+		Entry("optional in both roles", false, false),
+		Entry("required only by Create", true, false),
+		Entry("required only by Update", false, true),
+		Entry("required by both roles", true, true),
+	)
+
+	It("suppresses a request write-only field returned by Read and emits one deterministic value-free warning", func() {
+		requestPassword := secretSchema(true, false)
+		requestPassword.Description = "configured-secret-must-not-appear"
+		responsePassword := secretSchema(false, true)
+		responsePassword.Description = "observed-secret-must-not-appear"
+		group := &ResolvedGroup{
+			Create: &Operation{OperationId: "CreateAccount", RequestSchema: jsonAPIBody(
+				"AccountCreateRequest", map[string]*Schema{"password": requestPassword}, []string{"password"})},
+			Update: &Operation{OperationId: "UpdateAccount", RequestSchema: jsonAPIBody(
+				"AccountUpdateRequest", map[string]*Schema{"password": secretSchema(true, false)}, nil)},
+			Read: &Operation{
+				OperationId: "GetAccount",
+				Tracking: &TrackingFieldMetadata{
+					ArtifactKind: ArtifactKindResource,
+					ArtifactName: "integration_account",
+				},
+				ResponseSchema: jsonAPIBody(
+					"AccountResponse", map[string]*Schema{"password": responsePassword}, nil),
+			},
+		}
+
+		merged, firstDiags, err := MergeResourceSchema(group)
+		Expect(err).NotTo(HaveOccurred())
+		password := attributesOf(merged)["password"]
+		Expect(testBoolField(password, "WriteOnlySecret")).To(BeTrue())
+		Expect(password.Provenance.InResponse).To(BeFalse(),
+			"a write-only response field must not produce an updateState assignment")
+
+		_, secondDiags, err := MergeResourceSchema(group)
+		Expect(err).NotTo(HaveOccurred())
+		warnings := func(diags []Diagnostic) []Diagnostic {
+			var out []Diagnostic
+			for _, diagnostic := range diags {
+				if diagnostic.Severity == SeverityWarning {
+					out = append(out, diagnostic)
+				}
+			}
+			return out
+		}
+		firstWarnings := warnings(firstDiags)
+		Expect(firstWarnings).To(HaveLen(1))
+		Expect(warnings(secondDiags)).To(Equal(firstWarnings))
+		message := firstWarnings[0].Message
+		Expect(message).To(ContainSubstring("integration_account"))
+		Expect(message).To(ContainSubstring("data.attributes.password"))
+		Expect(message).NotTo(ContainSubstring("configured-secret-must-not-appear"))
+		Expect(message).NotTo(ContainSubstring("observed-secret-must-not-appear"))
+		Expect(strings.ToLower(message)).NotTo(ContainSubstring("value="))
+	})
+
 	It("correlates by property position across three differently-named components and stamps the provenance bits", func() {
 		createReq := jsonAPIBody("IncidentTypeCreateRequest", map[string]*Schema{
 			"name":          {Kind: SchemaKindPrimitive, Type: "string", Description: "name (create)"},

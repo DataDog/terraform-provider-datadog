@@ -229,8 +229,34 @@ type FilterParamView struct {
 // here. Attributes holds top-level leaves; Blocks holds top-level nested
 // objects/lists (for a plural data source, that includes the items block).
 type SchemaView struct {
-	Attributes []AttrView
-	Blocks     []AttrView
+	Attributes          []AttrView
+	Blocks              []AttrView
+	HasWriteOnlySecrets bool
+	IncludeResourceID   bool
+}
+
+// WriteOnlySecretView is one generated write-only-only Terraform pair. The
+// Terraform names and descriptions drive schema expansion, while SDKField
+// deliberately retains the original OpenAPI setter identity for request
+// routing. ParentBlocks contains only statically addressed single nested
+// attributes and is empty for a resource-root secret.
+type WriteOnlySecretView struct {
+	OriginalAttr         string
+	WriteOnlyAttr        string
+	TriggerAttr          string
+	SDKField             string
+	ParentBlocks         []string
+	RequiredOnCreate     bool
+	RequiredOnUpdate     bool
+	WriteOnlyDescription string
+	TriggerDescription   string
+	// ConfigVar is the package-scoped configuration shared by schema expansion
+	// and lifecycle handlers. HandlerVar and ResultVar are method-local names;
+	// GetterCall selects Create or Update retrieval on per-call copies.
+	ConfigVar  string
+	HandlerVar string
+	ResultVar  string
+	GetterCall string
 }
 
 // AttrView is one node of the Terraform schema tree. A leaf renders a typed
@@ -279,6 +305,14 @@ type AttrView struct {
 	// attribute's GoType (e.g. "String", "Object", "List"). Empty unless
 	// PlanModifiers is non-empty.
 	PlanModifierType string
+
+	// WriteOnlySecret replaces an original write-only leaf. It is rendered by
+	// the containing attribute map through fwutils rather than as an ordinary
+	// schema attribute. HasWriteOnlySecrets marks a nested container whose
+	// immediate Attributes slice contains at least one such replacement.
+	WriteOnlySecret     *WriteOnlySecretView
+	HasWriteOnlySecrets bool
+	IncludeResourceID   bool
 
 	// Attributes and Blocks are the leaf and nested children of a container; both
 	// are empty for a leaf attribute.
@@ -533,6 +567,12 @@ type ResourceView struct {
 	// time.Parse call (see RequestFieldView.ParseCall).
 	UsesTime bool
 
+	// WriteOnlySecrets is the deterministic resource-wide list used by request
+	// routing. UsesWriteOnly controls the fwutils import; schema placement is
+	// carried independently by the placeholder AttrViews at each nesting level.
+	WriteOnlySecrets []WriteOnlySecretView
+	UsesWriteOnly    bool
+
 	// Dropped lists response members skipped from the rendered view (e.g.
 	// relationships), surfaced as diagnostics in the run report.
 	Dropped []DroppedMember
@@ -551,6 +591,25 @@ type CRUDCallView struct {
 	// Envelope describes how this role builds its JSON:API request body. Nil
 	// for a call that sends none (Read, Delete).
 	Envelope *RequestEnvelopeView
+	// WriteOnlySecrets contains only secrets declared by this call's own
+	// request body, in deterministic resource-tree order.
+	WriteOnlySecrets []WriteOnlySecretView
+	// NormalizeUnknowns contains the computed Framework values that may remain
+	// unknown after a sparse Create response. It is populated only for Create;
+	// Read begins from state and Update preserves its planned values.
+	NormalizeUnknowns []UnknownNormalizationView
+}
+
+// UnknownNormalizationView describes one recursively-addressable generated
+// model value whose computed unknown state must not reach post-Create state.
+// Kind is value, object, or list_object. Value nodes carry NullExpr; container
+// nodes carry only descendants that can themselves remain unknown.
+type UnknownNormalizationView struct {
+	Kind     string
+	Expr     string
+	NullExpr string
+	ItemVar  string
+	Children []UnknownNormalizationView
 }
 
 // ImportView describes how a resource recovers its identity from a terraform
@@ -646,6 +705,10 @@ type RequestFieldView struct {
 	// TFName names the field in a parse-failure diagnostic. Set only when
 	// ParsedVar is.
 	TFName string
+	// WriteOnlyResult names the SecretResult retrieved from configuration before
+	// request construction. When set, the original SDK setter receives its Value
+	// only when ShouldSetValue is true; no Terraform model field is read.
+	WriteOnlyResult string
 
 	// Nested is set for an object field: the request-side SDK type to build
 	// via New<SDKType>WithDefaults(), and its own Set<GoField> calls

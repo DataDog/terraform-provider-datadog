@@ -25,9 +25,19 @@ func MergeAttributes(attributeMaps ...map[string]schema.Attribute) map[string]sc
 	return result
 }
 
-// WriteOnlySecretConfig configures a secret attribute that supports both modes:
-// - Plaintext mode: for Terraform <1.11 or users preferring state storage
-// - Write-only mode: for Terraform 1.11+ with secrets not stored in state
+// WriteOnlySecretMode selects whether a schema keeps the legacy plaintext
+// attribute alongside its write-only companion or exposes only the write-only
+// interface. The zero value preserves all existing callers.
+type WriteOnlySecretMode uint8
+
+const (
+	WriteOnlySecretModeLegacy WriteOnlySecretMode = iota
+	WriteOnlySecretModeOnly
+)
+
+// WriteOnlySecretConfig configures a secret attribute. Legacy mode supports
+// both a stateful plaintext attribute and its write-only companion. ModeOnly
+// exposes only the write-only attribute and its stateful version trigger.
 type WriteOnlySecretConfig struct {
 	OriginalAttr         string // Plaintext attribute (e.g., "secret_key")
 	WriteOnlyAttr        string // Write-only attribute (e.g., "secret_key_wo")
@@ -38,6 +48,10 @@ type WriteOnlySecretConfig struct {
 	// ParentBlocks scopes the three attributes under static nested blocks, e.g.
 	// []string{"authentication", "basic"}. Empty means the resource root.
 	ParentBlocks []string
+	// Mode defaults to WriteOnlySecretModeLegacy for backwards compatibility.
+	Mode WriteOnlySecretMode
+	// Required controls both ModeOnly attributes. Legacy mode ignores it.
+	Required bool
 }
 
 func (secretConfig WriteOnlySecretConfig) attrPath(attributeName string) frameworkPath.Path {
@@ -68,6 +82,36 @@ func (secretConfig WriteOnlySecretConfig) attrExpression(attributeName string) f
 // 3. Version trigger - when changed, applies the write-only secret
 // Users choose one mode via ExactlyOneOf validator.
 func CreateWriteOnlySecretAttributes(config WriteOnlySecretConfig) map[string]schema.Attribute {
+	if config.Mode == WriteOnlySecretModeOnly {
+		writeOnly := schema.StringAttribute{
+			Description: config.WriteOnlyDescription,
+			WriteOnly:   true,
+		}
+		trigger := schema.StringAttribute{
+			Description: config.TriggerDescription,
+			Validators: []validator.String{
+				stringvalidator.LengthAtLeast(1),
+			},
+		}
+		if config.Required {
+			writeOnly.Required = true
+			trigger.Required = true
+		} else {
+			writeOnly.Optional = true
+			trigger.Optional = true
+			writeOnly.Validators = []validator.String{
+				stringvalidator.AlsoRequires(config.attrExpression(config.TriggerAttr)),
+			}
+			trigger.Validators = append(trigger.Validators,
+				stringvalidator.AlsoRequires(config.attrExpression(config.WriteOnlyAttr)),
+			)
+		}
+		return map[string]schema.Attribute{
+			config.WriteOnlyAttr: writeOnly,
+			config.TriggerAttr:   trigger,
+		}
+	}
+
 	attrs := map[string]schema.Attribute{
 		config.OriginalAttr: schema.StringAttribute{
 			Optional:    true,
@@ -151,6 +195,9 @@ func (h *WriteOnlySecretHandler) GetSecretForCreate(ctx context.Context, config 
 		result.ShouldSetValue = true
 		return result
 	}
+	if h.Config.Mode == WriteOnlySecretModeOnly {
+		return result
+	}
 
 	// Fall back to plaintext attribute
 	var plaintextSecret types.String
@@ -215,6 +262,9 @@ func (h *WriteOnlySecretHandler) GetSecretForUpdate(ctx context.Context, config 
 		// Version changed - return secret for rotation
 		result.Value = writeOnlySecret.ValueString()
 		result.ShouldSetValue = true
+		return result
+	}
+	if h.Config.Mode == WriteOnlySecretModeOnly {
 		return result
 	}
 

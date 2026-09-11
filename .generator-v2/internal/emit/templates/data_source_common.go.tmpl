@@ -86,17 +86,55 @@ type {{ .Name }} struct {
 {{- end }}
 {{- end -}}
 
-{{/* nestedBody renders one combined Attributes map for a nested attribute. */}}
-{{- define "nestedBody" -}}
-{{- if or .Attributes .Blocks }}
-Attributes: map[string]schema.Attribute{
+{{/* writeOnlySecretConfigValue is shared by schema expansion and request handlers. */}}
+{{- define "writeOnlySecretConfigValue" -}}
+fwutils.WriteOnlySecretConfig{OriginalAttr: {{ printf "%q" .OriginalAttr }}, WriteOnlyAttr: {{ printf "%q" .WriteOnlyAttr }}, TriggerAttr: {{ printf "%q" .TriggerAttr }}, WriteOnlyDescription: {{ printf "%q" .WriteOnlyDescription }}, TriggerDescription: {{ printf "%q" .TriggerDescription }}, ParentBlocks: []string{ {{- range .ParentBlocks }}{{ printf "%q" . }},{{- end }}}, Mode: fwutils.WriteOnlySecretModeOnly, Required: {{ .RequiredOnCreate }}}
+{{- end -}}
+
+{{/* writeOnlySecretAttributes expands one generated write-only-only pair. */}}
+{{- define "writeOnlySecretAttributes" -}}
+fwutils.CreateWriteOnlySecretAttributes({{ .ConfigVar }}),
+{{- end -}}
+
+{{/* schemaBody renders one combined Attributes map for a resource root or nested attribute. */}}
+{{- define "schemaBody" -}}
+{{- if or .IncludeResourceID .Attributes .Blocks }}
+{{- if .HasWriteOnlySecrets }}
+Attributes: fwutils.MergeAttributes(
+	map[string]schema.Attribute{
+{{- if .IncludeResourceID }}
+		"id": utils.ResourceIDAttribute(),
+{{- end }}
 {{- range .Attributes }}
+{{- if not .WriteOnlySecret }}
 {{ template "schemaAttribute" . }}
+{{- end }}
+{{- end }}
+{{- range .Blocks }}
+{{ template "schemaNestedAttribute" . }}
+{{- end }}
+	},
+{{- range .Attributes }}
+{{- with .WriteOnlySecret }}
+{{ template "writeOnlySecretAttributes" . }}
+{{- end }}
+{{- end }}
+),
+{{- else }}
+Attributes: map[string]schema.Attribute{
+{{- if .IncludeResourceID }}
+	"id": utils.ResourceIDAttribute(),
+{{- end }}
+{{- range .Attributes }}
+{{- if not .WriteOnlySecret }}
+{{ template "schemaAttribute" . }}
+{{- end }}
 {{- end }}
 {{- range .Blocks }}
 {{ template "schemaNestedAttribute" . }}
 {{- end }}
 },
+{{- end }}
 {{- end }}
 {{- end -}}
 
@@ -106,7 +144,7 @@ Attributes: map[string]schema.Attribute{
 "{{ .TFName }}": schema.ListNestedAttribute{
 	Description: {{ printf "%q" .Description }},
 	NestedObject: schema.NestedAttributeObject{
-{{ template "nestedBody" . }}
+{{ template "schemaBody" . }}
 	},
 {{- template "presenceFlags" . }}
 {{ template "validators" . }}
@@ -115,7 +153,7 @@ Attributes: map[string]schema.Attribute{
 {{- else }}
 "{{ .TFName }}": schema.SingleNestedAttribute{
 	Description: {{ printf "%q" .Description }},
-{{ template "nestedBody" . }}
+{{ template "schemaBody" . }}
 {{- template "presenceFlags" . }}
 {{ template "validators" . }}
 {{ template "planModifiers" . }}
