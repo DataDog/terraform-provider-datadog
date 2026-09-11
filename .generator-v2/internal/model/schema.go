@@ -512,6 +512,7 @@ func markWriteOnlyAncestorsConfigurationOwned(attributes []*Attribute) bool {
 	for _, attribute := range attributes {
 		descendantWriteOnly := markWriteOnlyAncestorsConfigurationOwned(attribute.Children)
 		if descendantWriteOnly && (attribute.Required || attribute.Optional) {
+			attribute.PreserveConfiguredPresence = attribute.Optional && attribute.Computed && attribute.InResponse
 			attribute.Computed = false
 			attribute.PlanModifiers = slices.DeleteFunc(attribute.PlanModifiers, func(modifier PlanModifierSpec) bool {
 				return strings.HasSuffix(modifier.Name, ".UseStateForUnknown")

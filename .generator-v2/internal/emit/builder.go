@@ -196,22 +196,24 @@ func oneOfListAssignment(
 	tfName, receiver, lhs string,
 	collection bool,
 	preserveExisting bool,
+	preserveConfiguredPresence bool,
 ) ListAssignment {
 	outer := leafVar(tfName)
 	assignment := &OneOfAssignment{
-		Path:             env.Path,
-		SDKType:          env.SDKType,
-		GoModel:          render.goModel,
-		LHS:              lhs,
-		GetterOk:         getterOk(receiver, tfName),
-		Var:              outer,
-		Receiver:         outer,
-		ModelVar:         outer + "Envelope",
-		MatchVar:         outer + "Matches",
-		Optional:         env.Optional,
-		PreserveExisting: preserveExisting,
-		Collection:       collection,
-		Variants:         render.variants,
+		Path:                       env.Path,
+		SDKType:                    env.SDKType,
+		GoModel:                    render.goModel,
+		LHS:                        lhs,
+		GetterOk:                   getterOk(receiver, tfName),
+		Var:                        outer,
+		Receiver:                   outer,
+		ModelVar:                   outer + "Envelope",
+		MatchVar:                   outer + "Matches",
+		Optional:                   env.Optional,
+		PreserveExisting:           preserveExisting,
+		PreserveConfiguredPresence: preserveConfiguredPresence,
+		Collection:                 collection,
+		Variants:                   render.variants,
 	}
 	if collection {
 		// The members are read off each element, not off the slice pointer.
@@ -951,7 +953,7 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 			})
 			if b.responds(a) {
 				lists = append(lists, oneOfListAssignment(
-					a.OneOf, render, tfName, receiver, lhsPrefix+"."+field, collection, b.filterByResponse))
+					a.OneOf, render, tfName, receiver, lhsPrefix+"."+field, collection, b.filterByResponse, a.PreserveConfiguredPresence))
 			}
 			continue
 		}
@@ -1057,18 +1059,19 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 			})
 			if b.responds(a) {
 				lists = append(lists, ListAssignment{
-					Kind:             "object",
-					LHS:              lhsPrefix + "." + field,
-					GetterOk:         getterOk(receiver, tfName),
-					Var:              leafVar(tfName),
-					LoopVar:          loopVar,
-					LoopIndex:        base + "Index",
-					ExistingVar:      base + "Existing",
-					ElemVar:          elemVar,
-					ElemStruct:       elemStruct,
-					Scalars:          childScalars,
-					Lists:            childLists,
-					PreserveExisting: b.filterByResponse,
+					Kind:                       "object",
+					LHS:                        lhsPrefix + "." + field,
+					GetterOk:                   getterOk(receiver, tfName),
+					Var:                        leafVar(tfName),
+					LoopVar:                    loopVar,
+					LoopIndex:                  base + "Index",
+					ExistingVar:                base + "Existing",
+					ElemVar:                    elemVar,
+					ElemStruct:                 elemStruct,
+					Scalars:                    childScalars,
+					Lists:                      childLists,
+					PreserveExisting:           b.filterByResponse,
+					PreserveConfiguredPresence: a.PreserveConfiguredPresence,
 				})
 			}
 
@@ -1095,15 +1098,16 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 			})
 			if b.responds(a) {
 				lists = append(lists, ListAssignment{
-					Kind:             "object_single",
-					LHS:              lhsPrefix + "." + field,
-					GetterOk:         getterOk(receiver, tfName),
-					Var:              objVar,
-					ElemVar:          elemVar,
-					ElemStruct:       childStruct,
-					Scalars:          childScalars,
-					Lists:            childLists,
-					PreserveExisting: b.filterByResponse,
+					Kind:                       "object_single",
+					LHS:                        lhsPrefix + "." + field,
+					GetterOk:                   getterOk(receiver, tfName),
+					Var:                        objVar,
+					ElemVar:                    elemVar,
+					ElemStruct:                 childStruct,
+					Scalars:                    childScalars,
+					Lists:                      childLists,
+					PreserveExisting:           b.filterByResponse,
+					PreserveConfiguredPresence: a.PreserveConfiguredPresence,
 				})
 			}
 
@@ -1524,7 +1528,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 				Blocks:      render.blocks,
 			})
 			itemLists = append(itemLists, oneOfListAssignment(
-				n.OneOf, render, tfName, "item.Attributes", "r."+field, collection, false))
+				n.OneOf, render, tfName, "item.Attributes", "r."+field, collection, false, false))
 			continue
 		}
 

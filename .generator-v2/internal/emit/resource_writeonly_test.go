@@ -179,6 +179,15 @@ var _ = Describe("generated resource write-only-only contract", func() {
 		Expect(username.PlanModifiers).To(ContainElement("stringplanmodifier.UseStateForUnknown"))
 	})
 
+	It("does not materialize an omitted optional response-backed secret container", func() {
+		_, _, source := renderWriteOnlyResource(oneLevelWriteOnlyOperation())
+		updateStateOffset := strings.LastIndex(source, " updateState(")
+		Expect(updateStateOffset).NotTo(Equal(-1))
+		updateState := source[updateStateOffset:]
+
+		Expect(updateState).To(ContainSubstring("ok && settings != nil && state.Settings != nil {"))
+	})
+
 	It("suppresses a same-path Read assignment and emits one value-free warning", func() {
 		artifact, _, source := renderWriteOnlyResource(oneLevelWriteOnlyOperation())
 		Expect(source).NotTo(ContainSubstring("state.Settings.Url ="))

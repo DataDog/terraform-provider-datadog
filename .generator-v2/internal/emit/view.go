@@ -422,6 +422,10 @@ type ListAssignment struct {
 	// PreserveExisting is enabled for resource response mapping so fields the
 	// request owns but the API never returns survive a nested-model rebuild.
 	PreserveExisting bool
+	// PreserveConfiguredPresence guards response mapping with an existing model
+	// check so an optional configuration-owned container remains absent when the
+	// API returns server defaults for it.
+	PreserveConfiguredPresence bool
 
 	// The fields below back an object list (Kind == "object").
 
@@ -479,6 +483,9 @@ type OneOfAssignment struct {
 	// PreserveExisting retains the previously selected variant model when the
 	// response selects that same variant, preserving request-only leaves.
 	PreserveExisting bool
+	// PreserveConfiguredPresence has the same container-presence semantics as
+	// ListAssignment.PreserveConfiguredPresence for a oneOf envelope.
+	PreserveConfiguredPresence bool
 	// Collection marks a list whose element is an envelope; LoopVar is then the
 	// per-element local.
 	Collection bool

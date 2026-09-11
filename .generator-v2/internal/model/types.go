@@ -557,6 +557,10 @@ type Attribute struct {
 	// tree. Required alone cannot answer it: a required write-only field and a
 	// required field that is also read back both come out Required.
 	InResponse bool
+	// PreserveConfiguredPresence marks an optional response-backed container
+	// made configuration-owned because it contains a write-only descendant.
+	// Response mapping must not materialize it when configuration omitted it.
+	PreserveConfiguredPresence bool
 
 	// OpenAPIName is the property name this attribute was built from, before
 	// SnakeCase normalized it for Terraform (e.g. "hostTagsLists" behind the

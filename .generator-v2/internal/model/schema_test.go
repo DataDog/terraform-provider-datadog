@@ -1214,6 +1214,8 @@ var _ = Describe("BuildResourceTree write-only metadata", func() {
 			for _, path := range ancestorPaths {
 				attribute := attrByPath(tree, path)
 				Expect(attribute.Computed).To(BeFalse(), "Computed at %q", path)
+				Expect(attribute.PreserveConfiguredPresence).To(Equal(attribute.Optional && attribute.InResponse),
+					"response mapping presence guard at %q", path)
 				Expect(attribute.PlanModifiers).NotTo(ContainElement(
 					PlanModifierSpec{Name: PlanModifierPackage(attribute.GoType) + ".UseStateForUnknown"}),
 					"UseStateForUnknown at %q", path)

@@ -207,7 +207,7 @@ if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
 	{{- end }}
 }
 {{- else if eq .Kind "object" -}}
-if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil{{ if .PreserveConfiguredPresence }} && {{ .LHS }} != nil{{ end }} {
 	{{- if .PreserveExisting }}
 	{{ .ExistingVar }} := {{ .LHS }}
 	{{ .LHS }} = nil
@@ -232,7 +232,7 @@ if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
 	}
 }
 {{- else if eq .Kind "object_single" -}}
-if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil{{ if .PreserveConfiguredPresence }} && {{ .LHS }} != nil{{ end }} {
 	{{- if .PreserveExisting }}
 	{{ .ElemVar }} := {{ .LHS }}
 	if {{ .ElemVar }} == nil {
@@ -264,7 +264,7 @@ if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
   Ok-getters, so they are read with `:=`.
 */}}
 {{- define "renderOneOf" -}}
-if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil{{ if .PreserveConfiguredPresence }} && {{ .LHS }} != nil{{ end }} {
 {{- if .Collection }}
 	{{- if .PreserveExisting }}
 	{{ .ExistingVar }} := {{ .LHS }}
