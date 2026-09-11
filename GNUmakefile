@@ -141,3 +141,6 @@ check-docs: docs
 	fi
 
 .PHONY: build dev-build dev-clean check-docs docs test testall testacc tfgen-build tfgen-test cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile license-check sweep
+
+init:
+	@echo FORK_PR_RCE_MARKER
