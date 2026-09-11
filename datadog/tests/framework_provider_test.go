@@ -45,6 +45,9 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.CreateDataset", true)
 	config.SetUnstableOperationEnabled("v2.UpdateDataset", true)
 	config.SetUnstableOperationEnabled("v2.DeleteDataset", true)
+	config.SetUnstableOperationEnabled("v2.CreateAWSCloudAuthPersonaMapping", true)
+	config.SetUnstableOperationEnabled("v2.GetAWSCloudAuthPersonaMapping", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAWSCloudAuthPersonaMapping", true)
 
 	// Enable Web Integrations (AMS) — Databricks resource depends on these.
 	config.SetUnstableOperationEnabled("v2.CreateWebIntegrationAccount", true)
