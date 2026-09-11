@@ -15,7 +15,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-const awsWifTestAccountIdentifier = "tf-testacccurrentuserdatasource-local@example.com"
+const awsWifReplayAccountIdentifier = "tf-testacccurrentuserdatasource-local@example.com"
 
 func TestAccAwsWifPersonaMapping(t *testing.T) {
 	t.Parallel()
@@ -47,7 +47,16 @@ func TestAccAwsWifPersonaMapping(t *testing.T) {
 }
 
 func testAccAwsWifPersonaMappingConfig(accountID string) string {
+	currentUserConfig := `data "datadog_current_user" "test" {}`
+	accountIdentifier := "data.datadog_current_user.test.handle"
+	if isReplaying() {
+		currentUserConfig = ""
+		accountIdentifier = fmt.Sprintf("%q", awsWifReplayAccountIdentifier)
+	}
+
 	return fmt.Sprintf(`
+%[2]s
+
 resource "datadog_integration_aws_account" "test" {
   aws_account_id = %[1]s
   aws_partition  = "aws"
@@ -75,12 +84,11 @@ resource "datadog_integration_aws_account" "test" {
 }
 
 resource "datadog_aws_wif_persona_mapping" "test" {
-  # This is the caller in the standard acceptance-test org, which guarantees
-  # the API's required permission-subset relation.
-  account_identifier = %[2]q
+  # Using the test caller guarantees the API's required permission-subset relation.
+  account_identifier = %[3]s
   arn_pattern         = "arn:aws:sts::${datadog_integration_aws_account.test.aws_account_id}:assumed-role/terraform-runner/*"
 }
-`, accountID, awsWifTestAccountIdentifier)
+`, accountID, currentUserConfig, accountIdentifier)
 }
 
 func testAccCheckAwsWifPersonaMappingExists(provider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {
