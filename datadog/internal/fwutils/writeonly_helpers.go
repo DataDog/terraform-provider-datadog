@@ -2,6 +2,7 @@ package fwutils
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -177,6 +178,20 @@ type WriteOnlySecretHandler struct {
 	SecretRequiredOnUpdate bool // If true, API requires secret in every update; if false (default), secret is optional
 }
 
+func (h *WriteOnlySecretHandler) requireUpdateSecret(result SecretResult) SecretResult {
+	if !h.SecretRequiredOnUpdate || result.ShouldSetValue || result.Diagnostics.HasError() {
+		return result
+	}
+	result.Diagnostics.AddError(
+		"Missing write-only secret required for update",
+		fmt.Sprintf(
+			"The API requires the write-only attribute %q for every update, but configuration did not provide a known value.",
+			h.Config.attrPath(h.Config.WriteOnlyAttr).String(),
+		),
+	)
+	return result
+}
+
 // GetSecretForCreate retrieves secret for resource creation.
 // Checks write-only attribute first, then falls back to plaintext attribute.
 // Returns ShouldSetValue=true if either attribute has a value.
@@ -225,6 +240,7 @@ func (h *WriteOnlySecretHandler) GetSecretForCreate(ctx context.Context, config 
 // When SecretRequiredOnUpdate is true:
 //   - Pattern 2: API requires secret in every update request
 //   - Returns ShouldSetValue=true if write-only or plaintext attr exists in config
+//   - Returns an error diagnostic if configuration has no known secret value
 //   - Version trigger only matters for forcing Terraform to detect a change
 func (h *WriteOnlySecretHandler) GetSecretForUpdate(ctx context.Context, config *tfsdk.Config, req *resource.UpdateRequest) SecretResult {
 	result := SecretResult{}
@@ -265,7 +281,7 @@ func (h *WriteOnlySecretHandler) GetSecretForUpdate(ctx context.Context, config 
 		return result
 	}
 	if h.Config.Mode == WriteOnlySecretModeOnly {
-		return result
+		return h.requireUpdateSecret(result)
 	}
 
 	// Fall back to plaintext attribute
@@ -280,5 +296,5 @@ func (h *WriteOnlySecretHandler) GetSecretForUpdate(ctx context.Context, config 
 		result.ShouldSetValue = true
 	}
 
-	return result
+	return h.requireUpdateSecret(result)
 }

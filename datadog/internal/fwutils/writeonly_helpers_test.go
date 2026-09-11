@@ -680,3 +680,32 @@ func TestWriteOnlySecretHandlerModeOnlyUpdateRotation(t *testing.T) {
 		})
 	}
 }
+
+func TestWriteOnlySecretHandlerModeOnlyRequiredUpdateRejectsMissingSecret(t *testing.T) {
+	config := modeOnlySecretConfig(t, false)
+	testSchema := schema.Schema{Attributes: CreateWriteOnlySecretAttributes(config)}
+	handler := &WriteOnlySecretHandler{Config: config, SecretRequiredOnUpdate: true}
+	tfConfig := &tfsdk.Config{Raw: modeOnlyValue(nil, nil), Schema: testSchema}
+	request := &resource.UpdateRequest{
+		State: tfsdk.State{Raw: modeOnlyValue(nil, nil), Schema: testSchema},
+		Plan:  tfsdk.Plan{Raw: modeOnlyValue(nil, nil), Schema: testSchema},
+	}
+
+	result := handler.GetSecretForUpdate(context.Background(), tfConfig, request)
+
+	if !result.Diagnostics.HasError() {
+		t.Fatal("required Update secret omission must return an error diagnostic")
+	}
+	if result.ShouldSetValue {
+		t.Fatal("missing required Update secret must not be sent")
+	}
+	for _, diagnostic := range result.Diagnostics {
+		message := diagnostic.Summary() + " " + diagnostic.Detail()
+		if !strings.Contains(message, "api_key_wo") {
+			t.Errorf("diagnostic must identify api_key_wo, got %q", message)
+		}
+		if strings.Contains(message, "configuration-only-secret") {
+			t.Errorf("diagnostic exposed a secret value: %q", message)
+		}
+	}
+}
