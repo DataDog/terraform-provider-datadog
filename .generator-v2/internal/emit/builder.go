@@ -1150,12 +1150,24 @@ func unsupportedWriteOnlyCollision(path, name string) UnsupportedNode {
 	}
 }
 
+func unsupportedWriteOnlyIdentifierCollision(path, otherPath, identifier string) UnsupportedNode {
+	return UnsupportedNode{
+		Path: path,
+		Reason: fmt.Sprintf(
+			"write-only handler identifier %q collides with write-only field %q",
+			identifier,
+			otherPath,
+		),
+	}
+}
+
 // validateWriteOnlySecrets checks the complete, unflattened resource tree so
 // diagnostics retain their canonical OpenAPI-derived paths. Expansion later in
 // walk can stay a single-purpose transformation instead of duplicating these
 // support-boundary checks after paths have been rewritten for rendering.
 func validateWriteOnlySecrets(attributes []*model.Attribute) []UnsupportedNode {
 	var unsupported []UnsupportedNode
+	handlerIdentifiers := make(map[string]string)
 	var walk func([]*model.Attribute, string)
 	walk = func(nodes []*model.Attribute, containment string) {
 		siblingNames := make(map[string]struct{}, len(nodes))
@@ -1175,10 +1187,21 @@ func validateWriteOnlySecrets(attributes []*model.Attribute) []UnsupportedNode {
 					})
 				default:
 					name := tfNameOf(attribute.Path)
+					companionCollision := false
 					for _, companion := range []string{name + "_wo", name + "_wo_version"} {
 						if _, exists := siblingNames[companion]; exists {
 							unsupported = append(unsupported, unsupportedWriteOnlyCollision(attribute.Path, companion))
+							companionCollision = true
 							break
+						}
+					}
+					if !companionCollision {
+						identifier := writeOnlyLocalStem(writeOnlyParentBlocks(attribute.Path), name)
+						if otherPath, exists := handlerIdentifiers[identifier]; exists && otherPath != attribute.Path {
+							unsupported = append(unsupported,
+								unsupportedWriteOnlyIdentifierCollision(attribute.Path, otherPath, identifier))
+						} else {
+							handlerIdentifiers[identifier] = attribute.Path
 						}
 					}
 				}
@@ -1221,7 +1244,7 @@ func buildWriteOnlySecretView(attribute *model.Attribute, artifactBase string) W
 	}
 	writeOnlyAttr := tfName + "_wo"
 	parentBlocks := writeOnlyParentBlocks(attribute.Path)
-	localStem := lowerFirst(model.SdkName(strings.Join(append(append([]string(nil), parentBlocks...), tfName), "_")))
+	localStem := writeOnlyLocalStem(parentBlocks, tfName)
 	return WriteOnlySecretView{
 		OriginalAttr:         tfName,
 		WriteOnlyAttr:        writeOnlyAttr,
@@ -1242,11 +1265,17 @@ func (b *dataSourceBuilder) collectWriteOnlySecret(secret WriteOnlySecretView) {
 	if b.writeOnlySeen == nil {
 		b.writeOnlySeen = make(map[string]struct{})
 	}
-	if _, exists := b.writeOnlySeen[secret.ConfigVar]; exists {
+	pathKey := strings.Join(append(append([]string(nil), secret.ParentBlocks...), secret.OriginalAttr), ".")
+	if _, exists := b.writeOnlySeen[pathKey]; exists {
 		return
 	}
-	b.writeOnlySeen[secret.ConfigVar] = struct{}{}
+	b.writeOnlySeen[pathKey] = struct{}{}
 	b.writeOnlySecrets = append(b.writeOnlySecrets, secret)
+}
+
+func writeOnlyLocalStem(parentBlocks []string, tfName string) string {
+	path := append(append([]string(nil), parentBlocks...), tfName)
+	return lowerFirst(model.SdkName(strings.Join(path, "_")))
 }
 
 func writeOnlyParentBlocks(attributePath string) []string {

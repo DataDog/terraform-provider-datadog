@@ -283,6 +283,40 @@ func modelAttributeByPath(attributes []*model.Attribute, path string) *model.Att
 }
 
 var _ = Describe("generated write-only support boundary", func() {
+	It("rejects distinct static paths that collapse to one handler identifier", func() {
+		secret := func(path string) *model.Attribute {
+			return &model.Attribute{Path: path, TfType: "schema.StringAttribute", WriteOnlySecret: true}
+		}
+		attributes := []*model.Attribute{
+			{
+				Path:   "resource.data.attributes.foo_bar",
+				TfType: "schema.SingleNestedAttribute",
+				Children: []*model.Attribute{
+					secret("resource.data.attributes.foo_bar.token"),
+				},
+			},
+			{
+				Path:   "resource.data.attributes.foo",
+				TfType: "schema.SingleNestedAttribute",
+				Children: []*model.Attribute{
+					{
+						Path:   "resource.data.attributes.foo.bar",
+						TfType: "schema.SingleNestedAttribute",
+						Children: []*model.Attribute{
+							secret("resource.data.attributes.foo.bar.token"),
+						},
+					},
+				},
+			},
+		}
+
+		unsupported := validateWriteOnlySecrets(attributes)
+		Expect(unsupported).To(HaveLen(1))
+		err := (&UnsupportedEmitError{Nodes: unsupported}).Error()
+		Expect(err).To(ContainSubstring("resource.data.attributes.foo_bar.token"))
+		Expect(err).To(ContainSubstring("resource.data.attributes.foo.bar.token"))
+	})
+
 	DescribeTable("fails unsupported shapes before template rendering with their path and category",
 		func(build func() *model.Artifact, wantPath, wantCategory string) {
 			artifact := build()
