@@ -968,7 +968,7 @@ type securityMonitoringRuleResponseInterface interface {
 //   - Optional-only string / list: pass API value through; reconcileEmpty*
 //     helpers reconcile empty API responses against prior plan/state.
 //   - Optional-only int64: preserve prior when API returns zero or omits.
-func updateCommonResourceDataFromResponse(ctx context.Context, state *securityMonitoringRuleResourceModel, ruleResponse securityMonitoringRuleResponseInterface) diag.Diagnostics {
+func updateCommonResourceDataFromResponse(ctx context.Context, state *securityMonitoringRuleResourceModel, ruleResponse securityMonitoringRuleResponseInterface, ruleType string) diag.Diagnostics {
 	var diags diag.Diagnostics
 	priorOptions := state.Options
 
@@ -983,7 +983,7 @@ func updateCommonResourceDataFromResponse(ctx context.Context, state *securityMo
 	}
 
 	var optsDiags diag.Diagnostics
-	state.Options, optsDiags = extractTfOptions(ctx, ruleResponse.GetOptions(), priorOptions)
+	state.Options, optsDiags = extractTfOptions(ctx, ruleResponse.GetOptions(), priorOptions, ruleType)
 	diags.Append(optsDiags...)
 
 	return diags
@@ -1016,7 +1016,7 @@ func extractThirdPartyCases(ctx context.Context, responseThirdPartyCases []datad
 func updateStandardResourceDataFromResponse(ctx context.Context, state *securityMonitoringRuleResourceModel, ruleResponse *datadogV2.SecurityMonitoringStandardRuleResponse) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	diags.Append(updateCommonResourceDataFromResponse(ctx, state, ruleResponse)...)
+	diags.Append(updateCommonResourceDataFromResponse(ctx, state, ruleResponse, string(ruleResponse.GetType()))...)
 
 	opts := ruleResponse.GetOptions()
 	if opts.GetDetectionMethod() == datadogV2.SECURITYMONITORINGRULEDETECTIONMETHOD_THIRD_PARTY {
@@ -1140,7 +1140,7 @@ func extractStandardRuleQueries(ctx context.Context, responseRuleQueries []datad
 func updateSignalResourceDataFromResponse(ctx context.Context, state *securityMonitoringRuleResourceModel, resp *datadogV2.SecurityMonitoringSignalRuleResponse) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	diags.Append(updateCommonResourceDataFromResponse(ctx, state, resp)...)
+	diags.Append(updateCommonResourceDataFromResponse(ctx, state, resp, string(resp.GetType()))...)
 
 	var caseDiags diag.Diagnostics
 	state.Cases, caseDiags = extractRuleCases(ctx, resp.GetCases())
@@ -1265,7 +1265,7 @@ func extractRuleCaseActions(apiActions []datadogV2.SecurityMonitoringRuleCaseAct
 	return tfActions
 }
 
-func extractTfOptions(ctx context.Context, options datadogV2.SecurityMonitoringRuleOptions, priorOptions []ruleOptionsModel) ([]ruleOptionsModel, diag.Diagnostics) {
+func extractTfOptions(ctx context.Context, options datadogV2.SecurityMonitoringRuleOptions, priorOptions []ruleOptionsModel, ruleType string) ([]ruleOptionsModel, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	tfOptions := ruleOptionsModel{
@@ -1281,8 +1281,16 @@ func extractTfOptions(ctx context.Context, options datadogV2.SecurityMonitoringR
 	if detectionMethod, ok := options.GetDetectionMethodOk(); ok {
 		tfOptions.DetectionMethod = types.StringValue(string(*detectionMethod))
 	}
-	if decreaseCriticalityBasedOnEnv, ok := options.GetDecreaseCriticalityBasedOnEnvOk(); ok {
-		tfOptions.DecreaseCriticalityBasedOnEnv = types.BoolValue(*decreaseCriticalityBasedOnEnv)
+	// buildPayloadOptions only sends decrease_criticality_based_on_env for log_detection
+	// rules, so for any other rule type the API value is not one the provider can manage.
+	// Reading it back would plan a change that can never be applied, so keep the
+	// configured value instead.
+	if ruleType == string(datadogV2.SECURITYMONITORINGRULETYPECREATE_LOG_DETECTION) {
+		if decreaseCriticalityBasedOnEnv, ok := options.GetDecreaseCriticalityBasedOnEnvOk(); ok {
+			tfOptions.DecreaseCriticalityBasedOnEnv = types.BoolValue(*decreaseCriticalityBasedOnEnv)
+		}
+	} else if !priorOption.DecreaseCriticalityBasedOnEnv.IsNull() && !priorOption.DecreaseCriticalityBasedOnEnv.IsUnknown() {
+		tfOptions.DecreaseCriticalityBasedOnEnv = priorOption.DecreaseCriticalityBasedOnEnv
 	}
 
 	// Optional-only int64. Preserve prior explicit values when the API returns
