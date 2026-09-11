@@ -1,0 +1,202 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 433
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2EmbeddedApp_import-local-1788338262","widgets":[{"definition":{"app_id":"7e7745f9-4343-4927-b038-80934a355915","inputs":[{"name":"environment","value":"production"},{"name":"settings","value":{"dry_run":false,"replicas":3}}],"title":"Environment manager","type":"embedded_app"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"2sm-3am-zw2","title":"tf-TestAccDatadogDashboardV2EmbeddedApp_import-local-1788338262","description":null,"author_handle":"jiawen.zhu@datadoghq.com","author_name":"Jiawen Zhu","layout_type":"ordered","url":"/dashboard/2sm-3am-zw2/tf-testaccdatadogdashboardv2embeddedappimport-local-1788338262","template_variables":[],"widgets":[{"definition":{"app_id":"7e7745f9-4343-4927-b038-80934a355915","inputs":[{"name":"environment","value":"production"},{"name":"settings","value":{"dry_run":false,"replicas":3}}],"title":"Environment manager","type":"embedded_app"},"id":1310694003356709}],"notify_list":[],"created_at":"2026-09-02T08:37:45.406955+00:00","modified_at":"2026-09-02T08:37:45.406955+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 769.943583ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/2sm-3am-zw2
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"2sm-3am-zw2","title":"tf-TestAccDatadogDashboardV2EmbeddedApp_import-local-1788338262","description":null,"author_handle":"jiawen.zhu@datadoghq.com","author_name":"Jiawen Zhu","layout_type":"ordered","url":"/dashboard/2sm-3am-zw2/tf-testaccdatadogdashboardv2embeddedappimport-local-1788338262","template_variables":[],"widgets":[{"definition":{"app_id":"7e7745f9-4343-4927-b038-80934a355915","inputs":[{"name":"environment","value":"production"},{"name":"settings","value":{"dry_run":false,"replicas":3}}],"title":"Environment manager","type":"embedded_app"},"id":1310694003356709}],"notify_list":[],"created_at":"2026-09-02T08:37:45.406955+00:00","modified_at":"2026-09-02T08:37:45.406955+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 189.023833ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/2sm-3am-zw2
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"2sm-3am-zw2","title":"tf-TestAccDatadogDashboardV2EmbeddedApp_import-local-1788338262","description":null,"author_handle":"jiawen.zhu@datadoghq.com","author_name":"Jiawen Zhu","layout_type":"ordered","url":"/dashboard/2sm-3am-zw2/tf-testaccdatadogdashboardv2embeddedappimport-local-1788338262","template_variables":[],"widgets":[{"definition":{"app_id":"7e7745f9-4343-4927-b038-80934a355915","inputs":[{"name":"environment","value":"production"},{"name":"settings","value":{"dry_run":false,"replicas":3}}],"title":"Environment manager","type":"embedded_app"},"id":1310694003356709}],"notify_list":[],"created_at":"2026-09-02T08:37:45.406955+00:00","modified_at":"2026-09-02T08:37:45.406955+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 212.460709ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/2sm-3am-zw2
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"2sm-3am-zw2","title":"tf-TestAccDatadogDashboardV2EmbeddedApp_import-local-1788338262","description":null,"author_handle":"jiawen.zhu@datadoghq.com","author_name":"Jiawen Zhu","layout_type":"ordered","url":"/dashboard/2sm-3am-zw2/tf-testaccdatadogdashboardv2embeddedappimport-local-1788338262","template_variables":[],"widgets":[{"definition":{"app_id":"7e7745f9-4343-4927-b038-80934a355915","inputs":[{"name":"environment","value":"production"},{"name":"settings","value":{"dry_run":false,"replicas":3}}],"title":"Environment manager","type":"embedded_app"},"id":1310694003356709}],"notify_list":[],"created_at":"2026-09-02T08:37:45.406955+00:00","modified_at":"2026-09-02T08:37:45.406955+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 159.81325ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/2sm-3am-zw2
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"2sm-3am-zw2"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 1.116235291s
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/2sm-3am-zw2
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID 2sm-3am-zw2 not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 305.899583ms
