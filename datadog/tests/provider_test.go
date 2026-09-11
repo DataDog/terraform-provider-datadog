@@ -320,6 +320,8 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_security_findings_due_date_rules_order_test":                 "security-monitoring",
 	"tests/resource_datadog_security_findings_mute_rule_test":                            "security-monitoring",
 	"tests/resource_datadog_security_findings_mute_rules_order_test":                     "security-monitoring",
+	"tests/resource_datadog_security_findings_severity_modifier_rule_test":               "security-monitoring",
+	"tests/resource_datadog_security_findings_severity_modifier_rules_order_test":        "security-monitoring",
 	"tests/resource_datadog_security_findings_ticket_creation_rule_test":                 "security-monitoring",
 	"tests/resource_datadog_security_findings_ticket_creation_rules_order_test":          "security-monitoring",
 	"tests/resource_datadog_security_monitoring_default_rule_migration_test":             "security-monitoring",
