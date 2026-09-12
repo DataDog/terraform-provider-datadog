@@ -1141,6 +1141,7 @@ Required:
 Optional:
 
 - `allow_failure` (Boolean) Determines whether or not to continue with test if this step fails.
+- `always_execute` (Boolean) Determines whether or not to always execute this step even if the previous step failed or was skipped.
 - `assertion` (Block List) Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion))
 - `exit_if_succeed` (Boolean) Determines whether or not to exit the test if the step succeeds.
 - `extracted_value` (Block List) Values to parse and save as variables from the response. (see [below for nested schema](#nestedblock--api_step--extracted_value))
