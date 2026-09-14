@@ -4,6 +4,7 @@ import (
 	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -42,9 +43,7 @@ func ExpandPrometheusRemoteWriteSource(src *PrometheusRemoteWriteSourceModel, id
 	if !src.AddressKey.IsNull() {
 		s.SetAddressKey(src.AddressKey.ValueString())
 	}
-	if !src.Path.IsNull() {
-		s.SetPath(src.Path.ValueString())
-	}
+	s.SetPath(src.Path.ValueString())
 	if !src.UsernameKey.IsNull() {
 		s.SetUsernameKey(src.UsernameKey.ValueString())
 	}
@@ -173,8 +172,8 @@ func PrometheusRemoteWriteSourceSchema() schema.ListNestedBlock {
 					Description: "Name of the environment variable or secret that holds the listen address for the Prometheus Remote Write endpoint.",
 				},
 				"path": schema.StringAttribute{
-					Optional:    true,
-					Description: "The HTTP path on which the source listens for incoming Prometheus Remote Write requests. Defaults to `/api/v1/write`.",
+					Required:    true,
+					Description: "The HTTP path on which the source listens for incoming Prometheus Remote Write requests.",
 				},
 				"username_key": schema.StringAttribute{
 					Optional:    true,
@@ -214,14 +213,18 @@ func PrometheusRemoteWriteSourceSchema() schema.ListNestedBlock {
 									Attributes: map[string]schema.Attribute{
 										"location": schema.StringAttribute{
 											Optional:    true,
-											Description: "Built-in token location on the incoming HTTP request. One of `path`, `address`.",
+											Description: "Built-in token location on the incoming HTTP request. One of `path`, `address`. Exactly one of `location` or `header` must be set.",
 											Validators: []validator.String{
 												stringvalidator.OneOf("path", "address"),
+												stringvalidator.ExactlyOneOf(
+													path.MatchRelative().AtParent().AtName("location"),
+													path.MatchRelative().AtParent().AtName("header"),
+												),
 											},
 										},
 										"header": schema.StringAttribute{
 											Optional:    true,
-											Description: "The name of the HTTP header that carries the token.",
+											Description: "The name of the HTTP header that carries the token. Exactly one of `location` or `header` must be set.",
 										},
 									},
 								},
