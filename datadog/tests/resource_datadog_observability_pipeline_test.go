@@ -724,6 +724,76 @@ resource "datadog_observability_pipeline" "quota" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_quotaProcessorOverflowRouting(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.quota_overflow"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "quota_overflow" {
+  name = "quota-overflow-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "quota-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "quota-processor"
+        enabled = true
+        include = "*"
+
+        quota {
+          name            = "overflowQuota"
+          overflow_action = "overflow_routing"
+
+          limit {
+            enforce = "events"
+            limit   = 1000
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "s3-overflow-dest"
+      inputs = ["quota-processor.overflow_events"]
+
+      amazon_s3 {
+        bucket        = "my-overflow-bucket"
+        region        = "us-east-1"
+        key_prefix    = "overflow/"
+        storage_class = "STANDARD"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "quota-overflow-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.quota.0.overflow_action", "overflow_routing"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "s3-overflow-dest"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "quota-processor.overflow_events"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.bucket", "my-overflow-bucket"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_parseJsonProcessor(t *testing.T) {
 
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -6905,6 +6975,49 @@ resource "datadog_observability_pipeline" "http_client_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.tls.0.key_file", "/etc/ssl/private/http.key"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.tls.0.server_name", "httpclientdest.example.com"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_httpClientDestinationCustomAuth(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.http_client_dest_custom_auth"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "http_client_dest_custom_auth" {
+  name = "http client destination custom auth pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "http-client-dest-custom-auth"
+      inputs = ["source-1"]
+
+      http_client {
+        encoding      = "json"
+        auth_strategy = "custom"
+        custom_key    = "HTTP_AUTH_CUSTOM_HEADER"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.auth_strategy", "custom"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.custom_key", "HTTP_AUTH_CUSTOM_HEADER"),
 				),
 			},
 		},
