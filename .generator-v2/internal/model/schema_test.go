@@ -145,7 +145,7 @@ var _ = Describe("BuildResponseTree / BuildRequestTree path root and shape", fun
 		Expect(tree.Attributes).To(HaveLen(1))
 		root := tree.Attributes[0]
 		Expect(root.Path).To(Equal("response"))
-		Expect(root.TfType).To(Equal("schema.ListNestedBlock"))
+		Expect(root.TfType).To(Equal("schema.ListNestedAttribute"))
 		Expect(root.GoType).To(Equal("types.List"))
 		Expect(root.Children).To(HaveLen(1))
 		Expect(root.Children[0].Path).To(Equal("response[].name"))
@@ -235,13 +235,13 @@ var _ = Describe("BuildResponseTree type delegation and composites", func() {
 		Expect(tags.Children).To(BeEmpty())
 	})
 
-	It("builds array<object> as a ListNestedBlock with [] element children and no ElementType", func() {
+	It("builds array<object> as a ListNestedAttribute with [] element children and no ElementType", func() {
 		tree, _, err := BuildResponseTree(objSchema(map[string]*Schema{
 			"items": arrSchema(objSchema(map[string]*Schema{"name": primSchema("string")})),
 		}))
 		Expect(err).NotTo(HaveOccurred())
 		items := attrByPath(tree, "response.items")
-		Expect(items.TfType).To(Equal("schema.ListNestedBlock"))
+		Expect(items.TfType).To(Equal("schema.ListNestedAttribute"))
 		Expect(items.GoType).To(Equal("types.List"))
 		Expect(items.ElementType).To(Equal(""))
 		Expect(pathsOf(items.Children)).To(Equal([]string{"response.items[].name"}))
@@ -288,13 +288,13 @@ var _ = Describe("BuildResponseTree type delegation and composites", func() {
 		Expect(pathsOf(configs.Children)).To(Equal([]string{"response.configs{}.x"}))
 	})
 
-	It("builds a nested object (no map ancestor) as a SingleNestedBlock with .key children", func() {
+	It("builds a nested object (no map ancestor) as a SingleNestedAttribute with .key children", func() {
 		tree, _, err := BuildResponseTree(objSchema(map[string]*Schema{
 			"options": objSchema(map[string]*Schema{"notify": primSchema("boolean")}),
 		}))
 		Expect(err).NotTo(HaveOccurred())
 		options := attrByPath(tree, "response.options")
-		Expect(options.TfType).To(Equal("schema.SingleNestedBlock"))
+		Expect(options.TfType).To(Equal("schema.SingleNestedAttribute"))
 		Expect(options.GoType).To(Equal("types.Object"))
 		Expect(pathsOf(options.Children)).To(Equal([]string{"response.options.notify"}))
 		Expect(options.Children[0].TfType).To(Equal("schema.BoolAttribute"))
@@ -340,10 +340,10 @@ var _ = Describe("BuildResponseTree nesting-form context switch", func() {
 			})),
 		}))
 		Expect(err).NotTo(HaveOccurred())
-		Expect(attrByPath(tree, "response.outer").TfType).To(Equal("schema.SingleNestedBlock"))
-		Expect(attrByPath(tree, "response.outer.inner").TfType).To(Equal("schema.SingleNestedBlock"))
-		Expect(attrByPath(tree, "response.list").TfType).To(Equal("schema.ListNestedBlock"))
-		Expect(attrByPath(tree, "response.list[].elem").TfType).To(Equal("schema.SingleNestedBlock"))
+		Expect(attrByPath(tree, "response.outer").TfType).To(Equal("schema.SingleNestedAttribute"))
+		Expect(attrByPath(tree, "response.outer.inner").TfType).To(Equal("schema.SingleNestedAttribute"))
+		Expect(attrByPath(tree, "response.list").TfType).To(Equal("schema.ListNestedAttribute"))
+		Expect(attrByPath(tree, "response.list[].elem").TfType).To(Equal("schema.SingleNestedAttribute"))
 	})
 })
 
@@ -549,7 +549,7 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 				primitiveOneOfVariant("string", "string"),
 			),
 			"response",
-			"schema.SingleNestedBlock",
+			"schema.SingleNestedAttribute",
 			false,
 			true,
 			"response",
@@ -558,9 +558,9 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 			"response.string",
 			"response.string.value",
 		)
-		Expect(attrByPath(tree, "response.boolean").TfType).To(Equal("schema.SingleNestedBlock"))
+		Expect(attrByPath(tree, "response.boolean").TfType).To(Equal("schema.SingleNestedAttribute"))
 		Expect(attrByPath(tree, "response.boolean.value").TfType).To(Equal("schema.BoolAttribute"))
-		Expect(attrByPath(tree, "response.string").TfType).To(Equal("schema.SingleNestedBlock"))
+		Expect(attrByPath(tree, "response.string").TfType).To(Equal("schema.SingleNestedAttribute"))
 		Expect(attrByPath(tree, "response.string.value").TfType).To(Equal("schema.StringAttribute"))
 	})
 
@@ -576,7 +576,7 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 				),
 			}),
 			"response.choice",
-			"schema.SingleNestedBlock",
+			"schema.SingleNestedAttribute",
 			false,
 			true,
 			"response.choice",
@@ -585,9 +585,9 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 			"response.choice.string",
 			"response.choice.string.value",
 		)
-		Expect(attrByPath(tree, "response.choice.object").TfType).To(Equal("schema.SingleNestedBlock"))
+		Expect(attrByPath(tree, "response.choice.object").TfType).To(Equal("schema.SingleNestedAttribute"))
 		Expect(attrByPath(tree, "response.choice.object.name").TfType).To(Equal("schema.StringAttribute"))
-		Expect(attrByPath(tree, "response.choice.string").TfType).To(Equal("schema.SingleNestedBlock"))
+		Expect(attrByPath(tree, "response.choice.string").TfType).To(Equal("schema.SingleNestedAttribute"))
 		Expect(attrByPath(tree, "response.choice.string.value").TfType).To(Equal("schema.StringAttribute"))
 	})
 
@@ -605,7 +605,7 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 				}),
 			}),
 			"response.container.choice",
-			"schema.SingleNestedBlock",
+			"schema.SingleNestedAttribute",
 			false,
 			true,
 			"response.container.choice",
@@ -631,7 +631,7 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 				elementPath+".string",
 				elementPath+".string.value",
 			)
-			variantType := "schema.SingleNestedBlock"
+			variantType := "schema.SingleNestedAttribute"
 			if tfType == "schema.MapNestedAttribute" {
 				variantType = "schema.SingleNestedAttribute"
 			}
@@ -648,7 +648,7 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 				primitiveOneOfVariant("boolean", "boolean"),
 				primitiveOneOfVariant("string", "string"),
 			)),
-			"schema.ListNestedBlock",
+			"schema.ListNestedAttribute",
 			"response.choices[]",
 		),
 		Entry(
@@ -688,7 +688,7 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 				primitiveOneOfVariant("boolean", "boolean"),
 				primitiveOneOfVariant("string", "string"),
 			)),
-			"schema.ListNestedBlock",
+			"schema.ListNestedAttribute",
 			"response[]",
 		),
 		Entry(
@@ -714,7 +714,7 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 				primitiveOneOfVariant("string", "string"),
 			),
 			"request",
-			"schema.SingleNestedBlock",
+			"schema.SingleNestedAttribute",
 			true,
 			false,
 			"request",
@@ -742,7 +742,7 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 				})),
 			}),
 			"response.containers[].choice",
-			"schema.SingleNestedBlock",
+			"schema.SingleNestedAttribute",
 			[]string{
 				"response.containers[].choice",
 				"response.containers[].choice.boolean",
@@ -793,7 +793,7 @@ var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 			BuildResponseTree,
 			outer,
 			"response",
-			"schema.SingleNestedBlock",
+			"schema.SingleNestedAttribute",
 			false,
 			true,
 			"response",
@@ -820,28 +820,335 @@ var _ = Describe("BuildResponseTree golden tree", func() {
 		Expect(err).NotTo(HaveOccurred())
 
 		want := &AttributeTree{Attributes: []*Attribute{
-			{Path: "response.cfg", TfType: "schema.MapNestedAttribute", GoType: "types.Map", Computed: true,
+			{Path: "response.cfg", OpenAPIName: "cfg", TfType: "schema.MapNestedAttribute", GoType: "types.Map", Computed: true,
 				Children: []*Attribute{
-					{Path: "response.cfg{}.settings", TfType: "schema.SingleNestedAttribute", GoType: "types.Object", Computed: true,
+					{Path: "response.cfg{}.settings", OpenAPIName: "settings", TfType: "schema.SingleNestedAttribute", GoType: "types.Object", Computed: true,
 						Children: []*Attribute{
-							{Path: "response.cfg{}.settings.x", TfType: "schema.StringAttribute", GoType: "types.String", Computed: true},
+							{Path: "response.cfg{}.settings.x", OpenAPIName: "x", TfType: "schema.StringAttribute", GoType: "types.String", Computed: true},
 						}},
 				}},
-			{Path: "response.id", TfType: "schema.StringAttribute", GoType: "types.String", Computed: true},
-			{Path: "response.items", TfType: "schema.ListNestedBlock", GoType: "types.List", Computed: true,
+			{Path: "response.id", OpenAPIName: "id", TfType: "schema.StringAttribute", GoType: "types.String", Computed: true},
+			{Path: "response.items", OpenAPIName: "items", TfType: "schema.ListNestedAttribute", GoType: "types.List", Computed: true,
 				Children: []*Attribute{
-					{Path: "response.items[].name", TfType: "schema.StringAttribute", GoType: "types.String", Computed: true},
+					{Path: "response.items[].name", OpenAPIName: "name", TfType: "schema.StringAttribute", GoType: "types.String", Computed: true},
 				}},
-			{Path: "response.meta", TfType: "schema.MapAttribute", GoType: "types.Map", ElementType: "types.StringType", Computed: true},
-			{Path: "response.options", TfType: "schema.SingleNestedBlock", GoType: "types.Object", Computed: true,
+			{Path: "response.meta", OpenAPIName: "meta", TfType: "schema.MapAttribute", GoType: "types.Map", ElementType: "types.StringType", Computed: true},
+			{Path: "response.options", OpenAPIName: "options", TfType: "schema.SingleNestedAttribute", GoType: "types.Object", Computed: true,
 				Children: []*Attribute{
-					{Path: "response.options.notify", TfType: "schema.BoolAttribute", GoType: "types.Bool", Computed: true},
+					{Path: "response.options.notify", OpenAPIName: "notify", TfType: "schema.BoolAttribute", GoType: "types.Bool", Computed: true},
 				}},
-			{Path: "response.status", TfType: "schema.StringAttribute", GoType: "types.String", Computed: true, IsEnum: true,
+			{Path: "response.status", OpenAPIName: "status", TfType: "schema.StringAttribute", GoType: "types.String", Computed: true, IsEnum: true,
 				Validators: []ValidatorSpec{{Name: "stringvalidator.OneOf", Args: []string{`"ok"`, `"warn"`, `"alert"`}}}},
-			{Path: "response.tags", TfType: "schema.ListAttribute", GoType: "types.List", ElementType: "types.StringType", Computed: true},
+			{Path: "response.tags", OpenAPIName: "tags", TfType: "schema.ListAttribute", GoType: "types.List", ElementType: "types.StringType", Computed: true},
 		}}
 
 		Expect(tree).To(Equal(want))
+	})
+})
+
+// ---------------------------------------------------------------------------
+//  BuildResourceTree — presence flags derived from Provenance
+// ---------------------------------------------------------------------------
+
+// provSchema is a primitive schema stamped with Provenance, the shape a
+// resource schema merge produces and BuildResourceTree consumes.
+func provSchema(typ string, p SchemaProvenance) *Schema {
+	return &Schema{Kind: SchemaKindPrimitive, Type: typ, Provenance: &p}
+}
+
+var _ = Describe("BuildResourceTree presence flags", func() {
+	assertFlags := func(tree *AttributeTree, path string, required, optional, computed bool) {
+		GinkgoHelper()
+		a := attrByPath(tree, path)
+		Expect(a.Required).To(Equal(required), "Required at %q", path)
+		Expect(a.Optional).To(Equal(optional), "Optional at %q", path)
+		Expect(a.Computed).To(Equal(computed), "Computed at %q", path)
+	}
+
+	It("derives all four FR-034a flag combinations from Provenance", func() {
+		// required is children()'s own per-key check against the parent's
+		// Required list, not something read off each child's Provenance
+		// directly — a real merge keeps the two consistent (requiredFromCreate
+		// mirrors RequestRequired), so the fixture must too.
+		tree, _, err := BuildResourceTree(&Schema{
+			Kind:     SchemaKindObject,
+			Required: []string{"required_rw", "required_wo"},
+			Properties: map[string]*Schema{
+				"required_rw": provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true}),
+				"required_wo": provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: false}),
+				"server_dflt": provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}),
+				"write_only":  provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: false}),
+				"read_only":   provSchema("string", SchemaProvenance{InRequest: false, RequestRequired: false, InResponse: true}),
+			},
+		}, false)
+		Expect(err).NotTo(HaveOccurred())
+
+		assertFlags(tree, "resource.required_rw", true, false, false)
+		assertFlags(tree, "resource.required_wo", true, false, false)
+		assertFlags(tree, "resource.server_dflt", false, true, true)
+		assertFlags(tree, "resource.write_only", false, true, false)
+		assertFlags(tree, "resource.read_only", false, false, true)
+
+		By("InResponse mirrors Provenance.InResponse regardless of which flag combination fired — " +
+			"rows 1 and 2 both collapse to Required, but only row 1 actually has a response getter")
+		Expect(attrByPath(tree, "resource.required_rw").InResponse).To(BeTrue())
+		Expect(attrByPath(tree, "resource.required_wo").InResponse).To(BeFalse())
+		Expect(attrByPath(tree, "resource.server_dflt").InResponse).To(BeTrue())
+		Expect(attrByPath(tree, "resource.write_only").InResponse).To(BeFalse())
+		Expect(attrByPath(tree, "resource.read_only").InResponse).To(BeTrue())
+	})
+
+	It("carries Schema.RequestRefName through as RequestModelRefName, for an object and for an enum leaf", func() {
+		settings := &Schema{
+			Kind:           SchemaKindObject,
+			RefName:        "SettingsResponse",
+			RequestRefName: "SettingsUpdateRequest",
+			Provenance:     &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true},
+			Properties: map[string]*Schema{
+				"enabled": provSchema("boolean", SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}),
+			},
+		}
+		priority := provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true})
+		priority.RefName = "PriorityResponse"
+		priority.RequestRefName = "PriorityCreateRequest"
+		priority.Enum = []string{"low", "high"}
+
+		tree, _, err := BuildResourceTree(&Schema{
+			Kind:     SchemaKindObject,
+			Required: []string{"priority"},
+			Properties: map[string]*Schema{
+				"settings": settings,
+				"priority": priority,
+			},
+		}, false)
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(attrByPath(tree, "resource.settings").RequestModelRefName).To(Equal("SettingsUpdateRequest"))
+		Expect(attrByPath(tree, "resource.priority").RequestModelRefName).To(Equal("PriorityCreateRequest"))
+	})
+
+	It("never emits Required together with Optional or Computed, and never emits zero flags, anywhere in the tree", func() {
+		union := oneOfSchema("resource.choice", "Choice", primitiveOneOfVariant("v", "string"))
+		union.Provenance = &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}
+
+		tree, _, err := BuildResourceTree(&Schema{
+			Kind:     SchemaKindObject,
+			Required: []string{"required_rw", "required_wo"},
+			Properties: map[string]*Schema{
+				"required_rw": provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true}),
+				"required_wo": provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: false}),
+				"server_dflt": provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}),
+				"write_only":  provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: false}),
+				"read_only":   provSchema("string", SchemaProvenance{InRequest: false, RequestRequired: false, InResponse: true}),
+				"nested": {
+					Kind:       SchemaKindObject,
+					Provenance: &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true},
+					Properties: map[string]*Schema{
+						"inner": provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true}),
+					},
+				},
+				"choice": union,
+			},
+		}, false)
+		Expect(err).NotTo(HaveOccurred())
+
+		for _, a := range allAttrs(tree) {
+			flagCount := 0
+			for _, set := range []bool{a.Required, a.Optional, a.Computed} {
+				if set {
+					flagCount++
+				}
+			}
+			Expect(flagCount).NotTo(BeZero(), "attribute %q carries no presence flag at all", a.Path)
+			Expect(a.Required && (a.Optional || a.Computed)).To(
+				BeFalse(), "attribute %q carries Required together with Optional or Computed", a.Path)
+		}
+	})
+
+	It("roots paths at \"resource.\" and recurses into nested objects the same as the other trees", func() {
+		tree, _, err := BuildResourceTree(objSchema(map[string]*Schema{
+			"config": {
+				Kind:       SchemaKindObject,
+				Required:   []string{"name"},
+				Provenance: &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true},
+				Properties: map[string]*Schema{
+					"name": provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true}),
+				},
+			},
+		}), false)
+		Expect(err).NotTo(HaveOccurred())
+		assertFlags(tree, "resource.config", false, true, true)
+		assertFlags(tree, "resource.config.name", true, false, false)
+	})
+
+	It("fails with MissingProvenanceError when a node carries none", func() {
+		_, _, err := BuildResourceTree(objSchema(map[string]*Schema{
+			"orphan": primSchema("string"),
+		}), false)
+		Expect(err).To(HaveOccurred())
+		var missing *MissingProvenanceError
+		Expect(errors.As(err, &missing)).To(BeTrue())
+		Expect(missing.Path).To(Equal("resource.orphan"))
+	})
+
+	It("never marks a oneOf variant block Required, and carries Computed only when the union is in the response", func() {
+		writeOnly := oneOfSchema("resource.choice_write", "WriteChoice", primitiveOneOfVariant("value_a", "string"))
+		writeOnly.Provenance = &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: false}
+
+		both := oneOfSchema("resource.choice_both", "BothChoice", primitiveOneOfVariant("value_b", "string"))
+		both.Provenance = &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}
+
+		readOnly := oneOfSchema("resource.choice_read", "ReadChoice", primitiveOneOfVariant("value_c", "string"))
+		readOnly.Provenance = &SchemaProvenance{InRequest: false, RequestRequired: false, InResponse: true}
+
+		tree, _, err := BuildResourceTree(objSchema(map[string]*Schema{
+			"choice_write": writeOnly,
+			"choice_both":  both,
+			"choice_read":  readOnly,
+		}), false)
+		Expect(err).NotTo(HaveOccurred())
+
+		assertFlags(tree, "resource.choice_write.value_a", false, true, false)
+		assertFlags(tree, "resource.choice_both.value_b", false, true, true)
+		assertFlags(tree, "resource.choice_read.value_c", false, false, true)
+
+		// The wrapped value inherits the enclosing union's Provenance, since a
+		// resource merge never deep-merges oneOf content. Selecting a variant
+		// makes its value Required whenever the union itself is
+		// request-settable — but never for a purely response-only union,
+		// where that would wrongly demand practitioner input for something
+		// the practitioner can never configure.
+		assertFlags(tree, "resource.choice_write.value_a.value", true, false, false)
+		assertFlags(tree, "resource.choice_both.value_b.value", true, false, false)
+		assertFlags(tree, "resource.choice_read.value_c.value", false, false, true)
+	})
+
+	It("threads the enclosing union's Provenance into an object alternative's own properties too", func() {
+		union := oneOfSchema("resource.choice", "Choice",
+			objectOneOfVariant("obj", map[string]*Schema{"name": primSchema("string")}),
+		)
+		union.Provenance = &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}
+
+		tree, _, err := BuildResourceTree(objSchema(map[string]*Schema{"choice": union}), false)
+		Expect(err).NotTo(HaveOccurred())
+
+		assertFlags(tree, "resource.choice.obj", false, true, true)
+		// "name" isn't in the object alternative's own (empty) Required list,
+		// so it falls back to the same Optional+Computed pairing as the block.
+		assertFlags(tree, "resource.choice.obj.name", false, true, true)
+	})
+
+	It("keeps the outer union's Provenance as the fallback through a directly nested oneOf alternative", func() {
+		inner := oneOfSchema("resource.choice.nested.value", "InnerChoice", primitiveOneOfVariant("value_x", "string"))
+		// inner carries no Provenance of its own, exactly like a resource
+		// merge's verbatim clone of nested oneOf content.
+
+		outer := oneOfSchema("resource.choice", "OuterChoice", OneOfVariant{
+			TFName:       "nested",
+			GoName:       SdkName("nested"),
+			Schema:       inner,
+			ValueWrapped: true,
+		})
+		outer.Provenance = &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}
+
+		tree, _, err := BuildResourceTree(objSchema(map[string]*Schema{"choice": outer}), false)
+		Expect(err).NotTo(HaveOccurred())
+
+		// Every level here — the outer block, the inner union's own wrapped
+		// "value" position, and the inner variant block and its own wrapped
+		// value — has no Provenance of its own, and must all fall back to
+		// the outermost union's, not get clobbered to nil partway down.
+		assertFlags(tree, "resource.choice.nested", false, true, true)
+		assertFlags(tree, "resource.choice.nested.value", true, false, false)
+		assertFlags(tree, "resource.choice.nested.value.value_x", false, true, true)
+		assertFlags(tree, "resource.choice.nested.value.value_x.value", true, false, false)
+	})
+})
+
+// ---------------------------------------------------------------------------
+//  BuildResourceTree — plan modifiers
+// ---------------------------------------------------------------------------
+
+var _ = Describe("BuildResourceTree plan modifiers", func() {
+	It("emits UseStateForUnknown() only on Optional+Computed attributes, typed per GoType", func() {
+		schema := objSchema(map[string]*Schema{
+			"server_dflt_str":  provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}),
+			"server_dflt_bool": {Kind: SchemaKindPrimitive, Type: "boolean", Provenance: &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}},
+			"required":         provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true}),
+			"write_only":       provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: false}),
+			"read_only":        provSchema("string", SchemaProvenance{InRequest: false, RequestRequired: false, InResponse: true}),
+		})
+		// required's presence flags come from this list, not from its own
+		// Provenance.RequestRequired directly (see the note on the next test).
+		schema.Required = []string{"required"}
+
+		tree, _, err := BuildResourceTree(schema, false)
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(attrByPath(tree, "resource.server_dflt_str").PlanModifiers).To(Equal(
+			[]PlanModifierSpec{{Name: "stringplanmodifier.UseStateForUnknown"}}))
+		Expect(attrByPath(tree, "resource.server_dflt_bool").PlanModifiers).To(Equal(
+			[]PlanModifierSpec{{Name: "boolplanmodifier.UseStateForUnknown"}}))
+
+		// required is Required-only, write_only and read_only are never both
+		// Optional and Computed: none of the three gets UseStateForUnknown.
+		Expect(attrByPath(tree, "resource.required").PlanModifiers).To(BeEmpty())
+		Expect(attrByPath(tree, "resource.write_only").PlanModifiers).To(BeEmpty())
+		Expect(attrByPath(tree, "resource.read_only").PlanModifiers).To(BeEmpty())
+	})
+
+	It("emits RequiresReplace() on every request-settable attribute when the group resolves no Update role, never on Computed-only", func() {
+		schema := objSchema(map[string]*Schema{
+			"required":    provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true}),
+			"server_dflt": provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}),
+			"write_only":  provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: false}),
+			"read_only":   provSchema("string", SchemaProvenance{InRequest: false, RequestRequired: false, InResponse: true}),
+		})
+		schema.Required = []string{"required"}
+
+		tree, _, err := BuildResourceTree(schema, true)
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(attrByPath(tree, "resource.required").PlanModifiers).To(Equal(
+			[]PlanModifierSpec{{Name: "stringplanmodifier.RequiresReplace"}}))
+		// Optional+Computed and request-settable: both modifiers stack, in order.
+		Expect(attrByPath(tree, "resource.server_dflt").PlanModifiers).To(Equal([]PlanModifierSpec{
+			{Name: "stringplanmodifier.UseStateForUnknown"},
+			{Name: "stringplanmodifier.RequiresReplace"},
+		}))
+		Expect(attrByPath(tree, "resource.write_only").PlanModifiers).To(Equal(
+			[]PlanModifierSpec{{Name: "stringplanmodifier.RequiresReplace"}}))
+		// Computed-only: no endpoint could reconcile a forced replace anyway.
+		Expect(attrByPath(tree, "resource.read_only").PlanModifiers).To(BeEmpty())
+	})
+
+	It("omits RequiresReplace() entirely when the group resolves an Update role", func() {
+		tree, _, err := BuildResourceTree(objSchema(map[string]*Schema{
+			"write_only": provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: false}),
+		}), false)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(attrByPath(tree, "resource.write_only").PlanModifiers).To(BeEmpty())
+	})
+
+	It("types the modifier from GoType for list and object attributes too", func() {
+		tags := &Schema{
+			Kind:       SchemaKindArray,
+			Items:      primSchema("string"),
+			Provenance: &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true},
+		}
+		union := oneOfSchema("resource.choice", "Choice", primitiveOneOfVariant("v", "string"))
+		union.Provenance = &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}
+
+		tree, _, err := BuildResourceTree(objSchema(map[string]*Schema{
+			"tags":   tags,
+			"choice": union,
+		}), false)
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(attrByPath(tree, "resource.tags").PlanModifiers).To(Equal(
+			[]PlanModifierSpec{{Name: "listplanmodifier.UseStateForUnknown"}}))
+		// The oneOf envelope's own GoType is always types.Object.
+		Expect(attrByPath(tree, "resource.choice").PlanModifiers).To(Equal(
+			[]PlanModifierSpec{{Name: "objectplanmodifier.UseStateForUnknown"}}))
 	})
 })

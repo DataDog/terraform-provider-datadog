@@ -97,6 +97,68 @@ func (o *GetThingOptionalParameters) WithInclude(include ThingInclude) *GetThing
 	}
 }
 
+func TestBindCorroboratesRequestBodySeparatelyFromRequiredArguments(t *testing.T) {
+	inventory := loadFixtureInventory(t, `package datadogV2
+type ThingsApi struct{}
+func (a *ThingsApi) CreateThing(ctx context.Context, body ThingCreateRequest) {}
+func (a *ThingsApi) UpdateThing(ctx context.Context, thingId string, body ThingUpdateRequest) {}
+`)
+	tests := []struct {
+		name string
+		op   *model.Operation
+	}{
+		{
+			name: "create body only",
+			op: &model.Operation{
+				OperationId:    "CreateThing",
+				RequestRefName: "ThingCreateRequest",
+			},
+		},
+		{
+			name: "update path argument and body",
+			op: &model.Operation{
+				OperationId:    "UpdateThing",
+				RequestRefName: "ThingUpdateRequest",
+				PathParams: []model.QueryParam{
+					{Name: "thing_id", Required: true, Schema: scalar("string", "")},
+				},
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			diagnostics, err := Bind(test.op, inventory)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(diagnostics) != 0 {
+				t.Fatalf("matching request-body diagnostics = %#v", diagnostics)
+			}
+		})
+	}
+}
+
+func TestBindWarnsWhenPinnedRequestBodyTypeDiffers(t *testing.T) {
+	inventory := loadFixtureInventory(t, `package datadogV2
+type ThingsApi struct{}
+func (a *ThingsApi) CreateThing(ctx context.Context, body PinnedThingCreateRequest) {}
+`)
+	op := &model.Operation{
+		OperationId:    "CreateThing",
+		RequestRefName: "DerivedThingCreateRequest",
+	}
+	diagnostics, err := Bind(op, inventory)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got, want := len(diagnostics), 1; got != want {
+		t.Fatalf("diagnostic count = %d, want %d: %#v", got, want, diagnostics)
+	}
+	if got := diagnostics[0].Message; !strings.Contains(got, `request body type derived "DerivedThingCreateRequest", pinned "PinnedThingCreateRequest"`) {
+		t.Fatalf("request-body mismatch diagnostic = %q", got)
+	}
+}
+
 func TestBindWarnsAndKeepsDerivedBindingOnPinnedMismatch(t *testing.T) {
 	inventory := loadFixtureInventory(t, `package datadogV2
 type ThingsApi struct{}

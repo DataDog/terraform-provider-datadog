@@ -1,12 +1,9 @@
 {{/*
-  Shared partials for the data-source templates. These define the pieces that
-  are identical between the singular and plural shapes: the Go model structs,
-  the recursive schema attribute/block rendering, and the type / constructor /
-  Configure / Metadata boilerplate.
+  Partials shared by the singular and plural data-source templates: model
+  structs, recursive schema rendering, and the type/constructor boilerplate.
 
-  Whitespace here is intentionally loose: every rendered file is run through
-  go/format, which fixes all indentation and trailing space. Templates only
-  need to emit syntactically valid Go.
+  Whitespace is loose on purpose — every rendered file goes through go/format,
+  so these only need to emit syntactically valid Go.
 */}}
 
 {{/* modelStructs renders every Go struct in .Models, parent first. */}}
@@ -32,6 +29,19 @@ type {{ .Name }} struct {
 {{- if .ElementType }}
 	ElementType: {{ .ElementType }},
 {{- end }}
+{{- template "presenceFlags" . }}
+{{- template "validators" . }}
+{{ template "planModifiers" . }}
+},
+{{- end -}}
+
+{{/*
+  presenceFlags renders the Required/Optional/Computed/Sensitive fields shared
+  by a leaf attribute and both nested-attribute forms. Only the flags that are
+  set are emitted, so a data source's computed-only attribute stays as terse as
+  it was hand-written.
+*/}}
+{{- define "presenceFlags" -}}
 {{- if .Required }}
 	Required: true,
 {{- end }}
@@ -44,51 +54,102 @@ type {{ .Name }} struct {
 {{- if .Sensitive }}
 	Sensitive: true,
 {{- end }}
-},
 {{- end -}}
 
-{{/* nestedBody renders the Attributes/Blocks maps shared by both block kinds. */}}
+{{/*
+  planModifiers renders the "PlanModifiers: [...]" field shared by a leaf and
+  a nested attribute. Resource attributes only — a data source's AttrView
+  always carries an empty PlanModifiers, so this renders nothing there.
+*/}}
+{{- define "planModifiers" -}}
+{{- if .PlanModifiers }}
+	PlanModifiers: []planmodifier.{{ .PlanModifierType }}{
+{{- range .PlanModifiers }}
+		{{ . }}(),
+{{- end }}
+	},
+{{- end }}
+{{- end -}}
+
+{{/*
+  validators renders the "Validators: []validator.<T>{...}" field for a leaf or
+  a nested object attribute; ValidatorType names the element type, so one
+  partial serves both.
+*/}}
+{{- define "validators" -}}
+{{- if .Validators }}
+	Validators: []validator.{{ .ValidatorType }}{
+{{- range .Validators }}
+		{{ . }},
+{{- end }}
+	},
+{{- end }}
+{{- end -}}
+
+{{/* nestedBody renders one combined Attributes map for a nested attribute. */}}
 {{- define "nestedBody" -}}
-{{- if .Attributes }}
+{{- if or .Attributes .Blocks }}
 Attributes: map[string]schema.Attribute{
 {{- range .Attributes }}
 {{ template "schemaAttribute" . }}
 {{- end }}
-},
-{{- end }}
-{{- if .Blocks }}
-Blocks: map[string]schema.Block{
 {{- range .Blocks }}
-{{ template "schemaBlock" . }}
+{{ template "schemaNestedAttribute" . }}
 {{- end }}
 },
 {{- end }}
 {{- end -}}
 
-{{/* schemaBlock renders one nested block, recursing through nestedBody. */}}
-{{- define "schemaBlock" -}}
+{{/* schemaNestedAttribute renders one nested attribute recursively. */}}
+{{- define "schemaNestedAttribute" -}}
 {{- if .ListBlock }}
-"{{ .TFName }}": schema.ListNestedBlock{
+"{{ .TFName }}": schema.ListNestedAttribute{
 	Description: {{ printf "%q" .Description }},
-	NestedObject: schema.NestedBlockObject{
+	NestedObject: schema.NestedAttributeObject{
 {{ template "nestedBody" . }}
 	},
+{{- template "presenceFlags" . }}
+{{ template "validators" . }}
+{{ template "planModifiers" . }}
 },
 {{- else }}
-"{{ .TFName }}": schema.SingleNestedBlock{
+"{{ .TFName }}": schema.SingleNestedAttribute{
 	Description: {{ printf "%q" .Description }},
 {{ template "nestedBody" . }}
+{{- template "presenceFlags" . }}
+{{ template "validators" . }}
+{{ template "planModifiers" . }}
 },
 {{- end }}
 {{- end -}}
 
 {{/*
-  renderList projects one SDK collection into state. The primitive branch reports
-  the conversion's own diagnostics instead of discarding them, and converts under
-  the caller's ctx: a state mapper has no business minting context.Background(),
-  and a failed ListValueFrom used to leave a zero value in state silently. Each
-  branch opens its own `if` block, so the block-scoped listDiags cannot collide
-  with a sibling or nested list.
+  updateStateBody projects an already-decoded response into state, returning
+  diagnostics rather than writing them so it can fail at a specific schema
+  path. Callers differ only in the receiver and model type their signature
+  names, so each spells its own signature and delegates the body here.
+*/}}
+{{- define "updateStateBody" -}}
+	var diags diag.Diagnostics
+{{- range .State.Preamble }}
+	{{ . }}
+{{- end }}
+{{- range .State.Assignments }}
+	if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+		{{ .LHS }} = {{ .RHS }}
+	}
+{{- end }}
+{{- range .State.Lists }}
+	{{ template "renderList" . }}
+{{- end }}
+	return diags
+{{- end -}}
+
+{{/*
+  renderList projects one SDK collection into state. The primitive branch
+  converts under the caller's ctx and appends the conversion's own diagnostics
+  rather than discarding them. Each branch opens its own `if` block, so the
+  block-scoped collectionDiags cannot collide with a sibling or nested list.
 */}}
 {{- define "renderList" -}}
 {{- if eq .Kind "primitive" -}}
@@ -109,8 +170,18 @@ if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
 }
 {{- else if eq .Kind "object" -}}
 if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+	{{- if .PreserveExisting }}
+	{{ .ExistingVar }} := {{ .LHS }}
+	{{ .LHS }} = nil
+	for {{ .LoopIndex }}, {{ .LoopVar }} := range *{{ .Var }} {
+		{{ .ElemVar }} := &{{ .ElemStruct }}{}
+		if len({{ .ExistingVar }}) > {{ .LoopIndex }} && {{ .ExistingVar }}[{{ .LoopIndex }}] != nil {
+			{{ .ElemVar }} = {{ .ExistingVar }}[{{ .LoopIndex }}]
+		}
+	{{- else }}
 	for _, {{ .LoopVar }} := range *{{ .Var }} {
 		{{ .ElemVar }} := &{{ .ElemStruct }}{}
+	{{- end }}
 {{- range .Scalars }}
 		if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
 			{{ .LHS }} = {{ .RHS }}
@@ -124,7 +195,14 @@ if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
 }
 {{- else if eq .Kind "object_single" -}}
 if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+	{{- if .PreserveExisting }}
+	{{ .ElemVar }} := {{ .LHS }}
+	if {{ .ElemVar }} == nil {
+		{{ .ElemVar }} = &{{ .ElemStruct }}{}
+	}
+	{{- else }}
 	{{ .ElemVar }} := &{{ .ElemStruct }}{}
+	{{- end }}
 {{- range .Scalars }}
 	if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
 		{{ .LHS }} = {{ .RHS }}
@@ -142,20 +220,21 @@ if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
 
 {{/*
   renderOneOf unwraps one SDK oneOf wrapper into its Terraform envelope model.
-
-  Every member is inspected and the matches counted; the envelope is only assigned
-  when exactly one matched. This is deliberately not the SDK's own behaviour —
-  MarshalJSON and GetActualInstance both return the first non-nil member — because
-  the contract requires zero, multiple, or an unparsed payload to be reported at the
-  union's schema path rather than silently resolving to one branch.
-
-  The wrapper itself is reached through an ordinary Ok-getter; only its members are
-  plain fields, which is why they are read with `:=` rather than Get<Field>Ok.
+  Every member is inspected and the matches counted, and the envelope is
+  assigned only when exactly one matched, so zero, multiple, or an unparsed
+  payload is reported at the union's schema path. Members are plain fields, not
+  Ok-getters, so they are read with `:=`.
 */}}
 {{- define "renderOneOf" -}}
 if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
 {{- if .Collection }}
+	{{- if .PreserveExisting }}
+	{{ .ExistingVar }} := {{ .LHS }}
+	{{ .LHS }} = nil
+	for {{ .LoopIndex }}, {{ .LoopVar }} := range *{{ .Var }} {
+	{{- else }}
 	for _, {{ .LoopVar }} := range *{{ .Var }} {
+	{{- end }}
 		{{ template "oneOfBody" . }}
 	}
 {{- else }}
@@ -174,6 +253,17 @@ if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
 {{- range .Variants }}
 if {{ .SDKVar }} := {{ $.Receiver }}.{{ .SDKField }}; {{ .SDKVar }} != nil {
 	{{ .ModelVar }} := &{{ .GoModel }}{}
+	{{- if $.PreserveExisting }}
+	{{- if $.Collection }}
+	if len({{ $.ExistingVar }}) > {{ $.LoopIndex }} && {{ $.ExistingVar }}[{{ $.LoopIndex }}] != nil && {{ $.ExistingVar }}[{{ $.LoopIndex }}].{{ .GoField }} != nil {
+		{{ .ModelVar }} = {{ $.ExistingVar }}[{{ $.LoopIndex }}].{{ .GoField }}
+	}
+	{{- else }}
+	if {{ $.LHS }} != nil && {{ $.LHS }}.{{ .GoField }} != nil {
+		{{ .ModelVar }} = {{ $.LHS }}.{{ .GoField }}
+	}
+	{{- end }}
+	{{- end }}
 {{- with .Value }}
 	{{ .LHS }} = {{ .RHS }}
 {{- end }}
@@ -236,4 +326,27 @@ func (d *{{ .GoName }}DataSource) Configure(_ context.Context, request datasourc
 func (d *{{ .GoName }}DataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
 	response.TypeName = "{{ .TypeName }}"
 }
+{{- end -}}
+
+{{/*
+  argParse declares the local for ONE argument or query filter recovered by
+  parsing (a uuid or integer behind a Terraform string), bailing with a
+  diagnostic when it does not parse. Defined over a single item so it serves
+  both the argument sites and the filter sites already inside a range; it reads
+  the ParsedVar/ParseCall/TFName trio, and renders nothing when no parse is
+  needed.
+*/}}
+{{- define "argParse" -}}
+{{- if .ParsedVar }}
+	{{ .ParsedVar }}, err := {{ .ParseCall }}
+	if err != nil {
+		response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
+		return
+	}
+{{- end }}
+{{- end -}}
+
+{{/* argPrep applies argParse across a whole argument slice. */}}
+{{- define "argPrep" -}}
+{{- range . }}{{ template "argParse" . }}{{ end }}
 {{- end -}}

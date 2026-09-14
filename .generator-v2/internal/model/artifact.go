@@ -2,23 +2,72 @@ package model
 
 import (
 	"fmt"
+	"maps"
+	"slices"
 	"strings"
-	"unicode"
 )
 
-// BuildArtifact wraps a tracked Operation's response tree into an *Artifact and
-// resolves its SDK call bindings. It sets Name/Kind/SourceFile/Schema and the
-// data-source SDK calls (Lifecycle.Read for by-id, Lifecycle.Search for the list
-// call) plus Lifecycle.IdStrategy. The request side (Create/Update/Delete,
-// GoRequestType) stays empty.
-//
-// A singular data source resolves its one record three ways, selected by which
-// group operations are declared: read only (by-id, the original behavior),
-// search only (find one in a list), or both (by-id when an id is given, else
-// search). Plural is unchanged.
+// BuildArtifact wraps a tracked Operation into an *Artifact and resolves its SDK
+// call bindings, setting Name/Kind/SourceFile plus Lifecycle.IdStrategy and the
+// SDK calls its kind implies. A singular data source resolves its one record by
+// id, by search, or by both, depending on which group operations are declared;
+// a plural one lists. A resource resolves the full CRUD set and leaves Schema to
+// buildResourceArtifact.
 func BuildArtifact(op *Operation) (*Artifact, error) {
 	if op == nil || op.Tracking == nil {
 		return nil, fmt.Errorf("model: BuildArtifact requires a tracked operation")
+	}
+	artifact, err := buildArtifact(op)
+	if err != nil {
+		return nil, err
+	}
+	// A group reference naming an operationId the spec does not declare is an
+	// author error worth reporting even when the artifact still builds.
+	if diags := unresolvedGroupDiagnostics(op); len(diags) > 0 {
+		artifact.Diagnostics = append(diags, artifact.Diagnostics...)
+	}
+	artifact.UnstableOperations = unstableOperationKeys(op)
+	return artifact, nil
+}
+
+// UnstableOperationKey is the identifier the SDK gates a beta endpoint on:
+// the API version segment of its path joined to its operationId, e.g.
+// "v2.GetTwilioIntegrationAccount". It is the same spelling
+// SetUnstableOperationEnabled takes.
+func UnstableOperationKey(op *Operation) string {
+	return versionSegment(op.Path) + "." + op.OperationId
+}
+
+// unstableOperationKeys collects the x-unstable operations an artifact calls,
+// sorted and deduplicated. It reads the resolved group rather than the built
+// lifecycle, since a group role may resolve to an operation the artifact's kind
+// binds no call for, and counts the annotated operation itself whether or not
+// the group names it. Kind-agnostic: an x-unstable GET is gated like a create.
+func unstableOperationKeys(op *Operation) []string {
+	seen := map[string]struct{}{}
+	add := func(o *Operation) {
+		if o != nil && o.Unstable {
+			seen[UnstableOperationKey(o)] = struct{}{}
+		}
+	}
+	add(op)
+	for _, role := range op.ResolvedGroup.Operations() {
+		add(role)
+	}
+	if len(seen) == 0 {
+		return nil
+	}
+	keys := slices.Collect(maps.Keys(seen))
+	slices.Sort(keys)
+	return keys
+}
+
+// buildArtifact selects the builder for op's kind, cardinality and lookup shape.
+// Kind is tested first: cardinality describes how a data source resolves its
+// records and says nothing about a resource, which always maps to exactly one.
+func buildArtifact(op *Operation) (*Artifact, error) {
+	if op.Tracking.ArtifactKind == ArtifactKindResource {
+		return buildResourceArtifact(op)
 	}
 	if op.Tracking.Cardinality == CardinalityPlural {
 		return buildPluralArtifact(op)
@@ -38,6 +87,62 @@ func BuildArtifact(op *Operation) (*Artifact, error) {
 	}
 }
 
+// buildResourceArtifact builds a full-CRUD resource from the tracking group:
+// the lifecycle, then the schema — the union of the Create request, Update
+// request and Read response bodies — plus the path parameters.
+func buildResourceArtifact(op *Operation) (*Artifact, error) {
+	// Create and Read are load-bearing for the schema: without Create nothing is
+	// Required and the schema silently becomes all-Optional, without Read nothing
+	// is Computed and refresh can never reconcile state. Delete is load-bearing
+	// for the lifecycle. Checked once here, before any sub-builder, each of which
+	// assumes its preconditions already hold.
+	if err := requireResolvedRoles(op, GroupRoleCreate, GroupRoleRead, GroupRoleDelete); err != nil {
+		return nil, err
+	}
+	lifecycle, diags, err := buildResourceLifecycle(op)
+	if err != nil {
+		return nil, err
+	}
+	merged, mergeDiags, err := MergeResourceSchema(op.ResolvedGroup)
+	if err != nil {
+		return nil, err
+	}
+	schema, treeDiags, err := BuildResourceTree(merged, lifecycle.UpdateUnsupported)
+	if err != nil {
+		return nil, err
+	}
+	diags = append(diags, mergeDiags...)
+	diags = append(diags, treeDiags...)
+
+	// A sub-resource's parent id lives only in the path, so the body merge never
+	// sees it, yet all four lifecycle calls take it. Surface it as a top-level
+	// attribute. mergeRequiredInputLeaves is the agreement check: all four roles
+	// must describe the parameter identically, or the artifact fails.
+	pathInputs, err := mergeRequiredInputLeaves(
+		argumentsOf(lifecycle.Create), argumentsOf(lifecycle.Read),
+		argumentsOf(lifecycle.Update), argumentsOf(lifecycle.Delete))
+	if err != nil {
+		return nil, err
+	}
+	for _, input := range pathInputs {
+		// Re-parenting a child under a different parent is a replace, not an
+		// update: the API offers no endpoint that moves one. Applied here rather
+		// than in BuildResourceTree, which only ever sees the body.
+		input.PlanModifiers = []PlanModifierSpec{RequiresReplaceSpec(input.GoType)}
+	}
+	schema.Attributes = append(pathInputs, schema.Attributes...)
+
+	return &Artifact{
+		Name:        op.Tracking.ArtifactName,
+		Kind:        ArtifactKindResource,
+		Description: op.Tracking.TfDescription,
+		SourceFile:  sourceFileFor(ArtifactKindResource, op.Tracking.ArtifactName),
+		Schema:      schema,
+		Lifecycle:   lifecycle,
+		Diagnostics: diags,
+	}, nil
+}
+
 // buildSingularByIdArtifact resolves the one record by direct id lookup: its
 // Schema is the by-id response tree and Lifecycle.Read the get-by-id call.
 func buildSingularByIdArtifact(op *Operation) (*Artifact, error) {
@@ -45,7 +150,7 @@ func buildSingularByIdArtifact(op *Operation) (*Artifact, error) {
 	if err != nil {
 		return nil, err
 	}
-	read := readCall(op, true)
+	read := sdkCall(op, true)
 	inputs, err := buildRequiredInputLeaves(read.Arguments)
 	if err != nil {
 		return nil, err
@@ -57,7 +162,7 @@ func buildSingularByIdArtifact(op *Operation) (*Artifact, error) {
 		Cardinality: CardinalitySingular,
 		Description: op.Tracking.TfDescription,
 		Schema:      schema,
-		SourceFile:  sourceFileFor(op.Tracking.ArtifactName),
+		SourceFile:  sourceFileFor(op.Tracking.ArtifactKind, op.Tracking.ArtifactName),
 		Lifecycle: &LifecycleBindings{
 			Read:       read,
 			IdStrategy: op.Tracking.IdStrategy,
@@ -66,11 +171,10 @@ func buildSingularByIdArtifact(op *Operation) (*Artifact, error) {
 	}, nil
 }
 
-// buildSingularSearchArtifact resolves the one record by searching a list: op is
-// the list operation itself (group.search names it). The flat record is the list
-// element reshaped into a singular {data:{…}} envelope so the by-id envelope
-// flattener serves it unchanged; the search side adds Optional filters from the
-// query parameters and the list call. No list/items block is emitted.
+// buildSingularSearchArtifact resolves the one record by searching a list; op
+// is the list operation itself. The list element is reshaped into a singular
+// {data:{…}} envelope so the by-id envelope flattener serves it unchanged, and
+// the query parameters become Optional filters. No list/items block is emitted.
 func buildSingularSearchArtifact(op *Operation) (*Artifact, error) {
 	element := listElementSchema(op)
 	if element == nil {
@@ -93,7 +197,7 @@ func buildSingularSearchArtifact(op *Operation) (*Artifact, error) {
 		Cardinality: CardinalitySingular,
 		Description: op.Tracking.TfDescription,
 		Schema:      &AttributeTree{Attributes: append(append(inputs, filters...), record.Attributes...)},
-		SourceFile:  sourceFileFor(op.Tracking.ArtifactName),
+		SourceFile:  sourceFileFor(op.Tracking.ArtifactKind, op.Tracking.ArtifactName),
 		Lifecycle: &LifecycleBindings{
 			Search:     search,
 			IdStrategy: op.Tracking.IdStrategy,
@@ -103,22 +207,18 @@ func buildSingularSearchArtifact(op *Operation) (*Artifact, error) {
 }
 
 // buildSingularBothArtifact resolves the one record by id when given one and by
-// search otherwise. The flat record is the canonical by-id response tree (the
-// same element shape the search returns); the search side adds Optional filters
-// from the list op's query parameters and the list call, alongside the by-id Read.
+// search otherwise: the by-id response tree, the by-id Read call, plus the list
+// call and Optional filters from the list op's query parameters.
 func buildSingularBothArtifact(op *Operation) (*Artifact, error) {
-	searchOp := op.SearchOp
-	if searchOp == nil {
-		return nil, fmt.Errorf("model: data source %q declares group.search %q but no such operation exists",
-			op.Tracking.ArtifactName, op.Tracking.Group.Search)
+	if err := requireResolvedRoles(op, GroupRoleSearch); err != nil {
+		return nil, err
 	}
+	searchOp := op.ResolvedGroup.Op(GroupRoleSearch)
 
 	// One state mapper serves both lookups only when the by-id record and the
 	// list element are the same shape. Stay "both" only when both $ref names are
-	// known and agree; otherwise — an inline schema on either side (empty ref) or
-	// names that differ (e.g. api_key: FullAPIKey vs PartialAPIKey) — degrade to
-	// by-id-only (the full shape, id required) rather than risk a mapper that
-	// silently reads the wrong fields, and record why.
+	// known and equal; otherwise degrade to by-id-only (full shape, id required)
+	// rather than risk a mapper reading the wrong fields, and record why.
 	if op.ResponseDataRefName == "" || searchOp.ItemRefName == "" ||
 		op.ResponseDataRefName != searchOp.ItemRefName {
 		art, err := buildSingularByIdArtifact(op)
@@ -138,7 +238,7 @@ func buildSingularBothArtifact(op *Operation) (*Artifact, error) {
 	if err != nil {
 		return nil, err
 	}
-	read := readCall(op, true)
+	read := sdkCall(op, true)
 	search := listCall(searchOp)
 	inputs, err := mergeRequiredInputLeaves(read.Arguments, search.Arguments)
 	if err != nil {
@@ -152,7 +252,7 @@ func buildSingularBothArtifact(op *Operation) (*Artifact, error) {
 		Cardinality: CardinalitySingular,
 		Description: op.Tracking.TfDescription,
 		Schema:      &AttributeTree{Attributes: append(append(inputs, filters...), record.Attributes...)},
-		SourceFile:  sourceFileFor(op.Tracking.ArtifactName),
+		SourceFile:  sourceFileFor(op.Tracking.ArtifactKind, op.Tracking.ArtifactName),
 		Lifecycle: &LifecycleBindings{
 			Read:       read,
 			Search:     search,
@@ -162,9 +262,35 @@ func buildSingularBothArtifact(op *Operation) (*Artifact, error) {
 	}, nil
 }
 
-// sourceFileFor is the output path for a data-source artifact name.
-func sourceFileFor(name string) string {
-	return "datadog/fwprovider/data_source_datadog_" + name + ".go"
+// unresolvedGroupDiagnostics reports every group reference whose operationId
+// matches no operation in the spec, so an author's typo is never dropped
+// silently. It reports rather than fails: a shape that cannot proceed without a
+// role already rejected it via requireResolvedRoles, so what is left here is a
+// reference to a role this artifact shape does not consume.
+func unresolvedGroupDiagnostics(op *Operation) []Diagnostic {
+	if op.ResolvedGroup == nil || len(op.ResolvedGroup.Unresolved) == 0 {
+		return nil
+	}
+	diags := make([]Diagnostic, 0, len(op.ResolvedGroup.Unresolved))
+	for _, ref := range op.ResolvedGroup.Unresolved {
+		diags = append(diags, Diagnostic{
+			Severity: SeverityWarning,
+			Message: fmt.Sprintf("artifact %q: group.%s names operationId %q, which no operation in the spec declares; that role is unbound",
+				op.Tracking.ArtifactName, ref.Role, ref.OperationId),
+		})
+	}
+	return diags
+}
+
+// sourceFileFor is the output path for an artifact, keyed on kind so the two
+// prefixes stay in one place. The CLI overwrites SourceFile with a path under
+// --output-root, so the directory here is a default rather than a promise.
+func sourceFileFor(kind ArtifactKind, name string) string {
+	prefix := "data_source_datadog_"
+	if kind == ArtifactKindResource {
+		prefix = "resource_datadog_"
+	}
+	return "datadog/fwprovider/" + prefix + name + ".go"
 }
 
 // singularEnvelope wraps a list element schema in a one-property {data: element}
@@ -195,11 +321,11 @@ func listElementSchema(op *Operation) *Schema {
 	return arr.Items
 }
 
-// buildPluralArtifact derives a plural data-source artifact: its Schema is the
-// scalar-filter leaves (from the query parameters) followed by the response
-// tree, whose single top-level results array the emit builder turns into the
-// items block. It records the list-call bindings (item type, optional-params
-// type, pagination) and any dropped filters as info Diagnostics.
+// buildPluralArtifact derives a plural data-source artifact: scalar filter
+// leaves from the query parameters, followed by the response tree, whose single
+// top-level results array becomes the items block. It records the list-call
+// bindings (item type, optional-params type, pagination) and any dropped
+// filters as info Diagnostics.
 func buildPluralArtifact(op *Operation) (*Artifact, error) {
 	itemsBlock, itemDiags, err := buildItemsBlock(op)
 	if err != nil {
@@ -224,7 +350,7 @@ func buildPluralArtifact(op *Operation) (*Artifact, error) {
 		Cardinality: CardinalityPlural,
 		Description: op.Tracking.TfDescription,
 		Schema:      &AttributeTree{Attributes: attrs},
-		SourceFile:  "datadog/fwprovider/data_source_datadog_" + name + ".go",
+		SourceFile:  sourceFileFor(ArtifactKindDataSource, name),
 		Lifecycle: &LifecycleBindings{
 			Read:       read,
 			IdStrategy: op.Tracking.IdStrategy,
@@ -238,10 +364,10 @@ func buildPluralArtifact(op *Operation) (*Artifact, error) {
 const defaultResultsPath = "data"
 
 // buildItemsBlock builds the plural items block from the results array alone
-// (op.Pagination.ResultsPath, else "data"), so response siblings such as
-// meta/links/included are dropped rather than emitted. Returns a nil Attribute
-// when the response declares no such array, plus the diagnostics raised while
-// building the element (none today: an element either projects or fails).
+// (op.Pagination.ResultsPath, else "data"), dropping response siblings such as
+// meta/links/included. Returns a nil Attribute when the response declares no
+// such array; the diagnostics slice is always empty today, since an element
+// either projects or fails.
 func buildItemsBlock(op *Operation) (*Attribute, []Diagnostic, error) {
 	resultsPath := defaultResultsPath
 	if op.Pagination != nil && op.Pagination.ResultsPath != "" {
@@ -261,28 +387,26 @@ func buildItemsBlock(op *Operation) (*Attribute, []Diagnostic, error) {
 			break
 		}
 	}
-	attr, err := (&treeBuilder{kind: responseTree}).attribute(arr, "response."+resultsPath, nestBlock, required)
+	attr, err := (&treeBuilder{kind: responseTree}).attribute(arr, "response."+resultsPath, required)
 	return attr, nil, err
 }
 
 // SDKPackageForPath returns the versioned datadog-api-client-go package an
-// operation path belongs to, e.g. "/api/v2/teams/{id}" → "datadogV2". A path with
-// no version segment yields the bare "datadog" prefix, which is deliberately not
-// a real package: the emit builder fail-slows on it rather than emitting a broken
+// operation path belongs to, e.g. "/api/v2/teams/{id}" → "datadogV2". A path
+// with no version segment yields the bare "datadog" prefix, deliberately not a
+// real package, so a consumer fails slowly rather than emitting a broken
 // import.
-//
-// It is the one place this derivation lives, so the emitter, the SDK oneOf
-// binding pass and its corroboration test all agree on which package a union's
-// wrapper is declared in.
 func SDKPackageForPath(path string) string {
 	return "datadog" + strings.ToUpper(versionSegment(path))
 }
 
-// readCall resolves the datadog-api-client-go binding for op's read.
-func readCall(op *Operation, aliasTerminalID bool) *SDKCall {
+// sdkCall resolves the datadog-api-client-go binding shared by every call shape:
+// package, API struct, method, response type and bound arguments. aliasTerminalID
+// renames a trailing path-id argument to "id".
+func sdkCall(op *Operation, aliasTerminalID bool) *SDKCall {
 	call := &SDKCall{
 		GoPackage:      SDKPackageForPath(op.Path),
-		GoApiStruct:    tagToClassName(op.Tag) + "Api",
+		GoApiStruct:    SdkClassName(op.Tag),
 		GoMethod:       op.OperationId,
 		GoResponseType: op.ResponseRefName,
 	}
@@ -290,13 +414,12 @@ func readCall(op *Operation, aliasTerminalID bool) *SDKCall {
 	return call
 }
 
-// listCall resolves the datadog-api-client-go binding for op's list call: the
-// base read binding plus the element type, the optional-parameters struct (the
-// SDK generates one iff the endpoint declares query parameters — pagination
-// params are query parameters), and the pagination flag. Shared by the plural
-// path and the singular search path.
+// listCall resolves the binding for op's list call: the base read binding plus
+// the element type, the optional-parameters struct (the SDK generates one iff
+// the endpoint declares query parameters, pagination params included), and the
+// pagination flag.
 func listCall(op *Operation) *SDKCall {
-	c := readCall(op, false)
+	c := sdkCall(op, false)
 	c.ItemType = op.ItemRefName
 	c.Paginated = op.Pagination != nil
 	if op.SDKBinding == nil && len(op.QueryParams) > 0 {
@@ -326,6 +449,15 @@ func applySDKBinding(call *SDKCall, op *Operation, aliasTerminalID bool) {
 	}
 }
 
+// argumentsOf returns a call's positional arguments, tolerating a nil call so
+// a resource with no Update role still contributes its other three.
+func argumentsOf(call *SDKCall) []SDKArgument {
+	if call == nil {
+		return nil
+	}
+	return call.Arguments
+}
+
 func buildRequiredInputLeaves(arguments []SDKArgument) ([]*Attribute, error) {
 	var leaves []*Attribute
 	for _, arg := range arguments {
@@ -345,7 +477,7 @@ func buildRequiredInputLeaves(arguments []SDKArgument) ([]*Attribute, error) {
 		}
 		leaves = append(leaves, &Attribute{
 			Path: arg.TFName, TfType: tfType, GoType: goType, Format: arg.Schema.Format,
-			Required: true, Description: description,
+			Required: true, Description: description, FromPathParameter: true,
 		})
 	}
 	return leaves, nil
@@ -374,11 +506,10 @@ func mergeRequiredInputLeaves(argumentGroups ...[]SDKArgument) ([]*Attribute, er
 }
 
 // buildFilterLeaves converts op's scalar query parameters into Optional
-// top-level filter attributes. Pagination params are excluded (the SDK's
-// pagination form handles them); array- and enum-valued params are dropped with
-// an info Diagnostic rather than failing the build. Required query parameters
-// are surfaced as info diagnostics because the current SDK-call binding cannot
-// represent required query arguments. The result preserves QueryParams' order.
+// top-level filter attributes, preserving QueryParams' order. Pagination params
+// are excluded; array- and enum-valued params are dropped with an info
+// Diagnostic rather than failing. A required query parameter also gets an info
+// Diagnostic, since the SDK-call binding cannot represent one.
 func buildFilterLeaves(op *Operation) ([]*Attribute, []Diagnostic) {
 	var leaves []*Attribute
 	var diags []Diagnostic
@@ -463,9 +594,8 @@ func unsupportedFilterReason(s *Schema) string {
 }
 
 // versionSegment returns the API version path segment immediately after "/api/",
-// e.g. "/api/v2/incidents/config/types/{id}" → "v2". It returns "" when the path
-// has no segment after "api", leaving the resolved GoPackage incomplete so the
-// emit builder fail-slows on it rather than emitting a broken import.
+// e.g. "/api/v2/incidents/config/types/{id}" → "v2", or "" when the path has no
+// segment after "api".
 func versionSegment(path string) string {
 	segs := strings.Split(strings.Trim(path, "/"), "/")
 	for i, s := range segs {
@@ -474,21 +604,4 @@ func versionSegment(path string) string {
 		}
 	}
 	return ""
-}
-
-// tagToClassName converts an OpenAPI tag into the datadog-api-client-go API
-// struct base name: non-alphanumeric runs become word breaks, each word is
-// capitalized on its first rune, and in-word casing is preserved. So "org
-// groups" → "OrgGroups" and "APM" → "APM". This deliberately differs from
-// SdkName, which lower-cases acronyms ("APM" → "Apm").
-func tagToClassName(tag string) string {
-	var b strings.Builder
-	for _, word := range strings.FieldsFunc(tag, func(r rune) bool {
-		return !unicode.IsLetter(r) && !unicode.IsNumber(r)
-	}) {
-		runes := []rune(word)
-		b.WriteRune(unicode.ToUpper(runes[0]))
-		b.WriteString(string(runes[1:]))
-	}
-	return b.String()
 }

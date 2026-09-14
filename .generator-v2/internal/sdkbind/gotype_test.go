@@ -7,50 +7,11 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
-// These specs pin the port of formatter.simple_type and of model_oneof.j2's member
-// rule against the pinned SDK generator's actual behaviour. They
-// deliberately include the four spellings a lookup-based spike inferred wrongly,
-// since a derivation that is wrong produces a plausible name rather than nothing.
-
-var _ = Describe("simpleType (port of formatter.simple_type)", func() {
-	DescribeTable("primitive Go spellings",
-		func(openapiType, format, want string, ok bool) {
-			got, derived := simpleType(&model.Schema{Type: openapiType, Format: format})
-			Expect(derived).To(Equal(ok))
-			Expect(got).To(Equal(want))
-		},
-		// integer: an unformatted integer is int32, NOT int64.
-		Entry("integer, no format", "integer", "", "int32", true),
-		Entry("integer/int32", "integer", "int32", "int32", true),
-		Entry("integer/int64", "integer", "int64", "int64", true),
-		// number: an unformatted number is float; only double is float64.
-		Entry("number, no format", "number", "", "float", true),
-		Entry("number/double", "number", "double", "float64", true),
-		// string: date and date-time both map to time.Time.
-		Entry("string, no format", "string", "", "string", true),
-		Entry("string/date", "string", "date", "time.Time", true),
-		Entry("string/date-time", "string", "date-time", "time.Time", true),
-		Entry("string/uuid", "string", "uuid", "uuid.UUID", true),
-		Entry("string/binary", "string", "binary", "_io.Reader", true),
-		// An unmapped string format falls back to string (.get default).
-		Entry("string/email falls back", "string", "email", "string", true),
-		Entry("boolean", "boolean", "", "bool", true),
-		// Where the Python raises KeyError the SDK cannot generate a type at all.
-		Entry("integer with unmapped format", "integer", "int16", "", false),
-		Entry("number with unmapped format", "number", "float", "", false),
-		Entry("object is not a simple type", "object", "", "", false),
-		Entry("untyped is not a simple type", "", "", "", false),
-	)
-
-	It("does not spell a nullable alternative as datadog.Nullable", func() {
-		// model_oneof.j2 calls get_type(oneOf) with no render_nullable, so the
-		// Nullable prefix never reaches a wrapper member. Nullability is carried on
-		// OneOfSpec.Nullable and represented by an absent envelope instead.
-		got, ok := simpleType(&model.Schema{Type: "string"})
-		Expect(ok).To(BeTrue())
-		Expect(got).To(Equal("string"))
-	})
-})
+// These specs pin the port of model_oneof.j2's member rule against the pinned
+// SDK generator's actual behaviour. They deliberately include the spellings a
+// lookup-based spike inferred wrongly, since a derivation that is wrong
+// produces a plausible name rather than nothing. The scalar-type port moved to
+// model.SDKScalarGoType and is pinned by internal/model/sdktype_test.go.
 
 var _ = Describe("memberBinding (port of model_oneof.j2's member rule)", func() {
 	It("names a referenced alternative after its component, not its Terraform name", func() {

@@ -193,9 +193,33 @@ paths:
         content:
           application/json:
             schema:
-              type: string
+              type: object
               x-datadog-tf-generator:
                 sensitive: true
+              properties:
+                x_secret:
+                  type: string
+                  x-secret: true
+                write_only:
+                  type: string
+                  writeOnly: true
+                x_secret_false:
+                  type: string
+                  x-secret: false
+                x_secret_malformed:
+                  type: string
+                  x-secret: not-a-boolean
+                write_only_false:
+                  type: string
+                  writeOnly: false
+                explicit_false:
+                  type: string
+                  writeOnly: true
+                  x-secret: true
+                  x-datadog-tf-generator:
+                    sensitive: false
+                plain:
+                  type: string
       responses:
         '204':
           description: no content

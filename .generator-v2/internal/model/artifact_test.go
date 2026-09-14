@@ -8,14 +8,6 @@ import (
 )
 
 var _ = Describe("BuildArtifact", func() {
-	DescribeTable("tagToClassName capitalizes each word and preserves in-word casing",
-		func(tag, want string) { Expect(tagToClassName(tag)).To(Equal(want)) },
-		Entry("a single word passes through", "Incidents", "Incidents"),
-		Entry("a space-separated tag joins into PascalCase", "org groups", "OrgGroups"),
-		Entry("an acronym is preserved, not lower-cased", "APM", "APM"),
-		Entry("mixed punctuation becomes word breaks", "cloud-cost.management", "CloudCostManagement"),
-	)
-
 	DescribeTable("versionSegment returns the path segment after /api/",
 		func(path, want string) { Expect(versionSegment(path)).To(Equal(want)) },
 		Entry("a v2 path", "/api/v2/incidents/config/types/{id}", "v2"),
@@ -105,7 +97,7 @@ var _ = Describe("BuildArtifact plural", func() {
 			types = append(types, a.TfType)
 		}
 		Expect(names).To(Equal([]string{"filter_keyword", "filter_me", "response.data"}))
-		Expect(types).To(Equal([]string{"schema.StringAttribute", "schema.BoolAttribute", "schema.ListNestedBlock"}))
+		Expect(types).To(Equal([]string{"schema.StringAttribute", "schema.BoolAttribute", "schema.ListNestedAttribute"}))
 
 		// Filter leaves remain Optional inputs and are not Computed.
 		Expect(art.Schema.Attributes[0].Optional).To(BeTrue())
@@ -211,11 +203,11 @@ var _ = Describe("BuildArtifact singular search", func() {
 			}
 			// Two scalar filters (sorted by name), then the singular record envelope.
 			Expect(names).To(Equal([]string{"filter_name", "filter_query", "response.data"}))
-			Expect(types).To(Equal([]string{"schema.StringAttribute", "schema.StringAttribute", "schema.SingleNestedBlock"}))
+			Expect(types).To(Equal([]string{"schema.StringAttribute", "schema.StringAttribute", "schema.SingleNestedAttribute"}))
 
-			// Singular output: the record is a SingleNestedBlock, never a list block.
+			// Singular output: the record is a SingleNestedAttribute, never a list block.
 			for _, a := range art.Schema.Attributes {
-				Expect(a.TfType).NotTo(Equal("schema.ListNestedBlock"))
+				Expect(a.TfType).NotTo(Equal("schema.ListNestedAttribute"))
 			}
 			Expect(art.Schema.Attributes[0].Optional).To(BeTrue())
 			Expect(art.Schema.Attributes[0].Computed).To(BeFalse())
@@ -265,14 +257,29 @@ var _ = Describe("BuildArtifact singular search", func() {
 			}
 			// One Optional filter from the list op, then the singular record envelope.
 			Expect(names).To(Equal([]string{"filter_keyword", "response.data"}))
-			Expect(art.Schema.Attributes[len(names)-1].TfType).To(Equal("schema.SingleNestedBlock"))
+			Expect(art.Schema.Attributes[len(names)-1].TfType).To(Equal("schema.SingleNestedAttribute"))
 		})
 
 		It("fails when group.search names an operation that does not exist", func() {
 			op := bothDatastoreOp()
-			op.SearchOp = nil // simulate an unknown operationId
+			op.ResolvedGroup.Search = nil // simulate an unknown operationId
 			_, err := BuildArtifact(op)
 			Expect(err).To(HaveOccurred())
+		})
+
+		It("warns about a group reference the parser could not resolve", func() {
+			op := bothDatastoreOp()
+			op.ResolvedGroup.Unresolved = []GroupReference{
+				{Role: GroupRoleUpdate, OperationId: "UpdateDatastoreTypo"},
+			}
+			art, err := BuildArtifact(op)
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(art.Diagnostics).To(ContainElement(Diagnostic{
+				Severity: SeverityWarning,
+				Message: `artifact "datastore": group.update names operationId "UpdateDatastoreTypo", ` +
+					`which no operation in the spec declares; that role is unbound`,
+			}))
 		})
 
 		It("produces a deeply-equal artifact across two runs", func() {
@@ -360,7 +367,7 @@ func searchPowerpackOp() *Operation {
 }
 
 // bothDatastoreOp is an id-optional singular data source: the tracked op is the
-// by-id GET (group.read), and SearchOp points at the list GET (group.search)
+// by-id GET (group.read), and the resolved group's search role points at the list GET (group.search)
 // carrying one scalar filter.
 func bothDatastoreOp() *Operation {
 	listOp := &Operation{
@@ -388,7 +395,7 @@ func bothDatastoreOp() *Operation {
 		Tag:                 "Datastores",
 		ResponseRefName:     "Datastore",
 		ResponseDataRefName: "Datastore", // same as the list element → stays "both"
-		SearchOp:            listOp,
+		ResolvedGroup:       &ResolvedGroup{Search: listOp},
 		Tracking: &TrackingFieldMetadata{
 			ArtifactKind: ArtifactKindDataSource,
 			ArtifactName: "datastore",
@@ -431,7 +438,7 @@ func bothApiKeyOp() *Operation {
 		Tag:                 "KeyManagement",
 		ResponseRefName:     "APIKeyResponse",
 		ResponseDataRefName: "FullAPIKey",
-		SearchOp:            listOp,
+		ResolvedGroup:       &ResolvedGroup{Search: listOp},
 		Tracking: &TrackingFieldMetadata{
 			ArtifactKind: ArtifactKindDataSource,
 			ArtifactName: "api_key",
@@ -519,3 +526,44 @@ func incidentTypeOp() *Operation {
 		}),
 	}
 }
+
+var _ = Describe("Artifact.UnstableOperations", func() {
+	It("is empty when nothing the artifact calls is x-unstable", func() {
+		art, err := BuildArtifact(incidentTypeOp())
+		Expect(err).NotTo(HaveOccurred())
+		Expect(art.UnstableOperations).To(BeEmpty())
+	})
+
+	It("names the annotated operation when it is x-unstable", func() {
+		op := incidentTypeOp()
+		op.Unstable = true
+
+		art, err := BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(art.UnstableOperations).To(Equal([]string{"v2.GetIncidentType"}))
+	})
+
+	// The registry is keyed off the operation, not the artifact kind: a beta GET
+	// behind a data source is disabled exactly like a resource's create. It also
+	// has to reach through the resolved group, since a group role is a different
+	// operation from the annotated one.
+	It("collects group roles, sorted and de-duplicated, skipping stable ones", func() {
+		op := incidentTypeOp()
+		op.Unstable = true
+		create := &Operation{Path: "/api/v2/incidents/config/types", OperationId: "CreateIncidentType", Unstable: true}
+		stable := &Operation{Path: "/api/v2/incidents/config/types/{id}", OperationId: "UpdateIncidentType"}
+		op.ResolvedGroup = &ResolvedGroup{
+			Create: create,
+			Read:   op,
+			Update: stable,
+			Delete: create,
+		}
+
+		art, err := BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(art.UnstableOperations).To(Equal([]string{
+			"v2.CreateIncidentType",
+			"v2.GetIncidentType",
+		}))
+	})
+})

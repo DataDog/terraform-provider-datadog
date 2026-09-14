@@ -71,7 +71,7 @@ var _ = Describe("oneOf envelope metadata", func() {
 		Expect(err).NotTo(HaveOccurred())
 
 		collection := attrByPath(tree, "response.choices")
-		Expect(collection.TfType).To(Equal("schema.ListNestedBlock"))
+		Expect(collection.TfType).To(Equal("schema.ListNestedAttribute"))
 		Expect(collection.OneOf).NotTo(BeNil())
 		// The envelope path is the element path, which no attribute occupies.
 		Expect(collection.OneOf.Path).To(Equal("response.choices[]"))
@@ -141,7 +141,7 @@ var _ = Describe("oneOf envelope metadata", func() {
 				GoName: "Nested",
 				Schema: oneOfSchema("response.nested.value", "Nested", primitiveOneOfVariant("string", "string")),
 			},
-			true, "response.nested.value", "schema.SingleNestedBlock"),
+			true, "response.nested.value", "schema.SingleNestedAttribute"),
 	)
 
 	It("derives the variant's Go field and model from the parser's Go name", func() {

@@ -6,23 +6,40 @@ import (
 	"unicode"
 )
 
-// Mirroring the generator's own rule is what makes the names we emit match
-// datadog-api-client-go, the SDK uses naive PascalCase with
-// no acronym uppercasing ("org_id" → "OrgId","url" → "Url", "uuid" → "Uuid").
+// These patterns reproduce the SDK generator's own casing rule: naive
+// PascalCase with no acronym uppercasing ("org_id" → "OrgId", "url" → "Url",
+// "uuid" → "Uuid").
 var (
 	patternLeadingAlpha     = regexp.MustCompile(`(.)([A-Z][a-z]+)`)
 	patternFollowingAlpha   = regexp.MustCompile(`([a-z0-9])([A-Z])`)
 	patternWhitespace       = regexp.MustCompile(`\W`)
 	patternDoubleUnderscore = regexp.MustCompile(`__+`)
+	patternNonAlphanumeric  = regexp.MustCompile(`[^a-zA-Z0-9]`)
 )
 
-// SnakeCase converts a camelCase or PascalCase identifier to snake_case.
+// SnakeCase converts a camelCase or PascalCase identifier to snake_case, a port
+// of utils.snake_case from datadog-api-client-go's bundled generator, applying
+// the same five operations in the same order.
 func SnakeCase(value string) string {
 	value = patternLeadingAlpha.ReplaceAllString(value, "${1}_${2}")
 	value = strings.ToLower(patternFollowingAlpha.ReplaceAllString(value, "${1}_${2}"))
 	value = patternWhitespace.ReplaceAllString(value, "_")
 	value = strings.TrimRight(value, "_")
 	return patternDoubleUnderscore.ReplaceAllString(value, "_")
+}
+
+// SdkClassName ports utils.class_name from datadog-api-client-go's bundled
+// generator:
+//
+//	value = re.sub(r'[^a-zA-Z0-9]', '', value)
+//	return value + "Api"
+//
+// It strips non-alphanumerics and does not re-capitalize, relying on tags
+// already being PascalCase: "Org Groups" → "OrgGroupsApi", "APM" → "APMApi",
+// while "org groups" → "orggroupsApi" — capitalizing that would name a Go type
+// the SDK never generated.
+func SdkClassName(tag string) string {
+	return patternNonAlphanumeric.ReplaceAllString(tag, "") + "Api"
 }
 
 // goKeywords is Go's full reserved-word set, the same list the SDK generator
@@ -36,14 +53,10 @@ var goKeywords = map[string]bool{
 }
 
 // EscapeReservedKeyword appends "Var" to a Go reserved word and returns anything
-// else unchanged — a port of the SDK generator's
-// formatter.escape_reserved_keyword, which is how the SDK itself keeps a property
-// named "type" from producing the local `type`.
-//
-// Reusing the SDK's suffix rather than inventing one means a maintainer who knows
-// the SDK reads generated locals the same way in both codebases. It only ever
-// fires on a lower-camel identifier: an exported field name starts with an
-// upper-case rune, and no Go keyword does.
+// else unchanged, a port of the SDK generator's
+// formatter.escape_reserved_keyword — how the SDK keeps a property named "type"
+// from producing the local `type`. It only ever fires on a lower-camel
+// identifier: no Go keyword starts with an upper-case rune.
 func EscapeReservedKeyword(word string) string {
 	if goKeywords[word] {
 		return word + "Var"
@@ -52,10 +65,9 @@ func EscapeReservedKeyword(word string) string {
 }
 
 // UpperFirst upper-cases the first rune and leaves the rest untouched, a port of
-// the SDK generator's utils.upperfirst. It is not a PascalCase conversion: the
-// SDK applies it to an already-formed name (a component name, or a Go type
-// spelling) when deriving a oneOf wrapper member, so "AWSIntegration" and
-// "string" must come back as "AWSIntegration" and "String" respectively.
+// the SDK generator's utils.upperfirst. Not a PascalCase conversion: it applies
+// to an already-formed name, so "AWSIntegration" and "string" come back as
+// "AWSIntegration" and "String".
 func UpperFirst(value string) string {
 	if value == "" {
 		return ""
@@ -65,11 +77,9 @@ func UpperFirst(value string) string {
 }
 
 // SdkName translates an OpenAPI identifier into the PascalCase form used by
-// datadog-api-client-go. It is the port of the SDK generator's
-// utils.camel_case (snake_case, then upperfirst each underscore-delimited part).
-//
-// OperationIds in the Datadog spec are already PascalCase and serve as SDK
-// method anchors directly; SdkName is for snake_case property and parameter names.
+// datadog-api-client-go, a port of the SDK generator's utils.camel_case
+// (snake_case, then upperfirst each underscore-delimited part). It is for
+// snake_case property and parameter names; operationIds are already PascalCase.
 func SdkName(openapiName string) string {
 	var b strings.Builder
 	for _, part := range strings.Split(SnakeCase(openapiName), "_") {
