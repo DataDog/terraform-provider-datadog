@@ -18,6 +18,7 @@ resource "datadog_integration_azure" "sandbox" {
   tenant_name              = "<azure_tenant_name>"
   client_id                = "<azure_client_id>"
   client_secret            = "<azure_client_secret_key>"
+  display_name             = "datadog-azure-integration"
   host_filters             = "examplefilter:true,example:true"
   app_service_plan_filters = "examplefilter:true,example:another"
   container_app_filters    = "examplefilter:true,example:one_more"
@@ -52,6 +53,7 @@ resource "datadog_integration_azure" "sandbox_secretless" {
 - `cspm_enabled` (Boolean) When enabled, Datadog’s Cloud Security Management product scans resource configurations monitored by this app registration.
 Note: This requires `resource_collection_enabled` to be set to true. Defaults to `false`.
 - `custom_metrics_enabled` (Boolean) Enable custom metrics for your organization. Defaults to `false`.
+- `display_name` (String) The display name of the Azure app registration. This value is sent only when the integration is created. Changing it recreates the integration. Display_name must contain at least one non-whitespace character.
 - `host_filters` (String) String of host tag(s) (in the form `key:value,key:value`) defines a filter that Datadog will use when collecting metrics from Azure. Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog. e.x. `env:production,deploymentgroup:red` Defaults to `""`.
 - `metrics_enabled` (Boolean) Enable Azure metrics for your organization. Defaults to `true`.
 - `metrics_enabled_default` (Boolean) Enable Azure metrics for your organization for resource providers where no resource provider config is specified. Defaults to `true`.
