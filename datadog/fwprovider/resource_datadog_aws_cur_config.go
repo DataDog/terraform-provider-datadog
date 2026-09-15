@@ -387,9 +387,8 @@ func (r *awsCurConfigResource) buildAwsCurConfigUpdateRequestBody(ctx context.Co
 	// IsEnabled is not part of the resource model for creation/update in this context
 	// It's handled through separate patch operations
 
+	var accountFilters datadogV2.AccountFilteringConfig
 	if state.AccountFilters != nil {
-		var accountFilters datadogV2.AccountFilteringConfig
-
 		if !state.AccountFilters.IncludeNewAccounts.IsNull() {
 			accountFilters.SetIncludeNewAccounts(state.AccountFilters.IncludeNewAccounts.ValueBool())
 		}
@@ -405,8 +404,9 @@ func (r *awsCurConfigResource) buildAwsCurConfigUpdateRequestBody(ctx context.Co
 			diags.Append(state.AccountFilters.IncludedAccounts.ElementsAs(ctx, &includedAccounts, false)...)
 			accountFilters.SetIncludedAccounts(includedAccounts)
 		}
-		attributes.AccountFilters = &accountFilters
 	}
+	// An empty object explicitly clears filters; omitting the field leaves API state unchanged.
+	attributes.AccountFilters = &accountFilters
 
 	req := datadogV2.NewAwsCURConfigPatchRequestWithDefaults()
 	req.Data = *datadogV2.NewAwsCURConfigPatchDataWithDefaults()
