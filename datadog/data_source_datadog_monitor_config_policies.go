@@ -61,6 +61,22 @@ func dataSourceDatadogMonitorConfigPolicies() *schema.Resource {
 									},
 								},
 							},
+							"downtime_policy": {
+								Description: "Config for a downtime duration policy. Only set if `policy_type` is `downtime`.",
+								Type:        schema.TypeList,
+								Computed:    true,
+								Optional:    true,
+								MaxItems:    1,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"max_duration_ms": {
+											Type:        schema.TypeInt,
+											Description: "The maximum allowed downtime duration, in milliseconds",
+											Computed:    true,
+										},
+									},
+								},
+							},
 						},
 					},
 				},
@@ -103,6 +119,11 @@ func dataSourceDatadogMonitorConfigPoliciesRead(ctx context.Context, d *schema.R
 				"tag_key":          policy.MonitorConfigPolicyTagPolicy.GetTagKey(),
 				"tag_key_required": policy.MonitorConfigPolicyTagPolicy.GetTagKeyRequired(),
 				"valid_tag_values": policy.MonitorConfigPolicyTagPolicy.GetValidTagValues(),
+			}}
+		}
+		if policy.MonitorConfigPolicyDowntimePolicy != nil {
+			tfMonitorConfigPolicies[i]["downtime_policy"] = []interface{}{map[string]interface{}{
+				"max_duration_ms": policy.MonitorConfigPolicyDowntimePolicy.GetMaxDurationMs(),
 			}}
 		}
 	}
