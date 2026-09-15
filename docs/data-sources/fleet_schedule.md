@@ -33,9 +33,9 @@ data "datadog_fleet_schedule" "nonproduction" {
 - `is_default` (Boolean) Whether this is the organization's default schedule.
 - `name` (String) Human-readable name of the schedule.
 - `next_run` (String) RFC 3339 timestamp of the next maintenance window, or null when no next run can be computed.
-- `notification_rule` (Attributes) Notification configuration attached to the schedule, when available. (see [below for nested schema](#nestedatt--notification_rule))
+- `notification_rule` (Attributes) Notification configuration attached to the schedule, when available. (See [below for nested schema](#nestedatt--notification_rule).)
 - `query` (String) Datadog host query used to select the Agent upgrade targets.
-- `rule` (Attributes) Recurrence and maintenance-window configuration for the schedule. (see [below for nested schema](#nestedatt--rule))
+- `rule` (Attributes) Recurrence and maintenance-window configuration for the schedule. (See [below for nested schema](#nestedatt--rule).)
 - `status` (String) Whether the schedule is `active` or `inactive`.
 - `updated_at` (String) RFC 3339 timestamp when the schedule was last updated.
 - `updated_by` (String) User handle of the person who last updated the schedule.
