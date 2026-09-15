@@ -199,6 +199,28 @@ var ImageWidgetSpec = WidgetSpec{
 	},
 }
 
+// EmbeddedAppWidgetSpec corresponds to OpenAPI EmbeddedAppWidgetDefinition.
+var EmbeddedAppWidgetSpec = WidgetSpec{
+	HCLKey:      "embedded_app_definition",
+	JSONType:    "embedded_app",
+	Description: "The definition for an App Builder embedded app widget.",
+	Fields: []FieldSpec{
+		{HCLKey: "app_id", Type: TypeString, OmitEmpty: true,
+			Description: "UUID of the App Builder app to embed. Exactly one of `app_id` or `template_id` must be provided."},
+		{HCLKey: "template_id", Type: TypeString, OmitEmpty: true,
+			Description: "ID of the built-in app template to embed. Exactly one of `app_id` or `template_id` must be provided."},
+		{HCLKey: "input", JSONKey: "inputs", Type: TypeBlockList, OmitEmpty: true,
+			Description: "A nested block describing an input passed to the embedded app. Multiple `input` blocks are allowed.",
+			Children: []FieldSpec{
+				{HCLKey: "name", Type: TypeString, OmitEmpty: false, Required: true,
+					Description: "Name of the app input."},
+				{HCLKey: "value", Type: TypeJSON, OmitEmpty: false, Required: true,
+					Description: "JSON-encoded value of the app input. This can be a string, number, boolean, object, or array."},
+			}},
+		widgetCustomLinkField,
+	},
+}
+
 // NoteWidgetSpec corresponds to OpenAPI NoteWidgetDefinition.
 var NoteWidgetSpec = WidgetSpec{
 	HCLKey:      "note_definition",
@@ -1512,6 +1534,7 @@ var allWidgetSpecs = []WidgetSpec{
 	FreeTextWidgetSpec,
 	IFrameWidgetSpec,
 	ImageWidgetSpec,
+	EmbeddedAppWidgetSpec,
 	NoteWidgetSpec,
 	EventStreamWidgetSpec,
 	EventTimelineWidgetSpec,

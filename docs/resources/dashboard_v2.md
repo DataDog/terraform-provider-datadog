@@ -226,6 +226,7 @@ Optional:
 - `check_status_definition` (Block List, Max: 1) The definition for a Check Status widget. (see [below for nested schema](#nestedblock--widget--check_status_definition))
 - `cohort_definition` (Block List, Max: 1) The definition for a Cohort retention-grid widget. (see [below for nested schema](#nestedblock--widget--cohort_definition))
 - `distribution_definition` (Block List, Max: 1) The definition for a Distribution widget. (see [below for nested schema](#nestedblock--widget--distribution_definition))
+- `embedded_app_definition` (Block List, Max: 1) The definition for an App Builder embedded app widget. (see [below for nested schema](#nestedblock--widget--embedded_app_definition))
 - `event_stream_definition` (Block List, Max: 1) The definition for a Event Stream widget. (see [below for nested schema](#nestedblock--widget--event_stream_definition))
 - `event_timeline_definition` (Block List, Max: 1) The definition for a Event Timeline widget. (see [below for nested schema](#nestedblock--widget--event_timeline_definition))
 - `free_text_definition` (Block List, Max: 1) The definition for a Free Text widget. (see [below for nested schema](#nestedblock--widget--free_text_definition))
@@ -4657,6 +4658,71 @@ Optional:
 
 
 
+<a id="nestedblock--widget--embedded_app_definition"></a>
+### Nested Schema for `widget.embedded_app_definition`
+
+Optional:
+
+- `app_id` (String) UUID of the App Builder app to embed. Exactly one of `app_id` or `template_id` must be provided.
+- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--embedded_app_definition--custom_link))
+- `description` (String) The description of the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `input` (Block List) A nested block describing an input passed to the embedded app. Multiple `input` blocks are allowed. (see [below for nested schema](#nestedblock--widget--embedded_app_definition--input))
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `template_id` (String) ID of the built-in app template to embed. Exactly one of `app_id` or `template_id` must be provided.
+- `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--embedded_app_definition--time))
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--embedded_app_definition--custom_link"></a>
+### Nested Schema for `widget.embedded_app_definition.custom_link`
+
+Optional:
+
+- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
+- `label` (String) The label for the custom link URL. Keep the label short and descriptive. Use metrics and tags as variables.
+- `link` (String) The URL of the custom link. URL must include `http` or `https`. A relative URL must start with `/`.
+- `override_label` (String) The label ID that refers to a context menu link. Can be `logs`, `hosts`, `traces`, `profiles`, `processes`, `containers`, or `rum`.
+
+
+<a id="nestedblock--widget--embedded_app_definition--input"></a>
+### Nested Schema for `widget.embedded_app_definition.input`
+
+Required:
+
+- `name` (String) Name of the app input.
+- `value` (String) JSON-encoded value of the app input. This can be a string, number, boolean, object, or array.
+
+
+<a id="nestedblock--widget--embedded_app_definition--time"></a>
+### Nested Schema for `widget.embedded_app_definition.time`
+
+Optional:
+
+- `fixed` (Block List, Max: 1) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--embedded_app_definition--time--fixed))
+- `live` (Block List, Max: 1) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--embedded_app_definition--time--live))
+
+<a id="nestedblock--widget--embedded_app_definition--time--fixed"></a>
+### Nested Schema for `widget.embedded_app_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--embedded_app_definition--time--live"></a>
+### Nested Schema for `widget.embedded_app_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
+
 <a id="nestedblock--widget--event_stream_definition"></a>
 ### Nested Schema for `widget.event_stream_definition`
 
@@ -6009,6 +6075,7 @@ Optional:
 - `check_status_definition` (Block List, Max: 1) The definition for a Check Status widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--check_status_definition))
 - `cohort_definition` (Block List, Max: 1) The definition for a Cohort retention-grid widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition))
 - `distribution_definition` (Block List, Max: 1) The definition for a Distribution widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition))
+- `embedded_app_definition` (Block List, Max: 1) The definition for an App Builder embedded app widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--embedded_app_definition))
 - `event_stream_definition` (Block List, Max: 1) The definition for a Event Stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--event_stream_definition))
 - `event_timeline_definition` (Block List, Max: 1) The definition for a Event Timeline widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--event_timeline_definition))
 - `free_text_definition` (Block List, Max: 1) The definition for a Free Text widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--free_text_definition))
@@ -10434,6 +10501,71 @@ Optional:
 - `max` (String) Specifies the maximum value to show on the y-axis. It takes a number, or auto for default behavior.
 - `min` (String) Specifies minimum value to show on the y-axis. It takes a number, or auto for default behavior.
 - `scale` (String) Specifies the scale type. Possible values are `linear` or `log`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--embedded_app_definition"></a>
+### Nested Schema for `widget.group_definition.widget.embedded_app_definition`
+
+Optional:
+
+- `app_id` (String) UUID of the App Builder app to embed. Exactly one of `app_id` or `template_id` must be provided.
+- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--embedded_app_definition--custom_link))
+- `description` (String) The description of the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `input` (Block List) A nested block describing an input passed to the embedded app. Multiple `input` blocks are allowed. (see [below for nested schema](#nestedblock--widget--group_definition--widget--embedded_app_definition--input))
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `template_id` (String) ID of the built-in app template to embed. Exactly one of `app_id` or `template_id` must be provided.
+- `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--embedded_app_definition--time))
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--group_definition--widget--embedded_app_definition--custom_link"></a>
+### Nested Schema for `widget.group_definition.widget.embedded_app_definition.custom_link`
+
+Optional:
+
+- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
+- `label` (String) The label for the custom link URL. Keep the label short and descriptive. Use metrics and tags as variables.
+- `link` (String) The URL of the custom link. URL must include `http` or `https`. A relative URL must start with `/`.
+- `override_label` (String) The label ID that refers to a context menu link. Can be `logs`, `hosts`, `traces`, `profiles`, `processes`, `containers`, or `rum`.
+
+
+<a id="nestedblock--widget--group_definition--widget--embedded_app_definition--input"></a>
+### Nested Schema for `widget.group_definition.widget.embedded_app_definition.input`
+
+Required:
+
+- `name` (String) Name of the app input.
+- `value` (String) JSON-encoded value of the app input. This can be a string, number, boolean, object, or array.
+
+
+<a id="nestedblock--widget--group_definition--widget--embedded_app_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.embedded_app_definition.time`
+
+Optional:
+
+- `fixed` (Block List, Max: 1) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--embedded_app_definition--time--fixed))
+- `live` (Block List, Max: 1) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--embedded_app_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--embedded_app_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.embedded_app_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--embedded_app_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.embedded_app_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
 
 
 
