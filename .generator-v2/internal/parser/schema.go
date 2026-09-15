@@ -630,14 +630,15 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 		return n.normalizeAllOf(s, depth, ctx)
 	}
 	out := &model.Schema{
-		Kind:        classifyKind(s),
-		Type:        firstType(s),
-		Format:      s.Format,
-		Enum:        enumValues(s),
-		HasDefault:  s.Default != nil,
-		ReadOnly:    schemaReadOnly(s),
-		Sensitive:   n.isSensitive(s),
-		Description: s.Description,
+		Kind:            classifyKind(s),
+		Type:            firstType(s),
+		Format:          s.Format,
+		Enum:            enumValues(s),
+		HasDefault:      s.Default != nil,
+		ReadOnly:        schemaReadOnly(s),
+		WriteOnlySecret: schemaWriteOnly(s),
+		Sensitive:       n.isSensitive(s),
+		Description:     s.Description,
 		// The component name that led here — the go-sdk names its generated
 		// model after it. ctx carries the first $ref of the chain; a node
 		// reached inline leaves this empty.
@@ -983,6 +984,7 @@ type allOfAnnotations struct {
 	branchDescription string
 	sensitive         bool
 	readOnly          bool
+	writeOnlySecret   bool
 	hasDefault        bool
 }
 
@@ -991,6 +993,7 @@ func (n *schemaNormalizer) outerAnnotations(s *base.Schema) allOfAnnotations {
 		outerDescription: s.Description,
 		sensitive:        n.isSensitive(s),
 		readOnly:         schemaReadOnly(s),
+		writeOnlySecret:  schemaWriteOnly(s),
 		hasDefault:       s.Default != nil,
 	}
 }
@@ -1005,6 +1008,7 @@ func (a *allOfAnnotations) absorb(branch *model.Schema) {
 	}
 	a.sensitive = a.sensitive || branch.Sensitive
 	a.readOnly = a.readOnly || branch.ReadOnly
+	a.writeOnlySecret = a.writeOnlySecret || branch.WriteOnlySecret
 	a.hasDefault = a.hasDefault || branch.HasDefault
 }
 
@@ -1012,6 +1016,7 @@ func (a *allOfAnnotations) absorb(branch *model.Schema) {
 func (a allOfAnnotations) applyTo(out *model.Schema) {
 	out.Sensitive = out.Sensitive || a.sensitive
 	out.ReadOnly = out.ReadOnly || a.readOnly
+	out.WriteOnlySecret = out.WriteOnlySecret || a.writeOnlySecret
 	out.HasDefault = out.HasDefault || a.hasDefault
 	switch {
 	case a.outerDescription != "":
@@ -1027,8 +1032,14 @@ func (a allOfAnnotations) applyTo(out *model.Schema) {
 // but their metadata is unioned in. Anything outside the subset becomes an
 // Unsupported schema carrying a reason rather than an error.
 func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaContext) (*model.Schema, error) {
+	annotations := n.outerAnnotations(s)
+	unsupported := func(reason string) *model.Schema {
+		out := unsupportedSchema(reason)
+		annotations.applyTo(out)
+		return out
+	}
 	if reason := unsupportedAllOfOuterStructure(s); reason != "" {
-		return unsupportedSchema(reason), nil
+		return unsupported(reason), nil
 	}
 
 	type structuralBranch struct {
@@ -1036,16 +1047,15 @@ func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaC
 		schema *model.Schema
 	}
 	branches := make([]structuralBranch, 0, len(s.AllOf))
-	annotations := n.outerAnnotations(s)
-
 	for i, proxy := range s.AllOf {
 		branch, err := n.normalizeProxyAt(proxy, depth, ctx)
 		if err != nil {
 			return nil, err
 		}
 		if branch == nil {
-			return unsupportedSchema(fmt.Sprintf("allOf branch %d has no schema", i+1)), nil
+			return unsupported(fmt.Sprintf("allOf branch %d has no schema", i+1)), nil
 		}
+		annotations.writeOnlySecret = annotations.writeOnlySecret || branch.WriteOnlySecret
 
 		raw, err := n.resolveToSchema(proxy)
 		if err != nil {
@@ -1061,31 +1071,31 @@ func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaC
 			if reason == "" {
 				reason = fmt.Sprintf("allOf branch %d has unsupported schema kind %q", i+1, branch.Kind)
 			}
-			return unsupportedSchema(reason), nil
+			return unsupported(reason), nil
 		}
 		branches = append(branches, structuralBranch{index: i + 1, schema: branch})
 	}
 
 	if len(branches) == 0 {
-		return unsupportedSchema("allOf has no structural branches"), nil
+		return unsupported("allOf has no structural branches"), nil
 	}
 
 	outerType := firstType(s)
 	if len(s.Type) > 1 {
-		return unsupportedSchema("allOf declares multiple outer types"), nil
+		return unsupported("allOf declares multiple outer types"), nil
 	}
 
 	if len(branches) == 1 {
 		out := model.CloneSchema(branches[0].schema)
 		if outerType != "" && !schemaKindMatchesType(out, outerType) {
-			return unsupportedSchema(fmt.Sprintf("allOf outer type %q conflicts with branch %d schema kind %q", outerType, branches[0].index, out.Kind)), nil
+			return unsupported(fmt.Sprintf("allOf outer type %q conflicts with branch %d schema kind %q", outerType, branches[0].index, out.Kind)), nil
 		}
 		if reason := applyAllOfScalarConstraints(out, s, branches[0].index); reason != "" {
-			return unsupportedSchema(reason), nil
+			return unsupported(reason), nil
 		}
 		if len(s.Required) > 0 {
 			if out.Kind != model.SchemaKindObject {
-				return unsupportedSchema(fmt.Sprintf("allOf declares outer required fields for branch %d schema kind %q", branches[0].index, out.Kind)), nil
+				return unsupported(fmt.Sprintf("allOf declares outer required fields for branch %d schema kind %q", branches[0].index, out.Kind)), nil
 			}
 			out.Required = unionRequired(out.Required, s.Required)
 		}
@@ -1094,10 +1104,10 @@ func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaC
 	}
 
 	if outerType != "" && outerType != "object" {
-		return unsupportedSchema(fmt.Sprintf("allOf object composition conflicts with outer type %q", outerType)), nil
+		return unsupported(fmt.Sprintf("allOf object composition conflicts with outer type %q", outerType)), nil
 	}
 	if s.Format != "" || len(s.Enum) > 0 {
-		return unsupportedSchema("allOf object composition declares scalar outer constraints"), nil
+		return unsupported("allOf object composition declares scalar outer constraints"), nil
 	}
 
 	out := &model.Schema{
@@ -1115,15 +1125,16 @@ func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaC
 	}
 	for _, branch := range branches {
 		if branch.schema.Kind != model.SchemaKindObject {
-			return unsupportedSchema(fmt.Sprintf(
+			return unsupported(fmt.Sprintf(
 				"allOf branch %d has schema kind %q; multi-branch composition supports objects only",
 				branch.index, branch.schema.Kind,
 			)), nil
 		}
 		out.Sensitive = out.Sensitive || branch.schema.Sensitive
+		out.WriteOnlySecret = out.WriteOnlySecret || branch.schema.WriteOnlySecret
 		for name, child := range branch.schema.Properties {
 			if previous, exists := propertyBranch[name]; exists {
-				return unsupportedSchema(fmt.Sprintf(
+				return unsupported(fmt.Sprintf(
 					"allOf property %q is declared by branches %d and %d",
 					name, previous, branch.index,
 				)), nil

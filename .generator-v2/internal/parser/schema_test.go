@@ -3,6 +3,7 @@ package parser
 import (
 	"errors"
 	"path/filepath"
+	"reflect"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -28,6 +29,19 @@ func opByID(spec *model.Spec, operationId string) *model.Operation {
 	}
 	Fail("operation " + operationId + " not found in spec")
 	return nil
+}
+
+// schemaBoolField lets this test-first task describe metadata that T154 has
+// not added to model.Schema yet. Keeping the assertion reflective means the
+// suite compiles in the intended red state and fails specifically by naming
+// the missing field, rather than failing package compilation before Ginkgo can
+// report which contract is absent.
+func schemaBoolField(schema *model.Schema, name string) bool {
+	GinkgoHelper()
+	value := reflect.ValueOf(schema).Elem().FieldByName(name)
+	Expect(value.IsValid()).To(BeTrue(), "model.Schema is missing %s metadata", name)
+	Expect(value.Kind()).To(Equal(reflect.Bool), "model.Schema.%s must be boolean", name)
+	return value.Bool()
 }
 
 // -------------------------------------------------------------------
@@ -203,6 +217,24 @@ var _ = Describe("NormalizeSchemas field carrying", func() {
 		Expect(properties["explicit_false"].Sensitive).To(BeFalse())
 		Expect(properties["plain"].Sensitive).To(BeFalse())
 	})
+
+	DescribeTable("retains OpenAPI writeOnly independently from display-sensitivity selectors",
+		func(property string, wantWriteOnly, wantSensitive bool) {
+			schema := opByID(spec, "CreateSensitive").RequestSchema.Properties[property]
+			Expect(schema).NotTo(BeNil())
+			Expect(schemaBoolField(schema, "WriteOnlySecret")).To(Equal(wantWriteOnly))
+			Expect(schema.Sensitive).To(Equal(wantSensitive))
+		},
+		Entry("writeOnly:true selects write-only handling", "write_only", true, true),
+		Entry("x-secret:true affects redaction only", "x_secret", false, true),
+		Entry("tracking sensitive:true affects redaction only", "tracking_sensitive", false, true),
+		Entry("tracking sensitive:false cannot disable writeOnly", "explicit_false", true, false),
+		Entry("tracking sensitive:false still overrides x-secret sensitivity", "x_secret_explicit_false", false, false),
+		Entry("x-secret:false selects neither behavior", "x_secret_false", false, false),
+		Entry("malformed x-secret selects neither behavior", "x_secret_malformed", false, false),
+		Entry("writeOnly:false selects neither behavior", "write_only_false", false, false),
+		Entry("an unmarked field selects neither behavior", "plain", false, false),
+	)
 
 	It("marks the unannotated Elastic Cloud password sensitive from its OpenAPI secret markers", func() {
 		elastic, err := LoadSpec(filepath.Join(

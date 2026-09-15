@@ -351,6 +351,20 @@ type Schema struct {
 	// not object/array, not readOnly).
 	HasDefault bool
 	ReadOnly   bool
+	// WriteOnlySecret retains the OpenAPI writeOnly marker independently from
+	// Terraform display sensitivity. On a normalized schema it is the raw
+	// OpenAPI annotation; on a merged resource schema it is selected only from
+	// the Create or Update request role.
+	WriteOnlySecret bool
+	// SecretRequiredOnCreate and SecretRequiredOnUpdate record the containing
+	// request object's requiredness independently. They are meaningful only
+	// when WriteOnlySecret is true and are consumed by generated request routing.
+	SecretRequiredOnCreate bool
+	SecretRequiredOnUpdate bool
+	// WriteOnlyDescription retains the request-side description for generated
+	// write-only configuration. The ordinary Description may independently
+	// prefer the Read response during cosmetic resource merging.
+	WriteOnlyDescription string
 	// Sensitive is true when explicitly annotated sensitive or inferred from an
 	// unoverridden OpenAPI writeOnly / Datadog x-secret marker.
 	Sensitive bool
@@ -531,11 +545,22 @@ type Attribute struct {
 	Optional  bool
 	Computed  bool
 	Sensitive bool
+	// WriteOnlySecret and its role-specific requiredness are copied only while
+	// building a managed-resource tree. Response/data-source trees deliberately
+	// leave them false even if their OpenAPI response schema carries writeOnly.
+	WriteOnlySecret        bool
+	SecretRequiredOnCreate bool
+	SecretRequiredOnUpdate bool
+	WriteOnlyDescription   string
 
 	// InResponse mirrors Schema.Provenance.InResponse, set only for a resource
 	// tree. Required alone cannot answer it: a required write-only field and a
 	// required field that is also read back both come out Required.
 	InResponse bool
+	// PreserveConfiguredPresence marks an optional response-backed container
+	// made configuration-owned because it contains a write-only descendant.
+	// Response mapping must not materialize it when configuration omitted it.
+	PreserveConfiguredPresence bool
 
 	// OpenAPIName is the property name this attribute was built from, before
 	// SnakeCase normalized it for Terraform (e.g. "hostTagsLists" behind the

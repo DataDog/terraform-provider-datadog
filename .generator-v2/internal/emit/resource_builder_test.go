@@ -44,6 +44,11 @@ var _ = Describe("BuildResourceView", func() {
 				TypeExpr:       `datadogV2.IncidentTypeType("incident_types")`,
 				AttributesType: "IncidentTypeAttributes",
 			},
+			NormalizeUnknowns: []UnknownNormalizationView{
+				{Kind: "value", Expr: "state.Description", NullExpr: "types.StringNull()"},
+				{Kind: "value", Expr: "state.LastSeen", NullExpr: "types.StringNull()"},
+				{Kind: "value", Expr: "state.ResolutionPlaybook", NullExpr: "types.StringNull()"},
+			},
 		}))
 		Expect(view.Read).To(Equal(CRUDCallView{
 			Method: "GetIncidentType", GoResponseType: "IncidentTypeResponse",
@@ -451,6 +456,39 @@ var _ = Describe("BuildResourceView", func() {
 		Expect(err).To(HaveOccurred())
 		Expect(err.Error()).To(ContainSubstring("differs from Read's"))
 	})
+
+	It("normalizes computed unknowns recursively without touching configured siblings", func() {
+		attributes := []*model.Attribute{
+			{
+				Path: "response.settings", TfType: "schema.SingleNestedAttribute",
+				Children: []*model.Attribute{
+					{Path: "response.settings.tags", GoType: "types.String", Computed: true},
+					{Path: "response.settings.url", GoType: "types.String", Required: true},
+				},
+			},
+			{
+				Path: "response.items", TfType: "schema.ListNestedAttribute",
+				Children: []*model.Attribute{
+					{Path: "response.items.status", GoType: "types.String", Computed: true},
+				},
+			},
+		}
+
+		Expect(buildUnknownNormalizations(attributes, "state")).To(Equal([]UnknownNormalizationView{
+			{
+				Kind: "object", Expr: "state.Settings",
+				Children: []UnknownNormalizationView{
+					{Kind: "value", Expr: "state.Settings.Tags", NullExpr: "types.StringNull()"},
+				},
+			},
+			{
+				Kind: "list_object", Expr: "state.Items", ItemVar: "itemsItem",
+				Children: []UnknownNormalizationView{
+					{Kind: "value", Expr: "itemsItem.Status", NullExpr: "types.StringNull()"},
+				},
+			},
+		}))
+	})
 })
 
 var _ = Describe("RenderResource", func() {
@@ -467,10 +505,20 @@ var _ = Describe("RenderResource", func() {
 		Expect(err).NotTo(HaveOccurred(), "rendered output must already be gofmt-canonical Go:\n%s", src)
 
 		out := string(src)
-		Expect(out).To(ContainSubstring(`func (r *datadogIncidentTypeResource) Create(`))
-		By("decoding request fields from configuration so omitted computed nested attributes remain null instead of becoming unknown native Go values")
-		Expect(out).To(ContainSubstring("response.Diagnostics.Append(request.Config.Get(ctx, &state)...)"))
-		Expect(out).NotTo(ContainSubstring("response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)"))
+		createStart := strings.Index(out, `func (r *datadogIncidentTypeResource) Create(`)
+		readStart := strings.Index(out, `func (r *datadogIncidentTypeResource) Read(`)
+		Expect(createStart).To(BeNumerically(">=", 0))
+		Expect(readStart).To(BeNumerically(">", createStart))
+		createMethod := out[createStart:readStart]
+		By("decoding ordinary request fields from an unknown-capable plan value while write-only values are retrieved separately from configuration")
+		Expect(createMethod).To(ContainSubstring("var plan types.Object"))
+		Expect(createMethod).To(ContainSubstring("response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)"))
+		Expect(createMethod).To(ContainSubstring("response.Diagnostics.Append(plan.As(ctx, &state, basetypes.ObjectAsOptions{UnhandledUnknownAsEmpty: true})...)"))
+		Expect(createMethod).NotTo(ContainSubstring("response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)"))
+		Expect(createMethod).NotTo(ContainSubstring("response.Diagnostics.Append(request.Config.Get(ctx, &state)...)"))
+		Expect(createMethod).To(ContainSubstring(`if state.Description.IsUnknown() {
+		state.Description = types.StringNull()
+	}`))
 		By("Create builds the envelope innermost-first, so the data component's own constructor sets the JSON:API type discriminator (T138)")
 		for _, want := range []string{
 			"bodyAttributes := datadogV2.NewIncidentTypeAttributesWithDefaults()",
@@ -492,8 +540,6 @@ var _ = Describe("RenderResource", func() {
 		Expect(out).To(ContainSubstring(`response.State.RemoveResource(ctx)`))
 
 		Expect(out).To(ContainSubstring(`func (r *datadogIncidentTypeResource) Update(`))
-		By("recovering the computed resource ID from prior state after decoding the desired configuration")
-		Expect(out).To(ContainSubstring(`response.Diagnostics.Append(request.State.GetAttribute(ctx, path.Root("id"), &state.ID)...)`))
 		for _, want := range []string{
 			"bodyAttributes := datadogV2.NewIncidentTypeUpdateAttributesWithDefaults()",
 			"bodyData := datadogV2.NewIncidentTypeUpdateDataWithDefaults()",
@@ -517,6 +563,65 @@ var _ = Describe("RenderResource", func() {
 
 		Expect(out).To(ContainSubstring(`resource.ImportStatePassthroughID(ctx, path.Root("id"), request, response)`))
 		Expect(out).To(ContainSubstring(`"id": utils.ResourceIDAttribute(),`))
+	})
+
+	It("seeds Update from the planned model and reserves configuration reads for write-only handlers", func() {
+		art, err := model.BuildArtifact(incidentTypeResourceOperation(true))
+		Expect(err).NotTo(HaveOccurred())
+		view, err := BuildResourceView(art)
+		Expect(err).NotTo(HaveOccurred())
+
+		out := string(mustRenderResource(view))
+		updateStart := strings.Index(out, `func (r *datadogIncidentTypeResource) Update(`)
+		deleteStart := strings.Index(out, `func (r *datadogIncidentTypeResource) Delete(`)
+		Expect(updateStart).To(BeNumerically(">=", 0))
+		Expect(deleteStart).To(BeNumerically(">", updateStart))
+		updateMethod := out[updateStart:deleteStart]
+
+		Expect(updateMethod).To(ContainSubstring(`response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)`))
+		Expect(updateMethod).To(ContainSubstring(
+			`response.Diagnostics.Append(plan.As(ctx, &state, basetypes.ObjectAsOptions{UnhandledUnknownAsEmpty: true})...)`))
+		Expect(updateMethod).NotTo(ContainSubstring(`response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)`))
+		Expect(updateMethod).NotTo(ContainSubstring(`request.Config.Get(ctx, &state)`),
+			"only dedicated write-only handlers may retrieve values through request.Config")
+		Expect(updateMethod).NotTo(ContainSubstring(`request.State.GetAttribute(ctx, path.Root("id"), &state.ID)`),
+			"the planned model already carries the resource ID and prior Optional+Computed values")
+	})
+
+	It("preserves a planned Optional+Computed value when a sparse Update response omits it", func() {
+		art, err := model.BuildArtifact(incidentTypeResourceOperation(true))
+		Expect(err).NotTo(HaveOccurred())
+		view, err := BuildResourceView(art)
+		Expect(err).NotTo(HaveOccurred())
+
+		out := string(mustRenderResource(view))
+		By("carrying the prior description into the plan instead of making it unknown")
+		descriptionSchema := out[strings.Index(out, `"description": schema.StringAttribute{`):]
+		descriptionSchema = descriptionSchema[:strings.Index(descriptionSchema, "\n\t\t\t},")]
+		Expect(descriptionSchema).To(MatchRegexp(`Optional:\s+true`))
+		Expect(descriptionSchema).To(MatchRegexp(`Computed:\s+true`))
+		Expect(descriptionSchema).To(ContainSubstring("stringplanmodifier.UseStateForUnknown()"))
+
+		By("seeding Update with that planned value")
+		updateStart := strings.Index(out, `func (r *datadogIncidentTypeResource) Update(`)
+		deleteStart := strings.Index(out, `func (r *datadogIncidentTypeResource) Delete(`)
+		Expect(updateStart).To(BeNumerically(">=", 0))
+		Expect(deleteStart).To(BeNumerically(">", updateStart))
+		Expect(out[updateStart:deleteStart]).To(ContainSubstring(
+			`response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)`))
+		Expect(out[updateStart:deleteStart]).To(ContainSubstring(
+			`response.Diagnostics.Append(plan.As(ctx, &state, basetypes.ObjectAsOptions{UnhandledUnknownAsEmpty: true})...)`))
+
+		By("overlaying description only when the API actually returned it")
+		updateStateStart := strings.Index(out, `func (r *datadogIncidentTypeResource) updateState(`)
+		Expect(updateStateStart).To(BeNumerically(">=", 0))
+		updateState := out[updateStateStart:]
+		guardedAssignment := `if description, ok := attributes.GetDescriptionOk(); ok && description != nil {
+		state.Description = types.StringValue(*description)
+	}`
+		Expect(updateState).To(ContainSubstring(guardedAssignment))
+		Expect(strings.Count(updateState, `state.Description =`)).To(Equal(1),
+			"an unguarded fallback assignment would erase the planned value on a sparse response")
 	})
 
 	It("stubs Update with an error rather than a request builder when the group resolves no Update role", func() {

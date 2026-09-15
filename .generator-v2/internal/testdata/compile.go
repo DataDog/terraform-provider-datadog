@@ -93,6 +93,53 @@ func Compile(files []StagedFile) (CompileResult, error) {
 	return CompileResult{Diagnostics: out}, nil
 }
 
+// RunTests compiles staged files as members of their provider packages and
+// runs only the tests selected by runPattern. It uses the same hermetic Go
+// overlay and pinned provider module as Compile, while allowing a full-pipeline
+// regression to execute framework validation that a compile-only gate cannot
+// observe. Test files must be included in files like any other staged source.
+func RunTests(files []StagedFile, runPattern string) (CompileResult, error) {
+	if len(files) == 0 {
+		return CompileResult{}, fmt.Errorf("test gate: no files staged")
+	}
+	if runPattern == "" {
+		return CompileResult{}, fmt.Errorf("test gate: no test pattern provided")
+	}
+
+	providerRoot, err := providermod.Root("")
+	if err != nil {
+		return CompileResult{}, fmt.Errorf("test gate: %w", err)
+	}
+
+	packages, err := stagedPackages(files)
+	if err != nil {
+		return CompileResult{}, fmt.Errorf("test gate: %w", err)
+	}
+	if err := baseline(providerRoot, packages); err != nil {
+		return CompileResult{}, fmt.Errorf("test gate: %w", err)
+	}
+
+	dir, err := os.MkdirTemp("", "tfgen-test-overlay-")
+	if err != nil {
+		return CompileResult{}, fmt.Errorf("test gate: create overlay dir: %w", err)
+	}
+	defer os.RemoveAll(dir)
+
+	overlay, err := writeOverlay(dir, providerRoot, files)
+	if err != nil {
+		return CompileResult{}, fmt.Errorf("test gate: %w", err)
+	}
+
+	out, err := runTests(providerRoot, packages, overlay, runPattern)
+	if err == nil {
+		return CompileResult{}, nil
+	}
+	if out == "" {
+		return CompileResult{}, fmt.Errorf("test gate: go test in %s: %w", providerRoot, err)
+	}
+	return CompileResult{Diagnostics: out}, nil
+}
+
 // stagedPackages reduces the staged files to the sorted set of package patterns
 // to build, one per directory they land in.
 func stagedPackages(files []StagedFile) ([]string, error) {
@@ -177,6 +224,16 @@ func writeOverlay(dir, providerRoot string, files []StagedFile) (string, error) 
 // cache fails loudly here instead of being fetched from the network mid-test.
 func build(providerRoot string, packages []string, extraArgs ...string) (string, error) {
 	args := append([]string{"build"}, extraArgs...)
+	args = append(args, packages...)
+	cmd := exec.Command("go", args...)
+	cmd.Dir = providerRoot
+	cmd.Env = append(os.Environ(), "GOPROXY=off")
+	out, err := cmd.CombinedOutput()
+	return strings.TrimSpace(string(out)), err
+}
+
+func runTests(providerRoot string, packages []string, overlay, runPattern string) (string, error) {
+	args := []string{"test", "-overlay", overlay, "-run", runPattern, "-count=1"}
 	args = append(args, packages...)
 	cmd := exec.Command("go", args...)
 	cmd.Dir = providerRoot
