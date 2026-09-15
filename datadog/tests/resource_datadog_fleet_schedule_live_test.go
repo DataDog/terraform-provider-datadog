@@ -22,28 +22,29 @@ func TestAccDatadogFleetSchedule_LiveOrg2Lifecycle(t *testing.T) {
 	if os.Getenv("RECORD") != "none" {
 		t.Skip("live Fleet Automation lifecycle requires RECORD=none and org2 staging credentials")
 	}
-	testAccDatadogFleetScheduleLifecycle(t, true)
+	testAccDatadogFleetScheduleLifecycle(t)
 }
 
 func TestAccDatadogFleetSchedule_Lifecycle(t *testing.T) {
 	if os.Getenv("RECORD") == "none" {
 		t.Skip("cassette-backed Fleet Automation lifecycle is not run in live-only mode")
 	}
-	testAccDatadogFleetScheduleLifecycle(t, false)
+	testAccDatadogFleetScheduleLifecycle(t)
 }
 
-func testAccDatadogFleetScheduleLifecycle(t *testing.T, verifyLiveDeletion bool) {
+func testAccDatadogFleetScheduleLifecycle(t *testing.T) {
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	name := uniqueEntityName(ctx, t)
 	updatedName := name + "-updated"
 	query := fmt.Sprintf("env:terraform-fleet-test host:nonexistent-%d", clockFromContext(ctx).Now().Unix())
 	updatedQuery := query + " service:provider-test"
 	var capturedID string
+	cleanupNeeded := true
 
 	// Keep an API-level cleanup in addition to Terraform's normal destroy so a
 	// failed intermediate assertion cannot leak a schedule in org2 staging.
 	t.Cleanup(func() {
-		if capturedID == "" || providers.frameworkProvider.DatadogApiInstances == nil {
+		if !cleanupNeeded || capturedID == "" || providers.frameworkProvider.DatadogApiInstances == nil {
 			return
 		}
 		api := providers.frameworkProvider.DatadogApiInstances.GetFleetAutomationApiV2()
@@ -56,6 +57,7 @@ func testAccDatadogFleetScheduleLifecycle(t *testing.T, verifyLiveDeletion bool)
 	testCase := resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckFleetScheduleDestroyed(providers.frameworkProvider, &capturedID),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccFleetScheduleConfig(name, query, []string{"Tue"}, 60, "03:00", "UTC", 1),
@@ -88,14 +90,10 @@ func testAccDatadogFleetScheduleLifecycle(t *testing.T, verifyLiveDeletion bool)
 			},
 		},
 	}
-	// Cassette replay must not depend on Terraform's internal refresh count:
-	// older Terraform versions can consume an earlier identical GET response
-	// before this callback reaches the cassette's final 404. The live test keeps
-	// the strict API-level deletion check, while unit tests cover 404 handling.
-	if verifyLiveDeletion {
-		testCase.CheckDestroy = testAccCheckFleetScheduleDestroyed(providers.frameworkProvider, &capturedID)
-	}
 	resource.Test(t, testCase)
+	if !t.Failed() {
+		cleanupNeeded = false
+	}
 }
 
 func testAccFleetScheduleConfig(name, query string, days []string, duration int, start, timezone string, version int) string {
@@ -184,6 +182,19 @@ func testAccCheckFleetScheduleDestroyed(provider *fwprovider.FrameworkProvider, 
 			return nil
 		}
 		api := provider.DatadogApiInstances.GetFleetAutomationApiV2()
+		// A second DELETE is a deterministic cassette assertion: it must return
+		// 404 if Terraform's destroy already deleted the schedule. Unlike GET,
+		// DELETE has a fixed call count across supported Terraform versions.
+		deleteResponse, deleteErr := api.DeleteFleetSchedule(provider.Auth, *capturedID)
+		if deleteErr == nil || deleteResponse == nil || deleteResponse.StatusCode != http.StatusNotFound {
+			return fmt.Errorf("schedule %s still existed after Terraform destroy", *capturedID)
+		}
+		if isRecording() || isReplaying() {
+			return nil
+		}
+
+		// Live coverage additionally verifies the stable read APIs converge to
+		// GET 404 and that the schedule disappears from list results.
 		_, httpResponse, err := api.GetFleetScheduleV2(provider.Auth, *capturedID)
 		if err == nil || httpResponse == nil || httpResponse.StatusCode != http.StatusNotFound {
 			return fmt.Errorf("schedule %s still exists after deletion", *capturedID)
