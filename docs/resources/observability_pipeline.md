@@ -126,6 +126,7 @@ Optional:
 - `new_relic` (Block List) The `new_relic` destination sends logs to the New Relic platform. (see [below for nested schema](#nestedblock--config--destination--new_relic))
 - `opensearch` (Block List) The `opensearch` destination writes logs to an OpenSearch cluster. (see [below for nested schema](#nestedblock--config--destination--opensearch))
 - `opentelemetry` (Block List) The `opentelemetry` destination forwards metrics using the OpenTelemetry Protocol (OTLP) over HTTP. (see [below for nested schema](#nestedblock--config--destination--opentelemetry))
+- `prometheus_remote_write` (Block List) The `prometheus_remote_write` destination sends metrics to a Prometheus Remote Write compatible endpoint. (see [below for nested schema](#nestedblock--config--destination--prometheus_remote_write))
 - `rsyslog` (Block List) The `rsyslog` destination forwards logs to an external `rsyslog` server over TCP or UDP using the syslog protocol. (see [below for nested schema](#nestedblock--config--destination--rsyslog))
 - `sentinel_one` (Block List) The `sentinel_one` destination sends logs to SentinelOne. (see [below for nested schema](#nestedblock--config--destination--sentinel_one))
 - `socket` (Block List) The `socket` destination sends logs over TCP or UDP to a remote server. (see [below for nested schema](#nestedblock--config--destination--socket))
@@ -1453,6 +1454,65 @@ Optional:
 
 
 
+<a id="nestedblock--config--destination--prometheus_remote_write"></a>
+### Nested Schema for `config.destination.prometheus_remote_write`
+
+Optional:
+
+- `auth_strategy` (String) The authentication strategy to use for outgoing Prometheus Remote Write requests. Valid values are `none`, `basic`, `bearer`.
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--prometheus_remote_write--buffer))
+- `default_namespace` (String) The default namespace to prefix onto metric names that don't already have one.
+- `endpoint_url_key` (String) Name of the environment variable or secret that holds the Prometheus Remote Write endpoint URL.
+- `password_key` (String) Name of the environment variable or secret that holds the password. Used when `auth_strategy` is `basic`.
+- `tenant_id` (String) The tenant ID to include with outgoing requests. Used by multi-tenant Prometheus Remote Write receivers.
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--prometheus_remote_write--tls))
+- `token_key` (String) Name of the environment variable or secret that holds the bearer token. Used when `auth_strategy` is `bearer`.
+- `username_key` (String) Name of the environment variable or secret that holds the username. Used when `auth_strategy` is `basic`.
+
+<a id="nestedblock--config--destination--prometheus_remote_write--buffer"></a>
+### Nested Schema for `config.destination.prometheus_remote_write.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--prometheus_remote_write--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--prometheus_remote_write--buffer--memory))
+
+<a id="nestedblock--config--destination--prometheus_remote_write--buffer--disk"></a>
+### Nested Schema for `config.destination.prometheus_remote_write.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--prometheus_remote_write--buffer--memory"></a>
+### Nested Schema for `config.destination.prometheus_remote_write.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+
+<a id="nestedblock--config--destination--prometheus_remote_write--tls"></a>
+### Nested Schema for `config.destination.prometheus_remote_write.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `server_name` (String) Server name to use for Server Name Indication (SNI) and to verify against the certificate presented by the remote host. Use this when the address you connect to doesn't match the certificate's Common Name or Subject Alternative Name.
+
+
+
 <a id="nestedblock--config--destination--rsyslog"></a>
 ### Nested Schema for `config.destination.rsyslog`
 
@@ -2708,6 +2768,7 @@ Optional:
 - `kafka` (Block List) The `kafka` source ingests data from Apache Kafka topics. (see [below for nested schema](#nestedblock--config--source--kafka))
 - `logstash` (Block List) The `logstash` source ingests logs from a Logstash forwarder. (see [below for nested schema](#nestedblock--config--source--logstash))
 - `opentelemetry` (Block List) The `opentelemetry` source receives telemetry data using the OpenTelemetry Protocol (OTLP) over gRPC and HTTP. (see [below for nested schema](#nestedblock--config--source--opentelemetry))
+- `prometheus_remote_write` (Block List) The `prometheus_remote_write` source ingests metrics pushed over the Prometheus Remote Write protocol. (see [below for nested schema](#nestedblock--config--source--prometheus_remote_write))
 - `rsyslog` (Block List) The `rsyslog` source listens for logs over TCP or UDP from an `rsyslog` server using the syslog protocol. (see [below for nested schema](#nestedblock--config--source--rsyslog))
 - `socket` (Block List) The `socket` source ingests logs over TCP or UDP. (see [below for nested schema](#nestedblock--config--source--socket))
 - `splunk_hec` (Block List) The `splunk_hec` source implements the Splunk HTTP Event Collector (HEC) API. (see [below for nested schema](#nestedblock--config--source--splunk_hec))
@@ -3094,6 +3155,60 @@ Optional:
 - `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 - `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
+
+
+
+<a id="nestedblock--config--source--prometheus_remote_write"></a>
+### Nested Schema for `config.source.prometheus_remote_write`
+
+Required:
+
+- `auth_strategy` (String) HTTP authentication method. Valid values are `none`, `plain`.
+- `path` (String) The HTTP path on which the source listens for incoming Prometheus Remote Write requests.
+
+Optional:
+
+- `address_key` (String) Name of the environment variable or secret that holds the listen address for the Prometheus Remote Write endpoint.
+- `password_key` (String) Name of the environment variable or secret that holds the password. Used when `auth_strategy` is `plain`.
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--prometheus_remote_write--tls))
+- `username_key` (String) Name of the environment variable or secret that holds the username. Used when `auth_strategy` is `plain`.
+- `valid_token` (Block List) A token accepted for authenticating incoming Prometheus Remote Write requests. When set, the source rejects any request whose token does not match an enabled entry in this list. (see [below for nested schema](#nestedblock--config--source--prometheus_remote_write--valid_token))
+
+<a id="nestedblock--config--source--prometheus_remote_write--tls"></a>
+### Nested Schema for `config.source.prometheus_remote_write.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
+
+
+<a id="nestedblock--config--source--prometheus_remote_write--valid_token"></a>
+### Nested Schema for `config.source.prometheus_remote_write.valid_token`
+
+Required:
+
+- `token_key` (String) Name of the environment variable or secret that holds the expected token value.
+
+Optional:
+
+- `enabled` (Boolean) Whether this token is currently accepted. Defaults to `true`.
+- `path_to_token` (Block List) Specifies where the worker extracts the token from the incoming HTTP request. Set either `location` for a built-in source or `header` to read it from a request header. (see [below for nested schema](#nestedblock--config--source--prometheus_remote_write--valid_token--path_to_token))
+
+<a id="nestedblock--config--source--prometheus_remote_write--valid_token--path_to_token"></a>
+### Nested Schema for `config.source.prometheus_remote_write.valid_token.path_to_token`
+
+Optional:
+
+- `header` (String) The name of the HTTP header that carries the token. Exactly one of `location` or `header` must be set.
+- `location` (String) Built-in token location on the incoming HTTP request. One of `path`, `address`. Exactly one of `location` or `header` must be set. Valid values are `path`, `address`.
+
 
 
 
