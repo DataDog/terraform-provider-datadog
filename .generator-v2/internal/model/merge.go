@@ -114,7 +114,40 @@ func MergeNormalizedSchemas(variant, common *Schema) *Schema {
 	}
 	variant.Sensitive = variant.Sensitive || common.Sensitive
 	variant.WriteOnlySecret = variant.WriteOnlySecret || common.WriteOnlySecret
+	variant.HasDefault = variant.HasDefault || common.HasDefault
+	variant.Default = variant.Default.Union(common.Default)
 	return variant
+}
+
+// Union folds another declaration for the same field into d, as each composed
+// schema — an allOf branch, or a oneOf alternative and its common schema —
+// contributes one. The first usable value wins and an equal repeat is
+// harmless; two different values cancel out and leave a problem behind. The
+// first problem seen survives, so the earliest declaration is reported.
+func (d SchemaDefault) Union(other SchemaDefault) SchemaDefault {
+	out := d
+	if out.Problem == "" {
+		out.Problem = other.Problem
+	}
+	switch {
+	case other.Value == nil:
+	case out.Value == nil:
+		out.Value = other.Value
+	case !out.Value.Equal(other.Value):
+		out.Value = nil
+		out.Problem = "conflicting defaults are declared by composed schemas"
+	}
+	return cloneSchemaDefault(out)
+}
+
+// cloneSchemaDefault detaches d's value so the copy can be mutated
+// independently, matching CloneSchema's deep-copy contract.
+func cloneSchemaDefault(d SchemaDefault) SchemaDefault {
+	if d.Value != nil {
+		value := *d.Value
+		d.Value = &value
+	}
+	return d
 }
 
 // OneOfValueWrapped reports whether a oneOf alternative's Terraform variant
@@ -139,6 +172,7 @@ func CloneSchema(s *Schema) *Schema {
 		return nil
 	}
 	out := *s
+	out.Default = cloneSchemaDefault(s.Default)
 	out.Enum = append([]string(nil), s.Enum...)
 	out.Required = append([]string(nil), s.Required...)
 	out.Items = CloneSchema(s.Items)
@@ -218,6 +252,25 @@ func (e *SchemaMergeError) Error() string {
 type WriteOnlyLifecycleError struct {
 	Path        string
 	MissingRole string
+}
+
+// SchemaDefaultError reports an unusable request default at one correlated
+// resource field. Role names the request the problem was found in, and is
+// empty when Reason already describes both sides. Secret defaults are outside
+// the feature and never enter validation, so no value here is sensitive.
+type SchemaDefaultError struct {
+	Artifact string
+	Path     string
+	Role     string
+	Reason   string
+}
+
+func (e *SchemaDefaultError) Error() string {
+	prefix := fmt.Sprintf("model: resource %q has an invalid default at %q", e.Artifact, e.Path)
+	if e.Role != "" {
+		prefix += " in the " + e.Role + " request"
+	}
+	return prefix + ": " + e.Reason
 }
 
 func (e *WriteOnlyLifecycleError) Error() string {
@@ -325,6 +378,9 @@ func (m *resourceMerger) mergeNode(create, update, read *Schema, createRequired,
 	if update != nil && update.WriteOnlySecret && create == nil {
 		return nil, &WriteOnlyLifecycleError{Path: path, MissingRole: "Create"}
 	}
+	if err := m.validateRequestDefault(create, update, path); err != nil {
+		return nil, err
+	}
 	kind, err := kindConflict(create, update, read, path)
 	if err != nil {
 		return nil, err
@@ -344,6 +400,37 @@ func (m *resourceMerger) mergeNode(create, update, read *Schema, createRequired,
 		// is the preferred side's clone.
 		return m.mergeVerbatim(create, update, read, createRequired, updateRequired, path)
 	}
+}
+
+// validateRequestDefault applies the lifecycle policy before the Create value
+// is copied onto the merged schema. Create is authoritative. An Update-only
+// default is ignored; when Create has a usable value, Update may omit it or
+// repeat it, but may not supply an invalid or different value.
+func (m *resourceMerger) validateRequestDefault(create, update *Schema, path string) error {
+	if create == nil || create.Sensitive || create.WriteOnlySecret ||
+		update != nil && (update.Sensitive || update.WriteOnlySecret) {
+		return nil
+	}
+	fail := func(role, reason string) error {
+		return &SchemaDefaultError{Artifact: m.artifact, Path: path, Role: role, Reason: reason}
+	}
+	if create.Default.Problem != "" {
+		return fail("Create", create.Default.Problem)
+	}
+	if create.Default.Value == nil || update == nil {
+		return nil
+	}
+	if update.Default.Problem != "" {
+		return fail("Update", update.Default.Problem)
+	}
+	if update.Default.Value != nil && !create.Default.Value.Equal(update.Default.Value) {
+		return fail("", fmt.Sprintf(
+			"Create default %s conflicts with Update default %s",
+			create.Default.Value.GoExpr(),
+			update.Default.Value.GoExpr(),
+		))
+	}
+	return nil
 }
 
 func (m *resourceMerger) mergeObject(create, update, read *Schema, createRequired, updateRequired bool, path string) (*Schema, error) {
@@ -405,6 +492,10 @@ func (m *resourceMerger) stampCommon(out, create, update, read *Schema, createRe
 	out.WriteOnlySecret, out.SecretRequiredOnCreate, out.SecretRequiredOnUpdate, out.WriteOnlyDescription =
 		m.writeOnlyMetadata(create, update, read, createRequired, updateRequired, path)
 	out.Provenance = stampProvenance(create, update, read, createRequired, out.WriteOnlySecret)
+	if create != nil {
+		out.HasDefault = create.HasDefault
+		out.Default = cloneSchemaDefault(create.Default)
+	}
 	return out
 }
 

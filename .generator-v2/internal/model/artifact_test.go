@@ -46,6 +46,22 @@ var _ = Describe("BuildArtifact", func() {
 		Expect(err).To(HaveOccurred())
 	})
 
+	It("fails only the artifact carrying an invalid Create default", func() {
+		invalid := incidentTypeResourceOp()
+		invalidField := problemDefault("default has YAML type integer, want string")
+		invalid.RequestSchema = objSchema(map[string]*Schema{"name": invalidField})
+
+		_, err := BuildArtifact(invalid)
+		Expect(err).To(HaveOccurred())
+		Expect(err.Error()).To(ContainSubstring(`resource "incident_type"`))
+		Expect(err.Error()).To(ContainSubstring(`"name"`))
+		Expect(err.Error()).To(ContainSubstring("Create request"))
+
+		unrelated, err := BuildArtifact(incidentTypeResourceOp())
+		Expect(err).NotTo(HaveOccurred())
+		Expect(unrelated.Name).To(Equal("incident_type"))
+	})
+
 	It("maps scalar SDK arguments to required Terraform inputs and aliases the terminal path parameter to id", func() {
 		op := incidentTypeOp()
 		op.Path = "/api/v2/accounts/{account_id}/incident-types/{incident_type_id}"

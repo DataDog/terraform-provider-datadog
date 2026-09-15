@@ -274,6 +274,10 @@ type AttrView struct {
 	ElementType string
 	// Description is the attribute description (repo convention: always set).
 	Description string
+	// Default is a complete Terraform Framework static-default expression, for
+	// example stringdefault.StaticString("basic"). Empty for non-defaulted
+	// attributes and for every data-source view.
+	Default string
 
 	Required  bool
 	Optional  bool
@@ -564,6 +568,7 @@ type ResourceView struct {
 	UsesObjectValidators bool
 	UsesPlanModifiers    bool
 	PlanModifierPackages []string
+	DefaultPackages      []string
 	// UsesUUID and UsesStrconv add the google/uuid and strconv imports for a
 	// path argument that must be recovered by parsing (see SDKArgumentView).
 	// UsesUUID is also true when a request field needs a uuid.Parse (see
