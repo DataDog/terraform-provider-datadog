@@ -188,6 +188,9 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 		Description: s.Description,
 	}
 	b.applyWriteOnlyMetadata(attr, s)
+	if b.kind == resourceTree && s.Default.Value != nil && !s.Sensitive && !s.WriteOnlySecret {
+		attr.Default = scalarDefaultLiteral(s.Default.Value)
+	}
 	if err := b.applyPresence(attr, s, required); err != nil {
 		return nil, err
 	}
@@ -263,6 +266,24 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 	}
 
 	return attr, nil
+}
+
+func scalarDefaultLiteral(value *ScalarDefault) *Literal {
+	if value == nil {
+		return nil
+	}
+	switch value.Kind {
+	case ScalarDefaultString:
+		return &Literal{GoExpr: strconv.Quote(value.StringValue)}
+	case ScalarDefaultBool:
+		return &Literal{GoExpr: strconv.FormatBool(value.BoolValue)}
+	case ScalarDefaultInt64:
+		return &Literal{GoExpr: strconv.FormatInt(value.Int64Value, 10)}
+	case ScalarDefaultFloat64:
+		return &Literal{GoExpr: strconv.FormatFloat(value.Float64Value, 'g', -1, 64)}
+	default:
+		return nil
+	}
 }
 
 // isStringEnum reports whether s is a string constrained to a fixed set of
@@ -546,6 +567,8 @@ func (b *treeBuilder) applyPresence(a *Attribute, s *Schema, required bool) erro
 			return &MissingProvenanceError{Path: a.Path}
 		}
 		switch {
+		case a.Default != nil && p.InRequest:
+			a.Optional, a.Computed = true, true
 		case required && p.InRequest:
 			a.Required = true
 		case p.InRequest && p.InResponse:

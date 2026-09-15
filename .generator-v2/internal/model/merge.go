@@ -114,7 +114,42 @@ func MergeNormalizedSchemas(variant, common *Schema) *Schema {
 	}
 	variant.Sensitive = variant.Sensitive || common.Sensitive
 	variant.WriteOnlySecret = variant.WriteOnlySecret || common.WriteOnlySecret
+	variant.HasDefault = variant.HasDefault || common.HasDefault
+	variant.Default = mergeNormalizedDefaults(variant.Default, common.Default)
 	return variant
+}
+
+func mergeNormalizedDefaults(left, right SchemaDefault) SchemaDefault {
+	out := cloneSchemaDefault(left)
+	out.Declared = left.Declared || right.Declared
+	if out.Problem == "" {
+		out.Problem = right.Problem
+	}
+	if right.Value == nil {
+		return out
+	}
+	if out.Value == nil {
+		out.Value = cloneScalarDefault(right.Value)
+		return out
+	}
+	if !out.Value.Equal(right.Value) {
+		out.Value = nil
+		out.Problem = "conflicting defaults are declared by composed schemas"
+	}
+	return out
+}
+
+func cloneScalarDefault(value *ScalarDefault) *ScalarDefault {
+	if value == nil {
+		return nil
+	}
+	out := *value
+	return &out
+}
+
+func cloneSchemaDefault(value SchemaDefault) SchemaDefault {
+	value.Value = cloneScalarDefault(value.Value)
+	return value
 }
 
 // OneOfValueWrapped reports whether a oneOf alternative's Terraform variant
@@ -139,6 +174,7 @@ func CloneSchema(s *Schema) *Schema {
 		return nil
 	}
 	out := *s
+	out.Default = cloneSchemaDefault(s.Default)
 	out.Enum = append([]string(nil), s.Enum...)
 	out.Required = append([]string(nil), s.Required...)
 	out.Items = CloneSchema(s.Items)
@@ -405,6 +441,10 @@ func (m *resourceMerger) stampCommon(out, create, update, read *Schema, createRe
 	out.WriteOnlySecret, out.SecretRequiredOnCreate, out.SecretRequiredOnUpdate, out.WriteOnlyDescription =
 		m.writeOnlyMetadata(create, update, read, createRequired, updateRequired, path)
 	out.Provenance = stampProvenance(create, update, read, createRequired, out.WriteOnlySecret)
+	if create != nil {
+		out.HasDefault = create.HasDefault
+		out.Default = cloneSchemaDefault(create.Default)
+	}
 	return out
 }
 

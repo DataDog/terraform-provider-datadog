@@ -1162,3 +1162,38 @@ func schemaProperty(schema *model.Schema, name string) *model.Schema {
 	Expect(property).NotTo(BeNil())
 	return property
 }
+
+var _ = Describe("NormalizeSchemas scalar defaults", func() {
+	var properties map[string]*model.Schema
+
+	BeforeEach(func() {
+		spec := loadSpecMust("schema_normalize_defaults.yaml")
+		properties = opByID(spec, "CreateDefaults").RequestSchema.Properties
+	})
+
+	DescribeTable("preserves typed direct defaults, including falsy values",
+		func(property string, want *model.ScalarDefault) {
+			got := properties[property]
+			Expect(got.HasDefault).To(BeTrue())
+			Expect(got.Default.Declared).To(BeTrue())
+			Expect(got.Default.Problem).To(BeEmpty())
+			Expect(got.Default.Value).ToNot(BeNil())
+			Expect(got.Default.Value.Equal(want)).To(BeTrue())
+		},
+		Entry("empty string", "direct_string", model.NewStringDefault("")),
+		Entry("false", "direct_bool", model.NewBoolDefault(false)),
+		Entry("zero integer", "direct_integer", model.NewInt64Default(0)),
+		Entry("zero number", "direct_number", model.NewFloat64Default(0)),
+	)
+
+	DescribeTable("preserves a valid enum default through indirection",
+		func(property string) {
+			got := properties[property]
+			Expect(got.Default.Problem).To(BeEmpty())
+			Expect(got.Default.Value.Equal(model.NewStringDefault("basic"))).To(BeTrue())
+			Expect(got.Enum).To(ConsistOf("basic", "token"))
+		},
+		Entry("reference", "referenced"),
+		Entry("allOf", "composed"),
+	)
+})

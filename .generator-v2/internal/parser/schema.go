@@ -3,6 +3,7 @@ package parser
 import (
 	"errors"
 	"fmt"
+	"math"
 	"slices"
 	"sort"
 	"strconv"
@@ -12,6 +13,7 @@ import (
 	v3 "github.com/pb33f/libopenapi/datamodel/high/v3"
 	"github.com/pb33f/libopenapi/index"
 	"github.com/pb33f/libopenapi/orderedmap"
+	"go.yaml.in/yaml/v4"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
@@ -644,6 +646,7 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 		// reached inline leaves this empty.
 		RefName: ctx.refName,
 	}
+	out.Default = normalizeSchemaDefault(s.Default, out)
 
 	// Kind decides which children to recurse into and where to store them.
 	// Primitive and Unsupported have none, so they have no case and keep only
@@ -710,6 +713,104 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 	}
 
 	return out, nil
+}
+
+// normalizeSchemaDefault decodes one OpenAPI default against the normalized
+// schema's final primitive type. It deliberately returns metadata rather than
+// an error: resource construction later decides whether the declaration is on
+// a configurable Create/Update field, so an invalid response-only default does
+// not prevent unrelated artifacts from loading.
+func normalizeSchemaDefault(node *yaml.Node, schema *model.Schema) model.SchemaDefault {
+	result := model.SchemaDefault{Declared: node != nil}
+	if node == nil || node.ShortTag() == "!!null" {
+		return result
+	}
+	if schema.Kind != model.SchemaKindPrimitive {
+		return result
+	}
+	if node.Kind != yaml.ScalarNode {
+		result.Problem = fmt.Sprintf("default for OpenAPI type %q must be a scalar", schema.Type)
+		return result
+	}
+
+	tag := node.ShortTag()
+	decodeProblem := func(err error) model.SchemaDefault {
+		result.Problem = fmt.Sprintf("default %q cannot be decoded as OpenAPI type %q: %v", node.Value, schema.Type, err)
+		return result
+	}
+	switch schema.Type {
+	case "string":
+		if tag != "!!str" {
+			result.Problem = fmt.Sprintf("default %q has YAML type %s, want string", node.Value, tag)
+			return result
+		}
+		if len(schema.Enum) > 0 && !slices.Contains(schema.Enum, node.Value) {
+			result.Problem = fmt.Sprintf("default %q is not one of the allowed values %q", node.Value, schema.Enum)
+			return result
+		}
+		result.Value = model.NewStringDefault(node.Value)
+	case "boolean":
+		if tag != "!!bool" {
+			result.Problem = fmt.Sprintf("default %q has YAML type %s, want boolean", node.Value, tag)
+			return result
+		}
+		var value bool
+		if err := node.Decode(&value); err != nil {
+			return decodeProblem(err)
+		}
+		result.Value = model.NewBoolDefault(value)
+	case "integer":
+		if tag != "!!int" {
+			result.Problem = fmt.Sprintf("default %q has YAML type %s, want integer", node.Value, tag)
+			return result
+		}
+		var value int64
+		if err := node.Decode(&value); err != nil {
+			return decodeProblem(err)
+		}
+		result.Value = model.NewInt64Default(value)
+	case "number":
+		if tag != "!!int" && tag != "!!float" {
+			result.Problem = fmt.Sprintf("default %q has YAML type %s, want number", node.Value, tag)
+			return result
+		}
+		var value float64
+		if err := node.Decode(&value); err != nil {
+			return decodeProblem(err)
+		}
+		if math.IsNaN(value) || math.IsInf(value, 0) {
+			result.Problem = fmt.Sprintf("default %q must be a finite number", node.Value)
+			return result
+		}
+		result.Value = model.NewFloat64Default(value)
+	default:
+		result.Problem = fmt.Sprintf("default %q uses unsupported OpenAPI scalar type %q", node.Value, schema.Type)
+	}
+	return result
+}
+
+func applySchemaDefault(schema *model.Schema, node *yaml.Node) {
+	if node == nil {
+		return
+	}
+	candidate := normalizeSchemaDefault(node, schema)
+	schema.HasDefault = true
+	schema.Default.Declared = true
+	if candidate.Problem != "" {
+		schema.Default.Problem = candidate.Problem
+		return
+	}
+	if candidate.Value == nil {
+		return
+	}
+	if schema.Default.Value == nil {
+		schema.Default.Value = candidate.Value
+		return
+	}
+	if !schema.Default.Value.Equal(candidate.Value) {
+		schema.Default.Value = nil
+		schema.Default.Problem = "conflicting defaults are declared by composed schemas"
+	}
 }
 
 func isLocalOneOfNamingError(err error) bool {
@@ -986,6 +1087,7 @@ type allOfAnnotations struct {
 	readOnly          bool
 	writeOnlySecret   bool
 	hasDefault        bool
+	defaults          []*yaml.Node
 }
 
 func (n *schemaNormalizer) outerAnnotations(s *base.Schema) allOfAnnotations {
@@ -995,14 +1097,22 @@ func (n *schemaNormalizer) outerAnnotations(s *base.Schema) allOfAnnotations {
 		readOnly:         schemaReadOnly(s),
 		writeOnlySecret:  schemaWriteOnly(s),
 		hasDefault:       s.Default != nil,
+		defaults:         defaultNodes(s.Default),
 	}
+}
+
+func defaultNodes(node *yaml.Node) []*yaml.Node {
+	if node == nil {
+		return nil
+	}
+	return []*yaml.Node{node}
 }
 
 // absorb unions one skipped annotation-only branch into the carrier, reading
 // the branch's normalized form: normalizeSchema sets these four fields before
 // dispatching on kind, and an annotation-only branch has no kind case that
 // would overwrite them.
-func (a *allOfAnnotations) absorb(branch *model.Schema) {
+func (a *allOfAnnotations) absorb(branch *model.Schema, raw *base.Schema) {
 	if a.branchDescription == "" {
 		a.branchDescription = branch.Description
 	}
@@ -1010,6 +1120,9 @@ func (a *allOfAnnotations) absorb(branch *model.Schema) {
 	a.readOnly = a.readOnly || branch.ReadOnly
 	a.writeOnlySecret = a.writeOnlySecret || branch.WriteOnlySecret
 	a.hasDefault = a.hasDefault || branch.HasDefault
+	if raw != nil && raw.Default != nil {
+		a.defaults = append(a.defaults, raw.Default)
+	}
 }
 
 // applyTo unions the collected metadata onto a built result.
@@ -1018,6 +1131,9 @@ func (a allOfAnnotations) applyTo(out *model.Schema) {
 	out.ReadOnly = out.ReadOnly || a.readOnly
 	out.WriteOnlySecret = out.WriteOnlySecret || a.writeOnlySecret
 	out.HasDefault = out.HasDefault || a.hasDefault
+	for _, node := range a.defaults {
+		applySchemaDefault(out, node)
+	}
 	switch {
 	case a.outerDescription != "":
 		out.Description = a.outerDescription
@@ -1062,7 +1178,7 @@ func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaC
 			return nil, err
 		}
 		if branch.Kind == model.SchemaKindUnsupported && branch.UnsupportedReason == "" && isAnnotationOnlySchema(raw) {
-			annotations.absorb(branch)
+			annotations.absorb(branch, raw)
 			continue
 		}
 

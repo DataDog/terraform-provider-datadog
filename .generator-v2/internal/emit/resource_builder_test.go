@@ -12,6 +12,54 @@ import (
 )
 
 var _ = Describe("BuildResourceView", func() {
+	It("renders typed scalar defaults and deterministic resource imports", func() {
+		op := incidentTypeResourceOperation(true)
+		createAttrs := op.ResolvedGroup.Create.RequestSchema.Properties["data"].Properties["attributes"]
+		updateAttrs := op.ResolvedGroup.Update.RequestSchema.Properties["data"].Properties["attributes"]
+		readAttrs := op.ResolvedGroup.Read.ResponseSchema.Properties["data"].Properties["attributes"]
+		defaults := map[string]*model.ScalarDefault{
+			"default_string":  model.NewStringDefault("incident"),
+			"default_bool":    model.NewBoolDefault(false),
+			"default_integer": model.NewInt64Default(0),
+			"default_number":  model.NewFloat64Default(0),
+		}
+		for name, value := range defaults {
+			typ := map[string]string{
+				"default_string": "string", "default_bool": "boolean",
+				"default_integer": "integer", "default_number": "number",
+			}[name]
+			for _, target := range []*model.Schema{createAttrs, updateAttrs} {
+				target.Properties[name] = &model.Schema{
+					Kind: model.SchemaKindPrimitive, Type: typ, Description: "A defaulted value.",
+					HasDefault: true, Default: model.SchemaDefault{Declared: true, Value: value},
+				}
+			}
+			readAttrs.Properties[name] = prim(typ, "A defaulted value.")
+			createAttrs.Required = append(createAttrs.Required, name)
+		}
+
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		view, err := BuildResourceView(art)
+		Expect(err).NotTo(HaveOccurred())
+		source := string(mustRenderResource(view))
+
+		for _, want := range []string{
+			`stringdefault.StaticString("incident")`,
+			`booldefault.StaticBool(false)`,
+			`int64default.StaticInt64(0)`,
+			`float64default.StaticFloat64(0)`,
+		} {
+			Expect(source).To(ContainSubstring(want))
+		}
+		for _, pkg := range []string{"stringdefault", "booldefault", "int64default", "float64default"} {
+			Expect(strings.Count(source, `resource/schema/`+pkg+`"`)).To(Equal(1))
+		}
+		for _, setter := range []string{"SetDefaultString", "SetDefaultBool", "SetDefaultInteger", "SetDefaultNumber"} {
+			Expect(strings.Count(source, setter+"(")).To(Equal(2), setter)
+		}
+	})
+
 	It("fails rather than rendering an empty schema when the merge has not run", func() {
 		op := incidentTypeResourceOperation(true)
 		art, err := model.BuildArtifact(op)

@@ -872,6 +872,45 @@ var _ = Describe("BuildResourceTree presence flags", func() {
 		Expect(a.Computed).To(Equal(computed), "Computed at %q", path)
 	}
 
+	It("turns a required create default into an omittable known resource value", func() {
+		authType := provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true})
+		authType.Default = SchemaDefault{Declared: true, Value: NewStringDefault("basic")}
+		authType.HasDefault = true
+		tree, _, err := BuildResourceTree(&Schema{
+			Kind:       SchemaKindObject,
+			Required:   []string{"auth_type"},
+			Properties: map[string]*Schema{"auth_type": authType},
+		}, false)
+		Expect(err).NotTo(HaveOccurred())
+
+		got := attrByPath(tree, "resource.auth_type")
+		Expect(got.Required).To(BeFalse())
+		Expect(got.Optional).To(BeTrue())
+		Expect(got.Computed).To(BeTrue())
+		Expect(got.Default).To(Equal(&Literal{GoExpr: `"basic"`}))
+		Expect(got.PlanModifiers).To(Equal(
+			[]PlanModifierSpec{{Name: "stringplanmodifier.UseStateForUnknown"}}))
+	})
+
+	It("defaults a nested child without assigning a default to its parent", func() {
+		child := provSchema("boolean", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true})
+		child.Default = SchemaDefault{Declared: true, Value: NewBoolDefault(false)}
+		parent := &Schema{
+			Kind:       SchemaKindObject,
+			Required:   []string{"enabled"},
+			Provenance: &SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true},
+			Properties: map[string]*Schema{"enabled": child},
+		}
+		tree, _, err := BuildResourceTree(objSchema(map[string]*Schema{"settings": parent}), false)
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(attrByPath(tree, "resource.settings").Default).To(BeNil())
+		got := attrByPath(tree, "resource.settings.enabled")
+		Expect(got.Optional).To(BeTrue())
+		Expect(got.Computed).To(BeTrue())
+		Expect(got.Default).To(Equal(&Literal{GoExpr: "false"}))
+	})
+
 	It("derives all four FR-034a flag combinations from Provenance", func() {
 		// required is children()'s own per-key check against the parent's
 		// Required list, not something read off each child's Provenance

@@ -65,6 +65,48 @@ func secretSchema(writeOnly, sensitive bool) *Schema {
 }
 
 var _ = Describe("MergeResourceSchema", func() {
+	Describe("request defaults", func() {
+		defaulted := func(value *ScalarDefault) *Schema {
+			return &Schema{
+				Kind:       SchemaKindPrimitive,
+				Type:       "string",
+				HasDefault: value != nil,
+				Default: SchemaDefault{
+					Declared: value != nil,
+					Value:    value,
+				},
+			}
+		}
+
+		DescribeTable("uses the Create default when Update omits it or agrees",
+			func(updateValue *ScalarDefault) {
+				createReq := jsonAPIBody("AccountCreateRequest", map[string]*Schema{
+					"auth_type": defaulted(NewStringDefault("basic")),
+				}, []string{"auth_type"})
+				updateReq := jsonAPIBody("AccountUpdateRequest", map[string]*Schema{
+					"auth_type": defaulted(updateValue),
+				}, []string{"auth_type"})
+				readResp := jsonAPIBody("AccountResponse", map[string]*Schema{
+					"auth_type": {Kind: SchemaKindPrimitive, Type: "string"},
+				}, []string{"auth_type"})
+
+				merged, _, err := MergeResourceSchema(&ResolvedGroup{
+					Create: &Operation{OperationId: "CreateAccount", RequestSchema: createReq},
+					Update: &Operation{OperationId: "UpdateAccount", RequestSchema: updateReq},
+					Read:   &Operation{OperationId: "GetAccount", ResponseSchema: readResp},
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				authType := attributesOf(merged)["auth_type"]
+				Expect(authType.HasDefault).To(BeTrue())
+				Expect(authType.Default.Declared).To(BeTrue())
+				Expect(authType.Default.Value.Equal(NewStringDefault("basic"))).To(BeTrue())
+			},
+			Entry("Update has no default", (*ScalarDefault)(nil)),
+			Entry("Update declares the same default", NewStringDefault("basic")),
+		)
+	})
+
 	DescribeTable("selects generated write-only handling only from a request-role writeOnly marker",
 		func(createWriteOnly, updateWriteOnly, readWriteOnly, requestSensitive, wantWriteOnly, wantSensitive bool) {
 			createReq := jsonAPIBody("AccountCreateRequest", map[string]*Schema{

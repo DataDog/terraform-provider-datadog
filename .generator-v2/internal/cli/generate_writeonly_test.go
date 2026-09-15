@@ -56,6 +56,9 @@ func TestGenerateWriteOnlyResources(t *testing.T) {
 			}
 
 			assertGeneratedWriteOnlyContract(t, first)
+			if fixture.name == "Twilio" {
+				assertGeneratedTwilioDefaultContract(t, first)
+			}
 			firstStaged = append(firstStaged, testinfra.StagedFile{
 				ProviderPath: filepath.Join("datadog", "fwprovider", fixture.resource),
 				SourcePath:   firstPath,
@@ -220,6 +223,21 @@ func assertGeneratedWriteOnlyContract(t *testing.T, source []byte) {
 	}
 }
 
+func assertGeneratedTwilioDefaultContract(t *testing.T, source []byte) {
+	t.Helper()
+	text := string(source)
+	for _, want := range []string{
+		`stringdefault.StaticString("basic")`,
+	} {
+		if !strings.Contains(text, want) {
+			t.Errorf("generated Twilio resource is missing default contract %q", want)
+		}
+	}
+	if got := strings.Count(text, ".SetAuthType("); got != 2 {
+		t.Errorf("Twilio auth_type setter count = %d, want Create and Update setters", got)
+	}
+}
+
 func generatedMethod(t *testing.T, source []byte, methodName string) string {
 	t.Helper()
 	fset := token.NewFileSet()
@@ -248,6 +266,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	resourceschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/defaults"
 )
 
 func TestTfgenWriteOnlySchemasValidate(t *testing.T) {
@@ -287,6 +306,23 @@ func TestTfgenWriteOnlySchemasValidate(t *testing.T) {
 			}
 			if version.WriteOnly || version.Sensitive || !version.Required || version.Optional || version.Computed {
 				t.Fatalf("password_wo_version flags = %#v, want required stateful trigger", version)
+			}
+			if name == "twilio" {
+				authType, ok := basic.Attributes["auth_type"].(resourceschema.StringAttribute)
+				if !ok {
+					t.Fatalf("auth_type is %T, want StringAttribute", basic.Attributes["auth_type"])
+				}
+				if authType.Required || !authType.Optional || !authType.Computed || authType.Default == nil {
+					t.Fatalf("auth_type flags/default = %#v, want optional+computed static default", authType)
+				}
+				defaultResponse := defaults.StringResponse{}
+				authType.Default.DefaultString(context.Background(), defaults.StringRequest{}, &defaultResponse)
+				if defaultResponse.Diagnostics.HasError() {
+					t.Fatalf("auth_type default returned errors: %v", defaultResponse.Diagnostics)
+				}
+				if got := defaultResponse.PlanValue.ValueString(); got != "basic" {
+					t.Fatalf("auth_type default = %q, want basic", got)
+				}
 			}
 
 			if diagnostics := response.Schema.ValidateImplementation(context.Background()); diagnostics.HasError() {

@@ -48,6 +48,76 @@ const (
 	SchemaKindVariant = SchemaKindOneOf
 )
 
+// ScalarDefaultKind identifies one OpenAPI scalar kind that can be represented
+// by a Terraform Plugin Framework static attribute default.
+type ScalarDefaultKind string
+
+const (
+	ScalarDefaultString  ScalarDefaultKind = "string"
+	ScalarDefaultBool    ScalarDefaultKind = "boolean"
+	ScalarDefaultInt64   ScalarDefaultKind = "integer"
+	ScalarDefaultFloat64 ScalarDefaultKind = "number"
+)
+
+// ScalarDefault is a renderer-independent OpenAPI default. Exactly one value
+// field is meaningful according to Kind. Dedicated constructors keep call
+// sites from losing valid falsy values by treating them as absence.
+type ScalarDefault struct {
+	Kind         ScalarDefaultKind
+	StringValue  string
+	BoolValue    bool
+	Int64Value   int64
+	Float64Value float64
+}
+
+func NewStringDefault(value string) *ScalarDefault {
+	return &ScalarDefault{Kind: ScalarDefaultString, StringValue: value}
+}
+
+func NewBoolDefault(value bool) *ScalarDefault {
+	return &ScalarDefault{Kind: ScalarDefaultBool, BoolValue: value}
+}
+
+func NewInt64Default(value int64) *ScalarDefault {
+	return &ScalarDefault{Kind: ScalarDefaultInt64, Int64Value: value}
+}
+
+func NewFloat64Default(value float64) *ScalarDefault {
+	return &ScalarDefault{Kind: ScalarDefaultFloat64, Float64Value: value}
+}
+
+// Equal compares normalized scalar defaults by kind and value.
+func (d *ScalarDefault) Equal(other *ScalarDefault) bool {
+	if d == nil || other == nil {
+		return d == other
+	}
+	if d.Kind != other.Kind {
+		return false
+	}
+	switch d.Kind {
+	case ScalarDefaultString:
+		return d.StringValue == other.StringValue
+	case ScalarDefaultBool:
+		return d.BoolValue == other.BoolValue
+	case ScalarDefaultInt64:
+		return d.Int64Value == other.Int64Value
+	case ScalarDefaultFloat64:
+		return d.Float64Value == other.Float64Value
+	default:
+		return false
+	}
+}
+
+// SchemaDefault retains the source declaration separately from its usable
+// value. Problem is populated when a non-null scalar declaration cannot satisfy
+// the normalized field; artifact builders decide whether that problem belongs
+// to a configurable request role before failing generation.
+type SchemaDefault struct {
+	Declared bool
+	Value    *ScalarDefault
+	Problem  string
+}
+
 // Cardinality distinguishes a singular data source (resolves one item by id)
 // from a plural one (returns a filtered list). It is the decoded form of the
 // tracking extension's "cardinality" field; absent/empty means singular.
@@ -350,7 +420,11 @@ type Schema struct {
 	// New<Model>WithDefaults() pre-assigns a property (`default` defined, type
 	// not object/array, not readOnly).
 	HasDefault bool
-	ReadOnly   bool
+	// Default carries the typed value used by Terraform resource generation.
+	// HasDefault remains the compatibility bit used by pinned SDK constructor
+	// logic and mirrors Default.Declared for newly normalized schemas.
+	Default  SchemaDefault
+	ReadOnly bool
 	// WriteOnlySecret retains the OpenAPI writeOnly marker independently from
 	// Terraform display sensitivity. On a normalized schema it is the raw
 	// OpenAPI annotation; on a merged resource schema it is selected only from
