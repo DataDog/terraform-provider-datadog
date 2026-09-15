@@ -1,0 +1,375 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 691
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: '{"data":{"attributes":{"account_tags":[],"auth_config":{"role_name":"test"},"aws_account_id":"100504910155","aws_partition":"aws","aws_regions":{"include_all":true},"logs_config":{"lambda_forwarder":{"lambdas":[],"log_source_config":{"tag_filters":[]},"sources":[]}},"metrics_config":{"automute_enabled":true,"collect_cloudwatch_alarms":false,"collect_custom_metrics":false,"enabled":true,"metric_name_filters":[],"namespace_filters":{"exclude_only":["AWS/SQS","AWS/ElasticMapReduce","AWS/Usage"]},"tag_filters":[]},"resources_config":{"cloud_security_posture_management_collection":false,"extended_collection":true},"traces_config":{"xray_services":{"include_only":[]}}},"type":"account"}}
+
+'
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/aws/accounts
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 878
+    uncompressed: false
+    body: '{"data":{"id":"f4414eb4-3ec5-466d-bb5b-e59fc9cfffe5","type":"account","attributes":{"account_tags":null,"auth_config":{"role_name":"test","external_id":"013ed444a4144f6ba97ae00e46911e01"},"aws_account_id":"100504910155","aws_partition":"aws","aws_regions":{"include_all":true},"created_at":"2026-09-11T15:53:39.988682005Z","logs_config":{"lambda_forwarder":{"lambdas":[],"sources":[],"log_source_config":{"tag_filters":[]}}},"metrics_config":{"enabled":true,"automute_enabled":true,"collect_custom_metrics":false,"collect_cloudwatch_alarms":false,"tag_filters":[],"namespace_filters":{"exclude_only":["AWS/SQS","AWS/ElasticMapReduce","AWS/Usage"]},"metric_name_filters":[]},"modified_at":"2026-09-11T15:53:39.988682005Z","resources_config":{"cloud_security_posture_management_collection":false,"extended_collection":true},"traces_config":{"xray_services":{"include_only":[]}}}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 409.453375ms
+- id: 1
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 182
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: '{"data":{"attributes":{"account_identifier":"tf-testacccurrentuserdatasource-local@example.com","arn_pattern":"arn:aws:sts::100504910155:assumed-role/terraform-runner/*"},"type":"aws_cloud_auth_config"}}
+
+'
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/cloud_auth/aws/persona_mapping
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 108
+    uncompressed: false
+    body: '{"errors":[{"title":"Generic Error","detail":"AWS Account Id is not integrated
+      with this Datadog account"}]}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 400 Bad Request
+    code: 400
+    duration: 58.183959ms
+- id: 2
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 182
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: '{"data":{"attributes":{"account_identifier":"tf-testacccurrentuserdatasource-local@example.com","arn_pattern":"arn:aws:sts::100504910155:assumed-role/terraform-runner/*"},"type":"aws_cloud_auth_config"}}
+
+'
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/cloud_auth/aws/persona_mapping
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 279
+    uncompressed: false
+    body: '{"data":{"id":"7c405332-7033-40d2-a046-a27a075a22cd","type":"aws_cloud_auth_config","attributes":{"account_identifier":"tf-testacccurrentuserdatasource-local@example.com","account_uuid":"0bd557d2-6ed0-423e-9654-c0e1cd376abc","arn_pattern":"arn:aws:sts::100504910155:assumed-role/terraform-runner/*"}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 201 Created
+    code: 201
+    duration: 121.420375ms
+- id: 3
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/cloud_auth/aws/persona_mapping/7c405332-7033-40d2-a046-a27a075a22cd
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 279
+    uncompressed: false
+    body: '{"data":{"id":"7c405332-7033-40d2-a046-a27a075a22cd","type":"aws_cloud_auth_config","attributes":{"account_identifier":"tf-testacccurrentuserdatasource-local@example.com","account_uuid":"0bd557d2-6ed0-423e-9654-c0e1cd376abc","arn_pattern":"arn:aws:sts::100504910155:assumed-role/terraform-runner/*"}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 58.938125ms
+- id: 4
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/cloud_auth/aws/persona_mapping/7c405332-7033-40d2-a046-a27a075a22cd
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 279
+    uncompressed: false
+    body: '{"data":{"id":"7c405332-7033-40d2-a046-a27a075a22cd","type":"aws_cloud_auth_config","attributes":{"account_identifier":"tf-testacccurrentuserdatasource-local@example.com","account_uuid":"0bd557d2-6ed0-423e-9654-c0e1cd376abc","arn_pattern":"arn:aws:sts::100504910155:assumed-role/terraform-runner/*"}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 64.358084ms
+- id: 5
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/aws/accounts/%22f4414eb4-3ec5-466d-bb5b-e59fc9cfffe5%22
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 870
+    uncompressed: false
+    body: '{"data":{"id":"f4414eb4-3ec5-466d-bb5b-e59fc9cfffe5","type":"account","attributes":{"account_tags":[],"auth_config":{"role_name":"test","external_id":"013ed444a4144f6ba97ae00e46911e01"},"aws_account_id":"100504910155","aws_partition":"aws","aws_regions":{"include_all":true},"created_at":"2026-09-11T15:53:39.988682Z","logs_config":{"lambda_forwarder":{"lambdas":[],"sources":[],"log_source_config":{"tag_filters":[]}}},"metrics_config":{"enabled":true,"automute_enabled":true,"collect_custom_metrics":false,"collect_cloudwatch_alarms":false,"tag_filters":[],"namespace_filters":{"exclude_only":["AWS/SQS","AWS/ElasticMapReduce","AWS/Usage"]},"metric_name_filters":[]},"modified_at":"2026-09-11T15:53:39.988682Z","resources_config":{"cloud_security_posture_management_collection":false,"extended_collection":true},"traces_config":{"xray_services":{"include_only":[]}}}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 89.48325ms
+- id: 6
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/cloud_auth/aws/persona_mapping/7c405332-7033-40d2-a046-a27a075a22cd
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 279
+    uncompressed: false
+    body: '{"data":{"id":"7c405332-7033-40d2-a046-a27a075a22cd","type":"aws_cloud_auth_config","attributes":{"account_identifier":"tf-testacccurrentuserdatasource-local@example.com","account_uuid":"0bd557d2-6ed0-423e-9654-c0e1cd376abc","arn_pattern":"arn:aws:sts::100504910155:assumed-role/terraform-runner/*"}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 58.166417ms
+- id: 7
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/cloud_auth/aws/persona_mapping/7c405332-7033-40d2-a046-a27a075a22cd
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 279
+    uncompressed: false
+    body: '{"data":{"id":"7c405332-7033-40d2-a046-a27a075a22cd","type":"aws_cloud_auth_config","attributes":{"account_identifier":"tf-testacccurrentuserdatasource-local@example.com","account_uuid":"0bd557d2-6ed0-423e-9654-c0e1cd376abc","arn_pattern":"arn:aws:sts::100504910155:assumed-role/terraform-runner/*"}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 68.772042ms
+- id: 8
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - "*/*"
+    url: https://api.datadoghq.com/api/v2/cloud_auth/aws/persona_mapping/7c405332-7033-40d2-a046-a27a075a22cd
+    method: DELETE
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 0
+    uncompressed: false
+    body: ''
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: 91.798292ms
+- id: 9
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - "*/*"
+    url: https://api.datadoghq.com/api/v2/integration/aws/accounts/%22f4414eb4-3ec5-466d-bb5b-e59fc9cfffe5%22
+    method: DELETE
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 0
+    uncompressed: false
+    body: ''
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: 143.977417ms
+- id: 10
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/cloud_auth/aws/persona_mapping/7c405332-7033-40d2-a046-a27a075a22cd
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 49
+    uncompressed: false
+    body: '{"errors":[{"status":"404","title":"Not Found"}]}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 404 Not Found
+    code: 404
+    duration: 61.793666ms

@@ -57,6 +57,7 @@ type ApiInstances struct {
 	authNMappingsApiV2             *datadogV2.AuthNMappingsApi
 	awsIntegrationApiV2            *datadogV2.AWSIntegrationApi
 	awsLogsIntegrationApiV2        *datadogV2.AWSLogsIntegrationApi
+	cloudAuthenticationApiV2       *datadogV2.CloudAuthenticationApi
 	cloudflareIntegrationApiV2     *datadogV2.CloudflareIntegrationApi
 	csmThreatsApiV2                *datadogV2.CSMThreatsApi
 	confluentCloudApiV2            *datadogV2.ConfluentCloudApi
@@ -150,6 +151,14 @@ func (i *ApiInstances) GetAWSLogsIntegrationApiV2() *datadogV2.AWSLogsIntegratio
 		i.awsLogsIntegrationApiV2 = datadogV2.NewAWSLogsIntegrationApi(i.HttpClient)
 	}
 	return i.awsLogsIntegrationApiV2
+}
+
+// GetCloudAuthenticationApiV2 get instance of CloudAuthenticationApi
+func (i *ApiInstances) GetCloudAuthenticationApiV2() *datadogV2.CloudAuthenticationApi {
+	if i.cloudAuthenticationApiV2 == nil {
+		i.cloudAuthenticationApiV2 = datadogV2.NewCloudAuthenticationApi(i.HttpClient)
+	}
+	return i.cloudAuthenticationApiV2
 }
 
 // GetAzureIntegrationApiV1 get instance of AzureIntegrationApi

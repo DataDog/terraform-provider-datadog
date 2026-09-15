@@ -50,6 +50,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationAzureResource,
 	NewIntegrationAwsEventBridgeResource,
 	NewIntegrationAwsExternalIDResource,
+	NewAwsWifPersonaMappingResource,
 	NewIntegrationCloudflareAccountResource,
 	NewIntegrationConfluentAccountResource,
 	NewIntegrationConfluentResourceResource,
@@ -714,6 +715,9 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDataset", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAWSCloudAuthPersonaMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSCloudAuthPersonaMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSCloudAuthPersonaMapping", true)
 
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListIncidentUserDefinedFields", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateIncidentUserDefinedField", true)
