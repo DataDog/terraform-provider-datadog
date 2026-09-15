@@ -5,6 +5,7 @@ import (
 	"maps"
 	"slices"
 	"sort"
+	"strconv"
 )
 
 // ----------------------------------------------------------------------------
@@ -256,6 +257,52 @@ type WriteOnlyLifecycleError struct {
 	MissingRole string
 }
 
+// SchemaDefaultError reports an unusable request default at one correlated
+// resource field. Values are included only for non-sensitive, non-write-only
+// fields; secret defaults are outside the feature and never enter validation.
+type SchemaDefaultError struct {
+	Artifact string
+	Path     string
+	Role     string
+	Reason   string
+	Create   *ScalarDefault
+	Update   *ScalarDefault
+}
+
+func (e *SchemaDefaultError) Error() string {
+	prefix := fmt.Sprintf("model: resource %q has an invalid default at %q", e.Artifact, e.Path)
+	if e.Create != nil && e.Update != nil {
+		return fmt.Sprintf(
+			"%s: Create default %s conflicts with Update default %s",
+			prefix,
+			scalarDefaultDiagnostic(e.Create),
+			scalarDefaultDiagnostic(e.Update),
+		)
+	}
+	if e.Role != "" {
+		prefix += " in the " + e.Role + " request"
+	}
+	return prefix + ": " + e.Reason
+}
+
+func scalarDefaultDiagnostic(value *ScalarDefault) string {
+	if value == nil {
+		return "<absent>"
+	}
+	switch value.Kind {
+	case ScalarDefaultString:
+		return strconv.Quote(value.StringValue)
+	case ScalarDefaultBool:
+		return strconv.FormatBool(value.BoolValue)
+	case ScalarDefaultInt64:
+		return strconv.FormatInt(value.Int64Value, 10)
+	case ScalarDefaultFloat64:
+		return strconv.FormatFloat(value.Float64Value, 'g', -1, 64)
+	default:
+		return "<unsupported>"
+	}
+}
+
 func (e *WriteOnlyLifecycleError) Error() string {
 	return fmt.Sprintf(
 		"model: write-only field %q is missing from the %s request; write-only fields must be present in both Create and Update",
@@ -361,6 +408,9 @@ func (m *resourceMerger) mergeNode(create, update, read *Schema, createRequired,
 	if update != nil && update.WriteOnlySecret && create == nil {
 		return nil, &WriteOnlyLifecycleError{Path: path, MissingRole: "Create"}
 	}
+	if err := m.validateRequestDefault(create, update, path); err != nil {
+		return nil, err
+	}
 	kind, err := kindConflict(create, update, read, path)
 	if err != nil {
 		return nil, err
@@ -380,6 +430,45 @@ func (m *resourceMerger) mergeNode(create, update, read *Schema, createRequired,
 		// is the preferred side's clone.
 		return m.mergeVerbatim(create, update, read, createRequired, updateRequired, path)
 	}
+}
+
+// validateRequestDefault applies the lifecycle policy before the Create value
+// is copied onto the merged schema. Create is authoritative. An Update-only
+// default is ignored; when Create has a usable value, Update may omit it or
+// repeat it, but may not supply an invalid or different value.
+func (m *resourceMerger) validateRequestDefault(create, update *Schema, path string) error {
+	if create == nil || create.Sensitive || create.WriteOnlySecret ||
+		update != nil && (update.Sensitive || update.WriteOnlySecret) {
+		return nil
+	}
+	if create.Default.Problem != "" {
+		return &SchemaDefaultError{
+			Artifact: m.artifact,
+			Path:     path,
+			Role:     "Create",
+			Reason:   create.Default.Problem,
+		}
+	}
+	if create.Default.Value == nil || update == nil {
+		return nil
+	}
+	if update.Default.Problem != "" {
+		return &SchemaDefaultError{
+			Artifact: m.artifact,
+			Path:     path,
+			Role:     "Update",
+			Reason:   update.Default.Problem,
+		}
+	}
+	if update.Default.Value != nil && !create.Default.Value.Equal(update.Default.Value) {
+		return &SchemaDefaultError{
+			Artifact: m.artifact,
+			Path:     path,
+			Create:   create.Default.Value,
+			Update:   update.Default.Value,
+		}
+	}
+	return nil
 }
 
 func (m *resourceMerger) mergeObject(create, update, read *Schema, createRequired, updateRequired bool, path string) (*Schema, error) {

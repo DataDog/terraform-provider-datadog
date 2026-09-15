@@ -1165,10 +1165,13 @@ func schemaProperty(schema *model.Schema, name string) *model.Schema {
 
 var _ = Describe("NormalizeSchemas scalar defaults", func() {
 	var properties map[string]*model.Schema
+	var responseProperties map[string]*model.Schema
 
 	BeforeEach(func() {
 		spec := loadSpecMust("schema_normalize_defaults.yaml")
-		properties = opByID(spec, "CreateDefaults").RequestSchema.Properties
+		op := opByID(spec, "CreateDefaults")
+		properties = op.RequestSchema.Properties
+		responseProperties = op.ResponseSchema.Properties
 	})
 
 	DescribeTable("preserves typed direct defaults, including falsy values",
@@ -1196,4 +1199,34 @@ var _ = Describe("NormalizeSchemas scalar defaults", func() {
 		Entry("reference", "referenced"),
 		Entry("allOf", "composed"),
 	)
+
+	It("records null and compound declarations without producing a usable value or problem", func() {
+		for _, property := range []string{"null_default", "array_default", "object_default"} {
+			got := properties[property]
+			Expect(got.HasDefault).To(BeTrue(), property)
+			Expect(got.Default.Declared).To(BeTrue(), property)
+			Expect(got.Default.Value).To(BeNil(), property)
+			Expect(got.Default.Problem).To(BeEmpty(), property)
+		}
+	})
+
+	DescribeTable("retains unusable scalar defaults as validation problems",
+		func(property, problem string) {
+			got := properties[property]
+			Expect(got.Default.Declared).To(BeTrue())
+			Expect(got.Default.Value).To(BeNil())
+			Expect(got.Default.Problem).To(ContainSubstring(problem))
+		},
+		Entry("wrong scalar type", "invalid_type", "want integer"),
+		Entry("invalid enum member", "invalid_enum", "allowed values"),
+		Entry("integer overflow", "integer_overflow", "cannot be decoded"),
+		Entry("non-finite number", "non_finite", "finite number"),
+	)
+
+	It("retains a response-only validation problem for lifecycle code to ignore", func() {
+		got := responseProperties["response_invalid"]
+		Expect(got.Default.Declared).To(BeTrue())
+		Expect(got.Default.Value).To(BeNil())
+		Expect(got.Default.Problem).To(ContainSubstring("want integer"))
+	})
 })

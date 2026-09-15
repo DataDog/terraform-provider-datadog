@@ -80,6 +80,14 @@ paths:
                     - basic
                     - token
                   default: unsupported
+                integer_overflow:
+                  type: integer
+                  description: Integer outside the supported int64 range.
+                  default: 9223372036854775808
+                non_finite:
+                  type: number
+                  description: Non-finite numeric default.
+                  default: .inf
       responses:
         '200':
           description: Defaults response.
@@ -92,6 +100,10 @@ paths:
                     type: string
                     description: Response-only default.
                     default: server
+                  response_invalid:
+                    type: integer
+                    description: Invalid response-only default.
+                    default: basic
 components:
   schemas:
     AuthType:

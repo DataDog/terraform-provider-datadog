@@ -892,6 +892,78 @@ var _ = Describe("BuildResourceTree presence flags", func() {
 			[]PlanModifierSpec{{Name: "stringplanmodifier.UseStateForUnknown"}}))
 	})
 
+	It("keeps enum validation and plan modifiers on a defaulted field", func() {
+		authType := provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true})
+		authType.RefName = "IntegrationAccountAuthType"
+		authType.Enum = []string{"basic", "token"}
+		authType.Default = SchemaDefault{Declared: true, Value: NewStringDefault("basic")}
+		authType.HasDefault = true
+
+		tree, _, err := BuildResourceTree(&Schema{
+			Kind:       SchemaKindObject,
+			Required:   []string{"auth_type"},
+			Properties: map[string]*Schema{"auth_type": authType},
+		}, true)
+		Expect(err).NotTo(HaveOccurred())
+
+		got := attrByPath(tree, "resource.auth_type")
+		Expect(got.Optional).To(BeTrue())
+		Expect(got.Computed).To(BeTrue())
+		Expect(got.Default).To(Equal(&Literal{GoExpr: `"basic"`}))
+		Expect(got.Validators).To(Equal([]ValidatorSpec{{
+			Name: "stringvalidator.OneOf", Args: []string{`"basic"`, `"token"`},
+		}}))
+		Expect(got.PlanModifiers).To(Equal([]PlanModifierSpec{
+			{Name: "stringplanmodifier.UseStateForUnknown"},
+			{Name: "stringplanmodifier.RequiresReplace"},
+		}))
+	})
+
+	It("does not expose defaults that are null, response-only, secret, write-only, or compound", func() {
+		nullDefault := provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true})
+		nullDefault.Default = SchemaDefault{Declared: true}
+		nullDefault.HasDefault = true
+		responseOnly := provSchema("string", SchemaProvenance{InResponse: true})
+		responseOnly.Default = SchemaDefault{Declared: true, Value: NewStringDefault("server")}
+		responseOnly.HasDefault = true
+		sensitive := provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true})
+		sensitive.Sensitive = true
+		sensitive.Default = SchemaDefault{Declared: true, Value: NewStringDefault("redacted")}
+		sensitive.HasDefault = true
+		writeOnly := writeOnlySchema(
+			provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true}), true, true)
+		writeOnly.Default = SchemaDefault{Declared: true, Value: NewStringDefault("redacted")}
+		writeOnly.HasDefault = true
+		compound := &Schema{
+			Kind:       SchemaKindArray,
+			Items:      primSchema("string"),
+			Provenance: &SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true},
+			Default:    SchemaDefault{Declared: true, Value: NewStringDefault("not-a-list")},
+			HasDefault: true,
+		}
+
+		root := objSchema(map[string]*Schema{
+			"null_default":  nullDefault,
+			"response_only": responseOnly,
+			"sensitive":     sensitive,
+			"write_only":    writeOnly,
+			"compound":      compound,
+			"optional":      provSchema("string", SchemaProvenance{InRequest: true}),
+		})
+		root.Required = []string{"null_default", "sensitive", "write_only", "compound"}
+		tree, _, err := BuildResourceTree(root, false)
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(attrByPath(tree, "resource.null_default").Required).To(BeTrue())
+		Expect(attrByPath(tree, "resource.optional").Optional).To(BeTrue())
+		for _, path := range []string{
+			"resource.null_default", "resource.response_only", "resource.sensitive",
+			"resource.write_only", "resource.compound",
+		} {
+			Expect(attrByPath(tree, path).Default).To(BeNil(), path)
+		}
+	})
+
 	It("defaults a nested child without assigning a default to its parent", func() {
 		child := provSchema("boolean", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true})
 		child.Default = SchemaDefault{Declared: true, Value: NewBoolDefault(false)}

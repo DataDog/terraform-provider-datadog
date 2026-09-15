@@ -188,7 +188,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 		Description: s.Description,
 	}
 	b.applyWriteOnlyMetadata(attr, s)
-	if b.kind == resourceTree && s.Default.Value != nil && !s.Sensitive && !s.WriteOnlySecret {
+	if b.resourceDefaultEligible(s) {
 		attr.Default = scalarDefaultLiteral(s.Default.Value)
 	}
 	if err := b.applyPresence(attr, s, required); err != nil {
@@ -266,6 +266,21 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 	}
 
 	return attr, nil
+}
+
+// resourceDefaultEligible limits native defaults to configurable primitive
+// fields originating in a request role. Response-only, secret and compound
+// defaults remain metadata and cannot affect Terraform planning.
+func (b *treeBuilder) resourceDefaultEligible(s *Schema) bool {
+	if b.kind != resourceTree || s.Kind != SchemaKindPrimitive || s.Default.Value == nil ||
+		s.Sensitive || s.WriteOnlySecret {
+		return false
+	}
+	provenance := s.Provenance
+	if provenance == nil {
+		provenance = b.oneOfProvenance
+	}
+	return provenance != nil && provenance.InRequest
 }
 
 func scalarDefaultLiteral(value *ScalarDefault) *Literal {
