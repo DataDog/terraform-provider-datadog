@@ -45,6 +45,9 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.CreateDataset", true)
 	config.SetUnstableOperationEnabled("v2.UpdateDataset", true)
 	config.SetUnstableOperationEnabled("v2.DeleteDataset", true)
+	config.SetUnstableOperationEnabled("v2.CreateFleetSchedule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateFleetSchedule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteFleetSchedule", true)
 
 	// Enable Web Integrations (AMS) — Databricks resource depends on these.
 	config.SetUnstableOperationEnabled("v2.CreateWebIntegrationAccount", true)
