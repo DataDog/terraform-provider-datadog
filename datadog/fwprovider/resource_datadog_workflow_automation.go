@@ -16,6 +16,7 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -36,14 +37,15 @@ type workflowAutomationResource struct {
 }
 
 type workflowAutomationResourceModel struct {
-	ID            types.String         `tfsdk:"id"`
-	Name          types.String         `tfsdk:"name"`
-	Description   types.String         `tfsdk:"description"`
-	Tags          []types.String       `tfsdk:"tags"`
-	Published     types.Bool           `tfsdk:"published"`
-	SpecJson      jsontypes.Normalized `tfsdk:"spec_json"`
-	WebhookSecret types.String         `tfsdk:"webhook_secret"`
-	RunAs         types.Object         `tfsdk:"run_as"`
+	ID                  types.String         `tfsdk:"id"`
+	Name                types.String         `tfsdk:"name"`
+	Description         types.String         `tfsdk:"description"`
+	Tags                []types.String       `tfsdk:"tags"`
+	Published           types.Bool           `tfsdk:"published"`
+	SpecJson            jsontypes.Normalized `tfsdk:"spec_json"`
+	WebhookSecret       types.String         `tfsdk:"webhook_secret"`
+	RunAs               types.Object         `tfsdk:"run_as"`
+	SensitivePrivileges types.Bool           `tfsdk:"sensitive_privileges"`
 }
 
 type workflowAutomationRunAsModel struct {
@@ -109,6 +111,14 @@ func (r *workflowAutomationResource) Schema(_ context.Context, _ resource.Schema
 				Description: "If a webhook trigger is defined on this workflow, a webhookSecret is required and should be provided here.",
 				// BE validation requires 16 characters
 				Validators: []validator.String{stringvalidator.LengthAtLeast(16)},
+			},
+			"sensitive_privileges": schema.BoolAttribute{
+				Optional:    true,
+				Computed:    true,
+				Description: "Whether the workflow requires sensitive privileges to run. When omitted, the server-managed value is preserved. Only the workflow owner can update this field. This allows it to run actions that use [Execution Policies](https://docs.datadoghq.com/actions/private_actions/execution_policies/).",
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"run_as": schema.SingleNestedAttribute{
 				Description: "Identity used to run the workflow. When omitted, the server-managed value is preserved.",
@@ -236,6 +246,7 @@ func (r *workflowAutomationResource) Create(ctx context.Context, request resourc
 
 	// Set computed values
 	plan.ID = types.StringPointerValue(createResp.Data.Id)
+	plan.SensitivePrivileges = types.BoolPointerValue(createResp.Data.Attributes.SensitivePrivileges)
 	plan.RunAs, err = apiWorkflowRunAsToModel(
 		createResp.Data.Attributes.RunAsUserMode,
 		createResp.Data.Relationships,
@@ -330,6 +341,7 @@ func (r *workflowAutomationResource) Update(ctx context.Context, request resourc
 		response.Diagnostics.AddError("Error reading run_as from update workflow response", "workflow response is missing data")
 		return
 	}
+	plan.SensitivePrivileges = types.BoolPointerValue(updateResp.Data.Attributes.SensitivePrivileges)
 	plan.RunAs, err = apiWorkflowRunAsToModel(
 		updateResp.Data.Attributes.RunAsUserMode,
 		updateResp.Data.Relationships,
@@ -425,6 +437,9 @@ func workflowAutomationModelToCreateApiRequest(workflowAutomationModel workflowA
 	attributes.SetTags(tags)
 	attributes.SetPublished(workflowAutomationModel.Published.ValueBool())
 	attributes.SetWebhookSecret(workflowAutomationModel.WebhookSecret.ValueString())
+	if !workflowAutomationModel.SensitivePrivileges.IsNull() && !workflowAutomationModel.SensitivePrivileges.IsUnknown() {
+		attributes.SetSensitivePrivileges(workflowAutomationModel.SensitivePrivileges.ValueBool())
+	}
 	runAs, err := workflowAutomationModelToApiRunAs(workflowAutomationModel.RunAs)
 	if err != nil {
 		return nil, err
@@ -462,6 +477,9 @@ func workflowAutomationModelToUpdateApiRequest(workflowAutomationModel workflowA
 	attributes.SetTags(tags)
 	attributes.SetPublished(workflowAutomationModel.Published.ValueBool())
 	attributes.SetWebhookSecret(workflowAutomationModel.WebhookSecret.ValueString())
+	if !workflowAutomationModel.SensitivePrivileges.IsNull() && !workflowAutomationModel.SensitivePrivileges.IsUnknown() {
+		attributes.SetSensitivePrivileges(workflowAutomationModel.SensitivePrivileges.ValueBool())
+	}
 	runAs, err := workflowAutomationModelToApiRunAs(workflowAutomationModel.RunAs)
 	if err != nil {
 		return nil, err
@@ -503,6 +521,7 @@ func apiResponseToWorkflowAutomationResourceModel(workflow *datadogV2.GetWorkflo
 	}
 
 	workflowModel.Published = types.BoolPointerValue(attributes.Published)
+	workflowModel.SensitivePrivileges = types.BoolPointerValue(attributes.SensitivePrivileges)
 	var err error
 	workflowModel.RunAs, err = apiWorkflowRunAsToModel(attributes.RunAsUserMode, workflow.Data.Relationships)
 	if err != nil {
