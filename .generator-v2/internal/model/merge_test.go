@@ -66,18 +66,6 @@ func secretSchema(writeOnly, sensitive bool) *Schema {
 
 var _ = Describe("MergeResourceSchema", func() {
 	Describe("request defaults", func() {
-		defaulted := func(value *ScalarDefault) *Schema {
-			return &Schema{
-				Kind:       SchemaKindPrimitive,
-				Type:       "string",
-				HasDefault: value != nil,
-				Default: SchemaDefault{
-					Declared: value != nil,
-					Value:    value,
-				},
-			}
-		}
-
 		DescribeTable("uses the Create default when Update omits it or agrees",
 			func(updateValue *ScalarDefault) {
 				createReq := jsonAPIBody("AccountCreateRequest", map[string]*Schema{
@@ -99,7 +87,6 @@ var _ = Describe("MergeResourceSchema", func() {
 
 				authType := attributesOf(merged)["auth_type"]
 				Expect(authType.HasDefault).To(BeTrue())
-				Expect(authType.Default.Declared).To(BeTrue())
 				Expect(authType.Default.Value.Equal(NewStringDefault("basic"))).To(BeTrue())
 			},
 			Entry("Update has no default", (*ScalarDefault)(nil)),
@@ -133,9 +120,7 @@ var _ = Describe("MergeResourceSchema", func() {
 		})
 
 		It("rejects an invalid Create default with artifact, path, role, and reason", func() {
-			invalid := defaulted(nil)
-			invalid.HasDefault = true
-			invalid.Default = SchemaDefault{Declared: true, Problem: "default has YAML type string, want integer"}
+			invalid := problemDefault("default has YAML type string, want integer")
 			_, _, err := MergeResourceSchema(groupForDefaults(invalid, defaulted(nil), defaulted(nil)))
 			var defaultErr *SchemaDefaultError
 			Expect(errors.As(err, &defaultErr)).To(BeTrue())
@@ -147,9 +132,7 @@ var _ = Describe("MergeResourceSchema", func() {
 
 		It("rejects an invalid or conflicting Update default when Create has a usable default", func() {
 			create := defaulted(NewStringDefault("basic"))
-			invalidUpdate := defaulted(nil)
-			invalidUpdate.HasDefault = true
-			invalidUpdate.Default = SchemaDefault{Declared: true, Problem: "not one of the allowed values"}
+			invalidUpdate := problemDefault("not one of the allowed values")
 			_, _, err := MergeResourceSchema(groupForDefaults(create, invalidUpdate, defaulted(nil)))
 			Expect(err).To(MatchError(ContainSubstring("Update request")))
 

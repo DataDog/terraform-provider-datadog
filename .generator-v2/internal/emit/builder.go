@@ -801,10 +801,9 @@ func (b *dataSourceBuilder) defaultView(a *model.Attribute) string {
 	if a.Default == nil {
 		return ""
 	}
-	typeName := strings.TrimPrefix(a.GoType, "types.")
-	if typeName != "String" && typeName != "Bool" && typeName != "Int64" && typeName != "Float64" {
-		return ""
-	}
+	// Both the subpackage and its constructor are named from the same stem:
+	// "types.String" -> "stringdefault".StaticString.
+	typeName := model.FrameworkTypeName(a.GoType)
 	pkg := strings.ToLower(typeName) + "default"
 	if b.defaultPkgs == nil {
 		b.defaultPkgs = make(map[string]struct{})
@@ -834,7 +833,7 @@ func (b *dataSourceBuilder) planModifierViews(a *model.Attribute) (names []strin
 		b.planModifierPkgs = make(map[string]struct{})
 	}
 	b.planModifierPkgs[model.PlanModifierPackage(a.GoType)] = struct{}{}
-	return names, strings.TrimPrefix(a.GoType, "types.")
+	return names, model.FrameworkTypeName(a.GoType)
 }
 
 // validatorViews renders a's validators for its AttrView, e.g.
@@ -2014,7 +2013,6 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		UsesObjectValidators: b.usesObjectValidators,
 		UsesPlanModifiers:    len(planModifierPkgs) > 0,
 		PlanModifierPackages: planModifierPkgs,
-		UsesDefaults:         len(defaultPkgs) > 0,
 		DefaultPackages:      defaultPkgs,
 		Import:               buildImportView(pathAttrs),
 		UsesUUID:             createUUID || readUUID || updateUUID || deleteUUID || requestImps.uuid,

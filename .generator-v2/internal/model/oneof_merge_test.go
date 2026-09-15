@@ -279,17 +279,10 @@ var _ = Describe("MergeResourceSchema over a oneOf", func() {
 })
 
 var _ = Describe("MergeNormalizedSchemas default composition", func() {
-	defaulted := func(value string) *Schema {
-		return &Schema{
-			Kind:       SchemaKindPrimitive,
-			Type:       "string",
-			HasDefault: true,
-			Default:    SchemaDefault{Declared: true, Value: NewStringDefault(value)},
-		}
-	}
+	declaring := func(value string) *Schema { return defaulted(NewStringDefault(value)) }
 
 	It("accepts equal repeated defaults and preserves them through cloning", func() {
-		merged := MergeNormalizedSchemas(defaulted("basic"), defaulted("basic"))
+		merged := MergeNormalizedSchemas(declaring("basic"), declaring("basic"))
 		Expect(merged.Default.Problem).To(BeEmpty())
 		Expect(merged.Default.Value.Equal(NewStringDefault("basic"))).To(BeTrue())
 
@@ -301,8 +294,8 @@ var _ = Describe("MergeNormalizedSchemas default composition", func() {
 	})
 
 	It("records conflicting defaults contributed by composition", func() {
-		merged := MergeNormalizedSchemas(defaulted("basic"), defaulted("token"))
-		Expect(merged.Default.Declared).To(BeTrue())
+		merged := MergeNormalizedSchemas(declaring("basic"), declaring("token"))
+		Expect(merged.HasDefault).To(BeTrue())
 		Expect(merged.Default.Value).To(BeNil())
 		Expect(merged.Default.Problem).To(ContainSubstring("conflicting defaults"))
 	})

@@ -5,7 +5,6 @@ import (
 	"maps"
 	"slices"
 	"sort"
-	"strconv"
 )
 
 // ----------------------------------------------------------------------------
@@ -116,41 +115,39 @@ func MergeNormalizedSchemas(variant, common *Schema) *Schema {
 	variant.Sensitive = variant.Sensitive || common.Sensitive
 	variant.WriteOnlySecret = variant.WriteOnlySecret || common.WriteOnlySecret
 	variant.HasDefault = variant.HasDefault || common.HasDefault
-	variant.Default = mergeNormalizedDefaults(variant.Default, common.Default)
+	variant.Default = variant.Default.Union(common.Default)
 	return variant
 }
 
-func mergeNormalizedDefaults(left, right SchemaDefault) SchemaDefault {
-	out := cloneSchemaDefault(left)
-	out.Declared = left.Declared || right.Declared
+// Union folds another declaration for the same field into d, as each composed
+// schema — an allOf branch, or a oneOf alternative and its common schema —
+// contributes one. The first usable value wins and an equal repeat is
+// harmless; two different values cancel out and leave a problem behind. The
+// first problem seen survives, so the earliest declaration is reported.
+func (d SchemaDefault) Union(other SchemaDefault) SchemaDefault {
+	out := d
 	if out.Problem == "" {
-		out.Problem = right.Problem
+		out.Problem = other.Problem
 	}
-	if right.Value == nil {
-		return out
-	}
-	if out.Value == nil {
-		out.Value = cloneScalarDefault(right.Value)
-		return out
-	}
-	if !out.Value.Equal(right.Value) {
+	switch {
+	case other.Value == nil:
+	case out.Value == nil:
+		out.Value = other.Value
+	case !out.Value.Equal(other.Value):
 		out.Value = nil
 		out.Problem = "conflicting defaults are declared by composed schemas"
 	}
-	return out
+	return cloneSchemaDefault(out)
 }
 
-func cloneScalarDefault(value *ScalarDefault) *ScalarDefault {
-	if value == nil {
-		return nil
+// cloneSchemaDefault detaches d's value so the copy can be mutated
+// independently, matching CloneSchema's deep-copy contract.
+func cloneSchemaDefault(d SchemaDefault) SchemaDefault {
+	if d.Value != nil {
+		value := *d.Value
+		d.Value = &value
 	}
-	out := *value
-	return &out
-}
-
-func cloneSchemaDefault(value SchemaDefault) SchemaDefault {
-	value.Value = cloneScalarDefault(value.Value)
-	return value
+	return d
 }
 
 // OneOfValueWrapped reports whether a oneOf alternative's Terraform variant
@@ -258,49 +255,22 @@ type WriteOnlyLifecycleError struct {
 }
 
 // SchemaDefaultError reports an unusable request default at one correlated
-// resource field. Values are included only for non-sensitive, non-write-only
-// fields; secret defaults are outside the feature and never enter validation.
+// resource field. Role names the request the problem was found in, and is
+// empty when Reason already describes both sides. Secret defaults are outside
+// the feature and never enter validation, so no value here is sensitive.
 type SchemaDefaultError struct {
 	Artifact string
 	Path     string
 	Role     string
 	Reason   string
-	Create   *ScalarDefault
-	Update   *ScalarDefault
 }
 
 func (e *SchemaDefaultError) Error() string {
 	prefix := fmt.Sprintf("model: resource %q has an invalid default at %q", e.Artifact, e.Path)
-	if e.Create != nil && e.Update != nil {
-		return fmt.Sprintf(
-			"%s: Create default %s conflicts with Update default %s",
-			prefix,
-			scalarDefaultDiagnostic(e.Create),
-			scalarDefaultDiagnostic(e.Update),
-		)
-	}
 	if e.Role != "" {
 		prefix += " in the " + e.Role + " request"
 	}
 	return prefix + ": " + e.Reason
-}
-
-func scalarDefaultDiagnostic(value *ScalarDefault) string {
-	if value == nil {
-		return "<absent>"
-	}
-	switch value.Kind {
-	case ScalarDefaultString:
-		return strconv.Quote(value.StringValue)
-	case ScalarDefaultBool:
-		return strconv.FormatBool(value.BoolValue)
-	case ScalarDefaultInt64:
-		return strconv.FormatInt(value.Int64Value, 10)
-	case ScalarDefaultFloat64:
-		return strconv.FormatFloat(value.Float64Value, 'g', -1, 64)
-	default:
-		return "<unsupported>"
-	}
 }
 
 func (e *WriteOnlyLifecycleError) Error() string {
@@ -441,32 +411,24 @@ func (m *resourceMerger) validateRequestDefault(create, update *Schema, path str
 		update != nil && (update.Sensitive || update.WriteOnlySecret) {
 		return nil
 	}
+	fail := func(role, reason string) error {
+		return &SchemaDefaultError{Artifact: m.artifact, Path: path, Role: role, Reason: reason}
+	}
 	if create.Default.Problem != "" {
-		return &SchemaDefaultError{
-			Artifact: m.artifact,
-			Path:     path,
-			Role:     "Create",
-			Reason:   create.Default.Problem,
-		}
+		return fail("Create", create.Default.Problem)
 	}
 	if create.Default.Value == nil || update == nil {
 		return nil
 	}
 	if update.Default.Problem != "" {
-		return &SchemaDefaultError{
-			Artifact: m.artifact,
-			Path:     path,
-			Role:     "Update",
-			Reason:   update.Default.Problem,
-		}
+		return fail("Update", update.Default.Problem)
 	}
 	if update.Default.Value != nil && !create.Default.Value.Equal(update.Default.Value) {
-		return &SchemaDefaultError{
-			Artifact: m.artifact,
-			Path:     path,
-			Create:   create.Default.Value,
-			Update:   update.Default.Value,
-		}
+		return fail("", fmt.Sprintf(
+			"Create default %s conflicts with Update default %s",
+			create.Default.Value.GoExpr(),
+			update.Default.Value.GoExpr(),
+		))
 	}
 	return nil
 }

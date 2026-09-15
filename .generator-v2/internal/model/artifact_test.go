@@ -48,12 +48,7 @@ var _ = Describe("BuildArtifact", func() {
 
 	It("fails only the artifact carrying an invalid Create default", func() {
 		invalid := incidentTypeResourceOp()
-		invalidField := primSchema("string")
-		invalidField.HasDefault = true
-		invalidField.Default = SchemaDefault{
-			Declared: true,
-			Problem:  "default has YAML type integer, want string",
-		}
+		invalidField := problemDefault("default has YAML type integer, want string")
 		invalid.RequestSchema = objSchema(map[string]*Schema{"name": invalidField})
 
 		_, err := BuildArtifact(invalid)

@@ -276,29 +276,25 @@ func (b *treeBuilder) resourceDefaultEligible(s *Schema) bool {
 		s.Sensitive || s.WriteOnlySecret {
 		return false
 	}
-	provenance := s.Provenance
-	if provenance == nil {
-		provenance = b.oneOfProvenance
+	p := b.provenanceOf(s)
+	return p != nil && p.InRequest
+}
+
+// provenanceOf resolves the role provenance to judge s by: a oneOf alternative
+// inherits the union's, having none of its own.
+func (b *treeBuilder) provenanceOf(s *Schema) *SchemaProvenance {
+	if s.Provenance != nil {
+		return s.Provenance
 	}
-	return provenance != nil && provenance.InRequest
+	return b.oneOfProvenance
 }
 
 func scalarDefaultLiteral(value *ScalarDefault) *Literal {
-	if value == nil {
+	expr := value.GoExpr()
+	if expr == "" {
 		return nil
 	}
-	switch value.Kind {
-	case ScalarDefaultString:
-		return &Literal{GoExpr: strconv.Quote(value.StringValue)}
-	case ScalarDefaultBool:
-		return &Literal{GoExpr: strconv.FormatBool(value.BoolValue)}
-	case ScalarDefaultInt64:
-		return &Literal{GoExpr: strconv.FormatInt(value.Int64Value, 10)}
-	case ScalarDefaultFloat64:
-		return &Literal{GoExpr: strconv.FormatFloat(value.Float64Value, 'g', -1, 64)}
-	default:
-		return nil
-	}
+	return &Literal{GoExpr: expr}
 }
 
 // isStringEnum reports whether s is a string constrained to a fixed set of
@@ -564,7 +560,9 @@ func markWriteOnlyAncestorsConfigurationOwned(attributes []*Attribute) bool {
 // Optional otherwise; resourceTree reads s.Provenance (falling back to
 // b.oneOfProvenance) and is the only kind that can set two flags at once
 // (Optional+Computed). resourceTree honors `required` only alongside InRequest,
-// since the oneOf wrapped-value call site passes it unconditionally. Returns
+// since the oneOf wrapped-value call site passes it unconditionally, and a
+// native default outranks `required`: Terraform fills the omitted value, so
+// the attribute becomes Optional+Computed instead. Returns
 // MissingProvenanceError when resourceTree finds no Provenance at all.
 func (b *treeBuilder) applyPresence(a *Attribute, s *Schema, required bool) error {
 	switch b.kind {
@@ -574,15 +572,13 @@ func (b *treeBuilder) applyPresence(a *Attribute, s *Schema, required bool) erro
 		a.Required = required
 		a.Optional = !required
 	case resourceTree:
-		p := s.Provenance
-		if p == nil {
-			p = b.oneOfProvenance
-		}
+		p := b.provenanceOf(s)
 		if p == nil {
 			return &MissingProvenanceError{Path: a.Path}
 		}
 		switch {
-		case a.Default != nil && p.InRequest:
+		// resourceDefaultEligible has already established InRequest here.
+		case a.Default != nil:
 			a.Optional, a.Computed = true, true
 		case required && p.InRequest:
 			a.Required = true
@@ -631,7 +627,13 @@ func RequiresReplaceSpec(goType string) PlanModifierSpec {
 // "types.String" -> "stringplanmodifier". Every GoType FrameworkType produces
 // follows this convention.
 func PlanModifierPackage(goType string) string {
-	return strings.ToLower(strings.TrimPrefix(goType, "types.")) + "planmodifier"
+	return strings.ToLower(FrameworkTypeName(goType)) + "planmodifier"
+}
+
+// FrameworkTypeName is goType without the "types." qualifier, the stem both
+// framework subpackages and their Static<Type> constructors are named from.
+func FrameworkTypeName(goType string) string {
+	return strings.TrimPrefix(goType, "types.")
 }
 
 // oneOfModelName is the generated Go struct name for an envelope or variant.

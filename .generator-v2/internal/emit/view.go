@@ -568,7 +568,6 @@ type ResourceView struct {
 	UsesObjectValidators bool
 	UsesPlanModifiers    bool
 	PlanModifierPackages []string
-	UsesDefaults         bool
 	DefaultPackages      []string
 	// UsesUUID and UsesStrconv add the google/uuid and strconv imports for a
 	// path argument that must be recovered by parsing (see SDKArgumentView).

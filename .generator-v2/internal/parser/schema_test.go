@@ -1178,7 +1178,6 @@ var _ = Describe("NormalizeSchemas scalar defaults", func() {
 		func(property string, want *model.ScalarDefault) {
 			got := properties[property]
 			Expect(got.HasDefault).To(BeTrue())
-			Expect(got.Default.Declared).To(BeTrue())
 			Expect(got.Default.Problem).To(BeEmpty())
 			Expect(got.Default.Value).ToNot(BeNil())
 			Expect(got.Default.Value.Equal(want)).To(BeTrue())
@@ -1204,7 +1203,6 @@ var _ = Describe("NormalizeSchemas scalar defaults", func() {
 		for _, property := range []string{"null_default", "array_default", "object_default"} {
 			got := properties[property]
 			Expect(got.HasDefault).To(BeTrue(), property)
-			Expect(got.Default.Declared).To(BeTrue(), property)
 			Expect(got.Default.Value).To(BeNil(), property)
 			Expect(got.Default.Problem).To(BeEmpty(), property)
 		}
@@ -1213,7 +1211,7 @@ var _ = Describe("NormalizeSchemas scalar defaults", func() {
 	DescribeTable("retains unusable scalar defaults as validation problems",
 		func(property, problem string) {
 			got := properties[property]
-			Expect(got.Default.Declared).To(BeTrue())
+			Expect(got.HasDefault).To(BeTrue())
 			Expect(got.Default.Value).To(BeNil())
 			Expect(got.Default.Problem).To(ContainSubstring(problem))
 		},
@@ -1225,7 +1223,7 @@ var _ = Describe("NormalizeSchemas scalar defaults", func() {
 
 	It("retains a response-only validation problem for lifecycle code to ignore", func() {
 		got := responseProperties["response_invalid"]
-		Expect(got.Default.Declared).To(BeTrue())
+		Expect(got.HasDefault).To(BeTrue())
 		Expect(got.Default.Value).To(BeNil())
 		Expect(got.Default.Problem).To(ContainSubstring("want integer"))
 	})

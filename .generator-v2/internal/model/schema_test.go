@@ -19,7 +19,24 @@ func objSchema(props map[string]*Schema) *Schema {
 	return &Schema{Kind: SchemaKindObject, Properties: props}
 }
 func arrSchema(item *Schema) *Schema { return &Schema{Kind: SchemaKindArray, Items: item} }
-func mapSchema(val *Schema) *Schema  { return &Schema{Kind: SchemaKindMap, Items: val} }
+
+// defaulted is a primitive string carrying one decoded default; a nil value
+// makes it a plain undeclared field. problemDefault is the declared-but-
+// unusable counterpart.
+func defaulted(value *ScalarDefault) *Schema {
+	out := primSchema("string")
+	out.HasDefault = value != nil
+	out.Default = SchemaDefault{Value: value}
+	return out
+}
+
+func problemDefault(problem string) *Schema {
+	out := primSchema("string")
+	out.HasDefault = true
+	out.Default = SchemaDefault{Problem: problem}
+	return out
+}
+func mapSchema(val *Schema) *Schema { return &Schema{Kind: SchemaKindMap, Items: val} }
 func oneOfSchema(path, name string, variants ...OneOfVariant) *Schema {
 	return &Schema{
 		Kind: SchemaKindOneOf,
@@ -874,8 +891,8 @@ var _ = Describe("BuildResourceTree presence flags", func() {
 
 	It("turns a required create default into an omittable known resource value", func() {
 		authType := provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true})
-		authType.Default = SchemaDefault{Declared: true, Value: NewStringDefault("basic")}
 		authType.HasDefault = true
+		authType.Default = SchemaDefault{Value: NewStringDefault("basic")}
 		tree, _, err := BuildResourceTree(&Schema{
 			Kind:       SchemaKindObject,
 			Required:   []string{"auth_type"},
@@ -896,8 +913,8 @@ var _ = Describe("BuildResourceTree presence flags", func() {
 		authType := provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true})
 		authType.RefName = "IntegrationAccountAuthType"
 		authType.Enum = []string{"basic", "token"}
-		authType.Default = SchemaDefault{Declared: true, Value: NewStringDefault("basic")}
 		authType.HasDefault = true
+		authType.Default = SchemaDefault{Value: NewStringDefault("basic")}
 
 		tree, _, err := BuildResourceTree(&Schema{
 			Kind:       SchemaKindObject,
@@ -921,26 +938,22 @@ var _ = Describe("BuildResourceTree presence flags", func() {
 
 	It("does not expose defaults that are null, response-only, secret, write-only, or compound", func() {
 		nullDefault := provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true})
-		nullDefault.Default = SchemaDefault{Declared: true}
 		nullDefault.HasDefault = true
 		responseOnly := provSchema("string", SchemaProvenance{InResponse: true})
-		responseOnly.Default = SchemaDefault{Declared: true, Value: NewStringDefault("server")}
 		responseOnly.HasDefault = true
+		responseOnly.Default = SchemaDefault{Value: NewStringDefault("server")}
 		sensitive := provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true})
 		sensitive.Sensitive = true
-		sensitive.Default = SchemaDefault{Declared: true, Value: NewStringDefault("redacted")}
 		sensitive.HasDefault = true
+		sensitive.Default = SchemaDefault{Value: NewStringDefault("redacted")}
 		writeOnly := writeOnlySchema(
 			provSchema("string", SchemaProvenance{InRequest: true, RequestRequired: true}), true, true)
-		writeOnly.Default = SchemaDefault{Declared: true, Value: NewStringDefault("redacted")}
 		writeOnly.HasDefault = true
-		compound := &Schema{
-			Kind:       SchemaKindArray,
-			Items:      primSchema("string"),
-			Provenance: &SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true},
-			Default:    SchemaDefault{Declared: true, Value: NewStringDefault("not-a-list")},
-			HasDefault: true,
-		}
+		writeOnly.Default = SchemaDefault{Value: NewStringDefault("redacted")}
+		compound := arrSchema(primSchema("string"))
+		compound.Provenance = &SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true}
+		compound.HasDefault = true
+		compound.Default = SchemaDefault{Value: NewStringDefault("not-a-list")}
 
 		root := objSchema(map[string]*Schema{
 			"null_default":  nullDefault,
@@ -966,7 +979,7 @@ var _ = Describe("BuildResourceTree presence flags", func() {
 
 	It("defaults a nested child without assigning a default to its parent", func() {
 		child := provSchema("boolean", SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true})
-		child.Default = SchemaDefault{Declared: true, Value: NewBoolDefault(false)}
+		child.Default = SchemaDefault{Value: NewBoolDefault(false)}
 		parent := &Schema{
 			Kind:       SchemaKindObject,
 			Required:   []string{"enabled"},

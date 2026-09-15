@@ -166,10 +166,7 @@ var _ = Describe("BuildResourceView request mapping", func() {
 		} {
 			priority := body.Properties["data"].Properties["attributes"].Properties["priority"]
 			priority.HasDefault = true
-			priority.Default = model.SchemaDefault{
-				Declared: true,
-				Value:    model.NewStringDefault("low"),
-			}
+			priority.Default = model.SchemaDefault{Value: model.NewStringDefault("low")}
 		}
 
 		artifact, err := model.BuildArtifact(op)

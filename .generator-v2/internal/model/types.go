@@ -7,6 +7,7 @@ package model
 
 import (
 	"slices"
+	"strconv"
 	"time"
 
 	v3 "github.com/pb33f/libopenapi/datamodel/high/v3"
@@ -86,6 +87,26 @@ func NewFloat64Default(value float64) *ScalarDefault {
 	return &ScalarDefault{Kind: ScalarDefaultFloat64, Float64Value: value}
 }
 
+// GoExpr renders the value as the Go literal used both by generated code and
+// by diagnostics. Empty for a nil receiver or an unrepresentable kind.
+func (d *ScalarDefault) GoExpr() string {
+	if d == nil {
+		return ""
+	}
+	switch d.Kind {
+	case ScalarDefaultString:
+		return strconv.Quote(d.StringValue)
+	case ScalarDefaultBool:
+		return strconv.FormatBool(d.BoolValue)
+	case ScalarDefaultInt64:
+		return strconv.FormatInt(d.Int64Value, 10)
+	case ScalarDefaultFloat64:
+		return strconv.FormatFloat(d.Float64Value, 'g', -1, 64)
+	default:
+		return ""
+	}
+}
+
 // Equal compares normalized scalar defaults by kind and value.
 func (d *ScalarDefault) Equal(other *ScalarDefault) bool {
 	if d == nil || other == nil {
@@ -108,14 +129,14 @@ func (d *ScalarDefault) Equal(other *ScalarDefault) bool {
 	}
 }
 
-// SchemaDefault retains the source declaration separately from its usable
-// value. Problem is populated when a non-null scalar declaration cannot satisfy
-// the normalized field; artifact builders decide whether that problem belongs
+// SchemaDefault is the usable form of one OpenAPI `default` declaration;
+// Schema.HasDefault records that a declaration was present at all. Value is nil
+// when the declaration was null or cannot satisfy the normalized field, and
+// Problem then says why: artifact builders decide whether that problem belongs
 // to a configurable request role before failing generation.
 type SchemaDefault struct {
-	Declared bool
-	Value    *ScalarDefault
-	Problem  string
+	Value   *ScalarDefault
+	Problem string
 }
 
 // Cardinality distinguishes a singular data source (resolves one item by id)
@@ -355,8 +376,8 @@ type SDKOperationBinding struct {
 // RequestDiscriminator describes a request body's JSON:API "data.type" member,
 // which the API requires and rejects the body without. The pinned SDK's
 // New<Data>WithDefaults() supplies the value only when the OpenAPI type schema
-// declares a `default` (see Schema.HasDefault); otherwise the generated code
-// must send it itself.
+// declares a `default` (see Schema.HasDefault); otherwise the generated
+// code must send it itself.
 type RequestDiscriminator struct {
 	// GoType is the SDK type the value converts to, e.g. "PlaylistDataType" —
 	// the type property's own component name. Empty when the property is
@@ -415,14 +436,14 @@ type Schema struct {
 	// Enum holds the allowed values, if constrained.
 	Enum []string
 	// HasDefault records that the schema declares a `default`, ReadOnly that it
-	// declares `readOnly: true`. Neither reaches the Terraform schema; together
-	// they reproduce the pinned SDK generator's predicate for whether
-	// New<Model>WithDefaults() pre-assigns a property (`default` defined, type
-	// not object/array, not readOnly).
+	// declares `readOnly: true`. Together they reproduce the pinned SDK
+	// generator's predicate for whether New<Model>WithDefaults() pre-assigns a
+	// property (`default` defined, type not object/array, not readOnly), so
+	// HasDefault stays true for the null, object/array and undecodable cases
+	// that leave Default without a usable Value.
 	HasDefault bool
-	// Default carries the typed value used by Terraform resource generation.
-	// HasDefault remains the compatibility bit used by pinned SDK constructor
-	// logic and mirrors Default.Declared for newly normalized schemas.
+	// Default carries the typed value used by Terraform resource generation;
+	// it is empty whenever the declaration is unusable (see SchemaDefault).
 	Default  SchemaDefault
 	ReadOnly bool
 	// WriteOnlySecret retains the OpenAPI writeOnly marker independently from
