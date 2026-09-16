@@ -4692,7 +4692,7 @@ Optional:
 Required:
 
 - `name` (String) Name of the app input.
-- `value` (String) JSON-encoded value of the app input. This can be a string, number, boolean, object, or array.
+- `value` (String) JSON-encoded value of the app input. Use `jsonencode()` for strings, numbers, booleans, objects, and arrays.
 
 
 <a id="nestedblock--widget--embedded_app_definition--time"></a>
@@ -10538,7 +10538,7 @@ Optional:
 Required:
 
 - `name` (String) Name of the app input.
-- `value` (String) JSON-encoded value of the app input. This can be a string, number, boolean, object, or array.
+- `value` (String) JSON-encoded value of the app input. Use `jsonencode()` for strings, numbers, booleans, objects, and arrays.
 
 
 <a id="nestedblock--widget--group_definition--widget--embedded_app_definition--time"></a>

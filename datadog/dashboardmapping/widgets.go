@@ -204,6 +204,9 @@ var EmbeddedAppWidgetSpec = WidgetSpec{
 	HCLKey:      "embedded_app_definition",
 	JSONType:    "embedded_app",
 	Description: "The definition for an App Builder embedded app widget.",
+	ExactlyOneOf: [][]string{
+		{"app_id", "template_id"},
+	},
 	Fields: []FieldSpec{
 		{HCLKey: "app_id", Type: TypeString, OmitEmpty: true,
 			Description: "UUID of the App Builder app to embed. Exactly one of `app_id` or `template_id` must be provided."},
@@ -215,7 +218,7 @@ var EmbeddedAppWidgetSpec = WidgetSpec{
 				{HCLKey: "name", Type: TypeString, OmitEmpty: false, Required: true,
 					Description: "Name of the app input."},
 				{HCLKey: "value", Type: TypeJSON, OmitEmpty: false, Required: true,
-					Description: "JSON-encoded value of the app input. This can be a string, number, boolean, object, or array."},
+					Description: "JSON-encoded value of the app input. Use `jsonencode()` for strings, numbers, booleans, objects, and arrays."},
 			}},
 		widgetCustomLinkField,
 	},

@@ -78,3 +78,52 @@ func TestEmbeddedAppTemplateWidgetRoundTrip(t *testing.T) {
 		t.Fatalf("template_id was not restored: %#v", flattenedDefinition)
 	}
 }
+
+func TestEmbeddedAppWidgetIdentifierValidation(t *testing.T) {
+	tests := []struct {
+		name       string
+		definition map[string]interface{}
+		wantError  bool
+	}{
+		{
+			name:       "app id only",
+			definition: map[string]interface{}{"app_id": "7e7745f9-4343-4927-b038-80934a355915"},
+		},
+		{
+			name:       "template id only",
+			definition: map[string]interface{}{"template_id": "ec2_manager"},
+		},
+		{
+			name:       "neither identifier",
+			definition: map[string]interface{}{},
+			wantError:  true,
+		},
+		{
+			name: "both identifiers",
+			definition: map[string]interface{}{
+				"app_id":      "7e7745f9-4343-4927-b038-80934a355915",
+				"template_id": "ec2_manager",
+			},
+			wantError: true,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			data := map[string]interface{}{
+				"widget": []interface{}{
+					map[string]interface{}{
+						"embedded_app_definition": []interface{}{test.definition},
+					},
+				},
+			}
+			errs := ValidateWidgetConflicts(data)
+			if test.wantError && len(errs) == 0 {
+				t.Fatal("expected identifier validation error, got none")
+			}
+			if !test.wantError && len(errs) != 0 {
+				t.Fatalf("expected no identifier validation error, got: %v", errs)
+			}
+		})
+	}
+}
