@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"runtime"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -30,6 +31,16 @@ import (
 
 var _ provider.Provider = &FrameworkProvider{}
 
+// EnableGeneratedUnstableOperations enables every unstable SDK operation used
+// by generated provider artifacts. Keeping this in the provider package lets
+// alternate client construction paths, including acceptance tests, consume the
+// generator-owned registry without duplicating operation identifiers.
+func EnableGeneratedUnstableOperations(config *datadog.Configuration) {
+	for _, operation := range generatedUnstableOperations {
+		config.SetUnstableOperationEnabled(operation, true)
+	}
+}
+
 var Resources = []func() resource.Resource{
 	NewAgentlessScanningAwsScanOptionsResource,
 	NewAgentlessScanningAzureScanOptionsResource,
@@ -46,6 +57,7 @@ var Resources = []func() resource.Resource{
 	NewDatasetResource,
 	NewDomainAllowlistResource,
 	NewDowntimeScheduleResource,
+	NewFleetScheduleResource,
 	NewIntegrationAzureResource,
 	NewIntegrationAwsEventBridgeResource,
 	NewIntegrationAwsExternalIDResource,
@@ -67,6 +79,7 @@ var Resources = []func() resource.Resource{
 	NewRumMetricResource,
 	NewRumRetentionFilterResource,
 	NewRumRetentionFiltersOrderResource,
+	NewSamlIdpMetadataResource,
 	NewRumRetentionQuotaResource,
 	NewSecurityFindingsMuteRuleResource,
 	NewSecurityFindingsMuteRulesOrderResource,
@@ -74,6 +87,8 @@ var Resources = []func() resource.Resource{
 	NewSecurityFindingsDueDateRulesOrderResource,
 	NewSecurityFindingsTicketCreationRuleResource,
 	NewSecurityFindingsTicketCreationRulesOrderResource,
+	NewSecurityFindingsSeverityModifierRuleResource,
+	NewSecurityFindingsSeverityModifierRulesOrderResource,
 	NewSensitiveDataScannerGroupOrder,
 	NewServiceAccountApplicationKeyResource,
 	NewServiceAccessTokenResource,
@@ -168,6 +183,8 @@ var Datasources = []func() datasource.DataSource{
 	NewAwsLogsServicesDataSource,
 	NewDatadogApmRetentionFiltersOrderDataSource,
 	NewDatadogDashboardListDataSource,
+	NewFleetScheduleDataSource,
+	NewFleetSchedulesDataSource,
 	NewDatadogIntegrationAWSNamespaceRulesDatasource,
 	NewDatadogMetricActiveTagsAndAggregationsDataSource,
 	NewDatadogMetricMetadataDataSource,
@@ -261,6 +278,7 @@ type ProviderSchema struct {
 	HttpClientRetryBackoffMultiplier types.Int64  `tfsdk:"http_client_retry_backoff_multiplier"`
 	HttpClientRetryBackoffBase       types.Int64  `tfsdk:"http_client_retry_backoff_base"`
 	HttpClientRetryMaxRetries        types.Int64  `tfsdk:"http_client_retry_max_retries"`
+	HttpClientRetryJitter            types.Int64  `tfsdk:"http_client_retry_jitter"`
 	DefaultTags                      []DefaultTag `tfsdk:"default_tags"`
 	IgnoreTagKeys                    types.Set    `tfsdk:"ignore_tag_keys"`
 }
@@ -276,8 +294,11 @@ func New() provider.Provider {
 }
 
 func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resource {
-	var wrappedResources []func() resource.Resource
-	for _, f := range Resources {
+	// Hand-written and generator-v2 resources are kept in separate slices (see
+	// generatedResources) so regenerating does not churn this file. The two
+	// conditional resources below leave room for themselves in the capacity.
+	wrappedResources := make([]func() resource.Resource, 0, len(Resources)+len(generatedResources)+2)
+	for _, f := range slices.Concat(Resources, generatedResources) {
 		r := f()
 		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&r) })
 	}
@@ -298,12 +319,8 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	// Hand-written and generator-v2 data sources are kept in separate slices
 	// (see generatedDatasources) so regenerating does not churn this file.
-	all := make([]func() datasource.DataSource, 0, len(Datasources)+len(generatedDatasources))
-	all = append(all, Datasources...)
-	all = append(all, generatedDatasources...)
-
-	var wrappedDatasources []func() datasource.DataSource
-	for _, f := range all {
+	wrappedDatasources := make([]func() datasource.DataSource, 0, len(Datasources)+len(generatedDatasources))
+	for _, f := range slices.Concat(Datasources, generatedDatasources) {
 		r := f()
 		wrappedDatasources = append(wrappedDatasources, func() datasource.DataSource { return NewFrameworkDatasourceWrapper(&r) })
 	}
@@ -391,6 +408,10 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Optional:    true,
 				Description: "The HTTP request maximum retry number. Defaults to 3.",
 			},
+			"http_client_retry_jitter": schema.Int64Attribute{
+				Optional:    true,
+				Description: "The maximum random delay added to each HTTP request retry. Defaults to 0 seconds.",
+			},
 			"ignore_tag_keys": schema.SetAttribute{
 				Optional:    true,
 				ElementType: types.StringType,
@@ -402,13 +423,13 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Validators: []validator.List{
 					listvalidator.SizeAtMost(1),
 				},
-				Description: "[Experimental - Logs Indexes, Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources.",
+				Description: "[Experimental - Action Connections, Logs Indexes, Logs Pipelines, Monitors, Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"tags": schema.MapAttribute{
 							ElementType: types.StringType,
 							Optional:    true,
-							Description: "[Experimental - Logs Indexes, Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.",
+							Description: "[Experimental - Action Connections, Logs Indexes, Logs Pipelines, Monitors, Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.",
 						},
 					},
 				},
@@ -540,6 +561,14 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 		}
 	}
 
+	if config.HttpClientRetryJitter.IsNull() {
+		retryJitter, err := utils.GetMultiEnvVar(utils.DDHTTPRetryJitter)
+		if err == nil {
+			v, _ := strconv.Atoi(retryJitter)
+			config.HttpClientRetryJitter = types.Int64Value(int64(v))
+		}
+	}
+
 	// Configure defaults for booleans.
 	// Remove this once fully migrated to framework
 	if config.Validate.IsNull() {
@@ -561,6 +590,7 @@ func (p *FrameworkProvider) ValidateConfigValues(ctx context.Context, config *Pr
 	// Init validators we need for purposes of config validation only
 	oneOfStringValidator := stringvalidator.OneOf("true", "false")
 	int64AtLeastValidator := int64validator.AtLeast(1)
+	int64NonNegativeValidator := int64validator.AtLeast(0)
 	int64BetweenValidator := int64validator.Between(1, 5)
 
 	if !config.Validate.IsNull() {
@@ -590,6 +620,12 @@ func (p *FrameworkProvider) ValidateConfigValues(ctx context.Context, config *Pr
 	if !config.HttpClientRetryMaxRetries.IsNull() {
 		res := validator.Int64Response{}
 		int64BetweenValidator.ValidateInt64(ctx, validator.Int64Request{ConfigValue: config.HttpClientRetryMaxRetries}, &res)
+		diags.Append(res.Diagnostics...)
+	}
+
+	if !config.HttpClientRetryJitter.IsNull() {
+		res := validator.Int64Response{}
+		int64NonNegativeValidator.ValidateInt64(ctx, validator.Int64Request{ConfigValue: config.HttpClientRetryJitter}, &res)
 		diags.Append(res.Diagnostics...)
 	}
 
@@ -691,6 +727,11 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDataset", true)
+
+	// Fleet Automation schedule reads are stable. Only mutations use Preview endpoints.
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateFleetSchedule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateFleetSchedule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteFleetSchedule", true)
 
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListIncidentUserDefinedFields", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateIncidentUserDefinedField", true)
@@ -828,6 +869,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationTicketCreationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationTicketCreationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationTicketCreationRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationSeverityModifierRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationSeverityModifierRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationSeverityModifierRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationSeverityModifierRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationSeverityModifierRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationSeverityModifierRules", true)
 
 	// Enable Tag Indexing Rules & Exemptions
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateTagIndexingRule", true)
@@ -852,6 +899,8 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateExecutionPolicy", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
+
+	EnableGeneratedUnstableOperations(ddClientConfig)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
@@ -907,6 +956,10 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 
 		if !config.HttpClientRetryMaxRetries.IsNull() {
 			ddClientConfig.RetryConfiguration.MaxRetries = int(config.HttpClientRetryMaxRetries.ValueInt64())
+		}
+
+		if !config.HttpClientRetryJitter.IsNull() {
+			ddClientConfig.RetryConfiguration.RetryJitter = time.Duration(config.HttpClientRetryJitter.ValueInt64()) * time.Second
 		}
 	}
 

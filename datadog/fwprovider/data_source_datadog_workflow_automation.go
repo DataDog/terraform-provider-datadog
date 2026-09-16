@@ -28,6 +28,7 @@ type workflowAutomationDatasourceModel struct {
 	Tags        []types.String       `tfsdk:"tags"`
 	Published   types.Bool           `tfsdk:"published"`
 	SpecJson    jsontypes.Normalized `tfsdk:"spec_json"`
+	RunAs       types.Object         `tfsdk:"run_as"`
 }
 
 func NewWorkflowAutomationDataSource() datasource.DataSource {
@@ -79,6 +80,20 @@ func (d *workflowAutomationDatasource) Schema(_ context.Context, request datasou
 				Description: "The spec defines what the workflow does.",
 				CustomType:  jsontypes.NormalizedType{},
 			},
+			"run_as": schema.SingleNestedAttribute{
+				Computed:    true,
+				Description: "Identity used to run the workflow.",
+				Attributes: map[string]schema.Attribute{
+					"type": schema.StringAttribute{
+						Computed:    true,
+						Description: "Type of identity used to run the workflow. `owner` uses the workflow owner, `initiator` uses the user who starts the execution, and `service_account` uses the account specified by `id`.",
+					},
+					"id": schema.StringAttribute{
+						Computed:    true,
+						Description: "Service account identifier when the workflow runs as a service account.",
+					},
+				},
+			},
 		},
 	}
 }
@@ -129,6 +144,11 @@ func apiResponseToWorkflowAutomationDatasourceModel(workflow *datadogV2.GetWorkf
 	}
 
 	workflowModel.Published = types.BoolPointerValue(attributes.Published)
+	var err error
+	workflowModel.RunAs, err = apiWorkflowRunAsToModel(attributes.RunAsUserMode, workflow.Data.Relationships)
+	if err != nil {
+		return nil, err
+	}
 
 	sort.Strings(attributes.Tags)
 	var tags []types.String = make([]types.String, 0, len(attributes.Tags))

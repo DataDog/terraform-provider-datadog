@@ -36,6 +36,11 @@ resource "datadog_workflow_automation" "team_rules_test" {
   description = "Workflow used by on-call team routing rules test."
   tags        = ["service:foo", "team:bar"]
   published   = true
+
+  run_as = {
+    type = "owner"
+  }
+
   spec_json = jsonencode({
     handle = "team-rules-test-workflow-UNIQ"
     steps  = []

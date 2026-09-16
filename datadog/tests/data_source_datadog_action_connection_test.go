@@ -32,6 +32,9 @@ func TestAccDatadogActionConnectionDatasource_AWS_AssumeRole(t *testing.T) {
 				Config: testAWSAssumeRoleConnectionDataSourceConfig(connectionName),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("data.datadog_action_connection.aws_assume_role_conn", "name", connectionName),
+					resource.TestCheckResourceAttr("data.datadog_action_connection.aws_assume_role_conn", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr("data.datadog_action_connection.aws_assume_role_conn", "tags.*", "env:test"),
+					resource.TestCheckTypeSetElemAttr("data.datadog_action_connection.aws_assume_role_conn", "tags.*", "team:action-platform"),
 					resource.TestCheckResourceAttr("data.datadog_action_connection.aws_assume_role_conn", "aws.assume_role.account_id", testAWSAccountID),
 					resource.TestCheckResourceAttr("data.datadog_action_connection.aws_assume_role_conn", "aws.assume_role.role", testAWSRole),
 					resource.TestCheckResourceAttrSet("data.datadog_action_connection.aws_assume_role_conn", "aws.assume_role.principal_id"),
@@ -48,13 +51,18 @@ func testAWSAssumeRoleConnectionDataSourceConfig(name string) string {
 	data "datadog_action_connection" "aws_assume_role_conn" {
 		id = datadog_action_connection.aws_assume_role_conn.id
 		depends_on = [datadog_action_connection.aws_assume_role_conn]
-	}`, testAWSAssumeRoleConnectionResourceConfig(name))
+	}`, testAWSAssumeRoleConnectionResourceConfigWithTags(name, `["env:test", "team:action-platform"]`))
 }
 
 func testAWSAssumeRoleConnectionResourceConfig(name string) string {
+	return testAWSAssumeRoleConnectionResourceConfigWithTags(name, "null")
+}
+
+func testAWSAssumeRoleConnectionResourceConfigWithTags(name, tags string) string {
 	return fmt.Sprintf(`
 	resource "datadog_action_connection" "aws_assume_role_conn" {
 		name = "%s"
+		tags = %s
 
 		aws {
 			assume_role {
@@ -62,7 +70,7 @@ func testAWSAssumeRoleConnectionResourceConfig(name string) string {
 				role = "%s"
 			}
 		}
-	}`, name, testAWSAccountID, testAWSRole)
+	}`, name, tags, testAWSAccountID, testAWSRole)
 }
 
 func testAccCheckDatadogConnectionDestroy(accProvider *fwprovider.FrameworkProvider, resourceName string) func(*terraform.State) error {

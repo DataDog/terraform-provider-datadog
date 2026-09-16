@@ -41,3 +41,23 @@ jobs:
 
       - name: Test
         run: make -C .. tfgen-test
+
+  integration-test:
+    name: integration test (compile & schema-validate generated resources)
+    runs-on: ubuntu-latest
+    if: github.event.action != 'closed' && github.event.pull_request.merged != true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Go
+        uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe
+        with:
+          go-version-file: .generator-v2/go.mod
+          cache: true
+          cache-dependency-path: |
+            go.sum
+            .generator-v2/go.sum
+
+      - name: Integration test
+        run: make tfgen-test-integration

@@ -18,7 +18,6 @@ import (
 	"go/parser"
 	"go/token"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -29,15 +28,12 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 	tfparser "github.com/terraform-providers/terraform-provider-datadog/generator/internal/parser"
+	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/providermod"
 )
 
 // corpusDir holds the checked-in mini-OAS slices: real Datadog response shapes,
 // unannotated, which this test annotates in memory to opt each read operation in.
 const corpusDir = "../testdata/mini-oas"
-
-// providerRoot is the provider module, whose go.mod pins the SDK this generator's
-// output must compile against.
-const providerRoot = "../../.."
 
 // packageDecls is what one generated SDK package declares, read from source.
 type packageDecls struct {
@@ -60,7 +56,7 @@ func (d packageDecls) hasField(structName, field string) bool {
 // only exported declarations' names, never types, so nothing here depends on the
 // SDK being linkable.
 func sdkPackageDecls(pkg string) (packageDecls, error) {
-	sdkDir, err := sdkModuleDir()
+	sdkDir, err := providermod.SDKModuleDir("")
 	if err != nil {
 		return packageDecls{}, err
 	}
@@ -106,18 +102,6 @@ func sdkPackageDecls(pkg string) (packageDecls, error) {
 		}
 	}
 	return decls, nil
-}
-
-// sdkModuleDir resolves the pinned SDK's module directory through the provider
-// module, so the version read is exactly the one the provider builds against.
-func sdkModuleDir() (string, error) {
-	cmd := exec.Command("go", "list", "-m", "-f", "{{.Dir}}", "github.com/DataDog/datadog-api-client-go/v2")
-	cmd.Dir = providerRoot
-	out, err := cmd.Output()
-	if err != nil {
-		return "", err
-	}
-	return strings.TrimSpace(string(out)), nil
 }
 
 // annotatedCorpus loads every mini-OAS slice with its by-id (else first) GET

@@ -16,14 +16,16 @@ Terraform provides helpful [Extending Terraform][1] documentation for best pract
 - All new resources should be written using [Terraform Plugin Framework][11]. See [here][12] for examples of current resources implemented using Terraform Plugin Framework. **NOTE**: We use [Protocol Version 6][13], which requires Terraform CLI 1.0+ (or 1.1.5+ for SDKv2 resources using tf5to6server).
 - The documentation is generated using the `tfplugindocs` CLI.
   - Ensure each Schema attribute in the code contains a `Description` field.
-  - For nested attributes, prefer [Nested Attribute Types][14] (`SingleNestedAttribute`, `ListNestedAttribute`, `SetNestedAttribute`, `MapNestedAttribute`) over [Blocks][15]. They are type-safe, fully support `Description`, and are the recommended approach in Plugin Framework v1.x. Do not use [ObjectType][16] as it does not support per-field descriptions.
+  - For new complex structures, use [Nested Attribute Types][14] (`SingleNestedAttribute`, `ListNestedAttribute`, `SetNestedAttribute`, `MapNestedAttribute`) instead of [Blocks][15]. Blocks are reserved for preserving configuration compatibility while migrating existing legacy SDK-based schemas. Nested attributes are type-safe, fully support `Description`, and are the recommended approach in Plugin Framework v1.x. Do not use [ObjectType][16] as it does not support per-field descriptions.
 - When developing a datasource, plan to write 2 data-sources :
   - One that will have a singular name (ex: `datadog_user`) which returns exactly one objects (and fails if there is 0 or more than 0)
   - One that will have a plural name (ex: `datadog_users`) which returns a list of objects and succeed in all cases (0, 1 or more than 1 objects)
 
 ## Write-Only Arguments
 
-When adding secret/sensitive attributes to Framework resources, use the write-only helpers in [`datadog/internal/fwutils`](./datadog/internal/fwutils/README.md#write-only-secret-helpers-writeonly_helpersgo). These generate the three-attribute pattern (`<attr>`, `<attr>_wo`, `<attr>_wo_version`) required by Terraform 1.11+ write-only support while maintaining backwards compatibility.
+For generated resources, only an OpenAPI property with `writeOnly: true` uses Terraform write-only handling. The generated schema replaces that property with `<attr>_wo` and `<attr>_wo_version`; it does not expose or fall back to a stateful plaintext `<attr>`. Datadog `x-secret` and generator `sensitive` annotations redact ordinary attributes from display but do not keep their values out of Terraform state.
+
+Existing hand-written resources can use the compatibility-preserving helpers in [`datadog/internal/fwutils`](./datadog/internal/fwutils/README.md#write-only-secret-helpers-writeonly_helpersgo). Their existing three-attribute pattern (`<attr>`, `<attr>_wo`, `<attr>_wo_version`) is retained for already-shipped schemas; do not use that legacy shape for new generated resources.
 
 ## Env-gated resources
 

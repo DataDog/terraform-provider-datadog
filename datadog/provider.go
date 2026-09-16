@@ -194,18 +194,24 @@ func Provider() *schema.Provider {
 					return diags
 				},
 			},
+			"http_client_retry_jitter": {
+				Type:         schema.TypeInt,
+				Optional:     true,
+				Description:  "The maximum random delay added to each HTTP request retry. Defaults to 0 seconds.",
+				ValidateFunc: validation.IntAtLeast(0),
+			},
 			"default_tags": {
 				Type:        schema.TypeList,
 				Optional:    true,
 				MaxItems:    1,
-				Description: "[Experimental - Logs Indexes, Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources.",
+				Description: "[Experimental - Action Connections, Logs Indexes, Logs Pipelines, Monitors, Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"tags": {
 							Type:        schema.TypeMap,
 							Optional:    true,
 							Elem:        &schema.Schema{Type: schema.TypeString},
-							Description: "[Experimental - Logs Indexes, Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.",
+							Description: "[Experimental - Action Connections, Logs Indexes, Logs Pipelines, Monitors, Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.",
 						},
 					},
 				},
@@ -516,6 +522,16 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		if err == nil {
 			fVal, _ := strconv.Atoi(envVal)
 			config.RetryConfiguration.MaxRetries = fVal
+		}
+	}
+
+	if retryJitterInterface, ok := d.GetOk("http_client_retry_jitter"); ok {
+		config.RetryConfiguration.RetryJitter = time.Duration(retryJitterInterface.(int)) * time.Second
+	} else {
+		envVal, err := utils.GetMultiEnvVar(utils.DDHTTPRetryJitter)
+		if err == nil {
+			vInt, _ := strconv.Atoi(envVal)
+			config.RetryConfiguration.RetryJitter = time.Duration(vInt) * time.Second
 		}
 	}
 
