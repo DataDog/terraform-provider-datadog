@@ -1,0 +1,930 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 333
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: '{"data":{"attributes":{"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278","rule":{"days_of_week":["Tue"],"maintenance_window_duration":60,"start_maintenance_window":"03:00","timezone":"UTC"},"status":"inactive","version_to_latest":1},"type":"schedule"}}
+
+'
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/unstable/fleet/schedules
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 525
+    uncompressed: false
+    body: '{"data":{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at_unix":1789474279,"created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278","next_run":"2026-09-22T03:00:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278","rule":{"days_of_week":["Tue"],"start_maintenance_window":"0300","maintenance_window_duration":60,"timezone":"UTC"},"status":"inactive","updated_at_unix":1789474279,"updated_by":"test@example.com","version_to_latest":1}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 201 Created
+    code: 201
+    duration: 56.141958ms
+- id: 1
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 86
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: '{"data":{"attributes":{"status":"inactive","version_to_latest":1},"type":"schedule"}}
+
+'
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/unstable/fleet/schedules/IsV-EoP-Vhq
+    method: PATCH
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 525
+    uncompressed: false
+    body: '{"data":{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at_unix":1789474279,"created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278","next_run":"2026-09-22T03:00:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278","rule":{"days_of_week":["Tue"],"start_maintenance_window":"0300","maintenance_window_duration":60,"timezone":"UTC"},"status":"inactive","updated_at_unix":1789474279,"updated_by":"test@example.com","version_to_latest":1}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 75.32875ms
+- id: 2
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules/IsV-EoP-Vhq
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 539
+    uncompressed: false
+    body: '{"data":{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at":"2026-09-15T12:11:19Z","created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278","next_run":"2026-09-22T03:00:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278","rule":{"days_of_week":["Tue"],"start_maintenance_window":"0300","maintenance_window_duration":60,"timezone":"UTC"},"status":"inactive","updated_at":"2026-09-15T12:11:19Z","updated_by":"test@example.com","version_to_latest":1}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 50.912583ms
+- id: 3
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules/IsV-EoP-Vhq
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 539
+    uncompressed: false
+    body: '{"data":{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at":"2026-09-15T12:11:19Z","created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278","next_run":"2026-09-22T03:00:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278","rule":{"days_of_week":["Tue"],"start_maintenance_window":"0300","maintenance_window_duration":60,"timezone":"UTC"},"status":"inactive","updated_at":"2026-09-15T12:11:19Z","updated_by":"test@example.com","version_to_latest":1}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 69.145834ms
+- id: 4
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 575
+    uncompressed: true
+    body: '{"data":[{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at":"2026-09-15T12:11:19Z","created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278","next_run":"2026-09-22T03:00:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278","rule":{"days_of_week":["Tue"],"start_maintenance_window":"0300","maintenance_window_duration":60,"timezone":"UTC"},"status":"inactive","updated_at":"2026-09-15T12:11:19Z","updated_by":"test@example.com","version_to_latest":1}}],"meta":{"page":{"total_count":1}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 80.530583ms
+- id: 5
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules/IsV-EoP-Vhq
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 539
+    uncompressed: false
+    body: '{"data":{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at":"2026-09-15T12:11:19Z","created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278","next_run":"2026-09-22T03:00:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278","rule":{"days_of_week":["Tue"],"start_maintenance_window":"0300","maintenance_window_duration":60,"timezone":"UTC"},"status":"inactive","updated_at":"2026-09-15T12:11:19Z","updated_by":"test@example.com","version_to_latest":1}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 55.526958ms
+- id: 6
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 575
+    uncompressed: true
+    body: '{"data":[{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at":"2026-09-15T12:11:19Z","created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278","next_run":"2026-09-22T03:00:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278","rule":{"days_of_week":["Tue"],"start_maintenance_window":"0300","maintenance_window_duration":60,"timezone":"UTC"},"status":"inactive","updated_at":"2026-09-15T12:11:19Z","updated_by":"test@example.com","version_to_latest":1}}],"meta":{"page":{"total_count":1}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 75.971209ms
+- id: 7
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules/IsV-EoP-Vhq
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 539
+    uncompressed: false
+    body: '{"data":{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at":"2026-09-15T12:11:19Z","created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278","next_run":"2026-09-22T03:00:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278","rule":{"days_of_week":["Tue"],"start_maintenance_window":"0300","maintenance_window_duration":60,"timezone":"UTC"},"status":"inactive","updated_at":"2026-09-15T12:11:19Z","updated_by":"test@example.com","version_to_latest":1}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 49.874875ms
+- id: 8
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules/IsV-EoP-Vhq
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 539
+    uncompressed: false
+    body: '{"data":{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at":"2026-09-15T12:11:19Z","created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278","next_run":"2026-09-22T03:00:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278","rule":{"days_of_week":["Tue"],"start_maintenance_window":"0300","maintenance_window_duration":60,"timezone":"UTC"},"status":"inactive","updated_at":"2026-09-15T12:11:19Z","updated_by":"test@example.com","version_to_latest":1}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 48.326875ms
+- id: 9
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 575
+    uncompressed: true
+    body: '{"data":[{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at":"2026-09-15T12:11:19Z","created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278","next_run":"2026-09-22T03:00:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278","rule":{"days_of_week":["Tue"],"start_maintenance_window":"0300","maintenance_window_duration":60,"timezone":"UTC"},"status":"inactive","updated_at":"2026-09-15T12:11:19Z","updated_by":"test@example.com","version_to_latest":1}}],"meta":{"page":{"total_count":1}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 65.29025ms
+- id: 10
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules/IsV-EoP-Vhq
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 539
+    uncompressed: false
+    body: '{"data":{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at":"2026-09-15T12:11:19Z","created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278","next_run":"2026-09-22T03:00:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278","rule":{"days_of_week":["Tue"],"start_maintenance_window":"0300","maintenance_window_duration":60,"timezone":"UTC"},"status":"inactive","updated_at":"2026-09-15T12:11:19Z","updated_by":"test@example.com","version_to_latest":1}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 60.47925ms
+- id: 11
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 362
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: '{"data":{"attributes":{"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278-updated","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278 service:provider-test","rule":{"days_of_week":["Fri","Wed"],"maintenance_window_duration":90,"start_maintenance_window":"04:30","timezone":"America/New_York"},"version_to_latest":2},"type":"schedule"}}
+
+'
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/unstable/fleet/schedules/IsV-EoP-Vhq
+    method: PATCH
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 574
+    uncompressed: false
+    body: '{"data":{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at_unix":1789474279,"created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278-updated","next_run":"2026-09-16T08:30:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278 service:provider-test","rule":{"days_of_week":["Fri","Wed"],"start_maintenance_window":"0430","maintenance_window_duration":90,"timezone":"America/New_York"},"status":"inactive","updated_at_unix":1789474281,"updated_by":"test@example.com","version_to_latest":2}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 140.293542ms
+- id: 12
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules/IsV-EoP-Vhq
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 588
+    uncompressed: false
+    body: '{"data":{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at":"2026-09-15T12:11:19Z","created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278-updated","next_run":"2026-09-16T08:30:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278 service:provider-test","rule":{"days_of_week":["Fri","Wed"],"start_maintenance_window":"0430","maintenance_window_duration":90,"timezone":"America/New_York"},"status":"inactive","updated_at":"2026-09-15T12:11:21Z","updated_by":"test@example.com","version_to_latest":2}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 47.652125ms
+- id: 13
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules/IsV-EoP-Vhq
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 588
+    uncompressed: false
+    body: '{"data":{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at":"2026-09-15T12:11:19Z","created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278-updated","next_run":"2026-09-16T08:30:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278 service:provider-test","rule":{"days_of_week":["Fri","Wed"],"start_maintenance_window":"0430","maintenance_window_duration":90,"timezone":"America/New_York"},"status":"inactive","updated_at":"2026-09-15T12:11:21Z","updated_by":"test@example.com","version_to_latest":2}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 48.698625ms
+- id: 14
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 624
+    uncompressed: true
+    body: '{"data":[{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at":"2026-09-15T12:11:19Z","created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278-updated","next_run":"2026-09-16T08:30:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278 service:provider-test","rule":{"days_of_week":["Fri","Wed"],"start_maintenance_window":"0430","maintenance_window_duration":90,"timezone":"America/New_York"},"status":"inactive","updated_at":"2026-09-15T12:11:21Z","updated_by":"test@example.com","version_to_latest":2}}],"meta":{"page":{"total_count":1}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 72.517125ms
+- id: 15
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules/IsV-EoP-Vhq
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 588
+    uncompressed: false
+    body: '{"data":{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at":"2026-09-15T12:11:19Z","created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278-updated","next_run":"2026-09-16T08:30:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278 service:provider-test","rule":{"days_of_week":["Fri","Wed"],"start_maintenance_window":"0430","maintenance_window_duration":90,"timezone":"America/New_York"},"status":"inactive","updated_at":"2026-09-15T12:11:21Z","updated_by":"test@example.com","version_to_latest":2}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 108.461292ms
+- id: 16
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 624
+    uncompressed: true
+    body: '{"data":[{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at":"2026-09-15T12:11:19Z","created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278-updated","next_run":"2026-09-16T08:30:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278 service:provider-test","rule":{"days_of_week":["Fri","Wed"],"start_maintenance_window":"0430","maintenance_window_duration":90,"timezone":"America/New_York"},"status":"inactive","updated_at":"2026-09-15T12:11:21Z","updated_by":"test@example.com","version_to_latest":2}}],"meta":{"page":{"total_count":1}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 120.330875ms
+- id: 17
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules/IsV-EoP-Vhq
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 588
+    uncompressed: false
+    body: '{"data":{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at":"2026-09-15T12:11:19Z","created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278-updated","next_run":"2026-09-16T08:30:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278 service:provider-test","rule":{"days_of_week":["Fri","Wed"],"start_maintenance_window":"0430","maintenance_window_duration":90,"timezone":"America/New_York"},"status":"inactive","updated_at":"2026-09-15T12:11:21Z","updated_by":"test@example.com","version_to_latest":2}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 135.403333ms
+- id: 18
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules/IsV-EoP-Vhq
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 588
+    uncompressed: false
+    body: '{"data":{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at":"2026-09-15T12:11:19Z","created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278-updated","next_run":"2026-09-16T08:30:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278 service:provider-test","rule":{"days_of_week":["Fri","Wed"],"start_maintenance_window":"0430","maintenance_window_duration":90,"timezone":"America/New_York"},"status":"inactive","updated_at":"2026-09-15T12:11:21Z","updated_by":"test@example.com","version_to_latest":2}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 53.658958ms
+- id: 19
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 624
+    uncompressed: true
+    body: '{"data":[{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at":"2026-09-15T12:11:19Z","created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278-updated","next_run":"2026-09-16T08:30:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278 service:provider-test","rule":{"days_of_week":["Fri","Wed"],"start_maintenance_window":"0430","maintenance_window_duration":90,"timezone":"America/New_York"},"status":"inactive","updated_at":"2026-09-15T12:11:21Z","updated_by":"test@example.com","version_to_latest":2}}],"meta":{"page":{"total_count":1}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 71.146958ms
+- id: 20
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules/IsV-EoP-Vhq
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 588
+    uncompressed: false
+    body: '{"data":{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at":"2026-09-15T12:11:19Z","created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278-updated","next_run":"2026-09-16T08:30:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278 service:provider-test","rule":{"days_of_week":["Fri","Wed"],"start_maintenance_window":"0430","maintenance_window_duration":90,"timezone":"America/New_York"},"status":"inactive","updated_at":"2026-09-15T12:11:21Z","updated_by":"test@example.com","version_to_latest":2}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 50.284042ms
+- id: 21
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules/IsV-EoP-Vhq
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 588
+    uncompressed: false
+    body: '{"data":{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at":"2026-09-15T12:11:19Z","created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278-updated","next_run":"2026-09-16T08:30:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278 service:provider-test","rule":{"days_of_week":["Fri","Wed"],"start_maintenance_window":"0430","maintenance_window_duration":90,"timezone":"America/New_York"},"status":"inactive","updated_at":"2026-09-15T12:11:21Z","updated_by":"test@example.com","version_to_latest":2}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 65.873375ms
+- id: 22
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 624
+    uncompressed: true
+    body: '{"data":[{"id":"IsV-EoP-Vhq","type":"schedule","attributes":{"created_at":"2026-09-15T12:11:19Z","created_by":"test@example.com","is_default":false,"name":"tf-TestAccDatadogFleetSchedule_Lifecycle-local-1789474278-updated","next_run":"2026-09-16T08:30:00Z","query":"env:terraform-fleet-test
+      host:nonexistent-1789474278 service:provider-test","rule":{"days_of_week":["Fri","Wed"],"start_maintenance_window":"0430","maintenance_window_duration":90,"timezone":"America/New_York"},"status":"inactive","updated_at":"2026-09-15T12:11:21Z","updated_by":"test@example.com","version_to_latest":2}}],"meta":{"page":{"total_count":1}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 84.837042ms
+- id: 23
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - "*/*"
+    url: https://api.datadoghq.com/api/unstable/fleet/schedules/IsV-EoP-Vhq
+    method: DELETE
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 0
+    uncompressed: false
+    body: ''
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: 64.090958ms
+- id: 24
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules/IsV-EoP-Vhq
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 88
+    uncompressed: false
+    body: '{"errors":[{"status":"404","title":"Schedule Not Found","detail":"schedule
+      not found"}]}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 404 Not Found
+    code: 404
+    duration: 47.425084ms
+- id: 25
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/fleet/schedules
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 45
+    uncompressed: true
+    body: '{"data":[],"meta":{"page":{"total_count":0}}}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 200 OK
+    code: 200
+    duration: 60.140666ms
+- id: 26
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    transfer_encoding: []
+    trailer: {}
+    host: api.datadoghq.com
+    remote_addr: ''
+    request_uri: ''
+    body: ''
+    form: {}
+    headers:
+      Accept:
+      - "*/*"
+    url: https://api.datadoghq.com/api/unstable/fleet/schedules/IsV-EoP-Vhq
+    method: DELETE
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    transfer_encoding: []
+    trailer: {}
+    content_length: 68
+    uncompressed: false
+    body: '{"errors":[{"title":"Generic Error","detail":"schedule not found"}]}'
+    headers:
+      Content-Type:
+      - application/vnd.api+json
+    status: 404 Not Found
+    code: 404
+    duration: 131.627292ms

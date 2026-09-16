@@ -57,6 +57,7 @@ var Resources = []func() resource.Resource{
 	NewDatasetResource,
 	NewDomainAllowlistResource,
 	NewDowntimeScheduleResource,
+	NewFleetScheduleResource,
 	NewIntegrationAzureResource,
 	NewIntegrationAwsEventBridgeResource,
 	NewIntegrationAwsExternalIDResource,
@@ -182,6 +183,8 @@ var Datasources = []func() datasource.DataSource{
 	NewAwsLogsServicesDataSource,
 	NewDatadogApmRetentionFiltersOrderDataSource,
 	NewDatadogDashboardListDataSource,
+	NewFleetScheduleDataSource,
+	NewFleetSchedulesDataSource,
 	NewDatadogIntegrationAWSNamespaceRulesDatasource,
 	NewDatadogMetricActiveTagsAndAggregationsDataSource,
 	NewDatadogMetricMetadataDataSource,
@@ -724,6 +727,11 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDataset", true)
+
+	// Fleet Automation schedule reads are stable. Only mutations use Preview endpoints.
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateFleetSchedule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateFleetSchedule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteFleetSchedule", true)
 
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListIncidentUserDefinedFields", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateIncidentUserDefinedField", true)

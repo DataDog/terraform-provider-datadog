@@ -63,4 +63,16 @@ func TestDefaultConfigureFuncRetryConfiguration(t *testing.T) {
 	if got, want := retryConfig.RetryJitter, 9*time.Second; got != want {
 		t.Errorf("RetryJitter = %s, want %s", got, want)
 	}
+
+	clientConfig := p.DatadogApiInstances.HttpClient.GetConfig()
+	for _, operation := range []string{"v2.CreateFleetSchedule", "v2.UpdateFleetSchedule", "v2.DeleteFleetSchedule"} {
+		if !clientConfig.IsUnstableOperationEnabled(operation) {
+			t.Errorf("%s should be enabled", operation)
+		}
+	}
+	for _, stableOperation := range []string{"v2.GetFleetScheduleV2", "v2.ListFleetSchedulesV2"} {
+		if clientConfig.IsUnstableOperationEnabled(stableOperation) {
+			t.Errorf("stable operation %s should not be enabled as unstable", stableOperation)
+		}
+	}
 }
