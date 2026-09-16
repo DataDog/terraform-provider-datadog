@@ -12,6 +12,48 @@ import (
 )
 
 var _ = Describe("BuildResourceView", func() {
+	It("renders typed scalar defaults and deterministic resource imports", func() {
+		op := incidentTypeResourceOperation(true)
+		createAttrs := op.ResolvedGroup.Create.RequestSchema.Properties["data"].Properties["attributes"]
+		updateAttrs := op.ResolvedGroup.Update.RequestSchema.Properties["data"].Properties["attributes"]
+		readAttrs := op.ResolvedGroup.Read.ResponseSchema.Properties["data"].Properties["attributes"]
+		cases := []struct {
+			field, oapiType, pkg, literal, setter string
+			value                                 *model.ScalarDefault
+		}{
+			{"default_string", "string", "stringdefault", `stringdefault.StaticString("incident")`,
+				"SetDefaultString", model.NewStringDefault("incident")},
+			{"default_bool", "boolean", "booldefault", "booldefault.StaticBool(false)",
+				"SetDefaultBool", model.NewBoolDefault(false)},
+			{"default_integer", "integer", "int64default", "int64default.StaticInt64(0)",
+				"SetDefaultInteger", model.NewInt64Default(0)},
+			{"default_number", "number", "float64default", "float64default.StaticFloat64(0)",
+				"SetDefaultNumber", model.NewFloat64Default(0)},
+		}
+		for _, tc := range cases {
+			for _, target := range []*model.Schema{createAttrs, updateAttrs} {
+				field := prim(tc.oapiType, "A defaulted value.")
+				field.HasDefault = true
+				field.Default = model.SchemaDefault{Value: tc.value}
+				target.Properties[tc.field] = field
+			}
+			readAttrs.Properties[tc.field] = prim(tc.oapiType, "A defaulted value.")
+			createAttrs.Required = append(createAttrs.Required, tc.field)
+		}
+
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		view, err := BuildResourceView(art)
+		Expect(err).NotTo(HaveOccurred())
+		source := string(mustRenderResource(view))
+
+		for _, tc := range cases {
+			Expect(source).To(ContainSubstring(tc.literal))
+			Expect(strings.Count(source, `resource/schema/`+tc.pkg+`"`)).To(Equal(1), tc.pkg)
+			Expect(strings.Count(source, tc.setter+"(")).To(Equal(2), tc.setter)
+		}
+	})
+
 	It("fails rather than rendering an empty schema when the merge has not run", func() {
 		op := incidentTypeResourceOperation(true)
 		art, err := model.BuildArtifact(op)

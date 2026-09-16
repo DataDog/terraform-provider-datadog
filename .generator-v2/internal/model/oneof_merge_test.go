@@ -278,6 +278,29 @@ var _ = Describe("MergeResourceSchema over a oneOf", func() {
 	})
 })
 
+var _ = Describe("MergeNormalizedSchemas default composition", func() {
+	declaring := func(value string) *Schema { return defaulted(NewStringDefault(value)) }
+
+	It("accepts equal repeated defaults and preserves them through cloning", func() {
+		merged := MergeNormalizedSchemas(declaring("basic"), declaring("basic"))
+		Expect(merged.Default.Problem).To(BeEmpty())
+		Expect(merged.Default.Value.Equal(NewStringDefault("basic"))).To(BeTrue())
+
+		clone := CloneSchema(merged)
+		Expect(clone.Default.Value.Equal(NewStringDefault("basic"))).To(BeTrue())
+		Expect(clone.Default.Value).NotTo(BeIdenticalTo(merged.Default.Value))
+		clone.Default.Value.StringValue = "token"
+		Expect(merged.Default.Value.Equal(NewStringDefault("basic"))).To(BeTrue())
+	})
+
+	It("records conflicting defaults contributed by composition", func() {
+		merged := MergeNormalizedSchemas(declaring("basic"), declaring("token"))
+		Expect(merged.HasDefault).To(BeTrue())
+		Expect(merged.Default.Value).To(BeNil())
+		Expect(merged.Default.Problem).To(ContainSubstring("conflicting defaults"))
+	})
+})
+
 var _ = Describe("StripOneOfRoleSuffix", func() {
 	DescribeTable("removes a trailing role suffix in either casing",
 		func(in, want string) { Expect(StripOneOfRoleSuffix(in)).To(Equal(want)) },

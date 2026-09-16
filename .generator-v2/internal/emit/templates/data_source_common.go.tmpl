@@ -29,6 +29,9 @@ type {{ .Name }} struct {
 {{- if .ElementType }}
 	ElementType: {{ .ElementType }},
 {{- end }}
+{{- if .Default }}
+	Default: {{ .Default }},
+{{- end }}
 {{- template "presenceFlags" . }}
 {{- template "validators" . }}
 {{ template "planModifiers" . }}

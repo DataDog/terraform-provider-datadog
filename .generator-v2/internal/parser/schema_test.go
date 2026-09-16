@@ -1162,3 +1162,69 @@ func schemaProperty(schema *model.Schema, name string) *model.Schema {
 	Expect(property).NotTo(BeNil())
 	return property
 }
+
+var _ = Describe("NormalizeSchemas scalar defaults", func() {
+	var properties map[string]*model.Schema
+	var responseProperties map[string]*model.Schema
+
+	BeforeEach(func() {
+		spec := loadSpecMust("schema_normalize_defaults.yaml")
+		op := opByID(spec, "CreateDefaults")
+		properties = op.RequestSchema.Properties
+		responseProperties = op.ResponseSchema.Properties
+	})
+
+	DescribeTable("preserves typed direct defaults, including falsy values",
+		func(property string, want *model.ScalarDefault) {
+			got := properties[property]
+			Expect(got.HasDefault).To(BeTrue())
+			Expect(got.Default.Problem).To(BeEmpty())
+			Expect(got.Default.Value).ToNot(BeNil())
+			Expect(got.Default.Value.Equal(want)).To(BeTrue())
+		},
+		Entry("empty string", "direct_string", model.NewStringDefault("")),
+		Entry("false", "direct_bool", model.NewBoolDefault(false)),
+		Entry("zero integer", "direct_integer", model.NewInt64Default(0)),
+		Entry("zero number", "direct_number", model.NewFloat64Default(0)),
+	)
+
+	DescribeTable("preserves a valid enum default through indirection",
+		func(property string) {
+			got := properties[property]
+			Expect(got.Default.Problem).To(BeEmpty())
+			Expect(got.Default.Value.Equal(model.NewStringDefault("basic"))).To(BeTrue())
+			Expect(got.Enum).To(ConsistOf("basic", "token"))
+		},
+		Entry("reference", "referenced"),
+		Entry("allOf", "composed"),
+	)
+
+	It("records null and compound declarations without producing a usable value or problem", func() {
+		for _, property := range []string{"null_default", "array_default", "object_default"} {
+			got := properties[property]
+			Expect(got.HasDefault).To(BeTrue(), property)
+			Expect(got.Default.Value).To(BeNil(), property)
+			Expect(got.Default.Problem).To(BeEmpty(), property)
+		}
+	})
+
+	DescribeTable("retains unusable scalar defaults as validation problems",
+		func(property, problem string) {
+			got := properties[property]
+			Expect(got.HasDefault).To(BeTrue())
+			Expect(got.Default.Value).To(BeNil())
+			Expect(got.Default.Problem).To(ContainSubstring(problem))
+		},
+		Entry("wrong scalar type", "invalid_type", "want integer"),
+		Entry("invalid enum member", "invalid_enum", "allowed values"),
+		Entry("integer overflow", "integer_overflow", "cannot be decoded"),
+		Entry("non-finite number", "non_finite", "finite number"),
+	)
+
+	It("retains a response-only validation problem for lifecycle code to ignore", func() {
+		got := responseProperties["response_invalid"]
+		Expect(got.HasDefault).To(BeTrue())
+		Expect(got.Default.Value).To(BeNil())
+		Expect(got.Default.Problem).To(ContainSubstring("want integer"))
+	})
+})

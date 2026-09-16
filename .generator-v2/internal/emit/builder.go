@@ -781,6 +781,9 @@ type dataSourceBuilder struct {
 	// planModifierPkgs collects the distinct planmodifier subpackages
 	// (e.g. "stringplanmodifier") any attribute's PlanModifiers reference.
 	planModifierPkgs map[string]struct{}
+	// defaultPkgs collects resource/schema default subpackages referenced by
+	// leaf defaults. Data-source walks leave it empty.
+	defaultPkgs map[string]struct{}
 	// usesStringValidators records that some scalar attribute rendered a string
 	// validator, for the template's import block.
 	usesStringValidators bool
@@ -792,6 +795,21 @@ type dataSourceBuilder struct {
 	// is the sole selector.
 	writeOnlySecrets []WriteOnlySecretView
 	writeOnlySeen    map[string]struct{}
+}
+
+func (b *dataSourceBuilder) defaultView(a *model.Attribute) string {
+	if a.Default == nil {
+		return ""
+	}
+	// Both the subpackage and its constructor are named from the same stem:
+	// "types.String" -> "stringdefault".StaticString.
+	typeName := model.FrameworkTypeName(a.GoType)
+	pkg := strings.ToLower(typeName) + "default"
+	if b.defaultPkgs == nil {
+		b.defaultPkgs = make(map[string]struct{})
+	}
+	b.defaultPkgs[pkg] = struct{}{}
+	return pkg + ".Static" + typeName + "(" + a.Default.GoExpr + ")"
 }
 
 // responds reports whether walk should build a's response-mapping assignment.
@@ -815,7 +833,7 @@ func (b *dataSourceBuilder) planModifierViews(a *model.Attribute) (names []strin
 		b.planModifierPkgs = make(map[string]struct{})
 	}
 	b.planModifierPkgs[model.PlanModifierPackage(a.GoType)] = struct{}{}
-	return names, strings.TrimPrefix(a.GoType, "types.")
+	return names, model.FrameworkTypeName(a.GoType)
 }
 
 // validatorViews renders a's validators for its AttrView, e.g.
@@ -966,6 +984,7 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 				TFName:           tfName,
 				TFType:           a.TfType,
 				Description:      a.Description,
+				Default:          b.defaultView(a),
 				Required:         a.Required,
 				Optional:         a.Optional,
 				Computed:         a.Computed,
@@ -1947,6 +1966,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	}
 
 	planModifierPkgs := sortedKeys(b.planModifierPkgs)
+	defaultPkgs := sortedKeys(b.defaultPkgs)
 
 	return ResourceView{
 		TypeName:    a.Name,
@@ -1993,6 +2013,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		UsesObjectValidators: b.usesObjectValidators,
 		UsesPlanModifiers:    len(planModifierPkgs) > 0,
 		PlanModifierPackages: planModifierPkgs,
+		DefaultPackages:      defaultPkgs,
 		Import:               buildImportView(pathAttrs),
 		UsesUUID:             createUUID || readUUID || updateUUID || deleteUUID || requestImps.uuid,
 		UsesStrconv:          createStrconv || readStrconv || updateStrconv || deleteStrconv,
