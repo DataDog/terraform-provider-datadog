@@ -222,7 +222,6 @@ func assertGeneratedWriteOnlyContract(t *testing.T, source []byte) {
 	}
 }
 
-
 // assertGeneratedDefaultContract checks the omittable-default contract on
 // auth_type, the one field both fixtures declare an OpenAPI default for: the
 // schema renders a static default, and the value still reaches both request
