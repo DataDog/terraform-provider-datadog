@@ -724,6 +724,76 @@ resource "datadog_observability_pipeline" "quota" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_quotaProcessorOverflowRouting(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.quota_overflow"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "quota_overflow" {
+  name = "quota-overflow-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "quota-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "quota-processor"
+        enabled = true
+        include = "*"
+
+        quota {
+          name            = "overflowQuota"
+          overflow_action = "overflow_routing"
+
+          limit {
+            enforce = "events"
+            limit   = 1000
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "s3-overflow-dest"
+      inputs = ["quota-processor.overflow_events"]
+
+      amazon_s3 {
+        bucket        = "my-overflow-bucket"
+        region        = "us-east-1"
+        key_prefix    = "overflow/"
+        storage_class = "STANDARD"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "quota-overflow-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.quota.0.overflow_action", "overflow_routing"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "s3-overflow-dest"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "quota-processor.overflow_events"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.bucket", "my-overflow-bucket"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_parseJsonProcessor(t *testing.T) {
 
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -6911,6 +6981,49 @@ resource "datadog_observability_pipeline" "http_client_dest" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_httpClientDestinationCustomAuth(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.http_client_dest_custom_auth"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "http_client_dest_custom_auth" {
+  name = "http client destination custom auth pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "http-client-dest-custom-auth"
+      inputs = ["source-1"]
+
+      http_client {
+        encoding      = "json"
+        auth_strategy = "custom"
+        custom_key    = "HTTP_AUTH_CUSTOM_HEADER"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.auth_strategy", "custom"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.custom_key", "HTTP_AUTH_CUSTOM_HEADER"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_httpClientDestinationMinimal(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -9015,6 +9128,281 @@ resource "datadog_observability_pipeline" "websocket" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.username_key", "WEBSOCKET_USERNAME"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.password_key", "WEBSOCKET_PASSWORD"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.tls.0.mode", "enabled"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_prometheusRemoteWriteSource(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.prometheus_remote_write_source"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// Minimal config: only required fields
+				Config: `
+resource "datadog_observability_pipeline" "prometheus_remote_write_source" {
+  name = "prometheus-remote-write-source-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "prometheus-source-1"
+
+      prometheus_remote_write {
+        auth_strategy = "none"
+        path          = "/api/v1/write"
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["prometheus-source-1"]
+
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "prometheus-remote-write-source-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "prometheus-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.auth_strategy", "none"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.path", "/api/v1/write"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "prometheus-source-1"),
+				),
+			},
+			{
+				// Full config: all optional fields, TLS, and valid tokens
+				Config: `
+resource "datadog_observability_pipeline" "prometheus_remote_write_source" {
+  name = "prometheus-remote-write-source-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "prometheus-source-1"
+
+      prometheus_remote_write {
+        auth_strategy = "none"
+        address_key   = "PROMETHEUS_ADDRESS"
+        path          = "/api/v1/write"
+
+        tls {
+          crt_file           = "/etc/ssl/certs/prometheus.crt"
+          ca_file            = "/etc/ssl/certs/ca.crt"
+          key_file           = "/etc/ssl/private/prometheus.key"
+          verify_certificate = true
+        }
+
+        valid_token {
+          token_key = "PROMETHEUS_TOKEN_PRIMARY"
+          enabled   = true
+
+          path_to_token {
+            header = "X-Auth-Token"
+          }
+        }
+
+        valid_token {
+          token_key = "PROMETHEUS_TOKEN_SECONDARY"
+
+          path_to_token {
+            location = "path"
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["prometheus-source-1"]
+
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.auth_strategy", "none"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.address_key", "PROMETHEUS_ADDRESS"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.path", "/api/v1/write"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.crt_file", "/etc/ssl/certs/prometheus.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.key_file", "/etc/ssl/private/prometheus.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.verify_certificate", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.valid_token.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.valid_token.0.token_key", "PROMETHEUS_TOKEN_PRIMARY"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.valid_token.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.valid_token.0.path_to_token.0.header", "X-Auth-Token"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.valid_token.1.token_key", "PROMETHEUS_TOKEN_SECONDARY"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.valid_token.1.path_to_token.0.location", "path"),
+				),
+			},
+			{
+				// Plain auth: valid tokens are not allowed alongside auth_strategy = "plain"
+				Config: `
+resource "datadog_observability_pipeline" "prometheus_remote_write_source" {
+  name = "prometheus-remote-write-source-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "prometheus-source-1"
+
+      prometheus_remote_write {
+        auth_strategy = "plain"
+        address_key   = "PROMETHEUS_ADDRESS"
+        path          = "/api/v1/write"
+        username_key  = "PROMETHEUS_USERNAME"
+        password_key  = "PROMETHEUS_PASSWORD"
+
+        tls {
+          crt_file           = "/etc/ssl/certs/prometheus.crt"
+          ca_file            = "/etc/ssl/certs/ca.crt"
+          key_file           = "/etc/ssl/private/prometheus.key"
+          verify_certificate = true
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["prometheus-source-1"]
+
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.auth_strategy", "plain"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.address_key", "PROMETHEUS_ADDRESS"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.path", "/api/v1/write"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.username_key", "PROMETHEUS_USERNAME"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.password_key", "PROMETHEUS_PASSWORD"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.crt_file", "/etc/ssl/certs/prometheus.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.key_file", "/etc/ssl/private/prometheus.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.verify_certificate", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.valid_token.#", "0"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_prometheusRemoteWriteDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.prometheus_remote_write_dest"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// Minimal config: only required fields
+				Config: `
+resource "datadog_observability_pipeline" "prometheus_remote_write_dest" {
+  name = "prometheus-remote-write-destination-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    destination {
+      id     = "prometheus-remote-write-1"
+      inputs = ["source-1"]
+
+      prometheus_remote_write {
+        endpoint_url_key = "PROMETHEUS_ENDPOINT_URL"
+        auth_strategy    = "none"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "prometheus-remote-write-destination-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "prometheus-remote-write-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.endpoint_url_key", "PROMETHEUS_ENDPOINT_URL"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.auth_strategy", "none"),
+				),
+			},
+			{
+				// Full config: all optional fields, TLS, and disk buffer
+				Config: `
+resource "datadog_observability_pipeline" "prometheus_remote_write_dest" {
+  name = "prometheus-remote-write-destination-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    destination {
+      id     = "prometheus-remote-write-1"
+      inputs = ["source-1"]
+
+      prometheus_remote_write {
+        endpoint_url_key  = "PROMETHEUS_ENDPOINT_URL"
+        default_namespace = "custom_namespace"
+        tenant_id          = "tenant-1"
+        auth_strategy      = "bearer"
+        token_key          = "PROMETHEUS_TOKEN"
+
+        tls {
+          crt_file    = "/etc/ssl/certs/prometheus.crt"
+          ca_file     = "/etc/ssl/certs/ca.crt"
+          key_file    = "/etc/ssl/private/prometheus.key"
+          server_name = "prometheus.example.com"
+        }
+
+        buffer {
+          disk {
+            max_size  = 1073741824
+            when_full = "drop_newest"
+          }
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.endpoint_url_key", "PROMETHEUS_ENDPOINT_URL"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.default_namespace", "custom_namespace"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.tenant_id", "tenant-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.auth_strategy", "bearer"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.token_key", "PROMETHEUS_TOKEN"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.tls.0.crt_file", "/etc/ssl/certs/prometheus.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.tls.0.key_file", "/etc/ssl/private/prometheus.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.tls.0.server_name", "prometheus.example.com"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.buffer.0.disk.0.max_size", "1073741824"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.buffer.0.disk.0.when_full", "drop_newest"),
 				),
 			},
 		},

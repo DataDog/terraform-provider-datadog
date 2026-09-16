@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -97,7 +98,12 @@ func BuildRequestTree(s *Schema) (*AttributeTree, []Diagnostic, error) {
 // plan modifiers follow from those flags plus updateUnsupported — when true,
 // every request-settable attribute gets RequiresReplace().
 func BuildResourceTree(s *Schema, updateUnsupported bool) (*AttributeTree, []Diagnostic, error) {
-	return (&treeBuilder{kind: resourceTree, updateUnsupported: updateUnsupported}).build(s, "resource")
+	tree, diagnostics, err := (&treeBuilder{kind: resourceTree, updateUnsupported: updateUnsupported}).build(s, "resource")
+	if err != nil {
+		return nil, nil, err
+	}
+	markWriteOnlyAncestorsConfigurationOwned(tree.Attributes)
+	return tree, diagnostics, nil
 }
 
 // treeBuilder carries the state of one AttributeTree conversion; the recursion
@@ -181,6 +187,10 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 		Sensitive:   s.Sensitive,
 		Description: s.Description,
 	}
+	b.applyWriteOnlyMetadata(attr, s)
+	if b.resourceDefaultEligible(s) {
+		attr.Default = scalarDefaultLiteral(s.Default.Value)
+	}
 	if err := b.applyPresence(attr, s, required); err != nil {
 		return nil, err
 	}
@@ -258,6 +268,35 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 	return attr, nil
 }
 
+// resourceDefaultEligible limits native defaults to configurable primitive
+// fields originating in a request role. Response-only, secret and compound
+// defaults remain metadata and cannot affect Terraform planning.
+func (b *treeBuilder) resourceDefaultEligible(s *Schema) bool {
+	if b.kind != resourceTree || s.Kind != SchemaKindPrimitive || s.Default.Value == nil ||
+		s.Sensitive || s.WriteOnlySecret {
+		return false
+	}
+	p := b.provenanceOf(s)
+	return p != nil && p.InRequest
+}
+
+// provenanceOf resolves the role provenance to judge s by: a oneOf alternative
+// inherits the union's, having none of its own.
+func (b *treeBuilder) provenanceOf(s *Schema) *SchemaProvenance {
+	if s.Provenance != nil {
+		return s.Provenance
+	}
+	return b.oneOfProvenance
+}
+
+func scalarDefaultLiteral(value *ScalarDefault) *Literal {
+	expr := value.GoExpr()
+	if expr == "" {
+		return nil
+	}
+	return &Literal{GoExpr: expr}
+}
+
 // isStringEnum reports whether s is a string constrained to a fixed set of
 // values.
 func isStringEnum(s *Schema) bool {
@@ -324,6 +363,7 @@ func (b *treeBuilder) envelope(s *Schema, path string, required bool) (*Attribut
 		Children:    variants,
 		OneOf:       envelope,
 	}
+	b.applyWriteOnlyMetadata(attr, s)
 	// Required only when the containing field demands a value and the union may
 	// not be absent — a nullable union is an absent envelope, not a null
 	// variant. Keyed on Nullable alone: OneOf.Optional either restates
@@ -429,8 +469,10 @@ func (b *treeBuilder) oneOfVariant(
 		Sensitive:   variant.Schema.Sensitive,
 		Description: variant.Schema.Description,
 	}
+	b.applyWriteOnlyMetadata(block, variant.Schema)
 	// A variant is a choice, never mandatory: exactly-one selection is enforced
-	// by the envelope's validator, not by marking every branch Required.
+	// by the envelope's validator and by request mapping, not by marking every
+	// branch Required.
 	if err := b.applyPresence(block, union, false); err != nil {
 		return fail("", err)
 	}
@@ -478,12 +520,49 @@ func (b *treeBuilder) oneOfVariant(
 	}, nil
 }
 
+// applyWriteOnlyMetadata copies a schema's write-only facts onto attribute, and
+// only for a resourceTree: a response schema may carry OpenAPI writeOnly for
+// normalization and display sensitivity, but only a request-selected
+// managed-resource field drives write-only expansion.
+func (b *treeBuilder) applyWriteOnlyMetadata(attribute *Attribute, schema *Schema) {
+	if b.kind != resourceTree {
+		return
+	}
+	attribute.WriteOnlySecret = schema.WriteOnlySecret
+	attribute.SecretRequiredOnCreate = schema.SecretRequiredOnCreate
+	attribute.SecretRequiredOnUpdate = schema.SecretRequiredOnUpdate
+	attribute.WriteOnlyDescription = schema.WriteOnlyDescription
+}
+
+// markWriteOnlyAncestorsConfigurationOwned enforces the Framework containment
+// rule over an already-projected tree: a request-settable nested ancestor of a
+// write-only descendant keeps its Required or Optional flag but loses Computed
+// and UseStateForUnknown. Sibling branches are untouched. Reports whether this
+// level contains a write-only attribute.
+func markWriteOnlyAncestorsConfigurationOwned(attributes []*Attribute) bool {
+	containsWriteOnly := false
+	for _, attribute := range attributes {
+		descendantWriteOnly := markWriteOnlyAncestorsConfigurationOwned(attribute.Children)
+		if descendantWriteOnly && (attribute.Required || attribute.Optional) {
+			attribute.PreserveConfiguredPresence = attribute.Optional && attribute.Computed && attribute.InResponse
+			attribute.Computed = false
+			attribute.PlanModifiers = slices.DeleteFunc(attribute.PlanModifiers, func(modifier PlanModifierSpec) bool {
+				return strings.HasSuffix(modifier.Name, ".UseStateForUnknown")
+			})
+		}
+		containsWriteOnly = containsWriteOnly || attribute.WriteOnlySecret || descendantWriteOnly
+	}
+	return containsWriteOnly
+}
+
 // applyPresence sets a's presence flags, plus resourceTree's plan modifiers.
 // responseTree is all Computed; requestTree is Required per `required` and
 // Optional otherwise; resourceTree reads s.Provenance (falling back to
 // b.oneOfProvenance) and is the only kind that can set two flags at once
 // (Optional+Computed). resourceTree honors `required` only alongside InRequest,
-// since the oneOf wrapped-value call site passes it unconditionally. Returns
+// since the oneOf wrapped-value call site passes it unconditionally, and a
+// native default outranks `required`: Terraform fills the omitted value, so
+// the attribute becomes Optional+Computed instead. Returns
 // MissingProvenanceError when resourceTree finds no Provenance at all.
 func (b *treeBuilder) applyPresence(a *Attribute, s *Schema, required bool) error {
 	switch b.kind {
@@ -493,14 +572,14 @@ func (b *treeBuilder) applyPresence(a *Attribute, s *Schema, required bool) erro
 		a.Required = required
 		a.Optional = !required
 	case resourceTree:
-		p := s.Provenance
-		if p == nil {
-			p = b.oneOfProvenance
-		}
+		p := b.provenanceOf(s)
 		if p == nil {
 			return &MissingProvenanceError{Path: a.Path}
 		}
 		switch {
+		// resourceDefaultEligible has already established InRequest here.
+		case a.Default != nil:
+			a.Optional, a.Computed = true, true
 		case required && p.InRequest:
 			a.Required = true
 		case p.InRequest && p.InResponse:
@@ -548,7 +627,13 @@ func RequiresReplaceSpec(goType string) PlanModifierSpec {
 // "types.String" -> "stringplanmodifier". Every GoType FrameworkType produces
 // follows this convention.
 func PlanModifierPackage(goType string) string {
-	return strings.ToLower(strings.TrimPrefix(goType, "types.")) + "planmodifier"
+	return strings.ToLower(FrameworkTypeName(goType)) + "planmodifier"
+}
+
+// FrameworkTypeName is goType without the "types." qualifier, the stem both
+// framework subpackages and their Static<Type> constructors are named from.
+func FrameworkTypeName(goType string) string {
+	return strings.TrimPrefix(goType, "types.")
 }
 
 // oneOfModelName is the generated Go struct name for an envelope or variant.

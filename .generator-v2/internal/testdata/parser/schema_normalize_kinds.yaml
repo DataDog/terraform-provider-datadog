@@ -203,6 +203,10 @@ paths:
                 write_only:
                   type: string
                   writeOnly: true
+                tracking_sensitive:
+                  type: string
+                  x-datadog-tf-generator:
+                    sensitive: true
                 x_secret_false:
                   type: string
                   x-secret: false
@@ -215,6 +219,11 @@ paths:
                 explicit_false:
                   type: string
                   writeOnly: true
+                  x-secret: true
+                  x-datadog-tf-generator:
+                    sensitive: false
+                x_secret_explicit_false:
+                  type: string
                   x-secret: true
                   x-datadog-tf-generator:
                     sensitive: false
