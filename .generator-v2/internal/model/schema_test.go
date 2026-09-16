@@ -856,6 +856,13 @@ func provSchema(typ string, p SchemaProvenance) *Schema {
 	return &Schema{Kind: SchemaKindPrimitive, Type: typ, Provenance: &p}
 }
 
+func writeOnlySchema(schema *Schema, requiredOnCreate, requiredOnUpdate bool) *Schema {
+	setTestBoolField(schema, "WriteOnlySecret", true)
+	setTestBoolField(schema, "SecretRequiredOnCreate", requiredOnCreate)
+	setTestBoolField(schema, "SecretRequiredOnUpdate", requiredOnUpdate)
+	return schema
+}
+
 var _ = Describe("BuildResourceTree presence flags", func() {
 	assertFlags := func(tree *AttributeTree, path string, required, optional, computed bool) {
 		GinkgoHelper()
@@ -1151,4 +1158,112 @@ var _ = Describe("BuildResourceTree plan modifiers", func() {
 		Expect(attrByPath(tree, "resource.choice").PlanModifiers).To(Equal(
 			[]PlanModifierSpec{{Name: "objectplanmodifier.UseStateForUnknown"}}))
 	})
+})
+
+// ---------------------------------------------------------------------------
+//  BuildResourceTree — write-only metadata and containment (T153 red tests)
+// ---------------------------------------------------------------------------
+
+var _ = Describe("BuildResourceTree write-only metadata", func() {
+	DescribeTable("carries selector metadata and the original SDK property identity without expanding companions",
+		func(schema *Schema, openAPIName, wantPath string, requiredOnCreate, requiredOnUpdate bool) {
+			schema.Provenance = &SchemaProvenance{
+				InRequest:       true,
+				RequestRequired: requiredOnCreate,
+				InResponse:      false,
+			}
+			writeOnlySchema(schema, requiredOnCreate, requiredOnUpdate)
+			root := objSchema(map[string]*Schema{openAPIName: schema})
+			if requiredOnCreate {
+				root.Required = []string{openAPIName}
+			}
+
+			tree, _, err := BuildResourceTree(root, false)
+			Expect(err).NotTo(HaveOccurred())
+			attribute := attrByPath(tree, wantPath)
+			Expect(attribute.OpenAPIName).To(Equal(openAPIName))
+			Expect(testBoolField(attribute, "WriteOnlySecret")).To(BeTrue())
+			Expect(testBoolField(attribute, "SecretRequiredOnCreate")).To(Equal(requiredOnCreate))
+			Expect(testBoolField(attribute, "SecretRequiredOnUpdate")).To(Equal(requiredOnUpdate))
+			Expect(pathsOf(allAttrs(tree))).NotTo(ContainElement(wantPath + "_wo"))
+			Expect(pathsOf(allAttrs(tree))).NotTo(ContainElement(wantPath + "_wo_version"))
+		},
+		Entry("required root string", primSchema("string"), "apiToken", "resource.api_token", true, false),
+		Entry("optional root string required by Update", primSchema("string"), "password", "resource.password", false, true),
+		Entry("non-string marker retained for the emitter support decision", primSchema("boolean"), "enabledSecret", "resource.enabled_secret", false, false),
+		Entry("collection marker retained for the emitter support decision", arrSchema(primSchema("string")), "secretItems", "resource.secret_items", false, false),
+	)
+
+	It("never turns normalized response/data-source writeOnly metadata into a Terraform write-only attribute", func() {
+		responseSecret := writeOnlySchema(primSchema("string"), false, false)
+		responseSecret.Sensitive = true
+		tree, _, err := BuildResponseTree(objSchema(map[string]*Schema{"password": responseSecret}))
+		Expect(err).NotTo(HaveOccurred())
+
+		attribute := attrByPath(tree, "response.password")
+		Expect(testBoolField(attribute, "WriteOnlySecret")).To(BeFalse())
+		Expect(attribute.Sensitive).To(BeTrue(), "response-side sensitivity remains ordinary display redaction")
+	})
+
+	DescribeTable("makes every request-settable nested ancestor configuration-owned while preserving readable siblings",
+		func(buildRoot func() *Schema, ancestorPaths []string, readablePath string) {
+			root := buildRoot()
+			tree, _, err := BuildResourceTree(root, false)
+			Expect(err).NotTo(HaveOccurred())
+
+			for _, path := range ancestorPaths {
+				attribute := attrByPath(tree, path)
+				Expect(attribute.Computed).To(BeFalse(), "Computed at %q", path)
+				Expect(attribute.PreserveConfiguredPresence).To(Equal(attribute.Optional && attribute.InResponse),
+					"response mapping presence guard at %q", path)
+				Expect(attribute.PlanModifiers).NotTo(ContainElement(
+					PlanModifierSpec{Name: PlanModifierPackage(attribute.GoType) + ".UseStateForUnknown"}),
+					"UseStateForUnknown at %q", path)
+			}
+			readable := attrByPath(tree, readablePath)
+			Expect(readable.Optional).To(BeTrue())
+			Expect(readable.Computed).To(BeTrue())
+			Expect(readable.PlanModifiers).To(ContainElement(
+				PlanModifierSpec{Name: PlanModifierPackage(readable.GoType) + ".UseStateForUnknown"}))
+		},
+		Entry("one-level nested object",
+			func() *Schema {
+				password := provSchema("string", SchemaProvenance{InRequest: true, InResponse: false})
+				writeOnlySchema(password, false, false)
+				authentication := objSchema(map[string]*Schema{
+					"password": password,
+					"username": provSchema("string", SchemaProvenance{InRequest: true, InResponse: true}),
+				})
+				authentication.Provenance = &SchemaProvenance{InRequest: true, InResponse: true}
+				return objSchema(map[string]*Schema{"authentication": authentication})
+			},
+			[]string{"resource.authentication"},
+			"resource.authentication.username",
+		),
+		Entry("recursive object path through a oneOf variant",
+			func() *Schema {
+				password := writeOnlySchema(primSchema("string"), true, true)
+				credentials := objSchema(map[string]*Schema{
+					"password": password,
+					"username": primSchema("string"),
+				})
+				credentials.Required = []string{"password"}
+				basic := objectOneOfVariant("basic", map[string]*Schema{"credentials": credentials})
+				basic.Schema.Required = []string{"credentials"}
+				method := oneOfSchema("resource.authentication.method", "AuthenticationMethod", basic)
+				method.Provenance = &SchemaProvenance{InRequest: true, InResponse: true}
+				authentication := objSchema(map[string]*Schema{"method": method})
+				authentication.Required = []string{"method"}
+				authentication.Provenance = &SchemaProvenance{InRequest: true, InResponse: true}
+				return objSchema(map[string]*Schema{"authentication": authentication})
+			},
+			[]string{
+				"resource.authentication",
+				"resource.authentication.method",
+				"resource.authentication.method.basic",
+				"resource.authentication.method.basic.credentials",
+			},
+			"resource.authentication.method.basic.credentials.username",
+		),
+	)
 })

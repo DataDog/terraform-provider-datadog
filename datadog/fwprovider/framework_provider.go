@@ -31,6 +31,16 @@ import (
 
 var _ provider.Provider = &FrameworkProvider{}
 
+// EnableGeneratedUnstableOperations enables every unstable SDK operation used
+// by generated provider artifacts. Keeping this in the provider package lets
+// alternate client construction paths, including acceptance tests, consume the
+// generator-owned registry without duplicating operation identifiers.
+func EnableGeneratedUnstableOperations(config *datadog.Configuration) {
+	for _, operation := range generatedUnstableOperations {
+		config.SetUnstableOperationEnabled(operation, true)
+	}
+}
+
 var Resources = []func() resource.Resource{
 	NewAgentlessScanningAwsScanOptionsResource,
 	NewAgentlessScanningAzureScanOptionsResource,
@@ -881,6 +891,8 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateExecutionPolicy", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
+
+	EnableGeneratedUnstableOperations(ddClientConfig)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
