@@ -8,4 +8,8 @@ package fwprovider
 // --include run never drops entries another artifact needs. Do not edit by hand.
 //
 // EnableGeneratedUnstableOperations enables each of these on the client config.
-var generatedUnstableOperations = []string{}
+var generatedUnstableOperations = []string{
+	"v2.CreateTeamsOwnershipMapping",
+	"v2.DeleteTeamsOwnershipMapping",
+	"v2.GetTeamsOwnershipMapping",
+}
