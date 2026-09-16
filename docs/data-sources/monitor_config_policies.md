@@ -30,9 +30,18 @@ data "datadog_monitor_config_policies" "test" {
 
 Read-Only:
 
+- `downtime_policy` (List of Object) (see [below for nested schema](#nestedobjatt--monitor_config_policies--downtime_policy))
 - `id` (String)
 - `policy_type` (String)
 - `tag_policy` (List of Object) (see [below for nested schema](#nestedobjatt--monitor_config_policies--tag_policy))
+
+<a id="nestedobjatt--monitor_config_policies--downtime_policy"></a>
+### Nested Schema for `monitor_config_policies.downtime_policy`
+
+Read-Only:
+
+- `max_duration_ms` (Number)
+
 
 <a id="nestedobjatt--monitor_config_policies--tag_policy"></a>
 ### Nested Schema for `monitor_config_policies.tag_policy`
