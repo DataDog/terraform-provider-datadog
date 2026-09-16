@@ -128,6 +128,14 @@ func (r *fleetScheduleResource) Create(ctx context.Context, request resource.Cre
 	if response.Diagnostics.HasError() {
 		return
 	}
+	// Read the configuration separately because Optional+Computed attributes
+	// omitted by the user are unknown in the plan and later receive API defaults.
+	// Only explicitly configured values need the follow-up reconciliation PATCH.
+	var config fleetScheduleResourceModel
+	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 
 	body, diags := buildFleetScheduleCreateRequest(ctx, &plan)
 	response.Diagnostics.Append(diags...)
@@ -160,14 +168,25 @@ func (r *fleetScheduleResource) Create(ctx context.Context, request resource.Cre
 	// The Preview create endpoint may apply its defaults instead of explicit
 	// optional values. Reconcile those values before the stable refresh so an
 	// explicitly inactive schedule never remains active after creation.
-	reconciliation, changed := buildFleetScheduleCreateReconciliation(&plan)
+	reconciliation, changed := buildFleetScheduleCreateReconciliation(&config)
 	if changed {
 		_, reconciliationResponse, reconciliationErr := r.Api.UpdateFleetSchedule(r.Auth, plan.ID.ValueString(), reconciliation)
 		if reconciliationErr != nil {
-			// A failed reconciliation can leave a schedule active. Best-effort
-			// deletion is safer than leaving an untracked schedule behind.
-			_, _ = r.Api.DeleteFleetSchedule(r.Auth, plan.ID.ValueString())
-			response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(reconciliationErr, reconciliationResponse, "error reconciling Fleet Automation schedule after creation"), ""))
+			reconciliationError := utils.TranslateClientError(reconciliationErr, reconciliationResponse, "error reconciling Fleet Automation schedule after creation")
+			cleanupResponse, cleanupErr := r.Api.DeleteFleetSchedule(r.Auth, plan.ID.ValueString())
+			if cleanupErr != nil && (cleanupResponse == nil || cleanupResponse.StatusCode != http.StatusNotFound) {
+				// The schedule still exists. Persist its ID even though Create returns
+				// errors so Terraform tracks and taints it instead of creating another.
+				response.Diagnostics.Append(response.State.Set(ctx, &plan)...)
+				response.Diagnostics.Append(utils.FrameworkErrorDiag(reconciliationError, ""))
+				cleanupError := utils.TranslateClientError(cleanupErr, cleanupResponse, "error deleting Fleet Automation schedule after failed creation reconciliation")
+				response.Diagnostics.AddError(
+					"Fleet Automation schedule cleanup failed",
+					fmt.Sprintf("Schedule %q was created, but reconciliation and automatic cleanup both failed. Terraform retained the schedule ID in state so it can be refreshed or destroyed on the next operation. Cleanup error: %s", plan.ID.ValueString(), cleanupError),
+				)
+				return
+			}
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(reconciliationError, ""))
 			return
 		}
 	}

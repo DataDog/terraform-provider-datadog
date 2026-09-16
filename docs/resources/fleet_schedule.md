@@ -37,7 +37,7 @@ resource "datadog_fleet_schedule" "nonproduction" {
 
 - `name` (String) Human-readable name for the schedule. String length must be at least 1.
 - `query` (String) Datadog host query used to select the Agent upgrade targets. String length must be at least 1.
-- `rule` (Attributes) Weekly recurrence and maintenance-window configuration for the schedule. (See [below for nested schema](#nestedatt--rule).)
+- `rule` (Attributes) Weekly recurrence and maintenance-window configuration for the schedule. (see [below for nested schema](#nestedatt--rule))
 
 ### Optional
 

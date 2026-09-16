@@ -96,9 +96,9 @@ func TestBuildFleetScheduleCreateRequest(t *testing.T) {
 
 func TestBuildFleetScheduleCreateReconciliation(t *testing.T) {
 	t.Parallel()
-	model := testFleetScheduleResourceModel(t)
+	config := testFleetScheduleResourceModel(t)
 
-	body, changed := buildFleetScheduleCreateReconciliation(&model)
+	body, changed := buildFleetScheduleCreateReconciliation(&config)
 	if !changed {
 		t.Fatal("active create response must be reconciled with configured inactive status")
 	}
@@ -108,6 +108,13 @@ func TestBuildFleetScheduleCreateReconciliation(t *testing.T) {
 	}
 	if !attributes.HasVersionToLatest() || attributes.GetVersionToLatest() != 1 {
 		t.Fatal("explicit version_to_latest must be reconciled")
+	}
+
+	config.Status = types.StringNull()
+	config.VersionToLatest = types.Int64Null()
+	body, changed = buildFleetScheduleCreateReconciliation(&config)
+	if changed {
+		t.Fatalf("omitted Optional+Computed values must not be reconciled: %#v", body.Data.GetAttributes())
 	}
 }
 
@@ -283,8 +290,9 @@ func TestFleetScheduleResourceLifecycleUsesStableReads(t *testing.T) {
 	if diags := createPlan.Set(ctx, &createModel); diags.HasError() {
 		t.Fatalf("building create plan: %v", diags)
 	}
+	createConfig := tfsdk.Config{Raw: createPlan.Raw, Schema: schemaResponse.Schema}
 	createResponse := resource.CreateResponse{State: tfsdk.State{Raw: createPlan.Raw, Schema: schemaResponse.Schema}}
-	r.Create(ctx, resource.CreateRequest{Plan: createPlan}, &createResponse)
+	r.Create(ctx, resource.CreateRequest{Config: createConfig, Plan: createPlan}, &createResponse)
 	if createResponse.Diagnostics.HasError() {
 		t.Fatalf("creating schedule: %v", createResponse.Diagnostics)
 	}
@@ -331,6 +339,74 @@ func TestFleetScheduleResourceLifecycleUsesStableReads(t *testing.T) {
 		"GET /api/v2/fleet/schedules/" + scheduleID,
 		"PATCH /api/unstable/fleet/schedules/" + scheduleID,
 		"GET /api/v2/fleet/schedules/" + scheduleID,
+		"DELETE /api/unstable/fleet/schedules/" + scheduleID,
+	}
+	if !equalStrings(requests, wantRequests) {
+		t.Fatalf("requests = %v, want %v", requests, wantRequests)
+	}
+}
+
+func TestFleetScheduleCreateRetainsIDWhenReconciliationAndCleanupFail(t *testing.T) {
+	const scheduleID = "schedule-needs-cleanup"
+	ctx := context.Background()
+	requests := make([]string, 0, 3)
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, request *http.Request) {
+		requests = append(requests, request.Method+" "+request.URL.Path)
+		w.Header().Set("Content-Type", "application/json")
+		switch request.Method {
+		case http.MethodPost:
+			w.WriteHeader(http.StatusCreated)
+			fmt.Fprintf(w, `{"data":{"id":%q,"type":"schedule","attributes":{"name":"test schedule","query":"env:nonprod","status":"active","version_to_latest":1}}}`, scheduleID)
+		case http.MethodPatch:
+			http.Error(w, `{"errors":["reconciliation failed"]}`, http.StatusInternalServerError)
+		case http.MethodDelete:
+			http.Error(w, `{"errors":["cleanup failed"]}`, http.StatusInternalServerError)
+		default:
+			http.Error(w, "unexpected request", http.StatusBadRequest)
+		}
+	}))
+	defer server.Close()
+
+	clientConfig := datadog.NewConfiguration()
+	clientConfig.Servers = datadog.ServerConfigurations{{URL: server.URL}}
+	clientConfig.OperationServers = nil
+	clientConfig.HTTPClient = server.Client()
+	for _, operation := range []string{"v2.CreateFleetSchedule", "v2.UpdateFleetSchedule", "v2.DeleteFleetSchedule"} {
+		clientConfig.SetUnstableOperationEnabled(operation, true)
+	}
+	r := &fleetScheduleResource{Api: datadogV2.NewFleetAutomationApi(datadog.NewAPIClient(clientConfig)), Auth: ctx}
+	var schemaResponse resource.SchemaResponse
+	r.Schema(ctx, resource.SchemaRequest{}, &schemaResponse)
+
+	model := testFleetScheduleResourceModel(t)
+	model.ID = types.StringUnknown()
+	plan := tfsdk.Plan{Schema: schemaResponse.Schema}
+	if diags := plan.Set(ctx, &model); diags.HasError() {
+		t.Fatalf("building create plan: %v", diags)
+	}
+	config := tfsdk.Config{Raw: plan.Raw, Schema: schemaResponse.Schema}
+	createResponse := resource.CreateResponse{State: tfsdk.State{Raw: plan.Raw, Schema: schemaResponse.Schema}}
+	r.Create(ctx, resource.CreateRequest{Config: config, Plan: plan}, &createResponse)
+
+	if !createResponse.Diagnostics.HasError() {
+		t.Fatal("expected reconciliation and cleanup errors")
+	}
+	var state fleetScheduleResourceModel
+	if diags := createResponse.State.Get(ctx, &state); diags.HasError() {
+		t.Fatalf("reading retained create state: %v", diags)
+	}
+	if state.ID.ValueString() != scheduleID {
+		t.Fatalf("retained ID = %q, want %q", state.ID.ValueString(), scheduleID)
+	}
+	diagnosticText := fmt.Sprint(createResponse.Diagnostics)
+	for _, expected := range []string{"reconciling Fleet Automation schedule", "cleanup failed", scheduleID} {
+		if !strings.Contains(diagnosticText, expected) {
+			t.Fatalf("diagnostics %q do not contain %q", diagnosticText, expected)
+		}
+	}
+	wantRequests := []string{
+		"POST /api/unstable/fleet/schedules",
+		"PATCH /api/unstable/fleet/schedules/" + scheduleID,
 		"DELETE /api/unstable/fleet/schedules/" + scheduleID,
 	}
 	if !equalStrings(requests, wantRequests) {

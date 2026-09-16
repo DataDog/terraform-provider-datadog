@@ -115,16 +115,16 @@ func buildFleetScheduleCreateRequest(ctx context.Context, model *fleetScheduleRe
 	}, diags
 }
 
-func buildFleetScheduleCreateReconciliation(model *fleetScheduleResourceModel) (datadogV2.FleetSchedulePatchRequest, bool) {
+func buildFleetScheduleCreateReconciliation(config *fleetScheduleResourceModel) (datadogV2.FleetSchedulePatchRequest, bool) {
 	attributes := datadogV2.FleetSchedulePatchAttributes{}
 	changed := false
 
-	if !model.Status.IsNull() && !model.Status.IsUnknown() {
-		attributes.SetStatus(datadogV2.FleetScheduleStatus(model.Status.ValueString()))
+	if !config.Status.IsNull() && !config.Status.IsUnknown() {
+		attributes.SetStatus(datadogV2.FleetScheduleStatus(config.Status.ValueString()))
 		changed = true
 	}
-	if !model.VersionToLatest.IsNull() && !model.VersionToLatest.IsUnknown() {
-		attributes.SetVersionToLatest(model.VersionToLatest.ValueInt64())
+	if !config.VersionToLatest.IsNull() && !config.VersionToLatest.IsUnknown() {
+		attributes.SetVersionToLatest(config.VersionToLatest.ValueInt64())
 		changed = true
 	}
 
