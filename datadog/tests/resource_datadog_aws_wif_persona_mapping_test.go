@@ -15,7 +15,13 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-const awsWifReplayAccountIdentifier = "tf-testacccurrentuserdatasource-local@example.com"
+// awsWifAccountIdentifier is the Datadog caller the mapping is created for. It is
+// deliberately a fixed value rather than a datadog_current_user lookup so that record
+// and replay exercise the identical resource graph and the cassette stays valid across
+// re-records. Re-recording requires that the recording credentials belong to this user,
+// or to a user whose permissions are a superset of theirs, because the API enforces a
+// permission-subset relation between caller and mapped account.
+const awsWifAccountIdentifier = "tf-testacccurrentuserdatasource-local@example.com"
 
 func TestAccAwsWifPersonaMapping(t *testing.T) {
 	t.Parallel()
@@ -33,7 +39,7 @@ func TestAccAwsWifPersonaMapping(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckAwsWifPersonaMappingExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "arn_pattern", fmt.Sprintf("arn:aws:sts::%s:assumed-role/terraform-runner/*", accountID)),
-					resource.TestCheckResourceAttrSet(resourceName, "account_identifier"),
+					resource.TestCheckResourceAttr(resourceName, "account_identifier", awsWifAccountIdentifier),
 					resource.TestCheckResourceAttrSet(resourceName, "account_uuid"),
 				),
 			},
@@ -47,16 +53,7 @@ func TestAccAwsWifPersonaMapping(t *testing.T) {
 }
 
 func testAccAwsWifPersonaMappingConfig(accountID string) string {
-	currentUserConfig := `data "datadog_current_user" "test" {}`
-	accountIdentifier := "data.datadog_current_user.test.handle"
-	if isReplaying() {
-		currentUserConfig = ""
-		accountIdentifier = fmt.Sprintf("%q", awsWifReplayAccountIdentifier)
-	}
-
 	return fmt.Sprintf(`
-%[2]s
-
 resource "datadog_integration_aws_account" "test" {
   aws_account_id = %[1]s
   aws_partition  = "aws"
@@ -84,16 +81,19 @@ resource "datadog_integration_aws_account" "test" {
 }
 
 resource "datadog_aws_wif_persona_mapping" "test" {
-  # Using the test caller guarantees the API's required permission-subset relation.
-  account_identifier = %[3]s
-  arn_pattern         = "arn:aws:sts::${datadog_integration_aws_account.test.aws_account_id}:assumed-role/terraform-runner/*"
+  account_identifier = %[2]q
+  arn_pattern        = "arn:aws:sts::${datadog_integration_aws_account.test.aws_account_id}:assumed-role/terraform-runner/*"
 }
-`, accountID, currentUserConfig, accountIdentifier)
+`, accountID, awsWifAccountIdentifier)
 }
 
 func testAccCheckAwsWifPersonaMappingExists(provider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {
 	return func(state *terraform.State) error {
-		id := state.RootModule().Resources[resourceName].Primary.ID
+		stateResource, ok := state.RootModule().Resources[resourceName]
+		if !ok {
+			return fmt.Errorf("resource %s not found in state", resourceName)
+		}
+		id := stateResource.Primary.ID
 		_, httpResponse, err := provider.DatadogApiInstances.GetCloudAuthenticationApiV2().GetAWSCloudAuthPersonaMapping(provider.Auth, id)
 		if err != nil {
 			return utils.TranslateClientError(err, httpResponse, "error checking AWS WIF persona mapping existence")

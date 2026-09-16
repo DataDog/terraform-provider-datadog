@@ -26,6 +26,9 @@ resource "datadog_service_account" "terraform" {
 }
 
 resource "datadog_aws_wif_persona_mapping" "terraform" {
+  # A service account's handle is its UUID, so `id` is both stable and already the
+  # canonical value Datadog stores. Using `email` here would work, but Datadog
+  # normalizes it to the handle, leaving this attribute import-unstable.
   account_identifier = datadog_service_account.terraform.id
   arn_pattern        = "arn:aws:sts::${data.aws_caller_identity.current.account_id}:assumed-role/terraform-runner/*"
 }
@@ -36,7 +39,7 @@ resource "datadog_aws_wif_persona_mapping" "terraform" {
 
 ### Required
 
-- `account_identifier` (String) The email or handle of the Datadog user or service account that the AWS principal authenticates as. For a Terraform-managed service account, prefer the stable UUID exported by `datadog_service_account.id`; Datadog accepts it as the service account identifier. String length must be at least 1.
+- `account_identifier` (String) The email or handle of the Datadog user or service account that the AWS principal authenticates as. For a Terraform-managed service account, prefer the stable UUID exported by `datadog_service_account.id`; Datadog accepts it as the service account identifier. Datadog normalizes an email to the account's handle, so the handle form is the only value that survives `terraform import` unchanged — importing a mapping configured by email produces a diff on this attribute, which forces replacement. String length must be at least 1.
 - `arn_pattern` (String) The AWS caller ARN pattern allowed to authenticate. Currently, only the `aws` partition is supported. For role-based authentication, use the STS assumed-role ARN returned by `aws sts get-caller-identity`, not the IAM role ARN shown in the AWS console. A pattern may contain one wildcard only, as a trailing `/*` after a specific resource, for example `arn:aws:sts::123456789012:assumed-role/terraform-runner/*`. Must be an AWS GetCallerIdentity ARN supported by Datadog for an IAM user, assumed role, or federated user; a wildcard is allowed only as one trailing /* after a specific resource.
 
 ### Read-Only

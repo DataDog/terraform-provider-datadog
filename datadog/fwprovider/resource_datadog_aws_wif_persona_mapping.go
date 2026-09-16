@@ -71,7 +71,7 @@ func (r *awsWifPersonaMappingResource) Schema(_ context.Context, _ resource.Sche
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"account_identifier": schema.StringAttribute{
-				Description: "The email or handle of the Datadog user or service account that the AWS principal authenticates as. For a Terraform-managed service account, prefer the stable UUID exported by `datadog_service_account.id`; Datadog accepts it as the service account identifier.",
+				Description: "The email or handle of the Datadog user or service account that the AWS principal authenticates as. For a Terraform-managed service account, prefer the stable UUID exported by `datadog_service_account.id`; Datadog accepts it as the service account identifier. Datadog normalizes an email to the account's handle, so the handle form is the only value that survives `terraform import` unchanged — importing a mapping configured by email produces a diff on this attribute, which forces replacement.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -232,7 +232,7 @@ func (r *awsWifPersonaMappingResource) Read(ctx context.Context, request resourc
 
 	apiResponse, httpResponse, err := r.Api.GetAWSCloudAuthPersonaMapping(r.Auth, state.ID.ValueString())
 	if err != nil {
-		if httpResponse != nil && httpResponse.StatusCode == 404 {
+		if httpResponse != nil && httpResponse.StatusCode == http.StatusNotFound {
 			response.State.RemoveResource(ctx)
 			return
 		}
@@ -263,7 +263,7 @@ func (r *awsWifPersonaMappingResource) Delete(ctx context.Context, request resou
 
 	httpResponse, err := r.Api.DeleteAWSCloudAuthPersonaMapping(r.Auth, state.ID.ValueString())
 	if err != nil {
-		if httpResponse != nil && httpResponse.StatusCode == 404 {
+		if httpResponse != nil && httpResponse.StatusCode == http.StatusNotFound {
 			return
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(
