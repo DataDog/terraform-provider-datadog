@@ -57,6 +57,7 @@ func TestGenerateWriteOnlyResources(t *testing.T) {
 
 			assertGeneratedWriteOnlyContract(t, first)
 			assertGeneratedDefaultContract(t, first)
+
 			firstStaged = append(firstStaged, testinfra.StagedFile{
 				ProviderPath: filepath.Join("datadog", "fwprovider", fixture.resource),
 				SourcePath:   firstPath,
@@ -220,6 +221,7 @@ func assertGeneratedWriteOnlyContract(t *testing.T, source []byte) {
 		}
 	}
 }
+
 
 // assertGeneratedDefaultContract checks the omittable-default contract on
 // auth_type, the one field both fixtures declare an OpenAPI default for: the
