@@ -31,6 +31,7 @@ data "datadog_workflow_automation" "my_workflow" {
 - `name` (String) Name of the workflow.
 - `published` (Boolean) Set the workflow to published or unpublished. Workflows in an unpublished state are only executable through manual runs. Automatic triggers such as Schedule do not execute the workflow until it is published.
 - `run_as` (Attributes) Identity used to run the workflow. (see [below for nested schema](#nestedatt--run_as))
+- `sensitive_privileges` (Boolean) Whether the workflow requires sensitive privileges to run. Only the workflow owner can update this field. This allows it to run actions that use [Execution Policies](https://docs.datadoghq.com/actions/private_actions/execution_policies/).
 - `spec_json` (String) The spec defines what the workflow does.
 - `tags` (Set of String) Tags of the workflow.
 
