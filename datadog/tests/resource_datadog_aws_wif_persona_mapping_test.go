@@ -53,6 +53,46 @@ func TestAccAwsWifPersonaMapping(t *testing.T) {
 	})
 }
 
+func TestAccAwsWifPersonaMappingServiceAccount(t *testing.T) {
+	skipIfNoCassette(t)
+	// Run before parallel tests: a mapping for the caller itself can prevent
+	// the same caller from creating another mapping, even for a service account.
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accountID := uniqueAWSAccountID(ctx, t)
+	resourceName := "datadog_aws_wif_persona_mapping.test"
+	serviceAccountName := "datadog_service_account.test"
+	serviceAccountConfig := fmt.Sprintf(`
+resource "datadog_service_account" "test" {
+  email = %q
+  name  = "AWS WIF acceptance test"
+  # No roles keeps the target's permissions a subset of the test caller's.
+  roles = []
+}
+`, uniqueEntityName(ctx, t)+"@example.com")
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckAwsWifPersonaMappingDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccAwsWifPersonaMappingConfigWithIdentity(accountID, serviceAccountName+".id", serviceAccountConfig),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckAwsWifPersonaMappingExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttrPair(resourceName, "account_identifier", serviceAccountName, "id"),
+					resource.TestCheckResourceAttrPair(resourceName, "account_uuid", serviceAccountName, "id"),
+					resource.TestCheckResourceAttr(resourceName, "arn_pattern", fmt.Sprintf("arn:aws:sts::%s:assumed-role/terraform-runner/*", accountID)),
+				),
+			},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
 func testAccAwsWifPersonaMappingConfig(accountID string) string {
 	currentUserConfig := `data "datadog_current_user" "test" {}`
 	accountIdentifier := "data.datadog_current_user.test.handle"
@@ -61,6 +101,10 @@ func testAccAwsWifPersonaMappingConfig(accountID string) string {
 		accountIdentifier = fmt.Sprintf("%q", awsWifReplayAccountIdentifier)
 	}
 
+	return testAccAwsWifPersonaMappingConfigWithIdentity(accountID, accountIdentifier, currentUserConfig)
+}
+
+func testAccAwsWifPersonaMappingConfigWithIdentity(accountID, accountIdentifier, identityConfig string) string {
 	return fmt.Sprintf(`
 %[2]s
 
@@ -91,11 +135,10 @@ resource "datadog_integration_aws_account" "test" {
 }
 
 resource "datadog_aws_wif_persona_mapping" "test" {
-  # Mapping the caller to itself satisfies the API's permission-subset requirement.
   account_identifier = %[3]s
   arn_pattern        = "arn:aws:sts::${datadog_integration_aws_account.test.aws_account_id}:assumed-role/terraform-runner/*"
 }
-`, accountID, currentUserConfig, accountIdentifier)
+`, accountID, identityConfig, accountIdentifier)
 }
 
 func testAccCheckAwsWifPersonaMappingExists(provider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {
