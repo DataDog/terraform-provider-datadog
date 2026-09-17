@@ -67,6 +67,13 @@ type OneOfDiscriminator struct {
 	// uses the parent's JSONKey (combine with DefaultVariant to handle the
 	// case where the parent's key is absent on this variant's JSON shape).
 	ChildJSONKey string
+
+	// Inline keeps variant fields at the parent block level instead of exposing
+	// one wrapper block per variant. Set this on a discriminated TypeBlockList
+	// when the public HCL shape predates the FieldSpec union representation.
+	// The child FieldSpecs remain internal variant declarations that drive schema
+	// generation, build/flatten dispatch, and plan-time validation.
+	Inline bool
 }
 
 // FieldSpec declares the bidirectional mapping for a single field.
@@ -323,6 +330,71 @@ func findPopulatedVariant(f FieldSpec, item map[string]interface{}) (*FieldSpec,
 	return nil, nil
 }
 
+// matchInlineOneOfVariant selects a variant from a flat HCL object using the
+// parent JSON discriminator. The discriminator field may be declared by any
+// variant; variants can share the same field declaration.
+func matchInlineOneOfVariant(f FieldSpec, item map[string]interface{}) *FieldSpec {
+	if f.Discriminator == nil {
+		return nil
+	}
+	var discriminatorValue string
+	for _, variant := range f.Children {
+		for _, field := range variant.Children {
+			if field.effectiveJSONPath() != f.Discriminator.JSONKey {
+				continue
+			}
+			if value, ok := item[field.HCLKey].(string); ok && value != "" {
+				discriminatorValue = value
+				break
+			}
+		}
+		if discriminatorValue != "" {
+			break
+		}
+	}
+	return matchOneOfVariant(f, map[string]interface{}{
+		f.Discriminator.JSONKey: discriminatorValue,
+	})
+}
+
+// inlineOneOfFields returns the de-duplicated flat HCL fields declared by all
+// variants of an inline discriminated union.
+func inlineOneOfFields(f FieldSpec) []FieldSpec {
+	fields := make([]FieldSpec, 0)
+	seen := make(map[string]struct{})
+	for _, variant := range f.Children {
+		for _, field := range variant.Children {
+			if _, ok := seen[field.HCLKey]; ok {
+				continue
+			}
+			seen[field.HCLKey] = struct{}{}
+			fields = append(fields, field)
+		}
+	}
+	return fields
+}
+
+func inlineOneOfVariantHasField(variant *FieldSpec, hclKey string) bool {
+	if variant == nil {
+		return false
+	}
+	for _, field := range variant.Children {
+		if field.HCLKey == hclKey {
+			return true
+		}
+	}
+	return false
+}
+
+func inlineOneOfField(fields []FieldSpec, hclKey string) *FieldSpec {
+	for i := range fields {
+		if fields[i].HCLKey == hclKey && fields[i].Discriminator != nil && fields[i].Discriminator.Inline {
+			return &fields[i]
+		}
+	}
+	return nil
+}
+
 // ============================================================
 // Generic Engine: JSON → HCL (flatten direction)
 // ============================================================
@@ -399,8 +471,13 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 							continue
 						}
 						if matched := matchOneOfVariant(f, m); matched != nil {
-							list[i] = map[string]interface{}{
-								matched.HCLKey: []interface{}{FlattenEngineJSON(matched.Children, m)},
+							flattened := FlattenEngineJSON(matched.Children, m)
+							if f.Discriminator.Inline {
+								list[i] = flattened
+							} else {
+								list[i] = map[string]interface{}{
+									matched.HCLKey: []interface{}{flattened},
+								}
 							}
 						} else {
 							list[i] = map[string]interface{}{}
@@ -502,7 +579,11 @@ func pruneUnknownFields(state map[string]interface{}, fields []FieldSpec, extraK
 		}
 		switch f.Type {
 		case TypeBlock, TypeBlockList:
-			dropped = append(dropped, recurseIntoBlock(val, f.Children, path, key)...)
+			children := f.Children
+			if f.Type == TypeBlockList && f.Discriminator != nil && f.Discriminator.Inline {
+				children = inlineOneOfFields(*f)
+			}
+			dropped = append(dropped, recurseIntoBlock(val, children, path, key)...)
 		case TypeOneOf:
 			variantFields := make([]FieldSpec, 0, len(f.Children))
 			for i := range f.Children {
@@ -659,7 +740,7 @@ var queryTableFormulaRequestConfig = FormulaRequestConfig{
 var geomapFormulaRequestConfig = FormulaRequestConfig{
 	ResponseFormat:              "scalar",
 	StyleFields:                 geomapWidgetRequestStyleFields,
-	ExtraFields:                 geomapRequestExtraFields,
+	ExtraFields:                 geomapFormulaRequestExtraFields,
 	IncludeSort:                 true,
 	AllowResponseFormatOverride: true,
 }
@@ -1152,6 +1233,7 @@ func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defSt
 	var nestedDrops []string
 	// ---- Formula/query request flattening ----
 	if isFormulaCapableWidget(spec.JSONType) {
+		inlineRequestSpec := inlineOneOfField(spec.Fields, "request")
 		if requests, ok := def["requests"].([]interface{}); ok {
 			flatRequests := make([]interface{}, len(requests))
 			for ri, req := range requests {
@@ -1162,6 +1244,13 @@ func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defSt
 				}
 				_, hasFormulas := reqMap["formulas"]
 				_, hasQueries := reqMap["queries"]
+				if inlineRequestSpec != nil {
+					matched := matchOneOfVariant(*inlineRequestSpec, reqMap)
+					if !inlineOneOfVariantHasField(matched, "formula") && !inlineOneOfVariantHasField(matched, "query") {
+						hasFormulas = false
+						hasQueries = false
+					}
+				}
 				if hasFormulas || hasQueries {
 					// New-style formula/query request (unified via FormulaRequestConfig)
 					flatRequests[ri] = flattenFormulaRequest(reqMap, formulaRequestConfigForWidget(spec.JSONType))
@@ -1930,12 +2019,22 @@ func buildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec, ctx
 				items := getBlockListFromMap(data, f.HCLKey)
 				built := make([]interface{}, 0, len(items))
 				for i, item := range items {
-					matched, inner := findPopulatedVariant(f, item)
+					var matched *FieldSpec
+					var inner map[string]interface{}
+					if f.Discriminator.Inline {
+						matched = matchInlineOneOfVariant(f, item)
+						inner = item
+					} else {
+						matched, inner = findPopulatedVariant(f, item)
+					}
 					if matched == nil {
 						built = append(built, map[string]interface{}{})
 						continue
 					}
-					variantCtx := ctx.block(f.HCLKey, i).block(matched.HCLKey, 0)
+					variantCtx := ctx.block(f.HCLKey, i)
+					if !f.Discriminator.Inline {
+						variantCtx = variantCtx.block(matched.HCLKey, 0)
+					}
 					resultJSON := buildEngineJSONFromMap(inner, matched.Children, variantCtx)
 					if matched.Discriminator != nil && matched.Discriminator.Value != "" {
 						keyToInject := matched.Discriminator.ChildJSONKey
@@ -2557,12 +2656,20 @@ func buildGroupWidgetsJSONFromMap(defMap map[string]interface{}, ctx mapBuildCon
 func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpec, defJSON map[string]interface{}, ctx mapBuildContext) {
 	// ---- Formula/query blocks ----
 	if isFormulaCapableWidget(spec.JSONType) {
+		inlineRequestSpec := inlineOneOfField(spec.Fields, "request")
 		requestList := getBlockListFromMap(defMap, "request")
 		if len(requestList) > 0 {
 			requests := make([]interface{}, 0, len(requestList))
 			for ri, reqMap := range requestList {
 				formulaCount := len(getBlockListFromMap(reqMap, "formula"))
 				queryCount := len(getBlockListFromMap(reqMap, "query"))
+				if inlineRequestSpec != nil {
+					matched := matchInlineOneOfVariant(*inlineRequestSpec, reqMap)
+					if !inlineOneOfVariantHasField(matched, "formula") && !inlineOneOfVariantHasField(matched, "query") {
+						formulaCount = 0
+						queryCount = 0
+					}
+				}
 				if formulaCount > 0 || queryCount > 0 {
 					requests = append(requests, buildFormulaRequestFromMap(reqMap, formulaRequestConfigForWidget(spec.JSONType)))
 				} else {
@@ -3057,19 +3164,24 @@ func ValidateWidgetConflicts(data map[string]interface{}) []string {
 				continue
 			}
 
-			// Check ConflictsWith constraints on request fields
+			// Check union and ConflictsWith constraints on request fields.
 			var requestFields []FieldSpec
+			var requestSpec *FieldSpec
 			for _, f := range spec.Fields {
 				if f.HCLKey == "request" {
+					requestSpec = &f
 					requestFields = f.Children
+					if f.Discriminator != nil && f.Discriminator.Inline {
+						requestFields = inlineOneOfFields(f)
+					}
 					break
 				}
 			}
 			if requestFields != nil {
 				reqList := getBlockListFromMap(defMap, "request")
 				for ri, reqMap := range reqList {
-					if spec.JSONType == "geomap" {
-						if err := validateGeomapRequestVariant(reqMap); err != "" {
+					if requestSpec != nil && requestSpec.Discriminator != nil && requestSpec.Discriminator.Inline {
+						if err := validateInlineOneOfVariant(*requestSpec, reqMap); err != "" {
 							errs = append(errs, fmt.Sprintf(
 								"widget[%d].%s.request[%d]: %s",
 								wi, spec.HCLKey, ri, err,
@@ -3110,51 +3222,33 @@ func ValidateWidgetConflicts(data map[string]interface{}) []string {
 	return errs
 }
 
-// validateGeomapRequestVariant enforces the Geomap request union while preserving
-// the existing flat HCL request block. The API distinguishes region-layer
-// formula requests from event-list point requests by response_format and uses
-// different JSON keys for their queries ("queries" versus "query").
-func validateGeomapRequestVariant(reqMap map[string]interface{}) string {
-	regionFields := []string{
-		"q", "log_query", "rum_query", "query", "formula", "conditional_formats", "sort",
-	}
-	pointFields := []string{"columns", "list_stream_query", "text_format"}
-	hasRegionFields := anyFieldSet(reqMap, regionFields)
-	hasPointFields := anyFieldSet(reqMap, pointFields)
-
-	if hasRegionFields && hasPointFields {
-		return "region-layer fields cannot be combined with event-list point-layer fields"
+// validateInlineOneOfVariant rejects fields that do not belong to the variant
+// selected by a flat HCL object's discriminator.
+func validateInlineOneOfVariant(f FieldSpec, item map[string]interface{}) string {
+	matched := matchInlineOneOfVariant(f, item)
+	if matched == nil {
+		return "request does not match a supported variant"
 	}
 
-	responseFormat, _ := reqMap["response_format"].(string)
-	switch responseFormat {
-	case "event_list":
-		if hasRegionFields {
-			return `response_format "event_list" cannot be used with region-layer fields`
-		}
-	case "scalar", "timeseries":
-		if hasPointFields {
-			return fmt.Sprintf(
-				`response_format %q cannot be used with event-list point-layer fields`,
-				responseFormat,
-			)
-		}
-	case "":
-		if hasPointFields {
-			return `event-list point-layer fields require response_format "event_list"`
-		}
+	allowed := make(map[string]struct{}, len(matched.Children))
+	for _, field := range matched.Children {
+		allowed[field.HCLKey] = struct{}{}
 	}
-
+	var invalid []string
+	for _, field := range inlineOneOfFields(f) {
+		if _, ok := allowed[field.HCLKey]; ok || !valueIsSet(item[field.HCLKey]) {
+			continue
+		}
+		invalid = append(invalid, field.HCLKey)
+	}
+	if len(invalid) > 0 {
+		quoted := make([]string, len(invalid))
+		for i, field := range invalid {
+			quoted[i] = strconv.Quote(field)
+		}
+		return fmt.Sprintf("fields %s do not belong to the selected request variant", strings.Join(quoted, ", "))
+	}
 	return ""
-}
-
-func anyFieldSet(data map[string]interface{}, keys []string) bool {
-	for _, key := range keys {
-		if valueIsSet(data[key]) {
-			return true
-		}
-	}
-	return false
 }
 
 func valueIsSet(v interface{}) bool {

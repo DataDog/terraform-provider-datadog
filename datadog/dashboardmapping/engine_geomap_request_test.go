@@ -1,6 +1,10 @@
 package dashboardmapping
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+)
 
 func TestGeomapFormulaRequestDefaultsToScalar(t *testing.T) {
 	widget := map[string]interface{}{
@@ -268,5 +272,65 @@ func TestGeomapRequestAcceptsMatchingRequestVariants(t *testing.T) {
 				t.Fatalf("expected matching request variant to pass validation, got %#v", errs)
 			}
 		})
+	}
+}
+
+func TestGeomapInlineRequestUnionKeepsFlatSchema(t *testing.T) {
+	var requestSpec *FieldSpec
+	for i := range GeomapWidgetSpec.Fields {
+		if GeomapWidgetSpec.Fields[i].HCLKey == "request" {
+			requestSpec = &GeomapWidgetSpec.Fields[i]
+			break
+		}
+	}
+	if requestSpec == nil || requestSpec.Discriminator == nil || !requestSpec.Discriminator.Inline {
+		t.Fatal("geomap request must use an inline discriminated union")
+	}
+
+	requestSchema := FieldSpecToSDKv2(*requestSpec)
+	resource := requestSchema.Elem.(*schema.Resource)
+	for _, key := range []string{"response_format", "query", "formula", "list_stream_query", "columns"} {
+		if resource.Schema[key] == nil {
+			t.Fatalf("inline request schema is missing %q", key)
+		}
+	}
+	for _, key := range []string{"region_request", "event_list_request"} {
+		if resource.Schema[key] != nil {
+			t.Fatalf("internal variant %q leaked into the public HCL schema", key)
+		}
+	}
+}
+
+func TestGeomapInlineRequestUnionBuildsOnlySelectedVariant(t *testing.T) {
+	widget := map[string]interface{}{
+		"geomap_definition": []interface{}{map[string]interface{}{
+			"request": []interface{}{map[string]interface{}{
+				"response_format": "event_list",
+				"query": []interface{}{map[string]interface{}{
+					"metric_query": []interface{}{map[string]interface{}{
+						"data_source": "metrics",
+						"name":        "query1",
+						"query":       "avg:system.cpu.user{*}",
+					}},
+				}},
+				"list_stream_query": []interface{}{map[string]interface{}{
+					"data_source":  "logs_stream",
+					"query_string": "service:web",
+				}},
+			}},
+		}},
+	}
+
+	built := BuildWidgetEngineJSONFromMap(widget)
+	definition := built["definition"].(map[string]interface{})
+	request := definition["requests"].([]interface{})[0].(map[string]interface{})
+	if _, ok := request["queries"]; ok {
+		t.Fatalf("event-list variant serialized region queries: %#v", request)
+	}
+	if _, ok := request["formulas"]; ok {
+		t.Fatalf("event-list variant serialized region formulas: %#v", request)
+	}
+	if _, ok := request["query"].(map[string]interface{}); !ok {
+		t.Fatalf("event-list variant did not serialize its singular query: %#v", request)
 	}
 }

@@ -1185,27 +1185,21 @@ var geomapWidgetRequestStyleFields = []FieldSpec{
 		Description: "The category used to color points."},
 }
 
-// geomapRequestExtraFields are request-level fields shared by formula region
-// layers and event-list point layers.
-var geomapRequestExtraFields = []FieldSpec{
-	{HCLKey: "response_format", Type: TypeString, OmitEmpty: true, Computed: true,
-		Description: "Response format for the Geomap request.",
-		ValidValues: []string{"timeseries", "scalar", "event_list"}},
-	{HCLKey: "columns", Type: TypeBlockList, OmitEmpty: true,
-		Description: "Columns displayed by an event-list points layer.",
-		Children:    listStreamColumnFields},
+var geomapResponseFormatField = FieldSpec{
+	HCLKey: "response_format", Type: TypeString, OmitEmpty: true, Computed: true,
+	Description: "Response format for the Geomap request.",
+	ValidValues: []string{"timeseries", "scalar", "event_list"},
+}
+
+var geomapFormulaRequestExtraFields = []FieldSpec{
+	geomapResponseFormatField,
 	{HCLKey: "conditional_formats", Type: TypeBlockList, OmitEmpty: true,
 		Description: "Threshold conditional formatting rules for a regions layer.",
 		Children:    widgetConditionalFormatFields},
-	{HCLKey: "text_format", JSONKey: "text_formats", Type: TypeBlockList, OmitEmpty: true,
-		Description: "Text formatting rules for a points layer.",
-		Children:    tableWidgetTextFormatRuleFields},
-	{HCLKey: "list_stream_query", JSONKey: "query", Type: TypeBlock, OmitEmpty: true,
-		Description: "List Stream query for an event-list points layer. Cannot be combined with a region-layer query or formula.",
-		Children:    listStreamQueryFields},
 }
 
-var geomapWidgetRequestFields = append([]FieldSpec{
+var geomapRegionRequestFields = []FieldSpec{
+	geomapResponseFormatField,
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
 		Deprecated:    "Use queries and formulas instead.",
 		ConflictsWith: []string{"query", "formula"},
@@ -1219,19 +1213,37 @@ var geomapWidgetRequestFields = append([]FieldSpec{
 		Description: "The query to use for this widget.",
 		Children:    logQueryDefinitionFields},
 	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
-		Description: "Style applied to a points layer request.",
+		Description: "Style applied to the request.",
 		Children:    geomapWidgetRequestStyleFields},
 	{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
 		Description: "Controls for sorting a formula request.",
 		Children:    widgetSortByFields},
-	// FormulaAndFunction query/formula fields
 	{HCLKey: "query", Type: TypeBlockList, OmitEmpty: true,
 		Description: "List of queries that can be returned directly or used in formulas.",
 		Children:    formulaAndFunctionQueryFields},
 	{HCLKey: "formula", Type: TypeBlockList, OmitEmpty: true,
 		Description: "List of formulas that operate on queries.",
 		Children:    widgetFormulaFields},
-}, geomapRequestExtraFields...)
+	{HCLKey: "conditional_formats", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Threshold conditional formatting rules for a regions layer.",
+		Children:    widgetConditionalFormatFields},
+}
+
+var geomapEventListRequestFields = []FieldSpec{
+	geomapResponseFormatField,
+	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
+		Description: "Style applied to the request.",
+		Children:    geomapWidgetRequestStyleFields},
+	{HCLKey: "columns", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Columns displayed by an event-list points layer.",
+		Children:    listStreamColumnFields},
+	{HCLKey: "text_format", JSONKey: "text_formats", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Text formatting rules for a points layer.",
+		Children:    tableWidgetTextFormatRuleFields},
+	{HCLKey: "list_stream_query", JSONKey: "query", Type: TypeBlock, OmitEmpty: true,
+		Description: "List Stream query for an event-list points layer. Cannot be combined with a region-layer query or formula.",
+		Children:    listStreamQueryFields},
+}
 
 var GeomapWidgetSpec = WidgetSpec{
 	HCLKey:      "geomap_definition",
@@ -1247,15 +1259,19 @@ var GeomapWidgetSpec = WidgetSpec{
 				{HCLKey: "focus", Type: TypeString, OmitEmpty: false, Required: true,
 					Description: "The 2-letter ISO code of a country to focus the map on, or `WORLD` for global view, or a region (`EMEA`, `APAC`, `LATAM`), or a continent (`NORTH_AMERICA`, `SOUTH_AMERICA`, `EUROPE`, `AFRICA`, `ASIA`, `OCEANIA`)."},
 			}},
-		// Keep the request variants flat for compatibility with the existing public
-		// request { q = ... } / request { query { ... } } HCL shape. A discriminated
-		// TypeBlockList would require new region_request/event_list_request wrapper
-		// blocks and break existing configurations. ValidateWidgetConflicts therefore
-		// enforces the variant-specific field constraints. Do not copy this
-		// compatibility exception for new widgets; prefer a discriminated TypeBlockList.
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false, MaxItems: 2,
-			Description: "A region-layer or point-layer request. Up to two `request` blocks are allowed.",
-			Children:    geomapWidgetRequestFields},
+			Discriminator: &OneOfDiscriminator{JSONKey: "response_format", Inline: true},
+			Description:   "A region-layer or point-layer request. Up to two `request` blocks are allowed.",
+			Children: []FieldSpec{
+				{HCLKey: "region_request", Type: TypeBlock,
+					Discriminator: &OneOfDiscriminator{Values: []string{"scalar", "timeseries"}, DefaultVariant: true},
+					Description:   "Region-layer request fields.",
+					Children:      geomapRegionRequestFields},
+				{HCLKey: "event_list_request", Type: TypeBlock,
+					Discriminator: &OneOfDiscriminator{Value: "event_list"},
+					Description:   "Event-list point-layer request fields.",
+					Children:      geomapEventListRequestFields},
+			}},
 		widgetCustomLinkField,
 	},
 }

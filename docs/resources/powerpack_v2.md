@@ -4791,7 +4791,7 @@ Optional:
 - `response_format` (String) Response format for the Geomap request. Valid values are `timeseries`, `scalar`, `event_list`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query))
 - `sort` (Block List, Max: 1) Controls for sorting a formula request. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--sort))
-- `style` (Block List, Max: 1) Style applied to a points layer request. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--style))
+- `style` (Block List, Max: 1) Style applied to the request. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--style))
 - `text_format` (Block List) Text formatting rules for a points layer. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--text_format))
 
 <a id="nestedblock--widget--geomap_definition--request--columns"></a>
@@ -10722,7 +10722,7 @@ Optional:
 - `response_format` (String) Response format for the Geomap request. Valid values are `timeseries`, `scalar`, `event_list`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query))
 - `sort` (Block List, Max: 1) Controls for sorting a formula request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--sort))
-- `style` (Block List, Max: 1) Style applied to a points layer request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--style))
+- `style` (Block List, Max: 1) Style applied to the request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--style))
 - `text_format` (Block List) Text formatting rules for a points layer. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--text_format))
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--columns"></a>
