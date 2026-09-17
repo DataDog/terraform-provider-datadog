@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 	"testing"
 	"time"
 
@@ -68,7 +69,7 @@ resource "datadog_service_account" "test" {
   # No roles keeps the target's permissions a subset of the test caller's.
   roles = []
 }
-`, uniqueEntityName(ctx, t)+"@example.com")
+`, strings.ToLower(uniqueEntityName(ctx, t))+"@example.com")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
