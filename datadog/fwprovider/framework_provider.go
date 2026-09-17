@@ -295,9 +295,9 @@ func New() provider.Provider {
 
 func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resource {
 	// Hand-written and generator-v2 resources are kept in separate slices (see
-	// generatedResources) so regenerating does not churn this file. The two
-	// conditional resources below leave room for themselves in the capacity.
-	wrappedResources := make([]func() resource.Resource, 0, len(Resources)+len(generatedResources)+2)
+	// generatedResources) so regenerating does not churn this file. The
+	// conditional resource below leaves room for itself in the capacity.
+	wrappedResources := make([]func() resource.Resource, 0, len(Resources)+len(generatedResources)+1)
 	for _, f := range slices.Concat(Resources, generatedResources) {
 		r := f()
 		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&r) })
@@ -306,11 +306,6 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 	if utils.UseMonitorFrameworkProvider() {
 		monitorResource := NewMonitorResource()
 		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&monitorResource) })
-	}
-
-	if utils.IsDatabricksIntegrationEnabled() {
-		databricksResource := NewIntegrationDatabricksAccountResource()
-		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&databricksResource) })
 	}
 
 	return wrappedResources
@@ -744,12 +739,6 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetIncidentUserDefinedRole", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentUserDefinedRole", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentUserDefinedRole", true)
-
-	ddClientConfig.SetUnstableOperationEnabled("v2.CreateWebIntegrationAccount", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.GetWebIntegrationAccount", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.ListWebIntegrationAccounts", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateWebIntegrationAccount", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteWebIntegrationAccount", true)
 
 	// Enable Governance Tag Rules
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateTagRule", true)
