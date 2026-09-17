@@ -63,11 +63,15 @@ func TestAccAwsWifPersonaMappingServiceAccount(t *testing.T) {
 	resourceName := "datadog_aws_wif_persona_mapping.test"
 	serviceAccountName := "datadog_service_account.test"
 	serviceAccountConfig := fmt.Sprintf(`
+data "datadog_role" "read_only" {
+  filter = "Datadog Read Only Role"
+}
+
 resource "datadog_service_account" "test" {
   email = %q
   name  = "AWS WIF acceptance test"
-  # No roles keeps the target's permissions a subset of the test caller's.
-  roles = []
+  # The API requires a nonempty permission set contained in the caller's.
+  roles = [data.datadog_role.read_only.id]
 }
 `, strings.ToLower(uniqueEntityName(ctx, t))+"@example.com")
 
