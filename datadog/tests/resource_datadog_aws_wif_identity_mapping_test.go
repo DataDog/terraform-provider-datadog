@@ -25,21 +25,21 @@ import (
 // recorded user does not exist in other orgs. Keep it in sync with the cassette.
 const awsWifReplayAccountIdentifier = "tf-testacccurrentuserdatasource-local@example.com"
 
-func TestAccAwsWifPersonaMapping(t *testing.T) {
+func TestAccAwsWifIdentityMapping(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
-	resourceName := "datadog_aws_wif_persona_mapping.test"
+	resourceName := "datadog_aws_wif_identity_mapping.test"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckAwsWifPersonaMappingDestroy(providers.frameworkProvider),
+		CheckDestroy:             testAccCheckAwsWifIdentityMappingDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccAwsWifPersonaMappingConfig(accountID),
+				Config: testAccAwsWifIdentityMappingConfig(accountID),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckAwsWifPersonaMappingExists(providers.frameworkProvider, resourceName),
+					testAccCheckAwsWifIdentityMappingExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "arn_pattern", fmt.Sprintf("arn:aws:sts::%s:assumed-role/terraform-runner/*", accountID)),
 					resource.TestCheckResourceAttrSet(resourceName, "account_identifier"),
 					resource.TestCheckResourceAttrSet(resourceName, "account_uuid"),
@@ -54,13 +54,13 @@ func TestAccAwsWifPersonaMapping(t *testing.T) {
 	})
 }
 
-func TestAccAwsWifPersonaMappingServiceAccount(t *testing.T) {
+func TestAccAwsWifIdentityMappingServiceAccount(t *testing.T) {
 	skipIfNoCassette(t)
 	// Run before parallel tests: a mapping for the caller itself can prevent
 	// the same caller from creating another mapping, even for a service account.
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
-	resourceName := "datadog_aws_wif_persona_mapping.test"
+	resourceName := "datadog_aws_wif_identity_mapping.test"
 	serviceAccountName := "datadog_service_account.test"
 	serviceAccountConfig := fmt.Sprintf(`
 data "datadog_role" "read_only" {
@@ -78,12 +78,12 @@ resource "datadog_service_account" "test" {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckAwsWifPersonaMappingDestroy(providers.frameworkProvider),
+		CheckDestroy:             testAccCheckAwsWifIdentityMappingDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccAwsWifPersonaMappingConfigWithIdentity(accountID, serviceAccountName+".id", serviceAccountConfig),
+				Config: testAccAwsWifIdentityMappingConfigWithIdentity(accountID, serviceAccountName+".id", serviceAccountConfig),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckAwsWifPersonaMappingExists(providers.frameworkProvider, resourceName),
+					testAccCheckAwsWifIdentityMappingExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttrPair(resourceName, "account_identifier", serviceAccountName, "id"),
 					resource.TestCheckResourceAttrPair(resourceName, "account_uuid", serviceAccountName, "id"),
 					resource.TestCheckResourceAttr(resourceName, "arn_pattern", fmt.Sprintf("arn:aws:sts::%s:assumed-role/terraform-runner/*", accountID)),
@@ -98,7 +98,7 @@ resource "datadog_service_account" "test" {
 	})
 }
 
-func testAccAwsWifPersonaMappingConfig(accountID string) string {
+func testAccAwsWifIdentityMappingConfig(accountID string) string {
 	currentUserConfig := `data "datadog_current_user" "test" {}`
 	accountIdentifier := "data.datadog_current_user.test.handle"
 	if isReplaying() {
@@ -106,10 +106,10 @@ func testAccAwsWifPersonaMappingConfig(accountID string) string {
 		accountIdentifier = fmt.Sprintf("%q", awsWifReplayAccountIdentifier)
 	}
 
-	return testAccAwsWifPersonaMappingConfigWithIdentity(accountID, accountIdentifier, currentUserConfig)
+	return testAccAwsWifIdentityMappingConfigWithIdentity(accountID, accountIdentifier, currentUserConfig)
 }
 
-func testAccAwsWifPersonaMappingConfigWithIdentity(accountID, accountIdentifier, identityConfig string) string {
+func testAccAwsWifIdentityMappingConfigWithIdentity(accountID, accountIdentifier, identityConfig string) string {
 	return fmt.Sprintf(`
 %[2]s
 
@@ -139,14 +139,14 @@ resource "datadog_integration_aws_account" "test" {
   }
 }
 
-resource "datadog_aws_wif_persona_mapping" "test" {
+resource "datadog_aws_wif_identity_mapping" "test" {
   account_identifier = %[3]s
   arn_pattern        = "arn:aws:sts::${datadog_integration_aws_account.test.aws_account_id}:assumed-role/terraform-runner/*"
 }
 `, accountID, identityConfig, accountIdentifier)
 }
 
-func testAccCheckAwsWifPersonaMappingExists(provider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {
+func testAccCheckAwsWifIdentityMappingExists(provider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {
 	return func(state *terraform.State) error {
 		stateResource, ok := state.RootModule().Resources[resourceName]
 		if !ok {
@@ -158,7 +158,7 @@ func testAccCheckAwsWifPersonaMappingExists(provider *fwprovider.FrameworkProvid
 			if err == nil {
 				return nil
 			}
-			translatedError := utils.TranslateClientError(err, httpResponse, "error checking AWS WIF persona mapping existence")
+			translatedError := utils.TranslateClientError(err, httpResponse, "error checking AWS WIF identity mapping existence")
 			if httpResponse != nil && httpResponse.StatusCode == http.StatusNotFound {
 				return retry.RetryableError(translatedError)
 			}
@@ -167,10 +167,10 @@ func testAccCheckAwsWifPersonaMappingExists(provider *fwprovider.FrameworkProvid
 	}
 }
 
-func testAccCheckAwsWifPersonaMappingDestroy(provider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
+func testAccCheckAwsWifIdentityMappingDestroy(provider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(state *terraform.State) error {
 		for _, stateResource := range state.RootModule().Resources {
-			if stateResource.Type != "datadog_aws_wif_persona_mapping" {
+			if stateResource.Type != "datadog_aws_wif_identity_mapping" {
 				continue
 			}
 
@@ -180,9 +180,9 @@ func testAccCheckAwsWifPersonaMappingDestroy(provider *fwprovider.FrameworkProvi
 					if httpResponse != nil && httpResponse.StatusCode == http.StatusNotFound {
 						return nil
 					}
-					return retry.NonRetryableError(utils.TranslateClientError(err, httpResponse, "error checking AWS WIF persona mapping destruction"))
+					return retry.NonRetryableError(utils.TranslateClientError(err, httpResponse, "error checking AWS WIF identity mapping destruction"))
 				}
-				return retry.RetryableError(fmt.Errorf("AWS WIF persona mapping %s still exists", stateResource.Primary.ID))
+				return retry.RetryableError(fmt.Errorf("AWS WIF identity mapping %s still exists", stateResource.Primary.ID))
 			})
 			if err != nil {
 				return err

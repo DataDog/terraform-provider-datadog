@@ -192,7 +192,7 @@ func TestAwsWifArnPattern(t *testing.T) {
 	}
 }
 
-func TestAwsWifPersonaMappingCreatePreservesStateOnPostCreateFailure(t *testing.T) {
+func TestAwsWifIdentityMappingCreatePreservesStateOnPostCreateFailure(t *testing.T) {
 	const (
 		mappingID         = "7c405332-7033-40d2-a046-a27a075a22cd"
 		accountIdentifier = "service-account-id"
@@ -245,14 +245,14 @@ func TestAwsWifPersonaMappingCreatePreservesStateOnPostCreateFailure(t *testing.
 			config.HTTPClient = server.Client()
 			config.SetUnstableOperationEnabled("v2.CreateAWSCloudAuthPersonaMapping", true)
 			config.SetUnstableOperationEnabled("v2.GetAWSCloudAuthPersonaMapping", true)
-			r := &awsWifPersonaMappingResource{
+			r := &awsWifIdentityMappingResource{
 				Api:  datadogV2.NewCloudAuthenticationApi(datadog.NewAPIClient(config)),
 				Auth: ctx,
 			}
 
 			var schemaResponse resource.SchemaResponse
 			r.Schema(ctx, resource.SchemaRequest{}, &schemaResponse)
-			planned := awsWifPersonaMappingModel{
+			planned := awsWifIdentityMappingModel{
 				ID:                types.StringUnknown(),
 				AccountIdentifier: types.StringValue(accountIdentifier),
 				AccountUUID:       types.StringUnknown(),
@@ -272,7 +272,7 @@ func TestAwsWifPersonaMappingCreatePreservesStateOnPostCreateFailure(t *testing.
 				t.Fatalf("visibility GET called = %t, want %t", sawGet, test.wantGet)
 			}
 
-			var state awsWifPersonaMappingModel
+			var state awsWifIdentityMappingModel
 			if diags := response.State.Get(ctx, &state); diags.HasError() {
 				t.Fatalf("reading response state: %v", diags.Errors())
 			}
@@ -292,17 +292,17 @@ func TestAwsWifPersonaMappingCreatePreservesStateOnPostCreateFailure(t *testing.
 	}
 }
 
-func TestAwsWifPersonaMappingUpdateState(t *testing.T) {
-	apiResponse := newAwsWifPersonaMappingResponse(
+func TestAwsWifIdentityMappingUpdateState(t *testing.T) {
+	apiResponse := newAwsWifIdentityMappingResponse(
 		"mapping-id",
 		"service-account-handle",
 		"account-uuid",
 		"arn:aws:sts::123456789012:assumed-role/terraform-runner/session-name",
 	)
-	resource := &awsWifPersonaMappingResource{}
+	resource := &awsWifIdentityMappingResource{}
 
 	t.Run("preserves configured email when API returns handle", func(t *testing.T) {
-		state := awsWifPersonaMappingModel{
+		state := awsWifIdentityMappingModel{
 			AccountIdentifier: types.StringValue("terraform-service-account@example.com"),
 		}
 
@@ -317,7 +317,7 @@ func TestAwsWifPersonaMappingUpdateState(t *testing.T) {
 	})
 
 	t.Run("uses API handle during import", func(t *testing.T) {
-		state := awsWifPersonaMappingModel{AccountIdentifier: types.StringNull()}
+		state := awsWifIdentityMappingModel{AccountIdentifier: types.StringNull()}
 
 		resource.updateState(&state, apiResponse)
 
@@ -327,7 +327,7 @@ func TestAwsWifPersonaMappingUpdateState(t *testing.T) {
 	})
 }
 
-func newAwsWifPersonaMappingResponse(id, accountIdentifier, accountUUID, arnPattern string) *datadogV2.AWSCloudAuthPersonaMappingResponse {
+func newAwsWifIdentityMappingResponse(id, accountIdentifier, accountUUID, arnPattern string) *datadogV2.AWSCloudAuthPersonaMappingResponse {
 	attributes := datadogV2.NewAWSCloudAuthPersonaMappingAttributesResponse(accountIdentifier, accountUUID, arnPattern)
 	data := datadogV2.NewAWSCloudAuthPersonaMappingDataResponse(
 		*attributes,
@@ -337,7 +337,7 @@ func newAwsWifPersonaMappingResponse(id, accountIdentifier, accountUUID, arnPatt
 	return datadogV2.NewAWSCloudAuthPersonaMappingResponse(*data)
 }
 
-func TestAwsWifPersonaMappingRead(t *testing.T) {
+func TestAwsWifIdentityMappingRead(t *testing.T) {
 	for _, tc := range []struct {
 		name        string
 		statuses    []int
@@ -365,7 +365,7 @@ func TestAwsWifPersonaMappingRead(t *testing.T) {
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(status)
 				if status == http.StatusOK {
-					if err := json.NewEncoder(w).Encode(newAwsWifPersonaMappingResponse("mapping-id", "handle", "account-uuid", "arn:aws:sts::123456789012:assumed-role/terraform-runner/*")); err != nil {
+					if err := json.NewEncoder(w).Encode(newAwsWifIdentityMappingResponse("mapping-id", "handle", "account-uuid", "arn:aws:sts::123456789012:assumed-role/terraform-runner/*")); err != nil {
 						t.Error(err)
 					}
 				} else {
@@ -381,13 +381,13 @@ func TestAwsWifPersonaMappingRead(t *testing.T) {
 			config.OperationServers = nil
 			config.HTTPClient = server.Client()
 			config.SetUnstableOperationEnabled("v2.GetAWSCloudAuthPersonaMapping", true)
-			r := &awsWifPersonaMappingResource{
+			r := &awsWifIdentityMappingResource{
 				Api:  datadogV2.NewCloudAuthenticationApi(datadog.NewAPIClient(config)),
 				Auth: context.Background(),
 			}
 			var schemaResponse resource.SchemaResponse
 			r.Schema(ctx, resource.SchemaRequest{}, &schemaResponse)
-			prior := awsWifPersonaMappingModel{
+			prior := awsWifIdentityMappingModel{
 				ID:                types.StringValue("mapping-id"),
 				AccountIdentifier: types.StringValue("configured@example.com"),
 				AccountUUID:       types.StringValue("account-uuid"),

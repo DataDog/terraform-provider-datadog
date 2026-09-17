@@ -26,8 +26,8 @@ import (
 )
 
 const (
-	awsWifPersonaMappingCreateTimeout     = 2 * time.Minute
-	awsWifPersonaMappingVisibilityTimeout = 30 * time.Second
+	awsWifIdentityMappingCreateTimeout     = 2 * time.Minute
+	awsWifIdentityMappingVisibilityTimeout = 30 * time.Second
 
 	// The authoritative backend parser is cloudconfig.ParseARNPattern in
 	// domains/aaa/external_authn/internal/libs/cloudconfig/arn_parser.go. It
@@ -40,35 +40,35 @@ const (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &awsWifPersonaMappingResource{}
-	_ resource.ResourceWithImportState = &awsWifPersonaMappingResource{}
+	_ resource.ResourceWithConfigure   = &awsWifIdentityMappingResource{}
+	_ resource.ResourceWithImportState = &awsWifIdentityMappingResource{}
 
 	awsWifArnPattern = regexp.MustCompile(`^arn:aws:(?:` + awsWifStsCallerPattern + `|` + awsWifIamUserCallerPattern + `)$`)
 )
 
-type awsWifPersonaMappingResource struct {
+type awsWifIdentityMappingResource struct {
 	Api  *datadogV2.CloudAuthenticationApi
 	Auth context.Context
 }
 
-type awsWifPersonaMappingModel struct {
+type awsWifIdentityMappingModel struct {
 	ID                types.String `tfsdk:"id"`
 	AccountIdentifier types.String `tfsdk:"account_identifier"`
 	AccountUUID       types.String `tfsdk:"account_uuid"`
 	ArnPattern        types.String `tfsdk:"arn_pattern"`
 }
 
-func NewAwsWifPersonaMappingResource() resource.Resource {
-	return &awsWifPersonaMappingResource{}
+func NewAwsWifIdentityMappingResource() resource.Resource {
+	return &awsWifIdentityMappingResource{}
 }
 
-func (r *awsWifPersonaMappingResource) Metadata(_ context.Context, _ resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = "aws_wif_persona_mapping"
+func (r *awsWifIdentityMappingResource) Metadata(_ context.Context, _ resource.MetadataRequest, response *resource.MetadataResponse) {
+	response.TypeName = "aws_wif_identity_mapping"
 }
 
-func (r *awsWifPersonaMappingResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *awsWifIdentityMappingResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides an AWS Workload Identity Federation (WIF) persona mapping. The mapping allows an AWS IAM principal matching `arn_pattern` to authenticate as the Datadog user or service account identified by `account_identifier`. The AWS account in the ARN must already be integrated with Datadog. The identity creating the mapping must have every permission assigned to the target identity. Creating the initial mapping requires API and application credentials with the Workload Identity Federation write permission; a provider already using WIF cannot bootstrap its own mapping. Mapping changes may take several minutes to affect WIF authentication. This resource uses a public beta API and is subject to change.",
+		Description: "Provides an AWS Workload Identity Federation (WIF) identity mapping. The mapping allows an AWS IAM principal matching `arn_pattern` to authenticate as the Datadog user or service account identified by `account_identifier`. The AWS account in the ARN must already be integrated with Datadog. The identity creating the mapping must have every permission assigned to the target identity. Creating the initial mapping requires API and application credentials with the Workload Identity Federation write permission; a provider already using WIF cannot bootstrap its own mapping. Mapping changes may take several minutes to affect WIF authentication. This resource uses a public beta API and is subject to change.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"account_identifier": schema.StringAttribute{
@@ -99,7 +99,7 @@ func (r *awsWifPersonaMappingResource) Schema(_ context.Context, _ resource.Sche
 	}
 }
 
-func (r *awsWifPersonaMappingResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *awsWifIdentityMappingResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	if request.ProviderData == nil {
 		return
 	}
@@ -117,12 +117,12 @@ func (r *awsWifPersonaMappingResource) Configure(_ context.Context, request reso
 	r.Auth = providerData.Auth
 }
 
-func (r *awsWifPersonaMappingResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *awsWifIdentityMappingResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), request, response)
 }
 
-func (r *awsWifPersonaMappingResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state awsWifPersonaMappingModel
+func (r *awsWifIdentityMappingResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state awsWifIdentityMappingModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -141,13 +141,13 @@ func (r *awsWifPersonaMappingResource) Create(ctx context.Context, request resou
 	var apiResponse datadogV2.AWSCloudAuthPersonaMappingResponse
 	var httpResponse *http.Response
 	var err error
-	err = retry.RetryContext(ctx, awsWifPersonaMappingCreateTimeout, func() *retry.RetryError {
+	err = retry.RetryContext(ctx, awsWifIdentityMappingCreateTimeout, func() *retry.RetryError {
 		apiResponse, httpResponse, err = r.Api.CreateAWSCloudAuthPersonaMapping(r.Auth, *body)
 		if err == nil {
 			return nil
 		}
 
-		translatedError := utils.TranslateClientError(err, httpResponse, "error creating AWS WIF persona mapping")
+		translatedError := utils.TranslateClientError(err, httpResponse, "error creating AWS WIF identity mapping")
 		if isAwsIntegrationPropagationError(err, httpResponse) {
 			return retry.RetryableError(translatedError)
 		}
@@ -182,14 +182,14 @@ func (r *awsWifPersonaMappingResource) Create(ctx context.Context, request resou
 		return
 	}
 	if mappingID == "" {
-		response.Diagnostics.AddError("response contains no mapping ID", "The API created an AWS WIF persona mapping but returned an empty ID, so Terraform cannot track it.")
+		response.Diagnostics.AddError("response contains no mapping ID", "The API created an AWS WIF identity mapping but returned an empty ID, so Terraform cannot track it.")
 		return
 	}
 
 	apiResponse, httpResponse, err = r.readWithRetry(ctx, mappingID)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(
-			utils.TranslateClientError(err, httpResponse, "error waiting for AWS WIF persona mapping to become visible"), "",
+			utils.TranslateClientError(err, httpResponse, "error waiting for AWS WIF identity mapping to become visible"), "",
 		))
 		return
 	}
@@ -214,8 +214,8 @@ func isAwsIntegrationPropagationError(err error, httpResponse *http.Response) bo
 	return strings.Contains(string(apiError.Body()), "AWS Account Id is not integrated with this Datadog account")
 }
 
-func (r *awsWifPersonaMappingResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state awsWifPersonaMappingModel
+func (r *awsWifIdentityMappingResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state awsWifIdentityMappingModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -228,7 +228,7 @@ func (r *awsWifPersonaMappingResource) Read(ctx context.Context, request resourc
 			return
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(
-			utils.TranslateClientError(err, httpResponse, "error retrieving AWS WIF persona mapping"), "",
+			utils.TranslateClientError(err, httpResponse, "error retrieving AWS WIF identity mapping"), "",
 		))
 		return
 	}
@@ -243,12 +243,12 @@ func (r *awsWifPersonaMappingResource) Read(ctx context.Context, request resourc
 
 // A newly created mapping can intermittently return 404 even after a successful
 // GET. Retry before treating it as deleted so a refresh cannot orphan it.
-func (r *awsWifPersonaMappingResource) readWithRetry(ctx context.Context, id string) (datadogV2.AWSCloudAuthPersonaMappingResponse, *http.Response, error) {
+func (r *awsWifIdentityMappingResource) readWithRetry(ctx context.Context, id string) (datadogV2.AWSCloudAuthPersonaMappingResponse, *http.Response, error) {
 	var result datadogV2.AWSCloudAuthPersonaMappingResponse
 	var httpResponse *http.Response
 	// RetryContext can return on cancellation while its callback is still running.
 	var resultMu sync.Mutex
-	err := retry.RetryContext(ctx, awsWifPersonaMappingVisibilityTimeout, func() *retry.RetryError {
+	err := retry.RetryContext(ctx, awsWifIdentityMappingVisibilityTimeout, func() *retry.RetryError {
 		readResponse, readHTTPResponse, err := r.Api.GetAWSCloudAuthPersonaMapping(r.Auth, id)
 		resultMu.Lock()
 		result, httpResponse = readResponse, readHTTPResponse
@@ -266,12 +266,12 @@ func (r *awsWifPersonaMappingResource) readWithRetry(ctx context.Context, id str
 	return result, httpResponse, err
 }
 
-func (r *awsWifPersonaMappingResource) Update(_ context.Context, _ resource.UpdateRequest, response *resource.UpdateResponse) {
-	response.Diagnostics.AddError("Update not supported", "AWS WIF persona mappings cannot be updated; changing either configured attribute replaces the mapping.")
+func (r *awsWifIdentityMappingResource) Update(_ context.Context, _ resource.UpdateRequest, response *resource.UpdateResponse) {
+	response.Diagnostics.AddError("Update not supported", "AWS WIF identity mappings cannot be updated; changing either configured attribute replaces the mapping.")
 }
 
-func (r *awsWifPersonaMappingResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state awsWifPersonaMappingModel
+func (r *awsWifIdentityMappingResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state awsWifIdentityMappingModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -283,12 +283,12 @@ func (r *awsWifPersonaMappingResource) Delete(ctx context.Context, request resou
 			return
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(
-			utils.TranslateClientError(err, httpResponse, "error deleting AWS WIF persona mapping"), "",
+			utils.TranslateClientError(err, httpResponse, "error deleting AWS WIF identity mapping"), "",
 		))
 	}
 }
 
-func (r *awsWifPersonaMappingResource) updateState(state *awsWifPersonaMappingModel, apiResponse *datadogV2.AWSCloudAuthPersonaMappingResponse) {
+func (r *awsWifIdentityMappingResource) updateState(state *awsWifIdentityMappingModel, apiResponse *datadogV2.AWSCloudAuthPersonaMappingResponse) {
 	data := apiResponse.GetData()
 	attributes := data.GetAttributes()
 
