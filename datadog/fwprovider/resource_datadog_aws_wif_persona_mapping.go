@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -245,17 +246,23 @@ func (r *awsWifPersonaMappingResource) Read(ctx context.Context, request resourc
 func (r *awsWifPersonaMappingResource) readWithRetry(ctx context.Context, id string) (datadogV2.AWSCloudAuthPersonaMappingResponse, *http.Response, error) {
 	var result datadogV2.AWSCloudAuthPersonaMappingResponse
 	var httpResponse *http.Response
+	// RetryContext can return on cancellation while its callback is still running.
+	var resultMu sync.Mutex
 	err := retry.RetryContext(ctx, awsWifPersonaMappingVisibilityTimeout, func() *retry.RetryError {
-		var err error
-		result, httpResponse, err = r.Api.GetAWSCloudAuthPersonaMapping(r.Auth, id)
+		readResponse, readHTTPResponse, err := r.Api.GetAWSCloudAuthPersonaMapping(r.Auth, id)
+		resultMu.Lock()
+		result, httpResponse = readResponse, readHTTPResponse
+		resultMu.Unlock()
 		if err == nil {
 			return nil
 		}
-		if httpResponse != nil && httpResponse.StatusCode == http.StatusNotFound {
+		if readHTTPResponse != nil && readHTTPResponse.StatusCode == http.StatusNotFound {
 			return retry.RetryableError(err)
 		}
 		return retry.NonRetryableError(err)
 	})
+	resultMu.Lock()
+	defer resultMu.Unlock()
 	return result, httpResponse, err
 }
 
