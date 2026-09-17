@@ -27,22 +27,6 @@ For generated resources, only an OpenAPI property with `writeOnly: true` uses Te
 
 Existing hand-written resources can use the compatibility-preserving helpers in [`datadog/internal/fwutils`](./datadog/internal/fwutils/README.md#write-only-secret-helpers-writeonly_helpersgo). Their existing three-attribute pattern (`<attr>`, `<attr>_wo`, `<attr>_wo_version`) is retained for already-shipped schemas; do not use that legacy shape for new generated resources.
 
-## Env-gated resources
-
-Some resources are gated behind environment variables so they are only registered when explicitly enabled. This is used to ship resources to a closed set of customers (private beta) without publishing them in the Terraform Registry.
-
-Currently gated resources:
-
-| Resource | Env var | Default |
-|---|---|---|
-| `datadog_integration_databricks_account` | `DD_TERRAFORM_DATABRICKS_INTEGRATION_ENABLED` | `false` |
-
-When working locally:
-
-- Set `DD_TERRAFORM_DATABRICKS_INTEGRATION_ENABLED=true` to make the resource visible to `terraform plan`/`apply` and to local acceptance tests.
-- The CI test job exports this variable, so cassette replay always sees the resource registered.
-- If you run `make docs` with the env var set, `tfplugindocs` will regenerate `docs/resources/integration_databricks_account.md` and the example under `examples/resources/datadog_integration_databricks_account/`. Revert those files before pushing — gated resources are intentionally excluded from public registry documentation.
-
 ## Linting
 
 This project uses [golangci-lint](https://golangci-lint.run/) (v2) for static analysis. Install it locally:
