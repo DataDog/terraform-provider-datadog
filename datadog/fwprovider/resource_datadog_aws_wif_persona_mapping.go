@@ -35,7 +35,7 @@ const (
 	awsWifArnNamePattern        = `[A-Za-z0-9_.@-]+`
 	awsWifArnPathSegmentPattern = `[A-Za-z0-9_.:@-]+`
 	awsWifStsCallerPattern      = `sts::` + awsWifArnAccountIDPattern + `:(?:assumed-role/` + awsWifArnNamePattern + `/(?:` + awsWifArnNamePattern + `|\*)|federated-user/` + awsWifArnNamePattern + `)`
-	awsWifIamUserCallerPattern  = `iam::` + awsWifArnAccountIDPattern + `:user/(?:` + awsWifArnPathSegmentPattern + `/)*` + awsWifArnNamePattern + `(?:/\*)?`
+	awsWifIamUserCallerPattern  = `iam::` + awsWifArnAccountIDPattern + `:user/(?:` + awsWifArnPathSegmentPattern + `/)*(?:` + awsWifArnNamePattern + `|` + awsWifArnPathSegmentPattern + `/\*)`
 )
 
 var (

@@ -80,6 +80,21 @@ func TestAwsWifArnPattern(t *testing.T) {
 			valid: true,
 		},
 		{
+			name:  "exact IAM user with colon in path",
+			value: "arn:aws:iam::123456789012:user/team:prod/alice",
+			valid: true,
+		},
+		{
+			name:  "IAM path with colon and trailing wildcard",
+			value: "arn:aws:iam::123456789012:user/team:prod/*",
+			valid: true,
+		},
+		{
+			name:  "colon is not valid in an IAM user name",
+			value: "arn:aws:iam::123456789012:user/team:prod",
+			valid: false,
+		},
+		{
 			name:  "exact STS assumed role session",
 			value: "arn:aws:sts::123456789012:assumed-role/terraform-runner/session-name",
 			valid: true,
