@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -13,6 +14,37 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
+
+func TestDashboardResourceNamesUseV2Implementation(t *testing.T) {
+	provider := Provider()
+	canonical := provider.ResourcesMap["datadog_dashboard"]
+	alias := provider.ResourcesMap["datadog_dashboard_v2"]
+
+	if canonical == nil || alias == nil {
+		t.Fatal("both datadog_dashboard and datadog_dashboard_v2 must be registered")
+	}
+	if canonical.Description == alias.Description {
+		t.Fatal("the alias must have an alias-specific documentation notice")
+	}
+	if !strings.Contains(alias.Description, "alias for `datadog_dashboard`") {
+		t.Fatalf("unexpected alias description: %q", alias.Description)
+	}
+
+	if reflect.ValueOf(canonical.SchemaFunc).Pointer() != reflect.ValueOf(alias.SchemaFunc).Pointer() {
+		t.Fatal("datadog_dashboard and datadog_dashboard_v2 must use the same schema builder")
+	}
+	if reflect.ValueOf(canonical.CreateContext).Pointer() != reflect.ValueOf(alias.CreateContext).Pointer() ||
+		reflect.ValueOf(canonical.ReadContext).Pointer() != reflect.ValueOf(alias.ReadContext).Pointer() ||
+		reflect.ValueOf(canonical.UpdateContext).Pointer() != reflect.ValueOf(alias.UpdateContext).Pointer() ||
+		reflect.ValueOf(canonical.DeleteContext).Pointer() != reflect.ValueOf(alias.DeleteContext).Pointer() {
+		t.Fatal("datadog_dashboard and datadog_dashboard_v2 must use the same lifecycle implementation")
+	}
+
+	canonicalSchema := canonical.SchemaFunc()
+	if _, ok := canonicalSchema["validate"]; !ok {
+		t.Fatal("datadog_dashboard must use the v2 schema")
+	}
+}
 
 func TestBuildDashboardV2SchemaValidate(t *testing.T) {
 	validateSchema, ok := buildDashboardV2Schema()["validate"]
