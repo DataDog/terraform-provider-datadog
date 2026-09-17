@@ -59,6 +59,39 @@ func TestAccAwsWifPersonaMappingServiceAccount(t *testing.T) {
 	// Run before parallel tests: a mapping for the caller itself can prevent
 	// the same caller from creating another mapping, even for a service account.
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	if !isReplaying() {
+		// Temporary cleanup of the exact artifact leaked by PR #4234's failed
+		// acceptance run 35259842227. Remove after the cleanup run succeeds.
+		const leakedID = "bb94e162-b36b-4ec1-b3c5-1844b8396f20"
+		const leakedARN = "arn:aws:sts::519956565653:assumed-role/terraform-runner/*"
+		api := providers.frameworkProvider.DatadogApiInstances.GetCloudAuthenticationApiV2()
+		var lastHTTP *http.Response
+		err := retry.RetryContext(ctx, 30*time.Second, func() *retry.RetryError {
+			mapping, httpResponse, err := api.GetAWSCloudAuthPersonaMapping(ctx, leakedID)
+			lastHTTP = httpResponse
+			if err != nil {
+				if httpResponse != nil && httpResponse.StatusCode == http.StatusNotFound {
+					return retry.RetryableError(err)
+				}
+				return retry.NonRetryableError(err)
+			}
+			data := mapping.GetData()
+			attributes := data.GetAttributes()
+			if data.GetId() != leakedID || attributes.GetArnPattern() != leakedARN {
+				return retry.NonRetryableError(fmt.Errorf("refusing cleanup: mapping does not match this PR's test artifact"))
+			}
+			_, err = api.DeleteAWSCloudAuthPersonaMapping(ctx, leakedID)
+			if err != nil {
+				return retry.NonRetryableError(err)
+			}
+			t.Logf("removed test artifact %s", leakedID)
+			return nil
+		})
+		if err != nil && (lastHTTP == nil || lastHTTP.StatusCode != http.StatusNotFound) {
+			t.Fatalf("cleanup of PR test artifact: %v", err)
+		}
+	}
+
 	accountID := uniqueAWSAccountID(ctx, t)
 	resourceName := "datadog_aws_wif_persona_mapping.test"
 	serviceAccountName := "datadog_service_account.test"
