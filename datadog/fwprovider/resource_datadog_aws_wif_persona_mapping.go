@@ -68,7 +68,7 @@ func (r *awsWifPersonaMappingResource) Metadata(_ context.Context, _ resource.Me
 
 func (r *awsWifPersonaMappingResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides an AWS Workload Identity Federation (WIF) persona mapping. The mapping allows an AWS IAM principal matching `arn_pattern` to authenticate as the Datadog user or service account identified by `account_identifier`. The AWS account in the ARN must already be integrated with Datadog. The identity creating the mapping must have every permission assigned to the target identity. Creating the initial mapping requires API and application credentials with the Workload Identity Federation write permission; a provider already using WIF cannot bootstrap its own mapping. This resource uses a public beta API and is subject to change.",
+		Description: "Provides an AWS Workload Identity Federation (WIF) persona mapping. The mapping allows an AWS IAM principal matching `arn_pattern` to authenticate as the Datadog user or service account identified by `account_identifier`. The AWS account in the ARN must already be integrated with Datadog. The identity creating the mapping must have every permission assigned to the target identity. Creating the initial mapping requires API and application credentials with the Workload Identity Federation write permission; a provider already using WIF cannot bootstrap its own mapping. Mapping changes may take several minutes to affect WIF authentication. This resource uses a public beta API and is subject to change.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"account_identifier": schema.StringAttribute{

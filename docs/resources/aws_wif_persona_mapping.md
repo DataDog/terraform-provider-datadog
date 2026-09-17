@@ -3,12 +3,12 @@
 page_title: "datadog_aws_wif_persona_mapping Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides an AWS Workload Identity Federation (WIF) persona mapping. The mapping allows an AWS IAM principal matching arn_pattern to authenticate as the Datadog user or service account identified by account_identifier. The AWS account in the ARN must already be integrated with Datadog. The identity creating the mapping must have every permission assigned to the target identity. Creating the initial mapping requires API and application credentials with the Workload Identity Federation write permission; a provider already using WIF cannot bootstrap its own mapping. This resource uses a public beta API and is subject to change.
+  Provides an AWS Workload Identity Federation (WIF) persona mapping. The mapping allows an AWS IAM principal matching arn_pattern to authenticate as the Datadog user or service account identified by account_identifier. The AWS account in the ARN must already be integrated with Datadog. The identity creating the mapping must have every permission assigned to the target identity. Creating the initial mapping requires API and application credentials with the Workload Identity Federation write permission; a provider already using WIF cannot bootstrap its own mapping. Mapping changes may take several minutes to affect WIF authentication. This resource uses a public beta API and is subject to change.
 ---
 
 # datadog_aws_wif_persona_mapping (Resource)
 
-Provides an AWS Workload Identity Federation (WIF) persona mapping. The mapping allows an AWS IAM principal matching `arn_pattern` to authenticate as the Datadog user or service account identified by `account_identifier`. The AWS account in the ARN must already be integrated with Datadog. The identity creating the mapping must have every permission assigned to the target identity. Creating the initial mapping requires API and application credentials with the Workload Identity Federation write permission; a provider already using WIF cannot bootstrap its own mapping. This resource uses a public beta API and is subject to change.
+Provides an AWS Workload Identity Federation (WIF) persona mapping. The mapping allows an AWS IAM principal matching `arn_pattern` to authenticate as the Datadog user or service account identified by `account_identifier`. The AWS account in the ARN must already be integrated with Datadog. The identity creating the mapping must have every permission assigned to the target identity. Creating the initial mapping requires API and application credentials with the Workload Identity Federation write permission; a provider already using WIF cannot bootstrap its own mapping. Mapping changes may take several minutes to affect WIF authentication. This resource uses a public beta API and is subject to change.
 
 ## Example Usage
 
