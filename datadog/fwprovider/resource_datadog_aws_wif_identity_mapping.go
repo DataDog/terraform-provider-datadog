@@ -140,15 +140,16 @@ func (r *awsWifIdentityMappingResource) Create(ctx context.Context, request reso
 
 	var apiResponse datadogV2.AWSCloudAuthPersonaMappingResponse
 	var httpResponse *http.Response
-	var err error
-	err = retry.RetryContext(ctx, awsWifIdentityMappingCreateTimeout, func() *retry.RetryError {
-		apiResponse, httpResponse, err = r.Api.CreateAWSCloudAuthPersonaMapping(r.Auth, *body)
-		if err == nil {
+	err := retry.RetryContext(ctx, awsWifIdentityMappingCreateTimeout, func() *retry.RetryError {
+		// Keep the request error local: cancellation can return before this callback.
+		var createErr error
+		apiResponse, httpResponse, createErr = r.Api.CreateAWSCloudAuthPersonaMapping(r.Auth, *body)
+		if createErr == nil {
 			return nil
 		}
 
-		translatedError := utils.TranslateClientError(err, httpResponse, "error creating AWS WIF identity mapping")
-		if isAwsIntegrationPropagationError(err, httpResponse) {
+		translatedError := utils.TranslateClientError(createErr, httpResponse, "error creating AWS WIF identity mapping")
+		if isAwsIntegrationPropagationError(createErr, httpResponse) {
 			return retry.RetryableError(translatedError)
 		}
 		return retry.NonRetryableError(translatedError)

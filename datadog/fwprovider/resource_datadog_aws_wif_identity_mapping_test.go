@@ -192,7 +192,7 @@ func TestAwsWifArnPattern(t *testing.T) {
 	}
 }
 
-func TestAwsWifIdentityMappingCreatePreservesStateOnPostCreateFailure(t *testing.T) {
+func TestAwsWifIdentityMappingCreate(t *testing.T) {
 	const (
 		mappingID         = "7c405332-7033-40d2-a046-a27a075a22cd"
 		accountIdentifier = "service-account-id"
@@ -203,6 +203,7 @@ func TestAwsWifIdentityMappingCreatePreservesStateOnPostCreateFailure(t *testing
 	tests := []struct {
 		name         string
 		responseType string
+		cancel       bool
 		wantGet      bool
 	}{
 		{
@@ -215,16 +216,27 @@ func TestAwsWifIdentityMappingCreatePreservesStateOnPostCreateFailure(t *testing
 			responseType: "future_aws_cloud_auth_config",
 			wantGet:      false,
 		},
+		{
+			name:   "cancellation during POST returns an error",
+			cancel: true,
+		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			ctx := context.Background()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
 			sawGet := false
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, request *http.Request) {
 				w.Header().Set("Content-Type", "application/json")
 				switch {
 				case request.Method == http.MethodPost && request.URL.Path == "/api/v2/cloud_auth/aws/persona_mapping":
+					if test.cancel {
+						cancel()
+						w.WriteHeader(http.StatusBadRequest)
+						fmt.Fprint(w, `{"errors":["AWS Account Id is not integrated with this Datadog account"]}`)
+						return
+					}
 					w.WriteHeader(http.StatusCreated)
 					fmt.Fprintf(w, `{"data":{"id":%q,"type":%q,"attributes":{"account_identifier":%q,"account_uuid":%q,"arn_pattern":%q}}}`,
 						mappingID, test.responseType, accountIdentifier, accountUUID, arnPattern)
@@ -247,7 +259,7 @@ func TestAwsWifIdentityMappingCreatePreservesStateOnPostCreateFailure(t *testing
 			config.SetUnstableOperationEnabled("v2.GetAWSCloudAuthPersonaMapping", true)
 			r := &awsWifIdentityMappingResource{
 				Api:  datadogV2.NewCloudAuthenticationApi(datadog.NewAPIClient(config)),
-				Auth: ctx,
+				Auth: context.Background(),
 			}
 
 			var schemaResponse resource.SchemaResponse
@@ -270,6 +282,10 @@ func TestAwsWifIdentityMappingCreatePreservesStateOnPostCreateFailure(t *testing
 			}
 			if sawGet != test.wantGet {
 				t.Fatalf("visibility GET called = %t, want %t", sawGet, test.wantGet)
+			}
+
+			if test.cancel {
+				return
 			}
 
 			var state awsWifIdentityMappingModel
