@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	awsauth "github.com/DataDog/datadog-api-client-go/auth/aws"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	awsauth "github.com/DataDog/datadog-api-client-go/v2/auth/aws"
 )
 
 // AWSConfig contains the Terraform provider settings that influence AWS

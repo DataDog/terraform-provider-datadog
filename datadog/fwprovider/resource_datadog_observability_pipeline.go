@@ -84,6 +84,7 @@ type destinationModel struct {
 	HttpClientDestination             []*httpClientDestinationModel                                    `tfsdk:"http_client"`
 	CloudPremDestination              []*observability_pipeline.CloudPremDestinationModel              `tfsdk:"cloud_prem"`
 	KafkaDestination                  []*observability_pipeline.KafkaDestinationModel                  `tfsdk:"kafka"`
+	PrometheusRemoteWriteDestination  []*observability_pipeline.PrometheusRemoteWriteDestinationModel  `tfsdk:"prometheus_remote_write"`
 }
 
 type datadogMetricsDestinationModel struct {
@@ -96,6 +97,7 @@ type httpClientDestinationModel struct {
 	PasswordKey  types.String                                `tfsdk:"password_key"`
 	UriKey       types.String                                `tfsdk:"uri_key"`
 	UsernameKey  types.String                                `tfsdk:"username_key"`
+	CustomKey    types.String                                `tfsdk:"custom_key"`
 	Compression  []httpClientDestinationCompressionModel     `tfsdk:"compression"`
 	AuthStrategy types.String                                `tfsdk:"auth_strategy"`
 	Tls          []observability_pipeline.ClientTlsModel     `tfsdk:"tls"`
@@ -107,25 +109,26 @@ type httpClientDestinationCompressionModel struct {
 }
 
 type sourceModel struct {
-	Id                       types.String                                       `tfsdk:"id"`
-	DatadogAgentSource       []*datadogAgentSourceModel                         `tfsdk:"datadog_agent"`
-	KafkaSource              []*kafkaSourceModel                                `tfsdk:"kafka"`
-	RsyslogSource            []*rsyslogSourceModel                              `tfsdk:"rsyslog"`
-	SyslogNgSource           []*syslogNgSourceModel                             `tfsdk:"syslog_ng"`
-	SumoLogicSource          []*sumoLogicSourceModel                            `tfsdk:"sumo_logic"`
-	FluentdSource            []*fluentdSourceModel                              `tfsdk:"fluentd"`
-	FluentBitSource          []*fluentBitSourceModel                            `tfsdk:"fluent_bit"`
-	HttpServerSource         []*httpServerSourceModel                           `tfsdk:"http_server"`
-	AmazonS3Source           []*amazonS3SourceModel                             `tfsdk:"amazon_s3"`
-	SplunkHecSource          []*splunkHecSourceModel                            `tfsdk:"splunk_hec"`
-	SplunkTcpSource          []*splunkTcpSourceModel                            `tfsdk:"splunk_tcp"`
-	AmazonDataFirehoseSource []*amazonDataFirehoseSourceModel                   `tfsdk:"amazon_data_firehose"`
-	HttpClientSource         []*httpClientSourceModel                           `tfsdk:"http_client"`
-	GooglePubSubSource       []*googlePubSubSourceModel                         `tfsdk:"google_pubsub"`
-	LogstashSource           []*logstashSourceModel                             `tfsdk:"logstash"`
-	SocketSource             []*observability_pipeline.SocketSourceModel        `tfsdk:"socket"`
-	OpentelemetrySource      []*observability_pipeline.OpentelemetrySourceModel `tfsdk:"opentelemetry"`
-	WebsocketSource          []*observability_pipeline.WebsocketSourceModel     `tfsdk:"websocket"`
+	Id                          types.String                                               `tfsdk:"id"`
+	DatadogAgentSource          []*datadogAgentSourceModel                                 `tfsdk:"datadog_agent"`
+	KafkaSource                 []*kafkaSourceModel                                        `tfsdk:"kafka"`
+	RsyslogSource               []*rsyslogSourceModel                                      `tfsdk:"rsyslog"`
+	SyslogNgSource              []*syslogNgSourceModel                                     `tfsdk:"syslog_ng"`
+	SumoLogicSource             []*sumoLogicSourceModel                                    `tfsdk:"sumo_logic"`
+	FluentdSource               []*fluentdSourceModel                                      `tfsdk:"fluentd"`
+	FluentBitSource             []*fluentBitSourceModel                                    `tfsdk:"fluent_bit"`
+	HttpServerSource            []*httpServerSourceModel                                   `tfsdk:"http_server"`
+	AmazonS3Source              []*amazonS3SourceModel                                     `tfsdk:"amazon_s3"`
+	SplunkHecSource             []*splunkHecSourceModel                                    `tfsdk:"splunk_hec"`
+	SplunkTcpSource             []*splunkTcpSourceModel                                    `tfsdk:"splunk_tcp"`
+	AmazonDataFirehoseSource    []*amazonDataFirehoseSourceModel                           `tfsdk:"amazon_data_firehose"`
+	HttpClientSource            []*httpClientSourceModel                                   `tfsdk:"http_client"`
+	GooglePubSubSource          []*googlePubSubSourceModel                                 `tfsdk:"google_pubsub"`
+	LogstashSource              []*logstashSourceModel                                     `tfsdk:"logstash"`
+	SocketSource                []*observability_pipeline.SocketSourceModel                `tfsdk:"socket"`
+	OpentelemetrySource         []*observability_pipeline.OpentelemetrySourceModel         `tfsdk:"opentelemetry"`
+	WebsocketSource             []*observability_pipeline.WebsocketSourceModel             `tfsdk:"websocket"`
+	PrometheusRemoteWriteSource []*observability_pipeline.PrometheusRemoteWriteSourceModel `tfsdk:"prometheus_remote_write"`
 }
 
 type logstashSourceModel struct {
@@ -546,8 +549,9 @@ type generatedMetricValue struct {
 }
 
 type splunkTcpSourceModel struct {
-	AddressKey types.String                                `tfsdk:"address_key"`
-	Tls        []observability_pipeline.MtlsServerTlsModel `tfsdk:"tls"`
+	AddressKey                types.String                                `tfsdk:"address_key"`
+	MaxConnectionDurationSecs types.Int64                                 `tfsdk:"max_connection_duration_secs"`
+	Tls                       []observability_pipeline.MtlsServerTlsModel `tfsdk:"tls"`
 }
 
 type gcsDestinationModel struct {
@@ -1076,6 +1080,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													Optional:    true,
 													Description: "Name of the environment variable or secret that holds the listen address for the Splunk TCP receiver.",
 												},
+												"max_connection_duration_secs": schema.Int64Attribute{
+													Optional:    true,
+													Description: "Maximum duration, in seconds, that a connection can remain open before it is closed. When unset, connections can remain open indefinitely.",
+												},
 											},
 											Blocks: map[string]schema.Block{
 												"tls": observability_pipeline.MtlsServerTlsSchema(),
@@ -1230,9 +1238,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											},
 										},
 									},
-									"socket":        observability_pipeline.SocketSourceSchema(),
-									"opentelemetry": observability_pipeline.OpentelemetrySourceSchema(),
-									"websocket":     observability_pipeline.WebsocketSourceSchema(),
+									"socket":                  observability_pipeline.SocketSourceSchema(),
+									"opentelemetry":           observability_pipeline.OpentelemetrySourceSchema(),
+									"websocket":               observability_pipeline.WebsocketSourceSchema(),
+									"prometheus_remote_write": observability_pipeline.PrometheusRemoteWriteSourceSchema(),
 								},
 							},
 						},
@@ -1469,7 +1478,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 															},
 															"overflow_action": schema.StringAttribute{
 																Optional:    true,
-																Description: "The action to take when the quota is exceeded: `drop`, `no_action`, or `overflow_routing`.",
+																Description: "The action to take when the quota is exceeded: `drop`, `no_action`, or `overflow_routing`. When `overflow_routing` is used, there must be a destination whose `inputs` reference this processor with the `<processor-id>.overflow_events` suffix to route the overflowing events. Only the following destination types support overflow inputs: `amazon_s3_generic`, `amazon_s3`, `google_cloud_storage`, and `azure_storage`.",
 															},
 															"too_many_buckets_action": schema.StringAttribute{
 																Optional:    true,
@@ -1753,7 +1762,8 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													},
 												},
 												"generate_datadog_metrics": schema.ListNestedBlock{
-													Description: "The `generate_datadog_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields.",
+													Description:        "The `generate_datadog_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields.\n\n**Deprecated:** This processor is deprecated, you should now use the `generate_metrics` processor.",
+													DeprecationMessage: "This processor is deprecated, use `generate_metrics` instead.",
 													Validators: []validator.List{
 														listvalidator.SizeAtMost(1),
 													},
@@ -2167,7 +2177,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													},
 												},
 												"generate_metrics": schema.ListNestedBlock{
-													Description: "The `generate_metrics` processor creates custom metrics from logs. The generated metrics must be routed to a metrics destination using the input `<processor-id>.metrics`.",
+													Description: "The `generate_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields. There must be a destination whose `inputs` reference this processor with the `<processor-id>.metrics` suffix to route the generated metrics. All destination types normally supported for `metrics` pipelines are also supported as metrics destinations in `logs` pipelines.",
 													Validators: []validator.List{
 														listvalidator.SizeAtMost(1),
 													},
@@ -2311,11 +2321,15 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													Optional:    true,
 													Description: "Name of the environment variable or secret that holds the username.",
 												},
+												"custom_key": schema.StringAttribute{
+													Optional:    true,
+													Description: "Name of the environment variable or secret that holds the custom authentication header value. Used with the `custom` auth strategy.",
+												},
 												"auth_strategy": schema.StringAttribute{
 													Optional:    true,
 													Description: "HTTP authentication strategy.",
 													Validators: []validator.String{
-														stringvalidator.OneOf("none", "basic", "bearer"),
+														stringvalidator.OneOf("none", "basic", "bearer", "custom"),
 													},
 												},
 											},
@@ -2860,6 +2874,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									"clickhouse":                observability_pipeline.ClickhouseDestinationSchema(),
 									"cloud_prem":                observability_pipeline.CloudPremDestinationSchema(),
 									"kafka":                     observability_pipeline.KafkaDestinationSchema(),
+									"prometheus_remote_write":   observability_pipeline.PrometheusRemoteWriteDestinationSchema(),
 								},
 							},
 						},
@@ -3124,6 +3139,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 			}
 			config.Sources = append(config.Sources, item)
 		}
+		for _, p := range sourceBlock.PrometheusRemoteWriteSource {
+			config.Sources = append(config.Sources, observability_pipeline.ExpandPrometheusRemoteWriteSource(p, sourceId))
+		}
 	}
 
 	// Processors - iterate through processor groups
@@ -3222,6 +3240,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		}
 		for _, d := range dest.KafkaDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandKafkaDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+		}
+		for _, d := range dest.PrometheusRemoteWriteDestination {
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandPrometheusRemoteWriteDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
 	}
 
@@ -3328,6 +3349,10 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		} else if w := observability_pipeline.FlattenWebsocketSource(src.ObservabilityPipelineWebsocketSource); w != nil {
 			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineWebsocketSource.GetId())
 			sourceBlock.WebsocketSource = append(sourceBlock.WebsocketSource, w)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if p := observability_pipeline.FlattenPrometheusRemoteWriteSource(src.ObservabilityPipelinePrometheusRemoteWriteSource); p != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelinePrometheusRemoteWriteSource.GetId())
+			sourceBlock.PrometheusRemoteWriteSource = append(sourceBlock.PrometheusRemoteWriteSource, p)
 			outCfg.Sources = append(outCfg.Sources, sourceBlock)
 		}
 	}
@@ -3482,6 +3507,11 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineKafkaDestination.GetId())
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineKafkaDestination.GetInputs())
 			destBlock.KafkaDestination = append(destBlock.KafkaDestination, kafka)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if promRW := observability_pipeline.FlattenPrometheusRemoteWriteDestination(d.ObservabilityPipelinePrometheusRemoteWriteDestination); promRW != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelinePrometheusRemoteWriteDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelinePrometheusRemoteWriteDestination.GetInputs())
+			destBlock.PrometheusRemoteWriteDestination = append(destBlock.PrometheusRemoteWriteDestination, promRW)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
 		}
 	}
@@ -5459,6 +5489,9 @@ func expandHttpClientDestination(ctx context.Context, dest *destinationModel, sr
 	if !src.UsernameKey.IsNull() {
 		d.SetUsernameKey(src.UsernameKey.ValueString())
 	}
+	if !src.CustomKey.IsNull() {
+		d.SetCustomKey(src.CustomKey.ValueString())
+	}
 	if !src.AuthStrategy.IsNull() {
 		d.SetAuthStrategy(datadogV2.ObservabilityPipelineHttpClientDestinationAuthStrategy(src.AuthStrategy.ValueString()))
 	}
@@ -5503,6 +5536,9 @@ func flattenHttpClientDestination(ctx context.Context, src *datadogV2.Observabil
 	}
 	if v, ok := src.GetUsernameKeyOk(); ok {
 		out.UsernameKey = types.StringValue(*v)
+	}
+	if v, ok := src.GetCustomKeyOk(); ok {
+		out.CustomKey = types.StringValue(*v)
 	}
 	if src.Tls != nil {
 		out.Tls = observability_pipeline.FlattenClientTls(src.Tls)
@@ -6059,6 +6095,9 @@ func expandSplunkTcpSource(src *splunkTcpSourceModel, id string) datadogV2.Obser
 	if !src.AddressKey.IsNull() {
 		s.SetAddressKey(src.AddressKey.ValueString())
 	}
+	if !src.MaxConnectionDurationSecs.IsNull() {
+		s.SetMaxConnectionDurationSecs(src.MaxConnectionDurationSecs.ValueInt64())
+	}
 	s.Tls = observability_pipeline.ExpandMtlsServerTls(src.Tls)
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
@@ -6073,6 +6112,9 @@ func flattenSplunkTcpSource(src *datadogV2.ObservabilityPipelineSplunkTcpSource)
 	out := &splunkTcpSourceModel{}
 	if v, ok := src.GetAddressKeyOk(); ok {
 		out.AddressKey = types.StringValue(*v)
+	}
+	if v, ok := src.GetMaxConnectionDurationSecsOk(); ok {
+		out.MaxConnectionDurationSecs = types.Int64Value(*v)
 	}
 	if src.Tls != nil {
 		out.Tls = observability_pipeline.FlattenMtlsServerTls(src.Tls)

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"runtime"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -31,6 +32,16 @@ import (
 
 var _ provider.Provider = &FrameworkProvider{}
 
+// EnableGeneratedUnstableOperations enables every unstable SDK operation used
+// by generated provider artifacts. Keeping this in the provider package lets
+// alternate client construction paths, including acceptance tests, consume the
+// generator-owned registry without duplicating operation identifiers.
+func EnableGeneratedUnstableOperations(config *datadog.Configuration) {
+	for _, operation := range generatedUnstableOperations {
+		config.SetUnstableOperationEnabled(operation, true)
+	}
+}
+
 var Resources = []func() resource.Resource{
 	NewAgentlessScanningAwsScanOptionsResource,
 	NewAgentlessScanningAzureScanOptionsResource,
@@ -47,6 +58,7 @@ var Resources = []func() resource.Resource{
 	NewDatasetResource,
 	NewDomainAllowlistResource,
 	NewDowntimeScheduleResource,
+	NewFleetScheduleResource,
 	NewIntegrationAzureResource,
 	NewIntegrationAwsEventBridgeResource,
 	NewIntegrationAwsExternalIDResource,
@@ -68,6 +80,7 @@ var Resources = []func() resource.Resource{
 	NewRumMetricResource,
 	NewRumRetentionFilterResource,
 	NewRumRetentionFiltersOrderResource,
+	NewSamlIdpMetadataResource,
 	NewRumRetentionQuotaResource,
 	NewSecurityFindingsMuteRuleResource,
 	NewSecurityFindingsMuteRulesOrderResource,
@@ -75,6 +88,8 @@ var Resources = []func() resource.Resource{
 	NewSecurityFindingsDueDateRulesOrderResource,
 	NewSecurityFindingsTicketCreationRuleResource,
 	NewSecurityFindingsTicketCreationRulesOrderResource,
+	NewSecurityFindingsSeverityModifierRuleResource,
+	NewSecurityFindingsSeverityModifierRulesOrderResource,
 	NewSensitiveDataScannerGroupOrder,
 	NewServiceAccountApplicationKeyResource,
 	NewServiceAccessTokenResource,
@@ -169,6 +184,8 @@ var Datasources = []func() datasource.DataSource{
 	NewAwsLogsServicesDataSource,
 	NewDatadogApmRetentionFiltersOrderDataSource,
 	NewDatadogDashboardListDataSource,
+	NewFleetScheduleDataSource,
+	NewFleetSchedulesDataSource,
 	NewDatadogIntegrationAWSNamespaceRulesDatasource,
 	NewDatadogMetricActiveTagsAndAggregationsDataSource,
 	NewDatadogMetricMetadataDataSource,
@@ -278,8 +295,11 @@ func New() provider.Provider {
 }
 
 func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resource {
-	var wrappedResources []func() resource.Resource
-	for _, f := range Resources {
+	// Hand-written and generator-v2 resources are kept in separate slices (see
+	// generatedResources) so regenerating does not churn this file. The
+	// conditional resource below leaves room for itself in the capacity.
+	wrappedResources := make([]func() resource.Resource, 0, len(Resources)+len(generatedResources)+1)
+	for _, f := range slices.Concat(Resources, generatedResources) {
 		r := f()
 		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&r) })
 	}
@@ -289,23 +309,14 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&monitorResource) })
 	}
 
-	if utils.IsDatabricksIntegrationEnabled() {
-		databricksResource := NewIntegrationDatabricksAccountResource()
-		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&databricksResource) })
-	}
-
 	return wrappedResources
 }
 
 func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	// Hand-written and generator-v2 data sources are kept in separate slices
 	// (see generatedDatasources) so regenerating does not churn this file.
-	all := make([]func() datasource.DataSource, 0, len(Datasources)+len(generatedDatasources))
-	all = append(all, Datasources...)
-	all = append(all, generatedDatasources...)
-
-	var wrappedDatasources []func() datasource.DataSource
-	for _, f := range all {
+	wrappedDatasources := make([]func() datasource.DataSource, 0, len(Datasources)+len(generatedDatasources))
+	for _, f := range slices.Concat(Datasources, generatedDatasources) {
 		r := f()
 		wrappedDatasources = append(wrappedDatasources, func() datasource.DataSource { return NewFrameworkDatasourceWrapper(&r) })
 	}
@@ -408,13 +419,13 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Validators: []validator.List{
 					listvalidator.SizeAtMost(1),
 				},
-				Description: "[Experimental - Logs Indexes, Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources.",
+				Description: "[Experimental - Action Connections, Logs Indexes, Logs Pipelines, Monitors, Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"tags": schema.MapAttribute{
 							ElementType: types.StringType,
 							Optional:    true,
-							Description: "[Experimental - Logs Indexes, Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.",
+							Description: "[Experimental - Action Connections, Logs Indexes, Logs Pipelines, Monitors, Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.",
 						},
 					},
 				},
@@ -718,6 +729,11 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDataset", true)
 
+	// Fleet Automation schedule reads are stable. Only mutations use Preview endpoints.
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateFleetSchedule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateFleetSchedule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteFleetSchedule", true)
+
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListIncidentUserDefinedFields", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateIncidentUserDefinedField", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetIncidentUserDefinedField", true)
@@ -729,12 +745,6 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetIncidentUserDefinedRole", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentUserDefinedRole", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentUserDefinedRole", true)
-
-	ddClientConfig.SetUnstableOperationEnabled("v2.CreateWebIntegrationAccount", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.GetWebIntegrationAccount", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.ListWebIntegrationAccounts", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateWebIntegrationAccount", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteWebIntegrationAccount", true)
 
 	// Enable Governance Tag Rules
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateTagRule", true)
@@ -854,6 +864,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationTicketCreationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationTicketCreationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationTicketCreationRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationSeverityModifierRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationSeverityModifierRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationSeverityModifierRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationSeverityModifierRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationSeverityModifierRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationSeverityModifierRules", true)
 
 	// Enable Tag Indexing Rules & Exemptions
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateTagIndexingRule", true)
@@ -878,6 +894,8 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateExecutionPolicy", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
+
+	EnableGeneratedUnstableOperations(ddClientConfig)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())

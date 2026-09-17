@@ -20,6 +20,11 @@ import (
 type methodSignature struct {
 	arguments []argumentSignature
 	options   string
+	// receiver is the API struct the method hangs off in the pinned SDK, e.g.
+	// "IncidentsApi". Kept so corroborate can also check the derived receiver
+	// name: a tag that defeats model.SdkClassName yields a plausible name for a
+	// type the SDK never generated.
+	receiver string
 }
 
 type argumentSignature struct {
@@ -35,9 +40,9 @@ type Inventory struct {
 	setters map[string]map[string]argumentSignature
 }
 
-// Load parses the generated SDK API files in dir for optional corroboration.
-// Callers must treat an unavailable inventory as non-fatal because the OpenAPI
-// derivation is the authoritative generation input.
+// Load builds an Inventory from the api_*.go files in dir, collecting each
+// <Tag>Api method (minus ctx and a trailing variadic options argument) and each
+// single-argument With* setter on an *OptionalParameters type.
 func Load(dir string) (*Inventory, error) {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
@@ -84,6 +89,7 @@ func Load(dir string) (*Inventory, error) {
 					args = args[:len(args)-1]
 				}
 				sig.arguments = args
+				sig.receiver = receiver
 				inv.methods[fn.Name.Name] = sig
 			}
 		}
@@ -96,11 +102,10 @@ type orderedParameter struct {
 	location  string
 }
 
-// Bind derives op's SDK call binding from OpenAPI using the Datadog Go client
-// generator's parameter, naming, and type rules. When inventory is present and
-// contains the same endpoint, a disagreement is returned as a warning while the
-// derived binding remains authoritative. A missing inventory or endpoint is an
-// ordinary successful binding.
+// Bind derives op.SDKBinding from OpenAPI using the Datadog Go client
+// generator's parameter, naming and type rules. With an inventory holding the
+// same endpoint, a disagreement comes back as a warning diagnostic while the
+// derived binding stands; a missing inventory or endpoint binds cleanly.
 func Bind(op *model.Operation, inventory *Inventory) ([]model.Diagnostic, error) {
 	if op == nil {
 		return nil, nil
@@ -185,9 +190,8 @@ func deriveArgument(parameter model.QueryParam, location string) (model.SDKArgum
 }
 
 // parameterGoType ports generator.openapi.type_to_go as used by
-// get_type_for_parameter. The scalar and named-enum cases are the generation
-// path tfgen currently emits; collection/object spellings keep corroboration
-// faithful for parameters the scalar-first emitter later drops.
+// get_type_for_parameter: scalars first, then a $ref's own component name, then
+// recursive []T and map[string]T spellings. An anonymous enum has no SDK type.
 func parameterGoType(schema *model.Schema) (string, error) {
 	if schema == nil {
 		return "", fmt.Errorf("parameter has no schema")
@@ -230,42 +234,21 @@ func parameterGoType(schema *model.Schema) (string, error) {
 	return "", fmt.Errorf("schema kind %s has no Go SDK parameter type", schema.Kind)
 }
 
+// parameterSimpleType returns the Go type the SDK generator gives a scalar
+// parameter, via model.SDKScalarGoType. recognized is false for a non-scalar
+// schema; a scalar whose format the SDK does not map returns an error naming
+// it.
 func parameterSimpleType(schema *model.Schema) (typeName string, recognized bool, err error) {
 	switch schema.Type {
-	case "integer":
-		switch schema.Format {
-		case "", "int32":
-			return "int32", true, nil
-		case "int64":
-			return "int64", true, nil
-		default:
-			return "", true, fmt.Errorf("integer format %q is not mapped by the Go SDK generator", schema.Format)
-		}
-	case "number":
-		switch schema.Format {
-		case "":
-			return "float", true, nil
-		case "double":
-			return "float64", true, nil
-		default:
-			return "", true, fmt.Errorf("number format %q is not mapped by the Go SDK generator", schema.Format)
-		}
-	case "string":
-		switch schema.Format {
-		case "date", "date-time":
-			return "time.Time", true, nil
-		case "binary":
-			return "_io.Reader", true, nil
-		case "uuid":
-			return "uuid.UUID", true, nil
-		default:
-			return "string", true, nil
-		}
-	case "boolean":
-		return "bool", true, nil
+	case "integer", "number", "string", "boolean":
 	default:
 		return "", false, nil
 	}
+	typeName, ok := model.SDKScalarGoType(schema)
+	if !ok {
+		return "", true, fmt.Errorf("%s format %q is not mapped by the Go SDK generator", schema.Type, schema.Format)
+	}
+	return typeName, true, nil
 }
 
 func variableName(openAPIName string) string {
@@ -288,7 +271,31 @@ func (i *Inventory) corroborate(op *model.Operation) []model.Diagnostic {
 	}
 	var differences []string
 	derived := op.SDKBinding
-	if got, want := renderArguments(derived.Required), renderArgumentSignatures(pinned.arguments); got != want {
+	// Skipped for an untagged operation: SdkClassName would derive the useless
+	// "Api" and drown out the real problem, the missing tag. Nothing currently
+	// rejects an empty Tag.
+	if op.Tag != "" {
+		if got := model.SdkClassName(op.Tag); got != pinned.receiver {
+			differences = append(differences, fmt.Sprintf("API struct derived %q from tag %q, pinned %q", got, op.Tag, pinned.receiver))
+		}
+	}
+	// The SDK method's final positional argument is the request body, which
+	// SDKBinding omits; check it against RequestRefName and pop it before
+	// comparing the remaining arguments like-for-like.
+	pinnedArguments := pinned.arguments
+	if op.RequestRefName != "" {
+		switch {
+		case len(pinnedArguments) == 0:
+			differences = append(differences, fmt.Sprintf("request body type derived %q, absent from pinned SDK", op.RequestRefName))
+		default:
+			pinnedBody := pinnedArguments[len(pinnedArguments)-1]
+			pinnedArguments = pinnedArguments[:len(pinnedArguments)-1]
+			if pinnedBody.typeName != op.RequestRefName {
+				differences = append(differences, fmt.Sprintf("request body type derived %q, pinned %q", op.RequestRefName, pinnedBody.typeName))
+			}
+		}
+	}
+	if got, want := renderArguments(derived.Required), renderArgumentSignatures(pinnedArguments); got != want {
 		differences = append(differences, fmt.Sprintf("required arguments derived [%s], pinned [%s]", got, want))
 	}
 	if derived.OptionalParamsType != pinned.options {

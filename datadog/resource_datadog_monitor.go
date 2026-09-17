@@ -5,12 +5,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"sort"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
@@ -1181,10 +1184,98 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 											Optional:    true,
 											Description: "Crontab expression to override the default schedule.",
 										},
+										// Deliberately not validated against the client enum: the API
+										// accepts values this provider version may not know about yet,
+										// and rejects bad ones with a clear error.
 										"model_type_override": {
 											Type:        schema.TypeString,
 											Optional:    true,
 											Description: "Override for the model type. Valid values are `freshness`, `percentage`, `any`.",
+										},
+										"sensitivity": {
+											Type:        schema.TypeFloat,
+											Optional:    true,
+											Description: "Sensitivity of the anomaly detection model, expressed as a multiplier on the width of the predicted bounds. Higher values widen the bounds and produce fewer alerts; lower values tighten them and produce more alerts. Defaults to `3.0`.",
+										},
+										"source_to_target_config": {
+											Type:        schema.TypeList,
+											Optional:    true,
+											MaxItems:    1,
+											Description: "Compare the same measure across two data entities and alert on the difference between them.",
+											Elem: &schema.Resource{
+												Schema: map[string]*schema.Schema{
+													"source": {
+														Type:        schema.TypeList,
+														Required:    true,
+														MaxItems:    1,
+														Description: "Measure configuration for the source entity.",
+														Elem:        &schema.Resource{Schema: dataQualityEntityMetricConfigSchema()},
+													},
+													"target": {
+														Type:        schema.TypeList,
+														Required:    true,
+														MaxItems:    1,
+														Description: "Measure configuration for the target entity.",
+														Elem:        &schema.Resource{Schema: dataQualityEntityMetricConfigSchema()},
+													},
+													"diff_type": {
+														Type:        schema.TypeString,
+														Required:    true,
+														Description: "How the difference between the source and target measures is computed. Valid values are `absolute`, `diff_percent`.",
+													},
+													"entity_type": {
+														Type:        schema.TypeString,
+														Required:    true,
+														Description: "Type of the data entities being compared.",
+													},
+												},
+											},
+										},
+										"model_configuration": {
+											Type:        schema.TypeList,
+											Optional:    true,
+											MaxItems:    1,
+											Description: "Tuning options for the anomaly detection model used by the monitor.",
+											Elem: &schema.Resource{
+												Schema: map[string]*schema.Schema{
+													"auto_resolve_days": {
+														Type:             schema.TypeInt,
+														Optional:         true,
+														ValidateDiagFunc: validation.ToDiagFunc(validation.IntBetween(math.MinInt32, math.MaxInt32)),
+														Description:      "Number of days after which an open alert is automatically resolved. When unset, alerts stay open until the measure returns within bounds.",
+													},
+													"enable_flatline_detection": {
+														Type:     schema.TypeBool,
+														Optional: true,
+														// Defaulted rather than left to the Terraform zero value: false is a
+														// meaningful setting here, so an omitted attribute must not be
+														// indistinguishable from an explicit `false`. The default matches
+														// the server's, so sending it is a no-op.
+														Default:     true,
+														Description: "Whether to alert when the measure stops changing entirely. Defaults to `true`.",
+													},
+													"function": {
+														Type:        schema.TypeString,
+														Optional:    true,
+														Description: "Function applied to the measure before it is compared against the predicted bounds. Valid values are `DIFF`, `DIFF_PERCENT`.",
+													},
+													"min_lower_bound_size": {
+														Type:        schema.TypeFloat,
+														Optional:    true,
+														Description: "Minimum distance between the predicted value and the lower bound. Widening the lower bound to at least this size suppresses alerts on small downward deviations. When unset, no minimum is enforced.",
+													},
+													"min_upper_bound_size": {
+														Type:        schema.TypeFloat,
+														Optional:    true,
+														Description: "Minimum distance between the predicted value and the upper bound. Widening the upper bound to at least this size suppresses alerts on small upward deviations. When unset, no minimum is enforced.",
+													},
+													"model_bounds_override": {
+														Type:        schema.TypeString,
+														Optional:    true,
+														Description: "Restricts which predicted bound the monitor alerts on. When unset, the monitor alerts on both. Valid values are `UPPER_ONLY`, `LOWER_ONLY`.",
+													},
+												},
+											},
 										},
 									},
 								},
@@ -1887,6 +1978,69 @@ func getOptionalString(data map[string]interface{}, fieldName string) (string, b
 	return val, ok && len(val) > 0
 }
 
+// getOptionalFloat safely extracts an optional float field from a map. A zero value is
+// treated as unset, mirroring how getOptionalString treats the empty string.
+func getOptionalFloat(data map[string]interface{}, fieldName string) (float64, bool) {
+	val, ok := data[fieldName].(float64)
+	return val, ok && val != 0
+}
+
+// getOptionalInt32 safely extracts an optional int field from a map, treating a zero
+// value as unset. Terraform's TypeInt is a platform int, so the range is checked
+// before narrowing: an out-of-range value is reported as unset rather than wrapping
+// to a negative one. The schema rejects those before they reach here, so this is
+// defence in depth for other callers.
+func getOptionalInt32(data map[string]interface{}, fieldName string) (int32, bool) {
+	val, ok := data[fieldName].(int)
+	if !ok || val == 0 || val < math.MinInt32 || val > math.MaxInt32 {
+		return 0, false
+	}
+	return int32(val), true
+}
+
+// getSingleNestedBlock returns the sole element of a MaxItems:1 block, if present.
+func getSingleNestedBlock(data map[string]interface{}, fieldName string) (map[string]interface{}, bool) {
+	list, ok := data[fieldName].([]interface{})
+	if !ok || len(list) == 0 || list[0] == nil {
+		return nil, false
+	}
+	block, ok := list[0].(map[string]interface{})
+	return block, ok
+}
+
+// dataQualityEntityMetricConfigSchema describes one side of a source to target
+// comparison. Shared by the source and target blocks, which are identical.
+func dataQualityEntityMetricConfigSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"entity_id": {
+			Type:        schema.TypeString,
+			Required:    true,
+			Description: "Identifier of the data entity to measure.",
+		},
+		"entity_type": {
+			Type:        schema.TypeString,
+			Required:    true,
+			Description: "Type of the data entity to measure.",
+		},
+		"custom_sql": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Custom SQL query used to compute the measure for this entity.",
+		},
+		"custom_where": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Custom WHERE clause applied when computing the measure for this entity.",
+		},
+		"group_by_columns": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem:        &schema.Schema{Type: schema.TypeString},
+			Description: "Columns to group results by when computing the measure for this entity.",
+		},
+	}
+}
+
 // getOptionalStringSlice safely extracts an optional string slice from a map, filtering out nil and empty values
 func getOptionalStringSlice(data map[string]interface{}, fieldName string) []string {
 	list, ok := data[fieldName].([]interface{})
@@ -1933,11 +2087,87 @@ func buildDataQualityMonitorOptions(data map[string]interface{}) *datadogV1.Moni
 		opts.SetModelTypeOverride(datadogV1.MonitorFormulaAndFunctionDataQualityModelTypeOverride(v))
 		hasAnyOption = true
 	}
+	if v, ok := getOptionalFloat(data, "sensitivity"); ok {
+		opts.SetSensitivity(v)
+		hasAnyOption = true
+	}
+	if block, ok := getSingleNestedBlock(data, "source_to_target_config"); ok {
+		opts.SetSourceToTargetConfig(*buildDataQualitySourceToTargetConfig(block))
+		hasAnyOption = true
+	}
+	if block, ok := getSingleNestedBlock(data, "model_configuration"); ok {
+		opts.SetModelConfiguration(*buildDataQualityModelConfiguration(block))
+		hasAnyOption = true
+	}
 
 	if !hasAnyOption {
 		return nil
 	}
 	return opts
+}
+
+// buildDataQualityEntityMetricConfig builds one side of a source to target comparison.
+func buildDataQualityEntityMetricConfig(data map[string]interface{}, context string) datadogV1.MonitorFormulaAndFunctionDataQualityEntityMetricConfig {
+	entityID := getRequiredString(data, "entity_id", context)
+	entityType := getRequiredString(data, "entity_type", context)
+
+	cfg := datadogV1.NewMonitorFormulaAndFunctionDataQualityEntityMetricConfig(entityID, entityType)
+	if v, ok := getOptionalString(data, "custom_sql"); ok {
+		cfg.SetCustomSql(v)
+	}
+	if v, ok := getOptionalString(data, "custom_where"); ok {
+		cfg.SetCustomWhere(v)
+	}
+	if cols := getOptionalStringSlice(data, "group_by_columns"); cols != nil {
+		cfg.SetGroupByColumns(cols)
+	}
+	return *cfg
+}
+
+func buildDataQualitySourceToTargetConfig(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionDataQualitySourceToTargetConfig {
+	const context = "data_quality_query.monitor_options.source_to_target_config"
+
+	sourceData, ok := getSingleNestedBlock(data, "source")
+	if !ok {
+		panic(fmt.Sprintf("%s: 'source' is required", context))
+	}
+	targetData, ok := getSingleNestedBlock(data, "target")
+	if !ok {
+		panic(fmt.Sprintf("%s: 'target' is required", context))
+	}
+
+	source := buildDataQualityEntityMetricConfig(sourceData, context+".source")
+	target := buildDataQualityEntityMetricConfig(targetData, context+".target")
+	diffType := datadogV1.MonitorFormulaAndFunctionDataQualityDiffType(getRequiredString(data, "diff_type", context))
+	entityType := getRequiredString(data, "entity_type", context)
+
+	return datadogV1.NewMonitorFormulaAndFunctionDataQualitySourceToTargetConfig(diffType, entityType, source, target)
+}
+
+func buildDataQualityModelConfiguration(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionDataQualityModelConfiguration {
+	cfg := datadogV1.NewMonitorFormulaAndFunctionDataQualityModelConfiguration()
+
+	if v, ok := getOptionalInt32(data, "auto_resolve_days"); ok {
+		cfg.SetAutoResolveDays(v)
+	}
+	// Sent unconditionally: the schema defaults it to true, so the value here is
+	// always the user's intent and false must not be swallowed as "unset".
+	if v, ok := data["enable_flatline_detection"].(bool); ok {
+		cfg.SetEnableFlatlineDetection(v)
+	}
+	if v, ok := getOptionalString(data, "function"); ok {
+		cfg.SetFunction(datadogV1.MonitorFormulaAndFunctionDataQualityDiffFunction(v))
+	}
+	if v, ok := getOptionalFloat(data, "min_lower_bound_size"); ok {
+		cfg.SetMinLowerBoundSize(v)
+	}
+	if v, ok := getOptionalFloat(data, "min_upper_bound_size"); ok {
+		cfg.SetMinUpperBoundSize(v)
+	}
+	if v, ok := getOptionalString(data, "model_bounds_override"); ok {
+		cfg.SetModelBoundsOverride(datadogV1.MonitorFormulaAndFunctionDataQualityModelBoundsOverride(v))
+	}
+	return cfg
 }
 
 func buildMonitorFormulaAndFunctionDataQualityQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
@@ -2709,6 +2939,19 @@ func buildTerraformDataQualityMonitorVariables(datadogVariables []datadogV1.Moni
 				if modelTypeOverride, ok := monitorOptions.GetModelTypeOverrideOk(); ok {
 					terraformMonitorOptions["model_type_override"] = modelTypeOverride
 				}
+				if sensitivity, ok := monitorOptions.GetSensitivityOk(); ok {
+					terraformMonitorOptions["sensitivity"] = sensitivity
+				}
+				if sourceToTarget, ok := monitorOptions.GetSourceToTargetConfigOk(); ok {
+					terraformMonitorOptions["source_to_target_config"] = []map[string]interface{}{
+						buildTerraformDataQualitySourceToTargetConfig(sourceToTarget),
+					}
+				}
+				if modelConfiguration, ok := monitorOptions.GetModelConfigurationOk(); ok {
+					terraformMonitorOptions["model_configuration"] = []map[string]interface{}{
+						buildTerraformDataQualityModelConfiguration(modelConfiguration),
+					}
+				}
 				terraformQuery["monitor_options"] = []map[string]interface{}{terraformMonitorOptions}
 			}
 			queries[i] = terraformQuery
@@ -2719,6 +2962,66 @@ func buildTerraformDataQualityMonitorVariables(datadogVariables []datadogV1.Moni
 
 	log.Printf("[INFO] data_quality_query variables: %+v", terraformVariables)
 	return terraformVariables
+}
+
+func buildTerraformDataQualityEntityMetricConfig(cfg *datadogV1.MonitorFormulaAndFunctionDataQualityEntityMetricConfig) []map[string]interface{} {
+	terraformConfig := map[string]interface{}{}
+	if entityID, ok := cfg.GetEntityIdOk(); ok {
+		terraformConfig["entity_id"] = entityID
+	}
+	if entityType, ok := cfg.GetEntityTypeOk(); ok {
+		terraformConfig["entity_type"] = entityType
+	}
+	if customSql, ok := cfg.GetCustomSqlOk(); ok {
+		terraformConfig["custom_sql"] = customSql
+	}
+	if customWhere, ok := cfg.GetCustomWhereOk(); ok {
+		terraformConfig["custom_where"] = customWhere
+	}
+	if groupByCols, ok := cfg.GetGroupByColumnsOk(); ok {
+		terraformConfig["group_by_columns"] = groupByCols
+	}
+	return []map[string]interface{}{terraformConfig}
+}
+
+func buildTerraformDataQualitySourceToTargetConfig(cfg *datadogV1.MonitorFormulaAndFunctionDataQualitySourceToTargetConfig) map[string]interface{} {
+	terraformConfig := map[string]interface{}{}
+	if source, ok := cfg.GetSourceOk(); ok {
+		terraformConfig["source"] = buildTerraformDataQualityEntityMetricConfig(source)
+	}
+	if target, ok := cfg.GetTargetOk(); ok {
+		terraformConfig["target"] = buildTerraformDataQualityEntityMetricConfig(target)
+	}
+	if diffType, ok := cfg.GetDiffTypeOk(); ok {
+		terraformConfig["diff_type"] = diffType
+	}
+	if entityType, ok := cfg.GetEntityTypeOk(); ok {
+		terraformConfig["entity_type"] = entityType
+	}
+	return terraformConfig
+}
+
+func buildTerraformDataQualityModelConfiguration(cfg *datadogV1.MonitorFormulaAndFunctionDataQualityModelConfiguration) map[string]interface{} {
+	terraformConfig := map[string]interface{}{}
+	if autoResolveDays, ok := cfg.GetAutoResolveDaysOk(); ok {
+		terraformConfig["auto_resolve_days"] = autoResolveDays
+	}
+	if enableFlatlineDetection, ok := cfg.GetEnableFlatlineDetectionOk(); ok {
+		terraformConfig["enable_flatline_detection"] = enableFlatlineDetection
+	}
+	if function, ok := cfg.GetFunctionOk(); ok {
+		terraformConfig["function"] = function
+	}
+	if minLowerBoundSize, ok := cfg.GetMinLowerBoundSizeOk(); ok {
+		terraformConfig["min_lower_bound_size"] = minLowerBoundSize
+	}
+	if minUpperBoundSize, ok := cfg.GetMinUpperBoundSizeOk(); ok {
+		terraformConfig["min_upper_bound_size"] = minUpperBoundSize
+	}
+	if modelBoundsOverride, ok := cfg.GetModelBoundsOverrideOk(); ok {
+		terraformConfig["model_bounds_override"] = modelBoundsOverride
+	}
+	return terraformConfig
 }
 
 func buildTerraformDataJobsMonitorVariables(datadogVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition) []map[string]interface{} {

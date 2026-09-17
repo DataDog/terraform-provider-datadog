@@ -52,7 +52,7 @@
       "sensitive": {
         "type": "boolean",
         "default": false,
-        "description": "When attached to a Schema Object, marks the attribute as Terraform-sensitive (suppressed in plan output)."
+        "description": "When present on a Schema Object, explicitly controls whether the attribute is Terraform-sensitive (suppressed in plan output). When omitted, writeOnly: true or x-secret: true defaults the attribute to sensitive; an explicit false overrides that inference on the same schema node."
       },
       "skip": {
         "type": "boolean",
@@ -62,7 +62,7 @@
       "overwrites": {
         "type": "string",
         "minLength": 1,
-        "description": "The constructor function of the hand-written data source this generated artifact replaces, e.g. \"NewDatadogTeamDataSource\". When set, the generated file overwrites the hand-written one in place (they share the datadog_<artifact_name>.go path), the generator removes that constructor from the FrameworkProvider Datasources slice, and registers the generated constructor in generatedDatasources. Omit for purely additive generation. Data sources only."
+        "description": "The constructor function of the hand-written artifact this generated one replaces, e.g. \"NewDatadogTeamDataSource\" or \"NewIncidentTypeResource\". When set, the generated file overwrites the hand-written one in place (they share the same output path), the generator removes that constructor from the FrameworkProvider Datasources or Resources slice as appropriate, and registers the generated constructor in generatedDatasources or generatedResources. It is also what authorizes the takeover: without it the generator refuses to overwrite a file carrying no generated-code marker, so a name collision fails loudly instead of silently replacing hand-written code. Omit for purely additive generation."
       }
     },
     "examples": [
@@ -97,4 +97,3 @@
       }
     ]
   }
-  

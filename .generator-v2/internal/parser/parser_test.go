@@ -51,21 +51,42 @@ var _ = Describe("LoadSpec", func() {
 		})
 	})
 
+	// A cycle is a property of one component, so it must not fail the load: a
+	// document is full of components no annotation reaches, and one recursive
+	// component among them used to take down every artifact in the spec. It is
+	// classified per node instead, and surfaces when an artifact expands it.
 	Context("cycle detection", func() {
-		It("returns a *RefCycleError for a self-referential $ref", func() {
-			_, err := LoadSpec(filepath.Join("../testdata/parser", "cycle_self.yaml"))
-			Expect(err).To(HaveOccurred())
+		DescribeTable("loads a document whose cyclic component no artifact reaches",
+			func(fixture string) {
+				spec, err := LoadSpec(filepath.Join("../testdata/parser", fixture))
+				Expect(err).NotTo(HaveOccurred())
+				Expect(spec).NotTo(BeNil())
+			},
+			Entry("a self-referential $ref", "cycle_self.yaml"),
+			Entry("an indirect A->B->A cycle", "cycle_indirect.yaml"),
+		)
 
-			var cycleErr *RefCycleError
-			Expect(errors.As(err, &cycleErr)).To(BeTrue(), "got %T: %v", err, err)
-			Expect(cycleErr.Cycles).NotTo(BeEmpty())
-			Expect(cycleErr.Cycles[0].Ref).To(Equal("#/components/schemas/Node"))
-		})
+		It("marks a re-entered $ref as a terminal ref_cycle node", func() {
+			spec, err := LoadSpec(filepath.Join("../testdata/parser", "cycle_artifact.yaml"))
+			Expect(err).NotTo(HaveOccurred())
 
-		It("returns a *RefCycleError for an indirect A->B->A cycle", func() {
-			_, err := LoadSpec(filepath.Join("../testdata/parser", "cycle_indirect.yaml"))
-			var cycleErr *RefCycleError
-			Expect(errors.As(err, &cycleErr)).To(BeTrue(), "got %T: %v", err, err)
+			var tree *model.Operation
+			for _, op := range spec.Operations {
+				if op.OperationId == "GetTree" {
+					tree = op
+				}
+			}
+			Expect(tree).NotTo(BeNil())
+
+			attributes := tree.ResponseSchema.
+				Properties["data"].
+				Properties["attributes"]
+			child := attributes.Properties["child"]
+			Expect(child.Kind).To(Equal(model.SchemaKindRefCycle))
+			Expect(child.UnsupportedReason).To(ContainSubstring("#/components/schemas/TreeAttributes"))
+
+			By("the surrounding schema is still normalized, so only the cycle is lost")
+			Expect(attributes.Properties["name"].Kind).To(Equal(model.SchemaKindPrimitive))
 		})
 	})
 
@@ -85,9 +106,6 @@ var _ = Describe("LoadSpec", func() {
 		It("returns a *MaxDepthError when depth is exceeded", func() {
 			_, err := LoadSpec(deepSpec, WithMaxDepth(4))
 			Expect(err).To(HaveOccurred())
-
-			var cycleErr *RefCycleError
-			Expect(errors.As(err, &cycleErr)).To(BeFalse(), "deep-but-acyclic refs must not be reported as a cycle")
 
 			var depthErr *MaxDepthError
 			Expect(errors.As(err, &depthErr)).To(BeTrue(), "got %T: %v", err, err)

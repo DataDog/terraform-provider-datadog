@@ -15,6 +15,7 @@ A connection that can be used in Actions, including in the Workflow Automation a
 ```terraform
 resource "datadog_action_connection" "aws_connection" {
   name = "My AWS Connection"
+  tags = ["env:prod", "team:action-platform"]
 
   aws {
     assume_role {
@@ -117,10 +118,12 @@ resource "datadog_action_connection" "http_connection" {
 - `service_now` (Block, Optional) Configuration for a ServiceNow connection (see [below for nested schema](#nestedblock--service_now))
 - `split` (Block, Optional) Configuration for a Split connection (see [below for nested schema](#nestedblock--split))
 - `statsig` (Block, Optional) Configuration for a Statsig connection (see [below for nested schema](#nestedblock--statsig))
+- `tags` (Set of String) User-defined tags associated with the connection. Each tag must follow the `key:value` format. The `default` tag key is reserved. See also `effective_tags`, which includes provider-level `default_tags`.
 - `virus_total` (Block, Optional) Configuration for a VirusTotal connection (see [below for nested schema](#nestedblock--virus_total))
 
 ### Read-Only
 
+- `effective_tags` (Set of String) Tags associated with the connection, including those inherited from the provider's `default_tags` configuration.
 - `id` (String) The ID of this resource.
 
 <a id="nestedblock--anthropic"></a>

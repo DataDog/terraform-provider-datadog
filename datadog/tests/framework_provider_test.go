@@ -45,13 +45,9 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.CreateDataset", true)
 	config.SetUnstableOperationEnabled("v2.UpdateDataset", true)
 	config.SetUnstableOperationEnabled("v2.DeleteDataset", true)
-
-	// Enable Web Integrations (AMS) — Databricks resource depends on these.
-	config.SetUnstableOperationEnabled("v2.CreateWebIntegrationAccount", true)
-	config.SetUnstableOperationEnabled("v2.GetWebIntegrationAccount", true)
-	config.SetUnstableOperationEnabled("v2.ListWebIntegrationAccounts", true)
-	config.SetUnstableOperationEnabled("v2.UpdateWebIntegrationAccount", true)
-	config.SetUnstableOperationEnabled("v2.DeleteWebIntegrationAccount", true)
+	config.SetUnstableOperationEnabled("v2.CreateFleetSchedule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateFleetSchedule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteFleetSchedule", true)
 
 	// Enable Logs Restriction Queries
 	config.SetUnstableOperationEnabled("v2.CreateRestrictionQuery", true)
@@ -172,6 +168,12 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationTicketCreationRule", true)
 	config.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationTicketCreationRule", true)
 	config.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationTicketCreationRules", true)
+	config.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationSeverityModifierRules", true)
+	config.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationSeverityModifierRule", true)
+	config.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationSeverityModifierRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationSeverityModifierRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationSeverityModifierRule", true)
+	config.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationSeverityModifierRules", true)
 
 	config.SetUnstableOperationEnabled("v2.CreateTagIndexingRule", true)
 	config.SetUnstableOperationEnabled("v2.GetTagIndexingRule", true)
@@ -201,6 +203,7 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateExecutionPolicy", true)
 	config.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
 	config.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
+	fwprovider.EnableGeneratedUnstableOperations(config)
 
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true

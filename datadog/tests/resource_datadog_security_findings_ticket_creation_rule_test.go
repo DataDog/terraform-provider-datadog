@@ -100,6 +100,35 @@ resource "datadog_security_findings_ticket_creation_rule" "test" {
 				),
 			},
 			{
+				Config: fmt.Sprintf(`
+resource "datadog_security_findings_ticket_creation_rule" "test" {
+  name    = "%s-updated"
+  enabled = false
+  rule = {
+    finding_types = ["misconfiguration", "secret"]
+    query         = "env:prod @severity:critical"
+  }
+  action = {
+    project_id          = "%s"
+    target              = "linear"
+    assignee_id         = "%s"
+    max_tickets_per_day = 50
+    fields = jsonencode({
+      linear_label_ids  = ["44444444-4444-4444-4444-444444444444"]
+      linear_project_id = "33333333-3333-3333-3333-333333333333"
+    })
+  }
+}
+`, uniq, ticketCreationTestProjectID, ticketCreationTestAssigneeID),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogSecurityFindingsTicketCreationRuleExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "action.target", "linear"),
+					resource.TestCheckResourceAttr(resourceName, "action.fields",
+						`{"linear_label_ids":["44444444-4444-4444-4444-444444444444"],"linear_project_id":"33333333-3333-3333-3333-333333333333"}`),
+					resource.TestCheckNoResourceAttr(resourceName, "action.auto_disabled_reason"),
+				),
+			},
+			{
 				ResourceName:      resourceName,
 				ImportState:       true,
 				ImportStateVerify: true,

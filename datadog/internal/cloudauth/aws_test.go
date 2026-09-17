@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"testing"
 
-	awsauth "github.com/DataDog/datadog-api-client-go/auth/aws"
+	awsauth "github.com/DataDog/datadog-api-client-go/v2/auth/aws"
 )
 
 func TestNewAWSProvider(t *testing.T) {

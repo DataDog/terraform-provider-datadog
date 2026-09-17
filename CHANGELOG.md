@@ -1,3 +1,25 @@
+## 4.21.0 (September 9, 2026)
+
+### BUGFIXES
+* [datadog_observability_pipeline] fix SDS processor fields schema by @clementd-dd in https://github.com/DataDog/terraform-provider-datadog/pull/4155
+* [datadog_status_page_component] Fix ValidateConfig error under for_each/count by @sundaylaundry in https://github.com/DataDog/terraform-provider-datadog/pull/4224
+* [datadog_datastore] Fix inconsistent result when primary_key_generation_strategy is omitted by @lemon0333 in https://github.com/DataDog/terraform-provider-datadog/pull/4186
+### FEATURES
+* [datadog_provider] Expose HTTP retry jitter by @jaxalo in https://github.com/DataDog/terraform-provider-datadog/pull/4181
+* [datadog_action_connection] Add tags support by @shimupan in https://github.com/DataDog/terraform-provider-datadog/pull/4163
+* [datadog_org_group_policy] Add role policy_type support by @saraslee in https://github.com/DataDog/terraform-provider-datadog/pull/4212
+* [datadog_monitor] Support sensitivity, source_to_target_config and model_configuration on data quality queries by @pkalmakis in https://github.com/DataDog/terraform-provider-datadog/pull/4211
+* [datadog_saml_idp_metadata] Add resource to upload SAML IdP metadata by @supermarine1377 in https://github.com/DataDog/terraform-provider-datadog/pull/4117
+
+## New Contributors
+* @jaxalo made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4181
+* @BusyBeaver-42 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4218
+* @saraslee made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4212
+* @lemon0333 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4186
+* @supermarine1377 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4117
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.20.0...v4.21.0
+
 ## 4.20.0 (September 2, 2026)
 
 ### BUGFIXES
