@@ -185,25 +185,15 @@ func (r *awsWifPersonaMappingResource) Create(ctx context.Context, request resou
 		return
 	}
 
-	err = retry.RetryContext(ctx, awsWifPersonaMappingVisibilityTimeout, func() *retry.RetryError {
-		var readResponse datadogV2.AWSCloudAuthPersonaMappingResponse
-		readResponse, httpResponse, err = r.Api.GetAWSCloudAuthPersonaMapping(r.Auth, mappingID)
-		if err == nil {
-			if unparsedErr := utils.CheckForUnparsed(readResponse); unparsedErr != nil {
-				return retry.NonRetryableError(fmt.Errorf("response contains unparsed object: %w", unparsedErr))
-			}
-			apiResponse = readResponse
-			return nil
-		}
-
-		translatedError := utils.TranslateClientError(err, httpResponse, "error waiting for AWS WIF persona mapping to become visible")
-		if httpResponse != nil && httpResponse.StatusCode == http.StatusNotFound {
-			return retry.RetryableError(translatedError)
-		}
-		return retry.NonRetryableError(translatedError)
-	})
+	apiResponse, httpResponse, err = r.readWithRetry(ctx, mappingID)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, ""))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(
+			utils.TranslateClientError(err, httpResponse, "error waiting for AWS WIF persona mapping to become visible"), "",
+		))
+		return
+	}
+	if err := utils.CheckForUnparsed(apiResponse); err != nil {
+		response.Diagnostics.AddError("response contains unparsed object", err.Error())
 		return
 	}
 
@@ -230,9 +220,9 @@ func (r *awsWifPersonaMappingResource) Read(ctx context.Context, request resourc
 		return
 	}
 
-	apiResponse, httpResponse, err := r.Api.GetAWSCloudAuthPersonaMapping(r.Auth, state.ID.ValueString())
+	apiResponse, httpResponse, err := r.readWithRetry(ctx, state.ID.ValueString())
 	if err != nil {
-		if httpResponse != nil && httpResponse.StatusCode == http.StatusNotFound {
+		if ctx.Err() == nil && httpResponse != nil && httpResponse.StatusCode == http.StatusNotFound {
 			response.State.RemoveResource(ctx)
 			return
 		}
@@ -248,6 +238,25 @@ func (r *awsWifPersonaMappingResource) Read(ctx context.Context, request resourc
 
 	r.updateState(&state, &apiResponse)
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+}
+
+// A newly created mapping can intermittently return 404 even after a successful
+// GET. Retry before treating it as deleted so a refresh cannot orphan it.
+func (r *awsWifPersonaMappingResource) readWithRetry(ctx context.Context, id string) (datadogV2.AWSCloudAuthPersonaMappingResponse, *http.Response, error) {
+	var result datadogV2.AWSCloudAuthPersonaMappingResponse
+	var httpResponse *http.Response
+	err := retry.RetryContext(ctx, awsWifPersonaMappingVisibilityTimeout, func() *retry.RetryError {
+		var err error
+		result, httpResponse, err = r.Api.GetAWSCloudAuthPersonaMapping(r.Auth, id)
+		if err == nil {
+			return nil
+		}
+		if httpResponse != nil && httpResponse.StatusCode == http.StatusNotFound {
+			return retry.RetryableError(err)
+		}
+		return retry.NonRetryableError(err)
+	})
+	return result, httpResponse, err
 }
 
 func (r *awsWifPersonaMappingResource) Update(_ context.Context, _ resource.UpdateRequest, response *resource.UpdateResponse) {

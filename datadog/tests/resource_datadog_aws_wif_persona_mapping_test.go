@@ -153,11 +153,17 @@ func testAccCheckAwsWifPersonaMappingExists(provider *fwprovider.FrameworkProvid
 			return fmt.Errorf("resource %s not found in state", resourceName)
 		}
 		id := stateResource.Primary.ID
-		_, httpResponse, err := provider.DatadogApiInstances.GetCloudAuthenticationApiV2().GetAWSCloudAuthPersonaMapping(provider.Auth, id)
-		if err != nil {
-			return utils.TranslateClientError(err, httpResponse, "error checking AWS WIF persona mapping existence")
-		}
-		return nil
+		return retry.RetryContext(provider.Auth, 30*time.Second, func() *retry.RetryError {
+			_, httpResponse, err := provider.DatadogApiInstances.GetCloudAuthenticationApiV2().GetAWSCloudAuthPersonaMapping(provider.Auth, id)
+			if err == nil {
+				return nil
+			}
+			translatedError := utils.TranslateClientError(err, httpResponse, "error checking AWS WIF persona mapping existence")
+			if httpResponse != nil && httpResponse.StatusCode == http.StatusNotFound {
+				return retry.RetryableError(translatedError)
+			}
+			return retry.NonRetryableError(translatedError)
+		})
 	}
 }
 

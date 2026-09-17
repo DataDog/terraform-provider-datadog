@@ -2,10 +2,12 @@ package fwprovider
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"sync/atomic"
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -333,4 +335,82 @@ func newAwsWifPersonaMappingResponse(id, accountIdentifier, accountUUID, arnPatt
 		datadogV2.AWSCLOUDAUTHPERSONAMAPPINGTYPE_AWS_CLOUD_AUTH_CONFIG,
 	)
 	return datadogV2.NewAWSCloudAuthPersonaMappingResponse(*data)
+}
+
+func TestAwsWifPersonaMappingRead(t *testing.T) {
+	for _, tc := range []struct {
+		name        string
+		statuses    []int
+		cancel      bool
+		wantError   bool
+		wantRemoved bool
+	}{
+		{name: "transient 404 preserves mapping", statuses: []int{http.StatusNotFound, http.StatusOK}},
+		{name: "persistent 404 removes mapping", statuses: []int{http.StatusNotFound}, wantRemoved: true},
+		{name: "forbidden preserves mapping", statuses: []int{http.StatusForbidden}, wantError: true},
+		{name: "server error preserves mapping", statuses: []int{http.StatusInternalServerError}, wantError: true},
+		{name: "cancellation after 404 preserves mapping", statuses: []int{http.StatusNotFound}, cancel: true, wantError: true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+			var requests atomic.Int32
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, request *http.Request) {
+				if request.Method != http.MethodGet || request.URL.Path != "/api/v2/cloud_auth/aws/persona_mapping/mapping-id" {
+					t.Errorf("unexpected request: %s %s", request.Method, request.URL.Path)
+				}
+				index := min(int(requests.Add(1))-1, len(tc.statuses)-1)
+				status := tc.statuses[index]
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(status)
+				if status == http.StatusOK {
+					if err := json.NewEncoder(w).Encode(newAwsWifPersonaMappingResponse("mapping-id", "handle", "account-uuid", "arn:aws:sts::123456789012:assumed-role/terraform-runner/*")); err != nil {
+						t.Error(err)
+					}
+				} else {
+					fmt.Fprint(w, `{"errors":[{"detail":"read failed"}]}`)
+				}
+				if tc.cancel {
+					cancel()
+				}
+			}))
+			defer server.Close()
+			config := datadog.NewConfiguration()
+			config.Servers = datadog.ServerConfigurations{{URL: server.URL}}
+			config.OperationServers = nil
+			config.HTTPClient = server.Client()
+			config.SetUnstableOperationEnabled("v2.GetAWSCloudAuthPersonaMapping", true)
+			r := &awsWifPersonaMappingResource{
+				Api:  datadogV2.NewCloudAuthenticationApi(datadog.NewAPIClient(config)),
+				Auth: context.Background(),
+			}
+			var schemaResponse resource.SchemaResponse
+			r.Schema(ctx, resource.SchemaRequest{}, &schemaResponse)
+			prior := awsWifPersonaMappingModel{
+				ID:                types.StringValue("mapping-id"),
+				AccountIdentifier: types.StringValue("configured@example.com"),
+				AccountUUID:       types.StringValue("account-uuid"),
+				ArnPattern:        types.StringValue("arn:aws:sts::123456789012:assumed-role/terraform-runner/*"),
+			}
+			state := tfsdk.State{Schema: schemaResponse.Schema}
+			if diags := state.Set(ctx, &prior); diags.HasError() {
+				t.Fatalf("building state: %v", diags.Errors())
+			}
+			response := resource.ReadResponse{State: state}
+			r.Read(ctx, resource.ReadRequest{State: state}, &response)
+			if response.Diagnostics.HasError() != tc.wantError {
+				t.Fatalf("error diagnostics = %v, want error %t", response.Diagnostics.Errors(), tc.wantError)
+			}
+			if response.State.Raw.IsNull() != tc.wantRemoved {
+				t.Fatalf("state removed = %t, want %t", response.State.Raw.IsNull(), tc.wantRemoved)
+			}
+			if !tc.wantRemoved && !response.State.Raw.Equal(state.Raw) {
+				t.Fatal("read did not preserve the existing mapping and configured identifier")
+			}
+			if tc.wantError && requests.Load() != 1 {
+				t.Fatalf("unexpected retries: got %d requests", requests.Load())
+			}
+		})
+	}
 }
