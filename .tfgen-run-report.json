@@ -1,0 +1,279 @@
+{
+  "run_id": "bfb36b23-0fcc-41f1-a26d-a4ff4d8fa539",
+  "generator_version": "dev",
+  "spec_hash": "d3bcd656b09956dc75c30f9ff3a2e8f149bb030889b173c9d9823e0023edb8c7",
+  "started_at": "2026-09-18T10:18:25.844151472Z",
+  "finished_at": "2026-09-18T10:18:28.455219912Z",
+  "artifacts": [
+    {
+      "name": "integration_elastic_cloud_account",
+      "kind": "resource",
+      "status": "created",
+      "path": "../datadog/fwprovider/resource_datadog_integration_elastic_cloud_account.go",
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "message": "pinned SDK binding for CreateElasticCloudIntegrationAccount differs from the OpenAPI-derived binding; generated with OpenAPI binding: API struct derived \"ElasticCloudIntegrationApi\" from tag \"Elastic Cloud Integration\", pinned \"ElasticCloudIntegrationAccountsApi\""
+        },
+        {
+          "severity": "warning",
+          "message": "pinned SDK binding for GetElasticCloudIntegrationAccount differs from the OpenAPI-derived binding; generated with OpenAPI binding: API struct derived \"ElasticCloudIntegrationApi\" from tag \"Elastic Cloud Integration\", pinned \"ElasticCloudIntegrationAccountsApi\""
+        },
+        {
+          "severity": "warning",
+          "message": "pinned SDK binding for UpdateElasticCloudIntegrationAccount differs from the OpenAPI-derived binding; generated with OpenAPI binding: API struct derived \"ElasticCloudIntegrationApi\" from tag \"Elastic Cloud Integration\", pinned \"ElasticCloudIntegrationAccountsApi\""
+        },
+        {
+          "severity": "warning",
+          "message": "pinned SDK binding for DeleteElasticCloudIntegrationAccount differs from the OpenAPI-derived binding; generated with OpenAPI binding: API struct derived \"ElasticCloudIntegrationApi\" from tag \"Elastic Cloud Integration\", pinned \"ElasticCloudIntegrationAccountsApi\""
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.authentication.elastic_cloud_integration_account_basic_auth\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.authentication\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.elastic-cloud-detailed-index-stats.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.elastic-cloud-detailed-index-stats\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.elastic-cloud-index-stats.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.elastic-cloud-index-stats\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.elastic-cloud-pending-task-stats.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.elastic-cloud-pending-task-stats\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.elastic-cloud-primary-shard-graceful-timeout.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.elastic-cloud-primary-shard-graceful-timeout\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.elastic-cloud-primary-shard-stats.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.elastic-cloud-primary-shard-stats\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.elastic-cloud-shard-allocation-stats.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.elastic-cloud-shard-allocation-stats\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.elastic-cloud-slm-stats.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.elastic-cloud-slm-stats\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.settings\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.id\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "enabled 4 unstable operation(s) the artifact calls: v2.CreateElasticCloudIntegrationAccount, v2.DeleteElasticCloudIntegrationAccount, v2.GetElasticCloudIntegrationAccount, v2.UpdateElasticCloudIntegrationAccount"
+        }
+      ]
+    },
+    {
+      "name": "integration_twilio_account",
+      "kind": "resource",
+      "status": "created",
+      "path": "../datadog/fwprovider/resource_datadog_integration_twilio_account.go",
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "message": "pinned SDK binding for CreateTwilioIntegrationAccount differs from the OpenAPI-derived binding; generated with OpenAPI binding: API struct derived \"TwilioIntegrationApi\" from tag \"Twilio Integration\", pinned \"TwilioIntegrationAccountsApi\""
+        },
+        {
+          "severity": "warning",
+          "message": "pinned SDK binding for GetTwilioIntegrationAccount differs from the OpenAPI-derived binding; generated with OpenAPI binding: API struct derived \"TwilioIntegrationApi\" from tag \"Twilio Integration\", pinned \"TwilioIntegrationAccountsApi\""
+        },
+        {
+          "severity": "warning",
+          "message": "pinned SDK binding for UpdateTwilioIntegrationAccount differs from the OpenAPI-derived binding; generated with OpenAPI binding: API struct derived \"TwilioIntegrationApi\" from tag \"Twilio Integration\", pinned \"TwilioIntegrationAccountsApi\""
+        },
+        {
+          "severity": "warning",
+          "message": "pinned SDK binding for DeleteTwilioIntegrationAccount differs from the OpenAPI-derived binding; generated with OpenAPI binding: API struct derived \"TwilioIntegrationApi\" from tag \"Twilio Integration\", pinned \"TwilioIntegrationAccountsApi\""
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.authentication.twilio_integration_account_basic_auth\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.authentication\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.twilio-alerts-logs.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.twilio-alerts-logs\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.twilio-call-summaries-logs.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.twilio-call-summaries-logs\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.twilio-cloud-cost-metrics.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.twilio-cloud-cost-metrics\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.twilio-events-logs.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.twilio-events-logs\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.twilio-messages-logs.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.twilio-messages-logs\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.settings\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.id\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "enabled 4 unstable operation(s) the artifact calls: v2.CreateTwilioIntegrationAccount, v2.DeleteTwilioIntegrationAccount, v2.GetTwilioIntegrationAccount, v2.UpdateTwilioIntegrationAccount"
+        }
+      ]
+    }
+  ],
+  "skipped_operations": [
+    {
+      "operation_id": "ListDatastores",
+      "path": "/api/v2/actions-datastores",
+      "method": "GET",
+      "reason": "tracking_field_absent"
+    },
+    {
+      "operation_id": "DeleteElasticCloudIntegrationAccount",
+      "path": "/api/v2/integration-interfaces/elastic-cloud/accounts/{account_id}",
+      "method": "DELETE",
+      "reason": "tracking_field_absent"
+    },
+    {
+      "operation_id": "GetElasticCloudIntegrationAccount",
+      "path": "/api/v2/integration-interfaces/elastic-cloud/accounts/{account_id}",
+      "method": "GET",
+      "reason": "tracking_field_absent"
+    },
+    {
+      "operation_id": "UpdateElasticCloudIntegrationAccount",
+      "path": "/api/v2/integration-interfaces/elastic-cloud/accounts/{account_id}",
+      "method": "PATCH",
+      "reason": "tracking_field_absent"
+    },
+    {
+      "operation_id": "DeleteTwilioIntegrationAccount",
+      "path": "/api/v2/integration-interfaces/twilio/accounts/{account_id}",
+      "method": "DELETE",
+      "reason": "tracking_field_absent"
+    },
+    {
+      "operation_id": "GetTwilioIntegrationAccount",
+      "path": "/api/v2/integration-interfaces/twilio/accounts/{account_id}",
+      "method": "GET",
+      "reason": "tracking_field_absent"
+    },
+    {
+      "operation_id": "UpdateTwilioIntegrationAccount",
+      "path": "/api/v2/integration-interfaces/twilio/accounts/{account_id}",
+      "method": "PATCH",
+      "reason": "tracking_field_absent"
+    }
+  ],
+  "summary": {
+    "created": 2,
+    "updated": 0,
+    "unchanged": 0,
+    "skipped": 0,
+    "failed": 0,
+    "retired": 0,
+    "retire_blocked": 0,
+    "registration_retired": 0
+  }
+}
