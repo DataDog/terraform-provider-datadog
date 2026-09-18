@@ -33,6 +33,8 @@ func TestAccDatadogSecurityFindingsDefaultInboxRule_Import(t *testing.T) {
 			{
 				// Import the existing rule; the config declares the resource with no attributes, so
 				// `enabled` adopts the imported (server-side) value and the following plan is clean.
+				// No ImportStateVerify: there is no prior state to compare against, since default
+				// rules cannot be created; the Check functions assert the imported state instead.
 				Config: `
 resource "datadog_security_findings_default_inbox_rule" "test" {
 }
@@ -41,7 +43,6 @@ resource "datadog_security_findings_default_inbox_rule" "test" {
 				ImportState:        true,
 				ImportStateId:      "secret_default_rule",
 				ImportStatePersist: true,
-				ImportStateVerify:  true,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogSecurityFindingsDefaultInboxRuleExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "id", "secret_default_rule"),

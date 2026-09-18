@@ -8,6 +8,10 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -58,14 +62,21 @@ func (r *securityFindingsDefaultInboxRuleResource) Schema(_ context.Context, _ r
 				Description: "Whether the default inbox rule is enabled for this organization. When not set, the rule's current server-side value is adopted; declare it to manage the value. Default inbox rules are enabled unless disabled.",
 				Optional:    true,
 				Computed:    true,
+				// UseStateForUnknown keeps the prior value when the attribute is absent from the
+				// config: without it, an unknown plan value would read as false and wrongly toggle
+				// the rule. It also makes the plan decodable in Update, since computed nested
+				// attributes would otherwise be unknown.
+				PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
 			},
 			"name": schema.StringAttribute{
-				Description: "The name of the default inbox rule, defined by Datadog.",
-				Computed:    true,
+				Description:   "The name of the default inbox rule, defined by Datadog.",
+				Computed:      true,
+				PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 			},
 			"rule": schema.SingleNestedAttribute{
-				Description: "The scope of findings the default inbox rule applies to, defined by Datadog.",
-				Computed:    true,
+				Description:   "The scope of findings the default inbox rule applies to, defined by Datadog.",
+				Computed:      true,
+				PlanModifiers: []planmodifier.Object{objectplanmodifier.UseStateForUnknown()},
 				Attributes: map[string]schema.Attribute{
 					"finding_types": schema.ListAttribute{
 						Description: "The list of security finding types that the default inbox rule applies to.",
@@ -79,8 +90,9 @@ func (r *securityFindingsDefaultInboxRuleResource) Schema(_ context.Context, _ r
 				},
 			},
 			"action": schema.SingleNestedAttribute{
-				Description: "The action taken by the default inbox rule: matching findings are pushed into the Security Inbox triage view.",
-				Computed:    true,
+				Description:   "The action taken by the default inbox rule: matching findings are pushed into the Security Inbox triage view.",
+				Computed:      true,
+				PlanModifiers: []planmodifier.Object{objectplanmodifier.UseStateForUnknown()},
 				Attributes: map[string]schema.Attribute{
 					"description": schema.StringAttribute{
 						Description: "The description of the default inbox rule, defined by Datadog.",
