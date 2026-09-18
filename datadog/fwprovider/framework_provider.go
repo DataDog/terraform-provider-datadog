@@ -89,6 +89,9 @@ var Resources = []func() resource.Resource{
 	NewSecurityFindingsTicketCreationRulesOrderResource,
 	NewSecurityFindingsSeverityModifierRuleResource,
 	NewSecurityFindingsSeverityModifierRulesOrderResource,
+	NewSecurityFindingsInboxRuleResource,
+	NewSecurityFindingsInboxRulesOrderResource,
+	NewSecurityFindingsDefaultInboxRuleResource,
 	NewSensitiveDataScannerGroupOrder,
 	NewServiceAccountApplicationKeyResource,
 	NewServiceAccessTokenResource,
@@ -864,6 +867,16 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationSeverityModifierRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationSeverityModifierRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationSeverityModifierRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationInboxRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationInboxRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationInboxRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationInboxRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationInboxRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationInboxRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationDefaultInboxRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationDefaultInboxRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.EnableSecurityFindingsAutomationDefaultInboxRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DisableSecurityFindingsAutomationDefaultInboxRule", true)
 
 	// Enable Tag Indexing Rules & Exemptions
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateTagIndexingRule", true)

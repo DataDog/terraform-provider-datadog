@@ -1,0 +1,1 @@
+terraform import datadog_security_findings_inbox_rule.triage_production_misconfigurations "00000000-0000-0000-0000-000000000000"
