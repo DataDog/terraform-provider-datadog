@@ -1,0 +1,257 @@
+{
+  "run_id": "803c2b2f-bd25-4c22-81a1-a00317946690",
+  "generator_version": "dev",
+  "spec_hash": "a897ebb028ed4dcc741279d0d2ab7ce62f82b0102b400b5912f7efff265ea990",
+  "started_at": "2026-09-18T10:21:48.175397047Z",
+  "finished_at": "2026-09-18T10:21:50.89212902Z",
+  "artifacts": [
+    {
+      "name": "integration_snowflake_account",
+      "kind": "resource",
+      "status": "created",
+      "path": "../datadog/fwprovider/resource_datadog_integration_snowflake_account.go",
+      "diagnostics": [
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.authentication.snowflake_integration_account_private_key_auth.private_key_passphrase\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.authentication.snowflake_integration_account_private_key_auth\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.authentication\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-account-usage-metrics.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-account-usage-metrics.settings.account_usage_metrics_aggregate_last_24h\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-account-usage-metrics.settings\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-account-usage-metrics\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-cloud-cost-metrics.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-cloud-cost-metrics.settings.query_tags\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-cloud-cost-metrics.settings\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-cloud-cost-metrics\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-data-observability-quality-monitoring.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-data-observability-quality-monitoring.settings.do_table_crawler_cron\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-data-observability-quality-monitoring.settings.sync_snowflake_system_database\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-data-observability-quality-monitoring.settings\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-data-observability-quality-monitoring\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-event-table-logs.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-event-table-logs.settings.event_table_events_enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-event-table-logs.settings.event_table_logs_enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-event-table-logs.settings.event_table_logs_interval_min\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-event-table-logs.settings.event_table_span_events_enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-event-table-logs.settings.event_table_spans_enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-event-table-logs.settings\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-event-table-logs\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-organization-usage-metrics.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-organization-usage-metrics.settings.organization_usage_metrics_aggregate_last_24h\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-organization-usage-metrics.settings\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-organization-usage-metrics\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-query-history-logs.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-query-history-logs.settings.join_query_history_with_access_history_enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-query-history-logs.settings.query_history_logs_interval_min\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-query-history-logs.settings\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-query-history-logs\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-security-logs.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-security-logs.settings.security_logs_interval_min\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-security-logs.settings\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-security-logs\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-task-history-logs.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-task-history-logs.settings.task_history_logs_interval_min\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-task-history-logs.settings\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.snowflake-task-history-logs\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.name\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.settings.snowflake_account_identifier\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.settings.username\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.settings\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.id\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "enabled 4 unstable operation(s) the artifact calls: v2.CreateSnowflakeIntegrationAccount, v2.DeleteSnowflakeIntegrationAccount, v2.GetSnowflakeIntegrationAccount, v2.UpdateSnowflakeIntegrationAccount"
+        }
+      ]
+    }
+  ],
+  "skipped_operations": [
+    {
+      "operation_id": "ListDatastores",
+      "path": "/api/v2/actions-datastores",
+      "method": "GET",
+      "reason": "tracking_field_absent"
+    },
+    {
+      "operation_id": "DeleteSnowflakeIntegrationAccount",
+      "path": "/api/v2/integration-interfaces/snowflake/accounts/{account_id}",
+      "method": "DELETE",
+      "reason": "tracking_field_absent"
+    },
+    {
+      "operation_id": "GetSnowflakeIntegrationAccount",
+      "path": "/api/v2/integration-interfaces/snowflake/accounts/{account_id}",
+      "method": "GET",
+      "reason": "tracking_field_absent"
+    },
+    {
+      "operation_id": "UpdateSnowflakeIntegrationAccount",
+      "path": "/api/v2/integration-interfaces/snowflake/accounts/{account_id}",
+      "method": "PATCH",
+      "reason": "tracking_field_absent"
+    }
+  ],
+  "summary": {
+    "created": 1,
+    "updated": 0,
+    "unchanged": 0,
+    "skipped": 0,
+    "failed": 0,
+    "retired": 0,
+    "retire_blocked": 0,
+    "registration_retired": 0
+  }
+}
