@@ -1,0 +1,42 @@
+openapi: 3.0.0
+info:
+  title: tracking valid fixture
+  version: 1.0.0
+paths:
+  /incident_types:
+    post:
+      operationId: CreateIncidentType
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: incident_type
+        group:
+          create: CreateIncidentType
+          read: GetIncidentType
+          update: UpdateIncidentType
+          delete: DeleteIncidentType
+      responses:
+        '201':
+          description: created
+  /teams/{id}:
+    get:
+      operationId: GetTeam
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: team
+        group:
+          read: GetTeam
+      responses:
+        '200':
+          description: ok
+  /health:
+    get:
+      operationId: GetHealth
+      responses:
+        '200':
+          description: ok

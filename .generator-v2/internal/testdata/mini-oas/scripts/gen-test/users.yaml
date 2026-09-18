@@ -1,0 +1,659 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: Users
+  description: Create, edit, and disable users.
+  externalDocs:
+    url: https://docs.datadoghq.com/account_management/users
+paths:
+  /api/v2/users:
+    get:
+      operationId: ListUsers
+      tags:
+      - Users
+      summary: List all users
+      description: 'Get the list of all users in the organization. This list includes
+
+        all users even if they are deactivated or unverified.'
+      parameters:
+      - $ref: '#/components/parameters/PageSize'
+      - $ref: '#/components/parameters/PageNumber'
+      - name: sort
+        in: query
+        required: false
+        description: 'User attribute to order results by. Sort order is ascending by default.
+
+          Sort order is descending if the field
+
+          is prefixed by a negative sign, for example `sort=-name`. Options: `name`,
+
+          `modified_at`, `user_count`.'
+        schema:
+          type: string
+          default: name
+          example: name
+      - name: sort_dir
+        in: query
+        required: false
+        description: 'Direction of sort. Options: `asc`, `desc`.'
+        schema:
+          $ref: '#/components/schemas/QuerySortOrder'
+      - name: filter
+        in: query
+        required: false
+        description: Filter all users by the given string. Defaults to no filtering.
+        schema:
+          type: string
+      - name: filter[status]
+        in: query
+        required: false
+        description: 'Filter on status attribute.
+
+          Comma separated list, with possible values `Active`, `Pending`, and `Disabled`.
+
+          Defaults to no filtering.'
+        schema:
+          type: string
+          example: Active
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                    - id: 00000000-0000-0000-0000-000000000001
+                      type: users
+                      attributes:
+                        email: test@example.com
+                        name: Example Name
+                        handle: example-handle
+                        status: Active
+                    included: []
+                    meta: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '403':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      security:
+      - apiKeyAuth: []
+        appKeyAuth: []
+      - AuthZ:
+        - user_access_read
+      x-permission:
+        operator: OR
+        permissions:
+        - user_access_read
+      x-codegen-request-body-name: body
+      x-menu-order: 1
+      x-undo:
+        type: safe
+      x-pagination:
+        limitParam: page[size]
+        pageParam: page[number]
+        resultsPath: data
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: users
+        tf_description: Use this data source to retrieve information about existing Datadog users.
+        group:
+          read: ListUsers
+        cardinality: plural
+components:
+  parameters:
+    PageNumber:
+      name: page[number]
+      in: query
+      required: false
+      description: Specific page number to return.
+      schema:
+        type: integer
+        format: int64
+        default: 0
+        example: 0
+    PageSize:
+      name: page[size]
+      in: query
+      required: false
+      description: Size for a given page. The maximum allowed value is 100.
+      schema:
+        type: integer
+        format: int64
+        default: 10
+        example: 10
+  responses:
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    Organization:
+      type: object
+      description: Organization object.
+      required:
+      - type
+      properties:
+        type:
+          $ref: '#/components/schemas/OrganizationsType'
+        id:
+          type: string
+          description: ID of the organization.
+        attributes:
+          $ref: '#/components/schemas/OrganizationAttributes'
+    OrganizationAttributes:
+      type: object
+      description: Attributes of the organization.
+      properties:
+        public_id:
+          type: string
+          description: Public ID of the organization.
+        name:
+          type: string
+          description: Name of the organization.
+        description:
+          type: string
+          description: Description of the organization.
+        sharing:
+          type: string
+          description: Sharing type of the organization.
+        url:
+          type: string
+          description: URL of the site that this organization exists at.
+        disabled:
+          type: boolean
+          description: Whether or not the organization is disabled.
+        created_at:
+          type: string
+          description: Creation time of the organization.
+          format: date-time
+        modified_at:
+          type: string
+          description: Time of last organization modification.
+          format: date-time
+    OrganizationsType:
+      type: string
+      description: Organizations resource type.
+      default: orgs
+      example: orgs
+      enum:
+      - orgs
+      x-enum-varnames:
+      - ORGS
+    Pagination:
+      type: object
+      description: Pagination object.
+      properties:
+        total_filtered_count:
+          type: integer
+          description: Total count of elements matched by the filter.
+          format: int64
+        total_count:
+          type: integer
+          description: Total count.
+          format: int64
+    Permission:
+      type: object
+      description: Permission object.
+      required:
+      - type
+      properties:
+        type:
+          $ref: '#/components/schemas/PermissionsType'
+        id:
+          type: string
+          description: ID of the permission.
+        attributes:
+          $ref: '#/components/schemas/PermissionAttributes'
+    PermissionAttributes:
+      type: object
+      description: Attributes of a permission.
+      properties:
+        name:
+          type: string
+          description: Name of the permission.
+        display_name:
+          type: string
+          description: Displayed name for the permission.
+        description:
+          type: string
+          description: Description of the permission.
+        created:
+          type: string
+          description: Creation time of the permission.
+          format: date-time
+        group_name:
+          type: string
+          description: Name of the permission group.
+        display_type:
+          type: string
+          description: Display type.
+        restricted:
+          type: boolean
+          description: Whether or not the permission is restricted.
+        name_aliases:
+          type: array
+          description: List of alias names for the permission.
+          items:
+            type: string
+            description: An alternative name for the permission.
+    PermissionsType:
+      type: string
+      description: Permissions resource type.
+      default: permissions
+      example: permissions
+      enum:
+      - permissions
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - PERMISSIONS
+    QuerySortOrder:
+      type: string
+      description: Direction of sort.
+      default: desc
+      enum:
+      - asc
+      - desc
+      x-enum-varnames:
+      - ASC
+      - DESC
+    RelationshipToOrganization:
+      type: object
+      description: Relationship to an organization.
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/RelationshipToOrganizationData'
+    RelationshipToOrganizationData:
+      type: object
+      description: Relationship to organization object.
+      required:
+      - id
+      - type
+      properties:
+        type:
+          $ref: '#/components/schemas/OrganizationsType'
+        id:
+          type: string
+          description: ID of the organization.
+          example: 00000000-0000-beef-0000-000000000000
+    RelationshipToOrganizations:
+      type: object
+      description: Relationship to organizations.
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          description: Relationships to organization objects.
+          example: []
+          items:
+            $ref: '#/components/schemas/RelationshipToOrganizationData'
+    RelationshipToPermissionData:
+      type: object
+      description: Relationship to permission object.
+      properties:
+        type:
+          $ref: '#/components/schemas/PermissionsType'
+        id:
+          type: string
+          description: ID of the permission.
+      x-merge-override:
+        required: false
+    RelationshipToPermissions:
+      type: object
+      description: Relationship to multiple permissions objects.
+      properties:
+        data:
+          type: array
+          description: Relationships to permission objects.
+          items:
+            $ref: '#/components/schemas/RelationshipToPermissionData'
+      x-merge-override:
+        required: false
+    RelationshipToRoleData:
+      type: object
+      description: Relationship to role object.
+      properties:
+        type:
+          $ref: '#/components/schemas/RolesType'
+        id:
+          type: string
+          description: The unique identifier of the role.
+          example: 3653d3c6-0c75-11ea-ad28-fb5701eabc7d
+      x-merge-override:
+        required: false
+    RelationshipToRoles:
+      type: object
+      description: Relationship to roles.
+      properties:
+        data:
+          type: array
+          description: An array containing type and the unique identifier of a role.
+          items:
+            $ref: '#/components/schemas/RelationshipToRoleData'
+      x-merge-override:
+        required: false
+    RelationshipToUserData:
+      type: object
+      description: Relationship to user object.
+      required:
+      - id
+      - type
+      properties:
+        type:
+          $ref: '#/components/schemas/UsersType'
+        id:
+          type: string
+          description: A unique identifier that represents the user.
+          example: 00000000-0000-0000-2345-000000000000
+      x-merge-override:
+        required: false
+    RelationshipToUsers:
+      type: object
+      description: Relationship to users.
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          description: Relationships to user objects.
+          example: []
+          items:
+            $ref: '#/components/schemas/RelationshipToUserData'
+    ResponseMetaAttributes:
+      type: object
+      description: Object describing meta attributes of response.
+      properties:
+        page:
+          $ref: '#/components/schemas/Pagination'
+      x-merge-override:
+        properties: false
+    Role:
+      type: object
+      description: Role object returned by the API.
+      required:
+      - type
+      properties:
+        type:
+          $ref: '#/components/schemas/RolesType'
+        id:
+          type: string
+          description: The unique identifier of the role.
+        attributes:
+          $ref: '#/components/schemas/RoleAttributes'
+        relationships:
+          $ref: '#/components/schemas/RoleResponseRelationships'
+      x-merge-override:
+        required: false
+    RoleAttributes:
+      type: object
+      description: Attributes of the role.
+      properties:
+        name:
+          type: string
+          description: The name of the role. The name is neither unique nor a stable identifier of the
+            role.
+        created_at:
+          type: string
+          description: Creation time of the role.
+          format: date-time
+          readOnly: true
+        modified_at:
+          type: string
+          description: Time of last role modification.
+          format: date-time
+          readOnly: true
+        user_count:
+          type: integer
+          description: Number of users with that role.
+          format: int64
+          readOnly: true
+        receives_permissions_from:
+          type: array
+          description: 'The managed role from which this role automatically inherits new permissions.
+
+            Specify one of the following: "Datadog Admin Role", "Datadog Standard Role", or "Datadog Read
+            Only Role".
+
+            If empty or not specified, the role does not automatically inherit permissions from any managed
+            role.'
+          items:
+            type: string
+            description: Name of a managed role to inherit permissions from.
+      additionalProperties: {}
+    RoleResponseRelationships:
+      type: object
+      description: Relationships of the role object returned by the API.
+      properties:
+        permissions:
+          $ref: '#/components/schemas/RelationshipToPermissions'
+      x-ignore-duplicate-object: true
+    RolesType:
+      type: string
+      description: Roles type.
+      default: roles
+      example: roles
+      enum:
+      - roles
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - ROLES
+    User:
+      type: object
+      description: User object returned by the API.
+      properties:
+        type:
+          $ref: '#/components/schemas/UsersType'
+        id:
+          type: string
+          description: ID of the user.
+        attributes:
+          $ref: '#/components/schemas/UserAttributes'
+        relationships:
+          $ref: '#/components/schemas/UserResponseRelationships'
+      x-merge-override:
+        required: false
+    UserAttributes:
+      type: object
+      description: Attributes of user object returned by the API.
+      properties:
+        mfa_enabled:
+          type: boolean
+          description: Whether multi-factor authentication (MFA) is enabled for the user's account.
+          readOnly: true
+        name:
+          type: string
+          description: The full display name of the user as shown in the Datadog UI.
+          nullable: true
+        handle:
+          type: string
+          description: The unique handle (username) of the user, typically matching their email prefix.
+        created_at:
+          type: string
+          description: The ISO 8601 timestamp of when the user account was created.
+          format: date-time
+        modified_at:
+          type: string
+          description: The ISO 8601 timestamp of when the user account was last modified.
+          format: date-time
+        email:
+          type: string
+          description: The email address of the user, used for login and notifications.
+        icon:
+          type: string
+          description: URL of the user's profile icon, typically a Gravatar URL derived from the email
+            address.
+        title:
+          type: string
+          description: The job title of the user (for example, "Senior Engineer" or "Product Manager").
+          nullable: true
+        verified:
+          type: boolean
+          description: Whether the user's email address has been verified.
+        disabled:
+          type: boolean
+          description: Whether the user account is deactivated. Disabled users cannot log in.
+        status:
+          type: string
+          description: The current status of the user account (for example, `Active`, `Pending`, or `Disabled`).
+        service_account:
+          type: boolean
+          description: 'Whether this is a service account rather than a human user.
+
+            Service accounts are used for programmatic API access.'
+        last_login_time:
+          type: string
+          description: The ISO 8601 timestamp of the user's most recent login, or null if the user has
+            never logged in.
+          format: date-time
+          nullable: true
+          readOnly: true
+        uuid:
+          type: string
+          description: The globally unique identifier (UUID) of the user.
+          readOnly: true
+    UserResponseIncludedItem:
+      description: An object related to a user.
+      oneOf:
+      - $ref: '#/components/schemas/Organization'
+      - $ref: '#/components/schemas/Permission'
+      - $ref: '#/components/schemas/Role'
+    UserResponseRelationships:
+      type: object
+      description: Relationships of the user object returned by the API.
+      properties:
+        roles:
+          $ref: '#/components/schemas/RelationshipToRoles'
+        org:
+          $ref: '#/components/schemas/RelationshipToOrganization'
+        other_users:
+          $ref: '#/components/schemas/RelationshipToUsers'
+        other_orgs:
+          $ref: '#/components/schemas/RelationshipToOrganizations'
+      x-merge-override:
+        properties: false
+    UsersResponse:
+      type: object
+      description: Response containing information about multiple users.
+      readOnly: true
+      properties:
+        data:
+          type: array
+          description: Array of returned users.
+          items:
+            $ref: '#/components/schemas/User'
+        included:
+          type: array
+          description: Array of objects related to the users.
+          items:
+            $ref: '#/components/schemas/UserResponseIncludedItem'
+        meta:
+          $ref: '#/components/schemas/ResponseMetaAttributes'
+    UsersType:
+      type: string
+      description: Users resource type.
+      default: users
+      example: users
+      enum:
+      - users
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - USERS
+  securitySchemes:
+    AuthZ:
+      type: oauth2
+      description: This API uses OAuth 2 with the implicit grant flow.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth2/v1/authorize
+          tokenUrl: /oauth2/v1/token
+          scopes:
+            user_access_read: View users and their roles and settings.
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY

@@ -45,13 +45,9 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.CreateDataset", true)
 	config.SetUnstableOperationEnabled("v2.UpdateDataset", true)
 	config.SetUnstableOperationEnabled("v2.DeleteDataset", true)
-
-	// Enable Web Integrations (AMS) — Databricks resource depends on these.
-	config.SetUnstableOperationEnabled("v2.CreateWebIntegrationAccount", true)
-	config.SetUnstableOperationEnabled("v2.GetWebIntegrationAccount", true)
-	config.SetUnstableOperationEnabled("v2.ListWebIntegrationAccounts", true)
-	config.SetUnstableOperationEnabled("v2.UpdateWebIntegrationAccount", true)
-	config.SetUnstableOperationEnabled("v2.DeleteWebIntegrationAccount", true)
+	config.SetUnstableOperationEnabled("v2.CreateFleetSchedule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateFleetSchedule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteFleetSchedule", true)
 
 	// Enable Logs Restriction Queries
 	config.SetUnstableOperationEnabled("v2.CreateRestrictionQuery", true)
@@ -65,6 +61,11 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.GetAWSAccountCCMConfig", true)
 	config.SetUnstableOperationEnabled("v2.UpdateAWSAccountCCMConfig", true)
 	config.SetUnstableOperationEnabled("v2.DeleteAWSAccountCCMConfig", true)
+
+	// Enable Custom Forecast
+	config.SetUnstableOperationEnabled("v2.UpsertCustomForecast", true)
+	config.SetUnstableOperationEnabled("v2.GetCustomForecast", true)
+	config.SetUnstableOperationEnabled("v2.DeleteCustomForecast", true)
 
 	// Enable Observability Pipelines
 	config.SetUnstableOperationEnabled("v2.CreatePipeline", true)
@@ -90,6 +91,24 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateIncidentNotificationTemplate", true)
 	config.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationTemplate", true)
 	config.SetUnstableOperationEnabled("v2.ListIncidentNotificationTemplates", true)
+
+	// Enable IncidentPostmortemTemplate
+	config.SetUnstableOperationEnabled("v2.CreateIncidentPostmortemTemplate", true)
+	config.SetUnstableOperationEnabled("v2.GetIncidentPostmortemTemplate", true)
+	config.SetUnstableOperationEnabled("v2.UpdateIncidentPostmortemTemplate", true)
+	config.SetUnstableOperationEnabled("v2.DeleteIncidentPostmortemTemplate", true)
+
+	config.SetUnstableOperationEnabled("v2.ListIncidentUserDefinedFields", true)
+	config.SetUnstableOperationEnabled("v2.CreateIncidentUserDefinedField", true)
+	config.SetUnstableOperationEnabled("v2.GetIncidentUserDefinedField", true)
+	config.SetUnstableOperationEnabled("v2.UpdateIncidentUserDefinedField", true)
+	config.SetUnstableOperationEnabled("v2.DeleteIncidentUserDefinedField", true)
+
+	config.SetUnstableOperationEnabled("v2.ListIncidentUserDefinedRoles", true)
+	config.SetUnstableOperationEnabled("v2.CreateIncidentUserDefinedRole", true)
+	config.SetUnstableOperationEnabled("v2.GetIncidentUserDefinedRole", true)
+	config.SetUnstableOperationEnabled("v2.UpdateIncidentUserDefinedRole", true)
+	config.SetUnstableOperationEnabled("v2.DeleteIncidentUserDefinedRole", true)
 
 	// Enable OrgGroup
 	config.SetUnstableOperationEnabled("v2.CreateOrgGroup", true)
@@ -149,6 +168,42 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationTicketCreationRule", true)
 	config.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationTicketCreationRule", true)
 	config.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationTicketCreationRules", true)
+	config.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationSeverityModifierRules", true)
+	config.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationSeverityModifierRule", true)
+	config.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationSeverityModifierRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationSeverityModifierRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationSeverityModifierRule", true)
+	config.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationSeverityModifierRules", true)
+
+	config.SetUnstableOperationEnabled("v2.CreateTagIndexingRule", true)
+	config.SetUnstableOperationEnabled("v2.GetTagIndexingRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateTagIndexingRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteTagIndexingRule", true)
+	config.SetUnstableOperationEnabled("v2.ListTagIndexingRules", true)
+	config.SetUnstableOperationEnabled("v2.ReorderTagIndexingRules", true)
+	config.SetUnstableOperationEnabled("v2.CreateTagIndexingRuleExemption", true)
+	config.SetUnstableOperationEnabled("v2.GetTagIndexingRuleExemption", true)
+	config.SetUnstableOperationEnabled("v2.DeleteTagIndexingRuleExemption", true)
+
+	// Enable Governance Controls
+	config.SetUnstableOperationEnabled("v2.GetGovernanceControl", true)
+	config.SetUnstableOperationEnabled("v2.UpdateGovernanceControl", true)
+	config.SetUnstableOperationEnabled("v2.GetGovernanceControlNotificationSettings", true)
+	config.SetUnstableOperationEnabled("v2.UpdateGovernanceControlNotificationSettings", true)
+
+	// Enable Governance Tag Rules
+	config.SetUnstableOperationEnabled("v2.CreateTagRule", true)
+	config.SetUnstableOperationEnabled("v2.GetTagRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateTagRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteTagRule", true)
+
+	// Enable Execution Policies
+	config.SetUnstableOperationEnabled("v2.CreateExecutionPolicy", true)
+	config.SetUnstableOperationEnabled("v2.GetExecutionPolicy", true)
+	config.SetUnstableOperationEnabled("v2.UpdateExecutionPolicy", true)
+	config.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
+	config.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
+	fwprovider.EnableGeneratedUnstableOperations(config)
 
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true

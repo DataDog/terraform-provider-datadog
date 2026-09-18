@@ -1,0 +1,13 @@
+---
+# Policy for: .github/workflows/release_self_hosted.yml in DataDog/terraform-provider-datadog
+# Allows the manually-dispatched self-hosted release workflow to create tags and GitHub releases
+issuer: https://token.actions.githubusercontent.com
+subject: repo:DataDog/terraform-provider-datadog:environment:release
+
+claim_pattern:
+  event_name: workflow_dispatch
+  job_workflow_ref: DataDog/terraform-provider-datadog/\.github/workflows/release_self_hosted\.yml@refs/heads/(master|v3)
+  repository: DataDog/terraform-provider-datadog
+
+permissions:
+  contents: write

@@ -61,6 +61,44 @@ func checkDatadogSyntheticsTest(uniq string) resource.TestCheckFunc {
 			"data.datadog_synthetics_test.data_source_test", "tags.1", "foo"),
 		resource.TestCheckResourceAttr(
 			"data.datadog_synthetics_test.data_source_test", "url", "https://www.example.com"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_synthetics_test.data_source_test", "type", "api"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_synthetics_test.data_source_test", "subtype", "http"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_synthetics_test.data_source_test", "status", "live"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_synthetics_test.data_source_test", "message", ""),
+		resource.TestCheckResourceAttr(
+			"data.datadog_synthetics_test.data_source_test", "locations.#", "1"),
+		resource.TestCheckTypeSetElemAttr(
+			"data.datadog_synthetics_test.data_source_test", "locations.*", "aws:ap-northeast-1"),
+		resource.TestCheckResourceAttrSet(
+			"data.datadog_synthetics_test.data_source_test", "monitor_id"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_synthetics_test.data_source_test", "options_list.0.tick_every", "900"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_synthetics_test.data_source_test", "options_list.0.min_failure_duration", "120"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_synthetics_test.data_source_test", "options_list.0.min_location_failed", "1"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_synthetics_test.data_source_test", "options_list.0.monitor_name", uniq+"-monitor"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_synthetics_test.data_source_test", "options_list.0.monitor_priority", "3"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_synthetics_test.data_source_test", "options_list.0.http_version", "any"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_synthetics_test.data_source_test", "options_list.0.retry.0.count", "2"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_synthetics_test.data_source_test", "options_list.0.retry.0.interval", "300"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_synthetics_test.data_source_test", "options_list.0.monitor_options.0.renotify_interval", "60"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_synthetics_test.data_source_test", "options_list.0.monitor_options.0.renotify_occurrences", "3"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_synthetics_test.data_source_test", "options_list.0.monitor_options.0.escalation_message", "escalation message"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_synthetics_test.data_source_test", "options_list.0.monitor_options.0.notification_preset_name", "show_all"),
 	)
 }
 
@@ -76,7 +114,21 @@ resource "datadog_synthetics_test" "resource_test" {
 		url    = "https://www.example.com"
 	}
 	options_list {
-		tick_every = 900
+		tick_every           = 900
+		min_failure_duration = 120
+		min_location_failed  = 1
+		monitor_name         = "%s-monitor"
+		monitor_priority     = 3
+		retry {
+			count    = 2
+			interval = 300
+		}
+		monitor_options {
+			renotify_interval        = 60
+			renotify_occurrences     = 3
+			escalation_message       = "escalation message"
+			notification_preset_name = "show_all"
+		}
 	}
 	assertion {
 		type     = "statusCode"
@@ -84,7 +136,7 @@ resource "datadog_synthetics_test" "resource_test" {
 		target   = "200"
 	}
 	tags = ["env:prod", "foo"]
-}`, uniq)
+}`, uniq, uniq)
 }
 
 func testAccCheckDatadogSyntheticsTestConfig(uniq string) string {

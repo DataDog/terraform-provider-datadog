@@ -29,6 +29,22 @@ Attributes: fwutils.MergeAttributes(
 )
 ```
 
+### Secrets in Nested Blocks
+
+The three attributes live at the resource root by default. Set `ParentBlocks` to scope them under static nested blocks, so that both the generated validators and the handler lookups target the right paths:
+
+```go
+var secretConfig = fwutils.WriteOnlySecretConfig{
+    OriginalAttr:  "password",
+    WriteOnlyAttr: "password_wo",
+    TriggerAttr:   "password_wo_version",
+    ParentBlocks:  []string{"authentication", "basic"},
+    // ...descriptions
+}
+```
+
+The attributes are then addressed as `authentication.basic.password`. Only single-nested blocks are supported: attributes inside list- or set-nested blocks need index-aware paths, which a list of block names cannot express.
+
 ### CRUD Operations
 
 `WriteOnlySecretHandler` retrieves the secret from whichever mode the user chose:

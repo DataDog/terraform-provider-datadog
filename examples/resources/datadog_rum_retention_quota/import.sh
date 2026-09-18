@@ -1,0 +1,1 @@
+terraform import datadog_rum_retention_quota.testing_rum_retention_quota "<application_id>"

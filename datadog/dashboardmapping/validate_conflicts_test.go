@@ -161,3 +161,52 @@ func TestValidateWidgetConflicts_GroupWidgetNested(t *testing.T) {
 		t.Errorf("expected error path to include group_definition, got: %s", combined)
 	}
 }
+
+func TestValidateWidgetConflicts_HeatmapHistogramWithFormulaQuery(t *testing.T) {
+	data := map[string]interface{}{
+		"widget": []interface{}{
+			map[string]interface{}{
+				"heatmap_definition": []interface{}{
+					map[string]interface{}{
+						"request": []interface{}{
+							map[string]interface{}{
+								"histogram_request": []interface{}{
+									map[string]interface{}{
+										"histogram_query": []interface{}{
+											map[string]interface{}{
+												"metric_query": []interface{}{
+													map[string]interface{}{
+														"name":  "histogram",
+														"query": "histogram:trace.servlet.request{*}",
+													},
+												},
+											},
+										},
+									},
+								},
+								"query": []interface{}{
+									map[string]interface{}{
+										"metric_query": []interface{}{
+											map[string]interface{}{
+												"name":  "query1",
+												"query": "avg:system.cpu.user{*}",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	errs := ValidateWidgetConflicts(data)
+	if len(errs) == 0 {
+		t.Fatal("expected validation error for histogram_request + query conflict, got none")
+	}
+	if combined := strings.Join(errs, "\n"); !strings.Contains(combined, `"histogram_request" conflicts with "query"`) {
+		t.Fatalf("expected histogram_request conflict, got: %s", combined)
+	}
+}

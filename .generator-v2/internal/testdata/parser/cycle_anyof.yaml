@@ -1,0 +1,15 @@
+# Graph recurses through an anyOf variant. Exercises the AnyOf edge of the walk.
+openapi: 3.0.0
+info:
+  title: Cycles
+  version: 1.0.0
+paths: {}
+components:
+  schemas:
+    Graph:
+      anyOf:
+        - type: object
+          properties:
+            id:
+              type: string
+        - $ref: '#/components/schemas/Graph'

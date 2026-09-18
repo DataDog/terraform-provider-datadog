@@ -1264,18 +1264,26 @@ Optional:
 
 - `access_key` (String, Sensitive) Access key for `SIGV4` authentication.
 - `access_token_url` (String) Access token url for `oauth-client` or `oauth-rop` authentication.
+- `add_claims_exp` (Boolean) Whether to inject the `exp` (expiration) claim automatically, for `jwt` authentication.
+- `add_claims_iat` (Boolean) Whether to inject the `iat` (issued at) claim automatically, for `jwt` authentication.
+- `algorithm` (String) Algorithm to use for `jwt` authentication. Valid values are `HS256`, `RS256`, `ES256`.
 - `audience` (String) Audience for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
 - `client_id` (String) Client ID for `oauth-client` or `oauth-rop` authentication.
 - `client_secret` (String, Sensitive) Client secret for `oauth-client` or `oauth-rop` authentication.
 - `domain` (String) Domain for `ntlm` authentication.
+- `expires_in` (Number) Token time-to-live in seconds, for `jwt` authentication.
+- `header` (String) Custom JWT header as a JSON string, for `jwt` authentication.
 - `password` (String, Sensitive) Password for authentication.
+- `payload` (String) JWT claims as a JSON string, for `jwt` authentication.
 - `region` (String) Region for `SIGV4` authentication.
 - `resource` (String) Resource for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
 - `scope` (String) Scope for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
+- `secret` (String, Sensitive) Signing key for `jwt` authentication. Use the shared secret for `HS256` or the private key (PEM format) for `RS256` and `ES256`.
 - `secret_key` (String, Sensitive) Secret key for `SIGV4` authentication.
 - `service_name` (String) Service name for `SIGV4` authentication.
 - `session_token` (String) Session token for `SIGV4` authentication.
 - `token_api_authentication` (String) Token API Authentication for `oauth-client` or `oauth-rop` authentication. Valid values are `header`, `body`.
+- `token_prefix` (String) Prefix added before the token in the `Authorization` header for `jwt` authentication. Defaults to `Bearer`.
 - `type` (String) Type of basic authentication to use when performing the test. Defaults to `"web"`.
 - `username` (String) Username for authentication.
 - `workstation` (String) Workstation for `ntlm` authentication.
@@ -1825,6 +1833,7 @@ Optional:
 - `disable_csp` (Boolean) Disable Content Security Policy for browser tests.
 - `follow_redirects` (Boolean) Determines whether or not the API HTTP test should follow redirects.
 - `http_version` (String) HTTP version to use for an HTTP request in an API test or step. Valid values are `http1`, `http2`, `any`. Defaults to `"any"`.
+- `ignore_certificate_validation` (Boolean) Ignore server certificate error for SSL tests.
 - `ignore_server_certificate_error` (Boolean) Ignore server certificate error for browser tests.
 - `initial_navigation_timeout` (Number) Timeout before declaring the initial step as failed (in seconds) for browser tests.
 - `min_failure_duration` (Number) Minimum amount of time in failure required to trigger an alert (in seconds). Default is `0`.
@@ -1906,18 +1915,26 @@ Optional:
 
 - `access_key` (String, Sensitive) Access key for `SIGV4` authentication.
 - `access_token_url` (String) Access token url for `oauth-client` or `oauth-rop` authentication.
+- `add_claims_exp` (Boolean) Whether to inject the `exp` (expiration) claim automatically, for `jwt` authentication.
+- `add_claims_iat` (Boolean) Whether to inject the `iat` (issued at) claim automatically, for `jwt` authentication.
+- `algorithm` (String) Algorithm to use for `jwt` authentication. Valid values are `HS256`, `RS256`, `ES256`.
 - `audience` (String) Audience for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
 - `client_id` (String) Client ID for `oauth-client` or `oauth-rop` authentication.
 - `client_secret` (String, Sensitive) Client secret for `oauth-client` or `oauth-rop` authentication.
 - `domain` (String) Domain for `ntlm` authentication.
+- `expires_in` (Number) Token time-to-live in seconds, for `jwt` authentication.
+- `header` (String) Custom JWT header as a JSON string, for `jwt` authentication.
 - `password` (String, Sensitive) Password for authentication.
+- `payload` (String) JWT claims as a JSON string, for `jwt` authentication.
 - `region` (String) Region for `SIGV4` authentication.
 - `resource` (String) Resource for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
 - `scope` (String) Scope for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
+- `secret` (String, Sensitive) Signing key for `jwt` authentication. Use the shared secret for `HS256` or the private key (PEM format) for `RS256` and `ES256`.
 - `secret_key` (String, Sensitive) Secret key for `SIGV4` authentication.
 - `service_name` (String) Service name for `SIGV4` authentication.
 - `session_token` (String) Session token for `SIGV4` authentication.
 - `token_api_authentication` (String) Token API Authentication for `oauth-client` or `oauth-rop` authentication. Valid values are `header`, `body`.
+- `token_prefix` (String) Prefix added before the token in the `Authorization` header for `jwt` authentication. Defaults to `Bearer`.
 - `type` (String) Type of basic authentication to use when performing the test. Defaults to `"web"`.
 - `username` (String) Username for authentication.
 - `workstation` (String) Workstation for `ntlm` authentication.

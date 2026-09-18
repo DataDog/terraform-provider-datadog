@@ -1,0 +1,1092 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: Workflow Automation
+  description: Datadog Workflow Automation allows you to automate your end-to-end processes by connecting
+    Datadog with the rest of your tech stack. Build workflows to auto-remediate your alerts, streamline
+    your incident and security processes, and reduce manual toil. Workflow Automation supports over 1,000+
+    OOTB actions, including AWS, JIRA, ServiceNow, GitHub, and OpenAI. Learn more in our Workflow Automation
+    docs [here](https://docs.datadoghq.com/service_management/workflows/).
+  externalDocs:
+    description: Find out more at
+    url: https://docs.datadoghq.com/service_management/workflows/
+paths:
+  /api/v2/workflows/{workflow_id}:
+    get:
+      operationId: GetWorkflow
+      tags:
+      - Workflow Automation
+      summary: Get an existing Workflow
+      description: Get a workflow by ID. This API requires a [registered application key](https://docs.datadoghq.com/api/latest/action-connection/#register-a-new-app-key).
+        Alternatively, you can configure these permissions [in the UI](https://docs.datadoghq.com/account_management/api-app-keys/#actions-api-access).
+      parameters:
+      - $ref: '#/components/parameters/WorkflowId'
+      responses:
+        '200':
+          description: Successfully got a workflow.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetWorkflowResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                      id: 00000000-0000-0000-0000-000000000002
+                      type: workflows
+                      attributes:
+                        name: Example Workflow
+                        description: A sample workflow.
+                        published: true
+                        tags:
+                        - team:infra
+                        spec: {}
+                        createdAt: '2024-01-01T00:00:00+00:00'
+                        updatedAt: '2024-01-01T00:00:00+00:00'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSONAPIErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSONAPIErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSONAPIErrorResponse'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSONAPIErrorResponse'
+      x-permission:
+        operator: OR
+        permissions:
+        - workflows_read
+      x-menu-order: 2
+      x-undo:
+        type: safe
+components:
+  parameters:
+    WorkflowId:
+      name: workflow_id
+      in: path
+      required: true
+      description: The ID of the workflow.
+      schema:
+        type: string
+  schemas:
+    APITrigger:
+      type: object
+      description: Trigger a workflow from an API request. The workflow must be published.
+      properties:
+        rateLimit:
+          $ref: '#/components/schemas/TriggerRateLimit'
+      x-ignore-duplicate-object: true
+    APITriggerWrapper:
+      type: object
+      description: Schema for an API-based trigger.
+      required:
+      - apiTrigger
+      properties:
+        startStepNames:
+          $ref: '#/components/schemas/StartStepNames'
+        apiTrigger:
+          $ref: '#/components/schemas/APITrigger'
+    Annotation:
+      type: object
+      description: A list of annotations used in the workflow. These are like sticky notes for your workflow!
+      required:
+      - id
+      - display
+      - markdownTextAnnotation
+      properties:
+        id:
+          type: string
+          description: The `Annotation` `id`.
+          example: ''
+        display:
+          $ref: '#/components/schemas/AnnotationDisplay'
+        markdownTextAnnotation:
+          $ref: '#/components/schemas/AnnotationMarkdownTextAnnotation'
+    AnnotationDisplay:
+      type: object
+      description: The definition of `AnnotationDisplay` object.
+      properties:
+        bounds:
+          $ref: '#/components/schemas/AnnotationDisplayBounds'
+    AnnotationDisplayBounds:
+      type: object
+      description: The definition of `AnnotationDisplayBounds` object.
+      properties:
+        x:
+          type: number
+          description: The `bounds` `x`.
+          format: double
+        y:
+          type: number
+          description: The `bounds` `y`.
+          format: double
+        height:
+          type: number
+          description: The `bounds` `height`.
+          format: double
+        width:
+          type: number
+          description: The `bounds` `width`.
+          format: double
+    AnnotationMarkdownTextAnnotation:
+      type: object
+      description: The definition of `AnnotationMarkdownTextAnnotation` object.
+      properties:
+        text:
+          type: string
+          description: The `markdownTextAnnotation` `text`.
+    AppTriggerWrapper:
+      type: object
+      description: Schema for an App-based trigger.
+      required:
+      - appTrigger
+      properties:
+        startStepNames:
+          $ref: '#/components/schemas/StartStepNames'
+        appTrigger:
+          type: object
+          description: Trigger a workflow from an App.
+    CaseTrigger:
+      type: object
+      description: Trigger a workflow from a Case. For automatic triggering a handle must be configured
+        and the workflow must be published.
+      properties:
+        rateLimit:
+          $ref: '#/components/schemas/TriggerRateLimit'
+      x-ignore-duplicate-object: true
+    CaseTriggerWrapper:
+      type: object
+      description: Schema for a Case-based trigger.
+      required:
+      - caseTrigger
+      properties:
+        startStepNames:
+          $ref: '#/components/schemas/StartStepNames'
+        caseTrigger:
+          $ref: '#/components/schemas/CaseTrigger'
+    ChangeEventTriggerWrapper:
+      type: object
+      description: Schema for a Change Event-based trigger.
+      required:
+      - changeEventTrigger
+      properties:
+        startStepNames:
+          $ref: '#/components/schemas/StartStepNames'
+        changeEventTrigger:
+          type: object
+          description: Trigger a workflow from a Change Event.
+    CompletionCondition:
+      type: object
+      description: The definition of `CompletionCondition` object.
+      required:
+      - operand1
+      - operator
+      properties:
+        operand1:
+          description: The `CompletionCondition` `operand1`.
+        operator:
+          $ref: '#/components/schemas/CompletionConditionOperator'
+        operand2:
+          description: The `CompletionCondition` `operand2`.
+    CompletionConditionOperator:
+      type: string
+      description: The definition of `CompletionConditionOperator` object.
+      example: OPERATOR_EQUAL
+      enum:
+      - OPERATOR_EQUAL
+      - OPERATOR_NOT_EQUAL
+      - OPERATOR_GREATER_THAN
+      - OPERATOR_LESS_THAN
+      - OPERATOR_GREATER_THAN_OR_EQUAL_TO
+      - OPERATOR_LESS_THAN_OR_EQUAL_TO
+      - OPERATOR_CONTAINS
+      - OPERATOR_DOES_NOT_CONTAIN
+      - OPERATOR_IS_NULL
+      - OPERATOR_IS_NOT_NULL
+      - OPERATOR_IS_EMPTY
+      - OPERATOR_IS_NOT_EMPTY
+      x-enum-varnames:
+      - OPERATOR_EQUAL
+      - OPERATOR_NOT_EQUAL
+      - OPERATOR_GREATER_THAN
+      - OPERATOR_LESS_THAN
+      - OPERATOR_GREATER_THAN_OR_EQUAL_TO
+      - OPERATOR_LESS_THAN_OR_EQUAL_TO
+      - OPERATOR_CONTAINS
+      - OPERATOR_DOES_NOT_CONTAIN
+      - OPERATOR_IS_NULL
+      - OPERATOR_IS_NOT_NULL
+      - OPERATOR_IS_EMPTY
+      - OPERATOR_IS_NOT_EMPTY
+    CompletionGate:
+      type: object
+      description: Used to create conditions before running subsequent actions.
+      required:
+      - completionCondition
+      - retryStrategy
+      properties:
+        completionCondition:
+          $ref: '#/components/schemas/CompletionCondition'
+        retryStrategy:
+          $ref: '#/components/schemas/RetryStrategy'
+    Connection:
+      type: object
+      description: The definition of `Connection` object.
+      required:
+      - connectionId
+      - label
+      properties:
+        connectionId:
+          type: string
+          description: The `Connection` `connectionId`.
+          example: ''
+        label:
+          type: string
+          description: The `Connection` `label`.
+          example: ''
+    ConnectionEnv:
+      type: object
+      description: A list of connections or connection groups used in the workflow.
+      required:
+      - env
+      properties:
+        env:
+          $ref: '#/components/schemas/ConnectionEnvEnv'
+        connections:
+          type: array
+          description: The `ConnectionEnv` `connections`.
+          items:
+            $ref: '#/components/schemas/Connection'
+        connectionGroups:
+          type: array
+          description: The `ConnectionEnv` `connectionGroups`.
+          items:
+            $ref: '#/components/schemas/ConnectionGroup'
+    ConnectionEnvEnv:
+      type: string
+      description: The definition of `ConnectionEnvEnv` object.
+      example: default
+      enum:
+      - default
+      x-enum-varnames:
+      - DEFAULT
+    ConnectionGroup:
+      type: object
+      description: The definition of `ConnectionGroup` object.
+      required:
+      - connectionGroupId
+      - label
+      - tags
+      properties:
+        connectionGroupId:
+          type: string
+          description: The `ConnectionGroup` `connectionGroupId`.
+          example: ''
+        label:
+          type: string
+          description: The `ConnectionGroup` `label`.
+          example: ''
+        tags:
+          type: array
+          description: The `ConnectionGroup` `tags`.
+          example:
+          - ''
+          items:
+            type: string
+            description: A tag string in `key:value` format.
+    DashboardTriggerWrapper:
+      type: object
+      description: Schema for a Dashboard-based trigger.
+      required:
+      - dashboardTrigger
+      properties:
+        startStepNames:
+          $ref: '#/components/schemas/StartStepNames'
+        dashboardTrigger:
+          type: object
+          description: Trigger a workflow from a Dashboard.
+    DatabaseMonitoringTriggerWrapper:
+      type: object
+      description: Schema for a Database Monitoring-based trigger.
+      required:
+      - databaseMonitoringTrigger
+      properties:
+        startStepNames:
+          $ref: '#/components/schemas/StartStepNames'
+        databaseMonitoringTrigger:
+          type: object
+          description: Trigger a workflow from Database Monitoring.
+    DatastoreTrigger:
+      type: object
+      description: Trigger a workflow from a Datastore. For automatic triggering a handle must be configured
+        and the workflow must be published.
+      properties:
+        rateLimit:
+          $ref: '#/components/schemas/TriggerRateLimit'
+      x-ignore-duplicate-object: true
+    DatastoreTriggerWrapper:
+      type: object
+      description: Schema for a Datastore-based trigger.
+      required:
+      - datastoreTrigger
+      properties:
+        startStepNames:
+          $ref: '#/components/schemas/StartStepNames'
+        datastoreTrigger:
+          $ref: '#/components/schemas/DatastoreTrigger'
+    ErrorHandler:
+      type: object
+      description: Used to handle errors in an action.
+      required:
+      - retryStrategy
+      - fallbackStepName
+      properties:
+        retryStrategy:
+          $ref: '#/components/schemas/RetryStrategy'
+        fallbackStepName:
+          type: string
+          description: The `ErrorHandler` `fallbackStepName`.
+          example: ''
+    FormTrigger:
+      type: object
+      description: Trigger a workflow from a Form.
+      properties:
+        formId:
+          type: string
+          description: The form UUID.
+          example: ''
+    FormTriggerWrapper:
+      type: object
+      description: Schema for a Form-based trigger.
+      required:
+      - formTrigger
+      properties:
+        startStepNames:
+          $ref: '#/components/schemas/StartStepNames'
+        formTrigger:
+          $ref: '#/components/schemas/FormTrigger'
+    GetWorkflowResponse:
+      type: object
+      description: The response object after getting a workflow.
+      properties:
+        data:
+          $ref: '#/components/schemas/WorkflowData'
+    GithubWebhookTrigger:
+      type: object
+      description: Trigger a workflow from a GitHub webhook. To trigger a workflow from GitHub, you must
+        set a `webhookSecret`. In your GitHub Webhook Settings, set the Payload URL to "base_url"/api/v2/workflows/"workflow_id"/webhook?orgId="org_id",
+        select application/json for the content type, and be highly recommend enabling SSL verification
+        for security. The workflow must be published.
+      properties:
+        rateLimit:
+          $ref: '#/components/schemas/TriggerRateLimit'
+      x-ignore-duplicate-object: true
+    GithubWebhookTriggerWrapper:
+      type: object
+      description: Schema for a GitHub webhook-based trigger.
+      required:
+      - githubWebhookTrigger
+      properties:
+        startStepNames:
+          $ref: '#/components/schemas/StartStepNames'
+        githubWebhookTrigger:
+          $ref: '#/components/schemas/GithubWebhookTrigger'
+    IncidentTrigger:
+      type: object
+      description: Trigger a workflow from an Incident. For automatic triggering a handle must be configured
+        and the workflow must be published.
+      properties:
+        rateLimit:
+          $ref: '#/components/schemas/TriggerRateLimit'
+      x-ignore-duplicate-object: true
+    IncidentTriggerWrapper:
+      type: object
+      description: Schema for an Incident-based trigger.
+      required:
+      - incidentTrigger
+      properties:
+        startStepNames:
+          $ref: '#/components/schemas/StartStepNames'
+        incidentTrigger:
+          $ref: '#/components/schemas/IncidentTrigger'
+    InputSchema:
+      type: object
+      description: A list of input parameters for the workflow. These can be used as dynamic runtime values
+        in your workflow.
+      properties:
+        parameters:
+          type: array
+          description: The `InputSchema` `parameters`.
+          items:
+            $ref: '#/components/schemas/InputSchemaParameters'
+    InputSchemaParameters:
+      type: object
+      description: The definition of `InputSchemaParameters` object.
+      required:
+      - name
+      - type
+      properties:
+        name:
+          type: string
+          description: The `InputSchemaParameters` `name`.
+          example: ''
+        label:
+          type: string
+          description: The `InputSchemaParameters` `label`.
+        description:
+          type: string
+          description: The `InputSchemaParameters` `description`.
+        type:
+          $ref: '#/components/schemas/InputSchemaParametersType'
+        defaultValue:
+          description: The `InputSchemaParameters` `defaultValue`.
+        allowedValues:
+          description: The `InputSchemaParameters` `allowedValues`.
+        allowExtraValues:
+          type: boolean
+          description: The `InputSchemaParameters` `allowExtraValues`.
+    InputSchemaParametersType:
+      type: string
+      description: The definition of `InputSchemaParametersType` object.
+      example: STRING
+      enum:
+      - STRING
+      - NUMBER
+      - BOOLEAN
+      - OBJECT
+      - ARRAY_STRING
+      - ARRAY_NUMBER
+      - ARRAY_BOOLEAN
+      - ARRAY_OBJECT
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - STRING
+      - NUMBER
+      - BOOLEAN
+      - OBJECT
+      - ARRAY_STRING
+      - ARRAY_NUMBER
+      - ARRAY_BOOLEAN
+      - ARRAY_OBJECT
+    JSONAPIErrorItem:
+      type: object
+      description: API error response body
+      properties:
+        status:
+          type: string
+          description: Status code of the response.
+          example: '400'
+        title:
+          type: string
+          description: Short human-readable summary of the error.
+          example: Bad Request
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the error.
+          example: Missing required attribute in body
+        meta:
+          type: object
+          description: Non-standard meta-information about the error
+          additionalProperties: {}
+        source:
+          $ref: '#/components/schemas/JSONAPIErrorItemSource'
+    JSONAPIErrorItemSource:
+      type: object
+      description: References to the source of the error.
+      properties:
+        pointer:
+          type: string
+          description: A JSON pointer to the value in the request document that caused the error.
+          example: /data/attributes/title
+        parameter:
+          type: string
+          description: A string indicating which URI query parameter caused the error.
+          example: limit
+        header:
+          type: string
+          description: A string indicating the name of a single request header which caused the error.
+          example: Authorization
+    JSONAPIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          items:
+            $ref: '#/components/schemas/JSONAPIErrorItem'
+    MonitorTrigger:
+      type: object
+      description: Trigger a workflow from a Monitor. For automatic triggering a handle must be configured
+        and the workflow must be published.
+      properties:
+        rateLimit:
+          $ref: '#/components/schemas/TriggerRateLimit'
+      x-ignore-duplicate-object: true
+    MonitorTriggerWrapper:
+      type: object
+      description: Schema for a Monitor-based trigger.
+      required:
+      - monitorTrigger
+      properties:
+        startStepNames:
+          $ref: '#/components/schemas/StartStepNames'
+        monitorTrigger:
+          $ref: '#/components/schemas/MonitorTrigger'
+    NotebookTriggerWrapper:
+      type: object
+      description: Schema for a Notebook-based trigger.
+      required:
+      - notebookTrigger
+      properties:
+        startStepNames:
+          $ref: '#/components/schemas/StartStepNames'
+        notebookTrigger:
+          type: object
+          description: Trigger a workflow from a Notebook.
+    OnCallTrigger:
+      type: object
+      description: Trigger a workflow from an On-Call Page or On-Call Handover. For automatic triggering
+        a handle must be configured and the workflow must be published.
+      properties:
+        rateLimit:
+          $ref: '#/components/schemas/TriggerRateLimit'
+      x-ignore-duplicate-object: true
+    OnCallTriggerWrapper:
+      type: object
+      description: Schema for an On-Call-based trigger.
+      required:
+      - onCallTrigger
+      properties:
+        startStepNames:
+          $ref: '#/components/schemas/StartStepNames'
+        onCallTrigger:
+          $ref: '#/components/schemas/OnCallTrigger'
+    OutboundEdge:
+      type: object
+      description: The definition of `OutboundEdge` object.
+      required:
+      - nextStepName
+      - branchName
+      properties:
+        nextStepName:
+          type: string
+          description: The `OutboundEdge` `nextStepName`.
+          example: ''
+        branchName:
+          type: string
+          description: The `OutboundEdge` `branchName`.
+          example: ''
+    OutputSchema:
+      type: object
+      description: A list of output parameters for the workflow.
+      properties:
+        parameters:
+          type: array
+          description: The `OutputSchema` `parameters`.
+          items:
+            $ref: '#/components/schemas/OutputSchemaParameters'
+    OutputSchemaParameters:
+      type: object
+      description: The definition of `OutputSchemaParameters` object.
+      required:
+      - name
+      - type
+      properties:
+        name:
+          type: string
+          description: The `OutputSchemaParameters` `name`.
+          example: ''
+        label:
+          type: string
+          description: The `OutputSchemaParameters` `label`.
+        description:
+          type: string
+          description: The `OutputSchemaParameters` `description`.
+        type:
+          $ref: '#/components/schemas/OutputSchemaParametersType'
+        value:
+          description: The `OutputSchemaParameters` `value`.
+        defaultValue:
+          description: The `OutputSchemaParameters` `defaultValue`.
+    OutputSchemaParametersType:
+      type: string
+      description: The definition of `OutputSchemaParametersType` object.
+      example: STRING
+      enum:
+      - STRING
+      - NUMBER
+      - BOOLEAN
+      - OBJECT
+      - ARRAY_STRING
+      - ARRAY_NUMBER
+      - ARRAY_BOOLEAN
+      - ARRAY_OBJECT
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - STRING
+      - NUMBER
+      - BOOLEAN
+      - OBJECT
+      - ARRAY_STRING
+      - ARRAY_NUMBER
+      - ARRAY_BOOLEAN
+      - ARRAY_OBJECT
+    Parameter:
+      type: object
+      description: The definition of `Parameter` object.
+      required:
+      - name
+      - value
+      properties:
+        name:
+          type: string
+          description: The `Parameter` `name`.
+          example: ''
+        value:
+          description: The `Parameter` `value`.
+    ReadinessGate:
+      type: object
+      description: Used to merge multiple branches into a single branch.
+      required:
+      - thresholdType
+      properties:
+        thresholdType:
+          $ref: '#/components/schemas/ReadinessGateThresholdType'
+    ReadinessGateThresholdType:
+      type: string
+      description: The definition of `ReadinessGateThresholdType` object.
+      example: ANY
+      enum:
+      - ANY
+      - ALL
+      x-enum-varnames:
+      - ANY
+      - ALL
+    RetryStrategy:
+      type: object
+      description: The definition of `RetryStrategy` object.
+      required:
+      - kind
+      properties:
+        kind:
+          $ref: '#/components/schemas/RetryStrategyKind'
+        linear:
+          $ref: '#/components/schemas/RetryStrategyLinear'
+    RetryStrategyKind:
+      type: string
+      description: The definition of `RetryStrategyKind` object.
+      example: RETRY_STRATEGY_LINEAR
+      enum:
+      - RETRY_STRATEGY_LINEAR
+      x-enum-varnames:
+      - RETRY_STRATEGY_LINEAR
+    RetryStrategyLinear:
+      type: object
+      description: The definition of `RetryStrategyLinear` object.
+      required:
+      - interval
+      - maxRetries
+      properties:
+        interval:
+          type: string
+          description: The `RetryStrategyLinear` `interval`. The expected format is the number of seconds
+            ending with an s. For example, 1 day is 86400s
+          example: ''
+        maxRetries:
+          type: number
+          description: The `RetryStrategyLinear` `maxRetries`.
+          format: double
+          example: 0.0
+    ScheduleTrigger:
+      type: object
+      description: Trigger a workflow from a Schedule. The workflow must be published.
+      required:
+      - rruleExpression
+      properties:
+        rruleExpression:
+          type: string
+          description: Recurrence rule expression for scheduling.
+          example: ''
+    ScheduleTriggerWrapper:
+      type: object
+      description: Schema for a Schedule-based trigger.
+      required:
+      - scheduleTrigger
+      properties:
+        startStepNames:
+          $ref: '#/components/schemas/StartStepNames'
+        scheduleTrigger:
+          $ref: '#/components/schemas/ScheduleTrigger'
+    SecurityTrigger:
+      type: object
+      description: Trigger a workflow from a Security Signal or Finding. For automatic triggering a handle
+        must be configured and the workflow must be published.
+      properties:
+        rateLimit:
+          $ref: '#/components/schemas/TriggerRateLimit'
+      x-ignore-duplicate-object: true
+    SecurityTriggerWrapper:
+      type: object
+      description: Schema for a Security-based trigger.
+      required:
+      - securityTrigger
+      properties:
+        startStepNames:
+          $ref: '#/components/schemas/StartStepNames'
+        securityTrigger:
+          $ref: '#/components/schemas/SecurityTrigger'
+    SelfServiceTriggerWrapper:
+      type: object
+      description: Schema for a Self Service-based trigger.
+      required:
+      - selfServiceTrigger
+      properties:
+        startStepNames:
+          $ref: '#/components/schemas/StartStepNames'
+        selfServiceTrigger:
+          type: object
+          description: Trigger a workflow from Self Service.
+    SlackTriggerWrapper:
+      type: object
+      description: Schema for a Slack-based trigger.
+      required:
+      - slackTrigger
+      properties:
+        startStepNames:
+          $ref: '#/components/schemas/StartStepNames'
+        slackTrigger:
+          type: object
+          description: Trigger a workflow from Slack. The workflow must be published.
+    SoftwareCatalogTriggerWrapper:
+      type: object
+      description: Schema for a Software Catalog-based trigger.
+      required:
+      - softwareCatalogTrigger
+      properties:
+        startStepNames:
+          $ref: '#/components/schemas/StartStepNames'
+        softwareCatalogTrigger:
+          type: object
+          description: Trigger a workflow from Software Catalog.
+    Spec:
+      type: object
+      description: The spec defines what the workflow does.
+      properties:
+        triggers:
+          type: array
+          description: The list of triggers that activate this workflow. At least one trigger is required,
+            and each trigger type may appear at most once.
+          items:
+            $ref: '#/components/schemas/Trigger'
+        steps:
+          type: array
+          description: A `Step` is a sub-component of a workflow. Each `Step` performs an action.
+          items:
+            $ref: '#/components/schemas/Step'
+        handle:
+          type: string
+          description: Unique identifier used to trigger workflows automatically in Datadog.
+        connectionEnvs:
+          type: array
+          description: A list of connections or connection groups used in the workflow.
+          items:
+            $ref: '#/components/schemas/ConnectionEnv'
+        inputSchema:
+          $ref: '#/components/schemas/InputSchema'
+        outputSchema:
+          $ref: '#/components/schemas/OutputSchema'
+        annotations:
+          type: array
+          description: A list of annotations used in the workflow. These are like sticky notes for your
+            workflow!
+          items:
+            $ref: '#/components/schemas/Annotation'
+    StartStepNames:
+      type: array
+      description: A list of steps that run first after a trigger fires.
+      example:
+      - ''
+      items:
+        type: string
+        description: The `StartStepNames` `items`.
+    Step:
+      type: object
+      description: A Step is a sub-component of a workflow. Each Step performs an action.
+      required:
+      - name
+      - actionId
+      properties:
+        name:
+          type: string
+          description: Name of the step.
+          example: ''
+        actionId:
+          type: string
+          description: The unique identifier of an action.
+          example: ''
+        connectionLabel:
+          type: string
+          description: The unique identifier of a connection defined in the spec.
+        parameters:
+          type: array
+          description: A list of inputs for an action.
+          items:
+            $ref: '#/components/schemas/Parameter'
+        outboundEdges:
+          type: array
+          description: A list of subsequent actions to run.
+          items:
+            $ref: '#/components/schemas/OutboundEdge'
+        readinessGate:
+          $ref: '#/components/schemas/ReadinessGate'
+        errorHandlers:
+          type: array
+          description: The `Step` `errorHandlers`.
+          items:
+            $ref: '#/components/schemas/ErrorHandler'
+        completionGate:
+          $ref: '#/components/schemas/CompletionGate'
+        display:
+          $ref: '#/components/schemas/StepDisplay'
+    StepDisplay:
+      type: object
+      description: The definition of `StepDisplay` object.
+      properties:
+        bounds:
+          $ref: '#/components/schemas/StepDisplayBounds'
+    StepDisplayBounds:
+      type: object
+      description: The definition of `StepDisplayBounds` object.
+      properties:
+        x:
+          type: number
+          description: The `bounds` `x`.
+          format: double
+        y:
+          type: number
+          description: The `bounds` `y`.
+          format: double
+    Trigger:
+      description: One of the triggers that can start the execution of a workflow.
+      oneOf:
+      - $ref: '#/components/schemas/APITriggerWrapper'
+      - $ref: '#/components/schemas/AppTriggerWrapper'
+      - $ref: '#/components/schemas/CaseTriggerWrapper'
+      - $ref: '#/components/schemas/ChangeEventTriggerWrapper'
+      - $ref: '#/components/schemas/DatabaseMonitoringTriggerWrapper'
+      - $ref: '#/components/schemas/DatastoreTriggerWrapper'
+      - $ref: '#/components/schemas/DashboardTriggerWrapper'
+      - $ref: '#/components/schemas/FormTriggerWrapper'
+      - $ref: '#/components/schemas/GithubWebhookTriggerWrapper'
+      - $ref: '#/components/schemas/IncidentTriggerWrapper'
+      - $ref: '#/components/schemas/MonitorTriggerWrapper'
+      - $ref: '#/components/schemas/NotebookTriggerWrapper'
+      - $ref: '#/components/schemas/OnCallTriggerWrapper'
+      - $ref: '#/components/schemas/ScheduleTriggerWrapper'
+      - $ref: '#/components/schemas/SecurityTriggerWrapper'
+      - $ref: '#/components/schemas/SelfServiceTriggerWrapper'
+      - $ref: '#/components/schemas/SlackTriggerWrapper'
+      - $ref: '#/components/schemas/SoftwareCatalogTriggerWrapper'
+      - $ref: '#/components/schemas/WorkflowTriggerWrapper'
+    TriggerRateLimit:
+      type: object
+      description: Defines a rate limit for a trigger.
+      properties:
+        count:
+          type: integer
+          description: The `TriggerRateLimit` `count`.
+          format: int64
+        interval:
+          type: string
+          description: The `TriggerRateLimit` `interval`. The expected format is the number of seconds
+            ending with an s. For example, 1 day is 86400s
+    WorkflowData:
+      type: object
+      description: Data related to the workflow.
+      required:
+      - type
+      - attributes
+      properties:
+        id:
+          type: string
+          description: The workflow identifier
+          readOnly: true
+        type:
+          $ref: '#/components/schemas/WorkflowDataType'
+        attributes:
+          $ref: '#/components/schemas/WorkflowDataAttributes'
+        relationships:
+          $ref: '#/components/schemas/WorkflowDataRelationships'
+    WorkflowDataAttributes:
+      type: object
+      description: The definition of `WorkflowDataAttributes` object.
+      required:
+      - name
+      - spec
+      properties:
+        name:
+          type: string
+          description: Name of the workflow.
+          example: ''
+        description:
+          type: string
+          description: Description of the workflow.
+        published:
+          type: boolean
+          description: Set the workflow to published or unpublished. Workflows in an unpublished state
+            will only be executable via manual runs. Automatic triggers such as Schedule will not execute
+            the workflow until it is published.
+        tags:
+          type: array
+          description: Tags of the workflow.
+          items:
+            type: string
+            description: A tag string in `key:value` format.
+        spec:
+          $ref: '#/components/schemas/Spec'
+        webhookSecret:
+          type: string
+          description: If a Webhook trigger is defined on this workflow, a webhookSecret is required and
+            should be provided here.
+          writeOnly: true
+        createdAt:
+          type: string
+          description: When the workflow was created.
+          format: date-time
+          readOnly: true
+        updatedAt:
+          type: string
+          description: When the workflow was last updated.
+          format: date-time
+          readOnly: true
+    WorkflowDataRelationships:
+      type: object
+      description: The definition of `WorkflowDataRelationships` object.
+      readOnly: true
+      properties:
+        owner:
+          $ref: '#/components/schemas/WorkflowUserRelationship'
+        creator:
+          $ref: '#/components/schemas/WorkflowUserRelationship'
+    WorkflowDataType:
+      type: string
+      description: The definition of `WorkflowDataType` object.
+      example: workflows
+      enum:
+      - workflows
+      x-enum-varnames:
+      - WORKFLOWS
+    WorkflowTriggerWrapper:
+      type: object
+      description: Schema for a Workflow-based trigger.
+      required:
+      - workflowTrigger
+      properties:
+        startStepNames:
+          $ref: '#/components/schemas/StartStepNames'
+        workflowTrigger:
+          type: object
+          description: Trigger a workflow from the Datadog UI. Only required if no other trigger exists.
+    WorkflowUserRelationship:
+      type: object
+      description: The definition of `WorkflowUserRelationship` object.
+      properties:
+        data:
+          $ref: '#/components/schemas/WorkflowUserRelationshipData'
+    WorkflowUserRelationshipData:
+      type: object
+      description: The definition of `WorkflowUserRelationshipData` object.
+      required:
+      - type
+      - id
+      properties:
+        type:
+          $ref: '#/components/schemas/WorkflowUserRelationshipType'
+        id:
+          type: string
+          description: The user identifier
+          example: ''
+    WorkflowUserRelationshipType:
+      type: string
+      description: The definition of `WorkflowUserRelationshipType` object.
+      example: users
+      enum:
+      - users
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - USERS
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY

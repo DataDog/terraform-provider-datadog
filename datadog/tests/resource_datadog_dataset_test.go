@@ -1,6 +1,7 @@
 package test
 
 import (
+	"crypto/sha256"
 	"errors"
 	"fmt"
 	"net/http"
@@ -18,17 +19,37 @@ var (
 	product = "rum"
 )
 
+// The API rejects a dataset whose filter is already claimed by another dataset of
+// the same product (`DatasetFilterInUse`), so every test must use its own filter
+// values, otherwise the dataset tests collide with each other when run in parallel.
+// Both filters below are derived from the test's unique dataset name so they stay
+// stable under the frozen clock used for cassette replay.
+
+// uniqueDatasetRUMFilter returns a RUM filter scoped to a UUID-shaped application ID
+// hashed from datasetName.
+func uniqueDatasetRUMFilter(datasetName string) string {
+	hash := fmt.Sprintf("%x", sha256.Sum256([]byte(datasetName)))
+	applicationID := fmt.Sprintf("%s-%s-%s-%s-%s", hash[0:8], hash[8:12], hash[12:16], hash[16:20], hash[20:32])
+	return fmt.Sprintf("@application.id:%s", applicationID)
+}
+
+// uniqueDatasetAPMFilter returns an APM filter scoped to a service named after datasetName.
+func uniqueDatasetAPMFilter(datasetName string) string {
+	return fmt.Sprintf("service:%s", datasetName)
+}
+
 func TestAccDatadogDataset_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(t.Context(), t)
 	datasetName := uniqueDatasetName(ctx, t)
+	rumFilter := uniqueDatasetRUMFilter(datasetName)
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogDatasetDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDataset(datasetName, product),
+				Config: testAccCheckDatadogDataset(datasetName, product, rumFilter),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDatasetExists(providers.frameworkProvider),
 				),
@@ -41,13 +62,15 @@ func TestAccDatadogDataset_Update(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(t.Context(), t)
 	datasetName := uniqueDatasetName(ctx, t)
+	rumFilter := uniqueDatasetRUMFilter(datasetName)
+	apmFilter := uniqueDatasetAPMFilter(datasetName)
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogDatasetDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDataset(datasetName, product),
+				Config: testAccCheckDatadogDataset(datasetName, product, rumFilter),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDatasetExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
@@ -55,7 +78,7 @@ func TestAccDatadogDataset_Update(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogDatasetUpdate(datasetName, product),
+				Config: testAccCheckDatadogDatasetUpdate(datasetName, product, rumFilter, apmFilter),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDatasetExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
@@ -74,17 +97,20 @@ func TestAccDatadogDataset_InvalidInput(t *testing.T) {
 	t.Parallel()
 	ctx, _, accProviders := testAccFrameworkMuxProviders(t.Context(), t)
 	datasetName := uniqueDatasetName(ctx, t)
+	rumFilter := uniqueDatasetRUMFilter(datasetName)
 	invalidProduct := "ci-visibility"
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config:      testAccCheckDatadogDataset(datasetName, invalidProduct),
-				ExpectError: regexp.MustCompile("Invalid product"),
+				Config: testAccCheckDatadogDataset(datasetName, invalidProduct, rumFilter),
+				// Terraform hard-wraps diagnostic text, so the message may
+				// contain a newline between the two words.
+				ExpectError: regexp.MustCompile(`Invalid\s+product`),
 			},
 			{
-				Config:      testAccCheckDatadogDatasetInvalidPrincipal(datasetName, product),
+				Config:      testAccCheckDatadogDatasetInvalidPrincipal(datasetName, product, rumFilter),
 				ExpectError: regexp.MustCompile("PrincipalInvalid"),
 			},
 			{
@@ -95,48 +121,48 @@ func TestAccDatadogDataset_InvalidInput(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogDataset(datasetName string, product string) string {
+func testAccCheckDatadogDataset(datasetName string, product string, rumFilter string) string {
 	return fmt.Sprintf(`
 		resource "datadog_dataset" "foo" {
     		name = "%s"
     		principals = ["role:94172442-be03-11e9-a77a-3b7612558ac1"]
-    
+
 			product_filters {
 				product = "%s"
-				filters = ["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]
+				filters = ["%s"]
 			}
-		}`, datasetName, product)
+		}`, datasetName, product, rumFilter)
 }
 
-func testAccCheckDatadogDatasetUpdate(datasetName string, product string) string {
+func testAccCheckDatadogDatasetUpdate(datasetName string, product string, rumFilter string, apmFilter string) string {
 	return fmt.Sprintf(`
 		resource "datadog_dataset" "foo" {
 			name = "%s-updated"
 			principals = ["role:94172442-be03-11e9-a77a-3b7612558ac1", "team:4ca6f4c0-88e4-4d42-b7bd-dea73da5c59e"]
-			
+
 			product_filters {
 				product = "%s"
-				filters = ["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]
+				filters = ["%s"]
 			}
 
 			product_filters {
 				product = "apm"
-				filters = ["service:test"]
+				filters = ["%s"]
 			}
-		}`, datasetName, product)
+		}`, datasetName, product, rumFilter, apmFilter)
 }
 
-func testAccCheckDatadogDatasetInvalidPrincipal(datasetName string, product string) string {
+func testAccCheckDatadogDatasetInvalidPrincipal(datasetName string, product string, rumFilter string) string {
 	return fmt.Sprintf(`
 		resource "datadog_dataset" "foo" {
 			name = "%s"
 			principals = ["foo:invalid-principal-format"]
-			
+
 			product_filters {
 				product = "%s"
-				filters = ["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]
+				filters = ["%s"]
 			}
-		}`, datasetName, product)
+		}`, datasetName, product, rumFilter)
 }
 
 func testAccCheckDatadogDatasetEmptyProductFilters(datasetName string) string {
@@ -151,13 +177,14 @@ func TestAccDatadogDatasetImport(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(t.Context(), t)
 	datasetName := uniqueDatasetName(ctx, t)
+	rumFilter := uniqueDatasetRUMFilter(datasetName)
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogDatasetDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDataset(datasetName, product),
+				Config: testAccCheckDatadogDataset(datasetName, product, rumFilter),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDatasetExists(providers.frameworkProvider),
 				),

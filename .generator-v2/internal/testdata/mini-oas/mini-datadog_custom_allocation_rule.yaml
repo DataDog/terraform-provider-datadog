@@ -1,0 +1,493 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: Cloud Cost Management
+  description: The Cloud Cost Management API allows you to set up, edit, and delete Cloud Cost Management
+    accounts for AWS, Azure, and Google Cloud. You can query your cost data by using the [Metrics endpoint](https://docs.datadoghq.com/api/latest/metrics/#query-timeseries-data-across-multiple-products)
+    and the `cloud_cost` data source. For more information, see the [Cloud Cost Management documentation](https://docs.datadoghq.com/cloud_cost_management/).
+paths:
+  /api/v2/cost/arbitrary_rule/{rule_id}:
+    get:
+      operationId: GetCustomAllocationRule
+      tags:
+      - Cloud Cost Management
+      summary: Get custom allocation rule
+      description: Get a specific custom allocation rule - Retrieve a specific custom allocation rule
+        by its ID
+      parameters:
+      - name: rule_id
+        in: path
+        required: true
+        description: The unique identifier of the custom allocation rule
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArbitraryRuleResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                      attributes:
+                        costs_to_allocate:
+                        - condition: is
+                          tag: account_id
+                          value: '123456789'
+                          values: null
+                        created: '2024-01-01T00:00:00+00:00'
+                        enabled: true
+                        last_modified_user_uuid: user-example-uuid
+                        order_id: 1
+                        provider:
+                        - aws
+                        rule_name: example-custom-allocation-rule
+                        strategy:
+                          allocated_by_tag_keys:
+                          - team
+                          granularity: daily
+                          method: proportional
+                        type: shared
+                        updated: '2024-01-01T00:00:00+00:00'
+                        version: 1
+                      id: '123'
+                      type: arbitrary_rule
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      security:
+      - apiKeyAuth: []
+        appKeyAuth: []
+      - AuthZ:
+        - cloud_cost_management_read
+      x-menu-order: 27
+      x-undo:
+        type: safe
+components:
+  responses:
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    ArbitraryRuleResponse:
+      type: object
+      description: The definition of `ArbitraryRuleResponse` object.
+      example:
+        data:
+          attributes:
+            costs_to_allocate:
+            - condition: is
+              tag: account_id
+              value: '123456789'
+              values: null
+            - condition: in
+              tag: environment
+              value: ''
+              values:
+              - production
+              - staging
+            created: '2023-01-01T12:00:00Z'
+            enabled: true
+            last_modified_user_uuid: user-123-uuid
+            order_id: 1
+            provider:
+            - aws
+            - gcp
+            rule_name: Example custom allocation rule
+            strategy:
+              allocated_by_tag_keys:
+              - team
+              - environment
+              based_on_costs:
+              - condition: is
+                tag: service
+                value: web-api
+                values: null
+              - condition: not in
+                tag: team
+                value: ''
+                values:
+                - legacy
+                - deprecated
+              granularity: daily
+              method: proportional
+            type: shared
+            updated: '2023-01-01T12:00:00Z'
+            version: 1
+          id: '123'
+          type: arbitrary_rule
+      properties:
+        data:
+          $ref: '#/components/schemas/ArbitraryRuleResponseData'
+    ArbitraryRuleResponseData:
+      type: object
+      description: The definition of `ArbitraryRuleResponseData` object.
+      required:
+      - type
+      properties:
+        attributes:
+          $ref: '#/components/schemas/ArbitraryRuleResponseDataAttributes'
+        id:
+          type: string
+          description: The `ArbitraryRuleResponseData` `id`.
+        type:
+          $ref: '#/components/schemas/ArbitraryRuleResponseDataType'
+    ArbitraryRuleResponseDataAttributes:
+      type: object
+      description: The definition of `ArbitraryRuleResponseDataAttributes` object.
+      required:
+      - costs_to_allocate
+      - created
+      - enabled
+      - last_modified_user_uuid
+      - order_id
+      - provider
+      - rule_name
+      - strategy
+      - type
+      - updated
+      - version
+      properties:
+        costs_to_allocate:
+          type: array
+          description: The `attributes` `costs_to_allocate`.
+          items:
+            $ref: '#/components/schemas/ArbitraryRuleResponseDataAttributesCostsToAllocateItems'
+        created:
+          type: string
+          description: The `attributes` `created`.
+          format: date-time
+          example: ''
+        enabled:
+          type: boolean
+          description: The `attributes` `enabled`.
+          example: false
+        last_modified_user_uuid:
+          type: string
+          description: The `attributes` `last_modified_user_uuid`.
+          example: ''
+        order_id:
+          type: integer
+          description: The `attributes` `order_id`.
+          format: int64
+          example: 0
+        processing_status:
+          type: string
+          description: The `attributes` `processing_status`.
+          example: ''
+        provider:
+          type: array
+          description: The `attributes` `provider`.
+          example:
+          - ''
+          items:
+            type: string
+            description: A cloud provider name.
+        rejected:
+          type: boolean
+          description: The `attributes` `rejected`.
+        rule_name:
+          type: string
+          description: The `attributes` `rule_name`.
+          example: ''
+        strategy:
+          $ref: '#/components/schemas/ArbitraryRuleResponseDataAttributesStrategy'
+        type:
+          type: string
+          description: The `attributes` `type`.
+          example: ''
+        updated:
+          type: string
+          description: The `attributes` `updated`.
+          format: date-time
+          example: ''
+        version:
+          type: integer
+          description: The `attributes` `version`.
+          format: int32
+          maximum: 2147483647
+          example: 0
+    ArbitraryRuleResponseDataAttributesCostsToAllocateItems:
+      type: object
+      description: The definition of `ArbitraryRuleResponseDataAttributesCostsToAllocateItems` object.
+      required:
+      - condition
+      - tag
+      properties:
+        condition:
+          type: string
+          description: The `items` `condition`.
+          example: ''
+        tag:
+          type: string
+          description: The `items` `tag`.
+          example: ''
+        value:
+          type: string
+          description: The `items` `value`.
+        values:
+          type: array
+          description: The `items` `values`.
+          nullable: true
+          items:
+            type: string
+            description: A filter value string.
+      x-ignore-duplicate-object: true
+    ArbitraryRuleResponseDataAttributesStrategy:
+      type: object
+      description: The definition of `ArbitraryRuleResponseDataAttributesStrategy` object.
+      required:
+      - method
+      properties:
+        allocated_by:
+          type: array
+          description: The `strategy` `allocated_by`.
+          items:
+            $ref: '#/components/schemas/ArbitraryRuleResponseDataAttributesStrategyAllocatedByItems'
+        allocated_by_filters:
+          type: array
+          description: The `strategy` `allocated_by_filters`.
+          items:
+            $ref: '#/components/schemas/ArbitraryRuleResponseDataAttributesStrategyAllocatedByFiltersItems'
+        allocated_by_tag_keys:
+          type: array
+          description: The `strategy` `allocated_by_tag_keys`.
+          items:
+            type: string
+            description: A tag key used to group cost allocations.
+        based_on_costs:
+          type: array
+          description: The `strategy` `based_on_costs`.
+          items:
+            $ref: '#/components/schemas/ArbitraryRuleResponseDataAttributesStrategyBasedOnCostsItems'
+        based_on_timeseries:
+          type: object
+          description: The rule `strategy` `based_on_timeseries`.
+          additionalProperties: {}
+        evaluate_grouped_by_filters:
+          type: array
+          description: The `strategy` `evaluate_grouped_by_filters`.
+          items:
+            $ref: '#/components/schemas/ArbitraryRuleResponseDataAttributesStrategyEvaluateGroupedByFiltersItems'
+        evaluate_grouped_by_tag_keys:
+          type: array
+          description: The `strategy` `evaluate_grouped_by_tag_keys`.
+          items:
+            type: string
+            description: A tag key used to group cost evaluation.
+        granularity:
+          type: string
+          description: The `strategy` `granularity`.
+        method:
+          type: string
+          description: The `strategy` `method`.
+          example: ''
+    ArbitraryRuleResponseDataAttributesStrategyAllocatedByFiltersItems:
+      type: object
+      description: The definition of `ArbitraryRuleResponseDataAttributesStrategyAllocatedByFiltersItems`
+        object.
+      required:
+      - condition
+      - tag
+      properties:
+        condition:
+          type: string
+          description: The `items` `condition`.
+          example: ''
+        tag:
+          type: string
+          description: The `items` `tag`.
+          example: ''
+        value:
+          type: string
+          description: The `items` `value`.
+        values:
+          type: array
+          description: The `items` `values`.
+          nullable: true
+          items:
+            type: string
+            description: A filter value string.
+      x-ignore-duplicate-object: true
+    ArbitraryRuleResponseDataAttributesStrategyAllocatedByItems:
+      type: object
+      description: The definition of `ArbitraryRuleResponseDataAttributesStrategyAllocatedByItems` object.
+      required:
+      - allocated_tags
+      - percentage
+      properties:
+        allocated_tags:
+          type: array
+          description: The `items` `allocated_tags`.
+          items:
+            $ref: '#/components/schemas/ArbitraryRuleResponseDataAttributesStrategyAllocatedByItemsAllocatedTagsItems'
+        percentage:
+          type: number
+          description: The `items` `percentage`. The numeric value format should be a 32bit float value.
+          format: double
+          example: 0.0
+    ArbitraryRuleResponseDataAttributesStrategyAllocatedByItemsAllocatedTagsItems:
+      type: object
+      description: The definition of `ArbitraryRuleResponseDataAttributesStrategyAllocatedByItemsAllocatedTagsItems`
+        object.
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: The `items` `key`.
+          example: ''
+        value:
+          type: string
+          description: The `items` `value`.
+          example: ''
+    ArbitraryRuleResponseDataAttributesStrategyBasedOnCostsItems:
+      type: object
+      description: The definition of `ArbitraryRuleResponseDataAttributesStrategyBasedOnCostsItems` object.
+      required:
+      - condition
+      - tag
+      properties:
+        condition:
+          type: string
+          description: The `items` `condition`.
+          example: ''
+        tag:
+          type: string
+          description: The `items` `tag`.
+          example: ''
+        value:
+          type: string
+          description: The `items` `value`.
+        values:
+          type: array
+          description: The `items` `values`.
+          nullable: true
+          items:
+            type: string
+            description: A filter value string.
+      x-ignore-duplicate-object: true
+    ArbitraryRuleResponseDataAttributesStrategyEvaluateGroupedByFiltersItems:
+      type: object
+      description: The definition of `ArbitraryRuleResponseDataAttributesStrategyEvaluateGroupedByFiltersItems`
+        object.
+      required:
+      - condition
+      - tag
+      properties:
+        condition:
+          type: string
+          description: The `items` `condition`.
+          example: ''
+        tag:
+          type: string
+          description: The `items` `tag`.
+          example: ''
+        value:
+          type: string
+          description: The `items` `value`.
+        values:
+          type: array
+          description: The `items` `values`.
+          nullable: true
+          items:
+            type: string
+            description: A filter value string.
+      x-ignore-duplicate-object: true
+    ArbitraryRuleResponseDataType:
+      type: string
+      description: Arbitrary rule resource type.
+      default: arbitrary_rule
+      example: arbitrary_rule
+      enum:
+      - arbitrary_rule
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - ARBITRARY_RULE
+  securitySchemes:
+    AuthZ:
+      type: oauth2
+      description: This API uses OAuth 2 with the implicit grant flow.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth2/v1/authorize
+          tokenUrl: /oauth2/v1/token
+          scopes: {}
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY

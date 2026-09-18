@@ -125,6 +125,8 @@ Optional:
 - `microsoft_sentinel` (Block List) The `microsoft_sentinel` destination forwards logs to Microsoft Sentinel. (see [below for nested schema](#nestedblock--config--destination--microsoft_sentinel))
 - `new_relic` (Block List) The `new_relic` destination sends logs to the New Relic platform. (see [below for nested schema](#nestedblock--config--destination--new_relic))
 - `opensearch` (Block List) The `opensearch` destination writes logs to an OpenSearch cluster. (see [below for nested schema](#nestedblock--config--destination--opensearch))
+- `opentelemetry` (Block List) The `opentelemetry` destination forwards metrics using the OpenTelemetry Protocol (OTLP) over HTTP. (see [below for nested schema](#nestedblock--config--destination--opentelemetry))
+- `prometheus_remote_write` (Block List) The `prometheus_remote_write` destination sends metrics to a Prometheus Remote Write compatible endpoint. (see [below for nested schema](#nestedblock--config--destination--prometheus_remote_write))
 - `rsyslog` (Block List) The `rsyslog` destination forwards logs to an external `rsyslog` server over TCP or UDP using the syslog protocol. (see [below for nested schema](#nestedblock--config--destination--rsyslog))
 - `sentinel_one` (Block List) The `sentinel_one` destination sends logs to SentinelOne. (see [below for nested schema](#nestedblock--config--destination--sentinel_one))
 - `socket` (Block List) The `socket` destination sends logs over TCP or UDP to a remote server. (see [below for nested schema](#nestedblock--config--destination--socket))
@@ -200,6 +202,9 @@ Optional:
 
 - `auth` (Block List) AWS authentication credentials used for accessing AWS services. If omitted, the system's default credentials are used (for example, the IAM role and environment variables). (see [below for nested schema](#nestedblock--config--destination--amazon_s3--auth))
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--amazon_s3--buffer))
+- `compression` (Block List) Compression configuration for archived logs. When omitted, the worker default (gzip) is used. (see [below for nested schema](#nestedblock--config--destination--amazon_s3--compression))
+- `server_side_encryption` (String) The server-side encryption algorithm used when storing objects in S3. Valid values: `aws:kms`, `AES256`. Valid values are `aws:kms`, `AES256`.
+- `ssekms_key_id` (String) ID of the AWS KMS key to use for SSE-KMS encryption. Only applies when `server_side_encryption` is `aws:kms`.
 
 <a id="nestedblock--config--destination--amazon_s3--auth"></a>
 ### Nested Schema for `config.destination.amazon_s3.auth`
@@ -239,6 +244,15 @@ Optional:
 
 
 
+<a id="nestedblock--config--destination--amazon_s3--compression"></a>
+### Nested Schema for `config.destination.amazon_s3.compression`
+
+Required:
+
+- `algorithm` (String) Compression algorithm. One of `gzip` or `zstd`. Valid values are `gzip`, `zstd`.
+- `level` (Number) Compression level. Applies to `gzip` (1-9) and `zstd` (1-21).
+
+
 
 <a id="nestedblock--config--destination--amazon_s3_generic"></a>
 ### Nested Schema for `config.destination.amazon_s3_generic`
@@ -257,6 +271,8 @@ Optional:
 - `compression` (Block List) Compression configuration. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--compression))
 - `encoding` (Block List) Encoding format for the destination. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--encoding))
 - `key_prefix` (String) Optional prefix for object keys.
+- `server_side_encryption` (String) The server-side encryption algorithm used when storing objects in S3. Valid values: `aws:kms`, `AES256`. Valid values are `aws:kms`, `AES256`.
+- `ssekms_key_id` (String) ID of the AWS KMS key to use for SSE-KMS encryption. Only applies when `server_side_encryption` is `aws:kms`.
 
 <a id="nestedblock--config--destination--amazon_s3_generic--auth"></a>
 ### Nested Schema for `config.destination.amazon_s3_generic.auth`
@@ -405,6 +421,7 @@ Optional:
 
 - `blob_prefix` (String) Optional prefix for blobs written to the container.
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--azure_storage--buffer))
+- `compression` (Block List) Compression configuration for archived logs. When omitted, the worker default (gzip) is used. (see [below for nested schema](#nestedblock--config--destination--azure_storage--compression))
 - `connection_string_key` (String) Name of the environment variable or secret that holds the Azure Storage connection string.
 
 <a id="nestedblock--config--destination--azure_storage--buffer"></a>
@@ -433,6 +450,15 @@ Optional:
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
 - `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
+
+
+<a id="nestedblock--config--destination--azure_storage--compression"></a>
+### Nested Schema for `config.destination.azure_storage.compression`
+
+Required:
+
+- `algorithm` (String) Compression algorithm. One of `gzip` or `zstd`. Valid values are `gzip`, `zstd`.
+- `level` (Number) Compression level. Applies to `gzip` (1-9) and `zstd` (1-21).
 
 
 
@@ -595,6 +621,7 @@ Optional:
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `server_name` (String) Server name to use for Server Name Indication (SNI) and to verify against the certificate presented by the remote host. Use this when the address you connect to doesn't match the certificate's Common Name or Subject Alternative Name.
 
 
 
@@ -888,6 +915,7 @@ Optional:
 - `acl` (String) Access control list setting for objects written to the bucket.
 - `auth` (Block List) Google Cloud credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--auth))
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--buffer))
+- `compression` (Block List) Compression configuration for archived logs. When omitted, the worker default (gzip) is used. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--compression))
 - `key_prefix` (String) Optional prefix for object keys within the GCS bucket.
 - `metadata` (Block List) Custom metadata key-value pairs added to each object. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--metadata))
 
@@ -925,6 +953,15 @@ Optional:
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
 - `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
+
+
+<a id="nestedblock--config--destination--google_cloud_storage--compression"></a>
+### Nested Schema for `config.destination.google_cloud_storage.compression`
+
+Required:
+
+- `algorithm` (String) Compression algorithm. One of `gzip` or `zstd`. Valid values are `gzip`, `zstd`.
+- `level` (Number) Compression level. Applies to `gzip` (1-9) and `zstd` (1-21).
 
 
 <a id="nestedblock--config--destination--google_cloud_storage--metadata"></a>
@@ -1065,9 +1102,10 @@ Required:
 
 Optional:
 
-- `auth_strategy` (String) HTTP authentication strategy. Valid values are `none`, `basic`, `bearer`.
+- `auth_strategy` (String) HTTP authentication strategy. Valid values are `none`, `basic`, `bearer`, `custom`.
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--http_client--buffer))
 - `compression` (Block List) Compression configuration for HTTP requests. (see [below for nested schema](#nestedblock--config--destination--http_client--compression))
+- `custom_key` (String) Name of the environment variable or secret that holds the custom authentication header value. Used with the `custom` auth strategy.
 - `password_key` (String) Name of the environment variable or secret that holds the password.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--http_client--tls))
 - `token_key` (String) Name of the environment variable or secret that holds the authentication token.
@@ -1122,6 +1160,7 @@ Optional:
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `server_name` (String) Server name to use for Server Name Indication (SNI) and to verify against the certificate presented by the remote host. Use this when the address you connect to doesn't match the certificate's Common Name or Subject Alternative Name.
 
 
 
@@ -1305,9 +1344,24 @@ Optional:
 
 Optional:
 
+- `auth` (Block List) Authentication settings for the OpenSearch destination. (see [below for nested schema](#nestedblock--config--destination--opensearch--auth))
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--opensearch--buffer))
 - `bulk_index` (String) The index or datastream to write logs to.
 - `data_stream` (Block List) Configuration options for writing to OpenSearch Data Streams instead of a fixed index. (see [below for nested schema](#nestedblock--config--destination--opensearch--data_stream))
+- `endpoint_url_key` (String) Name of the environment variable or secret that holds the OpenSearch endpoint URL.
+
+<a id="nestedblock--config--destination--opensearch--auth"></a>
+### Nested Schema for `config.destination.opensearch.auth`
+
+Required:
+
+- `strategy` (String) The authentication strategy to use. Valid values are `basic`, `aws`.
+
+Optional:
+
+- `password_key` (String) Name of the environment variable or secret that holds the OpenSearch password (used when `strategy` is `basic`).
+- `username_key` (String) Name of the environment variable or secret that holds the OpenSearch username (used when `strategy` is `basic`).
+
 
 <a id="nestedblock--config--destination--opensearch--buffer"></a>
 ### Nested Schema for `config.destination.opensearch.buffer`
@@ -1345,6 +1399,117 @@ Optional:
 - `dataset` (String) The data stream dataset for your logs. This groups logs by their source or application.
 - `dtype` (String) The data stream type for your logs. This determines how logs are categorized within the data stream.
 - `namespace` (String) The data stream namespace for your logs. This separates logs into different environments or domains.
+
+
+
+<a id="nestedblock--config--destination--opentelemetry"></a>
+### Nested Schema for `config.destination.opentelemetry`
+
+Optional:
+
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--opentelemetry--buffer))
+- `http_client_uri_key` (String) Environment variable name containing the URI of the OTLP HTTP endpoint to send metrics to.
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--opentelemetry--tls))
+
+<a id="nestedblock--config--destination--opentelemetry--buffer"></a>
+### Nested Schema for `config.destination.opentelemetry.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--opentelemetry--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--opentelemetry--buffer--memory))
+
+<a id="nestedblock--config--destination--opentelemetry--buffer--disk"></a>
+### Nested Schema for `config.destination.opentelemetry.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--opentelemetry--buffer--memory"></a>
+### Nested Schema for `config.destination.opentelemetry.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+
+<a id="nestedblock--config--destination--opentelemetry--tls"></a>
+### Nested Schema for `config.destination.opentelemetry.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+
+
+
+<a id="nestedblock--config--destination--prometheus_remote_write"></a>
+### Nested Schema for `config.destination.prometheus_remote_write`
+
+Optional:
+
+- `auth_strategy` (String) The authentication strategy to use for outgoing Prometheus Remote Write requests. Valid values are `none`, `basic`, `bearer`.
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--prometheus_remote_write--buffer))
+- `default_namespace` (String) The default namespace to prefix onto metric names that don't already have one.
+- `endpoint_url_key` (String) Name of the environment variable or secret that holds the Prometheus Remote Write endpoint URL.
+- `password_key` (String) Name of the environment variable or secret that holds the password. Used when `auth_strategy` is `basic`.
+- `tenant_id` (String) The tenant ID to include with outgoing requests. Used by multi-tenant Prometheus Remote Write receivers.
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--prometheus_remote_write--tls))
+- `token_key` (String) Name of the environment variable or secret that holds the bearer token. Used when `auth_strategy` is `bearer`.
+- `username_key` (String) Name of the environment variable or secret that holds the username. Used when `auth_strategy` is `basic`.
+
+<a id="nestedblock--config--destination--prometheus_remote_write--buffer"></a>
+### Nested Schema for `config.destination.prometheus_remote_write.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--prometheus_remote_write--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--prometheus_remote_write--buffer--memory))
+
+<a id="nestedblock--config--destination--prometheus_remote_write--buffer--disk"></a>
+### Nested Schema for `config.destination.prometheus_remote_write.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--prometheus_remote_write--buffer--memory"></a>
+### Nested Schema for `config.destination.prometheus_remote_write.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+
+<a id="nestedblock--config--destination--prometheus_remote_write--tls"></a>
+### Nested Schema for `config.destination.prometheus_remote_write.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `server_name` (String) Server name to use for Server Name Indication (SNI) and to verify against the certificate presented by the remote host. Use this when the address you connect to doesn't match the certificate's Common Name or Subject Alternative Name.
 
 
 
@@ -1517,6 +1682,7 @@ Optional:
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `server_name` (String) Server name to use for Server Name Indication (SNI) and to verify against the certificate presented by the remote host. Use this when the address you connect to doesn't match the certificate's Common Name or Subject Alternative Name.
 
 
 
@@ -1529,8 +1695,9 @@ Required:
 
 Optional:
 
-- `auto_extract_timestamp` (Boolean) If `true`, Splunk tries to extract timestamps from incoming log events.
+- `auto_extract_timestamp` (Boolean) If `true`, Splunk tries to extract timestamps from incoming log events. If `false`, Splunk assigns the time the event was received. Only applies when `endpoint_target` is `event`; cannot be `true` when `endpoint_target` is `raw`.
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--splunk_hec--buffer))
+- `endpoint_target` (String) The Splunk HEC endpoint to send events to. Use `event` to send structured events to the `/event` endpoint, or `raw` to send the raw message to the `/raw` endpoint. Valid values are `event`, `raw`.
 - `endpoint_url_key` (String) Name of the environment variable or secret that holds the Splunk HEC endpoint URL.
 - `index` (String) Optional name of the Splunk index where logs are written.
 - `indexed_fields` (List of String) List of log field names to send as indexed fields to Splunk HEC. Available only when `encoding` is `json`.
@@ -1726,6 +1893,7 @@ Optional:
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `server_name` (String) Server name to use for Server Name Indication (SNI) and to verify against the certificate presented by the remote host. Use this when the address you connect to doesn't match the certificate's Common Name or Subject Alternative Name.
 
 
 
@@ -1767,8 +1935,10 @@ Optional:
 - `display_name` (String) A human-friendly name for this processor.
 - `enrichment_table` (Block List) The `enrichment_table` processor enriches logs using a static CSV file or GeoIP database. (see [below for nested schema](#nestedblock--config--processor_group--processor--enrichment_table))
 - `filter` (Block List) The `filter` processor allows conditional processing of logs based on a Datadog search query. Logs that match the `include` query are passed through; others are discarded. (see [below for nested schema](#nestedblock--config--processor_group--processor--filter))
-- `generate_datadog_metrics` (Block List) The `generate_datadog_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_datadog_metrics))
-- `generate_metrics` (Block List) The `generate_metrics` processor creates custom metrics from logs. The generated metrics must be routed to a metrics destination using the input `<processor-id>.metrics`. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_metrics))
+- `generate_datadog_metrics` (Block List, Deprecated) The `generate_datadog_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields.
+
+**Deprecated:** This processor is deprecated, you should now use the `generate_metrics` processor. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_datadog_metrics))
+- `generate_metrics` (Block List) The `generate_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields. There must be a destination whose `inputs` reference this processor with the `<processor-id>.metrics` suffix to route the generated metrics. All destination types normally supported for `metrics` pipelines are also supported as metrics destinations in `logs` pipelines. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_metrics))
 - `metric_tags` (Block List) The `metric_tags` processor filters metrics based on their tags using Datadog tag key patterns. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_tags))
 - `ocsf_mapper` (Block List) The `ocsf_mapper` processor transforms logs into the OCSF schema using predefined library mappings or custom mapping configuration. (see [below for nested schema](#nestedblock--config--processor_group--processor--ocsf_mapper))
 - `parse_grok` (Block List) The `parse_grok` processor extracts structured fields from unstructured log messages using Grok patterns. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok))
@@ -2260,7 +2430,7 @@ Optional:
 - `drop_events` (Boolean) Whether to drop events exceeding the limit.
 - `ignore_when_missing_partitions` (Boolean) Whether to ignore when partition fields are missing.
 - `limit` (Block List) (see [below for nested schema](#nestedblock--config--processor_group--processor--quota--limit))
-- `overflow_action` (String) The action to take when the quota is exceeded: `drop`, `no_action`, or `overflow_routing`.
+- `overflow_action` (String) The action to take when the quota is exceeded: `drop`, `no_action`, or `overflow_routing`. When `overflow_routing` is used, there must be a destination whose `inputs` reference this processor with the `<processor-id>.overflow_events` suffix to route the overflowing events. Only the following destination types support overflow inputs: `amazon_s3_generic`, `amazon_s3`, `google_cloud_storage`, and `azure_storage`.
 - `override` (Block List) The overrides for field-specific quotas. (see [below for nested schema](#nestedblock--config--processor_group--processor--quota--override))
 - `partition_fields` (List of String) List of partition fields.
 - `too_many_buckets_action` (String) The action to take when the max number of buckets is exceeded: `drop`, `no_action`, or `overflow_routing`.
@@ -2416,7 +2586,7 @@ Optional:
 
 - `hash` (Block List) Hashes the matched value. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--on_match--hash))
 - `partial_redact` (Block List) Redacts part of the matched value (e.g., keep last 4 characters). (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--on_match--partial_redact))
-- `redact` (Block List) Redacts the matched value. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--on_match--redact))
+- `redact` (Block List) Redacts the matched value. Exactly one of `redact`, `hash`, or `partial_redact` must be specified. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--on_match--redact))
 
 <a id="nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--on_match--hash"></a>
 ### Nested Schema for `config.processor_group.processor.sensitive_data_scanner.rule.on_match.hash`
@@ -2445,7 +2615,7 @@ Optional:
 
 Optional:
 
-- `custom` (Block List) Pattern detection using a custom regular expression. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern--custom))
+- `custom` (Block List) Pattern detection using a custom regular expression. Exactly one of `custom` or `library` must be specified. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern--custom))
 - `library` (Block List) Pattern detection using a predefined pattern from the Sensitive Data Scanner library. For Terraform setup (standard pattern data source and library rules), see the [Sensitive Data Scanner processor documentation](https://docs.datadoghq.com/observability_pipelines/processors/sensitive_data_scanner/?tab=libraryrules#set-up-the-processor-using-terraform). (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern--library))
 
 <a id="nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern--custom"></a>
@@ -2475,7 +2645,7 @@ Optional:
 
 - `all` (Boolean) Scan all fields.
 - `exclude` (Block List) Explicitly exclude these fields from scanning. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--scope--exclude))
-- `include` (Block List) Explicitly include these fields for scanning. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--scope--include))
+- `include` (Block List) Explicitly include these fields for scanning. Exactly one of `include`, `exclude`, or `all` must be specified. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--scope--include))
 
 <a id="nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--scope--exclude"></a>
 ### Nested Schema for `config.processor_group.processor.sensitive_data_scanner.rule.scope.exclude`
@@ -2524,6 +2694,7 @@ Required:
 Optional:
 
 - `per_metric_limit` (Block List) Per-metric cardinality overrides that take precedence over the default `value_limit`. (see [below for nested schema](#nestedblock--config--processor_group--processor--tag_cardinality_limit--per_metric_limit))
+- `tracking_mode` (Block List) Controls whether the processor uses exact or probabilistic tag tracking. (see [below for nested schema](#nestedblock--config--processor_group--processor--tag_cardinality_limit--tracking_mode))
 
 <a id="nestedblock--config--processor_group--processor--tag_cardinality_limit--per_metric_limit"></a>
 ### Nested Schema for `config.processor_group.processor.tag_cardinality_limit.per_metric_limit`
@@ -2531,26 +2702,34 @@ Optional:
 Required:
 
 - `metric_name` (String) The metric name this override applies to.
-- `mode` (String) How the per-metric override is applied. One of `tracked`, `excluded`. Valid values are `tracked`, `excluded`.
+- `override_type` (String) How the per-metric override is applied. One of `limit_override`, `excluded`. Valid values are `limit_override`, `excluded`.
 
 Optional:
 
-- `limit_exceeded_action` (String) The action to take on this metric when the limit is exceeded. Required when `mode` is `tracked`; must be omitted when `mode` is `excluded`. Valid values are `drop_tag`, `drop_event`.
-- `per_tag_limit` (Block List) Per-tag cardinality overrides that apply within this metric. Must be omitted when `mode` is `excluded`. (see [below for nested schema](#nestedblock--config--processor_group--processor--tag_cardinality_limit--per_metric_limit--per_tag_limit))
-- `value_limit` (Number) The cardinality cap for this metric. Required when `mode` is `tracked`; must be omitted when `mode` is `excluded`. Value must be between 0 and 1000000.
+- `limit_exceeded_action` (String) The action to take on this metric when the limit is exceeded. Required when `override_type` is `limit_override`; must be omitted when `override_type` is `excluded`. Valid values are `drop_tag`, `drop_event`.
+- `per_tag_limit` (Block List) Per-tag cardinality overrides that apply within this metric. Must be omitted when `override_type` is `excluded`. (see [below for nested schema](#nestedblock--config--processor_group--processor--tag_cardinality_limit--per_metric_limit--per_tag_limit))
+- `value_limit` (Number) The cardinality cap for this metric. Required when `override_type` is `limit_override`; must be omitted when `override_type` is `excluded`. Value must be between 0 and 1000000.
 
 <a id="nestedblock--config--processor_group--processor--tag_cardinality_limit--per_metric_limit--per_tag_limit"></a>
 ### Nested Schema for `config.processor_group.processor.tag_cardinality_limit.per_metric_limit.per_tag_limit`
 
 Required:
 
-- `mode` (String) How the per-tag override is applied. One of `limit_override`, `excluded`. Valid values are `limit_override`, `excluded`.
+- `override_type` (String) How the per-tag override is applied. One of `limit_override`, `excluded`. Valid values are `limit_override`, `excluded`.
 - `tag_key` (String) The tag key this override applies to.
 
 Optional:
 
-- `value_limit` (Number) The cardinality cap for this tag. Required when `mode` is `limit_override`; must be omitted when `mode` is `excluded`. Value must be between 0 and 1000000.
+- `value_limit` (Number) The cardinality cap for this tag. Required when `override_type` is `limit_override`; must be omitted when `override_type` is `excluded`. Value must be between 0 and 1000000.
 
+
+
+<a id="nestedblock--config--processor_group--processor--tag_cardinality_limit--tracking_mode"></a>
+### Nested Schema for `config.processor_group.processor.tag_cardinality_limit.tracking_mode`
+
+Required:
+
+- `mode` (String) The cardinality tracking algorithm to use. One of `exact_fingerprint`, `probabilistic`. Valid values are `exact_fingerprint`, `probabilistic`.
 
 
 
@@ -2589,6 +2768,7 @@ Optional:
 - `kafka` (Block List) The `kafka` source ingests data from Apache Kafka topics. (see [below for nested schema](#nestedblock--config--source--kafka))
 - `logstash` (Block List) The `logstash` source ingests logs from a Logstash forwarder. (see [below for nested schema](#nestedblock--config--source--logstash))
 - `opentelemetry` (Block List) The `opentelemetry` source receives telemetry data using the OpenTelemetry Protocol (OTLP) over gRPC and HTTP. (see [below for nested schema](#nestedblock--config--source--opentelemetry))
+- `prometheus_remote_write` (Block List) The `prometheus_remote_write` source ingests metrics pushed over the Prometheus Remote Write protocol. (see [below for nested schema](#nestedblock--config--source--prometheus_remote_write))
 - `rsyslog` (Block List) The `rsyslog` source listens for logs over TCP or UDP from an `rsyslog` server using the syslog protocol. (see [below for nested schema](#nestedblock--config--source--rsyslog))
 - `socket` (Block List) The `socket` source ingests logs over TCP or UDP. (see [below for nested schema](#nestedblock--config--source--socket))
 - `splunk_hec` (Block List) The `splunk_hec` source implements the Splunk HTTP Event Collector (HEC) API. (see [below for nested schema](#nestedblock--config--source--splunk_hec))
@@ -2809,6 +2989,7 @@ Optional:
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `server_name` (String) Server name to use for Server Name Indication (SNI) and to verify against the certificate presented by the remote host. Use this when the address you connect to doesn't match the certificate's Common Name or Subject Alternative Name.
 
 
 
@@ -2977,6 +3158,60 @@ Optional:
 
 
 
+<a id="nestedblock--config--source--prometheus_remote_write"></a>
+### Nested Schema for `config.source.prometheus_remote_write`
+
+Required:
+
+- `auth_strategy` (String) HTTP authentication method. Valid values are `none`, `plain`.
+- `path` (String) The HTTP path on which the source listens for incoming Prometheus Remote Write requests.
+
+Optional:
+
+- `address_key` (String) Name of the environment variable or secret that holds the listen address for the Prometheus Remote Write endpoint.
+- `password_key` (String) Name of the environment variable or secret that holds the password. Used when `auth_strategy` is `plain`.
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--prometheus_remote_write--tls))
+- `username_key` (String) Name of the environment variable or secret that holds the username. Used when `auth_strategy` is `plain`.
+- `valid_token` (Block List) A token accepted for authenticating incoming Prometheus Remote Write requests. When set, the source rejects any request whose token does not match an enabled entry in this list. (see [below for nested schema](#nestedblock--config--source--prometheus_remote_write--valid_token))
+
+<a id="nestedblock--config--source--prometheus_remote_write--tls"></a>
+### Nested Schema for `config.source.prometheus_remote_write.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
+
+
+<a id="nestedblock--config--source--prometheus_remote_write--valid_token"></a>
+### Nested Schema for `config.source.prometheus_remote_write.valid_token`
+
+Required:
+
+- `token_key` (String) Name of the environment variable or secret that holds the expected token value.
+
+Optional:
+
+- `enabled` (Boolean) Whether this token is currently accepted. Defaults to `true`.
+- `path_to_token` (Block List) Specifies where the worker extracts the token from the incoming HTTP request. Set either `location` for a built-in source or `header` to read it from a request header. (see [below for nested schema](#nestedblock--config--source--prometheus_remote_write--valid_token--path_to_token))
+
+<a id="nestedblock--config--source--prometheus_remote_write--valid_token--path_to_token"></a>
+### Nested Schema for `config.source.prometheus_remote_write.valid_token.path_to_token`
+
+Optional:
+
+- `header` (String) The name of the HTTP header that carries the token. Exactly one of `location` or `header` must be set.
+- `location` (String) Built-in token location on the incoming HTTP request. One of `path`, `address`. Exactly one of `location` or `header` must be set. Valid values are `path`, `address`.
+
+
+
+
 <a id="nestedblock--config--source--rsyslog"></a>
 ### Nested Schema for `config.source.rsyslog`
 
@@ -3105,6 +3340,7 @@ Required:
 Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address for the Splunk TCP receiver.
+- `max_connection_duration_secs` (Number) Maximum duration, in seconds, that a connection can remain open before it is closed. When unset, connections can remain open indefinitely.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--splunk_tcp--tls))
 
 <a id="nestedblock--config--source--splunk_tcp--tls"></a>

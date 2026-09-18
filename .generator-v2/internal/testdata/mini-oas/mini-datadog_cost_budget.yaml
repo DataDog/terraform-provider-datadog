@@ -1,0 +1,249 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: Cloud Cost Management
+  description: The Cloud Cost Management API allows you to set up, edit, and delete Cloud Cost Management
+    accounts for AWS, Azure, and Google Cloud. You can query your cost data by using the [Metrics endpoint](https://docs.datadoghq.com/api/latest/metrics/#query-timeseries-data-across-multiple-products)
+    and the `cloud_cost` data source. For more information, see the [Cloud Cost Management documentation](https://docs.datadoghq.com/cloud_cost_management/).
+paths:
+  /api/v2/cost/budget/{budget_id}:
+    get:
+      operationId: GetBudget
+      tags:
+      - Cloud Cost Management
+      summary: Get budget
+      description: Get a budget
+      parameters:
+      - $ref: '#/components/parameters/BudgetID'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BudgetWithEntries'
+              examples:
+                default:
+                  value:
+                    data:
+                      id: 00000000-0a0a-0a0a-aaa0-00000000000a
+                      attributes:
+                        created_at: 1738258683590
+                        created_by: 00000000-0a0a-0a0a-aaa0-00000000000a
+                        end_month: 202502
+                        entries:
+                        - amount: 500
+                          month: 202501
+                          tag_filters:
+                          - tag_key: service
+                            tag_value: ec2
+                        metrics_query: aws.cost.amortized{service:ec2} by {service}
+                        name: my budget
+                        org_id: 123
+                        start_month: 202501
+                        total_amount: 1000
+                        updated_at: 1738258683590
+                        updated_by: 00000000-0a0a-0a0a-aaa0-00000000000a
+                      type: budget
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      security:
+      - apiKeyAuth: []
+        appKeyAuth: []
+      x-menu-order: 37
+      x-undo:
+        type: safe
+components:
+  parameters:
+    BudgetID:
+      name: budget_id
+      in: path
+      required: true
+      description: Budget id.
+      schema:
+        type: string
+  responses:
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    BudgetAttributes:
+      type: object
+      description: The attributes of a budget.
+      properties:
+        created_at:
+          type: integer
+          description: The timestamp when the budget was created.
+          format: int64
+          example: 1738258683590
+        created_by:
+          type: string
+          description: The id of the user that created the budget.
+          example: 00000000-0a0a-0a0a-aaa0-00000000000a
+        end_month:
+          type: integer
+          description: The month when the budget ends.
+          format: int64
+          example: 202502
+        metrics_query:
+          type: string
+          description: The cost query used to track against the budget.
+          example: aws.cost.amortized{service:ec2} by {service}
+        name:
+          type: string
+          description: The name of the budget.
+          example: my budget
+        org_id:
+          type: integer
+          description: The id of the org the budget belongs to.
+          format: int64
+          example: 123
+        start_month:
+          type: integer
+          description: The month when the budget starts.
+          format: int64
+          example: 202501
+        total_amount:
+          type: number
+          description: The sum of all budget entries' amounts.
+          format: double
+          example: 1000
+        updated_at:
+          type: integer
+          description: The timestamp when the budget was last updated.
+          format: int64
+          example: 1738258683590
+        updated_by:
+          type: string
+          description: The id of the user that created the budget.
+          example: 00000000-0a0a-0a0a-aaa0-00000000000a
+        entries:
+          type: array
+          description: The list of monthly budget entries.
+          items:
+            $ref: '#/components/schemas/BudgetWithEntriesDataAttributesEntriesItems'
+      x-ignore-duplicate-object: true
+    BudgetWithEntries:
+      type: object
+      description: The definition of the `BudgetWithEntries` object.
+      properties:
+        data:
+          $ref: '#/components/schemas/BudgetWithEntriesData'
+    BudgetWithEntriesData:
+      type: object
+      description: A budget and all its entries.
+      properties:
+        id:
+          type: string
+          description: The `BudgetWithEntriesData` `id`.
+          example: 00000000-0a0a-0a0a-aaa0-00000000000a
+        attributes:
+          $ref: '#/components/schemas/BudgetAttributes'
+        type:
+          type: string
+          description: The type of the object, must be `budget`.
+          example: ''
+      x-ignore-duplicate-object: true
+    BudgetWithEntriesDataAttributesEntriesItems:
+      type: object
+      description: A single monthly budget entry defining the allocated amount and optional tag filters
+        for a specific month.
+      properties:
+        amount:
+          type: number
+          description: The budgeted amount for this entry.
+          format: double
+        month:
+          type: integer
+          description: The month this budget entry applies to, in YYYYMM format.
+          format: int64
+        tag_filters:
+          type: array
+          description: The list of tag filters that scope this budget entry to specific resources.
+          items:
+            $ref: '#/components/schemas/BudgetWithEntriesDataAttributesEntriesItemsTagFiltersItems'
+    BudgetWithEntriesDataAttributesEntriesItemsTagFiltersItems:
+      type: object
+      description: A tag filter used to scope a budget entry to specific resource tags.
+      properties:
+        tag_key:
+          type: string
+          description: The tag key to filter on.
+        tag_value:
+          type: string
+          description: The tag value to filter on.
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY

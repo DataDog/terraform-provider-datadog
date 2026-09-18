@@ -36,6 +36,11 @@ resource "datadog_workflow_automation" "team_rules_test" {
   description = "Workflow used by on-call team routing rules test."
   tags        = ["service:foo", "team:bar"]
   published   = true
+
+  run_as = {
+    type = "owner"
+  }
+
   spec_json = jsonencode({
     handle = "team-rules-test-workflow-UNIQ"
     steps  = []
@@ -49,11 +54,11 @@ resource "datadog_workflow_automation" "team_rules_test" {
 }
 
 resource "datadog_on_call_escalation_policy" "team_rules_test" {
-  name                        = "POLICY_NAME"
+  name                       = "POLICY_NAME"
   resolve_page_on_policy_end = true
-  retries = 3
+  retries                    = 3
   step {
-    assignment = "round-robin"
+    assignment             = "round-robin"
     escalate_after_seconds = 300
     target {
       team = datadog_team.team_rules_test.id
@@ -92,16 +97,16 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
     query = "tags.service:payment"
     action {
       escalation_policy {
-        policy_id = datadog_on_call_escalation_policy.team_rules_test.id
+        policy_id           = datadog_on_call_escalation_policy.team_rules_test.id
         ack_timeout_minutes = 30
-        urgency = "low"
+        urgency             = "low"
         support_hours {
           time_zone = "America/New_York"
           restriction {
-            start_day = "monday"
+            start_day  = "monday"
             start_time = "09:00:00"
-            end_day = "friday"
-            end_time = "17:00:00"
+            end_day    = "friday"
+            end_time   = "17:00:00"
           }
           restriction {
             start_day  = "tuesday"
@@ -134,6 +139,6 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
 
   rule {
     escalation_policy = datadog_on_call_escalation_policy.team_rules_test.id
-    urgency = "dynamic"
+    urgency           = "dynamic"
   }
 }

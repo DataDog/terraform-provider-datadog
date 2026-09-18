@@ -1,0 +1,169 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 221
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"integration":{"credentials":{"api_key":"split-api-key","type":"SplitAPIKey"},"type":"Split"},"name":"tf-TestAccDatadogActionConnectionResource_Split-local-1783949276"},"type":"action_connection"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/connections
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 335
+        uncompressed: false
+        body: '{"data":{"id":"2136354c-4d05-43d9-acfa-e57090daf23c","type":"action_connection","attributes":{"acting_user_can_resolve":false,"external_secrets_manager":null,"integration":{"credentials":{"api_key":"","type":"SplitAPIKey"},"type":"Split"},"is_favorite":false,"name":"tf-TestAccDatadogActionConnectionResource_Split-local-1783949276"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 100.355189ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/connections/2136354c-4d05-43d9-acfa-e57090daf23c
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 546
+        uncompressed: false
+        body: '{"data":{"id":"2136354c-4d05-43d9-acfa-e57090daf23c","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-07-13 13:28:03.056451 +0000 UTC","external_secrets_manager":null,"integration":{"credentials":{"api_key":"","type":"SplitAPIKey"},"type":"Split"},"is_favorite":false,"last_updated":"2026-07-13 13:28:03.056451 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_Split-local-1783949276"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 52.30297ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/connections/2136354c-4d05-43d9-acfa-e57090daf23c
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 546
+        uncompressed: false
+        body: '{"data":{"id":"2136354c-4d05-43d9-acfa-e57090daf23c","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-07-13 13:28:03.056451 +0000 UTC","external_secrets_manager":null,"integration":{"credentials":{"api_key":"","type":"SplitAPIKey"},"type":"Split"},"is_favorite":false,"last_updated":"2026-07-13 13:28:03.056451 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_Split-local-1783949276"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 36.239746ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/actions/connections/2136354c-4d05-43d9-acfa-e57090daf23c
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 57.046661ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/connections/2136354c-4d05-43d9-acfa-e57090daf23c
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 130
+        uncompressed: false
+        body: '{"errors":[{"title":"Generic Error","detail":"error getting connection: rpc error: code = NotFound desc = connection not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 46.33183ms

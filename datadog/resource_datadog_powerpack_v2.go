@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
@@ -327,12 +328,12 @@ func buildPowerpackWidgets(d *schema.ResourceData) ([]datadogV2.PowerpackInnerWi
 	}
 	rawWidgets := widgetList.([]interface{})
 	result := make([]datadogV2.PowerpackInnerWidgets, 0, len(rawWidgets))
-	for _, w := range rawWidgets {
+	for i, w := range rawWidgets {
 		wMap, ok := w.(map[string]interface{})
 		if !ok {
 			continue
 		}
-		widgetJSON, err := json.Marshal(dashboardmapping.BuildWidgetEngineJSONFromMap(wMap))
+		widgetJSON, err := json.Marshal(dashboardmapping.BuildWidgetEngineJSONFromMapWithRawConfig(wMap, d, cty.GetAttrPath("widget").IndexInt(i)))
 		if err != nil {
 			return nil, fmt.Errorf("error marshaling widget: %w", err)
 		}

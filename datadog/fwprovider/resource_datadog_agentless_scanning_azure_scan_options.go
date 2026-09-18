@@ -32,6 +32,7 @@ type agentlessScanningAzureScanOptionsResourceModel struct {
 	ID                  types.String `tfsdk:"id"`
 	AzureSubscriptionId types.String `tfsdk:"azure_subscription_id"`
 	ComplianceHost      types.Bool   `tfsdk:"compliance_host"`
+	Function            types.Bool   `tfsdk:"function"`
 	VulnContainersOs    types.Bool   `tfsdk:"vuln_containers_os"`
 	VulnHostOs          types.Bool   `tfsdk:"vuln_host_os"`
 }
@@ -73,6 +74,10 @@ func (r *agentlessScanningAzureScanOptionsResource) Schema(_ context.Context, _ 
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
 				},
+			},
+			"function": schema.BoolAttribute{
+				Description: "Indicates if scanning of Azure Functions is enabled.",
+				Required:    true,
 			},
 			"vuln_containers_os": schema.BoolAttribute{
 				Description: "Indicates if scanning for vulnerabilities in containers is enabled.",
@@ -175,6 +180,7 @@ func (r *agentlessScanningAzureScanOptionsResource) updateStateFromScanOptionsDa
 
 	attributes := data.GetAttributes()
 	state.ComplianceHost = types.BoolValue(attributes.GetComplianceHost())
+	state.Function = types.BoolValue(attributes.GetFunction())
 	state.VulnContainersOs = types.BoolValue(attributes.GetVulnContainersOs())
 	state.VulnHostOs = types.BoolValue(attributes.GetVulnHostOs())
 }
@@ -202,6 +208,7 @@ func (r *agentlessScanningAzureScanOptionsResource) createOrUpdate(state *agentl
 				Type: datadogV2.AZURESCANOPTIONSINPUTUPDATEDATATYPE_AZURE_SCAN_OPTIONS,
 				Attributes: &datadogV2.AzureScanOptionsInputUpdateDataAttributes{
 					ComplianceHost:   state.ComplianceHost.ValueBoolPointer(),
+					Function:         state.Function.ValueBoolPointer(),
 					VulnContainersOs: state.VulnContainersOs.ValueBoolPointer(),
 					VulnHostOs:       state.VulnHostOs.ValueBoolPointer(),
 				},
@@ -227,6 +234,7 @@ func (r *agentlessScanningAzureScanOptionsResource) createOrUpdate(state *agentl
 				Type: datadogV2.AZURESCANOPTIONSDATATYPE_AZURE_SCAN_OPTIONS,
 				Attributes: &datadogV2.AzureScanOptionsDataAttributes{
 					ComplianceHost:   state.ComplianceHost.ValueBoolPointer(),
+					Function:         state.Function.ValueBoolPointer(),
 					VulnContainersOs: state.VulnContainersOs.ValueBoolPointer(),
 					VulnHostOs:       state.VulnHostOs.ValueBoolPointer(),
 				},

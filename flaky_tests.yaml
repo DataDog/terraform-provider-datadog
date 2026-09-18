@@ -151,12 +151,6 @@ skipped_tests:
     added: "2026-03-02"
     author: fpighi
 
-  # Dataset/IncidentNotificationRule — Rate limiting (1 test)
-  - test: TestAccDatadogDataset_Basic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-
   # Incident state — resources not found or externally deleted (1 test)
   - test: TestAccDatadogIncidentNotificationRuleDataSource_ByID
     reason: "Non-empty plan — dependent incident_type deleted outside Terraform, triggering rule replacement"
@@ -304,3 +298,9 @@ skipped_tests:
     reason: "retention_filter_ids count mismatch — expected 3, got 2 — pre-existing filters in org"
     added: "2026-04-24"
     author: fpighi
+
+  # ObservabilityPipeline tag_cardinality_limit — backend/spec drift (1 test)
+  - test: TestAccDatadogObservabilityPipeline_tagCardinalityLimitProcessor
+    reason: "400 Bad Request — backend now requires tracking_mode/override_type, but datadog-api-client-go still models mode. Needs api-spec update + client regen before this can pass live."
+    added: "2026-07-09"
+    author: andrei.patru

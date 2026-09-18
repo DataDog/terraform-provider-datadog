@@ -44,7 +44,7 @@ Email notifications can be sent to specific users by using the same `@username` 
 - `query` (String) The monitor query to notify on. Note this is not the same query you see in the UI and the syntax is different depending on the monitor type, please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. `terraform plan` will validate query contents unless `validate` is set to `false`.
 
 **Note:** APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the [detailed doc](https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/).
-- `type` (String) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created. Valid values are `composite`, `event alert`, `log alert`, `metric alert`, `process alert`, `query alert`, `rum alert`, `service check`, `synthetics alert`, `trace-analytics alert`, `slo alert`, `event-v2 alert`, `audit alert`, `ci-pipelines alert`, `ci-tests alert`, `error-tracking alert`, `database-monitoring alert`, `network-performance alert`, `cost alert`, `data-quality alert`, `network-path alert`, `data-jobs alert`.
+- `type` (String) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created. Valid values are `composite`, `event alert`, `log alert`, `metric alert`, `process alert`, `query alert`, `rum alert`, `service check`, `synthetics alert`, `trace-analytics alert`, `slo alert`, `event-v2 alert`, `audit alert`, `ci-pipelines alert`, `ci-tests alert`, `error-tracking alert`, `database-monitoring alert`, `network-performance alert`, `cost alert`, `data-quality alert`, `network-path alert`, `data-jobs alert`, `llm-observability alert`.
 
 ### Optional
 
@@ -72,7 +72,7 @@ For example, if the value is set to `300` (5min), the `timeframe` is set to `las
 We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks. Defaults to `10`.
 - `notification_preset_name` (String) Toggles the display of additional content sent in the monitor notification. Valid values are `show_all`, `hide_query`, `hide_handles`, `hide_all`, `hide_query_and_handles`, `show_only_snapshot`, `hide_handles_and_footer`.
 - `notify_audit` (Boolean) A boolean indicating whether tagged users will be notified on changes to this monitor. Defaults to `false`.
-- `notify_by` (Set of String) Controls what granularity a monitor alerts on. Only available for monitors with groupings. For instance, a monitor grouped by `cluster`, `namespace`, and `pod` can be configured to only notify on each new `cluster` violating the alert conditions by setting `notify_by` to `['cluster']`. Tags mentioned in `notify_by` must be a subset of the grouping tags in the query. For example, a query grouped by `cluster` and `namespace` cannot notify on `region`. Setting `notify_by` to `[*]` configures the monitor to notify as a simple-alert.
+- `notify_by` (Set of String) Controls what granularity a monitor alerts on. Only available for monitors with groupings. For instance, a monitor grouped by `cluster`, `namespace`, and `pod` can be configured to only notify on each new `cluster` violating the alert conditions by setting `notify_by` to `['cluster']`. Tags mentioned in `notify_by` must be a proper subset of the grouping tags in the query. For example, a query grouped by `cluster` and `namespace` cannot notify on `region` because `region` is not part of the grouping tags; furthermore, the same query cannot set `notify_by` to `['cluster', 'namespace']` because that is not a proper subset. Setting `notify_by` to `[*]` configures the monitor to notify as a simple-alert.
 - `notify_no_data` (Boolean) A boolean indicating whether this monitor will notify when data stops reporting. Defaults to `false`.
 - `on_missing_data` (String) Controls how groups or monitors are treated if an evaluation does not return any data points. The default option results in different behavior depending on the monitor query type. For monitors using `Count` queries, an empty monitor evaluation is treated as 0 and is compared to the threshold conditions. For monitors using any query type other than `Count`, for example `Gauge`, `Measure`, or `Rate`, the monitor shows the last known status. This option is not available for Service Check, Composite, or SLO monitors. Valid values are: `show_no_data`, `show_and_notify_no_data`, `resolve`, and `default`.
 - `priority` (String) Integer from 1 (high) to 5 (low) indicating alert severity.
@@ -684,7 +684,7 @@ Required:
 
 Required:
 
-- `job_type` (String) The type of job being monitored. Valid values include `databricks.job`, `spark.application`, `airflow.dag`, `dbt.job`, `dbt.model`, `dbt.test`, `glue.job`. Custom job types are supported with the `custom.ol.` prefix.
+- `job_type` (String) The type of job being monitored. Valid values include `databricks.job`, `spark.application`, `airflow.dag`, `dbt.job`, `glue.job`. Custom job types are supported with the `custom.ol.` prefix.
 - `jobs_query` (String) Filter expression used to select the jobs to monitor.
 - `name` (String) Name of the query for use in formulas. Must be `run_query`.
 - `query_dialect` (String) Query dialect for data jobs queries. Currently only `metric` is supported.
@@ -716,7 +716,64 @@ Optional:
 - `custom_sql` (String) Custom SQL query for the monitor.
 - `custom_where` (String) Custom WHERE clause for the query.
 - `group_by_columns` (List of String) Columns to group results by.
+- `model_configuration` (Block List, Max: 1) Tuning options for the anomaly detection model used by the monitor. (see [below for nested schema](#nestedblock--variables--data_quality_query--monitor_options--model_configuration))
 - `model_type_override` (String) Override for the model type. Valid values are `freshness`, `percentage`, `any`.
+- `sensitivity` (Number) Sensitivity of the anomaly detection model, expressed as a multiplier on the width of the predicted bounds. Higher values widen the bounds and produce fewer alerts; lower values tighten them and produce more alerts. Defaults to `3.0`.
+- `source_to_target_config` (Block List, Max: 1) Compare the same measure across two data entities and alert on the difference between them. (see [below for nested schema](#nestedblock--variables--data_quality_query--monitor_options--source_to_target_config))
+
+<a id="nestedblock--variables--data_quality_query--monitor_options--model_configuration"></a>
+### Nested Schema for `variables.data_quality_query.monitor_options.model_configuration`
+
+Optional:
+
+- `auto_resolve_days` (Number) Number of days after which an open alert is automatically resolved. When unset, alerts stay open until the measure returns within bounds.
+- `enable_flatline_detection` (Boolean) Whether to alert when the measure stops changing entirely. Defaults to `true`. Defaults to `true`.
+- `function` (String) Function applied to the measure before it is compared against the predicted bounds. Valid values are `DIFF`, `DIFF_PERCENT`.
+- `min_lower_bound_size` (Number) Minimum distance between the predicted value and the lower bound. Widening the lower bound to at least this size suppresses alerts on small downward deviations. When unset, no minimum is enforced.
+- `min_upper_bound_size` (Number) Minimum distance between the predicted value and the upper bound. Widening the upper bound to at least this size suppresses alerts on small upward deviations. When unset, no minimum is enforced.
+- `model_bounds_override` (String) Restricts which predicted bound the monitor alerts on. When unset, the monitor alerts on both. Valid values are `UPPER_ONLY`, `LOWER_ONLY`.
+
+
+<a id="nestedblock--variables--data_quality_query--monitor_options--source_to_target_config"></a>
+### Nested Schema for `variables.data_quality_query.monitor_options.source_to_target_config`
+
+Required:
+
+- `diff_type` (String) How the difference between the source and target measures is computed. Valid values are `absolute`, `diff_percent`.
+- `entity_type` (String) Type of the data entities being compared.
+- `source` (Block List, Min: 1, Max: 1) Measure configuration for the source entity. (see [below for nested schema](#nestedblock--variables--data_quality_query--monitor_options--source_to_target_config--source))
+- `target` (Block List, Min: 1, Max: 1) Measure configuration for the target entity. (see [below for nested schema](#nestedblock--variables--data_quality_query--monitor_options--source_to_target_config--target))
+
+<a id="nestedblock--variables--data_quality_query--monitor_options--source_to_target_config--source"></a>
+### Nested Schema for `variables.data_quality_query.monitor_options.source_to_target_config.source`
+
+Required:
+
+- `entity_id` (String) Identifier of the data entity to measure.
+- `entity_type` (String) Type of the data entity to measure.
+
+Optional:
+
+- `custom_sql` (String) Custom SQL query used to compute the measure for this entity.
+- `custom_where` (String) Custom WHERE clause applied when computing the measure for this entity.
+- `group_by_columns` (List of String) Columns to group results by when computing the measure for this entity.
+
+
+<a id="nestedblock--variables--data_quality_query--monitor_options--source_to_target_config--target"></a>
+### Nested Schema for `variables.data_quality_query.monitor_options.source_to_target_config.target`
+
+Required:
+
+- `entity_id` (String) Identifier of the data entity to measure.
+- `entity_type` (String) Type of the data entity to measure.
+
+Optional:
+
+- `custom_sql` (String) Custom SQL query used to compute the measure for this entity.
+- `custom_where` (String) Custom WHERE clause applied when computing the measure for this entity.
+- `group_by_columns` (List of String) Columns to group results by when computing the measure for this entity.
+
+
 
 
 

@@ -6,6 +6,78 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
+        content_length: 76
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"Query":"service:web-api"},"type":"validate_query"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/validate-query
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 126
+        uncompressed: false
+        body: '{"data":{"id":"dfd1a5de-3fd5-408e-ac9c-87ab517da4ef","type":"validate_response","attributes":{"Canonical":"service:web-api"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 43.753458ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 76
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"Query":"service:web-api"},"type":"validate_query"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/validate-query
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 126
+        uncompressed: false
+        body: '{"data":{"id":"b4854893-cd68-4a47-a6a4-ccf3f27526eb","type":"validate_response","attributes":{"Canonical":"service:web-api"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 98.171167ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         content_length: 365
         transfer_encoding: []
         trailer: {}
@@ -13,7 +85,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":null,"name":"Add Team Tag","query":{"addition":{"key":"team","value":"backend"},"case_insensitivity":true,"if_tag_exists":"do_not_apply","query":"service:web-api"},"reference_table":null}]},"id":"tf-TestAccDatadogTagPipelineRulesetDataSource_Basic-local-1770244764","type":"create_ruleset"}}
+            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":null,"name":"Add Team Tag","query":{"addition":{"key":"team","value":"backend"},"case_insensitivity":true,"if_tag_exists":"do_not_apply","query":"service:web-api"},"reference_table":null}]},"id":"tf-TestAccDatadogTagPipelineRulesetDataSource_Basic-local-1782916422","type":"create_ruleset"}}
         form: {}
         headers:
             Accept:
@@ -28,81 +100,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 638
+        content_length: 639
         uncompressed: false
-        body: '{"data":{"id":"3b5519bd-235b-4a54-bab6-7b7a1e529635","type":"ruleset","attributes":{"created":{"seconds":1770244767,"nanos":20158000},"enabled":true,"last_modified_user_uuid":"8aa9beab-3c2a-11ef-8a8f-56d598d478b5","modified":{"seconds":1770244767,"nanos":20158000},"name":"tf-TestAccDatadogTagPipelineRulesetDataSource_Basic-local-1770244764","position":20,"rules":[{"name":"Add Team Tag","enabled":true,"query":{"query":"service:web-api","addition":{"key":"team","value":"backend"},"if_not_exists":true,"case_insensitivity":true,"if_tag_exists":"do_not_apply"},"mapping":null,"reference_table":null,"metadata":null}],"version":3657252}}}'
+        body: '{"data":{"id":"d3bacdc6-41d5-4a9d-8174-075bea9d5b12","type":"ruleset","attributes":{"created":{"seconds":1782916423,"nanos":648538000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916423,"nanos":648538000},"name":"tf-TestAccDatadogTagPipelineRulesetDataSource_Basic-local-1782916422","position":1,"rules":[{"name":"Add Team Tag","enabled":true,"query":{"query":"service:web-api","addition":{"key":"team","value":"backend"},"if_not_exists":true,"case_insensitivity":true,"if_tag_exists":"do_not_apply"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718518}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 119.663708ms
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/3b5519bd-235b-4a54-bab6-7b7a1e529635
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 638
-        uncompressed: false
-        body: '{"data":{"id":"3b5519bd-235b-4a54-bab6-7b7a1e529635","type":"ruleset","attributes":{"created":{"seconds":1770244767,"nanos":20158000},"enabled":true,"last_modified_user_uuid":"8aa9beab-3c2a-11ef-8a8f-56d598d478b5","modified":{"seconds":1770244767,"nanos":20158000},"name":"tf-TestAccDatadogTagPipelineRulesetDataSource_Basic-local-1770244764","position":20,"rules":[{"name":"Add Team Tag","enabled":true,"query":{"query":"service:web-api","addition":{"key":"team","value":"backend"},"if_not_exists":true,"case_insensitivity":true,"if_tag_exists":"do_not_apply"},"mapping":null,"reference_table":null,"metadata":null}],"version":3657252}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 46.908875ms
-    - id: 2
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/3b5519bd-235b-4a54-bab6-7b7a1e529635
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 638
-        uncompressed: false
-        body: '{"data":{"id":"3b5519bd-235b-4a54-bab6-7b7a1e529635","type":"ruleset","attributes":{"created":{"seconds":1770244767,"nanos":20158000},"enabled":true,"last_modified_user_uuid":"8aa9beab-3c2a-11ef-8a8f-56d598d478b5","modified":{"seconds":1770244767,"nanos":20158000},"name":"tf-TestAccDatadogTagPipelineRulesetDataSource_Basic-local-1770244764","position":20,"rules":[{"name":"Add Team Tag","enabled":true,"query":{"query":"service:web-api","addition":{"key":"team","value":"backend"},"if_not_exists":true,"case_insensitivity":true,"if_tag_exists":"do_not_apply"},"mapping":null,"reference_table":null,"metadata":null}],"version":3657252}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 45.587667ms
+        duration: 119.69375ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/3b5519bd-235b-4a54-bab6-7b7a1e529635
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/d3bacdc6-41d5-4a9d-8174-075bea9d5b12
         method: GET
       response:
         proto: HTTP/1.1
@@ -127,48 +133,51 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 638
+        content_length: 639
         uncompressed: false
-        body: '{"data":{"id":"3b5519bd-235b-4a54-bab6-7b7a1e529635","type":"ruleset","attributes":{"created":{"seconds":1770244767,"nanos":20158000},"enabled":true,"last_modified_user_uuid":"8aa9beab-3c2a-11ef-8a8f-56d598d478b5","modified":{"seconds":1770244767,"nanos":20158000},"name":"tf-TestAccDatadogTagPipelineRulesetDataSource_Basic-local-1770244764","position":20,"rules":[{"name":"Add Team Tag","enabled":true,"query":{"query":"service:web-api","addition":{"key":"team","value":"backend"},"if_not_exists":true,"case_insensitivity":true,"if_tag_exists":"do_not_apply"},"mapping":null,"reference_table":null,"metadata":null}],"version":3657252}}}'
+        body: '{"data":{"id":"d3bacdc6-41d5-4a9d-8174-075bea9d5b12","type":"ruleset","attributes":{"created":{"seconds":1782916423,"nanos":648538000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916423,"nanos":648538000},"name":"tf-TestAccDatadogTagPipelineRulesetDataSource_Basic-local-1782916422","position":1,"rules":[{"name":"Add Team Tag","enabled":true,"query":{"query":"service:web-api","addition":{"key":"team","value":"backend"},"if_not_exists":true,"case_insensitivity":true,"if_tag_exists":"do_not_apply"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718518}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 49.793834ms
+        duration: 74.09075ms
     - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 0
+        content_length: 76
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
-        body: ""
+        body: |
+            {"data":{"attributes":{"Query":"service:web-api"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/3b5519bd-235b-4a54-bab6-7b7a1e529635
-        method: GET
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/validate-query
+        method: POST
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 638
+        content_length: 126
         uncompressed: false
-        body: '{"data":{"id":"3b5519bd-235b-4a54-bab6-7b7a1e529635","type":"ruleset","attributes":{"created":{"seconds":1770244767,"nanos":20158000},"enabled":true,"last_modified_user_uuid":"8aa9beab-3c2a-11ef-8a8f-56d598d478b5","modified":{"seconds":1770244767,"nanos":20158000},"name":"tf-TestAccDatadogTagPipelineRulesetDataSource_Basic-local-1770244764","position":20,"rules":[{"name":"Add Team Tag","enabled":true,"query":{"query":"service:web-api","addition":{"key":"team","value":"backend"},"if_not_exists":true,"case_insensitivity":true,"if_tag_exists":"do_not_apply"},"mapping":null,"reference_table":null,"metadata":null}],"version":3657252}}}'
+        body: '{"data":{"id":"de372dcb-2327-4dfb-b2b9-66a43c1e9916","type":"validate_response","attributes":{"Canonical":"service:web-api"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 45.525125ms
+        duration: 56.710042ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -184,22 +193,24 @@ interactions:
         form: {}
         headers:
             Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/3b5519bd-235b-4a54-bab6-7b7a1e529635
-        method: DELETE
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/d3bacdc6-41d5-4a9d-8174-075bea9d5b12
+        method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 0
+        content_length: 639
         uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 70.588667ms
+        body: '{"data":{"id":"d3bacdc6-41d5-4a9d-8174-075bea9d5b12","type":"ruleset","attributes":{"created":{"seconds":1782916423,"nanos":648538000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916423,"nanos":648538000},"name":"tf-TestAccDatadogTagPipelineRulesetDataSource_Basic-local-1782916422","position":1,"rules":[{"name":"Add Team Tag","enabled":true,"query":{"query":"service:web-api","addition":{"key":"team","value":"backend"},"if_not_exists":true,"case_insensitivity":true,"if_tag_exists":"do_not_apply"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718518}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 70.682583ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -216,7 +227,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/3b5519bd-235b-4a54-bab6-7b7a1e529635
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/d3bacdc6-41d5-4a9d-8174-075bea9d5b12
         method: GET
       response:
         proto: HTTP/1.1
@@ -224,16 +235,52 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 115
+        content_length: 639
         uncompressed: false
-        body: '{"errors":[{"status":"404","title":"Not Found","detail":"ruleset 3b5519bd-235b-4a54-bab6-7b7a1e529635 not found"}]}'
+        body: '{"data":{"id":"d3bacdc6-41d5-4a9d-8174-075bea9d5b12","type":"ruleset","attributes":{"created":{"seconds":1782916423,"nanos":648538000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916423,"nanos":648538000},"name":"tf-TestAccDatadogTagPipelineRulesetDataSource_Basic-local-1782916422","position":1,"rules":[{"name":"Add Team Tag","enabled":true,"query":{"query":"service:web-api","addition":{"key":"team","value":"backend"},"if_not_exists":true,"case_insensitivity":true,"if_tag_exists":"do_not_apply"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718518}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
-        status: 404 Not Found
-        code: 404
-        duration: 46.348708ms
+        status: 200 OK
+        code: 200
+        duration: 92.933ms
     - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 76
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"Query":"service:web-api"},"type":"validate_query"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/validate-query
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 126
+        uncompressed: false
+        body: '{"data":{"id":"42cab4ce-7fe3-467f-a12f-1930792b9a02","type":"validate_response","attributes":{"Canonical":"service:web-api"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 51.904792ms
+    - id: 8
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -249,7 +296,71 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/3b5519bd-235b-4a54-bab6-7b7a1e529635
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/d3bacdc6-41d5-4a9d-8174-075bea9d5b12
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 639
+        uncompressed: false
+        body: '{"data":{"id":"d3bacdc6-41d5-4a9d-8174-075bea9d5b12","type":"ruleset","attributes":{"created":{"seconds":1782916423,"nanos":648538000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916423,"nanos":648538000},"name":"tf-TestAccDatadogTagPipelineRulesetDataSource_Basic-local-1782916422","position":1,"rules":[{"name":"Add Team Tag","enabled":true,"query":{"query":"service:web-api","addition":{"key":"team","value":"backend"},"if_not_exists":true,"case_insensitivity":true,"if_tag_exists":"do_not_apply"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718518}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 80.084167ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/d3bacdc6-41d5-4a9d-8174-075bea9d5b12
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 71.739291ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/d3bacdc6-41d5-4a9d-8174-075bea9d5b12
         method: GET
       response:
         proto: HTTP/1.1
@@ -259,10 +370,43 @@ interactions:
         trailer: {}
         content_length: 115
         uncompressed: false
-        body: '{"errors":[{"status":"404","title":"Not Found","detail":"ruleset 3b5519bd-235b-4a54-bab6-7b7a1e529635 not found"}]}'
+        body: '{"errors":[{"status":"404","title":"Not Found","detail":"ruleset d3bacdc6-41d5-4a9d-8174-075bea9d5b12 not found"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 75.944333ms
+        duration: 56.474625ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/d3bacdc6-41d5-4a9d-8174-075bea9d5b12
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 115
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Not Found","detail":"ruleset d3bacdc6-41d5-4a9d-8174-075bea9d5b12 not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 65.30625ms

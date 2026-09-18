@@ -1,0 +1,14 @@
+openapi: 3.0.0
+info:
+  title: tracking malformed fixture
+  version: 1.0.0
+paths:
+  /widgets:
+    post:
+      operationId: CreateWidget
+      x-datadog-tf-generator:
+        artifact_kind: widget
+        artifact_name: widget
+      responses:
+        '201':
+          description: created

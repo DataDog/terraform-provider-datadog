@@ -1,0 +1,167 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: AWS Integration
+  description: 'Configure your Datadog-AWS integration directly through the Datadog API.
+
+    For more information, see the [AWS integration page](https://docs.datadoghq.com/integrations/amazon_web_services).'
+paths:
+  /api/v2/integration/aws/iam_permissions/resource_collection:
+    get:
+      operationId: GetAWSIntegrationIAMPermissionsResourceCollection
+      tags:
+      - AWS Integration
+      summary: Get resource collection IAM permissions
+      description: Get all resource collection AWS IAM permissions required for the AWS integration.
+      responses:
+        '200':
+          description: AWS integration resource collection IAM permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AWSIntegrationIamPermissionsResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                      id: permissions
+                      type: permissions
+                      attributes:
+                        permissions:
+                        - account:GetContactInformation
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      x-menu-order: 8
+      x-undo:
+        type: safe
+components:
+  responses:
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    AWSIntegrationIamPermissionsResponse:
+      type: object
+      description: AWS Integration IAM Permissions response body.
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/AWSIntegrationIamPermissionsResponseData'
+    AWSIntegrationIamPermissionsResponseAttributes:
+      type: object
+      description: AWS Integration IAM Permissions response attributes.
+      required:
+      - permissions
+      properties:
+        permissions:
+          type: array
+          description: List of AWS IAM permissions required for the integration.
+          example:
+          - account:GetContactInformation
+          - amplify:ListApps
+          - amplify:ListArtifacts
+          - amplify:ListBackendEnvironments
+          - amplify:ListBranches
+          items:
+            type: string
+            description: An AWS IAM permission required for the Datadog integration.
+            example: account:GetContactInformation
+    AWSIntegrationIamPermissionsResponseData:
+      type: object
+      description: AWS Integration IAM Permissions response data.
+      properties:
+        attributes:
+          $ref: '#/components/schemas/AWSIntegrationIamPermissionsResponseAttributes'
+        id:
+          type: string
+          description: The `AWSIntegrationIamPermissionsResponseData` `id`.
+          default: permissions
+          example: permissions
+        type:
+          $ref: '#/components/schemas/AWSIntegrationIamPermissionsResponseDataType'
+    AWSIntegrationIamPermissionsResponseDataType:
+      type: string
+      description: The `AWSIntegrationIamPermissionsResponseData` `type`.
+      default: permissions
+      example: permissions
+      enum:
+      - permissions
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - PERMISSIONS
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY

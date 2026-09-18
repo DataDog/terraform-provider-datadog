@@ -73,6 +73,9 @@ const DDHTTPRetryBackoffBase = "DD_HTTP_CLIENT_RETRY_BACKOFF_BASE"
 // DDHTTPRetryMaxRetries name of env var for max retries
 const DDHTTPRetryMaxRetries = "DD_HTTP_CLIENT_RETRY_MAX_RETRIES"
 
+// DDHTTPRetryJitter name of env var for retry jitter
+const DDHTTPRetryJitter = "DD_HTTP_CLIENT_RETRY_JITTER"
+
 // DDCloudProviderTypeEnvName name of env var for cloud provider type
 const DDCloudProviderTypeEnvName = "DD_CLOUD_PROVIDER_TYPE"
 
@@ -176,16 +179,16 @@ func TranslateClientError(err error, httpresp *http.Response, msg string) error 
 	}
 
 	if apiErr, ok := err.(CustomRequestAPIError); ok {
-		return fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
+		return fmt.Errorf("%s: %w: %s", msg, err, apiErr.Body())
 	}
 	if apiErr, ok := err.(datadog.GenericOpenAPIError); ok {
-		return fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
+		return fmt.Errorf("%s: %w: %s", msg, err, apiErr.Body())
 	}
 	if errURL, ok := err.(*url.Error); ok {
-		return fmt.Errorf(msg+" (url.Error): %s", errURL)
+		return fmt.Errorf("%s (url.Error): %w", msg, errURL)
 	}
 
-	return fmt.Errorf(msg+": %s", err.Error())
+	return fmt.Errorf("%s: %w", msg, err)
 }
 
 // CheckForUnparsed takes in a API response object and returns an error if it contains an unparsed element
@@ -628,10 +631,6 @@ func normalizeAppBuilderAppJSONString(jsonStr string) (string, error) {
 
 func UseMonitorFrameworkProvider() bool {
 	return getEnv("TERRAFORM_MONITOR_FRAMEWORK_PROVIDER", "false") == "true"
-}
-
-func IsDatabricksIntegrationEnabled() bool {
-	return getEnv("DD_TERRAFORM_DATABRICKS_INTEGRATION_ENABLED", "false") == "true"
 }
 
 func getEnv(key, fallback string) string {

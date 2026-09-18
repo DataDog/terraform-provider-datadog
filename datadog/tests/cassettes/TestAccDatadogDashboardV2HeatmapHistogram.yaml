@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 491
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2HeatmapHistogram-local-1784746453","widgets":[{"definition":{"requests":[{"query":{"data_source":"metrics","name":"query1","query":"histogram:trace.servlet.request{*}"},"request_type":"histogram","style":{"palette":"dog_classic"}}],"show_legend":true,"title":"Request duration distribution","type":"heatmap","xaxis":{"num_buckets":60}}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"jrw-5i6-jjv","title":"tf-TestAccDatadogDashboardV2HeatmapHistogram-local-1784746453","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/jrw-5i6-jjv/tf-testaccdatadogdashboardv2heatmaphistogram-local-1784746453","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"metrics","name":"query1","query":"histogram:trace.servlet.request{*}"},"request_type":"histogram","style":{"palette":"dog_classic"}}],"show_legend":true,"title":"Request duration distribution","type":"heatmap","xaxis":{"num_buckets":60}},"id":4017095687856368}],"notify_list":[],"created_at":"2026-07-22T18:54:16.826194+00:00","modified_at":"2026-07-22T18:54:16.826194+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 408.960375ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/jrw-5i6-jjv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"jrw-5i6-jjv","title":"tf-TestAccDatadogDashboardV2HeatmapHistogram-local-1784746453","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/jrw-5i6-jjv/tf-testaccdatadogdashboardv2heatmaphistogram-local-1784746453","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"metrics","name":"query1","query":"histogram:trace.servlet.request{*}"},"request_type":"histogram","style":{"palette":"dog_classic"}}],"show_legend":true,"title":"Request duration distribution","type":"heatmap","xaxis":{"num_buckets":60}},"id":4017095687856368}],"notify_list":[],"created_at":"2026-07-22T18:54:16.826194+00:00","modified_at":"2026-07-22T18:54:16.826194+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 201.912917ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/jrw-5i6-jjv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"jrw-5i6-jjv","title":"tf-TestAccDatadogDashboardV2HeatmapHistogram-local-1784746453","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/jrw-5i6-jjv/tf-testaccdatadogdashboardv2heatmaphistogram-local-1784746453","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"metrics","name":"query1","query":"histogram:trace.servlet.request{*}"},"request_type":"histogram","style":{"palette":"dog_classic"}}],"show_legend":true,"title":"Request duration distribution","type":"heatmap","xaxis":{"num_buckets":60}},"id":4017095687856368}],"notify_list":[],"created_at":"2026-07-22T18:54:16.826194+00:00","modified_at":"2026-07-22T18:54:16.826194+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 177.076792ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/jrw-5i6-jjv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"jrw-5i6-jjv","title":"tf-TestAccDatadogDashboardV2HeatmapHistogram-local-1784746453","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/jrw-5i6-jjv/tf-testaccdatadogdashboardv2heatmaphistogram-local-1784746453","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"metrics","name":"query1","query":"histogram:trace.servlet.request{*}"},"request_type":"histogram","style":{"palette":"dog_classic"}}],"show_legend":true,"title":"Request duration distribution","type":"heatmap","xaxis":{"num_buckets":60}},"id":4017095687856368}],"notify_list":[],"created_at":"2026-07-22T18:54:16.826194+00:00","modified_at":"2026-07-22T18:54:16.826194+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 172.132667ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/jrw-5i6-jjv
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"jrw-5i6-jjv"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 592.693666ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/jrw-5i6-jjv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID jrw-5i6-jjv not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 691.13325ms

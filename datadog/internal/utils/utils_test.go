@@ -2,7 +2,10 @@ package utils
 
 import (
 	"fmt"
+	"net/http"
+	"net/url"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -472,6 +475,72 @@ func TestAppBuilderAppJSONStringSemanticEquals(t *testing.T) {
 
 			if diff := cmp.Diff(diags, testCase.expectedDiags); diff != "" {
 				t.Errorf("Unexpected diagnostics (-got, +expected): %s", diff)
+			}
+		})
+	}
+}
+
+func TestTranslateClientError(t *testing.T) {
+	// A "#channel" path segment percent-encodes to "%23channel". msg embeds the
+	// request path, so concatenating it into the format string made fmt read that
+	// as a width-23 verb, which mangled the message and swallowed the body.
+	const path = "/api/v1/integration/slack/configuration/accounts/example-account/channels/%23example-channel"
+	reqURL, err := url.Parse("https://api.datadoghq.com" + path)
+	if err != nil {
+		t.Fatalf("failed to parse test URL: %s", err)
+	}
+	httpresp := &http.Response{Request: &http.Request{URL: reqURL}}
+	body := []byte(`{"errors":["Account is not configured: example-account"]}`)
+
+	cases := map[string]struct {
+		err      error
+		httpresp *http.Response
+		msg      string
+		expected string
+	}{
+		"custom request api error": {
+			err:      CustomRequestAPIError{body: body, error: "400 Bad Request"},
+			httpresp: httpresp,
+			msg:      "error getting slack channel",
+			expected: `error getting slack channel from ` + path + `: 400 Bad Request: {"errors":["Account is not configured: example-account"]}`,
+		},
+		"url error": {
+			err:      &url.Error{Op: "Get", URL: reqURL.String(), Err: fmt.Errorf("connection refused")},
+			httpresp: httpresp,
+			msg:      "error getting slack channel",
+			expected: `error getting slack channel from ` + path + ` (url.Error): Get "` + reqURL.String() + `": connection refused`,
+		},
+		"plain error": {
+			err:      fmt.Errorf("boom"),
+			httpresp: httpresp,
+			msg:      "error getting slack channel",
+			expected: "error getting slack channel from " + path + ": boom",
+		},
+		"no http response": {
+			err:      fmt.Errorf("boom"),
+			httpresp: nil,
+			msg:      "error getting slack channel",
+			expected: "error getting slack channel: boom",
+		},
+		"empty message": {
+			err:      fmt.Errorf("boom"),
+			httpresp: nil,
+			msg:      "",
+			expected: "an error occurred: boom",
+		},
+	}
+
+	for name, tc := range cases {
+		name, tc := name, tc
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			actual := TranslateClientError(tc.err, tc.httpresp, tc.msg).Error()
+			if actual != tc.expected {
+				t.Errorf("expected %q, got %q", tc.expected, actual)
+			}
+			if strings.Contains(actual, "%!") {
+				t.Errorf("message contains an unexpanded fmt verb: %q", actual)
 			}
 		})
 	}

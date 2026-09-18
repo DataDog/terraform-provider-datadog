@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 264
+        content_length: 263
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"name":"tf-test-TestAccDatadogDatasetImport-1755529920","principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"],"product_filters":[{"filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"],"product":"rum"}]},"type":"dataset"}}
+            {"data":{"attributes":{"name":"tf-test-TestAccDatadogDatasetImport-1785485101","principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"],"product_filters":[{"filters":["@application.id:31d93d5e-3ad3-9e93-d602-a6e99e3d162b"],"product":"rum"}]},"type":"dataset"}}
         form: {}
         headers:
             Accept:
@@ -26,19 +26,18 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
+        content_length: 307
+        uncompressed: false
         body: |
-            {"data":{"type":"dataset","id":"b7a8c9d0-e1f2-3456-bcde-f0123456789a","attributes":{"name":"tf-test-TestAccDatadogDatasetImport-1755529920","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
+            {"data":{"type":"dataset","id":"c64d6ec2-01ff-4520-aceb-39c3ad461a44","attributes":{"name":"tf-test-TestAccDatadogDatasetImport-1785485101","product_filters":[{"product":"rum","filters":["@application.id:31d93d5e-3ad3-9e93-d602-a6e99e3d162b"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 144.792875ms
+        duration: 181.395209ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,25 +54,24 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/datasets/b7a8c9d0-e1f2-3456-bcde-f0123456789a
+        url: https://api.datadoghq.com/api/v2/datasets/c64d6ec2-01ff-4520-aceb-39c3ad461a44
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
+        content_length: 307
+        uncompressed: false
         body: |
-            {"data":{"type":"dataset","id":"b7a8c9d0-e1f2-3456-bcde-f0123456789a","attributes":{"name":"tf-test-TestAccDatadogDatasetImport-1755529920","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
+            {"data":{"type":"dataset","id":"c64d6ec2-01ff-4520-aceb-39c3ad461a44","attributes":{"name":"tf-test-TestAccDatadogDatasetImport-1785485101","product_filters":[{"product":"rum","filters":["@application.id:31d93d5e-3ad3-9e93-d602-a6e99e3d162b"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 91.167208ms
+        duration: 129.359333ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,25 +88,24 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/datasets/b7a8c9d0-e1f2-3456-bcde-f0123456789a
+        url: https://api.datadoghq.com/api/v2/datasets/c64d6ec2-01ff-4520-aceb-39c3ad461a44
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
+        content_length: 307
+        uncompressed: false
         body: |
-            {"data":{"type":"dataset","id":"b7a8c9d0-e1f2-3456-bcde-f0123456789a","attributes":{"name":"tf-test-TestAccDatadogDatasetImport-1755529920","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
+            {"data":{"type":"dataset","id":"c64d6ec2-01ff-4520-aceb-39c3ad461a44","attributes":{"name":"tf-test-TestAccDatadogDatasetImport-1785485101","product_filters":[{"product":"rum","filters":["@application.id:31d93d5e-3ad3-9e93-d602-a6e99e3d162b"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 102.648042ms
+        duration: 122.804458ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,25 +122,24 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/datasets/b7a8c9d0-e1f2-3456-bcde-f0123456789a
+        url: https://api.datadoghq.com/api/v2/datasets/c64d6ec2-01ff-4520-aceb-39c3ad461a44
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
+        content_length: 307
+        uncompressed: false
         body: |
-            {"data":{"type":"dataset","id":"b7a8c9d0-e1f2-3456-bcde-f0123456789a","attributes":{"name":"tf-test-TestAccDatadogDatasetImport-1755529920","product_filters":[{"product":"rum","filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
+            {"data":{"type":"dataset","id":"c64d6ec2-01ff-4520-aceb-39c3ad461a44","attributes":{"name":"tf-test-TestAccDatadogDatasetImport-1785485101","product_filters":[{"product":"rum","filters":["@application.id:31d93d5e-3ad3-9e93-d602-a6e99e3d162b"]}],"principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"]}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 88.334125ms
+        duration: 116.735959ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +156,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/datasets/b7a8c9d0-e1f2-3456-bcde-f0123456789a
+        url: https://api.datadoghq.com/api/v2/datasets/c64d6ec2-01ff-4520-aceb-39c3ad461a44
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -176,7 +172,7 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 147.402458ms
+        duration: 135.492708ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -193,7 +189,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/datasets/b7a8c9d0-e1f2-3456-bcde-f0123456789a
+        url: https://api.datadoghq.com/api/v2/datasets/c64d6ec2-01ff-4520-aceb-39c3ad461a44
         method: GET
       response:
         proto: HTTP/1.1
@@ -201,13 +197,13 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: -1
+        content_length: 109
         uncompressed: false
         body: |
-            {"errors":["Not Found"]}
+            {"errors":["Invalid request: [DatasetNotFound] dataset \"c64d6ec2-01ff-4520-aceb-39c3ad461a44\" not found"]}
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 85.0ms
+        duration: 107.633292ms

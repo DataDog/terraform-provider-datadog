@@ -195,13 +195,13 @@ func readRulesOrder[Resp any, Rule any](
 }
 
 // reorderSecurityFindingsAutomationRules submits a reorder request for the given rule IDs.
-func reorderSecurityFindingsAutomationRules[I any, Req any](
+func reorderSecurityFindingsAutomationRules[I any, Req any, Resp any](
 	auth context.Context,
 	ruleIDs []string,
 	makeItem func(uuid.UUID) I,
 	makeRequest func([]I) Req,
-	reorderFn func(context.Context, Req) (Req, *http.Response, error),
-	getRespItems func(Req) []I,
+	reorderFn func(context.Context, Req) (Resp, *http.Response, error),
+	getRespItems func(Resp) []I,
 	getID func(I) string,
 ) ([]string, diag.Diagnostics) {
 	var diags diag.Diagnostics

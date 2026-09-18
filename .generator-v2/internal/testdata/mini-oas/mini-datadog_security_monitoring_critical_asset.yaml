@@ -1,0 +1,280 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: Security Monitoring
+  description: Create and manage your security rules, signals, filters, and more. See the [Datadog Security
+    page](https://docs.datadoghq.com/security/) for more information.
+paths:
+  /api/v2/security_monitoring/configuration/critical_assets/{critical_asset_id}:
+    get:
+      operationId: GetSecurityMonitoringCriticalAsset
+      tags:
+      - Security Monitoring
+      summary: Get a critical asset
+      description: Get the details of a specific critical asset.
+      parameters:
+      - $ref: '#/components/parameters/SecurityMonitoringCriticalAssetID'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecurityMonitoringCriticalAssetResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                      id: 4e2435a5-6670-4b8f-baff-46083cd1c250
+                      type: critical_assets
+                      attributes:
+                        query: security:monitoring
+                        rule_query: type:log_detection source:cloudtrail
+                        severity: increase
+                        enabled: true
+                        version: 1
+        '403':
+          $ref: '#/components/responses/NotAuthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      security:
+      - apiKeyAuth: []
+        appKeyAuth: []
+      - AuthZ:
+        - security_monitoring_critical_assets_read
+      x-menu-order: 54
+      x-undo:
+        type: safe
+components:
+  parameters:
+    SecurityMonitoringCriticalAssetID:
+      name: critical_asset_id
+      in: path
+      required: true
+      description: The ID of the critical asset.
+      schema:
+        type: string
+  responses:
+    NotAuthorizedResponse:
+      description: Not Authorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+    NotFoundResponse:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    SecurityMonitoringCriticalAsset:
+      type: object
+      description: The critical asset's properties.
+      properties:
+        id:
+          $ref: '#/components/schemas/SecurityMonitoringCriticalAssetID'
+        type:
+          $ref: '#/components/schemas/SecurityMonitoringCriticalAssetType'
+        attributes:
+          $ref: '#/components/schemas/SecurityMonitoringCriticalAssetAttributes'
+    SecurityMonitoringCriticalAssetAttributes:
+      type: object
+      description: The attributes of the critical asset.
+      properties:
+        version:
+          type: integer
+          description: The version of the critical asset; it starts at 1, and is incremented at each update.
+          format: int32
+          maximum: 2147483647
+          example: 2
+        query:
+          type: string
+          description: The query for the critical asset. It uses the same syntax as the queries to search
+            signals in the Signals Explorer.
+          example: security:monitoring
+        rule_query:
+          type: string
+          description: The rule query of the critical asset, with the same syntax as the search bar for
+            detection rules. This determines which rules this critical asset will apply to.
+          example: type:log_detection source:cloudtrail
+        severity:
+          $ref: '#/components/schemas/SecurityMonitoringCriticalAssetSeverity'
+        enabled:
+          type: boolean
+          description: Whether the critical asset is enabled.
+          example: true
+        creation_date:
+          type: integer
+          description: A Unix millisecond timestamp given the creation date of the critical asset.
+          format: int64
+        creation_author_id:
+          type: integer
+          description: ID of user who created the critical asset.
+          format: int64
+          example: 367742
+        update_date:
+          type: integer
+          description: A Unix millisecond timestamp given the update date of the critical asset.
+          format: int64
+        update_author_id:
+          type: integer
+          description: ID of user who updated the critical asset.
+          format: int64
+          example: 367743
+        tags:
+          type: array
+          description: List of tags associated with the critical asset.
+          example:
+          - team:database
+          - source:cloudtrail
+          items:
+            type: string
+            description: A tag string in `key:value` format.
+        creator:
+          $ref: '#/components/schemas/SecurityMonitoringUser'
+        updater:
+          $ref: '#/components/schemas/SecurityMonitoringUser'
+    SecurityMonitoringCriticalAssetID:
+      type: string
+      description: The ID of the critical asset.
+      example: 4e2435a5-6670-4b8f-baff-46083cd1c250
+    SecurityMonitoringCriticalAssetResponse:
+      type: object
+      description: Response object containing a single critical asset.
+      properties:
+        data:
+          $ref: '#/components/schemas/SecurityMonitoringCriticalAsset'
+    SecurityMonitoringCriticalAssetSeverity:
+      type: string
+      description: Severity associated with this critical asset. Either an explicit severity can be set,
+        or the severity can be increased or decreased, or the severity can be left unchanged (no-op).
+      example: increase
+      enum:
+      - info
+      - low
+      - medium
+      - high
+      - critical
+      - increase
+      - decrease
+      - no-op
+      x-enum-varnames:
+      - INFO
+      - LOW
+      - MEDIUM
+      - HIGH
+      - CRITICAL
+      - INCREASE
+      - DECREASE
+      - NO_OP
+    SecurityMonitoringCriticalAssetType:
+      type: string
+      description: The type of the resource. The value should always be `critical_assets`.
+      default: critical_assets
+      example: critical_assets
+      enum:
+      - critical_assets
+      x-enum-varnames:
+      - CRITICAL_ASSETS
+    SecurityMonitoringUser:
+      type: object
+      description: A user.
+      properties:
+        name:
+          type: string
+          description: The name of the user.
+          nullable: true
+          example: John Doe
+        handle:
+          type: string
+          description: The handle of the user.
+          example: john.doe@datadoghq.com
+  securitySchemes:
+    AuthZ:
+      type: oauth2
+      description: This API uses OAuth 2 with the implicit grant flow.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth2/v1/authorize
+          tokenUrl: /oauth2/v1/token
+          scopes: {}
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY

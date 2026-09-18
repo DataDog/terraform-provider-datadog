@@ -724,6 +724,76 @@ resource "datadog_observability_pipeline" "quota" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_quotaProcessorOverflowRouting(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.quota_overflow"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "quota_overflow" {
+  name = "quota-overflow-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "quota-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "quota-processor"
+        enabled = true
+        include = "*"
+
+        quota {
+          name            = "overflowQuota"
+          overflow_action = "overflow_routing"
+
+          limit {
+            enforce = "events"
+            limit   = 1000
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "s3-overflow-dest"
+      inputs = ["quota-processor.overflow_events"]
+
+      amazon_s3 {
+        bucket        = "my-overflow-bucket"
+        region        = "us-east-1"
+        key_prefix    = "overflow/"
+        storage_class = "STANDARD"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "quota-overflow-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.quota.0.overflow_action", "overflow_routing"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "s3-overflow-dest"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "quota-processor.overflow_events"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.bucket", "my-overflow-bucket"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_parseJsonProcessor(t *testing.T) {
 
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -1562,10 +1632,15 @@ resource "datadog_observability_pipeline" "splunk_tcp" {
       id = "splunk-tcp-source-1"
       
       splunk_tcp {
+        address_key                  = "SPLUNK_TCP_ADDRESS"
+        max_connection_duration_secs = 3600
+
         tls {
-          crt_file = "/etc/ssl/certs/tcp.crt"
-          ca_file  = "/etc/ssl/certs/tcp.ca"
-          key_file = "/etc/ssl/private/tcp.key"
+          crt_file           = "/etc/ssl/certs/tcp.crt"
+          ca_file            = "/etc/ssl/certs/tcp.ca"
+          key_file           = "/etc/ssl/private/tcp.key"
+          key_pass_key       = "SPLUNK_TCP_TLS_KEY_PASSPHRASE"
+          verify_certificate = true
         }
       }
     }
@@ -1583,9 +1658,44 @@ resource "datadog_observability_pipeline" "splunk_tcp" {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "splunk-tcp-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.address_key", "SPLUNK_TCP_ADDRESS"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.max_connection_duration_secs", "3600"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.tls.0.crt_file", "/etc/ssl/certs/tcp.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.tls.0.ca_file", "/etc/ssl/certs/tcp.ca"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.tls.0.key_file", "/etc/ssl/private/tcp.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.tls.0.key_pass_key", "SPLUNK_TCP_TLS_KEY_PASSPHRASE"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.tls.0.verify_certificate", "true"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "splunk_tcp" {
+  name = "splunk-tcp-pipeline"
+
+  config {
+    source {
+      id = "splunk-tcp-source-1"
+
+      splunk_tcp {
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["splunk-tcp-source-1"]
+
+      datadog_logs {
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "splunk-tcp-source-1"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.address_key"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.max_connection_duration_secs"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.tls.#"),
 				),
 			},
 		},
@@ -1773,6 +1883,58 @@ resource "datadog_observability_pipeline" "gcs_dest_minimal" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_cloud_storage.0.bucket", "my-gcs-bucket"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_cloud_storage.0.storage_class", "NEARLINE"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_googleCloudStorageDestinationCompression(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.gcs_dest_compression"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "gcs_dest_compression" {
+  name = "gcs-destination-compression-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id = "gcs-destination-compression-1"
+      inputs = ["source-1"]
+      google_cloud_storage {
+        bucket        = "my-gcs-bucket"
+        key_prefix    = "logs/"
+        storage_class = "NEARLINE"
+
+        compression {
+          algorithm = "zstd"
+          level     = 12
+        }
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "gcs-destination-compression-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_cloud_storage.0.bucket", "my-gcs-bucket"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_cloud_storage.0.key_prefix", "logs/"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_cloud_storage.0.storage_class", "NEARLINE"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_cloud_storage.0.compression.0.algorithm", "zstd"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_cloud_storage.0.compression.0.level", "12"),
 				),
 			},
 		},
@@ -2095,7 +2257,8 @@ resource "datadog_observability_pipeline" "syslogng_dest" {
         keepalive = 45000
 
         tls {
-          crt_file = "/etc/certs/syslogng.crt"
+          crt_file    = "/etc/certs/syslogng.crt"
+          server_name = "syslogng.example.com"
         }
       }
     }
@@ -2109,6 +2272,7 @@ resource "datadog_observability_pipeline" "syslogng_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.syslog_ng.0.keepalive", "45000"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.syslog_ng.0.tls.0.crt_file", "/etc/certs/syslogng.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.syslog_ng.0.tls.0.server_name", "syslogng.example.com"),
 				),
 			},
 		},
@@ -2201,6 +2365,60 @@ resource "datadog_observability_pipeline" "azure_storage_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.container_name", "logs-container"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.blob_prefix", "logs/"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.connection_string_key", "AZURE_STORAGE_CONNECTION_STRING_IDENT"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_azureStorageDestinationCompression(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.azure_storage_dest_compression"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "azure_storage_dest_compression" {
+  name = "azure-storage-dest-compression-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "azure-storage-compression-1"
+      inputs = ["source-1"]
+
+      azure_storage {
+        container_name        = "logs-container"
+        blob_prefix           = "logs/"
+        connection_string_key = "AZURE_STORAGE_CONNECTION_STRING_IDENT"
+
+        compression {
+          algorithm = "zstd"
+          level     = 15
+        }
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "azure-storage-dest-compression-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "azure-storage-compression-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.container_name", "logs-container"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.blob_prefix", "logs/"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.connection_string_key", "AZURE_STORAGE_CONNECTION_STRING_IDENT"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.compression.0.algorithm", "zstd"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.compression.0.level", "15"),
 				),
 			},
 		},
@@ -2817,7 +3035,8 @@ resource "datadog_observability_pipeline" "http_client" {
         scrape_timeout_secs  = 10
         auth_strategy       = "basic"
         tls {
-          crt_file = "/path/to/http.crt"
+          crt_file    = "/path/to/http.crt"
+          server_name = "httpclient.example.com"
         }
       }
     }
@@ -2838,6 +3057,7 @@ resource "datadog_observability_pipeline" "http_client" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_client.0.scrape_timeout_secs", "10"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_client.0.auth_strategy", "basic"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_client.0.tls.0.crt_file", "/path/to/http.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_client.0.tls.0.server_name", "httpclient.example.com"),
 				),
 			},
 		},
@@ -4054,6 +4274,60 @@ resource "datadog_observability_pipeline" "opensearch_datastream" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_opensearchDestinationAuthAndEndpoint(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.opensearch_auth"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "opensearch_auth" {
+  name = "opensearch-auth-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "opensearch-destination-1"
+      inputs = ["source-1"]
+
+      opensearch {
+        bulk_index       = "logs-datastream"
+        endpoint_url_key = "OPENSEARCH_ENDPOINT_URL"
+
+        auth {
+          strategy     = "basic"
+          username_key = "OPENSEARCH_USERNAME"
+          password_key = "OPENSEARCH_PASSWORD"
+        }
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "opensearch-auth-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "opensearch-destination-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opensearch.0.bulk_index", "logs-datastream"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opensearch.0.endpoint_url_key", "OPENSEARCH_ENDPOINT_URL"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opensearch.0.auth.0.strategy", "basic"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opensearch.0.auth.0.username_key", "OPENSEARCH_USERNAME"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opensearch.0.auth.0.password_key", "OPENSEARCH_PASSWORD"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_amazonOpenSearchDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -4888,9 +5162,10 @@ resource "datadog_observability_pipeline" "socket_dest" {
         }
 
         tls {
-          crt_file = "/etc/ssl/certs/socket.crt"
-          ca_file  = "/etc/ssl/certs/ca.crt"
-          key_file = "/etc/ssl/private/socket.key"
+          crt_file    = "/etc/ssl/certs/socket.crt"
+          ca_file     = "/etc/ssl/certs/ca.crt"
+          key_file    = "/etc/ssl/private/socket.key"
+          server_name = "socket.example.com"
         }
       }
     }
@@ -4907,6 +5182,7 @@ resource "datadog_observability_pipeline" "socket_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.socket.0.tls.0.crt_file", "/etc/ssl/certs/socket.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.socket.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.socket.0.tls.0.key_file", "/etc/ssl/private/socket.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.socket.0.tls.0.server_name", "socket.example.com"),
 				),
 			},
 		},
@@ -5093,6 +5369,7 @@ resource "datadog_observability_pipeline" "cloud_prem_dest_tls" {
           ca_file      = "/path/to/ca.pem"
           key_file     = "/path/to/key.pem"
           key_pass_key = "TLS_KEY_PASSPHRASE"
+          server_name  = "cloudprem.example.com"
         }
       }
     }
@@ -5106,6 +5383,7 @@ resource "datadog_observability_pipeline" "cloud_prem_dest_tls" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.cloud_prem.0.tls.0.ca_file", "/path/to/ca.pem"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.cloud_prem.0.tls.0.key_file", "/path/to/key.pem"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.cloud_prem.0.tls.0.key_pass_key", "TLS_KEY_PASSPHRASE"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.cloud_prem.0.tls.0.server_name", "cloudprem.example.com"),
 				),
 			},
 		},
@@ -5475,6 +5753,115 @@ resource "datadog_observability_pipeline" "amazon_s3_basic" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_amazonS3DestinationSseKms(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.amazon_s3_sse_kms"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "amazon_s3_sse_kms" {
+  name = "amazon s3 sse-kms pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "s3-sse-kms-1"
+      inputs = ["source-1"]
+
+      amazon_s3 {
+        bucket                 = "my-logs-bucket"
+        region                 = "us-east-1"
+        key_prefix             = "logs/"
+        storage_class          = "STANDARD"
+        server_side_encryption = "aws:kms"
+        ssekms_key_id          = "arn:aws:kms:us-east-1:123456789012:key/mrk-abc123"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "s3-sse-kms-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.bucket", "my-logs-bucket"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.region", "us-east-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.key_prefix", "logs/"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.storage_class", "STANDARD"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.server_side_encryption", "aws:kms"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.ssekms_key_id", "arn:aws:kms:us-east-1:123456789012:key/mrk-abc123"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_amazonS3DestinationCompression(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.amazon_s3_compression"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "amazon_s3_compression" {
+  name = "amazon s3 compression pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id           = "s3-dest-compression-1"
+      inputs       = ["source-1"]
+
+      amazon_s3 {
+        bucket       = "my-logs-bucket"
+        region       = "us-east-1"
+        key_prefix   = "logs/"
+        storage_class = "STANDARD"
+
+        compression {
+          algorithm = "zstd"
+          level     = 9
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "s3-dest-compression-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.bucket", "my-logs-bucket"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.region", "us-east-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.key_prefix", "logs/"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.storage_class", "STANDARD"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.compression.0.algorithm", "zstd"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.compression.0.level", "9"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_amazonS3GenericDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -5660,6 +6047,67 @@ resource "datadog_observability_pipeline" "amazon_s3_generic_buffer" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.buffer.0.memory.0.max_size", "268435456"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.buffer.0.memory.0.when_full", "block"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_amazonS3GenericDestinationSseKms(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.amazon_s3_generic_sse_kms"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "amazon_s3_generic_sse_kms" {
+  name = "amazon s3 generic sse-kms pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "s3-generic-sse-kms-1"
+      inputs = ["source-1"]
+
+      amazon_s3_generic {
+        bucket                = "my-generic-bucket"
+        region                = "us-east-1"
+        storage_class         = "STANDARD"
+        server_side_encryption = "aws:kms"
+        ssekms_key_id         = "arn:aws:kms:us-east-1:123456789012:key/mrk-abc123"
+
+        encoding {
+          type = "json"
+        }
+
+        compression {
+          algorithm = "snappy"
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "s3-generic-sse-kms-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.bucket", "my-generic-bucket"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.region", "us-east-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.storage_class", "STANDARD"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.server_side_encryption", "aws:kms"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.ssekms_key_id", "arn:aws:kms:us-east-1:123456789012:key/mrk-abc123"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.encoding.0.type", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.compression.0.algorithm", "snappy"),
 				),
 			},
 		},
@@ -6505,9 +6953,10 @@ resource "datadog_observability_pipeline" "http_client_dest" {
         }
 
         tls {
-          crt_file = "/etc/ssl/certs/http.crt"
-          ca_file  = "/etc/ssl/certs/ca.crt"
-          key_file = "/etc/ssl/private/http.key"
+          crt_file    = "/etc/ssl/certs/http.crt"
+          ca_file     = "/etc/ssl/certs/ca.crt"
+          key_file    = "/etc/ssl/private/http.key"
+          server_name = "httpclientdest.example.com"
         }
       }
     }
@@ -6525,6 +6974,50 @@ resource "datadog_observability_pipeline" "http_client_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.tls.0.crt_file", "/etc/ssl/certs/http.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.tls.0.key_file", "/etc/ssl/private/http.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.tls.0.server_name", "httpclientdest.example.com"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_httpClientDestinationCustomAuth(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.http_client_dest_custom_auth"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "http_client_dest_custom_auth" {
+  name = "http client destination custom auth pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "http-client-dest-custom-auth"
+      inputs = ["source-1"]
+
+      http_client {
+        encoding      = "json"
+        auth_strategy = "custom"
+        custom_key    = "HTTP_AUTH_CUSTOM_HEADER"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.auth_strategy", "custom"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.custom_key", "HTTP_AUTH_CUSTOM_HEADER"),
 				),
 			},
 		},
@@ -7221,6 +7714,76 @@ resource "datadog_observability_pipeline" "splunk_hec_token_strategy" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_splunkHecDestinationEndpointTarget(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.splunk_hec_endpoint_target"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "splunk_hec_endpoint_target" {
+  name = "splunk-hec-endpoint-target-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "splunk-hec-1"
+      inputs = ["source-1"]
+      splunk_hec {
+        encoding = "json"
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "splunk-hec-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.encoding", "json"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "splunk_hec_endpoint_target" {
+  name = "splunk-hec-endpoint-target-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "splunk-hec-1"
+      inputs = ["source-1"]
+      splunk_hec {
+        encoding        = "json"
+        endpoint_target = "raw"
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "splunk-hec-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.encoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.endpoint_target", "raw"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_enrichmentTableFieldLookup(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	resourceName := "datadog_observability_pipeline.enrichment_field_lookup"
@@ -7724,6 +8287,138 @@ resource "datadog_observability_pipeline" "splunk_hec_metrics_dest" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_opentelemetryMetricsDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.opentelemetry_metrics_dest"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// Minimal config: only required fields
+				Config: `
+resource "datadog_observability_pipeline" "opentelemetry_metrics_dest" {
+  name = "opentelemetry-metrics-destination-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    destination {
+      id     = "opentelemetry-metrics-1"
+      inputs = ["source-1"]
+
+      opentelemetry {
+        http_client_uri_key = "DESTINATION_OTEL_HTTP_CLIENT_URI"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "opentelemetry-metrics-destination-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "opentelemetry-metrics-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.http_client_uri_key", "DESTINATION_OTEL_HTTP_CLIENT_URI"),
+				),
+			},
+			{
+				// Full config: TLS and disk buffer
+				Config: `
+resource "datadog_observability_pipeline" "opentelemetry_metrics_dest" {
+  name = "opentelemetry-metrics-destination-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    destination {
+      id     = "opentelemetry-metrics-1"
+      inputs = ["source-1"]
+
+      opentelemetry {
+        http_client_uri_key = "DESTINATION_OTEL_HTTP_CLIENT_URI"
+
+        tls {
+          crt_file = "/etc/ssl/certs/otel.crt"
+          ca_file  = "/etc/ssl/certs/ca.crt"
+          key_file = "/etc/ssl/private/otel.key"
+        }
+
+        buffer {
+          disk {
+            max_size  = 1073741824
+            when_full = "drop_newest"
+          }
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "opentelemetry-metrics-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.http_client_uri_key", "DESTINATION_OTEL_HTTP_CLIENT_URI"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.tls.0.crt_file", "/etc/ssl/certs/otel.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.tls.0.key_file", "/etc/ssl/private/otel.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.buffer.0.disk.0.max_size", "1073741824"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.buffer.0.disk.0.when_full", "drop_newest"),
+				),
+			},
+			{
+				// Update: switch to memory buffer
+				Config: `
+resource "datadog_observability_pipeline" "opentelemetry_metrics_dest" {
+  name = "opentelemetry-metrics-destination-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    destination {
+      id     = "opentelemetry-metrics-1"
+      inputs = ["source-1"]
+
+      opentelemetry {
+        http_client_uri_key = "DESTINATION_OTEL_HTTP_CLIENT_URI"
+
+        buffer {
+          memory {
+            max_events = 10000
+            when_full  = "block"
+          }
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.http_client_uri_key", "DESTINATION_OTEL_HTTP_CLIENT_URI"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.buffer.0.memory.0.max_events", "10000"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.buffer.0.memory.0.when_full", "block"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_generateMetricsV2Processor(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -8043,16 +8738,20 @@ resource "datadog_observability_pipeline" "tag_cardinality_limit" {
           limit_exceeded_action = "drop_tag"
           value_limit           = 5000
 
+          tracking_mode {
+            mode = "exact_fingerprint"
+          }
+
           per_metric_limit {
             metric_name           = "request.count"
-            mode                  = "tracked"
+            override_type         = "limit_override"
             limit_exceeded_action = "drop_tag"
             value_limit           = 1000
 
             per_tag_limit {
-              tag_key     = "env"
-              mode        = "limit_override"
-              value_limit = 50
+              tag_key       = "env"
+              override_type = "limit_override"
+              value_limit   = 50
             }
           }
         }
@@ -8071,10 +8770,11 @@ resource "datadog_observability_pipeline" "tag_cardinality_limit" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.limit_exceeded_action", "drop_tag"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.value_limit", "5000"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.tracking_mode.0.mode", "exact_fingerprint"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.metric_name", "request.count"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.mode", "tracked"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.override_type", "limit_override"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.0.tag_key", "env"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.0.mode", "limit_override"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.0.override_type", "limit_override"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.0.value_limit", "50"),
 				),
 			},
@@ -8428,6 +9128,281 @@ resource "datadog_observability_pipeline" "websocket" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.username_key", "WEBSOCKET_USERNAME"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.password_key", "WEBSOCKET_PASSWORD"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.tls.0.mode", "enabled"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_prometheusRemoteWriteSource(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.prometheus_remote_write_source"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// Minimal config: only required fields
+				Config: `
+resource "datadog_observability_pipeline" "prometheus_remote_write_source" {
+  name = "prometheus-remote-write-source-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "prometheus-source-1"
+
+      prometheus_remote_write {
+        auth_strategy = "none"
+        path          = "/api/v1/write"
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["prometheus-source-1"]
+
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "prometheus-remote-write-source-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "prometheus-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.auth_strategy", "none"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.path", "/api/v1/write"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "prometheus-source-1"),
+				),
+			},
+			{
+				// Full config: all optional fields, TLS, and valid tokens
+				Config: `
+resource "datadog_observability_pipeline" "prometheus_remote_write_source" {
+  name = "prometheus-remote-write-source-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "prometheus-source-1"
+
+      prometheus_remote_write {
+        auth_strategy = "none"
+        address_key   = "PROMETHEUS_ADDRESS"
+        path          = "/api/v1/write"
+
+        tls {
+          crt_file           = "/etc/ssl/certs/prometheus.crt"
+          ca_file            = "/etc/ssl/certs/ca.crt"
+          key_file           = "/etc/ssl/private/prometheus.key"
+          verify_certificate = true
+        }
+
+        valid_token {
+          token_key = "PROMETHEUS_TOKEN_PRIMARY"
+          enabled   = true
+
+          path_to_token {
+            header = "X-Auth-Token"
+          }
+        }
+
+        valid_token {
+          token_key = "PROMETHEUS_TOKEN_SECONDARY"
+
+          path_to_token {
+            location = "path"
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["prometheus-source-1"]
+
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.auth_strategy", "none"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.address_key", "PROMETHEUS_ADDRESS"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.path", "/api/v1/write"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.crt_file", "/etc/ssl/certs/prometheus.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.key_file", "/etc/ssl/private/prometheus.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.verify_certificate", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.valid_token.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.valid_token.0.token_key", "PROMETHEUS_TOKEN_PRIMARY"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.valid_token.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.valid_token.0.path_to_token.0.header", "X-Auth-Token"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.valid_token.1.token_key", "PROMETHEUS_TOKEN_SECONDARY"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.valid_token.1.path_to_token.0.location", "path"),
+				),
+			},
+			{
+				// Plain auth: valid tokens are not allowed alongside auth_strategy = "plain"
+				Config: `
+resource "datadog_observability_pipeline" "prometheus_remote_write_source" {
+  name = "prometheus-remote-write-source-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "prometheus-source-1"
+
+      prometheus_remote_write {
+        auth_strategy = "plain"
+        address_key   = "PROMETHEUS_ADDRESS"
+        path          = "/api/v1/write"
+        username_key  = "PROMETHEUS_USERNAME"
+        password_key  = "PROMETHEUS_PASSWORD"
+
+        tls {
+          crt_file           = "/etc/ssl/certs/prometheus.crt"
+          ca_file            = "/etc/ssl/certs/ca.crt"
+          key_file           = "/etc/ssl/private/prometheus.key"
+          verify_certificate = true
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["prometheus-source-1"]
+
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.auth_strategy", "plain"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.address_key", "PROMETHEUS_ADDRESS"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.path", "/api/v1/write"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.username_key", "PROMETHEUS_USERNAME"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.password_key", "PROMETHEUS_PASSWORD"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.crt_file", "/etc/ssl/certs/prometheus.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.key_file", "/etc/ssl/private/prometheus.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.verify_certificate", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.valid_token.#", "0"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_prometheusRemoteWriteDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.prometheus_remote_write_dest"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// Minimal config: only required fields
+				Config: `
+resource "datadog_observability_pipeline" "prometheus_remote_write_dest" {
+  name = "prometheus-remote-write-destination-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    destination {
+      id     = "prometheus-remote-write-1"
+      inputs = ["source-1"]
+
+      prometheus_remote_write {
+        endpoint_url_key = "PROMETHEUS_ENDPOINT_URL"
+        auth_strategy    = "none"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "prometheus-remote-write-destination-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "prometheus-remote-write-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.endpoint_url_key", "PROMETHEUS_ENDPOINT_URL"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.auth_strategy", "none"),
+				),
+			},
+			{
+				// Full config: all optional fields, TLS, and disk buffer
+				Config: `
+resource "datadog_observability_pipeline" "prometheus_remote_write_dest" {
+  name = "prometheus-remote-write-destination-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    destination {
+      id     = "prometheus-remote-write-1"
+      inputs = ["source-1"]
+
+      prometheus_remote_write {
+        endpoint_url_key  = "PROMETHEUS_ENDPOINT_URL"
+        default_namespace = "custom_namespace"
+        tenant_id          = "tenant-1"
+        auth_strategy      = "bearer"
+        token_key          = "PROMETHEUS_TOKEN"
+
+        tls {
+          crt_file    = "/etc/ssl/certs/prometheus.crt"
+          ca_file     = "/etc/ssl/certs/ca.crt"
+          key_file    = "/etc/ssl/private/prometheus.key"
+          server_name = "prometheus.example.com"
+        }
+
+        buffer {
+          disk {
+            max_size  = 1073741824
+            when_full = "drop_newest"
+          }
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.endpoint_url_key", "PROMETHEUS_ENDPOINT_URL"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.default_namespace", "custom_namespace"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.tenant_id", "tenant-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.auth_strategy", "bearer"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.token_key", "PROMETHEUS_TOKEN"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.tls.0.crt_file", "/etc/ssl/certs/prometheus.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.tls.0.key_file", "/etc/ssl/private/prometheus.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.tls.0.server_name", "prometheus.example.com"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.buffer.0.disk.0.max_size", "1073741824"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.buffer.0.disk.0.when_full", "drop_newest"),
 				),
 			},
 		},

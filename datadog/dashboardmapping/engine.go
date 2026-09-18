@@ -16,6 +16,8 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	"github.com/hashicorp/go-cty/cty"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 )
 
 // FieldType drives serialization/deserialization behavior in the engine.
@@ -92,6 +94,11 @@ type FieldSpec struct {
 	// Derived by comparing cassette request bodies against HCL configs.
 	OmitEmpty bool
 
+	// PreserveZero keeps an explicitly configured numeric zero in JSON while still
+	// omitting an unset optional field. SDKv2 drops zero values from some nested
+	// decoded maps, so the build engine consults raw configuration when available.
+	PreserveZero bool
+
 	// Children: for TypeBlock and TypeBlockList, the nested field specs.
 	Children []FieldSpec
 
@@ -111,6 +118,9 @@ type FieldSpec struct {
 	// MaxItems: override for TypeBlockList (default 0 = unlimited)
 	// TypeBlock always uses MaxItems: 1 automatically.
 	MaxItems int
+
+	// MinItems: minimum count for list and TypeBlockList fields (default 0 = unset).
+	MinItems int
 
 	// Sensitive: mask this field in logs and UI
 	Sensitive bool
@@ -179,6 +189,69 @@ type WidgetSpec struct {
 	// Fields are the widget-specific fields.
 	// CommonWidgetFields are automatically merged in by the engine.
 	Fields []FieldSpec
+
+	// JSONMatchPath and JSONMatchValues disambiguate widget schemas that share
+	// the same JSON type. The path supports object keys and array indexes, for
+	// example `requests.0.request_type` for the two funnel definitions.
+	JSONMatchPath   string
+	JSONMatchValues []string
+
+	// JSONDefaultMatch marks the fallback schema when the JSON type matches but
+	// the discriminator path is absent or contains an unknown value.
+	JSONDefaultMatch bool
+}
+
+// getAtInterfacePath reads a dotted path through JSON objects and arrays.
+func getAtInterfacePath(value interface{}, path string) interface{} {
+	if path == "" {
+		return value
+	}
+	parts := strings.Split(path, ".")
+	current := value
+	for _, part := range parts {
+		switch typed := current.(type) {
+		case map[string]interface{}:
+			current = typed[part]
+		case []interface{}:
+			index, err := strconv.Atoi(part)
+			if err != nil || index < 0 || index >= len(typed) {
+				return nil
+			}
+			current = typed[index]
+		default:
+			return nil
+		}
+	}
+	return current
+}
+
+// findWidgetSpecForJSON selects the schema for a widget definition, including
+// discriminator-aware selection when multiple HCL definitions share a JSON type.
+func findWidgetSpecForJSON(def map[string]interface{}) *WidgetSpec {
+	widgetType, _ := def["type"].(string)
+	var fallback *WidgetSpec
+	for i := range allWidgetSpecs {
+		spec := &allWidgetSpecs[i]
+		if spec.JSONType != widgetType {
+			continue
+		}
+		if spec.JSONMatchPath == "" {
+			if fallback == nil || spec.JSONDefaultMatch {
+				fallback = spec
+			}
+			continue
+		}
+		matchValue, _ := getAtInterfacePath(def, spec.JSONMatchPath).(string)
+		for _, expected := range spec.JSONMatchValues {
+			if matchValue == expected {
+				return spec
+			}
+		}
+		if spec.JSONDefaultMatch {
+			fallback = spec
+		}
+	}
+	return fallback
 }
 
 // ============================================================
@@ -489,8 +562,18 @@ type FormulaRequestConfig struct {
 	// ExtraFields are widget-specific request-level fields emitted before formulas.
 	// Example: on_right_yaxis + display_type for timeseries; change-widget fields.
 	ExtraFields []FieldSpec
+	// FormulaFields overrides the fields used to build and flatten each formula.
+	// nil defaults to widgetFormulaFields.
+	FormulaFields []FieldSpec
 	// IncludeSort: when true, build/flatten the sort block (toplist, geomap, etc.).
 	IncludeSort bool
+}
+
+func (cfg FormulaRequestConfig) effectiveFormulaFields() []FieldSpec {
+	if cfg.FormulaFields != nil {
+		return cfg.FormulaFields
+	}
+	return widgetFormulaFields
 }
 
 // Per-widget FormulaRequestConfig declarations.
@@ -554,9 +637,26 @@ var scalarWithConditionalFormatsConfig = FormulaRequestConfig{
 	ExtraFields:    conditionalFormatsExtraFields,
 }
 
+var queryValueFormulaRequestConfig = FormulaRequestConfig{
+	ResponseFormat: "scalar",
+	StyleFields:    widgetRequestStyleFields,
+	IncludeSort:    true,
+	ExtraFields: append(
+		append([]FieldSpec{}, conditionalFormatsExtraFields...),
+		queryValueWidgetComparisonField,
+	),
+}
+
 var queryTableFormulaRequestConfig = FormulaRequestConfig{
 	ResponseFormat: "scalar",
 	ExtraFields:    queryTableRequestExtraFields,
+	IncludeSort:    true,
+}
+
+var hostmapInfrastructureEnrichmentFormulaRequestConfig = FormulaRequestConfig{
+	ResponseFormat: "scalar",
+	ExtraFields:    hostmapInfrastructureEnrichmentFields,
+	FormulaFields:  hostmapInfrastructureFormulaFields,
 }
 
 // formulaRequestConfigForWidget returns the FormulaRequestConfig for a given widget type.
@@ -568,7 +668,9 @@ func formulaRequestConfigForWidget(jsonType string) FormulaRequestConfig {
 		return heatmapFormulaRequestConfig
 	case "change":
 		return changeFormulaRequestConfig
-	case "query_value", "toplist", "bar_chart":
+	case "query_value":
+		return queryValueFormulaRequestConfig
+	case "toplist", "bar_chart":
 		return scalarWithConditionalFormatsConfig
 	default:
 		return scalarFormulaRequestConfig
@@ -595,7 +697,7 @@ func flattenFormulaRequest(req map[string]interface{}, cfg FormulaRequestConfig)
 		flat := make([]interface{}, len(formulas))
 		for i, f := range formulas {
 			if fm, ok := f.(map[string]interface{}); ok {
-				flat[i] = FlattenEngineJSON(widgetFormulaFields, fm)
+				flat[i] = FlattenEngineJSON(cfg.effectiveFormulaFields(), fm)
 			} else {
 				flat[i] = map[string]interface{}{}
 			}
@@ -634,21 +736,46 @@ func flattenFormulaRequest(req map[string]interface{}, cfg FormulaRequestConfig)
 	return result
 }
 
+func flattenHostmapInfrastructureRequestJSON(request map[string]interface{}, fields []FieldSpec) map[string]interface{} {
+	result := FlattenEngineJSON(fields, request)
+	if enrichments, ok := request["enrichments"].([]interface{}); ok {
+		flatEnrichments := make([]interface{}, len(enrichments))
+		for i, enrichment := range enrichments {
+			enrichmentMap, ok := enrichment.(map[string]interface{})
+			if !ok {
+				flatEnrichments[i] = map[string]interface{}{}
+				continue
+			}
+			flatEnrichments[i] = flattenFormulaRequest(enrichmentMap, hostmapInfrastructureEnrichmentFormulaRequestConfig)
+		}
+		result["enrichment"] = flatEnrichments
+	}
+	if child, ok := request["child"].(map[string]interface{}); ok {
+		result["child"] = []interface{}{flattenHostmapInfrastructureRequestJSON(child, hostmapInfrastructureLeafFields)}
+	}
+	return result
+}
+
 // dataSourceToQueryType maps JSON data_source values to HCL query block keys.
 // Used by flattenFormulaQueryJSON to route flattened queries to the right block.
 var dataSourceToQueryType = map[string]string{
-	"metrics":              "metric_query",
-	"logs":                 "event_query",
-	"spans":                "event_query",
-	"profiling":            "event_query",
-	"audit":                "event_query",
-	"rum":                  "event_query",
-	"errors":               "event_query",
-	"process":              "process_query",
-	"slo":                  "slo_query",
-	"cloud_cost":           "cloud_cost_query",
-	"apm_dependency_stats": "apm_dependency_stats_query",
-	"apm_resource_stats":   "apm_resource_stats_query",
+	"metrics":                     "metric_query",
+	"logs":                        "event_query",
+	"spans":                       "event_query",
+	"profiling":                   "event_query",
+	"audit":                       "event_query",
+	"rum":                         "event_query",
+	"errors":                      "event_query",
+	"process":                     "process_query",
+	"slo":                         "slo_query",
+	"cloud_cost":                  "cloud_cost_query",
+	"apm_dependency_stats":        "apm_dependency_stats_query",
+	"apm_resource_stats":          "apm_resource_stats_query",
+	"apm_metrics":                 "apm_metrics_query",
+	"product_analytics":           "event_query",
+	"product_analytics_extended":  "product_analytics_extended_query",
+	"product_analytics_journey":   "user_journey_query",
+	"product_analytics_retention": "retention_query",
 }
 
 // isFormulaCapableWidget returns true for widget types that support
@@ -679,12 +806,9 @@ func flattenWidgetEngineJSON(widgetData map[string]interface{}) (map[string]inte
 	if !ok {
 		return nil, nil
 	}
-	widgetType, _ := def["type"].(string)
 
-	for _, spec := range allWidgetSpecs {
-		if spec.JSONType != widgetType {
-			continue
-		}
+	if matchedSpec := findWidgetSpecForJSON(def); matchedSpec != nil {
+		spec := *matchedSpec
 		allFields := make([]FieldSpec, 0, len(CommonWidgetFields)+len(spec.Fields))
 		allFields = append(allFields, CommonWidgetFields...)
 		allFields = append(allFields, spec.Fields...)
@@ -844,9 +968,7 @@ func flattenWidgetSortByJSON(sortObj map[string]interface{}) map[string]interfac
 			switch sortType {
 			case "formula":
 				fs := map[string]interface{}{}
-				if idx, ok := obMap["index"].(float64); ok {
-					fs["index"] = int(idx)
-				}
+				fs["index"] = getIntFromMap(obMap, "index")
 				if ord, ok := obMap["order"].(string); ok {
 					fs["order"] = ord
 				}
@@ -1073,6 +1195,35 @@ func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defSt
 		}
 	}
 
+	// ---- Host map infrastructure request ----
+	if spec.JSONType == "hostmap" {
+		if request, ok := def["requests"].(map[string]interface{}); ok {
+			if requestType, _ := request["request_type"].(string); requestType == "infrastructure_hostmap" {
+				defState["request"] = []interface{}{flattenHostmapInfrastructureRequestJSON(request, hostmapRequestInnerFields)}
+			}
+		}
+	}
+
+	// ---- Heatmap: histogram request variant ----
+	if spec.JSONType == "heatmap" {
+		if requestStates, ok := defState["request"].([]interface{}); ok {
+			if requests, ok := def["requests"].([]interface{}); ok && len(requests) == len(requestStates) {
+				for i, request := range requests {
+					requestMap, ok := request.(map[string]interface{})
+					if !ok {
+						continue
+					}
+					if requestType, _ := requestMap["request_type"].(string); requestType != "histogram" {
+						continue
+					}
+					requestStates[i] = map[string]interface{}{
+						"histogram_request": []interface{}{flattenHistogramRequestJSON(requestMap)},
+					}
+				}
+			}
+		}
+	}
+
 	// ---- Split graph source widget + static_splits ----
 	if spec.JSONType == "split_group" {
 		if srcDef, ok := def["source_widget_definition"].(map[string]interface{}); ok {
@@ -1169,6 +1320,11 @@ func flattenQueryTableRequestJSON(req map[string]interface{}) map[string]interfa
 	}
 	// Old-style request
 	result := FlattenEngineJSON(queryTableOldRequestFields, req)
+	if sortObj, ok := req["sort"].(map[string]interface{}); ok {
+		if s := flattenWidgetSortByJSON(sortObj); len(s) > 0 {
+			result["sort"] = []interface{}{s}
+		}
+	}
 	// text_formats (2D array) needs special handling
 	if textFormats, ok := req["text_formats"].([]interface{}); ok && len(textFormats) > 0 {
 		result["text_formats"] = flattenQueryTableTextFormatsJSON(textFormats)
@@ -1278,11 +1434,8 @@ func flattenSplitConfigStaticSplitsJSON(staticSplits []interface{}) []interface{
 // flattenSplitGraphSourceWidgetJSON flattens the source_widget_definition JSON
 // for a split_graph widget response. Returns dropped paths from the inner widget.
 func flattenSplitGraphSourceWidgetJSON(srcDef map[string]interface{}) (map[string]interface{}, []string) {
-	widgetType, _ := srcDef["type"].(string)
-	for _, spec := range allWidgetSpecs {
-		if spec.JSONType != widgetType {
-			continue
-		}
+	if matchedSpec := findWidgetSpecForJSON(srcDef); matchedSpec != nil {
+		spec := *matchedSpec
 		allFields := make([]FieldSpec, 0, len(CommonWidgetFields)+len(spec.Fields))
 		allFields = append(allFields, CommonWidgetFields...)
 		allFields = append(allFields, spec.Fields...)
@@ -1647,9 +1800,43 @@ func getBlockListFromMap(data map[string]interface{}, key string) []map[string]i
 // Generic Engine: SDKv2 map → JSON (build direction)
 // ============================================================
 
+// RawConfigAtReader exposes SDKv2's raw Terraform configuration without tying
+// the mapping engine to schema.ResourceData.
+type RawConfigAtReader interface {
+	GetRawConfigAt(cty.Path) (cty.Value, diag.Diagnostics)
+}
+
+type mapBuildContext struct {
+	rawConfig RawConfigAtReader
+	path      cty.Path
+}
+
+func (ctx mapBuildContext) block(key string, index int) mapBuildContext {
+	return mapBuildContext{
+		rawConfig: ctx.rawConfig,
+		path:      ctx.path.GetAttr(key).IndexInt(index),
+	}
+}
+
+func (ctx mapBuildContext) explicitlyConfiguredZero(data map[string]interface{}, field FieldSpec) bool {
+	if _, present := data[field.HCLKey]; present {
+		return true
+	}
+	if ctx.rawConfig == nil {
+		return false
+	}
+	value, diags := ctx.rawConfig.GetRawConfigAt(ctx.path.GetAttr(field.HCLKey))
+	return !diags.HasError() && value.IsKnown() && !value.IsNull() &&
+		value.Type() == cty.Number && value.AsBigFloat().Sign() == 0
+}
+
 // BuildEngineJSONFromMap converts a SDKv2 data map to a JSON map using FieldSpec declarations.
 // This is the SDKv2 parallel of BuildEngineJSON (which reads from map[string]attr.Value).
 func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map[string]interface{} {
+	return buildEngineJSONFromMap(data, fields, mapBuildContext{})
+}
+
+func buildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec, ctx mapBuildContext) map[string]interface{} {
 	result := map[string]interface{}{}
 	for _, f := range fields {
 		if f.SchemaOnly {
@@ -1673,14 +1860,14 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 
 		case TypeInt:
 			intVal := getIntFromMap(data, f.HCLKey)
-			if f.OmitEmpty && intVal == 0 {
+			if f.OmitEmpty && intVal == 0 && (!f.PreserveZero || !ctx.explicitlyConfiguredZero(data, f)) {
 				continue
 			}
 			setAtJSONPath(result, f.effectiveJSONPath(), intVal)
 
 		case TypeFloat:
 			floatVal := getFloat64FromMap(data, f.HCLKey)
-			if f.OmitEmpty && floatVal == 0 {
+			if f.OmitEmpty && floatVal == 0 && (!f.PreserveZero || !ctx.explicitlyConfiguredZero(data, f)) {
 				continue
 			}
 			setAtJSONPath(result, f.effectiveJSONPath(), floatVal)
@@ -1710,7 +1897,7 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 			if child == nil {
 				continue
 			}
-			nested := BuildEngineJSONFromMap(child, f.Children)
+			nested := buildEngineJSONFromMap(child, f.Children, ctx.block(f.HCLKey, 0))
 			if len(nested) == 0 && f.OmitEmpty {
 				continue
 			}
@@ -1729,13 +1916,14 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 				// Discriminated union per list item
 				items := getBlockListFromMap(data, f.HCLKey)
 				built := make([]interface{}, 0, len(items))
-				for _, item := range items {
+				for i, item := range items {
 					matched, inner := findPopulatedVariant(f, item)
 					if matched == nil {
 						built = append(built, map[string]interface{}{})
 						continue
 					}
-					resultJSON := BuildEngineJSONFromMap(inner, matched.Children)
+					variantCtx := ctx.block(f.HCLKey, i).block(matched.HCLKey, 0)
+					resultJSON := buildEngineJSONFromMap(inner, matched.Children, variantCtx)
 					if matched.Discriminator != nil && matched.Discriminator.Value != "" {
 						keyToInject := matched.Discriminator.ChildJSONKey
 						if keyToInject == "" {
@@ -1754,8 +1942,8 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 			} else {
 				items := getBlockListFromMap(data, f.HCLKey)
 				built := make([]interface{}, 0, len(items))
-				for _, item := range items {
-					built = append(built, BuildEngineJSONFromMap(item, f.Children))
+				for i, item := range items {
+					built = append(built, buildEngineJSONFromMap(item, f.Children, ctx.block(f.HCLKey, i)))
 				}
 				if f.OmitEmpty && len(built) == 0 {
 					continue
@@ -1774,7 +1962,8 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 			matched, inner := findPopulatedVariant(f, outer)
 			var built map[string]interface{}
 			if matched != nil && inner != nil {
-				built = BuildEngineJSONFromMap(inner, matched.Children)
+				variantCtx := ctx.block(f.HCLKey, 0).block(matched.HCLKey, 0)
+				built = buildEngineJSONFromMap(inner, matched.Children, variantCtx)
 			}
 			if built == nil {
 				if f.OmitEmpty {
@@ -1808,12 +1997,132 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 // This is the exported entry point for callers outside the dashboardmapping package
 // (e.g., the powerpack SDKv2 resource).
 func BuildWidgetEngineJSONFromMap(widget map[string]interface{}) map[string]interface{} {
-	return buildWidgetEngineJSONFromMap(widget)
+	return buildWidgetEngineJSONFromMap(widget, mapBuildContext{})
+}
+
+// BuildWidgetEngineJSONFromMapWithRawConfig builds one widget while preserving
+// explicitly configured zero values at the supplied Terraform configuration path.
+func BuildWidgetEngineJSONFromMapWithRawConfig(widget map[string]interface{}, rawConfig RawConfigAtReader, path cty.Path) map[string]interface{} {
+	return buildWidgetEngineJSONFromMap(widget, mapBuildContext{rawConfig: rawConfig, path: path})
+}
+
+func widgetSpecForJSONType(widgetType string) *WidgetSpec {
+	for i := range allWidgetSpecs {
+		if allWidgetSpecs[i].JSONType == widgetType {
+			return &allWidgetSpecs[i]
+		}
+	}
+	return nil
+}
+
+// WidgetDefinitionHCLKey returns the Terraform block name for a widget JSON
+// type. Validation APIs speak in JSON paths, while provider errors must point
+// users to the corresponding HCL configuration.
+func WidgetDefinitionHCLKey(widgetType string) string {
+	spec := widgetSpecForJSONType(widgetType)
+	if spec == nil {
+		return "unknown_definition"
+	}
+	return spec.HCLKey
+}
+
+// WidgetErrorPathToHCL translates a widget-definition JSON error path, such as
+// "requests.0.q", to its FieldSpec-backed Terraform path, such as
+// "request.0.q". Unknown path segments are preserved so backend errors never
+// lose useful location information.
+func WidgetErrorPathToHCL(widgetType, jsonPath string) string {
+	spec := widgetSpecForJSONType(widgetType)
+	if spec == nil {
+		return normalizeValidationJSONPath(jsonPath)
+	}
+	fields := make([]FieldSpec, 0, len(CommonWidgetFields)+len(spec.Fields))
+	fields = append(fields, CommonWidgetFields...)
+	fields = append(fields, spec.Fields...)
+
+	tokens := strings.Split(normalizeValidationJSONPath(jsonPath), ".")
+	return strings.Join(fieldSpecJSONPathToHCL(fields, tokens), ".")
+}
+
+func normalizeValidationJSONPath(path string) string {
+	path = strings.TrimSpace(path)
+	if strings.HasPrefix(path, "[") && strings.HasSuffix(path, "]") {
+		path = strings.TrimSuffix(strings.TrimPrefix(path, "["), "]")
+		parts := strings.Split(path, ",")
+		tokens := make([]string, 0, len(parts))
+		for _, part := range parts {
+			token := strings.Trim(strings.TrimSpace(part), "'\"")
+			if token != "" {
+				tokens = append(tokens, token)
+			}
+		}
+		return strings.Join(tokens, ".")
+	}
+	path = strings.ReplaceAll(path, "[", ".")
+	path = strings.ReplaceAll(path, "]", "")
+	return strings.Trim(path, ".")
+}
+
+func fieldSpecJSONPathToHCL(fields []FieldSpec, tokens []string) []string {
+	if len(tokens) == 0 {
+		return nil
+	}
+
+	for _, field := range fields {
+		jsonPath := field.effectiveJSONPath()
+		// Formula-and-function blocks use singular HCL names but are assembled
+		// into plural JSON arrays by the request post-processor.
+		if field.Type == TypeBlockList && field.JSONKey == "" && field.JSONPath == "" {
+			switch field.HCLKey {
+			case "query":
+				jsonPath = "queries"
+			case "formula":
+				jsonPath = "formulas"
+			}
+		}
+		jsonTokens := strings.Split(jsonPath, ".")
+		if !hasPathPrefix(tokens, jsonTokens) {
+			continue
+		}
+
+		result := []string{field.HCLKey}
+		rest := tokens[len(jsonTokens):]
+		switch field.Type {
+		case TypeBlock, TypeBlockList:
+			if len(rest) > 0 {
+				if _, err := strconv.Atoi(rest[0]); err == nil {
+					result = append(result, rest[0])
+					rest = rest[1:]
+				}
+			}
+			result = append(result, fieldSpecJSONPathToHCL(field.Children, rest)...)
+		case TypeOneOf:
+			// The selected HCL variant is not encoded in the JSON error path.
+			// Preserve the remaining backend path rather than inventing a block.
+			result = append(result, rest...)
+		default:
+			result = append(result, rest...)
+		}
+		return result
+	}
+
+	return tokens
+}
+
+func hasPathPrefix(path, prefix []string) bool {
+	if len(prefix) > len(path) {
+		return false
+	}
+	for i := range prefix {
+		if path[i] != prefix[i] {
+			return false
+		}
+	}
+	return true
 }
 
 // buildWidgetEngineJSONFromMap builds the JSON for a single widget from a SDKv2 map.
 // Parallel to buildWidgetEngineJSON but reads from map[string]interface{}.
-func buildWidgetEngineJSONFromMap(widget map[string]interface{}) map[string]interface{} {
+func buildWidgetEngineJSONFromMap(widget map[string]interface{}, ctx mapBuildContext) map[string]interface{} {
 	for _, spec := range allWidgetSpecs {
 		defList, ok := widget[spec.HCLKey].([]interface{})
 		if !ok || len(defList) == 0 {
@@ -1827,32 +2136,19 @@ func buildWidgetEngineJSONFromMap(widget map[string]interface{}) map[string]inte
 		allFields := make([]FieldSpec, 0, len(CommonWidgetFields)+len(spec.Fields))
 		allFields = append(allFields, CommonWidgetFields...)
 		allFields = append(allFields, spec.Fields...)
-		defJSON := BuildEngineJSONFromMap(defMap, allFields)
+		defCtx := ctx.block(spec.HCLKey, 0)
+		defJSON := buildEngineJSONFromMap(defMap, allFields, defCtx)
 		defJSON["type"] = spec.JSONType
 
 		// Per-widget post-processing
-		buildWidgetPostProcessFromMap(defMap, spec, defJSON)
+		buildWidgetPostProcessFromMap(defMap, spec, defJSON, defCtx)
 
 		widgetJSON := map[string]interface{}{"definition": defJSON}
 
 		// Include widget_layout if present
 		if layoutList, ok := widget["widget_layout"].([]interface{}); ok && len(layoutList) > 0 {
 			if layoutMap, ok := layoutList[0].(map[string]interface{}); ok {
-				layout := map[string]interface{}{}
-				// Zero is a valid x/y coordinate, unlike width and height.
-				for _, key := range []string{"x", "y"} {
-					if _, ok := layoutMap[key]; ok {
-						layout[key] = getIntFromMap(layoutMap, key)
-					}
-				}
-				for _, key := range []string{"width", "height"} {
-					if v := getIntFromMap(layoutMap, key); v != 0 {
-						layout[key] = v
-					}
-				}
-				if getBoolFromMap(layoutMap, "is_column_break") {
-					layout["is_column_break"] = true
-				}
+				layout := buildEngineJSONFromMap(layoutMap, widgetLayoutFieldSpecs, ctx.block("widget_layout", 0))
 				if len(layout) > 0 {
 					widgetJSON["layout"] = layout
 				}
@@ -1870,18 +2166,18 @@ func buildWidgetEngineJSONFromMap(widget map[string]interface{}) map[string]inte
 }
 
 // buildWidgetsJSONFromMap builds the "widgets" array from a SDKv2 data map.
-func buildWidgetsJSONFromMap(data map[string]interface{}) []interface{} {
+func buildWidgetsJSONFromMap(data map[string]interface{}, ctx mapBuildContext) []interface{} {
 	widgetList, ok := data["widget"].([]interface{})
 	if !ok || len(widgetList) == 0 {
 		return []interface{}{}
 	}
 	widgets := make([]interface{}, 0, len(widgetList))
-	for _, w := range widgetList {
+	for i, w := range widgetList {
 		widgetMap, ok := w.(map[string]interface{})
 		if !ok {
 			continue
 		}
-		built := buildWidgetEngineJSONFromMap(widgetMap)
+		built := buildWidgetEngineJSONFromMap(widgetMap, ctx.block("widget", i))
 		if built != nil {
 			widgets = append(widgets, built)
 		}
@@ -1910,7 +2206,7 @@ func buildFormulaRequestFromMap(reqMap map[string]interface{}, cfg FormulaReques
 	if len(formulaList) > 0 {
 		formulas := make([]interface{}, 0, len(formulaList))
 		for _, fMap := range formulaList {
-			formulas = append(formulas, BuildEngineJSONFromMap(fMap, widgetFormulaFields))
+			formulas = append(formulas, BuildEngineJSONFromMap(fMap, cfg.effectiveFormulaFields()))
 		}
 		result["formulas"] = formulas
 	}
@@ -1953,6 +2249,22 @@ func buildFormulaRequestFromMap(reqMap map[string]interface{}, cfg FormulaReques
 		result["response_format"] = cfg.ResponseFormat
 	}
 
+	return result
+}
+
+func buildHostmapInfrastructureRequestJSONFromMap(requestMap map[string]interface{}, fields []FieldSpec, ctx mapBuildContext) map[string]interface{} {
+	result := buildEngineJSONFromMap(requestMap, fields, ctx)
+	enrichmentList := getBlockListFromMap(requestMap, "enrichment")
+	if len(enrichmentList) > 0 {
+		enrichments := make([]interface{}, 0, len(enrichmentList))
+		for _, enrichmentMap := range enrichmentList {
+			enrichments = append(enrichments, buildFormulaRequestFromMap(enrichmentMap, hostmapInfrastructureEnrichmentFormulaRequestConfig))
+		}
+		result["enrichments"] = enrichments
+	}
+	if childMap := getBlockFromMap(requestMap, "child"); childMap != nil {
+		result["child"] = buildHostmapInfrastructureRequestJSONFromMap(childMap, hostmapInfrastructureLeafFields, ctx.block("child", 0))
+	}
 	return result
 }
 
@@ -2093,9 +2405,7 @@ func buildWidgetSortByJSONFromMap(sortMap map[string]interface{}) map[string]int
 			entry := map[string]interface{}{}
 			if fsMap := getBlockFromMap(obMap, "formula_sort"); fsMap != nil {
 				entry["type"] = "formula"
-				if idx := getIntFromMap(fsMap, "index"); idx != 0 {
-					entry["index"] = idx
-				}
+				entry["index"] = getIntFromMap(fsMap, "index")
 				if ord := getStringFromMap(fsMap, "order"); ord != "" {
 					entry["order"] = ord
 				}
@@ -2136,6 +2446,11 @@ func buildQueryTableRequestsJSONFromMap(defMap map[string]interface{}) []interfa
 			requests = append(requests, req)
 		} else {
 			req := BuildEngineJSONFromMap(reqMap, queryTableOldRequestFields)
+			if sortMap := getBlockFromMap(reqMap, "sort"); sortMap != nil {
+				if sortJSON := buildWidgetSortByJSONFromMap(sortMap); len(sortJSON) > 0 {
+					req["sort"] = sortJSON
+				}
+			}
 			buildQueryTableTextFormatsJSONFromMap(reqMap, req)
 			requests = append(requests, req)
 		}
@@ -2256,7 +2571,7 @@ func buildScatterplotTableJSONFromMap(defMap map[string]interface{}, defJSON map
 
 // buildSplitGraphSourceWidgetJSONFromMap builds the source_widget_definition JSON for split_graph.
 // Parallel to buildSplitGraphSourceWidgetJSON in engine.go.
-func buildSplitGraphSourceWidgetJSONFromMap(defMap map[string]interface{}) map[string]interface{} {
+func buildSplitGraphSourceWidgetJSONFromMap(defMap map[string]interface{}, ctx mapBuildContext) map[string]interface{} {
 	srcWidgetMap := getBlockFromMap(defMap, "source_widget_definition")
 	if srcWidgetMap == nil {
 		return nil
@@ -2273,9 +2588,10 @@ func buildSplitGraphSourceWidgetJSONFromMap(defMap map[string]interface{}) map[s
 		allFields := make([]FieldSpec, 0, len(CommonWidgetFields)+len(spec.Fields))
 		allFields = append(allFields, CommonWidgetFields...)
 		allFields = append(allFields, spec.Fields...)
-		defJSON := BuildEngineJSONFromMap(innerMap, allFields)
+		innerCtx := ctx.block("source_widget_definition", 0).block(spec.HCLKey, 0)
+		defJSON := buildEngineJSONFromMap(innerMap, allFields, innerCtx)
 		defJSON["type"] = spec.JSONType
-		buildWidgetPostProcessFromMap(innerMap, spec, defJSON)
+		buildWidgetPostProcessFromMap(innerMap, spec, defJSON, innerCtx)
 		return defJSON
 	}
 	return nil
@@ -2311,18 +2627,18 @@ func buildSplitConfigStaticSplitsJSONFromMap(splitConfigMap map[string]interface
 
 // buildGroupWidgetsJSONFromMap builds the "widgets" array for a group widget.
 // Parallel to buildGroupWidgetsJSON in engine.go.
-func buildGroupWidgetsJSONFromMap(defMap map[string]interface{}) []interface{} {
+func buildGroupWidgetsJSONFromMap(defMap map[string]interface{}, ctx mapBuildContext) []interface{} {
 	widgetList, ok := defMap["widget"].([]interface{})
 	if !ok || len(widgetList) == 0 {
 		return []interface{}{}
 	}
 	widgets := make([]interface{}, 0, len(widgetList))
-	for _, w := range widgetList {
+	for i, w := range widgetList {
 		widgetMap, ok := w.(map[string]interface{})
 		if !ok {
 			continue
 		}
-		built := buildWidgetEngineJSONFromMap(widgetMap)
+		built := buildWidgetEngineJSONFromMap(widgetMap, ctx.block("widget", i))
 		if built == nil {
 			built = map[string]interface{}{}
 		}
@@ -2333,7 +2649,7 @@ func buildGroupWidgetsJSONFromMap(defMap map[string]interface{}) []interface{} {
 
 // buildWidgetPostProcessFromMap runs all per-widget post-processing in the build direction.
 // Parallel to buildWidgetPostProcess in engine.go but reads from map[string]interface{}.
-func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpec, defJSON map[string]interface{}) {
+func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpec, defJSON map[string]interface{}, ctx mapBuildContext) {
 	// ---- Formula/query blocks ----
 	if isFormulaCapableWidget(spec.JSONType) {
 		requestList := getBlockListFromMap(defMap, "request")
@@ -2370,9 +2686,32 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 		defJSON["requests"] = buildQueryTableRequestsJSONFromMap(defMap)
 	}
 
+	// ---- Host map infrastructure request ----
+	if spec.JSONType == "hostmap" {
+		if requestMap := getBlockFromMap(defMap, "request"); requestMap != nil {
+			if getStringFromMap(requestMap, "request_type") == "infrastructure_hostmap" {
+				defJSON["requests"] = buildHostmapInfrastructureRequestJSONFromMap(requestMap, hostmapRequestInnerFields, ctx.block("request", 0))
+			}
+		}
+	}
+
+	// ---- Heatmap: histogram request variant ----
+	if spec.JSONType == "heatmap" {
+		requestList := getBlockListFromMap(defMap, "request")
+		if existingRequests, ok := defJSON["requests"].([]interface{}); ok && len(existingRequests) == len(requestList) {
+			for i, requestMap := range requestList {
+				histogramRequest := getBlockFromMap(requestMap, "histogram_request")
+				if histogramRequest == nil {
+					continue
+				}
+				existingRequests[i] = buildHistogramRequestJSONFromMap(histogramRequest)
+			}
+		}
+	}
+
 	// ---- Split graph source widget + static_splits ----
 	if spec.JSONType == "split_group" {
-		srcDefJSON := buildSplitGraphSourceWidgetJSONFromMap(defMap)
+		srcDefJSON := buildSplitGraphSourceWidgetJSONFromMap(defMap, ctx)
 		if srcDefJSON != nil {
 			defJSON["source_widget_definition"] = srcDefJSON
 		}
@@ -2388,11 +2727,11 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 
 	// ---- Group nested widgets ----
 	if spec.JSONType == "group" {
-		defJSON["widgets"] = buildGroupWidgetsJSONFromMap(defMap)
+		defJSON["widgets"] = buildGroupWidgetsJSONFromMap(defMap, ctx)
 	}
 
 	// ---- Funnel request_type injection ----
-	if spec.JSONType == "funnel" {
+	if spec.HCLKey == "funnel_definition" {
 		if requests, ok := defJSON["requests"].([]interface{}); ok {
 			for _, req := range requests {
 				if reqMap, ok := req.(map[string]interface{}); ok {
@@ -2436,6 +2775,42 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 }
 
 // ============================================================
+// Histogram Request Build/Flatten Helpers
+// ============================================================
+
+// flattenHistogramRequestJSON converts a histogram request API object into the
+// shared histogram_request block shape used by Heatmap and Wildcard widgets.
+func flattenHistogramRequestJSON(req map[string]interface{}) map[string]interface{} {
+	state := map[string]interface{}{}
+	if styleObj, ok := req["style"].(map[string]interface{}); ok {
+		if style := FlattenEngineJSON(widgetRequestStyleFields, styleObj); len(style) > 0 {
+			state["style"] = []interface{}{style}
+		}
+	}
+	if query, ok := req["query"].(map[string]interface{}); ok {
+		state["histogram_query"] = []interface{}{flattenFormulaQueryJSON(query)}
+	}
+	return state
+}
+
+// buildHistogramRequestJSONFromMap converts a shared histogram_request block
+// into the API's request_type=histogram request shape.
+func buildHistogramRequestJSONFromMap(histogramRequest map[string]interface{}) map[string]interface{} {
+	reqJSON := map[string]interface{}{"request_type": "histogram"}
+	if histogramQuery := getBlockFromMap(histogramRequest, "histogram_query"); histogramQuery != nil {
+		if query := buildQueryFromMapAttrs(histogramQuery); query != nil {
+			reqJSON["query"] = query
+		}
+	}
+	if styleMap := getBlockFromMap(histogramRequest, "style"); styleMap != nil {
+		if style := BuildEngineJSONFromMap(styleMap, widgetRequestStyleFields); len(style) > 0 {
+			reqJSON["style"] = style
+		}
+	}
+	return reqJSON
+}
+
+// ============================================================
 // Wildcard Widget Build/Flatten Helpers
 // ============================================================
 
@@ -2457,16 +2832,7 @@ var wildcardTimeseriesConfig = FormulaRequestConfig{
 // request_type=histogram) using the histogram variant.
 func flattenWildcardRequestJSON(req map[string]interface{}) map[string]interface{} {
 	if rt, _ := req["request_type"].(string); rt == "histogram" {
-		variantState := map[string]interface{}{}
-		if styleObj, ok := req["style"].(map[string]interface{}); ok {
-			if s := FlattenEngineJSON(widgetRequestStyleFields, styleObj); len(s) > 0 {
-				variantState["style"] = []interface{}{s}
-			}
-		}
-		if q, ok := req["query"].(map[string]interface{}); ok {
-			variantState["histogram_query"] = []interface{}{flattenFormulaQueryJSON(q)}
-		}
-		return map[string]interface{}{"histogram_request": []interface{}{variantState}}
+		return map[string]interface{}{"histogram_request": []interface{}{flattenHistogramRequestJSON(req)}}
 	}
 	responseFormat, _ := req["response_format"].(string)
 	switch responseFormat {
@@ -2495,18 +2861,7 @@ func buildWildcardRequestsJSONFromMap(defMap map[string]interface{}) []interface
 		switch {
 		case getBlockFromMap(reqMap, "histogram_request") != nil:
 			variant := getBlockFromMap(reqMap, "histogram_request")
-			reqJSON := map[string]interface{}{"request_type": "histogram"}
-			if histQuery := getBlockFromMap(variant, "histogram_query"); histQuery != nil {
-				if built := buildQueryFromMapAttrs(histQuery); built != nil {
-					reqJSON["query"] = built
-				}
-			}
-			if styleMap := getBlockFromMap(variant, "style"); styleMap != nil {
-				if s := BuildEngineJSONFromMap(styleMap, widgetRequestStyleFields); len(s) > 0 {
-					reqJSON["style"] = s
-				}
-			}
-			requests = append(requests, reqJSON)
+			requests = append(requests, buildHistogramRequestJSONFromMap(variant))
 		case getBlockFromMap(reqMap, "timeseries_request") != nil:
 			variant := getBlockFromMap(reqMap, "timeseries_request")
 			requests = append(requests, buildFormulaRequestFromMap(variant, wildcardTimeseriesConfig))
@@ -2530,13 +2885,23 @@ func buildWildcardRequestsJSONFromMap(defMap map[string]interface{}) []interface
 // BuildDashboardEngineJSONFromMap builds the full dashboard JSON body from a SDKv2 data map.
 // Parallel to BuildDashboardEngineJSON in engine.go.
 func BuildDashboardEngineJSONFromMap(data map[string]interface{}, id string) map[string]interface{} {
-	result := BuildEngineJSONFromMap(data, DashboardTopLevelFields)
+	return buildDashboardEngineJSONFromMap(data, id, mapBuildContext{})
+}
+
+// BuildDashboardEngineJSONFromMapWithRawConfig preserves explicitly configured
+// zero values that SDKv2 omits from decoded nested maps.
+func BuildDashboardEngineJSONFromMapWithRawConfig(data map[string]interface{}, id string, rawConfig RawConfigAtReader) map[string]interface{} {
+	return buildDashboardEngineJSONFromMap(data, id, mapBuildContext{rawConfig: rawConfig})
+}
+
+func buildDashboardEngineJSONFromMap(data map[string]interface{}, id string, ctx mapBuildContext) map[string]interface{} {
+	result := buildEngineJSONFromMap(data, DashboardTopLevelFields, ctx)
 
 	// Both POST and PUT bodies need the id set.
 	result["id"] = id
 
 	// Build widgets with type dispatch.
-	widgets := buildWidgetsJSONFromMap(data)
+	widgets := buildWidgetsJSONFromMap(data, ctx)
 	result["widgets"] = widgets
 
 	// Build tabs with @N → widget ID resolution.
@@ -2589,6 +2954,16 @@ func MarshalDashboardJSONFromMap(data map[string]interface{}, id string) (string
 	body, err := json.Marshal(BuildDashboardEngineJSONFromMap(data, id))
 	if err != nil {
 		return "", fmt.Errorf("error marshaling dashboard JSON: %s", err)
+	}
+	return string(body) + "\n", nil
+}
+
+// MarshalDashboardJSONFromMapWithRawConfig marshals a dashboard while retaining
+// explicit zero values from raw Terraform configuration.
+func MarshalDashboardJSONFromMapWithRawConfig(data map[string]interface{}, id string, rawConfig RawConfigAtReader) (string, error) {
+	body, err := json.Marshal(BuildDashboardEngineJSONFromMapWithRawConfig(data, id, rawConfig))
+	if err != nil {
+		return "", fmt.Errorf("error marshaling dashboard JSON: %w", err)
 	}
 	return string(body) + "\n", nil
 }

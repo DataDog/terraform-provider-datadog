@@ -1,0 +1,329 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: Actions Datastores
+  description: 'Leverage the Actions Datastore API to create, modify, and delete
+
+    items in datastores owned by your organization.'
+  externalDocs:
+    url: https://docs.datadoghq.com/actions/datastore
+paths:
+  /api/v2/actions-datastores/{datastore_id}:
+    get:
+      operationId: GetDatastore
+      tags:
+      - Actions Datastores
+      summary: Get datastore
+      description: Retrieves a specific datastore by its ID.
+      parameters:
+      - name: datastore_id
+        in: path
+        required: true
+        description: The unique identifier of the datastore to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Datastore'
+              examples:
+                default:
+                  value:
+                    data:
+                      id: 00000000-0000-0000-0000-000000000003
+                      type: datastores
+                      attributes:
+                        name: Example Datastore
+                        description: A sample datastore
+                        primary_column_name: id
+                        primary_key_generation_strategy: none
+                        created_at: '2024-01-01T00:00:00+00:00'
+                        modified_at: '2024-01-01T00:00:00+00:00'
+                        org_id: 123
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSONAPIErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSONAPIErrorResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      x-menu-order: 3
+      x-permission:
+        operator: OR
+        permissions:
+        - apps_datastore_read
+      x-undo:
+        type: safe
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: datastore
+        tf_description: Use this data source to retrieve information about an existing Datadog datastore.
+        group:
+          read: GetDatastore
+          search: ListDatastores
+  /api/v2/actions-datastores:
+    get:
+      operationId: ListDatastores
+      tags:
+      - Actions Datastores
+      summary: List datastores
+      description: Lists all datastores for the organization.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatastoreArray'
+              examples:
+                default:
+                  value:
+                    data:
+                    - id: 00000000-0000-0000-0000-000000000001
+                      type: datastores
+                      attributes:
+                        name: Example Datastore
+                        description: A sample datastore
+                        primary_column_name: id
+                        primary_key_generation_strategy: none
+                        created_at: '2024-01-01T00:00:00+00:00'
+                        modified_at: '2024-01-01T00:00:00+00:00'
+                        org_id: 123
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      x-menu-order: 1
+      x-permission:
+        operator: OR
+        permissions:
+        - apps_datastore_read
+      x-undo:
+        type: safe
+components:
+  responses:
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    Datastore:
+      type: object
+      description: A datastore's complete configuration and metadata.
+      properties:
+        data:
+          $ref: '#/components/schemas/DatastoreData'
+    DatastoreArray:
+      type: object
+      description: A collection of datastores returned by list operations.
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          description: An array of datastore objects containing their configurations and metadata.
+          items:
+            $ref: '#/components/schemas/DatastoreData'
+    DatastoreAttributesPrimaryColumnName:
+      type: string
+      description: "The name of the primary key column for this datastore. Primary column names:\n  -
+        Must abide by both [PostgreSQL naming conventions](https://www.postgresql.org/docs/7.0/syntax525.htm)\n
+        \ - Cannot exceed 63 characters"
+      maxLength: 63
+      example: ''
+    DatastoreData:
+      type: object
+      description: Core information about a datastore, including its unique identifier and attributes.
+      required:
+      - type
+      properties:
+        attributes:
+          $ref: '#/components/schemas/DatastoreDataAttributes'
+        id:
+          type: string
+          description: The unique identifier of the datastore.
+        type:
+          $ref: '#/components/schemas/DatastoreDataType'
+    DatastoreDataAttributes:
+      type: object
+      description: Detailed information about a datastore.
+      properties:
+        created_at:
+          type: string
+          description: Timestamp when the datastore was created.
+          format: date-time
+        creator_user_id:
+          type: integer
+          description: The numeric ID of the user who created the datastore.
+          format: int64
+        creator_user_uuid:
+          type: string
+          description: The UUID of the user who created the datastore.
+        description:
+          type: string
+          description: A human-readable description about the datastore.
+        modified_at:
+          type: string
+          description: Timestamp when the datastore was last modified.
+          format: date-time
+        name:
+          type: string
+          description: The display name of the datastore.
+        org_id:
+          type: integer
+          description: The ID of the organization that owns this datastore.
+          format: int64
+        primary_column_name:
+          $ref: '#/components/schemas/DatastoreAttributesPrimaryColumnName'
+        primary_key_generation_strategy:
+          $ref: '#/components/schemas/DatastorePrimaryKeyGenerationStrategy'
+    DatastoreDataType:
+      type: string
+      description: The resource type for datastores.
+      default: datastores
+      example: datastores
+      enum:
+      - datastores
+      x-enum-varnames:
+      - DATASTORES
+    DatastorePrimaryKeyGenerationStrategy:
+      type: string
+      description: Can be set to `uuid` to automatically generate primary keys when new items are added.
+        Default value is `none`, which requires you to supply a primary key for each new item.
+      enum:
+      - none
+      - uuid
+      x-enum-varnames:
+      - NONE
+      - UUID
+    JSONAPIErrorItem:
+      type: object
+      description: API error response body
+      properties:
+        status:
+          type: string
+          description: Status code of the response.
+          example: '400'
+        title:
+          type: string
+          description: Short human-readable summary of the error.
+          example: Bad Request
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the error.
+          example: Missing required attribute in body
+        meta:
+          type: object
+          description: Non-standard meta-information about the error
+          additionalProperties: {}
+        source:
+          $ref: '#/components/schemas/JSONAPIErrorItemSource'
+    JSONAPIErrorItemSource:
+      type: object
+      description: References to the source of the error.
+      properties:
+        pointer:
+          type: string
+          description: A JSON pointer to the value in the request document that caused the error.
+          example: /data/attributes/title
+        parameter:
+          type: string
+          description: A string indicating which URI query parameter caused the error.
+          example: limit
+        header:
+          type: string
+          description: A string indicating the name of a single request header which caused the error.
+          example: Authorization
+    JSONAPIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          items:
+            $ref: '#/components/schemas/JSONAPIErrorItem'
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY

@@ -87,7 +87,7 @@ func (r *DatasetResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"product": schema.StringAttribute{
-							Description: "The product type of the dataset. Supported types: `apm`, `rum`, `synthetics`, `metrics` (Custom Metrics), `logs`, `sd_repoinfo`, `error_tracking`, `cloud_cost`, and `ml_obs`.",
+							Description: "The product type of the dataset. Supported types: `apm`, `rum`, `metrics` (Custom Metrics), `logs`, `sd_repoinfo`, `error_tracking`, `cloud_cost`, and `ml_obs`.",
 							Required:    true,
 						},
 						"filters": schema.SetAttribute{

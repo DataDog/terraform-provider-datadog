@@ -1,0 +1,169 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 306
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"integration":{"credentials":{"auth_email":"user@example.com","global_api_key":"cloudflare-global-key","type":"CloudflareGlobalAPIToken"},"type":"Cloudflare"},"name":"tf-TestAccDatadogActionConnectionResource_Cloudflare_GlobalAPIToken-local-1783949291"},"type":"action_connection"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/connections
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 412
+        uncompressed: false
+        body: '{"data":{"id":"7d27a4ed-1663-445f-a4d2-8dec39c87b41","type":"action_connection","attributes":{"acting_user_can_resolve":false,"external_secrets_manager":null,"integration":{"credentials":{"auth_email":"user@example.com","global_api_key":"","type":"CloudflareGlobalAPIToken"},"type":"Cloudflare"},"is_favorite":false,"name":"tf-TestAccDatadogActionConnectionResource_Cloudflare_GlobalAPIToken-local-1783949291"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 67.372412ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/connections/7d27a4ed-1663-445f-a4d2-8dec39c87b41
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 623
+        uncompressed: false
+        body: '{"data":{"id":"7d27a4ed-1663-445f-a4d2-8dec39c87b41","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-07-13 13:28:15.500442 +0000 UTC","external_secrets_manager":null,"integration":{"credentials":{"auth_email":"user@example.com","global_api_key":"","type":"CloudflareGlobalAPIToken"},"type":"Cloudflare"},"is_favorite":false,"last_updated":"2026-07-13 13:28:15.500442 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_Cloudflare_GlobalAPIToken-local-1783949291"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 32.374843ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/connections/7d27a4ed-1663-445f-a4d2-8dec39c87b41
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 623
+        uncompressed: false
+        body: '{"data":{"id":"7d27a4ed-1663-445f-a4d2-8dec39c87b41","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-07-13 13:28:15.500442 +0000 UTC","external_secrets_manager":null,"integration":{"credentials":{"auth_email":"user@example.com","global_api_key":"","type":"CloudflareGlobalAPIToken"},"type":"Cloudflare"},"is_favorite":false,"last_updated":"2026-07-13 13:28:15.500442 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_Cloudflare_GlobalAPIToken-local-1783949291"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 39.240318ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/actions/connections/7d27a4ed-1663-445f-a4d2-8dec39c87b41
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 45.048521ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/connections/7d27a4ed-1663-445f-a4d2-8dec39c87b41
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 130
+        uncompressed: false
+        body: '{"errors":[{"title":"Generic Error","detail":"error getting connection: rpc error: code = NotFound desc = connection not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 33.504454ms

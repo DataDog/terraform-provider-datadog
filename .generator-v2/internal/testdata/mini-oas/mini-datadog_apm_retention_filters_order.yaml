@@ -1,0 +1,246 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: APM Retention Filters
+  description: Manage configuration of [APM retention filters](https://app.datadoghq.com/apm/traces/retention-filters)
+    for your organization. You need an API and application key with Admin rights to interact with this
+    endpoint. See [retention filters](https://docs.datadoghq.com/tracing/trace_pipeline/trace_retention/#retention-filters)
+    on the Trace Retention page for more information.
+  externalDocs:
+    description: Find out more at
+    url: https://docs.datadoghq.com/tracing/trace_pipeline/trace_retention/
+paths:
+  /api/v2/apm/config/retention-filters:
+    get:
+      operationId: ListApmRetentionFilters
+      tags:
+      - APM Retention Filters
+      summary: List all APM retention filters
+      description: Get the list of APM retention filters.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetentionFiltersResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                    - id: abc-123
+                      type: apm_retention_filter
+                      attributes:
+                        name: my retention filter
+                        filter:
+                          query: '@http.status_code:200 service:my-service'
+                        enabled: true
+                        rate: 1.0
+                        filter_type: spans-sampling-processor
+        '403':
+          $ref: '#/components/responses/NotAuthorizedResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      x-permission:
+        operator: OR
+        permissions:
+        - apm_retention_filter_read
+      x-menu-order: 1
+      x-undo:
+        type: safe
+components:
+  responses:
+    NotAuthorizedResponse:
+      description: Not Authorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    ApmRetentionFilterType:
+      type: string
+      description: The type of the resource.
+      default: apm_retention_filter
+      example: apm_retention_filter
+      enum:
+      - apm_retention_filter
+      x-enum-varnames:
+      - apm_retention_filter
+    RetentionFilterAll:
+      type: object
+      description: The definition of the retention filter.
+      required:
+      - id
+      - type
+      - attributes
+      properties:
+        id:
+          type: string
+          description: The ID of the retention filter.
+          example: 7RBOb7dLSYWI01yc3pIH8w
+        type:
+          $ref: '#/components/schemas/ApmRetentionFilterType'
+        attributes:
+          $ref: '#/components/schemas/RetentionFilterAllAttributes'
+    RetentionFilterAllAttributes:
+      type: object
+      description: The attributes of the retention filter.
+      properties:
+        created_by:
+          type: string
+          description: The creator of the retention filter.
+        created_at:
+          type: integer
+          description: The creation timestamp of the retention filter.
+          format: int64
+        modified_by:
+          type: string
+          description: The modifier of the retention filter.
+        modified_at:
+          type: integer
+          description: The modification timestamp of the retention filter.
+          format: int64
+        rate:
+          type: number
+          description: 'Sample rate to apply to spans going through this retention filter.
+
+            A value of 1.0 keeps all spans matching the query.'
+          format: double
+          example: 1.0
+        trace_rate:
+          type: number
+          description: 'Sample rate to apply to traces containing spans going through this retention filter.
+
+            A value of 1.0 keeps all traces with spans matching the query.'
+          format: double
+          example: 1.0
+        name:
+          type: string
+          description: The name of the retention filter.
+          example: my retention filter
+        filter:
+          $ref: '#/components/schemas/SpansFilter'
+        enabled:
+          type: boolean
+          description: The status of the retention filter (Enabled/Disabled).
+          example: true
+        execution_order:
+          type: integer
+          description: The execution order of the retention filter.
+          format: int64
+        editable:
+          type: boolean
+          description: Shows whether the filter can be edited.
+          example: true
+        filter_type:
+          $ref: '#/components/schemas/RetentionFilterAllType'
+    RetentionFilterAllType:
+      type: string
+      description: The type of retention filter.
+      default: spans-sampling-processor
+      example: spans-sampling-processor
+      enum:
+      - spans-sampling-processor
+      - spans-errors-sampling-processor
+      - spans-appsec-sampling-processor
+      x-enum-varnames:
+      - SPANS_SAMPLING_PROCESSOR
+      - SPANS_ERRORS_SAMPLING_PROCESSOR
+      - SPANS_APPSEC_SAMPLING_PROCESSOR
+    RetentionFiltersResponse:
+      type: object
+      description: An ordered list of retention filters.
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          description: A list of retention filters objects.
+          items:
+            $ref: '#/components/schemas/RetentionFilterAll'
+    SpansFilter:
+      type: object
+      description: The spans filter used to index spans.
+      properties:
+        query:
+          type: string
+          description: The search query - following the [span search syntax](https://docs.datadoghq.com/tracing/trace_explorer/query_syntax/).
+          example: '@http.status_code:200 service:my-service'
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY

@@ -1,0 +1,6 @@
+# local configurations
+.zed
+.golangci.yml
+
+# cli executable
+tfgen

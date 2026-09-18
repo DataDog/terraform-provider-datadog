@@ -1,0 +1,656 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 404
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202502,"entries":[{"amount":1000,"month":202501,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]},{"amount":1000,"month":202502,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{service:ec2} by {service}","name":"tf-TestAccDatadogCostCustomForecast_Update-local-1784282056","start_month":202501},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 116.987041ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 404
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202502,"entries":[{"amount":1000,"month":202501,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]},{"amount":1000,"month":202502,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{service:ec2} by {service}","name":"tf-TestAccDatadogCostCustomForecast_Update-local-1784282056","start_month":202501},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 114.798166ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 404
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202502,"entries":[{"amount":1000,"month":202501,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]},{"amount":1000,"month":202502,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{service:ec2} by {service}","name":"tf-TestAccDatadogCostCustomForecast_Update-local-1784282056","start_month":202501},"type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 641
+        uncompressed: false
+        body: '{"data":{"id":"6ff19638-6946-40c9-9357-a73cf8cde0d8","type":"budget","attributes":{"created_at":1784282060605,"created_by":"5bca00bb-9154-4108-8376-7bc61f976482","end_month":202502,"entries":[{"month":202501,"amount":1000,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]},{"month":202502,"amount":1000,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{service:ec2} by {service}","name":"tf-TestAccDatadogCostCustomForecast_Update-local-1784282056","org_id":321813,"start_month":202501,"total_amount":2000,"updated_at":1784282060605,"updated_by":"5bca00bb-9154-4108-8376-7bc61f976482"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 285.370917ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 201
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"budget_uid":"6ff19638-6946-40c9-9357-a73cf8cde0d8","entries":[{"amount":400,"month":202501,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]}]},"type":"custom_forecast"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/custom-forecast
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 402
+        uncompressed: false
+        body: '{"data":{"id":"9fb4f927-a7ed-4cb7-a3c4-22ee11c3eb9d","type":"custom_forecast","attributes":{"budget_uid":"6ff19638-6946-40c9-9357-a73cf8cde0d8","created_at":1784282061022,"created_by":"5bca00bb-9154-4108-8376-7bc61f976482","entries":[{"month":202501,"amount":400,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]}],"updated_at":1784282061022,"updated_by":"5bca00bb-9154-4108-8376-7bc61f976482"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 394.481833ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 448
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202502,"entries":[{"amount":1000,"month":202501,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]},{"amount":1000,"month":202502,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{service:ec2} by {service}","name":"tf-TestAccDatadogCostCustomForecast_Update-local-1784282056","start_month":202501},"id":"6ff19638-6946-40c9-9357-a73cf8cde0d8","type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 122.291083ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/6ff19638-6946-40c9-9357-a73cf8cde0d8
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 641
+        uncompressed: false
+        body: '{"data":{"id":"6ff19638-6946-40c9-9357-a73cf8cde0d8","type":"budget","attributes":{"created_at":1784282060605,"created_by":"5bca00bb-9154-4108-8376-7bc61f976482","end_month":202502,"entries":[{"month":202501,"amount":1000,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]},{"month":202502,"amount":1000,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{service:ec2} by {service}","name":"tf-TestAccDatadogCostCustomForecast_Update-local-1784282056","org_id":321813,"start_month":202501,"total_amount":2000,"updated_at":1784282060605,"updated_by":"5bca00bb-9154-4108-8376-7bc61f976482"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 195.048958ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 448
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202502,"entries":[{"amount":1000,"month":202501,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]},{"amount":1000,"month":202502,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{service:ec2} by {service}","name":"tf-TestAccDatadogCostCustomForecast_Update-local-1784282056","start_month":202501},"id":"6ff19638-6946-40c9-9357-a73cf8cde0d8","type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 109.630375ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/6ff19638-6946-40c9-9357-a73cf8cde0d8/custom-forecast
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 402
+        uncompressed: false
+        body: '{"data":{"id":"9fb4f927-a7ed-4cb7-a3c4-22ee11c3eb9d","type":"custom_forecast","attributes":{"budget_uid":"6ff19638-6946-40c9-9357-a73cf8cde0d8","created_at":1784282061022,"created_by":"5bca00bb-9154-4108-8376-7bc61f976482","entries":[{"month":202501,"amount":400,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]}],"updated_at":1784282061022,"updated_by":"5bca00bb-9154-4108-8376-7bc61f976482"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 263.754417ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/6ff19638-6946-40c9-9357-a73cf8cde0d8
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 641
+        uncompressed: false
+        body: '{"data":{"id":"6ff19638-6946-40c9-9357-a73cf8cde0d8","type":"budget","attributes":{"created_at":1784282060605,"created_by":"5bca00bb-9154-4108-8376-7bc61f976482","end_month":202502,"entries":[{"month":202501,"amount":1000,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]},{"month":202502,"amount":1000,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{service:ec2} by {service}","name":"tf-TestAccDatadogCostCustomForecast_Update-local-1784282056","org_id":321813,"start_month":202501,"total_amount":2000,"updated_at":1784282060605,"updated_by":"5bca00bb-9154-4108-8376-7bc61f976482"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 160.863834ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 448
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202502,"entries":[{"amount":1000,"month":202501,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]},{"amount":1000,"month":202502,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{service:ec2} by {service}","name":"tf-TestAccDatadogCostCustomForecast_Update-local-1784282056","start_month":202501},"id":"6ff19638-6946-40c9-9357-a73cf8cde0d8","type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 109.9475ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/6ff19638-6946-40c9-9357-a73cf8cde0d8/custom-forecast
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 402
+        uncompressed: false
+        body: '{"data":{"id":"9fb4f927-a7ed-4cb7-a3c4-22ee11c3eb9d","type":"custom_forecast","attributes":{"budget_uid":"6ff19638-6946-40c9-9357-a73cf8cde0d8","created_at":1784282061022,"created_by":"5bca00bb-9154-4108-8376-7bc61f976482","entries":[{"month":202501,"amount":400,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]}],"updated_at":1784282061022,"updated_by":"5bca00bb-9154-4108-8376-7bc61f976482"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 161.675667ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 201
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"budget_uid":"6ff19638-6946-40c9-9357-a73cf8cde0d8","entries":[{"amount":500,"month":202501,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]}]},"type":"custom_forecast"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/custom-forecast
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 404
+        uncompressed: false
+        body: '{"data":{"id":"9fb4f927-a7ed-4cb7-a3c4-22ee11c3eb9d","type":"custom_forecast","attributes":{"budget_uid":"6ff19638-6946-40c9-9357-a73cf8cde0d8","created_at":-62135596800000,"created_by":"5bca00bb-9154-4108-8376-7bc61f976482","entries":[{"month":202501,"amount":500,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]}],"updated_at":1784282063765,"updated_by":"5bca00bb-9154-4108-8376-7bc61f976482"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 468.074875ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 448
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202502,"entries":[{"amount":1000,"month":202501,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]},{"amount":1000,"month":202502,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{service:ec2} by {service}","name":"tf-TestAccDatadogCostCustomForecast_Update-local-1784282056","start_month":202501},"id":"6ff19638-6946-40c9-9357-a73cf8cde0d8","type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 117.610958ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/6ff19638-6946-40c9-9357-a73cf8cde0d8
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 641
+        uncompressed: false
+        body: '{"data":{"id":"6ff19638-6946-40c9-9357-a73cf8cde0d8","type":"budget","attributes":{"created_at":1784282060605,"created_by":"5bca00bb-9154-4108-8376-7bc61f976482","end_month":202502,"entries":[{"month":202501,"amount":1000,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]},{"month":202502,"amount":1000,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{service:ec2} by {service}","name":"tf-TestAccDatadogCostCustomForecast_Update-local-1784282056","org_id":321813,"start_month":202501,"total_amount":2000,"updated_at":1784282060605,"updated_by":"5bca00bb-9154-4108-8376-7bc61f976482"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 243.071917ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 448
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"end_month":202502,"entries":[{"amount":1000,"month":202501,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]},{"amount":1000,"month":202502,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]}],"metrics_query":"sum:aws.cost.amortized{service:ec2} by {service}","name":"tf-TestAccDatadogCostCustomForecast_Update-local-1784282056","start_month":202501},"id":"6ff19638-6946-40c9-9357-a73cf8cde0d8","type":"budget"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 90
+        uncompressed: false
+        body: '{"data":{"id":"budget_validation","type":"budget_validation","attributes":{"valid":true}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 108.659833ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/6ff19638-6946-40c9-9357-a73cf8cde0d8/custom-forecast
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 402
+        uncompressed: false
+        body: '{"data":{"id":"9fb4f927-a7ed-4cb7-a3c4-22ee11c3eb9d","type":"custom_forecast","attributes":{"budget_uid":"6ff19638-6946-40c9-9357-a73cf8cde0d8","created_at":1784282061022,"created_by":"5bca00bb-9154-4108-8376-7bc61f976482","entries":[{"month":202501,"amount":500,"tag_filters":[{"tag_key":"service","tag_value":"ec2"}]}],"updated_at":1784282063765,"updated_by":"5bca00bb-9154-4108-8376-7bc61f976482"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 222.686375ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/cost/budget/6ff19638-6946-40c9-9357-a73cf8cde0d8/custom-forecast
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 247.683625ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/cost/budget/6ff19638-6946-40c9-9357-a73cf8cde0d8
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 629.654083ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cost/budget/6ff19638-6946-40c9-9357-a73cf8cde0d8/custom-forecast
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 109
+        uncompressed: false
+        body: '{"errors":[{"title":"Generic Error","detail":"rpc error: code = NotFound desc = custom forecast not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 173.784792ms

@@ -1,0 +1,49 @@
+openapi: 3.0.0
+info:
+  title: normalize $ref resolution fixture
+  version: 1.0.0
+components:
+  schemas:
+    MyString:
+      type: string
+      format: uuid
+    OuterObject:
+      type: object
+      properties:
+        inner:
+          $ref: '#/components/schemas/MyString'
+paths:
+  /direct-ref:
+    post:
+      operationId: CreateDirectRef
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: direct_ref
+        group:
+          create: CreateDirectRef
+          read: CreateDirectRef
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MyString'
+      responses:
+        '204':
+          description: no content
+  /nested-ref:
+    post:
+      operationId: CreateNestedRef
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: nested_ref
+        group:
+          create: CreateNestedRef
+          read: CreateNestedRef
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OuterObject'
+      responses:
+        '204':
+          description: no content

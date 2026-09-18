@@ -2969,6 +2969,8 @@ func createSyntheticsSSLTestStep(ctx context.Context, accProvider *schema.Provid
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "options_list.0.disable_aia_intermediate_fetching", "true"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options_list.0.ignore_certificate_validation", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "message", "Notify @datadog.user"),
@@ -3006,6 +3008,7 @@ resource "datadog_synthetics_test" "ssl" {
 		accept_self_signed = true
 		check_certificate_revocation = true
 		disable_aia_intermediate_fetching = true
+		ignore_certificate_validation = true
 	}
 
 	name = "%s"

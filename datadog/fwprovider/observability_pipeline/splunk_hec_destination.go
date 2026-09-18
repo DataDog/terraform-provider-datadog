@@ -15,6 +15,7 @@ import (
 type SplunkHECDestinationModel struct {
 	AutoExtractTimestamp types.Bool           `tfsdk:"auto_extract_timestamp"`
 	Encoding             types.String         `tfsdk:"encoding"`
+	EndpointTarget       types.String         `tfsdk:"endpoint_target"`
 	EndpointUrlKey       types.String         `tfsdk:"endpoint_url_key"`
 	TokenKey             types.String         `tfsdk:"token_key"`
 	TokenStrategy        types.String         `tfsdk:"token_strategy"`
@@ -44,6 +45,9 @@ func ExpandSplunkHECDestination(ctx context.Context, id string, inputs types.Lis
 	}
 	if !src.Index.IsNull() {
 		s.SetIndex(src.Index.ValueString())
+	}
+	if !src.EndpointTarget.IsNull() {
+		s.SetEndpointTarget(datadogV2.ObservabilityPipelineSplunkHecDestinationEndpointTarget(src.EndpointTarget.ValueString()))
 	}
 	if !src.EndpointUrlKey.IsNull() {
 		s.SetEndpointUrlKey(src.EndpointUrlKey.ValueString())
@@ -93,6 +97,9 @@ func FlattenSplunkHECDestination(ctx context.Context, src *datadogV2.Observabili
 	if enc, ok := src.GetEncodingOk(); ok && enc != nil {
 		out.Encoding = types.StringValue(string(*enc))
 	}
+	if v, ok := src.GetEndpointTargetOk(); ok {
+		out.EndpointTarget = types.StringValue(string(*v))
+	}
 	if v, ok := src.GetEndpointUrlKeyOk(); ok {
 		out.EndpointUrlKey = types.StringValue(*v)
 	}
@@ -123,13 +130,20 @@ func SplunkHECDestinationSchema() schema.ListNestedBlock {
 			Attributes: map[string]schema.Attribute{
 				"auto_extract_timestamp": schema.BoolAttribute{
 					Optional:    true,
-					Description: "If `true`, Splunk tries to extract timestamps from incoming log events.",
+					Description: "If `true`, Splunk tries to extract timestamps from incoming log events. If `false`, Splunk assigns the time the event was received. Only applies when `endpoint_target` is `event`; cannot be `true` when `endpoint_target` is `raw`.",
 				},
 				"encoding": schema.StringAttribute{
 					Required:    true,
 					Description: "Encoding format for log events.",
 					Validators: []validator.String{
 						stringvalidator.OneOf("json", "raw_message"),
+					},
+				},
+				"endpoint_target": schema.StringAttribute{
+					Optional:    true,
+					Description: "The Splunk HEC endpoint to send events to. Use `event` to send structured events to the `/event` endpoint, or `raw` to send the raw message to the `/raw` endpoint.",
+					Validators: []validator.String{
+						stringvalidator.OneOf("event", "raw"),
 					},
 				},
 				"endpoint_url_key": schema.StringAttribute{

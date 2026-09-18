@@ -20,11 +20,6 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
   }
 
   rule {
-    escalation_policy = "00000000-aba2-0000-0000-000000000000"
-    urgency           = "dynamic"
-  }
-
-  rule {
     query = "tags.service:payment"
     action {
       escalation_policy {
@@ -66,5 +61,12 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
         }
       }
     }
+  }
+
+  # The last rule must be a catch-all: no query, no time restriction,
+  # and an escalation policy.
+  rule {
+    escalation_policy = "00000000-aba2-0000-0000-000000000000"
+    urgency           = "dynamic"
   }
 }

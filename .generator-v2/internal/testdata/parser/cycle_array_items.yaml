@@ -1,0 +1,15 @@
+# Tree recurses through array items — exercises the Items edge of the walk.
+openapi: 3.0.0
+info:
+  title: Cycles
+  version: 1.0.0
+paths: {}
+components:
+  schemas:
+    Tree:
+      type: object
+      properties:
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tree'

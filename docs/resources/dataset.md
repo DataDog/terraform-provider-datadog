@@ -51,7 +51,7 @@ resource "datadog_dataset" "foo" {
 Required:
 
 - `filters` (Set of String) A list of tag-based filters used to restrict access to the product type. Each filter is formatted as `@tag.key:value`.
-- `product` (String) The product type of the dataset. Supported types: `apm`, `rum`, `synthetics`, `metrics` (Custom Metrics), `logs`, `sd_repoinfo`, `error_tracking`, `cloud_cost`, and `ml_obs`.
+- `product` (String) The product type of the dataset. Supported types: `apm`, `rum`, `metrics` (Custom Metrics), `logs`, `sd_repoinfo`, `error_tracking`, `cloud_cost`, and `ml_obs`.
 
 ## Import
 

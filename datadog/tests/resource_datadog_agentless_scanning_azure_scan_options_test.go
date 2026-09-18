@@ -24,11 +24,12 @@ func TestAccDatadogAgentlessScanningAzureScanOptions_Basic(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogAgentlessScanningAzureScanOptionsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogAgentlessScanningAzureScanOptionsConfig(subscriptionID, true, true, true),
+				Config: testAccCheckDatadogAgentlessScanningAzureScanOptionsConfig(subscriptionID, true, true, true, true),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogAgentlessScanningAzureScanOptionsExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_azure_scan_options.test", "azure_subscription_id", subscriptionID),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_azure_scan_options.test", "compliance_host", "true"),
+					resource.TestCheckResourceAttr("datadog_agentless_scanning_azure_scan_options.test", "function", "true"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_azure_scan_options.test", "vuln_containers_os", "true"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_azure_scan_options.test", "vuln_host_os", "true"),
 				),
@@ -48,7 +49,7 @@ func TestAccDatadogAgentlessScanningAzureScanOptions_InvalidSubscriptionID(t *te
 		CheckDestroy:             testAccCheckDatadogAgentlessScanningAzureScanOptionsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config:      testAccCheckDatadogAgentlessScanningAzureScanOptionsConfig(subscriptionID, true, true, true),
+				Config:      testAccCheckDatadogAgentlessScanningAzureScanOptionsConfig(subscriptionID, true, true, true, true),
 				ExpectError: regexp.MustCompile("must be a valid Azure subscription ID"),
 			},
 		},
@@ -66,19 +67,21 @@ func TestAccDatadogAgentlessScanningAzureScanOptions_Update(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogAgentlessScanningAzureScanOptionsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogAgentlessScanningAzureScanOptionsConfig(subscriptionID, true, true, true),
+				Config: testAccCheckDatadogAgentlessScanningAzureScanOptionsConfig(subscriptionID, true, true, true, true),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogAgentlessScanningAzureScanOptionsExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_azure_scan_options.test", "compliance_host", "true"),
+					resource.TestCheckResourceAttr("datadog_agentless_scanning_azure_scan_options.test", "function", "true"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_azure_scan_options.test", "vuln_containers_os", "true"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_azure_scan_options.test", "vuln_host_os", "true"),
 				),
 			},
 			{
-				Config: testAccCheckDatadogAgentlessScanningAzureScanOptionsConfig(subscriptionID, false, false, false),
+				Config: testAccCheckDatadogAgentlessScanningAzureScanOptionsConfig(subscriptionID, false, false, false, false),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogAgentlessScanningAzureScanOptionsExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_azure_scan_options.test", "compliance_host", "false"),
+					resource.TestCheckResourceAttr("datadog_agentless_scanning_azure_scan_options.test", "function", "false"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_azure_scan_options.test", "vuln_containers_os", "false"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_azure_scan_options.test", "vuln_host_os", "false"),
 				),
@@ -98,7 +101,7 @@ func TestAccDatadogAgentlessScanningAzureScanOptions_Import(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogAgentlessScanningAzureScanOptionsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogAgentlessScanningAzureScanOptionsConfig(subscriptionID, true, true, true),
+				Config: testAccCheckDatadogAgentlessScanningAzureScanOptionsConfig(subscriptionID, true, true, true, true),
 			},
 			{
 				ResourceName:      "datadog_agentless_scanning_azure_scan_options.test",
@@ -109,14 +112,15 @@ func TestAccDatadogAgentlessScanningAzureScanOptions_Import(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogAgentlessScanningAzureScanOptionsConfig(subscriptionID string, complianceHost, vulnContainers, vulnHost bool) string {
+func testAccCheckDatadogAgentlessScanningAzureScanOptionsConfig(subscriptionID string, complianceHost, function, vulnContainers, vulnHost bool) string {
 	return fmt.Sprintf(`
 resource "datadog_agentless_scanning_azure_scan_options" "test" {
   azure_subscription_id = "%s"
-  compliance_host       = %s
-  vuln_containers_os    = %s
-  vuln_host_os          = %s
-}`, subscriptionID, strconv.FormatBool(complianceHost), strconv.FormatBool(vulnContainers), strconv.FormatBool(vulnHost))
+  compliance_host        = %s
+  function               = %s
+  vuln_containers_os     = %s
+  vuln_host_os           = %s
+}`, subscriptionID, strconv.FormatBool(complianceHost), strconv.FormatBool(function), strconv.FormatBool(vulnContainers), strconv.FormatBool(vulnHost))
 }
 
 func testAccCheckDatadogAgentlessScanningAzureScanOptionsExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {

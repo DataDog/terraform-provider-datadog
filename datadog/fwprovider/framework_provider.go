@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"runtime"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -30,6 +31,16 @@ import (
 
 var _ provider.Provider = &FrameworkProvider{}
 
+// EnableGeneratedUnstableOperations enables every unstable SDK operation used
+// by generated provider artifacts. Keeping this in the provider package lets
+// alternate client construction paths, including acceptance tests, consume the
+// generator-owned registry without duplicating operation identifiers.
+func EnableGeneratedUnstableOperations(config *datadog.Configuration) {
+	for _, operation := range generatedUnstableOperations {
+		config.SetUnstableOperationEnabled(operation, true)
+	}
+}
+
 var Resources = []func() resource.Resource{
 	NewAgentlessScanningAwsScanOptionsResource,
 	NewAgentlessScanningAzureScanOptionsResource,
@@ -46,6 +57,7 @@ var Resources = []func() resource.Resource{
 	NewDatasetResource,
 	NewDomainAllowlistResource,
 	NewDowntimeScheduleResource,
+	NewFleetScheduleResource,
 	NewIntegrationAzureResource,
 	NewIntegrationAwsEventBridgeResource,
 	NewIntegrationAwsExternalIDResource,
@@ -57,20 +69,26 @@ var Resources = []func() resource.Resource{
 	NewIntegrationGcpResource,
 	NewIntegrationGcpStsResource,
 	NewCloudInventorySyncConfigResource,
+	NewGovernanceControlResource,
 	NewIpAllowListResource,
 	NewMonitorNotificationRuleResource,
 	NewSecurityNotificationRuleResource,
 	NewRestrictionPolicyResource,
 	NewRumApplicationResource,
+	NewRumExclusionFilterResource,
 	NewRumMetricResource,
 	NewRumRetentionFilterResource,
 	NewRumRetentionFiltersOrderResource,
+	NewSamlIdpMetadataResource,
+	NewRumRetentionQuotaResource,
 	NewSecurityFindingsMuteRuleResource,
 	NewSecurityFindingsMuteRulesOrderResource,
 	NewSecurityFindingsDueDateRuleResource,
 	NewSecurityFindingsDueDateRulesOrderResource,
 	NewSecurityFindingsTicketCreationRuleResource,
 	NewSecurityFindingsTicketCreationRulesOrderResource,
+	NewSecurityFindingsSeverityModifierRuleResource,
+	NewSecurityFindingsSeverityModifierRulesOrderResource,
 	NewSensitiveDataScannerGroupOrder,
 	NewServiceAccountApplicationKeyResource,
 	NewServiceAccessTokenResource,
@@ -82,6 +100,7 @@ var Resources = []func() resource.Resource{
 	NewSyntheticsGlobalVariableResource,
 	NewSyntheticsPrivateLocationResource,
 	NewSyntheticsSuiteResource,
+	NewTagRuleResource,
 	NewTeamLinkResource,
 	NewTeamMembershipResource,
 	NewTeamNotificationRuleResource,
@@ -96,6 +115,7 @@ var Resources = []func() resource.Resource{
 	NewServiceAccountResource,
 	NewWebhookResource,
 	NewWebhookCustomVariableResource,
+	NewWebhookOauth2ClientCredentialsResource,
 	NewLogsCustomDestinationResource,
 	NewLogsRestrictionQueryResource,
 	NewTenantBasedHandleResource,
@@ -103,6 +123,7 @@ var Resources = []func() resource.Resource{
 	NewAppsecWafCustomRuleResource,
 	NewWorkflowsWebhookHandleResource,
 	NewActionConnectionResource,
+	NewActionExecutionPolicyResource,
 	NewWorkflowAutomationResource,
 	NewAppBuilderAppResource,
 	NewObservabilitPipelineResource,
@@ -123,6 +144,7 @@ var Resources = []func() resource.Resource{
 	NewSecurityMonitoringRuleJSONResource,
 	NewComplianceCustomFrameworkResource,
 	NewCostBudgetResource,
+	NewCostCustomForecastResource,
 	NewTagPipelineRulesetResource,
 	NewTagPipelineRulesetsResource,
 	NewSecureEmbedDashboardResource,
@@ -132,6 +154,9 @@ var Resources = []func() resource.Resource{
 	NewIncidentTypeResource,
 	NewIncidentNotificationTemplateResource,
 	NewIncidentNotificationRuleResource,
+	NewIncidentPostmortemTemplateResource,
+	NewIncidentUserDefinedFieldResource,
+	NewIncidentUserDefinedRoleResource,
 	NewAwsCurConfigResource,
 	NewGcpUcConfigResource,
 	NewDatadogCustomAllocationRuleResource,
@@ -141,11 +166,16 @@ var Resources = []func() resource.Resource{
 	NewReferenceTableResource,
 	NewDatastoreResource,
 	NewDatastoreItemResource,
+	NewStatusPageResource,
+	NewStatusPageComponentResource,
+	NewStatusPageDegradationTemplateResource,
+	NewStatusPageMaintenanceTemplateResource,
 }
 
 var Datasources = []func() datasource.DataSource{
 	NewAPIKeyDataSource,
 	NewAwsAvailableNamespacesDataSource,
+	NewAwsIntegrationAccountDataSource,
 	NewAwsIntegrationExternalIDDataSource,
 	NewAwsIntegrationIAMPermissionsDataSource,
 	NewAwsIntegrationIAMPermissionsStandardDataSource,
@@ -153,6 +183,8 @@ var Datasources = []func() datasource.DataSource{
 	NewAwsLogsServicesDataSource,
 	NewDatadogApmRetentionFiltersOrderDataSource,
 	NewDatadogDashboardListDataSource,
+	NewFleetScheduleDataSource,
+	NewFleetSchedulesDataSource,
 	NewDatadogIntegrationAWSNamespaceRulesDatasource,
 	NewDatadogMetricActiveTagsAndAggregationsDataSource,
 	NewDatadogMetricMetadataDataSource,
@@ -177,6 +209,7 @@ var Datasources = []func() datasource.DataSource{
 	NewSensitiveDataScannerGroupOrderDatasource,
 	NewDatadogUsersDataSource,
 	NewDatadogRoleUsersDataSource,
+	NewDatadogRolePermissionsDataSource,
 	NewSecurityMonitoringSuppressionDataSource,
 	NewSecurityMonitoringCriticalAssetDataSource,
 	NewSecurityMonitoringCriticalAssetsDataSource,
@@ -188,6 +221,7 @@ var Datasources = []func() datasource.DataSource{
 	NewWorkflowAutomationDataSource,
 	NewDatadogAppBuilderAppDataSource,
 	NewCostBudgetDataSource,
+	NewCostCustomForecastDataSource,
 	NewTagPipelineRulesetDataSource,
 	NewCSMThreatsAgentRulesDataSource,
 	NewCSMThreatsPoliciesDataSource,
@@ -201,8 +235,17 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogReferenceTableDataSource,
 	NewDatadogReferenceTableRowsDataSource,
 	NewOrganizationSettingsDataSource,
+	NewDatadogCurrentUserDataSource,
 	NewDatadogDatastoreDataSource,
 	NewDatastoreItemDataSource,
+	NewStatusPageDataSource,
+	NewStatusPagesDataSource,
+	NewStatusPageComponentDataSource,
+	NewStatusPageComponentsDataSource,
+	NewStatusPageDegradationTemplateDataSource,
+	NewStatusPageDegradationTemplatesDataSource,
+	NewStatusPageMaintenanceTemplateDataSource,
+	NewStatusPageMaintenanceTemplatesDataSource,
 }
 
 // FrameworkProvider struct
@@ -235,6 +278,7 @@ type ProviderSchema struct {
 	HttpClientRetryBackoffMultiplier types.Int64  `tfsdk:"http_client_retry_backoff_multiplier"`
 	HttpClientRetryBackoffBase       types.Int64  `tfsdk:"http_client_retry_backoff_base"`
 	HttpClientRetryMaxRetries        types.Int64  `tfsdk:"http_client_retry_max_retries"`
+	HttpClientRetryJitter            types.Int64  `tfsdk:"http_client_retry_jitter"`
 	DefaultTags                      []DefaultTag `tfsdk:"default_tags"`
 	IgnoreTagKeys                    types.Set    `tfsdk:"ignore_tag_keys"`
 }
@@ -250,8 +294,11 @@ func New() provider.Provider {
 }
 
 func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resource {
-	var wrappedResources []func() resource.Resource
-	for _, f := range Resources {
+	// Hand-written and generator-v2 resources are kept in separate slices (see
+	// generatedResources) so regenerating does not churn this file. The
+	// conditional resource below leaves room for itself in the capacity.
+	wrappedResources := make([]func() resource.Resource, 0, len(Resources)+len(generatedResources)+1)
+	for _, f := range slices.Concat(Resources, generatedResources) {
 		r := f()
 		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&r) })
 	}
@@ -261,17 +308,14 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&monitorResource) })
 	}
 
-	if utils.IsDatabricksIntegrationEnabled() {
-		databricksResource := NewIntegrationDatabricksAccountResource()
-		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&databricksResource) })
-	}
-
 	return wrappedResources
 }
 
 func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.DataSource {
-	var wrappedDatasources []func() datasource.DataSource
-	for _, f := range Datasources {
+	// Hand-written and generator-v2 data sources are kept in separate slices
+	// (see generatedDatasources) so regenerating does not churn this file.
+	wrappedDatasources := make([]func() datasource.DataSource, 0, len(Datasources)+len(generatedDatasources))
+	for _, f := range slices.Concat(Datasources, generatedDatasources) {
 		r := f()
 		wrappedDatasources = append(wrappedDatasources, func() datasource.DataSource { return NewFrameworkDatasourceWrapper(&r) })
 	}
@@ -359,6 +403,10 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Optional:    true,
 				Description: "The HTTP request maximum retry number. Defaults to 3.",
 			},
+			"http_client_retry_jitter": schema.Int64Attribute{
+				Optional:    true,
+				Description: "The maximum random delay added to each HTTP request retry. Defaults to 0 seconds.",
+			},
 			"ignore_tag_keys": schema.SetAttribute{
 				Optional:    true,
 				ElementType: types.StringType,
@@ -370,13 +418,13 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Validators: []validator.List{
 					listvalidator.SizeAtMost(1),
 				},
-				Description: "[Experimental - Logs Indexes, Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources.",
+				Description: "[Experimental - Action Connections, Logs Indexes, Logs Pipelines, Monitors, Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"tags": schema.MapAttribute{
 							ElementType: types.StringType,
 							Optional:    true,
-							Description: "[Experimental - Logs Indexes, Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.",
+							Description: "[Experimental - Action Connections, Logs Indexes, Logs Pipelines, Monitors, Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.",
 						},
 					},
 				},
@@ -508,6 +556,14 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 		}
 	}
 
+	if config.HttpClientRetryJitter.IsNull() {
+		retryJitter, err := utils.GetMultiEnvVar(utils.DDHTTPRetryJitter)
+		if err == nil {
+			v, _ := strconv.Atoi(retryJitter)
+			config.HttpClientRetryJitter = types.Int64Value(int64(v))
+		}
+	}
+
 	// Configure defaults for booleans.
 	// Remove this once fully migrated to framework
 	if config.Validate.IsNull() {
@@ -529,6 +585,7 @@ func (p *FrameworkProvider) ValidateConfigValues(ctx context.Context, config *Pr
 	// Init validators we need for purposes of config validation only
 	oneOfStringValidator := stringvalidator.OneOf("true", "false")
 	int64AtLeastValidator := int64validator.AtLeast(1)
+	int64NonNegativeValidator := int64validator.AtLeast(0)
 	int64BetweenValidator := int64validator.Between(1, 5)
 
 	if !config.Validate.IsNull() {
@@ -558,6 +615,12 @@ func (p *FrameworkProvider) ValidateConfigValues(ctx context.Context, config *Pr
 	if !config.HttpClientRetryMaxRetries.IsNull() {
 		res := validator.Int64Response{}
 		int64BetweenValidator.ValidateInt64(ctx, validator.Int64Request{ConfigValue: config.HttpClientRetryMaxRetries}, &res)
+		diags.Append(res.Diagnostics...)
+	}
+
+	if !config.HttpClientRetryJitter.IsNull() {
+		res := validator.Int64Response{}
+		int64NonNegativeValidator.ValidateInt64(ctx, validator.Int64Request{ConfigValue: config.HttpClientRetryJitter}, &res)
 		diags.Append(res.Diagnostics...)
 	}
 
@@ -660,11 +723,28 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDataset", true)
 
-	ddClientConfig.SetUnstableOperationEnabled("v2.CreateWebIntegrationAccount", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.GetWebIntegrationAccount", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.ListWebIntegrationAccounts", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateWebIntegrationAccount", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteWebIntegrationAccount", true)
+	// Fleet Automation schedule reads are stable. Only mutations use Preview endpoints.
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateFleetSchedule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateFleetSchedule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteFleetSchedule", true)
+
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListIncidentUserDefinedFields", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateIncidentUserDefinedField", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetIncidentUserDefinedField", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentUserDefinedField", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentUserDefinedField", true)
+
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListIncidentUserDefinedRoles", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateIncidentUserDefinedRole", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetIncidentUserDefinedRole", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentUserDefinedRole", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentUserDefinedRole", true)
+
+	// Enable Governance Tag Rules
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateTagRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetTagRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateTagRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteTagRule", true)
 
 	// Enable Logs Restriction Queries
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateRestrictionQuery", true)
@@ -678,6 +758,11 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSAccountCCMConfig", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAWSAccountCCMConfig", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSAccountCCMConfig", true)
+
+	// Enable Custom Forecast
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpsertCustomForecast", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetCustomForecast", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteCustomForecast", true)
 
 	// Enable Observability Pipelines
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreatePipeline", true)
@@ -703,6 +788,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentNotificationTemplate", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationTemplate", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListIncidentNotificationTemplates", true)
+
+	// Enable IncidentPostmortemTemplate
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateIncidentPostmortemTemplate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetIncidentPostmortemTemplate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentPostmortemTemplate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentPostmortemTemplate", true)
 
 	// Enable OrgGroup
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateOrgGroup", true)
@@ -767,6 +858,38 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationTicketCreationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationTicketCreationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationTicketCreationRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationSeverityModifierRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationSeverityModifierRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationSeverityModifierRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationSeverityModifierRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationSeverityModifierRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationSeverityModifierRules", true)
+
+	// Enable Tag Indexing Rules & Exemptions
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateTagIndexingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetTagIndexingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateTagIndexingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteTagIndexingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListTagIndexingRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderTagIndexingRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateTagIndexingRuleExemption", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetTagIndexingRuleExemption", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteTagIndexingRuleExemption", true)
+
+	// Enable Governance Controls
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetGovernanceControl", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateGovernanceControl", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetGovernanceControlNotificationSettings", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateGovernanceControlNotificationSettings", true)
+
+	// Enable Execution Policies
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateExecutionPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetExecutionPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateExecutionPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
+
+	EnableGeneratedUnstableOperations(ddClientConfig)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
@@ -807,9 +930,13 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	if httpClientRetryEnabled {
 		ddClientConfig.RetryConfiguration.EnableRetry = httpClientRetryEnabled
 
-		if !config.HttpClientRetryBackoffMultiplier.IsNull() {
-			timeout := time.Duration(config.HttpClientRetryBackoffMultiplier.ValueInt64()) * time.Second
+		if !config.HttpClientRetryTimeout.IsNull() {
+			timeout := time.Duration(config.HttpClientRetryTimeout.ValueInt64()) * time.Second
 			ddClientConfig.RetryConfiguration.HTTPRetryTimeout = timeout
+		}
+
+		if !config.HttpClientRetryBackoffMultiplier.IsNull() {
+			ddClientConfig.RetryConfiguration.BackOffMultiplier = float64(config.HttpClientRetryBackoffMultiplier.ValueInt64())
 		}
 
 		if !config.HttpClientRetryBackoffBase.IsNull() {
@@ -818,6 +945,10 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 
 		if !config.HttpClientRetryMaxRetries.IsNull() {
 			ddClientConfig.RetryConfiguration.MaxRetries = int(config.HttpClientRetryMaxRetries.ValueInt64())
+		}
+
+		if !config.HttpClientRetryJitter.IsNull() {
+			ddClientConfig.RetryConfiguration.RetryJitter = time.Duration(config.HttpClientRetryJitter.ValueInt64()) * time.Second
 		}
 	}
 

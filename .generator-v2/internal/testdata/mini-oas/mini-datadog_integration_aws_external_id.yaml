@@ -1,0 +1,543 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: AWS Integration
+  description: 'Configure your Datadog-AWS integration directly through the Datadog API.
+
+    For more information, see the [AWS integration page](https://docs.datadoghq.com/integrations/amazon_web_services).'
+paths:
+  /api/v2/integration/aws/accounts:
+    get:
+      operationId: ListAWSAccounts
+      tags:
+      - AWS Integration
+      summary: List all AWS integrations
+      description: Get a list of AWS Account Integration Configs.
+      parameters:
+      - name: aws_account_id
+        in: query
+        required: false
+        description: 'Optional query parameter to filter accounts by AWS Account ID.
+
+          If not provided, all accounts are returned.'
+        schema:
+          type: string
+        example: '123456789012'
+      responses:
+        '200':
+          description: AWS Accounts List object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AWSAccountsResponse'
+              examples:
+                default:
+                  value:
+                    data: []
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      x-permission:
+        operator: OR
+        permissions:
+        - aws_configuration_read
+      x-menu-order: 12
+      x-undo:
+        type: safe
+components:
+  responses:
+    ForbiddenResponse:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    AWSAccountConfigID:
+      type: string
+      description: 'Unique Datadog ID of the AWS Account Integration Config.
+
+        To get the config ID for an account, use the
+
+        [List all AWS integrations](https://docs.datadoghq.com/api/latest/aws-integration/#list-all-aws-integrations)
+
+        endpoint and query by AWS Account ID.'
+      example: 00000000-abcd-0001-0000-000000000000
+    AWSAccountID:
+      type: string
+      description: AWS Account ID.
+      example: '123456789012'
+    AWSAccountPartition:
+      type: string
+      description: 'AWS partition your AWS account is scoped to. Defaults to `aws`.
+
+        See [Partitions](https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/partitions.html)
+
+        in the AWS documentation for more information.'
+      example: aws
+      enum:
+      - aws
+      - aws-cn
+      - aws-us-gov
+      x-enum-varnames:
+      - AWS
+      - AWS_CN
+      - AWS_US_GOV
+    AWSAccountResponseAttributes:
+      type: object
+      description: AWS Account response attributes.
+      required:
+      - aws_account_id
+      properties:
+        account_tags:
+          $ref: '#/components/schemas/AWSAccountTags'
+        auth_config:
+          $ref: '#/components/schemas/AWSAuthConfig'
+        aws_account_id:
+          $ref: '#/components/schemas/AWSAccountID'
+        aws_partition:
+          $ref: '#/components/schemas/AWSAccountPartition'
+        aws_regions:
+          $ref: '#/components/schemas/AWSRegions'
+        logs_config:
+          $ref: '#/components/schemas/AWSLogsConfig'
+        metrics_config:
+          $ref: '#/components/schemas/AWSMetricsConfig'
+        resources_config:
+          $ref: '#/components/schemas/AWSResourcesConfig'
+        traces_config:
+          $ref: '#/components/schemas/AWSTracesConfig'
+        created_at:
+          type: string
+          description: Timestamp of when the account integration was created.
+          format: date-time
+          readOnly: true
+        modified_at:
+          type: string
+          description: Timestamp of when the account integration was updated.
+          format: date-time
+          readOnly: true
+    AWSAccountResponseData:
+      type: object
+      description: AWS Account response data.
+      required:
+      - id
+      - type
+      properties:
+        attributes:
+          $ref: '#/components/schemas/AWSAccountResponseAttributes'
+        id:
+          $ref: '#/components/schemas/AWSAccountConfigID'
+        type:
+          $ref: '#/components/schemas/AWSAccountType'
+    AWSAccountTags:
+      type: array
+      description: Tags to apply to all hosts and metrics reporting for this account. Defaults to `[]`.
+      nullable: true
+      items:
+        type: string
+        description: Tag in the form `key:value`.
+        example: env:prod
+    AWSAccountType:
+      type: string
+      description: AWS Account resource type.
+      default: account
+      example: account
+      enum:
+      - account
+      x-enum-varnames:
+      - ACCOUNT
+    AWSAccountsResponse:
+      type: object
+      description: AWS Accounts response body.
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          description: List of AWS Account Integration Configs.
+          items:
+            $ref: '#/components/schemas/AWSAccountResponseData'
+    AWSAuthConfig:
+      description: AWS Authentication config.
+      oneOf:
+      - $ref: '#/components/schemas/AWSAuthConfigKeys'
+      - $ref: '#/components/schemas/AWSAuthConfigRole'
+    AWSAuthConfigKeys:
+      type: object
+      description: AWS Authentication config to integrate your account using an access key pair.
+      required:
+      - access_key_id
+      properties:
+        access_key_id:
+          type: string
+          description: AWS Access Key ID.
+          example: AKIAIOSFODNN7EXAMPLE
+        secret_access_key:
+          type: string
+          description: AWS Secret Access Key.
+          minLength: 1
+          writeOnly: true
+          example: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    AWSAuthConfigRole:
+      type: object
+      description: AWS Authentication config to integrate your account using an IAM role.
+      required:
+      - role_name
+      properties:
+        external_id:
+          type: string
+          description: AWS IAM External ID for associated role.
+        role_name:
+          type: string
+          description: AWS IAM Role name.
+          maxLength: 576
+          minLength: 1
+          example: DatadogIntegrationRole
+    AWSLambdaForwarderConfig:
+      type: object
+      description: 'Log Autosubscription configuration for Datadog Forwarder Lambda functions.
+
+        Automatically set up triggers for existing and new logs for some services,
+
+        ensuring no logs from new resources are missed and saving time spent on manual configuration.'
+      properties:
+        lambdas:
+          type: array
+          description: List of Datadog Lambda Log Forwarder ARNs in your AWS account. Defaults to `[]`.
+          items:
+            type: string
+            description: The ARN of a Datadog Lambda Log Forwarder function.
+            example: arn:aws:lambda:us-east-1:123456789012:function:DatadogLambdaLogForwarder
+        sources:
+          type: array
+          description: 'List of service IDs set to enable automatic log collection.
+
+            Discover the list of available services with the
+
+            [Get list of AWS log ready
+
+            services](https://docs.datadoghq.com/api/latest/aws-logs-integration/#get-list-of-aws-log-ready-services)
+
+            endpoint.'
+          items:
+            type: string
+            description: An AWS service ID for which automatic log collection is enabled.
+            example: s3
+        log_source_config:
+          $ref: '#/components/schemas/AWSLambdaForwarderConfigLogSourceConfig'
+    AWSLambdaForwarderConfigLogSourceConfig:
+      type: object
+      description: Log source configuration.
+      properties:
+        tag_filters:
+          type: array
+          description: List of AWS log source tag filters. Defaults to `[]`.
+          items:
+            $ref: '#/components/schemas/AWSLogSourceTagFilter'
+    AWSLogSourceTagFilter:
+      type: object
+      description: 'AWS log source tag filter list. Defaults to `[]`.
+
+        Array of log source to AWS resource tag mappings. Each mapping contains a log source and its
+
+        associated AWS resource tags (in `key:value` format) used to filter logs submitted to Datadog.
+
+        Tag filters are applied for tags on the AWS resource emitting logs; tags associated with the
+
+        log storage entity (such as a CloudWatch Log Group or S3 Bucket) are not considered.
+
+        For more information on resource tag filter syntax,
+
+        [see AWS resource exclusion](https://docs.datadoghq.com/account_management/billing/aws/#aws-resource-exclusion)
+
+        in the AWS integration billing page.'
+      properties:
+        source:
+          type: string
+          description: The AWS log source to which the tag filters defined in `tags` are applied.
+          example: s3
+        tags:
+          type: array
+          description: The AWS resource tags to filter on for the log source specified by `source`.
+          nullable: true
+          items:
+            type: string
+            description: Tag in the form `key:value`.
+            example: env:prod
+    AWSLogsConfig:
+      type: object
+      description: AWS Logs Collection config.
+      properties:
+        lambda_forwarder:
+          $ref: '#/components/schemas/AWSLambdaForwarderConfig'
+    AWSMetricsConfig:
+      type: object
+      description: AWS Metrics Collection config.
+      properties:
+        automute_enabled:
+          type: boolean
+          description: Enable EC2 automute for AWS metrics. Defaults to `true`.
+          example: true
+        collect_cloudwatch_alarms:
+          type: boolean
+          description: Enable CloudWatch alarms collection. Defaults to `false`.
+          example: false
+        collect_custom_metrics:
+          type: boolean
+          description: Enable custom metrics collection. Defaults to `false`.
+          example: false
+        enabled:
+          type: boolean
+          description: Enable AWS metrics collection. Defaults to `true`.
+          example: true
+        namespace_filters:
+          $ref: '#/components/schemas/AWSNamespaceFilters'
+        tag_filters:
+          type: array
+          description: AWS Metrics collection tag filters list. Defaults to `[]`.
+          items:
+            $ref: '#/components/schemas/AWSNamespaceTagFilter'
+    AWSNamespaceFilters:
+      description: AWS Metrics namespace filters. Defaults to `exclude_only`.
+      oneOf:
+      - $ref: '#/components/schemas/AWSNamespaceFiltersExcludeOnly'
+      - $ref: '#/components/schemas/AWSNamespaceFiltersIncludeOnly'
+    AWSNamespaceFiltersExcludeOnly:
+      type: object
+      description: 'Exclude only these namespaces from metrics collection.
+
+        Defaults to `["AWS/SQS", "AWS/ElasticMapReduce", "AWS/Usage"]`.
+
+        `AWS/SQS`, `AWS/ElasticMapReduce`, and `AWS/Usage` are excluded by default
+
+        to reduce your AWS CloudWatch costs from `GetMetricData` API calls.'
+      required:
+      - exclude_only
+      properties:
+        exclude_only:
+          type: array
+          description: 'Exclude only these namespaces from metrics collection.
+
+            Defaults to `["AWS/SQS", "AWS/ElasticMapReduce", "AWS/Usage"]`.
+
+            `AWS/SQS`, `AWS/ElasticMapReduce`, and `AWS/Usage` are excluded by default
+
+            to reduce your AWS CloudWatch costs from `GetMetricData` API calls.'
+          example:
+          - AWS/SQS
+          - AWS/ElasticMapReduce
+          - AWS/Usage
+          items:
+            type: string
+            description: An AWS CloudWatch namespace to exclude from metrics collection.
+            example: AWS/SQS
+    AWSNamespaceFiltersIncludeOnly:
+      type: object
+      description: Include only these namespaces.
+      required:
+      - include_only
+      properties:
+        include_only:
+          type: array
+          description: Include only these namespaces.
+          example:
+          - AWS/EC2
+          items:
+            type: string
+            description: An AWS CloudWatch namespace to include in metrics collection.
+            example: AWS/EC2
+    AWSNamespaceTagFilter:
+      type: object
+      description: 'AWS Metrics Collection tag filters list. Defaults to `[]`.
+
+        The array of custom AWS resource tags (in the form `key:value`) defines a filter that Datadog
+        uses
+
+        when collecting metrics from a specified service.
+
+        Wildcards, such as `?` (match a single character) and `*` (match multiple characters),
+
+        and exclusion using `!` before the tag are supported.
+
+        For EC2, only hosts that match one of the defined tags are imported into Datadog.
+
+        The rest are ignored. For example, `env:production,instance-type:c?.*,!region:us-east-1`.'
+      properties:
+        namespace:
+          type: string
+          description: The AWS service for which the tag filters defined in `tags` will be applied.
+          example: AWS/EC2
+        tags:
+          type: array
+          description: The AWS resource tags to filter on for the service specified by `namespace`.
+          nullable: true
+          items:
+            type: string
+            description: Tag in the form `key:value`.
+            example: datadog:true
+    AWSRegions:
+      description: AWS Regions to collect data from. Defaults to `include_all`.
+      oneOf:
+      - $ref: '#/components/schemas/AWSRegionsIncludeAll'
+      - $ref: '#/components/schemas/AWSRegionsIncludeOnly'
+    AWSRegionsIncludeAll:
+      type: object
+      description: Include all regions. Defaults to `true`.
+      required:
+      - include_all
+      properties:
+        include_all:
+          type: boolean
+          description: Include all regions.
+          example: true
+    AWSRegionsIncludeOnly:
+      type: object
+      description: Include only these regions.
+      required:
+      - include_only
+      properties:
+        include_only:
+          type: array
+          description: Include only these regions.
+          example:
+          - us-east-1
+          items:
+            type: string
+            description: An AWS region to include in metrics collection.
+            example: us-east-1
+    AWSResourcesConfig:
+      type: object
+      description: AWS Resources Collection config.
+      properties:
+        cloud_security_posture_management_collection:
+          type: boolean
+          description: 'Enable Cloud Security Management to scan AWS resources for vulnerabilities, misconfigurations,
+
+            identity risks, and compliance violations. Defaults to `false`.
+
+            Requires `extended_collection` to be set to `true`.'
+          example: false
+        extended_collection:
+          type: boolean
+          description: 'Whether Datadog collects additional attributes and configuration information about
+            the resources
+
+            in your AWS account. Defaults to `true`. Required for `cloud_security_posture_management_collection`.'
+          example: true
+    AWSTracesConfig:
+      type: object
+      description: AWS Traces Collection config.
+      properties:
+        xray_services:
+          $ref: '#/components/schemas/XRayServicesList'
+    XRayServicesIncludeAll:
+      type: object
+      description: Include all services.
+      required:
+      - include_all
+      properties:
+        include_all:
+          type: boolean
+          description: Include all services.
+          example: false
+    XRayServicesIncludeOnly:
+      type: object
+      description: Include only these services. Defaults to `[]`.
+      nullable: true
+      required:
+      - include_only
+      properties:
+        include_only:
+          type: array
+          description: Include only these services.
+          example:
+          - AWS/AppSync
+          items:
+            type: string
+            description: An AWS X-Ray service name to include in traces collection.
+            example: AWS/AppSync
+    XRayServicesList:
+      description: AWS X-Ray services to collect traces from. Defaults to `include_only`.
+      oneOf:
+      - $ref: '#/components/schemas/XRayServicesIncludeAll'
+      - $ref: '#/components/schemas/XRayServicesIncludeOnly'
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY
