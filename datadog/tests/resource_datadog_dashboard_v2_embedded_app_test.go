@@ -26,6 +26,13 @@ resource "datadog_dashboard_v2" "embedded_app_dashboard" {
       }
     }
   }
+
+  widget {
+    embedded_app_definition {
+      template_id = "ec2_manager"
+      title       = "EC2 manager"
+    }
+  }
 }
 `
 
@@ -37,6 +44,8 @@ var datadogDashboardV2EmbeddedAppAsserts = []string{
 	`widget.0.embedded_app_definition.0.input.0.value = "production"`,
 	"widget.0.embedded_app_definition.0.input.1.name = settings",
 	`widget.0.embedded_app_definition.0.input.1.value = {"dry_run":false,"replicas":3}`,
+	"widget.1.embedded_app_definition.0.template_id = ec2_manager",
+	"widget.1.embedded_app_definition.0.title = EC2 manager",
 }
 
 func TestAccDatadogDashboardV2EmbeddedApp(t *testing.T) {
