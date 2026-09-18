@@ -670,7 +670,6 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	// Initialize the official Datadog V1 API client
 	datadogHTTPClient := utils.NewHTTPClient()
 	auth := context.Background()
-	var delegatedTokenProvider datadog.DelegatedTokenProvider
 	// Check cloud_provider_type first - explicit config takes precedence over API keys
 	if cloudProviderType != "" {
 		// Allows for delegated token authentication
@@ -681,18 +680,19 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 		)
 		switch cloudProviderType {
 		case "aws":
-			provider, err := cloudauth.NewAWSProvider(cloudauth.AWSConfig{
-				Region:          cloudProviderRegion,
-				AccessKeyID:     awsAccessKeyId,
-				SecretAccessKey: awsSecretAccessKey,
-				SessionToken:    awsSessionToken,
-				HTTPClient:      datadogHTTPClient,
-			})
-			if err != nil {
+			if err := cloudauth.ValidateAWSCredentials(awsAccessKeyId, awsSecretAccessKey, awsSessionToken); err != nil {
 				diags.AddError("Unable to configure AWS delegated authentication", err.Error())
 				return diags
 			}
-			delegatedTokenProvider = provider
+			auth = context.WithValue(
+				auth,
+				datadog.ContextAWSVariables,
+				map[string]string{
+					datadog.AWSAccessKeyIdName:     awsAccessKeyId,
+					datadog.AWSSecretAccessKeyName: awsSecretAccessKey,
+					datadog.AWSSessionTokenName:    awsSessionToken,
+				},
+			)
 		default:
 			diags.AddError("cloud_provider_type must be set to a valid value unless validate = false", "")
 			return diags
@@ -963,9 +963,17 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	if cloudProviderType != "" {
 		switch cloudProviderType {
 		case "aws":
+			provider, err := cloudauth.NewAWSProvider(cloudauth.AWSConfig{
+				Region:     cloudProviderRegion,
+				HTTPClient: datadogHTTPClient,
+			})
+			if err != nil {
+				diags.AddError("Unable to configure AWS delegated authentication", err.Error())
+				return diags
+			}
 			ddClientConfig.DelegatedTokenConfig = &datadog.DelegatedTokenConfig{
 				OrgUUID:      orgUUID,
-				ProviderAuth: delegatedTokenProvider,
+				ProviderAuth: provider,
 				Provider:     datadog.ProviderAWS,
 			}
 		}

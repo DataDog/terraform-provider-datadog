@@ -439,7 +439,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	// Initialize the official Datadog V1 API client
 	datadogHTTPClient := utils.NewHTTPClient()
 	auth := context.Background()
-	var delegatedTokenProvider datadog.DelegatedTokenProvider
 	// Check cloud_provider_type first - explicit config takes precedence over API keys
 	if cloudProviderType != "" {
 		// Allows for delegated token authentication
@@ -450,17 +449,18 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		)
 		switch cloudProviderType {
 		case "aws":
-			var err error
-			delegatedTokenProvider, err = cloudauth.NewAWSProvider(cloudauth.AWSConfig{
-				Region:          cloudProviderRegion,
-				AccessKeyID:     awsAccessKeyId,
-				SecretAccessKey: awsSecretAccessKey,
-				SessionToken:    awsSessionToken,
-				HTTPClient:      datadogHTTPClient,
-			})
-			if err != nil {
+			if err := cloudauth.ValidateAWSCredentials(awsAccessKeyId, awsSecretAccessKey, awsSessionToken); err != nil {
 				return nil, diag.FromErr(err)
 			}
+			auth = context.WithValue(
+				auth,
+				datadog.ContextAWSVariables,
+				map[string]string{
+					datadog.AWSAccessKeyIdName:     awsAccessKeyId,
+					datadog.AWSSecretAccessKeyName: awsSecretAccessKey,
+					datadog.AWSSessionTokenName:    awsSessionToken,
+				},
+			)
 		default:
 			return nil, diag.FromErr(errors.New("cloud_provider_type must be set to a valid value unless validate = false"))
 		}
@@ -581,9 +581,16 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	if cloudProviderType != "" {
 		switch cloudProviderType {
 		case "aws":
+			provider, err := cloudauth.NewAWSProvider(cloudauth.AWSConfig{
+				Region:     cloudProviderRegion,
+				HTTPClient: datadogHTTPClient,
+			})
+			if err != nil {
+				return nil, diag.FromErr(err)
+			}
 			config.DelegatedTokenConfig = &datadog.DelegatedTokenConfig{
 				OrgUUID:      orgUUID,
-				ProviderAuth: delegatedTokenProvider,
+				ProviderAuth: provider,
 				Provider:     datadog.ProviderAWS,
 			}
 		}
