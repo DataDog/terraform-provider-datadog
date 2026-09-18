@@ -180,6 +180,10 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationInboxRule", true)
 	config.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationInboxRule", true)
 	config.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationInboxRules", true)
+	config.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationDefaultInboxRules", true)
+	config.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationDefaultInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.EnableSecurityFindingsAutomationDefaultInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.DisableSecurityFindingsAutomationDefaultInboxRule", true)
 
 	config.SetUnstableOperationEnabled("v2.CreateTagIndexingRule", true)
 	config.SetUnstableOperationEnabled("v2.GetTagIndexingRule", true)
