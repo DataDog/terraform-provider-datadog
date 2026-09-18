@@ -142,11 +142,16 @@ func FieldSpecToSDKv2(f FieldSpec) *schema.Schema {
 	case TypeBlockList:
 		s.Type = schema.TypeList
 		if f.Discriminator != nil {
-			// Discriminated union per list item — merge variant children
-			// into a single flat schema (same as TypeOneOf).
+			// Discriminated union per list item. Wrapper variants expose one
+			// optional block per variant; inline variants merge the contents of
+			// those internal variant declarations into the current block.
 			merged := make(map[string]*schema.Schema)
 			for _, child := range f.Children {
-				for key, childSchema := range FieldSpecsToSDKv2Schema([]FieldSpec{child}) {
+				variantFields := []FieldSpec{child}
+				if f.Discriminator.Inline {
+					variantFields = child.Children
+				}
+				for key, childSchema := range FieldSpecsToSDKv2Schema(variantFields) {
 					childSchema.Required = false
 					childSchema.Optional = true
 					merged[key] = childSchema
