@@ -1,0 +1,185 @@
+{
+  "run_id": "7f6dd43d-b5be-46b1-8c03-816d8373ed97",
+  "generator_version": "dev",
+  "spec_hash": "fea8da9cd19132faa89b92bed42c1193375df587b874e3ba9b7a67928aaf4421",
+  "started_at": "2026-09-18T10:21:37.764893835Z",
+  "finished_at": "2026-09-18T10:21:40.159067028Z",
+  "artifacts": [
+    {
+      "name": "integration_databricks_account",
+      "kind": "resource",
+      "status": "created",
+      "path": "../datadog/fwprovider/resource_datadog_integration_databricks_account.go",
+      "diagnostics": [
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.authentication.databricks_integration_account_bearer_token_auth\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.authentication.databricks_integration_account_o_auth_auth.azure_tenant_id\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.authentication.databricks_integration_account_o_auth_auth\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.authentication.databricks_integration_account_private_action_runner_auth.secret_path\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.authentication.databricks_integration_account_private_action_runner_auth\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.authentication\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.databricks-cloud-cost-metrics.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.databricks-cloud-cost-metrics.settings.ccm_collect_all_workspaces\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.databricks-cloud-cost-metrics.settings\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.databricks-cloud-cost-metrics\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.databricks-data-observability-jobs-monitoring.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.databricks-data-observability-jobs-monitoring.settings.dd_api_key_id\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.databricks-data-observability-jobs-monitoring.settings.djm_global_init_script_enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.databricks-data-observability-jobs-monitoring.settings.script_gpum_enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.databricks-data-observability-jobs-monitoring.settings.script_logs_enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.databricks-data-observability-jobs-monitoring.settings.serverless_jobs_enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.databricks-data-observability-jobs-monitoring.settings\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.databricks-data-observability-jobs-monitoring\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.databricks-data-observability-quality-monitoring.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.databricks-data-observability-quality-monitoring.settings.do_crawlers_cron\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.databricks-data-observability-quality-monitoring.settings.sync_system_catalog\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.databricks-data-observability-quality-monitoring.settings\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.databricks-data-observability-quality-monitoring\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.databricks-model-serving-metrics.enabled\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows.databricks-model-serving-metrics\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.dataflows\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.settings.system_tables_sql_warehouse_id\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes.settings\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.attributes\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data.id\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"data\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "resource schema merge: reconciled a cosmetic difference between the create/update/read bodies at \"\" — favoring the read response for name/description, unioning enum members, OR-ing sensitive"
+        },
+        {
+          "severity": "info",
+          "message": "enabled 4 unstable operation(s) the artifact calls: v2.CreateDatabricksIntegrationAccount, v2.DeleteDatabricksIntegrationAccount, v2.GetDatabricksIntegrationAccount, v2.UpdateDatabricksIntegrationAccount"
+        }
+      ]
+    }
+  ],
+  "skipped_operations": [
+    {
+      "operation_id": "ListDatastores",
+      "path": "/api/v2/actions-datastores",
+      "method": "GET",
+      "reason": "tracking_field_absent"
+    },
+    {
+      "operation_id": "DeleteDatabricksIntegrationAccount",
+      "path": "/api/v2/integration-interfaces/databricks/accounts/{account_id}",
+      "method": "DELETE",
+      "reason": "tracking_field_absent"
+    },
+    {
+      "operation_id": "GetDatabricksIntegrationAccount",
+      "path": "/api/v2/integration-interfaces/databricks/accounts/{account_id}",
+      "method": "GET",
+      "reason": "tracking_field_absent"
+    },
+    {
+      "operation_id": "UpdateDatabricksIntegrationAccount",
+      "path": "/api/v2/integration-interfaces/databricks/accounts/{account_id}",
+      "method": "PATCH",
+      "reason": "tracking_field_absent"
+    }
+  ],
+  "summary": {
+    "created": 1,
+    "updated": 0,
+    "unchanged": 0,
+    "skipped": 0,
+    "failed": 0,
+    "retired": 0,
+    "retire_blocked": 0,
+    "registration_retired": 0
+  }
+}
