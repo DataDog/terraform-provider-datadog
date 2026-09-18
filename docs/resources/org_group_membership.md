@@ -2,12 +2,12 @@
 page_title: "Resource datadog_org_group_membership - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Org Group Membership resource. This can be used to manage an organization's membership in an org group.
+  Provides a Datadog Org Group Membership resource. This can be used to manage an organization's membership in an org group. Note: Org Groups operations are in preview and subject to change. Access may need to be enabled for your organization. Contact Datadog support https://docs.datadoghq.com/help/ to request access.
 ---
 
 # Resource (datadog_org_group_membership)
 
-Provides a Datadog Org Group Membership resource. This can be used to manage an organization's membership in an org group.
+Provides a Datadog Org Group Membership resource. This can be used to manage an organization's membership in an org group. **Note**: Org Groups operations are in preview and subject to change. Access may need to be enabled for your organization. Contact [Datadog support](https://docs.datadoghq.com/help/) to request access.
 
 ## Example Usage
 

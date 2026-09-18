@@ -59,7 +59,7 @@ func (d *datadogOrgGroupPoliciesDataSource) Metadata(_ context.Context, _ dataso
 
 func (d *datadogOrgGroupPoliciesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Use this data source to retrieve the policies attached to an org group, optionally filtered by policy name.",
+		Description: "Use this data source to retrieve the policies attached to an org group, optionally filtered by policy name. **Note**: Org Groups operations are in preview and subject to change. Access may need to be enabled for your organization. Contact [Datadog support](https://docs.datadoghq.com/help/) to request access.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"org_group_id": schema.StringAttribute{
