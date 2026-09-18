@@ -1,0 +1,305 @@
+package fwprovider
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"net/http"
+	"regexp"
+	"strings"
+	"sync"
+	"time"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+)
+
+const (
+	awsWifIdentityMappingCreateTimeout     = 2 * time.Minute
+	awsWifIdentityMappingVisibilityTimeout = 30 * time.Second
+
+	// The authoritative backend parser is cloudconfig.ParseARNPattern in
+	// domains/aaa/external_authn/internal/libs/cloudconfig/arn_parser.go. It
+	// currently supports only the aws partition and this resource character set.
+	awsWifArnAccountIDPattern   = `[0-9]{12}`
+	awsWifArnNamePattern        = `[A-Za-z0-9_.@-]+`
+	awsWifArnPathSegmentPattern = `[A-Za-z0-9_.:@-]+`
+	awsWifStsCallerPattern      = `sts::` + awsWifArnAccountIDPattern + `:(?:assumed-role/` + awsWifArnNamePattern + `/(?:` + awsWifArnNamePattern + `|\*)|federated-user/` + awsWifArnNamePattern + `)`
+	awsWifIamUserCallerPattern  = `iam::` + awsWifArnAccountIDPattern + `:user/(?:` + awsWifArnPathSegmentPattern + `/)*(?:` + awsWifArnNamePattern + `|` + awsWifArnPathSegmentPattern + `/\*)`
+)
+
+var (
+	_ resource.ResourceWithConfigure   = &awsWifIdentityMappingResource{}
+	_ resource.ResourceWithImportState = &awsWifIdentityMappingResource{}
+
+	awsWifArnPattern = regexp.MustCompile(`^arn:aws:(?:` + awsWifStsCallerPattern + `|` + awsWifIamUserCallerPattern + `)$`)
+)
+
+type awsWifIdentityMappingResource struct {
+	Api  *datadogV2.CloudAuthenticationApi
+	Auth context.Context
+}
+
+type awsWifIdentityMappingModel struct {
+	ID                types.String `tfsdk:"id"`
+	AccountIdentifier types.String `tfsdk:"account_identifier"`
+	AccountUUID       types.String `tfsdk:"account_uuid"`
+	ArnPattern        types.String `tfsdk:"arn_pattern"`
+}
+
+func NewAwsWifIdentityMappingResource() resource.Resource {
+	return &awsWifIdentityMappingResource{}
+}
+
+func (r *awsWifIdentityMappingResource) Metadata(_ context.Context, _ resource.MetadataRequest, response *resource.MetadataResponse) {
+	response.TypeName = "aws_wif_identity_mapping"
+}
+
+func (r *awsWifIdentityMappingResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+	response.Schema = schema.Schema{
+		Description: "Provides an AWS Workload Identity Federation (WIF) identity mapping. The mapping allows an AWS IAM principal matching `arn_pattern` to authenticate as the Datadog user or service account identified by `account_identifier`. The AWS account in the ARN must already be integrated with Datadog. The identity creating the mapping must have every permission assigned to the target identity. Creating the initial mapping requires API and application credentials with the Workload Identity Federation write permission; a provider already using WIF cannot bootstrap its own mapping. Mapping changes may take several minutes to affect WIF authentication. This resource uses a public beta API and is subject to change.",
+		Attributes: map[string]schema.Attribute{
+			"id": utils.ResourceIDAttribute(),
+			"account_identifier": schema.StringAttribute{
+				Description: "The email or handle of the Datadog user or service account that the AWS principal authenticates as. For a Terraform-managed service account, prefer the stable UUID exported by `datadog_service_account.id`; Datadog accepts it as the service account identifier. Datadog normalizes an email to the account's handle, so the handle form is the only value that survives `terraform import` unchanged — importing a mapping configured by email produces a diff on this attribute, which forces replacement.",
+				Required:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
+			},
+			"account_uuid": schema.StringAttribute{
+				Description: "The UUID of the Datadog user or service account resolved from `account_identifier`.",
+				Computed:    true,
+			},
+			"arn_pattern": schema.StringAttribute{
+				Description: "The AWS caller ARN pattern allowed to authenticate. Currently, only the `aws` partition is supported. For role-based authentication, use the STS assumed-role ARN returned by `aws sts get-caller-identity`, not the IAM role ARN shown in the AWS console. A pattern may contain one wildcard only, as a trailing `/*` after a specific resource, for example `arn:aws:sts::123456789012:assumed-role/terraform-runner/*`.",
+				Required:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+				Validators: []validator.String{
+					stringvalidator.RegexMatches(awsWifArnPattern, "must be an AWS GetCallerIdentity ARN supported by Datadog for an IAM user, assumed role, or federated user; a wildcard is allowed only as one trailing /* after a specific resource"),
+				},
+			},
+		},
+	}
+}
+
+func (r *awsWifIdentityMappingResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+	if request.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := request.ProviderData.(*FrameworkProvider)
+	if !ok {
+		response.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected *FrameworkProvider, got: %T. Please report this issue to the provider developers.", request.ProviderData),
+		)
+		return
+	}
+
+	r.Api = providerData.DatadogApiInstances.GetCloudAuthenticationApiV2()
+	r.Auth = providerData.Auth
+}
+
+func (r *awsWifIdentityMappingResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+	resource.ImportStatePassthroughID(ctx, path.Root("id"), request, response)
+}
+
+func (r *awsWifIdentityMappingResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state awsWifIdentityMappingModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	attributes := datadogV2.NewAWSCloudAuthPersonaMappingCreateAttributes(
+		state.AccountIdentifier.ValueString(),
+		state.ArnPattern.ValueString(),
+	)
+	data := datadogV2.NewAWSCloudAuthPersonaMappingCreateData(
+		*attributes,
+		datadogV2.AWSCLOUDAUTHPERSONAMAPPINGTYPE_AWS_CLOUD_AUTH_CONFIG,
+	)
+	body := datadogV2.NewAWSCloudAuthPersonaMappingCreateRequest(*data)
+
+	var apiResponse datadogV2.AWSCloudAuthPersonaMappingResponse
+	var httpResponse *http.Response
+	err := retry.RetryContext(ctx, awsWifIdentityMappingCreateTimeout, func() *retry.RetryError {
+		// Keep the request error local: cancellation can return before this callback.
+		var createErr error
+		apiResponse, httpResponse, createErr = r.Api.CreateAWSCloudAuthPersonaMapping(r.Auth, *body)
+		if createErr == nil {
+			return nil
+		}
+
+		translatedError := utils.TranslateClientError(createErr, httpResponse, "error creating AWS WIF identity mapping")
+		if isAwsIntegrationPropagationError(createErr, httpResponse) {
+			return retry.RetryableError(translatedError)
+		}
+		return retry.NonRetryableError(translatedError)
+	})
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, ""))
+		return
+	}
+	unparsedErr := utils.CheckForUnparsed(apiResponse)
+	createdData := apiResponse.GetData()
+	mappingID := createdData.GetId()
+	if unparsedErr == nil {
+		r.updateState(&state, &apiResponse)
+	} else if mappingID != "" {
+		// Preserve enough state to track and destroy a mapping when the SDK can
+		// still expose its ID from an otherwise unparsed public-beta response.
+		state.ID = types.StringValue(mappingID)
+		createdAttributes := createdData.GetAttributes()
+		if accountUUID := createdAttributes.GetAccountUuid(); accountUUID != "" {
+			state.AccountUUID = types.StringValue(accountUUID)
+		}
+	}
+	if mappingID != "" {
+		response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	}
+	if response.Diagnostics.HasError() {
+		return
+	}
+	if unparsedErr != nil {
+		response.Diagnostics.AddError("response contains unparsed object", unparsedErr.Error())
+		return
+	}
+	if mappingID == "" {
+		response.Diagnostics.AddError("response contains no mapping ID", "The API created an AWS WIF identity mapping but returned an empty ID, so Terraform cannot track it.")
+		return
+	}
+
+	apiResponse, httpResponse, err = r.readWithRetry(ctx, mappingID)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(
+			utils.TranslateClientError(err, httpResponse, "error waiting for AWS WIF identity mapping to become visible"), "",
+		))
+		return
+	}
+	if err := utils.CheckForUnparsed(apiResponse); err != nil {
+		response.Diagnostics.AddError("response contains unparsed object", err.Error())
+		return
+	}
+
+	r.updateState(&state, &apiResponse)
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+}
+
+func isAwsIntegrationPropagationError(err error, httpResponse *http.Response) bool {
+	if httpResponse == nil || httpResponse.StatusCode != http.StatusBadRequest {
+		return false
+	}
+
+	var apiError datadog.GenericOpenAPIError
+	if !errors.As(err, &apiError) {
+		return false
+	}
+	return strings.Contains(string(apiError.Body()), "AWS Account Id is not integrated with this Datadog account")
+}
+
+func (r *awsWifIdentityMappingResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state awsWifIdentityMappingModel
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	apiResponse, httpResponse, err := r.readWithRetry(ctx, state.ID.ValueString())
+	if err != nil {
+		if ctx.Err() == nil && httpResponse != nil && httpResponse.StatusCode == http.StatusNotFound {
+			response.State.RemoveResource(ctx)
+			return
+		}
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(
+			utils.TranslateClientError(err, httpResponse, "error retrieving AWS WIF identity mapping"), "",
+		))
+		return
+	}
+	if err := utils.CheckForUnparsed(apiResponse); err != nil {
+		response.Diagnostics.AddError("response contains unparsed object", err.Error())
+		return
+	}
+
+	r.updateState(&state, &apiResponse)
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+}
+
+// A newly created mapping can intermittently return 404 even after a successful
+// GET. Retry before treating it as deleted so a refresh cannot orphan it.
+func (r *awsWifIdentityMappingResource) readWithRetry(ctx context.Context, id string) (datadogV2.AWSCloudAuthPersonaMappingResponse, *http.Response, error) {
+	var result datadogV2.AWSCloudAuthPersonaMappingResponse
+	var httpResponse *http.Response
+	// RetryContext can return on cancellation while its callback is still running.
+	var resultMu sync.Mutex
+	err := retry.RetryContext(ctx, awsWifIdentityMappingVisibilityTimeout, func() *retry.RetryError {
+		readResponse, readHTTPResponse, err := r.Api.GetAWSCloudAuthPersonaMapping(r.Auth, id)
+		resultMu.Lock()
+		result, httpResponse = readResponse, readHTTPResponse
+		resultMu.Unlock()
+		if err == nil {
+			return nil
+		}
+		if readHTTPResponse != nil && readHTTPResponse.StatusCode == http.StatusNotFound {
+			return retry.RetryableError(err)
+		}
+		return retry.NonRetryableError(err)
+	})
+	resultMu.Lock()
+	defer resultMu.Unlock()
+	return result, httpResponse, err
+}
+
+func (r *awsWifIdentityMappingResource) Update(_ context.Context, _ resource.UpdateRequest, response *resource.UpdateResponse) {
+	response.Diagnostics.AddError("Update not supported", "AWS WIF identity mappings cannot be updated; changing either configured attribute replaces the mapping.")
+}
+
+func (r *awsWifIdentityMappingResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state awsWifIdentityMappingModel
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	httpResponse, err := r.Api.DeleteAWSCloudAuthPersonaMapping(r.Auth, state.ID.ValueString())
+	if err != nil {
+		if httpResponse != nil && httpResponse.StatusCode == http.StatusNotFound {
+			return
+		}
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(
+			utils.TranslateClientError(err, httpResponse, "error deleting AWS WIF identity mapping"), "",
+		))
+	}
+}
+
+func (r *awsWifIdentityMappingResource) updateState(state *awsWifIdentityMappingModel, apiResponse *datadogV2.AWSCloudAuthPersonaMappingResponse) {
+	data := apiResponse.GetData()
+	attributes := data.GetAttributes()
+
+	state.ID = types.StringValue(data.GetId())
+	state.AccountUUID = types.StringValue(attributes.GetAccountUuid())
+	state.ArnPattern = types.StringValue(attributes.GetArnPattern())
+
+	// The API normalizes an email identifier to the resolved handle. Preserve the
+	// configured value to prevent a perpetual replacement; imports start with no value.
+	if state.AccountIdentifier.IsNull() || state.AccountIdentifier.IsUnknown() {
+		state.AccountIdentifier = types.StringValue(attributes.GetAccountIdentifier())
+	}
+}
