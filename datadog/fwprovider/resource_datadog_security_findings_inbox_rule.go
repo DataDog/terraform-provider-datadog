@@ -71,7 +71,7 @@ func (r *securityFindingsInboxRuleResource) Schema(_ context.Context, _ resource
 			},
 			"rule": securityFindingsAutomationRuleScopeAttribute(),
 			"action": schema.SingleNestedAttribute{
-				Description: "The action to take when the inbox rule matches a finding. Matching findings are pushed into the Security Inbox triage view.",
+				Description: "The action to take when the inbox rule matches a finding.",
 				Required:    true,
 				Attributes: map[string]schema.Attribute{
 					"description": schema.StringAttribute{

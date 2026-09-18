@@ -82,7 +82,7 @@ func (r *securityFindingsTicketCreationRuleResource) Schema(_ context.Context, _
 				Required:    true,
 				Attributes: map[string]schema.Attribute{
 					"project_id": schema.StringAttribute{
-						Description: "The UUID of the Case Management project.",
+						Description: "The UUID of the case management project.",
 						Required:    true,
 						Validators:  []validator.String{uuidValidator},
 					},
@@ -97,19 +97,19 @@ func (r *securityFindingsTicketCreationRuleResource) Schema(_ context.Context, _
 						Validators:  []validator.String{uuidValidator},
 					},
 					"fields": schema.StringAttribute{
-						Description: "A JSON-encoded object of target-specific fields for the created ticket. For `target` `jira`, the custom fields of the Jira issue; for the list of available fields, see the [Jira documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-createmeta-projectidorkey-issuetypes-issuetypeid-get). For `target` `linear`, the optional keys `linear_project_id` (string, the identifier of the Linear project the issue is created in) and `linear_label_ids` (list of strings, the identifiers of the Linear labels applied to the issue).",
+						Description: "A JSON-encoded object of target-specific fields for the ticket to create. For `target: jira`, the custom fields of the Jira issue. For the list of available fields, see the [Jira documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-createmeta-projectidorkey-issuetypes-issuetypeid-get). For `target: linear`, the optional keys `linear_project_id` (string, the identifier of the Linear project the issue is created in) and `linear_label_ids` (array of strings, the identifiers of the Linear labels applied to the issue).",
 						Optional:    true,
 						CustomType:  jsontypes.NormalizedType{},
 					},
 					"max_tickets_per_day": schema.Int64Attribute{
-						Description: "The maximum number of tickets the rule may create per day. If exceeded, one final ticket will be created, explaining the limit was hit and linking back to the responsible rule.",
+						Description: "The maximum number of tickets the rule may create per day. If exceeded, one final ticket will be created, explaining the limit was hit and link back to the responsible rule.",
 						Required:    true,
 						Validators: []validator.Int64{
 							int64validator.Between(1, 500),
 						},
 					},
 					"auto_disabled_reason": schema.StringAttribute{
-						Description: "The reason the rule was automatically disabled by the system due to a ticketing integration error. This field is read-only.",
+						Description: "The reason the rule was automatically disabled by the system due to a ticketing integration error.",
 						Computed:    true,
 					},
 				},

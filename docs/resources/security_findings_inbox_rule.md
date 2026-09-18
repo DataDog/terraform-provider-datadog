@@ -36,7 +36,7 @@ resource "datadog_security_findings_inbox_rule" "triage_production_misconfigurat
 
 ### Required
 
-- `action` (Attributes) The action to take when the inbox rule matches a finding. Matching findings are pushed into the Security Inbox triage view. (see [below for nested schema](#nestedatt--action))
+- `action` (Attributes) The action to take when the inbox rule matches a finding. (see [below for nested schema](#nestedatt--action))
 - `name` (String) The name of the inbox rule.
 - `rule` (Attributes) Defines the scope of findings to which the automation rule applies. (see [below for nested schema](#nestedatt--rule))
 

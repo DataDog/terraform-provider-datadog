@@ -57,7 +57,7 @@ resource "datadog_security_findings_severity_modifier_rule" "deprioritize_dev_mi
 
 ### Required
 
-- `action` (Attributes) The action to take when the severity modifier rule matches a finding. Exactly one of `set` or `shift` must be provided. (see [below for nested schema](#nestedatt--action))
+- `action` (Attributes) The action to take when a severity modifier rule matches a finding. This is a discriminated union on `type`: `set` assigns a fixed severity, while `shift` moves the severity up or down by one severity rank. In this resource the union is expressed as the `set` and `shift` blocks; exactly one must be provided. A severity modifier rule's `rule.query` must not filter on `@severity` or on the `@severity_details.user_adjusted.*` namespace. Use `@severity_details.adjusted.value` instead, which reflects the severity before user-defined adjustments. (see [below for nested schema](#nestedatt--action))
 - `name` (String) The name of the severity modifier rule.
 - `rule` (Attributes) Defines the scope of findings to which the automation rule applies. (see [below for nested schema](#nestedatt--rule))
 

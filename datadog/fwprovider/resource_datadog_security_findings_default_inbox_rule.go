@@ -55,11 +55,11 @@ func (r *securityFindingsDefaultInboxRuleResource) Metadata(_ context.Context, _
 
 func (r *securityFindingsDefaultInboxRuleResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog security findings default inbox rule resource. Default inbox rules are managed by Datadog and always exist: they can only be imported, not created. Only `enabled` can be set; all other attributes are read from Datadog. Default inbox rules are not part of the evaluation order managed by the `datadog_security_findings_inbox_rules_order` resource. Removing the resource from the configuration does not delete the rule, it only stops managing it.",
+		Description: "Provides a Datadog security findings default inbox rule resource. Datadog manages default inbox rules. Their name, rule, and action are read-only, and each organization can change only whether they are enabled. Default inbox rules always exist, so this resource can only be imported, not created; removing it from the configuration does not delete the rule, it only stops managing it. Default inbox rules are not part of the evaluation order managed by the `datadog_security_findings_inbox_rules_order` resource.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"enabled": schema.BoolAttribute{
-				Description: "Whether the default inbox rule is enabled for this organization. When not set, the rule's current server-side value is adopted; declare it to manage the value. Default inbox rules are enabled unless disabled.",
+				Description: "Whether the default inbox rule is enabled for the organization. When not set, the rule's current server-side value is adopted; declare it to manage the value. Default inbox rules are enabled unless disabled.",
 				Optional:    true,
 				Computed:    true,
 				// UseStateForUnknown keeps the prior value when the attribute is absent from the
@@ -69,33 +69,33 @@ func (r *securityFindingsDefaultInboxRuleResource) Schema(_ context.Context, _ r
 				PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
 			},
 			"name": schema.StringAttribute{
-				Description:   "The name of the default inbox rule, defined by Datadog.",
+				Description:   "The name of the default inbox rule.",
 				Computed:      true,
 				PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 			},
 			"rule": schema.SingleNestedAttribute{
-				Description:   "The scope of findings the default inbox rule applies to, defined by Datadog.",
+				Description:   "Defines the scope of findings to which the automation rule applies.",
 				Computed:      true,
 				PlanModifiers: []planmodifier.Object{objectplanmodifier.UseStateForUnknown()},
 				Attributes: map[string]schema.Attribute{
 					"finding_types": schema.ListAttribute{
-						Description: "The list of security finding types that the default inbox rule applies to.",
+						Description: "The list of security finding types that the automation rule applies to.",
 						ElementType: types.StringType,
 						Computed:    true,
 					},
 					"query": schema.StringAttribute{
-						Description: "The search query that further filters the findings matched by the default inbox rule.",
+						Description: "A search query to further filter the findings matched by this rule. The `@workflow.*` namespace and `@status` fields are not permitted. For a reference of available fields, see the [Security Findings schema documentation](https://docs.datadoghq.com/security/guide/findings-schema/).",
 						Computed:    true,
 					},
 				},
 			},
 			"action": schema.SingleNestedAttribute{
-				Description:   "The action taken by the default inbox rule: matching findings are pushed into the Security Inbox triage view.",
+				Description:   "The action to take when the inbox rule matches a finding.",
 				Computed:      true,
 				PlanModifiers: []planmodifier.Object{objectplanmodifier.UseStateForUnknown()},
 				Attributes: map[string]schema.Attribute{
 					"description": schema.StringAttribute{
-						Description: "The description of the default inbox rule, defined by Datadog.",
+						Description: "An optional description providing more context for the rule.",
 						Computed:    true,
 					},
 				},

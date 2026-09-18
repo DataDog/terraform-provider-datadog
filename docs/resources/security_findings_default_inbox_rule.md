@@ -3,12 +3,12 @@
 page_title: "datadog_security_findings_default_inbox_rule Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog security findings default inbox rule resource. Default inbox rules are managed by Datadog and always exist: they can only be imported, not created. Only enabled can be set; all other attributes are read from Datadog. Default inbox rules are not part of the evaluation order managed by the datadog_security_findings_inbox_rules_order resource. Removing the resource from the configuration does not delete the rule, it only stops managing it.
+  Provides a Datadog security findings default inbox rule resource. Datadog manages default inbox rules. Their name, rule, and action are read-only, and each organization can change only whether they are enabled. Default inbox rules always exist, so this resource can only be imported, not created; removing it from the configuration does not delete the rule, it only stops managing it. Default inbox rules are not part of the evaluation order managed by the datadog_security_findings_inbox_rules_order resource.
 ---
 
 # datadog_security_findings_default_inbox_rule (Resource)
 
-Provides a Datadog security findings default inbox rule resource. Default inbox rules are managed by Datadog and always exist: they can only be imported, not created. Only `enabled` can be set; all other attributes are read from Datadog. Default inbox rules are not part of the evaluation order managed by the `datadog_security_findings_inbox_rules_order` resource. Removing the resource from the configuration does not delete the rule, it only stops managing it.
+Provides a Datadog security findings default inbox rule resource. Datadog manages default inbox rules. Their name, rule, and action are read-only, and each organization can change only whether they are enabled. Default inbox rules always exist, so this resource can only be imported, not created; removing it from the configuration does not delete the rule, it only stops managing it. Default inbox rules are not part of the evaluation order managed by the `datadog_security_findings_inbox_rules_order` resource.
 
 ## Example Usage
 
@@ -32,21 +32,21 @@ resource "datadog_security_findings_default_inbox_rule" "secret" {
 
 ### Optional
 
-- `enabled` (Boolean) Whether the default inbox rule is enabled for this organization. When not set, the rule's current server-side value is adopted; declare it to manage the value. Default inbox rules are enabled unless disabled.
+- `enabled` (Boolean) Whether the default inbox rule is enabled for the organization. When not set, the rule's current server-side value is adopted; declare it to manage the value. Default inbox rules are enabled unless disabled.
 
 ### Read-Only
 
-- `action` (Attributes) The action taken by the default inbox rule: matching findings are pushed into the Security Inbox triage view. (see [below for nested schema](#nestedatt--action))
+- `action` (Attributes) The action to take when the inbox rule matches a finding. (see [below for nested schema](#nestedatt--action))
 - `id` (String) The ID of this resource.
-- `name` (String) The name of the default inbox rule, defined by Datadog.
-- `rule` (Attributes) The scope of findings the default inbox rule applies to, defined by Datadog. (see [below for nested schema](#nestedatt--rule))
+- `name` (String) The name of the default inbox rule.
+- `rule` (Attributes) Defines the scope of findings to which the automation rule applies. (see [below for nested schema](#nestedatt--rule))
 
 <a id="nestedatt--action"></a>
 ### Nested Schema for `action`
 
 Read-Only:
 
-- `description` (String) The description of the default inbox rule, defined by Datadog.
+- `description` (String) An optional description providing more context for the rule.
 
 
 <a id="nestedatt--rule"></a>
@@ -54,8 +54,8 @@ Read-Only:
 
 Read-Only:
 
-- `finding_types` (List of String) The list of security finding types that the default inbox rule applies to.
-- `query` (String) The search query that further filters the findings matched by the default inbox rule.
+- `finding_types` (List of String) The list of security finding types that the automation rule applies to.
+- `query` (String) A search query to further filter the findings matched by this rule. The `@workflow.*` namespace and `@status` fields are not permitted. For a reference of available fields, see the [Security Findings schema documentation](https://docs.datadoghq.com/security/guide/findings-schema/).
 
 ## Import
 
