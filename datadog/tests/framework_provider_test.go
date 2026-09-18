@@ -174,6 +174,12 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationSeverityModifierRule", true)
 	config.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationSeverityModifierRule", true)
 	config.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationSeverityModifierRules", true)
+	config.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationInboxRules", true)
+	config.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationInboxRules", true)
 
 	config.SetUnstableOperationEnabled("v2.CreateTagIndexingRule", true)
 	config.SetUnstableOperationEnabled("v2.GetTagIndexingRule", true)
