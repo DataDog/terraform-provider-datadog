@@ -29,4 +29,5 @@ data "datadog_role" "api_key_manager" {
 
 - `id` (String) The ID of this resource.
 - `name` (String) Name of the role.
+- `permissions` (Map of String) Map of permissions granted to this role, keyed by permission name and returning the permission ID.
 - `user_count` (Number) Number of users assigned to this role.
