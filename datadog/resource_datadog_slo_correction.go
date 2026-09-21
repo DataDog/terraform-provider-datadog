@@ -50,7 +50,6 @@ func resourceDatadogSloCorrection() *schema.Resource {
 				"slo_query": {
 					Type:         schema.TypeString,
 					Optional:     true,
-					ForceNew:     true,
 					ExactlyOneOf: []string{"slo_id", "slo_query"},
 					Description:  "Query that matches the SLOs this correction will be applied to.",
 				},
@@ -139,6 +138,9 @@ func buildDatadogSloCorrectionUpdate(d *schema.ResourceData) *datadogV1.SLOCorre
 	}
 	if rrule, ok := d.GetOk("rrule"); ok {
 		attributes.SetRrule(rrule.(string))
+	}
+	if sloQuery, ok := d.GetOk("slo_query"); ok {
+		attributes.SetSloQuery(sloQuery.(string))
 	}
 	if duration, ok := d.GetOk("duration"); ok {
 		attributes.SetDuration(int64(duration.(int)))
