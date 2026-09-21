@@ -289,6 +289,12 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 											Description:      "The interval used when querying data, which defines the size of a time slice.",
 											ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOTimeSliceIntervalFromValue),
 										},
+										"no_data_strategy": {
+											Type:        schema.TypeString,
+											Optional:    true,
+											Default:     "",
+											Description: "Strategy for handling no-data periods. Valid values: COUNT_AS_DOWNTIME (treat no-data as downtime, does not burn budget) or COUNT_AS_FAILED (treat no-data as failure, burns budget). If not set, the Datadog API default is used.",
+										},
 									},
 								},
 							},
@@ -560,6 +566,9 @@ func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.Servi
 								sliSpec.SLOTimeSliceSpec.TimeSlice.SetQueryIntervalSeconds(datadogV1.SLOTimeSliceInterval(queryInterval))
 							}
 						}
+						if noDataStrategy, ok := rawTimeSliceCond["no_data_strategy"].(string); ok && noDataStrategy != "" {
+							sliSpec.SLOTimeSliceSpec.TimeSlice.AdditionalProperties["no_data_strategy"] = noDataStrategy
+						}
 					}
 				}
 			}
@@ -775,6 +784,9 @@ func buildTerraformSliSpecification(sliSpec *datadogV1.SLOSliSpec) []map[string]
 		}
 		if queryInterval, ok := sliSpec.SLOTimeSliceSpec.TimeSlice.GetQueryIntervalSecondsOk(); ok {
 			rawTimeSliceCond["query_interval_seconds"] = *queryInterval
+		}
+		if noDataStrategy, ok := sliSpec.SLOTimeSliceSpec.TimeSlice.AdditionalProperties["no_data_strategy"].(string); ok {
+			rawTimeSliceCond["no_data_strategy"] = noDataStrategy
 		}
 		rawTimeSliceSpec = append(rawTimeSliceSpec, rawTimeSliceCond)
 		sliSpecMap["time_slice"] = rawTimeSliceSpec
