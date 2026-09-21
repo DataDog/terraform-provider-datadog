@@ -95,6 +95,21 @@ func buildDashboardV2Schema() map[string]*schema.Schema {
 
 	// Add widget block with all widget types
 	widgetSchema := dashboardmapping.AllWidgetSDKv2Schema(false)
+	// A legacy `type` value and the equivalent canonical variant describe the
+	// same display mode after refresh. Suppress only that normalization diff;
+	// changing the legacy value must still update the dashboard.
+	toplistSchema := widgetSchema["toplist_definition"].Elem.(*schema.Resource)
+	styleSchema := toplistSchema.Schema["style"].Elem.(*schema.Resource)
+	displaySchema := styleSchema.Schema["display"].Elem.(*schema.Resource)
+	displaySchema.Schema["type"].DiffSuppressFunc = func(key, _, new string, data *schema.ResourceData) bool {
+		prefix := strings.TrimSuffix(key, ".type")
+		if prefix == key {
+			return false
+		}
+		variantCount, ok := data.GetOk(prefix + "." + new + ".#")
+		count, isInt := variantCount.(int)
+		return ok && isInt && count > 0
+	}
 	topSchema["widget"] = &schema.Schema{
 		Type:        schema.TypeList,
 		Optional:    true,

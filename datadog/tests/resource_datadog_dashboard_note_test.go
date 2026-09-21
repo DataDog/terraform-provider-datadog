@@ -74,7 +74,7 @@ func TestAccDatadogDashboardNoteContentError(t *testing.T) {
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config:      datadogDashboardNoteConfigNoContent(uniq),
+				Config:      disableDashboardPlanValidation(datadogDashboardNoteConfigNoContent(uniq)),
 				ExpectError: regexp.MustCompile("expected \"widget.0.note_definition.0.content\" to not be an empty string"),
 			},
 		},

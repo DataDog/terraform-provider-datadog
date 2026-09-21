@@ -2650,6 +2650,27 @@ func buildGroupWidgetsJSONFromMap(defMap map[string]interface{}, ctx mapBuildCon
 // buildWidgetPostProcessFromMap runs all per-widget post-processing in the build direction.
 // Parallel to buildWidgetPostProcess in engine.go but reads from map[string]interface{}.
 func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpec, defJSON map[string]interface{}, ctx mapBuildContext) {
+	// ---- Toplist legacy display discriminator ----
+	// datadog_dashboard historically represented the toplist display oneOf as
+	// display { type = "flat"|"stacked" }. Keep accepting that form while the
+	// canonical v2 form uses display { flat {} } / display { stacked {} }.
+	if spec.JSONType == "toplist" {
+		if styleMap := getBlockFromMap(defMap, "style"); styleMap != nil {
+			if displayMap := getBlockFromMap(styleMap, "display"); displayMap != nil {
+				if legacyType := getStringFromMap(displayMap, "type"); legacyType != "" {
+					styleJSON, _ := defJSON["style"].(map[string]interface{})
+					if styleJSON == nil {
+						styleJSON = map[string]interface{}{}
+						defJSON["style"] = styleJSON
+					}
+					// The legacy scalar is authoritative when configured. Do not retain
+					// fields from a computed canonical variant left in refreshed state.
+					styleJSON["display"] = map[string]interface{}{"type": legacyType}
+				}
+			}
+		}
+	}
+
 	// ---- Formula/query blocks ----
 	if isFormulaCapableWidget(spec.JSONType) {
 		requestList := getBlockListFromMap(defMap, "request")

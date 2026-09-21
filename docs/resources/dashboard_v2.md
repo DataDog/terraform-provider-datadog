@@ -28927,6 +28927,7 @@ Optional:
 
 - `flat` (Block List, Max: 1) Flat display for the top list widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--style--display--flat))
 - `stacked` (Block List, Max: 1) Stacked display for the top list widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--style--display--stacked))
+- `type` (String, Deprecated) Legacy display type for the widget. Valid values are `stacked`, `flat`. **Deprecated.** Use the `stacked` or `flat` block instead.
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--style--display--flat"></a>
 ### Nested Schema for `widget.group_definition.widget.toplist_definition.style.display.flat`
@@ -58330,6 +58331,7 @@ Optional:
 
 - `flat` (Block List, Max: 1) Flat display for the top list widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display--flat))
 - `stacked` (Block List, Max: 1) Stacked display for the top list widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display--stacked))
+- `type` (String, Deprecated) Legacy display type for the widget. Valid values are `stacked`, `flat`. **Deprecated.** Use the `stacked` or `flat` block instead.
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display--flat"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.style.display.flat`
@@ -63653,6 +63655,7 @@ Optional:
 
 - `flat` (Block List, Max: 1) Flat display for the top list widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--style--display--flat))
 - `stacked` (Block List, Max: 1) Stacked display for the top list widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--style--display--stacked))
+- `type` (String, Deprecated) Legacy display type for the widget. Valid values are `stacked`, `flat`. **Deprecated.** Use the `stacked` or `flat` block instead.
 
 <a id="nestedblock--widget--toplist_definition--style--display--flat"></a>
 ### Nested Schema for `widget.toplist_definition.style.display.flat`

@@ -1499,9 +1499,18 @@ var toplistWidgetStyleFields = []FieldSpec{
 		Discriminator: &OneOfDiscriminator{JSONKey: "type"},
 		Children: []FieldSpec{
 			{
+				HCLKey:      "type",
+				Type:        TypeString,
+				OmitEmpty:   true,
+				Description: "Legacy display type for the widget.",
+				Deprecated:  "Use the `stacked` or `flat` block instead.",
+				ValidValues: []string{"stacked", "flat"},
+			},
+			{
 				HCLKey:        "stacked",
 				Type:          TypeBlock,
 				OmitEmpty:     true,
+				Computed:      true,
 				Description:   "Stacked display for the top list widget.",
 				Discriminator: &OneOfDiscriminator{Value: "stacked"},
 				Children:      toplistWidgetDisplayStackedFields,
@@ -1510,6 +1519,7 @@ var toplistWidgetStyleFields = []FieldSpec{
 				HCLKey:        "flat",
 				Type:          TypeBlock,
 				OmitEmpty:     true,
+				Computed:      true,
 				Description:   "Flat display for the top list widget.",
 				Discriminator: &OneOfDiscriminator{Value: "flat"},
 				Children:      toplistWidgetDisplayFlatFields,

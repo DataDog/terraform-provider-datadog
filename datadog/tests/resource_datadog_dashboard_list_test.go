@@ -132,7 +132,7 @@ func TestDatadogDashListImport(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogDashListDestroyWithFw(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDashListConfig(uniqueName),
+				Config: disableDashboardPlanValidation(testAccCheckDatadogDashListConfig(uniqueName)),
 			},
 			{
 				ResourceName:      resourceName,
@@ -153,7 +153,7 @@ func TestDatadogDashListInDashboard(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogDashListDestroyWithFw(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDashListConfigInDashboard(uniqueName),
+				Config: disableDashboardPlanValidation(testAccCheckDatadogDashListConfigInDashboard(uniqueName)),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_dashboard.time", "dashboard_lists.#", "1"),
@@ -164,7 +164,7 @@ func TestDatadogDashListInDashboard(t *testing.T) {
 				ExpectNonEmptyPlan: true,
 			},
 			{
-				Config: testAccCheckDatadogDashListConfigRemoveFromDashboard(uniqueName),
+				Config: disableDashboardPlanValidation(testAccCheckDatadogDashListConfigRemoveFromDashboard(uniqueName)),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_dashboard.time", "dashboard_lists.#", "0"),

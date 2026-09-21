@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -43,6 +44,55 @@ func TestDashboardResourceNamesUseV2Implementation(t *testing.T) {
 	canonicalSchema := canonical.SchemaFunc()
 	if _, ok := canonicalSchema["validate"]; !ok {
 		t.Fatal("datadog_dashboard must use the v2 schema")
+	}
+}
+
+func TestDashboardV2PreservesLegacyCanonicalSchemaShapes(t *testing.T) {
+	resourceSchema := buildDashboardV2Schema()
+	widgetResource := resourceSchema["widget"].Elem.(*schema.Resource)
+	toplistResource := widgetResource.Schema["toplist_definition"].Elem.(*schema.Resource)
+	styleResource := toplistResource.Schema["style"].Elem.(*schema.Resource)
+	displayResource := styleResource.Schema["display"].Elem.(*schema.Resource)
+
+	legacyType := displayResource.Schema["type"]
+	if legacyType == nil || legacyType.Deprecated == "" || legacyType.DiffSuppressFunc == nil {
+		t.Fatalf("legacy toplist display type must remain accepted without normalization diffs: %#v", legacyType)
+	}
+	if !displayResource.Schema["stacked"].Computed || !displayResource.Schema["flat"].Computed {
+		t.Fatal("canonical toplist display variants must be able to coexist with legacy configuration in state")
+	}
+	resourceData := schema.TestResourceDataRaw(t, resourceSchema, map[string]interface{}{
+		"widget": []interface{}{map[string]interface{}{
+			"toplist_definition": []interface{}{map[string]interface{}{
+				"style": []interface{}{map[string]interface{}{
+					"display": []interface{}{map[string]interface{}{
+						"type":    "stacked",
+						"stacked": []interface{}{map[string]interface{}{}},
+					}},
+				}},
+			}},
+		}},
+	})
+	legacyTypePath := "widget.0.toplist_definition.0.style.0.display.0.type"
+	if !legacyType.DiffSuppressFunc(legacyTypePath, "", "stacked", resourceData) {
+		t.Fatal("matching canonical state should suppress the legacy normalization diff")
+	}
+	if legacyType.DiffSuppressFunc(legacyTypePath, "stacked", "flat", resourceData) {
+		t.Fatal("a real legacy display type change must not be suppressed")
+	}
+
+	legacyDisplay := map[string]interface{}{"type": "stacked"}
+	legacyStyle := map[string]interface{}{"display": []interface{}{legacyDisplay}}
+	legacyToplist := map[string]interface{}{"style": []interface{}{legacyStyle}}
+	legacyWidget := map[string]interface{}{"toplist_definition": []interface{}{legacyToplist}}
+	config := terraform.NewResourceConfigRaw(map[string]interface{}{
+		"title":       "Legacy toplist",
+		"layout_type": "ordered",
+		"validate":    false,
+		"widget":      []interface{}{legacyWidget},
+	})
+	if _, err := resourceDatadogDashboardV2().Diff(context.Background(), nil, config, nil); err != nil {
+		t.Fatalf("legacy canonical dashboard configuration must remain valid: %v", err)
 	}
 }
 
