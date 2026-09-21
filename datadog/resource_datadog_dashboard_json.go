@@ -340,6 +340,11 @@ func prepResource(attrMap map[string]interface{}) map[string]interface{} {
 			attrMap["is_read_only"] = false
 		}
 	}
+	// `pause_auto_refresh` defaults to false and the API omits it in that case.
+	// Dashboard exports include it, so we drop it to avoid continuous diff.
+	if pause, ok := attrMap["pause_auto_refresh"].(bool); ok && !pause {
+		delete(attrMap, "pause_auto_refresh")
+	}
 	// handle `notify_list` order
 	if notifyList, ok := attrMap["notify_list"].([]interface{}); ok {
 		sort.SliceStable(notifyList, func(i, j int) bool {
