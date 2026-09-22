@@ -128,6 +128,10 @@ type FieldSpec struct {
 	// Deprecated: non-empty string = deprecation message
 	Deprecated string
 
+	// NotEmpty: reject the empty string for a required TypeString field.
+	// Generates validation.StringIsNotEmpty automatically.
+	NotEmpty bool
+
 	// ValidValues: valid string values for enum fields.
 	// Generates validators.ValidateEnumValue automatically.
 	// Use instead of SDK-based enum validators.
@@ -2665,7 +2669,14 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 					}
 					// The legacy scalar is authoritative when configured. Do not retain
 					// fields from a computed canonical variant left in refreshed state.
-					styleJSON["display"] = map[string]interface{}{"type": legacyType}
+					display := map[string]interface{}{"type": legacyType}
+					// The legacy datadog_dashboard implementation always sent
+					// legend=automatic alongside a stacked display. Keep emitting it so
+					// legacy configs produce byte-identical API payloads.
+					if legacyType == "stacked" {
+						display["legend"] = "automatic"
+					}
+					styleJSON["display"] = display
 				}
 			}
 		}

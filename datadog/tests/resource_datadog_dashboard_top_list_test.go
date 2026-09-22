@@ -282,7 +282,7 @@ var datadogDashboardTopListAssertsWithStyle = []string{
 	"widget.0.toplist_definition.0.custom_link.1.is_hidden = true",
 	"widget.0.toplist_definition.0.style.# = 1",
 	"widget.0.toplist_definition.0.style.0.display.# = 1",
-	"widget.0.toplist_definition.0.style.0.display.0.type = flat",
+	"widget.0.toplist_definition.0.style.0.display.0.flat.# = 1",
 
 	"widget.1.toplist_definition.0.request.0.conditional_formats.0.timeframe =",
 	"widget.1.toplist_definition.0.request.0.conditional_formats.0.image_url =",
@@ -306,7 +306,8 @@ var datadogDashboardTopListAssertsWithStyle = []string{
 	"widget.1.toplist_definition.0.custom_link.1.is_hidden = true",
 	"widget.1.toplist_definition.0.style.# = 1",
 	"widget.1.toplist_definition.0.style.0.display.# = 1",
-	"widget.1.toplist_definition.0.style.0.display.0.type = stacked",
+	"widget.1.toplist_definition.0.style.0.display.0.stacked.# = 1",
+	"widget.1.toplist_definition.0.style.0.display.0.stacked.0.legend = automatic",
 	"widget.1.toplist_definition.0.style.0.palette = datadog16",
 	"widget.1.toplist_definition.0.style.0.scaling = relative",
 }
