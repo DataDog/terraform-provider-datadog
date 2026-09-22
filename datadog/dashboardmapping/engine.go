@@ -190,6 +190,10 @@ type WidgetSpec struct {
 	// CommonWidgetFields are automatically merged in by the engine.
 	Fields []FieldSpec
 
+	// ExactlyOneOf contains groups of widget-definition fields where exactly one
+	// field must be configured. These constraints are checked during planning.
+	ExactlyOneOf [][]string
+
 	// JSONMatchPath and JSONMatchValues disambiguate widget schemas that share
 	// the same JSON type. The path supports object keys and array indexes, for
 	// example `requests.0.request_type` for the two funnel definitions.
@@ -3122,12 +3126,12 @@ func normalizeNumericID(v interface{}) string {
 }
 
 // ============================================================
-// Validation — check FieldSpec ConflictsWith at plan time
+// Validation — check widget constraints at plan time
 // ============================================================
 
-// ValidateWidgetConflicts walks the widget tree and checks ConflictsWith
-// constraints on request-level fields. Returns a list of human-readable
-// error strings for any violations found.
+// ValidateWidgetConflicts walks the widget tree and checks widget-level
+// ExactlyOneOf groups and request-level ConflictsWith constraints. Returns a
+// list of human-readable error strings for any violations found.
 //
 // This is driven by the ConflictsWith annotations on FieldSpec declarations
 // (e.g., the "q" field conflicts with "query" and "formula").
@@ -3150,6 +3154,28 @@ func ValidateWidgetConflicts(data map[string]interface{}) []string {
 			defMap, ok := defList[0].(map[string]interface{})
 			if !ok {
 				continue
+			}
+
+			for _, group := range spec.ExactlyOneOf {
+				setFields := make([]string, 0, len(group))
+				for _, fieldName := range group {
+					for _, field := range spec.Fields {
+						if field.HCLKey == fieldName && fieldIsSetInMap(defMap, field) {
+							setFields = append(setFields, fieldName)
+							break
+						}
+					}
+				}
+				if len(setFields) != 1 {
+					quotedFields := make([]string, len(group))
+					for i, fieldName := range group {
+						quotedFields[i] = fmt.Sprintf("%q", fieldName)
+					}
+					errs = append(errs, fmt.Sprintf(
+						"widget[%d].%s: exactly one of %s must be configured",
+						wi, spec.HCLKey, strings.Join(quotedFields, " or "),
+					))
+				}
 			}
 
 			// Check ConflictsWith constraints on request fields

@@ -138,6 +138,7 @@ func FieldSpecToSDKv2(f FieldSpec) *schema.Schema {
 
 	case TypeJSON:
 		s.Type = schema.TypeString
+		s.ValidateDiagFunc = validation.ToDiagFunc(validation.StringIsJSON)
 
 	case TypeBlockList:
 		s.Type = schema.TypeList
