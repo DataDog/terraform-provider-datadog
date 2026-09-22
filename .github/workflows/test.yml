@@ -54,12 +54,13 @@ jobs:
   # Generated files (marked with the standard Go "Code generated ... DO NOT
   # EDIT." header) must only be produced by tfgen, never hand-edited. The
   # generate/* and retire/* branches are created by the tfgen-split workflow
-  # itself and are allowed to touch them, as are PRs opened by dd-octo-sts.
+  # itself and are allowed to touch them, as are PRs opened by bots or GitHub
+  # Apps.
   no-generated-file-edits:
     runs-on: ubuntu-latest
     if: >
       github.event_name == 'pull_request' &&
-      github.event.pull_request.user.login != 'dd-octo-sts[bot]' &&
+      github.event.pull_request.user.type != 'Bot' &&
       !startsWith(github.head_ref, 'generate/') &&
       !startsWith(github.head_ref, 'retire/')
     steps:
