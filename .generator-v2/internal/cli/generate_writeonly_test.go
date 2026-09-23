@@ -22,18 +22,22 @@ type writeOnlyResourceFixture struct {
 	name     string
 	spec     string
 	resource string
+	// basicAuth is the authentication variant block holding the password.
+	basicAuth string
 }
 
 var writeOnlyResourceFixtures = []writeOnlyResourceFixture{
 	{
-		name:     "Twilio",
-		spec:     "mini-datadog_integration_twilio_account.yaml",
-		resource: "resource_datadog_integration_twilio_account.go",
+		name:      "Twilio",
+		spec:      "mini-datadog_integration_twilio_account.yaml",
+		resource:  "resource_datadog_integration_twilio_account.go",
+		basicAuth: "twilio_integration_account_basic_auth",
 	},
 	{
-		name:     "Elastic Cloud",
-		spec:     "mini-datadog_integration_elastic_cloud_account.yaml",
-		resource: "resource_datadog_integration_elastic_cloud.go",
+		name:      "Elastic Cloud",
+		spec:      "mini-datadog_integration_elastic_cloud_account.yaml",
+		resource:  "resource_datadog_integration_elastic_cloud.go",
+		basicAuth: "elastic_cloud_integration_account_basic_auth",
 	},
 }
 
@@ -55,7 +59,7 @@ func TestGenerateWriteOnlyResources(t *testing.T) {
 				t.Fatalf("two independent generations of the %s resource differ", fixture.name)
 			}
 
-			assertGeneratedWriteOnlyContract(t, first)
+			assertGeneratedWriteOnlyContract(t, first, fixture.basicAuth)
 			assertGeneratedDefaultContract(t, first)
 
 			firstStaged = append(firstStaged, testinfra.StagedFile{
@@ -150,7 +154,7 @@ func assertNoFailedArtifacts(t *testing.T, reportPath string) {
 	}
 }
 
-func assertGeneratedWriteOnlyContract(t *testing.T, source []byte) {
+func assertGeneratedWriteOnlyContract(t *testing.T, source []byte, basicAuth string) {
 	t.Helper()
 	text := string(source)
 
@@ -158,7 +162,7 @@ func assertGeneratedWriteOnlyContract(t *testing.T, source []byte) {
 		`OriginalAttr: "password"`,
 		`WriteOnlyAttr: "password_wo"`,
 		`TriggerAttr: "password_wo_version"`,
-		`ParentBlocks: []string{"authentication", "integration_account_basic_auth"}`,
+		`ParentBlocks: []string{"authentication", "` + basicAuth + `"}`,
 		`Mode: fwutils.WriteOnlySecretModeOnly`,
 		`fwutils.CreateWriteOnlySecretAttributes(`,
 	} {
@@ -270,14 +274,17 @@ import (
 )
 
 func TestTfgenWriteOnlySchemasValidate(t *testing.T) {
-	constructors := map[string]func() resource.Resource{
-		"twilio": NewDatadogIntegrationTwilioAccountResource,
-		"elastic_cloud": NewDatadogIntegrationElasticCloudResource,
+	resources := map[string]struct {
+		constructor func() resource.Resource
+		basicAuth   string
+	}{
+		"twilio":        {NewDatadogIntegrationTwilioAccountResource, "twilio_integration_account_basic_auth"},
+		"elastic_cloud": {NewDatadogIntegrationElasticCloudResource, "elastic_cloud_integration_account_basic_auth"},
 	}
-	for name, constructor := range constructors {
+	for name, r := range resources {
 		t.Run(name, func(t *testing.T) {
 			var response resource.SchemaResponse
-			constructor().Schema(context.Background(), resource.SchemaRequest{}, &response)
+			r.constructor().Schema(context.Background(), resource.SchemaRequest{}, &response)
 			if response.Diagnostics.HasError() {
 				t.Fatalf("Schema returned errors: %v", response.Diagnostics)
 			}
@@ -286,9 +293,9 @@ func TestTfgenWriteOnlySchemasValidate(t *testing.T) {
 			if !ok {
 				t.Fatalf("authentication is %T, want SingleNestedAttribute", response.Schema.Attributes["authentication"])
 			}
-			basic, ok := authentication.Attributes["integration_account_basic_auth"].(resourceschema.SingleNestedAttribute)
+			basic, ok := authentication.Attributes[r.basicAuth].(resourceschema.SingleNestedAttribute)
 			if !ok {
-				t.Fatalf("integration_account_basic_auth is %T, want SingleNestedAttribute", authentication.Attributes["integration_account_basic_auth"])
+				t.Fatalf("%s is %T, want SingleNestedAttribute", r.basicAuth, authentication.Attributes[r.basicAuth])
 			}
 			if _, exists := basic.Attributes["password"]; exists {
 				t.Fatal("plaintext password attribute is exposed")

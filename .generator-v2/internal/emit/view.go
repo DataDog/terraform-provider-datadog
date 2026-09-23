@@ -801,7 +801,7 @@ type RequestOneOfVariantView struct {
 	// ElemVar is the local holding the SDK member before it is wrapped.
 	ElemVar string
 	// Constructor builds an object alternative's member, e.g.
-	// "datadogV2.NewIntegrationAccountBasicAuthRequestWithDefaults()". Empty
+	// "datadogV2.NewElasticCloudIntegrationAccountBasicAuthRequestWithDefaults()". Empty
 	// for a value-wrapped alternative, whose member is the value itself.
 	Constructor string
 	// Fields populate an object alternative's member, narrowed to what this
@@ -812,7 +812,7 @@ type RequestOneOfVariantView struct {
 	// child rather than constructed.
 	Value *RequestOneOfValueView
 	// WrapCall is the SDK convenience constructor applied to ElemVar, e.g.
-	// "datadogV2.IntegrationAccountBasicAuthRequestAsElasticCloudIntegrationAccountAuthenticationRequest(basicAuthValue)".
+	// "datadogV2.ElasticCloudIntegrationAccountBasicAuthRequestAsElasticCloudIntegrationAccountAuthenticationRequest(basicAuthValue)".
 	WrapCall string
 }
 
