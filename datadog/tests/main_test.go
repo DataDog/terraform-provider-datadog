@@ -13,6 +13,11 @@ import (
 
 // TestMain starts the tracer.
 func TestMain(m *testing.M) {
+	// Enable env-gated resources for the test package. These resources are
+	// registered conditionally in framework_provider.go and would otherwise
+	// be invisible to tests in the suite.
+	os.Setenv("DD_TERRAFORM_DATABRICKS_INTEGRATION_ENABLED", "true")
+
 	if _, ok := os.LookupEnv("DD_AGENT_HOST"); !ok {
 		log.Println("DD_AGENT_HOST is not configured. Tests are executed without tracer and profiler.")
 		code := m.Run()
