@@ -265,6 +265,71 @@ var _ = Describe("MergeResourceSchema", func() {
 		Expect(lifecycleErr.MissingRole).To(Equal("Update"))
 	})
 
+	Describe("inside a oneOf alternative one request role does not list", func() {
+		// tokenAuth is one role's spelling of an alternative carrying a write-only
+		// token; the Read spelling has no token, as a response never returns one.
+		tokenAuth := func(refName string, withToken bool) *Schema {
+			properties := map[string]*Schema{"auth_type": {Kind: SchemaKindPrimitive, Type: "string"}}
+			if withToken {
+				properties["token"] = secretSchema(true, false)
+			}
+			return &Schema{Kind: SchemaKindObject, RefName: refName, Properties: properties}
+		}
+		addAlternative := func(union *Schema, refName string, alternative *Schema) {
+			withTokenAuth(union, refName)
+			union.OneOf.Variants[len(union.OneOf.Variants)-1].Schema = alternative
+		}
+		unionIn := func(body *Schema) *Schema { return attributesOf(body)["authentication"] }
+
+		It("does not report the write-only field missing from the role whose union omits the alternative", func() {
+			group := threeRoleAuthGroup()
+			addAlternative(unionIn(group.Update.RequestSchema), "TokenAuthUpdate", tokenAuth("TokenAuthUpdate", true))
+			addAlternative(unionIn(group.Read.ResponseSchema), "TokenAuthResponse", tokenAuth("TokenAuthResponse", false))
+
+			merged, _, err := MergeResourceSchema(group)
+			Expect(err).NotTo(HaveOccurred())
+			token := mergedVariant(attributesOf(merged)["authentication"], "token_auth").Schema.Properties["token"]
+			Expect(token.WriteOnlySecret).To(BeTrue())
+		})
+
+		It("does the same for an alternative the Update request omits", func() {
+			group := threeRoleAuthGroup()
+			addAlternative(unionIn(group.Create.RequestSchema), "TokenAuthRequest", tokenAuth("TokenAuthRequest", true))
+			addAlternative(unionIn(group.Read.ResponseSchema), "TokenAuthResponse", tokenAuth("TokenAuthResponse", false))
+
+			_, _, err := MergeResourceSchema(group)
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		It("carries the omission down through a union nested inside the alternative", func() {
+			nested := func(refName string, withToken bool) *Schema {
+				// The inner alternative is spelled the same by every role, so only the
+				// outer omission is under test.
+				credential := authUnion(refName+"Credential", "TokenPat", tokenAuth("TokenPat", withToken), true)
+				return &Schema{Kind: SchemaKindObject, RefName: refName, Properties: map[string]*Schema{"credential": credential}}
+			}
+			group := threeRoleAuthGroup()
+			addAlternative(unionIn(group.Update.RequestSchema), "TokenAuthUpdate", nested("TokenAuthUpdate", true))
+			addAlternative(unionIn(group.Read.ResponseSchema), "TokenAuthResponse", nested("TokenAuthResponse", false))
+
+			_, _, err := MergeResourceSchema(group)
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		It("still reports a write-only field missing from a request whose union does list the alternative", func() {
+			group := threeRoleAuthGroup()
+			addAlternative(unionIn(group.Create.RequestSchema), "TokenAuthRequest", tokenAuth("TokenAuthRequest", false))
+			addAlternative(unionIn(group.Update.RequestSchema), "TokenAuthUpdate", tokenAuth("TokenAuthUpdate", true))
+			addAlternative(unionIn(group.Read.ResponseSchema), "TokenAuthResponse", tokenAuth("TokenAuthResponse", false))
+
+			_, _, err := MergeResourceSchema(group)
+			var lifecycleErr *WriteOnlyLifecycleError
+			Expect(errors.As(err, &lifecycleErr)).To(BeTrue())
+			Expect(lifecycleErr.MissingRole).To(Equal("Create"))
+			Expect(lifecycleErr.Path).To(Equal("data.attributes.authentication.token_auth.token"))
+		})
+	})
+
 	It("suppresses a request write-only field returned by Read and emits one deterministic value-free warning", func() {
 		requestPassword := secretSchema(true, false)
 		requestPassword.Description = "configured-secret-must-not-appear"

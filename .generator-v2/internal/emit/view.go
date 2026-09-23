@@ -758,11 +758,33 @@ type RequestOneOfView struct {
 	MatchVar string
 	// SelectionMessage is the detail a failed selection reports, with a single
 	// %d for the count, e.g. `data.attributes.auth: exactly one of "basic" or
-	// "token" must be set, got 2`. It is assembled here and rendered as a
-	// quoted Go literal, so no variant name or schema path can escape it.
+	// "token" must be set, got 2`. It names only the alternatives this role
+	// accepts. It is assembled here and rendered as a quoted Go literal, so no
+	// variant name or schema path can escape it.
 	SelectionMessage string
-	// Variants are the alternatives in envelope order.
+	// Variants are the alternatives this role accepts, in envelope order.
 	Variants []RequestOneOfVariantView
+	// Rejected are the alternatives the practitioner may configure but this
+	// role's request cannot send, in envelope order. Each is checked before the
+	// selection is counted, so configuring one fails with its own message
+	// rather than a misleading count. Empty for a union every role accepts
+	// whole.
+	Rejected []RequestOneOfRejectedView
+}
+
+// RequestOneOfRejectedView is one alternative a role's request cannot send:
+// configuring it fails the operation before any SDK call.
+type RequestOneOfRejectedView struct {
+	// TFName is the variant block's Terraform name.
+	TFName string
+	// ModelExpr is the envelope model's pointer to this variant's block, the
+	// same expression RequestOneOfVariantView.ModelExpr uses; non-nil means
+	// configured.
+	ModelExpr string
+	// Message is the complete diagnostic detail, e.g. `data.attributes.auth:
+	// "token" cannot be set on create; set exactly one of "basic" instead`,
+	// rendered as a quoted Go literal.
+	Message string
 }
 
 // RequestOneOfVariantView is one alternative's expansion: how to tell it was

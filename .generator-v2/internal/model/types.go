@@ -566,6 +566,14 @@ type OneOfVariant struct {
 	// Terraform variant model exposes a single field named value. Object
 	// alternatives expose their generated fields directly.
 	ValueWrapped bool
+	// AbsentOnCreate and AbsentOnUpdate are set only by the resource merge, on
+	// an alternative that role's request body does not list although the body
+	// does reach the union. The zero value means accepted, which is also what a
+	// role with no opinion (a body that never reaches the union, or no Update
+	// endpoint) reads as. Read needs no flag: the merge rejects any alternative
+	// the Read response cannot return.
+	AbsentOnCreate bool
+	AbsentOnUpdate bool
 }
 
 // ----------------------------------------------------------------------------
@@ -762,6 +770,11 @@ type OneOfEnvelopeVariant struct {
 	// or a directly nested union — whose block holds a single child named
 	// "value". Object alternatives expose their own fields directly instead.
 	ValueWrapped bool
+	// AbsentOnCreate and AbsentOnUpdate are carried through from
+	// OneOfVariant: the variant's block is configurable, but that role's
+	// request cannot send it.
+	AbsentOnCreate bool
+	AbsentOnUpdate bool
 	// Attribute is this variant's projected block — the same pointer as the
 	// envelope-carrying attribute's Children entry at this index. Children
 	// drives schema rendering; this reaches a block without re-deriving order.
