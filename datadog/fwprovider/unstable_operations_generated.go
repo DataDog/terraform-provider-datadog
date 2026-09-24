@@ -8,4 +8,13 @@ package fwprovider
 // --include run never drops entries another artifact needs. Do not edit by hand.
 //
 // EnableGeneratedUnstableOperations enables each of these on the client config.
-var generatedUnstableOperations = []string{}
+var generatedUnstableOperations = []string{
+	"v2.CreateElasticCloudIntegrationAccount",
+	"v2.CreateTwilioIntegrationAccount",
+	"v2.DeleteElasticCloudIntegrationAccount",
+	"v2.DeleteTwilioIntegrationAccount",
+	"v2.GetElasticCloudIntegrationAccount",
+	"v2.GetTwilioIntegrationAccount",
+	"v2.UpdateElasticCloudIntegrationAccount",
+	"v2.UpdateTwilioIntegrationAccount",
+}
