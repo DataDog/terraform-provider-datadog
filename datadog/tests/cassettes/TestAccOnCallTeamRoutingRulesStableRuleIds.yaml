@@ -1,0 +1,544 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 242
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"Test team for stable rule IDs","handle":"team-tf-testacconcallteamroutingrulesstableruleids-local-1790329107","name":"team-tf-testacconcallteamroutingrulesstableruleids-local-1790329107"},"type":"team"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"team","id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","attributes":{"name":"team-tf-testacconcallteamroutingrulesstableruleids-local-1790329107","handle":"team-tf-testacconcallteamroutingrulesstableruleids-local-1790329107","summary":"Test team for stable rule IDs","description":"Test team for stable rule IDs","avatar":null,"banner":12,"visible_modules":[],"hidden_modules":[],"created_at":"2026-09-25T09:38:30.117630+00:00","modified_at":"2026-09-25T09:38:30.117637+00:00","user_count":0,"link_count":0,"is_managed":false},"relationships":{"team_links":{"links":{"related":"/api/v2/team/b46e6eba-c0ed-4aac-900c-b3e28c69c2f9/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/b46e6eba-c0ed-4aac-900c-b3e28c69c2f9/permission-settings"}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 201 Created
+        code: 201
+        duration: 475.538958ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 310
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"name":"policy-tf-testacconcallteamroutingrulesstableruleids-local-1790329107","resolve_page_on_policy_end":true,"retries":3,"steps":[{"assignment":"round-robin","escalate_after_seconds":300,"targets":[{"id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","type":"teams"}]}]},"type":"policies"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/escalation-policies?include=steps.targets
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 875
+        uncompressed: false
+        body: '{"data":{"id":"fb16db1c-ef5b-486e-8a03-44a1c65d9b80","type":"policies","attributes":{"name":"policy-tf-testacconcallteamroutingrulesstableruleids-local-1790329107","resolve_page_on_policy_end":true,"retries":3,"tags":[]},"relationships":{"steps":{"data":[{"id":"63c6e2c0-2aff-4b7d-996e-16552e7c9854","type":"steps"}]},"teams":{"data":[]}}},"included":[{"id":"63c6e2c0-2aff-4b7d-996e-16552e7c9854","type":"steps","attributes":{"assignment":"round-robin","escalate_after_seconds":300},"relationships":{"targets":{"data":[{"id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","type":"teams"}]}}},{"id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","type":"teams","attributes":{"avatar":"","description":"Test team for stable rule IDs","handle":"team-tf-testacconcallteamroutingrulesstableruleids-local-1790329107","name":"team-tf-testacconcallteamroutingrulesstableruleids-local-1790329107"}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 161.740125ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 319
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"rules":[{"actions":[],"policy_id":"fb16db1c-ef5b-486e-8a03-44a1c65d9b80","query":"tags.service:payments","urgency":"low"},{"actions":[],"policy_id":"fb16db1c-ef5b-486e-8a03-44a1c65d9b80","query":"","urgency":"dynamic"}]},"id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","type":"team_routing_rules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/teams/b46e6eba-c0ed-4aac-900c-b3e28c69c2f9/routing-rules?include=rules
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 763
+        uncompressed: false
+        body: '{"data":{"id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","type":"team_routing_rules","relationships":{"rules":{"data":[{"id":"79f410ce-c78e-4972-9c3c-2a5bb5ad3eee","type":"team_routing_rules"},{"id":"e7bdc3ee-16e3-491a-8b12-9a4980cbdaec","type":"team_routing_rules"}]}}},"included":[{"id":"79f410ce-c78e-4972-9c3c-2a5bb5ad3eee","type":"team_routing_rules","attributes":{"actions":[],"query":"tags.service:payments","urgency":"low"},"relationships":{"policy":{"data":{"id":"fb16db1c-ef5b-486e-8a03-44a1c65d9b80","type":"policies"}}}},{"id":"e7bdc3ee-16e3-491a-8b12-9a4980cbdaec","type":"team_routing_rules","attributes":{"actions":[],"query":"","urgency":"dynamic"},"relationships":{"policy":{"data":{"id":"fb16db1c-ef5b-486e-8a03-44a1c65d9b80","type":"policies"}}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 305.62125ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/b46e6eba-c0ed-4aac-900c-b3e28c69c2f9
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 724
+        uncompressed: false
+        body: '{"data":{"id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","type":"team","attributes":{"created_at":"2026-09-25T09:38:30.117630+00:00","description":"Test team for stable rule IDs","handle":"team-tf-testacconcallteamroutingrulesstableruleids-local-1790329107","is_managed":false,"link_count":0,"modified_at":"2026-09-25T09:38:30.117637+00:00","name":"team-tf-testacconcallteamroutingrulesstableruleids-local-1790329107","summary":"Test team for stable rule IDs","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/b46e6eba-c0ed-4aac-900c-b3e28c69c2f9/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/b46e6eba-c0ed-4aac-900c-b3e28c69c2f9/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 135.865292ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/escalation-policies/fb16db1c-ef5b-486e-8a03-44a1c65d9b80?include=steps.targets
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 875
+        uncompressed: false
+        body: '{"data":{"id":"fb16db1c-ef5b-486e-8a03-44a1c65d9b80","type":"policies","attributes":{"name":"policy-tf-testacconcallteamroutingrulesstableruleids-local-1790329107","resolve_page_on_policy_end":true,"retries":3,"tags":[]},"relationships":{"steps":{"data":[{"id":"63c6e2c0-2aff-4b7d-996e-16552e7c9854","type":"steps"}]},"teams":{"data":[]}}},"included":[{"id":"63c6e2c0-2aff-4b7d-996e-16552e7c9854","type":"steps","attributes":{"assignment":"round-robin","escalate_after_seconds":300},"relationships":{"targets":{"data":[{"id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","type":"teams"}]}}},{"id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","type":"teams","attributes":{"avatar":"","description":"Test team for stable rule IDs","handle":"team-tf-testacconcallteamroutingrulesstableruleids-local-1790329107","name":"team-tf-testacconcallteamroutingrulesstableruleids-local-1790329107"}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 134.761042ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/teams/b46e6eba-c0ed-4aac-900c-b3e28c69c2f9/routing-rules?include=rules
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 763
+        uncompressed: false
+        body: '{"data":{"id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","type":"team_routing_rules","relationships":{"rules":{"data":[{"id":"79f410ce-c78e-4972-9c3c-2a5bb5ad3eee","type":"team_routing_rules"},{"id":"e7bdc3ee-16e3-491a-8b12-9a4980cbdaec","type":"team_routing_rules"}]}}},"included":[{"id":"79f410ce-c78e-4972-9c3c-2a5bb5ad3eee","type":"team_routing_rules","attributes":{"actions":[],"query":"tags.service:payments","urgency":"low"},"relationships":{"policy":{"data":{"id":"fb16db1c-ef5b-486e-8a03-44a1c65d9b80","type":"policies"}}}},{"id":"e7bdc3ee-16e3-491a-8b12-9a4980cbdaec","type":"team_routing_rules","attributes":{"actions":[],"query":"","urgency":"dynamic"},"relationships":{"policy":{"data":{"id":"fb16db1c-ef5b-486e-8a03-44a1c65d9b80","type":"policies"}}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 127.340667ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/b46e6eba-c0ed-4aac-900c-b3e28c69c2f9
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 724
+        uncompressed: false
+        body: '{"data":{"id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","type":"team","attributes":{"created_at":"2026-09-25T09:38:30.117630+00:00","description":"Test team for stable rule IDs","handle":"team-tf-testacconcallteamroutingrulesstableruleids-local-1790329107","is_managed":false,"link_count":0,"modified_at":"2026-09-25T09:38:30.117637+00:00","name":"team-tf-testacconcallteamroutingrulesstableruleids-local-1790329107","summary":"Test team for stable rule IDs","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/b46e6eba-c0ed-4aac-900c-b3e28c69c2f9/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/b46e6eba-c0ed-4aac-900c-b3e28c69c2f9/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 123.3125ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/escalation-policies/fb16db1c-ef5b-486e-8a03-44a1c65d9b80?include=steps.targets
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 875
+        uncompressed: false
+        body: '{"data":{"id":"fb16db1c-ef5b-486e-8a03-44a1c65d9b80","type":"policies","attributes":{"name":"policy-tf-testacconcallteamroutingrulesstableruleids-local-1790329107","resolve_page_on_policy_end":true,"retries":3,"tags":[]},"relationships":{"steps":{"data":[{"id":"63c6e2c0-2aff-4b7d-996e-16552e7c9854","type":"steps"}]},"teams":{"data":[]}}},"included":[{"id":"63c6e2c0-2aff-4b7d-996e-16552e7c9854","type":"steps","attributes":{"assignment":"round-robin","escalate_after_seconds":300},"relationships":{"targets":{"data":[{"id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","type":"teams"}]}}},{"id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","type":"teams","attributes":{"avatar":"","description":"Test team for stable rule IDs","handle":"team-tf-testacconcallteamroutingrulesstableruleids-local-1790329107","name":"team-tf-testacconcallteamroutingrulesstableruleids-local-1790329107"}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 148.991875ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/teams/b46e6eba-c0ed-4aac-900c-b3e28c69c2f9/routing-rules?include=rules
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 763
+        uncompressed: false
+        body: '{"data":{"id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","type":"team_routing_rules","relationships":{"rules":{"data":[{"id":"79f410ce-c78e-4972-9c3c-2a5bb5ad3eee","type":"team_routing_rules"},{"id":"e7bdc3ee-16e3-491a-8b12-9a4980cbdaec","type":"team_routing_rules"}]}}},"included":[{"id":"79f410ce-c78e-4972-9c3c-2a5bb5ad3eee","type":"team_routing_rules","attributes":{"actions":[],"query":"tags.service:payments","urgency":"low"},"relationships":{"policy":{"data":{"id":"fb16db1c-ef5b-486e-8a03-44a1c65d9b80","type":"policies"}}}},{"id":"e7bdc3ee-16e3-491a-8b12-9a4980cbdaec","type":"team_routing_rules","attributes":{"actions":[],"query":"","urgency":"dynamic"},"relationships":{"policy":{"data":{"id":"fb16db1c-ef5b-486e-8a03-44a1c65d9b80","type":"policies"}}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 133.544041ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 421
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"rules":[{"actions":[],"id":"79f410ce-c78e-4972-9c3c-2a5bb5ad3eee","policy_id":"fb16db1c-ef5b-486e-8a03-44a1c65d9b80","query":"tags.service:payments tags.env:prod","urgency":"low"},{"actions":[],"id":"e7bdc3ee-16e3-491a-8b12-9a4980cbdaec","policy_id":"fb16db1c-ef5b-486e-8a03-44a1c65d9b80","query":"","urgency":"dynamic"}]},"id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","type":"team_routing_rules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/teams/b46e6eba-c0ed-4aac-900c-b3e28c69c2f9/routing-rules?include=rules
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 777
+        uncompressed: false
+        body: '{"data":{"id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","type":"team_routing_rules","relationships":{"rules":{"data":[{"id":"79f410ce-c78e-4972-9c3c-2a5bb5ad3eee","type":"team_routing_rules"},{"id":"e7bdc3ee-16e3-491a-8b12-9a4980cbdaec","type":"team_routing_rules"}]}}},"included":[{"id":"79f410ce-c78e-4972-9c3c-2a5bb5ad3eee","type":"team_routing_rules","attributes":{"actions":[],"query":"tags.service:payments tags.env:prod","urgency":"low"},"relationships":{"policy":{"data":{"id":"fb16db1c-ef5b-486e-8a03-44a1c65d9b80","type":"policies"}}}},{"id":"e7bdc3ee-16e3-491a-8b12-9a4980cbdaec","type":"team_routing_rules","attributes":{"actions":[],"query":"","urgency":"dynamic"},"relationships":{"policy":{"data":{"id":"fb16db1c-ef5b-486e-8a03-44a1c65d9b80","type":"policies"}}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 220.258792ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/b46e6eba-c0ed-4aac-900c-b3e28c69c2f9
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 724
+        uncompressed: false
+        body: '{"data":{"id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","type":"team","attributes":{"created_at":"2026-09-25T09:38:30.117630+00:00","description":"Test team for stable rule IDs","handle":"team-tf-testacconcallteamroutingrulesstableruleids-local-1790329107","is_managed":false,"link_count":0,"modified_at":"2026-09-25T09:38:30.117637+00:00","name":"team-tf-testacconcallteamroutingrulesstableruleids-local-1790329107","summary":"Test team for stable rule IDs","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/b46e6eba-c0ed-4aac-900c-b3e28c69c2f9/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/b46e6eba-c0ed-4aac-900c-b3e28c69c2f9/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 115.055667ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/escalation-policies/fb16db1c-ef5b-486e-8a03-44a1c65d9b80?include=steps.targets
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 875
+        uncompressed: false
+        body: '{"data":{"id":"fb16db1c-ef5b-486e-8a03-44a1c65d9b80","type":"policies","attributes":{"name":"policy-tf-testacconcallteamroutingrulesstableruleids-local-1790329107","resolve_page_on_policy_end":true,"retries":3,"tags":[]},"relationships":{"steps":{"data":[{"id":"63c6e2c0-2aff-4b7d-996e-16552e7c9854","type":"steps"}]},"teams":{"data":[]}}},"included":[{"id":"63c6e2c0-2aff-4b7d-996e-16552e7c9854","type":"steps","attributes":{"assignment":"round-robin","escalate_after_seconds":300},"relationships":{"targets":{"data":[{"id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","type":"teams"}]}}},{"id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","type":"teams","attributes":{"avatar":"","description":"Test team for stable rule IDs","handle":"team-tf-testacconcallteamroutingrulesstableruleids-local-1790329107","name":"team-tf-testacconcallteamroutingrulesstableruleids-local-1790329107"}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 129.663791ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/teams/b46e6eba-c0ed-4aac-900c-b3e28c69c2f9/routing-rules?include=rules
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 777
+        uncompressed: false
+        body: '{"data":{"id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","type":"team_routing_rules","relationships":{"rules":{"data":[{"id":"79f410ce-c78e-4972-9c3c-2a5bb5ad3eee","type":"team_routing_rules"},{"id":"e7bdc3ee-16e3-491a-8b12-9a4980cbdaec","type":"team_routing_rules"}]}}},"included":[{"id":"79f410ce-c78e-4972-9c3c-2a5bb5ad3eee","type":"team_routing_rules","attributes":{"actions":[],"query":"tags.service:payments tags.env:prod","urgency":"low"},"relationships":{"policy":{"data":{"id":"fb16db1c-ef5b-486e-8a03-44a1c65d9b80","type":"policies"}}}},{"id":"e7bdc3ee-16e3-491a-8b12-9a4980cbdaec","type":"team_routing_rules","attributes":{"actions":[],"query":"","urgency":"dynamic"},"relationships":{"policy":{"data":{"id":"fb16db1c-ef5b-486e-8a03-44a1c65d9b80","type":"policies"}}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 135.49175ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 83
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","type":"team_routing_rules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/teams/b46e6eba-c0ed-4aac-900c-b3e28c69c2f9/routing-rules
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 120
+        uncompressed: false
+        body: '{"data":{"id":"b46e6eba-c0ed-4aac-900c-b3e28c69c2f9","type":"team_routing_rules","relationships":{"rules":{"data":[]}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 251.005333ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/on-call/escalation-policies/fb16db1c-ef5b-486e-8a03-44a1c65d9b80
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 141.026959ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/team/b46e6eba-c0ed-4aac-900c-b3e28c69c2f9
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 227.212084ms
