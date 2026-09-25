@@ -206,6 +206,28 @@ func TestAccDatadogDashboardJSONNoDiff(t *testing.T) {
 	})
 }
 
+func TestAccDatadogDashboardJSONPauseAutoRefreshNoDiff(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniqueName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogDashListDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDashboardJSONPauseAutoRefreshNoDiff(uniqueName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_dashboard_json.timeboard_json", "dashboard", fmt.Sprintf("{\"description\":\"\",\"is_read_only\":false,\"layout_type\":\"ordered\",\"notify_list\":[],\"reflow_type\":\"fixed\",\"template_variables\":[],\"title\":\"%s\",\"widgets\":[]}", uniqueName)),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogDashboardJSONNotifyListDiff(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -2022,6 +2044,24 @@ resource "datadog_dashboard_json" "timeboard_json" {
    "notify_list": [],
    "reflow_type": "fixed",
    "id": "3fa-nkp-wty"
+}
+EOF
+}`, uniq)
+}
+
+func testAccCheckDatadogDashboardJSONPauseAutoRefreshNoDiff(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_dashboard_json" "timeboard_json" {
+   dashboard = <<EOF
+{
+   "title": "%s",
+   "description": "",
+   "widgets": [],
+   "template_variables": [],
+   "layout_type": "ordered",
+   "notify_list": [],
+   "pause_auto_refresh": false,
+   "reflow_type": "fixed"
 }
 EOF
 }`, uniq)
