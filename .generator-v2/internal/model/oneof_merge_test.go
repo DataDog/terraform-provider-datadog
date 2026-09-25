@@ -89,6 +89,29 @@ func threeRoleAuthGroup() *ResolvedGroup {
 	)
 }
 
+// withTokenAuth appends one role's spelling of a second, field-less "token
+// auth" alternative to that role's union, so a test can make one body list an
+// alternative another does not.
+func withTokenAuth(union *Schema, refName string) {
+	tfName := SnakeCase(refName)
+	union.OneOf.Variants = append(union.OneOf.Variants, OneOfVariant{
+		TFName: tfName, GoName: SdkName(tfName),
+		Schema:  &Schema{Kind: SchemaKindObject, RefName: refName},
+		RefName: refName, SDKField: refName, SDKPointer: true,
+	})
+}
+
+func mergedVariant(union *Schema, tfName string) OneOfVariant {
+	GinkgoHelper()
+	for _, variant := range union.OneOf.Variants {
+		if variant.TFName == tfName {
+			return variant
+		}
+	}
+	Fail("merged union has no variant " + tfName)
+	return OneOfVariant{}
+}
+
 var _ = Describe("MergeResourceSchema over a oneOf", func() {
 	It("unions each correlated alternative's own properties instead of cloning the preferred body's", func() {
 		merged, _, err := MergeResourceSchema(threeRoleAuthGroup())
@@ -218,21 +241,70 @@ var _ = Describe("MergeResourceSchema over a oneOf", func() {
 			&SchemaProvenance{InRequest: false, RequestRequired: false, InResponse: true}))
 	})
 
-	It("fails at the union's path when the bodies list different alternatives", func() {
+	It("accepts an alternative only the Read response lists, marking it absent on both requests", func() {
 		group := threeRoleAuthGroup()
-		readUnion := group.Read.ResponseSchema.Properties["data"].Properties["attributes"].Properties["authentication"]
-		readUnion.OneOf.Variants = append(readUnion.OneOf.Variants, OneOfVariant{
-			TFName: "token_auth", GoName: "TokenAuth",
-			Schema: &Schema{Kind: SchemaKindObject, RefName: "TokenAuth"},
-		})
+		withTokenAuth(attributesOf(group.Read.ResponseSchema)["authentication"], "TokenAuthResponse")
+
+		merged, _, err := MergeResourceSchema(group)
+		Expect(err).NotTo(HaveOccurred())
+		union := attributesOf(merged)["authentication"]
+		Expect(union.OneOf.Variants).To(HaveLen(2))
+		basic := mergedVariant(union, "integration_account_basic_auth")
+		Expect(basic.AbsentOnCreate).To(BeFalse())
+		Expect(basic.AbsentOnUpdate).To(BeFalse())
+		token := mergedVariant(union, "token_auth")
+		Expect(token.AbsentOnCreate).To(BeTrue())
+		Expect(token.AbsentOnUpdate).To(BeTrue())
+	})
+
+	It("accepts an alternative the Create request omits but Update and Read list", func() {
+		group := threeRoleAuthGroup()
+		withTokenAuth(attributesOf(group.Update.RequestSchema)["authentication"], "TokenAuthUpdate")
+		withTokenAuth(attributesOf(group.Read.ResponseSchema)["authentication"], "TokenAuthResponse")
+
+		merged, _, err := MergeResourceSchema(group)
+		Expect(err).NotTo(HaveOccurred())
+		token := mergedVariant(attributesOf(merged)["authentication"], "token_auth")
+		Expect(token.AbsentOnCreate).To(BeTrue())
+		Expect(token.AbsentOnUpdate).To(BeFalse())
+	})
+
+	It("reads a missing Update body as no opinion rather than as an absence", func() {
+		group := threeRoleAuthGroup()
+		group.Update = nil
+		withTokenAuth(attributesOf(group.Read.ResponseSchema)["authentication"], "TokenAuthResponse")
+
+		merged, _, err := MergeResourceSchema(group)
+		Expect(err).NotTo(HaveOccurred())
+		token := mergedVariant(attributesOf(merged)["authentication"], "token_auth")
+		Expect(token.AbsentOnCreate).To(BeTrue())
+		Expect(token.AbsentOnUpdate).To(BeFalse())
+	})
+
+	It("fails at the union's path when a request accepts an alternative the Read response cannot return", func() {
+		group := threeRoleAuthGroup()
+		withTokenAuth(attributesOf(group.Create.RequestSchema)["authentication"], "TokenAuthRequest")
+		withTokenAuth(attributesOf(group.Update.RequestSchema)["authentication"], "TokenAuthUpdate")
 
 		_, _, err := MergeResourceSchema(group)
 		var conflict *OneOfMergeError
 		Expect(errors.As(err, &conflict)).To(BeTrue())
 		Expect(conflict.Path).To(Equal("data.attributes.authentication"))
+		Expect(conflict.Error()).To(ContainSubstring(`alternative(s) ["token_auth"] are accepted on a request but missing from the Read response`))
 		By("the bodies are quoted as they spell themselves, not as the correlation reduced them")
-		Expect(conflict.Create).To(Equal([]string{"integration_account_basic_auth_request"}))
-		Expect(conflict.Read).To(Equal([]string{"integration_account_basic_auth_response", "token_auth"}))
+		Expect(conflict.Create).To(Equal([]string{"integration_account_basic_auth_request", "token_auth_request"}))
+		Expect(conflict.Read).To(Equal([]string{"integration_account_basic_auth_response"}))
+	})
+
+	It("fails when the requests disagree and no Read response reaches the union", func() {
+		group := threeRoleAuthGroup()
+		withTokenAuth(attributesOf(group.Create.RequestSchema)["authentication"], "TokenAuthRequest")
+		group.Read.ResponseSchema = jsonAPIBody("AccountResponse", map[string]*Schema{}, nil)
+
+		_, _, err := MergeResourceSchema(group)
+		var conflict *OneOfMergeError
+		Expect(errors.As(err, &conflict)).To(BeTrue())
+		Expect(conflict.Read).To(BeNil())
 		Expect(conflict.Error()).To(ContainSubstring("do not list the same alternatives"))
 	})
 
