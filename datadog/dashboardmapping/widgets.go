@@ -459,6 +459,16 @@ var ManageStatusWidgetSpec = WidgetSpec{
 	JSONType:    "manage_status",
 	Description: "The definition for an Manage Status widget.",
 	Fields: []FieldSpec{
+		{HCLKey: "count", Type: TypeInt, OmitEmpty: true, PreserveZero: true,
+			Description: "The number of monitors to display.", Deprecated: "This pagination field is deprecated by the Datadog API."},
+		{HCLKey: "start", Type: TypeInt, OmitEmpty: true, PreserveZero: true,
+			Description: "The start of the monitor list, typically zero.", Deprecated: "This pagination field is deprecated by the Datadog API."},
+		{HCLKey: "last_triggered_format", Type: TypeString, OmitEmpty: true,
+			Description: "The display format for the last triggered time."},
+		{HCLKey: "show_investigation", Type: TypeBool, OmitEmpty: true, PreserveZero: true,
+			Description: "Whether to display monitor investigation information."},
+		{HCLKey: "show_status", Type: TypeBool, OmitEmpty: true, PreserveZero: true,
+			Description: "Whether to display monitor status."},
 		{
 			HCLKey:      "query",
 			Type:        TypeString,
@@ -1757,6 +1767,8 @@ var splitGraphSourceWidgetTypes = map[string]bool{
 // timeseriesWidgetRequestStyleFields corresponds to OpenAPI
 // components/schemas/WidgetRequestStyle (inline on TimeseriesWidgetRequest).
 var timeseriesWidgetRequestStyleFields = []FieldSpec{
+	{HCLKey: "color_order", Type: TypeString, OmitEmpty: true,
+		Description: "The ordering of colors in the timeseries palette."},
 	{
 		HCLKey:      "palette",
 		Type:        TypeString,

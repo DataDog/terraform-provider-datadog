@@ -94,7 +94,7 @@ type FieldSpec struct {
 	// Derived by comparing cassette request bodies against HCL configs.
 	OmitEmpty bool
 
-	// PreserveZero keeps an explicitly configured numeric zero in JSON while still
+	// PreserveZero keeps an explicitly configured numeric zero or false in JSON while still
 	// omitting an unset optional field. SDKv2 drops zero values from some nested
 	// decoded maps, so the build engine consults raw configuration when available.
 	PreserveZero bool
@@ -1067,6 +1067,9 @@ func flattenEventQueryJSON(q map[string]interface{}) map[string]interface{} {
 				continue
 			}
 			flatGB := map[string]interface{}{}
+			if v, ok := gbMap["should_exclude_missing"].(bool); ok {
+				flatGB["should_exclude_missing"] = v
+			}
 			if v, ok := gbMap["facet"].(string); ok {
 				flatGB["facet"] = v
 			}
@@ -1823,15 +1826,16 @@ func (ctx mapBuildContext) block(key string, index int) mapBuildContext {
 }
 
 func (ctx mapBuildContext) explicitlyConfiguredZero(data map[string]interface{}, field FieldSpec) bool {
-	if _, present := data[field.HCLKey]; present {
-		return true
-	}
 	if ctx.rawConfig == nil {
-		return false
+		_, present := data[field.HCLKey]
+		return present
 	}
 	value, diags := ctx.rawConfig.GetRawConfigAt(ctx.path.GetAttr(field.HCLKey))
-	return !diags.HasError() && value.IsKnown() && !value.IsNull() &&
-		value.Type() == cty.Number && value.AsBigFloat().Sign() == 0
+	if diags.HasError() || !value.IsKnown() || value.IsNull() {
+		return false
+	}
+	return (value.Type() == cty.Number && value.AsBigFloat().Sign() == 0) ||
+		(value.Type() == cty.Bool && !value.True())
 }
 
 // BuildEngineJSONFromMap converts a SDKv2 data map to a JSON map using FieldSpec declarations.
@@ -1857,7 +1861,7 @@ func buildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec, ctx
 
 		case TypeBool:
 			boolVal := getBoolFromMap(data, f.HCLKey)
-			if f.OmitEmpty && !boolVal {
+			if f.OmitEmpty && !boolVal && (!f.PreserveZero || !ctx.explicitlyConfiguredZero(data, f)) {
 				continue
 			}
 			setAtJSONPath(result, f.effectiveJSONPath(), boolVal)
@@ -2338,6 +2342,9 @@ func buildEventQueryJSONFromMap(attrs map[string]interface{}) map[string]interfa
 		groupBys := make([]interface{}, 0, len(groupByList))
 		for _, gbMap := range groupByList {
 			gb := map[string]interface{}{}
+			if v, ok := gbMap["should_exclude_missing"].(bool); ok {
+				gb["should_exclude_missing"] = v
+			}
 			if v := getStringFromMap(gbMap, "facet"); v != "" {
 				gb["facet"] = v
 			}
