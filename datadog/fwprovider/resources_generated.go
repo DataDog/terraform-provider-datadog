@@ -9,4 +9,6 @@ import "github.com/hashicorp/terraform-plugin-framework/resource"
 //
 // FrameworkProvider.Resources registers this slice alongside the hand-written
 // Resources.
-var generatedResources = []func() resource.Resource{}
+var generatedResources = []func() resource.Resource{
+	NewDatadogRumTeamOwnershipResource,
+}
