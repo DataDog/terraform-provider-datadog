@@ -3,12 +3,12 @@
 page_title: "datadog_dashboard_v2 Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  [BETA] Provides an updated version of the Datadog dashboard resource which improves compliance with Datadog's dashboard API spec. This version is currently experimental and prone to changes.
+  datadog_dashboard_v2 is an alias for datadog_dashboard. Both resource names have identical behavior and schema; prefer datadog_dashboard for new configurations.
 ---
 
 # datadog_dashboard_v2 (Resource)
 
-[BETA] Provides an updated version of the Datadog dashboard resource which improves compliance with Datadog's dashboard API spec. This version is currently experimental and prone to changes.
+`datadog_dashboard_v2` is an alias for `datadog_dashboard`. Both resource names have identical behavior and schema; prefer `datadog_dashboard` for new configurations.
 
 ## Example Usage
 
@@ -29059,6 +29059,7 @@ Optional:
 
 - `flat` (Block List, Max: 1) Flat display for the top list widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--style--display--flat))
 - `stacked` (Block List, Max: 1) Stacked display for the top list widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--style--display--stacked))
+- `type` (String, Deprecated) Legacy display type for the widget. Valid values are `stacked`, `flat`. **Deprecated.** Use the `stacked` or `flat` block instead.
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--style--display--flat"></a>
 ### Nested Schema for `widget.group_definition.widget.toplist_definition.style.display.flat`
@@ -58462,6 +58463,7 @@ Optional:
 
 - `flat` (Block List, Max: 1) Flat display for the top list widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display--flat))
 - `stacked` (Block List, Max: 1) Stacked display for the top list widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display--stacked))
+- `type` (String, Deprecated) Legacy display type for the widget. Valid values are `stacked`, `flat`. **Deprecated.** Use the `stacked` or `flat` block instead.
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display--flat"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.style.display.flat`
@@ -63785,6 +63787,7 @@ Optional:
 
 - `flat` (Block List, Max: 1) Flat display for the top list widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--style--display--flat))
 - `stacked` (Block List, Max: 1) Stacked display for the top list widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--style--display--stacked))
+- `type` (String, Deprecated) Legacy display type for the widget. Valid values are `stacked`, `flat`. **Deprecated.** Use the `stacked` or `flat` block instead.
 
 <a id="nestedblock--widget--toplist_definition--style--display--flat"></a>
 ### Nested Schema for `widget.toplist_definition.style.display.flat`

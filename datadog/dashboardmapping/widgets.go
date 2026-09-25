@@ -235,6 +235,7 @@ var NoteWidgetSpec = WidgetSpec{
 			Type:        TypeString,
 			OmitEmpty:   false,
 			Required:    true,
+			NotEmpty:    true,
 			Description: "The content of the note.",
 		},
 		{

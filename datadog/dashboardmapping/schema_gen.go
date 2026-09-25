@@ -84,6 +84,10 @@ func FieldSpecToSDKv2(f FieldSpec) *schema.Schema {
 			s.ValidateDiagFunc = validation.ToDiagFunc(
 				validation.StringInSlice(f.ValidValues, false),
 			)
+		} else if f.NotEmpty {
+			// ValidateFunc (not ValidateDiagFunc) so the diagnostic names the full
+			// flatmap path, matching the legacy datadog_dashboard error text.
+			s.ValidateFunc = validation.StringIsNotEmpty
 		}
 
 	case TypeBool:
