@@ -19,6 +19,9 @@ import (
 //go:embed resource_datadog_on_call_team_routing_rules_test.tf
 var OnCallTeamRoutingRulesTest string
 
+//go:embed resource_datadog_on_call_team_routing_rules_stable_ids_test.tf
+var OnCallTeamRoutingRulesStableIdsTest string
+
 func TestAccOnCallTeamRoutingRulesCreateAndUpdate(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -302,6 +305,55 @@ func TestAccOnCallTeamRoutingRulesUnknownBlocks(t *testing.T) {
 				}`,
 				PlanOnly:           true,
 				ExpectNonEmptyPlan: true,
+			},
+		},
+	})
+}
+
+// TestAccOnCallTeamRoutingRulesStableRuleIds verifies that rule IDs don't churn
+// across updates: applying a change to an existing rule should preserve its id
+// rather than the API minting a new one.
+func TestAccOnCallTeamRoutingRulesStableRuleIds(t *testing.T) {
+	t.Parallel()
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := strings.ToLower(uniqueEntityName(ctx, t))
+
+	config := func(query string) string {
+		return strings.NewReplacer(
+			"TEAM_NAME", "team-"+uniq,
+			"TEAM_HANDLE", "team-"+uniq,
+			"POLICY_NAME", "policy-"+uniq,
+			"QUERY_1", query,
+		).Replace(OnCallTeamRoutingRulesStableIdsTest)
+	}
+
+	var ruleZeroID string
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: config("tags.service:payments"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrSet(
+						"datadog_on_call_team_routing_rules.stable_ids_test", "rule.0.id"),
+					func(s *terraform.State) error {
+						ruleZeroID = s.RootModule().Resources["datadog_on_call_team_routing_rules.stable_ids_test"].Primary.Attributes["rule.0.id"]
+						return nil
+					},
+				),
+			},
+			{
+				Config: config("tags.service:payments tags.env:prod"),
+				Check: resource.ComposeTestCheckFunc(
+					func(s *terraform.State) error {
+						newID := s.RootModule().Resources["datadog_on_call_team_routing_rules.stable_ids_test"].Primary.Attributes["rule.0.id"]
+						if newID != ruleZeroID {
+							return fmt.Errorf("rule.0.id changed from %s to %s after query update", ruleZeroID, newID)
+						}
+						return nil
+					},
+				),
 			},
 		},
 	})

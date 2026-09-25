@@ -417,7 +417,7 @@ func (r *onCallTeamRoutingRulesResource) Create(ctx context.Context, request res
 		return
 	}
 
-	body, diags := r.teamRoutingRulesRequestFromModel(&plan)
+	body, diags := r.teamRoutingRulesRequestFromModel(&plan, nil)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -455,7 +455,17 @@ func (r *onCallTeamRoutingRulesResource) Update(ctx context.Context, request res
 		return
 	}
 
-	body, diags := r.teamRoutingRulesRequestFromModel(&plan)
+	var previousState onCallTeamRoutingRulesModel
+	response.Diagnostics.Append(request.State.Get(ctx, &previousState)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+	existingRuleIdByIndex := make([]string, len(previousState.Rules))
+	for i, rule := range previousState.Rules {
+		existingRuleIdByIndex[i] = rule.Id.ValueString()
+	}
+
+	body, diags := r.teamRoutingRulesRequestFromModel(&plan, existingRuleIdByIndex)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -664,7 +674,7 @@ func (r *onCallTeamRoutingRulesResource) emptyTeamRoutingRules(id string) datado
 	return *req
 }
 
-func (r *onCallTeamRoutingRulesResource) teamRoutingRulesRequestFromModel(state *onCallTeamRoutingRulesModel) (*datadogV2.TeamRoutingRulesRequest, diag.Diagnostics) {
+func (r *onCallTeamRoutingRulesResource) teamRoutingRulesRequestFromModel(state *onCallTeamRoutingRulesModel, existingRuleIdByIndex []string) (*datadogV2.TeamRoutingRulesRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	req := datadogV2.NewTeamRoutingRulesRequestWithDefaults()
 
@@ -770,13 +780,17 @@ func (r *onCallTeamRoutingRulesResource) teamRoutingRulesRequestFromModel(state 
 			}
 		}
 
-		attributes.Rules = append(attributes.Rules, datadogV2.TeamRoutingRulesRequestRule{
+		requestRule := datadogV2.TeamRoutingRulesRequestRule{
 			Actions:         actions,
 			PolicyId:        plannedRule.EscalationPolicy.ValueStringPointer(),
 			Query:           plannedRule.Query.ValueStringPointer(),
 			TimeRestriction: timeRestriction,
 			Urgency:         (*datadogV2.Urgency)(plannedRule.Urgency.ValueStringPointer()),
-		})
+		}
+		if ruleIndex < len(existingRuleIdByIndex) && existingRuleIdByIndex[ruleIndex] != "" {
+			requestRule.SetId(existingRuleIdByIndex[ruleIndex])
+		}
+		attributes.Rules = append(attributes.Rules, requestRule)
 	}
 
 	data.Attributes = attributes
