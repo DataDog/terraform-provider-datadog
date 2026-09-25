@@ -83,7 +83,7 @@ func (r *securityFindingsMuteRulesOrderResource) applyOrder(ctx context.Context,
 			return *datadogV2.NewMuteRuleReorderRequest(items)
 		},
 		r.Api.ReorderSecurityFindingsAutomationMuteRules,
-		func(resp datadogV2.MuteRuleReorderRequest) []datadogV2.MuteRuleReorderItem { return resp.GetData() },
+		func(resp datadogV2.MuteRuleReorderResponse) []datadogV2.MuteRuleReorderItem { return resp.GetData() },
 		func(item datadogV2.MuteRuleReorderItem) string { return item.GetId().String() },
 	)
 	diags.Append(d...)

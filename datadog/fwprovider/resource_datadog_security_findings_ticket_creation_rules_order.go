@@ -85,7 +85,7 @@ func (r *securityFindingsTicketCreationRulesOrderResource) applyOrder(ctx contex
 			return *datadogV2.NewTicketCreationRuleReorderRequest(items)
 		},
 		r.Api.ReorderSecurityFindingsAutomationTicketCreationRules,
-		func(resp datadogV2.TicketCreationRuleReorderRequest) []datadogV2.TicketCreationRuleReorderItem {
+		func(resp datadogV2.TicketCreationRuleReorderResponse) []datadogV2.TicketCreationRuleReorderItem {
 			return resp.GetData()
 		},
 		func(item datadogV2.TicketCreationRuleReorderItem) string { return item.GetId().String() },
