@@ -1373,7 +1373,8 @@ func setActionConnectionTags(ctx context.Context, tags types.Set, set func([]str
 // base URL, tokens, etc.) differs between plan and oldState, ignoring fields that are
 // unrelated to the integration (id, name, tags) as well as AWS's server-computed
 // external_id/principal_id, which are always unknown in plan and would otherwise make
-// every update look like an integration change.
+// every update look like an integration change. Used to gate resending the HTTP/additional
+// integration blocks on Update; the AWS block is always resent regardless of this check.
 func actionConnectionIntegrationChanged(plan, oldState connectionResourceModel) bool {
 	normalize := func(m connectionResourceModel) connectionResourceModel {
 		m.ID = types.String{}
@@ -1399,18 +1400,21 @@ func connectionModelToUpdateApiRequest(ctx context.Context, plan, oldState conne
 	attributes.SetName(plan.Name.ValueString())
 	setActionConnectionTags(ctx, plan.EffectiveTags, attributes.SetTags)
 
+	// The AWS integration block is always resent on update, even when unchanged: the live
+	// backend has been observed to not reliably persist a tag/name-only PATCH that omits it
+	// (see PR discussion), so we don't apply the change-detection skip to AWS.
+	if plan.AWS != nil {
+		assumeRoleParams := datadogV2.NewAWSAssumeRoleUpdate(datadogV2.AWSASSUMEROLETYPE_AWSASSUMEROLE)
+		assumeRoleParams.SetAccountId(plan.AWS.AssumeRole.AccountID.ValueString())
+		assumeRoleParams.SetRole(plan.AWS.AssumeRole.Role.ValueString())
+
+		awsIntegration := datadogV2.NewAWSIntegrationUpdate(datadogV2.AWSINTEGRATIONTYPE_AWS)
+		awsIntegration.SetCredentials(datadogV2.AWSAssumeRoleUpdateAsAWSCredentialsUpdate(assumeRoleParams))
+		integration := datadogV2.AWSIntegrationUpdateAsActionConnectionIntegrationUpdate(awsIntegration)
+		attributes.SetIntegration(integration)
+	}
+
 	if actionConnectionIntegrationChanged(plan, oldState) {
-		if plan.AWS != nil {
-			assumeRoleParams := datadogV2.NewAWSAssumeRoleUpdate(datadogV2.AWSASSUMEROLETYPE_AWSASSUMEROLE)
-			assumeRoleParams.SetAccountId(plan.AWS.AssumeRole.AccountID.ValueString())
-			assumeRoleParams.SetRole(plan.AWS.AssumeRole.Role.ValueString())
-
-			awsIntegration := datadogV2.NewAWSIntegrationUpdate(datadogV2.AWSINTEGRATIONTYPE_AWS)
-			awsIntegration.SetCredentials(datadogV2.AWSAssumeRoleUpdateAsAWSCredentialsUpdate(assumeRoleParams))
-			integration := datadogV2.AWSIntegrationUpdateAsActionConnectionIntegrationUpdate(awsIntegration)
-			attributes.SetIntegration(integration)
-		}
-
 		if plan.HTTP != nil {
 			httpTokenAuth := datadogV2.NewHTTPTokenAuthUpdate(datadogV2.HTTPTOKENAUTHTYPE_HTTPTOKENAUTH)
 
