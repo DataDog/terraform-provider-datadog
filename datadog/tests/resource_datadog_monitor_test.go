@@ -504,7 +504,7 @@ func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", monitorName),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
+						"datadog_monitor.foo", "message", "some message\nNotify: @hipchat-channel"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "type", "query alert"),
 					resource.TestCheckResourceAttr(
@@ -529,6 +529,15 @@ func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
 						"datadog_monitor.foo", "monitor_thresholds.0.critical", "2"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "monitor_thresholds.0.critical_recovery", "1.5"),
+				),
+				ExpectNonEmptyPlan: true,
+			},
+			{
+				Config: testAccCheckDatadogMonitorConfigWhitespaceNormalized(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "message", "some message\nNotify: @hipchat-channel"),
 				),
 			},
 		},
@@ -1568,19 +1577,21 @@ resource "datadog_monitor" "complex_query_alert_example_monitor" {
 }
 
 func testAccCheckDatadogMonitorConfigWhitespace(uniq string) string {
+	return testAccCheckDatadogMonitorConfigWhitespaceWithMessage(uniq, "  some message\nNotify: @hipchat-channel  ")
+}
+
+func testAccCheckDatadogMonitorConfigWhitespaceNormalized(uniq string) string {
+	return testAccCheckDatadogMonitorConfigWhitespaceWithMessage(uniq, "some message\nNotify: @hipchat-channel")
+}
+
+func testAccCheckDatadogMonitorConfigWhitespaceWithMessage(uniq, message string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
   name = "%s"
   type = "query alert"
-  message = <<EOF
-some message Notify: @hipchat-channel
-EOF
-  escalation_message = <<EOF
-the situation has escalated @pagerduty
-EOF
-  query = <<EOF
-avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2
-EOF
+  message = %q
+  escalation_message = "the situation has escalated @pagerduty"
+  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
   monitor_thresholds {
 	ok = "0.0"
 	warning = "1.0"
@@ -1597,7 +1608,7 @@ EOF
   notify_audit = false
   timeout_h = 1
   include_tags = true
-}`, uniq)
+}`, uniq, message)
 }
 
 func testAccCheckDatadogMonitorConfigLogAlert(uniq string) string {
