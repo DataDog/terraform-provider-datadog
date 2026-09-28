@@ -141,14 +141,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 279
+        content_length: 168
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"integration":{"credentials":{"account_id":"123456789012","role":"role","type":"AWSAssumeRole"},"type":"AWS"},"name":"tf-TestAccDatadogActionConnectionResource_Tags-local-1787183641","tags":["env:prod","team:action-platform"]},"type":"action_connection"}}
+            {"data":{"attributes":{"name":"tf-TestAccDatadogActionConnectionResource_Tags-local-1787183641","tags":["env:prod","team:action-platform"]},"type":"action_connection"}}
         form: {}
         headers:
             Accept:
