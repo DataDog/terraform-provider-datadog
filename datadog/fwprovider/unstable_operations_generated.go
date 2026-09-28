@@ -9,8 +9,16 @@ package fwprovider
 //
 // EnableGeneratedUnstableOperations enables each of these on the client config.
 var generatedUnstableOperations = []string{
+	"v2.CreateElasticCloudIntegrationAccount",
 	"v2.CreateSnowflakeIntegrationAccount",
+	"v2.CreateTwilioIntegrationAccount",
+	"v2.DeleteElasticCloudIntegrationAccount",
 	"v2.DeleteSnowflakeIntegrationAccount",
+	"v2.DeleteTwilioIntegrationAccount",
+	"v2.GetElasticCloudIntegrationAccount",
 	"v2.GetSnowflakeIntegrationAccount",
+	"v2.GetTwilioIntegrationAccount",
+	"v2.UpdateElasticCloudIntegrationAccount",
 	"v2.UpdateSnowflakeIntegrationAccount",
+	"v2.UpdateTwilioIntegrationAccount",
 }
