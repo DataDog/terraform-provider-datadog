@@ -581,9 +581,7 @@ func testAccDueDateRuleRenameOutOfBand(accProvider *fwprovider.FrameworkProvider
 		updateAttrs.SetRule(attrs.GetRule())
 		updateAttrs.SetAction(attrs.GetAction())
 
-		data := datadogV2.NewDueDateRuleDataCreateWithDefaults()
-		data.SetType(datadogV2.DUEDATERULETYPE_DUE_DATE_RULES)
-		data.SetAttributes(*updateAttrs)
+		data := datadogV2.NewDueDateRuleDataUpdate(*updateAttrs, id, datadogV2.DUEDATERULETYPE_DUE_DATE_RULES)
 
 		body := datadogV2.NewDueDateRuleUpdateRequestWithDefaults()
 		body.SetData(*data)
