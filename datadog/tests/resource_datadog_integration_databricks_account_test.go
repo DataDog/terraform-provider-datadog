@@ -40,7 +40,6 @@ func TestAccIntegrationDatabricksAccountOAuth(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "ccm_enabled", "false"),
 					resource.TestCheckResourceAttr(resourceName, "do_crawlers_cron", "0 * * * *"),
 					resource.TestCheckResourceAttr(resourceName, "auth_config.oauth.client_id", "f635a6e0-60f8-448d-9087-b9359eafa329"),
-					resource.TestCheckResourceAttr(resourceName, "auth_config.oauth.databricks_account_id", "f482fe01-7704-4760-af92-72ed263ac8f3"),
 				),
 			},
 			{
@@ -70,9 +69,8 @@ resource "datadog_integration_databricks_account" "oauth" {
 
     auth_config {
         oauth {
-            client_id             = "f635a6e0-60f8-448d-9087-b9359eafa329"
-            client_secret         = "oauth-test-client-secret"
-            databricks_account_id = "f482fe01-7704-4760-af92-72ed263ac8f3"
+            client_id     = "f635a6e0-60f8-448d-9087-b9359eafa329"
+            client_secret = "oauth-test-client-secret"
         }
     }
 

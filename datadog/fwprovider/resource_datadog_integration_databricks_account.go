@@ -71,10 +71,9 @@ type databricksAuthConfigModel struct {
 }
 
 type databricksOauthModel struct {
-	ClientId            types.String `tfsdk:"client_id"`
-	ClientSecret        types.String `tfsdk:"client_secret"`
-	DatabricksAccountId types.String `tfsdk:"databricks_account_id"`
-	AzureTenantId       types.String `tfsdk:"azure_tenant_id"`
+	ClientId      types.String `tfsdk:"client_id"`
+	ClientSecret  types.String `tfsdk:"client_secret"`
+	AzureTenantId types.String `tfsdk:"azure_tenant_id"`
 }
 
 type databricksPatModel struct {
@@ -108,12 +107,11 @@ func (r *integrationDatabricksAccountResource) ConfigValidators(_ context.Contex
 			databricksOauthPath.AtName("client_id"),
 			databricksPatPath.AtName("token"),
 		),
-		// Within OAuth, client_id + client_secret + databricks_account_id are
-		// all required together (azure_tenant_id is the optional Azure Entra ID variant).
+		// Within OAuth, client_id + client_secret are required together
+		// (azure_tenant_id is the optional Azure Entra ID variant).
 		resourcevalidator.RequiredTogether(
 			databricksOauthPath.AtName("client_id"),
 			databricksOauthPath.AtName("client_secret"),
-			databricksOauthPath.AtName("databricks_account_id"),
 		),
 	}
 }
@@ -234,7 +232,7 @@ func (r *integrationDatabricksAccountResource) Schema(_ context.Context, _ resou
 				Blocks: map[string]schema.Block{
 					"oauth": schema.SingleNestedBlock{
 						Description: "OAuth (service principal) authentication. Recommended for new deployments. " +
-							"`client_id`, `client_secret`, and `databricks_account_id` must be provided together.",
+							"`client_id` and `client_secret` must be provided together.",
 						Attributes: map[string]schema.Attribute{
 							"client_id": schema.StringAttribute{
 								Optional:    true,
@@ -245,10 +243,6 @@ func (r *integrationDatabricksAccountResource) Schema(_ context.Context, _ resou
 								Sensitive:     true,
 								Description:   "OAuth Client Secret for the Databricks service principal. This value is write-only; changes made outside of Terraform will not be drift-detected.",
 								PlanModifiers: secretStateModifiers,
-							},
-							"databricks_account_id": schema.StringAttribute{
-								Optional:    true,
-								Description: "Databricks Account ID (UUID format). Found in your Databricks profile in the upper-right corner.",
 							},
 							"azure_tenant_id": schema.StringAttribute{
 								Optional:    true,
@@ -417,7 +411,6 @@ func (r *integrationDatabricksAccountResource) updateState(state *integrationDat
 	// (or refreshing) an OAuth-configured account sees the right structure.
 	if state.AuthConfig != nil && state.AuthConfig.Oauth != nil {
 		state.AuthConfig.Oauth.ClientId = settingStringOrNull(state.AuthConfig.Oauth.ClientId, settings, "client_id")
-		state.AuthConfig.Oauth.DatabricksAccountId = settingStringOrNull(state.AuthConfig.Oauth.DatabricksAccountId, settings, "databricks_account_id")
 		state.AuthConfig.Oauth.AzureTenantId = settingStringOrNull(state.AuthConfig.Oauth.AzureTenantId, settings, "azure_tenant_id")
 	}
 
@@ -488,7 +481,6 @@ func (r *integrationDatabricksAccountResource) buildSettings(plan *integrationDa
 	if plan.AuthConfig != nil && plan.AuthConfig.Oauth != nil {
 		oauth := plan.AuthConfig.Oauth
 		setIfKnown(settings, "client_id", oauth.ClientId)
-		setIfKnown(settings, "databricks_account_id", oauth.DatabricksAccountId)
 		setIfKnown(settings, "azure_tenant_id", oauth.AzureTenantId)
 	}
 
