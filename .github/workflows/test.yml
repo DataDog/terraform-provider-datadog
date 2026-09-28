@@ -211,7 +211,6 @@ jobs:
         env:
           RECORD: false
           TESTARGS: ${{ steps.shard.outputs.test_args }}
-          DD_TERRAFORM_DATABRICKS_INTEGRATION_ENABLED: "true"
 
   test-tofu:
     needs: changes
@@ -254,7 +253,6 @@ jobs:
         env:
           RECORD: false
           TESTARGS: ${{ steps.shard.outputs.test_args }}
-          DD_TERRAFORM_DATABRICKS_INTEGRATION_ENABLED: "true"
 
   # Final job for branch protection rules - depends on all other jobs
   all-checks:

@@ -78,7 +78,6 @@ datadog/**/*datadog_integration_aws*              @DataDog/api-reliability @Data
 datadog/**/*datadog_integration_azure*            @DataDog/api-reliability @DataDog/azure-integrations
 datadog/**/*datadog_integration_cloudflare*       @DataDog/api-reliability @DataDog/saas-integrations
 datadog/**/*datadog_integration_confluent*        @DataDog/api-reliability @DataDog/saas-integrations
-datadog/**/*datadog_integration_databricks*       @DataDog/api-reliability @DataDog/saas-integrations
 datadog/**/*datadog_integration_fastly*           @DataDog/api-reliability @DataDog/saas-integrations
 datadog/**/*datadog_integration_gcp*              @DataDog/api-reliability @DataDog/gcp-integrations
 datadog/**/*datadog_integration_microsoft_teams*  @DataDog/api-reliability @DataDog/chat-integrations
