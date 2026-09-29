@@ -498,7 +498,7 @@ func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigWhitespace(monitorName),
+				Config: testAccCheckDatadogMonitorConfigMessageWhitespace(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -1576,7 +1576,7 @@ resource "datadog_monitor" "complex_query_alert_example_monitor" {
 }`, uniq)
 }
 
-func testAccCheckDatadogMonitorConfigWhitespace(uniq string) string {
+func testAccCheckDatadogMonitorConfigMessageWhitespace(uniq string) string {
 	return testAccCheckDatadogMonitorConfigWhitespaceWithMessage(uniq, "  some message\nNotify: @hipchat-channel  ")
 }
 
@@ -1609,6 +1609,39 @@ resource "datadog_monitor" "foo" {
   timeout_h = 1
   include_tags = true
 }`, uniq, message)
+}
+
+func testAccCheckDatadogMonitorConfigWhitespace(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "%s"
+  type = "query alert"
+  message = <<EOF
+some message Notify: @hipchat-channel
+EOF
+  escalation_message = <<EOF
+the situation has escalated @pagerduty
+EOF
+  query = <<EOF
+avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2
+EOF
+  monitor_thresholds {
+	ok = "0.0"
+	warning = "1.0"
+	warning_recovery = "0.5"
+	critical = "2.0"
+	critical_recovery = "1.5"
+  }
+
+  notify_no_data = false
+  renotify_interval = 60
+  renotify_occurrences = 5
+  renotify_statuses = ["alert", "warn"]
+
+  notify_audit = false
+  timeout_h = 1
+  include_tags = true
+}`, uniq)
 }
 
 func testAccCheckDatadogMonitorConfigLogAlert(uniq string) string {
@@ -2743,7 +2776,7 @@ func testAccCheckDatadogDataQualityMonitorWithoutOptions(uniq string) string {
 resource "datadog_monitor" "data_quality_no_options" {
   name                     = "%s"
   type                     = "data-quality alert"
-  message                  = <<-EOT
+  message                  = trimspace(<<-EOT
     {{#is_alert}}
     To debug this alert, 
     1. Follow the error logs and see what errors the stream is encountering. 
@@ -2765,6 +2798,7 @@ resource "datadog_monitor" "data_quality_no_options" {
     
     @slack-dna-integrations-ops-low-prio
   EOT
+  )
   query                    = "formula(\"query1\").last(\"30m\") > 129600"
   new_host_delay           = 300
   notification_preset_name = "hide_all"
