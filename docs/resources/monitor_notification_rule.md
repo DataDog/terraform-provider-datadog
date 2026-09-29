@@ -97,9 +97,9 @@ Optional:
 <a id="nestedatt--rule_options"></a>
 ### Nested Schema for `rule_options`
 
-Required:
+Optional:
 
-- `is_threaded` (Boolean) Whether Slack notifications for the same monitor are posted as replies in a single thread (`true`) or as separate messages (`false`).
+- `is_threaded` (Boolean) Whether Slack notifications for the same monitor are posted as replies in a single thread (`true`) or as separate messages (`false`). When omitted, the value currently set on the rule is kept.
 
 ## Import
 

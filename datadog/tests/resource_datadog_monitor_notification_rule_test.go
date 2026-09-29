@@ -216,7 +216,7 @@ func TestAccMonitorNotificationRuleWithRuleOptions_Update(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogMonitorNotificationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorNotificationRule_ruleOptions(uniq, false),
+				Config: testAccCheckDatadogMonitorNotificationRule_ruleOptions(uniq, "is_threaded = false"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorNotificationRuleExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
@@ -224,9 +224,16 @@ func TestAccMonitorNotificationRuleWithRuleOptions_Update(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMonitorNotificationRule_ruleOptions(uniq, true),
+				Config: testAccCheckDatadogMonitorNotificationRule_ruleOptions(uniq, "is_threaded = true"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorNotificationRuleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor_notification_rule.r", "rule_options.is_threaded", "true"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogMonitorNotificationRule_ruleOptions(uniq, ""),
+				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_monitor_notification_rule.r", "rule_options.is_threaded", "true"),
 				),
@@ -309,7 +316,7 @@ func testAccCheckDatadogMonitorNotificationRule_bundleConfig(uniq string) string
 }`, uniq)
 }
 
-func testAccCheckDatadogMonitorNotificationRule_ruleOptions(uniq string, isThreaded bool) string {
+func testAccCheckDatadogMonitorNotificationRule_ruleOptions(uniq string, ruleOptions string) string {
 	return fmt.Sprintf(`resource "datadog_monitor_notification_rule" "r" {
     name = "A notification rule name"
     recipients = ["slack-foo", "jira-bar"]
@@ -317,9 +324,9 @@ func testAccCheckDatadogMonitorNotificationRule_ruleOptions(uniq string, isThrea
 	  tags = ["env:%s", "host:abc"]
 	}
 	rule_options = {
-	  is_threaded = %t
+	  %s
 	}
-}`, uniq, isThreaded)
+}`, uniq, ruleOptions)
 }
 
 func testAccCheckDatadogMonitorNotificationRuleDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {

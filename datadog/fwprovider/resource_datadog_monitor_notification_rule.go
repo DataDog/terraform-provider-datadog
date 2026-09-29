@@ -15,6 +15,7 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -126,8 +127,12 @@ func (r *MonitorNotificationRuleResource) Schema(_ context.Context, _ resource.S
 				},
 				Attributes: map[string]schema.Attribute{
 					"is_threaded": schema.BoolAttribute{
-						Description: "Whether Slack notifications for the same monitor are posted as replies in a single thread (`true`) or as separate messages (`false`).",
-						Required:    true,
+						Description: "Whether Slack notifications for the same monitor are posted as replies in a single thread (`true`) or as separate messages (`false`). When omitted, the value currently set on the rule is kept.",
+						Optional:    true,
+						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifier.UseStateForUnknown(),
+						},
 					},
 				},
 			},
@@ -403,9 +408,11 @@ func (r *MonitorNotificationRuleResource) buildRequestAttributes(ctx context.Con
 	}
 
 	if !state.RuleOptions.IsNull() && !state.RuleOptions.IsUnknown() {
-		isThreaded, _ := state.RuleOptions.Attributes()["is_threaded"].(types.Bool)
-		if err := setRuleOptions(attributes, isThreaded.ValueBool()); err != nil {
-			diags.AddError("error building rule_options", err.Error())
+		isThreaded, ok := state.RuleOptions.Attributes()["is_threaded"].(types.Bool)
+		if ok && !isThreaded.IsNull() && !isThreaded.IsUnknown() {
+			if err := setRuleOptions(attributes, isThreaded.ValueBool()); err != nil {
+				diags.AddError("error building rule_options", err.Error())
+			}
 		}
 	}
 

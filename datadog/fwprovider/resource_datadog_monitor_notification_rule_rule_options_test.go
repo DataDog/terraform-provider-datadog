@@ -38,6 +38,7 @@ func TestMonitorNotificationRuleRuleOptionsRequest(t *testing.T) {
 		"threaded": {threaded(true), `"rule_options":{"is_threaded":true}`},
 		"separate": {threaded(false), `"rule_options":{"is_threaded":false}`},
 		"null":     {types.ObjectNull(ruleOptionsAttrTypes), ""},
+		"empty":    {types.ObjectValueMust(ruleOptionsAttrTypes, map[string]attr.Value{"is_threaded": types.BoolNull()}), ""},
 		"unknown":  {types.ObjectUnknown(ruleOptionsAttrTypes), ""},
 	} {
 		t.Run(name, func(t *testing.T) {
