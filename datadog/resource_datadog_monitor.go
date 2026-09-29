@@ -56,9 +56,6 @@ func resourceDatadogMonitor() *schema.Resource {
 					Description: "A message to include with a re-notification. Supports the `@username` notification allowed elsewhere.",
 					Type:        schema.TypeString,
 					Optional:    true,
-					StateFunc: func(val interface{}) string {
-						return strings.TrimSpace(val.(string))
-					},
 				},
 				"query": {
 					Description: "The monitor query to notify on. Note this is not the same query you see in the UI and the syntax is different depending on the monitor type, please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. `terraform plan` will validate query contents unless `validate` is set to `false`.\n\n**Note:** APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the [detailed doc](https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/).",
