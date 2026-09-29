@@ -557,6 +557,23 @@ func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
 						"datadog_monitor.foo", "escalation_message", "the situation has escalated\nNotify: @pagerduty"),
 				),
 			},
+			{
+				Config: testAccCheckDatadogMonitorConfigQueryWhitespace(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"),
+				),
+				ExpectNonEmptyPlan: true,
+			},
+			{
+				Config: testAccCheckDatadogMonitorConfigQueryWhitespaceNormalized(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"),
+				),
+			},
 		},
 	})
 }
@@ -1602,10 +1619,11 @@ func testAccCheckDatadogMonitorConfigWhitespaceNormalized(uniq string) string {
 }
 
 func testAccCheckDatadogMonitorConfigWhitespaceWithMessage(uniq, message string) string {
-	return testAccCheckDatadogMonitorConfigWhitespaceWithMessageAndEscalationMessage(
+	return testAccCheckDatadogMonitorConfigWhitespaceWithMessageEscalationMessageAndQuery(
 		uniq,
 		message,
 		"the situation has escalated @pagerduty",
+		"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2",
 	)
 }
 
@@ -1618,21 +1636,39 @@ func testAccCheckDatadogMonitorConfigEscalationMessageWhitespaceNormalized(uniq 
 }
 
 func testAccCheckDatadogMonitorConfigWithEscalationMessage(uniq, escalationMessage string) string {
-	return testAccCheckDatadogMonitorConfigWhitespaceWithMessageAndEscalationMessage(
+	return testAccCheckDatadogMonitorConfigWhitespaceWithMessageEscalationMessageAndQuery(
 		uniq,
 		"some message\nNotify: @hipchat-channel",
 		escalationMessage,
+		"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2",
 	)
 }
 
-func testAccCheckDatadogMonitorConfigWhitespaceWithMessageAndEscalationMessage(uniq, message, escalationMessage string) string {
+func testAccCheckDatadogMonitorConfigQueryWhitespace(uniq string) string {
+	return testAccCheckDatadogMonitorConfigWithQuery(uniq, "  avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2  ")
+}
+
+func testAccCheckDatadogMonitorConfigQueryWhitespaceNormalized(uniq string) string {
+	return testAccCheckDatadogMonitorConfigWithQuery(uniq, "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2")
+}
+
+func testAccCheckDatadogMonitorConfigWithQuery(uniq, query string) string {
+	return testAccCheckDatadogMonitorConfigWhitespaceWithMessageEscalationMessageAndQuery(
+		uniq,
+		"some message\nNotify: @hipchat-channel",
+		"the situation has escalated\nNotify: @pagerduty",
+		query,
+	)
+}
+
+func testAccCheckDatadogMonitorConfigWhitespaceWithMessageEscalationMessageAndQuery(uniq, message, escalationMessage, query string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
   name = "%s"
   type = "query alert"
   message = %q
   escalation_message = %q
-  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+  query = %q
   monitor_thresholds {
 	ok = "0.0"
 	warning = "1.0"
@@ -1649,7 +1685,7 @@ resource "datadog_monitor" "foo" {
   notify_audit = false
   timeout_h = 1
   include_tags = true
-}`, uniq, message, escalationMessage)
+}`, uniq, message, escalationMessage, query)
 }
 
 func testAccCheckDatadogMonitorConfigWhitespace(uniq string) string {
