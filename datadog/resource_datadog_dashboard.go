@@ -10051,6 +10051,18 @@ func buildTerraformListStreamWidgetRequests(datadogListStreamRequests *[]datadog
 		if eventSize, ok := q.GetEventSizeOk(); ok && q.GetDataSource() == datadogV1.LISTSTREAMSOURCE_EVENT_STREAM {
 			queryRequest["event_size"] = eventSize
 		}
+		if clusteringPatternFieldPath, ok := q.GetClusteringPatternFieldPathOk(); ok {
+			queryRequest["clustering_pattern_field_path"] = clusteringPatternFieldPath
+		}
+		if groupBy, ok := q.GetGroupByOk(); ok && groupBy != nil && len(*groupBy) > 0 {
+			terraformGroupBys := make([]map[string]interface{}, len(*groupBy))
+			for i, g := range *groupBy {
+				terraformGroupBys[i] = map[string]interface{}{
+					"facet": g.GetFacet(),
+				}
+			}
+			queryRequest["group_by"] = terraformGroupBys
+		}
 		if v, ok := q.GetSortOk(); ok {
 			terraformSort := map[string]interface{}{}
 			if v, ok := v.GetColumnOk(); ok {
