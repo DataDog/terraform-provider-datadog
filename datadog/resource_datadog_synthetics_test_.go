@@ -6640,8 +6640,8 @@ func buildDatadogParamsForMobileStep(stepType datadogV1.SyntheticsMobileStepType
 func buildDatadogParamsElementForMobileStep(stepParamsElements map[string]interface{}) datadogV1.SyntheticsMobileStepParamsElement {
 	elements := datadogV1.SyntheticsMobileStepParamsElement{}
 
-	if len(stepParamsElements["multi_locator"].(map[string]interface{})) != 0 {
-		elements.SetMultiLocator(stepParamsElements["multi_locator"].(string))
+	if multiLocator := stepParamsElements["multi_locator"].(map[string]interface{}); len(multiLocator) != 0 {
+		elements.SetMultiLocator(multiLocator)
 	}
 	if stepParamsElements["context"].(string) != "" {
 		elements.SetContext(stepParamsElements["context"].(string))
@@ -6649,9 +6649,8 @@ func buildDatadogParamsElementForMobileStep(stepParamsElements map[string]interf
 	if stepParamsElements["context_type"].(string) != "" {
 		elements.SetContextType(datadogV1.SyntheticsMobileStepParamsElementContextType(stepParamsElements["context_type"].(string)))
 	}
-	stepParamsElement := stepParamsElements["user_locator"].([]interface{})[0].(map[string]interface{})
-	if len(stepParamsElement) != 0 {
-
+	if userLocators, ok := stepParamsElements["user_locator"].([]interface{}); ok && len(userLocators) > 0 {
+		stepParamsElement := userLocators[0].(map[string]interface{})
 		userLocator := datadogV1.SyntheticsMobileStepParamsElementUserLocator{}
 		userLocatorValues := []datadogV1.SyntheticsMobileStepParamsElementUserLocatorValuesItems{}
 

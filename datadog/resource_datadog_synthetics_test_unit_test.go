@@ -1,9 +1,13 @@
 package datadog
 
 import (
+	"encoding/json"
 	"testing"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // TestConvertStepParamsValueForConfig_EmptyVariableOrPattern reproduces the
@@ -29,4 +33,72 @@ func TestConvertStepParamsValueForConfig_NonEmptyVariableOrPattern(t *testing.T)
 	result, diags := convertStepParamsValueForConfig(nil, "variable", value)
 	assert.Equal(t, value[0], result)
 	assert.Empty(t, diags)
+}
+
+func TestBuildDatadogParamsElementForMobileStep_Locators(t *testing.T) {
+	multiLocator := map[string]interface{}{
+		"ab": `/*[local-name()="XCUIElementTypeStaticText"][1]`,
+		"co": `[{"tagName":"XCUIElementTypeStaticText","text":"tap","textType":"directText"}]`,
+		"ro": `//*[@name="Tap"]`,
+	}
+	userLocator := []interface{}{map[string]interface{}{
+		"fail_test_on_cannot_locate": true,
+		"values": []interface{}{map[string]interface{}{
+			"type": "id", "value": "some_id",
+		}},
+	}}
+
+	for _, tc := range []struct {
+		name            string
+		multiLocator    map[string]interface{}
+		withUserLocator bool
+	}{
+		{name: "multi locator only", multiLocator: multiLocator},
+		{name: "both locators", multiLocator: multiLocator, withUserLocator: true},
+		{name: "empty multi locator", multiLocator: map[string]interface{}{}, withUserLocator: true},
+		{name: "user locator only", withUserLocator: true},
+		{name: "neither locator"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			element := map[string]interface{}{"context": "NATIVE_APP", "context_type": "native"}
+			if tc.multiLocator != nil {
+				element["multi_locator"] = tc.multiLocator
+			}
+			if tc.withUserLocator {
+				element["user_locator"] = userLocator
+			}
+			paramsSchema := syntheticsMobileStepParams()
+			data := schema.TestResourceDataRaw(t, map[string]*schema.Schema{"params": &paramsSchema}, map[string]interface{}{
+				"params": []interface{}{map[string]interface{}{"element": []interface{}{element}}},
+			})
+			params := data.Get("params").([]interface{})[0].(map[string]interface{})
+			var built datadogV1.SyntheticsMobileStepParams
+			require.NotPanics(t, func() {
+				built = buildDatadogParamsForMobileStep(datadogV1.SYNTHETICSMOBILESTEPTYPE_TAP, params)
+			})
+			builtElement := built.GetElement()
+			assert.Equal(t, len(tc.multiLocator) > 0, builtElement.HasMultiLocator())
+			assert.Equal(t, tc.withUserLocator, builtElement.HasUserLocator())
+			if len(tc.multiLocator) > 0 {
+				assert.Equal(t, tc.multiLocator, builtElement.GetMultiLocator())
+			}
+			if tc.withUserLocator {
+				locator := builtElement.GetUserLocator()
+				assert.True(t, locator.GetFailTestOnCannotLocate())
+				require.Len(t, locator.GetValues(), 1)
+				assert.Equal(t, "some_id", locator.Values[0].GetValue())
+				assert.Equal(t, "id", string(locator.Values[0].GetType()))
+			}
+
+			// Exercise the SDK wire representation and the API-to-Terraform mapping.
+			step := datadogV1.NewSyntheticsMobileStep("Tap", built, datadogV1.SYNTHETICSMOBILESTEPTYPE_TAP)
+			encoded, err := json.Marshal(step)
+			require.NoError(t, err)
+			var decoded datadogV1.SyntheticsMobileStep
+			require.NoError(t, json.Unmarshal(encoded, &decoded))
+			flattened := buildTerraformMobileTestSteps([]datadogV1.SyntheticsMobileStep{decoded})
+			require.NoError(t, data.Set("params", flattened[0]["params"]))
+			assert.Equal(t, params, data.Get("params").([]interface{})[0])
+		})
+	}
 }
