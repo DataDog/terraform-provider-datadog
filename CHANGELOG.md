@@ -1,3 +1,12 @@
+## 4.23.0 (September 29, 2026)
+
+### FEATURES
+* [generated] Add Databricks integration accounts resource by @api-clients-generation-pipeline in https://github.com/DataDog/terraform-provider-datadog/pull/4291
+* [generated] Added Twilio and Elastic Cloud account resources by @api-clients-generation-pipeline in https://github.com/DataDog/terraform-provider-datadog/pull/4260
+* [generated] Added Snowflake integrations resource by @dd-octo-sts in https://github.com/DataDog/terraform-provider-datadog/pull/4258
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.22.0...v4.23.0
+
 ## 4.22.0 (September 24, 2026)
 
 ### BUGFIXES
