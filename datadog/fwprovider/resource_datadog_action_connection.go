@@ -1369,11 +1369,40 @@ func setActionConnectionTags(ctx context.Context, tags types.Set, set func([]str
 	set(values)
 }
 
+// actionConnectionIntegrationChanged reports whether the integration config (credentials,
+// base URL, tokens, etc.) differs between plan and oldState, ignoring fields that are
+// unrelated to the integration (id, name, tags) as well as AWS's server-computed
+// external_id/principal_id, which are always unknown in plan and would otherwise make
+// every update look like an integration change. Used to gate resending the HTTP/additional
+// integration blocks on Update; the AWS block is always resent regardless of this check.
+func actionConnectionIntegrationChanged(plan, oldState connectionResourceModel) bool {
+	normalize := func(m connectionResourceModel) connectionResourceModel {
+		m.ID = types.String{}
+		m.Name = types.String{}
+		m.Tags = types.Set{}
+		m.EffectiveTags = types.Set{}
+		if m.AWS != nil && m.AWS.AssumeRole != nil {
+			assumeRole := *m.AWS.AssumeRole
+			assumeRole.ExternalID = types.String{}
+			assumeRole.PrincipalID = types.String{}
+			aws := *m.AWS
+			aws.AssumeRole = &assumeRole
+			m.AWS = &aws
+		}
+		return m
+	}
+
+	return !reflect.DeepEqual(normalize(plan), normalize(oldState))
+}
+
 func connectionModelToUpdateApiRequest(ctx context.Context, plan, oldState connectionResourceModel) (*datadogV2.UpdateActionConnectionRequest, error) {
 	attributes := datadogV2.NewActionConnectionAttributesUpdate()
 	attributes.SetName(plan.Name.ValueString())
 	setActionConnectionTags(ctx, plan.EffectiveTags, attributes.SetTags)
 
+	// The AWS integration block is always resent on update, even when unchanged: the live
+	// backend has been observed to not reliably persist a tag/name-only PATCH that omits it
+	// (see PR discussion), so we don't apply the change-detection skip to AWS.
 	if plan.AWS != nil {
 		assumeRoleParams := datadogV2.NewAWSAssumeRoleUpdate(datadogV2.AWSASSUMEROLETYPE_AWSASSUMEROLE)
 		assumeRoleParams.SetAccountId(plan.AWS.AssumeRole.AccountID.ValueString())
@@ -1385,58 +1414,60 @@ func connectionModelToUpdateApiRequest(ctx context.Context, plan, oldState conne
 		attributes.SetIntegration(integration)
 	}
 
-	if plan.HTTP != nil {
-		httpTokenAuth := datadogV2.NewHTTPTokenAuthUpdate(datadogV2.HTTPTOKENAUTHTYPE_HTTPTOKENAUTH)
+	if actionConnectionIntegrationChanged(plan, oldState) {
+		if plan.HTTP != nil {
+			httpTokenAuth := datadogV2.NewHTTPTokenAuthUpdate(datadogV2.HTTPTOKENAUTHTYPE_HTTPTOKENAUTH)
 
-		buildHttpDeletions(plan, oldState, httpTokenAuth)
+			buildHttpDeletions(plan, oldState, httpTokenAuth)
 
-		for _, token := range plan.HTTP.TokenAuth.Tokens {
-			tokenType, err := datadogV2.NewTokenTypeFromValue(token.Type.ValueString())
+			for _, token := range plan.HTTP.TokenAuth.Tokens {
+				tokenType, err := datadogV2.NewTokenTypeFromValue(token.Type.ValueString())
+				if err != nil {
+					return nil, err
+				}
+
+				tokenModel := datadogV2.NewHTTPTokenUpdate(token.Name.ValueString(), *tokenType, token.Value.ValueString())
+				httpTokenAuth.Tokens = append(httpTokenAuth.Tokens, *tokenModel)
+			}
+
+			for _, header := range plan.HTTP.TokenAuth.Headers {
+				headerUpdate := datadogV2.NewHTTPHeaderUpdate(header.Name.ValueString())
+				headerUpdate.SetValue(header.Value.ValueString())
+				httpTokenAuth.Headers = append(httpTokenAuth.Headers, *headerUpdate)
+			}
+
+			for _, urlParam := range plan.HTTP.TokenAuth.URLParameters {
+				paramUpdate := datadogV2.NewUrlParamUpdate(urlParam.Name.ValueString())
+				paramUpdate.SetValue(urlParam.Value.ValueString())
+				httpTokenAuth.UrlParameters = append(httpTokenAuth.UrlParameters, *paramUpdate)
+			}
+
+			httpTokenAuth.Body = datadogV2.NewHTTPBody()
+			if plan.HTTP.TokenAuth.Body != nil {
+				if !plan.HTTP.TokenAuth.Body.ContentType.IsNull() {
+					httpTokenAuth.Body.SetContentType(plan.HTTP.TokenAuth.Body.ContentType.ValueString())
+				}
+				if !plan.HTTP.TokenAuth.Body.Content.IsNull() {
+					httpTokenAuth.Body.SetContent(plan.HTTP.TokenAuth.Body.Content.ValueString())
+				}
+			}
+
+			httpCredentials := datadogV2.HTTPTokenAuthUpdateAsHTTPCredentialsUpdate(httpTokenAuth)
+			httpIntegration := datadogV2.NewHTTPIntegrationUpdate(datadogV2.HTTPINTEGRATIONTYPE_HTTP)
+			httpIntegration.SetBaseUrl(plan.HTTP.BaseURL.ValueString())
+			httpIntegration.SetCredentials(httpCredentials)
+
+			integration := datadogV2.HTTPIntegrationUpdateAsActionConnectionIntegrationUpdate(httpIntegration)
+			attributes.SetIntegration(integration)
+		}
+
+		if plan.AWS == nil && plan.HTTP == nil {
+			integration, err := additionalUpdateActionConnectionIntegration(plan)
 			if err != nil {
 				return nil, err
 			}
-
-			tokenModel := datadogV2.NewHTTPTokenUpdate(token.Name.ValueString(), *tokenType, token.Value.ValueString())
-			httpTokenAuth.Tokens = append(httpTokenAuth.Tokens, *tokenModel)
+			attributes.SetIntegration(*integration)
 		}
-
-		for _, header := range plan.HTTP.TokenAuth.Headers {
-			headerUpdate := datadogV2.NewHTTPHeaderUpdate(header.Name.ValueString())
-			headerUpdate.SetValue(header.Value.ValueString())
-			httpTokenAuth.Headers = append(httpTokenAuth.Headers, *headerUpdate)
-		}
-
-		for _, urlParam := range plan.HTTP.TokenAuth.URLParameters {
-			paramUpdate := datadogV2.NewUrlParamUpdate(urlParam.Name.ValueString())
-			paramUpdate.SetValue(urlParam.Value.ValueString())
-			httpTokenAuth.UrlParameters = append(httpTokenAuth.UrlParameters, *paramUpdate)
-		}
-
-		httpTokenAuth.Body = datadogV2.NewHTTPBody()
-		if plan.HTTP.TokenAuth.Body != nil {
-			if !plan.HTTP.TokenAuth.Body.ContentType.IsNull() {
-				httpTokenAuth.Body.SetContentType(plan.HTTP.TokenAuth.Body.ContentType.ValueString())
-			}
-			if !plan.HTTP.TokenAuth.Body.Content.IsNull() {
-				httpTokenAuth.Body.SetContent(plan.HTTP.TokenAuth.Body.Content.ValueString())
-			}
-		}
-
-		httpCredentials := datadogV2.HTTPTokenAuthUpdateAsHTTPCredentialsUpdate(httpTokenAuth)
-		httpIntegration := datadogV2.NewHTTPIntegrationUpdate(datadogV2.HTTPINTEGRATIONTYPE_HTTP)
-		httpIntegration.SetBaseUrl(plan.HTTP.BaseURL.ValueString())
-		httpIntegration.SetCredentials(httpCredentials)
-
-		integration := datadogV2.HTTPIntegrationUpdateAsActionConnectionIntegrationUpdate(httpIntegration)
-		attributes.SetIntegration(integration)
-	}
-
-	if plan.AWS == nil && plan.HTTP == nil {
-		integration, err := additionalUpdateActionConnectionIntegration(plan)
-		if err != nil {
-			return nil, err
-		}
-		attributes.SetIntegration(*integration)
 	}
 
 	data := datadogV2.NewActionConnectionDataUpdate(*attributes, datadogV2.ACTIONCONNECTIONDATATYPE_ACTION_CONNECTION)
