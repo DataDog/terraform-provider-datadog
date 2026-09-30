@@ -1783,7 +1783,7 @@ var listStreamQueryFields = []FieldSpec{
 			"rum_issue_stream", "apm_issue_stream", "trace_stream", "logs_issue_stream",
 			"logs_pattern_stream", "logs_transaction_stream", "event_stream", "rum_stream",
 			"llm_observability_stream", "issue_stream", "security_runtime_stream",
-			"security_signals_stream", "incidents_stream",
+			"security_signals_stream", "incidents_stream", "case_stream",
 		},
 	},
 	{HCLKey: "query_string", Type: TypeString, OmitEmpty: false, Description: "Widget query."},
