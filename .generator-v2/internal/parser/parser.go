@@ -102,6 +102,9 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 	// came from, so NormalizeSchemas can reach request/response bodies, which
 	// the model itself does not retain.
 	rawOps := make(map[*model.Operation]*v3.Operation)
+	// pathItemParams records what each operation inherits from its path item,
+	// which the high-level operation itself does not expose.
+	pathItemParams := make(map[*model.Operation][]*v3.Parameter)
 	if paths := v3doc.Model.Paths; paths != nil && paths.PathItems != nil {
 		for opPath, item := range paths.PathItems.FromOldest() {
 			if item == nil {
@@ -126,6 +129,9 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 				}
 				spec.Operations = append(spec.Operations, mop)
 				rawOps[mop] = op
+				if len(item.Parameters) > 0 {
+					pathItemParams[mop] = item.Parameters
+				}
 			}
 		}
 	}
@@ -146,7 +152,7 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 	// those pointers only exist once every operation is enumerated.
 	ResolveOperationGroups(spec)
 
-	if err := NormalizeSchemas(spec, rawOps, cfg.maxDepth, cfg.trackingFieldName); err != nil {
+	if err := NormalizeSchemas(spec, rawOps, pathItemParams, cfg.maxDepth, cfg.trackingFieldName); err != nil {
 		return nil, err
 	}
 
