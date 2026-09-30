@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"sync/atomic"
 	"testing"
 
@@ -70,128 +71,6 @@ func TestIsAwsIntegrationPropagationError(t *testing.T) {
 	}
 }
 
-func TestAwsWifArnPattern(t *testing.T) {
-	tests := []struct {
-		name  string
-		value string
-		valid bool
-	}{
-		{
-			name:  "exact IAM user",
-			value: "arn:aws:iam::123456789012:user/terraform-runner",
-			valid: true,
-		},
-		{
-			name:  "exact IAM user with colon in path",
-			value: "arn:aws:iam::123456789012:user/team:prod/alice",
-			valid: true,
-		},
-		{
-			name:  "IAM path with colon and trailing wildcard",
-			value: "arn:aws:iam::123456789012:user/team:prod/*",
-			valid: true,
-		},
-		{
-			name:  "colon is not valid in an IAM user name",
-			value: "arn:aws:iam::123456789012:user/team:prod",
-			valid: false,
-		},
-		{
-			name:  "exact STS assumed role session",
-			value: "arn:aws:sts::123456789012:assumed-role/terraform-runner/session-name",
-			valid: true,
-		},
-		{
-			name:  "assumed role with trailing wildcard",
-			value: "arn:aws:sts::123456789012:assumed-role/terraform-runner/*",
-			valid: true,
-		},
-		{
-			name:  "special characters supported by the API",
-			value: "arn:aws:sts::123456789012:assumed-role/team.blue_prod@terraform/session-name_ci",
-			valid: true,
-		},
-		{
-			name:  "AWS name characters not supported by the API",
-			value: "arn:aws:sts::123456789012:assumed-role/team+blue=prod,ops@terraform/session+name=ci,1",
-			valid: false,
-		},
-		{
-			name:  "colon is not valid in an STS name",
-			value: "arn:aws:sts::123456789012:assumed-role/terraform-runner/session:name",
-			valid: false,
-		},
-		{
-			name:  "federated user",
-			value: "arn:aws:sts::123456789012:federated-user/terraform-runner",
-			valid: true,
-		},
-		{
-			name:  "IAM role is not a caller ARN",
-			value: "arn:aws:iam::123456789012:role/terraform-runner",
-			valid: false,
-		},
-		{
-			name:  "mismatched STS resource type",
-			value: "arn:aws:sts::123456789012:group/terraform-runners",
-			valid: false,
-		},
-		{
-			name:  "mismatched IAM resource type",
-			value: "arn:aws:iam::123456789012:assumed-role/terraform-runner/session-name",
-			valid: false,
-		},
-		{
-			name:  "account ID must contain 12 digits",
-			value: "arn:aws:sts::12345:assumed-role/terraform-runner/session-name",
-			valid: false,
-		},
-		{
-			name:  "wildcard without a specific resource",
-			value: "arn:aws:sts::123456789012:assumed-role/*",
-			valid: false,
-		},
-		{
-			name:  "wildcard in the middle",
-			value: "arn:aws:sts::123456789012:assumed-role/*/session-name",
-			valid: false,
-		},
-		{
-			name:  "multiple wildcards",
-			value: "arn:aws:sts::123456789012:assumed-role/terraform-runner/*/*",
-			valid: false,
-		},
-		{
-			name:  "question mark wildcard",
-			value: "arn:aws:iam::123456789012:role/terraform-runner?",
-			valid: false,
-		},
-		{
-			name:  "China partition is not supported by the API",
-			value: "arn:aws-cn:sts::123456789012:assumed-role/terraform-runner/session-name",
-			valid: false,
-		},
-		{
-			name:  "GovCloud partition is not supported by the API",
-			value: "arn:aws-us-gov:sts::123456789012:assumed-role/terraform-runner/session-name",
-			valid: false,
-		},
-		{
-			name:  "ISO partition is not supported by the API",
-			value: "arn:aws-iso:sts::123456789012:assumed-role/terraform-runner/session-name",
-			valid: false,
-		},
-	}
-
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			if got := awsWifArnPattern.MatchString(test.value); got != test.valid {
-				t.Fatalf("awsWifArnPattern.MatchString(%q) = %t, want %t", test.value, got, test.valid)
-			}
-		})
-	}
-}
-
 func TestAwsWifIdentityMappingCreate(t *testing.T) {
 	const (
 		mappingID         = "7c405332-7033-40d2-a046-a27a075a22cd"
@@ -202,10 +81,22 @@ func TestAwsWifIdentityMappingCreate(t *testing.T) {
 
 	tests := []struct {
 		name         string
+		errorBody    string
+		wantDetail   string
 		responseType string
 		cancel       bool
 		wantGet      bool
 	}{
+		{
+			name:       "backend validation error with string errors",
+			errorBody:  `{"errors":["Invalid ARN pattern"]}`,
+			wantDetail: "Invalid ARN pattern",
+		},
+		{
+			name:       "backend validation error with structured errors",
+			errorBody:  `{"errors":[{"status":"400","title":"Bad Request","detail":"Invalid ARN pattern","source":{"pointer":"/data/attributes/arn_pattern"}}]}`,
+			wantDetail: "Invalid ARN pattern",
+		},
 		{
 			name:         "visibility GET fails",
 			responseType: "aws_cloud_auth_config",
@@ -227,10 +118,17 @@ func TestAwsWifIdentityMappingCreate(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 			sawGet := false
+			var requests atomic.Int32
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, request *http.Request) {
+				requests.Add(1)
 				w.Header().Set("Content-Type", "application/json")
 				switch {
 				case request.Method == http.MethodPost && request.URL.Path == "/api/v2/cloud_auth/aws/persona_mapping":
+					if test.errorBody != "" {
+						w.WriteHeader(http.StatusBadRequest)
+						fmt.Fprint(w, test.errorBody)
+						return
+					}
 					if test.cancel {
 						cancel()
 						w.WriteHeader(http.StatusBadRequest)
@@ -282,6 +180,28 @@ func TestAwsWifIdentityMappingCreate(t *testing.T) {
 			}
 			if sawGet != test.wantGet {
 				t.Fatalf("visibility GET called = %t, want %t", sawGet, test.wantGet)
+			}
+
+			if test.errorBody != "" {
+				diags := response.Diagnostics.Errors()
+				if len(diags) != 1 {
+					t.Fatalf("got %d error diagnostics, want 1: %v", len(diags), diags)
+				}
+				if got := diags[0].Summary(); got != "Error creating AWS WIF identity mapping" {
+					t.Fatalf("diagnostic summary = %q", got)
+				}
+				for _, detail := range []string{test.wantDetail, "400 Bad Request", test.errorBody} {
+					if !strings.Contains(diags[0].Detail(), detail) {
+						t.Errorf("diagnostic detail = %q, want to contain %q", diags[0].Detail(), detail)
+					}
+				}
+				if got := requests.Load(); got != 1 {
+					t.Errorf("got %d requests, want 1 (validation failures must not be retried)", got)
+				}
+				if !response.State.Raw.Equal(plan.Raw) {
+					t.Error("failed create changed state")
+				}
+				return
 			}
 
 			if test.cancel {

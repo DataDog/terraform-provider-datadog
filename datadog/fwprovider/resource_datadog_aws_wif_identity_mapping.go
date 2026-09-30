@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -28,22 +27,11 @@ import (
 const (
 	awsWifIdentityMappingCreateTimeout     = 2 * time.Minute
 	awsWifIdentityMappingVisibilityTimeout = 30 * time.Second
-
-	// The authoritative backend parser is cloudconfig.ParseARNPattern in
-	// domains/aaa/external_authn/internal/libs/cloudconfig/arn_parser.go. It
-	// currently supports only the aws partition and this resource character set.
-	awsWifArnAccountIDPattern   = `[0-9]{12}`
-	awsWifArnNamePattern        = `[A-Za-z0-9_.@-]+`
-	awsWifArnPathSegmentPattern = `[A-Za-z0-9_.:@-]+`
-	awsWifStsCallerPattern      = `sts::` + awsWifArnAccountIDPattern + `:(?:assumed-role/` + awsWifArnNamePattern + `/(?:` + awsWifArnNamePattern + `|\*)|federated-user/` + awsWifArnNamePattern + `)`
-	awsWifIamUserCallerPattern  = `iam::` + awsWifArnAccountIDPattern + `:user/(?:` + awsWifArnPathSegmentPattern + `/)*(?:` + awsWifArnNamePattern + `|` + awsWifArnPathSegmentPattern + `/\*)`
 )
 
 var (
 	_ resource.ResourceWithConfigure   = &awsWifIdentityMappingResource{}
 	_ resource.ResourceWithImportState = &awsWifIdentityMappingResource{}
-
-	awsWifArnPattern = regexp.MustCompile(`^arn:aws:(?:` + awsWifStsCallerPattern + `|` + awsWifIamUserCallerPattern + `)$`)
 )
 
 type awsWifIdentityMappingResource struct {
@@ -92,7 +80,7 @@ func (r *awsWifIdentityMappingResource) Schema(_ context.Context, _ resource.Sch
 					stringplanmodifier.RequiresReplace(),
 				},
 				Validators: []validator.String{
-					stringvalidator.RegexMatches(awsWifArnPattern, "must be an AWS GetCallerIdentity ARN supported by Datadog for an IAM user, assumed role, or federated user; a wildcard is allowed only as one trailing /* after a specific resource"),
+					stringvalidator.LengthAtLeast(1),
 				},
 			},
 		},
@@ -155,7 +143,7 @@ func (r *awsWifIdentityMappingResource) Create(ctx context.Context, request reso
 		return retry.NonRetryableError(translatedError)
 	})
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, ""))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "Error creating AWS WIF identity mapping"))
 		return
 	}
 	unparsedErr := utils.CheckForUnparsed(apiResponse)
