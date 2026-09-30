@@ -84,21 +84,18 @@ func backtickedToken(s string) (string, bool) {
 // lowest-numbered 2xx code that has one. A missing body leaves the field nil, a
 // missing $ref target yields *UnresolvableRefError, and a local oneOf naming
 // failure becomes an Unsupported node. Requires ResolveOperationGroups first.
-func NormalizeSchemas(
-	spec *model.Spec,
-	rawOps map[*model.Operation]*v3.Operation,
-	pathItemParams map[*model.Operation][]*v3.Parameter,
-	maxDepth int,
-	trackingFieldName string,
-) error {
+func NormalizeSchemas(spec *model.Spec, raw *RawContext, maxDepth int, trackingFieldName string) error {
 	if spec == nil {
 		return nil
+	}
+	if raw == nil {
+		raw = newRawContext()
 	}
 	n := &schemaNormalizer{
 		components:        spec.Components,
 		maxDepth:          maxDepth,
 		trackingFieldName: trackingFieldName,
-		pathItemParams:    pathItemParams,
+		raw:               raw,
 	}
 
 	// Each tracked operation fills its own bodies and its group's, which may
@@ -111,7 +108,7 @@ func NormalizeSchemas(
 			return nil
 		}
 		filled[target] = true
-		return n.fillOperation(target, rawOps[target])
+		return n.fillOperation(target, raw.Operations[target])
 	}
 	for _, op := range spec.Operations {
 		if op == nil || op.Tracking == nil {
@@ -139,10 +136,10 @@ type schemaNormalizer struct {
 	// re-entering the chain closes a cycle, which becomes a terminal node
 	// instead of recursing forever.
 	refStack []string
-	// pathItemParams holds the parameters each operation inherits from its path
-	// item. The high-level operation does not carry them, so they are captured
-	// while the document is walked and merged in fillParameters.
-	pathItemParams map[*model.Operation][]*v3.Parameter
+	// raw is the document context the normalized model does not retain: the
+	// libopenapi operations, their inherited path-item parameters, and the
+	// reusable example set.
+	raw *RawContext
 }
 
 // schemaContext carries what a resolved SchemaProxy no longer knows: the node's
@@ -217,7 +214,7 @@ func (n *schemaNormalizer) fillParameters(op *model.Operation, raw *v3.Operation
 	// Reading only raw.Parameters would drop the path parameter naming the
 	// object an operation acts on whenever the description declares it once for
 	// the whole path item.
-	for index, p := range MergeParameters(n.pathItemParams[op], raw.Parameters) {
+	for index, p := range n.raw.MergedParameters(op) {
 		if p == nil || (p.In != "query" && p.In != "path") || p.Name == "" {
 			continue
 		}
