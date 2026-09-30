@@ -104,6 +104,9 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 	// came from, so NormalizeSchemas can reach request/response bodies, which
 	// the model itself does not retain.
 	rawOps := make(map[*model.Operation]*v3.Operation)
+	// pathItemParams records what each operation inherits from its path item,
+	// which the high-level operation itself does not expose.
+	pathItemParams := make(map[*model.Operation][]*v3.Parameter)
 	if paths := v3doc.Model.Paths; paths != nil && paths.PathItems != nil {
 		for opPath, item := range paths.PathItems.FromOldest() {
 			if item == nil {
@@ -128,6 +131,9 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 				}
 				spec.Operations = append(spec.Operations, mop)
 				rawOps[mop] = op
+				if len(item.Parameters) > 0 {
+					pathItemParams[mop] = item.Parameters
+				}
 			}
 		}
 	}
@@ -135,7 +141,7 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 	// The tag-scoped registry is read after enumeration because a family
 	// block is anchored on the operation it names, and resolved before the sort
 	// so the synthetic operations it mints sort alongside the real ones.
-	if err := fanOutRegistry(spec, rawOps, v3doc.Model.Tags, cfg.trackingFieldName); err != nil {
+	if err := fanOutRegistry(spec, rawOps, pathItemParams, v3doc.Model.Tags, cfg.trackingFieldName); err != nil {
 		return nil, err
 	}
 
@@ -155,7 +161,7 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 	// those pointers only exist once every operation is enumerated.
 	ResolveOperationGroups(spec)
 
-	if err := NormalizeSchemas(spec, rawOps, cfg.maxDepth); err != nil {
+	if err := NormalizeSchemas(spec, rawOps, pathItemParams, cfg.maxDepth); err != nil {
 		return nil, err
 	}
 
@@ -174,7 +180,7 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 // more than one artifact: a family's resource and its singular data source
 // both read through the same endpoint. The clone inherits the raw handle so
 // schema normalization can still reach its request and response bodies.
-func fanOutRegistry(spec *model.Spec, rawOps map[*model.Operation]*v3.Operation, tags []*base.Tag, extensionName string) error {
+func fanOutRegistry(spec *model.Spec, rawOps map[*model.Operation]*v3.Operation, pathItemParams map[*model.Operation][]*v3.Parameter, tags []*base.Tag, extensionName string) error {
 	metas, err := decodeTagRegistries(tags, extensionName)
 	if err != nil {
 		return err
@@ -208,6 +214,7 @@ func fanOutRegistry(spec *model.Spec, rawOps map[*model.Operation]*v3.Operation,
 		}
 		spec.Operations = append(spec.Operations, clone)
 		rawOps[clone] = rawOps[primary]
+		pathItemParams[clone] = pathItemParams[primary]
 	}
 	return nil
 }

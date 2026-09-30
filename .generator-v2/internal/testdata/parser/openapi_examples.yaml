@@ -7,21 +7,91 @@ info:
     must recognize, plus a few paths covering what the pipeline reads alongside
     an example: parameter serialization (`/parameters`), path-item vs operation
     parameter precedence (`/parameter-merge`), and bodyless success responses
-    (`/bodyless`). Each case is independently addressable, by the artifact_name
-    in its x-datadog-tf-generator block, so a test can assert one case without
+    (`/bodyless`). Each case is independently addressable, by the family name
+    in its tag-level x-datadog-tf-generator registry, so a test can assert one case without
     depending on the others. Cases prefixed "bad-" are deliberately ineligible.
+tags:
+  - name: Example Matrix
+    x-datadog-tf-generator:
+      media_singular:
+        resource:
+          group:
+            create: CreateMediaSingular
+            read: CreateMediaSingular
+            delete: DeleteExample
+      media_named:
+        resource:
+          group:
+            create: CreateMediaNamed
+            read: CreateMediaNamed
+            delete: DeleteExample
+      bad_both_forms:
+        resource:
+          group:
+            create: CreateBadBothForms
+            read: CreateBadBothForms
+            delete: DeleteExample
+      schema_example:
+        resource:
+          group:
+            create: CreateSchemaExample
+            read: CreateSchemaExample
+            delete: DeleteExample
+      schema_property_example:
+        resource:
+          group:
+            create: CreateSchemaPropertyExample
+            read: CreateSchemaPropertyExample
+            delete: DeleteExample
+      local_reference:
+        resource:
+          group:
+            create: CreateLocalReference
+            read: CreateLocalReference
+            delete: DeleteExample
+      bad_external:
+        resource:
+          group:
+            create: CreateBadExternal
+            read: CreateBadExternal
+            delete: DeleteExample
+      bodyless:
+        resource:
+          group:
+            create: GetBodyless
+            read: GetBodyless
+            delete: DeleteBodyless
+      parameters_case:
+        resource:
+          group:
+            create: GetWithParameters
+            read: GetWithParameters
+            delete: DeleteExample
+      parameter_merge:
+        resource:
+          group:
+            create: GetParameterMerge
+            read: GetParameterMerge
+            delete: DeleteExample
+      sensitive_case:
+        resource:
+          group:
+            create: CreateSensitive
+            read: CreateSensitive
+            delete: DeleteExample
 paths:
+  # Shared bodyless destroy endpoint for the isolated parser examples.
+  /example:
+    delete:
+      operationId: DeleteExample
+      responses:
+        '204':
+          description: deleted
 
   # --- media-type level: singular `example` ---
   /media-singular:
     post:
       operationId: CreateMediaSingular
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: media_singular
-        group:
-          create: CreateMediaSingular
-          read: CreateMediaSingular
       requestBody:
         required: true
         content:
@@ -51,12 +121,6 @@ paths:
   /media-named:
     post:
       operationId: CreateMediaNamed
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: media_named
-        group:
-          create: CreateMediaNamed
-          read: CreateMediaNamed
       requestBody:
         required: true
         content:
@@ -105,12 +169,6 @@ paths:
   /bad-both-forms:
     post:
       operationId: CreateBadBothForms
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: bad_both_forms
-        group:
-          create: CreateBadBothForms
-          read: CreateBadBothForms
       requestBody:
         required: true
         content:
@@ -147,12 +205,6 @@ paths:
   /schema-example:
     post:
       operationId: CreateSchemaExample
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: schema_example
-        group:
-          create: CreateSchemaExample
-          read: CreateSchemaExample
       requestBody:
         required: true
         content:
@@ -171,12 +223,6 @@ paths:
   /schema-property-example:
     post:
       operationId: CreateSchemaPropertyExample
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: schema_property_example
-        group:
-          create: CreateSchemaPropertyExample
-          read: CreateSchemaPropertyExample
       requestBody:
         required: true
         content:
@@ -195,12 +241,6 @@ paths:
   /local-reference:
     post:
       operationId: CreateLocalReference
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: local_reference
-        group:
-          create: CreateLocalReference
-          read: CreateLocalReference
       requestBody:
         required: true
         content:
@@ -225,12 +265,6 @@ paths:
   /bad-external:
     post:
       operationId: CreateBadExternal
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: bad_external
-        group:
-          create: CreateBadExternal
-          read: CreateBadExternal
       requestBody:
         required: true
         content:
@@ -257,13 +291,6 @@ paths:
     - $ref: '#/components/parameters/WidgetIdParameter'
     get:
       operationId: GetBodyless
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: bodyless
-        group:
-          create: GetBodyless
-          read: GetBodyless
-          delete: DeleteBodyless
       responses:
         '200':
           description: ok
@@ -291,12 +318,6 @@ paths:
     - $ref: '#/components/parameters/WidgetIdParameter'
     get:
       operationId: GetWithParameters
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: parameters_case
-        group:
-          create: GetWithParameters
-          read: GetWithParameters
       parameters:
       - name: tags
         in: query
@@ -356,12 +377,6 @@ paths:
       example: path-item-only
     get:
       operationId: GetParameterMerge
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: parameter_merge
-        group:
-          create: GetParameterMerge
-          read: GetParameterMerge
       parameters:
       - name: shared
         in: query
@@ -386,12 +401,6 @@ paths:
   /sensitive:
     post:
       operationId: CreateSensitive
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: sensitive_case
-        group:
-          create: CreateSensitive
-          read: CreateSensitive
       requestBody:
         required: true
         content:
