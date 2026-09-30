@@ -339,12 +339,12 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			"api_key": schema.StringAttribute{
 				Optional:    true,
 				Sensitive:   true,
-				Description: "(Required unless validate is false) Datadog API key. This can also be set via the DD_API_KEY environment variable.",
+				Description: "Datadog API key. Required unless another authentication method is configured or `validate` is false. This can also be set via the `DD_API_KEY` environment variable.",
 			},
 			"app_key": schema.StringAttribute{
 				Optional:    true,
 				Sensitive:   true,
-				Description: "(Required unless validate is false) Datadog APP key. This can also be set via the DD_APP_KEY environment variable.",
+				Description: "Datadog application key. Required unless another authentication method is configured or `validate` is false. This can also be set via the `DD_APP_KEY` environment variable.",
 			},
 			"bearer_token": schema.StringAttribute{
 				Optional:    true,
@@ -357,7 +357,7 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			},
 			"validate": schema.StringAttribute{
 				Optional:    true,
-				Description: "Enables validation of the provided API key during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, api_key won't be checked.",
+				Description: "Enables credential validation during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, initial credential validation is skipped.",
 			},
 			"cloud_provider_type": schema.StringAttribute{
 				Optional:    true,
@@ -369,7 +369,7 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			},
 			"org_uuid": schema.StringAttribute{
 				Optional:    true,
-				Description: "The organization UUID; used for cloud-provider-based authentication. This can also be set using the `DD_ORG_UUID` environment variable. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
+				Description: "The organization UUID; required for cloud-provider-based authentication. Terraform Dynamic Provider Credentials obtain the organization UUID from the token audience instead. This can also be set using the `DD_ORG_UUID` environment variable. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
 			},
 			"aws_access_key_id": schema.StringAttribute{
 				Optional:    true,
@@ -639,14 +639,15 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	cloudProviderType := config.CloudProviderType.ValueString()
 	cloudProviderRegion := config.CloudProviderRegion.ValueString()
 	orgUUID := config.OrgUuid.ValueString()
+	workloadIdentityConfig := utils.GetTerraformDelegatedTokenConfig()
 	awsAccessKeyId := config.AWSAccessKeyId.ValueString()
 	awsSecretAccessKey := config.AWSSecretAccessKey.ValueString()
 	awsSessionToken := config.AWSSessionToken.ValueString()
 	bearerToken := config.BearerToken.ValueString()
 
-	if validate {
+	if validate && workloadIdentityConfig == nil {
 		if cloudProviderType == "" && bearerToken == "" && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
-			diags.AddError("api_key and app_key, bearer_token, or orgUUID must be set unless validate = false", "")
+			diags.AddError("Datadog credentials are required unless validate = false: configure api_key and app_key, bearer_token, cloud provider authentication, or Terraform Dynamic Provider Credentials", "")
 			return diags
 		} else if cloudProviderType != "" && orgUUID == "" {
 			diags.AddError("orgUUID must be set when using cloud provider auth unless validate = false", "")
@@ -671,8 +672,10 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 
 	// Initialize the official Datadog V1 API client
 	auth := context.Background()
-	// Check cloud_provider_type first - explicit config takes precedence over API keys
-	if cloudProviderType != "" {
+	// Terraform workload identity takes precedence over existing authentication.
+	if workloadIdentityConfig != nil {
+		auth = context.WithValue(auth, datadog.ContextDelegatedToken, &datadog.DelegatedTokenCredentials{})
+	} else if cloudProviderType != "" {
 		// Allows for delegated token authentication
 		auth = context.WithValue(
 			auth,
@@ -714,7 +717,9 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	}
 	ddClientConfig := datadog.NewConfiguration()
 	ddClientConfig.UserAgent = utils.GetUserAgentFramework(ddClientConfig.UserAgent, request.TerraformVersion)
-	ddClientConfig.Debug = logging.IsDebugOrHigher()
+	// The SDK debug logger does not redact ContextDelegatedToken credentials.
+	// Suppress raw HTTP dumps for WIT authentication until SDK redaction supports it.
+	ddClientConfig.Debug = logging.IsDebugOrHigher() && workloadIdentityConfig == nil
 
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateOpenAPI", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateOpenAPI", true)
@@ -966,8 +971,9 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	}
 
 	ddClientConfig.HTTPClient = utils.NewHTTPClient()
-	// If cloud_provider_type is set, use cloud auth (takes precedence over API keys)
-	if cloudProviderType != "" {
+	if workloadIdentityConfig != nil {
+		ddClientConfig.DelegatedTokenConfig = workloadIdentityConfig
+	} else if cloudProviderType != "" {
 		switch cloudProviderType {
 		case "aws":
 			ddClientConfig.DelegatedTokenConfig = &datadog.DelegatedTokenConfig{
