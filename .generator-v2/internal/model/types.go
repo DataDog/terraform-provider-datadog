@@ -175,6 +175,12 @@ type Spec struct {
 	Components *v3.Components
 	// Hash is the lowercase hex SHA-256 of the spec source
 	Hash string
+	// ServerURL is the default server origin with its template variables
+	// resolved to their declared defaults, e.g. https://api.datadoghq.com.
+	// Cassette generation records request URLs against it, so it must be the
+	// origin the generated provider client actually calls — a different host
+	// fails the replay matcher exactly like a wrong path.
+	ServerURL string
 }
 
 // Operation is a single OpenAPI operation, tagged with whether it is in scope
@@ -230,6 +236,86 @@ type Operation struct {
 	// SDKBinding is the call signature derived from the operation using the Go
 	// SDK generator's naming and ordering rules. Nil until it is resolved.
 	SDKBinding *SDKOperationBinding
+
+	// LifecycleRoles are the tracking-group slots this operation fills, in
+	// create/read/search/update/delete order. It is a slice rather than a
+	// single role because one operation may legitimately fill several: a
+	// minimal annotation can name the same operationId as both create and
+	// read, and several test fixtures do exactly that.
+	LifecycleRoles []GroupRole
+	// RequestExamples is the cassette-relevant request-body contract, or nil
+	// when example extraction has not run. Distinct from RequestSchema, which
+	// describes the body's shape rather than any replayable value.
+	RequestExamples *RequestBodyExamples
+	// ResponseExamples holds every declared response outcome, not just the
+	// success one. The failure outcomes matter: a generated resource test
+	// reads once more after destroy and expects a 404, so that response needs
+	// an interaction too.
+	ResponseExamples []ResponseExamples
+	// ParameterExamples holds the merged path and query parameter contracts,
+	// carrying the serialization detail needed to rebuild a request target
+	// byte for byte.
+	ParameterExamples []ParameterExamples
+}
+
+// HasLifecycleRole reports whether this operation fills the given tracking-group
+// slot.
+func (o *Operation) HasLifecycleRole(role GroupRole) bool {
+	return o != nil && slices.Contains(o.LifecycleRoles, role)
+}
+
+// ResponseExampleFor returns the declared outcome for a status code, or nil
+// when the operation declares none. Status is compared as written in the
+// description, so "404" finds a declared 404 but not a "4XX" range.
+func (o *Operation) ResponseExampleFor(status string) *ResponseExamples {
+	if o == nil {
+		return nil
+	}
+	for i := range o.ResponseExamples {
+		if o.ResponseExamples[i].Status == status {
+			return &o.ResponseExamples[i]
+		}
+	}
+	return nil
+}
+
+// SuccessResponseExample returns the lowest-numbered declared 2xx outcome,
+// matching the selection schema normalization already applies. The two must
+// agree: a cassette built from one response while the provider model was built
+// from another would replay values the generated code cannot decode.
+func (o *Operation) SuccessResponseExample() *ResponseExamples {
+	if o == nil {
+		return nil
+	}
+	best := -1
+	bestCode := 0
+	for i := range o.ResponseExamples {
+		code, err := strconv.Atoi(o.ResponseExamples[i].Status)
+		if err != nil || code < 200 || code > 299 {
+			continue
+		}
+		if best < 0 || code < bestCode {
+			best, bestCode = i, code
+		}
+	}
+	if best < 0 {
+		return nil
+	}
+	return &o.ResponseExamples[best]
+}
+
+// ParameterExampleFor returns the merged contract for one parameter, or nil
+// when the operation declares none by that (name, location).
+func (o *Operation) ParameterExampleFor(name string, in ParameterIn) *ParameterExamples {
+	if o == nil {
+		return nil
+	}
+	for i := range o.ParameterExamples {
+		if o.ParameterExamples[i].Name == name && o.ParameterExamples[i].In == in {
+			return &o.ParameterExamples[i]
+		}
+	}
+	return nil
 }
 
 // GroupRole names one operation slot in a tracking group. The values are the
@@ -350,6 +436,43 @@ type QueryParam struct {
 	// DeclarationOrder is the one-based position in operation.parameters. Zero
 	// is reserved for hand-built test fixtures that do not carry source order.
 	DeclarationOrder int
+
+	// In is the parameter location. The zero value is empty rather than a
+	// location, because this type describes both Operation.QueryParams and
+	// Operation.PathParams and guessing from the field it arrived in would
+	// silently pick the wrong serialization default.
+	In ParameterIn
+	// Style is the declared serialization style, empty when the parameter
+	// omits it. Read it through ResolvedStyle, which applies the
+	// location-dependent default.
+	Style ParameterStyle
+	// Explode is the declared explode flag. It is a pointer because the
+	// default is style-dependent and true for form style: a plain bool could
+	// not tell "the spec said false" from "the spec said nothing", and the two
+	// produce different request targets. Read it through ResolvedExplode.
+	Explode *bool
+	// AllowReserved records that reserved characters may appear unescaped in a
+	// query value. A plain bool is sufficient: the default is false and an
+	// explicit false is indistinguishable from it.
+	AllowReserved bool
+}
+
+// ResolvedStyle returns the serialization style to use, applying the
+// location-dependent OpenAPI default when the parameter declared none.
+func (p QueryParam) ResolvedStyle() ParameterStyle {
+	if p.Style != "" {
+		return p.Style
+	}
+	return DefaultParameterStyle(p.In)
+}
+
+// ResolvedExplode returns the explode flag to use, applying the style-dependent
+// OpenAPI default when the parameter declared none.
+func (p QueryParam) ResolvedExplode() bool {
+	if p.Explode != nil {
+		return *p.Explode
+	}
+	return DefaultParameterExplode(p.ResolvedStyle())
 }
 
 // Pagination is the decoded x-pagination extension on a list operation. It
