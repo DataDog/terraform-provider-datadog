@@ -6,7 +6,6 @@ import (
 	"math"
 	"slices"
 	"sort"
-	"strconv"
 	"strings"
 
 	"github.com/pb33f/libopenapi/datamodel/high/base"
@@ -85,7 +84,13 @@ func backtickedToken(s string) (string, bool) {
 // lowest-numbered 2xx code that has one. A missing body leaves the field nil, a
 // missing $ref target yields *UnresolvableRefError, and a local oneOf naming
 // failure becomes an Unsupported node. Requires ResolveOperationGroups first.
-func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operation, maxDepth int, trackingFieldName string) error {
+func NormalizeSchemas(
+	spec *model.Spec,
+	rawOps map[*model.Operation]*v3.Operation,
+	pathItemParams map[*model.Operation][]*v3.Parameter,
+	maxDepth int,
+	trackingFieldName string,
+) error {
 	if spec == nil {
 		return nil
 	}
@@ -93,6 +98,7 @@ func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operatio
 		components:        spec.Components,
 		maxDepth:          maxDepth,
 		trackingFieldName: trackingFieldName,
+		pathItemParams:    pathItemParams,
 	}
 
 	// Each tracked operation fills its own bodies and its group's, which may
@@ -133,6 +139,10 @@ type schemaNormalizer struct {
 	// re-entering the chain closes a cycle, which becomes a terminal node
 	// instead of recursing forever.
 	refStack []string
+	// pathItemParams holds the parameters each operation inherits from its path
+	// item. The high-level operation does not carry them, so they are captured
+	// while the document is walked and merged in fillParameters.
+	pathItemParams map[*model.Operation][]*v3.Parameter
 }
 
 // schemaContext carries what a resolved SchemaProxy no longer knows: the node's
@@ -202,7 +212,12 @@ func (n *schemaNormalizer) fillOperation(op *model.Operation, raw *v3.Operation)
 // arrives with Name and Schema populated; the inner schema is normalized like a
 // body. Raw bracketed names (filter[keyword]) are preserved.
 func (n *schemaNormalizer) fillParameters(op *model.Operation, raw *v3.Operation) error {
-	for index, p := range raw.Parameters {
+	// Path-item parameters are inherited by every operation on that path, with
+	// the operation's own declaration winning on a (name, location) collision.
+	// Reading only raw.Parameters would drop the path parameter naming the
+	// object an operation acts on whenever the description declares it once for
+	// the whole path item.
+	for index, p := range MergeParameters(n.pathItemParams[op], raw.Parameters) {
 		if p == nil || (p.In != "query" && p.In != "path") || p.Name == "" {
 			continue
 		}
@@ -213,12 +228,20 @@ func (n *schemaNormalizer) fillParameters(op *model.Operation, raw *v3.Operation
 		if err != nil {
 			return err
 		}
+		in := model.ParameterInQuery
+		if p.In == "path" {
+			in = model.ParameterInPath
+		}
 		parameter := model.QueryParam{
 			Name:             p.Name,
 			Required:         p.Required != nil && *p.Required,
 			Schema:           schema,
 			Description:      p.Description,
 			DeclarationOrder: index + 1,
+			In:               in,
+			Style:            model.ParameterStyle(p.Style),
+			Explode:          p.Explode,
+			AllowReserved:    p.AllowReserved,
 		}
 		if p.In == "path" {
 			op.PathParams = append(op.PathParams, parameter)
@@ -479,48 +502,23 @@ func lastRefSegment(ref string) string {
 
 // requestBodySchemaProxy returns op's application/json request body schema, or nil.
 func requestBodySchemaProxy(op *v3.Operation) *base.SchemaProxy {
-	if op.RequestBody == nil || op.RequestBody.Content == nil {
-		return nil
-	}
-	mt := op.RequestBody.Content.GetOrZero(jsonMediaType)
-	if mt == nil {
+	mt, _, present := SelectRequestBody(op)
+	if !present {
 		return nil
 	}
 	return mt.Schema
 }
 
 // responseBodySchemaProxy returns the application/json schema of the
-// lowest-numbered 2xx response code that has one, or nil. Codes without a JSON
-// body are skipped; numeric ordering makes the choice deterministic.
+// lowest-numbered 2xx response code that has one, or nil. It delegates to
+// SelectSuccessResponse so the provider model is always built from the same
+// response cassette generation records.
 func responseBodySchemaProxy(op *v3.Operation) *base.SchemaProxy {
-	if op.Responses == nil || op.Responses.Codes == nil {
+	selected, ok := SelectSuccessResponse(op)
+	if !ok {
 		return nil
 	}
-	type codedResponse struct {
-		code int
-		resp *v3.Response
-	}
-	var twoXX []codedResponse
-	for code, resp := range op.Responses.Codes.FromOldest() {
-		num, err := strconv.Atoi(code)
-		if err != nil || num < 200 || num > 299 || resp == nil {
-			continue
-		}
-		twoXX = append(twoXX, codedResponse{code: num, resp: resp})
-	}
-	sort.Slice(twoXX, func(i, j int) bool { return twoXX[i].code < twoXX[j].code })
-
-	for _, cr := range twoXX {
-		if cr.resp.Content == nil {
-			continue
-		}
-		mt := cr.resp.Content.GetOrZero(jsonMediaType)
-		if mt == nil || mt.Schema == nil {
-			continue
-		}
-		return mt.Schema
-	}
-	return nil
+	return selected.Schema
 }
 
 // schemaRef returns the $ref a proxy points at, and whether it has one at all.
