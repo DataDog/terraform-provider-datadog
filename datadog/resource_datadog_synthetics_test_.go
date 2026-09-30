@@ -195,9 +195,10 @@ func syntheticsTestRequest() *schema.Resource {
 				Optional:    true,
 			},
 			"timeout": {
-				Description: "Timeout in seconds for the test.",
-				Type:        schema.TypeInt,
-				Optional:    true,
+				Description:  "Timeout in seconds for the test, between 0 and 60; the API rejects anything above 60.",
+				Type:         schema.TypeInt,
+				Optional:     true,
+				ValidateFunc: validation.IntBetween(0, 60),
 			},
 			"host": {
 				Description: "Host name to perform the test with.",
