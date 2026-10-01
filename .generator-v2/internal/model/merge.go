@@ -100,7 +100,7 @@ func MergeNormalizedSchemas(variant, common *Schema) *Schema {
 		case len(variant.Enum) == 0:
 			variant.Enum = append([]string(nil), common.Enum...)
 		case len(common.Enum) > 0:
-			intersection := intersectStrings(variant.Enum, common.Enum)
+			intersection := IntersectStrings(variant.Enum, common.Enum)
 			if len(intersection) == 0 {
 				return &Schema{
 					Kind:              SchemaKindUnsupported,
@@ -209,7 +209,7 @@ func sortedUniqueStrings(values []string) []string {
 	return slices.Compact(values)
 }
 
-func intersectStrings(left, right []string) []string {
+func IntersectStrings(left, right []string) []string {
 	allowed := make(map[string]struct{}, len(right))
 	for _, value := range right {
 		allowed[value] = struct{}{}

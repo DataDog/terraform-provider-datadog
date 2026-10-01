@@ -170,8 +170,8 @@ func (m *materializer) declaredObject(value any, schema *model.Schema, path stri
 	out := map[string]any{}
 	for _, name := range slices.Sorted(maps.Keys(schema.Properties)) {
 		property := schema.Properties[name]
-		childPath := joinDotted(path, name)
-		present, declaredValue := lookup(declared, name)
+		childPath := model.ChildPath(path, name)
+		declaredValue, present := declared[name]
 
 		if m.isRequest && property.ReadOnly {
 			// Server-assigned; the provider never sends it.
@@ -239,7 +239,7 @@ func (m *materializer) assemble(schema *model.Schema, path string) any {
 		out := map[string]any{}
 		for _, name := range slices.Sorted(maps.Keys(schema.Properties)) {
 			property := schema.Properties[name]
-			childPath := joinDotted(path, name)
+			childPath := model.ChildPath(path, name)
 			if m.isRequest && property.ReadOnly {
 				continue
 			}
@@ -378,20 +378,6 @@ func schemaDefaultValue(schema *model.Schema) (any, bool) {
 		return schema.Enum[0], true
 	}
 	return nil, false
-}
-
-// lookup reads a key, reporting whether it was present so a declared null is
-// distinguishable from an omitted field.
-func lookup(in map[string]any, name string) (bool, any) {
-	value, ok := in[name]
-	return ok, value
-}
-
-func joinDotted(prefix, name string) string {
-	if prefix == "" {
-		return name
-	}
-	return prefix + "." + name
 }
 
 // labelPath renders the root as something a diagnostic can name.
