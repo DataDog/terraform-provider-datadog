@@ -251,6 +251,15 @@ type CassetteResult struct {
 	Diagnostics     []Diagnostic `json:"diagnostics,omitempty"`
 }
 
+// CassetteSummary holds counts per cassette status. It is deliberately separate
+// from RunSummary so cassette generation cannot change the artifact tallies CI
+// already asserts on.
+type CassetteSummary struct {
+	Generated  int `json:"generated"`
+	Preserved  int `json:"preserved"`
+	Ineligible int `json:"ineligible"`
+}
+
 // NewCassetteDiagnostic builds a diagnostic anchored at an example location.
 // Callers pass a location rather than formatting one into the message so the
 // anchor stays machine-readable and the message stays value-free: locations are
