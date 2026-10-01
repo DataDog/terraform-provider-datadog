@@ -268,7 +268,8 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 		return buildPluralView(a)
 	}
 
-	b := &dataSourceBuilder{receiver: envelopeReceiver, namer: modelNamer{base: dsGoName(a.Name)}}
+	b := &dataSourceBuilder{receiver: envelopeReceiver, namer: modelNamer{base: dsGoName(a.Name)},
+		apiPaths: apiPathIndex(a.Schema.Attributes)}
 
 	// Resolve the SDK calls. read backs the by-id lookup, search the list; the
 	// presence of each selects the resolution shape (read-only / search / both).
@@ -762,6 +763,10 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 // flags. receiver is the getter root leaves are read off, e.g. "attributes".
 type dataSourceBuilder struct {
 	receiver string
+	// apiPaths maps an attribute's Terraform path to its path in the API body,
+	// recorded once from the artifact tree because SnakeCase cannot be
+	// inverted. See apiPathIndex.
+	apiPaths map[string]string
 	// namer scopes every model struct name to this artifact and derives nested
 	// names from their OpenAPI component.
 	namer       modelNamer
@@ -957,6 +962,7 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 			fields = append(fields, ModelFieldView{GoField: field, GoType: goType, TFName: tfName})
 			blockViews = append(blockViews, AttrView{
 				TFName:              tfName,
+				APIPath:             b.apiPaths[a.Path],
 				Description:         a.Description,
 				Required:            a.Required,
 				Optional:            a.Optional,
@@ -982,6 +988,7 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 			leafValidators, leafValidatorType := b.validatorViews(a)
 			attrViews = append(attrViews, AttrView{
 				TFName:           tfName,
+				APIPath:          b.apiPaths[a.Path],
 				TFType:           a.TfType,
 				Description:      a.Description,
 				Default:          b.defaultView(a),
@@ -1008,6 +1015,7 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 		case "schema.ListAttribute":
 			attrViews = append(attrViews, AttrView{
 				TFName:           tfName,
+				APIPath:          b.apiPaths[a.Path],
 				TFType:           a.TfType,
 				ElementType:      a.ElementType,
 				Description:      a.Description,
@@ -1033,6 +1041,7 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 		case "schema.MapAttribute":
 			attrViews = append(attrViews, AttrView{
 				TFName:           tfName,
+				APIPath:          b.apiPaths[a.Path],
 				TFType:           a.TfType,
 				ElementType:      a.ElementType,
 				Description:      a.Description,
@@ -1063,6 +1072,7 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, childStem, loopVar, elemVar, a.Children)
 			blockViews = append(blockViews, AttrView{
 				TFName:              tfName,
+				APIPath:             b.apiPaths[a.Path],
 				Description:         a.Description,
 				Required:            a.Required,
 				Optional:            a.Optional,
@@ -1102,6 +1112,7 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 			childAttrs, childBlocks, childScalars, childLists := b.walk(childStruct, childStem, objVar, elemVar, a.Children)
 			blockViews = append(blockViews, AttrView{
 				TFName:              tfName,
+				APIPath:             b.apiPaths[a.Path],
 				Description:         a.Description,
 				Required:            a.Required,
 				Optional:            a.Optional,
@@ -1864,7 +1875,8 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 
 	primary := lc.Read
 	goName := dsGoName(a.Name)
-	b := &dataSourceBuilder{receiver: "attributes", namer: modelNamer{base: goName}}
+	b := &dataSourceBuilder{receiver: "attributes", namer: modelNamer{base: goName},
+		apiPaths: apiPathIndex(a.Schema.Attributes)}
 
 	// Split the path parameters back out: they are not part of the JSON:API
 	// envelope, so flattenEnvelope would drop them as stray siblings. Keyed on
