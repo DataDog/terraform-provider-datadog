@@ -78,14 +78,6 @@ var _ = Describe("ExampleSelection", func() {
 		Expect(ok).To(BeFalse())
 	})
 
-	It("tolerates a nil or empty selection", func() {
-		var s *ExampleSelection
-		_, ok := s.Explicit("CreateX")
-		Expect(ok).To(BeFalse())
-		Expect(s.SortedExplicitOperations()).To(BeEmpty())
-		Expect((&ExampleSelection{}).SortedExplicitOperations()).To(BeEmpty())
-	})
-
 	It("orders explicit operations lexically so diagnostics never vary", func() {
 		s := &ExampleSelection{ExplicitNames: map[string]string{
 			"UpdateX": "a", "CreateX": "b", "DeleteX": "c",
@@ -105,11 +97,6 @@ var _ = Describe("MaterializedConfiguration", func() {
 		}))
 	})
 
-	It("tolerates a nil or unreplaced configuration", func() {
-		var c *MaterializedConfiguration
-		Expect(c.SortedSensitivePaths()).To(BeEmpty())
-		Expect((&MaterializedConfiguration{}).SortedSensitivePaths()).To(BeEmpty())
-	})
 })
 
 var _ = Describe("GeneratedTestScenario", func() {

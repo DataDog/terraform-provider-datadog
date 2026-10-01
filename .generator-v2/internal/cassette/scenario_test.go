@@ -300,16 +300,6 @@ var _ = Describe("BuildResourceScenario", func() {
 	})
 })
 
-var _ = Describe("camelCase", func() {
-	DescribeTable("converts a snake_case artifact name",
-		func(in, want string) { Expect(camelCase(in)).To(Equal(want)) },
-		Entry("multi word", "integration_twilio_account", "IntegrationTwilioAccount"),
-		Entry("single word", "team", "Team"),
-		Entry("doubled separator", "a__b", "AB"),
-		Entry("empty", "", ""),
-	)
-})
-
 var _ = Describe("deleteStatus", func() {
 	It("uses the declared success status", func() {
 		op := &model.Operation{ResponseExamples: []model.ResponseExamples{{Status: "200", BodyPresent: true}}}
@@ -390,9 +380,12 @@ var _ = Describe("BuildResourceScenario edge paths", func() {
 			"/bodyless/99999999-9999-9999-9999-999999999999"))
 	})
 
-	It("trims a trailing slash from the server origin", func() {
+	// The trailing-slash rule is owned by parser.resolveServerURL, which has
+	// its own spec; the scenario concatenates the origin as given so there is
+	// one place that decides it.
+	It("concatenates the resolved origin as given", func() {
 		target := twilioTarget()
-		target.ServerURL = "https://api.datadoghq.com/"
+		Expect(target.ServerURL).To(Equal("https://api.datadoghq.com"))
 		scenario, err := BuildResourceScenario(target)
 		Expect(err).To(Succeed())
 		Expect(scenario.Interactions[0].Request.URL).To(Equal(

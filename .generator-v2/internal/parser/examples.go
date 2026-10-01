@@ -2,6 +2,8 @@ package parser
 
 import (
 	"fmt"
+	"maps"
+	"slices"
 
 	"github.com/pb33f/libopenapi/datamodel/high/base"
 	v3 "github.com/pb33f/libopenapi/datamodel/high/v3"
@@ -126,7 +128,6 @@ func extractResponseExamples(op *model.Operation, rawOp *v3.Operation) []model.R
 		entry := model.ResponseExamples{
 			Status:      response.Status,
 			BodyPresent: response.BodyPresent(),
-			Headers:     declaredHeaderNames(response.Response),
 		}
 		if response.BodyPresent() {
 			entry.MediaType = response.MediaType
@@ -143,20 +144,6 @@ func extractResponseExamples(op *model.Operation, rawOp *v3.Operation) []model.R
 		out = append(out, entry)
 	}
 	return out
-}
-
-// declaredHeaderNames returns the response's declared header names, sorted.
-// Only names are kept: recorded headers are filtered to an allowlist, so a
-// declared header value cannot affect replay.
-func declaredHeaderNames(response *v3.Response) []string {
-	if response == nil || response.Headers == nil {
-		return nil
-	}
-	var names []string
-	for name := range response.Headers.FromOldest() {
-		names = append(names, name)
-	}
-	return sortedStrings(names)
 }
 
 // extractParameterExamples reads the merged path and query parameter
@@ -192,26 +179,15 @@ func extractParameterExamples(op *model.Operation, raw *RawContext) []model.Para
 			Component:   model.ExampleComponentParameter,
 			Detail:      p.Name,
 		}
-		// Style and explode are stored resolved. Their defaults are
-		// location- and style-dependent, and explode defaults to true for
-		// form style, so leaving them unresolved would let a renderer apply
-		// the wrong one and silently change the recorded request target.
-		style := model.ParameterStyle(p.Style)
-		if style == "" {
-			style = model.DefaultParameterStyle(in)
-		}
-		explode := model.DefaultParameterExplode(style)
-		if p.Explode != nil {
-			explode = *p.Explode
-		}
+		// Serialization is not resolved here: normalization already recorded
+		// style, explode and allowReserved onto the matching QueryParam, which
+		// exposes ResolvedStyle/ResolvedExplode. Resolving a second time would
+		// be the drift MergedParameters exists to prevent.
 		entry := model.ParameterExamples{
 			Name:             p.Name,
 			In:               in,
 			Required:         p.Required != nil && *p.Required,
 			Schema:           normalizedParamSchema(op, p.Name, in),
-			Style:            style,
-			Explode:          explode,
-			AllowReserved:    p.AllowReserved,
 			DeclarationOrder: index + 1,
 			Examples:         parameterExampleSet(p, location),
 		}
@@ -380,10 +356,7 @@ func propertyExampleCandidates(
 		if err != nil || resolved == nil {
 			continue
 		}
-		path := name
-		if prefix != "" {
-			path = prefix + "." + name
-		}
+		path := model.ChildPath(prefix, name)
 		if resolved.Properties != nil || len(resolved.AllOf) > 0 || resolved.Items != nil {
 			out = append(out, propertyExampleCandidates(resolved, location, path, depth+1, onStack)...)
 			continue
@@ -468,8 +441,8 @@ func checkSupportedValue(value any, path string) error {
 	case nil, bool, string, int, int64, float64:
 		return nil
 	case map[string]any:
-		for _, key := range sortedStrings(mapKeys(typed)) {
-			if err := checkSupportedValue(typed[key], joinPath(path, key)); err != nil {
+		for _, key := range slices.Sorted(maps.Keys(typed)) {
+			if err := checkSupportedValue(typed[key], model.ChildPath(path, key)); err != nil {
 				return err
 			}
 		}
@@ -490,31 +463,6 @@ func checkSupportedValue(value any, path string) error {
 	}
 }
 
-func joinPath(prefix, name string) string {
-	if prefix == "" {
-		return name
-	}
-	return prefix + "." + name
-}
-
-func mapKeys(m map[string]any) []string {
-	out := make([]string, 0, len(m))
-	for k := range m {
-		out = append(out, k)
-	}
-	return out
-}
-
-func sortedStrings(in []string) []string {
-	out := append([]string(nil), in...)
-	for i := 1; i < len(out); i++ {
-		for j := i; j > 0 && out[j] < out[j-1]; j-- {
-			out[j], out[j-1] = out[j-1], out[j]
-		}
-	}
-	return out
-}
-
 func sortedPropertyNames(schema *base.Schema) []string {
 	if schema == nil || schema.Properties == nil {
 		return nil
@@ -523,5 +471,6 @@ func sortedPropertyNames(schema *base.Schema) []string {
 	for name := range schema.Properties.FromOldest() {
 		names = append(names, name)
 	}
-	return sortedStrings(names)
+	slices.Sort(names)
+	return names
 }

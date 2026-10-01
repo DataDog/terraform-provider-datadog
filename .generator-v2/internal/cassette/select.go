@@ -7,6 +7,7 @@ package cassette
 import (
 	"fmt"
 	"slices"
+	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
@@ -313,7 +314,7 @@ func resolveScenarioName(required []requiredSet) (string, error) {
 			first = false
 			continue
 		}
-		common = intersect(common, names)
+		common = model.IntersectStrings(common, names)
 	}
 	if first {
 		return model.ScenarioNameSingle, nil
@@ -335,18 +336,6 @@ func resolveScenarioName(required []requiredSet) (string, error) {
 			Sets: namedKeys,
 		}
 	}
-}
-
-// intersect returns the sorted names present in both inputs. Both are already
-// sorted, so the result is too — selection must not depend on input order.
-func intersect(left, right []string) []string {
-	var out []string
-	for _, name := range left {
-		if slices.Contains(right, name) {
-			out = append(out, name)
-		}
-	}
-	return out
 }
 
 // ----------------------------------------------------------------------------
@@ -419,13 +408,6 @@ func joinAnd(items []string) string {
 	case 2:
 		return items[0] + " and " + items[1]
 	default:
-		out := ""
-		for i, item := range items[:len(items)-1] {
-			if i > 0 {
-				out += ", "
-			}
-			out += item
-		}
-		return out + ", and " + items[len(items)-1]
+		return strings.Join(items[:len(items)-1], ", ") + ", and " + items[len(items)-1]
 	}
 }

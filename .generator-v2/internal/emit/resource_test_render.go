@@ -2,7 +2,6 @@ package emit
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
@@ -71,7 +70,7 @@ func BuildResourceTestView(
 
 	out := resourceTestView{
 		exampleTestView:  common,
-		DestroyCheckFunc: destroyCheckFuncName(scenario.TestFuncName),
+		DestroyCheckFunc: testHelperName(scenario.TestFuncName, "Destroy"),
 		APIAccessor:      view.APIAccessor,
 		SDKPackage:       view.SDKPackage,
 		APIConstructor:   view.APIConstructor,
@@ -82,14 +81,4 @@ func BuildResourceTestView(
 		out.UpdateStepIndex = len(scenario.Steps)
 	}
 	return out, nil
-}
-
-// destroyCheckFuncName derives the CheckDestroy helper from the test name, so
-// the two read as a pair in the generated file. The leading Test is
-// lower-cased to keep the helper unexported, matching the config helper.
-func destroyCheckFuncName(testFuncName string) string {
-	if rest, ok := strings.CutPrefix(testFuncName, "Test"); ok {
-		return "test" + rest + "Destroy"
-	}
-	return "testAcc" + testFuncName + "Destroy"
 }
