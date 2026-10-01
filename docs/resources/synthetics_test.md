@@ -1824,6 +1824,7 @@ Optional:
 
 - `accept_self_signed` (Boolean) For SSL tests, whether or not the test should allow self signed certificates.
 - `allow_insecure` (Boolean) Allows loading insecure content for a request in an API test or in a multistep API test step.
+- `bits_ai_auto_investigate` (Boolean) Whether Bits AI automatically investigates alerts from the test monitor. When omitted, the current value is left unchanged.
 - `blocked_request_patterns` (List of String) Blocked URL patterns. Requests made to URLs matching any of the patterns listed here will be blocked.
 - `capture_network_payloads` (Boolean) Capture HTTP request/response headers and bodies for Fetch/XHR calls made during browser tests.
 - `check_certificate_revocation` (Boolean) For SSL tests, whether or not the test should fail on revoked certificate in stapled OCSP.
