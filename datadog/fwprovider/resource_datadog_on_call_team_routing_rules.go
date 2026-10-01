@@ -153,6 +153,10 @@ func (m *onCallTeamRoutingRulesModel) Validate() diag.Diagnostics {
 			}
 		}
 
+		if len(rule.Actions) == 0 && rule.EscalationPolicy.IsNull() {
+			diags.AddAttributeError(root, "missing actions on rule", "rule must define at least one action. Add an `action` block or set `escalation_policy`.")
+		}
+
 		if hasEscalationPolicyAction && !rule.EscalationPolicy.IsNull() {
 			rootEscalationPolicyPath := root.AtName("escalation_policy")
 			diags.AddAttributeError(rootEscalationPolicyPath, "conflicting escalation policy configuration", "cannot combine rule-level `escalation_policy` attribute with an `escalation_policy` action in the same rule. Use one or the other.")
