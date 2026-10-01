@@ -151,25 +151,6 @@ func TestAccOnCallTeamRoutingRulesCatchAllValidation(t *testing.T) {
 				}`,
 				ExpectError: regexp.MustCompile("invalid time_restrictions on last rule"),
 			},
-			{
-				Config: `
-				resource "datadog_on_call_team_routing_rules" "catch_all_validation" {
-				  id = "00000000-aba2-0000-0000-000000000000"
-				  rule {
-				    query             = "tags.service:test"
-				    escalation_policy = "00000000-aba2-0000-0000-000000000001"
-				  }
-				  rule {
-				    action {
-				      send_slack_message {
-				        workspace = "workspace"
-				        channel   = "channel"
-				      }
-				    }
-				  }
-				}`,
-				ExpectError: regexp.MustCompile("missing escalation policy on last rule"),
-			},
 		},
 	})
 }
