@@ -14,3 +14,11 @@ import _ "embed"
 //
 //go:embed tracking-field.schema.json
 var TrackingFieldSchema []byte
+
+// RunReportSchema is the embedded JSON Schema (draft 2020-12) for the run
+// report tfgen generate writes to --report. CI asserts against that report, so
+// the schema pins its shape: it is strict throughout, and a new field must be
+// added here in the same change that emits it.
+//
+//go:embed run-report.schema.json
+var RunReportSchema []byte
