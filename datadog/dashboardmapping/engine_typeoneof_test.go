@@ -273,6 +273,36 @@ func TestTypeOneOf_Build_ToplistDisplay_Flat(t *testing.T) {
 	}
 }
 
+func TestTypeOneOf_Build_ToplistDisplay_LegacyType(t *testing.T) {
+	styleData := map[string]interface{}{
+		"display": []interface{}{
+			map[string]interface{}{
+				"type":    "stacked",
+				"stacked": []interface{}{},
+				"flat":    []interface{}{},
+			},
+		},
+	}
+
+	result := BuildEngineJSONFromMap(styleData, toplistWidgetStyleFields)
+	if _, ok := result["display"]; ok {
+		t.Fatalf("the generic oneOf builder should leave the legacy discriminator for widget post-processing: %#v", result)
+	}
+
+	widget := map[string]interface{}{
+		"toplist_definition": []interface{}{
+			map[string]interface{}{
+				"style": []interface{}{styleData},
+			},
+		},
+	}
+	definition := BuildWidgetEngineJSONFromMap(widget)["definition"].(map[string]interface{})
+	display := definition["style"].(map[string]interface{})["display"].(map[string]interface{})
+	if display["type"] != "stacked" {
+		t.Fatalf("expected legacy display type to be serialized, got %#v", display)
+	}
+}
+
 // TestTypeOneOf_Flatten_ToplistDisplay_Stacked verifies flatten of stacked display.
 func TestTypeOneOf_Flatten_ToplistDisplay_Stacked(t *testing.T) {
 	jsonData := map[string]interface{}{

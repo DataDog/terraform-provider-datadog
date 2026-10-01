@@ -128,6 +128,10 @@ type FieldSpec struct {
 	// Deprecated: non-empty string = deprecation message
 	Deprecated string
 
+	// NotEmpty: reject the empty string for a required TypeString field.
+	// Generates validation.StringIsNotEmpty automatically.
+	NotEmpty bool
+
 	// ValidValues: valid string values for enum fields.
 	// Generates validators.ValidateEnumValue automatically.
 	// Use instead of SDK-based enum validators.
@@ -2654,6 +2658,34 @@ func buildGroupWidgetsJSONFromMap(defMap map[string]interface{}, ctx mapBuildCon
 // buildWidgetPostProcessFromMap runs all per-widget post-processing in the build direction.
 // Parallel to buildWidgetPostProcess in engine.go but reads from map[string]interface{}.
 func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpec, defJSON map[string]interface{}, ctx mapBuildContext) {
+	// ---- Toplist legacy display discriminator ----
+	// datadog_dashboard historically represented the toplist display oneOf as
+	// display { type = "flat"|"stacked" }. Keep accepting that form while the
+	// canonical v2 form uses display { flat {} } / display { stacked {} }.
+	if spec.JSONType == "toplist" {
+		if styleMap := getBlockFromMap(defMap, "style"); styleMap != nil {
+			if displayMap := getBlockFromMap(styleMap, "display"); displayMap != nil {
+				if legacyType := getStringFromMap(displayMap, "type"); legacyType != "" {
+					styleJSON, _ := defJSON["style"].(map[string]interface{})
+					if styleJSON == nil {
+						styleJSON = map[string]interface{}{}
+						defJSON["style"] = styleJSON
+					}
+					// The legacy scalar is authoritative when configured. Do not retain
+					// fields from a computed canonical variant left in refreshed state.
+					display := map[string]interface{}{"type": legacyType}
+					// The legacy datadog_dashboard implementation always sent
+					// legend=automatic alongside a stacked display. Keep emitting it so
+					// legacy configs produce byte-identical API payloads.
+					if legacyType == "stacked" {
+						display["legend"] = "automatic"
+					}
+					styleJSON["display"] = display
+				}
+			}
+		}
+	}
+
 	// ---- Formula/query blocks ----
 	if isFormulaCapableWidget(spec.JSONType) {
 		requestList := getBlockListFromMap(defMap, "request")
