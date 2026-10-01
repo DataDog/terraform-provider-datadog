@@ -1,0 +1,91 @@
+{{- define "resource_example_test" -}}
+// {{ .Marker }}
+//
+// Replays {{ .CassettePath }} ({{ .InteractionCount }} interactions), recorded
+// against the freeze time in {{ .FreezePath }}. Every value here came from the
+// OpenAPI description's own examples — see the cassette generation entry in the
+// run report for the source anchors.
+//
+// A replay failure is most often an interaction-count mismatch: the test
+// framework issued a request the cassette has no interaction left for.
+package test
+
+import (
+	"context"
+	"fmt"
+	"testing"
+
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
+)
+
+func {{ .FuncName }}(t *testing.T) {
+	// Skips before any provider setup. This fixture was generated from the
+	// description rather than recorded against an org, so it is only ever
+	// meaningful in replay; running it live would create real objects whose
+	// ids could not match the cassette.
+	if !isReplaying() {
+		t.Skip("{{ .FuncName }} replays a generated cassette; run with RECORD=false")
+	}
+	t.Parallel()
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             {{ .DestroyCheckFunc }}(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+{{- range $index, $step := .Steps }}
+			{
+				Config: {{ $step.ConfigFunc }}(),
+				Check: resource.ComposeTestCheckFunc(
+{{- range $step.Checks }}
+					{{ . }},
+{{- end }}
+				),
+			},
+{{- end }}
+		},
+	})
+}
+
+{{ range .Steps }}
+func {{ .ConfigFunc }}() string {
+	return `{{ .ConfigBody }}`
+}
+{{ end }}
+// {{ .DestroyCheckFunc }} confirms the object is gone. Unlike the checks above,
+// which read state, this one asks the API — the cassette's final interaction is
+// a read expecting a 404, and this is what consumes it.
+//
+// A read that succeeds means destroy left the object behind, so it is an error.
+// A check that cannot fail would be worse than no check, because it looks like
+// coverage.
+func {{ .DestroyCheckFunc }}(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
+
+		for _, r := range s.RootModule().Resources {
+			if r.Type != "{{ .ResourceType }}" {
+				continue
+			}
+{{- if .APIAccessor }}
+			_, httpResp, err := apiInstances.{{ .APIAccessor }}().{{ .ReadMethod }}(auth, r.Primary.ID)
+{{- else }}
+			api := {{ .SDKPackage }}.{{ .APIConstructor }}(apiInstances.HttpClient)
+			_, httpResp, err := api.{{ .ReadMethod }}(auth, r.Primary.ID)
+{{- end }}
+			if err != nil {
+				if httpResp != nil && httpResp.StatusCode == 404 {
+					continue
+				}
+				return fmt.Errorf("error retrieving {{ .ResourceType }} %s: %w", r.Primary.ID, err)
+			}
+			return fmt.Errorf("{{ .ResourceType }} %s still exists after destroy", r.Primary.ID)
+		}
+		return nil
+	}
+}
+{{- end -}}
