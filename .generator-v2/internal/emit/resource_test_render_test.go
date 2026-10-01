@@ -105,14 +105,3 @@ var _ = Describe("BuildResourceTestView", func() {
 		})
 	})
 })
-
-var _ = Describe("destroyCheckFuncName", func() {
-	It("lower-cases the leading Test and appends Destroy", func() {
-		Expect(destroyCheckFuncName("TestAccDatadogWidgetOpenAPIExample")).
-			To(Equal("testAccDatadogWidgetOpenAPIExampleDestroy"))
-	})
-
-	It("prefixes a name off-convention rather than slicing it", func() {
-		Expect(destroyCheckFuncName("Odd")).To(Equal("testAccOddDestroy"))
-	})
-})

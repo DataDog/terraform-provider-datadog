@@ -12,15 +12,13 @@ import (
 // ----------------------------------------------------------------------------
 // Scenario construction
 //
-// A scenario is the single source of truth for one example-backed target: the
-// generated test and the cassette it replays are both rendered from it, so the
-// request the test sends and the request the cassette expects cannot drift.
+// A scenario is what one example-backed target's generated test is rendered
+// from: its ordered Terraform steps and the materialized values each step's
+// configuration carries.
 //
-// Two values tie the whole trace together. The identity is minted once from
-// the create response and reused by every later URL — a cassette whose create
-// response and subsequent request targets disagree cannot replay at all. The
-// freeze time is fixed, which is what makes the generated unique name
-// reproducible without a recording.
+// It describes no HTTP. The cassette the test replays comes from a recording
+// run, so there is no trace to keep in agreement with the request the test
+// sends — the recording is the agreement.
 // ----------------------------------------------------------------------------
 
 // ResourceTarget is everything scenario construction needs about one resource.

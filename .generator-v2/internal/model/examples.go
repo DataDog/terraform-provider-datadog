@@ -36,9 +36,6 @@ const (
 	// ExampleSourceSchemaProperty is a single property's example, only ever
 	// meaningful assembled with its siblings.
 	ExampleSourceSchemaProperty ExampleSourceKind = "schema_property"
-	// ExampleSourceDefaultFallback is a value taken from a schema default or a
-	// single-member enum rather than from any example field.
-	ExampleSourceDefaultFallback ExampleSourceKind = "default_fallback"
 )
 
 // ExampleComponent names the part of an operation a location belongs to, so a
@@ -292,15 +289,11 @@ type ParameterExamples struct {
 	Required bool
 	// Schema is the normalized parameter schema.
 	Schema *Schema
-	// Style is the resolved serialization style, defaulted by location when the
-	// parameter omits it.
-	Style ParameterStyle
-	// Explode is the resolved explode flag, defaulted by style.
-	Explode bool
-	// AllowReserved records that reserved characters may appear unescaped.
-	// Query only; it changes the recorded target, so it is resolved here rather
-	// than assumed at render time.
-	AllowReserved bool
+	// Serialization detail is deliberately absent. QueryParam already carries
+	// Style/Explode/AllowReserved for the same merged parameters, and exposes
+	// ResolvedStyle/ResolvedExplode as the single authority for the location-
+	// and style-dependent defaults. Duplicating it here gave two contracts to
+	// keep in sync for values nothing read.
 	// Examples are the candidates declared for this parameter.
 	Examples ExampleSet
 	// DeclarationOrder is the one-based position among the operation's merged
@@ -345,10 +338,6 @@ type ResponseExamples struct {
 	MediaType string
 	// Schema is the normalized response body schema; nil when bodyless.
 	Schema *Schema
-	// Headers names the response headers the description declares. Only names
-	// are kept: recorded headers are filtered to an allowlist, so declared
-	// header values cannot affect replay.
-	Headers []string
 	// Examples are the candidates declared for the selected media type.
 	Examples ExampleSet
 }

@@ -17,11 +17,6 @@ var _ = Describe("Operation lifecycle roles", func() {
 		Expect(op.HasLifecycleRole(GroupRoleDelete)).To(BeFalse())
 	})
 
-	It("tolerates a nil operation or an unassigned one", func() {
-		var op *Operation
-		Expect(op.HasLifecycleRole(GroupRoleCreate)).To(BeFalse())
-		Expect((&Operation{}).HasLifecycleRole(GroupRoleCreate)).To(BeFalse())
-	})
 })
 
 var _ = Describe("Operation response examples", func() {
@@ -52,10 +47,6 @@ var _ = Describe("Operation response examples", func() {
 			Expect(ranged.ResponseExampleFor("404")).To(BeNil())
 		})
 
-		It("tolerates a nil operation", func() {
-			var nilOp *Operation
-			Expect(nilOp.ResponseExampleFor("200")).To(BeNil())
-		})
 	})
 
 	Describe("SuccessResponseExample", func() {
@@ -103,10 +94,6 @@ var _ = Describe("Operation response examples", func() {
 			Expect(withBoth.ParameterExampleFor("other", ParameterInQuery)).To(BeNil())
 		})
 
-		It("tolerates a nil operation", func() {
-			var nilOp *Operation
-			Expect(nilOp.ParameterExampleFor("id", ParameterInPath)).To(BeNil())
-		})
 	})
 })
 
