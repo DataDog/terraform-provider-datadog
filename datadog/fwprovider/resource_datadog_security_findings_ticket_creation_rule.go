@@ -196,7 +196,7 @@ func (r *securityFindingsTicketCreationRuleResource) Update(ctx context.Context,
 		return
 	}
 
-	data, diags := r.buildRuleData(ctx, &state)
+	data, diags := r.buildRuleUpdateData(ctx, &state, id)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -287,8 +287,8 @@ func (r *securityFindingsTicketCreationRuleResource) updateState(ctx context.Con
 	return diags
 }
 
-// buildRuleData builds the JSON:API data object shared by the create and update requests.
-func (r *securityFindingsTicketCreationRuleResource) buildRuleData(ctx context.Context, state *securityFindingsTicketCreationRuleModel) (*datadogV2.TicketCreationRuleDataCreate, diag.Diagnostics) {
+// buildRuleAttributes builds the attributes object shared by the create and update payloads.
+func (r *securityFindingsTicketCreationRuleResource) buildRuleAttributes(ctx context.Context, state *securityFindingsTicketCreationRuleModel) (*datadogV2.TicketCreationRuleAttributesCreate, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	scope, d := buildAutomationRuleScope(ctx, state.Rule)
@@ -332,8 +332,27 @@ func (r *securityFindingsTicketCreationRuleResource) buildRuleData(ctx context.C
 	attributes.SetRule(*scope)
 	attributes.SetAction(*action)
 
-	data := datadogV2.NewTicketCreationRuleDataCreateWithDefaults()
-	data.SetType(datadogV2.TICKETCREATIONRULETYPE_TICKET_CREATION_RULES)
-	data.SetAttributes(*attributes)
-	return data, diags
+	return attributes, diags
+}
+
+// buildRuleData builds the JSON:API data object for a create request.
+func (r *securityFindingsTicketCreationRuleResource) buildRuleData(ctx context.Context, state *securityFindingsTicketCreationRuleModel) (*datadogV2.TicketCreationRuleDataCreate, diag.Diagnostics) {
+	attributes, diags := r.buildRuleAttributes(ctx, state)
+	if diags.HasError() {
+		return nil, diags
+	}
+
+	return datadogV2.NewTicketCreationRuleDataCreate(*attributes, datadogV2.TICKETCREATIONRULETYPE_TICKET_CREATION_RULES), diags
+}
+
+// buildRuleUpdateData builds the JSON:API data object for an update request.
+// The API requires the resource id in the update body, matching the rule_id
+// path parameter.
+func (r *securityFindingsTicketCreationRuleResource) buildRuleUpdateData(ctx context.Context, state *securityFindingsTicketCreationRuleModel, id uuid.UUID) (*datadogV2.TicketCreationRuleDataUpdate, diag.Diagnostics) {
+	attributes, diags := r.buildRuleAttributes(ctx, state)
+	if diags.HasError() {
+		return nil, diags
+	}
+
+	return datadogV2.NewTicketCreationRuleDataUpdate(*attributes, id, datadogV2.TICKETCREATIONRULETYPE_TICKET_CREATION_RULES), diags
 }

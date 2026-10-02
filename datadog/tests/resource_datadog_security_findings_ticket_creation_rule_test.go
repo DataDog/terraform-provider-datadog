@@ -577,9 +577,7 @@ func testAccTicketCreationRuleRenameOutOfBand(accProvider *fwprovider.FrameworkP
 		updateAttrs.SetRule(attrs.GetRule())
 		updateAttrs.SetAction(*action)
 
-		data := datadogV2.NewTicketCreationRuleDataCreateWithDefaults()
-		data.SetType(datadogV2.TICKETCREATIONRULETYPE_TICKET_CREATION_RULES)
-		data.SetAttributes(*updateAttrs)
+		data := datadogV2.NewTicketCreationRuleDataUpdate(*updateAttrs, id, datadogV2.TICKETCREATIONRULETYPE_TICKET_CREATION_RULES)
 
 		body := datadogV2.NewTicketCreationRuleUpdateRequestWithDefaults()
 		body.SetData(*data)

@@ -259,10 +259,7 @@ func (r *securityFindingsInboxRuleResource) buildRuleData(ctx context.Context, s
 		return nil, diags
 	}
 
-	data := datadogV2.NewInboxRuleDataCreateWithDefaults()
-	data.SetType(datadogV2.INBOXRULETYPE_INBOX_RULES)
-	data.SetAttributes(*attributes)
-	return data, diags
+	return datadogV2.NewInboxRuleDataCreate(*attributes, datadogV2.INBOXRULETYPE_INBOX_RULES), diags
 }
 
 // buildRuleUpdateData builds the JSON:API data object for an update request.
@@ -274,9 +271,5 @@ func (r *securityFindingsInboxRuleResource) buildRuleUpdateData(ctx context.Cont
 		return nil, diags
 	}
 
-	data := datadogV2.NewInboxRuleDataUpdateWithDefaults()
-	data.SetId(id)
-	data.SetType(datadogV2.INBOXRULETYPE_INBOX_RULES)
-	data.SetAttributes(*attributes)
-	return data, diags
+	return datadogV2.NewInboxRuleDataUpdate(*attributes, id, datadogV2.INBOXRULETYPE_INBOX_RULES), diags
 }
