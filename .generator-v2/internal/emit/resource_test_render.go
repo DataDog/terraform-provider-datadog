@@ -85,8 +85,9 @@ func BuildResourceTestView(
 func RenderResourceExampleTest(
 	scenario *model.GeneratedTestScenario,
 	view ResourceView,
+	apiPaths map[string]string,
 ) ([]byte, error) {
-	rendered, err := BuildResourceTestView(scenario, view)
+	rendered, err := BuildResourceTestView(scenario, view, apiPaths)
 	if err != nil {
 		return nil, err
 	}
