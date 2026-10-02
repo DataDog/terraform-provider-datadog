@@ -232,7 +232,7 @@ var _ = Describe("oneOf envelope emission", func() {
 	})
 
 	Context("reuse of one component at two sites", func() {
-		It("generates a single model and blocks differing only by API path", func() {
+		It("generates a single model and identical blocks", func() {
 			// A reusable union is one generated envelope, not one per use site.
 			op := incidentTypeOperation()
 			attrs := op.ResponseSchema.Properties["data"].Properties["attributes"]
@@ -249,12 +249,8 @@ var _ = Describe("oneOf envelope emission", func() {
 			}
 			Expect(envelopeModels).To(Equal(1), "the component yielded one model per use site")
 
-			// The variant bodies are shared, so the blocks match apart from
-			// APIPath — which legitimately differs, because the same component
-			// reused at two body sites occupies two different paths.
-			primaryBlocks := clearAPIPaths(blockByName(view.Schema.Blocks, "primary").Blocks)
-			secondaryBlocks := clearAPIPaths(blockByName(view.Schema.Blocks, "secondary").Blocks)
-			Expect(primaryBlocks).To(Equal(secondaryBlocks))
+			Expect(blockByName(view.Schema.Blocks, "primary").Blocks).
+				To(Equal(blockByName(view.Schema.Blocks, "secondary").Blocks))
 
 			// The two sites share the variant bodies but not the outer locals, so
 			// each unwraps into its own envelope model without colliding.
@@ -524,17 +520,4 @@ func mustRender(op *model.Operation) []byte {
 	src, err := RenderDataSource(unionView(op))
 	Expect(err).NotTo(HaveOccurred())
 	return src
-}
-
-// clearAPIPaths copies a block tree with every APIPath blanked, so a spec can
-// compare the parts that are genuinely expected to match.
-func clearAPIPaths(in []AttrView) []AttrView {
-	out := make([]AttrView, 0, len(in))
-	for _, attr := range in {
-		attr.APIPath = ""
-		attr.Attributes = clearAPIPaths(attr.Attributes)
-		attr.Blocks = clearAPIPaths(attr.Blocks)
-		out = append(out, attr)
-	}
-	return out
 }
