@@ -13,7 +13,7 @@ import (
 // incomplete configuration.
 func renderTwilioExampleTest() string {
 	_, scenario := twilioExampleView()
-	out, err := RenderResourceExampleTest(scenario, twilioResourceView())
+	out, err := RenderResourceExampleTest(scenario, twilioResourceView(), twilioAPIPaths())
 	Expect(err).To(Succeed())
 	return string(out)
 }
@@ -49,6 +49,28 @@ var _ = Describe("RenderResourceExampleTest", func() {
 		setup := strings.Index(body, "testAccFrameworkMuxProviders")
 		Expect(guard).To(BeNumerically(">", 0))
 		Expect(guard).To(BeNumerically("<", setup), "the skip must precede provider setup")
+	})
+
+	// Without an accessor the destroy check constructs the SDK client itself,
+	// which needs the SDK package imported. The import-usage spec above cannot
+	// catch the inverse — a used package that is never imported — so this
+	// pins it directly.
+	It("imports the SDK package when the provider exposes no accessor", func() {
+		_, scenario := twilioExampleView()
+		view := twilioResourceView()
+		view.APIAccessor = ""
+		view.APIConstructor = "NewTwilioIntegrationApi"
+		out, err := RenderResourceExampleTest(scenario, view, twilioAPIPaths())
+		Expect(err).To(Succeed())
+
+		Expect(string(out)).To(ContainSubstring(
+			`"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"`))
+		Expect(string(out)).To(ContainSubstring(
+			"datadogV2.NewTwilioIntegrationApi(apiInstances.HttpClient)"))
+	})
+
+	It("omits that import when an accessor exists", func() {
+		Expect(renderTwilioExampleTest()).NotTo(ContainSubstring("datadog-api-client-go"))
 	})
 
 	It("wires the generated destroy check as CheckDestroy", func() {
@@ -111,14 +133,14 @@ var _ = Describe("RenderResourceExampleTest", func() {
 	It("names the cassette and interaction count in the header", func() {
 		source := renderTwilioExampleTest()
 		Expect(source).To(ContainSubstring(
-			"cassettes/TestAccDatadogIntegrationTwilioAccountOpenAPIExample.yaml (9 interactions)"))
+			"cassettes/TestAccDatadogIntegrationTwilioAccountOpenAPIExample.yaml (7 interactions)"))
 	})
 
 	It("propagates a view it cannot build", func() {
 		_, scenario := twilioExampleView()
 		view := twilioResourceView()
 		view.Read.Method = ""
-		_, err := RenderResourceExampleTest(scenario, view)
+		_, err := RenderResourceExampleTest(scenario, view, twilioAPIPaths())
 		Expect(err).To(MatchError(ContainSubstring("no SDK read call")))
 	})
 })
