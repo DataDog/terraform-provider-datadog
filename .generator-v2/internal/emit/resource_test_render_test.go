@@ -26,7 +26,7 @@ func twilioResourceView() ResourceView {
 var _ = Describe("BuildResourceTestView", func() {
 	build := func() resourceTestView {
 		_, scenario := twilioExampleView()
-		view, err := BuildResourceTestView(scenario, twilioResourceView())
+		view, err := BuildResourceTestView(scenario, twilioResourceView(), twilioAPIPaths())
 		Expect(err).To(Succeed())
 		return view
 	}
@@ -62,7 +62,7 @@ var _ = Describe("BuildResourceTestView", func() {
 	It("reports no update step when the scenario has none", func() {
 		_, scenario := twilioExampleView()
 		scenario.Steps = scenario.Steps[:1]
-		view, err := BuildResourceTestView(scenario, twilioResourceView())
+		view, err := BuildResourceTestView(scenario, twilioResourceView(), twilioAPIPaths())
 		Expect(err).To(Succeed())
 		Expect(view.UpdateStepIndex).To(BeZero())
 	})
@@ -74,7 +74,7 @@ var _ = Describe("BuildResourceTestView", func() {
 			_, scenario := twilioExampleView()
 			view := twilioResourceView()
 			view.Read.Method = ""
-			_, err := BuildResourceTestView(scenario, view)
+			_, err := BuildResourceTestView(scenario, view, twilioAPIPaths())
 			Expect(err).To(MatchError(ContainSubstring("no SDK read call")))
 		})
 
@@ -86,7 +86,7 @@ var _ = Describe("BuildResourceTestView", func() {
 			view := twilioResourceView()
 			view.Read.Arguments = append(view.Read.Arguments,
 				SDKArgumentView{Expression: "state.Parent.ValueString()", TFName: "parent_id"})
-			_, err := BuildResourceTestView(scenario, view)
+			_, err := BuildResourceTestView(scenario, view, twilioAPIPaths())
 			Expect(err).To(MatchError(ContainSubstring("has only the resource id")))
 			Expect(err.Error()).To(ContainSubstring("takes 2 arguments"))
 		})
@@ -95,12 +95,12 @@ var _ = Describe("BuildResourceTestView", func() {
 			_, scenario := twilioExampleView()
 			view := twilioResourceView()
 			view.Read.Arguments = nil
-			_, err := BuildResourceTestView(scenario, view)
+			_, err := BuildResourceTestView(scenario, view, twilioAPIPaths())
 			Expect(err).To(MatchError(ContainSubstring("takes 0 arguments")))
 		})
 
 		It("propagates a scenario that does not validate", func() {
-			_, err := BuildResourceTestView(&model.GeneratedTestScenario{}, twilioResourceView())
+			_, err := BuildResourceTestView(&model.GeneratedTestScenario{}, twilioResourceView(), nil)
 			Expect(err).To(HaveOccurred())
 		})
 	})
