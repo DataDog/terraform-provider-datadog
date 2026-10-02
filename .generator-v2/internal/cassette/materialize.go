@@ -36,6 +36,10 @@ type MaterializedSet struct {
 	// SensitiveReplacements maps a leaf path to the safe value substituted
 	// there, so a writer can prove no declared secret survived.
 	SensitiveReplacements map[string]string
+	// WriteOnlyPaths lists the request leaves the description marks writeOnly.
+	// Recorded here, where the path strings are built, so it cannot disagree
+	// with Values about what a leaf is called. Consumed by overlaidWith.
+	WriteOnlyPaths []string
 }
 
 // IncompleteError reports that a set's examples cannot form a complete value.
@@ -303,6 +307,9 @@ func (m *materializer) assembleChild(schema *model.Schema, path string, required
 // credential material.
 func (m *materializer) leaf(value any, schema *model.Schema, path string) any {
 	sensitive := m.isRequest && schema != nil && (schema.WriteOnlySecret || schema.Sensitive)
+	if m.isRequest && schema != nil && schema.WriteOnlySecret {
+		m.out.WriteOnlyPaths = append(m.out.WriteOnlyPaths, labelPath(path))
+	}
 	if sensitive {
 		if _, isString := value.(string); isString {
 			m.out.SensitiveReplacements[labelPath(path)] = model.RedactedPlaceholder
@@ -428,4 +435,106 @@ func IdentityFrom(body any, strategy model.IdStrategy) (string, bool) {
 		return "", false
 	}
 	return identity, true
+}
+
+// ----------------------------------------------------------------------------
+// Overlay
+// ----------------------------------------------------------------------------
+
+// overlaidWith returns this set with delta's values layered on top.
+//
+// An update example describes the API's sparse PATCH delta: only the members
+// the caller wants to change. Terraform does not work that way. Its state is
+// the complete desired configuration, so the provider serializes every planned
+// attribute into the update request — not just the changed ones. A cassette
+// recorded from the delta alone therefore never matches the request the
+// provider actually sends, and replay fails to find the interaction.
+//
+// Layering the delta over the create request reconstructs what the provider
+// will send: the resource as created, with the update's changes applied. The
+// same overlaid set then feeds both the recorded body and the step's
+// configuration, so the two cannot drift apart.
+//
+// Deep merge cannot express removal, so an update that drops a member is not
+// representable. That is a limit of describing updates as examples rather than
+// as patches, and it fails loudly at replay rather than silently.
+func (m MaterializedSet) overlaidWith(delta MaterializedSet) MaterializedSet {
+	values := map[string]model.MaterializedValue{}
+	for _, value := range m.Values {
+		values[value.Path] = value
+	}
+	for _, value := range delta.Values {
+		values[value.Path] = value
+	}
+
+	// Body and Values diverge here, and deliberately. A write-only secret
+	// stays in Values because the step's configuration must keep declaring it
+	// — the attribute is required, and dropping it would fail validation. It
+	// is removed from the body because the provider sends a write-only secret
+	// only when its _wo_version trigger changes, and a generated update step
+	// leaves that version alone. Recording the inherited secret would describe
+	// a request the provider never makes.
+	body := overlayJSON(m.Body, delta.Body)
+	for _, path := range append(slices.Clone(m.WriteOnlyPaths), delta.WriteOnlyPaths...) {
+		body = withoutJSONPath(body, strings.Split(path, "."))
+	}
+
+	out := MaterializedSet{
+		Key:                   delta.Key,
+		Body:                  body,
+		Values:                make([]model.MaterializedValue, 0, len(values)),
+		SensitiveReplacements: map[string]string{},
+		WriteOnlyPaths:        delta.WriteOnlyPaths,
+	}
+	// Sorted so regeneration stays byte-identical: map iteration is not.
+	for _, path := range slices.Sorted(maps.Keys(values)) {
+		out.Values = append(out.Values, values[path])
+	}
+	maps.Copy(out.SensitiveReplacements, m.SensitiveReplacements)
+	maps.Copy(out.SensitiveReplacements, delta.SensitiveReplacements)
+	if len(out.SensitiveReplacements) == 0 {
+		out.SensitiveReplacements = nil
+	}
+	return out
+}
+
+// overlayJSON deep-merges delta over base. Objects merge member by member;
+// anything else is replaced wholesale. Arrays in particular are replaced
+// rather than merged element-wise, because an array is one value to Terraform:
+// a config that sets two tags means exactly those two, not an append.
+func overlayJSON(base, delta any) any {
+	if delta == nil {
+		return base
+	}
+	baseObject, baseOK := base.(map[string]any)
+	deltaObject, deltaOK := delta.(map[string]any)
+	if !baseOK || !deltaOK {
+		return delta
+	}
+	merged := maps.Clone(baseObject)
+	for key, value := range deltaObject {
+		merged[key] = overlayJSON(merged[key], value)
+	}
+	return merged
+}
+
+// withoutJSONPath returns value with the member at the given path segments
+// removed. A path that does not resolve leaves the value untouched, so a
+// write-only leaf the update example never declared is not an error.
+func withoutJSONPath(value any, path []string) any {
+	object, ok := value.(map[string]any)
+	if !ok || len(path) == 0 {
+		return value
+	}
+	head := path[0]
+	if _, present := object[head]; !present {
+		return value
+	}
+	out := maps.Clone(object)
+	if len(path) == 1 {
+		delete(out, head)
+		return out
+	}
+	out[head] = withoutJSONPath(out[head], path[1:])
+	return out
 }

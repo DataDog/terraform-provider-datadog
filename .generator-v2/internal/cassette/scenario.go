@@ -25,23 +25,29 @@ import (
 // reproducible without a recording.
 // ----------------------------------------------------------------------------
 
-// defaultRefreshesAfterApply is how many reads the test framework issues after
-// an apply step: one to refresh state, one for the follow-up plan.
+// How many reads one applied step contributes to the trace.
 //
-// This number is framework behavior, not something the description implies, and
-// it is the least certain part of the scenario. Surveying the 344 single-
-// resource CRUD cassettes already in this repository, a create-only flow
-// records either five or six interactions for what is logically the same
-// sequence, and a one-update flow either nine or ten. The extra read comes from
-// a test's own check functions calling the API, which a generated test does not
-// do — its checks read state only, because the cassette is the oracle.
+// The framework plans against the API once after each apply, and the following
+// step refreshes again before its own apply. So a step with another after it
+// contributes two reads, and the last step contributes one. Destroy does not
+// refresh: the read after the delete is the destroy verification's own, added
+// separately.
 //
-// So two is the right default for the shape this generator emits, and offline
-// replay is the arbiter: if the pinned framework disagrees, this one constant
-// is what changes.
+// This is framework behavior rather than anything the description implies, so
+// offline replay is the arbiter and these constants are what change if the
+// pinned framework disagrees. Replay is also what corrected them: giving the
+// final step two reads leaves one unconsumed, the destroy verification matches
+// that stale 200 instead of the 404, and the failure reads "still exists after
+// destroy" — naming the symptom and not the count.
+//
+// The 344 single-resource CRUD cassettes already in this repository record more
+// than this — five or six interactions for a create-only flow where a generated
+// one records four. The difference is that a hand-written test's check
+// functions call the API themselves, which a generated test never does: its
+// checks read state only, because the cassette is the oracle.
 //
 // Letting the recorder replay an interaction more than once looks like it would
-// make the count irrelevant. It does not, and the idea is a trap worth naming
+// make all of this irrelevant. It does not, and the idea is a trap worth naming
 // here so it is not retried. go-vcr's lookup is
 //
 //	for _, i := range c.Interactions {
@@ -49,16 +55,19 @@ import (
 //
 // so setting ReplayableInteractions bypasses the consumed check and the lookup
 // always returns the *first* match, never advancing. Every read in this trace
-// shares a method and URL while returning a different body — create state,
-// then updated state, then a 404 once destroyed — so with repeats enabled the
-// post-update refresh serves stale state and the destroy verification can
-// never reach its 404. Measured against a recorded cassette whose reads are
-// 200, 200, 404: strict playback yields exactly that, and repeats yield
-// 200, 200, 200.
+// shares a method and URL while returning a different body — create state, then
+// updated state, then a 404 once destroyed — so with repeats enabled the
+// post-update refresh serves stale state and the destroy verification can never
+// reach its 404. Measured against a recorded cassette whose reads are 200, 200,
+// 404: strict playback yields exactly that, and repeats yield 200, 200, 200.
 //
 // The count being predictable therefore matters, and the deliberately
 // duplicated refreshes are load-bearing rather than redundant.
-const defaultRefreshesAfterApply = 2
+const (
+	readsPerStep         = 1
+	readsBeforeNextStep  = 1
+	readsAfterMiddleStep = readsPerStep + readsBeforeNextStep
+)
 
 // ResourceTarget is everything scenario construction needs about one resource.
 type ResourceTarget struct {
@@ -75,9 +84,6 @@ type ResourceTarget struct {
 	Create, Read, Update, Delete *model.Operation
 	// Selection is the chosen scenario these interactions are built from.
 	Selection TargetSelection
-	// RefreshesAfterApply overrides defaultRefreshesAfterApply. Zero means the
-	// default.
-	RefreshesAfterApply int
 }
 
 // BuildResourceScenario assembles the ordered interaction trace and Terraform
@@ -121,21 +127,28 @@ func BuildResourceScenario(target ResourceTarget) (*model.GeneratedTestScenario,
 		Selection:        target.Selection.Model(),
 	}
 
+	// Materialized before the create's reads are added, because how many reads
+	// the create step contributes depends on whether a step follows it.
+	updated, hasUpdate, err := target.updateStep(createRequest, createResponse)
+	if err != nil {
+		return nil, err
+	}
+
 	builder := &traceBuilder{target: target, identity: identity}
 
-	// Create, then the reads the framework issues after an apply.
+	// Create, then the reads the framework issues after its apply.
 	builder.add(model.InteractionRoleCreate, target.Create, createRequest, createResponse, http.StatusCreated)
-	builder.addRefreshes(target.Read, readResponse)
+	createReads := readsPerStep
+	if hasUpdate {
+		createReads = readsAfterMiddleStep
+	}
+	builder.addRefreshes(target.Read, readResponse, createReads)
 	scenario.Steps = append(scenario.Steps, model.ScenarioStep{State: createRequest.configuration()})
 
 	// An update step, only when the examples give a distinct state to assert.
-	if updated, has, err := target.updateStep(createResponse); err != nil {
-		return nil, err
-	} else if has {
-		// The framework refreshes before applying the second step.
-		builder.addRefreshes(target.Read, readResponse, 1)
+	if hasUpdate {
 		builder.add(model.InteractionRoleUpdate, target.Update, updated.request, updated.response, http.StatusOK)
-		builder.addRefreshes(target.Read, updated.response)
+		builder.addRefreshes(target.Read, updated.response, readsPerStep)
 		scenario.Steps = append(scenario.Steps, model.ScenarioStep{State: updated.request.configuration()})
 	}
 
@@ -166,14 +179,6 @@ func (t ResourceTarget) validate() error {
 		return fmt.Errorf("scenario %q: no delete operation", t.ArtifactName)
 	}
 	return nil
-}
-
-// refreshCount returns how many reads follow an apply.
-func (t ResourceTarget) refreshCount() int {
-	if t.RefreshesAfterApply > 0 {
-		return t.RefreshesAfterApply
-	}
-	return defaultRefreshesAfterApply
 }
 
 // materializePair materializes one operation's request and success response.
@@ -233,7 +238,11 @@ type updatedState struct {
 // updateStep materializes an update step, and reports whether the examples
 // justify having one. They do only when the update's response differs from the
 // create's: an update that changes nothing gives the step nothing to assert.
-func (t ResourceTarget) updateStep(createResponse MaterializedSet) (updatedState, bool, error) {
+//
+// The returned request is the create request overlaid with the update's own
+// values. See MaterializedSet.overlaidWith for why the delta alone cannot
+// match what the provider sends.
+func (t ResourceTarget) updateStep(createRequest, createResponse MaterializedSet) (updatedState, bool, error) {
 	if t.Update == nil {
 		return updatedState{}, false, nil
 	}
@@ -250,7 +259,9 @@ func (t ResourceTarget) updateStep(createResponse MaterializedSet) (updatedState
 	if equivalentJSON(response.Body, createResponse.Body) {
 		return updatedState{}, false, nil
 	}
-	return updatedState{request: request, response: response}, true, nil
+	// The recorded request is what the provider will send: the created
+	// resource with the update's changes applied, not the example's delta.
+	return updatedState{request: createRequest.overlaidWith(request), response: response}, true, nil
 }
 
 // ----------------------------------------------------------------------------
@@ -297,11 +308,7 @@ func (b *traceBuilder) add(
 // addRefreshes appends the reads the framework issues after an apply.
 // Identical requests are repeated rather than shared, because a replayed
 // interaction is consumed once.
-func (b *traceBuilder) addRefreshes(read *model.Operation, response MaterializedSet, count ...int) {
-	times := b.target.refreshCount()
-	if len(count) == 1 {
-		times = count[0]
-	}
+func (b *traceBuilder) addRefreshes(read *model.Operation, response MaterializedSet, times int) {
 	for i := 0; i < times; i++ {
 		role := model.InteractionRoleRefresh
 		if len(b.interactions) == 1 {

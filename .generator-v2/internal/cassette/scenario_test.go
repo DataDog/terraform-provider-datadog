@@ -81,9 +81,7 @@ var _ = Describe("BuildResourceScenario", func() {
 				model.InteractionRoleCreate,
 				model.InteractionRoleRead,
 				model.InteractionRoleRefresh,
-				model.InteractionRoleRefresh,
 				model.InteractionRoleUpdate,
-				model.InteractionRoleRefresh,
 				model.InteractionRoleRefresh,
 				model.InteractionRoleDelete,
 				model.InteractionRoleDestroyVerification,
@@ -212,7 +210,6 @@ var _ = Describe("BuildResourceScenario", func() {
 			Expect(roles(scenario)).To(Equal([]model.InteractionRole{
 				model.InteractionRoleCreate,
 				model.InteractionRoleRead,
-				model.InteractionRoleRefresh,
 				model.InteractionRoleDelete,
 				model.InteractionRoleDestroyVerification,
 			}))
@@ -224,30 +221,32 @@ var _ = Describe("BuildResourceScenario", func() {
 			scenario, err := BuildResourceScenario(target)
 			Expect(err).To(Succeed())
 			Expect(scenario.HasUpdateStep()).To(BeFalse())
-			Expect(scenario.Interactions).To(HaveLen(5))
+			// create, its one post-apply read, delete, destroy verification.
+			Expect(scenario.Interactions).To(HaveLen(4))
 		})
 	})
 
 	Describe("refresh expansion", func() {
 		// Identical requests are repeated rather than shared, because a
 		// replayed interaction is consumed once.
-		It("repeats the read once per expected refresh", func() {
+		// A step followed by another contributes two reads: its own post-apply
+		// plan and the next step's pre-apply refresh. The last step contributes
+		// one. Getting this wrong leaves a stale read queued, which surfaces as
+		// a non-empty refresh plan or a destroy check that says "still exists".
+		It("gives the last step one read and a followed step two", func() {
+			scenario, err := BuildResourceScenario(twilioTarget())
+			Expect(err).To(Succeed())
+			Expect(scenario.HasUpdateStep()).To(BeTrue())
+			Expect(readRoles(scenario)).To(Equal(2 + 1))
+		})
+
+		It("gives a create-only flow a single read", func() {
 			target := twilioTarget()
 			target.Update = nil
-			target.RefreshesAfterApply = 3
 
 			scenario, err := BuildResourceScenario(target)
 			Expect(err).To(Succeed())
-			Expect(scenario.Interactions).To(HaveLen(6))
-
-			reads := 0
-			for _, interaction := range scenario.Interactions {
-				if interaction.Role == model.InteractionRoleRead ||
-					interaction.Role == model.InteractionRoleRefresh {
-					reads++
-				}
-			}
-			Expect(reads).To(Equal(3))
+			Expect(readRoles(scenario)).To(Equal(1))
 		})
 
 		It("keeps indexes dense and ordered", func() {
@@ -422,3 +421,16 @@ var _ = Describe("identityPathLabel", func() {
 		Expect(identityPathLabel(model.IdStrategyDataAttributesID)).To(Equal("data.attributes.id"))
 	})
 })
+
+// readRoles counts the reads in a trace, excluding the destroy verification:
+// that one is the delete's own confirmation, not a framework refresh.
+func readRoles(scenario *model.GeneratedTestScenario) int {
+	reads := 0
+	for _, interaction := range scenario.Interactions {
+		switch interaction.Role {
+		case model.InteractionRoleRead, model.InteractionRoleRefresh:
+			reads++
+		}
+	}
+	return reads
+}
