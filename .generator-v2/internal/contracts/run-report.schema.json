@@ -1,0 +1,244 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://datadog.github.io/terraform-provider-datadog/contracts/run-report.schema.json",
+    "title": "tfgen run report",
+    "description": "The structured result tfgen generate writes to --report. CI asserts against it, so the shape is a contract: additionalProperties is false throughout, and a new field must be added here in the same change that emits it.",
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["run_id", "generator_version", "spec_hash", "started_at", "finished_at", "artifacts"],
+    "properties": {
+      "run_id": {
+        "type": "string",
+        "description": "Unique identifier for this generation run."
+      },
+      "generator_version": {
+        "type": "string",
+        "description": "tfgen build version, or \"dev\" for a local build."
+      },
+      "spec_hash": {
+        "type": "string",
+        "description": "Lowercase hex SHA-256 of the OpenAPI source, identifying exactly which description produced this run."
+      },
+      "started_at": { "type": "string", "format": "date-time" },
+      "finished_at": { "type": "string", "format": "date-time" },
+      "artifacts": {
+        "type": ["array", "null"],
+        "description": "One entry per generated, retired, or failed provider artifact. Null is permitted because the field carries no omitempty and a run that produced no artifacts marshals its nil slice to null; consumers must treat null and [] alike. Accepting it here rather than emitting [] keeps existing report bytes unchanged.",
+        "items": { "$ref": "#/$defs/artifactEntry" }
+      },
+      "skipped_operations": {
+        "type": "array",
+        "description": "Operations that produced no artifact, listed for visibility rather than as failures.",
+        "items": { "$ref": "#/$defs/skippedOperation" }
+      },
+      "summary": { "$ref": "#/$defs/runSummary" },
+      "cassettes": {
+        "type": "array",
+        "description": "One entry per example-backed cassette target. Absent unless cassette generation was requested, so a run without it is byte-identical to one from before the feature existed.",
+        "items": { "$ref": "#/$defs/cassetteResult" }
+      },
+      "cassette_summary": { "$ref": "#/$defs/cassetteSummary" }
+    },
+    "$defs": {
+      "diagnostic": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["severity", "message"],
+        "description": "One error, warning, or informational message. A cassette diagnostic names source anchors only and never carries an example value, which may be credential material.",
+        "properties": {
+          "severity": {
+            "type": "string",
+            "enum": ["error", "warning", "info"]
+          },
+          "message": { "type": "string" },
+          "location": {
+            "type": "string",
+            "description": "Optional source-side anchor, e.g. spec:/api/v2/widgets.post.requestBody.content.application/json.example"
+          }
+        }
+      },
+      "artifactKind": {
+        "type": "string",
+        "enum": ["resource", "data_source"],
+        "description": "Terraform namespace the artifact belongs to."
+      },
+      "artifactEntry": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "kind", "status", "path"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Terraform artifact name without the datadog_ prefix."
+          },
+          "kind": { "$ref": "#/$defs/artifactKind" },
+          "status": {
+            "type": "string",
+            "enum": [
+              "created",
+              "updated",
+              "unchanged",
+              "skipped",
+              "failed",
+              "retired",
+              "retire_blocked",
+              "registration_retired"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "description": "File the entry concerns. Empty on a registration_retired entry, whose generated files are already gone."
+          },
+          "diagnostics": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/diagnostic" }
+          },
+          "orphaned_hooks": {
+            "type": "array",
+            "description": "Hook functions declared but no longer referenced.",
+            "items": { "type": "string" }
+          },
+          "constructor": {
+            "type": "string",
+            "description": "Set only on a registration_retired entry: the removed registration identifier, authoritative because the artifact name cannot be recovered once the files are gone."
+          }
+        }
+      },
+      "skippedOperation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["operation_id", "path", "method", "reason"],
+        "properties": {
+          "operation_id": { "type": "string" },
+          "path": { "type": "string" },
+          "method": { "type": "string" },
+          "reason": {
+            "type": "string",
+            "enum": ["tracking_field_absent", "tracking_field_skip_true"]
+          }
+        }
+      },
+      "runSummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Convenience counts for CI assertions, one per artifact status. Unchanged by cassette generation, which reports through cassette_summary instead.",
+        "required": [
+          "created",
+          "updated",
+          "unchanged",
+          "skipped",
+          "failed",
+          "retired",
+          "retire_blocked",
+          "registration_retired"
+        ],
+        "properties": {
+          "created": { "type": "integer", "minimum": 0 },
+          "updated": { "type": "integer", "minimum": 0 },
+          "unchanged": { "type": "integer", "minimum": 0 },
+          "skipped": { "type": "integer", "minimum": 0 },
+          "failed": { "type": "integer", "minimum": 0 },
+          "retired": { "type": "integer", "minimum": 0 },
+          "retire_blocked": { "type": "integer", "minimum": 0 },
+          "registration_retired": { "type": "integer", "minimum": 0 }
+        }
+      },
+      "interactionSummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["index", "role", "operation_id", "method", "url", "status"],
+        "description": "Safe description of one recorded interaction. Request and response bodies are deliberately absent: a body may hold a replaced secret, and this report is committed.",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Zero-based position in the cassette. Indexes are dense and ordered, because replay interactions are single-use and consumed in sequence."
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "create",
+              "read",
+              "search",
+              "update",
+              "delete",
+              "refresh",
+              "destroy_verification"
+            ],
+            "description": "Why the interaction exists. refresh and destroy_verification issue the same request as read; the role is what explains an apparently duplicated interaction."
+          },
+          "operation_id": { "type": "string" },
+          "method": { "type": "string" },
+          "url": {
+            "type": "string",
+            "description": "Canonical request URL with credential query parameters removed."
+          },
+          "status": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 599
+          },
+          "source_paths": {
+            "type": "array",
+            "description": "Provenance: the source anchors whose examples contributed values to this interaction, so a reviewer can trace committed fixture bytes back to the description. Anchors only, never values.",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "cassetteResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "kind", "test_name", "status", "write_action"],
+        "properties": {
+          "name": { "type": "string" },
+          "kind": { "$ref": "#/$defs/artifactKind" },
+          "test_name": {
+            "type": "string",
+            "description": "Generated Go test function, which doubles as the cassette basename because the replay harness derives the cassette from t.Name()."
+          },
+          "status": {
+            "type": "string",
+            "enum": ["generated", "preserved", "ineligible"],
+            "description": "generated: a bundle was written. preserved: an existing bundle was left alone. ineligible: the examples could not form a valid cassette, and no partial output was written."
+          },
+          "write_action": {
+            "type": "string",
+            "enum": [
+              "none",
+              "created",
+              "unchanged",
+              "replaced_generated",
+              "replaced_recorded"
+            ],
+            "description": "What the writer did, reported apart from status so \"generated\" can be distinguished from \"generated, replacing a hand-recorded fixture\" — which a reviewer must be told explicitly."
+          },
+          "test_path": { "type": "string" },
+          "cassette_path": { "type": "string" },
+          "freeze_path": { "type": "string" },
+          "selected_example": {
+            "type": "string",
+            "description": "Resolved scenario name: an explicit selection, \"default\", a lexical fallback, or \"single\" when the values came from singular example fields."
+          },
+          "interactions": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/interactionSummary" }
+          },
+          "diagnostics": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/diagnostic" }
+          }
+        }
+      },
+      "cassetteSummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Counts per cassette status. Separate from runSummary so cassette generation cannot change the artifact tallies CI already asserts on.",
+        "required": ["generated", "preserved", "ineligible"],
+        "properties": {
+          "generated": { "type": "integer", "minimum": 0 },
+          "preserved": { "type": "integer", "minimum": 0 },
+          "ineligible": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+}

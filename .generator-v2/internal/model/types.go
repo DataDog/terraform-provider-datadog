@@ -1084,6 +1084,12 @@ type RunReport struct {
 	Artifacts         []ArtifactReportEntry `json:"artifacts"`
 	SkippedOperations []SkippedOperation    `json:"skipped_operations,omitempty"`
 	Summary           *RunSummary           `json:"summary,omitempty"`
+	// Cassettes holds one entry per example-backed cassette target. Both it
+	// and CassetteSummary are omitted entirely unless cassette generation was
+	// requested, so a run without it produces the same bytes it did before the
+	// feature existed and CI assertions on the artifact report keep passing.
+	Cassettes       []CassetteResult `json:"cassettes,omitempty"`
+	CassetteSummary *CassetteSummary `json:"cassette_summary,omitempty"`
 }
 
 // RunSummary holds convenience counts for CI assertions, one per ArtifactStatus.
