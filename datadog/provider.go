@@ -20,6 +20,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/terraformauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
@@ -77,13 +78,13 @@ func Provider() *schema.Provider {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Sensitive:   true,
-				Description: "(Required unless validate is false) Datadog API key. This can also be set via the DD_API_KEY environment variable.",
+				Description: "Datadog API key. Required when `validate` is true unless authentication uses AWS WIF, a bearer token, or Terraform Dynamic Provider Credentials. This can also be set via the `DD_API_KEY` environment variable.",
 			},
 			"app_key": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Sensitive:   true,
-				Description: "(Required unless validate is false) Datadog APP key. This can also be set via the DD_APP_KEY environment variable.",
+				Description: "Datadog application key. Required when `validate` is true unless authentication uses AWS WIF, a bearer token, or Terraform Dynamic Provider Credentials. This can also be set via the `DD_APP_KEY` environment variable.",
 			},
 			"bearer_token": {
 				Type:        schema.TypeString,
@@ -99,7 +100,7 @@ func Provider() *schema.Provider {
 			"validate": {
 				Type:         schema.TypeString,
 				Optional:     true,
-				Description:  "Enables validation of the provided API key during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, api_key won't be checked.",
+				Description:  "Enables credential validation during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, initial credential validation is skipped.",
 				ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
 			},
 			"cloud_provider_type": {
@@ -115,7 +116,7 @@ func Provider() *schema.Provider {
 			"org_uuid": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "The organization UUID; used for cloud-provider-based authentication. This can also be set using the `DD_ORG_UUID` environment variable. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
+				Description: "The organization UUID; required for AWS WIF. Optional for Terraform Dynamic Provider Credentials, but when configured it must match the organization UUID in the token audience. This can also be set using the `DD_ORG_UUID` environment variable. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
 			},
 			"aws_access_key_id": {
 				Type:        schema.TypeString,
@@ -381,6 +382,10 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	if orgUUID == "" {
 		orgUUID, _ = utils.GetMultiEnvVar(utils.OrgUUIDEnvVars[:]...)
 	}
+	workloadIdentityConfig, err := terraformauth.GetDelegatedTokenConfig(orgUUID)
+	if err != nil {
+		return nil, diag.FromErr(err)
+	}
 	awsAccessKeyId := d.Get("aws_access_key_id").(string)
 	if awsAccessKeyId == "" {
 		awsAccessKeyId, _ = utils.GetMultiEnvVar(utils.AWSAccessKeyId)
@@ -410,9 +415,9 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		validate, _ = strconv.ParseBool(v)
 	}
 
-	if validate {
+	if validate && workloadIdentityConfig == nil {
 		if cloudProviderType == "" && bearerToken == "" && (apiKey == "" || appKey == "") {
-			return nil, diag.FromErr(errors.New("api_key and app_key, bearer_token, or orgUUID must be set unless validate = false"))
+			return nil, diag.FromErr(errors.New("credentials are required unless validate = false: configure api_key and app_key, bearer_token, AWS WIF, or Terraform Dynamic Provider Credentials"))
 		} else if cloudProviderType != "" && orgUUID == "" {
 			return nil, diag.FromErr(errors.New("orgUUID must be set when using cloud provider auth unless validate = false"))
 		}
@@ -437,8 +442,11 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 
 	// Initialize the official Datadog V1 API client
 	auth := context.Background()
-	// Check cloud_provider_type first - explicit config takes precedence over API keys
-	if cloudProviderType != "" {
+	// Terraform workload identity takes precedence over existing authentication.
+	switch {
+	case workloadIdentityConfig != nil:
+		auth = context.WithValue(auth, datadog.ContextDelegatedToken, &datadog.DelegatedTokenCredentials{})
+	case cloudProviderType != "":
 		// Allows for delegated token authentication
 		auth = context.WithValue(
 			auth,
@@ -459,11 +467,11 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		default:
 			return nil, diag.FromErr(errors.New("cloud_provider_type must be set to a valid value unless validate = false"))
 		}
-	} else if bearerToken != "" {
+	case bearerToken != "":
 		// bearer_token takes precedence over api_key/app_key when both are set:
 		// a configured bearer token is an explicit signal to use Bearer auth.
 		auth = context.WithValue(auth, datadog.ContextAccessToken, bearerToken)
-	} else if apiKey != "" || appKey != "" {
+	case apiKey != "" || appKey != "":
 		auth = context.WithValue(
 			auth,
 			datadog.ContextAPIKeys,
@@ -536,7 +544,9 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 
 	config.UserAgent = utils.GetUserAgent(config.UserAgent)
-	config.Debug = logging.IsDebugOrHigher()
+	// The SDK debug logger does not redact ContextDelegatedToken credentials.
+	// Suppress raw HTTP dumps for WIT authentication until SDK redaction supports it.
+	config.Debug = logging.IsDebugOrHigher() && workloadIdentityConfig == nil
 	if apiURL != "" {
 		parsedAPIURL, parseErr := url.Parse(apiURL)
 		if parseErr != nil {
@@ -572,8 +582,9 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 
 	config.HTTPClient = utils.NewHTTPClient()
-	// If cloud_provider_type is set, use cloud auth (takes precedence over API keys)
-	if cloudProviderType != "" {
+	if workloadIdentityConfig != nil {
+		config.DelegatedTokenConfig = workloadIdentityConfig
+	} else if cloudProviderType != "" {
 		switch cloudProviderType {
 		case "aws":
 			config.DelegatedTokenConfig = &datadog.DelegatedTokenConfig{
@@ -590,20 +601,21 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	apiInstances := &utils.ApiInstances{HttpClient: datadogClient}
 	if validate {
 		log.Println("[INFO] Datadog client successfully initialized, now validating...")
-		// Validate cloud auth credentials if cloud_provider_type is set
-		if cloudProviderType != "" { // Validate the cloud auth credentials
+		// Validate the selected delegated credentials without falling back on failure.
+		switch {
+		case config.DelegatedTokenConfig != nil:
 			delegatedConfig, err := datadogClient.GetDelegatedToken(auth)
 			if err != nil {
 				log.Printf("[ERROR] Datadog Client validation error: %v", err)
 				return nil, diag.FromErr(err)
 			}
 			if delegatedConfig.DelegatedToken == "" {
-				msg := fmt.Sprintf(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your OrgUUID is correct and your cloud auth credentials for "%s" are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`, cloudProviderType)
+				msg := fmt.Sprintf(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your OrgUUID is correct and your cloud auth credentials for %q are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`, config.DelegatedTokenConfig.Provider)
 				err := errors.New(msg)
 				log.Printf("[ERROR] Datadog Client validation error: %v", err)
 				return nil, diag.FromErr(err)
 			}
-		} else if bearerToken != "" {
+		case bearerToken != "":
 			// bearer_token takes precedence over api_key/app_key (matches the auth
 			// context selection above). /api/v1/validate is API-key-only, so hit
 			// /api/v2/validate_keys with the bearer token in the DD-APPLICATION-KEY
@@ -615,7 +627,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 				log.Printf("[ERROR] Datadog Client validation error: %v", err)
 				return nil, diag.FromErr(err)
 			}
-		} else if apiKey != "" || appKey != "" { // Validate the API and APP keys
+		case apiKey != "" || appKey != "": // Validate the API and APP keys
 			resp, _, err := apiInstances.GetAuthenticationApiV1().Validate(auth)
 			if err != nil {
 				log.Printf("[ERROR] Datadog Client validation error: %v", err)
