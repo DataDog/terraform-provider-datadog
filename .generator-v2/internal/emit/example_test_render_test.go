@@ -149,7 +149,7 @@ var _ = Describe("BuildExampleTestView", func() {
 		It("reports the interaction count, since a replay failure is usually a mismatch", func() {
 			view, scenario := twilioExampleView()
 			Expect(view.InteractionCount).To(Equal(len(scenario.Interactions)))
-			Expect(view.InteractionCount).To(Equal(9))
+			Expect(view.InteractionCount).To(Equal(7))
 		})
 
 		It("derives an unexported config helper", func() {
