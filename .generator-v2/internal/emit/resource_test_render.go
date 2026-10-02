@@ -51,8 +51,9 @@ type resourceTestView struct {
 func BuildResourceTestView(
 	scenario *model.GeneratedTestScenario,
 	view ResourceView,
+	apiPaths map[string]string,
 ) (resourceTestView, error) {
-	common, err := BuildExampleTestView(scenario, view.Schema)
+	common, err := BuildExampleTestView(scenario, view.Schema, apiPaths)
 	if err != nil {
 		return resourceTestView{}, err
 	}
