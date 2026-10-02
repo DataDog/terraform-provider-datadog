@@ -78,6 +78,7 @@ type exampleStepView struct {
 func BuildExampleTestView(
 	scenario *model.GeneratedTestScenario,
 	schema SchemaView,
+	apiPaths map[string]string,
 ) (exampleTestView, error) {
 	if err := scenario.Validate(); err != nil {
 		return exampleTestView{}, err
@@ -111,8 +112,8 @@ func BuildExampleTestView(
 			desired[path] = value
 		}
 		values := maps.Clone(desired)
-		stepView.ConfigBody = renderExampleConfig(resourceType, schema, values)
-		stepView.Checks = renderExampleChecks(scenario.TerraformAddress, schema, values)
+		stepView.ConfigBody = renderExampleConfig(resourceType, schema, values, apiPaths)
+		stepView.Checks = renderExampleChecks(scenario.TerraformAddress, schema, values, apiPaths)
 		view.Steps = append(view.Steps, stepView)
 	}
 	return view, nil
@@ -151,12 +152,32 @@ func stepValues(step model.ScenarioStep) map[string]model.MaterializedValue {
 // renderExampleConfig writes the HCL for one step by walking the artifact's own
 // attribute tree, so the configuration can only contain attributes the
 // generated schema actually declares.
-func renderExampleConfig(resourceType string, schema SchemaView, values map[string]model.MaterializedValue) string {
+func renderExampleConfig(
+	resourceType string,
+	schema SchemaView,
+	values map[string]model.MaterializedValue,
+	apiPaths map[string]string,
+) string {
 	var out strings.Builder
 	fmt.Fprintf(&out, "resource %q \"foo\" {\n", resourceType)
-	writeAttributes(&out, schema.Attributes, values, nil, 1)
+	// A generated schema splits top-level leaves from nested objects, so both
+	// have to be walked: rendering only Attributes omits every block, which
+	// leaves a configuration missing its required arguments.
+	writeAttributes(&out, schemaMembers(schema), values, apiPaths, nil, 1)
 	out.WriteString("}")
 	return out.String()
+}
+
+// schemaMembers is a schema's leaves and nested objects together, which is what
+// a configuration has to cover. AttrView carries its own children the same way
+// at every level, so the walkers below need only this one flattening.
+func schemaMembers(schema SchemaView) []AttrView {
+	return append(append([]AttrView{}, schema.Attributes...), schema.Blocks...)
+}
+
+// nestedMembers is schemaMembers for one block.
+func nestedMembers(attr AttrView) []AttrView {
+	return append(append([]AttrView{}, attr.Attributes...), attr.Blocks...)
 }
 
 // writeAttributes renders one level of the attribute tree. A nested block is
@@ -166,18 +187,19 @@ func writeAttributes(
 	out *strings.Builder,
 	attributes []AttrView,
 	values map[string]model.MaterializedValue,
+	apiPaths map[string]string,
 	prefix []string,
 	depth int,
 ) {
 	for _, attr := range attributes {
 		path := append(slices.Clone(prefix), attr.TFName)
 		if attr.IsBlock {
-			if !hasValues(attr.Attributes, values) {
+			if !hasValues(nestedMembers(attr), values, apiPaths, path) {
 				continue
 			}
 			writeIndent(out, depth)
 			fmt.Fprintf(out, "%s = {\n", attr.TFName)
-			writeAttributes(out, attr.Attributes, values, path, depth+1)
+			writeAttributes(out, nestedMembers(attr), values, apiPaths, path, depth+1)
 			writeIndent(out, depth)
 			out.WriteString("}\n")
 			continue
@@ -186,7 +208,23 @@ func writeAttributes(
 			// A purely computed attribute is never configured.
 			continue
 		}
-		value, ok := lookupValue(values, attr)
+		// A write-only secret is not configured under its own name: the
+		// generated schema replaces it with a <name>_wo attribute carrying the
+		// value and a <name>_wo_version rotation trigger, and requires both.
+		// The placeholder attribute here is the original, so its value
+		// resolves normally and is written under the replacement's name.
+		if secret := attr.WriteOnlySecret; secret != nil {
+			value, ok := lookupValue(values, apiPaths, path)
+			if !ok {
+				continue
+			}
+			writeIndent(out, depth)
+			fmt.Fprintf(out, "%s = %s\n", secret.WriteOnlyAttr, hclLiteral(value.Value))
+			writeIndent(out, depth)
+			fmt.Fprintf(out, "%s = %s\n", secret.TriggerAttr, hclLiteral(writeOnlySecretVersion))
+			continue
+		}
+		value, ok := lookupValue(values, apiPaths, path)
 		if !ok {
 			continue
 		}
@@ -197,37 +235,45 @@ func writeAttributes(
 
 // hasValues reports whether any leaf under a block has a value, so an empty
 // block is omitted rather than rendered.
-func hasValues(attributes []AttrView, values map[string]model.MaterializedValue) bool {
+func hasValues(
+	attributes []AttrView,
+	values map[string]model.MaterializedValue,
+	apiPaths map[string]string,
+	prefix []string,
+) bool {
 	for _, attr := range attributes {
+		path := append(slices.Clone(prefix), attr.TFName)
 		if attr.IsBlock {
-			if hasValues(attr.Attributes, values) {
+			if hasValues(nestedMembers(attr), values, apiPaths, path) {
 				return true
 			}
 			continue
 		}
-		if _, ok := lookupValue(values, attr); ok {
+		if _, ok := lookupValue(values, apiPaths, path); ok {
 			return true
 		}
+
 	}
 	return false
 }
 
-// lookupValue finds the materialized value an attribute corresponds to.
+// lookupValue finds the materialized value a Terraform path corresponds to.
 //
-// The attribute carries the API path it was built from, recorded by
-// apiPathIndex while both spellings were in hand, so this is an exact lookup.
-// It deliberately is not a suffix match: SnakeCase turns `backgroundColor` into
-// `background_color` and `twilio-messages-logs` into `twilio_messages_logs`,
-// neither of which suffix-matches its API path, and a near-miss there drops the
-// value from the configuration while the cassette still sends it.
-//
-// An empty APIPath means the attribute has no API counterpart, so nothing can
-// resolve to it.
-func lookupValue(values map[string]model.MaterializedValue, attr AttrView) (model.MaterializedValue, bool) {
-	if attr.APIPath == "" {
+// The index records which API path each attribute was built from, so this is
+// two exact map hits: Terraform path to API path, then API path to value. It
+// deliberately is not a suffix match between the two — a normalized name never
+// suffix-matches its API spelling, and the value would be dropped from the
+// configuration while the cassette still sent it.
+func lookupValue(
+	values map[string]model.MaterializedValue,
+	apiPaths map[string]string,
+	path []string,
+) (model.MaterializedValue, bool) {
+	apiPath, ok := apiPaths[strings.Join(path, ".")]
+	if !ok {
 		return model.MaterializedValue{}, false
 	}
-	value, ok := values[attr.APIPath]
+	value, ok := values[apiPath]
 	return value, ok
 }
 
@@ -271,12 +317,17 @@ func writeIndent(out *strings.Builder, depth int) {
 // plus a check that the resource has an id. Checks read state only — the
 // cassette is the oracle, so a live existence check would add an unplanned
 // interaction and assert nothing the fixture does not already pin.
-func renderExampleChecks(address string, schema SchemaView, values map[string]model.MaterializedValue) []string {
+func renderExampleChecks(
+	address string,
+	schema SchemaView,
+	values map[string]model.MaterializedValue,
+	apiPaths map[string]string,
+) []string {
 	checks := []string{
 		fmt.Sprintf("resource.TestCheckResourceAttrSet(%q, \"id\")", address),
 	}
 	var leaves []checkLeaf
-	collectCheckLeaves(schema.Attributes, values, nil, &leaves)
+	collectCheckLeaves(schemaMembers(schema), values, apiPaths, nil, &leaves)
 	slices.SortFunc(leaves, func(a, b checkLeaf) int { return strings.Compare(a.path, b.path) })
 	for _, leaf := range leaves {
 		// A replaced secret is asserted as the placeholder, which is what the
@@ -293,16 +344,22 @@ func renderExampleChecks(address string, schema SchemaView, values map[string]mo
 func collectCheckLeaves(
 	attributes []AttrView,
 	values map[string]model.MaterializedValue,
+	apiPaths map[string]string,
 	prefix []string,
 	out *[]checkLeaf,
 ) {
 	for _, attr := range attributes {
 		path := append(slices.Clone(prefix), attr.TFName)
 		if attr.IsBlock {
-			collectCheckLeaves(attr.Attributes, values, path, out)
+			collectCheckLeaves(nestedMembers(attr), values, apiPaths, path, out)
 			continue
 		}
-		value, ok := lookupValue(values, attr)
+		// Terraform never persists a write-only value, nor its rotation
+		// trigger, so asserting either against state would fail.
+		if attr.WriteOnlySecret != nil {
+			continue
+		}
+		value, ok := lookupValue(values, apiPaths, path)
 		if !ok || value.Value == nil {
 			continue
 		}
@@ -312,6 +369,12 @@ func collectCheckLeaves(
 		*out = append(*out, checkLeaf{path: strings.Join(path, "."), value: value.Value})
 	}
 }
+
+// writeOnlySecretVersion is the rotation trigger every generated test writes.
+// The trigger's only job is to change when an operator wants the secret
+// resent, so a generated fixture pins it: a value derived from anything that
+// varies would rewrite the configuration on every run.
+const writeOnlySecretVersion = "1"
 
 // checkLeaf is one asserted attribute: its Terraform path and the value the
 // configuration set there. Carrying the value avoids resolving it twice.
