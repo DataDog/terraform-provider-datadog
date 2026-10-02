@@ -10,6 +10,7 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -27,14 +28,21 @@ type gcpUcConfigResource struct {
 	Auth context.Context
 }
 
+type cudMetadataConfigModel struct {
+	ProjectId types.String `tfsdk:"project_id"`
+	DatasetId types.String `tfsdk:"dataset_id"`
+	TableId   types.String `tfsdk:"table_id"`
+}
+
 type gcpUcConfigModel struct {
-	ID                types.String `tfsdk:"id"`
-	BillingAccountId  types.String `tfsdk:"billing_account_id"`
-	BucketName        types.String `tfsdk:"bucket_name"`
-	ExportDatasetName types.String `tfsdk:"export_dataset_name"`
-	ExportPrefix      types.String `tfsdk:"export_prefix"`
-	ExportProjectName types.String `tfsdk:"export_project_name"`
-	ServiceAccount    types.String `tfsdk:"service_account"`
+	ID                types.String            `tfsdk:"id"`
+	BillingAccountId  types.String            `tfsdk:"billing_account_id"`
+	BucketName        types.String            `tfsdk:"bucket_name"`
+	CudMetadataConfig *cudMetadataConfigModel `tfsdk:"cud_metadata_config"`
+	ExportDatasetName types.String            `tfsdk:"export_dataset_name"`
+	ExportPrefix      types.String            `tfsdk:"export_prefix"`
+	ExportProjectName types.String            `tfsdk:"export_project_name"`
+	ServiceAccount    types.String            `tfsdk:"service_account"`
 	// Computed fields
 	CreatedAt       types.String `tfsdk:"created_at"`
 	Dataset         types.String `tfsdk:"dataset"`
@@ -72,6 +80,35 @@ func (r *gcpUcConfigResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Required:      true,
 				Description:   "The Google Cloud bucket name used to store the Usage Cost export.",
 				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplace()},
+			},
+			// Deliberately NOT RequiresReplace, unlike its siblings above. Adding a
+			// CUD metadata export to an existing account is purely additive, and
+			// replacement would delete and recreate the cost config, costing the
+			// customer an ingestion gap and a full revalidation. Update() maps this
+			// attribute onto the PATCH endpoint instead.
+			//
+			// Computed as well as Optional so that an export configured in the
+			// Datadog UI, with no block in the customer's configuration, is left
+			// alone rather than proposed for deletion on the next plan.
+			"cud_metadata_config": schema.SingleNestedAttribute{
+				Optional:    true,
+				Computed:    true,
+				Description: "The location of the committed use discount (CUD) metadata export. Google publishes commitment terms, amounts and expiration dates to this BigQuery table, and Datadog reads it to show commitment details in Cloud Cost Management.",
+				Attributes: map[string]schema.Attribute{
+					"project_id": schema.StringAttribute{
+						Required:    true,
+						Description: "The Google Cloud project that hosts the CUD metadata export dataset. Not necessarily the project holding the Usage Cost export.",
+					},
+					"dataset_id": schema.StringAttribute{
+						Required:    true,
+						Description: "The BigQuery dataset holding the CUD metadata export.",
+					},
+					"table_id": schema.StringAttribute{
+						Required:    true,
+						Description: "The BigQuery table holding the CUD metadata export. Google names this table, so it is always `cud_subscriptions_export`.",
+					},
+				},
+				PlanModifiers: []planmodifier.Object{objectplanmodifier.UseStateForUnknown()},
 			},
 			"export_dataset_name": schema.StringAttribute{
 				Required:      true,
@@ -189,11 +226,61 @@ func (r *gcpUcConfigResource) Create(ctx context.Context, request resource.Creat
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
+// Update only ever handles cud_metadata_config. Every other writable attribute
+// carries RequiresReplace, so the framework recreates the resource instead of
+// routing those changes here.
 func (r *gcpUcConfigResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	response.Diagnostics.AddError(
-		"Update Not Supported",
-		"GCP UC Config resources do not support updates. Changes require resource recreation.",
-	)
+	var plan gcpUcConfigModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	var state gcpUcConfigModel
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	if plan.CudMetadataConfig == nil {
+		// Optional + Computed: an attribute absent from the configuration means
+		// "leave the remote value alone", not "clear it". Carry the prior value
+		// forward so the plan stays empty instead of proposing a deletion the
+		// customer never asked for.
+		plan.CudMetadataConfig = state.CudMetadataConfig
+		response.Diagnostics.Append(response.State.Set(ctx, &plan)...)
+		return
+	}
+
+	id, _ := strconv.ParseInt(state.ID.ValueString(), 10, 64)
+
+	attributes := datadogV2.NewGCPUsageCostConfigPatchRequestAttributesWithDefaults()
+	cudMetadataConfig := datadogV2.NewGCPUsageCostConfigCudMetadataConfigWithDefaults()
+	cudMetadataConfig.SetProjectId(plan.CudMetadataConfig.ProjectId.ValueString())
+	cudMetadataConfig.SetDatasetId(plan.CudMetadataConfig.DatasetId.ValueString())
+	cudMetadataConfig.SetTableId(plan.CudMetadataConfig.TableId.ValueString())
+	attributes.SetCudMetadataConfig(*cudMetadataConfig)
+
+	// is_enabled is deliberately not set: the API rejects a PATCH carrying both
+	// it and cud_metadata_config.
+	body := datadogV2.NewGCPUsageCostConfigPatchRequestWithDefaults()
+	body.Data = *datadogV2.NewGCPUsageCostConfigPatchDataWithDefaults()
+	body.Data.SetAttributes(*attributes)
+
+	resp, _, err := r.Api.UpdateCostGCPUsageCostConfig(r.Auth, id, *body)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating GcpUcConfig"))
+		return
+	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		return
+	}
+
+	responseData := resp.GetData()
+	r.updateStateFromResponseData(ctx, &plan, &responseData)
+
+	response.Diagnostics.Append(response.State.Set(ctx, &plan)...)
 }
 
 func (r *gcpUcConfigResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
@@ -226,6 +313,19 @@ func (r *gcpUcConfigResource) updateStateFromResponseData(ctx context.Context, s
 		state.ExportProjectName = types.StringValue(attributes.GetExportProjectName())
 		state.ServiceAccount = types.StringValue(attributes.GetServiceAccount())
 
+		// Reading this back is what makes Optional + Computed work: without it
+		// the provider cannot tell a UI-configured export from an absent one,
+		// and would propose removing it on every plan.
+		if cudMetadataConfig, ok := attributes.GetCudMetadataConfigOk(); ok && cudMetadataConfig != nil {
+			state.CudMetadataConfig = &cudMetadataConfigModel{
+				ProjectId: types.StringValue(cudMetadataConfig.GetProjectId()),
+				DatasetId: types.StringValue(cudMetadataConfig.GetDatasetId()),
+				TableId:   types.StringValue(cudMetadataConfig.GetTableId()),
+			}
+		} else {
+			state.CudMetadataConfig = nil
+		}
+
 		// Set computed fields
 		state.CreatedAt = types.StringValue(attributes.GetCreatedAt())
 		state.Dataset = types.StringValue(attributes.GetDataset())
@@ -252,6 +352,19 @@ func (r *gcpUcConfigResource) updateStateFromGcpUcConfigResponseData(ctx context
 		state.ExportProjectName = types.StringValue(attributes.GetExportProjectName())
 		state.ServiceAccount = types.StringValue(attributes.GetServiceAccount())
 
+		// Reading this back is what makes Optional + Computed work: without it
+		// the provider cannot tell a UI-configured export from an absent one,
+		// and would propose removing it on every plan.
+		if cudMetadataConfig, ok := attributes.GetCudMetadataConfigOk(); ok && cudMetadataConfig != nil {
+			state.CudMetadataConfig = &cudMetadataConfigModel{
+				ProjectId: types.StringValue(cudMetadataConfig.GetProjectId()),
+				DatasetId: types.StringValue(cudMetadataConfig.GetDatasetId()),
+				TableId:   types.StringValue(cudMetadataConfig.GetTableId()),
+			}
+		} else {
+			state.CudMetadataConfig = nil
+		}
+
 		// Set computed fields
 		state.CreatedAt = types.StringValue(attributes.GetCreatedAt())
 		state.Dataset = types.StringValue(attributes.GetDataset())
@@ -276,6 +389,13 @@ func (r *gcpUcConfigResource) buildGcpUcConfigRequestBody(ctx context.Context, s
 	}
 	if !state.BucketName.IsNull() {
 		attributes.SetBucketName(state.BucketName.ValueString())
+	}
+	if state.CudMetadataConfig != nil {
+		cudMetadataConfig := datadogV2.NewGCPUsageCostConfigCudMetadataConfigWithDefaults()
+		cudMetadataConfig.SetProjectId(state.CudMetadataConfig.ProjectId.ValueString())
+		cudMetadataConfig.SetDatasetId(state.CudMetadataConfig.DatasetId.ValueString())
+		cudMetadataConfig.SetTableId(state.CudMetadataConfig.TableId.ValueString())
+		attributes.SetCudMetadataConfig(*cudMetadataConfig)
 	}
 	if !state.ExportDatasetName.IsNull() {
 		attributes.SetExportDatasetName(state.ExportDatasetName.ValueString())
