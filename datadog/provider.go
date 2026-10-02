@@ -77,13 +77,13 @@ func Provider() *schema.Provider {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Sensitive:   true,
-				Description: "Datadog API key. Required unless another authentication method is configured or `validate` is false. This can also be set via the `DD_API_KEY` environment variable.",
+				Description: "Datadog API key. Required when `validate` is true unless authentication uses AWS WIF, a bearer token, or Terraform Dynamic Provider Credentials. This can also be set via the `DD_API_KEY` environment variable.",
 			},
 			"app_key": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Sensitive:   true,
-				Description: "Datadog application key. Required unless another authentication method is configured or `validate` is false. This can also be set via the `DD_APP_KEY` environment variable.",
+				Description: "Datadog application key. Required when `validate` is true unless authentication uses AWS WIF, a bearer token, or Terraform Dynamic Provider Credentials. This can also be set via the `DD_APP_KEY` environment variable.",
 			},
 			"bearer_token": {
 				Type:        schema.TypeString,
@@ -115,7 +115,7 @@ func Provider() *schema.Provider {
 			"org_uuid": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "The organization UUID; required for cloud-provider-based authentication. Terraform Dynamic Provider Credentials obtain the organization UUID from the token audience instead. This can also be set using the `DD_ORG_UUID` environment variable. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
+				Description: "The organization UUID; required for AWS WIF. Optional for Terraform Dynamic Provider Credentials, but when configured it must match the organization UUID in the token audience. This can also be set using the `DD_ORG_UUID` environment variable. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
 			},
 			"aws_access_key_id": {
 				Type:        schema.TypeString,

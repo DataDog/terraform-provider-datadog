@@ -7,23 +7,23 @@ description: |-
 
 # Terraform Dynamic Provider Credentials
 
-Use Terraform-issued workload identity tokens (WITs) to authenticate the Datadog provider without storing Datadog API or application keys in your workspace. The provider exchanges a WIT for a short-lived Datadog access token through Workload Identity Federation (WIF).
+Use Terraform-issued workload identity tokens (WITs) to authenticate the Datadog provider without storing Datadog credentials in your workspace. The provider exchanges a WIT for a short-lived Datadog access token through Workload Identity Federation (WIF).
 
 ## Prerequisites
 
-- Use a Datadog provider release that includes Terraform Dynamic Provider Credentials support.
+- Use a Datadog provider release that includes Terraform Dynamic Provider Credentials support (version >= 4.25.0).
 - Enable the applicable WIF integration for your Datadog organization and register the identity mapping described below. Creating the Terraform audience variable alone is insufficient.
 - Run in HCP Terraform or Terraform Enterprise (TFE). Local Terraform CLI execution does not generate these workload tokens.
 - For self-hosted HCP Terraform agents, tagged workload tokens require agent v1.12.0 or later; the untagged token requires v1.7.0 or later. Check [HashiCorp's requirements](https://developer.hashicorp.com/terraform/cloud-docs/dynamic-provider-credentials/manual-generation) for your deployment.
 
 ## Register a WIF persona mapping
 
-Create a Terraform WIF identity (persona) mapping in the Datadog organization whose resources you intend to manage. Map the permitted Terraform workload identity to an active Datadog user or service account. The resulting Datadog token receives that identity's permissions, so grant the permissions required by your Terraform resources. A service account is recommended for automation.
+Create a Terraform WIF identity mapping in the Datadog organization whose resources you intend to manage. Map the permitted Terraform workload identity to an active Datadog service account or user. The resulting Datadog token receives that identity's permissions, so grant the permissions required by your Terraform resources. A service account is recommended for automation.
 
 For HCP Terraform workspace runs, the subject has this form:
 
 ```text
-organization:<terraform-organization>:project:<project>:workspace:<workspace>:run_phase:<plan-or-apply>
+organization:<terraform-organization>:project:<project>:workspace:<workspace>:run_phase:(plan|apply)
 ```
 
 For example, a mapping for both phases of a specific workspace can use:
@@ -38,8 +38,6 @@ HCP Terraform's US and EU issuers use the dedicated Terraform integration:
 
 - `https://app.terraform.io`
 - `https://app.eu.terraform.io`
-
-For self-hosted TFE, first register your TFE issuer with Datadog's CustomOIDC integration, configure organization resolution from the `datadog/<org-uuid>` audience, and create its persona mapping to the intended Datadog identity. The registered issuer/key source must satisfy the reachability and trust requirements of your WIF configuration. The provider routes these tokens through CustomOIDC; it does not create issuer registrations or persona mappings.
 
 ## Configure the Terraform workspace
 
@@ -68,7 +66,7 @@ provider "datadog" {
 }
 ```
 
-Use the appropriate URL for your [Datadog site](https://docs.datadoghq.com/getting_started/site/). HCP's US/EU region does not select the Datadog site. The WIT audience supplies the Datadog organization UUID. `org_uuid` and `DD_ORG_UUID` are not used to select or filter WIT credentials.
+Use the appropriate URL for your [Datadog site](https://docs.datadoghq.com/getting_started/site/). HCP's US/EU region does not select the Datadog site. The WIT audience supplies the Datadog organization UUID. Setting `org_uuid` is optional. If `org_uuid`, `DD_ORG_UUID`, or `DATADOG_ORG_UUID` is configured, it must match the organization UUID in the token audience. A mismatch fails before token exchange, even when `validate = false`; the provider does not switch to another token or authentication method.
 
 The provider also supports the untagged `TFC_WORKLOAD_IDENTITY_AUDIENCE` / `TFC_WORKLOAD_IDENTITY_TOKEN` pair. Use the `DATADOG` tag to avoid sharing the untagged token with another integration. Other tags are not discovered automatically.
 
@@ -92,6 +90,70 @@ The legacy `datadog_integration_pagerduty` resource uses a separate API client t
 
 ## Verify the setup
 
-Run a plan and apply against a test resource covered by the mapped identity's permissions. Remove alternate Datadog credentials and AWS WIF configuration from the verification workspace so success proves the WIT path. Verify the target Datadog identity through the WIF authentication/audit evidence available in your organization.
+### Check the authenticated identity during plan
 
-Also verify that a run excluded by the persona mapping fails authentication, and that removing the WIT permits a separately configured existing authentication method to work. An ETS rejection must still fail when alternate credentials are configured. If no authentication method is available, the provider reports a missing-credentials error.
+1. Use a dedicated test workspace with no managed resources. Keep the provider configuration above.
+2. Confirm that the persona mapping permits this workspace's plan phase and that `TFC_WORKLOAD_IDENTITY_AUDIENCE_DATADOG` contains the audience returned by the mapping setup.
+3. Remove alternate authentication from the provider configuration, workspace environment, inherited variable sets, and agent environment. This includes `api_key`, `app_key`, `bearer_token`, and `cloud_provider_type`, plus their `DD_*` and `DATADOG_*` environment-variable equivalents. Leave provider validation enabled.
+4. Add the following configuration. Set `expected_datadog_user_id` and `expected_datadog_org_uuid` as **Terraform variables** in the workspace, using the mapped user or service account's UUID and the Datadog organization UUID.
+
+```terraform
+variable "expected_datadog_user_id" {
+  type        = string
+  description = "UUID of the Datadog user or service account in the persona mapping."
+}
+
+variable "expected_datadog_org_uuid" {
+  type        = string
+  description = "UUID of the Datadog organization containing the persona mapping."
+}
+
+data "datadog_current_user" "wif" {
+  lifecycle {
+    postcondition {
+      condition = (
+        self.id == var.expected_datadog_user_id &&
+        self.org_id == var.expected_datadog_org_uuid
+      )
+      error_message = "The authenticated Datadog identity or organization does not match the persona mapping."
+    }
+  }
+}
+
+output "datadog_wif_identity" {
+  value = {
+    user_id         = data.datadog_current_user.wif.id
+    handle          = data.datadog_current_user.wif.handle
+    service_account = data.datadog_current_user.wif.service_account
+    org_uuid        = data.datadog_current_user.wif.org_id
+  }
+}
+```
+
+Queue a new plan in HCP Terraform or TFE. In the run output, verify that:
+
+- `datadog_current_user.wif` completes its read and the postcondition passes.
+- `datadog_wif_identity` contains the expected user or service account UUID and organization UUID.
+- There are no managed-resource additions, updates, or deletions. Terraform may show the new output as a change; that is expected.
+
+This checks authentication with the plan-phase WIT and a Datadog API read. It does not establish permission to manage every resource type. Do not print the WIT or exchanged access token to inspect the result.
+
+### Check the apply phase
+
+Terraform issues a separate WIT for apply. A data source already read during plan may not be read again during apply, so applying the unchanged example alone does not prove the apply-phase API call works.
+
+In the same dedicated test workspace, add this built-in Terraform resource:
+
+```terraform
+resource "terraform_data" "wif_apply_check" {
+  input = "first-check"
+}
+```
+
+Add `depends_on = [terraform_data.wif_apply_check]` inside the existing `data "datadog_current_user" "wif"` block, keeping its postcondition. The dependency deliberately defers the identity read until apply when the marker has a pending change. The marker stores only a value in Terraform state and creates no Datadog resource. See HashiCorp's [data source dependencies](https://developer.hashicorp.com/terraform/language/data-sources#dependencies) and [terraform_data reference](https://developer.hashicorp.com/terraform/language/resources/terraform-data).
+
+1. Confirm the persona mapping permits the apply phase as well as plan.
+2. Queue a normal plan-and-apply run. A speculative or plan-only run cannot perform this check.
+3. Before applying, verify that the only resource addition is `terraform_data.wif_apply_check` and that `datadog_current_user.wif` says it will be read during apply.
+4. Apply the run. Confirm that the identity read and postcondition pass and that the output contains the expected identity and organization.
+5. To repeat the check, change the marker's `input` value and confirm the next plan defers the read again. For cleanup, remove the marker and the `depends_on` line, then plan and apply its removal.
