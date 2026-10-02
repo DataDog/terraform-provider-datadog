@@ -20,6 +20,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/terraformauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
@@ -381,7 +382,10 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	if orgUUID == "" {
 		orgUUID, _ = utils.GetMultiEnvVar(utils.OrgUUIDEnvVars[:]...)
 	}
-	workloadIdentityConfig := utils.GetTerraformDelegatedTokenConfig()
+	workloadIdentityConfig, err := terraformauth.GetDelegatedTokenConfig(orgUUID)
+	if err != nil {
+		return nil, diag.FromErr(err)
+	}
 	awsAccessKeyId := d.Get("aws_access_key_id").(string)
 	if awsAccessKeyId == "" {
 		awsAccessKeyId, _ = utils.GetMultiEnvVar(utils.AWSAccessKeyId)
@@ -413,7 +417,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 
 	if validate && workloadIdentityConfig == nil {
 		if cloudProviderType == "" && bearerToken == "" && (apiKey == "" || appKey == "") {
-			return nil, diag.FromErr(errors.New("Datadog credentials are required unless validate = false: configure api_key and app_key, bearer_token, cloud provider authentication, or Terraform Dynamic Provider Credentials"))
+			return nil, diag.FromErr(errors.New("credentials are required unless validate = false: configure api_key and app_key, bearer_token, AWS WIF, or Terraform Dynamic Provider Credentials"))
 		} else if cloudProviderType != "" && orgUUID == "" {
 			return nil, diag.FromErr(errors.New("orgUUID must be set when using cloud provider auth unless validate = false"))
 		}
@@ -439,9 +443,10 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	// Initialize the official Datadog V1 API client
 	auth := context.Background()
 	// Terraform workload identity takes precedence over existing authentication.
-	if workloadIdentityConfig != nil {
+	switch {
+	case workloadIdentityConfig != nil:
 		auth = context.WithValue(auth, datadog.ContextDelegatedToken, &datadog.DelegatedTokenCredentials{})
-	} else if cloudProviderType != "" {
+	case cloudProviderType != "":
 		// Allows for delegated token authentication
 		auth = context.WithValue(
 			auth,
@@ -462,11 +467,11 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		default:
 			return nil, diag.FromErr(errors.New("cloud_provider_type must be set to a valid value unless validate = false"))
 		}
-	} else if bearerToken != "" {
+	case bearerToken != "":
 		// bearer_token takes precedence over api_key/app_key when both are set:
 		// a configured bearer token is an explicit signal to use Bearer auth.
 		auth = context.WithValue(auth, datadog.ContextAccessToken, bearerToken)
-	} else if apiKey != "" || appKey != "" {
+	case apiKey != "" || appKey != "":
 		auth = context.WithValue(
 			auth,
 			datadog.ContextAPIKeys,
@@ -597,19 +602,20 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	if validate {
 		log.Println("[INFO] Datadog client successfully initialized, now validating...")
 		// Validate the selected delegated credentials without falling back on failure.
-		if config.DelegatedTokenConfig != nil {
+		switch {
+		case config.DelegatedTokenConfig != nil:
 			delegatedConfig, err := datadogClient.GetDelegatedToken(auth)
 			if err != nil {
 				log.Printf("[ERROR] Datadog Client validation error: %v", err)
 				return nil, diag.FromErr(err)
 			}
 			if delegatedConfig.DelegatedToken == "" {
-				msg := fmt.Sprintf(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your OrgUUID is correct and your cloud auth credentials for "%s" are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`, config.DelegatedTokenConfig.Provider)
+				msg := fmt.Sprintf(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your OrgUUID is correct and your cloud auth credentials for %q are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`, config.DelegatedTokenConfig.Provider)
 				err := errors.New(msg)
 				log.Printf("[ERROR] Datadog Client validation error: %v", err)
 				return nil, diag.FromErr(err)
 			}
-		} else if bearerToken != "" {
+		case bearerToken != "":
 			// bearer_token takes precedence over api_key/app_key (matches the auth
 			// context selection above). /api/v1/validate is API-key-only, so hit
 			// /api/v2/validate_keys with the bearer token in the DD-APPLICATION-KEY
@@ -621,7 +627,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 				log.Printf("[ERROR] Datadog Client validation error: %v", err)
 				return nil, diag.FromErr(err)
 			}
-		} else if apiKey != "" || appKey != "" { // Validate the API and APP keys
+		case apiKey != "" || appKey != "": // Validate the API and APP keys
 			resp, _, err := apiInstances.GetAuthenticationApiV1().Validate(auth)
 			if err != nil {
 				log.Printf("[ERROR] Datadog Client validation error: %v", err)

@@ -1,4 +1,4 @@
-package utils
+package terraformauth
 
 import (
 	"encoding/base64"
@@ -20,14 +20,22 @@ func TestTerraformWorkloadIdentityDiscovery(t *testing.T) {
 	eu := token("https://app.eu.terraform.io", []string{"datadog/" + org})
 	tfe := token("https://terraform.example.com", "datadog/"+org)
 	tests := []struct {
-		name      string
-		tagged    string
-		untagged  string
-		wantOrg   string
-		wantProof string
+		name          string
+		tagged        string
+		untagged      string
+		configuredOrg string
+		wantError     bool
+		wantOrg       string
+		wantProof     string
 	}{
 		{name: "absent"},
 		{name: "tagged", tagged: us, wantProof: us},
+		{name: "matching configured organization", configuredOrg: org, tagged: us, wantProof: us},
+		{name: "mismatched tagged organization is terminal", configuredOrg: otherOrg, tagged: us, untagged: token("https://app.terraform.io", "datadog/"+otherOrg), wantError: true},
+		{name: "mismatched untagged organization", configuredOrg: otherOrg, untagged: us, wantError: true},
+		{name: "configured organization without WIT allows fallback", configuredOrg: org},
+		{name: "configured organization with unrelated WIT allows fallback", configuredOrg: org, tagged: token("https://app.terraform.io", "vault")},
+		{name: "configured UUID comparison ignores letter case", configuredOrg: "AAAAAAAA-AAAA-4AAA-8AAA-AAAAAAAAAAAA", tagged: token("https://app.terraform.io", "datadog/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"), wantOrg: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa", wantProof: token("https://app.terraform.io", "datadog/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa")},
 		{name: "tagged wins", tagged: us, untagged: eu, wantProof: us},
 		{name: "untagged", untagged: us, wantProof: us},
 		{name: "HCP Europe", tagged: eu, wantProof: eu},
@@ -58,7 +66,14 @@ func TestTerraformWorkloadIdentityDiscovery(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Setenv(TerraformWorkloadIdentityTokenEnv, tt.tagged)
 			t.Setenv(TerraformWorkloadIdentityTokenFallbackEnv, tt.untagged)
-			config := GetTerraformDelegatedTokenConfig()
+			config, err := GetDelegatedTokenConfig(tt.configuredOrg)
+			if tt.wantError {
+				require.ErrorContains(t, err, "does not match configured org_uuid")
+				require.Nil(t, config)
+				require.NotContains(t, err.Error(), us)
+				return
+			}
+			require.NoError(t, err)
 			if tt.wantProof == "" {
 				require.Nil(t, config)
 				return

@@ -1,4 +1,4 @@
-package utils
+package terraformauth
 
 import (
 	"context"
@@ -20,11 +20,12 @@ const (
 	TerraformWorkloadIdentityTokenFallbackEnv = "TFC_WORKLOAD_IDENTITY_TOKEN" // #nosec G101 -- environment variable name
 )
 
-// GetTerraformDelegatedTokenConfig discovers a Terraform workload identity token
-// addressed to a Datadog organization. A nil result lets the caller retain its
-// existing authentication selection. Claims are inspected only for selection and
-// routing: ETS is responsible for signature, issuer, expiry and mapping validation.
-func GetTerraformDelegatedTokenConfig() *datadog.DelegatedTokenConfig {
+// GetDelegatedTokenConfig discovers a Terraform workload identity token
+// addressed to a Datadog organization. A nil configuration without an error
+// lets the caller retain its existing authentication selection. Claims are inspected only for selection and
+// routing. A configured organization must match the selected token's audience.
+// ETS is responsible for signature, issuer, expiry and mapping validation.
+func GetDelegatedTokenConfig(orgUUID string) (*datadog.DelegatedTokenConfig, error) {
 	for _, name := range []string{TerraformWorkloadIdentityTokenEnv, TerraformWorkloadIdentityTokenFallbackEnv} {
 		token := os.Getenv(name)
 		parts := strings.Split(token, ".")
@@ -46,6 +47,9 @@ func GetTerraformDelegatedTokenConfig() *datadog.DelegatedTokenConfig {
 		if tokenOrgUUID == "" {
 			continue
 		}
+		if orgUUID != "" && !strings.EqualFold(orgUUID, tokenOrgUUID) {
+			return nil, fmt.Errorf("%s audience %q does not match configured org_uuid %q", name, "datadog/"+tokenOrgUUID, orgUUID)
+		}
 
 		// Inspect the issuer only to route TFE through CustomOIDC. Missing or
 		// malformed issuers still reach ETS and must not cause credential fallback.
@@ -59,9 +63,9 @@ func GetTerraformDelegatedTokenConfig() *datadog.DelegatedTokenConfig {
 			OrgUUID:      tokenOrgUUID,
 			Provider:     "terraform",
 			ProviderAuth: &terraformWorkloadIdentityAuth{proof: proof},
-		}
+		}, nil
 	}
-	return nil
+	return nil, nil
 }
 
 // terraformAudienceOrgUUID accepts the JWT string and array forms of aud. It

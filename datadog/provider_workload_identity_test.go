@@ -23,6 +23,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/terraformauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -44,7 +45,7 @@ func clearWorkloadIdentityTestEnv(t *testing.T) {
 	for _, names := range [][]string{
 		utils.APIKeyEnvVars, utils.APPKeyEnvVars, utils.BearerTokenEnvVars,
 		utils.CloudProviderTypeEnvVars, utils.OrgUUIDEnvVars, utils.APIUrlEnvVars,
-		{utils.TerraformWorkloadIdentityTokenEnv, utils.TerraformWorkloadIdentityTokenFallbackEnv},
+		{terraformauth.TerraformWorkloadIdentityTokenEnv, terraformauth.TerraformWorkloadIdentityTokenFallbackEnv},
 	} {
 		for _, name := range names {
 			t.Setenv(name, "")
@@ -95,7 +96,7 @@ func TestTerraformWorkloadIdentityAuthentication(t *testing.T) {
 				log.SetOutput(&logs)
 				t.Cleanup(func() { log.SetOutput(previousLogOutput) })
 				token := workloadIdentityTestToken(t, issuer)
-				t.Setenv(utils.TerraformWorkloadIdentityTokenEnv, token)
+				t.Setenv(terraformauth.TerraformWorkloadIdentityTokenEnv, token)
 				proof := token
 				if issuer == "https://terraform.example.com" {
 					proof = "oidc-" + token
@@ -132,8 +133,6 @@ func TestTerraformWorkloadIdentityAuthentication(t *testing.T) {
 				defer server.Close()
 				client, auth, err := configureWorkloadIdentityTestProvider(t, implementation, map[string]interface{}{
 					"api_url": server.URL,
-					// An org configured for another auth method must not filter the WIT.
-					"org_uuid": "22222222-2222-4222-8222-222222222222",
 				})
 				require.NoError(t, err)
 				require.Equal(t, "terraform", client.GetConfig().DelegatedTokenConfig.Provider)
@@ -171,13 +170,13 @@ func TestTerraformWorkloadIdentityAuthentication(t *testing.T) {
 func TestTerraformWorkloadIdentityPrecedenceAndRejection(t *testing.T) {
 	for _, implementation := range []string{"sdkv2", "framework"} {
 		for _, failure := range []string{"rejected", "malformed response", "empty access token"} {
-			for _, tokenEnv := range []string{utils.TerraformWorkloadIdentityTokenEnv, utils.TerraformWorkloadIdentityTokenFallbackEnv} {
+			for _, tokenEnv := range []string{terraformauth.TerraformWorkloadIdentityTokenEnv, terraformauth.TerraformWorkloadIdentityTokenFallbackEnv} {
 				t.Run(implementation+"/"+failure+"/"+tokenEnv, func(t *testing.T) {
 					clearWorkloadIdentityTestEnv(t)
 					selected := workloadIdentityTestToken(t, "https://app.terraform.io")
 					t.Setenv(tokenEnv, selected)
-					if tokenEnv == utils.TerraformWorkloadIdentityTokenEnv {
-						t.Setenv(utils.TerraformWorkloadIdentityTokenFallbackEnv, workloadIdentityTestToken(t, "https://app.eu.terraform.io"))
+					if tokenEnv == terraformauth.TerraformWorkloadIdentityTokenEnv {
+						t.Setenv(terraformauth.TerraformWorkloadIdentityTokenFallbackEnv, workloadIdentityTestToken(t, "https://app.eu.terraform.io"))
 					}
 					exchanges := 0
 					server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -239,7 +238,7 @@ func TestTerraformWorkloadIdentityFallback(t *testing.T) {
 					clearWorkloadIdentityTestEnv(t)
 					if tokenKind == "unrelated" {
 						token := "eyJhbGciOiJSUzI1NiJ9." + base64.RawURLEncoding.EncodeToString([]byte(`{"iss":"https://app.terraform.io","aud":"vault"}`)) + ".c2ln"
-						t.Setenv(utils.TerraformWorkloadIdentityTokenFallbackEnv, token)
+						t.Setenv(terraformauth.TerraformWorkloadIdentityTokenFallbackEnv, token)
 					}
 					values := map[string]interface{}{
 						"validate": "false",
@@ -272,6 +271,48 @@ func TestTerraformWorkloadIdentityFallback(t *testing.T) {
 						require.Equal(t, "test-app-key", keys["appKeyAuth"].Key)
 					}
 				})
+			}
+		}
+	}
+}
+
+func TestTerraformWorkloadIdentityOrganizationBinding(t *testing.T) {
+	const otherOrg = "22222222-2222-4222-8222-222222222222"
+	for _, implementation := range []string{"sdkv2", "framework"} {
+		for _, source := range []string{"org_uuid", "DD_ORG_UUID", "DATADOG_ORG_UUID"} {
+			for _, tokenEnv := range []string{terraformauth.TerraformWorkloadIdentityTokenEnv, terraformauth.TerraformWorkloadIdentityTokenFallbackEnv} {
+				for _, validate := range []string{"true", "false"} {
+					t.Run(strings.Join([]string{implementation, source, tokenEnv, validate}, "/"), func(t *testing.T) {
+						clearWorkloadIdentityTestEnv(t)
+						token := workloadIdentityTestToken(t, "https://app.terraform.io")
+						t.Setenv(tokenEnv, token)
+						requests := 0
+						server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+							requests++
+							w.WriteHeader(http.StatusInternalServerError)
+						}))
+						defer server.Close()
+						values := map[string]interface{}{
+							"api_url":             server.URL,
+							"validate":            validate,
+							"cloud_provider_type": "aws",
+							"bearer_token":        "test-bearer",
+							"api_key":             "test-api-key",
+							"app_key":             "test-app-key",
+						}
+						if source == "org_uuid" {
+							values[source] = otherOrg
+						} else {
+							t.Setenv(source, otherOrg)
+						}
+						_, _, err := configureWorkloadIdentityTestProvider(t, implementation, values)
+						require.ErrorContains(t, err, "does not match configured org_uuid")
+						require.Contains(t, err.Error(), workloadIdentityTestOrg)
+						require.Contains(t, err.Error(), otherOrg)
+						require.NotContains(t, err.Error(), token)
+						require.Zero(t, requests, "organization mismatches must fail before exchange or fallback")
+					})
+				}
 			}
 		}
 	}

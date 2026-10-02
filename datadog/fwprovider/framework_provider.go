@@ -26,6 +26,7 @@ import (
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/terraformauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -639,7 +640,11 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	cloudProviderType := config.CloudProviderType.ValueString()
 	cloudProviderRegion := config.CloudProviderRegion.ValueString()
 	orgUUID := config.OrgUuid.ValueString()
-	workloadIdentityConfig := utils.GetTerraformDelegatedTokenConfig()
+	workloadIdentityConfig, err := terraformauth.GetDelegatedTokenConfig(orgUUID)
+	if err != nil {
+		diags.AddError("Invalid Terraform workload identity configuration", err.Error())
+		return diags
+	}
 	awsAccessKeyId := config.AWSAccessKeyId.ValueString()
 	awsSecretAccessKey := config.AWSSecretAccessKey.ValueString()
 	awsSessionToken := config.AWSSessionToken.ValueString()
@@ -647,7 +652,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 
 	if validate && workloadIdentityConfig == nil {
 		if cloudProviderType == "" && bearerToken == "" && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
-			diags.AddError("Datadog credentials are required unless validate = false: configure api_key and app_key, bearer_token, cloud provider authentication, or Terraform Dynamic Provider Credentials", "")
+			diags.AddError("credentials are required unless validate = false: configure api_key and app_key, bearer_token, AWS WIF, or Terraform Dynamic Provider Credentials", "")
 			return diags
 		} else if cloudProviderType != "" && orgUUID == "" {
 			diags.AddError("orgUUID must be set when using cloud provider auth unless validate = false", "")
@@ -673,9 +678,10 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	// Initialize the official Datadog V1 API client
 	auth := context.Background()
 	// Terraform workload identity takes precedence over existing authentication.
-	if workloadIdentityConfig != nil {
+	switch {
+	case workloadIdentityConfig != nil:
 		auth = context.WithValue(auth, datadog.ContextDelegatedToken, &datadog.DelegatedTokenCredentials{})
-	} else if cloudProviderType != "" {
+	case cloudProviderType != "":
 		// Allows for delegated token authentication
 		auth = context.WithValue(
 			auth,
@@ -697,11 +703,11 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 			diags.AddError("cloud_provider_type must be set to a valid value unless validate = false", "")
 			return diags
 		}
-	} else if bearerToken != "" {
+	case bearerToken != "":
 		// bearer_token takes precedence over api_key/app_key when both are set:
 		// a configured bearer token is an explicit signal to use Bearer auth.
 		auth = context.WithValue(auth, datadog.ContextAccessToken, bearerToken)
-	} else if config.ApiKey.ValueString() != "" || config.AppKey.ValueString() != "" {
+	case config.ApiKey.ValueString() != "" || config.AppKey.ValueString() != "":
 		auth = context.WithValue(
 			auth,
 			datadog.ContextAPIKeys,
