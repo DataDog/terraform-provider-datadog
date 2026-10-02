@@ -686,6 +686,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--bar_chart_definition--request--query--event_query--group_by--sort"></a>
@@ -1971,6 +1972,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--change_definition--request--query--event_query--group_by--sort"></a>
@@ -3444,6 +3446,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--histogram_query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--distribution_definition--request--histogram_query--event_query--group_by--sort"></a>
@@ -3727,6 +3730,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--distribution_definition--request--query--event_query--group_by--sort"></a>
@@ -5164,6 +5168,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--geomap_definition--request--query--event_query--group_by--sort"></a>
@@ -6532,6 +6537,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--bar_chart_definition--request--query--event_query--group_by--sort"></a>
@@ -7817,6 +7823,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--group_by--sort"></a>
@@ -9290,6 +9297,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--event_query--group_by--sort"></a>
@@ -9573,6 +9581,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request--query--event_query--group_by--sort"></a>
@@ -11010,6 +11019,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--group_by--sort"></a>
@@ -12245,6 +12255,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--query--event_query--group_by--sort"></a>
@@ -13326,6 +13337,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by--sort"></a>
@@ -14212,6 +14224,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--group_by--sort"></a>
@@ -15233,6 +15246,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--query--event_query--group_by--sort"></a>
@@ -16496,6 +16510,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--query--event_query--group_by--sort"></a>
@@ -17558,14 +17573,19 @@ Required:
 Optional:
 
 - `color_preference` (String) Whether to colorize text or background. Valid values are `background`, `text`.
+- `count` (Number, Deprecated) The number of monitors to display. **Deprecated.** This pagination field is deprecated by the Datadog API.
 - `description` (String) The description of the widget.
 - `display_format` (String) The display setting to use. Valid values are `counts`, `countsAndList`, `list`.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `hide_zero_counts` (Boolean) A Boolean indicating whether to hide empty categories.
+- `last_triggered_format` (String) The display format for the last triggered time.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `show_investigation` (Boolean) Whether to display monitor investigation information.
 - `show_last_triggered` (Boolean) Whether to show the time that has elapsed since the monitor/group triggered.
 - `show_priority` (Boolean) Whether to show the priorities column.
+- `show_status` (Boolean) Whether to display monitor status.
 - `sort` (String) The method to sort the monitors. Valid values are `name`, `group`, `status`, `tags`, `triggered`, `group,asc`, `group,desc`, `name,asc`, `name,desc`, `status,asc`, `status,desc`, `tags,asc`, `tags,desc`, `triggered,asc`, `triggered,desc`, `priority,asc`, `priority,desc`.
+- `start` (Number, Deprecated) The start of the monitor list, typically zero. **Deprecated.** This pagination field is deprecated by the Datadog API.
 - `summary_type` (String) The summary type to use. Valid values are `monitors`, `groups`, `combined`.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--manage_status_definition--time))
 - `title` (String) The title of the widget.
@@ -18534,6 +18554,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query--group_by--sort"></a>
@@ -19944,6 +19965,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--group_by--sort"></a>
@@ -21502,6 +21524,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by--sort"></a>
@@ -22524,6 +22547,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--query--event_query--group_by--sort"></a>
@@ -23674,6 +23698,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--query--event_query--group_by--sort"></a>
@@ -24617,7 +24642,16 @@ Required:
 Optional:
 
 - `limit` (Number) Maximum number of results to display in the table.
+- `rollup` (Block List, Max: 1) Calendar rollup configuration for the SLO list. (see [below for nested schema](#nestedblock--widget--group_definition--widget--slo_list_definition--request--query--rollup))
 - `sort` (Block List) The facet and order to sort the data, for example: `{"column": "status.sli", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--slo_list_definition--request--query--sort))
+
+<a id="nestedblock--widget--group_definition--widget--slo_list_definition--request--query--rollup"></a>
+### Nested Schema for `widget.group_definition.widget.slo_list_definition.request.query.rollup`
+
+Required:
+
+- `type` (String) The calendar rollup type, for example `month`.
+
 
 <a id="nestedblock--widget--group_definition--widget--slo_list_definition--request--query--sort"></a>
 ### Nested Schema for `widget.group_definition.widget.slo_list_definition.request.query.sort`
@@ -25243,6 +25277,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--group_by--sort"></a>
@@ -26801,6 +26836,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--group_by--sort"></a>
@@ -27551,6 +27587,7 @@ Optional:
 
 Optional:
 
+- `color_order` (String) The ordering of colors in the timeseries palette.
 - `has_value_labels` (Boolean) Whether to display value labels on the timeseries.
 - `line_type` (String) The type of lines displayed. Valid values are `dashed`, `dotted`, `solid`.
 - `line_width` (String) The width of line displayed. Valid values are `normal`, `thick`, `thin`.
@@ -28128,6 +28165,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--group_by--sort"></a>
@@ -29396,6 +29434,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query--group_by--sort"></a>
@@ -30244,6 +30283,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--group_by--sort"></a>
@@ -30781,6 +30821,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--event_query--group_by--sort"></a>
@@ -31977,6 +32018,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--event_query--group_by--sort"></a>
@@ -33316,6 +33358,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--heatmap_definition--request--query--event_query--group_by--sort"></a>
@@ -34397,6 +34440,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by--sort"></a>
@@ -35283,6 +35327,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--group_by--sort"></a>
@@ -36304,6 +36349,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--hostmap_definition--request--fill--query--event_query--group_by--sort"></a>
@@ -37567,6 +37613,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--hostmap_definition--request--size--query--event_query--group_by--sort"></a>
@@ -38629,14 +38676,19 @@ Required:
 Optional:
 
 - `color_preference` (String) Whether to colorize text or background. Valid values are `background`, `text`.
+- `count` (Number, Deprecated) The number of monitors to display. **Deprecated.** This pagination field is deprecated by the Datadog API.
 - `description` (String) The description of the widget.
 - `display_format` (String) The display setting to use. Valid values are `counts`, `countsAndList`, `list`.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `hide_zero_counts` (Boolean) A Boolean indicating whether to hide empty categories.
+- `last_triggered_format` (String) The display format for the last triggered time.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `show_investigation` (Boolean) Whether to display monitor investigation information.
 - `show_last_triggered` (Boolean) Whether to show the time that has elapsed since the monitor/group triggered.
 - `show_priority` (Boolean) Whether to show the priorities column.
+- `show_status` (Boolean) Whether to display monitor status.
 - `sort` (String) The method to sort the monitors. Valid values are `name`, `group`, `status`, `tags`, `triggered`, `group,asc`, `group,desc`, `name,asc`, `name,desc`, `status,asc`, `status,desc`, `tags,asc`, `tags,desc`, `triggered,asc`, `triggered,desc`, `priority,asc`, `priority,desc`.
+- `start` (Number, Deprecated) The start of the monitor list, typically zero. **Deprecated.** This pagination field is deprecated by the Datadog API.
 - `summary_type` (String) The summary type to use. Valid values are `monitors`, `groups`, `combined`.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--manage_status_definition--time))
 - `title` (String) The title of the widget.
@@ -39605,6 +39657,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--query_table_definition--request--query--event_query--group_by--sort"></a>
@@ -41015,6 +41068,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--query_value_definition--request--query--event_query--group_by--sort"></a>
@@ -42573,6 +42627,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by--sort"></a>
@@ -43595,6 +43650,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--scatterplot_definition--request--x--query--event_query--group_by--sort"></a>
@@ -44745,6 +44801,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--query--event_query--group_by--sort"></a>
@@ -45688,7 +45745,16 @@ Required:
 Optional:
 
 - `limit` (Number) Maximum number of results to display in the table.
+- `rollup` (Block List, Max: 1) Calendar rollup configuration for the SLO list. (see [below for nested schema](#nestedblock--widget--slo_list_definition--request--query--rollup))
 - `sort` (Block List) The facet and order to sort the data, for example: `{"column": "status.sli", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--slo_list_definition--request--query--sort))
+
+<a id="nestedblock--widget--slo_list_definition--request--query--rollup"></a>
+### Nested Schema for `widget.slo_list_definition.request.query.rollup`
+
+Required:
+
+- `type` (String) The calendar rollup type, for example `month`.
+
 
 <a id="nestedblock--widget--slo_list_definition--request--query--sort"></a>
 ### Nested Schema for `widget.slo_list_definition.request.query.sort`
@@ -46314,6 +46380,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--sunburst_definition--request--query--event_query--group_by--sort"></a>
@@ -47872,6 +47939,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--timeseries_definition--request--query--event_query--group_by--sort"></a>
@@ -48622,6 +48690,7 @@ Optional:
 
 Optional:
 
+- `color_order` (String) The ordering of colors in the timeseries palette.
 - `has_value_labels` (Boolean) Whether to display value labels on the timeseries.
 - `line_type` (String) The type of lines displayed. Valid values are `dashed`, `dotted`, `solid`.
 - `line_width` (String) The width of line displayed. Valid values are `normal`, `thick`, `thin`.
@@ -49199,6 +49268,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--toplist_definition--request--query--event_query--group_by--sort"></a>
@@ -50467,6 +50537,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--treemap_definition--request--query--event_query--group_by--sort"></a>
@@ -51315,6 +51386,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--group_by--sort"></a>
@@ -51852,6 +51924,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--wildcard_definition--request--timeseries_request--query--event_query--group_by--sort"></a>
@@ -53048,6 +53121,7 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
+- `should_exclude_missing` (Boolean) Whether to exclude events missing the group-by facet.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--event_query--group_by--sort))
 
 <a id="nestedblock--widget--wildcard_definition--request--treemap_request--query--event_query--group_by--sort"></a>
@@ -53881,5 +53955,5 @@ Import is supported using the following syntax:
 The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
-terraform import datadog_powerpack_v2.foo 11111111-2222-3333-4444-555555555555
+terraform import datadog_powerpack_v2.foo abcdefab-cdef-abcd-efab-cdefabcdefab
 ```
