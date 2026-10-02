@@ -265,12 +265,6 @@ type WriteOnlySecretView struct {
 type AttrView struct {
 	// TFName is the Terraform attribute key, snake_case, e.g. "link_count".
 	TFName string
-	// APIPath is the dotted path this attribute occupies in the API body, e.g.
-	// "data.attributes.backgroundColor" behind the "background_color" TFName.
-	// It is recorded rather than derived because SnakeCase cannot be inverted,
-	// and it is what lets a cassette scenario's materialized values be matched
-	// to attributes exactly. Empty for an attribute with no API counterpart.
-	APIPath string
 	// TFType is the framework attribute type token for a leaf, e.g.
 	// "schema.StringAttribute". Ignored for nested containers (ListBlock picks
 	// the type).

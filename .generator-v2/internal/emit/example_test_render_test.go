@@ -58,61 +58,63 @@ func twilioExampleView() (exampleTestView, *model.GeneratedTestScenario) {
 	// internal/sdkbind to have resolved SDK wrapper types first — the CLI does
 	// that, a unit test does not, and this unit is the mapping from scenario
 	// plus schema to HCL and checks, not the SDK binding.
-	view, err := BuildExampleTestView(scenario, twilioSchemaView())
+	view, err := BuildExampleTestView(scenario, twilioSchemaView(), twilioAPIPaths())
 	Expect(err).To(Succeed())
 	return view, scenario
 }
 
-// twilioSchemaView mirrors the attribute tree tfgen actually emits for the
-// Twilio fixture: the JSON:API envelope flattened to top-level attributes.
-//
-// Each attribute states the API path it was built from, as apiPathIndex
-// records it. That is the correspondence under test: `twilio_messages_logs`
-// comes from `twilio-messages-logs`, and the oneOf wrapper contributes nothing
-// to the path, so the credential leaves sit directly under `authentication`.
+// twilioSchemaView mirrors the attribute tree tfgen actually emits: leaves in
+// Attributes, nested objects in Blocks. That split is the point — a renderer
+// walking only Attributes omits every block, leaving a configuration without
+// its required arguments.
 func twilioSchemaView() SchemaView {
-	const attrs = "data.attributes"
-	leaf := func(name, apiPath string, required bool) AttrView {
-		return AttrView{TFName: name, APIPath: apiPath, TFType: "schema.StringAttribute",
+	leaf := func(name string, required bool) AttrView {
+		return AttrView{TFName: name, TFType: "schema.StringAttribute",
 			Required: required, Optional: !required}
 	}
-	boolLeaf := func(name, apiPath string) AttrView {
-		return AttrView{TFName: name, APIPath: apiPath, TFType: "schema.BoolAttribute", Optional: true}
+	boolLeaf := func(name string) AttrView {
+		return AttrView{TFName: name, TFType: "schema.BoolAttribute", Optional: true}
 	}
 	return SchemaView{
 		Attributes: []AttrView{
-			leaf("name", attrs+".name", true),
-			{
-				TFName: "authentication", APIPath: attrs + ".authentication", IsBlock: true, Optional: true,
-				Attributes: []AttrView{
-					leaf("auth_type", attrs+".authentication.auth_type", true),
-					leaf("username", attrs+".authentication.username", false),
-					{TFName: "password", APIPath: attrs + ".authentication.password",
-						TFType: "schema.StringAttribute", Optional: true, Sensitive: true},
-				},
-			},
-			{
-				TFName: "settings", APIPath: attrs + ".settings", IsBlock: true, Optional: true,
-				Attributes: []AttrView{
-					leaf("account_sid", attrs+".settings.account_sid", true),
-					boolLeaf("censor_logs", attrs+".settings.censor_logs"),
-				},
-			},
-			{
-				TFName: "dataflows", APIPath: attrs + ".dataflows", IsBlock: true, Optional: true,
-				Attributes: []AttrView{
-					{
-						// The Terraform name is normalized; the API name is not.
-						TFName: "twilio_messages_logs", IsBlock: true, Optional: true,
-						APIPath: attrs + ".dataflows.twilio-messages-logs",
-						Attributes: []AttrView{
-							boolLeaf("enabled", attrs+".dataflows.twilio-messages-logs.enabled"),
-						},
-					},
-				},
-			},
-			{TFName: "id", APIPath: "data.id", TFType: "schema.StringAttribute", Computed: true},
+			leaf("name", true),
+			{TFName: "id", TFType: "schema.StringAttribute", Computed: true},
 		},
+		Blocks: []AttrView{
+			{TFName: "authentication", IsBlock: true, Optional: true,
+				Attributes: []AttrView{
+					leaf("auth_type", true),
+					leaf("username", false),
+					{TFName: "password", TFType: "schema.StringAttribute",
+						Optional: true, Sensitive: true},
+				}},
+			{TFName: "settings", IsBlock: true, Optional: true,
+				Attributes: []AttrView{leaf("account_sid", true), boolLeaf("censor_logs")}},
+			{TFName: "dataflows", IsBlock: true, Optional: true,
+				Blocks: []AttrView{
+					{TFName: "twilio_messages_logs", IsBlock: true, Optional: true,
+						Attributes: []AttrView{boolLeaf("enabled")}},
+				}},
+		},
+	}
+}
+
+// twilioAPIPaths is the correspondence APIPathIndex records. The interesting
+// entries are the ones a suffix match could never bridge — twilio_messages_logs
+// from twilio-messages-logs — and the oneOf wrapper, which advances the
+// Terraform path but not the API one.
+func twilioAPIPaths() map[string]string {
+	const attrs = "data.attributes"
+	return map[string]string{
+		"name":                     attrs + ".name",
+		"id":                       "data.id",
+		"authentication.auth_type": attrs + ".authentication.auth_type",
+		"authentication.username":  attrs + ".authentication.username",
+		"authentication.password":  attrs + ".authentication.password",
+		"settings.account_sid":     attrs + ".settings.account_sid",
+		"settings.censor_logs":     attrs + ".settings.censor_logs",
+		"dataflows.twilio_messages_logs.enabled": attrs +
+			".dataflows.twilio-messages-logs.enabled",
 	}
 }
 
@@ -254,7 +256,7 @@ var _ = Describe("BuildExampleTestView", func() {
 	})
 
 	It("rejects a scenario that does not validate", func() {
-		_, err := BuildExampleTestView(&model.GeneratedTestScenario{}, SchemaView{})
+		_, err := BuildExampleTestView(&model.GeneratedTestScenario{}, SchemaView{}, twilioAPIPaths())
 		Expect(err).To(HaveOccurred())
 	})
 })
@@ -288,51 +290,50 @@ var _ = Describe("checkValue", func() {
 })
 
 var _ = Describe("lookupValue", func() {
-	leaf := func(apiPath string) AttrView {
-		return AttrView{TFName: "ignored", APIPath: apiPath}
+	index := map[string]string{
+		"background_color":                       "data.attributes.backgroundColor",
+		"dataflows.twilio_messages_logs.enabled": "data.attributes.dataflows.twilio-messages-logs.enabled",
+		"name":                                   "data.attributes.name",
+		"flat":                                   "flat",
+		"nested.name":                            "data.attributes.nested.name",
 	}
 
-	// Regression test for a defect this replaced. Matching a Terraform path
+	// Regression test for the defect this replaced. Matching a Terraform path
 	// against an API path by string suffix cannot bridge a name SnakeCase
-	// normalized: `background_color` never suffix-matches `backgroundColor`,
-	// and `twilio_messages_logs` never matches `twilio-messages-logs`. The
-	// value was silently dropped from the configuration while the cassette
-	// still sent it.
-	DescribeTable("resolves a name Terraform normalized, which suffix matching could not",
-		func(apiPath string, want any) {
-			values := map[string]model.MaterializedValue{apiPath: {Path: apiPath, Value: want}}
-			got, ok := lookupValue(values, leaf(apiPath))
+	// normalized: background_color never suffix-matches backgroundColor, and
+	// twilio_messages_logs never matches twilio-messages-logs. The value was
+	// silently dropped from the configuration while the cassette still sent it.
+	DescribeTable("resolves through the recorded correspondence",
+		func(tfPath string, want any) {
+			values := map[string]model.MaterializedValue{
+				index[tfPath]: {Path: index[tfPath], Value: want},
+			}
+			got, ok := lookupValue(values, index, strings.Split(tfPath, "."))
 			Expect(ok).To(BeTrue())
 			Expect(got.Value).To(Equal(want))
 		},
-		Entry("camelCase", "data.attributes.backgroundColor", "#ffffff"),
-		Entry("hyphenated", "data.attributes.dataflows.twilio-messages-logs.enabled", true),
-		Entry("already snake_case", "data.attributes.name", "widget"),
-		Entry("no envelope at all", "name", "flat"),
+		Entry("camelCase", "background_color", "#ffffff"),
+		Entry("hyphenated", "dataflows.twilio_messages_logs.enabled", true),
+		Entry("already snake_case", "name", "widget"),
+		Entry("no envelope at all", "flat", "value"),
 	)
 
 	// The old suffix match preferred the shallowest candidate, so a top-level
-	// attribute could silently take an unrelated nested property's value.
+	// attribute could silently take a nested property's value.
 	It("does not resolve a top-level attribute to a nested property of the same name", func() {
 		values := map[string]model.MaterializedValue{
 			"data.attributes.nested.name": {Path: "data.attributes.nested.name", Value: "INNER"},
 		}
-		_, ok := lookupValue(values, leaf("data.attributes.name"))
+		_, ok := lookupValue(values, index, []string{"name"})
 		Expect(ok).To(BeFalse())
 
-		got, ok := lookupValue(values, leaf("data.attributes.nested.name"))
+		got, ok := lookupValue(values, index, []string{"nested", "name"})
 		Expect(ok).To(BeTrue())
 		Expect(got.Value).To(Equal("INNER"))
 	})
 
-	It("reports an attribute with no API counterpart", func() {
-		values := map[string]model.MaterializedValue{"data.attributes.name": {Value: "x"}}
-		_, ok := lookupValue(values, leaf(""))
-		Expect(ok).To(BeFalse())
-	})
-
-	It("reports an API path nothing materialized", func() {
-		_, ok := lookupValue(map[string]model.MaterializedValue{}, leaf("data.attributes.absent"))
+	It("reports a Terraform path the index does not know", func() {
+		_, ok := lookupValue(map[string]model.MaterializedValue{}, index, []string{"absent"})
 		Expect(ok).To(BeFalse())
 	})
 })
@@ -348,6 +349,21 @@ var _ = Describe("testHelperName", func() {
 		Expect(testHelperName("Odd", "Config")).To(Equal("testAccOddConfig"))
 	})
 })
+
+// edgePaths is the correspondence for the attributes the edge specs declare.
+// Each sits directly under the JSON:API attributes member, except the id,
+// which the envelope carries itself.
+func edgePaths() map[string]string {
+	const attrs = "data.attributes"
+	paths := map[string]string{"id": "data.id"}
+	for _, name := range []string{
+		"name", "created_at", "mode", "tags", "note",
+		"settings", "settings.unset", "deep", "deep.inner", "deep.inner.also_unset",
+	} {
+		paths[name] = attrs + "." + name
+	}
+	return paths
+}
 
 var _ = Describe("BuildExampleTestView edge paths", func() {
 	scenario := func(values []model.MaterializedValue) *model.GeneratedTestScenario {
@@ -372,7 +388,7 @@ var _ = Describe("BuildExampleTestView edge paths", func() {
 		s.Steps[0].State = nil
 		view, err := BuildExampleTestView(s, SchemaView{
 			Attributes: []AttrView{{TFName: "name", TFType: "schema.StringAttribute", Optional: true}},
-		})
+		}, twilioAPIPaths())
 		Expect(err).To(Succeed())
 		Expect(view.Steps[0].ConfigBody).To(Equal("resource \"datadog_widget\" \"foo\" {\n}"))
 		// The id check stands alone when nothing was configured.
@@ -385,7 +401,7 @@ var _ = Describe("BuildExampleTestView edge paths", func() {
 			{Path: "data.attributes.name", Value: "widget"},
 		}), SchemaView{
 			Attributes: []AttrView{
-				{TFName: "name", APIPath: "data.attributes.name",
+				{TFName: "name",
 					TFType: "schema.StringAttribute", Required: true},
 				{TFName: "settings", IsBlock: true, Optional: true, Attributes: []AttrView{
 					{TFName: "unset", TFType: "schema.StringAttribute", Optional: true},
@@ -396,7 +412,7 @@ var _ = Describe("BuildExampleTestView edge paths", func() {
 					}},
 				}},
 			},
-		})
+		}, edgePaths())
 		Expect(err).To(Succeed())
 		Expect(view.Steps[0].ConfigBody).NotTo(ContainSubstring("settings"))
 		Expect(view.Steps[0].ConfigBody).NotTo(ContainSubstring("deep"))
@@ -409,10 +425,10 @@ var _ = Describe("BuildExampleTestView edge paths", func() {
 			{Path: "data.attributes.created_at", Value: "2026-06-25T08:30:50Z"},
 		}), SchemaView{
 			Attributes: []AttrView{
-				{TFName: "created_at", APIPath: "data.attributes.created_at",
+				{TFName: "created_at",
 					TFType: "schema.StringAttribute", Computed: true},
 			},
-		})
+		}, edgePaths())
 		Expect(err).To(Succeed())
 		Expect(view.Steps[0].ConfigBody).NotTo(ContainSubstring("created_at"))
 	})
@@ -422,10 +438,10 @@ var _ = Describe("BuildExampleTestView edge paths", func() {
 			{Path: "data.attributes.mode", Value: "fast"},
 		}), SchemaView{
 			Attributes: []AttrView{
-				{TFName: "mode", APIPath: "data.attributes.mode",
+				{TFName: "mode",
 					TFType: "schema.StringAttribute", Optional: true, Computed: true},
 			},
-		})
+		}, edgePaths())
 		Expect(err).To(Succeed())
 		Expect(view.Steps[0].ConfigBody).To(ContainSubstring(`mode = "fast"`))
 	})
@@ -439,14 +455,14 @@ var _ = Describe("BuildExampleTestView edge paths", func() {
 			{Path: "data.attributes.name", Value: "widget"},
 		}), SchemaView{
 			Attributes: []AttrView{
-				{TFName: "tags", APIPath: "data.attributes.tags",
+				{TFName: "tags",
 					TFType: "schema.ListAttribute", Optional: true},
-				{TFName: "note", APIPath: "data.attributes.note",
+				{TFName: "note",
 					TFType: "schema.StringAttribute", Optional: true},
-				{TFName: "name", APIPath: "data.attributes.name",
+				{TFName: "name",
 					TFType: "schema.StringAttribute", Required: true},
 			},
-		})
+		}, edgePaths())
 		Expect(err).To(Succeed())
 		Expect(view.Steps[0].ConfigBody).To(ContainSubstring(`tags = ["alpha", "beta"]`))
 		Expect(view.Steps[0].ConfigBody).To(ContainSubstring("note = null"))
@@ -458,7 +474,7 @@ var _ = Describe("BuildExampleTestView edge paths", func() {
 	})
 
 	It("uses one config helper when there is a single step", func() {
-		view, err := BuildExampleTestView(scenario(nil), SchemaView{})
+		view, err := BuildExampleTestView(scenario(nil), SchemaView{}, twilioAPIPaths())
 		Expect(err).To(Succeed())
 		Expect(view.Steps).To(HaveLen(1))
 		Expect(view.Steps[0].ConfigFunc).NotTo(ContainSubstring("Step"))
