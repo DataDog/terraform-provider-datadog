@@ -17,7 +17,12 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
-
+{{ if not .APIAccessor }}
+	// The provider exposes no accessor for this API, so the destroy check
+	// constructs the SDK client directly, exactly as the generated resource's
+	// Configure does.
+	"github.com/DataDog/datadog-api-client-go/v2/api/{{ .SDKPackage }}"
+{{- end }}
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
