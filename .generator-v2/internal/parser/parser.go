@@ -152,6 +152,10 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 		return nil, err
 	}
 
+	// Must follow normalization: the example contracts reuse the normalized
+	// request/response/parameter schemas rather than normalizing a second time.
+	ExtractExamples(spec, raw)
+
 	return spec, nil
 }
 
