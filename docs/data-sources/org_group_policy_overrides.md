@@ -3,12 +3,12 @@
 page_title: "datadog_org_group_policy_overrides Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to retrieve org group policy overrides. Supports filtering by policy ID (server-side) and organization UUID (client-side).
+  Use this data source to retrieve org group policy overrides. Supports filtering by policy ID (server-side) and organization UUID (client-side). Note: Org Groups operations are in preview and subject to change. Access may need to be enabled for your organization. Contact Datadog support https://docs.datadoghq.com/help/ to request access.
 ---
 
 # datadog_org_group_policy_overrides (Data Source)
 
-Use this data source to retrieve org group policy overrides. Supports filtering by policy ID (server-side) and organization UUID (client-side).
+Use this data source to retrieve org group policy overrides. Supports filtering by policy ID (server-side) and organization UUID (client-side). **Note**: Org Groups operations are in preview and subject to change. Access may need to be enabled for your organization. Contact [Datadog support](https://docs.datadoghq.com/help/) to request access.
 
 ## Example Usage
 
