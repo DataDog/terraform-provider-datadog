@@ -721,6 +721,102 @@ func TestAccDatadogSyntheticsMobileTest_NoSteps(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsMobileTest_MultiLocator(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	const resourceName = "datadog_synthetics_test.bar"
+	const elementPath = "mobile_step.0.params.0.element.0."
+	const absoluteLocator = `/*[local-name()="XCUIElementTypeStaticText"][1]`
+	const contentLocator = `[{"tagName":"XCUIElementTypeStaticText","text":"tap","textType":"directText"}]`
+	multiLocatorConfig := func(relativeLocator string) string {
+		return createSyntheticsMobileTestMultiLocatorConfig(testName, fmt.Sprintf(`
+        multi_locator = {
+          ab = %q
+          co = %q
+          ro = %q
+        }`, absoluteLocator, contentLocator, relativeLocator))
+	}
+	checkMultiLocator := func(relativeLocator string) resource.TestCheckFunc {
+		return resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(providers.sdkV2Provider),
+			resource.TestCheckResourceAttr(resourceName, elementPath+"multi_locator.%", "3"),
+			resource.TestCheckResourceAttr(resourceName, elementPath+"multi_locator.ab", absoluteLocator),
+			resource.TestCheckResourceAttr(resourceName, elementPath+"multi_locator.co", contentLocator),
+			resource.TestCheckResourceAttr(resourceName, elementPath+"multi_locator.ro", relativeLocator),
+			resource.TestCheckResourceAttr(resourceName, elementPath+"user_locator.#", "0"),
+		)
+	}
+	initialConfig := multiLocatorConfig(`//*[@name="Tap"]`)
+	updatedConfig := multiLocatorConfig(`//*[@name="Tap again"]`)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(providers.sdkV2Provider),
+		Steps: []resource.TestStep{
+			{Config: initialConfig, Check: checkMultiLocator(`//*[@name="Tap"]`)},
+			{Config: updatedConfig, Check: checkMultiLocator(`//*[@name="Tap again"]`)},
+			{
+				Config: createSyntheticsMobileTestMultiLocatorConfig(testName, `
+        user_locator {
+          fail_test_on_cannot_locate = true
+          values {
+            type  = "id"
+            value = "some_id"
+          }
+        }`),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, elementPath+"multi_locator.%", "0"),
+					resource.TestCheckResourceAttr(resourceName, elementPath+"user_locator.0.values.0.value", "some_id"),
+				),
+			},
+			{Config: initialConfig, Check: checkMultiLocator(`//*[@name="Tap"]`)},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			{Config: initialConfig, PlanOnly: true},
+		},
+	})
+}
+
+func createSyntheticsMobileTestMultiLocatorConfig(uniq, locator string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "bar" {
+  name      = %q
+  type      = "mobile"
+  status    = "paused"
+  message   = ""
+  locations = []
+
+  mobile_options_list {
+    device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+    tick_every = 43200
+    mobile_application {
+      application_id = "ab0e0aed-536d-411a-9a99-5428c27d8f8e"
+      reference_id   = "6115922a-5f5d-455e-bc7e-7955a57f3815"
+      reference_type = "version"
+    }
+  }
+
+  mobile_step {
+    name = "Tap"
+    type = "tap"
+    params {
+      element {
+        context      = "NATIVE_APP"
+        context_type = "native"
+        view_name    = "StaticText"
+        text_content = "Tap"
+        %s
+      }
+    }
+  }
+}`, uniq, locator)
+}
+
 func TestAccDatadogSyntheticsMobileTest_Updated(t *testing.T) {
 	cleanupSyntheticsTests(t)
 	t.Parallel()

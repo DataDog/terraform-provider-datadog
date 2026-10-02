@@ -1,0 +1,317 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 698
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["metric-enrichment-table-group-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"metric-enrichment-table-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"file":{"encoding":{"delimiter":",","includes_headers":true,"type":"csv"},"key":{"column":"service","source":{"name":"service","type":"tag"}},"path":"/etc/enrichment/lookup.csv"},"id":"metric-enrichment-table-processor","include":"*","type":"enrichment_table"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"metric enrichment table processor test"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"b0dcf6c8-bcdf-11f1-9506-da7ad0900002","type":"pipelines","attributes":{"name":"metric enrichment table processor test","config":{"destinations":[{"id":"destination-1","inputs":["metric-enrichment-table-group-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"metric-enrichment-table-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"file":{"encoding":{"delimiter":",","includes_headers":true,"type":"csv"},"key":{"column":"service","source":{"name":"service","type":"tag"}},"path":"/etc/enrichment/lookup.csv"},"id":"metric-enrichment-table-processor","include":"*","type":"enrichment_table"}]}],"processors":[{"enabled":true,"id":"metric-enrichment-table-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"file":{"encoding":{"delimiter":",","includes_headers":true,"type":"csv"},"key":{"column":"service","source":{"name":"service","type":"tag"}},"path":"/etc/enrichment/lookup.csv"},"id":"metric-enrichment-table-processor","include":"*","type":"enrichment_table"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 256.144834ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/b0dcf6c8-bcdf-11f1-9506-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"b0dcf6c8-bcdf-11f1-9506-da7ad0900002","type":"pipelines","attributes":{"name":"metric enrichment table processor test","config":{"destinations":[{"id":"destination-1","inputs":["metric-enrichment-table-group-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"metric-enrichment-table-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"file":{"encoding":{"delimiter":",","includes_headers":true,"type":"csv"},"key":{"column":"service","source":{"name":"service","type":"tag"}},"path":"/etc/enrichment/lookup.csv"},"id":"metric-enrichment-table-processor","include":"*","type":"enrichment_table"}]}],"processors":[{"enabled":true,"id":"metric-enrichment-table-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"file":{"encoding":{"delimiter":",","includes_headers":true,"type":"csv"},"key":{"column":"service","source":{"name":"service","type":"tag"}},"path":"/etc/enrichment/lookup.csv"},"id":"metric-enrichment-table-processor","include":"*","type":"enrichment_table"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 174.467459ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/b0dcf6c8-bcdf-11f1-9506-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"b0dcf6c8-bcdf-11f1-9506-da7ad0900002","type":"pipelines","attributes":{"name":"metric enrichment table processor test","config":{"destinations":[{"id":"destination-1","inputs":["metric-enrichment-table-group-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"metric-enrichment-table-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"file":{"encoding":{"delimiter":",","includes_headers":true,"type":"csv"},"key":{"column":"service","source":{"name":"service","type":"tag"}},"path":"/etc/enrichment/lookup.csv"},"id":"metric-enrichment-table-processor","include":"*","type":"enrichment_table"}]}],"processors":[{"enabled":true,"id":"metric-enrichment-table-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"file":{"encoding":{"delimiter":",","includes_headers":true,"type":"csv"},"key":{"column":"service","source":{"name":"service","type":"tag"}},"path":"/etc/enrichment/lookup.csv"},"id":"metric-enrichment-table-processor","include":"*","type":"enrichment_table"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 238.316834ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 693
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["metric-enrichment-table-group-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"metric-enrichment-table-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"metric-enrichment-table-processor","include":"*","reference_table":{"app_key_key":"METRIC_ENRICHMENT_APP_KEY","columns":["environment","team"],"key":{"source":{"type":"metric_name"}},"table_id":"metric-enrichment"},"type":"enrichment_table"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"metric enrichment table processor test"},"id":"","type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/b0dcf6c8-bcdf-11f1-9506-da7ad0900002
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"b0dcf6c8-bcdf-11f1-9506-da7ad0900002","type":"pipelines","attributes":{"name":"metric enrichment table processor test","config":{"destinations":[{"id":"destination-1","inputs":["metric-enrichment-table-group-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"metric-enrichment-table-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"metric-enrichment-table-processor","include":"*","reference_table":{"app_key_key":"METRIC_ENRICHMENT_APP_KEY","columns":["environment","team"],"key":{"source":{"type":"metric_name"}},"table_id":"metric-enrichment"},"type":"enrichment_table"}]}],"processors":[{"enabled":true,"id":"metric-enrichment-table-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"metric-enrichment-table-processor","include":"*","reference_table":{"app_key_key":"METRIC_ENRICHMENT_APP_KEY","columns":["environment","team"],"key":{"source":{"type":"metric_name"}},"table_id":"metric-enrichment"},"type":"enrichment_table"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 435.146792ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/b0dcf6c8-bcdf-11f1-9506-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"b0dcf6c8-bcdf-11f1-9506-da7ad0900002","type":"pipelines","attributes":{"name":"metric enrichment table processor test","config":{"destinations":[{"id":"destination-1","inputs":["metric-enrichment-table-group-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"metric-enrichment-table-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"metric-enrichment-table-processor","include":"*","reference_table":{"app_key_key":"METRIC_ENRICHMENT_APP_KEY","columns":["environment","team"],"key":{"source":{"type":"metric_name"}},"table_id":"metric-enrichment"},"type":"enrichment_table"}]}],"processors":[{"enabled":true,"id":"metric-enrichment-table-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"metric-enrichment-table-processor","include":"*","reference_table":{"app_key_key":"METRIC_ENRICHMENT_APP_KEY","columns":["environment","team"],"key":{"source":{"type":"metric_name"}},"table_id":"metric-enrichment"},"type":"enrichment_table"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 183.134875ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/b0dcf6c8-bcdf-11f1-9506-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"b0dcf6c8-bcdf-11f1-9506-da7ad0900002","type":"pipelines","attributes":{"name":"metric enrichment table processor test","config":{"destinations":[{"id":"destination-1","inputs":["metric-enrichment-table-group-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"metric-enrichment-table-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"metric-enrichment-table-processor","include":"*","reference_table":{"app_key_key":"METRIC_ENRICHMENT_APP_KEY","columns":["environment","team"],"key":{"source":{"type":"metric_name"}},"table_id":"metric-enrichment"},"type":"enrichment_table"}]}],"processors":[{"enabled":true,"id":"metric-enrichment-table-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"metric-enrichment-table-processor","include":"*","reference_table":{"app_key_key":"METRIC_ENRICHMENT_APP_KEY","columns":["environment","team"],"key":{"source":{"type":"metric_name"}},"table_id":"metric-enrichment"},"type":"enrichment_table"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 160.062375ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 618
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["metric-enrichment-table-group-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"metric-enrichment-table-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"metric-enrichment-table-processor","include":"*","reference_table":{"key":{"source":{"type":"metric_name"}},"table_id":"metric-enrichment"},"type":"enrichment_table"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"metric enrichment table processor test"},"id":"","type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/b0dcf6c8-bcdf-11f1-9506-da7ad0900002
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 965
+        uncompressed: false
+        body: |
+            {"data":{"id":"b0dcf6c8-bcdf-11f1-9506-da7ad0900002","type":"pipelines","attributes":{"name":"metric enrichment table processor test","config":{"destinations":[{"id":"destination-1","inputs":["metric-enrichment-table-group-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"metric-enrichment-table-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"metric-enrichment-table-processor","include":"*","reference_table":{"key":{"source":{"type":"metric_name"}},"table_id":"metric-enrichment"},"type":"enrichment_table"}]}],"processors":[{"enabled":true,"id":"metric-enrichment-table-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"metric-enrichment-table-processor","include":"*","reference_table":{"key":{"source":{"type":"metric_name"}},"table_id":"metric-enrichment"},"type":"enrichment_table"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 387.458125ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/b0dcf6c8-bcdf-11f1-9506-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 965
+        uncompressed: false
+        body: |
+            {"data":{"id":"b0dcf6c8-bcdf-11f1-9506-da7ad0900002","type":"pipelines","attributes":{"name":"metric enrichment table processor test","config":{"destinations":[{"id":"destination-1","inputs":["metric-enrichment-table-group-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"metric-enrichment-table-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"metric-enrichment-table-processor","include":"*","reference_table":{"key":{"source":{"type":"metric_name"}},"table_id":"metric-enrichment"},"type":"enrichment_table"}]}],"processors":[{"enabled":true,"id":"metric-enrichment-table-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"metric-enrichment-table-processor","include":"*","reference_table":{"key":{"source":{"type":"metric_name"}},"table_id":"metric-enrichment"},"type":"enrichment_table"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 567.963583ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/b0dcf6c8-bcdf-11f1-9506-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 371.388083ms

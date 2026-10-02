@@ -1,0 +1,997 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 845
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"variables":[]},"message":"","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"status":"paused","steps":[{"allowFailure":false,"hasNewStepElement":false,"isCritical":false,"name":"Tap","noScreenshot":false,"params":{"element":{"context":"NATIVE_APP","contextType":"native","multiLocator":{"ab":"/*[local-name()=\"XCUIElementTypeStaticText\"][1]","co":"[{\"tagName\":\"XCUIElementTypeStaticText\",\"text\":\"tap\",\"textType\":\"directText\"}]","ro":"//*[@name=\"Tap\"]"},"textContent":"Tap","viewName":"StaticText"}},"type":"tap"}],"type":"mobile"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:20.675057+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":326214869,"org_id":321813,"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"creation_source":"terraform","steps":[{"name":"Tap","params":{"element":{"context":"NATIVE_APP","contextType":"native","multiLocator":{"ab":"/*[local-name()=\"XCUIElementTypeStaticText\"][1]","co":"[{\"tagName\":\"XCUIElementTypeStaticText\",\"text\":\"tap\",\"textType\":\"directText\"}]","ro":"//*[@name=\"Tap\"]"},"textContent":"Tap","viewName":"StaticText"}},"type":"tap","public_id":"rgv-zq9-ads","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}],"stepCount":{"assertions":0,"subtests":0,"total":1,"nested_steps":0}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 481.648542ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:20.675057+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Tap","params":{"element":{"context":"NATIVE_APP","contextType":"native","multiLocator":{"ab":"/*[local-name()=\"XCUIElementTypeStaticText\"][1]","co":"[{\"tagName\":\"XCUIElementTypeStaticText\",\"text\":\"tap\",\"textType\":\"directText\"}]","ro":"//*[@name=\"Tap\"]"},"textContent":"Tap","viewName":"StaticText"}},"public_id":"rgv-zq9-ads","type":"tap","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 250.357708ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:20.675057+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 234.120959ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:20.675057+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 239.098667ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:20.675057+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Tap","params":{"element":{"context":"NATIVE_APP","contextType":"native","multiLocator":{"ab":"/*[local-name()=\"XCUIElementTypeStaticText\"][1]","co":"[{\"tagName\":\"XCUIElementTypeStaticText\",\"text\":\"tap\",\"textType\":\"directText\"}]","ro":"//*[@name=\"Tap\"]"},"textContent":"Tap","viewName":"StaticText"}},"public_id":"rgv-zq9-ads","type":"tap","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 817.3505ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:20.675057+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 236.429667ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:20.675057+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Tap","params":{"element":{"context":"NATIVE_APP","contextType":"native","multiLocator":{"ab":"/*[local-name()=\"XCUIElementTypeStaticText\"][1]","co":"[{\"tagName\":\"XCUIElementTypeStaticText\",\"text\":\"tap\",\"textType\":\"directText\"}]","ro":"//*[@name=\"Tap\"]"},"textContent":"Tap","viewName":"StaticText"}},"public_id":"rgv-zq9-ads","type":"tap","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 267.703916ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 851
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"variables":[]},"message":"","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"status":"paused","steps":[{"allowFailure":false,"hasNewStepElement":false,"isCritical":false,"name":"Tap","noScreenshot":false,"params":{"element":{"context":"NATIVE_APP","contextType":"native","multiLocator":{"ab":"/*[local-name()=\"XCUIElementTypeStaticText\"][1]","co":"[{\"tagName\":\"XCUIElementTypeStaticText\",\"text\":\"tap\",\"textType\":\"directText\"}]","ro":"//*[@name=\"Tap again\"]"},"textContent":"Tap","viewName":"StaticText"}},"type":"tap"}],"type":"mobile"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/ibd-3zy-2fi
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"org_id":321813,"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:24.766164+00:00","config":{"variables":[]},"overall_state_modified":"1970-01-01T00:00:00+00:00","monitor_id":326214869,"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"overall_state":2,"creation_source":"terraform","steps":[{"name":"Tap","params":{"element":{"context":"NATIVE_APP","contextType":"native","multiLocator":{"ab":"/*[local-name()=\"XCUIElementTypeStaticText\"][1]","co":"[{\"tagName\":\"XCUIElementTypeStaticText\",\"text\":\"tap\",\"textType\":\"directText\"}]","ro":"//*[@name=\"Tap again\"]"},"textContent":"Tap","viewName":"StaticText"}},"type":"tap","public_id":"8pg-fbt-r2r","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}],"stepCount":{"assertions":0,"subtests":0,"total":1,"nested_steps":0}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 867.107625ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:24.766164+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 281.001458ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:24.766164+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 234.262166ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:24.766164+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Tap","params":{"element":{"context":"NATIVE_APP","contextType":"native","multiLocator":{"ab":"/*[local-name()=\"XCUIElementTypeStaticText\"][1]","co":"[{\"tagName\":\"XCUIElementTypeStaticText\",\"text\":\"tap\",\"textType\":\"directText\"}]","ro":"//*[@name=\"Tap again\"]"},"textContent":"Tap","viewName":"StaticText"}},"public_id":"8pg-fbt-r2r","type":"tap","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 243.220708ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:24.766164+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 228.132584ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:24.766164+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Tap","params":{"element":{"context":"NATIVE_APP","contextType":"native","multiLocator":{"ab":"/*[local-name()=\"XCUIElementTypeStaticText\"][1]","co":"[{\"tagName\":\"XCUIElementTypeStaticText\",\"text\":\"tap\",\"textType\":\"directText\"}]","ro":"//*[@name=\"Tap again\"]"},"textContent":"Tap","viewName":"StaticText"}},"public_id":"8pg-fbt-r2r","type":"tap","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 231.075542ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 736
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"variables":[]},"message":"","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"status":"paused","steps":[{"allowFailure":false,"hasNewStepElement":false,"isCritical":false,"name":"Tap","noScreenshot":false,"params":{"element":{"context":"NATIVE_APP","contextType":"native","textContent":"Tap","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some_id"}]},"viewName":"StaticText"}},"type":"tap"}],"type":"mobile"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/ibd-3zy-2fi
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"org_id":321813,"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:28.507879+00:00","config":{"variables":[]},"overall_state_modified":"1970-01-01T00:00:00+00:00","monitor_id":326214869,"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"overall_state":2,"creation_source":"terraform","steps":[{"name":"Tap","params":{"element":{"context":"NATIVE_APP","contextType":"native","textContent":"Tap","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some_id"}]},"viewName":"StaticText"}},"type":"tap","public_id":"dq4-c6y-bwr","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}],"stepCount":{"assertions":0,"subtests":0,"total":1,"nested_steps":0}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 935.838708ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:28.507879+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 285.370375ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:28.507879+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Tap","params":{"element":{"context":"NATIVE_APP","contextType":"native","textContent":"Tap","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some_id"}]},"viewName":"StaticText"}},"public_id":"dq4-c6y-bwr","type":"tap","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 245.670208ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:28.507879+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 224.455542ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:28.507879+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Tap","params":{"element":{"context":"NATIVE_APP","contextType":"native","textContent":"Tap","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some_id"}]},"viewName":"StaticText"}},"public_id":"dq4-c6y-bwr","type":"tap","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 254.973042ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 845
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"variables":[]},"message":"","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"status":"paused","steps":[{"allowFailure":false,"hasNewStepElement":false,"isCritical":false,"name":"Tap","noScreenshot":false,"params":{"element":{"context":"NATIVE_APP","contextType":"native","multiLocator":{"ab":"/*[local-name()=\"XCUIElementTypeStaticText\"][1]","co":"[{\"tagName\":\"XCUIElementTypeStaticText\",\"text\":\"tap\",\"textType\":\"directText\"}]","ro":"//*[@name=\"Tap\"]"},"textContent":"Tap","viewName":"StaticText"}},"type":"tap"}],"type":"mobile"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/ibd-3zy-2fi
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"org_id":321813,"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:32.389168+00:00","config":{"variables":[]},"overall_state_modified":"1970-01-01T00:00:00+00:00","monitor_id":326214869,"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"overall_state":2,"creation_source":"terraform","steps":[{"name":"Tap","params":{"element":{"context":"NATIVE_APP","contextType":"native","multiLocator":{"ab":"/*[local-name()=\"XCUIElementTypeStaticText\"][1]","co":"[{\"tagName\":\"XCUIElementTypeStaticText\",\"text\":\"tap\",\"textType\":\"directText\"}]","ro":"//*[@name=\"Tap\"]"},"textContent":"Tap","viewName":"StaticText"}},"type":"tap","public_id":"je2-us9-cuu","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}],"stepCount":{"assertions":0,"subtests":0,"total":1,"nested_steps":0}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 829.217459ms
+    - id: 19
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:32.389168+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 222.431041ms
+    - id: 20
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:32.389168+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 232.311792ms
+    - id: 21
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:32.389168+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Tap","params":{"element":{"context":"NATIVE_APP","contextType":"native","multiLocator":{"ab":"/*[local-name()=\"XCUIElementTypeStaticText\"][1]","co":"[{\"tagName\":\"XCUIElementTypeStaticText\",\"text\":\"tap\",\"textType\":\"directText\"}]","ro":"//*[@name=\"Tap\"]"},"textContent":"Tap","viewName":"StaticText"}},"public_id":"je2-us9-cuu","type":"tap","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 227.826334ms
+    - id: 22
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:32.389168+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 219.855167ms
+    - id: 23
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:32.389168+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Tap","params":{"element":{"context":"NATIVE_APP","contextType":"native","multiLocator":{"ab":"/*[local-name()=\"XCUIElementTypeStaticText\"][1]","co":"[{\"tagName\":\"XCUIElementTypeStaticText\",\"text\":\"tap\",\"textType\":\"directText\"}]","ro":"//*[@name=\"Tap\"]"},"textContent":"Tap","viewName":"StaticText"}},"public_id":"je2-us9-cuu","type":"tap","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 234.133583ms
+    - id: 24
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:32.389168+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 213.033625ms
+    - id: 25
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ibd-3zy-2fi","name":"tf-TestAccDatadogSyntheticsMobileTest_MultiLocator-local-1790674998","status":"paused","type":"mobile","tags":[],"created_at":"2026-09-29T09:43:20.675057+00:00","modified_at":"2026-09-29T09:43:32.389168+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":326214869,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Tap","params":{"element":{"context":"NATIVE_APP","contextType":"native","multiLocator":{"ab":"/*[local-name()=\"XCUIElementTypeStaticText\"][1]","co":"[{\"tagName\":\"XCUIElementTypeStaticText\",\"text\":\"tap\",\"textType\":\"directText\"}]","ro":"//*[@name=\"Tap\"]"},"textContent":"Tap","viewName":"StaticText"}},"public_id":"je2-us9-cuu","type":"tap","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 247.646666ms
+    - id: 26
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 31
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"public_ids":["ibd-3zy-2fi"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_tests":[{"public_id":"ibd-3zy-2fi","deleted_at":"2026-09-29T09:43:39.068168+00:00"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 756.708084ms
+    - id: 27
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/ibd-3zy-2fi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics test not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 133.391875ms

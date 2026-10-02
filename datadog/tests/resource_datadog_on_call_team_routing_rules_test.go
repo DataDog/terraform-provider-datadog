@@ -156,19 +156,13 @@ func TestAccOnCallTeamRoutingRulesCatchAllValidation(t *testing.T) {
 				resource "datadog_on_call_team_routing_rules" "catch_all_validation" {
 				  id = "00000000-aba2-0000-0000-000000000000"
 				  rule {
-				    query             = "tags.service:test"
-				    escalation_policy = "00000000-aba2-0000-0000-000000000001"
+				    query = "tags.service:test"
 				  }
 				  rule {
-				    action {
-				      send_slack_message {
-				        workspace = "workspace"
-				        channel   = "channel"
-				      }
-				    }
+				    escalation_policy = "00000000-aba2-0000-0000-000000000001"
 				  }
 				}`,
-				ExpectError: regexp.MustCompile("missing escalation policy on last rule"),
+				ExpectError: regexp.MustCompile("missing actions on rule"),
 			},
 		},
 	})

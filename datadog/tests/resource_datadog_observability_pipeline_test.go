@@ -9408,3 +9408,198 @@ resource "datadog_observability_pipeline" "prometheus_remote_write_dest" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_metricEnrichmentTableProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.metric_enrichment_table"
+	processorPath := "config.0.processor_group.0.processor.0"
+	enrichmentPath := processorPath + ".metric_enrichment_table.0"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "metric_enrichment_table" {
+  name = "metric enrichment table processor test"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "metric-enrichment-table-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "metric-enrichment-table-processor"
+        enabled = true
+        include = "*"
+
+        metric_enrichment_table {
+          file {
+            path = "/etc/enrichment/lookup.csv"
+            encoding {
+              type             = "csv"
+              delimiter        = ","
+              includes_headers = true
+            }
+            key {
+              column = "service"
+              source {
+                type = "tag"
+                name = "service"
+              }
+            }
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["metric-enrichment-table-group-1"]
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".id", "metric-enrichment-table-processor"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".file.0.path", "/etc/enrichment/lookup.csv"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".file.0.encoding.0.type", "csv"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".file.0.encoding.0.delimiter", ","),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".file.0.encoding.0.includes_headers", "true"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".file.0.key.0.column", "service"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".file.0.key.0.source.0.type", "tag"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".file.0.key.0.source.0.name", "service"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".reference_table.#", "0"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "metric_enrichment_table" {
+  name = "metric enrichment table processor test"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "metric-enrichment-table-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "metric-enrichment-table-processor"
+        enabled = true
+        include = "*"
+
+        metric_enrichment_table {
+          reference_table {
+            table_id    = "metric-enrichment"
+            app_key_key = "METRIC_ENRICHMENT_APP_KEY"
+            columns     = ["environment", "team"]
+            key {
+              source {
+                type = "metric_name"
+              }
+            }
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["metric-enrichment-table-group-1"]
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".file.#", "0"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".reference_table.0.table_id", "metric-enrichment"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".reference_table.0.app_key_key", "METRIC_ENRICHMENT_APP_KEY"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".reference_table.0.columns.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".reference_table.0.columns.0", "environment"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".reference_table.0.columns.1", "team"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".reference_table.0.key.0.source.0.type", "metric_name"),
+					resource.TestCheckNoResourceAttr(resourceName, enrichmentPath+".reference_table.0.key.0.source.0.name"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "metric_enrichment_table" {
+  name = "metric enrichment table processor test"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "metric-enrichment-table-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "metric-enrichment-table-processor"
+        enabled = true
+        include = "*"
+
+        metric_enrichment_table {
+          reference_table {
+            table_id = "metric-enrichment"
+            key {
+              source {
+                type = "metric_name"
+              }
+            }
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["metric-enrichment-table-group-1"]
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".reference_table.0.table_id", "metric-enrichment"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".reference_table.0.key.0.source.0.type", "metric_name"),
+					resource.TestCheckNoResourceAttr(resourceName, enrichmentPath+".reference_table.0.app_key_key"),
+					resource.TestCheckNoResourceAttr(resourceName, enrichmentPath+".reference_table.0.columns.#"),
+				),
+			},
+		},
+	})
+}
