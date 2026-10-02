@@ -53,6 +53,7 @@ resource "datadog_monitor_notification_rule" "team_payment_notification_rule" {
 - `conditional_recipients` (Block, Optional) Use conditional recipients to define different recipients for different situations. Cannot be used with `recipients`. (see [below for nested schema](#nestedblock--conditional_recipients))
 - `filter` (Block, Optional) Specifies the matching criteria for monitor notifications. (see [below for nested schema](#nestedblock--filter))
 - `recipients` (Set of String) List of recipients to notify. Cannot be used with `conditional_recipients`.
+- `rule_options` (Attributes) Additional options for the notification rule. When omitted, the options currently set on the rule, for example through the Datadog UI, are kept. (see [below for nested schema](#nestedatt--rule_options))
 
 ### Read-Only
 
@@ -91,6 +92,14 @@ Optional:
 
 - `scope` (String) A scope expression composed of `key:value` pairs (such as `env:prod`) with boolean operators (AND, OR, NOT) and parentheses for grouping.
 - `tags` (Set of String) A list of tag key:value pairs (e.g. team:product). All tags must match (AND semantics).
+
+
+<a id="nestedatt--rule_options"></a>
+### Nested Schema for `rule_options`
+
+Optional:
+
+- `is_threaded` (Boolean) Whether Slack notifications for the same monitor are posted as replies in a single thread (`true`) or as separate messages (`false`). When omitted, the value currently set on the rule is kept.
 
 ## Import
 
