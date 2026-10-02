@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -408,7 +409,9 @@ func (b *traceBuilder) url(op *model.Operation) string {
 		}
 		path = strings.ReplaceAll(path, placeholder, b.pathValue(op, parameter))
 	}
-	return strings.TrimSuffix(b.target.ServerURL, "/") + path
+	// resolveServerURL already trimmed any trailing slash, so the origin is
+	// concatenated as given — one place owns that rule.
+	return b.target.ServerURL + path
 }
 
 // pathValue resolves one path parameter: the minted identity when the
@@ -477,8 +480,9 @@ func equivalentJSON(left, right any) bool {
 // 204. A delete that declares 200 must record 200: the matcher compares codes.
 func deleteStatus(op *model.Operation) int {
 	if success := op.SuccessResponseExample(); success != nil {
-		var code int
-		if _, err := fmt.Sscanf(success.Status, "%d", &code); err == nil && code > 0 {
+		// Parsed the same way model.SuccessResponseExample parses it, so the
+		// two cannot disagree about what counts as a numeric status.
+		if code, err := strconv.Atoi(success.Status); err == nil && code > 0 {
 			return code
 		}
 	}
@@ -488,24 +492,11 @@ func deleteStatus(op *model.Operation) int {
 // resourceTestFuncName builds the generated test's name, which doubles as the
 // cassette basename because the harness derives the cassette from t.Name().
 func resourceTestFuncName(artifact string) string {
-	return "TestAccDatadog" + camelCase(artifact) + "OpenAPIExample"
+	return "TestAccDatadog" + model.SdkName(artifact) + "OpenAPIExample"
 }
 
 func resourceTestFilePath(artifact string) string {
 	return fmt.Sprintf("resource_datadog_%s_openapi_example_test.go", artifact)
-}
-
-// camelCase converts a snake_case artifact name to UpperCamelCase.
-func camelCase(in string) string {
-	var out strings.Builder
-	for _, part := range strings.Split(in, "_") {
-		if part == "" {
-			continue
-		}
-		out.WriteString(strings.ToUpper(part[:1]))
-		out.WriteString(part[1:])
-	}
-	return out.String()
 }
 
 // identityPathLabel names where an id strategy expects to find the identifier.
