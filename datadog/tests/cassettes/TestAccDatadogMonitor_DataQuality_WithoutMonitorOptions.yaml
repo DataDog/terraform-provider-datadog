@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 2288
+        content_length: 2286
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"{{#is_alert}}\nTo debug this alert, \n1. Follow the error logs and see what errors the stream is encountering. \n2. If you do not find any errors, check that the table is being referenced by DBT entities because Pyairbyte is only triggered in those cases.\n    \n{{/is_alert}}\n    \n{{#is_renotify}}\n{{table.name}} is still stale and has not been refreshed since {{eval \"round(value/86400, 2)\"}} days.\n{{/is_renotify}}\n    \n{{#is_alert_recovery}}\n{{table.name}} had a successful sync and is fresh!\n{{/is_alert_recovery}}\n    \n    \n[View stream error logs](https://app.datadoghq.com/logs?query=service:%28mortar-luigi-runner%20OR%20mortar-kubernetes-job%29%20-status:debug%20stream_name:{{eval \"strip(table.name, '_airbyte_raw_')\"}}\u0026agg_m=count\u0026agg_m_source=base\u0026agg_t=count\u0026cols=host%2Cservice\u0026fromUser=true\u0026index=mortar%2Cdata-eng\u0026messageDisplay=inline\u0026refresh_mode=sliding\u0026storage=hot\u0026stream_sort=desc\u0026viz=stream\u0026from_ts=1770298423747\u0026to_ts=1770903223747\u0026live=true)\n[View lineage](https://app.datadoghq.com/data-obs/lineage?anchors=search%20for%20%2A%20where%20%60name%3A{{table.name}}%60\u0026fromUser=false\u0026group_id=\u0026mode=map\u0026scope_types=\u0026start=1769778454487\u0026end=1770383254487\u0026paused=false)\n    \n@slack-dna-integrations-ops-low-prio\n","name":"tf-TestAccDatadogMonitor_DataQuality_WithoutMonitorOptions-local-1788878893","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notification_preset_name":"hide_all","notify_no_data":false,"renotify_interval":1440,"renotify_statuses":["alert"],"require_full_window":false,"thresholds":{"critical":129600},"variables":[{"data_source":"data_quality_metrics","filter":"search for database_table where `name:_airbyte_raw_* -schema:(staging_* OR test_*)`","group_by":["entity_id","table","schema","database"],"measure":"freshness","name":"query1","schema_version":"0.0.1"}]},"priority":3,"query":"formula(\"query1\").last(\"30m\") \u003e 129600","restricted_roles":null,"tags":["team:analytics-data-platform-integrations","terraform:true","terraform_path:prod/data-and-analytics-integrations","terraform_repo:DataDog/terraform-config"],"type":"data-quality alert"}
+            {"draft_status":"published","message":"{{#is_alert}}\nTo debug this alert, \n1. Follow the error logs and see what errors the stream is encountering. \n2. If you do not find any errors, check that the table is being referenced by DBT entities because Pyairbyte is only triggered in those cases.\n    \n{{/is_alert}}\n    \n{{#is_renotify}}\n{{table.name}} is still stale and has not been refreshed since {{eval \"round(value/86400, 2)\"}} days.\n{{/is_renotify}}\n    \n{{#is_alert_recovery}}\n{{table.name}} had a successful sync and is fresh!\n{{/is_alert_recovery}}\n    \n    \n[View stream error logs](https://app.datadoghq.com/logs?query=service:%28mortar-luigi-runner%20OR%20mortar-kubernetes-job%29%20-status:debug%20stream_name:{{eval \"strip(table.name, '_airbyte_raw_')\"}}\u0026agg_m=count\u0026agg_m_source=base\u0026agg_t=count\u0026cols=host%2Cservice\u0026fromUser=true\u0026index=mortar%2Cdata-eng\u0026messageDisplay=inline\u0026refresh_mode=sliding\u0026storage=hot\u0026stream_sort=desc\u0026viz=stream\u0026from_ts=1770298423747\u0026to_ts=1770903223747\u0026live=true)\n[View lineage](https://app.datadoghq.com/data-obs/lineage?anchors=search%20for%20%2A%20where%20%60name%3A{{table.name}}%60\u0026fromUser=false\u0026group_id=\u0026mode=map\u0026scope_types=\u0026start=1769778454487\u0026end=1770383254487\u0026paused=false)\n    \n@slack-dna-integrations-ops-low-prio","name":"tf-TestAccDatadogMonitor_DataQuality_WithoutMonitorOptions-local-1790691305","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notification_preset_name":"hide_all","notify_no_data":false,"renotify_interval":1440,"renotify_statuses":["alert"],"require_full_window":false,"thresholds":{"critical":129600},"variables":[{"data_source":"data_quality_metrics","filter":"search for database_table where `name:_airbyte_raw_* -schema:(staging_* OR test_*)`","group_by":["entity_id","table","schema","database"],"measure":"freshness","name":"query1","schema_version":"0.0.1"}]},"priority":3,"query":"formula(\"query1\").last(\"30m\") \u003e 129600","restricted_roles":null,"tags":["team:analytics-data-platform-integrations","terraform:true","terraform_path:prod/data-and-analytics-integrations","terraform_repo:DataDog/terraform-config"],"type":"data-quality alert"}
         form: {}
         headers:
             Accept:
@@ -37,20 +37,20 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 133.230875ms
+        duration: 122.120042ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 2288
+        content_length: 2286
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"{{#is_alert}}\nTo debug this alert, \n1. Follow the error logs and see what errors the stream is encountering. \n2. If you do not find any errors, check that the table is being referenced by DBT entities because Pyairbyte is only triggered in those cases.\n    \n{{/is_alert}}\n    \n{{#is_renotify}}\n{{table.name}} is still stale and has not been refreshed since {{eval \"round(value/86400, 2)\"}} days.\n{{/is_renotify}}\n    \n{{#is_alert_recovery}}\n{{table.name}} had a successful sync and is fresh!\n{{/is_alert_recovery}}\n    \n    \n[View stream error logs](https://app.datadoghq.com/logs?query=service:%28mortar-luigi-runner%20OR%20mortar-kubernetes-job%29%20-status:debug%20stream_name:{{eval \"strip(table.name, '_airbyte_raw_')\"}}\u0026agg_m=count\u0026agg_m_source=base\u0026agg_t=count\u0026cols=host%2Cservice\u0026fromUser=true\u0026index=mortar%2Cdata-eng\u0026messageDisplay=inline\u0026refresh_mode=sliding\u0026storage=hot\u0026stream_sort=desc\u0026viz=stream\u0026from_ts=1770298423747\u0026to_ts=1770903223747\u0026live=true)\n[View lineage](https://app.datadoghq.com/data-obs/lineage?anchors=search%20for%20%2A%20where%20%60name%3A{{table.name}}%60\u0026fromUser=false\u0026group_id=\u0026mode=map\u0026scope_types=\u0026start=1769778454487\u0026end=1770383254487\u0026paused=false)\n    \n@slack-dna-integrations-ops-low-prio\n","name":"tf-TestAccDatadogMonitor_DataQuality_WithoutMonitorOptions-local-1788878893","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notification_preset_name":"hide_all","notify_no_data":false,"renotify_interval":1440,"renotify_statuses":["alert"],"require_full_window":false,"thresholds":{"critical":129600},"variables":[{"data_source":"data_quality_metrics","filter":"search for database_table where `name:_airbyte_raw_* -schema:(staging_* OR test_*)`","group_by":["entity_id","table","schema","database"],"measure":"freshness","name":"query1","schema_version":"0.0.1"}]},"priority":3,"query":"formula(\"query1\").last(\"30m\") \u003e 129600","restricted_roles":null,"tags":["team:analytics-data-platform-integrations","terraform:true","terraform_path:prod/data-and-analytics-integrations","terraform_repo:DataDog/terraform-config"],"type":"data-quality alert"}
+            {"draft_status":"published","message":"{{#is_alert}}\nTo debug this alert, \n1. Follow the error logs and see what errors the stream is encountering. \n2. If you do not find any errors, check that the table is being referenced by DBT entities because Pyairbyte is only triggered in those cases.\n    \n{{/is_alert}}\n    \n{{#is_renotify}}\n{{table.name}} is still stale and has not been refreshed since {{eval \"round(value/86400, 2)\"}} days.\n{{/is_renotify}}\n    \n{{#is_alert_recovery}}\n{{table.name}} had a successful sync and is fresh!\n{{/is_alert_recovery}}\n    \n    \n[View stream error logs](https://app.datadoghq.com/logs?query=service:%28mortar-luigi-runner%20OR%20mortar-kubernetes-job%29%20-status:debug%20stream_name:{{eval \"strip(table.name, '_airbyte_raw_')\"}}\u0026agg_m=count\u0026agg_m_source=base\u0026agg_t=count\u0026cols=host%2Cservice\u0026fromUser=true\u0026index=mortar%2Cdata-eng\u0026messageDisplay=inline\u0026refresh_mode=sliding\u0026storage=hot\u0026stream_sort=desc\u0026viz=stream\u0026from_ts=1770298423747\u0026to_ts=1770903223747\u0026live=true)\n[View lineage](https://app.datadoghq.com/data-obs/lineage?anchors=search%20for%20%2A%20where%20%60name%3A{{table.name}}%60\u0026fromUser=false\u0026group_id=\u0026mode=map\u0026scope_types=\u0026start=1769778454487\u0026end=1770383254487\u0026paused=false)\n    \n@slack-dna-integrations-ops-low-prio","name":"tf-TestAccDatadogMonitor_DataQuality_WithoutMonitorOptions-local-1790691305","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notification_preset_name":"hide_all","notify_no_data":false,"renotify_interval":1440,"renotify_statuses":["alert"],"require_full_window":false,"thresholds":{"critical":129600},"variables":[{"data_source":"data_quality_metrics","filter":"search for database_table where `name:_airbyte_raw_* -schema:(staging_* OR test_*)`","group_by":["entity_id","table","schema","database"],"measure":"freshness","name":"query1","schema_version":"0.0.1"}]},"priority":3,"query":"formula(\"query1\").last(\"30m\") \u003e 129600","restricted_roles":null,"tags":["team:analytics-data-platform-integrations","terraform:true","terraform_path:prod/data-and-analytics-integrations","terraform_repo:DataDog/terraform-config"],"type":"data-quality alert"}
         form: {}
         headers:
             Accept:
@@ -74,20 +74,20 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 118.885417ms
+        duration: 159.087667ms
     - id: 2
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 2265
+        content_length: 2263
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"{{#is_alert}}\nTo debug this alert, \n1. Follow the error logs and see what errors the stream is encountering. \n2. If you do not find any errors, check that the table is being referenced by DBT entities because Pyairbyte is only triggered in those cases.\n    \n{{/is_alert}}\n    \n{{#is_renotify}}\n{{table.name}} is still stale and has not been refreshed since {{eval \"round(value/86400, 2)\"}} days.\n{{/is_renotify}}\n    \n{{#is_alert_recovery}}\n{{table.name}} had a successful sync and is fresh!\n{{/is_alert_recovery}}\n    \n    \n[View stream error logs](https://app.datadoghq.com/logs?query=service:%28mortar-luigi-runner%20OR%20mortar-kubernetes-job%29%20-status:debug%20stream_name:{{eval \"strip(table.name, '_airbyte_raw_')\"}}\u0026agg_m=count\u0026agg_m_source=base\u0026agg_t=count\u0026cols=host%2Cservice\u0026fromUser=true\u0026index=mortar%2Cdata-eng\u0026messageDisplay=inline\u0026refresh_mode=sliding\u0026storage=hot\u0026stream_sort=desc\u0026viz=stream\u0026from_ts=1770298423747\u0026to_ts=1770903223747\u0026live=true)\n[View lineage](https://app.datadoghq.com/data-obs/lineage?anchors=search%20for%20%2A%20where%20%60name%3A{{table.name}}%60\u0026fromUser=false\u0026group_id=\u0026mode=map\u0026scope_types=\u0026start=1769778454487\u0026end=1770383254487\u0026paused=false)\n    \n@slack-dna-integrations-ops-low-prio\n","name":"tf-TestAccDatadogMonitor_DataQuality_WithoutMonitorOptions-local-1788878893","options":{"include_tags":true,"new_host_delay":300,"notification_preset_name":"hide_all","notify_no_data":false,"renotify_interval":1440,"renotify_statuses":["alert"],"require_full_window":false,"thresholds":{"critical":129600},"variables":[{"data_source":"data_quality_metrics","filter":"search for database_table where `name:_airbyte_raw_* -schema:(staging_* OR test_*)`","group_by":["entity_id","table","schema","database"],"measure":"freshness","name":"query1","schema_version":"0.0.1"}]},"priority":3,"query":"formula(\"query1\").last(\"30m\") \u003e 129600","restricted_roles":null,"tags":["team:analytics-data-platform-integrations","terraform:true","terraform_path:prod/data-and-analytics-integrations","terraform_repo:DataDog/terraform-config"],"type":"data-quality alert"}
+            {"draft_status":"published","message":"{{#is_alert}}\nTo debug this alert, \n1. Follow the error logs and see what errors the stream is encountering. \n2. If you do not find any errors, check that the table is being referenced by DBT entities because Pyairbyte is only triggered in those cases.\n    \n{{/is_alert}}\n    \n{{#is_renotify}}\n{{table.name}} is still stale and has not been refreshed since {{eval \"round(value/86400, 2)\"}} days.\n{{/is_renotify}}\n    \n{{#is_alert_recovery}}\n{{table.name}} had a successful sync and is fresh!\n{{/is_alert_recovery}}\n    \n    \n[View stream error logs](https://app.datadoghq.com/logs?query=service:%28mortar-luigi-runner%20OR%20mortar-kubernetes-job%29%20-status:debug%20stream_name:{{eval \"strip(table.name, '_airbyte_raw_')\"}}\u0026agg_m=count\u0026agg_m_source=base\u0026agg_t=count\u0026cols=host%2Cservice\u0026fromUser=true\u0026index=mortar%2Cdata-eng\u0026messageDisplay=inline\u0026refresh_mode=sliding\u0026storage=hot\u0026stream_sort=desc\u0026viz=stream\u0026from_ts=1770298423747\u0026to_ts=1770903223747\u0026live=true)\n[View lineage](https://app.datadoghq.com/data-obs/lineage?anchors=search%20for%20%2A%20where%20%60name%3A{{table.name}}%60\u0026fromUser=false\u0026group_id=\u0026mode=map\u0026scope_types=\u0026start=1769778454487\u0026end=1770383254487\u0026paused=false)\n    \n@slack-dna-integrations-ops-low-prio","name":"tf-TestAccDatadogMonitor_DataQuality_WithoutMonitorOptions-local-1790691305","options":{"include_tags":true,"new_host_delay":300,"notification_preset_name":"hide_all","notify_no_data":false,"renotify_interval":1440,"renotify_statuses":["alert"],"require_full_window":false,"thresholds":{"critical":129600},"variables":[{"data_source":"data_quality_metrics","filter":"search for database_table where `name:_airbyte_raw_* -schema:(staging_* OR test_*)`","group_by":["entity_id","table","schema","database"],"measure":"freshness","name":"query1","schema_version":"0.0.1"}]},"priority":3,"query":"formula(\"query1\").last(\"30m\") \u003e 129600","restricted_roles":null,"tags":["team:analytics-data-platform-integrations","terraform:true","terraform_path:prod/data-and-analytics-integrations","terraform_repo:DataDog/terraform-config"],"type":"data-quality alert"}
         form: {}
         headers:
             Accept:
@@ -106,13 +106,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":320046635,"org_id":321813,"type":"data-quality alert","name":"tf-TestAccDatadogMonitor_DataQuality_WithoutMonitorOptions-local-1788878893","message":"{{#is_alert}}\nTo debug this alert, \n1. Follow the error logs and see what errors the stream is encountering. \n2. If you do not find any errors, check that the table is being referenced by DBT entities because Pyairbyte is only triggered in those cases.\n    \n{{/is_alert}}\n    \n{{#is_renotify}}\n{{table.name}} is still stale and has not been refreshed since {{eval \"round(value/86400, 2)\"}} days.\n{{/is_renotify}}\n    \n{{#is_alert_recovery}}\n{{table.name}} had a successful sync and is fresh!\n{{/is_alert_recovery}}\n    \n    \n[View stream error logs](https://app.datadoghq.com/logs?query=service:%28mortar-luigi-runner%20OR%20mortar-kubernetes-job%29%20-status:debug%20stream_name:{{eval \"strip(table.name, '_airbyte_raw_')\"}}&agg_m=count&agg_m_source=base&agg_t=count&cols=host%2Cservice&fromUser=true&index=mortar%2Cdata-eng&messageDisplay=inline&refresh_mode=sliding&storage=hot&stream_sort=desc&viz=stream&from_ts=1770298423747&to_ts=1770903223747&live=true)\n[View lineage](https://app.datadoghq.com/data-obs/lineage?anchors=search%20for%20%2A%20where%20%60name%3A{{table.name}}%60&fromUser=false&group_id=&mode=map&scope_types=&start=1769778454487&end=1770383254487&paused=false)\n    \n@slack-dna-integrations-ops-low-prio","tags":["team:analytics-data-platform-integrations","terraform:true","terraform_path:prod/data-and-analytics-integrations","terraform_repo:DataDog/terraform-config"],"query":"formula(\"query1\").last(\"30m\") > 129600","options":{"include_tags":true,"new_host_delay":300,"notification_preset_name":"hide_all","notify_no_data":false,"renotify_interval":1440,"renotify_statuses":["alert"],"require_full_window":false,"thresholds":{"critical":129600.0},"variables":[{"data_source":"data_quality_metrics","filter":"search for database_table where `name:_airbyte_raw_* -schema:(staging_* OR test_*)`","group_by":["entity_id","table","schema","database"],"measure":"freshness","name":"query1","schema_version":"0.0.1"}],"notify_audit":false,"silenced":{}},"multi":false,"created_at":1788878895000,"created":"2026-09-08T14:48:15.714335+00:00","modified":"2026-09-08T14:48:15.714335+00:00","deleted":null,"priority":3,"restricted_roles":null,"restriction_policy":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
+            {"id":326271258,"org_id":321813,"type":"data-quality alert","name":"tf-TestAccDatadogMonitor_DataQuality_WithoutMonitorOptions-local-1790691305","message":"{{#is_alert}}\nTo debug this alert, \n1. Follow the error logs and see what errors the stream is encountering. \n2. If you do not find any errors, check that the table is being referenced by DBT entities because Pyairbyte is only triggered in those cases.\n    \n{{/is_alert}}\n    \n{{#is_renotify}}\n{{table.name}} is still stale and has not been refreshed since {{eval \"round(value/86400, 2)\"}} days.\n{{/is_renotify}}\n    \n{{#is_alert_recovery}}\n{{table.name}} had a successful sync and is fresh!\n{{/is_alert_recovery}}\n    \n    \n[View stream error logs](https://app.datadoghq.com/logs?query=service:%28mortar-luigi-runner%20OR%20mortar-kubernetes-job%29%20-status:debug%20stream_name:{{eval \"strip(table.name, '_airbyte_raw_')\"}}&agg_m=count&agg_m_source=base&agg_t=count&cols=host%2Cservice&fromUser=true&index=mortar%2Cdata-eng&messageDisplay=inline&refresh_mode=sliding&storage=hot&stream_sort=desc&viz=stream&from_ts=1770298423747&to_ts=1770903223747&live=true)\n[View lineage](https://app.datadoghq.com/data-obs/lineage?anchors=search%20for%20%2A%20where%20%60name%3A{{table.name}}%60&fromUser=false&group_id=&mode=map&scope_types=&start=1769778454487&end=1770383254487&paused=false)\n    \n@slack-dna-integrations-ops-low-prio","tags":["team:analytics-data-platform-integrations","terraform:true","terraform_path:prod/data-and-analytics-integrations","terraform_repo:DataDog/terraform-config"],"query":"formula(\"query1\").last(\"30m\") > 129600","options":{"include_tags":true,"new_host_delay":300,"notification_preset_name":"hide_all","notify_no_data":false,"renotify_interval":1440,"renotify_statuses":["alert"],"require_full_window":false,"thresholds":{"critical":129600.0},"variables":[{"data_source":"data_quality_metrics","filter":"search for database_table where `name:_airbyte_raw_* -schema:(staging_* OR test_*)`","group_by":["entity_id","table","schema","database"],"measure":"freshness","name":"query1","schema_version":"0.0.1"}],"notify_audit":false,"silenced":{}},"multi":false,"created_at":1790691307000,"created":"2026-09-29T14:15:07.757973+00:00","modified":"2026-09-29T14:15:07.757973+00:00","deleted":null,"priority":3,"restricted_roles":null,"restriction_policy":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Esteban Aleman","handle":"esteban.aleman@datadoghq.com","email":"esteban.aleman@datadoghq.com","id":70916387}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 235.408875ms
+        duration: 269.037208ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -129,7 +129,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/320046635
+        url: https://api.datadoghq.com/api/v1/monitor/326271258
         method: GET
       response:
         proto: HTTP/1.1
@@ -141,33 +141,33 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":320046635,"org_id":321813,"type":"data-quality alert","name":"tf-TestAccDatadogMonitor_DataQuality_WithoutMonitorOptions-local-1788878893","message":"{{#is_alert}}\nTo debug this alert, \n1. Follow the error logs and see what errors the stream is encountering. \n2. If you do not find any errors, check that the table is being referenced by DBT entities because Pyairbyte is only triggered in those cases.\n    \n{{/is_alert}}\n    \n{{#is_renotify}}\n{{table.name}} is still stale and has not been refreshed since {{eval \"round(value/86400, 2)\"}} days.\n{{/is_renotify}}\n    \n{{#is_alert_recovery}}\n{{table.name}} had a successful sync and is fresh!\n{{/is_alert_recovery}}\n    \n    \n[View stream error logs](https://app.datadoghq.com/logs?query=service:%28mortar-luigi-runner%20OR%20mortar-kubernetes-job%29%20-status:debug%20stream_name:{{eval \"strip(table.name, '_airbyte_raw_')\"}}&agg_m=count&agg_m_source=base&agg_t=count&cols=host%2Cservice&fromUser=true&index=mortar%2Cdata-eng&messageDisplay=inline&refresh_mode=sliding&storage=hot&stream_sort=desc&viz=stream&from_ts=1770298423747&to_ts=1770903223747&live=true)\n[View lineage](https://app.datadoghq.com/data-obs/lineage?anchors=search%20for%20%2A%20where%20%60name%3A{{table.name}}%60&fromUser=false&group_id=&mode=map&scope_types=&start=1769778454487&end=1770383254487&paused=false)\n    \n@slack-dna-integrations-ops-low-prio","tags":["team:analytics-data-platform-integrations","terraform:true","terraform_path:prod/data-and-analytics-integrations","terraform_repo:DataDog/terraform-config"],"query":"formula(\"query1\").last(\"30m\") > 129600","options":{"include_tags":true,"new_host_delay":300,"notification_preset_name":"hide_all","notify_no_data":false,"renotify_interval":1440,"renotify_statuses":["alert"],"require_full_window":false,"thresholds":{"critical":129600.0},"variables":[{"data_source":"data_quality_metrics","filter":"search for database_table where `name:_airbyte_raw_* -schema:(staging_* OR test_*)`","group_by":["entity_id","table","schema","database"],"measure":"freshness","name":"query1","schema_version":"0.0.1"}],"notify_audit":false,"silenced":{}},"multi":false,"created_at":1788878895000,"created":"2026-09-08T14:48:15.714335+00:00","modified":"2026-09-08T14:48:15.714335+00:00","deleted":null,"priority":3,"restricted_roles":null,"draft_status":"published","overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":326271258,"org_id":321813,"type":"data-quality alert","name":"tf-TestAccDatadogMonitor_DataQuality_WithoutMonitorOptions-local-1790691305","message":"{{#is_alert}}\nTo debug this alert, \n1. Follow the error logs and see what errors the stream is encountering. \n2. If you do not find any errors, check that the table is being referenced by DBT entities because Pyairbyte is only triggered in those cases.\n    \n{{/is_alert}}\n    \n{{#is_renotify}}\n{{table.name}} is still stale and has not been refreshed since {{eval \"round(value/86400, 2)\"}} days.\n{{/is_renotify}}\n    \n{{#is_alert_recovery}}\n{{table.name}} had a successful sync and is fresh!\n{{/is_alert_recovery}}\n    \n    \n[View stream error logs](https://app.datadoghq.com/logs?query=service:%28mortar-luigi-runner%20OR%20mortar-kubernetes-job%29%20-status:debug%20stream_name:{{eval \"strip(table.name, '_airbyte_raw_')\"}}&agg_m=count&agg_m_source=base&agg_t=count&cols=host%2Cservice&fromUser=true&index=mortar%2Cdata-eng&messageDisplay=inline&refresh_mode=sliding&storage=hot&stream_sort=desc&viz=stream&from_ts=1770298423747&to_ts=1770903223747&live=true)\n[View lineage](https://app.datadoghq.com/data-obs/lineage?anchors=search%20for%20%2A%20where%20%60name%3A{{table.name}}%60&fromUser=false&group_id=&mode=map&scope_types=&start=1769778454487&end=1770383254487&paused=false)\n    \n@slack-dna-integrations-ops-low-prio","tags":["team:analytics-data-platform-integrations","terraform:true","terraform_path:prod/data-and-analytics-integrations","terraform_repo:DataDog/terraform-config"],"query":"formula(\"query1\").last(\"30m\") > 129600","options":{"include_tags":true,"new_host_delay":300,"notification_preset_name":"hide_all","notify_no_data":false,"renotify_interval":1440,"renotify_statuses":["alert"],"require_full_window":false,"thresholds":{"critical":129600.0},"variables":[{"data_source":"data_quality_metrics","filter":"search for database_table where `name:_airbyte_raw_* -schema:(staging_* OR test_*)`","group_by":["entity_id","table","schema","database"],"measure":"freshness","name":"query1","schema_version":"0.0.1"}],"notify_audit":false,"silenced":{}},"multi":false,"created_at":1790691307000,"created":"2026-09-29T14:15:07.757973+00:00","modified":"2026-09-29T14:15:07.757973+00:00","deleted":null,"priority":3,"restricted_roles":null,"draft_status":"published","overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Esteban Aleman","email":"esteban.aleman@datadoghq.com","handle":"esteban.aleman@datadoghq.com","id":70916387}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 75.399416ms
+        duration: 600.066375ms
     - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 2288
+        content_length: 2286
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"{{#is_alert}}\nTo debug this alert, \n1. Follow the error logs and see what errors the stream is encountering. \n2. If you do not find any errors, check that the table is being referenced by DBT entities because Pyairbyte is only triggered in those cases.\n    \n{{/is_alert}}\n    \n{{#is_renotify}}\n{{table.name}} is still stale and has not been refreshed since {{eval \"round(value/86400, 2)\"}} days.\n{{/is_renotify}}\n    \n{{#is_alert_recovery}}\n{{table.name}} had a successful sync and is fresh!\n{{/is_alert_recovery}}\n    \n    \n[View stream error logs](https://app.datadoghq.com/logs?query=service:%28mortar-luigi-runner%20OR%20mortar-kubernetes-job%29%20-status:debug%20stream_name:{{eval \"strip(table.name, '_airbyte_raw_')\"}}\u0026agg_m=count\u0026agg_m_source=base\u0026agg_t=count\u0026cols=host%2Cservice\u0026fromUser=true\u0026index=mortar%2Cdata-eng\u0026messageDisplay=inline\u0026refresh_mode=sliding\u0026storage=hot\u0026stream_sort=desc\u0026viz=stream\u0026from_ts=1770298423747\u0026to_ts=1770903223747\u0026live=true)\n[View lineage](https://app.datadoghq.com/data-obs/lineage?anchors=search%20for%20%2A%20where%20%60name%3A{{table.name}}%60\u0026fromUser=false\u0026group_id=\u0026mode=map\u0026scope_types=\u0026start=1769778454487\u0026end=1770383254487\u0026paused=false)\n    \n@slack-dna-integrations-ops-low-prio\n","name":"tf-TestAccDatadogMonitor_DataQuality_WithoutMonitorOptions-local-1788878893","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notification_preset_name":"hide_all","notify_no_data":false,"renotify_interval":1440,"renotify_statuses":["alert"],"require_full_window":false,"thresholds":{"critical":129600},"variables":[{"data_source":"data_quality_metrics","filter":"search for database_table where `name:_airbyte_raw_* -schema:(staging_* OR test_*)`","group_by":["entity_id","table","schema","database"],"measure":"freshness","name":"query1","schema_version":"0.0.1"}]},"priority":3,"query":"formula(\"query1\").last(\"30m\") \u003e 129600","restricted_roles":null,"tags":["team:analytics-data-platform-integrations","terraform:true","terraform_path:prod/data-and-analytics-integrations","terraform_repo:DataDog/terraform-config"],"type":"data-quality alert"}
+            {"draft_status":"published","message":"{{#is_alert}}\nTo debug this alert, \n1. Follow the error logs and see what errors the stream is encountering. \n2. If you do not find any errors, check that the table is being referenced by DBT entities because Pyairbyte is only triggered in those cases.\n    \n{{/is_alert}}\n    \n{{#is_renotify}}\n{{table.name}} is still stale and has not been refreshed since {{eval \"round(value/86400, 2)\"}} days.\n{{/is_renotify}}\n    \n{{#is_alert_recovery}}\n{{table.name}} had a successful sync and is fresh!\n{{/is_alert_recovery}}\n    \n    \n[View stream error logs](https://app.datadoghq.com/logs?query=service:%28mortar-luigi-runner%20OR%20mortar-kubernetes-job%29%20-status:debug%20stream_name:{{eval \"strip(table.name, '_airbyte_raw_')\"}}\u0026agg_m=count\u0026agg_m_source=base\u0026agg_t=count\u0026cols=host%2Cservice\u0026fromUser=true\u0026index=mortar%2Cdata-eng\u0026messageDisplay=inline\u0026refresh_mode=sliding\u0026storage=hot\u0026stream_sort=desc\u0026viz=stream\u0026from_ts=1770298423747\u0026to_ts=1770903223747\u0026live=true)\n[View lineage](https://app.datadoghq.com/data-obs/lineage?anchors=search%20for%20%2A%20where%20%60name%3A{{table.name}}%60\u0026fromUser=false\u0026group_id=\u0026mode=map\u0026scope_types=\u0026start=1769778454487\u0026end=1770383254487\u0026paused=false)\n    \n@slack-dna-integrations-ops-low-prio","name":"tf-TestAccDatadogMonitor_DataQuality_WithoutMonitorOptions-local-1790691305","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notification_preset_name":"hide_all","notify_no_data":false,"renotify_interval":1440,"renotify_statuses":["alert"],"require_full_window":false,"thresholds":{"critical":129600},"variables":[{"data_source":"data_quality_metrics","filter":"search for database_table where `name:_airbyte_raw_* -schema:(staging_* OR test_*)`","group_by":["entity_id","table","schema","database"],"measure":"freshness","name":"query1","schema_version":"0.0.1"}]},"priority":3,"query":"formula(\"query1\").last(\"30m\") \u003e 129600","restricted_roles":null,"tags":["team:analytics-data-platform-integrations","terraform:true","terraform_path:prod/data-and-analytics-integrations","terraform_repo:DataDog/terraform-config"],"type":"data-quality alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/320046635/validate
+        url: https://api.datadoghq.com/api/v1/monitor/326271258/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -184,7 +184,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 130.648875ms
+        duration: 297.154083ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -201,7 +201,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/320046635?with_assets=true
+        url: https://api.datadoghq.com/api/v1/monitor/326271258?with_assets=true
         method: GET
       response:
         proto: HTTP/1.1
@@ -213,33 +213,33 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":320046635,"org_id":321813,"type":"data-quality alert","name":"tf-TestAccDatadogMonitor_DataQuality_WithoutMonitorOptions-local-1788878893","message":"{{#is_alert}}\nTo debug this alert, \n1. Follow the error logs and see what errors the stream is encountering. \n2. If you do not find any errors, check that the table is being referenced by DBT entities because Pyairbyte is only triggered in those cases.\n    \n{{/is_alert}}\n    \n{{#is_renotify}}\n{{table.name}} is still stale and has not been refreshed since {{eval \"round(value/86400, 2)\"}} days.\n{{/is_renotify}}\n    \n{{#is_alert_recovery}}\n{{table.name}} had a successful sync and is fresh!\n{{/is_alert_recovery}}\n    \n    \n[View stream error logs](https://app.datadoghq.com/logs?query=service:%28mortar-luigi-runner%20OR%20mortar-kubernetes-job%29%20-status:debug%20stream_name:{{eval \"strip(table.name, '_airbyte_raw_')\"}}&agg_m=count&agg_m_source=base&agg_t=count&cols=host%2Cservice&fromUser=true&index=mortar%2Cdata-eng&messageDisplay=inline&refresh_mode=sliding&storage=hot&stream_sort=desc&viz=stream&from_ts=1770298423747&to_ts=1770903223747&live=true)\n[View lineage](https://app.datadoghq.com/data-obs/lineage?anchors=search%20for%20%2A%20where%20%60name%3A{{table.name}}%60&fromUser=false&group_id=&mode=map&scope_types=&start=1769778454487&end=1770383254487&paused=false)\n    \n@slack-dna-integrations-ops-low-prio","tags":["team:analytics-data-platform-integrations","terraform:true","terraform_path:prod/data-and-analytics-integrations","terraform_repo:DataDog/terraform-config"],"query":"formula(\"query1\").last(\"30m\") > 129600","options":{"include_tags":true,"new_host_delay":300,"notification_preset_name":"hide_all","notify_no_data":false,"renotify_interval":1440,"renotify_statuses":["alert"],"require_full_window":false,"thresholds":{"critical":129600.0},"variables":[{"data_source":"data_quality_metrics","filter":"search for database_table where `name:_airbyte_raw_* -schema:(staging_* OR test_*)`","group_by":["entity_id","table","schema","database"],"measure":"freshness","name":"query1","schema_version":"0.0.1"}],"notify_audit":false,"silenced":{}},"multi":false,"created_at":1788878895000,"created":"2026-09-08T14:48:15.714335+00:00","modified":"2026-09-08T14:48:15.714335+00:00","deleted":null,"priority":3,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"frog","email":"frog@datadoghq.com","handle":"frog@datadoghq.com","id":1445416}}
+            {"id":326271258,"org_id":321813,"type":"data-quality alert","name":"tf-TestAccDatadogMonitor_DataQuality_WithoutMonitorOptions-local-1790691305","message":"{{#is_alert}}\nTo debug this alert, \n1. Follow the error logs and see what errors the stream is encountering. \n2. If you do not find any errors, check that the table is being referenced by DBT entities because Pyairbyte is only triggered in those cases.\n    \n{{/is_alert}}\n    \n{{#is_renotify}}\n{{table.name}} is still stale and has not been refreshed since {{eval \"round(value/86400, 2)\"}} days.\n{{/is_renotify}}\n    \n{{#is_alert_recovery}}\n{{table.name}} had a successful sync and is fresh!\n{{/is_alert_recovery}}\n    \n    \n[View stream error logs](https://app.datadoghq.com/logs?query=service:%28mortar-luigi-runner%20OR%20mortar-kubernetes-job%29%20-status:debug%20stream_name:{{eval \"strip(table.name, '_airbyte_raw_')\"}}&agg_m=count&agg_m_source=base&agg_t=count&cols=host%2Cservice&fromUser=true&index=mortar%2Cdata-eng&messageDisplay=inline&refresh_mode=sliding&storage=hot&stream_sort=desc&viz=stream&from_ts=1770298423747&to_ts=1770903223747&live=true)\n[View lineage](https://app.datadoghq.com/data-obs/lineage?anchors=search%20for%20%2A%20where%20%60name%3A{{table.name}}%60&fromUser=false&group_id=&mode=map&scope_types=&start=1769778454487&end=1770383254487&paused=false)\n    \n@slack-dna-integrations-ops-low-prio","tags":["team:analytics-data-platform-integrations","terraform:true","terraform_path:prod/data-and-analytics-integrations","terraform_repo:DataDog/terraform-config"],"query":"formula(\"query1\").last(\"30m\") > 129600","options":{"include_tags":true,"new_host_delay":300,"notification_preset_name":"hide_all","notify_no_data":false,"renotify_interval":1440,"renotify_statuses":["alert"],"require_full_window":false,"thresholds":{"critical":129600.0},"variables":[{"data_source":"data_quality_metrics","filter":"search for database_table where `name:_airbyte_raw_* -schema:(staging_* OR test_*)`","group_by":["entity_id","table","schema","database"],"measure":"freshness","name":"query1","schema_version":"0.0.1"}],"notify_audit":false,"silenced":{}},"multi":false,"created_at":1790691307000,"created":"2026-09-29T14:15:07.757973+00:00","modified":"2026-09-29T14:15:07.757973+00:00","deleted":null,"priority":3,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Esteban Aleman","email":"esteban.aleman@datadoghq.com","handle":"esteban.aleman@datadoghq.com","id":70916387}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 198.63475ms
+        duration: 753.819125ms
     - id: 6
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 2288
+        content_length: 2286
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"{{#is_alert}}\nTo debug this alert, \n1. Follow the error logs and see what errors the stream is encountering. \n2. If you do not find any errors, check that the table is being referenced by DBT entities because Pyairbyte is only triggered in those cases.\n    \n{{/is_alert}}\n    \n{{#is_renotify}}\n{{table.name}} is still stale and has not been refreshed since {{eval \"round(value/86400, 2)\"}} days.\n{{/is_renotify}}\n    \n{{#is_alert_recovery}}\n{{table.name}} had a successful sync and is fresh!\n{{/is_alert_recovery}}\n    \n    \n[View stream error logs](https://app.datadoghq.com/logs?query=service:%28mortar-luigi-runner%20OR%20mortar-kubernetes-job%29%20-status:debug%20stream_name:{{eval \"strip(table.name, '_airbyte_raw_')\"}}\u0026agg_m=count\u0026agg_m_source=base\u0026agg_t=count\u0026cols=host%2Cservice\u0026fromUser=true\u0026index=mortar%2Cdata-eng\u0026messageDisplay=inline\u0026refresh_mode=sliding\u0026storage=hot\u0026stream_sort=desc\u0026viz=stream\u0026from_ts=1770298423747\u0026to_ts=1770903223747\u0026live=true)\n[View lineage](https://app.datadoghq.com/data-obs/lineage?anchors=search%20for%20%2A%20where%20%60name%3A{{table.name}}%60\u0026fromUser=false\u0026group_id=\u0026mode=map\u0026scope_types=\u0026start=1769778454487\u0026end=1770383254487\u0026paused=false)\n    \n@slack-dna-integrations-ops-low-prio\n","name":"tf-TestAccDatadogMonitor_DataQuality_WithoutMonitorOptions-local-1788878893","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notification_preset_name":"hide_all","notify_no_data":false,"renotify_interval":1440,"renotify_statuses":["alert"],"require_full_window":false,"thresholds":{"critical":129600},"variables":[{"data_source":"data_quality_metrics","filter":"search for database_table where `name:_airbyte_raw_* -schema:(staging_* OR test_*)`","group_by":["entity_id","table","schema","database"],"measure":"freshness","name":"query1","schema_version":"0.0.1"}]},"priority":3,"query":"formula(\"query1\").last(\"30m\") \u003e 129600","restricted_roles":null,"tags":["team:analytics-data-platform-integrations","terraform:true","terraform_path:prod/data-and-analytics-integrations","terraform_repo:DataDog/terraform-config"],"type":"data-quality alert"}
+            {"draft_status":"published","message":"{{#is_alert}}\nTo debug this alert, \n1. Follow the error logs and see what errors the stream is encountering. \n2. If you do not find any errors, check that the table is being referenced by DBT entities because Pyairbyte is only triggered in those cases.\n    \n{{/is_alert}}\n    \n{{#is_renotify}}\n{{table.name}} is still stale and has not been refreshed since {{eval \"round(value/86400, 2)\"}} days.\n{{/is_renotify}}\n    \n{{#is_alert_recovery}}\n{{table.name}} had a successful sync and is fresh!\n{{/is_alert_recovery}}\n    \n    \n[View stream error logs](https://app.datadoghq.com/logs?query=service:%28mortar-luigi-runner%20OR%20mortar-kubernetes-job%29%20-status:debug%20stream_name:{{eval \"strip(table.name, '_airbyte_raw_')\"}}\u0026agg_m=count\u0026agg_m_source=base\u0026agg_t=count\u0026cols=host%2Cservice\u0026fromUser=true\u0026index=mortar%2Cdata-eng\u0026messageDisplay=inline\u0026refresh_mode=sliding\u0026storage=hot\u0026stream_sort=desc\u0026viz=stream\u0026from_ts=1770298423747\u0026to_ts=1770903223747\u0026live=true)\n[View lineage](https://app.datadoghq.com/data-obs/lineage?anchors=search%20for%20%2A%20where%20%60name%3A{{table.name}}%60\u0026fromUser=false\u0026group_id=\u0026mode=map\u0026scope_types=\u0026start=1769778454487\u0026end=1770383254487\u0026paused=false)\n    \n@slack-dna-integrations-ops-low-prio","name":"tf-TestAccDatadogMonitor_DataQuality_WithoutMonitorOptions-local-1790691305","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notification_preset_name":"hide_all","notify_no_data":false,"renotify_interval":1440,"renotify_statuses":["alert"],"require_full_window":false,"thresholds":{"critical":129600},"variables":[{"data_source":"data_quality_metrics","filter":"search for database_table where `name:_airbyte_raw_* -schema:(staging_* OR test_*)`","group_by":["entity_id","table","schema","database"],"measure":"freshness","name":"query1","schema_version":"0.0.1"}]},"priority":3,"query":"formula(\"query1\").last(\"30m\") \u003e 129600","restricted_roles":null,"tags":["team:analytics-data-platform-integrations","terraform:true","terraform_path:prod/data-and-analytics-integrations","terraform_repo:DataDog/terraform-config"],"type":"data-quality alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/320046635/validate
+        url: https://api.datadoghq.com/api/v1/monitor/326271258/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -256,7 +256,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 119.67775ms
+        duration: 245.897959ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -273,7 +273,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/320046635
+        url: https://api.datadoghq.com/api/v1/monitor/326271258
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -285,13 +285,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_monitor_id":320046635}
+            {"deleted_monitor_id":326271258}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 221.924417ms
+        duration: 268.878166ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -308,7 +308,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/320046635
+        url: https://api.datadoghq.com/api/v1/monitor/326271258
         method: GET
       response:
         proto: HTTP/1.1
@@ -325,4 +325,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 106.955958ms
+        duration: 90.457ms
