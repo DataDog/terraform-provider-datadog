@@ -25,7 +25,8 @@ var _ = Describe("RenderCassette", func() {
 	// format is its contract, so this asserts against its own loader rather
 	// than against a shape we believe it wants.
 	It("produces a cassette go-vcr itself can load and replay in order", func() {
-		out, err := RenderCassette(twilioScenario())
+		scenario := twilioScenario()
+		out, err := RenderCassette(scenario)
 		Expect(err).To(Succeed())
 
 		dir := GinkgoT().TempDir()
@@ -35,13 +36,14 @@ var _ = Describe("RenderCassette", func() {
 		loaded, err := govcr.Load(strings.TrimSuffix(path, ".yaml"))
 		Expect(err).To(Succeed())
 		Expect(loaded.Version).To(Equal(2))
-		Expect(loaded.Interactions).To(HaveLen(9))
+		Expect(loaded.Interactions).To(HaveLen(len(scenario.Interactions)))
 
 		for i, interaction := range loaded.Interactions {
 			Expect(interaction.ID).To(Equal(i), "interaction ids must be dense and ordered")
 		}
 		Expect(loaded.Interactions[0].Request.Method).To(Equal("POST"))
-		Expect(loaded.Interactions[8].Response.Code).To(Equal(404))
+		last := loaded.Interactions[len(loaded.Interactions)-1]
+		Expect(last.Response.Code).To(Equal(404), "the trace must end on the destroy verification")
 	})
 
 	It("carries the document separator and version a recorded cassette has", func() {
@@ -60,7 +62,14 @@ var _ = Describe("RenderCassette", func() {
 			}
 			Expect(yaml.Unmarshal(out, &doc)).To(Succeed())
 			first = doc.Interactions[0]
-			del = doc.Interactions[7]
+			// Located by method rather than position: this test is about the
+			// recorded shape of an interaction, not how many reads precede it.
+			for _, interaction := range doc.Interactions {
+				if interaction["request"].(map[string]any)["method"] == "DELETE" {
+					del = interaction
+				}
+			}
+			Expect(del).NotTo(BeNil(), "no DELETE interaction in the rendered cassette")
 		})
 
 		It("records the request the way the recorder would", func() {
@@ -95,9 +104,11 @@ var _ = Describe("RenderCassette", func() {
 		// A recorded latency would make regeneration non-deterministic while
 		// changing nothing about replay.
 		It("records every duration as zero", func() {
-			out, err := RenderCassette(twilioScenario())
+			scenario := twilioScenario()
+			out, err := RenderCassette(scenario)
 			Expect(err).To(Succeed())
-			Expect(strings.Count(string(out), "duration: 0s")).To(Equal(9))
+			Expect(strings.Count(string(out), "duration: 0s")).
+				To(Equal(len(scenario.Interactions)))
 		})
 	})
 
