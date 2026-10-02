@@ -6,9 +6,13 @@ changelog:
     - title: BUGFIXES
       labels:
         - changelog/bugfix
+        - changelog/fixed
+        - changelog/Fixed
     - title: IMPROVEMENTS
       labels:
         - changelog/improvement
+        - changelog/changed
+        - changelog/Changed
     - title: FEATURES
       labels:
         - changelog/feature
@@ -17,3 +21,8 @@ changelog:
     - title: NOTES
       labels:
         - changelog/note
+        - changelog/removed
+        - changelog/Removed
+    - title: DOCUMENTATION
+      labels:
+        - changelog/documentation
