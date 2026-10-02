@@ -51,6 +51,9 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.CreateAWSCloudAuthPersonaMapping", true)
 	config.SetUnstableOperationEnabled("v2.GetAWSCloudAuthPersonaMapping", true)
 	config.SetUnstableOperationEnabled("v2.DeleteAWSCloudAuthPersonaMapping", true)
+	config.SetUnstableOperationEnabled("v2.CreateAWSCloudAuthIntakeMapping", true)
+	config.SetUnstableOperationEnabled("v2.GetAWSCloudAuthIntakeMapping", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAWSCloudAuthIntakeMapping", true)
 
 	// Enable Logs Restriction Queries
 	config.SetUnstableOperationEnabled("v2.CreateRestrictionQuery", true)
