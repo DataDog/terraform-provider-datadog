@@ -1,3 +1,15 @@
+## 4.24.0 (October 2, 2026)
+
+### BUGFIXES
+* [datadog_action_connection] fix update tag requests by @shimupan in https://github.com/DataDog/terraform-provider-datadog/pull/4304
+* [datadog_synthetics_test] Fix mobile multi-locator crashes by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/4302
+### FEATURES
+* [datadog_integration_gcp_sts] Add isOrgFolderResourceCollectionEnabled by @katherinekim-51 in https://github.com/DataDog/terraform-provider-datadog/pull/4164
+* [datadog_observability_pipeline] Add metric enrichment table processor for Observability Pipelines by @jackie8c in https://github.com/DataDog/terraform-provider-datadog/pull/4319
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.23.0...v4.24.0
+
 ## 4.23.0 (September 29, 2026)
 
 ### FEATURES
