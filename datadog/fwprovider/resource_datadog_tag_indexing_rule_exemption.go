@@ -20,8 +20,9 @@ var (
 )
 
 type tagIndexingRuleExemptionResource struct {
-	Api  *datadogV2.MetricsApi
-	Auth context.Context
+	Api          *datadogV2.MetricsApi
+	Auth         context.Context
+	apiInstances *utils.ApiInstances
 }
 
 type tagIndexingRuleExemptionModel struct {
@@ -39,6 +40,7 @@ func NewTagIndexingRuleExemptionResource() resource.Resource {
 
 func (r *tagIndexingRuleExemptionResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
+	r.apiInstances = providerData.DatadogApiInstances
 	r.Api = providerData.DatadogApiInstances.GetMetricsApiV2()
 	r.Auth = providerData.Auth
 }
@@ -151,6 +153,7 @@ func (r *tagIndexingRuleExemptionResource) Create(ctx context.Context, request r
 	body := datadogV2.NewTagIndexingRuleExemptionCreateRequestWithDefaults()
 	body.SetData(*data)
 
+	defer r.apiInstances.InvalidateMetricTagReadCaches()
 	resp, _, err := r.Api.CreateTagIndexingRuleExemption(r.Auth, metricName, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating tag indexing rule exemption"))
@@ -179,6 +182,7 @@ func (r *tagIndexingRuleExemptionResource) Delete(ctx context.Context, request r
 	}
 
 	metricName := state.MetricName.ValueString()
+	defer r.apiInstances.InvalidateMetricTagReadCaches()
 	httpResp, err := r.Api.DeleteTagIndexingRuleExemption(r.Auth, metricName)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
