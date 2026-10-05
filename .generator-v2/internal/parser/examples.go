@@ -452,4 +452,3 @@ func checkSupportedValue(value any, path string) error {
 		return fmt.Errorf("unsupported example value type %T at %s", value, where)
 	}
 }
-

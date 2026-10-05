@@ -34,9 +34,6 @@ type resourceTestView struct {
 	APIConstructor string
 	// ReadMethod is the SDK read call, e.g. "GetIncidentType".
 	ReadMethod string
-	// UpdateStepIndex is the one-based index of the update step, or zero when
-	// the scenario has none. Templates use it to label the step.
-	UpdateStepIndex int
 }
 
 // BuildResourceTestView derives the render context for a resource's
@@ -76,10 +73,6 @@ func BuildResourceTestView(
 		SDKPackage:       view.SDKPackage,
 		APIConstructor:   view.APIConstructor,
 		ReadMethod:       view.Read.Method,
-	}
-	if scenario.HasUpdateStep() {
-		// The scenario adds at most one update step, and it is always the last.
-		out.UpdateStepIndex = len(scenario.Steps)
 	}
 	return out, nil
 }
