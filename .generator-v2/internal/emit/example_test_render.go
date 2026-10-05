@@ -41,15 +41,10 @@ type exampleTestView struct {
 	// ResourceType is the provider-prefixed Terraform type, e.g.
 	// "datadog_integration_twilio_account".
 	ResourceType string
-	// TerraformAddress is the address checks assert against.
-	TerraformAddress string
 	// CassettePath and FreezePath are where the fixture and its time companion
 	// live, surfaced in the file's header so a reviewer can find them.
 	CassettePath string
 	FreezePath   string
-	// FreezeTime is the fixed instant the cassette was built against, in the
-	// RFC3339Nano form the freeze companion carries.
-	FreezeTime string
 	// InteractionCount is the number of interactions the cassette holds, named
 	// in the header because a replay failure is usually a count mismatch.
 	InteractionCount int
@@ -90,10 +85,8 @@ func BuildExampleTestView(
 		FuncName:         scenario.TestFuncName,
 		ConfigFunc:       testHelperName(scenario.TestFuncName, "Config"),
 		ResourceType:     resourceType,
-		TerraformAddress: scenario.TerraformAddress,
 		CassettePath:     fmt.Sprintf("cassettes/%s.yaml", scenario.CassetteBaseName),
 		FreezePath:       fmt.Sprintf("cassettes/%s.freeze", scenario.CassetteBaseName),
-		FreezeTime:       scenario.FreezeTime.UTC().Format(freezeTimeLayout),
 		InteractionCount: len(scenario.Interactions),
 	}
 
@@ -129,9 +122,6 @@ func testHelperName(testFuncName, suffix string) string {
 	}
 	return "testAcc" + testFuncName + suffix
 }
-
-// freezeTimeLayout matches what the provider harness writes to a freeze file.
-const freezeTimeLayout = "2006-01-02T15:04:05.999999999Z07:00"
 
 // stepValues indexes a step's materialized values by their API path.
 func stepValues(step model.ScenarioStep) map[string]model.MaterializedValue {
@@ -194,12 +184,18 @@ func writeAttributes(
 	for _, attr := range attributes {
 		path := append(slices.Clone(prefix), attr.TFName)
 		if attr.IsBlock {
-			if !hasValues(nestedMembers(attr), values, apiPaths, path) {
+			// Rendered first, then kept only if it produced something: an
+			// empty block is a claim the scenario never made. Asking a
+			// separate walker whether the block has values would be a second
+			// implementation of the skips below, free to drift from them.
+			var body strings.Builder
+			writeAttributes(&body, nestedMembers(attr), values, apiPaths, path, depth+1)
+			if body.Len() == 0 {
 				continue
 			}
 			writeIndent(out, depth)
 			fmt.Fprintf(out, "%s = {\n", attr.TFName)
-			writeAttributes(out, nestedMembers(attr), values, apiPaths, path, depth+1)
+			out.WriteString(body.String())
 			writeIndent(out, depth)
 			out.WriteString("}\n")
 			continue
@@ -233,30 +229,6 @@ func writeAttributes(
 	}
 }
 
-// hasValues reports whether any leaf under a block has a value, so an empty
-// block is omitted rather than rendered.
-func hasValues(
-	attributes []AttrView,
-	values map[string]model.MaterializedValue,
-	apiPaths map[string]string,
-	prefix []string,
-) bool {
-	for _, attr := range attributes {
-		path := append(slices.Clone(prefix), attr.TFName)
-		if attr.IsBlock {
-			if hasValues(nestedMembers(attr), values, apiPaths, path) {
-				return true
-			}
-			continue
-		}
-		if _, ok := lookupValue(values, apiPaths, path); ok {
-			return true
-		}
-
-	}
-	return false
-}
-
 // lookupValue finds the materialized value a Terraform path corresponds to.
 //
 // The index records which API path each attribute was built from, so this is
@@ -284,14 +256,9 @@ func hclLiteral(value any) string {
 	switch typed := value.(type) {
 	case nil:
 		return "null"
-	case bool:
-		return strconv.FormatBool(typed)
-	case int:
-		return strconv.Itoa(typed)
-	case int64:
-		return strconv.FormatInt(typed, 10)
-	case float64:
-		return strconv.FormatFloat(typed, 'f', -1, 64)
+	case bool, int, int64, float64:
+		// Unquoted scalars render exactly as a check expects them.
+		return checkValue(typed)
 	case string:
 		return strconv.Quote(typed)
 	case []any:
@@ -301,7 +268,7 @@ func hclLiteral(value any) string {
 		}
 		return "[" + strings.Join(items, ", ") + "]"
 	default:
-		return strconv.Quote(fmt.Sprint(typed))
+		return strconv.Quote(checkValue(typed))
 	}
 }
 

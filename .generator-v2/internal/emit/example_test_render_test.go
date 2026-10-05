@@ -127,7 +127,6 @@ var _ = Describe("BuildExampleTestView", func() {
 			Expect(view.CassettePath).To(Equal("cassettes/" + scenario.TestFuncName + ".yaml"))
 			Expect(view.FreezePath).To(Equal("cassettes/" + scenario.TestFuncName + ".freeze"))
 			Expect(view.ResourceType).To(Equal("datadog_integration_twilio_account"))
-			Expect(view.TerraformAddress).To(Equal("datadog_integration_twilio_account.foo"))
 		})
 
 		// The writer replaces a file carrying the marker and never one without,
@@ -137,13 +136,6 @@ var _ = Describe("BuildExampleTestView", func() {
 			view, _ := twilioExampleView()
 			Expect(view.Marker).To(Equal(model.GeneratedMarker))
 			Expect(view.Marker).NotTo(BeEmpty())
-		})
-
-		It("surfaces the freeze time in the form the companion file carries", func() {
-			view, _ := twilioExampleView()
-			parsed, err := time.Parse(time.RFC3339Nano, view.FreezeTime)
-			Expect(err).To(Succeed())
-			Expect(parsed.UTC()).To(Equal(exampleFrozen))
 		})
 
 		It("reports the interaction count, since a replay failure is usually a mismatch", func() {
