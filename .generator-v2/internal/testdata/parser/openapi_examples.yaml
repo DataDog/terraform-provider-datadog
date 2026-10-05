@@ -3,8 +3,12 @@ info:
   title: openapi example-form matrix fixture
   version: 1.0.0
   description: |
-    One path per example form the cassette pipeline must recognize. Each case is
-    independently addressable so a parser test can assert a single form without
+    The cassette pipeline's parser fixture. Mostly one path per example form it
+    must recognize, plus a few paths covering what the pipeline reads alongside
+    an example: parameter serialization (`/parameters`), path-item vs operation
+    parameter precedence (`/parameter-merge`), and bodyless success responses
+    (`/bodyless`). Each case is independently addressable, by the artifact_name
+    in its x-datadog-tf-generator block, so a test can assert one case without
     depending on the others. Cases prefixed "bad-" are deliberately ineligible.
 paths:
 
@@ -161,7 +165,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/WidgetResponseWithSchemaExample'
+                $ref: '#/components/schemas/WidgetResponse'
 
   # --- schema-property `example` only (per-property fallback) ---
   /schema-property-example:
@@ -185,7 +189,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/WidgetResponsePropertyExamples'
+                $ref: '#/components/schemas/WidgetResponse'
 
   # --- local reusable example reference ---
   /local-reference:
@@ -379,47 +383,6 @@ paths:
                   type: widget
                   attributes:
                     name: parameter-merge-read
-
-  # --- more than one media type on a single response ---
-  /multi-media:
-    post:
-      operationId: CreateMultiMedia
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: multi_media
-        group:
-          create: CreateMultiMedia
-          read: CreateMultiMedia
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/WidgetRequest'
-            example:
-              data:
-                type: widget
-                attributes:
-                  name: multi-media-request
-      responses:
-        '201':
-          description: created — JSON is the supported representation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/WidgetResponse'
-              example:
-                data:
-                  id: 77777777-7777-7777-7777-777777777777
-                  type: widget
-                  attributes:
-                    name: multi-media-request
-            text/plain:
-              schema:
-                type: string
-              example: widget 77777777-7777-7777-7777-777777777777 created
-
-  # --- sensitive values must be replaced before use ---
   /sensitive:
     post:
       operationId: CreateSensitive
@@ -564,36 +527,6 @@ components:
                 name:
                   type: string
 
-    WidgetResponseWithSchemaExample:
-      type: object
-      required:
-      - data
-      example:
-        data:
-          id: bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb
-          type: widget
-          attributes:
-            name: schema-level-request
-      properties:
-        data:
-          type: object
-          required:
-          - id
-          - type
-          - attributes
-          properties:
-            id:
-              type: string
-            type:
-              $ref: '#/components/schemas/WidgetType'
-            attributes:
-              type: object
-              required:
-              - name
-              properties:
-                name:
-                  type: string
-
     WidgetRequestPropertyExamples:
       type: object
       required:
@@ -605,38 +538,6 @@ components:
           - type
           - attributes
           properties:
-            type:
-              $ref: '#/components/schemas/WidgetType'
-            attributes:
-              type: object
-              required:
-              - name
-              properties:
-                name:
-                  type: string
-                  example: property-level-name
-                replicas:
-                  type: integer
-                  example: 3
-                enabled:
-                  type: boolean
-                  example: true
-
-    WidgetResponsePropertyExamples:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          required:
-          - id
-          - type
-          - attributes
-          properties:
-            id:
-              type: string
-              example: cccccccc-cccc-cccc-cccc-cccccccccccc
             type:
               $ref: '#/components/schemas/WidgetType'
             attributes:
