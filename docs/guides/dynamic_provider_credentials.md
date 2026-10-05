@@ -2,7 +2,7 @@
 subcategory: ""
 page_title: "Terraform Dynamic Provider Credentials"
 description: |-
-  Authenticate HCP Terraform and Terraform Enterprise runs with Workload Identity Federation.
+  Authenticate HCP Terraform runs with Workload Identity Federation.
 ---
 
 # Terraform Dynamic Provider Credentials
@@ -13,7 +13,7 @@ Use Terraform-issued workload identity tokens (WITs) to authenticate the Datadog
 
 - Use a Datadog provider release that includes Terraform Dynamic Provider Credentials support (version >= 4.25.0).
 - Enable the applicable WIF integration for your Datadog organization and register the identity mapping described below. Creating the Terraform audience variable alone is insufficient.
-- Run in HCP Terraform or Terraform Enterprise (TFE). Local Terraform CLI execution does not generate these workload tokens.
+- Run in HCP Terraform. Local Terraform CLI execution does not generate these workload tokens.
 - For self-hosted HCP Terraform agents, tagged workload tokens require agent v1.12.0 or later; the untagged token requires v1.7.0 or later. Check [HashiCorp's requirements](https://developer.hashicorp.com/terraform/cloud-docs/dynamic-provider-credentials/manual-generation) for your deployment.
 
 ## Register a WIF persona mapping
@@ -47,7 +47,7 @@ Add an **environment variable** to the workspace, or a variable set attached to 
 | --- | --- |
 | `TFC_WORKLOAD_IDENTITY_AUDIENCE_DATADOG` | `datadog/<your-datadog-org-uuid>` |
 
-Use the audience supplied by the Datadog mapping setup. HCP Terraform/TFE injects the corresponding JWT as `TFC_WORKLOAD_IDENTITY_TOKEN_DATADOG` for each run phase. Do not populate the token variable yourself or place the token in Terraform configuration.
+Use the audience supplied by the Datadog mapping setup. HCP Terraform injects the corresponding JWT as `TFC_WORKLOAD_IDENTITY_TOKEN_DATADOG` for each run phase. Do not populate the token variable yourself or place the token in Terraform configuration.
 
 No additional authentication setting is required in the Datadog provider block:
 
@@ -80,7 +80,7 @@ The provider selects authentication in this order:
 4. A configured bearer token.
 5. Datadog API/application keys.
 
-A candidate must be a readable JWT with an unambiguous audience of the form `datadog/<valid-org-uuid>`. The JWT string and array forms of `aud` are supported. Missing, unreadable, or unrelated candidates are skipped. The issuer is inspected only to choose the HCP or CustomOIDC exchange path; a missing or malformed issuer does not cause credential fallback. Client-side inspection is only a selection check; ETS validates signatures, issuer trust, token expiration, and persona mappings.
+A candidate must be a readable JWT with an unambiguous audience of the form `datadog/<valid-org-uuid>`. The JWT string and array forms of `aud` are supported. Missing, unreadable, or unrelated candidates are skipped. A missing or malformed issuer does not cause credential fallback. Client-side inspection is only a selection check; ETS validates signatures, issuer trust, token expiration, and persona mappings.
 
 Once a WIT is selected, an exchange rejection is an error. The provider does not try the other token or switch to AWS/static credentials. Check the persona mapping, permitted subject/run phase, issuer registration, audience, and Datadog site when troubleshooting.
 
@@ -130,7 +130,7 @@ output "datadog_wif_identity" {
 }
 ```
 
-Queue a new plan in HCP Terraform or TFE. In the run output, verify that:
+Queue a new plan in HCP Terraform. In the run output, verify that:
 
 - `datadog_current_user.wif` completes its read and the postcondition passes.
 - `datadog_wif_identity` contains the expected user or service account UUID and organization UUID.
