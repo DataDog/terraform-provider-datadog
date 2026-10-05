@@ -174,15 +174,11 @@ func extractParameterExamples(op *model.Operation, raw *RawContext) []model.Para
 		if p == nil || p.Name == "" {
 			continue
 		}
-		var in model.ParameterIn
-		switch p.In {
-		case "path":
-			in = model.ParameterInPath
-		case "query":
-			in = model.ParameterInQuery
-		default:
-			// Header and cookie parameters cannot participate in matching,
-			// since recorded headers are filtered to an allowlist.
+		// Header and cookie parameters cannot participate in matching, since
+		// recorded headers are filtered to an allowlist, so parameterIn
+		// reports them as unmodelled and they are skipped.
+		in, ok := parameterIn(p.In)
+		if !ok {
 			continue
 		}
 		location := model.ExampleLocation{
@@ -371,7 +367,7 @@ func propertyExampleCandidates(
 	if schema.Properties == nil {
 		return out
 	}
-	for _, name := range sortedPropertyNames(schema) {
+	for _, name := range sortedPropertyKeys(schema) {
 		property := schema.Properties.GetOrZero(name)
 		if property == nil {
 			continue
@@ -430,13 +426,7 @@ func resolveAndWalk(
 // credential material, by either writeOnly or Datadog's x-secret extension. A
 // candidate so marked is usable only after replacement.
 func schemaDeclaresSecret(schema *base.Schema) bool {
-	if schema == nil {
-		return false
-	}
-	if schema.WriteOnly != nil && *schema.WriteOnly {
-		return true
-	}
-	return boolExtension(schema, secretExtension)
+	return schema != nil && (schemaWriteOnly(schema) || boolExtension(schema, secretExtension))
 }
 
 // decodeExampleValue decodes a YAML example node into the supported semantic
@@ -513,15 +503,4 @@ func sortedStrings(in []string) []string {
 		}
 	}
 	return out
-}
-
-func sortedPropertyNames(schema *base.Schema) []string {
-	if schema == nil || schema.Properties == nil {
-		return nil
-	}
-	var names []string
-	for name := range schema.Properties.FromOldest() {
-		names = append(names, name)
-	}
-	return sortedStrings(names)
 }
