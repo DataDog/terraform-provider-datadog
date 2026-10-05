@@ -215,7 +215,11 @@ func (n *schemaNormalizer) fillParameters(op *model.Operation, raw *v3.Operation
 	// object an operation acts on whenever the description declares it once for
 	// the whole path item.
 	for index, p := range n.raw.MergedParameters(op) {
-		if p == nil || (p.In != "query" && p.In != "path") || p.Name == "" {
+		if p == nil || p.Name == "" {
+			continue
+		}
+		in, ok := parameterIn(p.In)
+		if !ok {
 			continue
 		}
 		schema, err := n.normalizeProxyAt(p.Schema, 0, schemaContext{
@@ -224,10 +228,6 @@ func (n *schemaNormalizer) fillParameters(op *model.Operation, raw *v3.Operation
 		})
 		if err != nil {
 			return err
-		}
-		in := model.ParameterInQuery
-		if p.In == "path" {
-			in = model.ParameterInPath
 		}
 		parameter := model.QueryParam{
 			Name:             p.Name,

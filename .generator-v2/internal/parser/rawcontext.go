@@ -31,8 +31,6 @@ type RawContext struct {
 	// path item. The high-level operation does not expose them, so they are
 	// captured while the document is walked.
 	PathItemParams map[*model.Operation][]*v3.Parameter
-	// ServerURL is the resolved default server origin.
-	ServerURL string
 }
 
 // newRawContext returns an empty context with its maps ready to fill.
