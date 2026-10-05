@@ -480,7 +480,6 @@ func (m MaterializedSet) overlaidWith(delta MaterializedSet) MaterializedSet {
 	}
 
 	out := MaterializedSet{
-		Key:                   delta.Key,
 		Body:                  body,
 		Values:                make([]model.MaterializedValue, 0, len(values)),
 		SensitiveReplacements: map[string]string{},
