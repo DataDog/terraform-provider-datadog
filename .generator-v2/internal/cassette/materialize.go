@@ -26,7 +26,6 @@ import (
 
 // MaterializedSet is one example set turned into typed values.
 type MaterializedSet struct {
-	Key SetKey
 	// Body is the API-shaped payload: what the request sends or the response
 	// returns, after read-only filtering and sensitive replacement.
 	Body any
@@ -74,7 +73,7 @@ func (e *IncompleteError) Error() string {
 // field back is not what the provider does — but kept in a response, where the
 // server legitimately returns them.
 func MaterializeSet(set SelectedSet, schema *model.Schema) (MaterializedSet, error) {
-	out := MaterializedSet{Key: set.Key, SensitiveReplacements: map[string]string{}}
+	out := MaterializedSet{SensitiveReplacements: map[string]string{}}
 	if !set.Resolved() {
 		return out, &IncompleteError{Key: set.Key, Missing: []string{"the whole value"}}
 	}
@@ -254,7 +253,10 @@ func (m *materializer) assemble(schema *model.Schema, path string) any {
 		return nil
 
 	default:
-		return m.assembleLeaf(schema, path)
+		// A top-level scalar is one leaf, and a required one: the same probe
+		// order assembleChild's default arm already applies.
+		value, _ := m.assembleChild(schema, path, true)
+		return value
 	}
 }
 
@@ -295,18 +297,6 @@ func (m *materializer) assembleChild(schema *model.Schema, path string, required
 		}
 		return nil, false
 	}
-}
-
-// assembleLeaf covers a top-level scalar set, where the whole value is one leaf.
-func (m *materializer) assembleLeaf(schema *model.Schema, path string) any {
-	if candidate, ok := m.byPath[path]; ok {
-		return m.leaf(candidate.Value, schema, path)
-	}
-	if value, ok := schemaDefaultValue(schema); ok {
-		return m.leaf(value, schema, path)
-	}
-	m.missing = append(m.missing, labelPath(path))
-	return nil
 }
 
 // leaf records a scalar value, replacing it when the schema marks it
