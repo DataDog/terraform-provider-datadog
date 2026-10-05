@@ -29,14 +29,20 @@ const RedactedPlaceholder = "[redacted]"
 // provider's replay harness filters everything else, so retaining more would
 // record bytes that can never participate in matching — and would risk
 // committing an authorization header.
+//
+// This list must stay in parity with allowedHeaders in
+// datadog/tests/provider_test.go, which is the harness's own allowlist. That
+// one lives in a _test.go file in the root module, so it cannot be imported
+// here and the two are kept equal by hand.
 var retainedHeaders = []string{"Accept", "Content-Type"}
 
 // RetainedHeaders returns the header allowlist in canonical order.
 func RetainedHeaders() []string { return slices.Clone(retainedHeaders) }
 
 // FilterRetainedHeaders copies only the allowlisted headers, canonicalizing
-// their names. It is the single gate every rendered interaction passes through,
-// so the allowlist cannot be bypassed by a caller assembling headers by hand.
+// their names. Callers assembling headers are expected to pass them through
+// here; it is not a chokepoint, since rendering forwards whatever headers an
+// interaction already carries.
 func FilterRetainedHeaders(in map[string][]string) map[string][]string {
 	if len(in) == 0 {
 		return nil
@@ -262,7 +268,7 @@ type GeneratedTestScenario struct {
 	// datadog_integration_twilio_account.foo.
 	TerraformAddress string
 	// CassetteBaseName is the cassette and freeze basename. It must equal
-	// TestFuncName; ScenarioBaseNameMismatch reports when it does not.
+	// TestFuncName, and Validate reports when it does not.
 	CassetteBaseName string
 	// FreezeTime is the fixed UTC instant the replay harness restores. Every
 	// clock-dependent value in the scenario derives from it, which is what
