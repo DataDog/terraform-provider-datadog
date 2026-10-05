@@ -1,3 +1,9 @@
+---
+ddoc:
+  confluence_space: "API"
+  confluence_parent: "6733104627"
+---
+
 # Completing the acceptance test
 
 **Who this is for:** whoever is finishing a generated pull request.

@@ -1,3 +1,9 @@
+---
+ddoc:
+  confluence_space: "API"
+  confluence_parent: "6733104627"
+---
+
 # Scope: what tfgen supports today
 
 **Who this is for:** anyone asking "can tfgen generate this?" — before annotating,

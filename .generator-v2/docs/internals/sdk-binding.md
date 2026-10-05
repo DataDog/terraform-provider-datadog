@@ -1,3 +1,9 @@
+---
+ddoc:
+  confluence_space: "API"
+  confluence_parent: "6733104627"
+---
+
 # Stage 3 — Bind the Go SDK call
 
 **Who this is for:** you are changing how generated code reaches the Datadog Go SDK.

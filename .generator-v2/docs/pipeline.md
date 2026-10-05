@@ -1,3 +1,9 @@
+---
+ddoc:
+  confluence_space: "API"
+  confluence_parent: "6733104627"
+---
+
 # What triggers generation
 
 **Who this is for:** you annotated an operation and no provider pull request

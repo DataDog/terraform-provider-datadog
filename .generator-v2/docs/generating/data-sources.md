@@ -1,3 +1,9 @@
+---
+ddoc:
+  confluence_space: "API"
+  confluence_parent: "6733104627"
+---
+
 # Generating a data source
 
 **Who this is for:** you want practitioners to read an object that already exists —

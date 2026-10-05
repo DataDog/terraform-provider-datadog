@@ -1,3 +1,9 @@
+---
+ddoc:
+  confluence_id: "6733104627"
+  confluence_space: "API"
+---
+
 # tfgen — the Datadog Terraform provider generator
 
 tfgen turns annotated Datadog v2 OpenAPI operations into Terraform provider code.
@@ -83,3 +89,52 @@ Generated pages carry a `DO NOT EDIT` header. Regenerate with:
 make tfgen-docs        # rewrite them
 make tfgen-docs-check  # fail if any is stale (exit 3)
 ```
+
+## Mirroring to Confluence
+
+These files are the source of truth for the Confluence docs in the `API` space. ddoc
+has no repository-level config; it is configured per file, in the leading YAML block
+each page carries.
+
+The mapping is deliberately simple:
+
+- **`README.md` carries `confluence_id: "6733104627"`** and so replaces the existing
+  [Terraform Generator v2](https://datadoghq.atlassian.net/wiki/spaces/API/pages/6733104627)
+  page in place. That page stays the entry point and keeps its URL and inbound links.
+- **Every other page is new** and carries `confluence_parent: "6733104627"`, so it is
+  created under that entry point rather than at the space root.
+- **The old pages it supersedes are deleted**, not updated — the structure changed too
+  much for a page-for-page mapping, and three of them split into several.
+
+> **ddoc never deletes a Confluence page.** Removing Markdown leaves its page in
+> place, so the superseded pages have to be deleted by hand. Until that happens they
+> coexist with the new tree, which is the one state worth avoiding — two sets of docs
+> saying different things is how this drifted in the first place.
+
+Pages to delete once the new tree is published: v2 — Overview, Quick Start, Technical
+Overview, Pipeline in Depth, Generation in Depth, Testing, Internal data models, CLI
+contract, OAS extension contract, Road to Resources / Future Plans, and the
+`Contracts` folder that held the last two.
+
+Publishing is automatic: the org-scoped dd-octo-sts policy in `DataDog/.github`
+(`ddoc-sync-consumer-read-repos`, `repositories: []`) already authorizes this
+repository, and `ddoc-sync-consumer` publishes on every push to the default branch.
+So **merging a change to any of these files republishes its page.** Nothing happens on
+a feature branch.
+
+Before the first publish, run a dry run and read the plan:
+
+```sh
+ddoc sync --dry-run .generator-v2/docs
+```
+
+Two ddoc behaviours shape the rest:
+
+- Only a file named exactly **`index.md`** parents its siblings, and inheritance is
+  not recursive. `README.md` is not special to ddoc, so the section pages are parented
+  flat under the entry point rather than nesting one level deeper. After the first sync
+  writes their IDs back, set `confluence_parent` on each section's children to deepen
+  the tree.
+- The sync service never writes resolved IDs back to GitHub — only the local CLI does.
+  Run `ddoc sync` locally once and commit the IDs it writes, so later updates target
+  pages by ID instead of resolving them by title.

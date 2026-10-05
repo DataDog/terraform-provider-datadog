@@ -43,10 +43,11 @@ func renderCLI(root *cobra.Command) string {
 	var b strings.Builder
 
 	writeFrontMatter(&b, frontMatter{
-		Title:     "CLI reference",
-		Audience:  "anyone running `tfgen` directly, or reading a pipeline invocation.",
-		Source:    "the cobra command tree in `internal/cli/`",
-		Generator: "cmd/tfgen-docs",
+		Title:            "CLI reference",
+		ConfluenceParent: "6733104627",
+		Audience:         "anyone running `tfgen` directly, or reading a pipeline invocation.",
+		Source:           "the cobra command tree in `internal/cli/`",
+		Generator:        "cmd/tfgen-docs",
 	})
 
 	b.WriteString(`tfgen is invoked through a single binary. Build it with ` + "`make tfgen-build`" + ` (which

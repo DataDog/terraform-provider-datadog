@@ -1,3 +1,9 @@
+---
+ddoc:
+  confluence_space: "API"
+  confluence_parent: "6733104627"
+---
+
 # Generating a Terraform artifact
 
 **Who this is for:** you own a Datadog v2 API endpoint and want it available in the

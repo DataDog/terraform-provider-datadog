@@ -1,3 +1,9 @@
+---
+ddoc:
+  confluence_space: "API"
+  confluence_parent: "6733104627"
+---
+
 # 0002 — The split/fan-out workflow moved upstream
 
 - **Date:** 2026-10-02 (recording #4262, merged 2026-09-23)

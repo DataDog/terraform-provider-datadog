@@ -1,3 +1,9 @@
+---
+ddoc:
+  confluence_space: "API"
+  confluence_parent: "6733104627"
+---
+
 # Stage 2 — Model
 
 **Who this is for:** you are changing how an operation becomes a Terraform artifact.

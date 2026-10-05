@@ -1,3 +1,9 @@
+---
+ddoc:
+  confluence_space: "API"
+  confluence_parent: "6733104627"
+---
+
 # Stage 4 — Emit
 
 **Who this is for:** you are changing the generated output.

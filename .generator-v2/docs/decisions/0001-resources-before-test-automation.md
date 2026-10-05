@@ -1,3 +1,9 @@
+---
+ddoc:
+  confluence_space: "API"
+  confluence_parent: "6733104627"
+---
+
 # 0001 — Resources shipped before test automation
 
 - **Date:** 2026-10-02 (recording a decision taken over 2026-09)

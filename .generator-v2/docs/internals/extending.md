@@ -1,3 +1,9 @@
+---
+ddoc:
+  confluence_space: "API"
+  confluence_parent: "6733104627"
+---
+
 # Extending tfgen
 
 **Who this is for:** you are adding support for something the generator currently

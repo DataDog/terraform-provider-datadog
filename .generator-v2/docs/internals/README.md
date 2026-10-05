@@ -1,3 +1,9 @@
+---
+ddoc:
+  confluence_space: "API"
+  confluence_parent: "6733104627"
+---
+
 # tfgen internals
 
 **Who this is for:** you are changing the generator, not using it.

@@ -1,3 +1,9 @@
+---
+ddoc:
+  confluence_space: "API"
+  confluence_parent: "6733104627"
+---
+
 # Shipping a generated pull request
 
 **Who this is for:** a provider maintainer holding a generated pull request, or an
