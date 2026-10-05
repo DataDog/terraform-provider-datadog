@@ -275,14 +275,18 @@ type traceBuilder struct {
 	interactions []model.ScenarioInteraction
 }
 
-func (b *traceBuilder) add(
+// appendInteraction is the one place a recorded interaction is shaped. The
+// bodyless cases differ in what they carry, not in how it is assembled:
+// requestHeaders and responseHeaders already decide Accept-versus-Content-Type
+// from whether there is a body, and a zero content length follows from an
+// empty one.
+func (b *traceBuilder) appendInteraction(
 	role model.InteractionRole,
 	op *model.Operation,
-	request, response MaterializedSet,
+	requestBody, responseBody string,
 	status int,
+	provenance []model.ExampleProvenance,
 ) {
-	body := encodeBody(request.Body)
-	responseBody := encodeBody(response.Body)
 	b.interactions = append(b.interactions, model.ScenarioInteraction{
 		Index:       len(b.interactions),
 		Role:        role,
@@ -290,26 +294,37 @@ func (b *traceBuilder) add(
 		Request: model.InteractionRequest{
 			Method:        op.Method,
 			URL:           b.url(op),
-			Body:          body,
-			Headers:       requestHeaders(body),
-			ContentLength: len(body),
+			Body:          requestBody,
+			Headers:       requestHeaders(requestBody),
+			ContentLength: len(requestBody),
 		},
 		Response: model.InteractionResponse{
 			StatusCode:    status,
 			StatusText:    fmt.Sprintf("%d %s", status, http.StatusText(status)),
 			Body:          responseBody,
-			Headers:       model.FilterRetainedHeaders(map[string][]string{"Content-Type": {jsonContentType}}),
+			Headers:       responseHeaders(responseBody),
 			ContentLength: len(responseBody),
 		},
-		SourceExamples: b.provenanceFor(op),
+		SourceExamples: provenance,
 	})
+}
+
+// add appends an interaction whose request carries a body.
+func (b *traceBuilder) add(
+	role model.InteractionRole,
+	op *model.Operation,
+	request, response MaterializedSet,
+	status int,
+) {
+	b.appendInteraction(role, op,
+		encodeBody(request.Body), encodeBody(response.Body), status, b.provenanceFor(op))
 }
 
 // addRefreshes appends the reads the framework issues after an apply.
 // Identical requests are repeated rather than shared, because a replayed
 // interaction is consumed once.
 func (b *traceBuilder) addRefreshes(read *model.Operation, response MaterializedSet, times int) {
-	for i := 0; i < times; i++ {
+	for range times {
 		role := model.InteractionRoleRefresh
 		if len(b.interactions) == 1 {
 			// The first read after create is the resource's own Read, not a
@@ -320,69 +335,29 @@ func (b *traceBuilder) addRefreshes(read *model.Operation, response Materialized
 	}
 }
 
+// addRead appends a bodyless request returning a representation.
 func (b *traceBuilder) addRead(
 	role model.InteractionRole,
 	op *model.Operation,
 	response MaterializedSet,
 	status int,
 ) {
-	responseBody := encodeBody(response.Body)
-	b.interactions = append(b.interactions, model.ScenarioInteraction{
-		Index:       len(b.interactions),
-		Role:        role,
-		OperationId: op.OperationId,
-		Request: model.InteractionRequest{
-			Method:  op.Method,
-			URL:     b.url(op),
-			Headers: model.FilterRetainedHeaders(map[string][]string{"Accept": {jsonContentType}}),
-		},
-		Response: model.InteractionResponse{
-			StatusCode:    status,
-			StatusText:    fmt.Sprintf("%d %s", status, http.StatusText(status)),
-			Body:          responseBody,
-			Headers:       model.FilterRetainedHeaders(map[string][]string{"Content-Type": {jsonContentType}}),
-			ContentLength: len(responseBody),
-		},
-		SourceExamples: b.provenanceFor(op),
-	})
+	b.appendInteraction(role, op, "", encodeBody(response.Body), status, b.provenanceFor(op))
 }
 
+// addDelete appends the delete, which neither sends nor returns a body. It
+// carries no provenance: no declared example contributed a value to it.
 func (b *traceBuilder) addDelete() {
-	status := deleteStatus(b.target.Delete)
-	b.interactions = append(b.interactions, model.ScenarioInteraction{
-		Index:       len(b.interactions),
-		Role:        model.InteractionRoleDelete,
-		OperationId: b.target.Delete.OperationId,
-		Request: model.InteractionRequest{
-			Method:  b.target.Delete.Method,
-			URL:     b.url(b.target.Delete),
-			Headers: model.FilterRetainedHeaders(map[string][]string{"Accept": {jsonContentType}}),
-		},
-		Response: model.InteractionResponse{
-			StatusCode: status,
-			StatusText: fmt.Sprintf("%d %s", status, http.StatusText(status)),
-		},
-	})
+	b.appendInteraction(model.InteractionRoleDelete, b.target.Delete,
+		"", "", deleteStatus(b.target.Delete), nil)
 }
 
 // addDestroyVerification appends the post-destroy read the harness uses to
 // confirm the object is gone. It expects a 404 and is why response extraction
 // keeps failure outcomes, not only the success one.
 func (b *traceBuilder) addDestroyVerification() {
-	b.interactions = append(b.interactions, model.ScenarioInteraction{
-		Index:       len(b.interactions),
-		Role:        model.InteractionRoleDestroyVerification,
-		OperationId: b.target.Read.OperationId,
-		Request: model.InteractionRequest{
-			Method:  b.target.Read.Method,
-			URL:     b.url(b.target.Read),
-			Headers: model.FilterRetainedHeaders(map[string][]string{"Accept": {jsonContentType}}),
-		},
-		Response: model.InteractionResponse{
-			StatusCode: http.StatusNotFound,
-			StatusText: "404 Not Found",
-		},
-	})
+	b.appendInteraction(model.InteractionRoleDestroyVerification, b.target.Read,
+		"", "", http.StatusNotFound, nil)
 }
 
 // provenanceFor collects the origins of the values this operation's interaction
@@ -448,6 +423,15 @@ func (m MaterializedSet) configuration() *model.MaterializedConfiguration {
 		RequestValues:         m.Values,
 		SensitiveReplacements: m.SensitiveReplacements,
 	}
+}
+
+// responseHeaders returns the retained headers for a response. A bodyless
+// outcome carries none, which is what a recorded delete looks like.
+func responseHeaders(body string) map[string][]string {
+	if body == "" {
+		return nil
+	}
+	return model.FilterRetainedHeaders(map[string][]string{"Content-Type": {jsonContentType}})
 }
 
 // requestHeaders returns the retained headers for a request, declaring a
