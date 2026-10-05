@@ -80,16 +80,6 @@ var _ = Describe("WriteBundle", func() {
 			}
 		})
 
-		It("records a content hash per member", func() {
-			bundle := bundleIn(GinkgoT().TempDir())
-			_, err := WriteBundle(bundle, WritePolicyMissing)
-			Expect(err).To(Succeed())
-			Expect(bundle.ContentHashes).To(HaveLen(3))
-			for _, path := range bundle.Paths() {
-				Expect(bundle.ContentHashes).To(HaveKey(path))
-				Expect(bundle.ContentHashes[path]).To(HaveLen(64))
-			}
-		})
 	})
 
 	Describe("ownership preflight", func() {

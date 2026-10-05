@@ -2,8 +2,6 @@ package cassette
 
 import (
 	"bytes"
-	"crypto/sha256"
-	"encoding/hex"
 	"errors"
 	"fmt"
 	"os"
@@ -96,7 +94,6 @@ func WriteBundle(bundle *model.CassetteBundle, policy WritePolicy) (model.Casset
 	if err := commit(bundle); err != nil {
 		return model.CassetteWriteNone, err
 	}
-	bundle.ContentHashes = contentHashes(bundle)
 	return model.CassetteWriteCreated, nil
 }
 
@@ -244,19 +241,4 @@ func writeAtomic(path string, content []byte) error {
 		return fmt.Errorf("renaming into %s: %w", path, err)
 	}
 	return nil
-}
-
-// contentHashes records each member's content hash, so a later run can tell an
-// unchanged bundle from a changed one without re-rendering.
-func contentHashes(bundle *model.CassetteBundle) map[string]string {
-	return map[string]string{
-		bundle.TestPath:     hashOf(bundle.TestContent),
-		bundle.CassettePath: hashOf(bundle.CassetteContent),
-		bundle.FreezePath:   hashOf(bundle.FreezeContent),
-	}
-}
-
-func hashOf(content []byte) string {
-	sum := sha256.Sum256(content)
-	return hex.EncodeToString(sum[:])
 }
