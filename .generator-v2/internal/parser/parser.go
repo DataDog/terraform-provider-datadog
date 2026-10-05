@@ -103,7 +103,6 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 	// came from, so NormalizeSchemas can reach request/response bodies, which
 	// the model itself does not retain.
 	raw := newRawContext()
-	raw.ServerURL = spec.ServerURL
 	if paths := v3doc.Model.Paths; paths != nil && paths.PathItems != nil {
 		for opPath, item := range paths.PathItems.FromOldest() {
 			if item == nil {
