@@ -1,9 +1,7 @@
 package emit
 
 import (
-	"bytes"
 	"fmt"
-	"go/format"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
@@ -91,15 +89,5 @@ func RenderResourceExampleTest(
 	if err != nil {
 		return nil, err
 	}
-	var buf bytes.Buffer
-	if err := templates.ExecuteTemplate(&buf, "resource_example_test", rendered); err != nil {
-		return nil, fmt.Errorf("emit: executing example test template for %q: %w",
-			scenario.ArtifactName, err)
-	}
-	formatted, err := format.Source(buf.Bytes())
-	if err != nil {
-		return nil, fmt.Errorf("emit: gofmt of generated example test %q: %w\n--- raw output ---\n%s",
-			scenario.ArtifactName, err, buf.String())
-	}
-	return dropBlankLineAfterBrace(formatted), nil
+	return renderGoTemplate("resource_example_test", "example test", scenario.ArtifactName, rendered)
 }
