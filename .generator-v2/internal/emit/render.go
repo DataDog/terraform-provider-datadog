@@ -63,16 +63,7 @@ func RenderDataSource(v DataSourceView) ([]byte, error) {
 		name = "data_source_plural"
 	}
 
-	var buf bytes.Buffer
-	if err := templates.ExecuteTemplate(&buf, name, v); err != nil {
-		return nil, fmt.Errorf("emit: executing %s template for %q: %w", name, v.TypeName, err)
-	}
-
-	formatted, err := format.Source(buf.Bytes())
-	if err != nil {
-		return nil, fmt.Errorf("emit: gofmt of generated data source %q: %w\n--- raw output ---\n%s", v.TypeName, err, buf.String())
-	}
-	return dropBlankLineAfterBrace(formatted), nil
+	return renderGoTemplate(name, "data source", v.TypeName, v)
 }
 
 // RenderResource executes the resource template for v and returns
@@ -82,16 +73,7 @@ func RenderResource(v ResourceView) ([]byte, error) {
 		return nil, fmt.Errorf("emit: resource %q: %w", v.TypeName, err)
 	}
 
-	var buf bytes.Buffer
-	if err := templates.ExecuteTemplate(&buf, "resource", v); err != nil {
-		return nil, fmt.Errorf("emit: executing resource template for %q: %w", v.TypeName, err)
-	}
-
-	formatted, err := format.Source(buf.Bytes())
-	if err != nil {
-		return nil, fmt.Errorf("emit: gofmt of generated resource %q: %w\n--- raw output ---\n%s", v.TypeName, err, buf.String())
-	}
-	return dropBlankLineAfterBrace(formatted), nil
+	return renderGoTemplate("resource", "resource", v.TypeName, v)
 }
 
 // checkDuplicateFields rejects duplicate Go model names and a model struct that
@@ -142,4 +124,22 @@ func upperFirst(s string) string {
 	r := []rune(s)
 	r[0] = unicode.ToUpper(r[0])
 	return string(r)
+}
+
+// renderGoTemplate executes one template and returns gofmt-canonical Go
+// source. Every generated Go file goes through here, so a template syntax
+// error surfaces as a generation failure naming the artifact rather than as an
+// unbuildable package, and the raw output rides along for diagnosis. The kind
+// appears in both messages so a failure says which emitter produced it.
+func renderGoTemplate(templateName, kind, label string, data any) ([]byte, error) {
+	var buf bytes.Buffer
+	if err := templates.ExecuteTemplate(&buf, templateName, data); err != nil {
+		return nil, fmt.Errorf("emit: executing %s template for %q: %w", kind, label, err)
+	}
+	formatted, err := format.Source(buf.Bytes())
+	if err != nil {
+		return nil, fmt.Errorf("emit: gofmt of generated %s %q: %w\n--- raw output ---\n%s",
+			kind, label, err, buf.String())
+	}
+	return dropBlankLineAfterBrace(formatted), nil
 }
