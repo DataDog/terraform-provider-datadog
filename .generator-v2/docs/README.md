@@ -2,6 +2,7 @@
 ddoc:
   confluence_id: "6733104627"
   confluence_space: "API"
+  confluence_parent: "4784881958"
 ---
 
 # tfgen — the Datadog Terraform provider generator
