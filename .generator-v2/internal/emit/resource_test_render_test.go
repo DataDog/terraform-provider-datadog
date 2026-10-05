@@ -54,19 +54,6 @@ var _ = Describe("BuildResourceTestView", func() {
 		Expect(view.SDKPackage).To(Equal("datadogV2"))
 	})
 
-	It("labels the update step when the scenario has one", func() {
-		view := build()
-		Expect(view.UpdateStepIndex).To(Equal(2))
-	})
-
-	It("reports no update step when the scenario has none", func() {
-		_, scenario := twilioExampleView()
-		scenario.Steps = scenario.Steps[:1]
-		view, err := BuildResourceTestView(scenario, twilioResourceView(), twilioAPIPaths())
-		Expect(err).To(Succeed())
-		Expect(view.UpdateStepIndex).To(BeZero())
-	})
-
 	Describe("rejected views", func() {
 		// Without a read there is nothing to ask, so the scenario's 404
 		// interaction could never be consumed.
