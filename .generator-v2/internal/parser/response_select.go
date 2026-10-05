@@ -1,12 +1,15 @@
 package parser
 
 import (
+	"slices"
 	"sort"
 	"strconv"
 
 	"github.com/pb33f/libopenapi/datamodel/high/base"
 	v3 "github.com/pb33f/libopenapi/datamodel/high/v3"
 	"github.com/pb33f/libopenapi/orderedmap"
+
+	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
 // ----------------------------------------------------------------------------
@@ -57,22 +60,12 @@ func jsonMediaTypeOf(content *orderedmap.Map[string, *v3.MediaType]) *v3.MediaTy
 }
 
 // successResponses returns every declared 2xx outcome in ascending numeric
-// order. Ordering by number rather than declaration makes the choice
-// deterministic across spec reorderings.
+// order. It filters DeclaredResponses rather than enumerating again, so the
+// two cannot disagree about which statuses are parseable or how ties order.
 func successResponses(op *v3.Operation) []SelectedResponse {
-	if op == nil || op.Responses == nil || op.Responses.Codes == nil {
-		return nil
-	}
-	var out []SelectedResponse
-	for code, resp := range op.Responses.Codes.FromOldest() {
-		num, err := strconv.Atoi(code)
-		if err != nil || num < 200 || num > 299 || resp == nil {
-			continue
-		}
-		out = append(out, newSelectedResponse(code, num, resp))
-	}
-	sort.Slice(out, func(i, j int) bool { return out[i].Code < out[j].Code })
-	return out
+	return slices.DeleteFunc(DeclaredResponses(op), func(r SelectedResponse) bool {
+		return r.Code < 200 || r.Code > 299
+	})
 }
 
 // DeclaredResponses returns every declared response outcome with a parseable
@@ -193,4 +186,19 @@ func MergeParameters(pathItem, operation []*v3.Parameter) []*v3.Parameter {
 		merged = append(merged, p)
 	}
 	return merged
+}
+
+// parameterIn maps an OpenAPI parameter location onto the model's enum,
+// reporting false for the locations the generator does not model. Both the
+// normalizer and example extraction read parameters through this file, so the
+// mapping lives here once rather than once per reader.
+func parameterIn(in string) (model.ParameterIn, bool) {
+	switch in {
+	case "path":
+		return model.ParameterInPath, true
+	case "query":
+		return model.ParameterInQuery, true
+	default:
+		return "", false
+	}
 }
