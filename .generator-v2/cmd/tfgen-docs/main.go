@@ -109,7 +109,7 @@ func renderAnnotation(raw []byte) (string, error) {
 	var b strings.Builder
 	writeFrontMatter(&b, frontMatter{
 		Title:            "Annotation reference: `x-datadog-tf-generator`",
-		ConfluenceParent: "6733104627",
+		ConfluenceParent: "7291536637",
 		ConfluenceID:     "7290816044",
 		Audience:         "anyone annotating an OpenAPI operation to produce a Terraform artifact.",
 		Source:           "`internal/contracts/tracking-field.schema.json`",

@@ -44,7 +44,7 @@ func renderCLI(root *cobra.Command) string {
 
 	writeFrontMatter(&b, frontMatter{
 		Title:            "CLI reference",
-		ConfluenceParent: "6733104627",
+		ConfluenceParent: "7291536637",
 		ConfluenceID:     "7291503785",
 		Audience:         "anyone running `tfgen` directly, or reading a pipeline invocation.",
 		Source:           "the cobra command tree in `internal/cli/`",

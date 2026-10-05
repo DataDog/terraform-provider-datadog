@@ -129,13 +129,16 @@ Before the first publish, run a dry run and read the plan:
 ddoc sync --dry-run .generator-v2/docs
 ```
 
-Two ddoc behaviours shape the rest:
+The Confluence tree mirrors this directory structure: each directory's `README.md`
+is the page its siblings hang under, and `pipeline.md` sits at the top alongside them.
 
-- Only a file named exactly **`index.md`** parents its siblings, and inheritance is
-  not recursive. `README.md` is not special to ddoc, so the section pages are parented
-  flat under the entry point rather than nesting one level deeper. After the first sync
-  writes their IDs back, set `confluence_parent` on each section's children to deepen
-  the tree.
+Two ddoc behaviours worth knowing:
+
+- Only a file named exactly **`index.md`** parents its siblings automatically, and
+  inheritance is not recursive. `README.md` is not special to ddoc, so each page names
+  its parent explicitly in `confluence_parent`. Adding a page means pointing it at its
+  directory's index page ID.
 - The sync service never writes resolved IDs back to GitHub — only the local CLI does.
-  Run `ddoc sync` locally once and commit the IDs it writes, so later updates target
-  pages by ID instead of resolving them by title.
+  Every page here already records its `confluence_id`, so updates target pages by ID
+  rather than resolving them by title. That matters: "Reference" was already taken in
+  this space, which is why the reference index is titled "tfgen reference".
