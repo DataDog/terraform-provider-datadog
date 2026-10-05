@@ -5,7 +5,7 @@ ddoc:
   confluence_id: "7290881599"
 ---
 
-# Stage 4 — Emit
+# Stage 4: Emit
 
 **Who this is for:** you are changing the generated output.
 
@@ -42,7 +42,7 @@ schema:
 - relationships, sideloaded data, request metadata omitted
 - `created_at`, `created_by`, `modified_at` omitted, each with an `info` diagnostic
 
-It is also where `id_strategy` is enforced — anything other than `data.id` fails
+It is also where `id_strategy` is enforced: anything other than `data.id` fails
 here with `id_strategy %q is not yet supported (only data.id)`. For a plural data
 source the same transformation applies per item.
 
@@ -68,16 +68,16 @@ resolves provider API accessors; `apipath.go` handles path construction;
 
 `registration.go` and `resource_registration.go` maintain:
 
-- `datasources_generated.go` / `resources_generated.go` — a **union merge**, sorted,
+- `datasources_generated.go` / `resources_generated.go`: a **union merge**, sorted,
   so a scoped `--include` run never drops artifacts it did not regenerate
-- `framework_provider.go` — removal of a hand-written constructor when the annotation
+- `framework_provider.go`: removal of a hand-written constructor when the annotation
   declares `overwrites`
-- `datadog/tests/provider_test.go` — the `testFiles2EndpointTags` map entry for a
+- `datadog/tests/provider_test.go`: the `testFiles2EndpointTags` map entry for a
   generated test
 
 Because the registry files are sorted and merged, two concurrent artifact pull
 requests both touch them; the first to merge shifts the base and the second needs a
-trivial rebase. The resolution is deterministic — re-run the scoped emit.
+trivial rebase. The resolution is deterministic: re-run the scoped emit.
 
 ## What is preserved
 

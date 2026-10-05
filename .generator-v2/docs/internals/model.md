@@ -5,7 +5,7 @@ ddoc:
   confluence_id: "7291667269"
 ---
 
-# Stage 2 — Model
+# Stage 2: Model
 
 **Who this is for:** you are changing how an operation becomes a Terraform artifact.
 
@@ -19,7 +19,7 @@ One type serves both kinds. It carries:
 - the Terraform name, artifact kind, and top-level description
 - cardinality (singular or plural; ignored for resources)
 - an `AttributeTree`
-- `LifecycleBindings` — the SDK calls per role
+- `LifecycleBindings`: the SDK calls per role
 - the destination source path and generated-file ownership
 - non-fatal `Diagnostic`s
 
@@ -27,23 +27,23 @@ One type serves both kinds. It carries:
 `Attribute` holds its Terraform type, generated Go type, collection element types,
 description, flags, validators, nested children, component identity, and an optional
 `oneOf` envelope. Maps, nested objects, lists, and supported unions stay structural
-— nothing degrades to a dynamic value.
+Nothing degrades to a dynamic value.
 
 ## Lifecycle roles
 
 | Role | Used by |
 |---|---|
 | `Read` | Both. For a plural data source this is the **list** call. |
-| `Search` | Singular data sources only — a list endpoint resolving exactly one record. |
+| `Search` | Singular data sources only: a list endpoint resolving exactly one record. |
 | `Create` / `Update` / `Delete` | Resources. |
 
 `lifecycle.go` builds these. A resource with no `update` marks all attributes
-ForceNew — the missing-CRUD edge case.
+ForceNew, the missing-CRUD edge case.
 
 ## The resource schema merge
 
 `merge.go` is the densest code in the package and the part most likely to surprise
-you. A resource has up to three bodies — create, update, read — that must become one
+you. A resource has up to three bodies (create, update, read) that must become one
 Terraform schema.
 
 Rules that are easy to break:
@@ -66,7 +66,7 @@ Rules that are easy to break:
 `framework_types.go` maps schema kinds to Framework attribute types. Formats are
 deliberately ignored for integers and numbers: `int32` and `int64` both become
 `Int64Attribute`, `double` becomes `Float64Attribute`. Do not reintroduce
-format-sensitivity here without a reason — it was a conscious simplification.
+format-sensitivity here without a reason; it was a conscious simplification.
 
 Unrepresentable element or value kinds produce
 `array element kind %q is not representable` / `map value kind %q is not

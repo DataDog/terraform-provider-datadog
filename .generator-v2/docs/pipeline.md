@@ -24,7 +24,7 @@ appeared, or you are trying to find the run log.
    Terraform generator is selected by the changed-generator calculation.
 2. The API-spec workflow builds the compiled Terraform specification and runs
    `tfgen generate` against it, before the spec pull request merges.
-3. One invocation evaluates **every** annotated operation in the compiled spec — not
+3. One invocation evaluates **every** annotated operation in the compiled spec, not
    only the operation your pull request changed. This is why a single invalid
    annotation can abort the batch; see
    [reference/diagnostics.md](reference/diagnostics.md).
@@ -40,7 +40,7 @@ pull requests. The `tfgen split` command and `internal/split/` remain here and a
 still how the attribution is computed.
 
 > **Gap, stated rather than papered over.** This page deliberately does not
-> re-document the fan-out, because this repository does not own it — see house rule 3
+> re-document the fan-out, because this repository does not own it; see house rule 3
 > in [README.md](README.md). At the time of writing, the authoritative description of
 > where it now runs had not been written in the owning repository. If you are
 > debugging fan-out, start from the API-spec pipeline configuration, and please
@@ -53,12 +53,12 @@ Work down this list:
 - The API-spec pull request is ready for review, not a draft.
 - It does not carry `ci/skip`.
 - `x-datadog-generators.generators.terraform` is `true`.
-- The `x-datadog-tf-generator` annotation is valid — see
+- The `x-datadog-tf-generator` annotation is valid. See
   [reference/annotation.md](reference/annotation.md).
 - Every `operationId` named under `group` exists and is spelled exactly.
 - The endpoint and its models exist in the Go SDK version the provider pins.
 - The generation report has no parser, representability, SDK-binding, or emission
-  failure for your artifact — and no whole-run abort caused by *someone else's*
+  failure for your artifact, and no whole-run abort caused by *someone else's*
   annotation.
 
 ## Stale artefact worth cleaning up

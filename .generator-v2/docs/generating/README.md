@@ -11,15 +11,12 @@ ddoc:
 Terraform provider without writing the provider code yourself.
 
 You annotate an operation in `datadog-api-spec`. Generation produces the provider
-code, an example, and an acceptance-test scaffold. A provider maintainer — possibly
-you — then finishes the test and merges it.
+code, an example, and an acceptance-test scaffold. A provider maintainer, possibly
+you, then finishes the test and merges it.
 
 Before annotating, confirm your endpoint is in scope: [reference/scope.md](../reference/scope.md).
 
 ## Pick the artifact kind first
-
-This is the decision everything else follows from, and it is not about how many
-endpoints you have — it is about what a practitioner does with the result.
 
 | A practitioner should be able to… | Kind | Needs |
 |---|---|---|
@@ -27,9 +24,8 @@ endpoints you have — it is about what a practitioner does with the result.
 | Look up an object that already exists, by ID or filter | **Data source**, singular | a by-ID read, a list endpoint, or both |
 | Enumerate objects | **Data source**, plural | a list endpoint |
 
-Resources are the shipping path — see [resources.md](resources.md). Data sources are
-generated but none have been adopted yet; [data-sources.md](data-sources.md) says
-what that means for you.
+Resources are the shipping path: see [resources.md](resources.md).
+Data sources are: [data-sources.md](data-sources.md)
 
 A resource and a data source may share a name: they are separate Terraform
 namespaces. `artifact_name` must be unique *within* its kind.
@@ -61,25 +57,25 @@ paths:
 ```
 
 Every field is documented, with its exact validation rules, in
-[reference/annotation.md](../reference/annotation.md) — generated from the schema the
+[reference/annotation.md](../reference/annotation.md), generated from the schema the
 generator validates against, so it cannot describe a field that does not exist.
 
 ### Annotate the primary operation only
 
 One operation owns the artifact and carries both extensions. Operations referenced
-through `group` do not repeat them — they are named by `operationId` and found.
+through `group` do not repeat them, they are named by `operationId` and found.
 
 - Resource → annotate the **create** operation.
 - Singular data source, by-ID → annotate the **by-ID read**.
 - Singular data source, filter lookup → annotate the **list** operation.
 - Plural data source → annotate the **list** operation.
 
-Every value under `group` is an exact `operationId`. Not a path, not a method.
+Every value under `group` is an exact `operationId`.
 
 ## Replacing something hand-written
 
 If the provider already ships a hand-written artifact under your name, generation
-will refuse to overwrite it — a file with no tfgen marker is never silently
+will refuse to overwrite it. A file with no tfgen marker is never silently
 replaced. Authorise the takeover explicitly:
 
 ```yaml
@@ -113,7 +109,7 @@ some_secret:
 
 Usually you do not need it: `writeOnly: true` and `x-secret: true` already default a
 field to sensitive. Read the secrets section of
-[reference/scope.md](../reference/scope.md) before relying on either — redaction and
+[reference/scope.md](../reference/scope.md) before relying on either. Redaction and
 keeping values out of state are different things.
 
 ## Check before you open the pull request
@@ -121,10 +117,8 @@ keeping values out of state are different things.
 - The artifact name is lowercase `snake_case` and does not include `datadog_`.
 - Every `operationId` under `group` exists and is spelled exactly.
 - The endpoint and its models are in the Go SDK version the provider pins.
-- Response properties have useful `description`s — they become the Terraform schema
+- Response properties have useful `description`s, they become the Terraform schema
   descriptions practitioners read.
-- You have not used `ignore`. It does not exist, and it aborts the entire run —
-  including other teams' artifacts. See [reference/scope.md](../reference/scope.md).
 
 ## What happens next
 

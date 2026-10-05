@@ -11,8 +11,8 @@ ddoc:
 object through Terraform.
 
 This is the path with shipped precedent. Four generated resources are in the
-provider today — the Databricks, Elastic Cloud, Snowflake, and Twilio
-integration-account resources — so you are following a route that has been walked.
+provider today (the Databricks, Elastic Cloud, Snowflake, and Twilio
+integration-account resources) so you are following a route that has been walked.
 
 ## The annotation
 
@@ -34,18 +34,18 @@ Put it on the **create** operation. `cardinality` is ignored for resources.
 
 | Member | Effect if present | Effect if absent |
 |---|---|---|
-| `create` | Terraform `Create` calls it | Nothing to create; the artifact is a data source, not a resource |
-| `read` | `Read` refreshes state from it; required | Generation fails — the contract requires `read` or `search` |
+| `create` | Terraform `Create` calls it | Generation fails, the artifact should be a data source, not a resource |
+| `read` | `Read` refreshes state from it; required | Generation fails, the contract requires `read` or `search` |
 | `update` | Terraform `Update` calls it | **Every attribute becomes ForceNew**: any change destroys and recreates |
 | `delete` | Terraform `Destroy` calls it | No destroy path |
 
-Omitting `update` is a real design decision, not an oversight to paper over. If your
+Omitting `update` is a design decision. If your
 API has no PATCH, practitioners get replace-on-change semantics, and they should
 learn that from your `tf_description`.
 
 ## How the schema is built
 
-The generated schema is merged across the create, update, and read bodies — three
+The generated schema is merged across the create, update, and read bodies: three
 OpenAPI shapes, one Terraform schema. Two consequences worth anticipating:
 
 - **Per-role request components.** Create and update may reference different
@@ -64,7 +64,7 @@ Generated resource attributes follow one rule set:
 
 Optional+Computed means a practitioner may omit the field and let the API decide,
 without Terraform reporting perpetual drift. It also means you cannot tell from the
-schema alone whether the API will populate a field — which is why the acceptance
+schema alone whether the API will populate a field, which is why the acceptance
 test matters.
 
 ### What gets dropped
@@ -75,7 +75,7 @@ manage, each with an informational diagnostic in the run report:
 - `data.id` becomes the top-level `id`; `data.type` is omitted
 - fields under `data.attributes` are lifted to top level
 - `data.relationships`, sideloaded data, and request metadata are omitted
-- server-managed audit fields — `created_at`, `created_by`, `modified_at` — are
+- server-managed audit fields (`created_at`, `created_by`, `modified_at`) are
   dropped
 
 If something you consider essential is dropped, the run report says so explicitly.
@@ -84,7 +84,7 @@ Read it rather than assuming the generator missed it.
 ### Request construction
 
 Generated Create and Update build the JSON:API envelope level by level, set the
-`type` discriminator from the spec, and — for update — source `data.id` from
+`type` discriminator from the spec, and, for update, source `data.id` from
 Terraform state rather than from the path parameter alone. Nested request objects
 are expanded and mapped back in `updateState`. Enum leaves get a
 `stringvalidator.OneOf` and are converted through their generated SDK type.
@@ -103,13 +103,13 @@ before assuming it is a one-line change: two resources cannot share a Terraform 
 name, and the hand-written file may declare model types its sibling data source
 imports. Replacing the resource alone can break the package with something like
 `undefined: incidentTypeConfigurationModel`. Resolving that means generating the data
-source in the same run, or moving the shared declaration — a code change, not an
+source in the same run, or moving the shared declaration, which is a code change, not an
 annotation change.
 
 ## Then finish it
 
 Generation gives you a resource that compiles and a test that does not yet prove
-anything. A resource test must exercise the full lifecycle — create, update in
-place, and destroy — which is more work than a data-source test and more valuable.
+anything. A resource test must exercise the full lifecycle (create, update in
+place, and destroy), which is more work than a data-source test and more valuable.
 
 Continue at [shipping/](../shipping/README.md).

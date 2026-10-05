@@ -7,7 +7,7 @@ ddoc:
 
 # Reviewing generated code
 
-**Who this is for:** whoever approves a generated pull request — including the
+**Who this is for:** whoever approves a generated pull request, including the
 author, since generated code gets less scrutiny than hand-written code precisely
 because it looks uniform.
 
@@ -29,7 +29,7 @@ report together.
 ## The schema
 
 - [ ] Attribute names, types, and optionality look right against the API reference.
-- [ ] Required vs Optional+Computed is correct — a field the API populates should not
+- [ ] Required vs Optional+Computed is correct. A field the API populates should not
       be plain Optional, or practitioners get perpetual drift.
 - [ ] Descriptions came through. Empty descriptions mean the OpenAPI properties lack
       them; fix the spec rather than the generated file.
@@ -51,7 +51,7 @@ report together.
 
 - [ ] Every `info` diagnostic is something you are content to lose. Dropped audit
       fields are normal; a dropped field practitioners need is not.
-- [ ] No `warning` left unexamined — an unresolved warning is the most common way a
+- [ ] No `warning` left unexamined. An unresolved warning is the most common way a
       real problem reaches merge.
 - [ ] Nothing in the diff contradicts the report.
 
@@ -60,7 +60,7 @@ report together.
 - [ ] The test would fail if the state mapping broke. Asserting only that `id` is set
       does not meet that bar.
 - [ ] For a resource: create, update, and destroy are all exercised.
-- [ ] The cassette was read, not just produced — see [cassettes.md](cassettes.md).
+- [ ] The cassette was read, not just produced. See [cassettes.md](cassettes.md).
 - [ ] `RECORD=none` passed against the live API.
 
 ## Registration and blast radius
@@ -74,7 +74,7 @@ report together.
 
 ## When to reject rather than fix
 
-Push the fix upstream to the annotation or the spec — not into the generated file —
+Push the fix upstream to the annotation or the spec, not into the generated file,
 when the problem is a missing description, a wrong artifact kind, or an absent enum.
 Editing generated code is undone by the next run, and the marker makes CI reject
 hand edits anyway.

@@ -28,14 +28,14 @@ instruction quotes a differently-capitalised name, the file wins.
 
 A data source reads something that already exists; a resource creates it. In both
 cases prefer creating the object **in the same Terraform configuration** rather than
-relying on permanent state in the test organisation — a test that depends on an
+relying on permanent state in the test organisation. A test that depends on an
 object someone created by hand in the UI will eventually fail for reasons unrelated
 to your change.
 
 - Create the prerequisite with its Terraform resource where one exists.
 - Pass its ID, or a unique search value, into the artifact under test.
 - Use `depends_on` where Terraform cannot infer ordering.
-- Keep names deterministic with the existing unique-name helpers — replay matches on
+- Keep names deterministic with the existing unique-name helpers, because replay matches on
   the request URL, so a random name produces a request the cassette has never seen.
 
 ## Assert something that would catch a regression
@@ -68,7 +68,7 @@ make tfgen-test
 ```
 
 That covers the parser, model, SDK-binding, emission, CLI, and split tests, plus the
-golden snapshots in `internal/snapshots/` — which compare rendered output byte for
+golden snapshots in `internal/snapshots/`, which compare rendered output byte for
 byte, so an intentional emitter change shows up as a reviewable snapshot diff.
 Refresh them deliberately with `make tfgen-update-goldens`.
 

@@ -131,11 +131,11 @@ func (s *schemaDoc) writeObject(b *strings.Builder, obj map[string]any, level in
 		if p == nil {
 			continue
 		}
-		required := "—"
+		required := "no"
 		if req[n] {
 			required = "**yes**"
 		}
-		def := "—"
+		def := "none"
 		if d, ok := p["default"]; ok {
 			def = "`" + fmt.Sprintf("%v", d) + "`"
 		}
@@ -145,7 +145,7 @@ func (s *schemaDoc) writeObject(b *strings.Builder, obj map[string]any, level in
 	b.WriteString("\n")
 
 	if ap, ok := obj["additionalProperties"].(bool); ok && !ap {
-		b.WriteString("Unknown fields are rejected. A field absent from this table is not supported — " +
+		b.WriteString("Unknown fields are rejected. A field absent from this table is not supported: " +
 			"passing one fails the run at parse time.\n\n")
 	}
 	s.writeChoices(b, obj)
@@ -211,7 +211,7 @@ func (s *schemaDoc) typeOf(p map[string]any) string {
 		return "array"
 	}
 	if t == "" {
-		return "—"
+		return "unspecified"
 	}
 	return "`" + t + "`"
 }

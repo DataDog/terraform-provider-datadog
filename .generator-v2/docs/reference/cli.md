@@ -19,7 +19,7 @@ writes `bin/tfgen`) and run it from the provider checkout root.
 
 Every flag below is read from the command tree at generation time, so this inventory
 cannot drift from the flags actually registered. Flags marked **inert** are accepted
-without error but not yet acted on — they are still part of the contract, because
+without error but not yet acted on. They are still part of the contract, because
 passing one neither fails nor does anything.
 
 ## Exit codes

@@ -5,7 +5,7 @@ ddoc:
   confluence_id: "7291732553"
 ---
 
-# 0002 — The split/fan-out workflow moved upstream
+# 0002: The split/fan-out workflow moved upstream
 
 - **Date:** 2026-10-02 (recording #4262, merged 2026-09-23)
 - **Status:** accepted; the upstream description is an open gap
@@ -14,7 +14,7 @@ ddoc:
 
 Generating a batch of artifacts produces one aggregate branch. Something has to
 attribute each changed file to an artifact and open one draft pull request per
-artifact. That was `.github/workflows/tfgen-split.yml` in this repository — 746
+artifact. That was `.github/workflows/tfgen-split.yml` in this repository: 746
 lines of workflow that ran on pushes to `datadog-api-spec/generated/**`.
 
 Hosting it here meant the provider repository carried CI whose purpose was to
@@ -44,7 +44,7 @@ computes the attribution; the provider repository no longer runs the fan-out.
 
 ## Why this is recorded
 
-The previous documentation described the removed workflow in detail — branch naming,
-the pull-request cap, the fail-slow loop — for weeks after it was deleted, because
+The previous documentation described the removed workflow in detail (branch naming,
+the pull-request cap, the fail-slow loop) for weeks after it was deleted, because
 nothing connected the deletion to the page describing it. A dated decision record is
 the connection.

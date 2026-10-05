@@ -18,7 +18,7 @@ credentials. Recording is a live run; replay is not.
 | `RECORD` | Behaviour |
 |---|---|
 | `true` | Call the live API and write or replace the cassette |
-| `false` | Replay from the committed cassette, no API calls — **the default**, and what PR CI uses |
+| `false` | Replay from the committed cassette, no API calls. **The default**, and what PR CI uses |
 | `none` | Call the live API and record nothing |
 
 ## 1. Get test credentials
@@ -69,8 +69,8 @@ Confirm that:
 RECORD=false TESTARGS="-run TestAccDatadogIncidentTypeResource" make testacc
 ```
 
-Replay matches each request against the cassette by HTTP method and URL — **including
-the query string** — and request bodies must match too, either exactly or as
+Replay matches each request against the cassette by HTTP method and URL, **including
+the query string**, and request bodies must match too, either exactly or as
 equivalent JSON. Interactions are single-use and consumed in order.
 
 This is why deterministic test configuration matters: a different filter value

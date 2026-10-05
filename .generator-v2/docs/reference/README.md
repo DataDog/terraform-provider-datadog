@@ -8,7 +8,7 @@ ddoc:
 # tfgen reference
 
 **Who this is for:** you need a precise answer about a flag, a field, a status, or a
-failure — not a walkthrough.
+failure, not a walkthrough.
 
 | Page | What it is | Maintained by |
 |---|---|---|
@@ -19,5 +19,5 @@ failure — not a walkthrough.
 
 The two generated pages carry a `DO NOT EDIT` header. Change their source of truth and
 run `make tfgen-docs`; `make tfgen-docs-check` fails while either is stale. A field
-absent from a schema therefore cannot appear in its reference page — which is the
+absent from a schema therefore cannot appear in its reference page, which is the
 specific failure this directory exists to prevent.

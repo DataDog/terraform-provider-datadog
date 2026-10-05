@@ -5,13 +5,13 @@ ddoc:
   confluence_parent: "4784881958"
 ---
 
-# tfgen — the Datadog Terraform provider generator
+# Datadog's Terraform provider generator
 
 tfgen turns annotated Datadog v2 OpenAPI operations into Terraform provider code.
 An operation carrying `x-datadog-tf-generator` becomes a generated resource or data
 source, registered in the provider and shipped like any other.
 
-**Start with the question you arrived with.**
+**Lets get started.**
 
 | You are… | Go to | What you get |
 |---|---|---|
@@ -20,15 +20,14 @@ source, registered in the provider and shipped like any other.
 | Looking at a failed or surprising run | [reference/diagnostics.md](reference/diagnostics.md) | Report statuses, diagnostics, what each failure means |
 | Changing tfgen itself | [internals/](internals/README.md) | Architecture, the stages, and where to add a shape |
 
-**The two pages worth knowing by name:**
+**The two pages worth keeping in mind:**
 
-- [reference/scope.md](reference/scope.md) — the single statement of what tfgen can
-  do today. No other page restates it. If you are wondering whether something is
-  supported, that is the only page to read.
-- [reference/annotation.md](reference/annotation.md) — every accepted annotation
+- [reference/scope.md](reference/scope.md): what tfgen can do today. If you are
+  wondering whether something is supported, this is the page to read.
+- [reference/annotation.md](reference/annotation.md): every accepted annotation
   field, generated from the schema the generator validates against.
 
-## How it fits together
+## How it works
 
 ```
 OpenAPI operation (datadog-api-spec)
@@ -46,20 +45,16 @@ generated provider code + example + acceptance-test scaffold + run report
 a human finishes the test, records a cassette, reviews, merges
 ```
 
-The last step is not optional and not automated. A successful generation run means
-the code compiles and the schema is representable — not that the artifact works
-against the API. See [shipping/](shipping/README.md).
-
 ## Reference
 
 | Page | What it is |
 |---|---|
-| [reference/scope.md](reference/scope.md) | What is supported, what is not — the single source |
-| [reference/annotation.md](reference/annotation.md) | `x-datadog-tf-generator` fields · generated |
-| [reference/cli.md](reference/cli.md) | `tfgen` commands and flags · generated |
+| [reference/scope.md](reference/scope.md) | What is supported, what is not |
+| [reference/annotation.md](reference/annotation.md) | `x-datadog-tf-generator` fields  \[generated\] |
+| [reference/cli.md](reference/cli.md) | `tfgen` commands and flags \[generated\] |
 | [reference/diagnostics.md](reference/diagnostics.md) | Reading a failed run |
 | [pipeline.md](pipeline.md) | What triggers generation, and who owns it |
-| [decisions/](decisions/) | Why things are the way they are, dated |
+| [decisions/](decisions/) | Why things are the way they are |
 
 ## House rules for these docs
 
@@ -68,15 +63,14 @@ was documented for seven weeks after it failed to merge, the stated scope was wr
 on seven pages at once, and half a page described a workflow that had been deleted.
 Each rule below is a direct response to one of those.
 
-1. **One scope file.** Only [reference/scope.md](reference/scope.md) states what is
-   supported. Everything else links to it. Never restate it — that is how it went
-   wrong on seven pages simultaneously.
+1. **One scope file.** Only [reference/scope.md](reference/scope.md) states what
+   is supported. Everything else links to it.
 2. **Tables of flags, fields, statuses, or codes are generated.** If it cannot be
    derived from a source of truth, do not tabulate it; write a sentence instead.
    See `cmd/tfgen-docs`.
 3. **Never re-document another repository's workflow.** Name the owner, link, stop.
 4. **Links point at paths on the default branch.** Never a commit permalink, never a
-   branch — citing branch state as shipped state is what made an unmerged feature
+   branch. Citing branch state as shipped state is what made an unmerged feature
    look real.
 5. **Unmerged work gets a [decision record](decisions/), not a reference page.**
    Reference describes what runs today.
@@ -104,26 +98,15 @@ The mapping is deliberately simple:
   page in place. That page stays the entry point and keeps its URL and inbound links.
 - **Every other page is new** and carries `confluence_parent: "6733104627"`, so it is
   created under that entry point rather than at the space root.
-- **The old pages it supersedes are deleted**, not updated — the structure changed too
-  much for a page-for-page mapping, and three of them split into several.
 
 > **ddoc never deletes a Confluence page.** Removing Markdown leaves its page in
-> place, so the superseded pages have to be deleted by hand. Until that happens they
-> coexist with the new tree, which is the one state worth avoiding — two sets of docs
-> saying different things is how this drifted in the first place.
-
-Pages to delete once the new tree is published: v2 — Overview, Quick Start, Technical
-Overview, Pipeline in Depth, Generation in Depth, Testing, Internal data models, CLI
-contract, OAS extension contract, Road to Resources / Future Plans, and the
-`Contracts` folder that held the last two.
+> place, so the superseded pages have to be deleted by hand.
 
 Publishing is automatic: the org-scoped dd-octo-sts policy in `DataDog/.github`
 (`ddoc-sync-consumer-read-repos`, `repositories: []`) already authorizes this
 repository, and `ddoc-sync-consumer` publishes on every push to the default branch.
 So **merging a change to any of these files republishes its page.** Nothing happens on
 a feature branch.
-
-Before the first publish, run a dry run and read the plan:
 
 ```sh
 ddoc sync --dry-run .generator-v2/docs
@@ -138,7 +121,7 @@ Two ddoc behaviours worth knowing:
   inheritance is not recursive. `README.md` is not special to ddoc, so each page names
   its parent explicitly in `confluence_parent`. Adding a page means pointing it at its
   directory's index page ID.
-- The sync service never writes resolved IDs back to GitHub — only the local CLI does.
+- The sync service never writes resolved IDs back to GitHub; only the local CLI does.
   Every page here already records its `confluence_id`, so updates target pages by ID
   rather than resolving them by title. That matters: "Reference" was already taken in
   this space, which is why the reference index is titled "tfgen reference".

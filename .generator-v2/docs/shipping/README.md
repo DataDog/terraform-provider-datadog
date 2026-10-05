@@ -31,7 +31,7 @@ In order, because each step depends on the last:
    little more than that an ID is set. This is the bulk of the work.
 2. **[Record and replay its cassette](cassettes.md)** against the Frog organisation,
    and read the recording before committing it.
-3. **[Work the review checklist](review-checklist.md)** — schema, request, state
+3. **[Work the review checklist](review-checklist.md)**: schema, request, state
    mapping, diagnostics.
 4. Review the example. Replace it if the pull request flags it as a placeholder.
 5. Take it out of draft, and merge it through the normal provider workflow.
@@ -48,7 +48,7 @@ In order, because each step depends on the last:
 
 Ordinary pull-request CI **replays** committed cassettes across the Terraform and
 OpenTofu matrix. It never records or refreshes them. So CI can be green on a test
-that proves very little — a cassette only covers the interactions recorded during
+that proves very little. A cassette only covers the interactions recorded during
 that one run.
 
 A green replay also does not prove the API still behaves that way. That is what the
@@ -77,6 +77,6 @@ runner and the acceptance-test configuration; bare `go test` will not.
 
 ## If something looks wrong rather than unfinished
 
-Read the run report's diagnostics first — a dropped field or an unrepresentable
+Read the run report's diagnostics first. A dropped field or an unrepresentable
 shape is usually reported rather than silently mishandled. See
 [reference/diagnostics.md](../reference/diagnostics.md).

@@ -14,7 +14,7 @@ ddoc:
 
 > Generated from `internal/contracts/tracking-field.schema.json` by `cmd/tfgen-docs`. Edit that source and run `make tfgen-docs`; changes made here are overwritten.
 
-The extension opts an OpenAPI operation into Terraform generation. tfgen validates every occurrence against the schema this page is rendered from, so the fields below are exactly the fields accepted — there are no undocumented ones, and anything missing here will fail the run.
+The extension opts an OpenAPI operation into Terraform generation. tfgen validates every occurrence against the schema this page is rendered from, so the fields below are exactly the fields accepted. There are no undocumented ones, and anything missing here will fail the run.
 
 For how to choose between the shapes, see [Generating an artifact](../generating/README.md). For what the generator can currently do with them, see [Scope](scope.md).
 
@@ -24,17 +24,17 @@ OpenAPI 3.0 vendor extension that opts an operation in to Datadog Terraform prov
 
 | Field | Type | Required | Default | Notes |
 |---|---|---|---|---|
-| `artifact_kind` | `string` | **yes** | — | Whether this operation should be exposed as a Terraform resource (with full CRUD lifecycle) or a Terraform data source (read-only). One of: `resource`, `data_source`. |
-| `artifact_name` | `string` | **yes** | — | Terraform-facing artifact name without the 'datadog_' prefix. Must be lowercase snake_case. Must be unique per artifact_kind — resources and data sources are separate Terraform namespaces, so a resource and a data source may share a name. Pattern: `^[a-z][a-z0-9_]*$`. Min length 1, max length 64. |
-| `cardinality` | `string` | — | `singular` | For a data source, whether the read resolves a single item by id (singular) or returns a filtered list (plural). Ignored for resources. One of: `singular`, `plural`. |
-| `group` | `object` | — | — | The OpenAPI operations backing this artifact. For a resource: the create/read/update/delete lifecycle. For a data source: read (a by-id endpoint) and/or search (a list endpoint used to resolve a single match). May reference operations by their operationId. |
-| `id_strategy` | `string` | — | `data.id` | How to derive the Terraform resource ID from the API response on Create/Read. One of: `data.id`, `data.attributes.id`, `data.attributes.uuid`, `header.location`. |
-| `overwrites` | `string` | — | — | The constructor function of the hand-written artifact this generated one replaces, e.g. "NewDatadogTeamDataSource" or "NewIncidentTypeResource". When set, the generated file overwrites the hand-written one in place (they share the same output path), the generator removes that constructor from the FrameworkProvider Datasources or Resources slice as appropriate, and registers the generated constructor in generatedDatasources or generatedResources. It is also what authorizes the takeover: without it the generator refuses to overwrite a file carrying no generated-code marker, so a name collision fails loudly instead of silently replacing hand-written code. Omit for purely additive generation. Min length 1. |
-| `sensitive` | `boolean` | — | `false` | When present on a Schema Object, explicitly controls whether the attribute is Terraform-sensitive (suppressed in plan output). When omitted, writeOnly: true or x-secret: true defaults the attribute to sensitive; an explicit false overrides that inference on the same schema node. |
-| `skip` | `boolean` | — | `false` | Explicitly disable generation for this operation while keeping the annotation in place. Equivalent to removing the extension, but documented in-spec so reviewers see the choice. |
-| `tf_description` | `string` | — | — | Human-readable doc string for the generated artifact's top-level Terraform schema (the data source / resource description shown in `terraform docs`). Optional; when omitted the generated Description is left empty. Convention: "Use this data source to retrieve information about an existing <thing>." Min length 1. |
+| `artifact_kind` | `string` | **yes** | none | Whether this operation should be exposed as a Terraform resource (with full CRUD lifecycle) or a Terraform data source (read-only). One of: `resource`, `data_source`. |
+| `artifact_name` | `string` | **yes** | none | Terraform-facing artifact name without the 'datadog_' prefix. Must be lowercase snake_case. Must be unique per artifact_kind: resources and data sources are separate Terraform namespaces, so a resource and a data source may share a name. Pattern: `^[a-z][a-z0-9_]*$`. Min length 1, max length 64. |
+| `cardinality` | `string` | no | `singular` | For a data source, whether the read resolves a single item by id (singular) or returns a filtered list (plural). Ignored for resources. One of: `singular`, `plural`. |
+| `group` | `object` | no | none | The OpenAPI operations backing this artifact. For a resource: the create/read/update/delete lifecycle. For a data source: read (a by-id endpoint) and/or search (a list endpoint used to resolve a single match). May reference operations by their operationId. |
+| `id_strategy` | `string` | no | `data.id` | How to derive the Terraform resource ID from the API response on Create/Read. One of: `data.id`, `data.attributes.id`, `data.attributes.uuid`, `header.location`. |
+| `overwrites` | `string` | no | none | The constructor function of the hand-written artifact this generated one replaces, e.g. "NewDatadogTeamDataSource" or "NewIncidentTypeResource". When set, the generated file overwrites the hand-written one in place (they share the same output path), the generator removes that constructor from the FrameworkProvider Datasources or Resources slice as appropriate, and registers the generated constructor in generatedDatasources or generatedResources. It is also what authorizes the takeover: without it the generator refuses to overwrite a file carrying no generated-code marker, so a name collision fails loudly instead of silently replacing hand-written code. Omit for purely additive generation. Min length 1. |
+| `sensitive` | `boolean` | no | `false` | When present on a Schema Object, explicitly controls whether the attribute is Terraform-sensitive (suppressed in plan output). When omitted, writeOnly: true or x-secret: true defaults the attribute to sensitive; an explicit false overrides that inference on the same schema node. |
+| `skip` | `boolean` | no | `false` | Explicitly disable generation for this operation while keeping the annotation in place. Equivalent to removing the extension, but documented in-spec so reviewers see the choice. |
+| `tf_description` | `string` | no | none | Human-readable doc string for the generated artifact's top-level Terraform schema (the data source / resource description shown in `terraform docs`). Optional; when omitted the generated Description is left empty. Convention: "Use this data source to retrieve information about an existing <thing>." Min length 1. |
 
-Unknown fields are rejected. A field absent from this table is not supported — passing one fails the run at parse time.
+Unknown fields are rejected. A field absent from this table is not supported: passing one fails the run at parse time.
 
 ### `group`
 
@@ -42,13 +42,13 @@ The OpenAPI operations backing this artifact. For a resource: the create/read/up
 
 | Field | Type | Required | Default | Notes |
 |---|---|---|---|---|
-| `create` | `string` | — | — | operationId of the Create endpoint (resources). |
-| `delete` | `string` | — | — | operationId of the Delete endpoint (resources). |
-| `read` | `string` | — | — | operationId of the Read (by-id) endpoint. |
-| `search` | `string` | — | — | operationId of the list endpoint used to resolve a single match. Singular data sources only; never inferred. |
-| `update` | `string` | — | — | operationId of the Update endpoint (resources). May be omitted; the generator will then mark all attributes ForceNew per the missing-CRUD edge case in the spec. |
+| `create` | `string` | no | none | operationId of the Create endpoint (resources). |
+| `delete` | `string` | no | none | operationId of the Delete endpoint (resources). |
+| `read` | `string` | no | none | operationId of the Read (by-id) endpoint. |
+| `search` | `string` | no | none | operationId of the list endpoint used to resolve a single match. Singular data sources only; never inferred. |
+| `update` | `string` | no | none | operationId of the Update endpoint (resources). May be omitted; the generator will then mark all attributes ForceNew per the missing-CRUD edge case in the spec. |
 
-Unknown fields are rejected. A field absent from this table is not supported — passing one fails the run at parse time.
+Unknown fields are rejected. A field absent from this table is not supported: passing one fails the run at parse time.
 
 Constraint: at least one of `read` or `search` must be present.
 

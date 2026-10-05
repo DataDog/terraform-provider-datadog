@@ -117,7 +117,7 @@ func renderAnnotation(raw []byte) (string, error) {
 	})
 	b.WriteString("The extension opts an OpenAPI operation into Terraform generation. " +
 		"tfgen validates every occurrence against the schema this page is rendered from, " +
-		"so the fields below are exactly the fields accepted — there are no undocumented ones, " +
+		"so the fields below are exactly the fields accepted. There are no undocumented ones, " +
 		"and anything missing here will fail the run.\n\n")
 	b.WriteString("For how to choose between the shapes, see " +
 		"[Generating an artifact](../generating/README.md). " +
@@ -140,8 +140,8 @@ type frontMatter struct {
 }
 
 // ddocBlock renders the Confluence-mirroring metadata every page in docs/
-// carries, generated and hand-written alike. ddoc is configured per file —
-// there is no repository-level config — and its content prefilter requires a
+// carries, generated and hand-written alike. ddoc is configured per file (there
+// is no repository-level config), and its content prefilter requires a
 // closed leading YAML block with a column-zero `ddoc:` key, so this has to come
 // before the generated-code marker.
 //

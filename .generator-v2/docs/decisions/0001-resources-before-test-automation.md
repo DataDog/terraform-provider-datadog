@@ -5,7 +5,7 @@ ddoc:
   confluence_id: "7291144348"
 ---
 
-# 0001 — Resources shipped before test automation
+# 0001: Resources shipped before test automation
 
 - **Date:** 2026-10-02 (recording a decision taken over 2026-09)
 - **Status:** accepted, in progress ([APIR-2494](https://datadoghq.atlassian.net/browse/APIR-2494))
@@ -15,7 +15,7 @@ ddoc:
 The generator's original plan sequenced resources *after* automated acceptance-test
 generation. The reasoning was that data-source coverage was already high, so the
 bottleneck was no longer emitting code but proving a generated artifact safe to
-merge — and that solving testing first would make resources straightforward and
+merge, and that solving testing first would make resources straightforward and
 keep humans out of the loop.
 
 That is not what happened.
@@ -32,7 +32,7 @@ Automated acceptance-test generation and agentic review remain unbuilt.
 ## Consequences
 
 - **Resources are the path with precedent**, and data sources are the path with
-  none — the inverse of the original framing. `generatedDatasources` is still an
+  none, the inverse of the original framing. `generatedDatasources` is still an
   empty slice. The documentation leads with resources accordingly.
 - **Completing the acceptance test is still the dominant cost** of adopting a
   generated artifact, and it is now paid on the more complex of the two kinds, since

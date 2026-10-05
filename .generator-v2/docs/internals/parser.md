@@ -5,7 +5,7 @@ ddoc:
   confluence_id: "7291765206"
 ---
 
-# Stage 1 — Parse
+# Stage 1: Parse
 
 **Who this is for:** you are changing how tfgen reads OpenAPI.
 
@@ -41,7 +41,7 @@ Object is read by `isSensitive` through a narrow struct decode, which does *not*
 the JSON-Schema validation that operation annotations get. That is why a bare
 `{sensitive: true}` works even though the flat contract nominally requires
 `artifact_kind` and `artifact_name` on every occurrence. If you unify these paths, a
-lot of existing specs will start failing validation — intentionally or not.
+lot of existing specs will start failing validation, intentionally or not.
 
 A malformed `sensitive` annotation counts as absent, leaving `writeOnly` / `x-secret`
 inference in force. That direction is deliberate: it fails safe, so a typo cannot
@@ -51,14 +51,14 @@ expose a credential in a plan.
 
 `schema.go` converts OpenAPI composition into the generator's recursive `Schema`:
 
-- **`allOf`** — compatible branches merged; there is no retained `allOf` in later
+- **`allOf`**: compatible branches merged; there is no retained `allOf` in later
   stages. Conflicting intersections become unsupported nodes at the affected
   position, not run failures. Watch `isAnnotationOnlySchema`: a `$ref` carrying only
   a `readOnly` sibling must not be treated as a composition, and getting that wrong
   produced a real merge bug.
-- **`oneOf`** — becomes a typed `OneOfSpec` with discriminator info and alternatives.
-- **`additionalProperties`** — recognized as an object map.
-- **`anyOf`** — retained as unsupported, with a reason. First match wins in the
+- **`oneOf`**: becomes a typed `OneOfSpec` with discriminator info and alternatives.
+- **`additionalProperties`**: recognized as an object map.
+- **`anyOf`**: retained as unsupported, with a reason. First match wins in the
   unsupported classification, since a node can satisfy several conditions at once.
 
 Descriptions, formats, enums, component names, and sensitivity markings are all

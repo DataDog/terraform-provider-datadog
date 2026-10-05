@@ -21,17 +21,17 @@ generator's contract from "fails honestly" to "emits something approximate".
 
 Work outward from the parser; each stage will tell you what it is missing.
 
-1. **Parse** — stop classifying it as unsupported in `internal/parser/schema.go`, and
+1. **Parse**: stop classifying it as unsupported in `internal/parser/schema.go`, and
    represent it in the recursive `Schema`. Preserve component identity and
    `UnsupportedReason` for the sub-cases you still reject.
-2. **Model** — map it to a Framework type in `framework_types.go` and represent it in
+2. **Model**: map it to a Framework type in `framework_types.go` and represent it in
    the `AttributeTree`. If a resource can carry it, handle it in the create/update/read
-   merge in `merge.go` — in particular decide how it widens for validation and how it
+   merge in `merge.go`, deciding in particular how it widens for validation and how it
    ORs sensitivity.
-3. **Bind** — if it changes the SDK call surface (new argument type, new setter
+3. **Bind**: if it changes the SDK call surface (new argument type, new setter
    shape), handle it in `sdkbind`/`sdkbinding`.
-4. **Emit** — render it, and map state both ways. Omitted values must become null.
-5. **Goldens** — add a fixture, regenerate, read the diff.
+4. **Emit**: render it, and map state both ways. Omitted values must become null.
+5. **Goldens**: add a fixture, regenerate, read the diff.
 
 Add a fixture at each stage rather than at the end. `internal/testdata/mini-oas/`
 holds production-shaped slices; `mini-oas/scripts/gen-test/` holds annotated copies;
@@ -46,7 +46,7 @@ adding a template. Follow the same route: add the role, populate it in
 
 ## Changing a contract
 
-The annotation contract in `internal/contracts/` is consumed outside this module — by
+The annotation contract in `internal/contracts/` is consumed outside this module, by
 spec authors and by `openapi-transformer`. So:
 
 1. Edit `tracking-field.schema.json`.
@@ -56,7 +56,7 @@ spec authors and by `openapi-transformer`. So:
    upstream but absent here aborts the whole run**, which is exactly how `ignore`
    became a documented feature that broke generation.
 
-Adding a new contract — a run-report schema being the obvious one — means an
+Adding a new contract, a run-report schema being the obvious one, means an
 `//go:embed` directive plus an exported var in `contracts.go`, and a `page` entry in
 `cmd/tfgen-docs/main.go`. The schema renderer is generic; nothing else is needed to
 get a generated reference page out of it.
@@ -81,4 +81,4 @@ make tfgen-build
 ```
 
 Generator tests prove behaviour against known inputs. They do not prove the
-generated artifact works against the API — that still needs a recorded cassette.
+generated artifact works against the API; that still needs a recorded cassette.

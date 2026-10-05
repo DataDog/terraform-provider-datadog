@@ -15,12 +15,12 @@ import (
 // renamed, or given a new default shows up here on the next `make tfgen-docs`,
 // and the CI no-diff check fails until the page is regenerated.
 //
-// Only the flag *inventory* is derived. Behavioural prose — what --reconcile
-// refuses to combine with, which exit code means what — is not inferable from
+// Only the flag *inventory* is derived. Behavioural prose (what --reconcile
+// refuses to combine with, which exit code means what) is not inferable from
 // the tree and lives in the hand-written preamble below, which is the one part
 // of this page a human maintains.
-// inertFlags names the flags that are registered — so a caller may pass them
-// without error — but that the generator does not yet act on. This is the one
+// inertFlags names the flags that are registered, so a caller may pass them
+// without error, but that the generator does not yet act on. This is the one
 // hand-maintained fact on this page, because "accepted and ignored" is not
 // something the cobra tree can express.
 //
@@ -56,7 +56,7 @@ writes ` + "`bin/tfgen`" + `) and run it from the provider checkout root.
 
 Every flag below is read from the command tree at generation time, so this inventory
 cannot drift from the flags actually registered. Flags marked **inert** are accepted
-without error but not yet acted on — they are still part of the contract, because
+without error but not yet acted on. They are still part of the contract, because
 passing one neither fails nor does anything.
 
 `)

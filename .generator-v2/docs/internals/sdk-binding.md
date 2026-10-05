@@ -5,7 +5,7 @@ ddoc:
   confluence_id: "7291503766"
 ---
 
-# Stage 3 — Bind the Go SDK call
+# Stage 3: Bind the Go SDK call
 
 **Who this is for:** you are changing how generated code reaches the Datadog Go SDK.
 
@@ -31,7 +31,7 @@ OpenAPI-derived binding wins.
 The consequence is intentional: generation can succeed for an endpoint the pinned SDK
 does not have yet, and the failure surfaces at `make build` instead. SDK update and
 provider build are separate merge gates. A valid annotation is therefore not
-sufficient on its own — the endpoint must also exist in the SDK the provider pins.
+sufficient on its own. The endpoint must also exist in the SDK the provider pins.
 
 Corroboration is also why some generator tests are `integration`-tagged: they shell
 out and need the provider module's dependency graph on disk. `make

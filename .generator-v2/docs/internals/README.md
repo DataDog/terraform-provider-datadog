@@ -77,7 +77,7 @@ Worth knowing before you change anything, because they are load-bearing:
   the generator's contract.
 - **Determinism.** Operations are sorted; output is compared byte for byte against
   goldens in `internal/snapshots/`. Anything order-dependent or time-dependent is a
-  bug — the run report's IDs and timestamps are the deliberate exception.
+  bug; the run report's IDs and timestamps are the deliberate exception.
 - **Local failure.** One bad artifact must not take down the batch. Only spec-loading
   failures abort the run, and that blast radius is why annotation validation is
   strict.
@@ -91,7 +91,7 @@ Worth knowing before you change anything, because they are load-bearing:
 `internal/contracts/` holds the machine-readable contracts, embedded so the binary
 never depends on its working directory:
 
-- `tracking-field.schema.json` — the annotation. `parser.DecodeTracking` compiles it
+- `tracking-field.schema.json`: the annotation. `parser.DecodeTracking` compiles it
   once and validates every occurrence.
 
 It is rendered into [reference/annotation.md](../reference/annotation.md) by
@@ -99,5 +99,5 @@ It is rendered into [reference/annotation.md](../reference/annotation.md) by
 
 The `--report` output has **no** contract here yet, which is why
 [reference/diagnostics.md](../reference/diagnostics.md) describes its statuses by
-hand. Adding a `run-report.schema.json` would let that page be generated too —
+hand. Adding a `run-report.schema.json` would let that page be generated too;
 `cmd/tfgen-docs` is already generic over any schema in this package.
