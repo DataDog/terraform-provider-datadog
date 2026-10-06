@@ -36,6 +36,10 @@ type MaterializedSet struct {
 	// SensitiveReplacements maps a leaf path to the safe value substituted
 	// there, so a writer can prove no declared secret survived.
 	SensitiveReplacements map[string]string
+	// SynthesizedPaths lists the leaves no example or default described, whose
+	// values this run invented. They are schema-valid but not evidence: the
+	// API never returned them, so a reviewer has to know which they are.
+	SynthesizedPaths []string
 }
 
 // IncompleteError reports that a set's examples cannot form a complete value.
@@ -48,6 +52,8 @@ type IncompleteError struct {
 	// Ambiguous are union paths offering more than one branch with nothing to
 	// choose between them.
 	Ambiguous []string
+	// Unsafe lists sensitive values for which no safe replacement is supported.
+	Unsafe []string
 }
 
 func (e *IncompleteError) Error() string {
@@ -57,6 +63,9 @@ func (e *IncompleteError) Error() string {
 	}
 	if len(e.Ambiguous) > 0 {
 		parts = append(parts, fmt.Sprintf("more than one branch possible at %s", joinAnd(e.Ambiguous)))
+	}
+	if len(e.Unsafe) > 0 {
+		parts = append(parts, fmt.Sprintf("no safe replacement for sensitive %s", joinAnd(e.Unsafe)))
 	}
 	return fmt.Sprintf("%s cannot be materialized: %s", e.Key, strings.Join(parts, "; "))
 }
@@ -91,11 +100,12 @@ func MaterializeSet(set SelectedSet, schema *model.Schema) (MaterializedSet, err
 		body = walker.assemble(schema, "")
 	}
 
-	if len(walker.missing) > 0 || len(walker.ambiguous) > 0 {
+	if len(walker.missing) > 0 || len(walker.ambiguous) > 0 || len(walker.unsafe) > 0 {
 		return MaterializedSet{}, &IncompleteError{
 			Key:       set.Key,
 			Missing:   walker.missing,
 			Ambiguous: walker.ambiguous,
+			Unsafe:    walker.unsafe,
 		}
 	}
 	out.Body = body
@@ -132,6 +142,7 @@ type materializer struct {
 	out       *MaterializedSet
 	missing   []string
 	ambiguous []string
+	unsafe    []string
 }
 
 // fromDeclared walks a value a human declared against its schema, filtering
@@ -142,6 +153,9 @@ func (m *materializer) fromDeclared(value any, schema *model.Schema, path string
 	if schema == nil {
 		return value
 	}
+	if m.isRequest && (schema.Sensitive || schema.WriteOnlySecret) {
+		return m.leaf(value, schema, path)
+	}
 	switch {
 	case schema.Kind == model.SchemaKindOneOf:
 		return m.declaredOneOf(value, schema, path)
@@ -149,6 +163,8 @@ func (m *materializer) fromDeclared(value any, schema *model.Schema, path string
 		return m.declaredObject(value, schema, path)
 	case schema.Kind == model.SchemaKindArray && schema.Items != nil:
 		return m.declaredArray(value, schema, path)
+	case schema.Kind == model.SchemaKindMap:
+		return m.declaredMap(value, schema, path)
 	default:
 		return m.leaf(value, schema, path)
 	}
@@ -178,6 +194,14 @@ func (m *materializer) declaredObject(value any, schema *model.Schema, path stri
 			// a request the API would reject it, in a response the generated
 			// updateState would leave provider state under-populated.
 			if slices.Contains(schema.Required, name) {
+				// The example describes the object but omits a required
+				// member. Synthesize it rather than rejecting the whole
+				// artifact: a partly-described body is still worth recording
+				// over, and the invented leaves are reported.
+				if value, ok := m.synthesize(property, childPath); ok {
+					out[name] = value
+					continue
+				}
 				m.missing = append(m.missing, labelPath(childPath))
 			}
 			continue
@@ -199,25 +223,34 @@ func (m *materializer) declaredArray(value any, schema *model.Schema, path strin
 	for i, item := range items {
 		out = append(out, m.fromDeclared(item, schema.Items, fmt.Sprintf("%s[%d]", path, i)))
 	}
+	// Rendering consumes the complete collection; indexed leaves remain for
+	// validation and nested attribute mapping.
+	m.leafRecord(out, schema, path, false)
 	return out
 }
 
-// declaredOneOf keeps a declared union value as-is. The example already chose a
-// branch, which is precisely the choice materialization must not make itself.
-func (m *materializer) declaredOneOf(value any, schema *model.Schema, path string) any {
-	if variants := oneOfVariants(schema); len(variants) == 1 {
-		return m.fromDeclared(value, variants[0], path)
+func (m *materializer) declaredMap(value any, schema *model.Schema, path string) any {
+	declared, ok := value.(map[string]any)
+	if !ok {
+		m.missing = append(m.missing, labelPath(path))
+		return nil
 	}
-	// With a declared value the branch is settled even when several exist, so
-	// the value passes through unfiltered rather than being reported ambiguous.
-	m.leafRecord(value, path, false)
-	return value
+	out := make(map[string]any, len(declared))
+	for _, key := range slices.Sorted(maps.Keys(declared)) {
+		out[key] = m.fromDeclared(declared[key], schema.Items, model.ChildPath(path, key))
+	}
+	m.leafRecord(out, schema, path, false)
+	return out
 }
 
 // assemble builds a value from property pieces, which is only sound when every
 // required leaf is covered.
 func (m *materializer) assemble(schema *model.Schema, path string) any {
 	if schema == nil {
+		return nil
+	}
+	if m.isRequest && (schema.Sensitive || schema.WriteOnlySecret) && schema.Kind != model.SchemaKindPrimitive {
+		m.unsafe = append(m.unsafe, labelPath(path))
 		return nil
 	}
 	switch {
@@ -263,8 +296,14 @@ func (m *materializer) assemble(schema *model.Schema, path string) any {
 // assembleChild materializes one property, reporting a required one it cannot
 // cover and silently omitting an optional one.
 func (m *materializer) assembleChild(schema *model.Schema, path string, required bool) (any, bool) {
+	if candidate, ok := m.byPath[path]; ok {
+		return m.fromDeclared(candidate.Value, schema, path), true
+	}
 	switch schema.Kind {
 	case model.SchemaKindObject, model.SchemaKindOneOf:
+		if !required && !m.hasDeclaredValue(schema, path) {
+			return nil, false
+		}
 		before := len(m.missing)
 		assembled := m.assemble(schema, path)
 		if len(m.missing) > before {
@@ -278,11 +317,16 @@ func (m *materializer) assembleChild(schema *model.Schema, path string, required
 
 	case model.SchemaKindArray, model.SchemaKindMap:
 		if candidate, ok := m.byPath[path]; ok {
-			return m.leaf(candidate.Value, schema, path), true
+			return m.fromDeclared(candidate.Value, schema, path), true
 		}
-		if required {
-			m.missing = append(m.missing, labelPath(path))
+		if !required {
+			return nil, false
 		}
+		if value, ok := m.synthesizeCollection(schema, path); ok {
+			m.recordSynthesized(path)
+			return value, true
+		}
+		m.missing = append(m.missing, labelPath(path))
 		return nil, false
 
 	default:
@@ -292,11 +336,44 @@ func (m *materializer) assembleChild(schema *model.Schema, path string, required
 		if value, ok := schemaDefaultValue(schema); ok {
 			return m.leaf(value, schema, path), true
 		}
-		if required {
-			m.missing = append(m.missing, labelPath(path))
+		if !required {
+			// An optional leaf nothing described stays absent. Inventing one
+			// would send a value the configuration never asked for.
+			return nil, false
 		}
+		if value, ok := synthesizeLeaf(schema, path); ok {
+			m.recordSynthesized(path)
+			return m.leaf(value, schema, path), true
+		}
+		// No representable type to invent one from.
+		m.missing = append(m.missing, labelPath(path))
 		return nil, false
 	}
+}
+
+// hasDeclaredValue distinguishes an absent optional container from an
+// explicitly described one whose required children still need validation.
+func (m *materializer) hasDeclaredValue(schema *model.Schema, path string) bool {
+	if schema == nil || (m.isRequest && schema.ReadOnly) {
+		return false
+	}
+	if _, ok := m.byPath[path]; ok {
+		return true
+	}
+	if _, ok := schemaDefaultValue(schema); ok {
+		return true
+	}
+	for name, property := range schema.Properties {
+		if m.hasDeclaredValue(property, model.ChildPath(path, name)) {
+			return true
+		}
+	}
+	for _, variant := range oneOfVariants(schema) {
+		if m.hasDeclaredValue(variant, path) {
+			return true
+		}
+	}
+	return false
 }
 
 // leaf records a scalar value, replacing it when the schema marks it
@@ -306,24 +383,31 @@ func (m *materializer) leaf(value any, schema *model.Schema, path string) any {
 	if sensitive {
 		if _, isString := value.(string); isString {
 			m.out.SensitiveReplacements[labelPath(path)] = model.RedactedPlaceholder
-			m.leafRecord(model.RedactedPlaceholder, path, true)
+			m.leafRecord(model.RedactedPlaceholder, schema, path, true)
 			return model.RedactedPlaceholder
 		}
-		// A non-string secret keeps its declared value here and is recorded as
-		// sensitive; producing a schema-valid replacement for every type is
-		// sanitization's job, not materialization's.
-		m.leafRecord(value, path, true)
-		return value
+		// No downstream sanitization pass exists. Refuse a value whose type
+		// cannot use the string placeholder rather than emitting the secret.
+		if value != nil {
+			m.unsafe = append(m.unsafe, labelPath(path))
+		}
+		return nil
 	}
-	m.leafRecord(value, path, false)
+	m.leafRecord(value, schema, path, false)
 	return value
 }
 
-func (m *materializer) leafRecord(value any, path string, sensitive bool) {
+// recordSynthesized notes a leaf this run invented.
+func (m *materializer) recordSynthesized(path string) {
+	m.out.SynthesizedPaths = append(m.out.SynthesizedPaths, labelPath(path))
+}
+
+func (m *materializer) leafRecord(value any, schema *model.Schema, path string, sensitive bool) {
 	m.out.Values = append(m.out.Values, model.MaterializedValue{
 		Path:      labelPath(path),
 		Value:     value,
 		Sensitive: sensitive,
+		Schema:    schema,
 	})
 }
 

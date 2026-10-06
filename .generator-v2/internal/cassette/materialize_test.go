@@ -165,13 +165,15 @@ var _ = Describe("MaterializeSet", func() {
 					"name": {Kind: model.SchemaKindPrimitive, Type: "string"},
 				},
 			}
-			_, err := MaterializeSet(SelectedSet{
+			got, err := MaterializeSet(SelectedSet{
 				Key:       SetKey{OperationId: "CreateX", Role: SetRoleRequest},
 				Candidate: &model.ExampleCandidate{Value: map[string]any{}},
 			}, schema)
-			Expect(err).To(HaveOccurred())
-			Expect(incomplete(err).Missing).To(ContainElement("name"))
-			Expect(err.Error()).To(ContainSubstring("CreateX request"))
+			// Synthesized rather than refused, so the target stays eligible —
+			// and reported, so nobody reads the value as evidence.
+			Expect(err).To(Succeed())
+			Expect(got.Body).To(Equal(map[string]any{"name": "dummy-name"}))
+			Expect(got.SynthesizedPaths).To(ContainElement("name"))
 		})
 
 		It("reports an example whose shape disagrees with the schema", func() {
@@ -206,11 +208,13 @@ var _ = Describe("MaterializeSet", func() {
 		// This is the case selection deliberately deferred: bad_external
 		// resolves via fallback, and completeness is decided here.
 		It("reports the required leaves a fallback cannot cover", func() {
-			_, err := materializeRequest(
+			got, err := materializeRequest(
 				filepath.Join("parser", "openapi_examples.yaml"),
 				"bad_external", "CreateBadExternal")
-			Expect(err).To(HaveOccurred())
-			Expect(incomplete(err).Missing).To(ContainElement("data.attributes.name"))
+			// An external example is still unusable, but the leaf it would have
+			// covered is synthesized instead of failing the whole target.
+			Expect(err).To(Succeed())
+			Expect(got.SynthesizedPaths).To(ContainElement("data.attributes.name"))
 		})
 
 		It("uses a schema default and a single-member enum, which are not guesses", func() {
@@ -260,12 +264,15 @@ var _ = Describe("MaterializeSet", func() {
 					"tags": {Kind: model.SchemaKindArray, Items: &model.Schema{Kind: model.SchemaKindPrimitive, Type: "string"}},
 				},
 			}
-			_, err := MaterializeSet(SelectedSet{
+			got, err := MaterializeSet(SelectedSet{
 				Key:       SetKey{OperationId: "CreateX", Role: SetRoleRequest},
 				Fallbacks: []*model.ExampleCandidate{{Value: "x", Location: model.ExampleLocation{PropertyPath: "other"}}},
 			}, schema)
-			Expect(err).To(HaveOccurred())
-			Expect(incomplete(err).Missing).To(ContainElement("tags"))
+			// The smallest valid collection: one element, enough to exercise
+			// serialization without claiming the API returns more.
+			Expect(err).To(Succeed())
+			Expect(got.Body).To(Equal(map[string]any{"tags": []any{"dummy-tags"}}))
+			Expect(got.SynthesizedPaths).To(ContainElement("tags"))
 		})
 
 		It("omits an optional object nothing populated rather than sending it empty", func() {
@@ -405,7 +412,7 @@ var _ = Describe("MaterializeSet edge paths", func() {
 			for _, value := range got.Values {
 				paths = append(paths, value.Path)
 			}
-			Expect(paths).To(ConsistOf("tags[0]", "tags[1]"))
+			Expect(paths).To(ConsistOf("tags", "tags[0]", "tags[1]"))
 		})
 
 		It("replaces a secret inside an array item", func() {
@@ -478,11 +485,11 @@ var _ = Describe("MaterializeSet edge paths", func() {
 			got, err := MaterializeSet(requestSet(nil,
 				&model.ExampleCandidate{Value: "root-value", Location: model.ExampleLocation{PropertyPath: ""}}),
 				&model.Schema{Kind: model.SchemaKindPrimitive, Type: "string"})
-			// A candidate with no property path is not indexable, so the set
-			// has nothing to assemble from and says so.
-			Expect(err).To(HaveOccurred())
-			Expect(incomplete(err).Missing).To(ContainElement("(root)"))
-			Expect(got).To(Equal(MaterializedSet{}))
+			// A candidate with no property path is not indexable, so nothing
+			// describes the root and the value is synthesized.
+			Expect(err).To(Succeed())
+			Expect(got.Body).To(Equal("dummy-value"))
+			Expect(got.SynthesizedPaths).To(ContainElement("(root)"))
 		})
 
 		It("assembles a root scalar from a schema default", func() {
@@ -522,7 +529,7 @@ var _ = Describe("MaterializeSet edge paths", func() {
 		// HasDefault stays true for declarations the parser could not decode,
 		// so an unusable default must not be mistaken for a value.
 		It("ignores a default whose declaration was unusable", func() {
-			_, err := MaterializeSet(requestSet(nil,
+			got, err := MaterializeSet(requestSet(nil,
 				&model.ExampleCandidate{Value: "x", Location: model.ExampleLocation{PropertyPath: "other"}}),
 				&model.Schema{
 					Kind: model.SchemaKindObject, Required: []string{"field"},
@@ -530,42 +537,44 @@ var _ = Describe("MaterializeSet edge paths", func() {
 						"field": {Kind: model.SchemaKindPrimitive, Type: "string", HasDefault: true},
 					},
 				})
-			Expect(err).To(HaveOccurred())
-			Expect(incomplete(err).Missing).To(ContainElement("field"))
+			// The undecodable default contributes nothing, so the value is
+			// synthesized — not derived from a declaration nobody could read.
+			Expect(err).To(Succeed())
+			Expect(got.Body).To(Equal(map[string]any{"field": "dummy-field"}))
+			Expect(got.SynthesizedPaths).To(ContainElement("field"))
 		})
 	})
 
-	// A non-string secret keeps its value here; producing a schema-valid
-	// replacement for every type is sanitization's job.
-	It("records a non-string secret as sensitive without replacing it", func() {
-		schema := &model.Schema{
-			Kind: model.SchemaKindObject,
-			Properties: map[string]*model.Schema{
-				"port": {Kind: model.SchemaKindPrimitive, Type: "integer", Sensitive: true},
-			},
-		}
-		got, err := MaterializeSet(requestSet(map[string]any{"port": 5432}), schema)
-		Expect(err).To(Succeed())
-		Expect(got.Body).To(Equal(map[string]any{"port": 5432}))
-		Expect(got.SensitiveReplacements).To(BeEmpty())
-		for _, value := range got.Values {
-			if value.Path == "port" {
-				Expect(value.Sensitive).To(BeTrue())
-			}
-		}
-	})
+	DescribeTable("refuses sensitive values without a safe replacement",
+		func(value any, kind model.SchemaKind, typeName string) {
+			schema := &model.Schema{Kind: model.SchemaKindObject, Properties: map[string]*model.Schema{
+				"secret": {Kind: kind, Type: typeName, Sensitive: true},
+			}}
+			got, err := MaterializeSet(requestSet(map[string]any{"secret": value}), schema)
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(ContainSubstring("no safe replacement for sensitive secret"))
+			Expect(err.Error()).NotTo(ContainSubstring("735291"))
+			Expect(got.Values).To(BeEmpty())
+			Expect(got.Body).To(BeNil())
+		},
+		Entry("integer", 735291, model.SchemaKindPrimitive, "integer"),
+		Entry("boolean", true, model.SchemaKindPrimitive, "boolean"),
+		Entry("array", []any{"735291"}, model.SchemaKindArray, "array"),
+		Entry("object", map[string]any{"pin": "735291"}, model.SchemaKindObject, "object"),
+	)
 
 	It("is unaffected by a fallback candidate carrying no property path", func() {
 		schema := &model.Schema{
 			Kind: model.SchemaKindObject, Required: []string{"name"},
 			Properties: map[string]*model.Schema{"name": {Kind: model.SchemaKindPrimitive, Type: "string"}},
 		}
-		_, err := MaterializeSet(SelectedSet{
+		got, err := MaterializeSet(SelectedSet{
 			Key:       SetKey{OperationId: "CreateX", Role: SetRoleRequest},
 			Fallbacks: []*model.ExampleCandidate{nil, {Value: "x"}},
 		}, schema)
-		Expect(err).To(HaveOccurred())
-		Expect(incomplete(err).Missing).To(ContainElement("name"))
+		// Neither candidate is indexable, so nothing describes name.
+		Expect(err).To(Succeed())
+		Expect(got.SynthesizedPaths).To(ContainElement("name"))
 	})
 
 	It("passes a value through untouched when the schema is unknown", func() {
