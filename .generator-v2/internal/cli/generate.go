@@ -246,12 +246,12 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 						return errCheckFailed
 					}
 				}
-				// A cassette bundle that would be written, or one tfgen owns
-				// whose committed bytes no longer match the description, is a
-				// file that would change.
+				// A generated test that would be written or rewritten is a
+				// file that would change. There is no fixture to compare: the
+				// cassette is recorded, so it is not this run's output.
 				for _, c := range runReport.Cassettes {
 					switch c.WriteAction {
-					case model.CassetteWriteCreated, model.CassetteWriteDrifted:
+					case model.CassetteWriteCreated, model.CassetteWriteUpdated:
 						return errCheckFailed
 					}
 				}
