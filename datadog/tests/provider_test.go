@@ -56,6 +56,7 @@ var testFiles2EndpointTags = map[string]string{
 	"resource_datadog_dashboard_widget_time_test.go":                                     "dashboard",
 	"tests/data_source_datadog_api_key_test":                                             "api_keys",
 	"tests/data_source_datadog_apm_retention_filters_order_test":                         "apm_retention_filters_order",
+	"tests/data_source_datadog_apm_services_test":                                        "apm_services",
 	"tests/data_source_datadog_app_builder_app_test":                                     "app_builder_app",
 	"tests/data_source_datadog_cloud_workload_security_agent_rules_test":                 "cloud-workload-security",
 	"tests/data_source_datadog_action_connection_test":                                   "action_connection",
