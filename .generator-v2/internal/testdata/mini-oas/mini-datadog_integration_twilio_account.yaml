@@ -278,6 +278,7 @@ paths:
       x-datadog-tf-generator:
         artifact_kind: resource
         artifact_name: integration_twilio_account
+        cassette: true
         tf_description: Provides a Datadog Twilio integration account resource.
         group:
           create: CreateTwilioIntegrationAccount
