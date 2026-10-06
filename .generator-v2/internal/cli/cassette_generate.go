@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"path/filepath"
 	"slices"
-	"time"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/cassette"
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/emit"
@@ -22,16 +21,6 @@ import (
 // fixture is reported ineligible with the reason attached, because one
 // incomplete description must not stop every other artifact from generating.
 // ----------------------------------------------------------------------------
-
-// cassetteFreezeTime is the instant every generated freeze companion carries.
-//
-// It is a constant rather than the wall clock because regeneration has to be
-// byte-identical: a timestamp taken at generation time would rewrite every
-// fixture on every run. Its value barely matters — the replay harness only
-// needs a parseable instant to restore, and a generated test derives its
-// configuration from the description rather than from the clock — so a fixed,
-// obviously-synthetic date is clearer than a plausible one.
-var cassetteFreezeTime = time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 
 // cassetteRequest is everything generating one artifact's bundle needs. The
 // run-level fields are filled once when the flag is read and the per-artifact
@@ -76,9 +65,6 @@ func generateCassette(request cassetteRequest) model.CassetteResult {
 
 	scenario, err := cassette.BuildResourceScenario(cassette.ResourceTarget{
 		ArtifactName: op.Tracking.ArtifactName,
-		ServerURL:    request.ServerURL,
-		IdStrategy:   op.Tracking.IdStrategy,
-		FreezeTime:   cassetteFreezeTime,
 		Create:       group.Create,
 		Read:         group.Read,
 		Update:       group.Update,
@@ -89,7 +75,6 @@ func generateCassette(request cassetteRequest) model.CassetteResult {
 		return ineligible(result, err.Error())
 	}
 	result.TestName = scenario.TestFuncName
-	result.Interactions = interactionSummaries(scenario)
 
 	source, err := emit.RenderResourceExampleTest(scenario, request.View, request.APIPaths)
 	if err != nil {
@@ -142,28 +127,6 @@ func lifecycleOperations(group *model.ResolvedGroup) []*model.Operation {
 		if !slices.Contains(out, op) {
 			out = append(out, op)
 		}
-	}
-	return out
-}
-
-// interactionSummaries renders the safe, reviewer-facing view of a trace.
-// Bodies are deliberately absent: one may hold a replaced secret, and the run
-// report is committed.
-func interactionSummaries(scenario *model.GeneratedTestScenario) []model.InteractionSummary {
-	out := make([]model.InteractionSummary, 0, len(scenario.Interactions))
-	for _, interaction := range scenario.Interactions {
-		summary := model.InteractionSummary{
-			Index:       interaction.Index,
-			Role:        string(interaction.Role),
-			OperationId: interaction.OperationId,
-			Method:      interaction.Request.Method,
-			URL:         interaction.Request.URL,
-			Status:      interaction.Response.StatusCode,
-		}
-		for _, provenance := range interaction.SourceExamples {
-			summary.SourcePaths = append(summary.SourcePaths, provenance.Location.String())
-		}
-		out = append(out, summary)
 	}
 	return out
 }

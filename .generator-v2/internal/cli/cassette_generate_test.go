@@ -139,18 +139,6 @@ func TestGenerateCassetteReportsIneligibility(t *testing.T) {
 			t.Errorf("severity = %q, want warning", result.Diagnostics[0].Severity)
 		}
 	})
-
-	t.Run("no server origin to record against", func(t *testing.T) {
-		request := twilioRequest(t, t.TempDir())
-		request.ServerURL = ""
-		result := generateCassette(request)
-		if result.Status != model.CassetteStatusIneligible {
-			t.Fatalf("status = %q, want ineligible", result.Status)
-		}
-		if !strings.Contains(result.Diagnostics[0].Message, "no cassette generated") {
-			t.Errorf("diagnostic does not lead with the outcome: %v", result.Diagnostics)
-		}
-	})
 }
 
 func TestLifecycleOperationsDeduplicates(t *testing.T) {
