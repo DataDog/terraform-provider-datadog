@@ -266,10 +266,9 @@
             "none",
             "created",
             "unchanged",
-            "replaced_generated",
-            "replaced_recorded"
+            "updated"
           ],
-          "description": "What the writer did, reported apart from status so \"generated\" can be distinguished from \"generated, replacing a hand-recorded fixture\" \u2014 which a reviewer must be told explicitly."
+          "description": "What happened to the generated test file, reported apart from status so an eligible target that produced no change is distinguishable from one that rewrote its test. Mirrors the artifactEntry status vocabulary. No action describes replacing a recording: the cassette is recorded by running the test, never written by the generator."
         },
         "test_path": {
           "type": "string"
