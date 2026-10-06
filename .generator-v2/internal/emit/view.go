@@ -263,6 +263,8 @@ type WriteOnlySecretView struct {
 // schema.*Attribute; a nested container (IsBlock) renders a
 // schema.*NestedAttribute and recurses through its own Attributes and Blocks.
 type AttrView struct {
+	// OneOfVariant marks a synthetic alternative selected by example metadata.
+	OneOfVariant bool
 	// TFName is the Terraform attribute key, snake_case, e.g. "link_count".
 	TFName string
 	// TFType is the framework attribute type token for a leaf, e.g.

@@ -1,12 +1,10 @@
 package cassette
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"net/http"
+	"reflect"
 	"strings"
-	"time"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
@@ -25,60 +23,10 @@ import (
 // reproducible without a recording.
 // ----------------------------------------------------------------------------
 
-// How many reads one applied step contributes to the trace.
-//
-// The framework plans against the API once after each apply, and the following
-// step refreshes again before its own apply. So a step with another after it
-// contributes two reads, and the last step contributes one. Destroy does not
-// refresh: the read after the delete is the destroy verification's own, added
-// separately.
-//
-// This is framework behavior rather than anything the description implies, so
-// offline replay is the arbiter and these constants are what change if the
-// pinned framework disagrees. Replay is also what corrected them: giving the
-// final step two reads leaves one unconsumed, the destroy verification matches
-// that stale 200 instead of the 404, and the failure reads "still exists after
-// destroy" — naming the symptom and not the count.
-//
-// The 344 single-resource CRUD cassettes already in this repository record more
-// than this — five or six interactions for a create-only flow where a generated
-// one records four. The difference is that a hand-written test's check
-// functions call the API themselves, which a generated test never does: its
-// checks read state only, because the cassette is the oracle.
-//
-// Letting the recorder replay an interaction more than once looks like it would
-// make all of this irrelevant. It does not, and the idea is a trap worth naming
-// here so it is not retried. go-vcr's lookup is
-//
-//	for _, i := range c.Interactions {
-//		if (c.ReplayableInteractions || !i.replayed) && c.Matcher(r, i.Request) {
-//
-// so setting ReplayableInteractions bypasses the consumed check and the lookup
-// always returns the *first* match, never advancing. Every read in this trace
-// shares a method and URL while returning a different body — create state, then
-// updated state, then a 404 once destroyed — so with repeats enabled the
-// post-update refresh serves stale state and the destroy verification can never
-// reach its 404. Measured against a recorded cassette whose reads are 200, 200,
-// 404: strict playback yields exactly that, and repeats yield 200, 200, 200.
-//
-// The count being predictable therefore matters, and the deliberately
-// duplicated refreshes are load-bearing rather than redundant.
-const (
-	readsPerStep         = 1
-	readsBeforeNextStep  = 1
-	readsAfterMiddleStep = readsPerStep + readsBeforeNextStep
-)
-
 // ResourceTarget is everything scenario construction needs about one resource.
 type ResourceTarget struct {
 	// ArtifactName is the Terraform artifact name without the datadog_ prefix.
 	ArtifactName string
-	// ServerURL is the resolved origin recorded request URLs are built on.
-	ServerURL string
-	// IdStrategy says where in a response the canonical identifier lives.
-	IdStrategy model.IdStrategy
-	// FreezeTime is the fixed UTC instant the replay harness restores.
-	FreezeTime time.Time
 	// Create, Read, Update and Delete are the lifecycle operations. Update may
 	// be nil; the others are required.
 	Create, Read, Update, Delete *model.Operation
@@ -103,59 +51,28 @@ func BuildResourceScenario(target ResourceTarget) (*model.GeneratedTestScenario,
 		return nil, err
 	}
 
-	identity, ok := IdentityFrom(createResponse.Body, target.IdStrategy)
-	if !ok {
-		return nil, fmt.Errorf(
-			"scenario %q: the create response example carries no %s to use as the resource identity",
-			target.ArtifactName, identityPathLabel(target.IdStrategy))
-	}
-
-	readResponse, err := target.materializeResponse(target.Read)
-	if err != nil {
-		return nil, err
-	}
-
-	testName := resourceTestFuncName(target.ArtifactName)
 	scenario := &model.GeneratedTestScenario{
 		ArtifactName:     target.ArtifactName,
 		ArtifactKind:     model.ArtifactKindResource,
 		TestFilePath:     resourceTestFilePath(target.ArtifactName),
-		TestFuncName:     testName,
+		TestFuncName:     resourceTestFuncName(target.ArtifactName),
 		TerraformAddress: fmt.Sprintf("datadog_%s.foo", target.ArtifactName),
-		CassetteBaseName: testName,
-		FreezeTime:       target.FreezeTime.UTC(),
 		Selection:        target.Selection.Model(),
 	}
 
-	// Materialized before the create's reads are added, because how many reads
-	// the create step contributes depends on whether a step follows it.
+	// The create step's configuration is the create request's own values.
+	scenario.Steps = append(scenario.Steps, model.ScenarioStep{State: createRequest.configuration()})
+
+	// A second step only when the examples describe a distinct state to assert.
+	// The response is materialized to make that comparison, not to record it.
 	updated, hasUpdate, err := target.updateStep(createRequest, createResponse)
 	if err != nil {
 		return nil, err
 	}
-
-	builder := &traceBuilder{target: target, identity: identity}
-
-	// Create, then the reads the framework issues after its apply.
-	builder.add(model.InteractionRoleCreate, target.Create, createRequest, createResponse, http.StatusCreated)
-	createReads := readsPerStep
 	if hasUpdate {
-		createReads = readsAfterMiddleStep
-	}
-	builder.addRefreshes(target.Read, readResponse, createReads)
-	scenario.Steps = append(scenario.Steps, model.ScenarioStep{State: createRequest.configuration()})
-
-	// An update step, only when the examples give a distinct state to assert.
-	if hasUpdate {
-		builder.add(model.InteractionRoleUpdate, target.Update, updated.request, updated.response, http.StatusOK)
-		builder.addRefreshes(target.Read, updated.response, readsPerStep)
 		scenario.Steps = append(scenario.Steps, model.ScenarioStep{State: updated.request.configuration()})
 	}
 
-	builder.addDelete()
-	builder.addDestroyVerification()
-
-	scenario.Interactions = builder.interactions
 	if err := scenario.Validate(); err != nil {
 		return nil, err
 	}
@@ -167,10 +84,6 @@ func (t ResourceTarget) validate() error {
 	switch {
 	case t.ArtifactName == "":
 		return fmt.Errorf("scenario: no artifact name")
-	case t.ServerURL == "":
-		return fmt.Errorf("scenario %q: no server URL to record request targets against", t.ArtifactName)
-	case t.FreezeTime.IsZero():
-		return fmt.Errorf("scenario %q: no freeze time", t.ArtifactName)
 	case t.Create == nil:
 		return fmt.Errorf("scenario %q: no create operation", t.ArtifactName)
 	case t.Read == nil:
@@ -275,152 +188,9 @@ func (t ResourceTarget) updateStep(createRequest, createResponse MaterializedSet
 // Trace building
 // ----------------------------------------------------------------------------
 
-// traceBuilder accumulates the ordered interactions, keeping indexes dense.
-type traceBuilder struct {
-	target       ResourceTarget
-	identity     string
-	interactions []model.ScenarioInteraction
-}
-
-// appendInteraction is the one place a recorded interaction is shaped. The
-// bodyless cases differ in what they carry, not in how it is assembled:
-// requestHeaders and responseHeaders already decide Accept-versus-Content-Type
-// from whether there is a body, and a zero content length follows from an
-// empty one.
-func (b *traceBuilder) appendInteraction(
-	role model.InteractionRole,
-	op *model.Operation,
-	requestBody, responseBody string,
-	status int,
-	provenance []model.ExampleProvenance,
-) {
-	b.interactions = append(b.interactions, model.ScenarioInteraction{
-		Index:       len(b.interactions),
-		Role:        role,
-		OperationId: op.OperationId,
-		Request: model.InteractionRequest{
-			Method:        op.Method,
-			URL:           b.url(op),
-			Body:          requestBody,
-			Headers:       requestHeaders(requestBody),
-			ContentLength: len(requestBody),
-		},
-		Response: model.InteractionResponse{
-			StatusCode:    status,
-			StatusText:    fmt.Sprintf("%d %s", status, http.StatusText(status)),
-			Body:          responseBody,
-			Headers:       responseHeaders(responseBody),
-			ContentLength: len(responseBody),
-		},
-		SourceExamples: provenance,
-	})
-}
-
-// add appends an interaction whose request carries a body.
-func (b *traceBuilder) add(
-	role model.InteractionRole,
-	op *model.Operation,
-	request, response MaterializedSet,
-	status int,
-) {
-	b.appendInteraction(role, op,
-		encodeBody(request.Body), encodeBody(response.Body), status, b.provenanceFor(op))
-}
-
-// addRefreshes appends the reads the framework issues after an apply.
-// Identical requests are repeated rather than shared, because a replayed
-// interaction is consumed once.
-func (b *traceBuilder) addRefreshes(read *model.Operation, response MaterializedSet, times int) {
-	for range times {
-		role := model.InteractionRoleRefresh
-		if len(b.interactions) == 1 {
-			// The first read after create is the resource's own Read, not a
-			// framework refresh.
-			role = model.InteractionRoleRead
-		}
-		b.addRead(role, read, response, http.StatusOK)
-	}
-}
-
-// addRead appends a bodyless request returning a representation.
-func (b *traceBuilder) addRead(
-	role model.InteractionRole,
-	op *model.Operation,
-	response MaterializedSet,
-	status int,
-) {
-	b.appendInteraction(role, op, "", encodeBody(response.Body), status, b.provenanceFor(op))
-}
-
-// addDelete appends the delete, which neither sends nor returns a body. It
-// carries no provenance: no declared example contributed a value to it.
-func (b *traceBuilder) addDelete() {
-	b.appendInteraction(model.InteractionRoleDelete, b.target.Delete,
-		"", "", deleteStatus(b.target.Delete), nil)
-}
-
-// addDestroyVerification appends the post-destroy read the harness uses to
-// confirm the object is gone. It expects a 404 and is why response extraction
-// keeps failure outcomes, not only the success one.
-func (b *traceBuilder) addDestroyVerification() {
-	b.appendInteraction(model.InteractionRoleDestroyVerification, b.target.Read,
-		"", "", http.StatusNotFound, nil)
-}
-
-// provenanceFor collects the origins of the values this operation's interaction
-// carries, so a reviewer can trace recorded bytes back to the description.
-func (b *traceBuilder) provenanceFor(op *model.Operation) []model.ExampleProvenance {
-	var out []model.ExampleProvenance
-	for _, set := range b.target.Selection.Sets {
-		if set.Key.OperationId != op.OperationId {
-			continue
-		}
-		out = append(out, provenanceFor(set)...)
-	}
-	return out
-}
-
-// url builds one operation's recorded request target: the resolved server
-// origin, the path template, and every path parameter substituted. The identity
-// fills the parameter the create response minted; any other path parameter
-// takes its selected example.
-func (b *traceBuilder) url(op *model.Operation) string {
-	path := op.Path
-	for i := range op.ParameterExamples {
-		parameter := op.ParameterExamples[i]
-		if parameter.In != model.ParameterInPath {
-			continue
-		}
-		placeholder := "{" + parameter.Name + "}"
-		if !strings.Contains(path, placeholder) {
-			continue
-		}
-		path = strings.ReplaceAll(path, placeholder, b.pathValue(op, parameter))
-	}
-	return strings.TrimSuffix(b.target.ServerURL, "/") + path
-}
-
-// pathValue resolves one path parameter: the minted identity when the
-// description gives no example for it, otherwise the selected example.
-func (b *traceBuilder) pathValue(op *model.Operation, parameter model.ParameterExamples) string {
-	key := SetKey{
-		OperationId: op.OperationId,
-		Role:        SetRoleParameter,
-		Detail:      fmt.Sprintf("%s:%s", parameter.In, parameter.Name),
-	}
-	if set, ok := b.target.Selection.Set(key); ok && set.Candidate != nil {
-		if text, isString := set.Candidate.Value.(string); isString && text != "" {
-			return text
-		}
-	}
-	return b.identity
-}
-
 // ----------------------------------------------------------------------------
 // Helpers
 // ----------------------------------------------------------------------------
-
-const jsonContentType = "application/json"
 
 // configuration turns a materialized request into the configuration a test
 // step applies. Config rendering stays in the emitter, which owns the mapping
@@ -430,39 +200,6 @@ func (m MaterializedSet) configuration() *model.MaterializedConfiguration {
 		RequestValues:         m.Values,
 		SensitiveReplacements: m.SensitiveReplacements,
 	}
-}
-
-// responseHeaders returns the retained headers for a response. A bodyless
-// outcome carries none, which is what a recorded delete looks like.
-func responseHeaders(body string) map[string][]string {
-	if body == "" {
-		return nil
-	}
-	return model.FilterRetainedHeaders(map[string][]string{"Content-Type": {jsonContentType}})
-}
-
-// requestHeaders returns the retained headers for a request, declaring a
-// content type only when there is a body to describe.
-func requestHeaders(body string) map[string][]string {
-	headers := map[string][]string{"Accept": {jsonContentType}}
-	if body != "" {
-		headers["Content-Type"] = []string{jsonContentType}
-	}
-	return model.FilterRetainedHeaders(headers)
-}
-
-// encodeBody renders a materialized body as canonical JSON. Go's encoder sorts
-// map keys, so the same values always produce the same bytes — which is what
-// byte-identical regeneration depends on.
-func encodeBody(value any) string {
-	if value == nil {
-		return ""
-	}
-	encoded, err := json.Marshal(value)
-	if err != nil {
-		return ""
-	}
-	return string(encoded)
 }
 
 // whollySynthesized reports a set none of whose values the description
@@ -490,19 +227,7 @@ func whollySynthesized(set MaterializedSet) bool {
 // equivalentJSON reports whether two bodies carry the same values, used to tell
 // a real update from one that changes nothing.
 func equivalentJSON(left, right any) bool {
-	return encodeBody(left) == encodeBody(right)
-}
-
-// deleteStatus returns the success status the delete declares, defaulting to
-// 204. A delete that declares 200 must record 200: the matcher compares codes.
-func deleteStatus(op *model.Operation) int {
-	if success := op.SuccessResponseExample(); success != nil {
-		var code int
-		if _, err := fmt.Sscanf(success.Status, "%d", &code); err == nil && code > 0 {
-			return code
-		}
-	}
-	return http.StatusNoContent
+	return reflect.DeepEqual(left, right)
 }
 
 // resourceTestFuncName builds the generated test's name, which doubles as the
@@ -526,12 +251,4 @@ func camelCase(in string) string {
 		out.WriteString(part[1:])
 	}
 	return out.String()
-}
-
-// identityPathLabel names where an id strategy expects to find the identifier.
-func identityPathLabel(strategy model.IdStrategy) string {
-	if strategy == "" {
-		return string(model.IdStrategyDataID)
-	}
-	return string(strategy)
 }

@@ -486,41 +486,6 @@ func labelPath(path string) string {
 	return path
 }
 
-// IdentityFrom extracts the canonical identifier a response declares, under
-// the artifact's id strategy. One identity is minted once and reused by every
-// later interaction: a cassette whose create response and subsequent request
-// URLs disagree cannot replay at all.
-func IdentityFrom(body any, strategy model.IdStrategy) (string, bool) {
-	var path []string
-	switch strategy {
-	case model.IdStrategyDataID, "":
-		path = []string{"data", "id"}
-	case model.IdStrategyDataAttributesID:
-		path = []string{"data", "attributes", "id"}
-	case model.IdStrategyDataAttributesUID:
-		path = []string{"data", "attributes", "uuid"}
-	default:
-		// header.location is carried by a response header, not its body.
-		return "", false
-	}
-	current := body
-	for _, segment := range path {
-		object, ok := current.(map[string]any)
-		if !ok {
-			return "", false
-		}
-		current, ok = object[segment]
-		if !ok {
-			return "", false
-		}
-	}
-	identity, ok := current.(string)
-	if !ok || identity == "" {
-		return "", false
-	}
-	return identity, true
-}
-
 // ----------------------------------------------------------------------------
 // Overlay
 // ----------------------------------------------------------------------------
@@ -547,9 +512,11 @@ func (m MaterializedSet) overlaidWith(delta MaterializedSet) MaterializedSet {
 	for _, value := range m.Values {
 		values[value.Path] = value
 	}
+	deltaValues := map[string]model.MaterializedValue{}
 	for _, value := range delta.Values {
-		values[value.Path] = value
+		deltaValues[value.Path] = value
 	}
+	model.OverlayMaterializedValues(values, deltaValues)
 
 	// Body and Values diverge here, and deliberately. A write-only secret
 	// stays in Values because the step's configuration must keep declaring it

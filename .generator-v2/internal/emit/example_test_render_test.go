@@ -42,9 +42,6 @@ func twilioExampleView() (exampleTestView, *model.GeneratedTestScenario) {
 
 	scenario, err := cassette.BuildResourceScenario(cassette.ResourceTarget{
 		ArtifactName: "integration_twilio_account",
-		ServerURL:    spec.ServerURL,
-		IdStrategy:   model.IdStrategyDataID,
-		FreezeTime:   exampleFrozen,
 		Create:       read.ResolvedGroup.Create,
 		Read:         read.ResolvedGroup.Read,
 		Update:       read.ResolvedGroup.Update,
@@ -120,12 +117,9 @@ func twilioAPIPaths() map[string]string {
 
 var _ = Describe("BuildExampleTestView", func() {
 	Describe("identity and header", func() {
-		It("names the test, cassette and freeze companion consistently", func() {
-			view, scenario := twilioExampleView()
+		It("names the test from the artifact", func() {
+			view, _ := twilioExampleView()
 			Expect(view.FuncName).To(Equal("TestAccDatadogIntegrationTwilioAccountOpenAPIExample"))
-			// The harness derives the cassette from t.Name().
-			Expect(view.CassettePath).To(Equal("cassettes/" + scenario.TestFuncName + ".yaml"))
-			Expect(view.FreezePath).To(Equal("cassettes/" + scenario.TestFuncName + ".freeze"))
 			Expect(view.ResourceType).To(Equal("datadog_integration_twilio_account"))
 		})
 
@@ -136,12 +130,6 @@ var _ = Describe("BuildExampleTestView", func() {
 			view, _ := twilioExampleView()
 			Expect(view.Marker).To(Equal(model.GeneratedMarker))
 			Expect(view.Marker).NotTo(BeEmpty())
-		})
-
-		It("reports the interaction count, since a replay failure is usually a mismatch", func() {
-			view, scenario := twilioExampleView()
-			Expect(view.InteractionCount).To(Equal(len(scenario.Interactions)))
-			Expect(view.InteractionCount).To(Equal(7))
 		})
 
 		It("derives an unexported config helper", func() {
@@ -265,7 +253,7 @@ var _ = Describe("hclLiteral", func() {
 		Entry("null", nil, "null"),
 		Entry("list", []any{"a", 1, true}, `["a", 1, true]`),
 		Entry("nested list", []any{[]any{"a"}}, `[["a"]]`),
-		Entry("unexpected type is quoted, not guessed", map[string]any{}, `"map[]"`),
+		Entry("empty map", map[string]any{}, `{}`),
 	)
 })
 
@@ -362,15 +350,9 @@ var _ = Describe("BuildExampleTestView edge paths", func() {
 		return &model.GeneratedTestScenario{
 			ArtifactName: "widget", ArtifactKind: model.ArtifactKindResource,
 			TestFuncName:     "TestAccDatadogWidgetOpenAPIExample",
-			CassetteBaseName: "TestAccDatadogWidgetOpenAPIExample",
 			TerraformAddress: "datadog_widget.foo",
-			FreezeTime:       exampleFrozen,
 			Steps: []model.ScenarioStep{{
 				State: &model.MaterializedConfiguration{RequestValues: values},
-			}},
-			Interactions: []model.ScenarioInteraction{{
-				Index: 0, Role: model.InteractionRoleCreate,
-				Request: model.InteractionRequest{Method: "POST", URL: "https://api.datadoghq.com/x"},
 			}},
 		}
 	}
