@@ -1,26 +1,29 @@
 {{- define "resource_example_test" -}}
 // {{ .Marker }}
 //
-// Replays {{ .CassettePath }} ({{ .InteractionCount }} interactions), recorded
-// against the freeze time in {{ .FreezePath }}. Every value here came from the
-// OpenAPI description's own examples — see the cassette generation entry in the
-// run report for the source anchors.
+// The configuration below came from the OpenAPI description's own examples,
+// with anything the description left out synthesized — see the cassette
+// generation entry in the run report for the source anchors, and for which
+// values were invented rather than declared.
 //
-// A replay failure is most often an interaction-count mismatch: the test
-// framework issued a request the cassette has no interaction left for.
+// The cassette this replays is recorded, not generated: run with RECORD=true
+// to record it against a real org, RECORD=false to replay it. A recording run
+// may be rejected by the API, since the values here are examples and
+// placeholders rather than real credentials.
 package test
 
 import (
 	"context"
 	"fmt"
+	{{ if .UsesStrconv }}"strconv"{{ end }}
+	{{ if .UsesTime }}"time"{{ end }}
 	"testing"
 
+	{{ if .UsesUUID }}"github.com/google/uuid"{{ end }}
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
-{{ if not .APIAccessor }}
-	// The provider exposes no accessor for this API, so the destroy check
-	// constructs the SDK client directly, exactly as the generated resource's
-	// Configure does.
+{{ if .UsesSDK }}
+	// The destroy check uses an SDK constructor or a named SDK argument type.
 	"github.com/DataDog/datadog-api-client-go/v2/api/{{ .SDKPackage }}"
 {{- end }}
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
@@ -57,7 +60,7 @@ func {{ .FuncName }}(t *testing.T) {
 
 {{ range .Steps }}
 func {{ .ConfigFunc }}() string {
-	return `{{ .ConfigBody }}`
+	return {{ .ConfigLiteral }}
 }
 {{ end }}
 // {{ .DestroyCheckFunc }} confirms the object is gone. Unlike the checks above,
@@ -76,11 +79,19 @@ func {{ .DestroyCheckFunc }}(accProvider *fwprovider.FrameworkProvider) resource
 			if r.Type != "{{ .ResourceType }}" {
 				continue
 			}
+{{- with .ReadArgument }}
+{{- if .ParsedVar }}
+			{{ .ParsedVar }}, err := {{ .ParseCall }}
+			if err != nil {
+				return fmt.Errorf("invalid resource id for destroy check: %w", err)
+			}
+{{- end }}
+{{- end }}
 {{- if .APIAccessor }}
-			_, httpResp, err := apiInstances.{{ .APIAccessor }}().{{ .ReadMethod }}(auth, r.Primary.ID)
+			_, httpResp, err := apiInstances.{{ .APIAccessor }}().{{ .ReadMethod }}(auth, {{ .ReadArgument.Expression }})
 {{- else }}
 			api := {{ .SDKPackage }}.{{ .APIConstructor }}(apiInstances.HttpClient)
-			_, httpResp, err := api.{{ .ReadMethod }}(auth, r.Primary.ID)
+			_, httpResp, err := api.{{ .ReadMethod }}(auth, {{ .ReadArgument.Expression }})
 {{- end }}
 			if err != nil {
 				if httpResp != nil && httpResp.StatusCode == 404 {
