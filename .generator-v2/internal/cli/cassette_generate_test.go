@@ -64,11 +64,6 @@ func twilioRequest(t *testing.T, dir string) cassetteRequest {
 	}
 }
 
-// wantInteractions is the two-step Twilio lifecycle: create, its post-apply
-// read and the next step's pre-apply refresh, update, that step's one read,
-// delete, and the destroy verification's 404.
-const wantInteractions = 7
-
 // The chain produces the test, and only the test. A fixture built from the
 // description would assert what the description claims rather than what the
 // API does, so it is recorded, not generated.
@@ -81,6 +76,10 @@ func TestGenerateCassetteWritesOnlyTheTest(t *testing.T) {
 	if _, err := os.Stat(result.TestPath); err != nil {
 		t.Fatalf("the generated test is absent: %v", err)
 	}
+	// Nothing here counts interactions, because nothing here writes any. A
+	// recording of this fixture contains seven: create, its post-apply read and
+	// the next step's pre-apply refresh, update, that step's one read, delete,
+	// and the destroy verification's 404.
 	if _, err := os.Stat(filepath.Join(dir, "tests", "cassettes")); !os.IsNotExist(err) {
 		t.Error("a fixture was generated; cassettes must come from a recording")
 	}
