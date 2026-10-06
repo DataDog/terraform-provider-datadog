@@ -203,7 +203,7 @@ func (r *securityFindingsTicketCreationRuleResource) Update(ctx context.Context,
 	}
 
 	body := datadogV2.NewTicketCreationRuleUpdateRequestWithDefaults()
-	body.SetData(*data)
+	body.SetData(*datadogV2.NewTicketCreationRuleDataUpdate(data.GetAttributes(), id, data.GetType()))
 
 	resp, _, err := r.Api.UpdateSecurityFindingsAutomationTicketCreationRule(r.Auth, id, *body)
 	if err != nil {

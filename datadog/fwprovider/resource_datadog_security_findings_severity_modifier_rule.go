@@ -209,7 +209,7 @@ func (r *securityFindingsSeverityModifierRuleResource) Update(ctx context.Contex
 	}
 
 	body := datadogV2.NewSeverityModifierRuleUpdateRequestWithDefaults()
-	body.SetData(*data)
+	body.SetData(*datadogV2.NewSeverityModifierRuleDataUpdate(data.GetAttributes(), id, data.GetType()))
 
 	resp, _, err := r.Api.UpdateSecurityFindingsAutomationSeverityModifierRule(r.Auth, id, *body)
 	if err != nil {

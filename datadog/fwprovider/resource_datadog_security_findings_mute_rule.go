@@ -179,7 +179,7 @@ func (r *securityFindingsMuteRuleResource) Update(ctx context.Context, request r
 	}
 
 	body := datadogV2.NewMuteRuleUpdateRequestWithDefaults()
-	body.SetData(*data)
+	body.SetData(*datadogV2.NewMuteRuleDataUpdate(data.GetAttributes(), id, data.GetType()))
 
 	resp, _, err := r.Api.UpdateSecurityFindingsAutomationMuteRule(r.Auth, id, *body)
 	if err != nil {
