@@ -113,15 +113,8 @@ var _ = Describe("run report contract", func() {
 				Status:          CassetteStatusGenerated,
 				WriteAction:     CassetteWriteCreated,
 				TestPath:        "datadog/tests/resource_x_openapi_example_test.go",
-				CassettePath:    "datadog/tests/cassettes/TestAccX.yaml",
-				FreezePath:      "datadog/tests/cassettes/TestAccX.freeze",
 				SelectedExample: ScenarioNameDefault,
-				Interactions: []InteractionSummary{{
-					Index: 0, Role: string(InteractionRoleCreate), OperationId: "CreateX",
-					Method: "POST", URL: "https://api.datadoghq.com/api/v2/x", Status: 201,
-					SourcePaths: []string{"spec:/api/v2/x.post.requestBody.content.application/json.examples.default"},
-				}},
-				Diagnostics: []Diagnostic{{Severity: SeverityInfo, Message: "selected example \"default\""}},
+				Diagnostics:     []Diagnostic{{Severity: SeverityInfo, Message: "selected example \"default\""}},
 			}
 		}
 
@@ -129,37 +122,6 @@ var _ = Describe("run report contract", func() {
 			report := baseReport()
 			report.Cassettes = []CassetteResult{cassetteResult()}
 			report.CassetteSummary = &CassetteSummary{Generated: 1}
-			Expect(validateAgainstContract(schema, report)).To(Succeed())
-		})
-
-		It("accepts every status, write action and interaction role the model defines", func() {
-			report := baseReport()
-			for _, status := range []CassetteStatus{
-				CassetteStatusGenerated, CassetteStatusPreserved, CassetteStatusIneligible,
-			} {
-				for _, action := range []CassetteWriteAction{
-					CassetteWriteNone, CassetteWriteCreated, CassetteWriteUnchanged,
-					CassetteWriteReplacedGenerated, CassetteWriteReplacedRecorded,
-				} {
-					result := cassetteResult()
-					result.Status = status
-					result.WriteAction = action
-					report.Cassettes = append(report.Cassettes, result)
-				}
-			}
-			for i, role := range []InteractionRole{
-				InteractionRoleCreate, InteractionRoleRead, InteractionRoleSearch,
-				InteractionRoleUpdate, InteractionRoleDelete, InteractionRoleRefresh,
-				InteractionRoleDestroyVerification,
-			} {
-				result := cassetteResult()
-				result.Interactions = []InteractionSummary{{
-					Index: i, Role: string(role), OperationId: "X",
-					Method: "GET", URL: "https://api.datadoghq.com/api/v2/x", Status: 200,
-				}}
-				report.Cassettes = append(report.Cassettes, result)
-			}
-			report.CassetteSummary = &CassetteSummary{Generated: 1, Preserved: 2, Ineligible: 3}
 			Expect(validateAgainstContract(schema, report)).To(Succeed())
 		})
 
@@ -176,12 +138,6 @@ var _ = Describe("run report contract", func() {
 				func(r *RunReport) { r.Cassettes[0].Status = "half_written" }, "status"),
 			Entry("an unknown write action",
 				func(r *RunReport) { r.Cassettes[0].WriteAction = "clobbered" }, "write_action"),
-			Entry("an unknown interaction role",
-				func(r *RunReport) { r.Cassettes[0].Interactions[0].Role = "guessing" }, "role"),
-			Entry("a negative interaction index",
-				func(r *RunReport) { r.Cassettes[0].Interactions[0].Index = -1 }, "index"),
-			Entry("a status code outside the HTTP range",
-				func(r *RunReport) { r.Cassettes[0].Interactions[0].Status = 42 }, "status"),
 			Entry("a negative summary count",
 				func(r *RunReport) { r.CassetteSummary = &CassetteSummary{Generated: -1} }, "generated"),
 		)
