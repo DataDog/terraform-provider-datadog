@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/planmodifiers"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -117,6 +118,7 @@ func (r *awsCurConfigResource) Schema(_ context.Context, _ resource.SchemaReques
 		},
 		Blocks: map[string]schema.Block{
 			"account_filters": schema.SingleNestedBlock{
+				PlanModifiers: []planmodifier.Object{planmodifiers.RemoveBlockModifier()},
 				Attributes: map[string]schema.Attribute{
 					"include_new_accounts": schema.BoolAttribute{
 						Optional:    true,
