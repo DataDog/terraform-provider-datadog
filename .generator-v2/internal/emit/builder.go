@@ -94,6 +94,7 @@ func (b *dataSourceBuilder) oneOfEnvelope(a *model.Attribute) oneOfRender {
 
 		variantValidators, variantValidatorType := b.oneOfVariantValidators(env, v)
 		render.blocks = append(render.blocks, AttrView{
+			OneOfVariant:        true,
 			TFName:              v.TFName,
 			Description:         v.Attribute.Description,
 			Optional:            v.Attribute.Optional,

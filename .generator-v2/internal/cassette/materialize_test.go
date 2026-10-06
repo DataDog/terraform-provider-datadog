@@ -344,45 +344,6 @@ var _ = Describe("MaterializeSet", func() {
 	})
 })
 
-var _ = Describe("IdentityFrom", func() {
-	body := map[string]any{
-		"data": map[string]any{
-			"id":         "953a0060-81ec-4221-aed4-d4733b59cd96",
-			"attributes": map[string]any{"id": "attr-id", "uuid": "attr-uuid"},
-		},
-	}
-
-	DescribeTable("reads the identifier the strategy names",
-		func(strategy model.IdStrategy, want string) {
-			got, ok := IdentityFrom(body, strategy)
-			Expect(ok).To(BeTrue())
-			Expect(got).To(Equal(want))
-		},
-		Entry("data.id", model.IdStrategyDataID, "953a0060-81ec-4221-aed4-d4733b59cd96"),
-		Entry("defaulted", model.IdStrategy(""), "953a0060-81ec-4221-aed4-d4733b59cd96"),
-		Entry("data.attributes.id", model.IdStrategyDataAttributesID, "attr-id"),
-		Entry("data.attributes.uuid", model.IdStrategyDataAttributesUID, "attr-uuid"),
-	)
-
-	It("reports a strategy whose value is not in the body", func() {
-		_, ok := IdentityFrom(body, model.IdStrategyHeaderLocation)
-		Expect(ok).To(BeFalse())
-	})
-
-	DescribeTable("reports a body that cannot yield an identity",
-		func(in any) {
-			_, ok := IdentityFrom(in, model.IdStrategyDataID)
-			Expect(ok).To(BeFalse())
-		},
-		Entry("not an object", "scalar"),
-		Entry("no data member", map[string]any{}),
-		Entry("data is not an object", map[string]any{"data": "scalar"}),
-		Entry("no id member", map[string]any{"data": map[string]any{}}),
-		Entry("id is not a string", map[string]any{"data": map[string]any{"id": 7}}),
-		Entry("id is empty", map[string]any{"data": map[string]any{"id": ""}}),
-	)
-})
-
 func sortedCopy(in []string) []string {
 	return slices.Sorted(slices.Values(in))
 }

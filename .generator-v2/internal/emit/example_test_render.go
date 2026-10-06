@@ -7,6 +7,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/hashicorp/hcl/v2/hclwrite"
+	"github.com/zclconf/go-cty/cty"
+
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
@@ -41,13 +44,6 @@ type exampleTestView struct {
 	// ResourceType is the provider-prefixed Terraform type, e.g.
 	// "datadog_integration_twilio_account".
 	ResourceType string
-	// CassettePath and FreezePath are where the fixture and its time companion
-	// live, surfaced in the file's header so a reviewer can find them.
-	CassettePath string
-	FreezePath   string
-	// InteractionCount is the number of interactions the cassette holds, named
-	// in the header because a replay failure is usually a count mismatch.
-	InteractionCount int
 	// Steps are the ordered Terraform steps.
 	Steps []exampleStepView
 }
@@ -59,6 +55,8 @@ type exampleStepView struct {
 	// ConfigBody is the HCL between the helper's backticks, built in Go so its
 	// whitespace is exact — gofmt does not touch raw-string contents.
 	ConfigBody string
+	// ConfigLiteral embeds the HCL safely in Go, including examples containing backticks.
+	ConfigLiteral string
 	// Checks are the resource.TestCheckResourceAttr expressions asserted after
 	// apply, as rendered Go argument source.
 	Checks []string
@@ -81,13 +79,10 @@ func BuildExampleTestView(
 
 	resourceType := "datadog_" + scenario.ArtifactName
 	view := exampleTestView{
-		Marker:           model.GeneratedMarker,
-		FuncName:         scenario.TestFuncName,
-		ConfigFunc:       testHelperName(scenario.TestFuncName, "Config"),
-		ResourceType:     resourceType,
-		CassettePath:     fmt.Sprintf("cassettes/%s.yaml", scenario.CassetteBaseName),
-		FreezePath:       fmt.Sprintf("cassettes/%s.freeze", scenario.CassetteBaseName),
-		InteractionCount: len(scenario.Interactions),
+		Marker:       model.GeneratedMarker,
+		FuncName:     scenario.TestFuncName,
+		ConfigFunc:   testHelperName(scenario.TestFuncName, "Config"),
+		ResourceType: resourceType,
 	}
 
 	// A Terraform configuration is the complete desired state, while an update
@@ -101,11 +96,13 @@ func BuildExampleTestView(
 		if len(scenario.Steps) > 1 {
 			stepView.ConfigFunc = fmt.Sprintf("%sStep%d", view.ConfigFunc, index+1)
 		}
-		for path, value := range stepValues(step) {
-			desired[path] = value
-		}
+		model.OverlayMaterializedValues(desired, stepValues(step))
 		values := maps.Clone(desired)
 		stepView.ConfigBody = renderExampleConfig(resourceType, schema, values, apiPaths)
+		stepView.ConfigLiteral = "`" + stepView.ConfigBody + "`"
+		if strings.ContainsRune(stepView.ConfigBody, '`') {
+			stepView.ConfigLiteral = strconv.Quote(stepView.ConfigBody)
+		}
 		stepView.Checks = renderExampleChecks(scenario.TerraformAddress, schema, values, apiPaths)
 		view.Steps = append(view.Steps, stepView)
 	}
@@ -183,6 +180,34 @@ func writeAttributes(
 ) {
 	for _, attr := range attributes {
 		path := append(slices.Clone(prefix), attr.TFName)
+		if !selectedExampleVariant(attr, path, values, apiPaths) {
+			continue
+		}
+		if attr.Computed && !attr.Optional && !attr.Required {
+			continue
+		}
+		if attr.IsBlock && attr.ListBlock {
+			value, ok := lookupValue(values, apiPaths, path)
+			if !ok {
+				continue
+			}
+			items, ok := value.Value.([]any)
+			if !ok {
+				continue
+			}
+			writeIndent(out, depth)
+			fmt.Fprintf(out, "%s = [\n", attr.TFName)
+			for i := range items {
+				writeIndent(out, depth+1)
+				out.WriteString("{\n")
+				writeAttributes(out, nestedMembers(attr), values, indexedAPIPaths(apiPaths, path, i), path, depth+2)
+				writeIndent(out, depth+1)
+				out.WriteString("},\n")
+			}
+			writeIndent(out, depth)
+			out.WriteString("]\n")
+			continue
+		}
 		if attr.IsBlock {
 			// Rendered first, then kept only if it produced something: an
 			// empty block is a claim the scenario never made. Asking a
@@ -229,6 +254,27 @@ func writeAttributes(
 	}
 }
 
+func selectedExampleVariant(attr AttrView, path []string, values map[string]model.MaterializedValue, apiPaths map[string]string) bool {
+	if !attr.OneOfVariant {
+		return true
+	}
+	value, ok := lookupValue(values, apiPaths, path)
+	return ok && value.Variant == attr.TFName
+}
+
+// indexedAPIPaths binds a list element's schema paths to its concrete values.
+func indexedAPIPaths(paths map[string]string, path []string, index int) map[string]string {
+	tfPath := strings.Join(path, ".")
+	apiPath := paths[tfPath]
+	out := maps.Clone(paths)
+	for tfChild, apiChild := range paths {
+		if strings.HasPrefix(tfChild, tfPath+".") && strings.HasPrefix(apiChild, apiPath) {
+			out[tfChild] = fmt.Sprintf("%s[%d]%s", apiPath, index, strings.TrimPrefix(apiChild, apiPath))
+		}
+	}
+	return out
+}
+
 // lookupValue finds the materialized value a Terraform path corresponds to.
 //
 // The index records which API path each attribute was built from, so this is
@@ -260,13 +306,19 @@ func hclLiteral(value any) string {
 		// Unquoted scalars render exactly as a check expects them.
 		return checkValue(typed)
 	case string:
-		return strconv.Quote(typed)
+		return string(hclwrite.TokensForValue(cty.StringVal(typed)).Bytes())
 	case []any:
 		items := make([]string, 0, len(typed))
 		for _, item := range typed {
 			items = append(items, hclLiteral(item))
 		}
 		return "[" + strings.Join(items, ", ") + "]"
+	case map[string]any:
+		items := make([]string, 0, len(typed))
+		for _, key := range slices.Sorted(maps.Keys(typed)) {
+			items = append(items, hclLiteral(key)+" = "+hclLiteral(typed[key]))
+		}
+		return "{" + strings.Join(items, ", ") + "}"
 	default:
 		return strconv.Quote(checkValue(typed))
 	}
@@ -317,6 +369,12 @@ func collectCheckLeaves(
 ) {
 	for _, attr := range attributes {
 		path := append(slices.Clone(prefix), attr.TFName)
+		if !selectedExampleVariant(attr, path, values, apiPaths) {
+			continue
+		}
+		if attr.ListBlock {
+			continue
+		}
 		if attr.IsBlock {
 			collectCheckLeaves(nestedMembers(attr), values, apiPaths, path, out)
 			continue
@@ -331,6 +389,9 @@ func collectCheckLeaves(
 			continue
 		}
 		if _, isList := value.Value.([]any); isList {
+			continue
+		}
+		if _, isMap := value.Value.(map[string]any); isMap {
 			continue
 		}
 		*out = append(*out, checkLeaf{path: strings.Join(path, "."), value: value.Value})
