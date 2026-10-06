@@ -42,6 +42,13 @@ jobs:
       - name: Test
         run: make -C .. tfgen-test
 
+      # The CLI and contract reference pages under .generator-v2/docs/reference/
+      # are generated from the cobra command tree and the two checked-in JSON
+      # Schemas. If you add a flag or a schema field, run `make tfgen-docs` and
+      # commit the result in the same change. Exits 3 when a page is stale.
+      - name: Reference docs up to date
+        run: make -C .. tfgen-docs-check
+
   integration-test:
     name: integration test (compile & schema-validate generated resources)
     runs-on: ubuntu-latest
