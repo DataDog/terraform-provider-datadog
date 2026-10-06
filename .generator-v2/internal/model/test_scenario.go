@@ -3,10 +3,8 @@ package model
 import (
 	"fmt"
 	"maps"
-	"net/http"
 	"slices"
 	"strings"
-	"time"
 )
 
 // ----------------------------------------------------------------------------
@@ -24,41 +22,6 @@ import (
 // leaves the materializer. It appears in rendered fixtures and diagnostics
 // alike so a leaked secret is a visible diff rather than a silent one.
 const RedactedPlaceholder = "[redacted]"
-
-// retainedHeaders are the only headers a recorded interaction may carry. The
-// provider's replay harness filters everything else, so retaining more would
-// record bytes that can never participate in matching — and would risk
-// committing an authorization header.
-//
-// This list must stay in parity with allowedHeaders in
-// datadog/tests/provider_test.go, which is the harness's own allowlist. That
-// one lives in a _test.go file in the root module, so it cannot be imported
-// here and the two are kept equal by hand.
-var retainedHeaders = []string{"Accept", "Content-Type"}
-
-// RetainedHeaders returns the header allowlist in canonical order.
-func RetainedHeaders() []string { return slices.Clone(retainedHeaders) }
-
-// FilterRetainedHeaders copies only the allowlisted headers, canonicalizing
-// their names. Callers assembling headers are expected to pass them through
-// here; it is not a chokepoint, since rendering forwards whatever headers an
-// interaction already carries.
-func FilterRetainedHeaders(in map[string][]string) map[string][]string {
-	if len(in) == 0 {
-		return nil
-	}
-	out := map[string][]string{}
-	for name, values := range in {
-		canonical := http.CanonicalHeaderKey(name)
-		if slices.Contains(retainedHeaders, canonical) && len(values) > 0 {
-			out[canonical] = slices.Clone(values)
-		}
-	}
-	if len(out) == 0 {
-		return nil
-	}
-	return out
-}
 
 // ----------------------------------------------------------------------------
 // Example selection
@@ -169,74 +132,6 @@ func (c *MaterializedConfiguration) SortedSensitivePaths() []string {
 // Scenario interactions
 // ----------------------------------------------------------------------------
 
-// InteractionRole names why an interaction exists in the trace. Refresh and
-// destroy verification are distinct roles even though they issue the same read
-// request, because the reason a request repeats is what a reviewer needs to
-// understand an apparently duplicated interaction.
-type InteractionRole string
-
-const (
-	InteractionRoleCreate  InteractionRole = "create"
-	InteractionRoleRead    InteractionRole = "read"
-	InteractionRoleSearch  InteractionRole = "search"
-	InteractionRoleUpdate  InteractionRole = "update"
-	InteractionRoleDelete  InteractionRole = "delete"
-	InteractionRoleRefresh InteractionRole = "refresh"
-	// InteractionRoleDestroyVerification is the post-destroy read the test
-	// harness issues to confirm the object is gone; it expects a 404.
-	InteractionRoleDestroyVerification InteractionRole = "destroy_verification"
-)
-
-// InteractionRequest is the expected request side of one interaction.
-type InteractionRequest struct {
-	// Method is the HTTP method, uppercase.
-	Method string
-	// URL is the canonical absolute URL with credential query parameters
-	// already removed, matching the provider harness's comparison form.
-	URL string
-	// Body is the canonicalized request body, empty for a bodyless request.
-	Body string
-	// Headers holds only the retained allowlist.
-	Headers map[string][]string
-	// ContentLength is the byte length of Body.
-	ContentLength int
-}
-
-// InteractionResponse is the expected response side of one interaction.
-type InteractionResponse struct {
-	// StatusCode is the numeric HTTP status.
-	StatusCode int
-	// StatusText is the recorded status line text, e.g. "200 OK".
-	StatusText string
-	// Body is the response body; empty is legitimate for a declared bodyless
-	// response and is not the same as a missing example.
-	Body string
-	// Headers holds only the retained allowlist.
-	Headers map[string][]string
-	// ContentLength is the byte length of Body.
-	ContentLength int
-	// Duration is always zero. A recorded latency would make regeneration
-	// non-deterministic while changing nothing about replay.
-	Duration time.Duration
-}
-
-// ScenarioInteraction is one expected request/response pair in the generated
-// test's trace.
-type ScenarioInteraction struct {
-	// Index is the zero-based stable position in the cassette.
-	Index int
-	// Role records why this interaction exists.
-	Role InteractionRole
-	// OperationId is the source OpenAPI operation.
-	OperationId string
-	// Request is the expected request.
-	Request InteractionRequest
-	// Response is the expected response.
-	Response InteractionResponse
-	// SourceExamples are the provenance entries that contributed values here.
-	SourceExamples []ExampleProvenance
-}
-
 // ----------------------------------------------------------------------------
 // Generated test scenario
 // ----------------------------------------------------------------------------
@@ -316,64 +211,6 @@ func (s *GeneratedTestScenario) Validate() error {
 // files.
 const GeneratedMarker = "Code generated by tfgen from OpenAPI examples. DO NOT EDIT."
 
-// CassetteOwnership classifies what already exists at a bundle's target paths.
-type CassetteOwnership string
-
-const (
-	// CassetteOwnershipMissing means no bundle member exists; the default
-	// policy writes only in this state.
-	CassetteOwnershipMissing CassetteOwnership = "missing"
-	// CassetteOwnershipGenerated means every member exists and carries the
-	// tfgen marker.
-	CassetteOwnershipGenerated CassetteOwnership = "generated"
-	// CassetteOwnershipHandwritten means members exist without the marker;
-	// replacing them takes an explicit all-files policy.
-	CassetteOwnershipHandwritten CassetteOwnership = "handwritten"
-	// CassetteOwnershipIncomplete means only some members exist, or their
-	// markers disagree. Ambiguous ownership is never resolved by guessing.
-	CassetteOwnershipIncomplete CassetteOwnership = "incomplete"
-)
-
-// CassetteBundle is the generated test, cassette, and freeze companion treated
-// as one logical unit. All three are rendered and validated before any target
-// path is modified, and a failed commit restores all of them: a half-written
-// bundle is worse than none, because it replays as a confusing failure rather
-// than an obvious absence.
-type CassetteBundle struct {
-	// TestPath and TestContent are the dedicated example-backed test.
-	TestPath    string
-	TestContent []byte
-	// CassettePath and CassetteContent are the go-vcr YAML fixture.
-	CassettePath    string
-	CassetteContent []byte
-	// FreezePath and FreezeContent are the RFC3339Nano timestamp companion.
-	// It carries no marker of its own; its ownership derives from the cassette.
-	FreezePath    string
-	FreezeContent []byte
-	// ContentHashes maps each path to a stable content hash, used for
-	// unchanged detection and to verify a rollback restored the original.
-	ContentHashes map[string]string
-	// Ownership is what was found at the target paths before writing.
-	Ownership CassetteOwnership
-}
-
-// Paths returns the bundle's three target paths in a stable order.
-func (b *CassetteBundle) Paths() []string {
-	if b == nil {
-		return nil
-	}
-	return []string{b.TestPath, b.CassettePath, b.FreezePath}
-}
-
-// Complete reports whether all three members were rendered. The writer checks
-// this before touching the filesystem.
-func (b *CassetteBundle) Complete() bool {
-	return b != nil &&
-		b.TestPath != "" && len(b.TestContent) > 0 &&
-		b.CassettePath != "" && len(b.CassetteContent) > 0 &&
-		b.FreezePath != "" && len(b.FreezeContent) > 0
-}
-
 // ----------------------------------------------------------------------------
 // Cassette result
 // ----------------------------------------------------------------------------
@@ -393,25 +230,10 @@ const (
 type CassetteWriteAction string
 
 const (
-	CassetteWriteNone              CassetteWriteAction = "none"
-	CassetteWriteCreated           CassetteWriteAction = "created"
-	CassetteWriteUnchanged         CassetteWriteAction = "unchanged"
-	CassetteWriteReplacedGenerated CassetteWriteAction = "replaced_generated"
-	CassetteWriteReplacedRecorded  CassetteWriteAction = "replaced_recorded"
+	CassetteWriteNone      CassetteWriteAction = "none"
+	CassetteWriteCreated   CassetteWriteAction = "created"
+	CassetteWriteUnchanged CassetteWriteAction = "unchanged"
 )
-
-// InteractionSummary is the safe, reviewer-facing description of one
-// interaction in the run report. It carries roles and anchors, never bodies:
-// a request body may hold a replaced secret, and the report is committed.
-type InteractionSummary struct {
-	Index       int      `json:"index"`
-	Role        string   `json:"role"`
-	OperationId string   `json:"operation_id"`
-	Method      string   `json:"method"`
-	URL         string   `json:"url"`
-	Status      int      `json:"status"`
-	SourcePaths []string `json:"source_paths,omitempty"`
-}
 
 // CassetteResult is the structured per-target outcome reported by
 // tfgen generate.
@@ -425,9 +247,8 @@ type CassetteResult struct {
 	CassettePath string              `json:"cassette_path,omitempty"`
 	FreezePath   string              `json:"freeze_path,omitempty"`
 	// SelectedExample is the resolved scenario name, for traceability.
-	SelectedExample string               `json:"selected_example,omitempty"`
-	Interactions    []InteractionSummary `json:"interactions,omitempty"`
-	Diagnostics     []Diagnostic         `json:"diagnostics,omitempty"`
+	SelectedExample string       `json:"selected_example,omitempty"`
+	Diagnostics     []Diagnostic `json:"diagnostics,omitempty"`
 }
 
 // NewCassetteDiagnostic builds a diagnostic anchored at an example location.

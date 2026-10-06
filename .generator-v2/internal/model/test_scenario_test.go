@@ -18,47 +18,6 @@ func validScenario() *GeneratedTestScenario {
 	}
 }
 
-var _ = Describe("RetainedHeaders", func() {
-	It("exposes the allowlist without letting a caller mutate it", func() {
-		Expect(RetainedHeaders()).To(Equal([]string{"Accept", "Content-Type"}))
-		RetainedHeaders()[0] = "Authorization"
-		Expect(RetainedHeaders()).To(Equal([]string{"Accept", "Content-Type"}))
-	})
-})
-
-var _ = Describe("FilterRetainedHeaders", func() {
-	// The provider harness filters everything outside this allowlist, so
-	// retaining more would commit bytes that cannot affect matching — and
-	// could commit an authorization header.
-	It("keeps only Accept and Content-Type, canonicalizing names", func() {
-		got := FilterRetainedHeaders(map[string][]string{
-			"accept":        {"application/json"},
-			"CONTENT-TYPE":  {"application/json"},
-			"Authorization": {"Bearer super-secret"},
-			"Dd-Api-Key":    {"abc123"},
-		})
-		Expect(got).To(HaveLen(2))
-		Expect(got).To(HaveKeyWithValue("Accept", []string{"application/json"}))
-		Expect(got).To(HaveKeyWithValue("Content-Type", []string{"application/json"}))
-	})
-
-	It("drops an allowlisted header with no values", func() {
-		Expect(FilterRetainedHeaders(map[string][]string{"Accept": {}})).To(BeNil())
-	})
-
-	It("returns nil for empty or wholly disallowed input", func() {
-		Expect(FilterRetainedHeaders(nil)).To(BeNil())
-		Expect(FilterRetainedHeaders(map[string][]string{"Authorization": {"x"}})).To(BeNil())
-	})
-
-	It("does not alias the caller's slices", func() {
-		in := map[string][]string{"Accept": {"application/json"}}
-		got := FilterRetainedHeaders(in)
-		in["Accept"][0] = "mutated"
-		Expect(got["Accept"][0]).To(Equal("application/json"))
-	})
-})
-
 var _ = Describe("ExampleSelection", func() {
 	It("reports an explicit name for an operation that has one", func() {
 		s := &ExampleSelection{ExplicitNames: map[string]string{"CreateX": "alternate"}}
@@ -139,39 +98,6 @@ var _ = Describe("GeneratedTestScenario", func() {
 			var nilScenario *GeneratedTestScenario
 			Expect(nilScenario.HasUpdateStep()).To(BeFalse())
 		})
-	})
-})
-
-var _ = Describe("CassetteBundle", func() {
-	complete := func() *CassetteBundle {
-		return &CassetteBundle{
-			TestPath: "t_test.go", TestContent: []byte("package test"),
-			CassettePath: "c.yaml", CassetteContent: []byte("version: 2"),
-			FreezePath: "c.freeze", FreezeContent: []byte("2026-06-25T08:30:50Z"),
-		}
-	}
-
-	It("reports its three paths in a stable order", func() {
-		Expect(complete().Paths()).To(Equal([]string{"t_test.go", "c.yaml", "c.freeze"}))
-		var b *CassetteBundle
-		Expect(b.Paths()).To(BeNil())
-	})
-
-	// A half-written bundle replays as a confusing failure rather than an
-	// obvious absence, so the writer refuses to touch disk without all three.
-	It("is complete only when all three members carry content", func() {
-		Expect(complete().Complete()).To(BeTrue())
-
-		missingBody := complete()
-		missingBody.FreezeContent = nil
-		Expect(missingBody.Complete()).To(BeFalse())
-
-		missingPath := complete()
-		missingPath.CassettePath = ""
-		Expect(missingPath.Complete()).To(BeFalse())
-
-		var nilBundle *CassetteBundle
-		Expect(nilBundle.Complete()).To(BeFalse())
 	})
 })
 
