@@ -939,6 +939,7 @@ tags:
   x-datadog-tf-generator:
     integration_twilio_account:
       resource:
+        cassette: true
         artifact_name: integration_twilio_account
         tf_description: Provides a Datadog Twilio integration account resource.
         group:

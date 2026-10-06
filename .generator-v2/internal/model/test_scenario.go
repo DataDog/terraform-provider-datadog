@@ -256,6 +256,9 @@ const (
 	CassetteWriteNone      CassetteWriteAction = "none"
 	CassetteWriteCreated   CassetteWriteAction = "created"
 	CassetteWriteUnchanged CassetteWriteAction = "unchanged"
+	// CassetteWriteUpdated means the generated test file already existed
+	// and this run replaced its contents.
+	CassetteWriteUpdated CassetteWriteAction = "updated"
 )
 
 // CassetteResult is the structured per-target outcome reported by

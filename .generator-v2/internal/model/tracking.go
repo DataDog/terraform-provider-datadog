@@ -31,6 +31,8 @@ type TrackingFieldMetadata struct {
 	// IdStrategy is how the Terraform resource ID is derived from the API
 	// response. Defaults to "data.id" when omitted.
 	IdStrategy IdStrategy `json:"id_strategy,omitempty"`
+	// Cassette requests an example-backed acceptance test for this resource.
+	Cassette bool `json:"cassette,omitempty"`
 	// Overwrites names the hand-written data source constructor this generated
 	// artifact supersedes, e.g. "NewDatadogTeamDataSource". When set, the
 	// generated file overwrites the hand-written one in place, that constructor is

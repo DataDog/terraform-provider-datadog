@@ -44,6 +44,11 @@
         "required": ["group"],
         "description": "A Terraform resource with a full CRUD lifecycle.",
         "properties": {
+          "cassette": {
+            "type": "boolean",
+            "default": false,
+            "description": "Generate an example-backed acceptance test for this resource. Only the Go test is generated; record its cassette by running it with RECORD=true."
+          },
           "artifact_name": { "$ref": "#/$defs/artifact_name" },
           "tf_description": { "$ref": "#/$defs/tf_description" },
           "id_strategy": { "$ref": "#/$defs/id_strategy" },
