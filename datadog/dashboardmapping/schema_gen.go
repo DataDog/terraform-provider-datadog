@@ -61,6 +61,12 @@ func FieldSpecToSDKv2(f FieldSpec) *schema.Schema {
 		s.Deprecated = f.Deprecated
 	}
 
+	if f.IgnoreChanges {
+		s.DiffSuppressFunc = func(_, _, _ string, _ *schema.ResourceData) bool {
+			return true
+		}
+	}
+
 	if f.Default != nil {
 		switch v := f.Default.(type) {
 		case string:

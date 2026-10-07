@@ -17418,6 +17418,10 @@ Required:
 - `query` (Block List, Min: 1, Max: 1) Updated list stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition--request--query))
 - `response_format` (String) Widget response format. Valid values are `event_list`.
 
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
+
 <a id="nestedblock--widget--group_definition--widget--list_stream_definition--request--columns"></a>
 ### Nested Schema for `widget.group_definition.widget.list_stream_definition.request.columns`
 
@@ -17459,6 +17463,10 @@ Required:
 
 - `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
 
 
 
@@ -17518,6 +17526,10 @@ Required:
 
 - `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
 
 
 <a id="nestedblock--widget--group_definition--widget--log_stream_definition--time"></a>
@@ -24607,6 +24619,10 @@ Required:
 - `query` (Block List, Min: 1, Max: 1) Updated SLO List widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--slo_list_definition--request--query))
 - `request_type` (String) The request type for the SLO List request. Valid values are `slo_list`.
 
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
+
 <a id="nestedblock--widget--group_definition--widget--slo_list_definition--request--query"></a>
 ### Nested Schema for `widget.group_definition.widget.slo_list_definition.request.query`
 
@@ -24626,6 +24642,10 @@ Required:
 
 - `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
 
 
 
@@ -30372,6 +30392,10 @@ Required:
 
 - `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
 
 
 
@@ -38490,6 +38514,10 @@ Required:
 - `query` (Block List, Min: 1, Max: 1) Updated list stream widget. (see [below for nested schema](#nestedblock--widget--list_stream_definition--request--query))
 - `response_format` (String) Widget response format. Valid values are `event_list`.
 
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
+
 <a id="nestedblock--widget--list_stream_definition--request--columns"></a>
 ### Nested Schema for `widget.list_stream_definition.request.columns`
 
@@ -38531,6 +38559,10 @@ Required:
 
 - `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
 
 
 
@@ -38590,6 +38622,10 @@ Required:
 
 - `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
 
 
 <a id="nestedblock--widget--log_stream_definition--time"></a>
@@ -45679,6 +45715,10 @@ Required:
 - `query` (Block List, Min: 1, Max: 1) Updated SLO List widget. (see [below for nested schema](#nestedblock--widget--slo_list_definition--request--query))
 - `request_type` (String) The request type for the SLO List request. Valid values are `slo_list`.
 
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
+
 <a id="nestedblock--widget--slo_list_definition--request--query"></a>
 ### Nested Schema for `widget.slo_list_definition.request.query`
 
@@ -45698,6 +45738,10 @@ Required:
 
 - `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
 
 
 
@@ -51444,6 +51488,10 @@ Required:
 
 - `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `description` (String, Deprecated) This field has no effect and is not sent to the Datadog API. **Deprecated.** This field has no effect and will be removed in a future release.
 
 
 

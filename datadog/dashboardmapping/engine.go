@@ -153,6 +153,11 @@ type FieldSpec struct {
 	// that are managed as side effects, not serialized to the API.
 	SchemaOnly bool
 
+	// IgnoreChanges: suppress all diffs on this field. Use with SchemaOnly for
+	// legacy no-op fields that are accepted in config but never sent to or
+	// returned by the API, so refreshed state never matches the config.
+	IgnoreChanges bool
+
 	// Discriminator configures polymorphic oneOf behavior for TypeOneOf fields.
 	// Set on the TypeOneOf parent (JSONKey) and on each child variant (Value/Values/DefaultVariant).
 	Discriminator *OneOfDiscriminator

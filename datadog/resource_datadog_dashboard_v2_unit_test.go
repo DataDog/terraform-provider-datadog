@@ -454,3 +454,83 @@ func dashboardV2TestTimeseriesWidgets(query string) []interface{} {
 		},
 	}
 }
+
+func TestDashboardV2LegacyNoOpDescriptionFields(t *testing.T) {
+	widgets := []interface{}{
+		map[string]interface{}{
+			"log_stream_definition": []interface{}{
+				map[string]interface{}{
+					"query": "status:error",
+					"sort": []interface{}{
+						map[string]interface{}{"column": "time", "order": "desc", "description": "legacy sort"},
+					},
+				},
+			},
+		},
+		map[string]interface{}{
+			"slo_list_definition": []interface{}{
+				map[string]interface{}{
+					"request": []interface{}{
+						map[string]interface{}{
+							"request_type": "slo_list",
+							"description":  "legacy request",
+							"query": []interface{}{
+								map[string]interface{}{
+									"query_string": "env:prod",
+									"sort": []interface{}{
+										map[string]interface{}{"column": "status.sli", "order": "desc", "description": "legacy query sort"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	called := false
+	client := dashboardValidationTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+		called = true
+		for _, widget := range assertDashboardValidationRequest(t, r, 2, "ordered", "") {
+			payload, _ := json.Marshal(widget)
+			if strings.Contains(string(payload), "legacy") {
+				t.Errorf("no-op description must not be sent for validation, got %s", payload)
+			}
+		}
+		writeDashboardValidationResponse(t, w, map[string]interface{}{
+			"results": []interface{}{
+				map[string]interface{}{"is_valid": true, "widget_type": "log_stream"},
+				map[string]interface{}{"is_valid": true, "widget_type": "slo_list"},
+			},
+		})
+	})
+	providerConfig := &ProviderConfiguration{
+		Auth:                context.Background(),
+		DatadogApiInstances: &utils.ApiInstances{HttpClient: client},
+	}
+	config := terraform.NewResourceConfigRaw(map[string]interface{}{
+		"title":       "Legacy description test",
+		"layout_type": "ordered",
+		"widget":      widgets,
+	})
+	diff, err := resourceDatadogDashboardV2().Diff(context.Background(), nil, config, providerConfig)
+	if err != nil {
+		t.Fatalf("legacy description fields should still plan, got: %v", err)
+	}
+	if !called {
+		t.Fatal("plan-time validation should still run when legacy description fields are set")
+	}
+	for key := range diff.Attributes {
+		if strings.HasSuffix(key, ".description") {
+			t.Errorf("no-op description should not produce a diff, got %q", key)
+		}
+	}
+
+	for _, widget := range flattenDashboardWidgets(widgets) {
+		payload, _ := json.Marshal(widget.widget)
+		if strings.Contains(string(payload), "legacy") {
+			t.Errorf("no-op description must not be sent to the API, got %s", payload)
+		}
+	}
+}
