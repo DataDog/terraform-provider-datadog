@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -15,6 +16,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 var (
@@ -24,8 +27,9 @@ var (
 )
 
 type statusPageComponentResource struct {
-	Api  *datadogV2.StatusPagesApi
-	Auth context.Context
+	Api          *datadogV2.StatusPagesApi
+	ApiInstances *utils.ApiInstances
+	Auth         context.Context
 }
 
 type statusPageComponentModel struct {
@@ -161,6 +165,7 @@ func (r *statusPageComponentResource) Configure(_ context.Context, request resou
 	}
 
 	r.Api = providerData.DatadogApiInstances.GetStatusPagesApiV2()
+	r.ApiInstances = providerData.DatadogApiInstances
 	r.Auth = providerData.Auth
 }
 
@@ -297,6 +302,9 @@ func (r *statusPageComponentResource) Create(ctx context.Context, request resour
 	state.PageID = plan.PageID
 	r.updateStateFromResponse(&state, &resp, plan.Components)
 
+	// The page listing is now stale for this page.
+	r.ApiInstances.InvalidateStatusPageComponentCache(pageID)
+
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -325,17 +333,52 @@ func (r *statusPageComponentResource) Read(ctx context.Context, request resource
 		return
 	}
 
-	resp, httpResp, err := r.Api.GetComponent(r.Auth, pageID, componentID)
+	// Resolve from the page listing rather than fetching this component on its
+	// own: refreshing a configuration with many components otherwise issues one
+	// request per component and exhausts the endpoint's 60 req/min per-user
+	// rate limit.
+	listing, httpResp, err := r.ApiInstances.ListStatusPageComponents(r.Auth, pageID)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
 			return
 		}
 		response.Diagnostics.AddError(
-			"Error reading status page component",
-			"Could not read status page component ID "+state.ID.ValueString()+": "+err.Error(),
+			"Error reading status page components",
+			"Could not list status page components for page "+state.PageID.ValueString()+": "+err.Error(),
 		)
 		return
+	}
+
+	var resp datadogV2.StatusPagesComponent
+	found := false
+	for _, component := range listing.GetData() {
+		if component.GetId() == componentID {
+			data := component
+			resp = datadogV2.StatusPagesComponent{Data: &data}
+			found = true
+			break
+		}
+	}
+
+	// The listing only carries top-level components; a component nested in a
+	// group appears in reduced form under its parent and not as its own entry.
+	// Fall back to a direct read so a nested component is not mistaken for a
+	// deleted one.
+	if !found {
+		var fallbackResp *http.Response
+		resp, fallbackResp, err = r.Api.GetComponent(r.Auth, pageID, componentID)
+		if err != nil {
+			if fallbackResp != nil && fallbackResp.StatusCode == 404 {
+				response.State.RemoveResource(ctx)
+				return
+			}
+			response.Diagnostics.AddError(
+				"Error reading status page component",
+				"Could not read status page component ID "+state.ID.ValueString()+": "+err.Error(),
+			)
+			return
+		}
 	}
 
 	previousComponents := state.Components
@@ -417,6 +460,9 @@ func (r *statusPageComponentResource) Update(ctx context.Context, request resour
 	}
 
 	r.updateStateFromResponse(&plan, &resp, plan.Components)
+
+	// The page listing is now stale for this page.
+	r.ApiInstances.InvalidateStatusPageComponentCache(pageID)
 
 	response.Diagnostics.Append(response.State.Set(ctx, &plan)...)
 }
@@ -582,6 +628,7 @@ func (r *statusPageComponentResource) Delete(ctx context.Context, request resour
 	httpResp, err := r.Api.DeleteComponent(r.Auth, pageID, componentID)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
+			r.ApiInstances.InvalidateStatusPageComponentCache(pageID)
 			return
 		}
 		response.Diagnostics.AddError(
@@ -590,6 +637,9 @@ func (r *statusPageComponentResource) Delete(ctx context.Context, request resour
 		)
 		return
 	}
+
+	// The page listing is now stale for this page.
+	r.ApiInstances.InvalidateStatusPageComponentCache(pageID)
 }
 
 func (r *statusPageComponentResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {

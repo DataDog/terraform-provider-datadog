@@ -12,6 +12,7 @@ type ApiInstances struct {
 
 	sensitiveDataScannerConfigCache    sensitiveDataScannerConfigCache
 	statusPageDegradationTemplateCache statusPageDegradationTemplateCache
+	statusPageComponentCache           statusPageComponentCache
 
 	// V1 APIs
 	authenticationApiV1                   *datadogV1.AuthenticationApi
