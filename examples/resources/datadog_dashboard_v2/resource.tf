@@ -77,6 +77,13 @@ resource "datadog_dashboard_v2" "ordered_dashboard" {
     }
   }
 
+  default_timeframe {
+    live {
+      unit  = "week"
+      value = 1
+    }
+  }
+
   template_variable {
     name    = "var_1"
     prefix  = "host"
