@@ -52,6 +52,36 @@ func enumValues(def, property string) []any {
 	return prop.Enum
 }
 
+// declaredProperties reads one $defs property set from the contract bytes.
+func declaredProperties(def string) []string {
+	var doc struct {
+		Defs map[string]struct {
+			Properties map[string]any `json:"properties"`
+		} `json:"$defs"`
+	}
+	Expect(json.Unmarshal(contracts.RunReportSchema, &doc)).To(Succeed())
+	d, ok := doc.Defs[def]
+	Expect(ok).To(BeTrue(), "contract has no $defs/%s", def)
+	names := make([]string, 0, len(d.Properties))
+	for name := range d.Properties {
+		names = append(names, name)
+	}
+	return names
+}
+
+// marshalledKeys is the JSON keys a value actually produces.
+func marshalledKeys(value any) []string {
+	encoded, err := json.Marshal(value)
+	Expect(err).To(Succeed())
+	var object map[string]any
+	Expect(json.Unmarshal(encoded, &object)).To(Succeed())
+	names := make([]string, 0, len(object))
+	for name := range object {
+		names = append(names, name)
+	}
+	return names
+}
+
 var _ = Describe("run report contract", func() {
 	var schema *jsonschema.Schema
 	BeforeEach(func() { schema = runReportSchema() })
@@ -180,6 +210,20 @@ var _ = Describe("run report contract", func() {
 		// Guards the other direction: a value added to the schema but never
 		// produced, which the per-value tables above cannot see. Counting is
 		// the only way to catch an enum that has grown past the model.
+		// additionalProperties:false already fails a Go field missing from the
+		// contract. This is the other direction — a contract property the model
+		// never populates, which validation cannot see because absent optional
+		// fields are valid. cassette_path and freeze_path sat here unpopulated.
+		It("declares exactly the properties a populated result produces", func() {
+			full := CassetteResult{
+				Name: "n", Kind: ArtifactKindResource, TestName: "t",
+				Status: CassetteStatusGenerated, WriteAction: CassetteWriteCreated,
+				TestPath: "p", SelectedExample: ScenarioNameDefault,
+				Diagnostics: []Diagnostic{{Severity: SeverityInfo, Message: "m"}},
+			}
+			Expect(declaredProperties("cassetteResult")).To(ConsistOf(marshalledKeys(full)))
+		})
+
 		It("declares no write action or status the model cannot produce", func() {
 			Expect(enumValues("cassetteResult", "write_action")).To(HaveLen(4))
 			Expect(enumValues("cassetteResult", "status")).To(HaveLen(3))

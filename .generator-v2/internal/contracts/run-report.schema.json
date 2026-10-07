@@ -273,12 +273,6 @@
         "test_path": {
           "type": "string"
         },
-        "cassette_path": {
-          "type": "string"
-        },
-        "freeze_path": {
-          "type": "string"
-        },
         "selected_example": {
           "type": "string",
           "description": "Resolved scenario name: an explicit selection, \"default\", a lexical fallback, or \"single\" when the values came from singular example fields."

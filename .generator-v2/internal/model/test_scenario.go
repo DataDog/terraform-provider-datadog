@@ -264,14 +264,15 @@ const (
 // CassetteResult is the structured per-target outcome reported by
 // tfgen generate.
 type CassetteResult struct {
-	Name         string              `json:"name"`
-	Kind         ArtifactKind        `json:"kind"`
-	TestName     string              `json:"test_name"`
-	Status       CassetteStatus      `json:"status"`
-	WriteAction  CassetteWriteAction `json:"write_action"`
-	TestPath     string              `json:"test_path,omitempty"`
-	CassettePath string              `json:"cassette_path,omitempty"`
-	FreezePath   string              `json:"freeze_path,omitempty"`
+	Name        string              `json:"name"`
+	Kind        ArtifactKind        `json:"kind"`
+	TestName    string              `json:"test_name"`
+	Status      CassetteStatus      `json:"status"`
+	WriteAction CassetteWriteAction `json:"write_action"`
+	// TestPath is the generated test. There is deliberately no cassette or
+	// freeze path: the generator writes neither, and the recording lands under
+	// a name the harness derives from the test's own name.
+	TestPath string `json:"test_path,omitempty"`
 	// SelectedExample is the resolved scenario name, for traceability.
 	SelectedExample string       `json:"selected_example,omitempty"`
 	Diagnostics     []Diagnostic `json:"diagnostics,omitempty"`
