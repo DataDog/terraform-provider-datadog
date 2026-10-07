@@ -34,7 +34,6 @@ func TestAccDatadogRumTeamOwnership(t *testing.T) {
 					resource.TestCheckResourceAttrPair(resourceName, "team_handle", "datadog_team.owner", "handle"),
 					resource.TestCheckResourceAttr(resourceName, "match_type", "exact"),
 					resource.TestCheckResourceAttr(resourceName, "service", ""),
-					resource.TestCheckResourceAttrSet(resourceName, "org_id"),
 					resource.TestCheckResourceAttr("datadog_rum_team_ownership.mobile", "application_id", "00000000-0000-0000-0000-000000000000"),
 					resource.TestCheckResourceAttr("datadog_rum_team_ownership.mobile", "service", uniq),
 					resource.TestCheckResourceAttr("datadog_rum_team_ownership.mobile", "match_type", "prefix"),

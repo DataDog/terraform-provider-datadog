@@ -40,4 +40,3 @@ resource "datadog_rum_team_ownership" "checkout" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `org_id` (Number) The ID of the organization that owns this mapping.

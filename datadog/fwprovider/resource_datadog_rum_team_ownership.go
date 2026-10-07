@@ -28,7 +28,6 @@ type datadogRumTeamOwnershipResourceModel struct {
 	ID            types.String `tfsdk:"id"`
 	ApplicationId types.String `tfsdk:"application_id"`
 	MatchType     types.String `tfsdk:"match_type"`
-	OrgId         types.Int64  `tfsdk:"org_id"`
 	Service       types.String `tfsdk:"service"`
 	TeamHandle    types.String `tfsdk:"team_handle"`
 	ViewName      types.String `tfsdk:"view_name"`
@@ -80,10 +79,6 @@ func (r *datadogRumTeamOwnershipResource) Schema(_ context.Context, _ resource.S
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
-			},
-			"org_id": schema.Int64Attribute{
-				Description: "The ID of the organization that owns this mapping.",
-				Computed:    true,
 			},
 			"service": schema.StringAttribute{
 				Description: "The service to match. Defaults to an empty string, which matches all services. Removing this field replaces the mapping with service wildcard scope.",
@@ -223,9 +218,6 @@ func (r *datadogRumTeamOwnershipResource) updateState(ctx context.Context, state
 	}
 	if matchType, ok := attributes.GetMatchTypeOk(); ok && matchType != nil {
 		state.MatchType = types.StringValue(string(*matchType))
-	}
-	if orgId, ok := attributes.GetOrgIdOk(); ok && orgId != nil {
-		state.OrgId = types.Int64Value(int64(*orgId))
 	}
 	if service, ok := attributes.GetServiceOk(); ok && service != nil {
 		state.Service = types.StringValue(*service)
