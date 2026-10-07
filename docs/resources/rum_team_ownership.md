@@ -40,3 +40,16 @@ resource "datadog_rum_team_ownership" "checkout" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+## Import
+
+Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
+```shell
+# Import existing UI mappings before applying this resource to avoid creating duplicates.
+# Import an existing mapping using teams[].mapping_id from /rules,
+# not the grouped rule ID.
+terraform import datadog_rum_team_ownership.checkout "<mapping_id>"
+```
