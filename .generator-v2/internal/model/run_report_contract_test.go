@@ -203,7 +203,6 @@ var _ = Describe("run report contract", func() {
 				Expect(validateAgainstContract(schema, report)).To(Succeed())
 			},
 			Entry("generated", CassetteStatusGenerated),
-			Entry("preserved", CassetteStatusPreserved),
 			Entry("ineligible", CassetteStatusIneligible),
 		)
 
@@ -214,6 +213,11 @@ var _ = Describe("run report contract", func() {
 		// contract. This is the other direction — a contract property the model
 		// never populates, which validation cannot see because absent optional
 		// fields are valid. cassette_path and freeze_path sat here unpopulated.
+		It("declares exactly the summary counters the model produces", func() {
+			Expect(declaredProperties("cassetteSummary")).To(
+				ConsistOf(marshalledKeys(CassetteSummary{})))
+		})
+
 		It("declares exactly the properties a populated result produces", func() {
 			full := CassetteResult{
 				Name: "n", Kind: ArtifactKindResource, TestName: "t",
@@ -226,7 +230,7 @@ var _ = Describe("run report contract", func() {
 
 		It("declares no write action or status the model cannot produce", func() {
 			Expect(enumValues("cassetteResult", "write_action")).To(HaveLen(4))
-			Expect(enumValues("cassetteResult", "status")).To(HaveLen(3))
+			Expect(enumValues("cassetteResult", "status")).To(HaveLen(2))
 		})
 
 		DescribeTable("rejects a value the model cannot produce",

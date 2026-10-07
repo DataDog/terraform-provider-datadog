@@ -255,10 +255,9 @@
           "type": "string",
           "enum": [
             "generated",
-            "preserved",
             "ineligible"
           ],
-          "description": "generated: a bundle was written. preserved: an existing bundle was left alone. ineligible: the examples could not form a valid cassette, and no partial output was written."
+          "description": "generated: the test was written. ineligible: the description could not describe a whole lifecycle, and nothing was written. There is no preserved outcome: the generator writes only its own test, and emit refuses a file it does not own."
         },
         "write_action": {
           "type": "string",
@@ -291,15 +290,10 @@
       "description": "Counts per cassette status. Separate from runSummary so cassette generation cannot change the artifact tallies CI already asserts on.",
       "required": [
         "generated",
-        "preserved",
         "ineligible"
       ],
       "properties": {
         "generated": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "preserved": {
           "type": "integer",
           "minimum": 0
         },

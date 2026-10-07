@@ -51,8 +51,6 @@ func summarizeCassettes(results []CassetteResult) *CassetteSummary {
 		switch r.Status {
 		case CassetteStatusGenerated:
 			s.Generated++
-		case CassetteStatusPreserved:
-			s.Preserved++
 		case CassetteStatusIneligible:
 			s.Ineligible++
 		}
