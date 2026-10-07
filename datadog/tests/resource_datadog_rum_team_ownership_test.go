@@ -68,13 +68,48 @@ func TestAccDatadogRumTeamOwnership(t *testing.T) {
 				),
 			},
 			{
+				Config: testAccDatadogRumTeamOwnershipConfigWithScope(uniq, "", "/checkout/", "application_id = datadog_rum_application.app.id", ""),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "match_type", "exact"),
+					testAccCheckDatadogRumTeamOwnershipReplacement(resourceName, &replacementID),
+				),
+			},
+			{
+				Config: testAccDatadogRumTeamOwnershipConfigWithScope(uniq, "", "/checkout/", "application_id = datadog_rum_application.app.id", fmt.Sprintf("service = %q", uniq)),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "service", uniq),
+					testAccCheckDatadogRumTeamOwnershipReplacement(resourceName, &replacementID),
+				),
+			},
+			{
+				Config: testAccDatadogRumTeamOwnershipConfigWithScope(uniq, "", "/checkout/", "", fmt.Sprintf("service = %q", uniq)),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "application_id", "00000000-0000-0000-0000-000000000000"),
+					resource.TestCheckResourceAttr(resourceName, "service", uniq),
+					testAccCheckDatadogRumTeamOwnershipReplacement(resourceName, &replacementID),
+				),
+			},
+			{
+				Config: testAccDatadogRumTeamOwnershipConfigWithScope(uniq, "", "/checkout/", "", ""),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "application_id", "00000000-0000-0000-0000-000000000000"),
+					resource.TestCheckResourceAttr(resourceName, "service", ""),
+					resource.TestCheckResourceAttr(resourceName, "match_type", "exact"),
+					testAccCheckDatadogRumTeamOwnershipReplacement(resourceName, &replacementID),
+				),
+			},
+			{
+				Config:   testAccDatadogRumTeamOwnershipConfigWithScope(uniq, "", "/checkout/", "", ""),
+				PlanOnly: true,
+			},
+			{
 				PreConfig: func() {
 					api := datadogV2.NewRumTeamsOwnershipApi(providers.frameworkProvider.DatadogApiInstances.HttpClient)
 					if _, err := api.DeleteTeamsOwnershipMapping(providers.frameworkProvider.Auth, replacementID); err != nil {
 						t.Fatalf("failed to delete RUM team ownership mapping outside Terraform: %s", err)
 					}
 				},
-				Config:             testAccDatadogRumTeamOwnershipConfig(uniq, "prefix", "/checkout/"),
+				Config:             testAccDatadogRumTeamOwnershipConfigWithScope(uniq, "", "/checkout/", "", ""),
 				PlanOnly:           true,
 				ExpectNonEmptyPlan: true,
 			},
@@ -83,6 +118,14 @@ func TestAccDatadogRumTeamOwnership(t *testing.T) {
 }
 
 func testAccDatadogRumTeamOwnershipConfig(uniq, matchType, viewName string) string {
+	return testAccDatadogRumTeamOwnershipConfigWithScope(uniq, matchType, viewName, "application_id = datadog_rum_application.app.id", "")
+}
+
+func testAccDatadogRumTeamOwnershipConfigWithScope(uniq, matchType, viewName, application, service string) string {
+	match := ""
+	if matchType != "" {
+		match = fmt.Sprintf("match_type = %q", matchType)
+	}
 	return fmt.Sprintf(`
 resource "datadog_team" "owner" {
   description = "Terraform RUM ownership acceptance test."
@@ -96,8 +139,9 @@ resource "datadog_rum_application" "app" {
 }
 
 resource "datadog_rum_team_ownership" "browser" {
-  application_id = datadog_rum_application.app.id
-  match_type     = %[2]q
+  %[4]s
+  %[5]s
+  %[2]s
   team_handle    = datadog_team.owner.handle
   view_name      = %[3]q
 }
@@ -114,7 +158,18 @@ resource "datadog_rum_team_ownership" "global" {
   team_handle = datadog_team.owner.handle
   view_name   = "Global"
 }
-`, uniq, matchType, viewName)
+`, uniq, match, viewName, application, service)
+}
+
+func testAccCheckDatadogRumTeamOwnershipReplacement(resourceName string, previousID *string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		id := s.RootModule().Resources[resourceName].Primary.ID
+		if id == *previousID {
+			return fmt.Errorf("expected mapping replacement, ID is still %s", id)
+		}
+		*previousID = id
+		return nil
+	}
 }
 
 func testAccCheckDatadogRumTeamOwnershipExists(accProvider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {

@@ -6,42 +6,6 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 135
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":{"attributes":{"name":"tf-testaccdatadogrumteamownership-local-1789551963","type":"browser"},"type":"rum_application_create"}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 948
-        uncompressed: false
-        body: '{"data":{"id":"a112f662-468d-4f2c-acd3-e35b0da6bea8","type":"rum_application","attributes":{"api_key_id":1301417,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"a112f662-468d-4f2c-acd3-e35b0da6bea8","client_token":"pub7c118690552594a71484f547e246bccf","created_at":1789551965830,"created_by_handle":"felipe.arrudabrito@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"is_active":false,"name":"tf-testaccdatadogrumteamownership-local-1789551963","ootb_metrics_installed":false,"org_id":2,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1789551965830},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1789551965830}},"short_name":"tf_testaccdatadogrumteamownershi_3","tags":[],"type":"browser","updated_at":1789551965830,"updated_by_handle":"felipe.arrudabrito@datadoghq.com"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 201 Created
-        code: 201
-        duration: 315.4175ms
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
         content_length: 219
         transfer_encoding: []
         trailer: {}
@@ -49,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"Terraform RUM ownership acceptance test.","handle":"tf-testaccdatadogrumteamownership-local-1789551963","name":"tf-testaccdatadogrumteamownership-local-1789551963"},"type":"team"}}
+            {"data":{"attributes":{"description":"Terraform RUM ownership acceptance test.","handle":"tf-testaccdatadogrumteamownership-local-1791381313","name":"tf-testaccdatadogrumteamownership-local-1791381313"},"type":"team"}}
         form: {}
         headers:
             Accept:
@@ -64,65 +28,28 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"team","id":"643ac9e7-57bc-4756-bb79-2c14be78ed49","attributes":{"name":"tf-testaccdatadogrumteamownership-local-1789551963","handle":"tf-testaccdatadogrumteamownership-local-1789551963","summary":"Terraform RUM ownership acceptance test.","description":"Terraform RUM ownership acceptance test.","avatar":null,"banner":2,"visible_modules":[],"hidden_modules":[],"created_at":"2026-09-16T09:46:06.112989+00:00","modified_at":"2026-09-16T09:46:06.112996+00:00","user_count":0,"link_count":0,"is_managed":false},"relationships":{"team_links":{"links":{"related":"/api/v2/team/643ac9e7-57bc-4756-bb79-2c14be78ed49/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/643ac9e7-57bc-4756-bb79-2c14be78ed49/permission-settings"}}}}}
-        headers:
-            Content-Type:
-                - application/json
-        status: 201 Created
-        code: 201
-        duration: 1.373612375s
-    - id: 2
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 169
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":{"attributes":{"match_type":"exact","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"Global"},"type":"teams_ownership_mappings"}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 355
+        content_length: 817
         uncompressed: false
-        body: '{"data":{"id":"730585","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-09-16T09:46:07.1192Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"Global"}}}'
+        body: '{"data":{"id":"ce369556-0f59-443d-9e9c-4f4282dd882c","type":"team","attributes":{"avatar":null,"banner":3,"created_at":"2026-10-07T13:55:17.840937+00:00","description":"Terraform RUM ownership acceptance test.","handle":"tf-testaccdatadogrumteamownership-local-1791381313","hidden_modules":null,"is_managed":false,"link_count":0,"modified_at":"2026-10-07T13:55:17.840937+00:00","name":"tf-testaccdatadogrumteamownership-local-1791381313","provisioned_by":"teams_terraform","summary":"Terraform RUM ownership acceptance test.","user_count":0,"visible_modules":null},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/permission-settings"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 252.254708ms
-    - id: 3
+        duration: 701.3815ms
+    - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 233
+        content_length: 289
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"match_type":"prefix","service":"tf-testaccdatadogrumteamownership-local-1789551963","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"Mobile"},"type":"teams_ownership_mappings"}}
+            {"data":{"attributes":{"application_id":"00000000-0000-0000-0000-000000000000","match_type":"prefix","service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Mobile"},"type":"teams_ownership_mappings"}}
         form: {}
         headers:
             Accept:
@@ -139,26 +66,98 @@ interactions:
         trailer: {}
         content_length: 408
         uncompressed: false
-        body: '{"data":{"id":"730584","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-09-16T09:46:07.112153Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1789551963","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"Mobile"}}}'
+        body: '{"data":{"id":"761050","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:17.994184Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Mobile"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 252.267833ms
-    - id: 4
+        duration: 287.964125ms
+    - id: 2
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 228
+        content_length: 135
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"application_id":"a112f662-468d-4f2c-acd3-e35b0da6bea8","match_type":"exact","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"/checkout"},"type":"teams_ownership_mappings"}}
+            {"data":{"attributes":{"name":"tf-testaccdatadogrumteamownership-local-1791381313","type":"browser"},"type":"rum_application_create"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/applications
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 968
+        uncompressed: false
+        body: '{"data":{"id":"36674f50-2b08-449d-bde4-e866ddf86040","type":"rum_application","attributes":{"api_key_id":1451251,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","client_token":"pub767d8e1371b959bcba5b308a06b90b45","created_at":1791381318112,"created_by_handle":"felipe.arrudabrito@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"external_feeds":[],"is_active":false,"name":"tf-testaccdatadogrumteamownership-local-1791381313","ootb_metrics_installed":false,"org_id":2,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1791381318112},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1791381318112}},"short_name":"tf_testaccdatadogrumteamownershi_4","tags":[],"type":"browser","updated_at":1791381318112,"updated_by_handle":"felipe.arrudabrito@datadoghq.com"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 1.0513485s
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 238
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"application_id":"00000000-0000-0000-0000-000000000000","match_type":"exact","service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Global"},"type":"teams_ownership_mappings"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 357
+        uncompressed: false
+        body: '{"data":{"id":"761051","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:18.002255Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Global"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 351.290625ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 241
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","match_type":"exact","service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout"},"type":"teams_ownership_mappings"}}
         form: {}
         headers:
             Accept:
@@ -175,13 +174,13 @@ interactions:
         trailer: {}
         content_length: 360
         uncompressed: false
-        body: '{"data":{"id":"730586","type":"teams_ownership_mappings","attributes":{"application_id":"a112f662-468d-4f2c-acd3-e35b0da6bea8","created_at":"2026-09-16T09:46:07.133744Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"/checkout"}}}'
+        body: '{"data":{"id":"761052","type":"teams_ownership_mappings","attributes":{"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","created_at":"2026-10-07T13:55:18.363321Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 253.638833ms
+        duration: 328.9925ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -198,7 +197,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730586
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761052
         method: GET
       response:
         proto: HTTP/2.0
@@ -208,13 +207,13 @@ interactions:
         trailer: {}
         content_length: 360
         uncompressed: false
-        body: '{"data":{"id":"730586","type":"teams_ownership_mappings","attributes":{"application_id":"a112f662-468d-4f2c-acd3-e35b0da6bea8","created_at":"2026-09-16T09:46:07.133744Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"/checkout"}}}'
+        body: '{"data":{"id":"761052","type":"teams_ownership_mappings","attributes":{"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","created_at":"2026-10-07T13:55:18.363321Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 131.485875ms
+        duration: 107.841166ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -231,7 +230,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/team/643ac9e7-57bc-4756-bb79-2c14be78ed49
+        url: https://api.datadoghq.com/api/v2/rum/applications/36674f50-2b08-449d-bde4-e866ddf86040
         method: GET
       response:
         proto: HTTP/2.0
@@ -239,15 +238,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 712
+        content_length: 968
         uncompressed: false
-        body: '{"data":{"id":"643ac9e7-57bc-4756-bb79-2c14be78ed49","type":"team","attributes":{"created_at":"2026-09-16T09:46:06.112989+00:00","description":"Terraform RUM ownership acceptance test.","handle":"tf-testaccdatadogrumteamownership-local-1789551963","is_managed":false,"link_count":0,"modified_at":"2026-09-16T09:46:06.112996+00:00","name":"tf-testaccdatadogrumteamownership-local-1789551963","summary":"Terraform RUM ownership acceptance test.","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/643ac9e7-57bc-4756-bb79-2c14be78ed49/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/643ac9e7-57bc-4756-bb79-2c14be78ed49/permission-settings"}}}}}'
+        body: '{"data":{"id":"36674f50-2b08-449d-bde4-e866ddf86040","type":"rum_application","attributes":{"api_key_id":1451251,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","client_token":"pub767d8e1371b959bcba5b308a06b90b45","created_at":1791381318112,"created_by_handle":"felipe.arrudabrito@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"external_feeds":[],"is_active":false,"name":"tf-testaccdatadogrumteamownership-local-1791381313","ootb_metrics_installed":false,"org_id":2,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1791381318112},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1791381318112}},"short_name":"tf_testaccdatadogrumteamownershi_4","tags":[],"type":"browser","updated_at":1791381318112,"updated_by_handle":"felipe.arrudabrito@datadoghq.com"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 154.784ms
+        duration: 391.23525ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -264,7 +263,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/a112f662-468d-4f2c-acd3-e35b0da6bea8
+        url: https://api.datadoghq.com/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c
         method: GET
       response:
         proto: HTTP/2.0
@@ -272,15 +271,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 948
+        content_length: 747
         uncompressed: false
-        body: '{"data":{"id":"a112f662-468d-4f2c-acd3-e35b0da6bea8","type":"rum_application","attributes":{"api_key_id":1301417,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"a112f662-468d-4f2c-acd3-e35b0da6bea8","client_token":"pub7c118690552594a71484f547e246bccf","created_at":1789551965830,"created_by_handle":"felipe.arrudabrito@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"is_active":false,"name":"tf-testaccdatadogrumteamownership-local-1789551963","ootb_metrics_installed":false,"org_id":2,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1789551965830},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1789551965830}},"short_name":"tf_testaccdatadogrumteamownershi_3","tags":[],"type":"browser","updated_at":1789551965830,"updated_by_handle":"felipe.arrudabrito@datadoghq.com"}}}'
+        body: '{"data":{"id":"ce369556-0f59-443d-9e9c-4f4282dd882c","type":"team","attributes":{"created_at":"2026-10-07T13:55:17.840937+00:00","description":"Terraform RUM ownership acceptance test.","handle":"tf-testaccdatadogrumteamownership-local-1791381313","is_managed":false,"link_count":0,"modified_at":"2026-10-07T13:55:17.840937+00:00","name":"tf-testaccdatadogrumteamownership-local-1791381313","provisioned_by":"teams_terraform","summary":"Terraform RUM ownership acceptance test.","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/permission-settings"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 171.046417ms
+        duration: 391.2465ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -297,7 +296,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730585
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761052
         method: GET
       response:
         proto: HTTP/2.0
@@ -305,15 +304,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 355
+        content_length: 360
         uncompressed: false
-        body: '{"data":{"id":"730585","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-09-16T09:46:07.1192Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"Global"}}}'
+        body: '{"data":{"id":"761052","type":"teams_ownership_mappings","attributes":{"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","created_at":"2026-10-07T13:55:18.363321Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 152.042042ms
+        duration: 737.406167ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -330,7 +329,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730584
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761050
         method: GET
       response:
         proto: HTTP/2.0
@@ -340,13 +339,13 @@ interactions:
         trailer: {}
         content_length: 408
         uncompressed: false
-        body: '{"data":{"id":"730584","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-09-16T09:46:07.112153Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1789551963","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"Mobile"}}}'
+        body: '{"data":{"id":"761050","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:17.994184Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Mobile"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 157.211625ms
+        duration: 737.962375ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -363,7 +362,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730586
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761051
         method: GET
       response:
         proto: HTTP/2.0
@@ -371,15 +370,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 360
+        content_length: 357
         uncompressed: false
-        body: '{"data":{"id":"730586","type":"teams_ownership_mappings","attributes":{"application_id":"a112f662-468d-4f2c-acd3-e35b0da6bea8","created_at":"2026-09-16T09:46:07.133744Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"/checkout"}}}'
+        body: '{"data":{"id":"761051","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:18.002255Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Global"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 141.300959ms
+        duration: 738.335917ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -396,7 +395,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730586
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761052
         method: GET
       response:
         proto: HTTP/2.0
@@ -406,13 +405,13 @@ interactions:
         trailer: {}
         content_length: 360
         uncompressed: false
-        body: '{"data":{"id":"730586","type":"teams_ownership_mappings","attributes":{"application_id":"a112f662-468d-4f2c-acd3-e35b0da6bea8","created_at":"2026-09-16T09:46:07.133744Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"/checkout"}}}'
+        body: '{"data":{"id":"761052","type":"teams_ownership_mappings","attributes":{"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","created_at":"2026-10-07T13:55:18.363321Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 117.65325ms
+        duration: 607.776709ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -429,7 +428,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/team/643ac9e7-57bc-4756-bb79-2c14be78ed49
+        url: https://api.datadoghq.com/api/v2/rum/applications/36674f50-2b08-449d-bde4-e866ddf86040
         method: GET
       response:
         proto: HTTP/2.0
@@ -437,15 +436,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 712
+        content_length: 968
         uncompressed: false
-        body: '{"data":{"id":"643ac9e7-57bc-4756-bb79-2c14be78ed49","type":"team","attributes":{"created_at":"2026-09-16T09:46:06.112989+00:00","description":"Terraform RUM ownership acceptance test.","handle":"tf-testaccdatadogrumteamownership-local-1789551963","is_managed":false,"link_count":0,"modified_at":"2026-09-16T09:46:06.112996+00:00","name":"tf-testaccdatadogrumteamownership-local-1789551963","summary":"Terraform RUM ownership acceptance test.","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/643ac9e7-57bc-4756-bb79-2c14be78ed49/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/643ac9e7-57bc-4756-bb79-2c14be78ed49/permission-settings"}}}}}'
+        body: '{"data":{"id":"36674f50-2b08-449d-bde4-e866ddf86040","type":"rum_application","attributes":{"api_key_id":1451251,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","client_token":"pub767d8e1371b959bcba5b308a06b90b45","created_at":1791381318112,"created_by_handle":"felipe.arrudabrito@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"external_feeds":[],"is_active":false,"name":"tf-testaccdatadogrumteamownership-local-1791381313","ootb_metrics_installed":false,"org_id":2,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1791381318112},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1791381318112}},"short_name":"tf_testaccdatadogrumteamownershi_4","tags":[],"type":"browser","updated_at":1791381318112,"updated_by_handle":"felipe.arrudabrito@datadoghq.com"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 158.238459ms
+        duration: 272.716875ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -462,7 +461,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/a112f662-468d-4f2c-acd3-e35b0da6bea8
+        url: https://api.datadoghq.com/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c
         method: GET
       response:
         proto: HTTP/2.0
@@ -470,15 +469,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 948
+        content_length: 747
         uncompressed: false
-        body: '{"data":{"id":"a112f662-468d-4f2c-acd3-e35b0da6bea8","type":"rum_application","attributes":{"api_key_id":1301417,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"a112f662-468d-4f2c-acd3-e35b0da6bea8","client_token":"pub7c118690552594a71484f547e246bccf","created_at":1789551965830,"created_by_handle":"felipe.arrudabrito@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"is_active":false,"name":"tf-testaccdatadogrumteamownership-local-1789551963","ootb_metrics_installed":false,"org_id":2,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1789551965830},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1789551965830}},"short_name":"tf_testaccdatadogrumteamownershi_3","tags":[],"type":"browser","updated_at":1789551965830,"updated_by_handle":"felipe.arrudabrito@datadoghq.com"}}}'
+        body: '{"data":{"id":"ce369556-0f59-443d-9e9c-4f4282dd882c","type":"team","attributes":{"created_at":"2026-10-07T13:55:17.840937+00:00","description":"Terraform RUM ownership acceptance test.","handle":"tf-testaccdatadogrumteamownership-local-1791381313","is_managed":false,"link_count":0,"modified_at":"2026-10-07T13:55:17.840937+00:00","name":"tf-testaccdatadogrumteamownership-local-1791381313","provisioned_by":"teams_terraform","summary":"Terraform RUM ownership acceptance test.","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/permission-settings"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 165.29325ms
+        duration: 272.715125ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -495,7 +494,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730586
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761051
         method: GET
       response:
         proto: HTTP/2.0
@@ -503,15 +502,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 360
+        content_length: 357
         uncompressed: false
-        body: '{"data":{"id":"730586","type":"teams_ownership_mappings","attributes":{"application_id":"a112f662-468d-4f2c-acd3-e35b0da6bea8","created_at":"2026-09-16T09:46:07.133744Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"/checkout"}}}'
+        body: '{"data":{"id":"761051","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:18.002255Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Global"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 185.511667ms
+        duration: 203.336583ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -528,7 +527,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730584
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761050
         method: GET
       response:
         proto: HTTP/2.0
@@ -538,13 +537,13 @@ interactions:
         trailer: {}
         content_length: 408
         uncompressed: false
-        body: '{"data":{"id":"730584","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-09-16T09:46:07.112153Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1789551963","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"Mobile"}}}'
+        body: '{"data":{"id":"761050","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:17.994184Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Mobile"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 191.404041ms
+        duration: 203.457375ms
     - id: 16
       request:
         proto: HTTP/1.1
@@ -561,7 +560,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730585
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761052
         method: GET
       response:
         proto: HTTP/2.0
@@ -569,15 +568,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 355
+        content_length: 360
         uncompressed: false
-        body: '{"data":{"id":"730585","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-09-16T09:46:07.1192Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"Global"}}}'
+        body: '{"data":{"id":"761052","type":"teams_ownership_mappings","attributes":{"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","created_at":"2026-10-07T13:55:18.363321Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 191.415708ms
+        duration: 203.279958ms
     - id: 17
       request:
         proto: HTTP/1.1
@@ -594,7 +593,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730586
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761052
         method: DELETE
       response:
         proto: HTTP/2.0
@@ -608,20 +607,20 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 257.590542ms
+        duration: 431.011875ms
     - id: 18
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 230
+        content_length: 243
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"application_id":"a112f662-468d-4f2c-acd3-e35b0da6bea8","match_type":"prefix","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"/checkout/"},"type":"teams_ownership_mappings"}}
+            {"data":{"attributes":{"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","match_type":"prefix","service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout/"},"type":"teams_ownership_mappings"}}
         form: {}
         headers:
             Accept:
@@ -638,13 +637,13 @@ interactions:
         trailer: {}
         content_length: 362
         uncompressed: false
-        body: '{"data":{"id":"730587","type":"teams_ownership_mappings","attributes":{"application_id":"a112f662-468d-4f2c-acd3-e35b0da6bea8","created_at":"2026-09-16T09:46:11.443555Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"/checkout/"}}}'
+        body: '{"data":{"id":"761053","type":"teams_ownership_mappings","attributes":{"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","created_at":"2026-10-07T13:55:24.015716Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout/"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 236.379167ms
+        duration: 994.228083ms
     - id: 19
       request:
         proto: HTTP/1.1
@@ -661,7 +660,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730587
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761053
         method: GET
       response:
         proto: HTTP/2.0
@@ -671,13 +670,13 @@ interactions:
         trailer: {}
         content_length: 362
         uncompressed: false
-        body: '{"data":{"id":"730587","type":"teams_ownership_mappings","attributes":{"application_id":"a112f662-468d-4f2c-acd3-e35b0da6bea8","created_at":"2026-09-16T09:46:11.443555Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"/checkout/"}}}'
+        body: '{"data":{"id":"761053","type":"teams_ownership_mappings","attributes":{"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","created_at":"2026-10-07T13:55:24.015716Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout/"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 129.834041ms
+        duration: 278.699583ms
     - id: 20
       request:
         proto: HTTP/1.1
@@ -694,7 +693,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/team/643ac9e7-57bc-4756-bb79-2c14be78ed49
+        url: https://api.datadoghq.com/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c
         method: GET
       response:
         proto: HTTP/2.0
@@ -702,15 +701,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 712
+        content_length: 747
         uncompressed: false
-        body: '{"data":{"id":"643ac9e7-57bc-4756-bb79-2c14be78ed49","type":"team","attributes":{"created_at":"2026-09-16T09:46:06.112989+00:00","description":"Terraform RUM ownership acceptance test.","handle":"tf-testaccdatadogrumteamownership-local-1789551963","is_managed":false,"link_count":0,"modified_at":"2026-09-16T09:46:06.112996+00:00","name":"tf-testaccdatadogrumteamownership-local-1789551963","summary":"Terraform RUM ownership acceptance test.","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/643ac9e7-57bc-4756-bb79-2c14be78ed49/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/643ac9e7-57bc-4756-bb79-2c14be78ed49/permission-settings"}}}}}'
+        body: '{"data":{"id":"ce369556-0f59-443d-9e9c-4f4282dd882c","type":"team","attributes":{"created_at":"2026-10-07T13:55:17.840937+00:00","description":"Terraform RUM ownership acceptance test.","handle":"tf-testaccdatadogrumteamownership-local-1791381313","is_managed":false,"link_count":0,"modified_at":"2026-10-07T13:55:17.840937+00:00","name":"tf-testaccdatadogrumteamownership-local-1791381313","provisioned_by":"teams_terraform","summary":"Terraform RUM ownership acceptance test.","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/permission-settings"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 229.526833ms
+        duration: 158.776417ms
     - id: 21
       request:
         proto: HTTP/1.1
@@ -727,7 +726,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/a112f662-468d-4f2c-acd3-e35b0da6bea8
+        url: https://api.datadoghq.com/api/v2/rum/applications/36674f50-2b08-449d-bde4-e866ddf86040
         method: GET
       response:
         proto: HTTP/2.0
@@ -735,15 +734,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 948
+        content_length: 968
         uncompressed: false
-        body: '{"data":{"id":"a112f662-468d-4f2c-acd3-e35b0da6bea8","type":"rum_application","attributes":{"api_key_id":1301417,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"a112f662-468d-4f2c-acd3-e35b0da6bea8","client_token":"pub7c118690552594a71484f547e246bccf","created_at":1789551965830,"created_by_handle":"felipe.arrudabrito@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"is_active":false,"name":"tf-testaccdatadogrumteamownership-local-1789551963","ootb_metrics_installed":false,"org_id":2,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1789551965830},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1789551965830}},"short_name":"tf_testaccdatadogrumteamownershi_3","tags":[],"type":"browser","updated_at":1789551965830,"updated_by_handle":"felipe.arrudabrito@datadoghq.com"}}}'
+        body: '{"data":{"id":"36674f50-2b08-449d-bde4-e866ddf86040","type":"rum_application","attributes":{"api_key_id":1451251,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","client_token":"pub767d8e1371b959bcba5b308a06b90b45","created_at":1791381318112,"created_by_handle":"felipe.arrudabrito@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"external_feeds":[],"is_active":false,"name":"tf-testaccdatadogrumteamownership-local-1791381313","ootb_metrics_installed":false,"org_id":2,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1791381318112},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1791381318112}},"short_name":"tf_testaccdatadogrumteamownershi_4","tags":[],"type":"browser","updated_at":1791381318112,"updated_by_handle":"felipe.arrudabrito@datadoghq.com"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 261.183167ms
+        duration: 189.717208ms
     - id: 22
       request:
         proto: HTTP/1.1
@@ -760,7 +759,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730584
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761050
         method: GET
       response:
         proto: HTTP/2.0
@@ -770,13 +769,13 @@ interactions:
         trailer: {}
         content_length: 408
         uncompressed: false
-        body: '{"data":{"id":"730584","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-09-16T09:46:07.112153Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1789551963","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"Mobile"}}}'
+        body: '{"data":{"id":"761050","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:17.994184Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Mobile"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 149.041417ms
+        duration: 222.052083ms
     - id: 23
       request:
         proto: HTTP/1.1
@@ -793,7 +792,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730587
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761053
         method: GET
       response:
         proto: HTTP/2.0
@@ -803,13 +802,13 @@ interactions:
         trailer: {}
         content_length: 362
         uncompressed: false
-        body: '{"data":{"id":"730587","type":"teams_ownership_mappings","attributes":{"application_id":"a112f662-468d-4f2c-acd3-e35b0da6bea8","created_at":"2026-09-16T09:46:11.443555Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"/checkout/"}}}'
+        body: '{"data":{"id":"761053","type":"teams_ownership_mappings","attributes":{"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","created_at":"2026-10-07T13:55:24.015716Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout/"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 118.03375ms
+        duration: 189.45425ms
     - id: 24
       request:
         proto: HTTP/1.1
@@ -826,7 +825,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730585
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761051
         method: GET
       response:
         proto: HTTP/2.0
@@ -834,15 +833,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 355
+        content_length: 357
         uncompressed: false
-        body: '{"data":{"id":"730585","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-09-16T09:46:07.1192Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"Global"}}}'
+        body: '{"data":{"id":"761051","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:18.002255Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Global"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 152.379625ms
+        duration: 222.072375ms
     - id: 25
       request:
         proto: HTTP/1.1
@@ -858,22 +857,24 @@ interactions:
         form: {}
         headers:
             Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730587
-        method: DELETE
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/applications/36674f50-2b08-449d-bde4-e866ddf86040
+        method: GET
       response:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 0
+        content_length: 968
         uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 248.119666ms
+        body: '{"data":{"id":"36674f50-2b08-449d-bde4-e866ddf86040","type":"rum_application","attributes":{"api_key_id":1451251,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","client_token":"pub767d8e1371b959bcba5b308a06b90b45","created_at":1791381318112,"created_by_handle":"felipe.arrudabrito@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"external_feeds":[],"is_active":false,"name":"tf-testaccdatadogrumteamownership-local-1791381313","ootb_metrics_installed":false,"org_id":2,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1791381318112},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1791381318112}},"short_name":"tf_testaccdatadogrumteamownershi_4","tags":[],"type":"browser","updated_at":1791381318112,"updated_by_handle":"felipe.arrudabrito@datadoghq.com"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 698.404167ms
     - id: 26
       request:
         proto: HTTP/1.1
@@ -890,7 +891,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/team/643ac9e7-57bc-4756-bb79-2c14be78ed49
+        url: https://api.datadoghq.com/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c
         method: GET
       response:
         proto: HTTP/2.0
@@ -898,15 +899,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 712
+        content_length: 747
         uncompressed: false
-        body: '{"data":{"id":"643ac9e7-57bc-4756-bb79-2c14be78ed49","type":"team","attributes":{"created_at":"2026-09-16T09:46:06.112989+00:00","description":"Terraform RUM ownership acceptance test.","handle":"tf-testaccdatadogrumteamownership-local-1789551963","is_managed":false,"link_count":0,"modified_at":"2026-09-16T09:46:06.112996+00:00","name":"tf-testaccdatadogrumteamownership-local-1789551963","summary":"Terraform RUM ownership acceptance test.","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/643ac9e7-57bc-4756-bb79-2c14be78ed49/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/643ac9e7-57bc-4756-bb79-2c14be78ed49/permission-settings"}}}}}'
+        body: '{"data":{"id":"ce369556-0f59-443d-9e9c-4f4282dd882c","type":"team","attributes":{"created_at":"2026-10-07T13:55:17.840937+00:00","description":"Terraform RUM ownership acceptance test.","handle":"tf-testaccdatadogrumteamownership-local-1791381313","is_managed":false,"link_count":0,"modified_at":"2026-10-07T13:55:17.840937+00:00","name":"tf-testaccdatadogrumteamownership-local-1791381313","provisioned_by":"teams_terraform","summary":"Terraform RUM ownership acceptance test.","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/permission-settings"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 208.85325ms
+        duration: 698.398125ms
     - id: 27
       request:
         proto: HTTP/1.1
@@ -923,7 +924,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/a112f662-468d-4f2c-acd3-e35b0da6bea8
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761050
         method: GET
       response:
         proto: HTTP/2.0
@@ -931,15 +932,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 948
+        content_length: 408
         uncompressed: false
-        body: '{"data":{"id":"a112f662-468d-4f2c-acd3-e35b0da6bea8","type":"rum_application","attributes":{"api_key_id":1301417,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"a112f662-468d-4f2c-acd3-e35b0da6bea8","client_token":"pub7c118690552594a71484f547e246bccf","created_at":1789551965830,"created_by_handle":"felipe.arrudabrito@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"is_active":false,"name":"tf-testaccdatadogrumteamownership-local-1789551963","ootb_metrics_installed":false,"org_id":2,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1789551965830},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1789551965830}},"short_name":"tf_testaccdatadogrumteamownershi_3","tags":[],"type":"browser","updated_at":1789551965830,"updated_by_handle":"felipe.arrudabrito@datadoghq.com"}}}'
+        body: '{"data":{"id":"761050","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:17.994184Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Mobile"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 208.862167ms
+        duration: 675.760708ms
     - id: 28
       request:
         proto: HTTP/1.1
@@ -956,7 +957,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730587
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761053
         method: GET
       response:
         proto: HTTP/2.0
@@ -964,15 +965,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 49
+        content_length: 362
         uncompressed: false
-        body: '{"errors":[{"status":"404","title":"Not Found"}]}'
+        body: '{"data":{"id":"761053","type":"teams_ownership_mappings","attributes":{"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","created_at":"2026-10-07T13:55:24.015716Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout/"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
-        status: 404 Not Found
-        code: 404
-        duration: 154.123833ms
+        status: 200 OK
+        code: 200
+        duration: 675.7555ms
     - id: 29
       request:
         proto: HTTP/1.1
@@ -989,7 +990,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730585
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761051
         method: GET
       response:
         proto: HTTP/2.0
@@ -997,15 +998,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 355
+        content_length: 357
         uncompressed: false
-        body: '{"data":{"id":"730585","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-09-16T09:46:07.1192Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"Global"}}}'
+        body: '{"data":{"id":"761051","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:18.002255Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Global"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 156.007958ms
+        duration: 691.657791ms
     - id: 30
       request:
         proto: HTTP/1.1
@@ -1021,41 +1022,8 @@ interactions:
         form: {}
         headers:
             Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730584
-        method: GET
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 408
-        uncompressed: false
-        body: '{"data":{"id":"730584","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-09-16T09:46:07.112153Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1789551963","team_handle":"tf-testaccdatadogrumteamownership-local-1789551963","view_name":"Mobile"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 186.760083ms
-    - id: 31
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730587
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761053
         method: DELETE
       response:
         proto: HTTP/2.0
@@ -1063,15 +1031,49 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 49
+        content_length: 0
         uncompressed: false
-        body: '{"errors":[{"status":"404","title":"Not Found"}]}'
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 649.300708ms
+    - id: 31
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 242
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","match_type":"exact","service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout/"},"type":"teams_ownership_mappings"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 361
+        uncompressed: false
+        body: '{"data":{"id":"761054","type":"teams_ownership_mappings","attributes":{"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","created_at":"2026-10-07T13:55:28.970209Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout/"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
-        status: 404 Not Found
-        code: 404
-        duration: 125.190291ms
+        status: 201 Created
+        code: 201
+        duration: 468.261875ms
     - id: 32
       request:
         proto: HTTP/1.1
@@ -1087,22 +1089,24 @@ interactions:
         form: {}
         headers:
             Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730585
-        method: DELETE
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c
+        method: GET
       response:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 0
+        content_length: 747
         uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 250.019209ms
+        body: '{"data":{"id":"ce369556-0f59-443d-9e9c-4f4282dd882c","type":"team","attributes":{"created_at":"2026-10-07T13:55:17.840937+00:00","description":"Terraform RUM ownership acceptance test.","handle":"tf-testaccdatadogrumteamownership-local-1791381313","is_managed":false,"link_count":0,"modified_at":"2026-10-07T13:55:17.840937+00:00","name":"tf-testaccdatadogrumteamownership-local-1791381313","provisioned_by":"teams_terraform","summary":"Terraform RUM ownership acceptance test.","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 136.987166ms
     - id: 33
       request:
         proto: HTTP/1.1
@@ -1118,22 +1122,24 @@ interactions:
         form: {}
         headers:
             Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730584
-        method: DELETE
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/applications/36674f50-2b08-449d-bde4-e866ddf86040
+        method: GET
       response:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 0
+        content_length: 968
         uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 250.00925ms
+        body: '{"data":{"id":"36674f50-2b08-449d-bde4-e866ddf86040","type":"rum_application","attributes":{"api_key_id":1451251,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","client_token":"pub767d8e1371b959bcba5b308a06b90b45","created_at":1791381318112,"created_by_handle":"felipe.arrudabrito@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"external_feeds":[],"is_active":false,"name":"tf-testaccdatadogrumteamownership-local-1791381313","ootb_metrics_installed":false,"org_id":2,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1791381318112},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1791381318112}},"short_name":"tf_testaccdatadogrumteamownershi_4","tags":[],"type":"browser","updated_at":1791381318112,"updated_by_handle":"felipe.arrudabrito@datadoghq.com"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 176.119625ms
     - id: 34
       request:
         proto: HTTP/1.1
@@ -1149,22 +1155,24 @@ interactions:
         form: {}
         headers:
             Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/rum/applications/a112f662-468d-4f2c-acd3-e35b0da6bea8
-        method: DELETE
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761051
+        method: GET
       response:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 0
+        content_length: 357
         uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 519.417042ms
+        body: '{"data":{"id":"761051","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:18.002255Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Global"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 193.350416ms
     - id: 35
       request:
         proto: HTTP/1.1
@@ -1180,22 +1188,24 @@ interactions:
         form: {}
         headers:
             Accept:
-                - '*/*'
-        url: https://api.datadoghq.com/api/v2/team/643ac9e7-57bc-4756-bb79-2c14be78ed49
-        method: DELETE
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761050
+        method: GET
       response:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 0
+        content_length: 408
         uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 388.45375ms
+        body: '{"data":{"id":"761050","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:17.994184Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Mobile"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 193.338708ms
     - id: 36
       request:
         proto: HTTP/1.1
@@ -1212,7 +1222,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730587
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761054
         method: GET
       response:
         proto: HTTP/2.0
@@ -1220,15 +1230,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 49
+        content_length: 361
         uncompressed: false
-        body: '{"errors":[{"status":"404","title":"Not Found"}]}'
+        body: '{"data":{"id":"761054","type":"teams_ownership_mappings","attributes":{"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","created_at":"2026-10-07T13:55:28.970209Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout/"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
-        status: 404 Not Found
-        code: 404
-        duration: 113.079334ms
+        status: 200 OK
+        code: 200
+        duration: 153.751625ms
     - id: 37
       request:
         proto: HTTP/1.1
@@ -1245,7 +1255,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730585
+        url: https://api.datadoghq.com/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c
         method: GET
       response:
         proto: HTTP/2.0
@@ -1253,15 +1263,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 49
+        content_length: 747
         uncompressed: false
-        body: '{"errors":[{"status":"404","title":"Not Found"}]}'
+        body: '{"data":{"id":"ce369556-0f59-443d-9e9c-4f4282dd882c","type":"team","attributes":{"created_at":"2026-10-07T13:55:17.840937+00:00","description":"Terraform RUM ownership acceptance test.","handle":"tf-testaccdatadogrumteamownership-local-1791381313","is_managed":false,"link_count":0,"modified_at":"2026-10-07T13:55:17.840937+00:00","name":"tf-testaccdatadogrumteamownership-local-1791381313","provisioned_by":"teams_terraform","summary":"Terraform RUM ownership acceptance test.","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/permission-settings"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
-        status: 404 Not Found
-        code: 404
-        duration: 139.262917ms
+        status: 200 OK
+        code: 200
+        duration: 392.037125ms
     - id: 38
       request:
         proto: HTTP/1.1
@@ -1278,7 +1288,1427 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/730584
+        url: https://api.datadoghq.com/api/v2/rum/applications/36674f50-2b08-449d-bde4-e866ddf86040
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 968
+        uncompressed: false
+        body: '{"data":{"id":"36674f50-2b08-449d-bde4-e866ddf86040","type":"rum_application","attributes":{"api_key_id":1451251,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","client_token":"pub767d8e1371b959bcba5b308a06b90b45","created_at":1791381318112,"created_by_handle":"felipe.arrudabrito@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"external_feeds":[],"is_active":false,"name":"tf-testaccdatadogrumteamownership-local-1791381313","ootb_metrics_installed":false,"org_id":2,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1791381318112},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1791381318112}},"short_name":"tf_testaccdatadogrumteamownershi_4","tags":[],"type":"browser","updated_at":1791381318112,"updated_by_handle":"felipe.arrudabrito@datadoghq.com"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 399.947417ms
+    - id: 39
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761054
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 361
+        uncompressed: false
+        body: '{"data":{"id":"761054","type":"teams_ownership_mappings","attributes":{"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","created_at":"2026-10-07T13:55:28.970209Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout/"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 132.254375ms
+    - id: 40
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761050
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 408
+        uncompressed: false
+        body: '{"data":{"id":"761050","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:17.994184Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Mobile"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 139.027833ms
+    - id: 41
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761051
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 357
+        uncompressed: false
+        body: '{"data":{"id":"761051","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:18.002255Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Global"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 139.03ms
+    - id: 42
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761054
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 382.463541ms
+    - id: 43
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 292
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","match_type":"exact","service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout/"},"type":"teams_ownership_mappings"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 411
+        uncompressed: false
+        body: '{"data":{"id":"761055","type":"teams_ownership_mappings","attributes":{"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","created_at":"2026-10-07T13:55:31.918466Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout/"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 339.140167ms
+    - id: 44
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 747
+        uncompressed: false
+        body: '{"data":{"id":"ce369556-0f59-443d-9e9c-4f4282dd882c","type":"team","attributes":{"created_at":"2026-10-07T13:55:17.840937+00:00","description":"Terraform RUM ownership acceptance test.","handle":"tf-testaccdatadogrumteamownership-local-1791381313","is_managed":false,"link_count":0,"modified_at":"2026-10-07T13:55:17.840937+00:00","name":"tf-testaccdatadogrumteamownership-local-1791381313","provisioned_by":"teams_terraform","summary":"Terraform RUM ownership acceptance test.","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 212.295459ms
+    - id: 45
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/applications/36674f50-2b08-449d-bde4-e866ddf86040
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 968
+        uncompressed: false
+        body: '{"data":{"id":"36674f50-2b08-449d-bde4-e866ddf86040","type":"rum_application","attributes":{"api_key_id":1451251,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","client_token":"pub767d8e1371b959bcba5b308a06b90b45","created_at":1791381318112,"created_by_handle":"felipe.arrudabrito@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"external_feeds":[],"is_active":false,"name":"tf-testaccdatadogrumteamownership-local-1791381313","ootb_metrics_installed":false,"org_id":2,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1791381318112},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1791381318112}},"short_name":"tf_testaccdatadogrumteamownershi_4","tags":[],"type":"browser","updated_at":1791381318112,"updated_by_handle":"felipe.arrudabrito@datadoghq.com"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 212.295083ms
+    - id: 46
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761055
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 411
+        uncompressed: false
+        body: '{"data":{"id":"761055","type":"teams_ownership_mappings","attributes":{"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","created_at":"2026-10-07T13:55:31.918466Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout/"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 163.529625ms
+    - id: 47
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761050
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 408
+        uncompressed: false
+        body: '{"data":{"id":"761050","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:17.994184Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Mobile"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 163.535208ms
+    - id: 48
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761051
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 357
+        uncompressed: false
+        body: '{"data":{"id":"761051","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:18.002255Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Global"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 163.535041ms
+    - id: 49
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 747
+        uncompressed: false
+        body: '{"data":{"id":"ce369556-0f59-443d-9e9c-4f4282dd882c","type":"team","attributes":{"created_at":"2026-10-07T13:55:17.840937+00:00","description":"Terraform RUM ownership acceptance test.","handle":"tf-testaccdatadogrumteamownership-local-1791381313","is_managed":false,"link_count":0,"modified_at":"2026-10-07T13:55:17.840937+00:00","name":"tf-testaccdatadogrumteamownership-local-1791381313","provisioned_by":"teams_terraform","summary":"Terraform RUM ownership acceptance test.","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 425.078208ms
+    - id: 50
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/applications/36674f50-2b08-449d-bde4-e866ddf86040
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 968
+        uncompressed: false
+        body: '{"data":{"id":"36674f50-2b08-449d-bde4-e866ddf86040","type":"rum_application","attributes":{"api_key_id":1451251,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","client_token":"pub767d8e1371b959bcba5b308a06b90b45","created_at":1791381318112,"created_by_handle":"felipe.arrudabrito@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"external_feeds":[],"is_active":false,"name":"tf-testaccdatadogrumteamownership-local-1791381313","ootb_metrics_installed":false,"org_id":2,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1791381318112},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1791381318112}},"short_name":"tf_testaccdatadogrumteamownershi_4","tags":[],"type":"browser","updated_at":1791381318112,"updated_by_handle":"felipe.arrudabrito@datadoghq.com"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 460.788917ms
+    - id: 51
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761055
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 411
+        uncompressed: false
+        body: '{"data":{"id":"761055","type":"teams_ownership_mappings","attributes":{"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","created_at":"2026-10-07T13:55:31.918466Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout/"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 177.127542ms
+    - id: 52
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761051
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 357
+        uncompressed: false
+        body: '{"data":{"id":"761051","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:18.002255Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Global"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 177.100125ms
+    - id: 53
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761050
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 408
+        uncompressed: false
+        body: '{"data":{"id":"761050","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:17.994184Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Mobile"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 177.213459ms
+    - id: 54
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761055
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 494.43625ms
+    - id: 55
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 292
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"application_id":"00000000-0000-0000-0000-000000000000","match_type":"exact","service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout/"},"type":"teams_ownership_mappings"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 411
+        uncompressed: false
+        body: '{"data":{"id":"761056","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:35.067215Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout/"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 1.121877291s
+    - id: 56
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/applications/36674f50-2b08-449d-bde4-e866ddf86040
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 968
+        uncompressed: false
+        body: '{"data":{"id":"36674f50-2b08-449d-bde4-e866ddf86040","type":"rum_application","attributes":{"api_key_id":1451251,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","client_token":"pub767d8e1371b959bcba5b308a06b90b45","created_at":1791381318112,"created_by_handle":"felipe.arrudabrito@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"external_feeds":[],"is_active":false,"name":"tf-testaccdatadogrumteamownership-local-1791381313","ootb_metrics_installed":false,"org_id":2,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1791381318112},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1791381318112}},"short_name":"tf_testaccdatadogrumteamownershi_4","tags":[],"type":"browser","updated_at":1791381318112,"updated_by_handle":"felipe.arrudabrito@datadoghq.com"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 301.963583ms
+    - id: 57
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 747
+        uncompressed: false
+        body: '{"data":{"id":"ce369556-0f59-443d-9e9c-4f4282dd882c","type":"team","attributes":{"created_at":"2026-10-07T13:55:17.840937+00:00","description":"Terraform RUM ownership acceptance test.","handle":"tf-testaccdatadogrumteamownership-local-1791381313","is_managed":false,"link_count":0,"modified_at":"2026-10-07T13:55:17.840937+00:00","name":"tf-testaccdatadogrumteamownership-local-1791381313","provisioned_by":"teams_terraform","summary":"Terraform RUM ownership acceptance test.","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 301.960417ms
+    - id: 58
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761051
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 357
+        uncompressed: false
+        body: '{"data":{"id":"761051","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:18.002255Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Global"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 732.127625ms
+    - id: 59
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761050
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 408
+        uncompressed: false
+        body: '{"data":{"id":"761050","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:17.994184Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Mobile"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 732.162458ms
+    - id: 60
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761056
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 411
+        uncompressed: false
+        body: '{"data":{"id":"761056","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:35.067215Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout/"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 732.180708ms
+    - id: 61
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 747
+        uncompressed: false
+        body: '{"data":{"id":"ce369556-0f59-443d-9e9c-4f4282dd882c","type":"team","attributes":{"created_at":"2026-10-07T13:55:17.840937+00:00","description":"Terraform RUM ownership acceptance test.","handle":"tf-testaccdatadogrumteamownership-local-1791381313","is_managed":false,"link_count":0,"modified_at":"2026-10-07T13:55:17.840937+00:00","name":"tf-testaccdatadogrumteamownership-local-1791381313","provisioned_by":"teams_terraform","summary":"Terraform RUM ownership acceptance test.","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 646.467083ms
+    - id: 62
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/applications/36674f50-2b08-449d-bde4-e866ddf86040
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 968
+        uncompressed: false
+        body: '{"data":{"id":"36674f50-2b08-449d-bde4-e866ddf86040","type":"rum_application","attributes":{"api_key_id":1451251,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","client_token":"pub767d8e1371b959bcba5b308a06b90b45","created_at":1791381318112,"created_by_handle":"felipe.arrudabrito@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"external_feeds":[],"is_active":false,"name":"tf-testaccdatadogrumteamownership-local-1791381313","ootb_metrics_installed":false,"org_id":2,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1791381318112},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1791381318112}},"short_name":"tf_testaccdatadogrumteamownershi_4","tags":[],"type":"browser","updated_at":1791381318112,"updated_by_handle":"felipe.arrudabrito@datadoghq.com"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 646.46625ms
+    - id: 63
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761051
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 357
+        uncompressed: false
+        body: '{"data":{"id":"761051","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:18.002255Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Global"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 408.552375ms
+    - id: 64
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761056
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 411
+        uncompressed: false
+        body: '{"data":{"id":"761056","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:35.067215Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout/"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 408.694791ms
+    - id: 65
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761050
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 408
+        uncompressed: false
+        body: '{"data":{"id":"761050","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:17.994184Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Mobile"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 408.608625ms
+    - id: 66
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761056
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 316.419167ms
+    - id: 67
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 242
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"application_id":"00000000-0000-0000-0000-000000000000","match_type":"exact","service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout/"},"type":"teams_ownership_mappings"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 361
+        uncompressed: false
+        body: '{"data":{"id":"761058","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:39.916509Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout/"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 355.327709ms
+    - id: 68
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 747
+        uncompressed: false
+        body: '{"data":{"id":"ce369556-0f59-443d-9e9c-4f4282dd882c","type":"team","attributes":{"created_at":"2026-10-07T13:55:17.840937+00:00","description":"Terraform RUM ownership acceptance test.","handle":"tf-testaccdatadogrumteamownership-local-1791381313","is_managed":false,"link_count":0,"modified_at":"2026-10-07T13:55:17.840937+00:00","name":"tf-testaccdatadogrumteamownership-local-1791381313","provisioned_by":"teams_terraform","summary":"Terraform RUM ownership acceptance test.","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 156.213459ms
+    - id: 69
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/applications/36674f50-2b08-449d-bde4-e866ddf86040
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 968
+        uncompressed: false
+        body: '{"data":{"id":"36674f50-2b08-449d-bde4-e866ddf86040","type":"rum_application","attributes":{"api_key_id":1451251,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","client_token":"pub767d8e1371b959bcba5b308a06b90b45","created_at":1791381318112,"created_by_handle":"felipe.arrudabrito@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"external_feeds":[],"is_active":false,"name":"tf-testaccdatadogrumteamownership-local-1791381313","ootb_metrics_installed":false,"org_id":2,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1791381318112},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1791381318112}},"short_name":"tf_testaccdatadogrumteamownershi_4","tags":[],"type":"browser","updated_at":1791381318112,"updated_by_handle":"felipe.arrudabrito@datadoghq.com"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 174.766916ms
+    - id: 70
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761050
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 408
+        uncompressed: false
+        body: '{"data":{"id":"761050","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:17.994184Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Mobile"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 126.398666ms
+    - id: 71
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761058
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 361
+        uncompressed: false
+        body: '{"data":{"id":"761058","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:39.916509Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout/"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 148.226125ms
+    - id: 72
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761051
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 357
+        uncompressed: false
+        body: '{"data":{"id":"761051","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:18.002255Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Global"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 138.616542ms
+    - id: 73
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/applications/36674f50-2b08-449d-bde4-e866ddf86040
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 968
+        uncompressed: false
+        body: '{"data":{"id":"36674f50-2b08-449d-bde4-e866ddf86040","type":"rum_application","attributes":{"api_key_id":1451251,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","client_token":"pub767d8e1371b959bcba5b308a06b90b45","created_at":1791381318112,"created_by_handle":"felipe.arrudabrito@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"external_feeds":[],"is_active":false,"name":"tf-testaccdatadogrumteamownership-local-1791381313","ootb_metrics_installed":false,"org_id":2,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1791381318112},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1791381318112}},"short_name":"tf_testaccdatadogrumteamownershi_4","tags":[],"type":"browser","updated_at":1791381318112,"updated_by_handle":"felipe.arrudabrito@datadoghq.com"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 159.268333ms
+    - id: 74
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 747
+        uncompressed: false
+        body: '{"data":{"id":"ce369556-0f59-443d-9e9c-4f4282dd882c","type":"team","attributes":{"created_at":"2026-10-07T13:55:17.840937+00:00","description":"Terraform RUM ownership acceptance test.","handle":"tf-testaccdatadogrumteamownership-local-1791381313","is_managed":false,"link_count":0,"modified_at":"2026-10-07T13:55:17.840937+00:00","name":"tf-testaccdatadogrumteamownership-local-1791381313","provisioned_by":"teams_terraform","summary":"Terraform RUM ownership acceptance test.","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 159.270375ms
+    - id: 75
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761051
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 357
+        uncompressed: false
+        body: '{"data":{"id":"761051","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:18.002255Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Global"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 135.751584ms
+    - id: 76
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761058
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 361
+        uncompressed: false
+        body: '{"data":{"id":"761058","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:39.916509Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"/checkout/"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 139.035667ms
+    - id: 77
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761050
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 408
+        uncompressed: false
+        body: '{"data":{"id":"761050","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:17.994184Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Mobile"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 140.757209ms
+    - id: 78
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761058
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 349.636333ms
+    - id: 79
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 747
+        uncompressed: false
+        body: '{"data":{"id":"ce369556-0f59-443d-9e9c-4f4282dd882c","type":"team","attributes":{"created_at":"2026-10-07T13:55:17.840937+00:00","description":"Terraform RUM ownership acceptance test.","handle":"tf-testaccdatadogrumteamownership-local-1791381313","is_managed":false,"link_count":0,"modified_at":"2026-10-07T13:55:17.840937+00:00","name":"tf-testaccdatadogrumteamownership-local-1791381313","provisioned_by":"teams_terraform","summary":"Terraform RUM ownership acceptance test.","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 309.309542ms
+    - id: 80
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/applications/36674f50-2b08-449d-bde4-e866ddf86040
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 968
+        uncompressed: false
+        body: '{"data":{"id":"36674f50-2b08-449d-bde4-e866ddf86040","type":"rum_application","attributes":{"api_key_id":1451251,"apm_rum_flat_sampling_replay_enabled":true,"apm_rum_flat_sampling_replay_sample_rate":1,"application_id":"36674f50-2b08-449d-bde4-e866ddf86040","client_token":"pub767d8e1371b959bcba5b308a06b90b45","created_at":1791381318112,"created_by_handle":"felipe.arrudabrito@datadoghq.com","error_tracking_exclusion_filter_enabled":false,"external_feeds":[],"is_active":false,"name":"tf-testaccdatadogrumteamownership-local-1791381313","ootb_metrics_installed":false,"org_id":2,"product_analytics_replay_sample_rate":100,"product_scales":{"rum_event_processing_scale":{"state":"ALL","last_modified_at":1791381318112},"product_analytics_retention_scale":{"state":"NONE","last_modified_at":1791381318112}},"short_name":"tf_testaccdatadogrumteamownershi_4","tags":[],"type":"browser","updated_at":1791381318112,"updated_by_handle":"felipe.arrudabrito@datadoghq.com"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 309.325042ms
+    - id: 81
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761058
         method: GET
       response:
         proto: HTTP/2.0
@@ -1294,4 +2724,326 @@ interactions:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 120.601958ms
+        duration: 176.349292ms
+    - id: 82
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761051
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 357
+        uncompressed: false
+        body: '{"data":{"id":"761051","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:18.002255Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"exact","org_id":2,"service":"","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Global"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 176.438417ms
+    - id: 83
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761050
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 408
+        uncompressed: false
+        body: '{"data":{"id":"761050","type":"teams_ownership_mappings","attributes":{"application_id":"00000000-0000-0000-0000-000000000000","created_at":"2026-10-07T13:55:17.994184Z","created_by":"b6832da7-88b2-460e-bf2b-160aa81e803a","match_type":"prefix","org_id":2,"service":"tf-testaccdatadogrumteamownership-local-1791381313","team_handle":"tf-testaccdatadogrumteamownership-local-1791381313","view_name":"Mobile"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 176.319583ms
+    - id: 84
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761058
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 49
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Not Found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 160.88425ms
+    - id: 85
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/rum/applications/36674f50-2b08-449d-bde4-e866ddf86040
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 234.136042ms
+    - id: 86
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761051
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 425.404041ms
+    - id: 87
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761050
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 1.008341167s
+    - id: 88
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/team/ce369556-0f59-443d-9e9c-4f4282dd882c
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 733.2315ms
+    - id: 89
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761058
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 49
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Not Found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 614.734708ms
+    - id: 90
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761051
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 49
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Not Found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 150.908917ms
+    - id: 91
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/teams-ownership/mappings/761050
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 49
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Not Found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 216.147ms

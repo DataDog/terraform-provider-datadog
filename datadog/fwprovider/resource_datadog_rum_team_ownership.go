@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -58,25 +59,25 @@ func (r *datadogRumTeamOwnershipResource) Schema(_ context.Context, _ resource.S
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"application_id": schema.StringAttribute{
-				Description: "The ID of the RUM application this mapping applies to.\nFor browser applications, this is the real application UUID.\nFor mobile applications, this is the nil UUID `00000000-0000-0000-0000-000000000000` (wildcard), meaning the ownership applies across all applications.",
+				Description: "The RUM application UUID to match. Defaults to the nil UUID `00000000-0000-0000-0000-000000000000`, which matches all applications. Removing this field replaces the mapping with application wildcard scope.",
 				Optional:    true,
 				Computed:    true,
+				Default:     stringdefault.StaticString(uuid.Nil.String()),
 
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"match_type": schema.StringAttribute{
-				Description: "How the `view_name` is matched against RUM view names.",
+				Description: "How the `view_name` is matched against RUM view names. Defaults to `exact`. Removing this field replaces the mapping with exact matching.",
 				Optional:    true,
 				Computed:    true,
+				Default:     stringdefault.StaticString("exact"),
 				Validators: []validator.String{
 					stringvalidator.OneOf("exact", "prefix"),
 				},
 
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
@@ -85,12 +86,12 @@ func (r *datadogRumTeamOwnershipResource) Schema(_ context.Context, _ resource.S
 				Computed:    true,
 			},
 			"service": schema.StringAttribute{
-				Description: "The RUM application's service name. For browser applications, may be empty. For mobile applications, this is the service that scopes the ownership.",
+				Description: "The service to match. Defaults to an empty string, which matches all services. Removing this field replaces the mapping with service wildcard scope.",
 				Optional:    true,
 				Computed:    true,
+				Default:     stringdefault.StaticString(""),
 
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
@@ -120,7 +121,7 @@ func (r *datadogRumTeamOwnershipResource) ImportState(ctx context.Context, reque
 
 func (r *datadogRumTeamOwnershipResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
 	var state datadogRumTeamOwnershipResourceModel
-	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
+	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
 	}

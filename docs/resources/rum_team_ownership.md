@@ -33,11 +33,9 @@ resource "datadog_rum_team_ownership" "checkout" {
 
 ### Optional
 
-- `application_id` (String) The ID of the RUM application this mapping applies to.
-For browser applications, this is the real application UUID.
-For mobile applications, this is the nil UUID `00000000-0000-0000-0000-000000000000` (wildcard), meaning the ownership applies across all applications.
-- `match_type` (String) How the `view_name` is matched against RUM view names. Valid values are `exact`, `prefix`.
-- `service` (String) The RUM application's service name. For browser applications, may be empty. For mobile applications, this is the service that scopes the ownership.
+- `application_id` (String) The RUM application UUID to match. Defaults to the nil UUID `00000000-0000-0000-0000-000000000000`, which matches all applications. Removing this field replaces the mapping with application wildcard scope. Defaults to `"00000000-0000-0000-0000-000000000000"`.
+- `match_type` (String) How the `view_name` is matched against RUM view names. Defaults to `exact`. Removing this field replaces the mapping with exact matching. Valid values are `exact`, `prefix`. Defaults to `"exact"`.
+- `service` (String) The service to match. Defaults to an empty string, which matches all services. Removing this field replaces the mapping with service wildcard scope. Defaults to `""`.
 
 ### Read-Only
 
