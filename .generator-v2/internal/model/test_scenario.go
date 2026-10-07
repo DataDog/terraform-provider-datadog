@@ -243,7 +243,6 @@ type CassetteStatus string
 
 const (
 	CassetteStatusGenerated  CassetteStatus = "generated"
-	CassetteStatusPreserved  CassetteStatus = "preserved"
 	CassetteStatusIneligible CassetteStatus = "ineligible"
 )
 
@@ -283,7 +282,6 @@ type CassetteResult struct {
 // already asserts on.
 type CassetteSummary struct {
 	Generated  int `json:"generated"`
-	Preserved  int `json:"preserved"`
 	Ineligible int `json:"ineligible"`
 }
 
