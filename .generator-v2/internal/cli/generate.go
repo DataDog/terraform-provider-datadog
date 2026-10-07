@@ -2,7 +2,9 @@ package cli
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"slices"
@@ -181,10 +183,10 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 
 				// Register the generated constructors and retire any they overwrite.
 				// Errors are deferred so a wiring failure still emits the report.
-				wiringChanged, deferredErr = wireGeneratedDatasources(outputRoot, testsOutputRoot, registrations, check)
+				wiringChanged, deferredErr = wireGeneratedDatasources(outputRoot, testsOutputRoot, registrations, check, cmd.PrintErrln)
 				if deferredErr == nil {
 					var resourceWiringChanged bool
-					resourceWiringChanged, deferredErr = wireGeneratedResources(outputRoot, testsOutputRoot, resourceRegistrations, check)
+					resourceWiringChanged, deferredErr = wireGeneratedResources(outputRoot, testsOutputRoot, resourceRegistrations, check, cmd.PrintErrln)
 					wiringChanged = wiringChanged || resourceWiringChanged
 				}
 				// One registry for both kinds: the SDK gates a beta endpoint per
@@ -632,13 +634,13 @@ func wireGenerated(outputRoot string, k generatedKind, regs []emit.GeneratedRegi
 // wireGeneratedDatasources runs the shared registration for data sources, then
 // records each generated test in provider_test.go's testFiles2EndpointTags map
 // under testsOutputRoot.
-func wireGeneratedDatasources(outputRoot, testsOutputRoot string, regs []emit.GeneratedRegistration, check bool) (changed bool, err error) {
+func wireGeneratedDatasources(outputRoot, testsOutputRoot string, regs []emit.GeneratedRegistration, check bool, warn func(...any)) (changed bool, err error) {
 	changed, err = wireGenerated(outputRoot, datasourceKind, regs, check)
 	if err != nil {
 		return changed, err
 	}
 
-	tagsChanged, err := insertEndpointTags(testsOutputRoot, regs, check)
+	tagsChanged, err := insertEndpointTags(testsOutputRoot, regs, check, warn)
 	return changed || tagsChanged, err
 }
 
@@ -652,8 +654,26 @@ func insertEndpointTags(
 	testsOutputRoot string,
 	regs []emit.GeneratedRegistration,
 	check bool,
+	warn func(...any),
 ) (changed bool, err error) {
 	providerTestPath := filepath.Join(testsOutputRoot, "provider_test.go")
+	// An output root with no provider_test.go is not a provider checkout — a
+	// temp tree in a test, or a scratch --output-root. There is nothing to
+	// register in and no reason to fail the run over it, but a real run
+	// against a real checkout must not skip silently: a generated test absent
+	// from testFiles2EndpointTags does not fail a check, it t.Fatals at
+	// startup. So the skip is reported, and only once.
+	if _, statErr := os.Stat(providerTestPath); errors.Is(statErr, fs.ErrNotExist) {
+		for _, reg := range regs {
+			if reg.TestFileKey != "" {
+				warn("tfgen: no provider_test.go under", testsOutputRoot,
+					"- generated tests were not registered in testFiles2EndpointTags;",
+					"register them before running the suite")
+				break
+			}
+		}
+		return false, nil
+	}
 	for _, reg := range regs {
 		if reg.TestFileKey == "" {
 			continue
@@ -675,13 +695,14 @@ func wireGeneratedResources(
 	outputRoot, testsOutputRoot string,
 	regs []emit.GeneratedRegistration,
 	check bool,
+	warn func(...any),
 ) (changed bool, err error) {
 	changed, err = wireGenerated(outputRoot, resourceKind, regs, check)
 	if err != nil {
 		return changed, err
 	}
 	// A resource carries a TestFileKey when a cassette bundle emitted its test.
-	tagsChanged, err := insertEndpointTags(testsOutputRoot, regs, check)
+	tagsChanged, err := insertEndpointTags(testsOutputRoot, regs, check, warn)
 	return changed || tagsChanged, err
 }
 
