@@ -1,0 +1,1 @@
+terraform import datadog_bits_ai_monitor_automation.example 12345678

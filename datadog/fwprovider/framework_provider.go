@@ -42,6 +42,7 @@ func EnableGeneratedUnstableOperations(config *datadog.Configuration) {
 }
 
 var Resources = []func() resource.Resource{
+	NewBitsAIMonitorAutomationResource,
 	NewAgentlessScanningAwsScanOptionsResource,
 	NewAgentlessScanningAzureScanOptionsResource,
 	NewAgentlessScanningGcpScanOptionsResource,

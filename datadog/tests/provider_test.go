@@ -53,6 +53,7 @@ var isTestOrgC *bool
 var allowedHeaders = map[string]string{"Accept": "", "Content-Type": ""}
 
 var testFiles2EndpointTags = map[string]string{
+	"tests/resource_datadog_bits_ai_monitor_automation_test":                             "bits-ai",
 	"resource_datadog_dashboard_widget_time_test.go":                                     "dashboard",
 	"tests/data_source_datadog_api_key_test":                                             "api_keys",
 	"tests/data_source_datadog_apm_retention_filters_order_test":                         "apm_retention_filters_order",
