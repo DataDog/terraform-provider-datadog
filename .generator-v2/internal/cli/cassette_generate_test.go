@@ -211,3 +211,310 @@ func TestGenerateCassetteSuppressesTheWriteOnAViolation(t *testing.T) {
 		t.Errorf("a violating target wrote %v", names)
 	}
 }
+
+// declaredSecret is the write-only password the Twilio fixture declares. It is
+// the value a diagnostic must never carry, and it is spelled here so the
+// assertion fails loudly if the fixture's example is ever changed.
+const declaredSecret = "twilio-basic-auth-secret"
+
+// attributeOf walks the fixture's JSON:API request schema to one attribute, so
+// a case can contradict exactly one leaf.
+func attributeOf(t *testing.T, op *model.Operation, names ...string) *model.Schema {
+	t.Helper()
+	if op == nil || op.RequestExamples == nil || op.RequestExamples.Schema == nil {
+		t.Fatal("operation carries no request schema")
+	}
+	current := op.RequestExamples.Schema
+	for _, name := range append([]string{"data", "attributes"}, names...) {
+		next, ok := current.Properties[name]
+		if !ok {
+			t.Fatalf("schema has no %q under the walked path", name)
+		}
+		current = next
+	}
+	return current
+}
+
+// Every stage that can reject a target must name the operation or artifact it
+// rejected, because the remedy is always an edit to that operation's
+// description and a reader has to know which one.
+func TestGenerateCassetteDiagnosticsNameTheirTarget(t *testing.T) {
+	cases := []struct {
+		name    string
+		corrupt func(t *testing.T, r *cassetteRequest)
+		wants   []string
+	}{
+		{
+			name: "a group missing its delete",
+			corrupt: func(t *testing.T, r *cassetteRequest) {
+				r.Operation.ResolvedGroup.Delete = nil
+			},
+			wants: []string{"create, read and delete"},
+		},
+		{
+			name: "a request example its schema rejects",
+			corrupt: func(t *testing.T, r *cassetteRequest) {
+				attributeOf(t, r.Operation.ResolvedGroup.Create, "name").
+					Enum = []string{"a-name-the-example-does-not-use"}
+			},
+			wants: []string{"CreateTwilioIntegrationAccount", "data.attributes.name"},
+		},
+		{
+			name: "a node the normalizer could not represent",
+			corrupt: func(t *testing.T, r *cassetteRequest) {
+				name := attributeOf(t, r.Operation.ResolvedGroup.Create, "name")
+				name.Kind = model.SchemaKindUnsupported
+				name.UnsupportedReason = "a reason the reader needs"
+			},
+			wants: []string{"CreateTwilioIntegrationAccount", "a reason the reader needs"},
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			dir := t.TempDir()
+			request := twilioRequest(t, dir)
+			c.corrupt(t, &request)
+
+			result := generateCassette(request)
+			if result.Status != model.CassetteStatusIneligible {
+				t.Fatalf("status = %q, want ineligible", result.Status)
+			}
+			if len(result.Diagnostics) == 0 {
+				t.Fatal("no diagnostic explains the rejection")
+			}
+			message := result.Diagnostics[0].Message
+			for _, want := range c.wants {
+				if !strings.Contains(message, want) {
+					t.Errorf("diagnostic does not name %q: %s", want, message)
+				}
+			}
+			if result.Diagnostics[0].Severity != model.SeverityWarning {
+				t.Errorf("severity = %q, want warning", result.Diagnostics[0].Severity)
+			}
+		})
+	}
+}
+
+// A declared secret must not reach a diagnostic by any route.
+//
+// This holds for a stronger reason than the assertion implies, and the reason
+// is worth recording: the materializer replaces a write-only secret with
+// RedactedPlaceholder before validation or the CLI ever sees the value, so the
+// declared secret does not exist downstream of materialization. Verified by
+// removing both of ValidateSet's sensitive skips and making its message quote
+// the value — what leaks is "[redacted]", never the password.
+//
+// So this test cannot fail while replacement holds, and it is kept as a guard
+// on that property rather than on anything these layers do. Note also that
+// model.Redact, documented as the last line of defense before a message
+// reaches the run report, is never called by anything.
+func TestGenerateCassetteDiagnosticsNeverCarryADeclaredSecret(t *testing.T) {
+	corruptions := map[string]func(t *testing.T, r *cassetteRequest){
+		"a group missing its delete": func(t *testing.T, r *cassetteRequest) {
+			r.Operation.ResolvedGroup.Delete = nil
+		},
+		"a sibling attribute its schema rejects": func(t *testing.T, r *cassetteRequest) {
+			attributeOf(t, r.Operation.ResolvedGroup.Create, "name").
+				Enum = []string{"a-name-the-example-does-not-use"}
+		},
+	}
+
+	for name, corrupt := range corruptions {
+		t.Run(name, func(t *testing.T) {
+			dir := t.TempDir()
+			request := twilioRequest(t, dir)
+			corrupt(t, &request)
+
+			result := generateCassette(request)
+			for _, d := range result.Diagnostics {
+				if strings.Contains(d.Message, declaredSecret) {
+					t.Errorf("diagnostic carries the declared secret: %s", d.Message)
+				}
+			}
+		})
+	}
+}
+
+// A write-only secret cannot itself produce a conformance violation, which is
+// what keeps its value out of a diagnostic rather than relying on redaction
+// after the fact: the materializer replaces it, validation skips the
+// replacement, so no message is ever built from it.
+//
+// The fixture declares authentication as a oneOf, and the password sits
+// directly on a variant — the twilio_integration_account_basic_auth name in
+// the generated HCL is the emitter's, not the schema's.
+func TestGenerateCassetteSecretCannotProduceAViolation(t *testing.T) {
+	dir := t.TempDir()
+	request := twilioRequest(t, dir)
+
+	auth := attributeOf(t, request.Operation.ResolvedGroup.Create, "authentication")
+	if auth.OneOf == nil || len(auth.OneOf.Variants) == 0 {
+		t.Fatalf("authentication is %q with no oneOf variants; fixture shape changed", auth.Kind)
+	}
+	var password *model.Schema
+	for _, variant := range auth.OneOf.Variants {
+		if variant.Schema == nil {
+			continue
+		}
+		if candidate, ok := variant.Schema.Properties["password"]; ok {
+			password = candidate
+			break
+		}
+	}
+	if password == nil {
+		t.Fatal("no oneOf variant declares a password; fixture shape changed")
+	}
+	if !password.WriteOnlySecret {
+		t.Fatalf("the password is not classified write-only, so this test is not exercising a secret")
+	}
+
+	// Contradict the secret's own schema. Were sensitive leaves checked, this
+	// would be a violation naming the path whose value is the password.
+	password.Enum = []string{"a-password-the-example-does-not-use"}
+
+	result := generateCassette(request)
+	if result.Status != model.CassetteStatusGenerated {
+		t.Fatalf("a contradicted secret made the target ineligible: %q, %v",
+			result.Status, result.Diagnostics)
+	}
+	for _, d := range result.Diagnostics {
+		if strings.Contains(d.Message, declaredSecret) {
+			t.Errorf("diagnostic carries the declared secret: %s", d.Message)
+		}
+	}
+}
+
+// A target that fails any stage must leave nothing behind. The write is last,
+// so this is really asserting that no earlier stage writes as a side effect.
+func TestGenerateCassetteWritesNothingForAnyRejection(t *testing.T) {
+	corruptions := map[string]func(t *testing.T, r *cassetteRequest){
+		"a group missing its delete": func(t *testing.T, r *cassetteRequest) {
+			r.Operation.ResolvedGroup.Delete = nil
+		},
+		"a request example its schema rejects": func(t *testing.T, r *cassetteRequest) {
+			attributeOf(t, r.Operation.ResolvedGroup.Create, "name").
+				Enum = []string{"a-name-the-example-does-not-use"}
+		},
+		"an unrepresentable node": func(t *testing.T, r *cassetteRequest) {
+			name := attributeOf(t, r.Operation.ResolvedGroup.Create, "name")
+			name.Kind = model.SchemaKindUnsupported
+			name.UnsupportedReason = "unrepresentable"
+		},
+	}
+
+	for name, corrupt := range corruptions {
+		t.Run(name, func(t *testing.T) {
+			dir := t.TempDir()
+			request := twilioRequest(t, dir)
+			corrupt(t, &request)
+
+			result := generateCassette(request)
+			if result.WriteAction != model.CassetteWriteNone {
+				t.Errorf("write action = %q, want none", result.WriteAction)
+			}
+			if result.TestPath != "" {
+				if _, err := os.Stat(result.TestPath); err == nil {
+					t.Errorf("a rejected target wrote %s", result.TestPath)
+				}
+			}
+			entries, err := os.ReadDir(dir)
+			if err != nil {
+				t.Fatalf("reading the output root: %v", err)
+			}
+			if len(entries) > 0 {
+				var names []string
+				for _, e := range entries {
+					names = append(names, e.Name())
+				}
+				t.Errorf("a rejected target left %v behind", names)
+			}
+		})
+	}
+}
+
+// Each rejection stage must say which stage it was and where to look. The
+// category distinguishes a description that cannot be selected from one whose
+// values its own schema rejects, which call for different edits; the location
+// is the anchor a reader opens.
+func TestGenerateCassetteDiagnosticsCarryStageAndAnchor(t *testing.T) {
+	cases := []struct {
+		name         string
+		corrupt      func(t *testing.T, r *cassetteRequest)
+		wantCategory model.DiagnosticCategory
+		wantAnchor   []string
+	}{
+		{
+			name: "a group missing its delete",
+			corrupt: func(t *testing.T, r *cassetteRequest) {
+				r.Operation.ResolvedGroup.Delete = nil
+			},
+			wantCategory: model.DiagnosticCategoryEligibility,
+			wantAnchor:   []string{"spec:", "/api/v2/integration-interfaces/twilio/accounts"},
+		},
+		{
+			name: "a request example its schema rejects",
+			corrupt: func(t *testing.T, r *cassetteRequest) {
+				attributeOf(t, r.Operation.ResolvedGroup.Create, "name").
+					Enum = []string{"a-name-the-example-does-not-use"}
+			},
+			wantCategory: model.DiagnosticCategoryValidation,
+			// Anchored at the set that failed, not the tracked operation.
+			wantAnchor: []string{"spec:", ".requestBody"},
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			dir := t.TempDir()
+			request := twilioRequest(t, dir)
+			c.corrupt(t, &request)
+
+			result := generateCassette(request)
+			if len(result.Diagnostics) == 0 {
+				t.Fatal("no diagnostic explains the rejection")
+			}
+			d := result.Diagnostics[0]
+			if d.Category != c.wantCategory {
+				t.Errorf("category = %q, want %q", d.Category, c.wantCategory)
+			}
+			if d.Location == "" {
+				t.Fatal("diagnostic carries no location anchor")
+			}
+			for _, want := range c.wantAnchor {
+				if !strings.Contains(d.Location, want) {
+					t.Errorf("location %q does not contain %q", d.Location, want)
+				}
+			}
+			// An anchor is a spec coordinate and must never be a value.
+			if strings.Contains(d.Location, declaredSecret) {
+				t.Errorf("location carries the declared secret: %s", d.Location)
+			}
+		})
+	}
+}
+
+// A validation failure anchors at the operation that actually failed, which
+// need not be the tracked one: the update's request is a different operation
+// from the create the annotation hangs on.
+func TestGenerateCassetteAnchorsAtTheFailingOperation(t *testing.T) {
+	dir := t.TempDir()
+	request := twilioRequest(t, dir)
+	attributeOf(t, request.Operation.ResolvedGroup.Update, "name").
+		Enum = []string{"a-name-the-update-example-does-not-use"}
+
+	result := generateCassette(request)
+	if result.Status != model.CassetteStatusIneligible {
+		t.Fatalf("status = %q, want ineligible", result.Status)
+	}
+	d := result.Diagnostics[0]
+	if !strings.Contains(d.Message, "UpdateTwilioIntegrationAccount") {
+		t.Errorf("message does not name the failing operation: %s", d.Message)
+	}
+	if !strings.Contains(d.Location, "{account_id}") {
+		t.Errorf("location %q is not the update operation's path", d.Location)
+	}
+	if d.Category != model.DiagnosticCategoryValidation {
+		t.Errorf("category = %q, want validation", d.Category)
+	}
+}
