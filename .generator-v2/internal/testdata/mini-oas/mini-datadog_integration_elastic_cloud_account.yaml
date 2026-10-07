@@ -47,14 +47,10 @@ security:
 - apiKeyAuth: []
   appKeyAuth: []
 tags:
-- name: Elastic Cloud Integration Accounts
-  description: 'Manage your Datadog Elastic Cloud integration accounts directly through the Datadog API.
+- name: Elastic Cloud Integration
+  description: 'Manage your Datadog Elastic Cloud integration accounts and account resources
 
-    Create, update, and delete accounts, configure authentication and settings, and
-
-    enable or disable dataflows such as cluster metrics, index stats, shard stats,
-
-    pending tasks, and snapshot lifecycle management stats. See the
+    directly through the Datadog API. See the
 
     [Elastic Cloud integration page](https://docs.datadoghq.com/integrations/elastic-cloud/) for
 
@@ -71,7 +67,7 @@ paths:
         - manage_integrations
       description: Create an Elastic Cloud integration account.
       operationId: CreateElasticCloudIntegrationAccount
-      x-unstable: '**Note**: This endpoint is in public beta.
+      x-unstable: '**Note**: This endpoint is in preview and is subject to change.
 
         If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).'
       x-menu-order: 2
@@ -82,15 +78,6 @@ paths:
         - name: account_id
           source: data.id
       x-codegen-request-body-name: body
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: integration_elastic_cloud
-        tf_description: Provide a Datadog Elastic Cloud integration account resource.
-        group:
-          create: CreateElasticCloudIntegrationAccount
-          read: GetElasticCloudIntegrationAccount
-          update: UpdateElasticCloudIntegrationAccount
-          delete: DeleteElasticCloudIntegrationAccount
       requestBody:
         content:
           application/json:
@@ -138,7 +125,16 @@ paths:
           $ref: '#/components/responses/TooManyRequestsResponse'
       summary: Create an Elastic Cloud integration account
       tags:
-      - Elastic Cloud Integration Accounts
+      - Elastic Cloud Integration
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: integration_elastic_cloud
+        tf_description: Provide a Datadog Elastic Cloud integration account resource.
+        group:
+          create: CreateElasticCloudIntegrationAccount
+          read: GetElasticCloudIntegrationAccount
+          update: UpdateElasticCloudIntegrationAccount
+          delete: DeleteElasticCloudIntegrationAccount
     get:
       x-permission:
         operator: OR
@@ -146,7 +142,7 @@ paths:
         - integrations_read
       description: List Elastic Cloud integration accounts.
       operationId: ListElasticCloudIntegrationAccounts
-      x-unstable: '**Note**: This endpoint is in public beta.
+      x-unstable: '**Note**: This endpoint is in preview and is subject to change.
 
         If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).'
       x-menu-order: 1
@@ -191,7 +187,7 @@ paths:
           $ref: '#/components/responses/TooManyRequestsResponse'
       summary: List Elastic Cloud integration accounts
       tags:
-      - Elastic Cloud Integration Accounts
+      - Elastic Cloud Integration
   /api/v2/integration-interfaces/elastic-cloud/accounts/{account_id}:
     delete:
       x-permission:
@@ -200,7 +196,7 @@ paths:
         - manage_integrations
       description: Delete an Elastic Cloud integration account.
       operationId: DeleteElasticCloudIntegrationAccount
-      x-unstable: '**Note**: This endpoint is in public beta.
+      x-unstable: '**Note**: This endpoint is in preview and is subject to change.
 
         If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).'
       x-menu-order: 5
@@ -221,7 +217,7 @@ paths:
           $ref: '#/components/responses/TooManyRequestsResponse'
       summary: Delete an Elastic Cloud integration account
       tags:
-      - Elastic Cloud Integration Accounts
+      - Elastic Cloud Integration
     get:
       x-permission:
         operator: OR
@@ -229,7 +225,7 @@ paths:
         - integrations_read
       description: Get an Elastic Cloud integration account.
       operationId: GetElasticCloudIntegrationAccount
-      x-unstable: '**Note**: This endpoint is in public beta.
+      x-unstable: '**Note**: This endpoint is in preview and is subject to change.
 
         If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).'
       x-menu-order: 3
@@ -276,7 +272,7 @@ paths:
           $ref: '#/components/responses/TooManyRequestsResponse'
       summary: Get an Elastic Cloud integration account
       tags:
-      - Elastic Cloud Integration Accounts
+      - Elastic Cloud Integration
     patch:
       x-permission:
         operator: OR
@@ -284,7 +280,7 @@ paths:
         - manage_integrations
       description: Update an Elastic Cloud integration account. Only the fields provided are changed.
       operationId: UpdateElasticCloudIntegrationAccount
-      x-unstable: '**Note**: This endpoint is in public beta.
+      x-unstable: '**Note**: This endpoint is in preview and is subject to change.
 
         If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).'
       x-menu-order: 4
@@ -340,7 +336,7 @@ paths:
           $ref: '#/components/responses/TooManyRequestsResponse'
       summary: Update an Elastic Cloud integration account
       tags:
-      - Elastic Cloud Integration Accounts
+      - Elastic Cloud Integration
 components:
   parameters:
     IntegrationAccountIdParameter:
@@ -399,40 +395,46 @@ components:
             example: Bad Request
     ElasticCloudDetailedIndexStatsIntegrationDataflowRequest:
       x-ignore-duplicate-object: true
-      description: The Elastic Cloud detailed index stats dataflow.
+      additionalProperties: false
+      description: Primary shard metrics broken down per index, rather than aggregated across the cluster.
       type: object
       properties:
         enabled:
-          description: Whether the Elastic Cloud dataflow is enabled.
+          description: Whether Datadog collects this data. Defaults to `false`; set to `true` to start
+            collection.
           example: true
           type: boolean
     ElasticCloudDetailedIndexStatsIntegrationDataflowResponse:
       x-ignore-duplicate-object: true
-      description: The Elastic Cloud detailed index stats dataflow.
+      description: Primary shard metrics broken down per index, rather than aggregated across the cluster.
       type: object
       properties:
         enabled:
-          description: Whether the Elastic Cloud dataflow is enabled.
+          description: Whether Datadog collects this data.
           example: true
           type: boolean
         status:
           $ref: '#/components/schemas/IntegrationAccountDataflowStatus'
     ElasticCloudIndexStatsIntegrationDataflowRequest:
       x-ignore-duplicate-object: true
-      description: The Elastic Cloud index stats dataflow.
+      additionalProperties: false
+      description: Metrics for individual indices. Only the indices granted to the role of the user in
+        `authentication` are collected.
       type: object
       properties:
         enabled:
-          description: Whether the Elastic Cloud dataflow is enabled.
+          description: Whether Datadog collects this data. Defaults to `false`; set to `true` to start
+            collection.
           example: true
           type: boolean
     ElasticCloudIndexStatsIntegrationDataflowResponse:
       x-ignore-duplicate-object: true
-      description: The Elastic Cloud index stats dataflow.
+      description: Metrics for individual indices. Only the indices granted to the role of the user in
+        `authentication` are collected.
       type: object
       properties:
         enabled:
-          description: Whether the Elastic Cloud dataflow is enabled.
+          description: Whether Datadog collects this data.
           example: true
           type: boolean
         status:
@@ -441,19 +443,83 @@ components:
       description: Authentication for creating the Elastic Cloud integration account. Exactly one method
         is set.
       oneOf:
-      - $ref: '#/components/schemas/IntegrationAccountBasicAuthRequest'
+      - $ref: '#/components/schemas/ElasticCloudIntegrationAccountBasicAuthRequest'
       x-ignore-duplicate-object: true
     ElasticCloudIntegrationAccountAuthenticationResponse:
       description: Authentication configured on the Elastic Cloud integration account.
       oneOf:
-      - $ref: '#/components/schemas/IntegrationAccountBasicAuthResponse'
+      - $ref: '#/components/schemas/ElasticCloudIntegrationAccountBasicAuthResponse'
       x-ignore-duplicate-object: true
     ElasticCloudIntegrationAccountAuthenticationUpdate:
       description: Authentication for updating the Elastic Cloud integration account. Exactly one method
         is set.
       oneOf:
-      - $ref: '#/components/schemas/IntegrationAccountBasicAuthUpdate'
+      - $ref: '#/components/schemas/ElasticCloudIntegrationAccountBasicAuthUpdate'
       x-ignore-duplicate-object: true
+    ElasticCloudIntegrationAccountBasicAuthRequest:
+      description: Username and password authentication.
+      additionalProperties: false
+      type: object
+      required:
+      - auth_type
+      - username
+      - password
+      properties:
+        auth_type:
+          $ref: '#/components/schemas/ElasticCloudIntegrationAccountBasicAuthType'
+        username:
+          description: Non-secret username or public identifier for the credential pair.
+          example: datadog
+          type: string
+        password:
+          description: Secret password or private key.
+          example: your-password
+          type: string
+          writeOnly: true
+          x-secret: true
+    ElasticCloudIntegrationAccountBasicAuthResponse:
+      description: The basic authentication method and username configured on the account.
+      type: object
+      required:
+      - auth_type
+      - username
+      properties:
+        auth_type:
+          $ref: '#/components/schemas/ElasticCloudIntegrationAccountBasicAuthType'
+        username:
+          description: Non-secret username or public identifier for the credential pair.
+          example: datadog
+          type: string
+    ElasticCloudIntegrationAccountBasicAuthType:
+      description: The authentication method type.
+      default: basic
+      enum:
+      - basic
+      example: basic
+      type: string
+      x-enum-varnames:
+      - BASIC
+      x-ignore-duplicate-object: true
+    ElasticCloudIntegrationAccountBasicAuthUpdate:
+      description: Username and password authentication. Only the fields provided are changed; omit `password`
+        to keep the stored one.
+      additionalProperties: false
+      type: object
+      required:
+      - auth_type
+      properties:
+        auth_type:
+          $ref: '#/components/schemas/ElasticCloudIntegrationAccountBasicAuthType'
+        username:
+          description: Non-secret username or public identifier for the credential pair.
+          example: datadog
+          type: string
+        password:
+          description: Secret password or private key.
+          example: your-password
+          type: string
+          writeOnly: true
+          x-secret: true
     ElasticCloudIntegrationAccountCreateAttributes:
       description: Writable attributes used to create an Elastic Cloud integration account.
       properties:
@@ -535,6 +601,7 @@ components:
       type: object
     ElasticCloudIntegrationAccountSettingsRequest:
       description: Settings for creating the Elastic Cloud integration account.
+      additionalProperties: false
       properties:
         url:
           description: Elastic Cloud deployment URL.
@@ -565,6 +632,7 @@ components:
     ElasticCloudIntegrationAccountSettingsUpdate:
       description: Settings for updating the Elastic Cloud integration account. Only the fields provided
         are changed.
+      additionalProperties: false
       properties:
         url:
           description: Elastic Cloud deployment URL.
@@ -628,8 +696,12 @@ components:
       type: object
     ElasticCloudIntegrationDataflowsRequest:
       additionalProperties: false
-      description: Dataflows to configure on the Elastic Cloud integration account, keyed by dataflow
-        id.
+      description: Data Datadog collects from Elastic Cloud, keyed by dataflow id. Node-level cluster
+        statistics are always collected; each dataflow here adds a further set of metrics on top of that
+        baseline, so set `enabled` to start or stop it. Defaults listed on each dataflow apply when the
+        account is created; on update, omitted fields keep their current values. Every dataflow queries
+        the deployment as the user in `authentication`, so that user's role must hold the required Elasticsearch
+        privileges; a dataflow enabled without them is stored but collects no data.
       type: object
       properties:
         elastic-cloud-primary-shard-stats:
@@ -647,7 +719,7 @@ components:
         elastic-cloud-index-stats:
           $ref: '#/components/schemas/ElasticCloudIndexStatsIntegrationDataflowRequest'
     ElasticCloudIntegrationDataflowsResponse:
-      description: Dataflows configured on the Elastic Cloud integration account, keyed by dataflow id.
+      description: Data Datadog collects from Elastic Cloud, keyed by dataflow id.
       type: object
       properties:
         elastic-cloud-metrics:
@@ -668,11 +740,14 @@ components:
           $ref: '#/components/schemas/ElasticCloudIndexStatsIntegrationDataflowResponse'
     ElasticCloudMetricsIntegrationDataflowResponse:
       x-ignore-duplicate-object: true
-      description: The Elastic Cloud metrics dataflow.
+      description: 'Node-level statistics for the clusters in your deployment, such as the number of nodes
+        and the number of documents on each node. This is the integration''s baseline collection: it is
+        always on and cannot be turned off, which is why it appears in responses only.'
       type: object
       properties:
         enabled:
-          description: Whether the Elastic Cloud dataflow is enabled.
+          description: Whether Datadog collects this data. Always `true`, because this collection cannot
+            be turned off.
           example: true
           readOnly: true
           type: boolean
@@ -680,165 +755,124 @@ components:
           $ref: '#/components/schemas/IntegrationAccountDataflowStatus'
     ElasticCloudPendingTaskStatsIntegrationDataflowRequest:
       x-ignore-duplicate-object: true
-      description: The Elastic Cloud pending task stats dataflow.
+      additionalProperties: false
+      description: Metrics for cluster-level changes that have been submitted but not yet executed.
       type: object
       properties:
         enabled:
-          description: Whether the Elastic Cloud dataflow is enabled.
+          description: Whether Datadog collects this data. Defaults to `false`; set to `true` to start
+            collection.
           example: true
           type: boolean
     ElasticCloudPendingTaskStatsIntegrationDataflowResponse:
       x-ignore-duplicate-object: true
-      description: The Elastic Cloud pending task stats dataflow.
+      description: Metrics for cluster-level changes that have been submitted but not yet executed.
       type: object
       properties:
         enabled:
-          description: Whether the Elastic Cloud dataflow is enabled.
+          description: Whether Datadog collects this data.
           example: true
           type: boolean
         status:
           $ref: '#/components/schemas/IntegrationAccountDataflowStatus'
     ElasticCloudPrimaryShardGracefulTimeoutIntegrationDataflowRequest:
       x-ignore-duplicate-object: true
-      description: The Elastic Cloud primary shard graceful timeout dataflow.
+      additionalProperties: false
+      description: Tolerance for slow primary shard requests. Primary shard metrics can grow large enough
+        for the request to time out; enabling this keeps the rest of the collection running when that
+        happens instead of failing the run. Only has an effect alongside `elastic-cloud-primary-shard-stats`.
       type: object
       properties:
         enabled:
-          description: Whether the Elastic Cloud dataflow is enabled.
+          description: Whether this tolerance is applied. Defaults to `false`; set to `true` to apply
+            it.
           example: true
           type: boolean
     ElasticCloudPrimaryShardGracefulTimeoutIntegrationDataflowResponse:
       x-ignore-duplicate-object: true
-      description: The Elastic Cloud primary shard graceful timeout dataflow.
+      description: Tolerance for slow primary shard requests, keeping the rest of the collection running
+        when a primary shard request times out instead of failing the run. Only has an effect alongside
+        `elastic-cloud-primary-shard-stats`.
       type: object
       properties:
         enabled:
-          description: Whether the Elastic Cloud dataflow is enabled.
+          description: Whether this tolerance is applied.
           example: true
           type: boolean
         status:
           $ref: '#/components/schemas/IntegrationAccountDataflowStatus'
     ElasticCloudPrimaryShardStatsIntegrationDataflowRequest:
       x-ignore-duplicate-object: true
-      description: The Elastic Cloud primary shard stats dataflow.
+      additionalProperties: false
+      description: Metrics covering only the cluster's primary shards.
       type: object
       properties:
         enabled:
-          description: Whether the Elastic Cloud dataflow is enabled.
+          description: Whether Datadog collects this data. Defaults to `false`; set to `true` to start
+            collection.
           example: true
           type: boolean
     ElasticCloudPrimaryShardStatsIntegrationDataflowResponse:
       x-ignore-duplicate-object: true
-      description: The Elastic Cloud primary shard stats dataflow.
+      description: Metrics covering only the cluster's primary shards.
       type: object
       properties:
         enabled:
-          description: Whether the Elastic Cloud dataflow is enabled.
+          description: Whether Datadog collects this data.
           example: true
           type: boolean
         status:
           $ref: '#/components/schemas/IntegrationAccountDataflowStatus'
     ElasticCloudShardAllocationStatsIntegrationDataflowRequest:
       x-ignore-duplicate-object: true
-      description: The Elastic Cloud shard allocation stats dataflow.
+      additionalProperties: false
+      description: Metrics for how many shards are allocated to each data node, and the disk space they
+        use.
       type: object
       properties:
         enabled:
-          description: Whether the Elastic Cloud dataflow is enabled.
+          description: Whether Datadog collects this data. Defaults to `false`; set to `true` to start
+            collection.
           example: true
           type: boolean
     ElasticCloudShardAllocationStatsIntegrationDataflowResponse:
       x-ignore-duplicate-object: true
-      description: The Elastic Cloud shard allocation stats dataflow.
+      description: Metrics for how many shards are allocated to each data node, and the disk space they
+        use.
       type: object
       properties:
         enabled:
-          description: Whether the Elastic Cloud dataflow is enabled.
+          description: Whether Datadog collects this data.
           example: true
           type: boolean
         status:
           $ref: '#/components/schemas/IntegrationAccountDataflowStatus'
     ElasticCloudSlmStatsIntegrationDataflowRequest:
       x-ignore-duplicate-object: true
-      description: The Elastic Cloud snapshot lifecycle management stats dataflow.
+      additionalProperties: false
+      description: Metrics about the actions taken by snapshot lifecycle management. Requires the `read_slm`
+        Elasticsearch cluster privilege on the role of the user in `authentication`; without it this dataflow
+        collects no data.
       type: object
       properties:
         enabled:
-          description: Whether the Elastic Cloud dataflow is enabled.
+          description: Whether Datadog collects this data. Defaults to `false`; set to `true` to start
+            collection.
           example: true
           type: boolean
     ElasticCloudSlmStatsIntegrationDataflowResponse:
       x-ignore-duplicate-object: true
-      description: The Elastic Cloud snapshot lifecycle management stats dataflow.
+      description: Metrics about the actions taken by snapshot lifecycle management. Requires the `read_slm`
+        Elasticsearch cluster privilege on the role of the user in `authentication`; without it this dataflow
+        collects no data.
       type: object
       properties:
         enabled:
-          description: Whether the Elastic Cloud dataflow is enabled.
+          description: Whether Datadog collects this data.
           example: true
           type: boolean
         status:
           $ref: '#/components/schemas/IntegrationAccountDataflowStatus'
-    IntegrationAccountBasicAuthRequest:
-      description: Username and password authentication.
-      type: object
-      required:
-      - auth_type
-      - username
-      - password
-      properties:
-        auth_type:
-          $ref: '#/components/schemas/IntegrationAccountBasicAuthType'
-        username:
-          description: Non-secret username or public identifier for the credential pair.
-          example: datadog
-          type: string
-        password:
-          description: Secret password or private key.
-          example: your-password
-          type: string
-          writeOnly: true
-          x-secret: true
-    IntegrationAccountBasicAuthResponse:
-      description: The basic authentication method and username configured on the account.
-      type: object
-      required:
-      - auth_type
-      - username
-      properties:
-        auth_type:
-          $ref: '#/components/schemas/IntegrationAccountBasicAuthType'
-        username:
-          description: Non-secret username or public identifier for the credential pair.
-          example: datadog
-          type: string
-    IntegrationAccountBasicAuthType:
-      description: The authentication method type.
-      default: basic
-      enum:
-      - basic
-      example: basic
-      type: string
-      x-enum-varnames:
-      - BASIC
-    IntegrationAccountBasicAuthUpdate:
-      description: Username and password authentication. Only the fields provided are changed; omit `password`
-        to keep the stored one.
-      type: object
-      required:
-      - auth_type
-      properties:
-        auth_type:
-          $ref: '#/components/schemas/IntegrationAccountBasicAuthType'
-        username:
-          description: Non-secret username or public identifier for the credential pair.
-          example: datadog
-          type: string
-        password:
-          description: Secret password or private key.
-          example: your-password
-          type: string
-          writeOnly: true
-          x-secret: true
     IntegrationAccountDataflowHealth:
       description: Collection health of a single dataflow.
       enum:

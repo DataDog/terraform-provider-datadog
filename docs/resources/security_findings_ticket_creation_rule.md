@@ -81,18 +81,18 @@ resource "datadog_security_findings_ticket_creation_rule" "exposed_secrets" {
 
 Required:
 
-- `max_tickets_per_day` (Number) The maximum number of tickets the rule may create per day. If exceeded, one final ticket will be created, explaining the limit was hit and linking back to the responsible rule. Value must be between 1 and 500.
-- `project_id` (String) The UUID of the Case Management project. Must be a valid UUID.
+- `max_tickets_per_day` (Number) The maximum number of tickets the rule may create per day. If exceeded, one final ticket will be created, explaining the limit was hit and link back to the responsible rule. Value must be between 1 and 500.
+- `project_id` (String) The UUID of the case management project. Must be a valid UUID.
 - `target` (String) The ticketing system to create tickets in. Valid values are `jira`, `case_management`, `linear`.
 
 Optional:
 
 - `assignee_id` (String) The UUID of the default assignee for created tickets. Must be a valid UUID.
-- `fields` (String) A JSON-encoded object of target-specific fields for the created ticket. For `target` `jira`, the custom fields of the Jira issue; for the list of available fields, see the [Jira documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-createmeta-projectidorkey-issuetypes-issuetypeid-get). For `target` `linear`, the optional keys `linear_project_id` (string, the identifier of the Linear project the issue is created in) and `linear_label_ids` (list of strings, the identifiers of the Linear labels applied to the issue).
+- `fields` (String) A JSON-encoded object of target-specific fields for the ticket to create. For `target: jira`, the custom fields of the Jira issue. For the list of available fields, see the [Jira documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-createmeta-projectidorkey-issuetypes-issuetypeid-get). For `target: linear`, the optional keys `linear_project_id` (string, the identifier of the Linear project the issue is created in) and `linear_label_ids` (array of strings, the identifiers of the Linear labels applied to the issue).
 
 Read-Only:
 
-- `auto_disabled_reason` (String) The reason the rule was automatically disabled by the system due to a ticketing integration error. This field is read-only.
+- `auto_disabled_reason` (String) The reason the rule was automatically disabled by the system due to a ticketing integration error.
 
 
 <a id="nestedatt--rule"></a>

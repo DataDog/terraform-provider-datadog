@@ -27,7 +27,6 @@ resource "datadog_integration_azure" "sandbox" {
 }
 
 # Or, using secretless (federated workload identity) authentication.
-# Note: secretless authentication is currently in Preview.
 resource "datadog_integration_azure" "sandbox_secretless" {
   tenant_name             = "<azure_tenant_name>"
   client_id               = "<azure_client_id>"
@@ -57,7 +56,7 @@ Note: This requires `resource_collection_enabled` to be set to true. Defaults to
 - `metrics_enabled_default` (Boolean) Enable Azure metrics for your organization for resource providers where no resource provider config is specified. Defaults to `true`.
 - `resource_collection_enabled` (Boolean) When enabled, Datadog collects metadata and configuration info from cloud resources (such as compute instances, databases, and load balancers) monitored by this app registration.
 - `resource_provider_configs` (List of Object) Configuration settings applied to resources from the specified Azure resource providers. (see [below for nested schema](#nestedatt--resource_provider_configs))
-- `secretless_auth_enabled` (Boolean) (Preview) When enabled, Datadog authenticates to this app registration using federated workload identity credentials instead of a client secret. The app registration must have a Datadog federated credential for this to work. When `true`, `client_secret` should be omitted. Defaults to `false`.
+- `secretless_auth_enabled` (Boolean) When enabled, Datadog authenticates to this app registration using federated workload identity credentials instead of a client secret. You also need to set up a federated credential in your Azure App Registration with the proper External ID. Follow Terraform instructions in the Datadog UI to [onboard](https://app.datadoghq.com/integrations/azure/add) or [migrate](https://app.datadoghq.com/integrations/azure). Migration instructions can be found in the general tab by clicking 'Set Up Secretless Auth'. When `true`, `client_secret` should be omitted. Defaults to `false`.
 - `usage_metrics_enabled` (Boolean) Enable azure.usage metrics for your organization. Defaults to `true`.
 
 ### Read-Only

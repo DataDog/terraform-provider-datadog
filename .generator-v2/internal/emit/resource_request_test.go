@@ -158,6 +158,37 @@ var _ = Describe("BuildResourceView request mapping", func() {
 			Equal("datadogV2.WidgetTargetUpdateRequest"))
 	})
 
+	It("uses an explicitly configured enum value in both request roles instead of overwriting it with the schema default", func() {
+		op := widgetResourceOperation()
+		for _, body := range []*model.Schema{
+			op.ResolvedGroup.Create.RequestSchema,
+			op.ResolvedGroup.Update.RequestSchema,
+		} {
+			priority := body.Properties["data"].Properties["attributes"].Properties["priority"]
+			priority.HasDefault = true
+			priority.Default = model.SchemaDefault{Value: model.NewStringDefault("low")}
+		}
+
+		artifact, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		view, err := BuildResourceView(artifact)
+		Expect(err).NotTo(HaveOccurred())
+
+		for role, fields := range map[string][]RequestFieldView{
+			"Create": view.Create.Envelope.Fields,
+			"Update": view.Update.Envelope.Fields,
+		} {
+			priority := requestFieldByGoField(fields, "Priority")
+			Expect(priority.ValueExpr).To(
+				Equal("datadogV2.WidgetPriority(state.Priority.ValueString())"), role)
+		}
+
+		source := string(mustRenderResource(view))
+		Expect(strings.Count(source,
+			"SetPriority(datadogV2.WidgetPriority(state.Priority.ValueString()))")).To(Equal(2))
+		Expect(source).NotTo(ContainSubstring(`SetPriority(datadogV2.WidgetPriority("low"))`))
+	})
+
 	It("fails a oneOf whose SDK wrapper the binding pass never resolved, rather than emitting an unnamed type", func() {
 		op := widgetResourceOperation()
 		for _, body := range []*model.Schema{

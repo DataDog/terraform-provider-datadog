@@ -82,7 +82,7 @@ func (r *securityFindingsTicketCreationRuleResource) Schema(_ context.Context, _
 				Required:    true,
 				Attributes: map[string]schema.Attribute{
 					"project_id": schema.StringAttribute{
-						Description: "The UUID of the Case Management project.",
+						Description: "The UUID of the case management project.",
 						Required:    true,
 						Validators:  []validator.String{uuidValidator},
 					},
@@ -97,19 +97,19 @@ func (r *securityFindingsTicketCreationRuleResource) Schema(_ context.Context, _
 						Validators:  []validator.String{uuidValidator},
 					},
 					"fields": schema.StringAttribute{
-						Description: "A JSON-encoded object of target-specific fields for the created ticket. For `target` `jira`, the custom fields of the Jira issue; for the list of available fields, see the [Jira documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-createmeta-projectidorkey-issuetypes-issuetypeid-get). For `target` `linear`, the optional keys `linear_project_id` (string, the identifier of the Linear project the issue is created in) and `linear_label_ids` (list of strings, the identifiers of the Linear labels applied to the issue).",
+						Description: "A JSON-encoded object of target-specific fields for the ticket to create. For `target: jira`, the custom fields of the Jira issue. For the list of available fields, see the [Jira documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-createmeta-projectidorkey-issuetypes-issuetypeid-get). For `target: linear`, the optional keys `linear_project_id` (string, the identifier of the Linear project the issue is created in) and `linear_label_ids` (array of strings, the identifiers of the Linear labels applied to the issue).",
 						Optional:    true,
 						CustomType:  jsontypes.NormalizedType{},
 					},
 					"max_tickets_per_day": schema.Int64Attribute{
-						Description: "The maximum number of tickets the rule may create per day. If exceeded, one final ticket will be created, explaining the limit was hit and linking back to the responsible rule.",
+						Description: "The maximum number of tickets the rule may create per day. If exceeded, one final ticket will be created, explaining the limit was hit and link back to the responsible rule.",
 						Required:    true,
 						Validators: []validator.Int64{
 							int64validator.Between(1, 500),
 						},
 					},
 					"auto_disabled_reason": schema.StringAttribute{
-						Description: "The reason the rule was automatically disabled by the system due to a ticketing integration error. This field is read-only.",
+						Description: "The reason the rule was automatically disabled by the system due to a ticketing integration error.",
 						Computed:    true,
 					},
 				},
@@ -196,7 +196,7 @@ func (r *securityFindingsTicketCreationRuleResource) Update(ctx context.Context,
 		return
 	}
 
-	data, diags := r.buildRuleData(ctx, &state)
+	data, diags := r.buildRuleUpdateData(ctx, &state, id)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -287,8 +287,8 @@ func (r *securityFindingsTicketCreationRuleResource) updateState(ctx context.Con
 	return diags
 }
 
-// buildRuleData builds the JSON:API data object shared by the create and update requests.
-func (r *securityFindingsTicketCreationRuleResource) buildRuleData(ctx context.Context, state *securityFindingsTicketCreationRuleModel) (*datadogV2.TicketCreationRuleDataCreate, diag.Diagnostics) {
+// buildRuleAttributes builds the attributes object shared by the create and update payloads.
+func (r *securityFindingsTicketCreationRuleResource) buildRuleAttributes(ctx context.Context, state *securityFindingsTicketCreationRuleModel) (*datadogV2.TicketCreationRuleAttributesCreate, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	scope, d := buildAutomationRuleScope(ctx, state.Rule)
@@ -332,8 +332,27 @@ func (r *securityFindingsTicketCreationRuleResource) buildRuleData(ctx context.C
 	attributes.SetRule(*scope)
 	attributes.SetAction(*action)
 
-	data := datadogV2.NewTicketCreationRuleDataCreateWithDefaults()
-	data.SetType(datadogV2.TICKETCREATIONRULETYPE_TICKET_CREATION_RULES)
-	data.SetAttributes(*attributes)
-	return data, diags
+	return attributes, diags
+}
+
+// buildRuleData builds the JSON:API data object for a create request.
+func (r *securityFindingsTicketCreationRuleResource) buildRuleData(ctx context.Context, state *securityFindingsTicketCreationRuleModel) (*datadogV2.TicketCreationRuleDataCreate, diag.Diagnostics) {
+	attributes, diags := r.buildRuleAttributes(ctx, state)
+	if diags.HasError() {
+		return nil, diags
+	}
+
+	return datadogV2.NewTicketCreationRuleDataCreate(*attributes, datadogV2.TICKETCREATIONRULETYPE_TICKET_CREATION_RULES), diags
+}
+
+// buildRuleUpdateData builds the JSON:API data object for an update request.
+// The API requires the resource id in the update body, matching the rule_id
+// path parameter.
+func (r *securityFindingsTicketCreationRuleResource) buildRuleUpdateData(ctx context.Context, state *securityFindingsTicketCreationRuleModel, id uuid.UUID) (*datadogV2.TicketCreationRuleDataUpdate, diag.Diagnostics) {
+	attributes, diags := r.buildRuleAttributes(ctx, state)
+	if diags.HasError() {
+		return nil, diags
+	}
+
+	return datadogV2.NewTicketCreationRuleDataUpdate(*attributes, id, datadogV2.TICKETCREATIONRULETYPE_TICKET_CREATION_RULES), diags
 }

@@ -22,18 +22,22 @@ type writeOnlyResourceFixture struct {
 	name     string
 	spec     string
 	resource string
+	// basicAuth is the authentication variant block holding the password.
+	basicAuth string
 }
 
 var writeOnlyResourceFixtures = []writeOnlyResourceFixture{
 	{
-		name:     "Twilio",
-		spec:     "mini-datadog_integration_twilio_account.yaml",
-		resource: "resource_datadog_integration_twilio_account.go",
+		name:      "Twilio",
+		spec:      "mini-datadog_integration_twilio_account.yaml",
+		resource:  "resource_datadog_integration_twilio_account.go",
+		basicAuth: "twilio_integration_account_basic_auth",
 	},
 	{
-		name:     "Elastic Cloud",
-		spec:     "mini-datadog_integration_elastic_cloud_account.yaml",
-		resource: "resource_datadog_integration_elastic_cloud.go",
+		name:      "Elastic Cloud",
+		spec:      "mini-datadog_integration_elastic_cloud_account.yaml",
+		resource:  "resource_datadog_integration_elastic_cloud.go",
+		basicAuth: "elastic_cloud_integration_account_basic_auth",
 	},
 }
 
@@ -55,7 +59,9 @@ func TestGenerateWriteOnlyResources(t *testing.T) {
 				t.Fatalf("two independent generations of the %s resource differ", fixture.name)
 			}
 
-			assertGeneratedWriteOnlyContract(t, first)
+			assertGeneratedWriteOnlyContract(t, first, fixture.basicAuth)
+			assertGeneratedDefaultContract(t, first)
+
 			firstStaged = append(firstStaged, testinfra.StagedFile{
 				ProviderPath: filepath.Join("datadog", "fwprovider", fixture.resource),
 				SourcePath:   firstPath,
@@ -148,7 +154,7 @@ func assertNoFailedArtifacts(t *testing.T, reportPath string) {
 	}
 }
 
-func assertGeneratedWriteOnlyContract(t *testing.T, source []byte) {
+func assertGeneratedWriteOnlyContract(t *testing.T, source []byte, basicAuth string) {
 	t.Helper()
 	text := string(source)
 
@@ -156,7 +162,7 @@ func assertGeneratedWriteOnlyContract(t *testing.T, source []byte) {
 		`OriginalAttr: "password"`,
 		`WriteOnlyAttr: "password_wo"`,
 		`TriggerAttr: "password_wo_version"`,
-		`ParentBlocks: []string{"authentication", "integration_account_basic_auth"}`,
+		`ParentBlocks: []string{"authentication", "` + basicAuth + `"}`,
 		`Mode: fwutils.WriteOnlySecretModeOnly`,
 		`fwutils.CreateWriteOnlySecretAttributes(`,
 	} {
@@ -220,6 +226,22 @@ func assertGeneratedWriteOnlyContract(t *testing.T, source []byte) {
 	}
 }
 
+// assertGeneratedDefaultContract checks the omittable-default contract on
+// auth_type, the one field both fixtures declare an OpenAPI default for: the
+// schema renders a static default, and the value still reaches both request
+// roles rather than being left to the SDK constructor.
+func assertGeneratedDefaultContract(t *testing.T, source []byte) {
+	t.Helper()
+	text := string(source)
+	const want = `stringdefault.StaticString("basic")`
+	if !strings.Contains(text, want) {
+		t.Errorf("generated resource is missing default contract %q", want)
+	}
+	if got := strings.Count(text, ".SetAuthType("); got != 2 {
+		t.Errorf("auth_type setter count = %d, want Create and Update setters", got)
+	}
+}
+
 func generatedMethod(t *testing.T, source []byte, methodName string) string {
 	t.Helper()
 	fset := token.NewFileSet()
@@ -248,17 +270,21 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	resourceschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/defaults"
 )
 
 func TestTfgenWriteOnlySchemasValidate(t *testing.T) {
-	constructors := map[string]func() resource.Resource{
-		"twilio": NewDatadogIntegrationTwilioAccountResource,
-		"elastic_cloud": NewDatadogIntegrationElasticCloudResource,
+	resources := map[string]struct {
+		constructor func() resource.Resource
+		basicAuth   string
+	}{
+		"twilio":        {NewDatadogIntegrationTwilioAccountResource, "twilio_integration_account_basic_auth"},
+		"elastic_cloud": {NewDatadogIntegrationElasticCloudResource, "elastic_cloud_integration_account_basic_auth"},
 	}
-	for name, constructor := range constructors {
+	for name, r := range resources {
 		t.Run(name, func(t *testing.T) {
 			var response resource.SchemaResponse
-			constructor().Schema(context.Background(), resource.SchemaRequest{}, &response)
+			r.constructor().Schema(context.Background(), resource.SchemaRequest{}, &response)
 			if response.Diagnostics.HasError() {
 				t.Fatalf("Schema returned errors: %v", response.Diagnostics)
 			}
@@ -267,9 +293,9 @@ func TestTfgenWriteOnlySchemasValidate(t *testing.T) {
 			if !ok {
 				t.Fatalf("authentication is %T, want SingleNestedAttribute", response.Schema.Attributes["authentication"])
 			}
-			basic, ok := authentication.Attributes["integration_account_basic_auth"].(resourceschema.SingleNestedAttribute)
+			basic, ok := authentication.Attributes[r.basicAuth].(resourceschema.SingleNestedAttribute)
 			if !ok {
-				t.Fatalf("integration_account_basic_auth is %T, want SingleNestedAttribute", authentication.Attributes["integration_account_basic_auth"])
+				t.Fatalf("%s is %T, want SingleNestedAttribute", r.basicAuth, authentication.Attributes[r.basicAuth])
 			}
 			if _, exists := basic.Attributes["password"]; exists {
 				t.Fatal("plaintext password attribute is exposed")
@@ -287,6 +313,21 @@ func TestTfgenWriteOnlySchemasValidate(t *testing.T) {
 			}
 			if version.WriteOnly || version.Sensitive || !version.Required || version.Optional || version.Computed {
 				t.Fatalf("password_wo_version flags = %#v, want required stateful trigger", version)
+			}
+			authType, ok := basic.Attributes["auth_type"].(resourceschema.StringAttribute)
+			if !ok {
+				t.Fatalf("auth_type is %T, want StringAttribute", basic.Attributes["auth_type"])
+			}
+			if authType.Required || !authType.Optional || !authType.Computed || authType.Default == nil {
+				t.Fatalf("auth_type flags/default = %#v, want optional+computed static default", authType)
+			}
+			defaultResponse := defaults.StringResponse{}
+			authType.Default.DefaultString(context.Background(), defaults.StringRequest{}, &defaultResponse)
+			if defaultResponse.Diagnostics.HasError() {
+				t.Fatalf("auth_type default returned errors: %v", defaultResponse.Diagnostics)
+			}
+			if got := defaultResponse.PlanValue.ValueString(); got != "basic" {
+				t.Fatalf("auth_type default = %q, want basic", got)
 			}
 
 			if diagnostics := response.Schema.ValidateImplementation(context.Background()); diagnostics.HasError() {

@@ -63,8 +63,7 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
     }
   }
 
-  # The last rule must be a catch-all: no query, no time restriction,
-  # and an escalation policy.
+  # The last rule must be a catch-all: no query and no time restriction.
   rule {
     escalation_policy = "00000000-aba2-0000-0000-000000000000"
     urgency           = "dynamic"

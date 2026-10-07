@@ -1,0 +1,115 @@
+openapi: 3.0.0
+info:
+  title: normalize defaults fixture
+  version: 1.0.0
+paths:
+  /defaults:
+    post:
+      operationId: CreateDefaults
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: defaults
+        group:
+          create: CreateDefaults
+          read: CreateDefaults
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - direct_string
+                - direct_bool
+                - direct_integer
+                - direct_number
+                - referenced
+                - composed
+              properties:
+                direct_string:
+                  type: string
+                  description: Direct empty-string default.
+                  default: ""
+                direct_bool:
+                  type: boolean
+                  description: Direct false default.
+                  default: false
+                direct_integer:
+                  type: integer
+                  format: int64
+                  description: Direct zero integer default.
+                  default: 0
+                direct_number:
+                  type: number
+                  format: double
+                  description: Direct zero number default.
+                  default: 0.0
+                referenced:
+                  $ref: '#/components/schemas/AuthType'
+                composed:
+                  allOf:
+                    - $ref: '#/components/schemas/AuthType'
+                    - description: Composed authentication type.
+                null_default:
+                  type: string
+                  description: Explicit null default.
+                  default: null
+                array_default:
+                  type: array
+                  description: Out-of-scope collection default.
+                  default:
+                    - basic
+                  items:
+                    type: string
+                object_default:
+                  type: object
+                  description: Out-of-scope object default.
+                  default:
+                    auth_type: basic
+                  properties:
+                    auth_type:
+                      type: string
+                      description: Nested authentication type.
+                invalid_type:
+                  type: integer
+                  description: Invalid scalar type default.
+                  default: basic
+                invalid_enum:
+                  type: string
+                  description: Invalid enum default.
+                  enum:
+                    - basic
+                    - token
+                  default: unsupported
+                integer_overflow:
+                  type: integer
+                  description: Integer outside the supported int64 range.
+                  default: 9223372036854775808
+                non_finite:
+                  type: number
+                  description: Non-finite numeric default.
+                  default: .inf
+      responses:
+        '200':
+          description: Defaults response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response_only:
+                    type: string
+                    description: Response-only default.
+                    default: server
+                  response_invalid:
+                    type: integer
+                    description: Invalid response-only default.
+                    default: basic
+components:
+  schemas:
+    AuthType:
+      type: string
+      description: Authentication type.
+      enum:
+        - basic
+        - token
+      default: basic

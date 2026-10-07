@@ -27,6 +27,13 @@ func resourceDatadogPowerpackV2() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
+		CustomizeDiff: func(_ context.Context, diff *schema.ResourceDiff, _ interface{}) error {
+			widgetData := map[string]interface{}{"widget": diff.Get("widget")}
+			if errs := dashboardmapping.ValidateWidgetConflicts(widgetData); len(errs) > 0 {
+				return fmt.Errorf("%s", strings.Join(errs, "\n"))
+			}
+			return nil
+		},
 		SchemaFunc: buildPowerpackV2Schema,
 	}
 }

@@ -79,6 +79,7 @@ resource "datadog_workflow_automation" "workflow" {
 ### Optional
 
 - `run_as` (Attributes) Identity used to run the workflow. When omitted, the server-managed value is preserved. (see [below for nested schema](#nestedatt--run_as))
+- `sensitive_privileges` (Boolean) Whether the workflow requires sensitive privileges to run. When omitted, the server-managed value is preserved. Only the workflow owner can update this field. This allows it to run actions that use [Execution Policies](https://docs.datadoghq.com/actions/private_actions/execution_policies/).
 - `webhook_secret` (String, Sensitive) If a webhook trigger is defined on this workflow, a webhookSecret is required and should be provided here. String length must be at least 16.
 
 ### Read-Only

@@ -1939,6 +1939,7 @@ Optional:
 
 **Deprecated:** This processor is deprecated, you should now use the `generate_metrics` processor. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_datadog_metrics))
 - `generate_metrics` (Block List) The `generate_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields. There must be a destination whose `inputs` reference this processor with the `<processor-id>.metrics` suffix to route the generated metrics. All destination types normally supported for `metrics` pipelines are also supported as metrics destinations in `logs` pipelines. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_metrics))
+- `metric_enrichment_table` (Block List) Configures the `enrichment_table` processor for `metrics` pipelines. The processor enriches metrics with tags from a static CSV file or a Datadog reference table. It looks up a row using the metric name or a metric tag value. It then adds each column of the matching row as a metric tag, overwriting any existing tag with the same key. Exactly one of `file` or `reference_table` must be configured. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_enrichment_table))
 - `metric_tags` (Block List) The `metric_tags` processor filters metrics based on their tags using Datadog tag key patterns. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_tags))
 - `ocsf_mapper` (Block List) The `ocsf_mapper` processor transforms logs into the OCSF schema using predefined library mappings or custom mapping configuration. (see [below for nested schema](#nestedblock--config--processor_group--processor--ocsf_mapper))
 - `parse_grok` (Block List) The `parse_grok` processor extracts structured fields from unstructured log messages using Grok patterns. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok))
@@ -2210,6 +2211,96 @@ Required:
 Optional:
 
 - `field` (String) Name of the log field containing the numeric value to increment the metric by (used only for `increment_by_field`).
+
+
+
+
+<a id="nestedblock--config--processor_group--processor--metric_enrichment_table"></a>
+### Nested Schema for `config.processor_group.processor.metric_enrichment_table`
+
+Optional:
+
+- `file` (Block List) Defines a static enrichment table loaded from a CSV file for metric enrichment. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_enrichment_table--file))
+- `reference_table` (Block List) Uses a Datadog reference table to enrich metrics. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_enrichment_table--reference_table))
+
+<a id="nestedblock--config--processor_group--processor--metric_enrichment_table--file"></a>
+### Nested Schema for `config.processor_group.processor.metric_enrichment_table.file`
+
+Required:
+
+- `path` (String) Path to the CSV file.
+
+Optional:
+
+- `encoding` (Block List) File encoding format. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_enrichment_table--file--encoding))
+- `key` (Block List) Defines how to map a metric lookup value to a CSV column during enrichment table lookups. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_enrichment_table--file--key))
+
+<a id="nestedblock--config--processor_group--processor--metric_enrichment_table--file--encoding"></a>
+### Nested Schema for `config.processor_group.processor.metric_enrichment_table.file.encoding`
+
+Required:
+
+- `delimiter` (String) The single character that separates columns in the file.
+- `includes_headers` (Boolean) Whether the first row of the file contains column headers.
+- `type` (String) The encoding format of the file. The value should always be `csv`.
+
+
+<a id="nestedblock--config--processor_group--processor--metric_enrichment_table--file--key"></a>
+### Nested Schema for `config.processor_group.processor.metric_enrichment_table.file.key`
+
+Required:
+
+- `column` (String) The CSV column name or index to match against the lookup value.
+
+Optional:
+
+- `source` (Block List) Specifies the source of the key value used for metric enrichment table lookups. The lookup key can be either the metric name or a metric tag. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_enrichment_table--file--key--source))
+
+<a id="nestedblock--config--processor_group--processor--metric_enrichment_table--file--key--source"></a>
+### Nested Schema for `config.processor_group.processor.metric_enrichment_table.file.key.source`
+
+Required:
+
+- `type` (String) The lookup source type. Use `metric_name` to look up the metric name, or `tag` to look up the value of the metric tag set in `name`. Valid values are `metric_name`, `tag`.
+
+Optional:
+
+- `name` (String) The Datadog tag key used as the lookup key. Required when `type` is `tag`.
+
+
+
+
+<a id="nestedblock--config--processor_group--processor--metric_enrichment_table--reference_table"></a>
+### Nested Schema for `config.processor_group.processor.metric_enrichment_table.reference_table`
+
+Required:
+
+- `table_id` (String) The unique identifier of the reference table.
+
+Optional:
+
+- `app_key_key` (String) The name of the environment variable or secret that holds the Datadog application key used to access the reference table.
+- `columns` (List of String) A list of column names to include from the reference table. If not provided, all columns are included.
+- `key` (Block List) Defines the metric lookup value used as the reference-table row ID. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_enrichment_table--reference_table--key))
+
+<a id="nestedblock--config--processor_group--processor--metric_enrichment_table--reference_table--key"></a>
+### Nested Schema for `config.processor_group.processor.metric_enrichment_table.reference_table.key`
+
+Optional:
+
+- `source` (Block List) Specifies the source of the key value used for metric enrichment table lookups. The lookup key can be either the metric name or a metric tag. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_enrichment_table--reference_table--key--source))
+
+<a id="nestedblock--config--processor_group--processor--metric_enrichment_table--reference_table--key--source"></a>
+### Nested Schema for `config.processor_group.processor.metric_enrichment_table.reference_table.key.source`
+
+Required:
+
+- `type` (String) The lookup source type. Use `metric_name` to look up the metric name, or `tag` to look up the value of the metric tag set in `name`. Valid values are `metric_name`, `tag`.
+
+Optional:
+
+- `name` (String) The Datadog tag key used as the lookup key. Required when `type` is `tag`.
+
 
 
 

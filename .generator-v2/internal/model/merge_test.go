@@ -65,6 +65,100 @@ func secretSchema(writeOnly, sensitive bool) *Schema {
 }
 
 var _ = Describe("MergeResourceSchema", func() {
+	Describe("request defaults", func() {
+		DescribeTable("uses the Create default when Update omits it or agrees",
+			func(updateValue *ScalarDefault) {
+				createReq := jsonAPIBody("AccountCreateRequest", map[string]*Schema{
+					"auth_type": defaulted(NewStringDefault("basic")),
+				}, []string{"auth_type"})
+				updateReq := jsonAPIBody("AccountUpdateRequest", map[string]*Schema{
+					"auth_type": defaulted(updateValue),
+				}, []string{"auth_type"})
+				readResp := jsonAPIBody("AccountResponse", map[string]*Schema{
+					"auth_type": {Kind: SchemaKindPrimitive, Type: "string"},
+				}, []string{"auth_type"})
+
+				merged, _, err := MergeResourceSchema(&ResolvedGroup{
+					Create: &Operation{OperationId: "CreateAccount", RequestSchema: createReq},
+					Update: &Operation{OperationId: "UpdateAccount", RequestSchema: updateReq},
+					Read:   &Operation{OperationId: "GetAccount", ResponseSchema: readResp},
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				authType := attributesOf(merged)["auth_type"]
+				Expect(authType.HasDefault).To(BeTrue())
+				Expect(authType.Default.Value.Equal(NewStringDefault("basic"))).To(BeTrue())
+			},
+			Entry("Update has no default", (*ScalarDefault)(nil)),
+			Entry("Update declares the same default", NewStringDefault("basic")),
+		)
+
+		groupForDefaults := func(createField, updateField, readField *Schema) *ResolvedGroup {
+			create := &Operation{OperationId: "CreateAccount", RequestSchema: jsonAPIBody(
+				"AccountCreateRequest", map[string]*Schema{"auth_type": createField}, []string{"auth_type"})}
+			create.Tracking = &TrackingFieldMetadata{ArtifactName: "integration_account"}
+			return &ResolvedGroup{
+				Create: create,
+				Update: &Operation{OperationId: "UpdateAccount", RequestSchema: jsonAPIBody(
+					"AccountUpdateRequest", map[string]*Schema{"auth_type": updateField}, nil)},
+				Read: &Operation{OperationId: "GetAccount", ResponseSchema: jsonAPIBody(
+					"AccountResponse", map[string]*Schema{"auth_type": readField}, nil)},
+			}
+		}
+
+		It("ignores Update-only and Read-only defaults", func() {
+			plain := defaulted(nil)
+			merged, _, err := MergeResourceSchema(groupForDefaults(
+				plain,
+				defaulted(NewStringDefault("token")),
+				defaulted(NewStringDefault("server")),
+			))
+			Expect(err).NotTo(HaveOccurred())
+			got := attributesOf(merged)["auth_type"]
+			Expect(got.Default.Value).To(BeNil())
+			Expect(got.HasDefault).To(BeFalse())
+		})
+
+		It("rejects an invalid Create default with artifact, path, role, and reason", func() {
+			invalid := problemDefault("default has YAML type string, want integer")
+			_, _, err := MergeResourceSchema(groupForDefaults(invalid, defaulted(nil), defaulted(nil)))
+			var defaultErr *SchemaDefaultError
+			Expect(errors.As(err, &defaultErr)).To(BeTrue())
+			Expect(err.Error()).To(ContainSubstring(`resource "integration_account"`))
+			Expect(err.Error()).To(ContainSubstring(`"data.attributes.auth_type"`))
+			Expect(err.Error()).To(ContainSubstring("Create request"))
+			Expect(err.Error()).To(ContainSubstring("want integer"))
+		})
+
+		It("rejects an invalid or conflicting Update default when Create has a usable default", func() {
+			create := defaulted(NewStringDefault("basic"))
+			invalidUpdate := problemDefault("not one of the allowed values")
+			_, _, err := MergeResourceSchema(groupForDefaults(create, invalidUpdate, defaulted(nil)))
+			Expect(err).To(MatchError(ContainSubstring("Update request")))
+
+			_, _, err = MergeResourceSchema(groupForDefaults(
+				create, defaulted(NewStringDefault("token")), defaulted(nil)))
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(ContainSubstring(`Create default "basic"`))
+			Expect(err.Error()).To(ContainSubstring(`Update default "token"`))
+		})
+
+		It("does not validate or disclose sensitive and write-only defaults", func() {
+			for _, markSecret := range []func(*Schema){
+				func(schema *Schema) { schema.Sensitive = true },
+				func(schema *Schema) { schema.WriteOnlySecret = true },
+			} {
+				create := defaulted(NewStringDefault("create-secret"))
+				update := defaulted(NewStringDefault("update-secret"))
+				markSecret(create)
+				markSecret(update)
+				merged, _, err := MergeResourceSchema(groupForDefaults(create, update, defaulted(nil)))
+				Expect(err).NotTo(HaveOccurred())
+				Expect(attributesOf(merged)["auth_type"].Default.Value).NotTo(BeNil())
+			}
+		})
+	})
+
 	DescribeTable("selects generated write-only handling only from a request-role writeOnly marker",
 		func(createWriteOnly, updateWriteOnly, readWriteOnly, requestSensitive, wantWriteOnly, wantSensitive bool) {
 			createReq := jsonAPIBody("AccountCreateRequest", map[string]*Schema{
@@ -169,6 +263,71 @@ var _ = Describe("MergeResourceSchema", func() {
 		var lifecycleErr *WriteOnlyLifecycleError
 		Expect(errors.As(err, &lifecycleErr)).To(BeTrue())
 		Expect(lifecycleErr.MissingRole).To(Equal("Update"))
+	})
+
+	Describe("inside a oneOf alternative one request role does not list", func() {
+		// tokenAuth is one role's spelling of an alternative carrying a write-only
+		// token; the Read spelling has no token, as a response never returns one.
+		tokenAuth := func(refName string, withToken bool) *Schema {
+			properties := map[string]*Schema{"auth_type": {Kind: SchemaKindPrimitive, Type: "string"}}
+			if withToken {
+				properties["token"] = secretSchema(true, false)
+			}
+			return &Schema{Kind: SchemaKindObject, RefName: refName, Properties: properties}
+		}
+		addAlternative := func(union *Schema, refName string, alternative *Schema) {
+			withTokenAuth(union, refName)
+			union.OneOf.Variants[len(union.OneOf.Variants)-1].Schema = alternative
+		}
+		unionIn := func(body *Schema) *Schema { return attributesOf(body)["authentication"] }
+
+		It("does not report the write-only field missing from the role whose union omits the alternative", func() {
+			group := threeRoleAuthGroup()
+			addAlternative(unionIn(group.Update.RequestSchema), "TokenAuthUpdate", tokenAuth("TokenAuthUpdate", true))
+			addAlternative(unionIn(group.Read.ResponseSchema), "TokenAuthResponse", tokenAuth("TokenAuthResponse", false))
+
+			merged, _, err := MergeResourceSchema(group)
+			Expect(err).NotTo(HaveOccurred())
+			token := mergedVariant(attributesOf(merged)["authentication"], "token_auth").Schema.Properties["token"]
+			Expect(token.WriteOnlySecret).To(BeTrue())
+		})
+
+		It("does the same for an alternative the Update request omits", func() {
+			group := threeRoleAuthGroup()
+			addAlternative(unionIn(group.Create.RequestSchema), "TokenAuthRequest", tokenAuth("TokenAuthRequest", true))
+			addAlternative(unionIn(group.Read.ResponseSchema), "TokenAuthResponse", tokenAuth("TokenAuthResponse", false))
+
+			_, _, err := MergeResourceSchema(group)
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		It("carries the omission down through a union nested inside the alternative", func() {
+			nested := func(refName string, withToken bool) *Schema {
+				// The inner alternative is spelled the same by every role, so only the
+				// outer omission is under test.
+				credential := authUnion(refName+"Credential", "TokenPat", tokenAuth("TokenPat", withToken), true)
+				return &Schema{Kind: SchemaKindObject, RefName: refName, Properties: map[string]*Schema{"credential": credential}}
+			}
+			group := threeRoleAuthGroup()
+			addAlternative(unionIn(group.Update.RequestSchema), "TokenAuthUpdate", nested("TokenAuthUpdate", true))
+			addAlternative(unionIn(group.Read.ResponseSchema), "TokenAuthResponse", nested("TokenAuthResponse", false))
+
+			_, _, err := MergeResourceSchema(group)
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		It("still reports a write-only field missing from a request whose union does list the alternative", func() {
+			group := threeRoleAuthGroup()
+			addAlternative(unionIn(group.Create.RequestSchema), "TokenAuthRequest", tokenAuth("TokenAuthRequest", false))
+			addAlternative(unionIn(group.Update.RequestSchema), "TokenAuthUpdate", tokenAuth("TokenAuthUpdate", true))
+			addAlternative(unionIn(group.Read.ResponseSchema), "TokenAuthResponse", tokenAuth("TokenAuthResponse", false))
+
+			_, _, err := MergeResourceSchema(group)
+			var lifecycleErr *WriteOnlyLifecycleError
+			Expect(errors.As(err, &lifecycleErr)).To(BeTrue())
+			Expect(lifecycleErr.MissingRole).To(Equal("Create"))
+			Expect(lifecycleErr.Path).To(Equal("data.attributes.authentication.token_auth.token"))
+		})
 	})
 
 	It("suppresses a request write-only field returned by Read and emits one deterministic value-free warning", func() {

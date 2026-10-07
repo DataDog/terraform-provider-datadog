@@ -31,10 +31,11 @@ func resourceDatadogMonitorConfigPolicy() *schema.Resource {
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewMonitorConfigPolicyTypeFromValue),
 				},
 				"tag_policy": {
-					Description: "Config for a tag policy. Only set if `policy_type` is `tag`.",
-					Type:        schema.TypeList,
-					Optional:    true,
-					MaxItems:    1,
+					Description:   "Config for a tag policy. Only set if `policy_type` is `tag`.",
+					Type:          schema.TypeList,
+					Optional:      true,
+					MaxItems:      1,
+					ConflictsWith: []string{"downtime_policy"},
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"tag_key": {
@@ -52,6 +53,22 @@ func resourceDatadogMonitorConfigPolicy() *schema.Resource {
 								Description: "Valid values for the tag",
 								Required:    true,
 								Elem:        &schema.Schema{Type: schema.TypeString},
+							},
+						},
+					},
+				},
+				"downtime_policy": {
+					Description:   "Config for a downtime duration policy. Only set if `policy_type` is `downtime`.",
+					Type:          schema.TypeList,
+					Optional:      true,
+					MaxItems:      1,
+					ConflictsWith: []string{"tag_policy"},
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"max_duration_ms": {
+								Type:        schema.TypeInt,
+								Description: "The maximum allowed downtime duration, in milliseconds",
+								Required:    true,
 							},
 						},
 					},
@@ -89,6 +106,12 @@ func buildCreateRequestPolicy(d *schema.ResourceData, policyType datadogV2.Monit
 				ValidTagValues: validTagValues,
 			}}
 	}
+	if policyType == datadogV2.MONITORCONFIGPOLICYTYPE_DOWNTIME {
+		return &datadogV2.MonitorConfigPolicyPolicyCreateRequest{
+			MonitorConfigPolicyDowntimePolicyCreateRequest: &datadogV2.MonitorConfigPolicyDowntimePolicyCreateRequest{
+				MaxDurationMs: int64(d.Get("downtime_policy.0.max_duration_ms").(int)),
+			}}
+	}
 	return nil
 }
 
@@ -120,6 +143,12 @@ func buildUpdateRequestPolicy(d *schema.ResourceData, policyType datadogV2.Monit
 				TagKey:         &tagKey,
 				TagKeyRequired: &tagKeyRequired,
 				ValidTagValues: validTagValues,
+			}}
+	}
+	if policyType == datadogV2.MONITORCONFIGPOLICYTYPE_DOWNTIME {
+		return &datadogV2.MonitorConfigPolicyPolicy{
+			MonitorConfigPolicyDowntimePolicy: &datadogV2.MonitorConfigPolicyDowntimePolicy{
+				MaxDurationMs: int64(d.Get("downtime_policy.0.max_duration_ms").(int)),
 			}}
 	}
 	return nil
@@ -207,12 +236,24 @@ func updateMonitorConfigPolicyState(d *schema.ResourceData, m *datadogV2.Monitor
 	d.SetId(m.GetId())
 	attributes := m.GetAttributes()
 	d.Set("policy_type", attributes.GetPolicyType())
+	policy := attributes.GetPolicy()
 	if attributes.GetPolicyType() == datadogV2.MONITORCONFIGPOLICYTYPE_TAG {
-		d.Set("tag_policy", []interface{}{map[string]interface{}{
-			"tag_key":          attributes.Policy.MonitorConfigPolicyTagPolicy.GetTagKey(),
-			"tag_key_required": attributes.Policy.MonitorConfigPolicyTagPolicy.GetTagKeyRequired(),
-			"valid_tag_values": attributes.Policy.MonitorConfigPolicyTagPolicy.GetValidTagValues(),
-		}})
+		if policy.MonitorConfigPolicyTagPolicy != nil {
+			d.Set("tag_policy", []interface{}{map[string]interface{}{
+				"tag_key":          policy.MonitorConfigPolicyTagPolicy.GetTagKey(),
+				"tag_key_required": policy.MonitorConfigPolicyTagPolicy.GetTagKeyRequired(),
+				"valid_tag_values": policy.MonitorConfigPolicyTagPolicy.GetValidTagValues(),
+			}})
+		}
+		d.Set("downtime_policy", nil)
+	}
+	if attributes.GetPolicyType() == datadogV2.MONITORCONFIGPOLICYTYPE_DOWNTIME {
+		if policy.MonitorConfigPolicyDowntimePolicy != nil {
+			d.Set("downtime_policy", []interface{}{map[string]interface{}{
+				"max_duration_ms": policy.MonitorConfigPolicyDowntimePolicy.GetMaxDurationMs(),
+			}})
+		}
+		d.Set("tag_policy", nil)
 	}
 	return nil
 }
@@ -221,6 +262,11 @@ func checkPolicyConsistency(d *schema.ResourceData) error {
 	if d.Get("policy_type") == string(datadogV2.MONITORCONFIGPOLICYTYPE_TAG) {
 		if _, ok := d.GetOk("tag_policy"); !ok {
 			return fmt.Errorf("tag_policy values must be set for tag policy_type")
+		}
+	}
+	if d.Get("policy_type") == string(datadogV2.MONITORCONFIGPOLICYTYPE_DOWNTIME) {
+		if _, ok := d.GetOk("downtime_policy"); !ok {
+			return fmt.Errorf("downtime_policy values must be set for downtime policy_type")
 		}
 	}
 	return nil

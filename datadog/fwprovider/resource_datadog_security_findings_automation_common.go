@@ -97,6 +97,18 @@ func flattenAutomationRuleScope(ctx context.Context, scope datadogV2.AutomationR
 	return m, diags
 }
 
+// flattenInboxRuleAction converts the API inbox rule action (shared by inbox rules and default
+// inbox rules) into the state model.
+func flattenInboxRuleAction(action datadogV2.InboxRuleAction) *inboxRuleActionModel {
+	actionModel := &inboxRuleActionModel{}
+	if action.HasDescription() {
+		actionModel.Description = types.StringValue(action.GetDescription())
+	} else {
+		actionModel.Description = types.StringNull()
+	}
+	return actionModel
+}
+
 // securityFindingsRulesOrderModel is the shared state model for the order resources.
 type securityFindingsRulesOrderModel struct {
 	ID      types.String `tfsdk:"id"`

@@ -12,7 +12,6 @@ resource "datadog_integration_azure" "sandbox" {
 }
 
 # Or, using secretless (federated workload identity) authentication.
-# Note: secretless authentication is currently in Preview.
 resource "datadog_integration_azure" "sandbox_secretless" {
   tenant_name             = "<azure_tenant_name>"
   client_id               = "<azure_client_id>"

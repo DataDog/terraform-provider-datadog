@@ -48,13 +48,9 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.CreateFleetSchedule", true)
 	config.SetUnstableOperationEnabled("v2.UpdateFleetSchedule", true)
 	config.SetUnstableOperationEnabled("v2.DeleteFleetSchedule", true)
-
-	// Enable Web Integrations (AMS) — Databricks resource depends on these.
-	config.SetUnstableOperationEnabled("v2.CreateWebIntegrationAccount", true)
-	config.SetUnstableOperationEnabled("v2.GetWebIntegrationAccount", true)
-	config.SetUnstableOperationEnabled("v2.ListWebIntegrationAccounts", true)
-	config.SetUnstableOperationEnabled("v2.UpdateWebIntegrationAccount", true)
-	config.SetUnstableOperationEnabled("v2.DeleteWebIntegrationAccount", true)
+	config.SetUnstableOperationEnabled("v2.CreateAWSCloudAuthPersonaMapping", true)
+	config.SetUnstableOperationEnabled("v2.GetAWSCloudAuthPersonaMapping", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAWSCloudAuthPersonaMapping", true)
 
 	// Enable Logs Restriction Queries
 	config.SetUnstableOperationEnabled("v2.CreateRestrictionQuery", true)
@@ -181,6 +177,16 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationSeverityModifierRule", true)
 	config.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationSeverityModifierRule", true)
 	config.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationSeverityModifierRules", true)
+	config.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationInboxRules", true)
+	config.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationInboxRules", true)
+	config.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationDefaultInboxRules", true)
+	config.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationDefaultInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.EnableSecurityFindingsAutomationDefaultInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.DisableSecurityFindingsAutomationDefaultInboxRule", true)
 
 	config.SetUnstableOperationEnabled("v2.CreateTagIndexingRule", true)
 	config.SetUnstableOperationEnabled("v2.GetTagIndexingRule", true)

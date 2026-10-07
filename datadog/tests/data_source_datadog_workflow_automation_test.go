@@ -42,6 +42,7 @@ func TestAccDatadogWorkflowAutomationDatasource(t *testing.T) {
 					resource.TestCheckResourceAttr("data.datadog_workflow_automation.my_workflow", "spec_json", testWorkflowEmptySpecNoWhitespace),
 					resource.TestCheckResourceAttr("data.datadog_workflow_automation.my_workflow", "run_as.type", "owner"),
 					resource.TestCheckNoResourceAttr("data.datadog_workflow_automation.my_workflow", "run_as.id"),
+					resource.TestCheckResourceAttr("data.datadog_workflow_automation.my_workflow", "sensitive_privileges", "false"),
 				),
 			},
 		},

@@ -47,14 +47,10 @@ security:
 - apiKeyAuth: []
   appKeyAuth: []
 tags:
-- name: Twilio Integration Accounts
-  description: 'Manage your Datadog Twilio integration accounts directly through the Datadog API.
+- name: Twilio Integration
+  description: 'Manage your Datadog Twilio integration accounts and account resources directly
 
-    Create, update, and delete accounts, configure authentication and settings, and
-
-    enable or disable dataflows such as message logs, event logs, alerts, call
-
-    summaries, and Cloud Cost Management metrics. See the
+    through the Datadog API. See the
 
     [Twilio integration page](https://docs.datadoghq.com/integrations/twilio/) for
 
@@ -71,7 +67,7 @@ paths:
         - manage_integrations
       description: Create a Twilio integration account.
       operationId: CreateTwilioIntegrationAccount
-      x-unstable: '**Note**: This endpoint is in public beta.
+      x-unstable: '**Note**: This endpoint is in preview and is subject to change.
 
         If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).'
       x-menu-order: 2
@@ -127,7 +123,7 @@ paths:
           $ref: '#/components/responses/TooManyRequestsResponse'
       summary: Create a Twilio integration account
       tags:
-      - Twilio Integration Accounts
+      - Twilio Integration
     get:
       x-permission:
         operator: OR
@@ -135,7 +131,7 @@ paths:
         - integrations_read
       description: List Twilio integration accounts.
       operationId: ListTwilioIntegrationAccounts
-      x-unstable: '**Note**: This endpoint is in public beta.
+      x-unstable: '**Note**: This endpoint is in preview and is subject to change.
 
         If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).'
       x-menu-order: 1
@@ -178,7 +174,7 @@ paths:
           $ref: '#/components/responses/TooManyRequestsResponse'
       summary: List Twilio integration accounts
       tags:
-      - Twilio Integration Accounts
+      - Twilio Integration
   /api/v2/integration-interfaces/twilio/accounts/{account_id}:
     delete:
       x-permission:
@@ -187,7 +183,7 @@ paths:
         - manage_integrations
       description: Delete a Twilio integration account.
       operationId: DeleteTwilioIntegrationAccount
-      x-unstable: '**Note**: This endpoint is in public beta.
+      x-unstable: '**Note**: This endpoint is in preview and is subject to change.
 
         If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).'
       x-menu-order: 5
@@ -208,7 +204,7 @@ paths:
           $ref: '#/components/responses/TooManyRequestsResponse'
       summary: Delete a Twilio integration account
       tags:
-      - Twilio Integration Accounts
+      - Twilio Integration
     get:
       x-permission:
         operator: OR
@@ -216,16 +212,7 @@ paths:
         - integrations_read
       description: Get a Twilio integration account.
       operationId: GetTwilioIntegrationAccount
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: integration_twilio_account
-        tf_description: Provides a Datadog Twilio integration account resource.
-        group:
-          create: CreateTwilioIntegrationAccount
-          read: GetTwilioIntegrationAccount
-          update: UpdateTwilioIntegrationAccount
-          delete: DeleteTwilioIntegrationAccount
-      x-unstable: '**Note**: This endpoint is in public beta.
+      x-unstable: '**Note**: This endpoint is in preview and is subject to change.
 
         If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).'
       x-menu-order: 3
@@ -270,7 +257,16 @@ paths:
           $ref: '#/components/responses/TooManyRequestsResponse'
       summary: Get a Twilio integration account
       tags:
-      - Twilio Integration Accounts
+      - Twilio Integration
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: integration_twilio_account
+        tf_description: Provides a Datadog Twilio integration account resource.
+        group:
+          create: CreateTwilioIntegrationAccount
+          read: GetTwilioIntegrationAccount
+          update: UpdateTwilioIntegrationAccount
+          delete: DeleteTwilioIntegrationAccount
     patch:
       x-permission:
         operator: OR
@@ -278,7 +274,7 @@ paths:
         - manage_integrations
       description: Update a Twilio integration account. Only the fields provided are changed.
       operationId: UpdateTwilioIntegrationAccount
-      x-unstable: '**Note**: This endpoint is in public beta.
+      x-unstable: '**Note**: This endpoint is in preview and is subject to change.
 
         If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).'
       x-menu-order: 4
@@ -332,7 +328,7 @@ paths:
           $ref: '#/components/responses/TooManyRequestsResponse'
       summary: Update a Twilio integration account
       tags:
-      - Twilio Integration Accounts
+      - Twilio Integration
 components:
   parameters:
     IntegrationAccountIdParameter:
@@ -389,67 +385,6 @@ components:
             type: string
             description: A list of items.
             example: Bad Request
-    IntegrationAccountBasicAuthRequest:
-      description: Username and password authentication.
-      type: object
-      required:
-      - auth_type
-      - username
-      - password
-      properties:
-        auth_type:
-          $ref: '#/components/schemas/IntegrationAccountBasicAuthType'
-        username:
-          description: Non-secret username or public identifier for the credential pair.
-          example: datadog
-          type: string
-        password:
-          description: Secret password or private key.
-          example: your-password
-          type: string
-          writeOnly: true
-          x-secret: true
-    IntegrationAccountBasicAuthResponse:
-      description: The basic authentication method and username configured on the account.
-      type: object
-      required:
-      - auth_type
-      - username
-      properties:
-        auth_type:
-          $ref: '#/components/schemas/IntegrationAccountBasicAuthType'
-        username:
-          description: Non-secret username or public identifier for the credential pair.
-          example: datadog
-          type: string
-    IntegrationAccountBasicAuthType:
-      description: The authentication method type.
-      default: basic
-      enum:
-      - basic
-      example: basic
-      type: string
-      x-enum-varnames:
-      - BASIC
-    IntegrationAccountBasicAuthUpdate:
-      description: Username and password authentication. Only the fields provided are changed; omit `password`
-        to keep the stored one.
-      type: object
-      required:
-      - auth_type
-      properties:
-        auth_type:
-          $ref: '#/components/schemas/IntegrationAccountBasicAuthType'
-        username:
-          description: Non-secret username or public identifier for the credential pair.
-          example: datadog
-          type: string
-        password:
-          description: Secret password or private key.
-          example: your-password
-          type: string
-          writeOnly: true
-          x-secret: true
     IntegrationAccountDataflowHealth:
       description: Collection health of a single dataflow.
       enum:
@@ -538,80 +473,106 @@ components:
             $ref: '#/components/schemas/JSONAPIErrorItem'
     TwilioAlertsLogsIntegrationDataflowRequest:
       x-ignore-duplicate-object: true
-      description: The Twilio alerts logs dataflow.
+      additionalProperties: false
+      description: Twilio Alert resource logs, which detail the errors and warnings raised when Twilio
+        makes a webhook request to your server or when your application calls the Twilio REST API. This
+        is the one kind of data the integration collects by default.
       type: object
       properties:
         enabled:
-          description: Whether the Twilio dataflow is enabled.
+          description: Whether Datadog collects this data. Defaults to `true`; set to `false` to stop
+            collection.
           example: true
           type: boolean
     TwilioAlertsLogsIntegrationDataflowResponse:
       x-ignore-duplicate-object: true
-      description: The Twilio alerts logs dataflow.
+      description: Twilio Alert resource logs, which detail the errors and warnings raised when Twilio
+        makes a webhook request to your server or when your application calls the Twilio REST API.
       type: object
       properties:
         enabled:
-          description: Whether the Twilio dataflow is enabled.
+          description: Whether Datadog collects this data.
           example: true
           type: boolean
         status:
           $ref: '#/components/schemas/IntegrationAccountDataflowStatus'
     TwilioCallSummariesLogsIntegrationDataflowRequest:
       x-ignore-duplicate-object: true
-      description: The Twilio call summaries logs dataflow.
+      additionalProperties: false
+      description: Twilio Call Summary resource logs, covering the metadata and performance of the calls
+        made from your Twilio account. Requires Voice Insights Advanced Features to be enabled on the
+        Twilio account; without it this dataflow collects no data.
       type: object
       properties:
         enabled:
-          description: Whether the Twilio dataflow is enabled.
+          description: Whether Datadog collects this data. Defaults to `false`; set to `true` to start
+            collection.
           example: true
           type: boolean
     TwilioCallSummariesLogsIntegrationDataflowResponse:
       x-ignore-duplicate-object: true
-      description: The Twilio call summaries logs dataflow.
+      description: Twilio Call Summary resource logs, covering the metadata and performance of the calls
+        made from your Twilio account. Requires Voice Insights Advanced Features to be enabled on the
+        Twilio account; without it this dataflow collects no data.
       type: object
       properties:
         enabled:
-          description: Whether the Twilio dataflow is enabled.
+          description: Whether Datadog collects this data.
           example: true
           type: boolean
         status:
           $ref: '#/components/schemas/IntegrationAccountDataflowStatus'
     TwilioCloudCostMetricsIntegrationDataflowRequest:
       x-ignore-duplicate-object: true
-      description: The Twilio cloud cost metrics dataflow.
+      additionalProperties: false
+      description: Your Twilio cost data, so that Twilio spend can be broken down and attributed in [Cloud
+        Cost Management](https://docs.datadoghq.com/cloud_cost_management/). Cost data appears in Cloud
+        Cost Management within 24 hours of enabling this dataflow.
       type: object
       properties:
         enabled:
-          description: Whether the Twilio dataflow is enabled.
+          description: Whether Datadog collects this data. Defaults to `false`; set to `true` to start
+            collection.
           example: true
           type: boolean
     TwilioCloudCostMetricsIntegrationDataflowResponse:
       x-ignore-duplicate-object: true
-      description: The Twilio cloud cost metrics dataflow.
+      description: Your Twilio cost data, so that Twilio spend can be broken down and attributed in [Cloud
+        Cost Management](https://docs.datadoghq.com/cloud_cost_management/).
       type: object
       properties:
         enabled:
-          description: Whether the Twilio dataflow is enabled.
+          description: Whether Datadog collects this data.
           example: true
           type: boolean
         status:
           $ref: '#/components/schemas/IntegrationAccountDataflowStatus'
     TwilioEventsLogsIntegrationDataflowRequest:
       x-ignore-duplicate-object: true
-      description: The Twilio events logs dataflow.
+      additionalProperties: false
+      description: Twilio Event resource logs, which record virtually every action taken in your Twilio
+        account, such as provisioning a phone number, changing account security settings, or deleting
+        a recording. Actions are recorded whether they came from the REST API, a user in the Twilio Console,
+        or Twilio itself. [Cloud SIEM](https://docs.datadoghq.com/security/cloud_siem/) analyzes and correlates
+        these logs to detect threats in real time.
       type: object
       properties:
         enabled:
-          description: Whether the Twilio dataflow is enabled.
+          description: Whether Datadog collects this data. Defaults to `false`; set to `true` to start
+            collection.
           example: true
           type: boolean
     TwilioEventsLogsIntegrationDataflowResponse:
       x-ignore-duplicate-object: true
-      description: The Twilio events logs dataflow.
+      description: Twilio Event resource logs, which record virtually every action taken in your Twilio
+        account, such as provisioning a phone number, changing account security settings, or deleting
+        a recording. Actions are recorded whether they came from the REST API, a user in the Twilio Console,
+        or Twilio itself. [Cloud SIEM](https://docs.datadoghq.com/security/cloud_siem/) analyzes and correlates
+        these logs to detect threats in real time.
       type: object
       properties:
         enabled:
-          description: Whether the Twilio dataflow is enabled.
+          description: Whether Datadog collects this data.
           example: true
           type: boolean
         status:
@@ -619,18 +580,82 @@ components:
     TwilioIntegrationAccountAuthenticationRequest:
       description: Authentication for creating the Twilio integration account. Exactly one method is set.
       oneOf:
-      - $ref: '#/components/schemas/IntegrationAccountBasicAuthRequest'
+      - $ref: '#/components/schemas/TwilioIntegrationAccountBasicAuthRequest'
       x-ignore-duplicate-object: true
     TwilioIntegrationAccountAuthenticationResponse:
       description: Authentication configured on the Twilio integration account.
       oneOf:
-      - $ref: '#/components/schemas/IntegrationAccountBasicAuthResponse'
+      - $ref: '#/components/schemas/TwilioIntegrationAccountBasicAuthResponse'
       x-ignore-duplicate-object: true
     TwilioIntegrationAccountAuthenticationUpdate:
       description: Authentication for updating the Twilio integration account. Exactly one method is set.
       oneOf:
-      - $ref: '#/components/schemas/IntegrationAccountBasicAuthUpdate'
+      - $ref: '#/components/schemas/TwilioIntegrationAccountBasicAuthUpdate'
       x-ignore-duplicate-object: true
+    TwilioIntegrationAccountBasicAuthRequest:
+      description: Username and password authentication.
+      additionalProperties: false
+      type: object
+      required:
+      - auth_type
+      - username
+      - password
+      properties:
+        auth_type:
+          $ref: '#/components/schemas/TwilioIntegrationAccountBasicAuthType'
+        username:
+          description: Non-secret username or public identifier for the credential pair.
+          example: datadog
+          type: string
+        password:
+          description: Secret password or private key.
+          example: your-password
+          type: string
+          writeOnly: true
+          x-secret: true
+    TwilioIntegrationAccountBasicAuthResponse:
+      description: The basic authentication method and username configured on the account.
+      type: object
+      required:
+      - auth_type
+      - username
+      properties:
+        auth_type:
+          $ref: '#/components/schemas/TwilioIntegrationAccountBasicAuthType'
+        username:
+          description: Non-secret username or public identifier for the credential pair.
+          example: datadog
+          type: string
+    TwilioIntegrationAccountBasicAuthType:
+      description: The authentication method type.
+      default: basic
+      enum:
+      - basic
+      example: basic
+      type: string
+      x-enum-varnames:
+      - BASIC
+      x-ignore-duplicate-object: true
+    TwilioIntegrationAccountBasicAuthUpdate:
+      description: Username and password authentication. Only the fields provided are changed; omit `password`
+        to keep the stored one.
+      additionalProperties: false
+      type: object
+      required:
+      - auth_type
+      properties:
+        auth_type:
+          $ref: '#/components/schemas/TwilioIntegrationAccountBasicAuthType'
+        username:
+          description: Non-secret username or public identifier for the credential pair.
+          example: datadog
+          type: string
+        password:
+          description: Secret password or private key.
+          example: your-password
+          type: string
+          writeOnly: true
+          x-secret: true
     TwilioIntegrationAccountCreateAttributes:
       description: Writable attributes used to create a Twilio integration account.
       properties:
@@ -712,6 +737,7 @@ components:
       type: object
     TwilioIntegrationAccountSettingsRequest:
       description: Settings for creating the Twilio integration account.
+      additionalProperties: false
       properties:
         account_sid:
           description: Twilio Account SID that uniquely identifies your Twilio account.
@@ -744,6 +770,7 @@ components:
     TwilioIntegrationAccountSettingsUpdate:
       description: Settings for updating the Twilio integration account. Only the fields provided are
         changed.
+      additionalProperties: false
       properties:
         account_sid:
           description: Twilio Account SID that uniquely identifies your Twilio account.
@@ -808,7 +835,11 @@ components:
       type: object
     TwilioIntegrationDataflowsRequest:
       additionalProperties: false
-      description: Dataflows to configure on the Twilio integration account, keyed by dataflow id.
+      description: 'Data Datadog collects from Twilio, keyed by dataflow id. Each dataflow turns on a
+        distinct kind of collection: set `enabled` to start or stop it. Defaults listed on each dataflow
+        apply when the account is created; on update, omitted fields keep their current values. Where
+        a dataflow depends on a Twilio feature being enabled, that prerequisite is noted on the dataflow;
+        a dataflow enabled without it is stored but collects no data.'
       type: object
       properties:
         twilio-cloud-cost-metrics:
@@ -822,7 +853,7 @@ components:
         twilio-call-summaries-logs:
           $ref: '#/components/schemas/TwilioCallSummariesLogsIntegrationDataflowRequest'
     TwilioIntegrationDataflowsResponse:
-      description: Dataflows configured on the Twilio integration account, keyed by dataflow id.
+      description: Data Datadog collects from Twilio, keyed by dataflow id.
       type: object
       properties:
         twilio-cloud-cost-metrics:
@@ -837,20 +868,28 @@ components:
           $ref: '#/components/schemas/TwilioCallSummariesLogsIntegrationDataflowResponse'
     TwilioMessagesLogsIntegrationDataflowRequest:
       x-ignore-duplicate-object: true
-      description: The Twilio messages logs dataflow.
+      additionalProperties: false
+      description: Twilio Message resource logs for inbound and outbound messages, used to track delivery
+        and troubleshoot message errors. A log is produced when you send a message through the REST API,
+        when Twilio executes a TwiML instruction, and when someone messages one of your Twilio numbers
+        or channel addresses. Message bodies are never collected.
       type: object
       properties:
         enabled:
-          description: Whether the Twilio dataflow is enabled.
+          description: Whether Datadog collects this data. Defaults to `false`; set to `true` to start
+            collection.
           example: true
           type: boolean
     TwilioMessagesLogsIntegrationDataflowResponse:
       x-ignore-duplicate-object: true
-      description: The Twilio messages logs dataflow.
+      description: Twilio Message resource logs for inbound and outbound messages, used to track delivery
+        and troubleshoot message errors. A log is produced when you send a message through the REST API,
+        when Twilio executes a TwiML instruction, and when someone messages one of your Twilio numbers
+        or channel addresses. Message bodies are never collected.
       type: object
       properties:
         enabled:
-          description: Whether the Twilio dataflow is enabled.
+          description: Whether Datadog collects this data.
           example: true
           type: boolean
         status:

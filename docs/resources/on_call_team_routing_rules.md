@@ -78,8 +78,7 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
     }
   }
 
-  # The last rule must be a catch-all: no query, no time restriction,
-  # and an escalation policy.
+  # The last rule must be a catch-all: no query and no time restriction.
   rule {
     escalation_policy = "00000000-aba2-0000-0000-000000000000"
     urgency           = "dynamic"
@@ -104,7 +103,7 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
 Optional:
 
 - `action` (Block List) Specifies the list of actions to perform when the routing rule is matched. (see [below for nested schema](#nestedblock--rule--action))
-- `escalation_policy` (String) ID of the policy to be applied when this routing rule matches. The last rule must define an escalation policy, either via this attribute or via an `escalation_policy` action.
+- `escalation_policy` (String) ID of the policy to be applied when this routing rule matches.
 - `query` (String) Defines the query or condition that triggers this routing rule. Must not be set on the last rule, which acts as a catch-all rule. Defaults to `""`.
 - `time_restrictions` (Block, Optional) Holds time zone information and a list of time restrictions for a routing rule. Must not be set on the last rule, which acts as a catch-all rule. (see [below for nested schema](#nestedblock--rule--time_restrictions))
 - `urgency` (String) Defines the urgency for pages created via this rule. Only valid if `escalation_policy` is set. Valid values are `high`, `low`, `dynamic`.

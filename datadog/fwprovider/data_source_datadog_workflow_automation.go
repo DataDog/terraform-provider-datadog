@@ -22,13 +22,14 @@ type workflowAutomationDatasource struct {
 }
 
 type workflowAutomationDatasourceModel struct {
-	ID          types.String         `tfsdk:"id"`
-	Name        types.String         `tfsdk:"name"`
-	Description types.String         `tfsdk:"description"`
-	Tags        []types.String       `tfsdk:"tags"`
-	Published   types.Bool           `tfsdk:"published"`
-	SpecJson    jsontypes.Normalized `tfsdk:"spec_json"`
-	RunAs       types.Object         `tfsdk:"run_as"`
+	ID                  types.String         `tfsdk:"id"`
+	Name                types.String         `tfsdk:"name"`
+	Description         types.String         `tfsdk:"description"`
+	Tags                []types.String       `tfsdk:"tags"`
+	Published           types.Bool           `tfsdk:"published"`
+	SpecJson            jsontypes.Normalized `tfsdk:"spec_json"`
+	RunAs               types.Object         `tfsdk:"run_as"`
+	SensitivePrivileges types.Bool           `tfsdk:"sensitive_privileges"`
 }
 
 func NewWorkflowAutomationDataSource() datasource.DataSource {
@@ -79,6 +80,10 @@ func (d *workflowAutomationDatasource) Schema(_ context.Context, request datasou
 				Computed:    true,
 				Description: "The spec defines what the workflow does.",
 				CustomType:  jsontypes.NormalizedType{},
+			},
+			"sensitive_privileges": schema.BoolAttribute{
+				Computed:    true,
+				Description: "Whether the workflow requires sensitive privileges to run. Only the workflow owner can update this field. This allows it to run actions that use [Execution Policies](https://docs.datadoghq.com/actions/private_actions/execution_policies/).",
 			},
 			"run_as": schema.SingleNestedAttribute{
 				Computed:    true,
@@ -144,6 +149,7 @@ func apiResponseToWorkflowAutomationDatasourceModel(workflow *datadogV2.GetWorkf
 	}
 
 	workflowModel.Published = types.BoolPointerValue(attributes.Published)
+	workflowModel.SensitivePrivileges = types.BoolPointerValue(attributes.SensitivePrivileges)
 	var err error
 	workflowModel.RunAs, err = apiWorkflowRunAsToModel(attributes.RunAsUserMode, workflow.Data.Relationships)
 	if err != nil {

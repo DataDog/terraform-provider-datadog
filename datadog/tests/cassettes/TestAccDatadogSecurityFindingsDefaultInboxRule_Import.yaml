@@ -1,0 +1,366 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/default_inbox_rules/secret_default_rule
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 633
+        uncompressed: false
+        body: '{"data":{"id":"secret_default_rule","type":"default_inbox_rules","attributes":{"action":{"description":"Maintained by Datadog Security Research. Customize your inbox by adding your own rules, cloning this rule, or disabling it."},"created_at":1787094752823,"created_by":{"type":"system","id":"datadog.security_research","name":"Datadog Security Research"},"enabled":true,"modified_at":1787094752823,"modified_by":{"type":"system","id":"datadog.security_research","name":"Datadog Security Research"},"name":"Secrets","rule":{"finding_types":["secret"],"query":"@git.repository_visibility:public OR @secret.validation_status:valid"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 299.208375ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/default_inbox_rules/secret_default_rule
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 633
+        uncompressed: false
+        body: '{"data":{"id":"secret_default_rule","type":"default_inbox_rules","attributes":{"action":{"description":"Maintained by Datadog Security Research. Customize your inbox by adding your own rules, cloning this rule, or disabling it."},"created_at":1787094752823,"created_by":{"type":"system","id":"datadog.security_research","name":"Datadog Security Research"},"enabled":true,"modified_at":1787094752823,"modified_by":{"type":"system","id":"datadog.security_research","name":"Datadog Security Research"},"name":"Secrets","rule":{"finding_types":["secret"],"query":"@git.repository_visibility:public OR @secret.validation_status:valid"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 127.7775ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/default_inbox_rules/secret_default_rule/disable
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 631
+        uncompressed: false
+        body: '{"data":{"id":"secret_default_rule","type":"default_inbox_rules","attributes":{"action":{"description":"Maintained by Datadog Security Research. Customize your inbox by adding your own rules, cloning this rule, or disabling it."},"created_at":1787094752823,"created_by":{"type":"system","id":"datadog.security_research","name":"Datadog Security Research"},"enabled":false,"modified_at":1789745147354,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"Secrets","rule":{"finding_types":["secret"],"query":"@git.repository_visibility:public OR @secret.validation_status:valid"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 251.834417ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/default_inbox_rules/secret_default_rule
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 631
+        uncompressed: false
+        body: '{"data":{"id":"secret_default_rule","type":"default_inbox_rules","attributes":{"action":{"description":"Maintained by Datadog Security Research. Customize your inbox by adding your own rules, cloning this rule, or disabling it."},"created_at":1787094752823,"created_by":{"type":"system","id":"datadog.security_research","name":"Datadog Security Research"},"enabled":false,"modified_at":1789745147354,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"Secrets","rule":{"finding_types":["secret"],"query":"@git.repository_visibility:public OR @secret.validation_status:valid"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 157.399ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/default_inbox_rules/secret_default_rule
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 631
+        uncompressed: false
+        body: '{"data":{"id":"secret_default_rule","type":"default_inbox_rules","attributes":{"action":{"description":"Maintained by Datadog Security Research. Customize your inbox by adding your own rules, cloning this rule, or disabling it."},"created_at":1787094752823,"created_by":{"type":"system","id":"datadog.security_research","name":"Datadog Security Research"},"enabled":false,"modified_at":1789745147354,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"Secrets","rule":{"finding_types":["secret"],"query":"@git.repository_visibility:public OR @secret.validation_status:valid"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 173.44775ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/default_inbox_rules/secret_default_rule
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 631
+        uncompressed: false
+        body: '{"data":{"id":"secret_default_rule","type":"default_inbox_rules","attributes":{"action":{"description":"Maintained by Datadog Security Research. Customize your inbox by adding your own rules, cloning this rule, or disabling it."},"created_at":1787094752823,"created_by":{"type":"system","id":"datadog.security_research","name":"Datadog Security Research"},"enabled":false,"modified_at":1789745147354,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"Secrets","rule":{"finding_types":["secret"],"query":"@git.repository_visibility:public OR @secret.validation_status:valid"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 128.872ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/default_inbox_rules/secret_default_rule
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 631
+        uncompressed: false
+        body: '{"data":{"id":"secret_default_rule","type":"default_inbox_rules","attributes":{"action":{"description":"Maintained by Datadog Security Research. Customize your inbox by adding your own rules, cloning this rule, or disabling it."},"created_at":1787094752823,"created_by":{"type":"system","id":"datadog.security_research","name":"Datadog Security Research"},"enabled":false,"modified_at":1789745147354,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"Secrets","rule":{"finding_types":["secret"],"query":"@git.repository_visibility:public OR @secret.validation_status:valid"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 129.052875ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/default_inbox_rules/secret_default_rule/enable
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 630
+        uncompressed: false
+        body: '{"data":{"id":"secret_default_rule","type":"default_inbox_rules","attributes":{"action":{"description":"Maintained by Datadog Security Research. Customize your inbox by adding your own rules, cloning this rule, or disabling it."},"created_at":1787094752823,"created_by":{"type":"system","id":"datadog.security_research","name":"Datadog Security Research"},"enabled":true,"modified_at":1789745149565,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"Secrets","rule":{"finding_types":["secret"],"query":"@git.repository_visibility:public OR @secret.validation_status:valid"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 256.111583ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/default_inbox_rules/secret_default_rule
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 630
+        uncompressed: false
+        body: '{"data":{"id":"secret_default_rule","type":"default_inbox_rules","attributes":{"action":{"description":"Maintained by Datadog Security Research. Customize your inbox by adding your own rules, cloning this rule, or disabling it."},"created_at":1787094752823,"created_by":{"type":"system","id":"datadog.security_research","name":"Datadog Security Research"},"enabled":true,"modified_at":1789745149565,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"Secrets","rule":{"finding_types":["secret"],"query":"@git.repository_visibility:public OR @secret.validation_status:valid"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 117.272792ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/default_inbox_rules/secret_default_rule
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 630
+        uncompressed: false
+        body: '{"data":{"id":"secret_default_rule","type":"default_inbox_rules","attributes":{"action":{"description":"Maintained by Datadog Security Research. Customize your inbox by adding your own rules, cloning this rule, or disabling it."},"created_at":1787094752823,"created_by":{"type":"system","id":"datadog.security_research","name":"Datadog Security Research"},"enabled":true,"modified_at":1789745149565,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"Secrets","rule":{"finding_types":["secret"],"query":"@git.repository_visibility:public OR @secret.validation_status:valid"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 127.15075ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/default_inbox_rules/secret_default_rule
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 630
+        uncompressed: false
+        body: '{"data":{"id":"secret_default_rule","type":"default_inbox_rules","attributes":{"action":{"description":"Maintained by Datadog Security Research. Customize your inbox by adding your own rules, cloning this rule, or disabling it."},"created_at":1787094752823,"created_by":{"type":"system","id":"datadog.security_research","name":"Datadog Security Research"},"enabled":true,"modified_at":1789745149565,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"Secrets","rule":{"finding_types":["secret"],"query":"@git.repository_visibility:public OR @secret.validation_status:valid"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 168.605208ms

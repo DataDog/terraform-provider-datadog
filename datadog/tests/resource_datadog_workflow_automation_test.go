@@ -72,6 +72,7 @@ func TestAccDatadogWorkflowAutomationResource(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "spec_json", testWorkflowEmptySpecNoWhitespace),
 					resource.TestCheckResourceAttr(resourceName, "run_as.type", "owner"),
 					resource.TestCheckNoResourceAttr(resourceName, "run_as.id"),
+					resource.TestCheckResourceAttr(resourceName, "sensitive_privileges", "false"),
 				),
 			},
 			{
@@ -88,6 +89,20 @@ func TestAccDatadogWorkflowAutomationResource(t *testing.T) {
 					testAccCheckDatadogWorkflowExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "run_as.type", "owner"),
 					resource.TestCheckNoResourceAttr(resourceName, "run_as.id"),
+				),
+			},
+			{
+				Config: testWorkflowAutomationResourceSensitivePrivilegesConfig(workflowName, true),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogWorkflowExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "sensitive_privileges", "true"),
+				),
+			},
+			{
+				Config: testWorkflowAutomationResourceSensitivePrivilegesConfig(workflowName, false),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogWorkflowExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "sensitive_privileges", "false"),
 				),
 			},
 			{
@@ -159,6 +174,25 @@ func testWorkflowAutomationResourceServiceAccountConfig(workflowName, serviceAcc
 %[6]s
 		)
 	}`, workflowName, serviceAccountName, strings.ToLower(workflowName), testWorkflowDescription, testWorkflowTags, testWorkflowSpec)
+}
+
+func testWorkflowAutomationResourceSensitivePrivilegesConfig(workflowName string, sensitivePrivileges bool) string {
+	return fmt.Sprintf(`
+	resource "datadog_workflow_automation" "my_workflow" {
+		name                  = "%s"
+		description           = "%s"
+		tags                  = %s
+		published             = false
+		sensitive_privileges  = %t
+
+		run_as = {
+			type = "owner"
+		}
+
+		spec_json = jsonencode(
+%s
+		)
+	}`, workflowName, testWorkflowDescription, testWorkflowTags, sensitivePrivileges, testWorkflowSpec)
 }
 
 func testInvalidWorkflowAutomationRunAsConfig(workflowName, runAs string) string {

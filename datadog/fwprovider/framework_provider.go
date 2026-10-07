@@ -61,6 +61,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationAzureResource,
 	NewIntegrationAwsEventBridgeResource,
 	NewIntegrationAwsExternalIDResource,
+	NewAwsWifIdentityMappingResource,
 	NewIntegrationCloudflareAccountResource,
 	NewIntegrationConfluentAccountResource,
 	NewIntegrationConfluentResourceResource,
@@ -89,6 +90,9 @@ var Resources = []func() resource.Resource{
 	NewSecurityFindingsTicketCreationRulesOrderResource,
 	NewSecurityFindingsSeverityModifierRuleResource,
 	NewSecurityFindingsSeverityModifierRulesOrderResource,
+	NewSecurityFindingsInboxRuleResource,
+	NewSecurityFindingsInboxRulesOrderResource,
+	NewSecurityFindingsDefaultInboxRuleResource,
 	NewSensitiveDataScannerGroupOrder,
 	NewServiceAccountApplicationKeyResource,
 	NewServiceAccessTokenResource,
@@ -295,9 +299,9 @@ func New() provider.Provider {
 
 func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resource {
 	// Hand-written and generator-v2 resources are kept in separate slices (see
-	// generatedResources) so regenerating does not churn this file. The two
-	// conditional resources below leave room for themselves in the capacity.
-	wrappedResources := make([]func() resource.Resource, 0, len(Resources)+len(generatedResources)+2)
+	// generatedResources) so regenerating does not churn this file. The
+	// conditional resource below leaves room for itself in the capacity.
+	wrappedResources := make([]func() resource.Resource, 0, len(Resources)+len(generatedResources)+1)
 	for _, f := range slices.Concat(Resources, generatedResources) {
 		r := f()
 		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&r) })
@@ -306,11 +310,6 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 	if utils.UseMonitorFrameworkProvider() {
 		monitorResource := NewMonitorResource()
 		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&monitorResource) })
-	}
-
-	if utils.IsDatabricksIntegrationEnabled() {
-		databricksResource := NewIntegrationDatabricksAccountResource()
-		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&databricksResource) })
 	}
 
 	return wrappedResources
@@ -727,6 +726,9 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDataset", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAWSCloudAuthPersonaMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSCloudAuthPersonaMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSCloudAuthPersonaMapping", true)
 
 	// Fleet Automation schedule reads are stable. Only mutations use Preview endpoints.
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateFleetSchedule", true)
@@ -744,12 +746,6 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetIncidentUserDefinedRole", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentUserDefinedRole", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentUserDefinedRole", true)
-
-	ddClientConfig.SetUnstableOperationEnabled("v2.CreateWebIntegrationAccount", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.GetWebIntegrationAccount", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.ListWebIntegrationAccounts", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateWebIntegrationAccount", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteWebIntegrationAccount", true)
 
 	// Enable Governance Tag Rules
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateTagRule", true)
@@ -875,6 +871,16 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationSeverityModifierRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationSeverityModifierRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationSeverityModifierRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationInboxRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationInboxRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationInboxRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationInboxRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationInboxRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationInboxRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationDefaultInboxRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationDefaultInboxRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.EnableSecurityFindingsAutomationDefaultInboxRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DisableSecurityFindingsAutomationDefaultInboxRule", true)
 
 	// Enable Tag Indexing Rules & Exemptions
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateTagIndexingRule", true)

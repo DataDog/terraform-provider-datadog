@@ -114,7 +114,40 @@ func MergeNormalizedSchemas(variant, common *Schema) *Schema {
 	}
 	variant.Sensitive = variant.Sensitive || common.Sensitive
 	variant.WriteOnlySecret = variant.WriteOnlySecret || common.WriteOnlySecret
+	variant.HasDefault = variant.HasDefault || common.HasDefault
+	variant.Default = variant.Default.Union(common.Default)
 	return variant
+}
+
+// Union folds another declaration for the same field into d, as each composed
+// schema — an allOf branch, or a oneOf alternative and its common schema —
+// contributes one. The first usable value wins and an equal repeat is
+// harmless; two different values cancel out and leave a problem behind. The
+// first problem seen survives, so the earliest declaration is reported.
+func (d SchemaDefault) Union(other SchemaDefault) SchemaDefault {
+	out := d
+	if out.Problem == "" {
+		out.Problem = other.Problem
+	}
+	switch {
+	case other.Value == nil:
+	case out.Value == nil:
+		out.Value = other.Value
+	case !out.Value.Equal(other.Value):
+		out.Value = nil
+		out.Problem = "conflicting defaults are declared by composed schemas"
+	}
+	return cloneSchemaDefault(out)
+}
+
+// cloneSchemaDefault detaches d's value so the copy can be mutated
+// independently, matching CloneSchema's deep-copy contract.
+func cloneSchemaDefault(d SchemaDefault) SchemaDefault {
+	if d.Value != nil {
+		value := *d.Value
+		d.Value = &value
+	}
+	return d
 }
 
 // OneOfValueWrapped reports whether a oneOf alternative's Terraform variant
@@ -139,6 +172,7 @@ func CloneSchema(s *Schema) *Schema {
 		return nil
 	}
 	out := *s
+	out.Default = cloneSchemaDefault(s.Default)
 	out.Enum = append([]string(nil), s.Enum...)
 	out.Required = append([]string(nil), s.Required...)
 	out.Items = CloneSchema(s.Items)
@@ -220,6 +254,25 @@ type WriteOnlyLifecycleError struct {
 	MissingRole string
 }
 
+// SchemaDefaultError reports an unusable request default at one correlated
+// resource field. Role names the request the problem was found in, and is
+// empty when Reason already describes both sides. Secret defaults are outside
+// the feature and never enter validation, so no value here is sensitive.
+type SchemaDefaultError struct {
+	Artifact string
+	Path     string
+	Role     string
+	Reason   string
+}
+
+func (e *SchemaDefaultError) Error() string {
+	prefix := fmt.Sprintf("model: resource %q has an invalid default at %q", e.Artifact, e.Path)
+	if e.Role != "" {
+		prefix += " in the " + e.Role + " request"
+	}
+	return prefix + ": " + e.Reason
+}
+
 func (e *WriteOnlyLifecycleError) Error() string {
 	return fmt.Sprintf(
 		"model: write-only field %q is missing from the %s request; write-only fields must be present in both Create and Update",
@@ -259,6 +312,11 @@ type resourceMerger struct {
 	artifact        string
 	diagnostics     []Diagnostic
 	warnedWriteOnly map[string]struct{}
+	// createAbsentDepth and updateAbsentDepth count the enclosing oneOf
+	// alternatives that role's union does not list. Beneath one, that role's
+	// schema is nil at every position because the whole alternative is
+	// unavailable on it, not because a write-only field was left out.
+	createAbsentDepth, updateAbsentDepth int
 }
 
 func resourceArtifactName(group *ResolvedGroup) string {
@@ -319,11 +377,14 @@ func (m *resourceMerger) warnWriteOnlyResponseConflict(path string) {
 // caller from each enclosing request object's Required list (a node cannot
 // answer either fact about itself).
 func (m *resourceMerger) mergeNode(create, update, read *Schema, createRequired, updateRequired bool, path string) (*Schema, error) {
-	if create != nil && create.WriteOnlySecret && update == nil {
+	if create != nil && create.WriteOnlySecret && update == nil && m.updateAbsentDepth == 0 {
 		return nil, &WriteOnlyLifecycleError{Path: path, MissingRole: "Update"}
 	}
-	if update != nil && update.WriteOnlySecret && create == nil {
+	if update != nil && update.WriteOnlySecret && create == nil && m.createAbsentDepth == 0 {
 		return nil, &WriteOnlyLifecycleError{Path: path, MissingRole: "Create"}
+	}
+	if err := m.validateRequestDefault(create, update, path); err != nil {
+		return nil, err
 	}
 	kind, err := kindConflict(create, update, read, path)
 	if err != nil {
@@ -344,6 +405,37 @@ func (m *resourceMerger) mergeNode(create, update, read *Schema, createRequired,
 		// is the preferred side's clone.
 		return m.mergeVerbatim(create, update, read, createRequired, updateRequired, path)
 	}
+}
+
+// validateRequestDefault applies the lifecycle policy before the Create value
+// is copied onto the merged schema. Create is authoritative. An Update-only
+// default is ignored; when Create has a usable value, Update may omit it or
+// repeat it, but may not supply an invalid or different value.
+func (m *resourceMerger) validateRequestDefault(create, update *Schema, path string) error {
+	if create == nil || create.Sensitive || create.WriteOnlySecret ||
+		update != nil && (update.Sensitive || update.WriteOnlySecret) {
+		return nil
+	}
+	fail := func(role, reason string) error {
+		return &SchemaDefaultError{Artifact: m.artifact, Path: path, Role: role, Reason: reason}
+	}
+	if create.Default.Problem != "" {
+		return fail("Create", create.Default.Problem)
+	}
+	if create.Default.Value == nil || update == nil {
+		return nil
+	}
+	if update.Default.Problem != "" {
+		return fail("Update", update.Default.Problem)
+	}
+	if update.Default.Value != nil && !create.Default.Value.Equal(update.Default.Value) {
+		return fail("", fmt.Sprintf(
+			"Create default %s conflicts with Update default %s",
+			create.Default.Value.GoExpr(),
+			update.Default.Value.GoExpr(),
+		))
+	}
+	return nil
 }
 
 func (m *resourceMerger) mergeObject(create, update, read *Schema, createRequired, updateRequired bool, path string) (*Schema, error) {
@@ -405,6 +497,10 @@ func (m *resourceMerger) stampCommon(out, create, update, read *Schema, createRe
 	out.WriteOnlySecret, out.SecretRequiredOnCreate, out.SecretRequiredOnUpdate, out.WriteOnlyDescription =
 		m.writeOnlyMetadata(create, update, read, createRequired, updateRequired, path)
 	out.Provenance = stampProvenance(create, update, read, createRequired, out.WriteOnlySecret)
+	if create != nil {
+		out.HasDefault = create.HasDefault
+		out.Default = cloneSchemaDefault(create.Default)
+	}
 	return out
 }
 
@@ -667,7 +763,8 @@ func anySensitive(create, update, read *Schema) (sensitive, disagreed bool) {
 
 // OneOfMergeError reports a union the Create request, Update request and Read
 // response bodies describe in ways that cannot be correlated into one
-// Terraform envelope: the bodies list alternatives that do not line up even
+// Terraform envelope: a request lists an alternative the Read response cannot
+// return, the bodies otherwise list alternatives that do not line up even
 // after their CRUD-role suffixes are removed, or one body names two
 // alternatives that collapse onto the same stripped name.
 type OneOfMergeError struct {
@@ -723,9 +820,12 @@ func (m *resourceMerger) mergeOneOf(create, update, read *Schema, createRequired
 				Reason: fmt.Sprintf("alternative %q has no normalized schema in any body", name),
 			}
 		}
-		// An alternative is a choice, never an entry in an enclosing object's
-		// required list, so it is never itself request-required.
-		merged, err := m.mergeNode(altCreate, altUpdate, altRead, false, false, ChildPath(path, name))
+		// A nil side is a body that never reaches the union: no opinion.
+		_, onCreate := sides.create[name]
+		_, onUpdate := sides.update[name]
+		absentOnCreate := sides.create != nil && !onCreate
+		absentOnUpdate := sides.update != nil && !onUpdate
+		merged, err := m.mergeAlternative(altCreate, altUpdate, altRead, absentOnCreate, absentOnUpdate, ChildPath(path, name))
 		if err != nil {
 			return nil, err
 		}
@@ -739,6 +839,8 @@ func (m *resourceMerger) mergeOneOf(create, update, read *Schema, createRequired
 			SDKConstructor: source.SDKConstructor,
 			SDKPointer:     source.SDKPointer,
 			ValueWrapped:   OneOfValueWrapped(merged),
+			AbsentOnCreate: absentOnCreate,
+			AbsentOnUpdate: absentOnUpdate,
 		})
 	}
 
@@ -765,26 +867,50 @@ func (m *resourceMerger) mergeOneOf(create, update, read *Schema, createRequired
 	}, create, update, read, createRequired, updateRequired, path), nil
 }
 
+// mergeAlternative merges one correlated alternative, recording for the walk
+// beneath it which request roles do not list it at all. An alternative is a
+// choice, never an entry in an enclosing object's required list, so it is
+// never itself request-required.
+func (m *resourceMerger) mergeAlternative(create, update, read *Schema, absentOnCreate, absentOnUpdate bool, path string) (*Schema, error) {
+	if absentOnCreate {
+		m.createAbsentDepth++
+		defer func() { m.createAbsentDepth-- }()
+	}
+	if absentOnUpdate {
+		m.updateAbsentDepth++
+		defer func() { m.updateAbsentDepth-- }()
+	}
+	return m.mergeNode(create, update, read, false, false, path)
+}
+
 // correlateOneOf lines the three bodies' alternatives up under one name each,
 // returning a create/update/read triple of name-keyed alternatives plus the
 // sorted names they agreed on. A nil map is a body that does not reach the
 // union. The bodies' own names are tried first, since a spelling every body
 // shares is already role-independent; only if they disagree is
 // StripOneOfRoleSuffix applied, to every side at once so the comparison stays
-// symmetric.
+// symmetric. The stripped pass also accepts requests that list only some of
+// the alternatives, as long as the Read response lists every one of them: an
+// API may accept an alternative on Update only, but refresh must be able to
+// read back whatever a request can send.
 func correlateOneOf(create, update, read *Schema, path string) (sides oneOfSides, names []string, err error) {
 	for _, strip := range []bool{false, true} {
 		if sides, err = indexOneOfSides(create, update, read, path, strip); err != nil {
 			return sides, nil, err
 		}
-		if names = sides.names(); sides.agree(len(names)) {
+		if names = sides.names(); sides.agree(len(names)) || strip && sides.readListsAll(len(names)) {
 			return sides, names, nil
 		}
 	}
+	reason := "the bodies that reach this union do not list the same alternatives, " +
+		"even after their CRUD-role suffixes are removed"
+	if missing := sides.missingFromRead(); len(missing) > 0 {
+		reason = fmt.Sprintf("alternative(s) %q are accepted on a request but missing from the Read response, "+
+			"so refresh could not read them back", missing)
+	}
 	return sides, nil, &OneOfMergeError{
-		Path: path,
-		Reason: "the bodies that reach this union do not list the same alternatives, " +
-			"even after their CRUD-role suffixes are removed",
+		Path:   path,
+		Reason: reason,
 		Create: alternativeNames(create),
 		Update: alternativeNames(update),
 		Read:   alternativeNames(read),
@@ -845,6 +971,30 @@ func (s oneOfSides) agree(total int) bool {
 		}
 	}
 	return true
+}
+
+// readListsAll reports whether the Read response reaches the union and carries
+// every alternative any body does, so each request's alternatives are a subset
+// of Read's.
+func (s oneOfSides) readListsAll(total int) bool {
+	return s.read != nil && len(s.read) == total
+}
+
+// missingFromRead returns, sorted, the alternatives a request lists but a Read
+// response that reaches the union does not; nil when Read does not reach it.
+func (s oneOfSides) missingFromRead() []string {
+	if s.read == nil {
+		return nil
+	}
+	missing := map[string]struct{}{}
+	for _, side := range []map[string]OneOfVariant{s.create, s.update} {
+		for name := range side {
+			if _, ok := s.read[name]; !ok {
+				missing[name] = struct{}{}
+			}
+		}
+	}
+	return slices.Sorted(maps.Keys(missing))
 }
 
 // oneOfAlternativesByName indexes one body's alternatives by name, optionally

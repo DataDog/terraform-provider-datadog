@@ -1,3 +1,54 @@
+## 4.24.0 (October 2, 2026)
+
+### BUGFIXES
+* [datadog_action_connection] fix update tag requests by @shimupan in https://github.com/DataDog/terraform-provider-datadog/pull/4304
+* [datadog_synthetics_test] Fix mobile multi-locator crashes by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/4302
+### FEATURES
+* [datadog_integration_gcp_sts] Add isOrgFolderResourceCollectionEnabled by @katherinekim-51 in https://github.com/DataDog/terraform-provider-datadog/pull/4164
+* [datadog_observability_pipeline] Add metric enrichment table processor for Observability Pipelines by @jackie8c in https://github.com/DataDog/terraform-provider-datadog/pull/4319
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.23.0...v4.24.0
+
+## 4.23.0 (September 29, 2026)
+
+### FEATURES
+* [generated] Add Databricks integration accounts resource by @api-clients-generation-pipeline in https://github.com/DataDog/terraform-provider-datadog/pull/4291
+* [generated] Added Twilio and Elastic Cloud account resources by @api-clients-generation-pipeline in https://github.com/DataDog/terraform-provider-datadog/pull/4260
+* [generated] Added Snowflake integrations resource by @dd-octo-sts in https://github.com/DataDog/terraform-provider-datadog/pull/4258
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.22.0...v4.23.0
+
+## 4.22.0 (September 24, 2026)
+
+### BUGFIXES
+* [datadog_reference_table] Fix inconsistent result after apply when description is empty by @dee-see in https://github.com/DataDog/terraform-provider-datadog/pull/4172
+### IMPROVEMENTS
+* [datadog_observability_pipeline] add max connection duration field to splunk tcp source by @jackie8c in https://github.com/DataDog/terraform-provider-datadog/pull/4209
+### FEATURES
+* [datadog_workflow_automation] Add run as configuration by @GabeWM in https://github.com/DataDog/terraform-provider-datadog/pull/4178
+* [datadog_security_findings_severity_modifier_rule] Add severity modifiers automation rule resources by @BusyBeaver-42 in https://github.com/DataDog/terraform-provider-datadog/pull/4221
+* [datadog_observability_pipeline] overflow/metrics destinations + deprecate generate_datadog_metrics + add custom auth for http_client by @20agbekodo in https://github.com/DataDog/terraform-provider-datadog/pull/4228
+* [datadog_observability_pipelines] Add prometheus remote_write source and destination by @petere-datadog in https://github.com/DataDog/terraform-provider-datadog/pull/4233
+* [datadog_fleet_schedule] Add resource and data sources for Fleet Automation schedules by @arbll in https://github.com/DataDog/terraform-provider-datadog/pull/4239
+* [datadog_monitor_config_policy] Add support for downtime duration policies by @eileendatadog in https://github.com/DataDog/terraform-provider-datadog/pull/4235
+* [datadog_workflow_automation] Add sensitive_privileges field by @martin-prevost1 in https://github.com/DataDog/terraform-provider-datadog/pull/4240
+* [datadog_security_findings_inbox_rule] Add security findings inbox rules, default inbox rules and rules order resources by @BusyBeaver-42 in https://github.com/DataDog/terraform-provider-datadog/pull/4252
+* [datadog_dashboard_v2] Add embedded app widgets by @Jiawen23 in https://github.com/DataDog/terraform-provider-datadog/pull/4198
+* [datadog_slo_correction] Support global SLO corrections with slo_query by @peachprosecutor in https://github.com/DataDog/terraform-provider-datadog/pull/3827
+* [datadog_azure_integration] Azure Secretless Auth GA by @benjjs in https://github.com/DataDog/terraform-provider-datadog/pull/4143
+
+## New Contributors
+* @dee-see made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4172
+* @VivianeQian made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4223
+* @arbll made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4239
+* @eileendatadog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4235
+* @martin-prevost1 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4240
+* @rossicris made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4247
+* @nogates made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4248
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.21.0...v4.22.0
+
 ## 4.21.0 (September 9, 2026)
 
 ### BUGFIXES
