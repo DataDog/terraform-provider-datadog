@@ -153,6 +153,58 @@ var _ = Describe("run report contract", func() {
 		Expect(validateAgainstContract(schema, report)).To(Succeed())
 	})
 
+	Describe("diagnostic category", func() {
+		// Same drift guard as the cassette enums: every category the model can
+		// produce must validate, and the contract must declare no more than
+		// the model produces.
+		DescribeTable("accepts every category the model can produce",
+			func(category DiagnosticCategory) {
+				report := baseReport()
+				report.Artifacts = []ArtifactReportEntry{{
+					Name: "thing", Kind: ArtifactKindResource, Status: ArtifactStatusCreated,
+					Diagnostics: []Diagnostic{{
+						Severity: SeverityWarning, Message: "m", Category: category,
+					}},
+				}}
+				Expect(validateAgainstContract(schema, report)).To(Succeed())
+			},
+			Entry("eligibility", DiagnosticCategoryEligibility),
+			Entry("selection", DiagnosticCategorySelection),
+			Entry("materialization", DiagnosticCategoryMaterialization),
+			Entry("validation", DiagnosticCategoryValidation),
+			Entry("render", DiagnosticCategoryRender),
+			Entry("write", DiagnosticCategoryWrite),
+		)
+
+		It("declares no category the model cannot produce", func() {
+			Expect(enumValues("diagnostic", "category")).To(HaveLen(6))
+		})
+
+		It("rejects a category the model cannot produce", func() {
+			report := baseReport()
+			report.Artifacts = []ArtifactReportEntry{{
+				Name: "thing", Kind: ArtifactKindResource, Status: ArtifactStatusCreated,
+				Diagnostics: []Diagnostic{{
+					Severity: SeverityWarning, Message: "m", Category: "invented",
+				}},
+			}}
+			err := validateAgainstContract(schema, report)
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(ContainSubstring("category"))
+		})
+
+		// A diagnostic without a category is the artifact pipeline's shape and
+		// must stay valid, which is why the field is omitempty.
+		It("accepts a diagnostic carrying no category", func() {
+			report := baseReport()
+			report.Artifacts = []ArtifactReportEntry{{
+				Name: "thing", Kind: ArtifactKindResource, Status: ArtifactStatusCreated,
+				Diagnostics: []Diagnostic{{Severity: SeverityWarning, Message: "m"}},
+			}}
+			Expect(validateAgainstContract(schema, report)).To(Succeed())
+		})
+	})
+
 	Describe("cassette fields", func() {
 		cassetteResult := func() CassetteResult {
 			return CassetteResult{
