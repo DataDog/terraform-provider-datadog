@@ -153,6 +153,10 @@ func (r *datadogRumTeamOwnershipResource) Create(ctx context.Context, request re
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating rum_team_ownership"))
 		return
 	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		return
+	}
 	response.Diagnostics.Append(r.updateState(ctx, &state, &resp)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -174,6 +178,10 @@ func (r *datadogRumTeamOwnershipResource) Read(ctx context.Context, request reso
 			return
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error reading rum_team_ownership"))
+		return
+	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
 	response.Diagnostics.Append(r.updateState(ctx, &state, &resp)...)
