@@ -5770,7 +5770,7 @@ func buildTerraformMobileTestSteps(steps []datadogV1.SyntheticsMobileStep) []map
 			localParams["variable"] = params.GetVariable()
 		}
 		if params.HasWithEnter() {
-			localParams["withEnter"] = params.GetWithEnter()
+			localParams["with_enter"] = params.GetWithEnter()
 		}
 		if params.HasX() {
 			localParams["x"] = params.GetX()
@@ -6618,8 +6618,8 @@ func buildDatadogParamsForMobileStep(stepType datadogV1.SyntheticsMobileStepType
 		if len(stepParam) != 0 {
 			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
 		}
-		if stepParams["delay"] != "" {
-			params.SetDelay(stepParams["delay"].(int64))
+		if delay, ok := stepParams["delay"].(int); ok && delay != 0 {
+			params.SetDelay(int64(delay))
 		}
 		if stepParams["with_enter"] != "" {
 			params.SetWithEnter(stepParams["with_enter"].(bool))
