@@ -74,6 +74,29 @@ func TestBitsAIMonitorAutomationPreservesIDAfterWrite(t *testing.T) {
 	require.Equal(t, "123", plan.ID.ValueString())
 }
 
+func TestBitsAIMonitorAutomationWaitsForIndex(t *testing.T) {
+	writes, reads := 0, 0
+	r := &bitsAIMonitorAutomationResource{auth: context.Background(), api: fakeMonitorAutomationAPI{
+		put: func(context.Context, int64, datadogV2.MonitorAutomationRequest) (datadogV2.MonitorAutomationResponse, *http.Response, error) {
+			writes++
+			if writes == 1 {
+				return datadogV2.MonitorAutomationResponse{}, &http.Response{StatusCode: 404}, errors.New("new monitor not indexed yet")
+			}
+			return automationResponse(true), nil, nil
+		},
+		get: func(context.Context, int64) (datadogV2.MonitorAutomationResponse, *http.Response, error) {
+			reads++
+			return automationResponse(reads > 1), nil, nil
+		},
+	}}
+	plan := bitsAIMonitorAutomationModel{MonitorID: types.StringValue("123"), Enabled: types.BoolValue(true)}
+	applied, diags := r.apply(context.Background(), &plan)
+	require.True(t, applied)
+	require.False(t, diags.HasError(), diags)
+	require.Equal(t, 2, writes)
+	require.Equal(t, 2, reads)
+}
+
 func TestBitsAIMonitorAutomationDoesNotRetryPermissionErrors(t *testing.T) {
 	calls := 0
 	r := &bitsAIMonitorAutomationResource{auth: context.Background(), api: fakeMonitorAutomationAPI{
