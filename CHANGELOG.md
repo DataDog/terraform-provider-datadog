@@ -1,3 +1,15 @@
+## 4.25.0 (October 7, 2026)
+
+### BUGFIXES
+* [datadog_security_findings_mute_rule] Automation pipelines require ID in updates and use different request/response schemas by @BusyBeaver-42 in https://github.com/DataDog/terraform-provider-datadog/pull/4219
+### FEATURES
+* [datadog_aws_wif_identity_mapping] [WIF-91] Add AWS WIF identity mappings by @devand123 in https://github.com/DataDog/terraform-provider-datadog/pull/4234
+
+## New Contributors
+* @devand123 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4234
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.24.0...v4.25.0
+
 ## 4.24.0 (October 2, 2026)
 
 ### BUGFIXES
