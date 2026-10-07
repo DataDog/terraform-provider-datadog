@@ -140,3 +140,57 @@ var _ = Describe("BuildResourceScenario edge paths", func() {
 	})
 
 })
+
+var _ = Describe("validation as a scenario stage", func() {
+	// attributeSchema walks a JSON:API request schema to one attribute, so a
+	// case can contradict exactly one leaf of a real fixture.
+	attributeSchema := func(root *model.Schema, name string) *model.Schema {
+		Expect(root).NotTo(BeNil())
+		data, ok := root.Properties["data"]
+		Expect(ok).To(BeTrue(), "fixture request schema has no data member")
+		attributes, ok := data.Properties["attributes"]
+		Expect(ok).To(BeTrue(), "fixture request schema has no data.attributes")
+		attribute, ok := attributes.Properties[name]
+		Expect(ok).To(BeTrue(), "fixture declares no attribute %q", name)
+		return attribute
+	}
+
+	// A real fixture with one leaf's enum narrowed so the example it already
+	// declares no longer satisfies it. The description now contradicts itself
+	// exactly as a hand-written one would.
+	It("fails the scenario when a declared example contradicts its schema", func() {
+		target := twilioTarget()
+		name := attributeSchema(target.Create.RequestExamples.Schema, "name")
+		name.Enum = []string{"a-name-the-example-does-not-use"}
+
+		_, err := BuildResourceScenario(target)
+		Expect(err).To(HaveOccurred())
+
+		var conformance *ConformanceError
+		Expect(err).To(BeAssignableToTypeOf(conformance))
+		Expect(err.Error()).To(ContainSubstring("CreateTwilioIntegrationAccount"))
+		Expect(err.Error()).To(ContainSubstring("data.attributes.name"))
+	})
+
+	// The contradiction must not be reported with the value in it: the same
+	// path could just as easily hold a credential.
+	It("names the path without quoting the offending value", func() {
+		target := twilioTarget()
+		name := attributeSchema(target.Create.RequestExamples.Schema, "name")
+		name.Enum = []string{"a-name-the-example-does-not-use"}
+
+		_, err := BuildResourceScenario(target)
+		Expect(err).To(HaveOccurred())
+		Expect(err.Error()).NotTo(ContainSubstring("twilio-prod"))
+	})
+
+	// The fixture is the one the stack records end to end, so it must pass
+	// untouched. This is the regression guard for wiring validation into a
+	// live path: a false violation here would make a working artifact
+	// ineligible.
+	It("leaves the untouched fixture eligible", func() {
+		scenario, err := BuildResourceScenario(twilioTarget())
+		Expect(err).To(Succeed())
+		Expect(scenario.Steps).NotTo(BeEmpty())
+	})
+})

@@ -96,7 +96,11 @@ func ValidateSet(key SetKey, set MaterializedSet, schema *model.Schema) error {
 		if _, replaced := set.SensitiveReplacements[value.Path]; replaced {
 			continue
 		}
-		leaf, ok := resolvePath(schema, value.Path)
+		leaf := value.Schema
+		ok := leaf != nil
+		if !ok {
+			leaf, ok = resolvePath(schema, value.Path)
+		}
 		if !ok {
 			// Materialization's business, not validation's: reporting it here
 			// would duplicate an upstream failure with a worse message.
