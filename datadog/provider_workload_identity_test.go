@@ -16,10 +16,12 @@ import (
 
 	api "github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/go-cty/cty"
 	framework "github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	"github.com/stretchr/testify/require"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
@@ -196,16 +198,13 @@ func TestTerraformWorkloadIdentityPrecedenceAndRejection(t *testing.T) {
 						}
 					}))
 					defer server.Close()
+					t.Setenv("DD_CLOUD_PROVIDER_TYPE", "aws")
+					t.Setenv("DD_BEARER_TOKEN", "test-bearer")
+					t.Setenv("DD_API_KEY", "test-api-key")
+					t.Setenv("DD_APP_KEY", "test-app-key")
 					client, auth, err := configureWorkloadIdentityTestProvider(t, implementation, map[string]interface{}{
-						"api_url":               server.URL,
-						"cloud_provider_type":   "aws",
-						"cloud_provider_region": "us-east-1",
-						"org_uuid":              workloadIdentityTestOrg,
-						"aws_access_key_id":     "test-aws-id",
-						"aws_secret_access_key": "test-aws-secret",
-						"bearer_token":          "test-bearer",
-						"api_key":               "test-api-key",
-						"app_key":               "test-app-key",
+						"api_url":  server.URL,
+						"org_uuid": workloadIdentityTestOrg,
 					})
 					// SDKv2 exchanges during initialization; Framework defers to the
 					// first API request because SDKv2 owns mux provider validation.
@@ -292,13 +291,13 @@ func TestTerraformWorkloadIdentityOrganizationBinding(t *testing.T) {
 							w.WriteHeader(http.StatusInternalServerError)
 						}))
 						defer server.Close()
+						t.Setenv("DD_CLOUD_PROVIDER_TYPE", "aws")
+						t.Setenv("DD_BEARER_TOKEN", "test-bearer")
+						t.Setenv("DD_API_KEY", "test-api-key")
+						t.Setenv("DD_APP_KEY", "test-app-key")
 						values := map[string]interface{}{
-							"api_url":             server.URL,
-							"validate":            validate,
-							"cloud_provider_type": "aws",
-							"bearer_token":        "test-bearer",
-							"api_key":             "test-api-key",
-							"app_key":             "test-app-key",
+							"api_url":  server.URL,
+							"validate": validate,
 						}
 						if source == "org_uuid" {
 							values[source] = otherOrg
@@ -315,5 +314,250 @@ func TestTerraformWorkloadIdentityOrganizationBinding(t *testing.T) {
 				}
 			}
 		}
+	}
+}
+
+func TestTerraformWorkloadIdentityExplicitAuthentication(t *testing.T) {
+	const otherOrg = "22222222-2222-4222-8222-222222222222"
+	for _, implementation := range []string{"sdkv2", "framework"} {
+		for _, mode := range []string{"keys", "api-key", "app-key", "bearer", "aws"} {
+			t.Run(implementation+"/"+mode, func(t *testing.T) {
+				clearWorkloadIdentityTestEnv(t)
+				t.Setenv(terraformauth.TerraformWorkloadIdentityTokenEnv, workloadIdentityTestToken(t, "https://app.terraform.io"))
+				t.Setenv("DD_CLOUD_PROVIDER_TYPE", "aws")
+				t.Setenv("DD_BEARER_TOKEN", "env-bearer")
+				t.Setenv("DD_API_KEY", "env-api")
+				t.Setenv("DD_APP_KEY", "env-app")
+				values := map[string]interface{}{
+					"validate": "false",
+					"org_uuid": otherOrg,
+					// Explicit authentication also bypasses strict token selection.
+					"workload_identity_token_tag": "MISSING",
+				}
+				expectedAPI, expectedApp := "env-api", "env-app"
+				switch mode {
+				case "keys", "api-key":
+					values["api_key"] = "explicit-api"
+					expectedAPI = "explicit-api"
+					if mode == "keys" {
+						values["app_key"] = "explicit-app"
+						expectedApp = "explicit-app"
+					}
+				case "app-key":
+					values["app_key"] = "explicit-app"
+					expectedApp = "explicit-app"
+				case "bearer":
+					values["bearer_token"] = "explicit-bearer"
+				case "aws":
+					values["cloud_provider_type"] = "aws"
+				}
+				requests := 0
+				server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					requests++
+					require.Equal(t, "/api/v2/roles", r.URL.Path, "explicit authentication must not exchange the ambient WIT")
+					if mode == "bearer" {
+						require.Equal(t, "Bearer explicit-bearer", r.Header.Get("Authorization"))
+						require.Empty(t, r.Header.Get("DD-API-KEY"))
+						require.Empty(t, r.Header.Get("DD-APPLICATION-KEY"))
+					} else {
+						require.Empty(t, r.Header.Get("Authorization"))
+						require.Equal(t, expectedAPI, r.Header.Get("DD-API-KEY"))
+						require.Equal(t, expectedApp, r.Header.Get("DD-APPLICATION-KEY"))
+					}
+					w.Header().Set("Content-Type", "application/json")
+					_, _ = w.Write([]byte(`{"data":[]}`))
+				}))
+				defer server.Close()
+				values["api_url"] = server.URL
+				client, auth, err := configureWorkloadIdentityTestProvider(t, implementation, values)
+				require.NoError(t, err, "the ambient WIT's different organization must not be checked")
+				if mode == "aws" {
+					require.Equal(t, "aws", client.GetConfig().DelegatedTokenConfig.Provider)
+					require.Equal(t, otherOrg, client.GetConfig().DelegatedTokenConfig.OrgUUID)
+					require.IsType(t, &api.AWSAuth{}, client.GetConfig().DelegatedTokenConfig.ProviderAuth)
+					require.Zero(t, requests)
+					return
+				}
+				require.Nil(t, client.GetConfig().DelegatedTokenConfig)
+				_, _, err = datadogV2.NewRolesApi(client).ListRoles(auth)
+				require.NoError(t, err)
+				require.Equal(t, 1, requests)
+			})
+		}
+		for _, field := range []string{"api_key", "app_key"} {
+			t.Run(implementation+"/incomplete-"+field, func(t *testing.T) {
+				clearWorkloadIdentityTestEnv(t)
+				t.Setenv(terraformauth.TerraformWorkloadIdentityTokenEnv, workloadIdentityTestToken(t, "https://app.terraform.io"))
+				t.Setenv("DD_CLOUD_PROVIDER_TYPE", "aws")
+				t.Setenv("DD_BEARER_TOKEN", "env-bearer")
+				_, _, err := configureWorkloadIdentityTestProvider(t, implementation, map[string]interface{}{field: "explicit-key"})
+				require.ErrorContains(t, err, "credentials are required")
+			})
+		}
+	}
+}
+
+func TestTerraformWorkloadIdentityExplicitTagFailure(t *testing.T) {
+	for _, implementation := range []string{"sdkv2", "framework"} {
+		for _, value := range []string{"", "malformed", "header.eyJhdWQiOiJ2YXVsdCJ9.signature"} {
+			t.Run(implementation+"/"+value, func(t *testing.T) {
+				clearWorkloadIdentityTestEnv(t)
+				t.Setenv("TFC_WORKLOAD_IDENTITY_TOKEN_SELECTED", value)
+				t.Setenv(terraformauth.TerraformWorkloadIdentityTokenEnv, workloadIdentityTestToken(t, "https://app.terraform.io"))
+				t.Setenv("DD_API_KEY", "env-api")
+				t.Setenv("DD_APP_KEY", "env-app")
+				_, _, err := configureWorkloadIdentityTestProvider(t, implementation, map[string]interface{}{
+					"workload_identity_token_tag": "SELECTED",
+					"validate":                    "false",
+				})
+				require.ErrorContains(t, err, "TFC_WORKLOAD_IDENTITY_TOKEN_SELECTED")
+				require.ErrorContains(t, err, "valid datadog/<uuid> audience")
+			})
+		}
+	}
+}
+
+func TestTerraformWorkloadIdentityAliasIsolation(t *testing.T) {
+	const otherOrg = "22222222-2222-4222-8222-222222222222"
+	for _, implementation := range []string{"sdkv2", "framework"} {
+		t.Run(implementation, func(t *testing.T) {
+			clearWorkloadIdentityTestEnv(t)
+			tokenA := workloadIdentityTestToken(t, "https://app.terraform.io")
+			payload, err := json.Marshal(map[string]string{"iss": "https://app.terraform.io", "aud": "datadog/" + otherOrg})
+			require.NoError(t, err)
+			tokenB := "header." + base64.RawURLEncoding.EncodeToString(payload) + ".signature"
+			t.Setenv("TFC_WORKLOAD_IDENTITY_TOKEN_ORG_A", tokenA)
+			t.Setenv("TFC_WORKLOAD_IDENTITY_TOKEN_ORG_B", tokenB)
+			t.Setenv(terraformauth.TerraformWorkloadIdentityTokenEnv, tokenA)
+			t.Setenv(terraformauth.TerraformWorkloadIdentityTokenFallbackEnv, tokenA)
+			exchanges := map[string]int{}
+			requests := map[string]int{}
+			rejectA := false
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				switch r.URL.Path {
+				case "/api/v2/delegated-token":
+					name := ""
+					switch r.Header.Get("Authorization") {
+					case "Delegated " + tokenA:
+						name = "a"
+					case "Delegated " + tokenB:
+						name = "b"
+					default:
+						t.Errorf("unexpected proof")
+						w.WriteHeader(http.StatusUnauthorized)
+						return
+					}
+					exchanges[name]++
+					if name == "a" && rejectA {
+						w.WriteHeader(http.StatusUnauthorized)
+						return
+					}
+					_ = json.NewEncoder(w).Encode(map[string]interface{}{"data": map[string]interface{}{"attributes": map[string]interface{}{
+						"access_token": fmt.Sprintf("%s-%d", name, exchanges[name]),
+						"expires":      strconv.FormatInt(time.Now().Add(time.Hour).Unix(), 10),
+					}}})
+				case "/api/v2/roles":
+					header := r.Header.Get("Authorization")
+					switch header {
+					case "Bearer a-1", "Bearer a-2":
+						requests["a"]++
+					case "Bearer b-1":
+						requests["b"]++
+					case "":
+						require.Equal(t, "static-api", r.Header.Get("DD-API-KEY"))
+						require.Equal(t, "static-app", r.Header.Get("DD-APPLICATION-KEY"))
+						requests["static"]++
+					default:
+						t.Errorf("unexpected access token %q", header)
+					}
+					_, _ = w.Write([]byte(`{"data":[]}`))
+				default:
+					t.Errorf("unexpected path: %s", r.URL.Path)
+					w.WriteHeader(http.StatusNotFound)
+				}
+			}))
+			defer server.Close()
+			clientA, authA, err := configureWorkloadIdentityTestProvider(t, implementation, map[string]interface{}{
+				"api_url": server.URL, "workload_identity_token_tag": "ORG_A", "org_uuid": workloadIdentityTestOrg,
+			})
+			require.NoError(t, err)
+			clientB, authB, err := configureWorkloadIdentityTestProvider(t, implementation, map[string]interface{}{
+				"api_url": server.URL, "workload_identity_token_tag": "ORG_B", "org_uuid": otherOrg,
+			})
+			require.NoError(t, err)
+			clientStatic, authStatic, err := configureWorkloadIdentityTestProvider(t, implementation, map[string]interface{}{
+				"api_url": server.URL, "validate": "false", "api_key": "static-api", "app_key": "static-app", "org_uuid": otherOrg,
+			})
+			require.NoError(t, err)
+			require.Equal(t, workloadIdentityTestOrg, clientA.GetConfig().DelegatedTokenConfig.OrgUUID)
+			require.Equal(t, otherOrg, clientB.GetConfig().DelegatedTokenConfig.OrgUUID)
+			for range 2 {
+				for _, client := range []struct {
+					client *api.APIClient
+					auth   context.Context
+				}{
+					{clientA, authA}, {clientB, authB}, {clientStatic, authStatic},
+				} {
+					_, _, err := datadogV2.NewRolesApi(client.client).ListRoles(client.auth)
+					require.NoError(t, err)
+				}
+			}
+			require.Equal(t, map[string]int{"a": 1, "b": 1}, exchanges)
+			require.Equal(t, map[string]int{"a": 2, "b": 2, "static": 2}, requests)
+			credentialsA := authA.Value(api.ContextDelegatedToken).(*api.DelegatedTokenCredentials)
+			credentialsB := authB.Value(api.ContextDelegatedToken).(*api.DelegatedTokenCredentials)
+			require.NotSame(t, credentialsA, credentialsB)
+			credentialsA.Expiration = time.Now().Add(-time.Second)
+			_, _, err = datadogV2.NewRolesApi(clientA).ListRoles(authA)
+			require.NoError(t, err)
+			_, _, err = datadogV2.NewRolesApi(clientB).ListRoles(authB)
+			require.NoError(t, err)
+			require.Equal(t, map[string]int{"a": 2, "b": 1}, exchanges)
+			// Refresh rejection for one alias must not select the other token or break its cache.
+			rejectA = true
+			credentialsA.Expiration = time.Now().Add(-time.Second)
+			_, _, err = datadogV2.NewRolesApi(clientA).ListRoles(authA)
+			require.ErrorContains(t, err, "401")
+			_, _, err = datadogV2.NewRolesApi(clientB).ListRoles(authB)
+			require.NoError(t, err)
+			require.Equal(t, map[string]int{"a": 3, "b": 1}, exchanges)
+			require.Equal(t, map[string]int{"a": 3, "b": 4, "static": 2}, requests)
+		})
+	}
+}
+
+func TestTerraformWorkloadIdentityUnknownTag(t *testing.T) {
+	clearWorkloadIdentityTestEnv(t)
+	t.Setenv(terraformauth.TerraformWorkloadIdentityTokenEnv, workloadIdentityTestToken(t, "https://app.terraform.io"))
+	p := Provider()
+	config := terraform.NewResourceConfigRaw(map[string]interface{}{"validate": "false"})
+	config.CtyValue = cty.ObjectVal(map[string]cty.Value{"workload_identity_token_tag": cty.UnknownVal(cty.String)})
+	diags := p.Configure(context.Background(), config)
+	require.True(t, diags.HasError())
+	require.Contains(t, fmt.Sprint(diags), "must be known before configuring the provider")
+
+	_, _, err := configureWorkloadIdentityTestProvider(t, "framework", map[string]interface{}{
+		"workload_identity_token_tag": tftypes.UnknownValue, "validate": "false",
+	})
+	require.ErrorContains(t, err, "must be known before configuring the provider")
+}
+
+func TestTerraformWorkloadIdentityUnknownExplicitCredentials(t *testing.T) {
+	for _, field := range []string{"api_key", "app_key", "bearer_token", "cloud_provider_type"} {
+		t.Run(field, func(t *testing.T) {
+			clearWorkloadIdentityTestEnv(t)
+			t.Setenv(terraformauth.TerraformWorkloadIdentityTokenEnv, workloadIdentityTestToken(t, "https://app.terraform.io"))
+			p := Provider()
+			config := terraform.NewResourceConfigRaw(map[string]interface{}{"validate": "false"})
+			config.CtyValue = cty.ObjectVal(map[string]cty.Value{field: cty.UnknownVal(cty.String)})
+			diags := p.Configure(context.Background(), config)
+			require.True(t, diags.HasError())
+			require.Contains(t, fmt.Sprint(diags), field+" must be known")
+			_, _, err := configureWorkloadIdentityTestProvider(t, "framework", map[string]interface{}{
+				field: tftypes.UnknownValue, "validate": "false",
+			})
+			require.ErrorContains(t, err, field+" must be known")
+		})
 	}
 }

@@ -262,6 +262,9 @@ type FrameworkProvider struct {
 	Now                   func() time.Time
 	DefaultTags           map[string]string
 	IgnoreTagKeys         []string
+
+	// Captured before environment defaults so a WIT cannot override provider-block authentication.
+	hasExplicitAuth bool
 }
 
 // ProviderSchema struct
@@ -269,6 +272,7 @@ type ProviderSchema struct {
 	ApiKey                           types.String `tfsdk:"api_key"`
 	AppKey                           types.String `tfsdk:"app_key"`
 	BearerToken                      types.String `tfsdk:"bearer_token"`
+	WorkloadIdentityTokenTag         types.String `tfsdk:"workload_identity_token_tag"`
 	ApiUrl                           types.String `tfsdk:"api_url"`
 	Validate                         types.String `tfsdk:"validate"`
 	CloudProviderType                types.String `tfsdk:"cloud_provider_type"`
@@ -351,6 +355,10 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Optional:    true,
 				Sensitive:   true,
 				Description: "Datadog credential sent in the `Authorization: Bearer <token>` header. Accepts personal access tokens (`ddpat_*`) and service-account access tokens (`ddsat_*`). When set, the provider authenticates with `Authorization: Bearer <token>` instead of the `DD-API-KEY` / `DD-APPLICATION-KEY` headers. This can also be set via the `DD_BEARER_TOKEN` or `DATADOG_BEARER_TOKEN` environment variable.",
+			},
+			"workload_identity_token_tag": schema.StringAttribute{
+				Optional:    true,
+				Description: "Selects the HCP Terraform workload identity token tag for this provider configuration, for example DATADOG_ORG_A selects TFC_WORKLOAD_IDENTITY_TOKEN_DATADOG_ORG_A. When set, that token must be present and have a valid Datadog audience; no other token or environment authentication is used as fallback. Explicit API/application keys, bearer_token, or cloud_provider_type take precedence. When unset or empty, automatically tries the DATADOG tag and then the untagged token. Tags may contain only letters, numbers, and underscores; TYPE is reserved.",
 			},
 			"api_url": schema.StringAttribute{
 				Optional:    true,
@@ -447,6 +455,7 @@ func (p *FrameworkProvider) Configure(ctx context.Context, request provider.Conf
 	diags := p.ConfigureConfigDefaults(ctx, &config)
 	if diags.HasError() {
 		response.Diagnostics.Append(diags...)
+		return
 	}
 
 	response.Diagnostics.Append(p.ConfigureCallbackFunc(p, &request, &config)...)
@@ -462,6 +471,26 @@ func (p *FrameworkProvider) Configure(ctx context.Context, request provider.Conf
 func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config *ProviderSchema) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	for _, attr := range []struct {
+		name  string
+		value types.String
+	}{
+		{"cloud_provider_type", config.CloudProviderType},
+		{"bearer_token", config.BearerToken},
+		{"api_key", config.ApiKey},
+		{"app_key", config.AppKey},
+	} {
+		if attr.value.IsUnknown() {
+			diags.AddError("Unknown provider authentication", attr.name+" must be known before configuring provider authentication")
+			return diags
+		}
+		if (attr.name == "cloud_provider_type" || attr.name == "bearer_token") && attr.value.ValueString() != "" {
+			break
+		}
+	}
+	p.hasExplicitAuth = config.ApiKey.ValueString() != "" || config.AppKey.ValueString() != "" ||
+		config.BearerToken.ValueString() != "" || config.CloudProviderType.ValueString() != ""
+
 	if config.ApiKey.IsNull() {
 		apiKey, err := utils.GetMultiEnvVar(utils.APIKeyEnvVars[:]...)
 		if err == nil {
@@ -476,7 +505,7 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 		}
 	}
 
-	if config.BearerToken.IsNull() {
+	if config.BearerToken.IsNull() && !p.hasExplicitAuth {
 		bearerToken, err := utils.GetMultiEnvVar(utils.BearerTokenEnvVars...)
 		if err == nil {
 			config.BearerToken = types.StringValue(bearerToken)
@@ -490,7 +519,7 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 		}
 	}
 
-	if config.CloudProviderType.IsNull() {
+	if config.CloudProviderType.IsNull() && !p.hasExplicitAuth {
 		cloudProviderType, err := utils.GetMultiEnvVar(utils.CloudProviderTypeEnvVars...)
 		if err == nil {
 			config.CloudProviderType = types.StringValue(cloudProviderType)
@@ -640,10 +669,18 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	cloudProviderType := config.CloudProviderType.ValueString()
 	cloudProviderRegion := config.CloudProviderRegion.ValueString()
 	orgUUID := config.OrgUuid.ValueString()
-	workloadIdentityConfig, err := terraformauth.GetDelegatedTokenConfig(orgUUID)
-	if err != nil {
-		diags.AddError("Invalid Terraform workload identity configuration", err.Error())
-		return diags
+	var workloadIdentityConfig *datadog.DelegatedTokenConfig
+	if !p.hasExplicitAuth {
+		if config.WorkloadIdentityTokenTag.IsUnknown() {
+			diags.AddError("Invalid Terraform workload identity configuration", "workload_identity_token_tag must be known before configuring the provider")
+			return diags
+		}
+		var err error
+		workloadIdentityConfig, err = terraformauth.GetDelegatedTokenConfig(orgUUID, config.WorkloadIdentityTokenTag.ValueString())
+		if err != nil {
+			diags.AddError("Invalid Terraform workload identity configuration", err.Error())
+			return diags
+		}
 	}
 	awsAccessKeyId := config.AWSAccessKeyId.ValueString()
 	awsSecretAccessKey := config.AWSSecretAccessKey.ValueString()
@@ -677,7 +714,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 
 	// Initialize the official Datadog V1 API client
 	auth := context.Background()
-	// Terraform workload identity takes precedence over existing authentication.
+	// Explicit provider authentication wins; otherwise prefer Terraform workload identity over environment credentials.
 	switch {
 	case workloadIdentityConfig != nil:
 		auth = context.WithValue(auth, datadog.ContextDelegatedToken, &datadog.DelegatedTokenCredentials{})

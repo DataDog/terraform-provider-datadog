@@ -66,7 +66,7 @@ func TestTerraformWorkloadIdentityDiscovery(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Setenv(TerraformWorkloadIdentityTokenEnv, tt.tagged)
 			t.Setenv(TerraformWorkloadIdentityTokenFallbackEnv, tt.untagged)
-			config, err := GetDelegatedTokenConfig(tt.configuredOrg)
+			config, err := GetDelegatedTokenConfig(tt.configuredOrg, "")
 			if tt.wantError {
 				require.ErrorContains(t, err, "does not match configured org_uuid")
 				require.Nil(t, config)
@@ -86,6 +86,50 @@ func TestTerraformWorkloadIdentityDiscovery(t *testing.T) {
 			require.Equal(t, wantOrg, config.OrgUUID)
 			require.Equal(t, "terraform", config.Provider)
 			require.Equal(t, tt.wantProof, config.ProviderAuth.(*terraformWorkloadIdentityAuth).proof)
+		})
+	}
+}
+
+func TestTerraformWorkloadIdentityExplicitTag(t *testing.T) {
+	const org = "11111111-1111-4111-8111-111111111111"
+	const otherOrg = "22222222-2222-4222-8222-222222222222"
+	makeToken := func(audience string) string {
+		payload, err := json.Marshal(map[string]string{"iss": "https://app.terraform.io", "aud": audience})
+		require.NoError(t, err)
+		return "header." + base64.RawURLEncoding.EncodeToString(payload) + ".signature"
+	}
+	selected := makeToken("datadog/" + otherOrg)
+	for _, tt := range []struct {
+		name, tag, value, org, wantError string
+	}{
+		{"selected", "ORG_2", selected, otherOrg, ""},
+		{"case sensitive", "org_2", selected, otherOrg, ""},
+		{"numeric tag", "2", selected, otherOrg, ""},
+		{"missing", "ORG_2", "", "", "TFC_WORKLOAD_IDENTITY_TOKEN_ORG_2"},
+		{"malformed", "ORG_2", "secret-invalid-token", "", "valid datadog/<uuid> audience"},
+		{"unrelated", "ORG_2", makeToken("vault"), "", "valid datadog/<uuid> audience"},
+		{"mismatch", "ORG_2", selected, org, "does not match configured org_uuid"},
+		{"invalid tag", "ORG-2", selected, "", "only letters, numbers, and underscores"},
+		{"reserved tag", "TYPE", selected, "", "TYPE is reserved"},
+		{"whitespace tag", " ORG_2", selected, "", "only letters, numbers, and underscores"},
+		{"non ASCII tag", "ÓRG", selected, "", "only letters, numbers, and underscores"},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Setenv(TerraformWorkloadIdentityTokenEnv, makeToken("datadog/"+org))
+			t.Setenv(TerraformWorkloadIdentityTokenFallbackEnv, makeToken("datadog/"+org))
+			t.Setenv(TerraformWorkloadIdentityTokenFallbackEnv+"_"+tt.tag, tt.value)
+			config, err := GetDelegatedTokenConfig(tt.org, tt.tag)
+			if tt.wantError != "" {
+				require.ErrorContains(t, err, tt.wantError)
+				require.Nil(t, config)
+				if tt.value != "" {
+					require.NotContains(t, err.Error(), tt.value)
+				}
+				return
+			}
+			require.NoError(t, err)
+			require.Equal(t, otherOrg, config.OrgUUID)
+			require.Equal(t, selected, config.ProviderAuth.(*terraformWorkloadIdentityAuth).proof)
 		})
 	}
 }

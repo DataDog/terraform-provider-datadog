@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -20,13 +21,23 @@ const (
 	TerraformWorkloadIdentityTokenFallbackEnv = "TFC_WORKLOAD_IDENTITY_TOKEN" // #nosec G101 -- environment variable name
 )
 
+var workloadIdentityTokenTagPattern = regexp.MustCompile(`^[a-zA-Z0-9_]+$`)
+
 // GetDelegatedTokenConfig discovers a Terraform workload identity token
 // addressed to a Datadog organization. A nil configuration without an error
 // lets the caller retain its existing authentication selection. Claims are inspected only for selection and
 // routing. A configured organization must match the selected token's audience.
 // ETS is responsible for signature, issuer, expiry and mapping validation.
-func GetDelegatedTokenConfig(orgUUID string) (*datadog.DelegatedTokenConfig, error) {
-	for _, name := range []string{TerraformWorkloadIdentityTokenEnv, TerraformWorkloadIdentityTokenFallbackEnv} {
+// A nonempty tokenTag requires exactly that tagged token, with no fallback.
+func GetDelegatedTokenConfig(orgUUID, tokenTag string) (*datadog.DelegatedTokenConfig, error) {
+	names := []string{TerraformWorkloadIdentityTokenEnv, TerraformWorkloadIdentityTokenFallbackEnv}
+	if tokenTag != "" {
+		if tokenTag == "TYPE" || !workloadIdentityTokenTagPattern.MatchString(tokenTag) {
+			return nil, errors.New("workload_identity_token_tag must contain only letters, numbers, and underscores; TYPE is reserved")
+		}
+		names = []string{TerraformWorkloadIdentityTokenFallbackEnv + "_" + tokenTag}
+	}
+	for _, name := range names {
 		token := os.Getenv(name)
 		parts := strings.Split(token, ".")
 		if len(parts) != 3 {
@@ -64,6 +75,9 @@ func GetDelegatedTokenConfig(orgUUID string) (*datadog.DelegatedTokenConfig, err
 			Provider:     "terraform",
 			ProviderAuth: &terraformWorkloadIdentityAuth{proof: proof},
 		}, nil
+	}
+	if tokenTag != "" {
+		return nil, fmt.Errorf("%s is missing or does not contain a workload identity token with a valid datadog/<uuid> audience", names[0])
 	}
 	return nil, nil
 }
