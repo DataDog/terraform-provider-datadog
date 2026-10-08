@@ -32,13 +32,14 @@ type datadogTeamNotificationRulesDataSourceModel struct {
 }
 
 // notificationRuleModel represents a notification rule in the data source.
-// Uses model types (emailModel, msTeamsModel, pagerdutyModel, slackModel) shared with resource_datadog_team_notification_rule.go
+// Uses model types (emailModel, msTeamsModel, pagerdutyModel, servicenowModel, slackModel) shared with resource_datadog_team_notification_rule.go
 type notificationRuleModel struct {
-	ID        types.String    `tfsdk:"id"`
-	Email     *emailModel     `tfsdk:"email"`
-	MsTeams   *msTeamsModel   `tfsdk:"ms_teams"`
-	Pagerduty *pagerdutyModel `tfsdk:"pagerduty"`
-	Slack     *slackModel     `tfsdk:"slack"`
+	ID         types.String     `tfsdk:"id"`
+	Email      *emailModel      `tfsdk:"email"`
+	MsTeams    *msTeamsModel    `tfsdk:"ms_teams"`
+	Pagerduty  *pagerdutyModel  `tfsdk:"pagerduty"`
+	Servicenow *servicenowModel `tfsdk:"servicenow"`
+	Slack      *slackModel      `tfsdk:"slack"`
 }
 
 func NewDatadogTeamNotificationRulesDataSource() datasource.DataSource {
@@ -85,6 +86,10 @@ func (d *datadogTeamNotificationRulesDataSource) Schema(_ context.Context, _ dat
 									Computed:    true,
 									Description: "Flag indicating whether email notifications should be sent.",
 								},
+								"recipient_email": schema.StringAttribute{
+									Computed:    true,
+									Description: "Email address notifications are sent to instead of all team members.",
+								},
 							},
 						},
 						"ms_teams": schema.SingleNestedBlock{
@@ -102,6 +107,16 @@ func (d *datadogTeamNotificationRulesDataSource) Schema(_ context.Context, _ dat
 								"service_name": schema.StringAttribute{
 									Computed:    true,
 									Description: "PagerDuty service name.",
+								},
+							},
+						},
+						"servicenow": schema.SingleNestedBlock{
+							Description: "The ServiceNow notification settings.",
+							Attributes: map[string]schema.Attribute{
+								"templates": schema.ListAttribute{
+									Computed:    true,
+									ElementType: types.StringType,
+									Description: "ServiceNow template handle names.",
 								},
 							},
 						},
@@ -143,7 +158,7 @@ func (d *datadogTeamNotificationRulesDataSource) Read(ctx context.Context, reque
 
 	state.NotificationRules = make([]notificationRuleModel, 0, len(ddResp.Data))
 	for _, rule := range ddResp.Data {
-		state.NotificationRules = append(state.NotificationRules, d.buildNotificationRuleModel(&rule))
+		state.NotificationRules = append(state.NotificationRules, d.buildNotificationRuleModel(ctx, &rule))
 	}
 	state.ID = types.StringValue(teamId)
 
@@ -151,7 +166,7 @@ func (d *datadogTeamNotificationRulesDataSource) Read(ctx context.Context, reque
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogTeamNotificationRulesDataSource) buildNotificationRuleModel(teamNotificationRuleData *datadogV2.TeamNotificationRule) notificationRuleModel {
+func (d *datadogTeamNotificationRulesDataSource) buildNotificationRuleModel(ctx context.Context, teamNotificationRuleData *datadogV2.TeamNotificationRule) notificationRuleModel {
 	rule := notificationRuleModel{
 		ID: types.StringValue(teamNotificationRuleData.GetId()),
 	}
@@ -159,9 +174,12 @@ func (d *datadogTeamNotificationRulesDataSource) buildNotificationRuleModel(team
 	attributes := teamNotificationRuleData.GetAttributes()
 
 	// Always populate email block with default false if not present
-	rule.Email = &emailModel{Enabled: types.BoolValue(false)}
+	rule.Email = &emailModel{Enabled: types.BoolValue(false), RecipientEmail: types.StringNull()}
 	if email, ok := attributes.GetEmailOk(); ok {
 		rule.Email.Enabled = types.BoolValue(email.GetEnabled())
+		if recipient := email.GetRecipientEmail(); recipient != "" {
+			rule.Email.RecipientEmail = types.StringValue(recipient)
+		}
 	}
 
 	// Only populate other blocks if they exist
@@ -175,6 +193,11 @@ func (d *datadogTeamNotificationRulesDataSource) buildNotificationRuleModel(team
 		rule.Pagerduty = &pagerdutyModel{
 			ServiceName: types.StringValue(pagerduty.GetServiceName()),
 		}
+	}
+
+	if servicenow, ok := attributes.GetServicenowOk(); ok {
+		templates, _ := types.ListValueFrom(ctx, types.StringType, servicenow.GetTemplates())
+		rule.Servicenow = &servicenowModel{Templates: templates}
 	}
 
 	if slack, ok := attributes.GetSlackOk(); ok {

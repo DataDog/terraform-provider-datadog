@@ -40,6 +40,7 @@ Read-Only:
 - `id` (String) The ID of the notification rule.
 - `ms_teams` (Block, Read-only) The MS Teams notification settings. (see [below for nested schema](#nestedblock--notification_rules--ms_teams))
 - `pagerduty` (Block, Read-only) The PagerDuty notification settings. (see [below for nested schema](#nestedblock--notification_rules--pagerduty))
+- `servicenow` (Block, Read-only) The ServiceNow notification settings. (see [below for nested schema](#nestedblock--notification_rules--servicenow))
 - `slack` (Block, Read-only) The Slack notification settings. (see [below for nested schema](#nestedblock--notification_rules--slack))
 
 <a id="nestedblock--notification_rules--email"></a>
@@ -48,6 +49,7 @@ Read-Only:
 Read-Only:
 
 - `enabled` (Boolean) Flag indicating whether email notifications should be sent.
+- `recipient_email` (String) Email address notifications are sent to instead of all team members.
 
 
 <a id="nestedblock--notification_rules--ms_teams"></a>
@@ -64,6 +66,14 @@ Read-Only:
 Read-Only:
 
 - `service_name` (String) PagerDuty service name.
+
+
+<a id="nestedblock--notification_rules--servicenow"></a>
+### Nested Schema for `notification_rules.servicenow`
+
+Read-Only:
+
+- `templates` (List of String) ServiceNow template handle names.
 
 
 <a id="nestedblock--notification_rules--slack"></a>

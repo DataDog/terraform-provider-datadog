@@ -26,6 +26,9 @@ func TestAccDatadogTeamNotificationRuleDatasourceBasic(t *testing.T) {
 					resource.TestCheckResourceAttrSet("data.datadog_team_notification_rule.foo_specific", "team_id"),
 					resource.TestCheckResourceAttrSet("data.datadog_team_notification_rule.foo_specific", "rule_id"),
 					resource.TestCheckResourceAttr("data.datadog_team_notification_rule.foo_specific", "email.enabled", "true"),
+					resource.TestCheckResourceAttr("data.datadog_team_notification_rule.foo_specific", "email.recipient_email", "team-alerts@example.com"),
+					resource.TestCheckResourceAttr("data.datadog_team_notification_rule.foo_specific", "servicenow.templates.#", "1"),
+					resource.TestCheckResourceAttr("data.datadog_team_notification_rule.foo_specific", "servicenow.templates.0", "incident-template"),
 					resource.TestCheckResourceAttr("data.datadog_team_notification_rule.foo_specific", "ms_teams.connector_name", "test-teams-handle"),
 					resource.TestCheckResourceAttr("data.datadog_team_notification_rule.foo_specific", "pagerduty.service_name", "my-service"),
 					resource.TestCheckResourceAttr("data.datadog_team_notification_rule.foo_specific", "slack.channel", "#test-channel"),
@@ -47,13 +50,17 @@ func testAccDatasourceTeamNotificationRuleSingularConfig(uniq string) string {
 		resource "datadog_team_notification_rule" "foo" {
 		  team_id = datadog_team.foo.id
 		  email {
-			enabled = true
+			enabled         = true
+			recipient_email = "team-alerts@example.com"
 		  }
 		  ms_teams {
 			connector_name = "test-teams-handle"
 		  }
 		  pagerduty {
 			service_name = "my-service"
+		  }
+		  servicenow {
+			templates = ["incident-template"]
 		  }
 		  slack {
 			channel   = "#test-channel"

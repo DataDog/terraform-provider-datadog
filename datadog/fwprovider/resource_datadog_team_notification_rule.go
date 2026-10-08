@@ -6,12 +6,14 @@ import (
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -33,19 +35,24 @@ type teamNotificationRuleModel struct {
 	ID     types.String `tfsdk:"id"`
 	TeamId types.String `tfsdk:"team_id"`
 
-	Email     *emailModel     `tfsdk:"email"`
-	MsTeams   *msTeamsModel   `tfsdk:"ms_teams"`
-	Pagerduty *pagerdutyModel `tfsdk:"pagerduty"`
-	Slack     *slackModel     `tfsdk:"slack"`
+	Email      *emailModel      `tfsdk:"email"`
+	MsTeams    *msTeamsModel    `tfsdk:"ms_teams"`
+	Pagerduty  *pagerdutyModel  `tfsdk:"pagerduty"`
+	Servicenow *servicenowModel `tfsdk:"servicenow"`
+	Slack      *slackModel      `tfsdk:"slack"`
 }
 type emailModel struct {
-	Enabled types.Bool `tfsdk:"enabled"`
+	Enabled        types.Bool   `tfsdk:"enabled"`
+	RecipientEmail types.String `tfsdk:"recipient_email"`
 }
 type msTeamsModel struct {
 	ConnectorName types.String `tfsdk:"connector_name"`
 }
 type pagerdutyModel struct {
 	ServiceName types.String `tfsdk:"service_name"`
+}
+type servicenowModel struct {
+	Templates types.List `tfsdk:"templates"`
 }
 type slackModel struct {
 	Channel   types.String `tfsdk:"channel"`
@@ -87,6 +94,10 @@ func (r *teamNotificationRuleResource) Schema(_ context.Context, _ resource.Sche
 						Optional:    true,
 						Description: "Whether to send email notifications to team members when alerts are triggered.",
 					},
+					"recipient_email": schema.StringAttribute{
+						Optional:    true,
+						Description: "A single email address to send notifications to instead of all team members. Requires `enabled` to be `true`. When omitted, notifications are sent to all team members.",
+					},
 				},
 			},
 			"ms_teams": schema.SingleNestedBlock{
@@ -104,6 +115,19 @@ func (r *teamNotificationRuleResource) Schema(_ context.Context, _ resource.Sche
 					"service_name": schema.StringAttribute{
 						Optional:    true,
 						Description: "PagerDuty service name to send incident notifications to. The service name can be found in your PagerDuty service settings.",
+					},
+				},
+			},
+			"servicenow": schema.SingleNestedBlock{
+				Description: "The ServiceNow notification settings.",
+				Attributes: map[string]schema.Attribute{
+					"templates": schema.ListAttribute{
+						Optional:    true,
+						ElementType: types.StringType,
+						Description: "ServiceNow template handle names to use for notifications.",
+						Validators: []validator.List{
+							listvalidator.SizeAtLeast(1),
+						},
 					},
 				},
 			},
@@ -172,6 +196,9 @@ func (r *teamNotificationRuleResource) ModifyPlan(ctx context.Context, request r
 	}
 	if config.Pagerduty == nil && plan.Pagerduty != nil {
 		plan.Pagerduty = nil
+	}
+	if config.Servicenow == nil && plan.Servicenow != nil {
+		plan.Servicenow = nil
 	}
 	if config.Slack == nil && plan.Slack != nil {
 		plan.Slack = nil
@@ -346,6 +373,7 @@ func (r *teamNotificationRuleResource) updateState(ctx context.Context, state *t
 	state.Email = nil
 	state.MsTeams = nil
 	state.Pagerduty = nil
+	state.Servicenow = nil
 	state.Slack = nil
 
 	if attributes, ok := notificationRule.GetAttributesOk(); ok {
@@ -359,8 +387,17 @@ func (r *teamNotificationRuleResource) updateState(ctx context.Context, state *t
 			// The API always returns `email.enabled` even if it wasn't
 			// present in the TF config. So ONLY set the email block
 			// if it's in the config.
+			// The API only keeps `recipient_email` when email is enabled,
+			// so this check also covers rules with a custom recipient.
 			if emailEnabled || emailWasConfigured {
-				state.Email = &emailModel{Enabled: types.BoolValue(emailEnabled)}
+				emailTf := emailModel{
+					Enabled:        types.BoolValue(emailEnabled),
+					RecipientEmail: types.StringNull(),
+				}
+				if recipient := email.GetRecipientEmail(); recipient != "" {
+					emailTf.RecipientEmail = types.StringValue(recipient)
+				}
+				state.Email = &emailTf
 			}
 		}
 		if msTeams, ok := attributes.GetMsTeamsOk(); ok {
@@ -378,6 +415,14 @@ func (r *teamNotificationRuleResource) updateState(ctx context.Context, state *t
 				pagerdutyTf.ServiceName = types.StringValue(*serviceName)
 			}
 			state.Pagerduty = &pagerdutyTf
+		}
+		if servicenow, ok := attributes.GetServicenowOk(); ok {
+
+			servicenowTf := servicenowModel{Templates: types.ListNull(types.StringType)}
+			if templates, ok := servicenow.GetTemplatesOk(); ok {
+				servicenowTf.Templates, _ = types.ListValueFrom(ctx, types.StringType, *templates)
+			}
+			state.Servicenow = &servicenowTf
 		}
 		if slack, ok := attributes.GetSlackOk(); ok {
 
@@ -402,6 +447,9 @@ func (r *teamNotificationRuleResource) buildTeamNotificationRuleRequestBody(ctx 
 	if state.Email != nil && !state.Email.Enabled.IsNull() {
 		req.Data.Attributes.Email = datadogV2.NewTeamNotificationRuleAttributesEmailWithDefaults()
 		req.Data.Attributes.Email.SetEnabled(state.Email.Enabled.ValueBool())
+		if !state.Email.RecipientEmail.IsNull() {
+			req.Data.Attributes.Email.SetRecipientEmail(state.Email.RecipientEmail.ValueString())
+		}
 	}
 
 	if state.MsTeams != nil && !state.MsTeams.ConnectorName.IsNull() {
@@ -412,6 +460,13 @@ func (r *teamNotificationRuleResource) buildTeamNotificationRuleRequestBody(ctx 
 	if state.Pagerduty != nil && !state.Pagerduty.ServiceName.IsNull() {
 		req.Data.Attributes.Pagerduty = datadogV2.NewTeamNotificationRuleAttributesPagerdutyWithDefaults()
 		req.Data.Attributes.Pagerduty.SetServiceName(state.Pagerduty.ServiceName.ValueString())
+	}
+
+	if state.Servicenow != nil && !state.Servicenow.Templates.IsNull() {
+		var templates []string
+		diags.Append(state.Servicenow.Templates.ElementsAs(ctx, &templates, false)...)
+		req.Data.Attributes.Servicenow = datadogV2.NewTeamNotificationRuleAttributesServiceNowWithDefaults()
+		req.Data.Attributes.Servicenow.SetTemplates(templates)
 	}
 
 	if state.Slack != nil && (!state.Slack.Channel.IsNull() || !state.Slack.Workspace.IsNull()) {
@@ -431,11 +486,11 @@ func (r *teamNotificationRuleResource) buildTeamNotificationRuleRequestBody(ctx 
 type teamNotificationRuleValidator struct{}
 
 func (v *teamNotificationRuleValidator) Description(ctx context.Context) string {
-	return "Validates that at least one notification type (email, ms_teams, pagerduty, or slack) is configured"
+	return "Validates that at least one notification type (email, ms_teams, pagerduty, servicenow, or slack) is configured, and that email.recipient_email is only set when email.enabled is true"
 }
 
 func (v *teamNotificationRuleValidator) MarkdownDescription(ctx context.Context) string {
-	return "Validates that at least one notification type (`email`, `ms_teams`, `pagerduty`, or `slack`) is configured"
+	return "Validates that at least one notification type (`email`, `ms_teams`, `pagerduty`, `servicenow`, or `slack`) is configured, and that `email.recipient_email` is only set when `email.enabled` is `true`"
 }
 
 func (v *teamNotificationRuleValidator) ValidateResource(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -450,12 +505,25 @@ func (v *teamNotificationRuleValidator) ValidateResource(ctx context.Context, re
 	hasEmail := config.Email != nil && !config.Email.Enabled.IsNull()
 	hasMsTeams := config.MsTeams != nil && !config.MsTeams.ConnectorName.IsNull()
 	hasPagerduty := config.Pagerduty != nil && !config.Pagerduty.ServiceName.IsNull()
+	hasServicenow := config.Servicenow != nil && !config.Servicenow.Templates.IsNull()
 	hasSlack := config.Slack != nil && (!config.Slack.Channel.IsNull() || !config.Slack.Workspace.IsNull())
 
-	if !hasEmail && !hasMsTeams && !hasPagerduty && !hasSlack {
+	if !hasEmail && !hasMsTeams && !hasPagerduty && !hasServicenow && !hasSlack {
 		resp.Diagnostics.AddError(
 			"Missing Notification Configuration",
-			"At least one notification type must be configured. Please configure one of: email, ms_teams, pagerduty, or slack.",
+			"At least one notification type must be configured. Please configure one of: email, ms_teams, pagerduty, servicenow, or slack.",
 		)
+	}
+
+	// The API silently drops recipient_email unless email is enabled, which
+	// would otherwise surface as an inconsistent result after apply.
+	if config.Email != nil && !config.Email.RecipientEmail.IsNull() && !config.Email.RecipientEmail.IsUnknown() && !config.Email.Enabled.IsUnknown() {
+		if config.Email.Enabled.IsNull() || !config.Email.Enabled.ValueBool() {
+			resp.Diagnostics.AddAttributeError(
+				frameworkPath.Root("email").AtName("recipient_email"),
+				"Invalid Email Configuration",
+				"email.recipient_email requires email.enabled to be true.",
+			)
+		}
 	}
 }
