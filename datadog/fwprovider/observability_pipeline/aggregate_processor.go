@@ -1,8 +1,6 @@
 package observability_pipeline
 
 import (
-	"encoding/json"
-
 	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
@@ -83,19 +81,13 @@ func ExpandAggregateProcessor(common BaseProcessorFields, src *AggregateProcesso
 	proc.SetMode(datadogV2.ObservabilityPipelineAggregateProcessorMode(src.Mode.ValueString()))
 	if len(src.AggregationTiming) > 0 {
 		timing := src.AggregationTiming[0]
-		serializedTiming := map[string]interface{}{
-			"type": timing.Type.ValueString(),
-		}
+		apiTiming := datadogV2.NewObservabilityPipelineAggregateProcessorAggregationTiming(
+			datadogV2.ObservabilityPipelineAggregateProcessorAggregationTimingType(timing.Type.ValueString()),
+		)
 		if !timing.AllowedLatenessSecs.IsNull() && !timing.AllowedLatenessSecs.IsUnknown() {
-			serializedTiming["allowed_lateness_secs"] = timing.AllowedLatenessSecs.ValueInt64()
+			apiTiming.SetAllowedLatenessSecs(timing.AllowedLatenessSecs.ValueInt64())
 		}
-		// The generated API client does not expose aggregation_timing until the
-		// corresponding API spec change is released. AdditionalProperties keeps the
-		// provider compatible with the current client while emitting the same wire shape.
-		if proc.AdditionalProperties == nil {
-			proc.AdditionalProperties = make(map[string]interface{})
-		}
-		proc.AdditionalProperties["aggregation_timing"] = serializedTiming
+		proc.SetAggregationTiming(*apiTiming)
 	}
 	return datadogV2.ObservabilityPipelineAggregateProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
@@ -112,28 +104,18 @@ func FlattenAggregateProcessor(src *datadogV2.ObservabilityPipelineAggregateProc
 }
 
 func flattenAggregateAggregationTiming(src *datadogV2.ObservabilityPipelineAggregateProcessor) []*AggregateAggregationTimingModel {
-	payload, err := json.Marshal(src)
-	if err != nil {
-		return nil
-	}
-
-	var serialized struct {
-		AggregationTiming *struct {
-			Type                string `json:"type"`
-			AllowedLatenessSecs *int64 `json:"allowed_lateness_secs,omitempty"`
-		} `json:"aggregation_timing,omitempty"`
-	}
-	if err := json.Unmarshal(payload, &serialized); err != nil || serialized.AggregationTiming == nil {
+	timing, ok := src.GetAggregationTimingOk()
+	if !ok {
 		return nil
 	}
 
 	allowedLatenessSecs := types.Int64Null()
-	if serialized.AggregationTiming.AllowedLatenessSecs != nil {
-		allowedLatenessSecs = types.Int64Value(*serialized.AggregationTiming.AllowedLatenessSecs)
+	if lateness, ok := timing.GetAllowedLatenessSecsOk(); ok {
+		allowedLatenessSecs = types.Int64Value(*lateness)
 	}
 
 	return []*AggregateAggregationTimingModel{{
-		Type:                types.StringValue(serialized.AggregationTiming.Type),
+		Type:                types.StringValue(string(timing.GetType())),
 		AllowedLatenessSecs: allowedLatenessSecs,
 	}}
 }
