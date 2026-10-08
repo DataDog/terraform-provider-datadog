@@ -817,6 +817,72 @@ resource "datadog_synthetics_test" "bar" {
 }`, uniq, locator)
 }
 
+func TestAccDatadogSyntheticsMobileTest_MonitorOptions(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	const resourceName = "datadog_synthetics_test.bar"
+	const monitorPath = "mobile_options_list.0.monitor_options.0."
+	checkMonitorOptions := func(preset, interval, occurrences string) resource.TestCheckFunc {
+		return resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(providers.sdkV2Provider),
+			resource.TestCheckResourceAttr(resourceName, monitorPath+"notification_preset_name", preset),
+			resource.TestCheckResourceAttr(resourceName, monitorPath+"renotify_interval", interval),
+			resource.TestCheckResourceAttr(resourceName, monitorPath+"renotify_occurrences", occurrences),
+		)
+	}
+	presetOnly := createSyntheticsMobileTestMonitorOptionsConfig(testName, `notification_preset_name = "hide_handles"`)
+	enabled := createSyntheticsMobileTestMonitorOptionsConfig(testName, `
+      notification_preset_name = "hide_query"
+      renotify_interval        = 30
+      renotify_occurrences     = 3`)
+	disabled := createSyntheticsMobileTestMonitorOptionsConfig(testName, `
+      notification_preset_name = "hide_handles"
+      renotify_interval        = 0
+      renotify_occurrences     = 0`)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(providers.sdkV2Provider),
+		Steps: []resource.TestStep{
+			{Config: presetOnly, Check: checkMonitorOptions("hide_handles", "0", "0")},
+			{ResourceName: resourceName, ImportState: true, ImportStateVerify: true},
+			{Config: enabled, Check: checkMonitorOptions("hide_query", "30", "3")},
+			{ResourceName: resourceName, ImportState: true, ImportStateVerify: true},
+			{Config: presetOnly, Check: checkMonitorOptions("hide_handles", "0", "0")},
+			{Config: enabled, Check: checkMonitorOptions("hide_query", "30", "3")},
+			{Config: disabled, Check: checkMonitorOptions("hide_handles", "0", "0")},
+			{ResourceName: resourceName, ImportState: true, ImportStateVerify: true},
+			{Config: disabled, PlanOnly: true},
+		},
+	})
+}
+
+func createSyntheticsMobileTestMonitorOptionsConfig(uniq, monitorOptions string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "bar" {
+  name      = %q
+  type      = "mobile"
+  status    = "paused"
+  message   = ""
+  locations = []
+
+  mobile_options_list {
+    device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+    tick_every = 43200
+    mobile_application {
+      application_id = "ab0e0aed-536d-411a-9a99-5428c27d8f8e"
+      reference_id   = "6115922a-5f5d-455e-bc7e-7955a57f3815"
+      reference_type = "version"
+    }
+    monitor_options {
+      %s
+    }
+  }
+}`, uniq, monitorOptions)
+}
+
 func TestAccDatadogSyntheticsMobileTest_Updated(t *testing.T) {
 	cleanupSyntheticsTests(t)
 	t.Parallel()
