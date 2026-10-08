@@ -68,15 +68,26 @@ failure prevented the spec from loading at all.
 ## Secrets and sensitivity
 
 - An OpenAPI property marked `writeOnly: true` becomes Terraform write-only
-  handling: the generated schema replaces it with `<attr>_wo` and
-  `<attr>_wo_version`, and does **not** expose a stateful plaintext `<attr>`.
+  handling: the generated schema replaces it with three attributes — `<attr>_wo`
+  and `<attr>_wo_version` for Terraform 1.11+, plus a stateful plaintext
+  `<attr>` as the fallback for older Terraform. The two halves are mutually
+  exclusive, and the plaintext one carries `PreferWriteOnlyAttribute`, so a
+  1.11+ user is steered to the write-only path while a pre-1.11 user can still
+  apply the resource.
+- Requiredness lands on the pair, not on either half: a secret the API requires
+  on create becomes `ExactlyOneOf(<attr>, <attr>_wo)`, and an optional one
+  becomes `ConflictsWith`. Neither attribute is ever `Required` on its own,
+  since either one alone satisfies the API.
 - `x-secret: true` or `writeOnly: true` default an attribute to Terraform-sensitive.
   An explicit `sensitive: false` on the same schema node overrides that inference.
 - Sensitive and `x-secret` redact from display; they do **not** keep values out of
   Terraform state. Only write-only handling does that.
 
-Hand-written resources use the legacy three-attribute pattern via
-`datadog/internal/fwutils`. Do not copy that shape into generated resources.
+Generated and hand-written resources share the same three-attribute pattern via
+`datadog/internal/fwutils`. Generated resources pass
+`WriteOnlySecretModeDual`, which differs from hand-written
+`WriteOnlySecretModeLegacy` only in honouring `Required`: Legacy predates it and
+always forces `ExactlyOneOf`.
 
 ## What a green run does not prove
 

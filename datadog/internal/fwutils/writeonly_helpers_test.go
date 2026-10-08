@@ -709,3 +709,99 @@ func TestWriteOnlySecretHandlerModeOnlyRequiredUpdateRejectsMissingSecret(t *tes
 		}
 	}
 }
+
+func dualSecretConfig(required bool) WriteOnlySecretConfig {
+	return WriteOnlySecretConfig{
+		OriginalAttr:         "api_key",
+		WriteOnlyAttr:        "api_key_wo",
+		TriggerAttr:          "api_key_wo_version",
+		OriginalDescription:  "The API key for the account.",
+		WriteOnlyDescription: "Write-only API key for the account.",
+		TriggerDescription:   "Version for `api_key_wo` rotation.",
+		Mode:                 WriteOnlySecretModeDual,
+		Required:             required,
+	}
+}
+
+// TestCreateWriteOnlySecretAttributesDual pins the shape generated resources
+// rely on: the plaintext fallback stays available for Terraform <1.11, and
+// requiredness lands on the pair rather than on either half, since either one
+// alone satisfies the API.
+func TestCreateWriteOnlySecretAttributesDual(t *testing.T) {
+	for _, required := range []bool{false, true} {
+		t.Run(fmt.Sprintf("required=%t", required), func(t *testing.T) {
+			config := dualSecretConfig(required)
+			attrs := CreateWriteOnlySecretAttributes(config)
+
+			if len(attrs) != 3 {
+				t.Fatalf("dual schema must expose plaintext, _wo and _wo_version, got keys %#v", reflect.ValueOf(attrs).MapKeys())
+			}
+			plaintext, ok := attrs[config.OriginalAttr].(schema.StringAttribute)
+			if !ok {
+				t.Fatalf("%s must be schema.StringAttribute, got %T", config.OriginalAttr, attrs[config.OriginalAttr])
+			}
+			writeOnly, ok := attrs[config.WriteOnlyAttr].(schema.StringAttribute)
+			if !ok {
+				t.Fatalf("%s must be schema.StringAttribute, got %T", config.WriteOnlyAttr, attrs[config.WriteOnlyAttr])
+			}
+
+			if plaintext.WriteOnly || !plaintext.Sensitive {
+				t.Errorf("plaintext fallback flags = WriteOnly:%t Sensitive:%t; want false, true", plaintext.WriteOnly, plaintext.Sensitive)
+			}
+			if !writeOnly.WriteOnly || !writeOnly.Sensitive {
+				t.Errorf("_wo flags = WriteOnly:%t Sensitive:%t; want true, true", writeOnly.WriteOnly, writeOnly.Sensitive)
+			}
+			// Marking either half Required would reject a configuration that
+			// legitimately sets only the other one.
+			for name, attr := range map[string]schema.StringAttribute{
+				config.OriginalAttr:  plaintext,
+				config.WriteOnlyAttr: writeOnly,
+			} {
+				if attr.Required || !attr.Optional || attr.Computed {
+					t.Errorf("%s flags = Required:%t Optional:%t Computed:%t; want false, true, false", name, attr.Required, attr.Optional, attr.Computed)
+				}
+			}
+
+			plaintextValidators := validatorDescriptions(t, plaintext)
+			if !strings.Contains(plaintextValidators, "api_key_wo") {
+				t.Errorf("plaintext fallback must steer 1.11+ users to _wo, got:\n%s", plaintextValidators)
+			}
+			wantExclusivity := "Ensure that one and only one attribute from this collection is set"
+			rejected := "Ensure that if an attribute is set, these are not set"
+			if !required {
+				wantExclusivity, rejected = rejected, wantExclusivity
+			}
+			for name, validators := range map[string]string{
+				config.OriginalAttr:  plaintextValidators,
+				config.WriteOnlyAttr: validatorDescriptions(t, writeOnly),
+			} {
+				if !strings.Contains(validators, wantExclusivity) {
+					t.Errorf("%s (required=%t) must carry %q, got:\n%s", name, required, wantExclusivity, validators)
+				}
+				if strings.Contains(validators, rejected) {
+					t.Errorf("%s (required=%t) must not carry %q, got:\n%s", name, required, rejected, validators)
+				}
+			}
+		})
+	}
+}
+
+// TestWriteOnlySecretHandlerDualFallsBackToPlaintext covers the point of the
+// fallback: a pre-1.11 configuration sets only the plaintext attribute, and the
+// request must still carry the secret.
+func TestWriteOnlySecretHandlerDualFallsBackToPlaintext(t *testing.T) {
+	config := dualSecretConfig(true)
+	handler := &WriteOnlySecretHandler{Config: config}
+	testSchema := schema.Schema{Attributes: CreateWriteOnlySecretAttributes(config)}
+
+	const plaintextOnly = "pre-1.11-plaintext-secret"
+	tfConfig := &tfsdk.Config{Raw: makeConfigValue(ptr(plaintextOnly), nil), Schema: testSchema}
+
+	result := handler.GetSecretForCreate(context.Background(), tfConfig)
+	if result.Diagnostics.HasError() {
+		t.Fatalf("GetSecretForCreate returned errors: %v", result.Diagnostics)
+	}
+	if !result.ShouldSetValue || result.Value != plaintextOnly {
+		t.Fatalf("GetSecretForCreate = (%q, %t); want (%q, true)", result.Value, result.ShouldSetValue, plaintextOnly)
+	}
+}

@@ -235,11 +235,13 @@ type SchemaView struct {
 	IncludeResourceID   bool
 }
 
-// WriteOnlySecretView is one generated write-only-only Terraform pair. The
-// Terraform names and descriptions drive schema expansion, while SDKField
-// deliberately retains the original OpenAPI setter identity for request
-// routing. ParentBlocks contains only statically addressed single nested
-// attributes and is empty for a resource-root secret.
+// WriteOnlySecretView is one generated write-only Terraform group: the
+// write-only attribute, its version trigger, and the stateful plaintext
+// attribute kept as the Terraform <1.11 fallback. The Terraform names and
+// descriptions drive schema expansion, while SDKField deliberately retains the
+// original OpenAPI setter identity for request routing. ParentBlocks contains
+// only statically addressed single nested attributes and is empty for a
+// resource-root secret.
 type WriteOnlySecretView struct {
 	OriginalAttr         string
 	WriteOnlyAttr        string
@@ -248,6 +250,7 @@ type WriteOnlySecretView struct {
 	ParentBlocks         []string
 	RequiredOnCreate     bool
 	RequiredOnUpdate     bool
+	OriginalDescription  string
 	WriteOnlyDescription string
 	TriggerDescription   string
 	// ConfigVar is the package-scoped configuration shared by schema expansion

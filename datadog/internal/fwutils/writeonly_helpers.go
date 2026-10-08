@@ -26,18 +26,29 @@ func MergeAttributes(attributeMaps ...map[string]schema.Attribute) map[string]sc
 	return result
 }
 
-// WriteOnlySecretMode selects whether a schema keeps the legacy plaintext
-// attribute alongside its write-only companion or exposes only the write-only
-// interface. The zero value preserves all existing callers.
+// WriteOnlySecretMode selects whether a schema keeps the plaintext attribute
+// alongside its write-only companion or exposes only the write-only interface.
+// The zero value preserves all existing callers.
 type WriteOnlySecretMode uint8
 
 const (
+	// WriteOnlySecretModeLegacy is the hand-written three-attribute shape:
+	// plaintext plus write-only companion, with the plaintext path always
+	// mandatory through ExactlyOneOf.
 	WriteOnlySecretModeLegacy WriteOnlySecretMode = iota
+	// WriteOnlySecretModeOnly exposes only the write-only attribute and its
+	// version trigger, which requires Terraform 1.11+ of every consumer.
 	WriteOnlySecretModeOnly
+	// WriteOnlySecretModeDual is ModeLegacy generalized over Required: the
+	// plaintext attribute stays available as the Terraform <1.11 fallback, and
+	// Required decides whether the pair is mandatory (ExactlyOneOf) or merely
+	// mutually exclusive (ConflictsWith).
+	WriteOnlySecretModeDual
 )
 
-// WriteOnlySecretConfig configures a secret attribute. Legacy mode supports
-// both a stateful plaintext attribute and its write-only companion. ModeOnly
+// WriteOnlySecretConfig configures a secret attribute. Legacy and Dual mode
+// both expose a stateful plaintext attribute alongside its write-only
+// companion, so pre-1.11 Terraform can still configure the secret. ModeOnly
 // exposes only the write-only attribute and its stateful version trigger.
 type WriteOnlySecretConfig struct {
 	OriginalAttr         string // Plaintext attribute (e.g., "secret_key")
@@ -51,7 +62,9 @@ type WriteOnlySecretConfig struct {
 	ParentBlocks []string
 	// Mode defaults to WriteOnlySecretModeLegacy for backwards compatibility.
 	Mode WriteOnlySecretMode
-	// Required controls both ModeOnly attributes. Legacy mode ignores it.
+	// Required controls the ModeOnly attributes and, in ModeDual, whether one
+	// of the plaintext/write-only pair must be set. Legacy mode ignores it and
+	// always requires exactly one.
 	Required bool
 }
 
@@ -77,7 +90,8 @@ func (secretConfig WriteOnlySecretConfig) attrExpression(attributeName string) f
 	return attributeExpression.AtName(attributeName)
 }
 
-// CreateWriteOnlySecretAttributes generates three attributes for dual-mode secret support:
+// CreateWriteOnlySecretAttributes generates, outside ModeOnly, three attributes
+// for dual-mode secret support:
 // 1. Original attr (plaintext) - for TF <1.11 or backwards compatibility
 // 2. Write-only attr - for TF 1.11+ (not stored in state)
 // 3. Version trigger - when changed, applies the write-only secret
@@ -113,16 +127,26 @@ func CreateWriteOnlySecretAttributes(config WriteOnlySecretConfig) map[string]sc
 		}
 	}
 
+	// Legacy predates Required and is always mandatory; Dual honours it, so an
+	// optional secret is mutually exclusive rather than forced.
+	exclusive := stringvalidator.ExactlyOneOf(
+		config.attrExpression(config.OriginalAttr),
+		config.attrExpression(config.WriteOnlyAttr),
+	)
+	if config.Mode == WriteOnlySecretModeDual && !config.Required {
+		exclusive = stringvalidator.ConflictsWith(
+			config.attrExpression(config.OriginalAttr),
+			config.attrExpression(config.WriteOnlyAttr),
+		)
+	}
+
 	attrs := map[string]schema.Attribute{
 		config.OriginalAttr: schema.StringAttribute{
 			Optional:    true,
 			Description: config.OriginalDescription,
 			Sensitive:   true,
 			Validators: []validator.String{
-				stringvalidator.ExactlyOneOf(
-					config.attrExpression(config.OriginalAttr),
-					config.attrExpression(config.WriteOnlyAttr),
-				),
+				exclusive,
 				stringvalidator.PreferWriteOnlyAttribute(
 					config.attrExpression(config.WriteOnlyAttr),
 				),
@@ -134,10 +158,7 @@ func CreateWriteOnlySecretAttributes(config WriteOnlySecretConfig) map[string]sc
 			Sensitive:   true,
 			WriteOnly:   true,
 			Validators: []validator.String{
-				stringvalidator.ExactlyOneOf(
-					config.attrExpression(config.OriginalAttr),
-					config.attrExpression(config.WriteOnlyAttr),
-				),
+				exclusive,
 				stringvalidator.AlsoRequires(
 					config.attrExpression(config.TriggerAttr),
 				),

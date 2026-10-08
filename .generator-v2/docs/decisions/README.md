@@ -18,6 +18,7 @@ place someone discovers that a feature was only ever planned.
 |---|---|
 | [0001](0001-resources-before-test-automation.md) | Resources shipped before test automation, inverting the original sequencing. |
 | [0002](0002-split-moves-upstream.md) | The split/fan-out workflow moved out of the provider repository. |
+| [0003](0003-write-only-keeps-a-plaintext-fallback.md) | Generated write-only secrets keep a plaintext fallback, so a resource does not require Terraform 1.11. |
 
 Add a record when a choice would otherwise only be legible from a commit message, or
 when something documented as the plan stops being it. Unmerged work gets a record, not
