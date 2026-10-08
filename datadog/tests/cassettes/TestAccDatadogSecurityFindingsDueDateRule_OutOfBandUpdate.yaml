@@ -174,14 +174,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 307
+        content_length: 351
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"action":{"due_days_per_severity":[{"due_in_days":7,"severity":"critical"}],"due_from":"first_seen"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsDueDateRule_OutOfBandUpdate-local-1782479535-drifted","rule":{"finding_types":["misconfiguration"]}},"type":"due_date_rules"}}
+            {"data":{"attributes":{"action":{"due_days_per_severity":[{"due_in_days":7,"severity":"critical"}],"due_from":"first_seen"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsDueDateRule_OutOfBandUpdate-local-1782479535-drifted","rule":{"finding_types":["misconfiguration"]}},"id":"eb4cb2d0-4270-41c6-a4ba-f64e3082c96f","type":"due_date_rules"}}
         form: {}
         headers:
             Accept:
@@ -276,14 +276,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 299
+        content_length: 343
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"action":{"due_days_per_severity":[{"due_in_days":7,"severity":"critical"}],"due_from":"first_seen"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsDueDateRule_OutOfBandUpdate-local-1782479535","rule":{"finding_types":["misconfiguration"]}},"type":"due_date_rules"}}
+            {"data":{"attributes":{"action":{"due_days_per_severity":[{"due_in_days":7,"severity":"critical"}],"due_from":"first_seen"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsDueDateRule_OutOfBandUpdate-local-1782479535","rule":{"finding_types":["misconfiguration"]}},"id":"eb4cb2d0-4270-41c6-a4ba-f64e3082c96f","type":"due_date_rules"}}
         form: {}
         headers:
             Accept:

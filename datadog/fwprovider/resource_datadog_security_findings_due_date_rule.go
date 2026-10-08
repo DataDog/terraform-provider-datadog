@@ -203,7 +203,7 @@ func (r *securityFindingsDueDateRuleResource) Update(ctx context.Context, reques
 	}
 
 	body := datadogV2.NewDueDateRuleUpdateRequestWithDefaults()
-	body.SetData(*data)
+	body.SetData(*datadogV2.NewDueDateRuleDataUpdate(data.GetAttributes(), id, data.GetType()))
 
 	resp, _, err := r.Api.UpdateSecurityFindingsAutomationDueDateRule(r.Auth, id, *body)
 	if err != nil {

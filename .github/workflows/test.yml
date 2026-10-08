@@ -167,6 +167,8 @@ jobs:
           cache: true
       - name: Unit tests
         run: make test
+      - name: WIF concurrency race tests
+        run: make test UNIT_PKGS=./datadog TESTARGS="-race -run TestWIFParallelRequests -count=10"
 
   test:
     needs: changes

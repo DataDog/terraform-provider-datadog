@@ -451,7 +451,7 @@ func testAccMuteRuleRenameOutOfBand(accProvider *fwprovider.FrameworkProvider, r
 		data.SetAttributes(*updateAttrs)
 
 		body := datadogV2.NewMuteRuleUpdateRequestWithDefaults()
-		body.SetData(*data)
+		body.SetData(*datadogV2.NewMuteRuleDataUpdate(data.GetAttributes(), id, data.GetType()))
 
 		if _, httpResp, err := api.UpdateSecurityFindingsAutomationMuteRule(auth, id, *body); err != nil {
 			return utils.TranslateClientError(err, httpResp, "error updating mute rule out-of-band")

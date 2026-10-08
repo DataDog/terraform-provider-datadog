@@ -141,14 +141,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 308
+        content_length: 352
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"action":{"due_days_per_severity":[{"due_in_days":14,"severity":"critical"}],"due_from":"first_seen"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsDueDateRule_DueDaysPerSeverityChurn-local-1782479475","rule":{"finding_types":["misconfiguration"]}},"type":"due_date_rules"}}
+            {"data":{"attributes":{"action":{"due_days_per_severity":[{"due_in_days":14,"severity":"critical"}],"due_from":"first_seen"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsDueDateRule_DueDaysPerSeverityChurn-local-1782479475","rule":{"finding_types":["misconfiguration"]}},"id":"f27d67f6-5626-479e-9500-d2d825ea8f3e","type":"due_date_rules"}}
         form: {}
         headers:
             Accept:

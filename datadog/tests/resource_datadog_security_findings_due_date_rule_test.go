@@ -586,7 +586,7 @@ func testAccDueDateRuleRenameOutOfBand(accProvider *fwprovider.FrameworkProvider
 		data.SetAttributes(*updateAttrs)
 
 		body := datadogV2.NewDueDateRuleUpdateRequestWithDefaults()
-		body.SetData(*data)
+		body.SetData(*datadogV2.NewDueDateRuleDataUpdate(data.GetAttributes(), id, data.GetType()))
 
 		if _, httpResp, err := api.UpdateSecurityFindingsAutomationDueDateRule(auth, id, *body); err != nil {
 			return utils.TranslateClientError(err, httpResp, "error updating due date rule out-of-band")

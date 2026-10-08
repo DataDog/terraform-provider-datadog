@@ -582,7 +582,7 @@ func testAccTicketCreationRuleRenameOutOfBand(accProvider *fwprovider.FrameworkP
 		data.SetAttributes(*updateAttrs)
 
 		body := datadogV2.NewTicketCreationRuleUpdateRequestWithDefaults()
-		body.SetData(*data)
+		body.SetData(*datadogV2.NewTicketCreationRuleDataUpdate(data.GetAttributes(), id, data.GetType()))
 
 		if _, httpResp, err := api.UpdateSecurityFindingsAutomationTicketCreationRule(auth, id, *body); err != nil {
 			return utils.TranslateClientError(err, httpResp, "error updating ticket creation rule out-of-band")

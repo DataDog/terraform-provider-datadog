@@ -174,14 +174,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 325
+        content_length: 369
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"action":{"max_tickets_per_day":100,"project_id":"11111111-1111-1111-1111-111111111111","target":"jira"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsTicketCreationRule_OutOfBandUpdate-local-1782480740-drifted","rule":{"finding_types":["misconfiguration"]}},"type":"ticket_creation_rules"}}
+            {"data":{"attributes":{"action":{"max_tickets_per_day":100,"project_id":"11111111-1111-1111-1111-111111111111","target":"jira"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsTicketCreationRule_OutOfBandUpdate-local-1782480740-drifted","rule":{"finding_types":["misconfiguration"]}},"id":"8536a4b4-e2e9-443d-9af3-a2ccfe570cb6","type":"ticket_creation_rules"}}
         form: {}
         headers:
             Accept:
@@ -276,14 +276,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 317
+        content_length: 361
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"action":{"max_tickets_per_day":100,"project_id":"11111111-1111-1111-1111-111111111111","target":"jira"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsTicketCreationRule_OutOfBandUpdate-local-1782480740","rule":{"finding_types":["misconfiguration"]}},"type":"ticket_creation_rules"}}
+            {"data":{"attributes":{"action":{"max_tickets_per_day":100,"project_id":"11111111-1111-1111-1111-111111111111","target":"jira"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsTicketCreationRule_OutOfBandUpdate-local-1782480740","rule":{"finding_types":["misconfiguration"]}},"id":"8536a4b4-e2e9-443d-9af3-a2ccfe570cb6","type":"ticket_creation_rules"}}
         form: {}
         headers:
             Accept:

@@ -141,14 +141,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 402
+        content_length: 446
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"action":{"due_days_per_severity":[{"due_in_days":7,"severity":"critical"},{"due_in_days":30,"severity":"high"},{"due_in_days":90,"severity":"medium"}],"due_from":"fix_available"},"enabled":false,"name":"tf-TestAccDatadogSecurityFindingsDueDateRule-local-1782479429-updated","rule":{"finding_types":["misconfiguration","secret"],"query":"env:staging"}},"type":"due_date_rules"}}
+            {"data":{"attributes":{"action":{"due_days_per_severity":[{"due_in_days":7,"severity":"critical"},{"due_in_days":30,"severity":"high"},{"due_in_days":90,"severity":"medium"}],"due_from":"fix_available"},"enabled":false,"name":"tf-TestAccDatadogSecurityFindingsDueDateRule-local-1782479429-updated","rule":{"finding_types":["misconfiguration","secret"],"query":"env:staging"}},"id":"76ca8a27-14a2-485e-93e9-20cd94de968d","type":"due_date_rules"}}
         form: {}
         headers:
             Accept:
