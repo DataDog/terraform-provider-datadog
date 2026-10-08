@@ -152,13 +152,13 @@ func (r *workflowAutomationResource) ImportState(ctx context.Context, request re
 }
 
 func (r *workflowAutomationResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
-	var config workflowAutomationResourceModel
-	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
-	if response.Diagnostics.HasError() || config.RunAs.IsNull() || config.RunAs.IsUnknown() {
+	var runAsObj types.Object
+	response.Diagnostics.Append(request.Config.GetAttribute(ctx, frameworkPath.Root("run_as"), &runAsObj)...)
+	if response.Diagnostics.HasError() || runAsObj.IsNull() || runAsObj.IsUnknown() {
 		return
 	}
 
-	runAs := workflowAutomationRunAsFromObject(config.RunAs)
+	runAs := workflowAutomationRunAsFromObject(runAsObj)
 	if runAs.Type.IsUnknown() {
 		return
 	}
