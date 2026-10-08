@@ -40,7 +40,7 @@ type workflowAutomationResourceModel struct {
 	ID                  types.String         `tfsdk:"id"`
 	Name                types.String         `tfsdk:"name"`
 	Description         types.String         `tfsdk:"description"`
-	Tags                []types.String       `tfsdk:"tags"`
+	Tags                types.Set            `tfsdk:"tags"`
 	Published           types.Bool           `tfsdk:"published"`
 	SpecJson            jsontypes.Normalized `tfsdk:"spec_json"`
 	WebhookSecret       types.String         `tfsdk:"webhook_secret"`
@@ -429,9 +429,10 @@ func workflowAutomationModelToCreateApiRequest(workflowAutomationModel workflowA
 	attributes := datadogV2.NewWorkflowDataAttributesWithDefaults()
 	attributes.SetName(workflowAutomationModel.Name.ValueString())
 	attributes.SetDescription(workflowAutomationModel.Description.ValueString())
-	tags := make([]string, len(workflowAutomationModel.Tags))
-	for i, tag := range workflowAutomationModel.Tags {
-		tags[i] = tag.ValueString()
+	tagElements := workflowAutomationModel.Tags.Elements()
+	tags := make([]string, len(tagElements))
+	for i, tag := range tagElements {
+		tags[i] = tag.(types.String).ValueString()
 	}
 	sort.Strings(tags)
 	attributes.SetTags(tags)
@@ -469,9 +470,10 @@ func workflowAutomationModelToUpdateApiRequest(workflowAutomationModel workflowA
 	attributes := datadogV2.NewWorkflowDataUpdateAttributesWithDefaults()
 	attributes.SetName(workflowAutomationModel.Name.ValueString())
 	attributes.SetDescription(workflowAutomationModel.Description.ValueString())
-	tags := make([]string, len(workflowAutomationModel.Tags))
-	for i, tag := range workflowAutomationModel.Tags {
-		tags[i] = tag.ValueString()
+	tagElements := workflowAutomationModel.Tags.Elements()
+	tags := make([]string, len(tagElements))
+	for i, tag := range tagElements {
+		tags[i] = tag.(types.String).ValueString()
 	}
 	sort.Strings(tags)
 	attributes.SetTags(tags)
@@ -528,12 +530,11 @@ func apiResponseToWorkflowAutomationResourceModel(workflow *datadogV2.GetWorkflo
 		return nil, err
 	}
 
-	sort.Strings(attributes.Tags)
-	var tags []types.String = make([]types.String, 0, len(attributes.Tags))
+	tags := make([]attr.Value, 0, len(attributes.Tags))
 	for _, tag := range attributes.Tags {
 		tags = append(tags, types.StringValue(tag))
 	}
-	workflowModel.Tags = tags
+	workflowModel.Tags = types.SetValueMust(types.StringType, tags)
 
 	marshalledBytes, err := json.Marshal(attributes.Spec)
 	if err != nil {
