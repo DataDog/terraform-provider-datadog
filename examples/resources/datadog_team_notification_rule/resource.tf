@@ -9,13 +9,17 @@ resource "datadog_team" "foo" {
 resource "datadog_team_notification_rule" "foo" {
   team_id = datadog_team.foo.id
   email {
-    enabled = true
+    enabled         = true
+    recipient_email = "team-alerts@example.com"
   }
   ms_teams {
     connector_name = "test-teams-handle"
   }
   pagerduty {
     service_name = "my-service"
+  }
+  servicenow {
+    templates = ["incident-template"]
   }
   slack {
     channel   = "test-channel"
