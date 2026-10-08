@@ -12,17 +12,28 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
-// seedProviderTest writes the minimal provider_test.go the harness keeps its
+// seedProviderTest ensures the minimal provider_test.go the harness keeps its
 // endpoint-tag map in. The real tree always has one; a generated test has to be
 // registered there or it t.Fatals at startup, so generation reads it.
+//
+// It writes only when the file is absent. Overwriting unconditionally would
+// revert the registration a previous run in the same directory just made,
+// which makes a second run look like drift when nothing drifted — the
+// generator is idempotent here, and a reseeding helper hides that.
 func seedProviderTest(t *testing.T, testsDir string) {
 	t.Helper()
 	if err := os.MkdirAll(testsDir, 0o755); err != nil {
 		t.Fatal(err)
 	}
+	path := filepath.Join(testsDir, "provider_test.go")
+	if _, err := os.Stat(path); err == nil {
+		return
+	} else if !errors.Is(err, os.ErrNotExist) {
+		t.Fatal(err)
+	}
 	const content = "package test\n\nvar testFiles2EndpointTags = map[string]string{\n" +
 		"\t\"tests/provider_test\": \"terraform\",\n}\n"
-	if err := os.WriteFile(filepath.Join(testsDir, "provider_test.go"), []byte(content), 0o644); err != nil {
+	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -321,5 +332,46 @@ func TestGenerateCheckDriftAloneIsStillCheckFailed(t *testing.T) {
 	err := runCassetteGenerate(t, dir, filepath.Join(dir, "report.json"), "--check")
 	if !errors.Is(err, errCheckFailed) {
 		t.Fatalf("check error = %v, want errCheckFailed", err)
+	}
+}
+
+// --check is the CI gate, so it has to be clean when nothing changed.
+// Otherwise it cannot tell real drift from none, and the exit-3 half of the
+// precedence above says nothing.
+func TestGenerateCleanCheckOfAnEligibleTargetSucceeds(t *testing.T) {
+	dir := t.TempDir()
+	if err := runCassetteGenerate(t, dir, filepath.Join(dir, "r1.json")); err != nil {
+		t.Fatalf("first run: %v", err)
+	}
+	if err := runCassetteGenerate(t, dir, filepath.Join(dir, "r2.json"), "--check"); err != nil {
+		t.Fatalf("check after a clean generate = %v, want nil", err)
+	}
+}
+
+// And a third run writes the same bytes, so the registration a run makes is
+// one the next run recognizes rather than re-applies.
+func TestGenerateRegistrationIsIdempotent(t *testing.T) {
+	dir := t.TempDir()
+	providerTest := filepath.Join(dir, "tests", "provider_test.go")
+	if err := runCassetteGenerate(t, dir, filepath.Join(dir, "r1.json")); err != nil {
+		t.Fatalf("first run: %v", err)
+	}
+	first, err := os.ReadFile(providerTest)
+	if err != nil {
+		t.Fatalf("reading provider_test.go: %v", err)
+	}
+	if !bytes.Contains(first, []byte("openapi_example_test")) {
+		t.Fatal("the first run did not register the generated test")
+	}
+	if err := runCassetteGenerate(t, dir, filepath.Join(dir, "r2.json")); err != nil {
+		t.Fatalf("second run: %v", err)
+	}
+	second, err := os.ReadFile(providerTest)
+	if err != nil {
+		t.Fatalf("re-reading provider_test.go: %v", err)
+	}
+	if !bytes.Equal(first, second) {
+		t.Errorf("a repeat run rewrote the registration:\n--- first ---\n%s\n--- second ---\n%s",
+			first, second)
 	}
 }
