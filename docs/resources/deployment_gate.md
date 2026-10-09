@@ -90,7 +90,7 @@ Optional:
 - `excluded_resources` (List of String) Resources to exclude from faulty deployment detection. Mutually exclusive with allowed_resources.
 - `fail_on_no_data` (Boolean) Fail if a matching monitor group is in NO DATA state (API default: true).
 - `fail_on_no_groups_found` (Boolean) Fail if no monitor groups are found (API default: false).
-- `monitor_ids` (Attributes List) Specific monitors to evaluate. Mutually exclusive with query. (see [below for nested schema](#nestedatt--rule--options--monitor_ids))
+- `monitor_ids` (Attributes List) Specific monitors to evaluate. Mutually exclusive with query. (see [nested schema](#nestedatt--rule--options--monitor_ids))
 - `query` (String) A query that selects the monitors to evaluate. Mutually exclusive with monitor_ids.
 - `warmup` (Number) Seconds to wait after deployment starts before evaluating monitors (API default: 0).
 
