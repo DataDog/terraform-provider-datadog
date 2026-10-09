@@ -58,6 +58,9 @@ The scripts that produced this corpus live in `scripts/`:
 - `_build_mini.py` — slices the singular V2 data sources (#4–#44). Run with no
   args for a recon table (writes nothing); pass `--build` to write the slices.
 - `_build_mini_role.py` — slices the one-off `datadog_role` data source.
+- `_build_mini_integration_accounts.py` — slices the SaaS integration-account
+  resources (Twilio, Elastic Cloud, …) and injects `x-datadog-tf-generator`
+  per operationId from its own `TF_GENERATOR` table.
 - `_validate.py` — checks every `mini-datadog_*.yaml` is a valid OpenAPI 3.0.0
   document with all `$ref`s resolving internally.
 - `_annotate.py` — writes annotated copies of a representative sample (under
@@ -65,6 +68,18 @@ The scripts that produced this corpus live in `scripts/`:
   the variants its endpoints support: a `<name>.yaml` singular (by-id GET) and/or
   a `<plural>.yaml` plural (collection GET, `cardinality: plural`). Needs only the
   committed slices — not the full v2 spec.
+
+> **`mini-datadog_integration_twilio_account.yaml` is not purely derived.**
+> It carries hand-authored `requestBody` examples on the create and update
+> operations, and a PATCH 200 example deliberately changed to describe the
+> *updated* state. Upstream has neither: it declares no request examples, and
+> its PATCH example is byte-identical to the create response. Both edits are
+> what make an update step observable in a generated cassette, and
+> **re-running `_build_mini_integration_accounts.py --build` reverts them**,
+> breaking cassette generation with no test pointing at the cause. Re-apply
+> them after any regeneration, or better, move them into the script as an
+> overlay table beside `TF_GENERATOR`. `_validate.py` cannot catch the loss:
+> it checks document validity and `$ref` resolution, never examples.
 
 The build scripts read the full v2 spec, which is **not** vendored here. Point at
 it with the `DATADOG_OPENAPI_V2_SPEC` env var (defaults to
