@@ -1,0 +1,741 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 257
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"Source team for reroute_to_team test","handle":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-src","name":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-src"},"type":"team"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 849
+        uncompressed: false
+        body: '{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"team","attributes":{"avatar":null,"banner":9,"created_at":"2026-10-09T08:19:42.495914+00:00","description":"Source team for reroute_to_team test","handle":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-src","hidden_modules":null,"is_managed":false,"link_count":0,"modified_at":"2026-10-09T08:19:42.495914+00:00","name":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-src","provisioned_by":"teams_terraform","summary":"Source team for reroutetoteam test","user_count":0,"visible_modules":null},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/b6d33e89-149d-4a5c-875b-3ef40998e4d7/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/b6d33e89-149d-4a5c-875b-3ef40998e4d7/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 184.828834ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 268
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"Destination team B for reroute_to_team test","handle":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-dst-b","name":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-dst-b"},"type":"team"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 867
+        uncompressed: false
+        body: '{"data":{"id":"141d4447-1230-4c0e-ad0d-a504feceb767","type":"team","attributes":{"avatar":null,"banner":5,"created_at":"2026-10-09T08:19:42.507907+00:00","description":"Destination team B for reroute_to_team test","handle":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-dst-b","hidden_modules":null,"is_managed":false,"link_count":0,"modified_at":"2026-10-09T08:19:42.507907+00:00","name":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-dst-b","provisioned_by":"teams_terraform","summary":"Destination team B for reroutetoteam test","user_count":0,"visible_modules":null},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/141d4447-1230-4c0e-ad0d-a504feceb767/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/141d4447-1230-4c0e-ad0d-a504feceb767/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 197.594375ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 268
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"Destination team A for reroute_to_team test","handle":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-dst-a","name":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-dst-a"},"type":"team"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 867
+        uncompressed: false
+        body: '{"data":{"id":"8e1b304c-4749-4d22-b7e7-1ebea8259170","type":"team","attributes":{"avatar":null,"banner":3,"created_at":"2026-10-09T08:19:42.689977+00:00","description":"Destination team A for reroute_to_team test","handle":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-dst-a","hidden_modules":null,"is_managed":false,"link_count":0,"modified_at":"2026-10-09T08:19:42.689977+00:00","name":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-dst-a","provisioned_by":"teams_terraform","summary":"Destination team A for reroutetoteam test","user_count":0,"visible_modules":null},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/8e1b304c-4749-4d22-b7e7-1ebea8259170/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/8e1b304c-4749-4d22-b7e7-1ebea8259170/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 377.66225ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 344
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"rules":[{"actions":[{"destination_team_id":"8e1b304c-4749-4d22-b7e7-1ebea8259170","type":"reroute_to_team"}],"query":"priority:2"},{"actions":[{"destination_team_id":"141d4447-1230-4c0e-ad0d-a504feceb767","type":"reroute_to_team"}],"query":""}]},"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"team_routing_rules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/teams/b6d33e89-149d-4a5c-875b-3ef40998e4d7/routing-rules?include=rules
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 880
+        uncompressed: false
+        body: '{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"team_routing_rules","relationships":{"rules":{"data":[{"id":"b382d264-c46a-4de8-b39b-3090276f15ba","type":"team_routing_rules"},{"id":"15cc7247-e966-42e1-9678-2f8b797f0872","type":"team_routing_rules"}]}}},"included":[{"id":"b382d264-c46a-4de8-b39b-3090276f15ba","type":"team_routing_rules","attributes":{"actions":[{"type":"reroute_to_team","destination_team_id":"8e1b304c-4749-4d22-b7e7-1ebea8259170"}],"query":"priority:2"},"relationships":{"team":{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"teams"}}}},{"id":"15cc7247-e966-42e1-9678-2f8b797f0872","type":"team_routing_rules","attributes":{"actions":[{"type":"reroute_to_team","destination_team_id":"141d4447-1230-4c0e-ad0d-a504feceb767"}],"query":""},"relationships":{"team":{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"teams"}}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 214.437625ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/8e1b304c-4749-4d22-b7e7-1ebea8259170
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 797
+        uncompressed: false
+        body: '{"data":{"id":"8e1b304c-4749-4d22-b7e7-1ebea8259170","type":"team","attributes":{"created_at":"2026-10-09T08:19:42.689977+00:00","description":"Destination team A for reroute_to_team test","handle":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-dst-a","is_managed":false,"link_count":0,"modified_at":"2026-10-09T08:19:42.689977+00:00","name":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-dst-a","provisioned_by":"teams_terraform","summary":"Destination team A for reroutetoteam test","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/8e1b304c-4749-4d22-b7e7-1ebea8259170/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/8e1b304c-4749-4d22-b7e7-1ebea8259170/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 127.953833ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/b6d33e89-149d-4a5c-875b-3ef40998e4d7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 779
+        uncompressed: false
+        body: '{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"team","attributes":{"created_at":"2026-10-09T08:19:42.495914+00:00","description":"Source team for reroute_to_team test","handle":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-src","is_managed":false,"link_count":0,"modified_at":"2026-10-09T08:19:42.495914+00:00","name":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-src","provisioned_by":"teams_terraform","summary":"Source team for reroutetoteam test","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/b6d33e89-149d-4a5c-875b-3ef40998e4d7/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/b6d33e89-149d-4a5c-875b-3ef40998e4d7/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 128.490166ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/141d4447-1230-4c0e-ad0d-a504feceb767
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 797
+        uncompressed: false
+        body: '{"data":{"id":"141d4447-1230-4c0e-ad0d-a504feceb767","type":"team","attributes":{"created_at":"2026-10-09T08:19:42.507907+00:00","description":"Destination team B for reroute_to_team test","handle":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-dst-b","is_managed":false,"link_count":0,"modified_at":"2026-10-09T08:19:42.507907+00:00","name":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-dst-b","provisioned_by":"teams_terraform","summary":"Destination team B for reroutetoteam test","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/141d4447-1230-4c0e-ad0d-a504feceb767/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/141d4447-1230-4c0e-ad0d-a504feceb767/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 257.0215ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/teams/b6d33e89-149d-4a5c-875b-3ef40998e4d7/routing-rules?include=rules
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 880
+        uncompressed: false
+        body: '{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"team_routing_rules","relationships":{"rules":{"data":[{"id":"b382d264-c46a-4de8-b39b-3090276f15ba","type":"team_routing_rules"},{"id":"15cc7247-e966-42e1-9678-2f8b797f0872","type":"team_routing_rules"}]}}},"included":[{"id":"b382d264-c46a-4de8-b39b-3090276f15ba","type":"team_routing_rules","attributes":{"actions":[{"type":"reroute_to_team","destination_team_id":"8e1b304c-4749-4d22-b7e7-1ebea8259170"}],"query":"priority:2"},"relationships":{"team":{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"teams"}}}},{"id":"15cc7247-e966-42e1-9678-2f8b797f0872","type":"team_routing_rules","attributes":{"actions":[{"type":"reroute_to_team","destination_team_id":"141d4447-1230-4c0e-ad0d-a504feceb767"}],"query":""},"relationships":{"team":{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"teams"}}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 127.707208ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/8e1b304c-4749-4d22-b7e7-1ebea8259170
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 797
+        uncompressed: false
+        body: '{"data":{"id":"8e1b304c-4749-4d22-b7e7-1ebea8259170","type":"team","attributes":{"created_at":"2026-10-09T08:19:42.689977+00:00","description":"Destination team A for reroute_to_team test","handle":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-dst-a","is_managed":false,"link_count":0,"modified_at":"2026-10-09T08:19:42.689977+00:00","name":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-dst-a","provisioned_by":"teams_terraform","summary":"Destination team A for reroutetoteam test","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/8e1b304c-4749-4d22-b7e7-1ebea8259170/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/8e1b304c-4749-4d22-b7e7-1ebea8259170/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 132.123041ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/b6d33e89-149d-4a5c-875b-3ef40998e4d7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 779
+        uncompressed: false
+        body: '{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"team","attributes":{"created_at":"2026-10-09T08:19:42.495914+00:00","description":"Source team for reroute_to_team test","handle":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-src","is_managed":false,"link_count":0,"modified_at":"2026-10-09T08:19:42.495914+00:00","name":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-src","provisioned_by":"teams_terraform","summary":"Source team for reroutetoteam test","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/b6d33e89-149d-4a5c-875b-3ef40998e4d7/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/b6d33e89-149d-4a5c-875b-3ef40998e4d7/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 134.090416ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/141d4447-1230-4c0e-ad0d-a504feceb767
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 797
+        uncompressed: false
+        body: '{"data":{"id":"141d4447-1230-4c0e-ad0d-a504feceb767","type":"team","attributes":{"created_at":"2026-10-09T08:19:42.507907+00:00","description":"Destination team B for reroute_to_team test","handle":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-dst-b","is_managed":false,"link_count":0,"modified_at":"2026-10-09T08:19:42.507907+00:00","name":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-dst-b","provisioned_by":"teams_terraform","summary":"Destination team B for reroutetoteam test","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/141d4447-1230-4c0e-ad0d-a504feceb767/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/141d4447-1230-4c0e-ad0d-a504feceb767/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 261.903625ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/teams/b6d33e89-149d-4a5c-875b-3ef40998e4d7/routing-rules?include=rules
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 880
+        uncompressed: false
+        body: '{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"team_routing_rules","relationships":{"rules":{"data":[{"id":"b382d264-c46a-4de8-b39b-3090276f15ba","type":"team_routing_rules"},{"id":"15cc7247-e966-42e1-9678-2f8b797f0872","type":"team_routing_rules"}]}}},"included":[{"id":"b382d264-c46a-4de8-b39b-3090276f15ba","type":"team_routing_rules","attributes":{"actions":[{"type":"reroute_to_team","destination_team_id":"8e1b304c-4749-4d22-b7e7-1ebea8259170"}],"query":"priority:2"},"relationships":{"team":{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"teams"}}}},{"id":"15cc7247-e966-42e1-9678-2f8b797f0872","type":"team_routing_rules","attributes":{"actions":[{"type":"reroute_to_team","destination_team_id":"141d4447-1230-4c0e-ad0d-a504feceb767"}],"query":""},"relationships":{"team":{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"teams"}}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 125.184416ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 344
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"rules":[{"actions":[{"destination_team_id":"141d4447-1230-4c0e-ad0d-a504feceb767","type":"reroute_to_team"}],"query":"priority:2"},{"actions":[{"destination_team_id":"8e1b304c-4749-4d22-b7e7-1ebea8259170","type":"reroute_to_team"}],"query":""}]},"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"team_routing_rules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/teams/b6d33e89-149d-4a5c-875b-3ef40998e4d7/routing-rules?include=rules
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 880
+        uncompressed: false
+        body: '{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"team_routing_rules","relationships":{"rules":{"data":[{"id":"06cd810c-cd8f-4067-842f-df5930325b46","type":"team_routing_rules"},{"id":"23c23eed-bbfc-4309-a58d-544981329a11","type":"team_routing_rules"}]}}},"included":[{"id":"06cd810c-cd8f-4067-842f-df5930325b46","type":"team_routing_rules","attributes":{"actions":[{"type":"reroute_to_team","destination_team_id":"141d4447-1230-4c0e-ad0d-a504feceb767"}],"query":"priority:2"},"relationships":{"team":{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"teams"}}}},{"id":"23c23eed-bbfc-4309-a58d-544981329a11","type":"team_routing_rules","attributes":{"actions":[{"type":"reroute_to_team","destination_team_id":"8e1b304c-4749-4d22-b7e7-1ebea8259170"}],"query":""},"relationships":{"team":{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"teams"}}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 385.613083ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/141d4447-1230-4c0e-ad0d-a504feceb767
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 797
+        uncompressed: false
+        body: '{"data":{"id":"141d4447-1230-4c0e-ad0d-a504feceb767","type":"team","attributes":{"created_at":"2026-10-09T08:19:42.507907+00:00","description":"Destination team B for reroute_to_team test","handle":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-dst-b","is_managed":false,"link_count":0,"modified_at":"2026-10-09T08:19:42.507907+00:00","name":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-dst-b","provisioned_by":"teams_terraform","summary":"Destination team B for reroutetoteam test","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/141d4447-1230-4c0e-ad0d-a504feceb767/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/141d4447-1230-4c0e-ad0d-a504feceb767/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 132.026458ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/b6d33e89-149d-4a5c-875b-3ef40998e4d7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 779
+        uncompressed: false
+        body: '{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"team","attributes":{"created_at":"2026-10-09T08:19:42.495914+00:00","description":"Source team for reroute_to_team test","handle":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-src","is_managed":false,"link_count":0,"modified_at":"2026-10-09T08:19:42.495914+00:00","name":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-src","provisioned_by":"teams_terraform","summary":"Source team for reroutetoteam test","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/b6d33e89-149d-4a5c-875b-3ef40998e4d7/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/b6d33e89-149d-4a5c-875b-3ef40998e4d7/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 134.737208ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/8e1b304c-4749-4d22-b7e7-1ebea8259170
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 797
+        uncompressed: false
+        body: '{"data":{"id":"8e1b304c-4749-4d22-b7e7-1ebea8259170","type":"team","attributes":{"created_at":"2026-10-09T08:19:42.689977+00:00","description":"Destination team A for reroute_to_team test","handle":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-dst-a","is_managed":false,"link_count":0,"modified_at":"2026-10-09T08:19:42.689977+00:00","name":"team-tf-testacconcallteamroutingrulesreroutetoteam-local-1791533980-dst-a","provisioned_by":"teams_terraform","summary":"Destination team A for reroutetoteam test","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/8e1b304c-4749-4d22-b7e7-1ebea8259170/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/8e1b304c-4749-4d22-b7e7-1ebea8259170/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 260.640208ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/teams/b6d33e89-149d-4a5c-875b-3ef40998e4d7/routing-rules?include=rules
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 880
+        uncompressed: false
+        body: '{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"team_routing_rules","relationships":{"rules":{"data":[{"id":"06cd810c-cd8f-4067-842f-df5930325b46","type":"team_routing_rules"},{"id":"23c23eed-bbfc-4309-a58d-544981329a11","type":"team_routing_rules"}]}}},"included":[{"id":"06cd810c-cd8f-4067-842f-df5930325b46","type":"team_routing_rules","attributes":{"actions":[{"type":"reroute_to_team","destination_team_id":"141d4447-1230-4c0e-ad0d-a504feceb767"}],"query":"priority:2"},"relationships":{"team":{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"teams"}}}},{"id":"23c23eed-bbfc-4309-a58d-544981329a11","type":"team_routing_rules","attributes":{"actions":[{"type":"reroute_to_team","destination_team_id":"8e1b304c-4749-4d22-b7e7-1ebea8259170"}],"query":""},"relationships":{"team":{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"teams"}}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 123.260125ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/teams/b6d33e89-149d-4a5c-875b-3ef40998e4d7/routing-rules?include=rules
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 880
+        uncompressed: false
+        body: '{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"team_routing_rules","relationships":{"rules":{"data":[{"id":"06cd810c-cd8f-4067-842f-df5930325b46","type":"team_routing_rules"},{"id":"23c23eed-bbfc-4309-a58d-544981329a11","type":"team_routing_rules"}]}}},"included":[{"id":"06cd810c-cd8f-4067-842f-df5930325b46","type":"team_routing_rules","attributes":{"actions":[{"type":"reroute_to_team","destination_team_id":"141d4447-1230-4c0e-ad0d-a504feceb767"}],"query":"priority:2"},"relationships":{"team":{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"teams"}}}},{"id":"23c23eed-bbfc-4309-a58d-544981329a11","type":"team_routing_rules","attributes":{"actions":[{"type":"reroute_to_team","destination_team_id":"8e1b304c-4749-4d22-b7e7-1ebea8259170"}],"query":""},"relationships":{"team":{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"teams"}}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 109.673209ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 83
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"team_routing_rules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/teams/b6d33e89-149d-4a5c-875b-3ef40998e4d7/routing-rules
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 120
+        uncompressed: false
+        body: '{"data":{"id":"b6d33e89-149d-4a5c-875b-3ef40998e4d7","type":"team_routing_rules","relationships":{"rules":{"data":[]}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 232.985709ms
+    - id: 19
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/team/b6d33e89-149d-4a5c-875b-3ef40998e4d7
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 211.033125ms
+    - id: 20
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/team/141d4447-1230-4c0e-ad0d-a504feceb767
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 253.662125ms
+    - id: 21
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/team/8e1b304c-4749-4d22-b7e7-1ebea8259170
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 446.470084ms

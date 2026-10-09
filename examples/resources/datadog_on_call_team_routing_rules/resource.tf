@@ -63,6 +63,23 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
     }
   }
 
+  # Reroute matching pages to another team's routing rules. A reroute can
+  # only be combined with `send_slack_message` or `send_teams_message` actions.
+  rule {
+    query = "tags.service:checkout"
+    action {
+      reroute_to_team {
+        destination_team_id = "00000000-aba2-0000-0000-000000000001"
+      }
+    }
+    action {
+      send_slack_message {
+        workspace = "workspace"
+        channel   = "channel"
+      }
+    }
+  }
+
   # The last rule must be a catch-all: no query and no time restriction.
   rule {
     escalation_policy = "00000000-aba2-0000-0000-000000000000"
