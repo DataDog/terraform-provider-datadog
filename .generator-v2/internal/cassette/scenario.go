@@ -125,7 +125,7 @@ func (t ResourceTarget) materializeRequest(op *model.Operation) (MaterializedSet
 	if op.RequestExamples != nil {
 		schema = op.RequestExamples.Schema
 	}
-	return MaterializeSet(set, schema)
+	return materializeAndValidate(key, set, schema)
 }
 
 func (t ResourceTarget) materializeResponse(op *model.Operation) (MaterializedSet, error) {
@@ -140,7 +140,25 @@ func (t ResourceTarget) materializeResponse(op *model.Operation) (MaterializedSe
 		return MaterializedSet{}, fmt.Errorf("scenario %q: no selected response example for %s",
 			t.ArtifactName, op.OperationId)
 	}
-	return MaterializeSet(set, success.Schema)
+	return materializeAndValidate(key, set, success.Schema)
+}
+
+// materializeAndValidate assembles one set and then checks it against the
+// schema it was assembled from, which is the only place both are in hand.
+//
+// Validation runs here rather than over a finished scenario so a target fails
+// before any step is built, and therefore long before anything is written. A
+// value the description's own schema rejects would otherwise reach a committed
+// test and only surface on a recording run against a real org.
+func materializeAndValidate(key SetKey, set SelectedSet, schema *model.Schema) (MaterializedSet, error) {
+	materialized, err := MaterializeSet(set, schema)
+	if err != nil {
+		return MaterializedSet{}, err
+	}
+	if err := ValidateSet(key, materialized, schema); err != nil {
+		return MaterializedSet{}, err
+	}
+	return materialized, nil
 }
 
 // updatedState is one update step's materialized request and response.

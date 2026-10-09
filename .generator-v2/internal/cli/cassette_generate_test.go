@@ -152,3 +152,62 @@ func TestLifecycleOperationsDeduplicates(t *testing.T) {
 		t.Fatalf("got %d operations, want the shared one once then the delete", len(got))
 	}
 }
+
+// A validation failure must reach the report as an ineligibility and leave the
+// tree alone: the write is the last stage, and a target that fails any earlier
+// one never reaches it.
+func TestGenerateCassetteSuppressesTheWriteOnAViolation(t *testing.T) {
+	dir := t.TempDir()
+	request := twilioRequest(t, dir)
+
+	// Narrow one attribute's enum so the example the fixture already declares
+	// no longer satisfies it, exactly as a self-contradicting description
+	// would.
+	create := request.Operation.ResolvedGroup.Create
+	if create == nil || create.RequestExamples == nil || create.RequestExamples.Schema == nil {
+		t.Fatal("fixture create operation carries no request schema")
+	}
+	data, ok := create.RequestExamples.Schema.Properties["data"]
+	if !ok {
+		t.Fatal("fixture request schema has no data member")
+	}
+	attributes, ok := data.Properties["attributes"]
+	if !ok {
+		t.Fatal("fixture request schema has no data.attributes")
+	}
+	name, ok := attributes.Properties["name"]
+	if !ok {
+		t.Fatal("fixture declares no name attribute")
+	}
+	name.Enum = []string{"a-name-the-example-does-not-use"}
+
+	result := generateCassette(request)
+
+	if result.Status != model.CassetteStatusIneligible {
+		t.Fatalf("status = %q, want ineligible", result.Status)
+	}
+	if result.WriteAction != model.CassetteWriteNone {
+		t.Errorf("write action = %q, want none", result.WriteAction)
+	}
+	if len(result.Diagnostics) == 0 {
+		t.Fatal("no diagnostic explains the violation")
+	}
+	message := result.Diagnostics[0].Message
+	for _, want := range []string{"CreateTwilioIntegrationAccount", "data.attributes.name"} {
+		if !strings.Contains(message, want) {
+			t.Errorf("diagnostic does not name %q: %s", want, message)
+		}
+	}
+	// The offending value could as easily have been a credential.
+	if strings.Contains(message, "twilio-prod") {
+		t.Errorf("diagnostic quotes the offending value: %s", message)
+	}
+	// Nothing was written, including no test file.
+	if entries, err := os.ReadDir(dir); err == nil && len(entries) > 0 {
+		var names []string
+		for _, e := range entries {
+			names = append(names, e.Name())
+		}
+		t.Errorf("a violating target wrote %v", names)
+	}
+}
