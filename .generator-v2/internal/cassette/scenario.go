@@ -28,17 +28,20 @@ type ResourceTarget struct {
 	// Create, Read, Update and Delete are the lifecycle operations. Update may
 	// be nil; the others are required.
 	Create, Read, Update, Delete *model.Operation
-	// Selection is the chosen scenario these interactions are built from.
+	// Selection is the chosen scenario these steps are built from.
 	Selection TargetSelection
 }
 
-// BuildResourceScenario assembles the ordered interaction trace and Terraform
-// steps for one resource target.
+// BuildResourceScenario assembles the Terraform steps for one resource target.
 //
-// The trace follows the standard generated flow — create, refresh, destroy,
-// verify — and adds an update step only when the examples describe a distinct
-// updated state. An update whose response equals the create response asserts
-// nothing, so a scenario is not given a step it cannot check.
+// It produces the initial apply, plus an update step only when the examples
+// describe a distinct updated state. An update whose response equals the create
+// response asserts nothing, so a scenario is not given a step it cannot check.
+//
+// Read and Delete gate eligibility but contribute no step. The refreshes, the
+// delete and the 404 that verifies it are interactions of the recorded
+// cassette, provoked by the lifecycle the generated test already runs — this
+// builds only what the configuration has to say.
 func BuildResourceScenario(target ResourceTarget) (*model.GeneratedTestScenario, error) {
 	if err := target.validate(); err != nil {
 		return nil, err
@@ -181,10 +184,6 @@ func (t ResourceTarget) updateStep(createRequest, createResponse MaterializedSet
 	// resource with the update's changes applied, not the example's delta.
 	return updatedState{request: createRequest.overlaidWith(request), response: response}, true, nil
 }
-
-// ----------------------------------------------------------------------------
-// Trace building
-// ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
 // Helpers

@@ -33,6 +33,55 @@ func validateAgainstContract(schema *jsonschema.Schema, value any) error {
 	return schema.Validate(decoded)
 }
 
+// enumValues reads one $defs enum straight from the contract bytes. The
+// compiled schema does not expose $defs enums, and the raw document is what a
+// consumer reads anyway.
+func enumValues(def, property string) []any {
+	var doc struct {
+		Defs map[string]struct {
+			Properties map[string]struct {
+				Enum []any `json:"enum"`
+			} `json:"properties"`
+		} `json:"$defs"`
+	}
+	Expect(json.Unmarshal(contracts.RunReportSchema, &doc)).To(Succeed())
+	d, ok := doc.Defs[def]
+	Expect(ok).To(BeTrue(), "contract has no $defs/%s", def)
+	prop, ok := d.Properties[property]
+	Expect(ok).To(BeTrue(), "contract has no $defs/%s/properties/%s", def, property)
+	return prop.Enum
+}
+
+// declaredProperties reads one $defs property set from the contract bytes.
+func declaredProperties(def string) []string {
+	var doc struct {
+		Defs map[string]struct {
+			Properties map[string]any `json:"properties"`
+		} `json:"$defs"`
+	}
+	Expect(json.Unmarshal(contracts.RunReportSchema, &doc)).To(Succeed())
+	d, ok := doc.Defs[def]
+	Expect(ok).To(BeTrue(), "contract has no $defs/%s", def)
+	names := make([]string, 0, len(d.Properties))
+	for name := range d.Properties {
+		names = append(names, name)
+	}
+	return names
+}
+
+// marshalledKeys is the JSON keys a value actually produces.
+func marshalledKeys(value any) []string {
+	encoded, err := json.Marshal(value)
+	Expect(err).To(Succeed())
+	var object map[string]any
+	Expect(json.Unmarshal(encoded, &object)).To(Succeed())
+	names := make([]string, 0, len(object))
+	for name := range object {
+		names = append(names, name)
+	}
+	return names
+}
+
 var _ = Describe("run report contract", func() {
 	var schema *jsonschema.Schema
 	BeforeEach(func() { schema = runReportSchema() })
@@ -123,6 +172,65 @@ var _ = Describe("run report contract", func() {
 			report.Cassettes = []CassetteResult{cassetteResult()}
 			report.CassetteSummary = &CassetteSummary{Generated: 1}
 			Expect(validateAgainstContract(schema, report)).To(Succeed())
+		})
+
+		// Every status and write action the model can produce must validate.
+		// The previous table only covered the ones already in the enum, so
+		// CassetteWriteUpdated — emitted whenever a run rewrites an existing
+		// generated test — drifted out of the contract unnoticed.
+		DescribeTable("accepts every write action the model can produce",
+			func(action CassetteWriteAction) {
+				report := baseReport()
+				result := cassetteResult()
+				result.WriteAction = action
+				report.Cassettes = []CassetteResult{result}
+				report.CassetteSummary = &CassetteSummary{Generated: 1}
+				Expect(validateAgainstContract(schema, report)).To(Succeed())
+			},
+			Entry("none", CassetteWriteNone),
+			Entry("created", CassetteWriteCreated),
+			Entry("unchanged", CassetteWriteUnchanged),
+			Entry("updated", CassetteWriteUpdated),
+		)
+
+		DescribeTable("accepts every status the model can produce",
+			func(status CassetteStatus) {
+				report := baseReport()
+				result := cassetteResult()
+				result.Status = status
+				report.Cassettes = []CassetteResult{result}
+				report.CassetteSummary = &CassetteSummary{Generated: 1}
+				Expect(validateAgainstContract(schema, report)).To(Succeed())
+			},
+			Entry("generated", CassetteStatusGenerated),
+			Entry("ineligible", CassetteStatusIneligible),
+		)
+
+		// Guards the other direction: a value added to the schema but never
+		// produced, which the per-value tables above cannot see. Counting is
+		// the only way to catch an enum that has grown past the model.
+		// additionalProperties:false already fails a Go field missing from the
+		// contract. This is the other direction — a contract property the model
+		// never populates, which validation cannot see because absent optional
+		// fields are valid. cassette_path and freeze_path sat here unpopulated.
+		It("declares exactly the summary counters the model produces", func() {
+			Expect(declaredProperties("cassetteSummary")).To(
+				ConsistOf(marshalledKeys(CassetteSummary{})))
+		})
+
+		It("declares exactly the properties a populated result produces", func() {
+			full := CassetteResult{
+				Name: "n", Kind: ArtifactKindResource, TestName: "t",
+				Status: CassetteStatusGenerated, WriteAction: CassetteWriteCreated,
+				TestPath: "p", SelectedExample: ScenarioNameDefault,
+				Diagnostics: []Diagnostic{{Severity: SeverityInfo, Message: "m"}},
+			}
+			Expect(declaredProperties("cassetteResult")).To(ConsistOf(marshalledKeys(full)))
+		})
+
+		It("declares no write action or status the model cannot produce", func() {
+			Expect(enumValues("cassetteResult", "write_action")).To(HaveLen(4))
+			Expect(enumValues("cassetteResult", "status")).To(HaveLen(2))
 		})
 
 		DescribeTable("rejects a value the model cannot produce",

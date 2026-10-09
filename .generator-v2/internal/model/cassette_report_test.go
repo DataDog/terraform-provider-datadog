@@ -43,12 +43,11 @@ var _ = Describe("summarizeCassettes", func() {
 		got := summarizeCassettes([]CassetteResult{
 			{Status: CassetteStatusGenerated},
 			{Status: CassetteStatusGenerated},
-			{Status: CassetteStatusPreserved},
 			{Status: CassetteStatusIneligible},
 			{Status: CassetteStatusIneligible},
 			{Status: CassetteStatusIneligible},
 		})
-		Expect(*got).To(Equal(CassetteSummary{Generated: 2, Preserved: 1, Ineligible: 3}))
+		Expect(*got).To(Equal(CassetteSummary{Generated: 2, Ineligible: 3}))
 	})
 
 	It("returns zeroed counts for no results", func() {
@@ -131,7 +130,7 @@ var _ = Describe("RunReport.Write with cassettes", func() {
 	It("produces identical bytes for the same results added in a different order", func() {
 		first, second := artifactOnlyReport(), artifactOnlyReport()
 		a := CassetteResult{Name: "api_key", Kind: ArtifactKindDataSource,
-			Status: CassetteStatusPreserved, WriteAction: CassetteWriteUnchanged}
+			Status: CassetteStatusGenerated, WriteAction: CassetteWriteUnchanged}
 		b := CassetteResult{Name: "widget", Kind: ArtifactKindResource,
 			Status: CassetteStatusGenerated, WriteAction: CassetteWriteCreated}
 		first.AddCassetteResult(a)
