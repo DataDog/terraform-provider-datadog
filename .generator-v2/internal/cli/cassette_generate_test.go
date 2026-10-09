@@ -61,6 +61,11 @@ func twilioRequest(t *testing.T, dir string) cassetteRequest {
 			}},
 		},
 		TestsOutputRoot: dir,
+		// The fixture declares cassette: true, so these cases exercise a
+		// target that asked for a test by name. An unmet request fails the
+		// run; a target that defaulted in is skipped instead, which
+		// TestGenerateCassetteSkipsADefaultedTarget covers.
+		Requested: true,
 	}
 }
 
@@ -516,5 +521,89 @@ func TestGenerateCassetteAnchorsAtTheFailingOperation(t *testing.T) {
 	}
 	if d.Category != model.DiagnosticCategoryValidation {
 		t.Errorf("category = %q, want validation", d.Category)
+	}
+}
+
+// Generation is on by default, so most reasons a target cannot produce a test
+// are the ordinary state of a spec nobody has finished. Those must not fail a
+// run that never asked for the test.
+func TestGenerateCassetteSkipsADefaultedTarget(t *testing.T) {
+	cases := map[string]func(t *testing.T, r *cassetteRequest){
+		"a group missing its delete": func(t *testing.T, r *cassetteRequest) {
+			r.Operation.ResolvedGroup.Delete = nil
+		},
+		"a request example its schema rejects": func(t *testing.T, r *cassetteRequest) {
+			attributeOf(t, r.Operation.ResolvedGroup.Create, "name").
+				Enum = []string{"a-name-the-example-does-not-use"}
+		},
+	}
+
+	for name, corrupt := range cases {
+		t.Run(name, func(t *testing.T) {
+			dir := t.TempDir()
+			request := twilioRequest(t, dir)
+			request.Requested = false // defaulted in rather than asked for
+			corrupt(t, &request)
+
+			result := generateCassette(request)
+			if result.Status != model.CassetteStatusSkipped {
+				t.Fatalf("status = %q, want skipped", result.Status)
+			}
+			if result.WriteAction != model.CassetteWriteNone {
+				t.Errorf("write action = %q, want none", result.WriteAction)
+			}
+			// The reason still has to reach the report; only the severity and
+			// the exit code change.
+			if len(result.Diagnostics) == 0 {
+				t.Fatal("a skipped target carries no diagnostic")
+			}
+			if sev := result.Diagnostics[0].Severity; sev != model.SeverityInfo {
+				t.Errorf("severity = %q, want info for a skip", sev)
+			}
+			if entries, err := os.ReadDir(dir); err == nil && len(entries) > 0 {
+				t.Error("a skipped target wrote something")
+			}
+		})
+	}
+}
+
+// A description that cannot supply a required value is refused rather than
+// having one invented for it. The same condition is a skip or a failure
+// depending on whether the test was asked for.
+func TestGenerateCassetteRefusesAnUndescribedTarget(t *testing.T) {
+	for _, tc := range []struct {
+		name      string
+		requested bool
+		want      model.CassetteStatus
+	}{
+		{"asked for by name", true, model.CassetteStatusIneligible},
+		{"defaulted in", false, model.CassetteStatusSkipped},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			dir := t.TempDir()
+			request := twilioRequest(t, dir)
+			request.Requested = tc.requested
+
+			// Drop the create request's declared examples so its required
+			// leaves have nothing to come from.
+			create := request.Operation.ResolvedGroup.Create
+			if create.RequestExamples == nil {
+				t.Fatal("fixture create operation declares no request examples")
+			}
+			create.RequestExamples.Examples.Named = nil
+			create.RequestExamples.Examples.Single = nil
+
+			result := generateCassette(request)
+			if result.Status != tc.want {
+				t.Fatalf("status = %q, want %q (diagnostics: %v)",
+					result.Status, tc.want, result.Diagnostics)
+			}
+			if len(result.Diagnostics) == 0 {
+				t.Fatal("no diagnostic explains the refusal")
+			}
+			if !strings.Contains(result.Diagnostics[0].Message, "no example or default") {
+				t.Errorf("diagnostic does not name the cause: %s", result.Diagnostics[0].Message)
+			}
+		})
 	}
 }

@@ -15,6 +15,8 @@ func TestOptionalFallbackContainers(t *testing.T) {
 	}{
 		{name: "absent object"},
 		{name: "absent union", union: true},
+		{name: "required object", required: true, wantError: true},
+		{name: "partial object", partial: true, wantError: true},
 		{name: "explicit empty object", declared: true, wantError: true},
 		{name: "defaulted object", defaulted: true},
 		{name: "sensitive fallback container", partial: true, sensitive: true, wantError: true},

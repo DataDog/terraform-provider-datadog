@@ -27,11 +27,18 @@ type TrackingFieldMetadata struct {
 	// Sensitive, when attached to a Schema Object, marks the attribute as
 	// Terraform-sensitive.
 	Sensitive bool `json:"sensitive,omitempty"`
-	// Cassette opts this artifact in to cassette-backed test generation: the
-	// generated test, its go-vcr fixture and the freeze companion, built from
-	// the description's own examples. Opt-in per artifact rather than per run,
-	// so the choice is reviewed with the spec.
-	Cassette bool `json:"cassette,omitempty"`
+	// Cassette controls example-backed test generation for this artifact.
+	//
+	// Generation is on by default, so a resource whose description can
+	// describe its own lifecycle gets a test without anyone remembering to ask.
+	// Setting it false opts out and is the only way to decline.
+	//
+	// It is a pointer because the three states are not two: absent means
+	// "defaulted in", true means "asked for by name", and the difference
+	// decides what an undescribed target costs. A target that defaulted in and
+	// cannot be described is skipped; one that asked explicitly is ineligible
+	// and fails the run, because an explicit annotation is a request.
+	Cassette *bool `json:"cassette,omitempty"`
 	// Skip explicitly disables generation while keeping the annotation in
 	// place, equivalent to removing the extension.
 	Skip bool `json:"skip,omitempty"`
@@ -62,4 +69,17 @@ type OperationGroup struct {
 	Update string `json:"update,omitempty"`
 	// Delete is the operationId of the Delete endpoint.
 	Delete string `json:"delete,omitempty"`
+}
+
+// CassetteEnabled reports whether this artifact should get an example-backed
+// test. Generation is on by default, so only an explicit false declines.
+func (t *TrackingFieldMetadata) CassetteEnabled() bool {
+	return t != nil && (t.Cassette == nil || *t.Cassette)
+}
+
+// CassetteRequested reports whether the description asked for a test by name
+// rather than receiving one by default. An explicit request that cannot be
+// satisfied fails the run; a default one is skipped.
+func (t *TrackingFieldMetadata) CassetteRequested() bool {
+	return t != nil && t.Cassette != nil && *t.Cassette
 }
