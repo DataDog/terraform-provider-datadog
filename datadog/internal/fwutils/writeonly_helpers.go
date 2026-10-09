@@ -203,13 +203,21 @@ func (h *WriteOnlySecretHandler) requireUpdateSecret(result SecretResult) Secret
 	if !h.SecretRequiredOnUpdate || result.ShouldSetValue || result.Diagnostics.HasError() {
 		return result
 	}
-	result.Diagnostics.AddError(
-		"Missing write-only secret required for update",
-		fmt.Sprintf(
-			"The API requires the write-only attribute %q for every update, but configuration did not provide a known value.",
-			h.Config.attrPath(h.Config.WriteOnlyAttr).String(),
-		),
+	// Outside ModeOnly the plaintext attribute satisfies the requirement too,
+	// so naming only the write-only one would point a pre-1.11 practitioner at
+	// an attribute their Terraform cannot use.
+	detail := fmt.Sprintf(
+		"The API requires the write-only attribute %q for every update, but configuration did not provide a known value.",
+		h.Config.attrPath(h.Config.WriteOnlyAttr).String(),
 	)
+	if h.Config.Mode != WriteOnlySecretModeOnly {
+		detail = fmt.Sprintf(
+			"The API requires the secret for every update, but configuration provided a known value for neither %q nor %q.",
+			h.Config.attrPath(h.Config.WriteOnlyAttr).String(),
+			h.Config.attrPath(h.Config.OriginalAttr).String(),
+		)
+	}
+	result.Diagnostics.AddError("Missing write-only secret required for update", detail)
 	return result
 }
 

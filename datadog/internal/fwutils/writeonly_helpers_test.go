@@ -4,12 +4,17 @@ import (
 	"context"
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
@@ -803,5 +808,156 @@ func TestWriteOnlySecretHandlerDualFallsBackToPlaintext(t *testing.T) {
 	}
 	if !result.ShouldSetValue || result.Value != plaintextOnly {
 		t.Fatalf("GetSecretForCreate = (%q, %t); want (%q, true)", result.Value, result.ShouldSetValue, plaintextOnly)
+	}
+}
+
+// makeDualConfigValue builds a config object for the three dual-mode
+// attributes. Unlike makeConfigValue it addresses the version trigger too,
+// since the write-only attribute's AlsoRequires validator reads it.
+func makeDualConfigValue(apiKey, apiKeyWo, version *string) tftypes.Value {
+	value := func(s *string) tftypes.Value {
+		if s == nil {
+			return tftypes.NewValue(tftypes.String, nil)
+		}
+		return tftypes.NewValue(tftypes.String, *s)
+	}
+	return tftypes.NewValue(tftypes.Object{
+		AttributeTypes: map[string]tftypes.Type{
+			"api_key":            tftypes.String,
+			"api_key_wo":         tftypes.String,
+			"api_key_wo_version": tftypes.String,
+		},
+	}, map[string]tftypes.Value{
+		"api_key":            value(apiKey),
+		"api_key_wo":         value(apiKeyWo),
+		"api_key_wo_version": value(version),
+	})
+}
+
+// runStringValidators exercises one attribute's validators against a real
+// config, so the assertions cover what the framework actually rejects rather
+// than how a validator describes itself.
+func runStringValidators(t *testing.T, config tfsdk.Config, attrs map[string]schema.Attribute, name string) diag.Diagnostics {
+	t.Helper()
+	stringAttr, ok := attrs[name].(schema.StringAttribute)
+	if !ok {
+		t.Fatalf("%s must be schema.StringAttribute, got %T", name, attrs[name])
+	}
+
+	var configValue types.String
+	attrPath := frameworkPath.Root(name)
+	if diags := config.GetAttribute(context.Background(), attrPath, &configValue); diags.HasError() {
+		t.Fatalf("read %s from config: %v", name, diags)
+	}
+
+	var diags diag.Diagnostics
+	for _, attrValidator := range stringAttr.Validators {
+		response := &validator.StringResponse{}
+		attrValidator.ValidateString(context.Background(), validator.StringRequest{
+			Config:         config,
+			ConfigValue:    configValue,
+			Path:           attrPath,
+			PathExpression: frameworkPath.MatchRoot(name),
+		}, response)
+		diags.Append(response.Diagnostics...)
+	}
+	return diags
+}
+
+// TestCreateWriteOnlySecretAttributesDualValidation pins what dual mode
+// actually accepts and rejects. A description-level assertion cannot tell a
+// correct exclusivity validator from one wired in the wrong direction, which is
+// the mistake this shape is most exposed to.
+func TestCreateWriteOnlySecretAttributesDualValidation(t *testing.T) {
+	const (
+		plaintext = "plaintext-secret"
+		writeOnly = "write-only-secret"
+		version   = "1"
+	)
+
+	cases := []struct {
+		name      string
+		required  bool
+		apiKey    *string
+		apiKeyWo  *string
+		version   *string
+		wantError bool
+	}{
+		// Required: ExactlyOneOf, so omitting both halves is an error.
+		{name: "required/neither", required: true, wantError: true},
+		{name: "required/plaintext only", required: true, apiKey: ptr(plaintext)},
+		{name: "required/write-only only", required: true, apiKeyWo: ptr(writeOnly), version: ptr(version)},
+		{name: "required/both", required: true, apiKey: ptr(plaintext), apiKeyWo: ptr(writeOnly), version: ptr(version), wantError: true},
+		// Optional: ConflictsWith, so omitting both is fine but setting both is not.
+		{name: "optional/neither", required: false},
+		{name: "optional/plaintext only", required: false, apiKey: ptr(plaintext)},
+		{name: "optional/write-only only", required: false, apiKeyWo: ptr(writeOnly), version: ptr(version)},
+		{name: "optional/both", required: false, apiKey: ptr(plaintext), apiKeyWo: ptr(writeOnly), version: ptr(version), wantError: true},
+	}
+
+	for _, testCase := range cases {
+		testCase := testCase
+		t.Run(testCase.name, func(t *testing.T) {
+			config := dualSecretConfig(testCase.required)
+			attrs := CreateWriteOnlySecretAttributes(config)
+			tfConfig := tfsdk.Config{
+				Raw:    makeDualConfigValue(testCase.apiKey, testCase.apiKeyWo, testCase.version),
+				Schema: schema.Schema{Attributes: attrs},
+			}
+
+			var diags diag.Diagnostics
+			for _, name := range []string{config.OriginalAttr, config.WriteOnlyAttr, config.TriggerAttr} {
+				diags.Append(runStringValidators(t, tfConfig, attrs, name)...)
+			}
+
+			if got := diags.HasError(); got != testCase.wantError {
+				t.Fatalf("validation error = %t, want %t; diagnostics: %v", got, testCase.wantError, diags)
+			}
+		})
+	}
+}
+
+// TestWriteOnlySecretHandlerDualRequiredUpdateNamesBothAttributes checks that
+// the required-update diagnostic names the plaintext attribute too: in dual
+// mode it satisfies the requirement, so pointing a pre-1.11 practitioner only
+// at the write-only attribute would name one their Terraform cannot use.
+func TestWriteOnlySecretHandlerDualRequiredUpdateNamesBothAttributes(t *testing.T) {
+	config := dualSecretConfig(true)
+	testSchema := schema.Schema{Attributes: CreateWriteOnlySecretAttributes(config)}
+	handler := &WriteOnlySecretHandler{Config: config, SecretRequiredOnUpdate: true}
+	empty := makeDualConfigValue(nil, nil, nil)
+	request := &resource.UpdateRequest{
+		State: tfsdk.State{Raw: empty, Schema: testSchema},
+		Plan:  tfsdk.Plan{Raw: empty, Schema: testSchema},
+	}
+
+	result := handler.GetSecretForUpdate(
+		context.Background(),
+		&tfsdk.Config{Raw: empty, Schema: testSchema},
+		request,
+	)
+
+	if !result.Diagnostics.HasError() {
+		t.Fatal("required Update secret omission must return an error diagnostic")
+	}
+	if result.ShouldSetValue {
+		t.Fatal("missing required Update secret must not be sent")
+	}
+	// Both halves satisfy the API, so both must be named. The quoted form
+	// matters: a bare "api_key" substring is also inside "api_key_wo", so it
+	// would pass even if the plaintext attribute went unmentioned.
+	for _, want := range []string{
+		strconv.Quote(config.OriginalAttr),
+		strconv.Quote(config.WriteOnlyAttr),
+	} {
+		var found bool
+		for _, diagnostic := range result.Diagnostics {
+			if strings.Contains(diagnostic.Summary()+" "+diagnostic.Detail(), want) {
+				found = true
+			}
+		}
+		if !found {
+			t.Errorf("diagnostic must identify %q, got %v", want, result.Diagnostics)
+		}
 	}
 }

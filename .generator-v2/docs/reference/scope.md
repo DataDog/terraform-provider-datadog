@@ -77,7 +77,13 @@ failure prevented the spec from loading at all.
 - Requiredness lands on the pair, not on either half: a secret the API requires
   on create becomes `ExactlyOneOf(<attr>, <attr>_wo)`, and an optional one
   becomes `ConflictsWith`. Neither attribute is ever `Required` on its own,
-  since either one alone satisfies the API.
+  since either one alone satisfies the API — and keeping `Required` off
+  `<attr>_wo` is also what lets older Terraform plan the resource. Older
+  Terraform loads a write-only attribute's schema without complaint, but the
+  framework rejects a non-null write-only value against a pre-1.11 client while
+  accepting an unset one, so a `Required` `<attr>_wo` can be satisfied from
+  neither side: omitting it fails the required-argument check and setting it
+  fails the version check.
 - `x-secret: true` or `writeOnly: true` default an attribute to Terraform-sensitive.
   An explicit `sensitive: false` on the same schema node overrides that inference.
 - Sensitive and `x-secret` redact from display; they do **not** keep values out of
