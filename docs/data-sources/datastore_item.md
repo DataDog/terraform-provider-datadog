@@ -28,4 +28,4 @@ Use this data source to retrieve information about an existing Datadog datastore
 - `org_id` (Number) The ID of the organization that owns this item.
 - `signature` (String) A unique signature identifying this item version.
 - `store_id` (String) The unique identifier of the datastore containing this item.
-- `value` (Map of String) The data content (as key-value pairs) of the datastore item.
+- `value` (Map of String) The data content (as key-value pairs) of the datastore item. A column of the datastore's JSON type is returned as a JSON string, so `jsondecode` can read it.
