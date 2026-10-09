@@ -90,6 +90,10 @@ func (s *ExampleSelection) SortedExplicitOperations() []string {
 
 // MaterializedValue is one typed value bound to an attribute path.
 type MaterializedValue struct {
+	// Schema is the selected schema for this value, including its union branch.
+	Schema *Schema
+	// Variant identifies the chosen normalized oneOf alternative at this path.
+	Variant string
 	// Path is the dotted attribute path, e.g. data.attributes.name for a
 	// request value or attributes.name for a Terraform value.
 	Path string
