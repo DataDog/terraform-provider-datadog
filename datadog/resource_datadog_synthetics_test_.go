@@ -685,7 +685,7 @@ func syntheticsAPIAssertion() *schema.Schema {
 								Required:    true,
 							},
 							"targetvalue": {
-								Description: "Expected matching value.",
+								Description: "Expected matching value. For `isUndefined`, this value is preserved in Terraform state but is not sent to the API.",
 								Type:        schema.TypeString,
 								Optional:    true,
 							},
@@ -2803,6 +2803,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		return diags
 	}
 
+	preserveSyntheticsUndefinedTargetValues(localAssertions, d.Get("assertion").([]interface{}))
 	if err := d.Set("assertion", localAssertions); err != nil {
 		return diag.FromErr(err)
 	}
@@ -2832,6 +2833,8 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				if diags.HasError() {
 					return diags
 				}
+				oldAssertions, _ := d.Get(fmt.Sprintf("api_step.%d.assertion", i)).([]interface{})
+				preserveSyntheticsUndefinedTargetValues(localAssertions, oldAssertions)
 				localStep["assertion"] = localAssertions
 				localStep["extracted_value"] = buildTerraformExtractedValues(step.SyntheticsAPITestStep.GetExtractedValues())
 
@@ -4272,6 +4275,37 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 	}
 
 	return assertions, diags
+}
+
+// isUndefined omits targetValue on the wire, so the API cannot return the local
+// value. Keep it from the plan on create/update, or prior state on refresh. Only
+// preserve values for the same assertion; imports have no local value to keep.
+func preserveSyntheticsUndefinedTargetValues(assertions []map[string]interface{}, prior []interface{}) {
+	for i, assertion := range assertions {
+		if i >= len(prior) {
+			continue
+		}
+		targets, ok := assertion["targetjsonpath"].([]map[string]string)
+		if !ok || len(targets) != 1 || targets[0]["operator"] != "isUndefined" {
+			continue
+		}
+		oldAssertion := prior[i].(map[string]interface{})
+		oldProperty, _ := oldAssertion["property"].(string)
+		property, _ := assertion["property"].(string)
+		if oldAssertion["type"] != assertion["type"] || oldAssertion["operator"] != assertion["operator"] || oldProperty != property {
+			continue
+		}
+		oldTargets, ok := oldAssertion["targetjsonpath"].([]interface{})
+		if !ok || len(oldTargets) != 1 {
+			continue
+		}
+		oldTarget := oldTargets[0].(map[string]interface{})
+		if oldTarget["operator"] == "isUndefined" && oldTarget["jsonpath"] == targets[0]["jsonpath"] {
+			if value, ok := oldTarget["targetvalue"].(string); ok {
+				targets[0]["targetvalue"] = value
+			}
+		}
+	}
 }
 
 func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) ([]map[string]interface{}, diag.Diagnostics) {
