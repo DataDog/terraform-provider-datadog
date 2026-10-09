@@ -2,6 +2,7 @@ package emit
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
@@ -33,7 +34,10 @@ type resourceTestView struct {
 	SDKPackage     string
 	APIConstructor string
 	// ReadMethod is the SDK read call, e.g. "GetIncidentType".
-	ReadMethod string
+	ReadMethod                      string
+	ReadArgument                    SDKArgumentView
+	UsesUUID, UsesStrconv, UsesTime bool
+	UsesSDK                         bool
 }
 
 // BuildResourceTestView derives the render context for a resource's
@@ -65,6 +69,20 @@ func BuildResourceTestView(
 				"resource id from Terraform state to supply",
 			scenario.ArtifactName, count)
 	}
+	argument := view.Read.Arguments[0]
+	if argument.TFName != "id" {
+		return resourceTestView{}, fmt.Errorf("resource %q: its destroy check cannot supply read argument %q from the resource id", scenario.ArtifactName, argument.TFName)
+	}
+	// Reuse the SDK binding's conversion, replacing only its Terraform-state
+	// source with the test harness's string ID.
+	if argument.GoType == "" || argument.GoType == "string" {
+		argument.Expression = "r.Primary.ID"
+	} else {
+		idSource := "state." + goFieldName("id") + ".ValueString()"
+		argument.Expression = strings.ReplaceAll(argument.Expression, idSource, "r.Primary.ID")
+		argument.ParseCall = strings.ReplaceAll(argument.ParseCall, idSource, "r.Primary.ID")
+	}
+	usesUUID, usesStrconv, usesTime := parseCallImports(argument.ParseCall)
 
 	out := resourceTestView{
 		exampleTestView:  common,
@@ -73,6 +91,26 @@ func BuildResourceTestView(
 		SDKPackage:       view.SDKPackage,
 		APIConstructor:   view.APIConstructor,
 		ReadMethod:       view.Read.Method,
+		ReadArgument:     argument,
+		UsesUUID:         usesUUID,
+		UsesStrconv:      usesStrconv,
+		UsesTime:         usesTime,
+		UsesSDK:          view.APIAccessor == "" || strings.Contains(argument.ParseCall, view.SDKPackage+".") || strings.Contains(argument.Expression, view.SDKPackage+"."),
 	}
 	return out, nil
+}
+
+// RenderResourceExampleTest renders a resource's example-backed acceptance
+// test. The file is gofmt'd here so a syntax error surfaces as a generation
+// failure naming the artifact, rather than as an unbuildable test package.
+func RenderResourceExampleTest(
+	scenario *model.GeneratedTestScenario,
+	view ResourceView,
+	apiPaths map[string]string,
+) ([]byte, error) {
+	rendered, err := BuildResourceTestView(scenario, view, apiPaths)
+	if err != nil {
+		return nil, err
+	}
+	return renderGoTemplate("resource_example_test", "example test", scenario.ArtifactName, rendered)
 }
