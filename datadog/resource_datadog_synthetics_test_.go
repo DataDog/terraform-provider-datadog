@@ -792,6 +792,15 @@ func syntheticsTestIgnoreCertificateValidation() *schema.Schema {
 	}
 }
 
+func syntheticsTestBitsAiAutoInvestigate() *schema.Schema {
+	return &schema.Schema{
+		Type:        schema.TypeBool,
+		Optional:    true,
+		Computed:    true,
+		Description: "Whether Bits AI automatically investigates alerts from the test monitor. When omitted, the current value is left unchanged.",
+	}
+}
+
 func syntheticsTestAcceptSelfSigned() *schema.Schema {
 	return &schema.Schema{
 		Description: "For SSL tests, whether or not the test should allow self signed certificates.",
@@ -923,7 +932,8 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Optional:    true,
 					Elem:        &schema.Schema{Type: schema.TypeString},
 				},
-				"retry": syntheticsTestOptionsRetry(),
+				"bits_ai_auto_investigate": syntheticsTestBitsAiAutoInvestigate(),
+				"retry":                    syntheticsTestOptionsRetry(),
 				"no_screenshot": {
 					Description: "Prevents saving screenshots of the steps.",
 					Type:        schema.TypeBool,
@@ -5104,6 +5114,10 @@ func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOp
 			options.SetRestrictedRoles(roles)
 		}
 
+		if bitsAiAutoInvestigate, ok := getConfigBitsAiAutoInvestigate(d); ok {
+			options.SetBitsAiAutoInvestigate(bitsAiAutoInvestigate)
+		}
+
 		if ciRaw, ok := d.GetOk("options_list.0.ci"); ok {
 			ci := ciRaw.([]interface{})[0]
 			if testCiOptions, ok := ci.(map[string]interface{}); ok {
@@ -5284,6 +5298,9 @@ func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []
 	}
 	if actualOptions.HasRestrictedRoles() {
 		localOptionsList["restricted_roles"] = actualOptions.GetRestrictedRoles()
+	}
+	if actualOptions.HasBitsAiAutoInvestigate() {
+		localOptionsList["bits_ai_auto_investigate"] = actualOptions.GetBitsAiAutoInvestigate()
 	}
 	if actualOptions.HasCi() {
 		actualCi := actualOptions.GetCi()
@@ -6757,6 +6774,18 @@ func isApiSubtype(subtype datadogV1.SyntheticsAPITestStepSubtype) bool {
 		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_ICMP ||
 		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_WEBSOCKET ||
 		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_MCP
+}
+
+// GetOk treats false as unset, so the raw config is read to send an explicit false, which disables the investigation.
+func getConfigBitsAiAutoInvestigate(d *schema.ResourceData) (bool, bool) {
+	value, err := cty.GetAttrPath("options_list").
+		Index(cty.NumberIntVal(0)).
+		GetAttr("bits_ai_auto_investigate").
+		Apply(d.GetRawConfig())
+	if err != nil || !value.IsKnown() || value.IsNull() {
+		return false, false
+	}
+	return value.True(), true
 }
 
 func getConfigCertAndKeyContent(d *schema.ResourceData, stepIndex int) (*string, *string) {

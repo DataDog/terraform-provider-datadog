@@ -1717,6 +1717,8 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider *schema.Provid
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.0.bits_ai_auto_investigate", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.retry.0.count", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.monitor_name", fmt.Sprintf(`%s-monitor`, testName)),
@@ -1843,6 +1845,7 @@ resource "datadog_synthetics_test" "foo" {
 		min_failure_duration = 0
 		min_location_failed = 1
 		http_version = "http2"
+		bits_ai_auto_investigate = true
 		retry {
 			count = 1
 		}
@@ -2767,6 +2770,8 @@ func updateSyntheticsAPITestStep(ctx context.Context, accProvider *schema.Provid
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.0.bits_ai_auto_investigate", "false"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.retry.0.count", "3"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.retry.0.interval", "500"),
@@ -2826,6 +2831,7 @@ resource "datadog_synthetics_test" "foo" {
 		follow_redirects = false
 		min_failure_duration = 10
 		min_location_failed = 1
+		bits_ai_auto_investigate = false
 
 		retry {
 			count = 3
