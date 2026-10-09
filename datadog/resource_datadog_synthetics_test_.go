@@ -2044,7 +2044,7 @@ func syntheticsConfigVariable() *schema.Schema {
 					Optional:    true,
 				},
 				"secure": {
-					Description: "Whether the value of this variable will be obfuscated in test results.",
+					Description: "Whether the value of this variable will be obfuscated in test results. For `type = \"global\"`, this flag is retained in Terraform state but has no effect; obfuscation is controlled by the referenced global variable. On import, this flag defaults to `false` for global references.",
 					Type:        schema.TypeBool,
 					Optional:    true,
 					Default:     false,
@@ -2982,6 +2982,7 @@ func updateSyntheticsMobileTestLocalState(d *schema.ResourceData, syntheticsTest
 
 	actualVariables := config.GetVariables()
 	localMobileVariables := make([]map[string]interface{}, len(actualVariables))
+	oldConfigVariables := d.Get("config_variable").([]interface{})
 
 	for i, variable := range actualVariables {
 		localVariable := make(map[string]interface{})
@@ -3006,6 +3007,9 @@ func updateSyntheticsMobileTestLocalState(d *schema.ResourceData, syntheticsTest
 			localVariable["pattern"] = *v
 		} else if v, ok := localVariable["secure"].(bool); ok && v {
 			localVariable["pattern"] = d.Get(fmt.Sprintf("mobile_variable.%d.pattern", i))
+		}
+		if variable.GetType() == "global" {
+			localVariable["secure"] = syntheticsGlobalConfigVariableSecure(variable, oldConfigVariables)
 		}
 		localMobileVariables[i] = localVariable
 	}
@@ -4850,6 +4854,9 @@ func buildTerraformConfigVariables(configVariables []datadogV1.SyntheticsConfigV
 		if v, ok := configVariable.GetSecureOk(); ok {
 			localVariable["secure"] = *v
 		}
+		if configVariable.GetType() == "global" {
+			localVariable["secure"] = syntheticsGlobalConfigVariableSecure(configVariable, oldConfigVariables)
+		}
 
 		if configVariable.GetType() != "global" {
 			// If the variable is secure, the example and pattern are not returned by the API,
@@ -4875,6 +4882,20 @@ func buildTerraformConfigVariables(configVariables []datadogV1.SyntheticsConfigV
 		localConfigVariables[i] = localVariable
 	}
 	return localConfigVariables
+}
+
+func syntheticsGlobalConfigVariableSecure(variable datadogV1.SyntheticsConfigVariable, oldConfigVariables []interface{}) bool {
+	// Global references do not persist secure in the API. Preserve the configured
+	// value by identity, so reordered or replaced references cannot inherit it.
+	for _, oldVariable := range oldConfigVariables {
+		old, ok := oldVariable.(map[string]interface{})
+		if ok && old["type"] == "global" && old["name"] == variable.GetName() && old["id"] == variable.GetId() {
+			secure, _ := old["secure"].(bool)
+			return secure
+		}
+	}
+	// Import has no configured value to preserve.
+	return false
 }
 
 func buildDatadogExtractedValues(stepExtractedValues []interface{}) []datadogV1.SyntheticsParsingOptions {
