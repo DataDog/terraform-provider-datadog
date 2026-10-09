@@ -144,16 +144,18 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 					}
 
 					if op.Tracking.ArtifactKind == model.ArtifactKindResource {
-						// Opt-in per artifact, from the annotation rather than a
-						// flag, so the choice is reviewed with the spec. Nil for
-						// an artifact that did not ask, which keeps its output
-						// byte-identical to a run from before the feature.
+						// On by default, from the annotation rather than a
+						// flag, so the choice is reviewed with the spec. Nil
+						// only when the description opted out, which keeps that
+						// artifact's output byte-identical to a run from before
+						// the feature.
 						var cassettes *cassetteRequest
-						if op.Tracking.Cassette {
+						if op.Tracking.CassetteEnabled() {
 							cassettes = &cassetteRequest{
 								TestsOutputRoot: testsOutputRoot,
 								ServerURL:       spec.ServerURL,
 								Check:           check,
+								Requested:       op.Tracking.CassetteRequested(),
 							}
 						}
 						entry, reg, cassetteResult := generateResourceArtifact(

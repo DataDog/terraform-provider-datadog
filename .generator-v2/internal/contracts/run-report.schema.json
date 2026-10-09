@@ -267,9 +267,10 @@
           "type": "string",
           "enum": [
             "generated",
+            "skipped",
             "ineligible"
           ],
-          "description": "generated: the test was written. ineligible: the description could not describe a whole lifecycle, and nothing was written. There is no preserved outcome: the generator writes only its own test, and emit refuses a file it does not own."
+          "description": "generated: the test was written. skipped: the target defaulted in and its description could not supply the values a test needs, so nothing was written and the run still succeeds. ineligible: an explicit request could not be fulfilled or writing the test failed, including for defaulted targets; either fails the run. There is no preserved outcome: the generator writes only its own test, and emit refuses a file it does not own."
         },
         "write_action": {
           "type": "string",
@@ -302,10 +303,15 @@
       "description": "Counts per cassette status. Separate from runSummary so cassette generation cannot change the artifact tallies CI already asserts on.",
       "required": [
         "generated",
+        "skipped",
         "ineligible"
       ],
       "properties": {
         "generated": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "skipped": {
           "type": "integer",
           "minimum": 0
         },

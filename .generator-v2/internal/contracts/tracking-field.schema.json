@@ -32,8 +32,8 @@
       },
       "cassette": {
         "type": "boolean",
-        "default": false,
-        "description": "Generate an example-backed acceptance test for this artifact, built from this description's own examples with anything it leaves out synthesized. Only the Go test is generated; the cassette it replays is recorded by running that test with RECORD=true, never rendered from the description. Opt-in per artifact, declared here so the choice is reviewed with the spec rather than passed on a command line. Requires artifact_kind: resource and a group naming create, read and delete. An artifact whose group cannot describe a whole lifecycle is reported in the run report and skipped, not failed."
+        "default": true,
+        "description": "Generate an example-backed acceptance test for this artifact. On by default, so a resource whose description can describe its own lifecycle gets a test without anyone remembering to ask; set false to opt out. Only the Go test is generated \u2014 the cassette it replays is recorded by running that test with RECORD=true, never rendered from the description. Requires artifact_kind: resource and a group naming create, read and delete. A target whose description leaves a required value with no example and no default cannot be built from the description alone: it is reported skipped when it defaulted in, and ineligible when it set this true explicitly, because an explicit annotation is a request."
       },
       "group": {
         "type": "object",
