@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"go/format"
 	"os"
+	"path/filepath"
 	"regexp"
 	"slices"
 	"sort"
@@ -283,7 +284,19 @@ const endpointTagsMapHeader = "var testFiles2EndpointTags = map[string]string{"
 // tests/ prefix and missing .go suffix match what getEndpointTagValue keys on
 // (it appends "datadog/" and ".go" before comparing).
 func EndpointTagTestKey(name string) string {
-	return "tests/data_source_datadog_" + name + "_test"
+	return EndpointTagKeyForTestFile("data_source_datadog_" + name + "_test.go")
+}
+
+// EndpointTagKeyForTestFile derives the testFiles2EndpointTags key from a
+// generated test's own file name. The harness matches a frame's file against
+// "datadog/<key>.go", and generated tests live under the tests package, so the
+// key is the basename without its extension under that directory.
+//
+// Taking the path rather than rebuilding a name is what lets registration
+// follow whatever file an emitter actually wrote: a test absent from that map
+// does not fail a check, it t.Fatals at startup.
+func EndpointTagKeyForTestFile(path string) string {
+	return "tests/" + strings.TrimSuffix(filepath.Base(path), ".go")
 }
 
 // NormalizeEndpointTag lowercases an OpenAPI tag and turns its spaces into

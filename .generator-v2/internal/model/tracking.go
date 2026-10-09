@@ -27,6 +27,11 @@ type TrackingFieldMetadata struct {
 	// Sensitive, when attached to a Schema Object, marks the attribute as
 	// Terraform-sensitive.
 	Sensitive bool `json:"sensitive,omitempty"`
+	// Cassette opts this artifact in to cassette-backed test generation: the
+	// generated test, its go-vcr fixture and the freeze companion, built from
+	// the description's own examples. Opt-in per artifact rather than per run,
+	// so the choice is reviewed with the spec.
+	Cassette bool `json:"cassette,omitempty"`
 	// Skip explicitly disables generation while keeping the annotation in
 	// place, equivalent to removing the extension.
 	Skip bool `json:"skip,omitempty"`

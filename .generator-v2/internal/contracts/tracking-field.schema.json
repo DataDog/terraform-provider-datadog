@@ -30,6 +30,11 @@
         "default": "singular",
         "description": "For a data source, whether the read resolves a single item by id (singular) or returns a filtered list (plural). Ignored for resources."
       },
+      "cassette": {
+        "type": "boolean",
+        "default": false,
+        "description": "Generate an example-backed acceptance test for this artifact, built from this description's own examples with anything it leaves out synthesized. Only the Go test is generated; the cassette it replays is recorded by running that test with RECORD=true, never rendered from the description. Opt-in per artifact, declared here so the choice is reviewed with the spec rather than passed on a command line. Requires artifact_kind: resource and a group naming create, read and delete. An artifact whose group cannot describe a whole lifecycle is reported in the run report and skipped, not failed."
+      },
       "group": {
         "type": "object",
         "description": "The OpenAPI operations backing this artifact. For a resource: the create/read/update/delete lifecycle. For a data source: read (a by-id endpoint) and/or search (a list endpoint used to resolve a single match). May reference operations by their operationId.",

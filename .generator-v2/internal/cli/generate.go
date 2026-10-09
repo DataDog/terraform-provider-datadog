@@ -2,7 +2,9 @@ package cli
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"slices"
@@ -142,10 +144,26 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 					}
 
 					if op.Tracking.ArtifactKind == model.ArtifactKindResource {
-						entry, reg := generateResourceArtifact(op, outputRoot, check, accessors, sdkBindings)
+						// Opt-in per artifact, from the annotation rather than a
+						// flag, so the choice is reviewed with the spec. Nil for
+						// an artifact that did not ask, which keeps its output
+						// byte-identical to a run from before the feature.
+						var cassettes *cassetteRequest
+						if op.Tracking.Cassette {
+							cassettes = &cassetteRequest{
+								TestsOutputRoot: testsOutputRoot,
+								ServerURL:       spec.ServerURL,
+								Check:           check,
+							}
+						}
+						entry, reg, cassetteResult := generateResourceArtifact(
+							op, outputRoot, check, accessors, sdkBindings, cassettes)
 						runReport.Artifacts = append(runReport.Artifacts, entry)
 						if reg != nil {
 							resourceRegistrations = append(resourceRegistrations, *reg)
+						}
+						if cassetteResult != nil {
+							runReport.AddCassetteResult(*cassetteResult)
 						}
 						continue
 					}
@@ -165,10 +183,10 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 
 				// Register the generated constructors and retire any they overwrite.
 				// Errors are deferred so a wiring failure still emits the report.
-				wiringChanged, deferredErr = wireGeneratedDatasources(outputRoot, testsOutputRoot, registrations, check)
+				wiringChanged, deferredErr = wireGeneratedDatasources(outputRoot, testsOutputRoot, registrations, check, cmd.PrintErrln)
 				if deferredErr == nil {
 					var resourceWiringChanged bool
-					resourceWiringChanged, deferredErr = wireGeneratedResources(outputRoot, resourceRegistrations, check)
+					resourceWiringChanged, deferredErr = wireGeneratedResources(outputRoot, testsOutputRoot, resourceRegistrations, check, cmd.PrintErrln)
 					wiringChanged = wiringChanged || resourceWiringChanged
 				}
 				// One registry for both kinds: the SDK gates a beta endpoint per
@@ -227,6 +245,15 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 			if check {
 				for _, e := range runReport.Artifacts {
 					if wouldChange(e.Status) {
+						return errCheckFailed
+					}
+				}
+				// A generated test that would be written or rewritten is a
+				// file that would change. There is no fixture to compare: the
+				// cassette is recorded, so it is not this run's output.
+				for _, c := range runReport.Cassettes {
+					switch c.WriteAction {
+					case model.CassetteWriteCreated, model.CassetteWriteUpdated:
 						return errCheckFailed
 					}
 				}
@@ -346,7 +373,14 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examples
 // generateResourceArtifact builds, renders and writes one tracked resource
 // operation, returning its report entry and its registration. The registration
 // is nil for a failed artifact.
-func generateResourceArtifact(op *model.Operation, outputRoot string, check bool, accessors map[string]string, sdkBindings *sdkbinding.Inventory) (model.ArtifactReportEntry, *emit.GeneratedRegistration) {
+func generateResourceArtifact(
+	op *model.Operation,
+	outputRoot string,
+	check bool,
+	accessors map[string]string,
+	sdkBindings *sdkbinding.Inventory,
+	cassettes *cassetteRequest,
+) (model.ArtifactReportEntry, *emit.GeneratedRegistration, *model.CassetteResult) {
 	entry := model.ArtifactReportEntry{
 		Name: op.Tracking.ArtifactName,
 		Kind: op.Tracking.ArtifactKind,
@@ -362,13 +396,13 @@ func generateResourceArtifact(op *model.Operation, outputRoot string, check bool
 	}
 	bindingDiagnostics, err := bindOperations(roleOps, sdkBindings)
 	if err != nil {
-		return failEntry(entry, err), nil
+		return failEntry(entry, err), nil, nil
 	}
 	entry.Diagnostics = append(entry.Diagnostics, bindingDiagnostics...)
 
 	artifact, err := model.BuildArtifact(op)
 	if err != nil {
-		return failEntry(entry, err), nil
+		return failEntry(entry, err), nil, nil
 	}
 	artifact.SourceFile = filepath.Join(outputRoot, "resource_datadog_"+artifact.Name+".go")
 	entry.Path = artifact.SourceFile
@@ -376,10 +410,10 @@ func generateResourceArtifact(op *model.Operation, outputRoot string, check bool
 
 	view, err := emit.BuildResourceView(artifact)
 	if err != nil {
-		return failEntry(entry, err), nil
+		return failEntry(entry, err), nil, nil
 	}
 	if err := emit.ApplyResourceAPIAccessor(&view, accessors); err != nil {
-		return failEntry(entry, err), nil
+		return failEntry(entry, err), nil, nil
 	}
 	for _, d := range view.Dropped {
 		entry.Diagnostics = append(entry.Diagnostics, model.Diagnostic{Severity: d.Severity, Message: d.Message})
@@ -387,12 +421,12 @@ func generateResourceArtifact(op *model.Operation, outputRoot string, check bool
 
 	src, err := emit.RenderResource(view)
 	if err != nil {
-		return failEntry(entry, err), nil
+		return failEntry(entry, err), nil, nil
 	}
 
 	status, err := emit.WriteArtifactSource(artifact.SourceFile, src, check, op.Tracking.Overwrites != "")
 	if err != nil {
-		return failEntry(entry, err), nil
+		return failEntry(entry, err), nil, nil
 	}
 	entry.Status = status
 
@@ -402,7 +436,31 @@ func generateResourceArtifact(op *model.Operation, outputRoot string, check bool
 		UnstableOperations: artifact.UnstableOperations,
 	}
 	entry.Diagnostics = append(entry.Diagnostics, unstableOperationDiagnostics(artifact)...)
-	return entry, reg
+
+	// After the artifact itself: a resource that could not be generated has no
+	// business carrying a fixture, and the cassette needs the view that
+	// rendering already built.
+	var cassetteResult *model.CassetteResult
+	if cassettes != nil {
+		request := *cassettes
+		request.Operation = op
+		request.View = view
+		request.APIPaths = emit.APIPathIndex(artifact.Schema.Attributes)
+		result := generateCassette(request)
+		cassetteResult = &result
+
+		// A generated test absent from testFiles2EndpointTags does not fail a
+		// check — it t.Fatals at startup — so registration follows the file
+		// whenever one exists, which is every outcome except ineligible.
+		if result.TestPath != "" && result.Status != model.CassetteStatusIneligible {
+			reg.TestFileKey = emit.EndpointTagKeyForTestFile(result.TestPath)
+			reg.EndpointTag = emit.NormalizeEndpointTag(op.Tag)
+			if reg.EndpointTag == "" {
+				reg.EndpointTag = artifact.Name
+			}
+		}
+	}
+	return entry, reg, cassetteResult
 }
 
 // bindOperations resolves the SDK bindings for each operation in ops and
@@ -576,14 +634,46 @@ func wireGenerated(outputRoot string, k generatedKind, regs []emit.GeneratedRegi
 // wireGeneratedDatasources runs the shared registration for data sources, then
 // records each generated test in provider_test.go's testFiles2EndpointTags map
 // under testsOutputRoot.
-func wireGeneratedDatasources(outputRoot, testsOutputRoot string, regs []emit.GeneratedRegistration, check bool) (changed bool, err error) {
+func wireGeneratedDatasources(outputRoot, testsOutputRoot string, regs []emit.GeneratedRegistration, check bool, warn func(...any)) (changed bool, err error) {
 	changed, err = wireGenerated(outputRoot, datasourceKind, regs, check)
 	if err != nil {
 		return changed, err
 	}
 
-	// Only regs whose test was emitted this run carry a TestFileKey.
+	tagsChanged, err := insertEndpointTags(testsOutputRoot, regs, check, warn)
+	return changed || tagsChanged, err
+}
+
+// insertEndpointTags records every generated test in provider_test.go's
+// testFiles2EndpointTags map. Both kinds of artifact go through here: a test
+// missing from that map does not fail generation, it t.Fatals at startup, so
+// the registration has to follow the file rather than the emitter.
+//
+// Only regs whose test was emitted this run carry a TestFileKey.
+func insertEndpointTags(
+	testsOutputRoot string,
+	regs []emit.GeneratedRegistration,
+	check bool,
+	warn func(...any),
+) (changed bool, err error) {
 	providerTestPath := filepath.Join(testsOutputRoot, "provider_test.go")
+	// An output root with no provider_test.go is not a provider checkout — a
+	// temp tree in a test, or a scratch --output-root. There is nothing to
+	// register in and no reason to fail the run over it, but a real run
+	// against a real checkout must not skip silently: a generated test absent
+	// from testFiles2EndpointTags does not fail a check, it t.Fatals at
+	// startup. So the skip is reported, and only once.
+	if _, statErr := os.Stat(providerTestPath); errors.Is(statErr, fs.ErrNotExist) {
+		for _, reg := range regs {
+			if reg.TestFileKey != "" {
+				warn("tfgen: no provider_test.go under", testsOutputRoot,
+					"- generated tests were not registered in testFiles2EndpointTags;",
+					"register them before running the suite")
+				break
+			}
+		}
+		return false, nil
+	}
 	for _, reg := range regs {
 		if reg.TestFileKey == "" {
 			continue
@@ -594,15 +684,26 @@ func wireGeneratedDatasources(outputRoot, testsOutputRoot string, regs []emit.Ge
 		}
 		changed = changed || wouldChange(tagStatus)
 	}
-
 	return changed, nil
 }
 
 // wireGeneratedResources registers each generated resource constructor in
-// resources_generated.go and drops any hand-written resource it overwrites from
-// the framework Resources slice.
-func wireGeneratedResources(outputRoot string, regs []emit.GeneratedRegistration, check bool) (changed bool, err error) {
-	return wireGenerated(outputRoot, resourceKind, regs, check)
+// resources_generated.go, drops any hand-written resource it overwrites from
+// the framework Resources slice, and records any generated test in
+// testFiles2EndpointTags.
+func wireGeneratedResources(
+	outputRoot, testsOutputRoot string,
+	regs []emit.GeneratedRegistration,
+	check bool,
+	warn func(...any),
+) (changed bool, err error) {
+	changed, err = wireGenerated(outputRoot, resourceKind, regs, check)
+	if err != nil {
+		return changed, err
+	}
+	// A resource carries a TestFileKey when a cassette bundle emitted its test.
+	tagsChanged, err := insertEndpointTags(testsOutputRoot, regs, check, warn)
+	return changed || tagsChanged, err
 }
 
 // wireUnstableOperations merges every artifact's x-unstable operation keys into
