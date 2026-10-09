@@ -92,9 +92,21 @@ func TestDeploymentGateRuleOptionsRoundTrip(t *testing.T) {
 				}
 			}
 			attributes := datadogV2.DeploymentRuleResponseDataAttributes{}
-			var raw map[string]interface{}
-			raw = tc.want
-			attributes.SetOptions(datadogV2.DeploymentRulesOptions{UnparsedObject: raw})
+			responseOptions := make(map[string]interface{}, len(tc.want))
+			for key, value := range tc.want {
+				responseOptions[key] = value
+			}
+			// Staging omits monitor options set to their API defaults.
+			if responseOptions["warmup"] == float64(0) {
+				delete(responseOptions, "warmup")
+			}
+			if responseOptions["fail_on_no_data"] == true {
+				delete(responseOptions, "fail_on_no_data")
+			}
+			if responseOptions["fail_on_no_groups_found"] == false {
+				delete(responseOptions, "fail_on_no_groups_found")
+			}
+			attributes.SetOptions(datadogV2.DeploymentRulesOptions{UnparsedObject: responseOptions})
 			attributes.SetType(datadogV2.DeploymentRuleResponseDataAttributesType(tc.ruleType))
 			(&deploymentGateResource{}).updateRuleStateFromAttributes(ctx, &rule, &attributes)
 			options, d := buildRuleOptions(ctx, &rule)

@@ -1049,14 +1049,26 @@ func (r *deploymentGateResource) updateRuleStateFromAttributes(ctx context.Conte
 				if !previous.AllowedResources.IsNull() && decoded.AllowedResources != nil {
 					rule.Options.AllowedResources, _ = types.ListValueFrom(ctx, types.StringType, decoded.AllowedResources)
 				}
-				if !previous.FailOnNoData.IsNull() && decoded.FailOnNoData != nil {
-					rule.Options.FailOnNoData = types.BoolPointerValue(decoded.FailOnNoData)
+				// The API omits monitor fields when they have their default values.
+				// Keep an explicitly configured value in state, using the API
+				// default when the field is absent to detect out-of-band changes.
+				if !previous.FailOnNoData.IsNull() {
+					rule.Options.FailOnNoData = types.BoolValue(true)
+					if decoded.FailOnNoData != nil {
+						rule.Options.FailOnNoData = types.BoolPointerValue(decoded.FailOnNoData)
+					}
 				}
-				if !previous.FailOnNoGroupsFound.IsNull() && decoded.FailOnNoGroupsFound != nil {
-					rule.Options.FailOnNoGroupsFound = types.BoolPointerValue(decoded.FailOnNoGroupsFound)
+				if !previous.FailOnNoGroupsFound.IsNull() {
+					rule.Options.FailOnNoGroupsFound = types.BoolValue(false)
+					if decoded.FailOnNoGroupsFound != nil {
+						rule.Options.FailOnNoGroupsFound = types.BoolPointerValue(decoded.FailOnNoGroupsFound)
+					}
 				}
-				if !previous.Warmup.IsNull() && decoded.Warmup != nil {
-					rule.Options.Warmup = types.Int64PointerValue(decoded.Warmup)
+				if !previous.Warmup.IsNull() {
+					rule.Options.Warmup = types.Int64Value(0)
+					if decoded.Warmup != nil {
+						rule.Options.Warmup = types.Int64PointerValue(decoded.Warmup)
+					}
 				}
 				if previous.MonitorIDs != nil && decoded.MonitorIDs != nil {
 					rule.Options.MonitorIDs = make([]deploymentGateMonitorIDModel, len(decoded.MonitorIDs))
