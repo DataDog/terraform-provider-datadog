@@ -60,7 +60,7 @@ func (d *datadogOrgGroupPolicyOverridesDataSource) Metadata(_ context.Context, _
 
 func (d *datadogOrgGroupPolicyOverridesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Use this data source to retrieve org group policy overrides. Supports filtering by policy ID (server-side) and organization UUID (client-side).",
+		Description: "Use this data source to retrieve org group policy overrides. Supports filtering by policy ID (server-side) and organization UUID (client-side). **Note**: Org Groups operations are in preview and subject to change. Access may need to be enabled for your organization. Contact [Datadog support](https://docs.datadoghq.com/help/) to request access.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"org_group_id": schema.StringAttribute{

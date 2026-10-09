@@ -56,7 +56,7 @@ func (r *OrgGroupPolicyOverrideResource) Metadata(_ context.Context, _ resource.
 
 func (r *OrgGroupPolicyOverrideResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog Org Group Policy Override resource. An override exempts a specific organization from a policy applied at the org group level.",
+		Description: "Provides a Datadog Org Group Policy Override resource. An override exempts a specific organization from a policy applied at the org group level. **Note**: Org Groups operations are in preview and subject to change. Access may need to be enabled for your organization. Contact [Datadog support](https://docs.datadoghq.com/help/) to request access.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"org_group_id": schema.StringAttribute{
