@@ -209,7 +209,7 @@ func (r *deploymentGateResource) Read(ctx context.Context, request resource.Read
 
 	r.updateState(ctx, &state, &resp)
 
-	response.Diagnostics.Append(r.readAndReconcileRules(ctx, id, &state)...)
+	response.Diagnostics.Append(r.readAndReconcileRules(ctx, id, &state, true)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -261,7 +261,7 @@ func (r *deploymentGateResource) Create(ctx context.Context, request resource.Cr
 		r.updateState(ctx, &state, &gateResp)
 	}
 
-	response.Diagnostics.Append(r.readAndReconcileRules(ctx, gateID, &state)...)
+	response.Diagnostics.Append(r.readAndReconcileRules(ctx, gateID, &state, false)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -335,7 +335,7 @@ func (r *deploymentGateResource) Update(ctx context.Context, request resource.Up
 
 	response.Diagnostics.Append(r.syncRules(ctx, id, &state)...)
 	response.Diagnostics.Append(
-		r.readAndReconcileRules(ctx, id, &state)...,
+		r.readAndReconcileRules(ctx, id, &state, false)...,
 	)
 	if response.Diagnostics.HasError() {
 		return
@@ -552,7 +552,7 @@ func (r *deploymentGateResource) createRules(ctx context.Context, gateID string,
 }
 
 // Reads all rules from a gate and removes rules not managed from terraform
-func (r *deploymentGateResource) readAndReconcileRules(ctx context.Context, gateID string, state *deploymentGateModel) diag.Diagnostics {
+func (r *deploymentGateResource) readAndReconcileRules(ctx context.Context, gateID string, state *deploymentGateModel, refresh bool) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	rulesResp, _, err := r.Api.GetDeploymentGateRules(r.Auth, gateID)
@@ -609,7 +609,7 @@ func (r *deploymentGateResource) readAndReconcileRules(ctx context.Context, gate
 		}
 
 		updated := existing
-		r.updateRuleStateFromAttributes(ctx, &updated, matched)
+		r.updateRuleStateFromAttributes(ctx, &updated, matched, refresh)
 		newRules = append(newRules, updated)
 	}
 
@@ -926,7 +926,7 @@ func (r *deploymentGateResource) buildRuleUpdateRequestBody(ctx context.Context,
 	return req, diags
 }
 
-func (r *deploymentGateResource) updateRuleStateFromAttributes(ctx context.Context, rule *deploymentGateRuleModel, attributes *datadogV2.DeploymentRuleResponseDataAttributes) {
+func (r *deploymentGateResource) updateRuleStateFromAttributes(ctx context.Context, rule *deploymentGateRuleModel, attributes *datadogV2.DeploymentRuleResponseDataAttributes, refresh bool) {
 	if idVal, ok := attributes.AdditionalProperties["id"]; ok {
 		if idStr, ok := idVal.(string); ok {
 			rule.ID = types.StringValue(idStr)
@@ -1046,31 +1046,33 @@ func (r *deploymentGateResource) updateRuleStateFromAttributes(ctx context.Conte
 				if !previous.ExcludedResources.IsNull() && decoded.ExcludedResources != nil {
 					rule.Options.ExcludedResources, _ = types.ListValueFrom(ctx, types.StringType, decoded.ExcludedResources)
 				}
-				if !previous.AllowedResources.IsNull() && decoded.AllowedResources != nil {
+				if decoded.AllowedResources != nil &&
+					(!previous.AllowedResources.IsNull() || refresh && len(decoded.AllowedResources) > 0) {
 					rule.Options.AllowedResources, _ = types.ListValueFrom(ctx, types.StringType, decoded.AllowedResources)
 				}
 				// The API omits monitor fields when they have their default values.
-				// Keep an explicitly configured value in state, using the API
-				// default when the field is absent to detect out-of-band changes.
-				if !previous.FailOnNoData.IsNull() {
+				// Keep explicit configuration in state, but surface non-default
+				// values introduced outside Terraform during a refresh. Create and
+				// Update must not introduce values absent from the plan.
+				if !previous.FailOnNoData.IsNull() || refresh && decoded.FailOnNoData != nil && !*decoded.FailOnNoData {
 					rule.Options.FailOnNoData = types.BoolValue(true)
 					if decoded.FailOnNoData != nil {
 						rule.Options.FailOnNoData = types.BoolPointerValue(decoded.FailOnNoData)
 					}
 				}
-				if !previous.FailOnNoGroupsFound.IsNull() {
+				if !previous.FailOnNoGroupsFound.IsNull() || refresh && decoded.FailOnNoGroupsFound != nil && *decoded.FailOnNoGroupsFound {
 					rule.Options.FailOnNoGroupsFound = types.BoolValue(false)
 					if decoded.FailOnNoGroupsFound != nil {
 						rule.Options.FailOnNoGroupsFound = types.BoolPointerValue(decoded.FailOnNoGroupsFound)
 					}
 				}
-				if !previous.Warmup.IsNull() {
+				if !previous.Warmup.IsNull() || refresh && decoded.Warmup != nil && *decoded.Warmup != 0 {
 					rule.Options.Warmup = types.Int64Value(0)
 					if decoded.Warmup != nil {
 						rule.Options.Warmup = types.Int64PointerValue(decoded.Warmup)
 					}
 				}
-				if previous.MonitorIDs != nil && decoded.MonitorIDs != nil {
+				if decoded.MonitorIDs != nil && (previous.MonitorIDs != nil || refresh && len(decoded.MonitorIDs) > 0) {
 					rule.Options.MonitorIDs = make([]deploymentGateMonitorIDModel, len(decoded.MonitorIDs))
 					for i, monitor := range decoded.MonitorIDs {
 						groups, _ := types.ListValueFrom(ctx, types.StringType, monitor.Groups)
@@ -1087,7 +1089,7 @@ func (r *deploymentGateResource) updateRuleState(ctx context.Context, rule *depl
 	data := resp.GetData()
 	rule.ID = types.StringValue(data.GetId())
 	attributes := data.GetAttributes()
-	r.updateRuleStateFromAttributes(ctx, rule, &attributes)
+	r.updateRuleStateFromAttributes(ctx, rule, &attributes, false)
 }
 
 func isEmptyOption(options *deploymentGateRuleOptionsModel) bool {

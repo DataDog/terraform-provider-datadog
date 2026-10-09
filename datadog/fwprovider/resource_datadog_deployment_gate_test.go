@@ -108,7 +108,7 @@ func TestDeploymentGateRuleOptionsRoundTrip(t *testing.T) {
 			}
 			attributes.SetOptions(datadogV2.DeploymentRulesOptions{UnparsedObject: responseOptions})
 			attributes.SetType(datadogV2.DeploymentRuleResponseDataAttributesType(tc.ruleType))
-			(&deploymentGateResource{}).updateRuleStateFromAttributes(ctx, &rule, &attributes)
+			(&deploymentGateResource{}).updateRuleStateFromAttributes(ctx, &rule, &attributes, false)
 			options, d := buildRuleOptions(ctx, &rule)
 			if d.HasError() {
 				t.Fatalf("read options: %v", d)
@@ -126,6 +126,62 @@ func TestDeploymentGateRuleOptionsRoundTrip(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestDeploymentGateRefreshDetectsOmittedOptionDrift(t *testing.T) {
+	ctx := context.Background()
+	tests := []struct {
+		name, ruleType string
+		response       map[string]interface{}
+		check          func(*deploymentGateRuleOptionsModel) bool
+	}{
+		{
+			name: "monitor non-defaults", ruleType: "monitor",
+			response: map[string]interface{}{"query": "service:web", "fail_on_no_data": false, "fail_on_no_groups_found": true, "warmup": 15},
+			check: func(o *deploymentGateRuleOptionsModel) bool {
+				return !o.FailOnNoData.ValueBool() && o.FailOnNoGroupsFound.ValueBool() && o.Warmup.ValueInt64() == 15 &&
+					!o.FailOnNoData.IsNull() && !o.FailOnNoGroupsFound.IsNull() && !o.Warmup.IsNull()
+			},
+		},
+		{
+			name: "allowed resources", ruleType: "faulty_deployment_detection",
+			response: map[string]interface{}{"allowed_resources": []string{"GET /api/status"}},
+			check: func(o *deploymentGateRuleOptionsModel) bool {
+				return !o.AllowedResources.IsNull() && len(o.AllowedResources.Elements()) == 1
+			},
+		},
+		{
+			name: "monitor ids", ruleType: "monitor",
+			response: map[string]interface{}{"monitor_ids": []interface{}{map[string]interface{}{"id": "123", "groups": []string{}}}},
+			check: func(o *deploymentGateRuleOptionsModel) bool {
+				return len(o.MonitorIDs) == 1 && o.MonitorIDs[0].ID.ValueString() == "123"
+			},
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			attributes := datadogV2.DeploymentRuleResponseDataAttributes{}
+			attributes.SetType(datadogV2.DeploymentRuleResponseDataAttributesType(tc.ruleType))
+			attributes.SetOptions(datadogV2.DeploymentRulesOptions{UnparsedObject: tc.response})
+			for _, refresh := range []bool{false, true} {
+				rule := deploymentGateRuleModel{Type: types.StringValue(tc.ruleType), Options: testRuleOptions()}
+				(&deploymentGateResource{}).updateRuleStateFromAttributes(ctx, &rule, &attributes, refresh)
+				if got := tc.check(rule.Options); got != refresh {
+					t.Errorf("refresh=%t: observed out-of-band options=%t, want %t", refresh, got, refresh)
+				}
+			}
+		})
+	}
+	attributes := datadogV2.DeploymentRuleResponseDataAttributes{}
+	attributes.SetType("monitor")
+	attributes.SetOptions(datadogV2.DeploymentRulesOptions{UnparsedObject: map[string]interface{}{
+		"query": "service:web", "fail_on_no_data": true, "fail_on_no_groups_found": false, "warmup": 0,
+	}})
+	rule := deploymentGateRuleModel{Type: types.StringValue("monitor"), Options: testRuleOptions()}
+	(&deploymentGateResource{}).updateRuleStateFromAttributes(ctx, &rule, &attributes, true)
+	if !rule.Options.FailOnNoData.IsNull() || !rule.Options.FailOnNoGroupsFound.IsNull() || !rule.Options.Warmup.IsNull() {
+		t.Fatalf("default values should not populate omitted options: %#v", rule.Options)
 	}
 }
 
