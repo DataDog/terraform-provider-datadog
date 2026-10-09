@@ -3,6 +3,7 @@ package cli
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"os"
 	"path/filepath"
 	"strings"
@@ -11,17 +12,28 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
-// seedProviderTest writes the minimal provider_test.go the harness keeps its
+// seedProviderTest ensures the minimal provider_test.go the harness keeps its
 // endpoint-tag map in. The real tree always has one; a generated test has to be
 // registered there or it t.Fatals at startup, so generation reads it.
+//
+// It writes only when the file is absent. Overwriting unconditionally would
+// revert the registration a previous run in the same directory just made,
+// which makes a second run look like drift when nothing drifted — the
+// generator is idempotent here, and a reseeding helper hides that.
 func seedProviderTest(t *testing.T, testsDir string) {
 	t.Helper()
 	if err := os.MkdirAll(testsDir, 0o755); err != nil {
 		t.Fatal(err)
 	}
+	path := filepath.Join(testsDir, "provider_test.go")
+	if _, err := os.Stat(path); err == nil {
+		return
+	} else if !errors.Is(err, os.ErrNotExist) {
+		t.Fatal(err)
+	}
 	const content = "package test\n\nvar testFiles2EndpointTags = map[string]string{\n" +
 		"\t\"tests/provider_test\": \"terraform\",\n}\n"
-	if err := os.WriteFile(filepath.Join(testsDir, "provider_test.go"), []byte(content), 0o644); err != nil {
+	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -193,5 +205,173 @@ func TestGenerateEmitCassettesCheckModeWritesNothing(t *testing.T) {
 	}
 	if _, err := os.Stat(filepath.Join(dir, "tests", "cassettes")); !os.IsNotExist(err) {
 		t.Error("check mode wrote a cassette")
+	}
+}
+
+// mutatedSpec copies the coherent fixture with one textual substitution, so a
+// case can make the description self-contradicting without a second fixture to
+// keep in step with this one.
+func mutatedSpec(t *testing.T, dir, old, replacement string) string {
+	t.Helper()
+	source := filepath.Join("..", "testdata", "mini-oas",
+		"mini-datadog_integration_twilio_account.yaml")
+	raw, err := os.ReadFile(source)
+	if err != nil {
+		t.Fatalf("reading fixture: %v", err)
+	}
+	if !bytes.Contains(raw, []byte(old)) {
+		t.Fatalf("fixture no longer contains %q; the mutation would be a no-op", old)
+	}
+	mutated := bytes.Replace(raw, []byte(old), []byte(replacement), 1)
+	path := filepath.Join(dir, "mutated.yaml")
+	if err := os.WriteFile(path, mutated, 0o644); err != nil {
+		t.Fatalf("writing mutated spec: %v", err)
+	}
+	return path
+}
+
+// contradictedNameSpec gives the create request's name a format its own
+// example does not satisfy. A format needs no SDK type, so the artifact still
+// binds and generates; only the cassette target becomes ineligible, which is
+// the mixed condition these cases need. (An invented enum would also
+// contradict the example, but enums bind to SDK types and would fail the
+// artifact instead.)
+func contradictedNameSpec(t *testing.T, dir string) string {
+	t.Helper()
+	return mutatedSpec(t, dir,
+		"          example: twilio-prod\n          type: string",
+		"          example: twilio-prod\n          type: string\n          format: uuid")
+}
+
+// runGenerateWithSpec drives the real command against an arbitrary spec.
+func runGenerateWithSpec(t *testing.T, specPath, dir, reportPath string, extra ...string) error {
+	t.Helper()
+	seedProviderTest(t, filepath.Join(dir, "tests"))
+	args := []string{"generate",
+		"--spec", specPath,
+		"--include", "integration_twilio_account",
+		"--output-root", filepath.Join(dir, "fwprovider"),
+		"--tests-output-root", filepath.Join(dir, "tests"),
+		"--examples-output-root", filepath.Join(dir, "examples"),
+		"--docs-root", filepath.Join(dir, "docs"),
+		"--report", reportPath,
+	}
+	return runTfgen(append(args, extra...)...)
+}
+
+// Opting in with cassette: true is a request for a test. A target that could
+// not produce one is a failure of the run, not a silent success — otherwise
+// the annotation looks satisfied when it is not.
+func TestGenerateFailsWhenARequestedTargetIsIneligible(t *testing.T) {
+	dir := t.TempDir()
+	report := filepath.Join(dir, "report.json")
+
+	err := runGenerateWithSpec(t, contradictedNameSpec(t, dir), dir, report)
+	if err == nil {
+		t.Fatal("an ineligible target exited 0")
+	}
+	if errors.Is(err, errCheckFailed) {
+		t.Errorf("ineligibility reported as check drift: %v", err)
+	}
+	if !strings.Contains(err.Error(), "integration_twilio_account") {
+		t.Errorf("error does not name the ineligible target: %v", err)
+	}
+
+	// Every independent result still has to survive the failure.
+	got := readCassetteReport(t, report)
+	if len(got.Cassettes) != 1 || got.Cassettes[0].Status != model.CassetteStatusIneligible {
+		t.Fatalf("report does not record the ineligibility: %+v", got.Cassettes)
+	}
+	if got.CassetteSummary == nil || got.CassetteSummary.Ineligible != 1 {
+		t.Errorf("cassette summary = %+v, want ineligible 1", got.CassetteSummary)
+	}
+	// The source artifact is independent of the cassette and must still be
+	// generated and reported.
+	if len(got.Artifacts) == 0 {
+		t.Fatal("the source artifact result was discarded")
+	}
+	for _, a := range got.Artifacts {
+		if a.Status == model.ArtifactStatusFailed {
+			t.Errorf("cassette ineligibility failed the source artifact %q", a.Name)
+		}
+	}
+	if _, statErr := os.Stat(filepath.Join(dir, "fwprovider",
+		"resource_datadog_integration_twilio_account.go")); statErr != nil {
+		t.Errorf("the eligible source artifact was not written: %v", statErr)
+	}
+}
+
+// Exit 1 takes precedence over exit 3: a --check run finding both an
+// ineligible target and output drift is a failure, not drift.
+func TestGenerateIneligibilityOutranksCheckDrift(t *testing.T) {
+	dir := t.TempDir()
+	report := filepath.Join(dir, "report.json")
+
+	// Nothing exists yet, so every file would change — drift is guaranteed,
+	// and the contradiction makes the target ineligible at the same time.
+	err := runGenerateWithSpec(t, contradictedNameSpec(t, dir), dir, report, "--check")
+	if err == nil {
+		t.Fatal("check mode with an ineligible target exited 0")
+	}
+	if errors.Is(err, errCheckFailed) {
+		t.Fatalf("exit 3 took precedence over exit 1: %v", err)
+	}
+	if !strings.Contains(err.Error(), "ineligible") {
+		t.Errorf("error does not report ineligibility: %v", err)
+	}
+	// Both facts belong in the report regardless of which one set the code.
+	got := readCassetteReport(t, report)
+	if got.CassetteSummary == nil || got.CassetteSummary.Ineligible != 1 {
+		t.Errorf("report lost the ineligibility: %+v", got.CassetteSummary)
+	}
+}
+
+// Drift alone is still exit 3, which is what makes the precedence meaningful.
+func TestGenerateCheckDriftAloneIsStillCheckFailed(t *testing.T) {
+	dir := t.TempDir()
+	err := runCassetteGenerate(t, dir, filepath.Join(dir, "report.json"), "--check")
+	if !errors.Is(err, errCheckFailed) {
+		t.Fatalf("check error = %v, want errCheckFailed", err)
+	}
+}
+
+// --check is the CI gate, so it has to be clean when nothing changed.
+// Otherwise it cannot tell real drift from none, and the exit-3 half of the
+// precedence above says nothing.
+func TestGenerateCleanCheckOfAnEligibleTargetSucceeds(t *testing.T) {
+	dir := t.TempDir()
+	if err := runCassetteGenerate(t, dir, filepath.Join(dir, "r1.json")); err != nil {
+		t.Fatalf("first run: %v", err)
+	}
+	if err := runCassetteGenerate(t, dir, filepath.Join(dir, "r2.json"), "--check"); err != nil {
+		t.Fatalf("check after a clean generate = %v, want nil", err)
+	}
+}
+
+// And a third run writes the same bytes, so the registration a run makes is
+// one the next run recognizes rather than re-applies.
+func TestGenerateRegistrationIsIdempotent(t *testing.T) {
+	dir := t.TempDir()
+	providerTest := filepath.Join(dir, "tests", "provider_test.go")
+	if err := runCassetteGenerate(t, dir, filepath.Join(dir, "r1.json")); err != nil {
+		t.Fatalf("first run: %v", err)
+	}
+	first, err := os.ReadFile(providerTest)
+	if err != nil {
+		t.Fatalf("reading provider_test.go: %v", err)
+	}
+	if !bytes.Contains(first, []byte("openapi_example_test")) {
+		t.Fatal("the first run did not register the generated test")
+	}
+	if err := runCassetteGenerate(t, dir, filepath.Join(dir, "r2.json")); err != nil {
+		t.Fatalf("second run: %v", err)
+	}
+	second, err := os.ReadFile(providerTest)
+	if err != nil {
+		t.Fatalf("re-reading provider_test.go: %v", err)
+	}
+	if !bytes.Equal(first, second) {
+		t.Errorf("a repeat run rewrote the registration:\n--- first ---\n%s\n--- second ---\n%s",
+			first, second)
 	}
 }

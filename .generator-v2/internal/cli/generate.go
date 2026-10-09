@@ -242,6 +242,20 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 				return fmt.Errorf("generate: %d artifact(s) failed; see report for details", runReport.Summary.Failed)
 			}
 
+			// A requested target that could not be generated is a failure of
+			// the run, even though every independent target was still
+			// processed and every eligible test still written. Opting in with
+			// cassette: true is a request for a test; silently exiting 0
+			// without one would make the annotation look satisfied.
+			//
+			// Placed before the check block deliberately: a --check run that
+			// finds both ineligibility and drift exits 1, not 3, and the
+			// report carries both facts either way.
+			if names := ineligibleCassettes(runReport.Cassettes); len(names) > 0 {
+				return fmt.Errorf("generate: %d cassette target(s) ineligible (%s); see report for details",
+					len(names), strings.Join(names, ", "))
+			}
+
 			if check {
 				for _, e := range runReport.Artifacts {
 					if wouldChange(e.Status) {
@@ -724,6 +738,18 @@ func wireUnstableOperations(outputRoot string, check bool, regs []emit.Generated
 		return false, err
 	}
 	return status != model.ArtifactStatusUnchanged, nil
+}
+
+// ineligibleCassettes names the requested targets that produced no test, in
+// report order so the message is stable across runs.
+func ineligibleCassettes(results []model.CassetteResult) []string {
+	var names []string
+	for _, r := range results {
+		if r.Status == model.CassetteStatusIneligible {
+			names = append(names, r.Name)
+		}
+	}
+	return names
 }
 
 // wouldChange reports whether a status means a file was (or, in check mode,
