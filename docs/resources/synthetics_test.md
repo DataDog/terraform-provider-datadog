@@ -1615,7 +1615,7 @@ Optional:
 - `example` (String) Example for the variable. This value is not returned by the API when `secure = true`. Avoid drift by only making updates to this value from within Terraform.
 - `id` (String) When type = `global`, ID of the global variable to use.
 - `pattern` (String) Pattern of the variable. This value is not returned by the API when `secure = true`. Avoid drift by only making updates to this value from within Terraform.
-- `secure` (Boolean) Whether the value of this variable will be obfuscated in test results. Defaults to `false`.
+- `secure` (Boolean) Whether the value of this variable will be obfuscated in test results. For `type = "global"`, this flag is retained in Terraform state but has no effect; obfuscation is controlled by the referenced global variable. On import, this flag defaults to `false` for global references. Defaults to `false`.
 
 
 <a id="nestedblock--mobile_options_list"></a>
