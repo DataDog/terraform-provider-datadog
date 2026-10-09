@@ -163,27 +163,24 @@ func assertGeneratedWriteOnlyContract(t *testing.T, source []byte, basicAuth str
 		`WriteOnlyAttr: "password_wo"`,
 		`TriggerAttr: "password_wo_version"`,
 		`ParentBlocks: []string{"authentication", "` + basicAuth + `"}`,
-		`Mode: fwutils.WriteOnlySecretModeOnly`,
+		`Mode: fwutils.WriteOnlySecretModeDual`,
 		`fwutils.CreateWriteOnlySecretAttributes(`,
 	} {
 		if !strings.Contains(text, want) {
 			t.Errorf("generated resource is missing write-only contract %q", want)
 		}
 	}
-	if got := strings.Count(text, "`tfsdk:\"password_wo\"`"); got != 1 {
-		t.Errorf("password_wo model field count = %d, want 1", got)
-	}
-	if got := strings.Count(text, "`tfsdk:\"password_wo_version\"`"); got != 1 {
-		t.Errorf("password_wo_version model field count = %d, want 1", got)
-	}
-	for _, forbidden := range []string{
-		"`tfsdk:\"password\"`",
-		`"password": schema.StringAttribute{`,
-		"Sensitive: true",
-	} {
-		if strings.Contains(text, forbidden) {
-			t.Errorf("generated resource contains forbidden plaintext/sensitive schema form %q", forbidden)
+	// The plaintext fallback is stateful and so has its own model field; the
+	// write-only pair keeps exactly one each.
+	for _, field := range []string{"password", "password_wo", "password_wo_version"} {
+		if got := strings.Count(text, "`tfsdk:\""+field+"\"`"); got != 1 {
+			t.Errorf("%s model field count = %d, want 1", field, got)
 		}
+	}
+	// fwutils owns the three attributes, so the plaintext fallback must not also
+	// be declared inline by the generated schema.
+	if strings.Contains(text, `"password": schema.StringAttribute{`) {
+		t.Error("generated resource declares the plaintext password inline instead of through fwutils")
 	}
 
 	for _, method := range []struct {
@@ -297,22 +294,29 @@ func TestTfgenWriteOnlySchemasValidate(t *testing.T) {
 			if !ok {
 				t.Fatalf("%s is %T, want SingleNestedAttribute", r.basicAuth, authentication.Attributes[r.basicAuth])
 			}
-			if _, exists := basic.Attributes["password"]; exists {
-				t.Fatal("plaintext password attribute is exposed")
+			// Dual mode keeps the plaintext attribute as the Terraform <1.11
+			// fallback. All three are Optional: requiredness is enforced by the
+			// ExactlyOneOf pair, since neither half can be Required on its own.
+			plaintext, ok := basic.Attributes["password"].(resourceschema.StringAttribute)
+			if !ok {
+				t.Fatalf("password is %T, want StringAttribute", basic.Attributes["password"])
+			}
+			if plaintext.WriteOnly || !plaintext.Sensitive || !plaintext.Optional || plaintext.Required || plaintext.Computed {
+				t.Fatalf("password flags = %#v, want optional sensitive plaintext fallback", plaintext)
 			}
 			password, ok := basic.Attributes["password_wo"].(resourceschema.StringAttribute)
 			if !ok {
 				t.Fatalf("password_wo is %T, want StringAttribute", basic.Attributes["password_wo"])
 			}
-			if !password.WriteOnly || password.Sensitive || !password.Required || password.Optional || password.Computed {
-				t.Fatalf("password_wo flags = %#v, want required write-only and not sensitive/optional/computed", password)
+			if !password.WriteOnly || !password.Sensitive || !password.Optional || password.Required || password.Computed {
+				t.Fatalf("password_wo flags = %#v, want optional sensitive write-only", password)
 			}
 			version, ok := basic.Attributes["password_wo_version"].(resourceschema.StringAttribute)
 			if !ok {
 				t.Fatalf("password_wo_version is %T, want StringAttribute", basic.Attributes["password_wo_version"])
 			}
-			if version.WriteOnly || version.Sensitive || !version.Required || version.Optional || version.Computed {
-				t.Fatalf("password_wo_version flags = %#v, want required stateful trigger", version)
+			if version.WriteOnly || version.Sensitive || version.Required || !version.Optional || version.Computed {
+				t.Fatalf("password_wo_version flags = %#v, want optional stateful trigger", version)
 			}
 			authType, ok := basic.Attributes["auth_type"].(resourceschema.StringAttribute)
 			if !ok {
