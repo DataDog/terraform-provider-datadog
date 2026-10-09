@@ -40,6 +40,10 @@ type cassetteRequest struct {
 	// Check suppresses the write, so a read-only run reports what it would
 	// have done without touching the tree.
 	Check bool
+	// Requested records that the description asked for a test by name rather
+	// than receiving one by default. It decides what an undescribed target
+	// costs: a default one is skipped, an explicit one fails the run.
+	Requested bool
 }
 
 // generateCassette runs one artifact through the chain and reports the result.
@@ -54,14 +58,15 @@ func generateCassette(request cassetteRequest) model.CassetteResult {
 
 	group := op.ResolvedGroup
 	if group == nil || group.Create == nil || group.Read == nil || group.Delete == nil {
-		return ineligible(result, model.DiagnosticCategoryEligibility, operationLocation(op),
+		return declined(result, request.Requested,
+			model.DiagnosticCategoryEligibility, operationLocation(op),
 			"a resource cassette needs a create, read and delete operation; "+
 				"the tracking group resolves fewer than that")
 	}
 
 	selection, err := cassette.Select(lifecycleOperations(group))
 	if err != nil {
-		return ineligible(result, model.DiagnosticCategorySelection, operationLocation(op), err.Error())
+		return declined(result, request.Requested, model.DiagnosticCategorySelection, operationLocation(op), err.Error())
 	}
 	result.SelectedExample = selection.ScenarioName
 
@@ -78,22 +83,21 @@ func generateCassette(request cassetteRequest) model.CassetteResult {
 		// off the error rather than assumed: a conformance failure anchors at
 		// the set that failed, which is more use than the artifact.
 		category, location := scenarioFailureAnchor(err, group, op)
-		return ineligible(result, category, location, err.Error())
+		return declined(result, request.Requested, category, location, err.Error())
 	}
 	result.TestName = scenario.TestFuncName
 
 	source, err := emit.RenderResourceExampleTest(scenario, request.View, request.APIPaths)
 	if err != nil {
-		return ineligible(result, model.DiagnosticCategoryRender, operationLocation(op), err.Error())
+		return declined(result, request.Requested, model.DiagnosticCategoryRender, operationLocation(op), err.Error())
 	}
 	result.TestPath = filepath.Join(request.TestsOutputRoot, scenario.TestFilePath)
 
 	// Only the test is written. The cassette and its freeze companion come from
 	// a recording run: a fixture built from the description asserts what the
-	// description claims, which is not evidence the API behaved that way, and a
-	// synthesized one asserts values nobody wrote down at all. So the generator
-	// produces the test and the configuration, and RECORD=true produces the
-	// fixture — go-vcr writes both files itself, under the names the harness
+	// description claims, which is not evidence the API behaved that way. So the
+	// generator produces the test and the configuration, and RECORD=true
+	// produces the fixture — go-vcr writes both files itself, under the names the harness
 	// derives from the test's own name.
 	status, err := emit.WriteArtifactSource(result.TestPath, source, request.Check, false)
 	if err != nil {
@@ -154,6 +158,53 @@ func ineligible(
 	result.WriteAction = model.CassetteWriteNone
 	diagnostic := model.NewCassetteDiagnostic(
 		model.SeverityWarning,
+		fmt.Sprintf("no cassette generated: %s", reason),
+		location,
+	)
+	diagnostic.Category = category
+	result.Diagnostics = append(result.Diagnostics, diagnostic)
+	return result
+}
+
+// declined reports a target that produced no test, as a failure when the
+// description asked for one and a skip when it did not.
+//
+// Generation is on by default, so most reasons a target cannot produce a test
+// — a group without a delete, a description with no examples — are the
+// ordinary state of a spec nobody has finished rather than anything going
+// wrong. Failing those would make every run red on the day the default
+// flipped. An explicit cassette: true is a request, and an unmet request is a
+// failure; that distinction is the only thing this decides.
+//
+// Both carry the same reason and anchor, because the remedy is identical.
+func declined(
+	result model.CassetteResult,
+	requested bool,
+	category model.DiagnosticCategory,
+	location model.ExampleLocation,
+	reason string,
+) model.CassetteResult {
+	if requested {
+		return ineligible(result, category, location, reason)
+	}
+	return skipped(result, category, location, reason)
+}
+
+// skipped reports a target that defaulted in and could not be described. It
+// carries the same reason and anchor as an ineligibility, because the remedy is
+// identical — fill in the description — and differs only in not failing the
+// run. The severity drops to info: nobody asked for this test, so its absence
+// is news rather than a problem.
+func skipped(
+	result model.CassetteResult,
+	category model.DiagnosticCategory,
+	location model.ExampleLocation,
+	reason string,
+) model.CassetteResult {
+	result.Status = model.CassetteStatusSkipped
+	result.WriteAction = model.CassetteWriteNone
+	diagnostic := model.NewCassetteDiagnostic(
+		model.SeverityInfo,
 		fmt.Sprintf("no cassette generated: %s", reason),
 		location,
 	)

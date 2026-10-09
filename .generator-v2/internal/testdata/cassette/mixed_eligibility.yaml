@@ -133,16 +133,6 @@ paths:
       summary: Create an Elastic Cloud integration account
       tags:
       - Elastic Cloud Integration
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: integration_elastic_cloud
-        tf_description: Provide a Datadog Elastic Cloud integration account resource.
-        group:
-          create: CreateElasticCloudIntegrationAccount
-          read: GetElasticCloudIntegrationAccount
-          update: UpdateElasticCloudIntegrationAccount
-          delete: DeleteElasticCloudIntegrationAccount
-        cassette: true
     get:
       x-permission:
         operator: OR
@@ -561,16 +551,6 @@ paths:
       summary: Get a Twilio integration account
       tags:
       - Twilio Integration
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: integration_twilio_account
-        cassette: true
-        tf_description: Provides a Datadog Twilio integration account resource.
-        group:
-          create: CreateTwilioIntegrationAccount
-          read: GetTwilioIntegrationAccount
-          update: UpdateTwilioIntegrationAccount
-          delete: DeleteTwilioIntegrationAccount
     patch:
       x-permission:
         operator: OR
@@ -1702,3 +1682,27 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/JSONAPIErrorResponse'
+
+tags:
+- name: Elastic Cloud Integration
+  x-datadog-tf-generator:
+    integration_elastic_cloud:
+      resource:
+        tf_description: Provide a Datadog Elastic Cloud integration account resource.
+        group:
+          create: CreateElasticCloudIntegrationAccount
+          read: GetElasticCloudIntegrationAccount
+          update: UpdateElasticCloudIntegrationAccount
+          delete: DeleteElasticCloudIntegrationAccount
+        cassette: true
+- name: Twilio Integration
+  x-datadog-tf-generator:
+    integration_twilio_account:
+      resource:
+        cassette: true
+        tf_description: Provides a Datadog Twilio integration account resource.
+        group:
+          create: CreateTwilioIntegrationAccount
+          read: GetTwilioIntegrationAccount
+          update: UpdateTwilioIntegrationAccount
+          delete: DeleteTwilioIntegrationAccount

@@ -31,8 +31,18 @@ type TrackingFieldMetadata struct {
 	// IdStrategy is how the Terraform resource ID is derived from the API
 	// response. Defaults to "data.id" when omitted.
 	IdStrategy IdStrategy `json:"id_strategy,omitempty"`
-	// Cassette requests an example-backed acceptance test for this resource.
-	Cassette bool `json:"cassette,omitempty"`
+	// Cassette controls example-backed test generation for this artifact.
+	//
+	// Generation is on by default, so a resource whose description can
+	// describe its own lifecycle gets a test without anyone remembering to ask.
+	// Setting it false opts out and is the only way to decline.
+	//
+	// It is a pointer because the three states are not two: absent means
+	// "defaulted in", true means "asked for by name", and the difference
+	// decides what an undescribed target costs. A target that defaulted in and
+	// cannot be described is skipped; one that asked explicitly is ineligible
+	// and fails the run, because an explicit annotation is a request.
+	Cassette *bool `json:"cassette,omitempty"`
 	// Overwrites names the hand-written data source constructor this generated
 	// artifact supersedes, e.g. "NewDatadogTeamDataSource". When set, the
 	// generated file overwrites the hand-written one in place, that constructor is
@@ -60,4 +70,17 @@ type OperationGroup struct {
 	Update string `json:"update,omitempty"`
 	// Delete is the operationId of the Delete endpoint.
 	Delete string `json:"delete,omitempty"`
+}
+
+// CassetteEnabled reports whether this artifact should get an example-backed
+// test. Generation is on by default, so only an explicit false declines.
+func (t *TrackingFieldMetadata) CassetteEnabled() bool {
+	return t != nil && (t.Cassette == nil || *t.Cassette)
+}
+
+// CassetteRequested reports whether the description asked for a test by name
+// rather than receiving one by default. An explicit request that cannot be
+// satisfied fails the run; a default one is skipped.
+func (t *TrackingFieldMetadata) CassetteRequested() bool {
+	return t != nil && t.Cassette != nil && *t.Cassette
 }

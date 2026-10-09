@@ -46,8 +46,8 @@
         "properties": {
           "cassette": {
             "type": "boolean",
-            "default": false,
-            "description": "Generate an example-backed acceptance test for this resource. Only the Go test is generated; record its cassette by running it with RECORD=true."
+            "default": true,
+            "description": "Generate an example-backed acceptance test for this resource. On by default; set false to opt out. Only the Go test is generated; record its cassette by running it with RECORD=true. Missing required examples or defaults skip a defaulted target, while an explicit true makes the target ineligible and fails the run."
           },
           "artifact_name": { "$ref": "#/$defs/artifact_name" },
           "tf_description": { "$ref": "#/$defs/tf_description" },

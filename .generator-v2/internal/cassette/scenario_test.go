@@ -120,8 +120,9 @@ var _ = Describe("camelCase", func() {
 })
 
 var _ = Describe("BuildResourceScenario edge paths", func() {
-	// An update the description does not fully describe is not fatal: the
-	// scenario keeps the create-only flow it can support.
+	// An update the description does not fully describe is not fatal: a PATCH
+	// body requires nothing, so an empty one materializes, and the step is
+	// dropped because it would assert the state the create already asserted.
 	It("drops the update step when the update examples are incomplete", func() {
 		target := twilioTarget()
 		updateRequest := target.Update.RequestExamples

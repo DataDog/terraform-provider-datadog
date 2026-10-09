@@ -36,10 +36,6 @@ type MaterializedSet struct {
 	// SensitiveReplacements maps a leaf path to the safe value substituted
 	// there, so a writer can prove no declared secret survived.
 	SensitiveReplacements map[string]string
-	// SynthesizedPaths lists the leaves no example or default described, whose
-	// values this run invented. They are schema-valid but not evidence: the
-	// API never returned them, so a reviewer has to know which they are.
-	SynthesizedPaths []string
 	// WriteOnlyPaths lists the request leaves the description marks writeOnly.
 	// Recorded here, where the path strings are built, so it cannot disagree
 	// with Values about what a leaf is called. Consumed by overlaidWith.
@@ -199,13 +195,8 @@ func (m *materializer) declaredObject(value any, schema *model.Schema, path stri
 			// updateState would leave provider state under-populated.
 			if slices.Contains(schema.Required, name) {
 				// The example describes the object but omits a required
-				// member. Synthesize it rather than rejecting the whole
-				// artifact: a partly-described body is still worth recording
-				// over, and the invented leaves are reported.
-				if value, ok := m.synthesize(property, childPath); ok {
-					out[name] = value
-					continue
-				}
+				// member, so the description cannot account for the body it
+				// claims to describe.
 				m.missing = append(m.missing, labelPath(childPath))
 			}
 			continue
@@ -326,10 +317,6 @@ func (m *materializer) assembleChild(schema *model.Schema, path string, required
 		if !required {
 			return nil, false
 		}
-		if value, ok := m.synthesizeCollection(schema, path); ok {
-			m.recordSynthesized(path)
-			return value, true
-		}
 		m.missing = append(m.missing, labelPath(path))
 		return nil, false
 
@@ -345,11 +332,7 @@ func (m *materializer) assembleChild(schema *model.Schema, path string, required
 			// would send a value the configuration never asked for.
 			return nil, false
 		}
-		if value, ok := synthesizeLeaf(schema, path); ok {
-			m.recordSynthesized(path)
-			return m.leaf(value, schema, path), true
-		}
-		// No representable type to invent one from.
+		//
 		m.missing = append(m.missing, labelPath(path))
 		return nil, false
 	}
@@ -402,11 +385,6 @@ func (m *materializer) leaf(value any, schema *model.Schema, path string) any {
 	}
 	m.leafRecord(value, schema, path, false)
 	return value
-}
-
-// recordSynthesized notes a leaf this run invented.
-func (m *materializer) recordSynthesized(path string) {
-	m.out.SynthesizedPaths = append(m.out.SynthesizedPaths, labelPath(path))
 }
 
 func (m *materializer) leafRecord(value any, schema *model.Schema, path string, sensitive bool) {

@@ -71,11 +71,9 @@ func (e *ConformanceError) Error() string {
 // ValidateSet checks one materialized set's values against the schema they
 // were built from, reporting every leaf the schema contradicts.
 //
-// Three kinds of leaf are skipped, each because checking it would describe
+// Two kinds of leaf are skipped, each because checking it would describe
 // something other than the description's own claim:
 //
-//   - a synthesized leaf, which is schema-valid by construction and already
-//     reported on SynthesizedPaths;
 //   - a replaced secret, which holds a safe stand-in rather than the declared
 //     value, so checking it checks the replacement;
 //   - a declared null, since the normalized model does not record nullability
@@ -88,9 +86,6 @@ func ValidateSet(key SetKey, set MaterializedSet, schema *model.Schema) error {
 	var violations []Violation
 	for _, value := range set.Values {
 		if value.Sensitive || value.Value == nil {
-			continue
-		}
-		if slices.Contains(set.SynthesizedPaths, value.Path) {
 			continue
 		}
 		if _, replaced := set.SensitiveReplacements[value.Path]; replaced {
@@ -141,7 +136,7 @@ func leafViolation(schema *model.Schema, value any) (string, bool) {
 }
 
 // typeViolation compares the value's Go type against the schema's declared
-// type. JSON decoding and synthesis produce different numeric types for the
+// type. JSON decoding and a schema default produce different numeric types for the
 // same declaration, so every numeric form is accepted for a numeric schema;
 // only a genuine category error is reported.
 func typeViolation(schema *model.Schema, value any) (string, bool) {
