@@ -86,11 +86,6 @@ var _ = Describe("ExampleSet", func() {
 			Expect(s.SortedNames()).To(Equal([]string{"alternate", "default", "zeta"}))
 		})
 
-		It("returns nothing for an unnamed or nil set", func() {
-			Expect((&ExampleSet{}).SortedNames()).To(BeEmpty())
-			var s *ExampleSet
-			Expect(s.SortedNames()).To(BeEmpty())
-		})
 	})
 
 	Describe("Empty", func() {

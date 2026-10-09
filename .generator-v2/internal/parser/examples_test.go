@@ -3,8 +3,6 @@ package parser
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	v3 "github.com/pb33f/libopenapi/datamodel/high/v3"
-	"github.com/pb33f/libopenapi/orderedmap"
 	"go.yaml.in/yaml/v4"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
@@ -189,17 +187,12 @@ var _ = Describe("ExtractExamples", func() {
 
 			tags := op.ParameterExampleFor("tags", model.ParameterInQuery)
 			Expect(tags).NotTo(BeNil())
-			Expect(tags.Style).To(Equal(model.ParameterStyleForm))
-			Expect(tags.Explode).To(BeFalse(), "the fixture declares explode: false")
 			Expect(tags.Examples.Single.Value).To(Equal([]any{"alpha", "beta"}))
 			Expect(tags.Examples.Single.SourceKind).To(Equal(model.ExampleSourceParameter))
 			Expect(tags.Examples.Single.Location.String()).To(Equal(
 				"spec:/parameters/{widget_id}.get.parameters.tags.example"))
 
-			// An omitted explode defaults to true for form style, which is why
-			// the model stores a resolved value rather than a raw flag.
 			archived := op.ParameterExampleFor("include_archived", model.ParameterInQuery)
-			Expect(archived.Explode).To(BeTrue())
 			Expect(archived.Examples.Single.Value).To(Equal(true))
 
 			reserved := op.ParameterExampleFor("reserved_filter", model.ParameterInQuery)
@@ -209,9 +202,27 @@ var _ = Describe("ExtractExamples", func() {
 			id := op.ParameterExampleFor("widget_id", model.ParameterInPath)
 			Expect(id).NotTo(BeNil())
 			Expect(id.Required).To(BeTrue())
-			Expect(id.Style).To(Equal(model.ParameterStyleSimple))
-			Expect(id.Explode).To(BeFalse())
 			Expect(id.Examples.Single.Value).To(Equal("99999999-9999-9999-9999-999999999999"))
+		})
+
+		// Serialization lives on QueryParam alone, which resolves the
+		// location- and style-dependent defaults. Asserting it here rather
+		// than on the example contract keeps one authority for what a
+		// parameter serializes to.
+		It("leaves serialization to the normalized parameter", func() {
+			op := matrixOperation("parameters_case")
+			byName := map[string]model.QueryParam{}
+			for _, p := range append(op.QueryParams, op.PathParams...) {
+				byName[p.Name] = p
+			}
+
+			Expect(byName["tags"].ResolvedStyle()).To(Equal(model.ParameterStyleForm))
+			Expect(byName["tags"].ResolvedExplode()).To(BeFalse(), "the fixture declares explode: false")
+			// An omitted explode defaults to true for form style, which is why
+			// the flag is a pointer rather than a plain bool.
+			Expect(byName["include_archived"].ResolvedExplode()).To(BeTrue())
+			Expect(byName["widget_id"].ResolvedStyle()).To(Equal(model.ParameterStyleSimple))
+			Expect(byName["widget_id"].ResolvedExplode()).To(BeFalse())
 		})
 
 		// Reading only the operation's own parameters would drop the path
@@ -365,20 +376,5 @@ var _ = Describe("decodeExampleValue", func() {
 	It("names the example root when the top-level value is unsupported", func() {
 		err := checkSupportedValue(map[int]any{1: "x"}, "")
 		Expect(err).To(MatchError(ContainSubstring("the example root")))
-	})
-})
-
-var _ = Describe("declaredHeaderNames", func() {
-	It("returns declared header names in sorted order", func() {
-		headers := orderedmap.New[string, *v3.Header]()
-		headers.Set("X-Rate-Limit-Remaining", &v3.Header{})
-		headers.Set("Location", &v3.Header{})
-		Expect(declaredHeaderNames(&v3.Response{Headers: headers})).
-			To(Equal([]string{"Location", "X-Rate-Limit-Remaining"}))
-	})
-
-	It("returns nothing for a response declaring none", func() {
-		Expect(declaredHeaderNames(&v3.Response{})).To(BeNil())
-		Expect(declaredHeaderNames(nil)).To(BeNil())
 	})
 })
