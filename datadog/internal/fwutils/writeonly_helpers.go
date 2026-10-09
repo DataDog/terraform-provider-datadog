@@ -33,8 +33,8 @@ type WriteOnlySecretMode uint8
 
 const (
 	// WriteOnlySecretModeLegacy is the hand-written three-attribute shape:
-	// plaintext plus write-only companion, with the plaintext path always
-	// mandatory through ExactlyOneOf.
+	// plaintext plus write-only companion and version trigger. ExactlyOneOf
+	// always requires one of the plaintext/write-only pair, regardless of Required.
 	WriteOnlySecretModeLegacy WriteOnlySecretMode = iota
 	// WriteOnlySecretModeOnly exposes only the write-only attribute and its
 	// version trigger, which requires Terraform 1.11+ of every consumer.
@@ -95,7 +95,8 @@ func (secretConfig WriteOnlySecretConfig) attrExpression(attributeName string) f
 // 1. Original attr (plaintext) - for TF <1.11 or backwards compatibility
 // 2. Write-only attr - for TF 1.11+ (not stored in state)
 // 3. Version trigger - when changed, applies the write-only secret
-// Users choose one mode via ExactlyOneOf validator.
+// Legacy mode and required Dual secrets use ExactlyOneOf for the plaintext/write-only
+// pair. Optional Dual secrets use ConflictsWith, allowing both to be omitted.
 func CreateWriteOnlySecretAttributes(config WriteOnlySecretConfig) map[string]schema.Attribute {
 	if config.Mode == WriteOnlySecretModeOnly {
 		writeOnly := schema.StringAttribute{
