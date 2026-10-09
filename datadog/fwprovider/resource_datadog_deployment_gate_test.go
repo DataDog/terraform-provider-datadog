@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -126,6 +127,33 @@ func TestDeploymentGateRuleOptionsRoundTrip(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestDeploymentGateTypedMonitorIdsResponse(t *testing.T) {
+	ctx := context.Background()
+	initial := testRuleOptions()
+	initial.MonitorIDs = []deploymentGateMonitorIDModel{{
+		ID:     types.StringValue("123"),
+		Groups: types.ListValueMust(types.StringType, []attr.Value{types.StringValue("host:test")}),
+	}}
+	initial.FailOnNoData = types.BoolValue(false)
+	initial.FailOnNoGroupsFound = types.BoolValue(true)
+	initial.Warmup = types.Int64Value(60)
+
+	options, diags := buildRuleOptions(ctx, &deploymentGateRuleModel{Type: types.StringValue("monitor"), Options: initial})
+	if diags.HasError() || options.DeploymentRuleOptionsMonitorIds == nil || options.UnparsedObject != nil {
+		t.Fatalf("expected typed monitor IDs variant, got options=%#v diagnostics=%v", options, diags)
+	}
+	attributes := datadogV2.DeploymentRuleResponseDataAttributes{}
+	attributes.SetType("monitor")
+	attributes.SetOptions(options)
+	rule := deploymentGateRuleModel{Type: types.StringValue("monitor"), Options: initial}
+	(&deploymentGateResource{}).updateRuleStateFromAttributes(ctx, &rule, &attributes, false)
+	if len(rule.Options.MonitorIDs) != 1 || rule.Options.MonitorIDs[0].ID.ValueString() != "123" ||
+		len(rule.Options.MonitorIDs[0].Groups.Elements()) != 1 ||
+		rule.Options.FailOnNoData.ValueBool() || !rule.Options.FailOnNoGroupsFound.ValueBool() || rule.Options.Warmup.ValueInt64() != 60 {
+		t.Fatalf("typed monitor IDs response was not mapped: %#v", rule.Options)
 	}
 }
 
