@@ -85,9 +85,22 @@ Read-Only:
 
 Optional:
 
+- `allowed_resources` (List of String) Resources to include in faulty deployment detection. Mutually exclusive with excluded_resources.
 - `duration` (Number) The duration for the rule.
-- `excluded_resources` (List of String) Resources to exclude from faulty deployment detection.
-- `query` (String) The query for monitor rules.
+- `excluded_resources` (List of String) Resources to exclude from faulty deployment detection. Mutually exclusive with allowed_resources.
+- `fail_on_no_data` (Boolean) Fail if a matching monitor group is in NO DATA state (API default: true).
+- `fail_on_no_groups_found` (Boolean) Fail if no monitor groups are found (API default: false).
+- `monitor_ids` (Attributes List) Specific monitors to evaluate. Mutually exclusive with query. (see [nested schema](#nestedatt--rule--options--monitor_ids))
+- `query` (String) A query that selects the monitors to evaluate. Mutually exclusive with monitor_ids.
+- `warmup` (Number) Seconds to wait after deployment starts before evaluating monitors (API default: 0).
+
+<a id="nestedatt--rule--options--monitor_ids"></a>
+### Nested Schema for `rule.options.monitor_ids`
+
+Required:
+
+- `groups` (List of String) Exact group names to evaluate; an empty list evaluates all groups.
+- `id` (String) The monitor's decimal ID.
 
 ## Import
 

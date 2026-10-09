@@ -457,6 +457,139 @@ func testAccCheckDatadogDeploymentGateModifyRuleOptionsUpdated(uniq string) stri
 }`, uniq)
 }
 
+// TestAccDeploymentGateRuleOptionsCRUD covers the new rule options through real
+// create, update, read-after-write, and automatic test teardown.
+func TestAccDeploymentGateRuleOptionsCRUD(t *testing.T) {
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+	const gate = "datadog_deployment_gate.foo"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogDeploymentGateDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccDeploymentGateRuleOptionsConfig(uniq, "initial"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDeploymentGateExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(gate, "rule.#", "3"),
+					resource.TestCheckResourceAttr(gate, "rule.0.options.allowed_resources.0", "GET /v1/health"),
+					resource.TestCheckResourceAttr(gate, "rule.1.options.warmup", "0"),
+					resource.TestCheckResourceAttr(gate, "rule.1.options.fail_on_no_data", "false"),
+					resource.TestCheckResourceAttr(gate, "rule.1.options.fail_on_no_groups_found", "true"),
+					resource.TestCheckResourceAttr(gate, "rule.2.options.monitor_ids.#", "1"),
+					resource.TestCheckResourceAttrPair(gate, "rule.2.options.monitor_ids.0.id", "datadog_monitor.target", "id"),
+					resource.TestCheckResourceAttr(gate, "rule.2.options.monitor_ids.0.groups.#", "0"),
+					resource.TestCheckResourceAttr(gate, "rule.2.options.warmup", "5"),
+					resource.TestCheckResourceAttr(gate, "rule.2.options.fail_on_no_data", "true"),
+					resource.TestCheckResourceAttr(gate, "rule.2.options.fail_on_no_groups_found", "false"),
+				),
+			},
+			{
+				Config: testAccDeploymentGateRuleOptionsConfig(uniq, "updated"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(gate, "rule.0.options.allowed_resources.0", "GET /v2/status"),
+					resource.TestCheckResourceAttr(gate, "rule.1.options.warmup", "30"),
+					resource.TestCheckResourceAttr(gate, "rule.1.options.fail_on_no_data", "true"),
+					resource.TestCheckResourceAttr(gate, "rule.1.options.fail_on_no_groups_found", "false"),
+					resource.TestCheckResourceAttr(gate, "rule.2.options.monitor_ids.0.groups.0", "host:dg-crud-nonexistent"),
+					resource.TestCheckResourceAttr(gate, "rule.2.options.warmup", "45"),
+					resource.TestCheckResourceAttr(gate, "rule.2.options.fail_on_no_data", "false"),
+					resource.TestCheckResourceAttr(gate, "rule.2.options.fail_on_no_groups_found", "true"),
+				),
+			},
+			{
+				Config: testAccDeploymentGateRuleOptionsConfig(uniq, "switched"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckNoResourceAttr(gate, "rule.0.options.allowed_resources"),
+					resource.TestCheckResourceAttr(gate, "rule.0.options.excluded_resources.0", "GET /v1/health"),
+					resource.TestCheckNoResourceAttr(gate, "rule.2.options.monitor_ids"),
+					resource.TestCheckResourceAttr(gate, "rule.2.options.query", "service:tf-dg-"+uniq+" env:staging"),
+				),
+			},
+		},
+	})
+}
+
+func testAccDeploymentGateRuleOptionsConfig(uniq, phase string) string {
+	fdd := `duration = 900
+            allowed_resources = ["GET /v1/health"]`
+	query := fmt.Sprintf(`duration = 300
+            query = %q
+            warmup = 0
+            fail_on_no_data = false
+            fail_on_no_groups_found = true`, "service:tf-dg-"+uniq+" env:staging")
+	ids := `duration = 300
+            monitor_ids = [{ id = datadog_monitor.target.id, groups = [] }]
+            warmup = 5
+            fail_on_no_data = true
+            fail_on_no_groups_found = false`
+	if phase != "initial" {
+		fdd = `duration = 1800
+            allowed_resources = ["GET /v2/status"]`
+		query = fmt.Sprintf(`duration = 600
+            query = %q
+            warmup = 30
+            fail_on_no_data = true
+            fail_on_no_groups_found = false`, "service:tf-dg-"+uniq+" env:staging")
+		ids = `duration = 600
+            monitor_ids = [{ id = datadog_monitor.target.id, groups = ["host:dg-crud-nonexistent"] }]
+            warmup = 45
+            fail_on_no_data = false
+            fail_on_no_groups_found = true`
+	}
+	if phase == "switched" {
+		fdd = `duration = 1800
+            excluded_resources = ["GET /v1/health"]`
+		ids = fmt.Sprintf(`duration = 600
+            query = %q
+            warmup = 45
+            fail_on_no_data = false
+            fail_on_no_groups_found = true`, "service:tf-dg-"+uniq+" env:staging")
+	}
+	return fmt.Sprintf(`resource "datadog_monitor" "target" {
+    name = "Terraform deployment gate CRUD %[1]s"
+    type = "metric alert"
+    query = "avg(last_5m):avg:system.cpu.user{service:tf-dg-%[1]s} by {host} > 100"
+    message = "Disposable monitor for deployment gate rule options test."
+    notify_no_data = false
+    require_full_window = false
+    tags = ["service:tf-dg-%[1]s", "env:staging"]
+}
+
+resource "datadog_deployment_gate" "foo" {
+    service = "tf-dg-%[1]s"
+    env = "staging"
+    identifier = "%[1]s"
+    dry_run = true
+
+    rule {
+        name = "resource-selection"
+        type = "faulty_deployment_detection"
+        dry_run = true
+        options {
+            %[2]s
+        }
+    }
+    rule {
+        name = "monitor-query"
+        type = "monitor"
+        dry_run = true
+        options {
+            %[3]s
+        }
+    }
+    rule {
+        name = "monitor-id-selection"
+        type = "monitor"
+        dry_run = true
+        options {
+            %[4]s
+        }
+    }
+}`, uniq, fdd, query, ids)
+}
+
 func TestAccDeploymentGateChangeRuleType(t *testing.T) {
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
