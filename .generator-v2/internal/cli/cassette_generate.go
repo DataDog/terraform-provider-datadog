@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"errors"
 	"fmt"
 	"path/filepath"
 	"slices"
@@ -53,13 +54,14 @@ func generateCassette(request cassetteRequest) model.CassetteResult {
 
 	group := op.ResolvedGroup
 	if group == nil || group.Create == nil || group.Read == nil || group.Delete == nil {
-		return ineligible(result, "a resource cassette needs a create, read and delete operation; "+
-			"the tracking group resolves fewer than that")
+		return ineligible(result, model.DiagnosticCategoryEligibility, operationLocation(op),
+			"a resource cassette needs a create, read and delete operation; "+
+				"the tracking group resolves fewer than that")
 	}
 
 	selection, err := cassette.Select(lifecycleOperations(group))
 	if err != nil {
-		return ineligible(result, err.Error())
+		return ineligible(result, model.DiagnosticCategorySelection, operationLocation(op), err.Error())
 	}
 	result.SelectedExample = selection.ScenarioName
 
@@ -72,13 +74,17 @@ func generateCassette(request cassetteRequest) model.CassetteResult {
 		Selection:    selection,
 	})
 	if err != nil {
-		return ineligible(result, err.Error())
+		// Scenario building materializes and validates, so the stage is read
+		// off the error rather than assumed: a conformance failure anchors at
+		// the set that failed, which is more use than the artifact.
+		category, location := scenarioFailureAnchor(err, group, op)
+		return ineligible(result, category, location, err.Error())
 	}
 	result.TestName = scenario.TestFuncName
 
 	source, err := emit.RenderResourceExampleTest(scenario, request.View, request.APIPaths)
 	if err != nil {
-		return ineligible(result, err.Error())
+		return ineligible(result, model.DiagnosticCategoryRender, operationLocation(op), err.Error())
 	}
 	result.TestPath = filepath.Join(request.TestsOutputRoot, scenario.TestFilePath)
 
@@ -91,7 +97,7 @@ func generateCassette(request cassetteRequest) model.CassetteResult {
 	// derives from the test's own name.
 	status, err := emit.WriteArtifactSource(result.TestPath, source, request.Check, false)
 	if err != nil {
-		return ineligible(result, err.Error())
+		return ineligible(result, model.DiagnosticCategoryWrite, operationLocation(op), err.Error())
 	}
 	result.WriteAction = testWriteAction(status)
 	result.Status = model.CassetteStatusGenerated
@@ -131,15 +137,92 @@ func lifecycleOperations(group *model.ResolvedGroup) []*model.Operation {
 	return out
 }
 
-// ineligible attaches the reason a target could not produce a fixture. The
-// message is what a description author has to act on, so it is carried rather
-// than reduced to a status.
-func ineligible(result model.CassetteResult, reason string) model.CassetteResult {
+// ineligible attaches the reason a target could not produce a fixture, the
+// stage that decided so, and the anchor a reader should open.
+//
+// The message is what a description author has to act on, so it is carried
+// rather than reduced to a status. The category says which stage rejected the
+// target, because "cannot be selected" and "contradicts its own schema" call
+// for different edits. The location is the spec anchor; it is never a value.
+func ineligible(
+	result model.CassetteResult,
+	category model.DiagnosticCategory,
+	location model.ExampleLocation,
+	reason string,
+) model.CassetteResult {
 	result.Status = model.CassetteStatusIneligible
 	result.WriteAction = model.CassetteWriteNone
-	result.Diagnostics = append(result.Diagnostics, model.Diagnostic{
-		Severity: model.SeverityWarning,
-		Message:  fmt.Sprintf("no cassette generated: %s", reason),
-	})
+	diagnostic := model.NewCassetteDiagnostic(
+		model.SeverityWarning,
+		fmt.Sprintf("no cassette generated: %s", reason),
+		location,
+	)
+	diagnostic.Category = category
+	result.Diagnostics = append(result.Diagnostics, diagnostic)
 	return result
+}
+
+// operationLocation anchors at the tracked operation itself, for the stages
+// that fail before any one example is implicated.
+func operationLocation(op *model.Operation) model.ExampleLocation {
+	if op == nil {
+		return model.ExampleLocation{}
+	}
+	return model.ExampleLocation{
+		Path:        op.Path,
+		Method:      op.Method,
+		OperationId: op.OperationId,
+	}
+}
+
+// scenarioFailureAnchor reads the stage and the anchor off a scenario-building
+// failure. Materialization and validation both happen in there, and a
+// conformance failure already knows which set it concerns, so that set is a
+// better anchor than the artifact it belongs to.
+func scenarioFailureAnchor(
+	err error,
+	group *model.ResolvedGroup,
+	fallback *model.Operation,
+) (model.DiagnosticCategory, model.ExampleLocation) {
+	var conformance *cassette.ConformanceError
+	if errors.As(err, &conformance) {
+		return model.DiagnosticCategoryValidation, setLocation(group, conformance.Key, fallback)
+	}
+	var incomplete *cassette.IncompleteError
+	if errors.As(err, &incomplete) {
+		return model.DiagnosticCategoryMaterialization, setLocation(group, incomplete.Key, fallback)
+	}
+	return model.DiagnosticCategoryMaterialization, operationLocation(fallback)
+}
+
+// setLocation turns a set key into a spec anchor, resolving the operation the
+// key names so the path and method are the real ones rather than the tracked
+// operation's.
+func setLocation(
+	group *model.ResolvedGroup,
+	key cassette.SetKey,
+	fallback *model.Operation,
+) model.ExampleLocation {
+	op := fallback
+	if group != nil {
+		for _, candidate := range lifecycleOperations(group) {
+			if candidate.OperationId == key.OperationId {
+				op = candidate
+				break
+			}
+		}
+	}
+	location := operationLocation(op)
+	location.OperationId = key.OperationId
+	switch key.Role {
+	case cassette.SetRoleRequest:
+		location.Component = model.ExampleComponentRequestBody
+	case cassette.SetRoleResponse:
+		location.Component = model.ExampleComponentResponse
+		location.Detail = key.Detail
+	case cassette.SetRoleParameter:
+		location.Component = model.ExampleComponentParameter
+		location.Detail = key.Detail
+	}
+	return location
 }

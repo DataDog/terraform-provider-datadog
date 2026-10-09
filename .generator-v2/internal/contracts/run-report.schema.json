@@ -89,6 +89,18 @@
         "location": {
           "type": "string",
           "description": "Optional source-side anchor, e.g. spec:/api/v2/widgets.post.requestBody.content.application/json.example"
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "eligibility",
+            "selection",
+            "materialization",
+            "validation",
+            "render",
+            "write"
+          ],
+          "description": "Optional stage that produced this diagnostic. Set by the cassette chain; the artifact pipeline's diagnostics carry none."
         }
       }
     },

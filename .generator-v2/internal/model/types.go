@@ -1126,7 +1126,37 @@ type Diagnostic struct {
 	// Location is an optional source-side anchor,
 	// e.g. spec:components.schemas.Pet.properties.tags.
 	Location string `json:"location,omitempty"`
+	// Category names the stage that produced this diagnostic, so a reader can
+	// tell a description that cannot be selected from one whose values its own
+	// schema rejects. Optional: the artifact pipeline's diagnostics predate it
+	// and carry none, which is why it is omitempty rather than required.
+	Category DiagnosticCategory `json:"category,omitempty"`
 }
+
+// DiagnosticCategory names the stage a diagnostic came from. The vocabulary is
+// the cassette chain's own stages, because that is the chain whose failures a
+// description author has to act on.
+type DiagnosticCategory string
+
+const (
+	// DiagnosticCategoryEligibility means the target's shape disqualified it
+	// before any example was read — a group missing a lifecycle role.
+	DiagnosticCategoryEligibility DiagnosticCategory = "eligibility"
+	// DiagnosticCategorySelection means no coherent example scenario spans the
+	// target's sets.
+	DiagnosticCategorySelection DiagnosticCategory = "selection"
+	// DiagnosticCategoryMaterialization means the chosen examples could not be
+	// assembled into a complete value.
+	DiagnosticCategoryMaterialization DiagnosticCategory = "materialization"
+	// DiagnosticCategoryValidation means the assembled value contradicts the
+	// schema it was assembled from.
+	DiagnosticCategoryValidation DiagnosticCategory = "validation"
+	// DiagnosticCategoryRender means the scenario could not be rendered into
+	// Go source.
+	DiagnosticCategoryRender DiagnosticCategory = "render"
+	// DiagnosticCategoryWrite means rendering succeeded and the write did not.
+	DiagnosticCategoryWrite DiagnosticCategory = "write"
+)
 
 // SkippedOperation records an operation that produced no artifact, listed for
 // visibility rather than as a failure.
