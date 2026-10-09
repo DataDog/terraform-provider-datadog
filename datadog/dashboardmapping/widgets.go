@@ -235,6 +235,7 @@ var NoteWidgetSpec = WidgetSpec{
 			Type:        TypeString,
 			OmitEmpty:   false,
 			Required:    true,
+			NotEmpty:    true,
 			Description: "The content of the note.",
 		},
 		{
@@ -434,6 +435,7 @@ var LogStreamWidgetSpec = WidgetSpec{
 		{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true,
 			Description: "The facet and order to sort the data, for example: `{\"column\": \"time\", \"order\": \"desc\"}`.",
 			Children: []FieldSpec{
+				legacyNoOpDescriptionField,
 				{
 					HCLKey:      "column",
 					Type:        TypeString,

@@ -1499,9 +1499,18 @@ var toplistWidgetStyleFields = []FieldSpec{
 		Discriminator: &OneOfDiscriminator{JSONKey: "type"},
 		Children: []FieldSpec{
 			{
+				HCLKey:      "type",
+				Type:        TypeString,
+				OmitEmpty:   true,
+				Description: "Legacy display type for the widget.",
+				Deprecated:  "Use the `stacked` or `flat` block instead.",
+				ValidValues: []string{"stacked", "flat"},
+			},
+			{
 				HCLKey:        "stacked",
 				Type:          TypeBlock,
 				OmitEmpty:     true,
+				Computed:      true,
 				Description:   "Stacked display for the top list widget.",
 				Discriminator: &OneOfDiscriminator{Value: "stacked"},
 				Children:      toplistWidgetDisplayStackedFields,
@@ -1510,6 +1519,7 @@ var toplistWidgetStyleFields = []FieldSpec{
 				HCLKey:        "flat",
 				Type:          TypeBlock,
 				OmitEmpty:     true,
+				Computed:      true,
 				Description:   "Flat display for the top list widget.",
 				Discriminator: &OneOfDiscriminator{Value: "flat"},
 				Children:      toplistWidgetDisplayFlatFields,
@@ -1756,8 +1766,22 @@ var listStreamGroupByFields = []FieldSpec{
 	{HCLKey: "facet", Type: TypeString, OmitEmpty: false, Required: true, Description: "Facet name"},
 }
 
+// legacyNoOpDescriptionField keeps configs written for the legacy
+// datadog_dashboard resource valid. That schema exposed a `description` on these
+// sort and request blocks, but never sent it to the API.
+var legacyNoOpDescriptionField = FieldSpec{
+	HCLKey:        "description",
+	Type:          TypeString,
+	OmitEmpty:     true,
+	SchemaOnly:    true,
+	IgnoreChanges: true,
+	Description:   "This field has no effect and is not sent to the Datadog API.",
+	Deprecated:    "This field has no effect and will be removed in a future release.",
+}
+
 // listStreamSortFields corresponds to the sort block inside ListStreamQuery.
 var listStreamSortFields = []FieldSpec{
+	legacyNoOpDescriptionField,
 	{HCLKey: "column", Type: TypeString, OmitEmpty: false, Required: true, Description: "The facet path for the column."},
 	{
 		HCLKey:      "order",
@@ -1819,6 +1843,7 @@ var listStreamQueryFields = []FieldSpec{
 // listStreamRequestFields corresponds to OpenAPI
 // components/schemas/ListStreamWidgetRequest.
 var listStreamRequestFields = []FieldSpec{
+	legacyNoOpDescriptionField,
 	// columns: HCL plural → JSON plural (same key)
 	{
 		HCLKey:      "columns",
@@ -1850,6 +1875,7 @@ var listStreamRequestFields = []FieldSpec{
 
 // sloListSortFields corresponds to the sort block inside SLOListWidgetQuery.
 var sloListSortFields = []FieldSpec{
+	legacyNoOpDescriptionField,
 	{HCLKey: "column", Type: TypeString, OmitEmpty: false, Required: true, Description: "The facet path for the column."},
 	{
 		HCLKey:      "order",
@@ -1879,6 +1905,7 @@ var sloListQueryFields = []FieldSpec{
 // sloListRequestFields corresponds to OpenAPI
 // components/schemas/SLOListWidgetRequest.
 var sloListRequestFields = []FieldSpec{
+	legacyNoOpDescriptionField,
 	{
 		HCLKey:      "request_type",
 		Type:        TypeString,

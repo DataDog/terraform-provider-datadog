@@ -801,6 +801,7 @@ func matchInteraction(r *http.Request, i cassette.Request) bool {
 // jsonEquivalent compares two JSON strings for semantic equality, ignoring:
 //   - key ordering (Go map vs struct serialization)
 //   - absent vs zero-value fields ("id":"" vs no "id" key)
+//   - widget IDs the cassette did not record (see dropUnrecordedWidgetIDs)
 //
 // This allows v1 (typed struct serialization) and v2 (map serialization) request
 // bodies to match against the same cassette.
@@ -812,7 +813,52 @@ func jsonEquivalent(a, b string) bool {
 	if err := json.Unmarshal([]byte(b), &vb); err != nil {
 		return false
 	}
+	dropUnrecordedWidgetIDs(va, vb)
 	return deepEquivalent(va, vb)
+}
+
+// dropUnrecordedWidgetIDs removes numeric widget "id" fields from the request
+// wherever the matching cassette widget has none. v1 never sent widget IDs on
+// update, while v2 sends back the IDs it read from state, so v1-era cassettes
+// would otherwise never match. Cassettes that do record widget IDs still
+// require an exact match.
+func dropUnrecordedWidgetIDs(req, cas interface{}) {
+	switch rv := req.(type) {
+	case map[string]interface{}:
+		cv, ok := cas.(map[string]interface{})
+		if !ok {
+			return
+		}
+		for k, v := range rv {
+			if k == "widgets" {
+				rw, rok := v.([]interface{})
+				cw, cok := cv[k].([]interface{})
+				if rok && cok && len(rw) == len(cw) {
+					for i := range rw {
+						rWidget, rok := rw[i].(map[string]interface{})
+						cWidget, cok := cw[i].(map[string]interface{})
+						if !rok || !cok {
+							continue
+						}
+						if _, isNum := rWidget["id"].(float64); isNum {
+							if _, recorded := cWidget["id"]; !recorded {
+								delete(rWidget, "id")
+							}
+						}
+					}
+				}
+			}
+			dropUnrecordedWidgetIDs(v, cv[k])
+		}
+	case []interface{}:
+		cv, ok := cas.([]interface{})
+		if !ok || len(rv) != len(cv) {
+			return
+		}
+		for i := range rv {
+			dropUnrecordedWidgetIDs(rv[i], cv[i])
+		}
+	}
 }
 
 // deepEquivalent recursively compares two JSON values, treating absent keys
