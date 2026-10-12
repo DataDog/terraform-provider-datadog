@@ -40,3 +40,10 @@ resource "datadog_synthetics_global_variable" "automated_rotation" {
   value_wo         = var.secret_value
   value_wo_version = local.secret_version
 }
+
+# Persistent Email: Datadog generates the address; omit value and value_wo.
+resource "datadog_synthetics_global_variable" "email" {
+  name        = "PERSISTENT_EMAIL"
+  description = "Inbox shared across Synthetic test runs"
+  is_email    = true
+}
