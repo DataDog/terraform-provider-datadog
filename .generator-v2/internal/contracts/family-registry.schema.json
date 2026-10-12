@@ -1,0 +1,171 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://datadog.github.io/terraform-provider-datadog/contracts/family-registry.schema.json",
+    "title": "x-datadog-tf-generator (document root)",
+    "description": "OpenAPI 3.0 vendor extension at the document root: a registry of Terraform artifact families, keyed by family name. Each family declares up to three artifacts — a resource, a singular data source and a list data source — over the same API. The block key replaces artifact_kind and cardinality, and the map key is the artifact name, so neither can be repeated inconsistently across a family.",
+    "type": "object",
+    "minProperties": 1,
+    "propertyNames": {
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "Family name: the Terraform-facing artifact name without the 'datadog_' prefix, lowercase snake_case. It names the resource and the singular data source verbatim (they are separate Terraform namespaces); the list data source pluralizes it unless its block overrides artifact_name."
+    },
+    "additionalProperties": { "$ref": "#/$defs/family" },
+    "$defs": {
+      "family": {
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "description": "One artifact family. At least one artifact block must be present, or skip must be set.",
+        "properties": {
+          "skip": {
+            "type": "boolean",
+            "default": false,
+            "description": "Explicitly disable generation for every artifact in this family while keeping the registry entry in place. Equivalent to deleting the entry, but documented in-spec so reviewers see the choice."
+          },
+          "resource": { "$ref": "#/$defs/resource" },
+          "datasource_singular": { "$ref": "#/$defs/datasource_singular" },
+          "datasource_list": { "$ref": "#/$defs/datasource_list" }
+        },
+        "anyOf": [
+          { "required": ["resource"] },
+          { "required": ["datasource_singular"] },
+          { "required": ["datasource_list"] },
+          { "required": ["skip"] }
+        ]
+      },
+
+      "resource": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["group"],
+        "description": "A Terraform resource with a full CRUD lifecycle.",
+        "properties": {
+          "artifact_name": { "$ref": "#/$defs/artifact_name" },
+          "tf_description": { "$ref": "#/$defs/tf_description" },
+          "id_strategy": { "$ref": "#/$defs/id_strategy" },
+          "overwrites": { "$ref": "#/$defs/overwrites" },
+          "skip": { "$ref": "#/$defs/block_skip" },
+          "group": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["create", "read", "delete"],
+            "description": "The CRUD lifecycle backing this resource, by operationId. Create and read are load-bearing for the schema — without create nothing is Required, without read nothing is Computed — and delete for the lifecycle, so all three are required.",
+            "properties": {
+              "create": { "type": "string", "minLength": 1, "description": "operationId of the Create endpoint." },
+              "read":   { "type": "string", "minLength": 1, "description": "operationId of the Read (by-id) endpoint." },
+              "update": { "type": "string", "minLength": 1, "description": "operationId of the Update endpoint. May be omitted; the generator then marks all attributes ForceNew." },
+              "delete": { "type": "string", "minLength": 1, "description": "operationId of the Delete endpoint." }
+            }
+          }
+        }
+      },
+
+      "datasource_singular": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["group"],
+        "description": "A read-only Terraform data source resolving exactly one record, by id, by search, or by both.",
+        "properties": {
+          "artifact_name": { "$ref": "#/$defs/artifact_name" },
+          "tf_description": { "$ref": "#/$defs/tf_description" },
+          "id_strategy": { "$ref": "#/$defs/id_strategy" },
+          "overwrites": { "$ref": "#/$defs/overwrites" },
+          "skip": { "$ref": "#/$defs/block_skip" },
+          "group": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "The read endpoints backing this data source, by operationId. At least one of read or search is required.",
+            "properties": {
+              "read":   { "type": "string", "minLength": 1, "description": "operationId of the Read (by-id) endpoint." },
+              "search": { "type": "string", "minLength": 1, "description": "operationId of the list endpoint used to resolve a single match. Singular data sources only; never inferred." }
+            },
+            "anyOf": [ { "required": ["read"] }, { "required": ["search"] } ]
+          }
+        }
+      },
+
+      "datasource_list": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["group"],
+        "description": "A read-only Terraform data source returning a filtered list. Its name defaults to the pluralized family name.",
+        "properties": {
+          "artifact_name": { "$ref": "#/$defs/artifact_name" },
+          "tf_description": { "$ref": "#/$defs/tf_description" },
+          "id_strategy": { "$ref": "#/$defs/id_strategy" },
+          "overwrites": { "$ref": "#/$defs/overwrites" },
+          "skip": { "$ref": "#/$defs/block_skip" },
+          "group": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["read"],
+            "description": "The list endpoint backing this data source, by operationId. A list data source names it in read, not search: search is the singular-only shape that resolves one match out of a list.",
+            "properties": {
+              "read": { "type": "string", "minLength": 1, "description": "operationId of the list endpoint." }
+            }
+          }
+        }
+      },
+
+      "artifact_name": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*$",
+        "minLength": 1,
+        "maxLength": 64,
+        "description": "Overrides the name this one artifact takes, when it must differ from the family name. Omit it in a resource or singular data-source block to take the family name verbatim; omit it in a list block to take the pluralized family name. Set it in a list block when the derived plural reads badly — a mass noun inflects regularly, so 'metadata' derives 'metadatas' — or when it would collide with a name already in use."
+      },
+      "tf_description": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Human-readable doc string for this artifact's top-level Terraform schema (the description shown in `terraform docs`). Optional; when omitted the generated Description is left empty. Convention: \"Use this data source to retrieve information about an existing <thing>.\""
+      },
+      "id_strategy": {
+        "type": "string",
+        "enum": ["data.id", "data.attributes.id", "data.attributes.uuid", "header.location"],
+        "default": "data.id",
+        "description": "How to derive the Terraform ID from the API response."
+      },
+      "overwrites": {
+        "type": "string",
+        "minLength": 1,
+        "description": "The constructor function of the hand-written artifact this generated one replaces, e.g. \"NewDatadogTeamDataSource\" or \"NewIncidentTypeResource\". When set, the generated file overwrites the hand-written one in place (they share the same output path), the generator removes that constructor from the FrameworkProvider Datasources or Resources slice as appropriate, and registers the generated constructor in generatedDatasources or generatedResources. It is also what authorizes the takeover: without it the generator refuses to overwrite a file carrying no generated-code marker, so a name collision fails loudly instead of silently replacing hand-written code. Omit for purely additive generation."
+      },
+      "block_skip": {
+        "type": "boolean",
+        "default": false,
+        "description": "Explicitly disable generation for this one artifact while keeping the block in place. Equivalent to deleting the block, but documented in-spec so reviewers see the choice."
+      }
+    },
+    "examples": [
+      {
+        "integration_databricks_account": {
+          "resource": {
+            "tf_description": "Provides a Datadog Databricks integration account resource.",
+            "group": {
+              "create": "CreateDatabricksIntegrationAccount",
+              "read": "GetDatabricksIntegrationAccount",
+              "update": "UpdateDatabricksIntegrationAccount",
+              "delete": "DeleteDatabricksIntegrationAccount"
+            }
+          },
+          "datasource_singular": {
+            "tf_description": "Use this data source to retrieve information about an existing Databricks integration account.",
+            "group": { "read": "GetDatabricksIntegrationAccount" }
+          },
+          "datasource_list": {
+            "tf_description": "Use this data source to list Databricks integration accounts.",
+            "group": { "read": "ListDatabricksIntegrationAccounts" }
+          }
+        },
+        "team": {
+          "datasource_singular": {
+            "tf_description": "Use this data source to retrieve information about an existing Datadog team.",
+            "overwrites": "NewDatadogTeamDataSource",
+            "group": { "read": "GetTeam", "search": "ListTeams" }
+          }
+        }
+      }
+    ]
+  }

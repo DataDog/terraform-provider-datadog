@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"sync"
 
 	v3 "github.com/pb33f/libopenapi/datamodel/high/v3"
@@ -28,30 +29,44 @@ const DefaultTrackingFieldName = "x-datadog-tf-generator"
 // attributable to the spec under test. Compiled schemas are safe for
 // concurrent Validate calls.
 var compiledSchema = sync.OnceValues(func() (*jsonschema.Schema, error) {
-	doc, err := jsonschema.UnmarshalJSON(bytes.NewReader(contracts.TrackingFieldSchema))
+	return compileEmbedded(contracts.TrackingFieldSchema, "tracking-field")
+})
+
+// compileEmbedded compiles one embedded contract, registering it under the
+// schema's own $id so the JSON file stays the single source of truth for that
+// identifier. name appears in errors only. Compiled schemas are safe for
+// concurrent Validate calls.
+func compileEmbedded(raw []byte, name string) (*jsonschema.Schema, error) {
+	doc, err := jsonschema.UnmarshalJSON(bytes.NewReader(raw))
 	if err != nil {
-		return nil, fmt.Errorf("parser: parsing embedded tracking-field schema: %w", err)
+		return nil, fmt.Errorf("parser: parsing embedded %s schema: %w", name, err)
 	}
-	// Register and compile under the schema's own $id, so the JSON file is the
-	// single source of truth for that identifier.
 	obj, ok := doc.(map[string]any)
 	if !ok {
-		return nil, fmt.Errorf("parser: embedded tracking-field schema is not a JSON object")
+		return nil, fmt.Errorf("parser: embedded %s schema is not a JSON object", name)
 	}
 	id, ok := obj["$id"].(string)
 	if !ok || id == "" {
-		return nil, fmt.Errorf("parser: embedded tracking-field schema has no $id")
+		return nil, fmt.Errorf("parser: embedded %s schema has no $id", name)
 	}
 	c := jsonschema.NewCompiler()
 	if err := c.AddResource(id, doc); err != nil {
-		return nil, fmt.Errorf("parser: registering tracking-field schema: %w", err)
+		return nil, fmt.Errorf("parser: registering %s schema: %w", name, err)
 	}
 	sch, err := c.Compile(id)
 	if err != nil {
-		return nil, fmt.Errorf("parser: compiling tracking-field schema: %w", err)
+		return nil, fmt.Errorf("parser: compiling %s schema: %w", name, err)
 	}
 	return sch, nil
-})
+}
+
+// artifactNamePattern and maxArtifactNameLen mirror the artifact_name
+// constraints both contracts state, for the one name the generator derives
+// rather than reads: a pluralized family name is checked against them before it
+// becomes a Terraform address.
+var artifactNamePattern = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
+
+const maxArtifactNameLen = 64
 
 // TrackingError reports a malformed tracking-field extension. It names the
 // OpenAPI location (method + path + operationId) so the spec author can find
