@@ -261,6 +261,104 @@ In-repo cost: **45 fixture files, 112 occurrences** under `internal/testdata` an
 `examples`. Mechanical, but it is the bulk of the work and worth scripting rather than
 hand-editing.
 
+## Upstream changes required
+
+The registry cannot be adopted by `datadog-api-spec` until `openapi-transformer` learns it.
+Surveyed 2026-10-12 against `openapi-transformer` @ `ca370cf` and
+`openapi-transformer-tf-dispatch` @ `c4b8128`.
+
+How the pipeline reaches tfgen: 278 per-domain fragments under `spec/v2/**` (partial
+documents — `components`/`paths`/`tags`, no `openapi`/`info`) are merged by
+`parser/folder_loader.py`, encoded to `spec/v2/full_spec.terraform.yaml` with only
+terraform-allowed extensions, and tfgen runs on that bundle
+(`config/client_generator_config.yaml`). So a root registry does land exactly where
+`DecodeRegistry` looks — in the bundle's document root.
+
+**This is also the answer to the merge-point worry.** Because each domain owns its own
+fragment, every team writes its registry at the top of its own file: no shared block, no
+human merge contention. What has to change is the machine merge.
+
+### 1. The decoder rejects the shape outright — verified
+
+`OpenAPIObject.known_extensions` (`openapi/base.py`) maps extension key → class with no
+regard for location, and `parser/decoder.py:_decode_extension` instantiates that class
+wherever the key appears. A root `x-datadog-tf-generator` is therefore decoded as the
+operation-level `XDatadogTfGenerator`, whose fields are `artifact_kind`/`artifact_name`/…,
+and the family name is an unregistered field. Loading the document raises:
+
+```
+ValueError: Unexpected key 'integration_databricks_account' at
+'#/x-datadog-tf-generator/integration_databricks_account' — no field registered
+```
+
+Needs location-aware dispatch (key + parent type) or a wildcard-keyed registry class
+alongside the existing one, so both shapes decode during the migration.
+
+### 2. Fragment merge silently keeps only the first registry — verified
+
+`folder_loader.py` merges `components`, `paths`, `security` and `tags` structurally, and
+copies every *other* root key only when absent:
+
+```python
+if key not in _SKIP_MERGE and key not in self._raw_data:
+    self._raw_data[key] = val
+```
+
+Two fragments each declaring a root registry key therefore collapse to whichever loads
+first, with no error. Demonstrated with a two-fragment probe: `paths` merged to
+`['/alpha', '/zeta']` while the registry merged to `['family_from_alpha']` — the second
+domain's families vanished.
+
+That is the most dangerous failure mode in this list: it loses artifacts quietly. The
+registry key needs a structural union keyed by family name, with a duplicate-family error.
+The same first-wins applies to a `paths`-level key, so moving the registry down one level
+would not avoid it.
+
+### 3. tf-dispatch would stop dispatching Terraform — from code, not tested
+
+`spec.py:terraform_operation_ids` builds the set of operations Terraform cares about by
+iterating operations and reading `operation.x_datadog_tf_generator`; `diff/spec_diff.py`
+uses it to decide whether a spec change affects the terraform generator. Under a registry
+**no operation carries the extension**, so the set is empty, no change ever looks
+Terraform-affecting, and tfgen is never run. This fails silently too — the pipeline simply
+stops producing provider PRs. It must read the root registry and union each block's group
+operationIds.
+
+### 4. The Python validation rule needs a sibling
+
+`validation/rules/validate_x_datadog_tf_generator.py` duplicates, in Python, what this
+change now expresses in the JSON Schema. It is bound to the operation shape twice over:
+`RULE_DEFINITION["object"] = "XDatadogTfGenerator"`, and every message is addressed via
+`cast("Operation", extension.parent()).operation_id`, which has no meaning when the parent
+is the spec root. A registry rule should address errors by family and block, and can drop
+the checks the schema now enforces structurally (per-kind group constraints).
+
+### 5. No change needed in `generators.py`
+
+Worth stating because it is the one place that looks like it would need touching:
+`GENERATOR_ALLOWED_EXTENSIONS["terraform"]` already lists `x-datadog-tf-generator`, and
+`parser/encoder.py:encode_object_extensions` filters by extension *name* only, on any
+object. A root-level registry survives into `full_spec.terraform.yaml` with the allowlist
+untouched.
+
+### 6. `datadog-api-spec` migration is small
+
+Only six files mention the extension: the Databricks, Elastic Cloud, Snowflake and Twilio
+interface specs, `actions_datastore/datastores.yaml`, and a describing comment in
+`config/client_generator_config.yaml` that says tfgen "reads operations annotated with
+x-datadog-tf-generator" — which the comment will need to stop saying. Far smaller than the
+45 fixture files in this repository.
+
+### Sequencing
+
+1. openapi-transformer: decode (1), merge (2), validate (4) — the registry round-trips but
+   nothing authors it yet.
+2. tf-dispatch: (3), before any spec adopts the registry, or Terraform generation goes
+   quiet.
+3. datadog-api-spec: migrate the six files, one domain at a time; output is byte-identical
+   per `TestRegistryShapeGeneratesIdenticalSource`.
+4. This repository: migrate fixtures, then drop the operation-level branch.
+
 ## Settled questions
 
 1. **Container: the document root.** Decided. The remaining risk is operational rather than
