@@ -91,10 +91,11 @@ type {{ .Name }} struct {
 
 {{/* writeOnlySecretConfigValue is shared by schema expansion and request handlers. */}}
 {{- define "writeOnlySecretConfigValue" -}}
-fwutils.WriteOnlySecretConfig{OriginalAttr: {{ printf "%q" .OriginalAttr }}, WriteOnlyAttr: {{ printf "%q" .WriteOnlyAttr }}, TriggerAttr: {{ printf "%q" .TriggerAttr }}, WriteOnlyDescription: {{ printf "%q" .WriteOnlyDescription }}, TriggerDescription: {{ printf "%q" .TriggerDescription }}, ParentBlocks: []string{ {{- range .ParentBlocks }}{{ printf "%q" . }},{{- end }}}, Mode: fwutils.WriteOnlySecretModeOnly, Required: {{ .RequiredOnCreate }}}
+fwutils.WriteOnlySecretConfig{OriginalAttr: {{ printf "%q" .OriginalAttr }}, WriteOnlyAttr: {{ printf "%q" .WriteOnlyAttr }}, TriggerAttr: {{ printf "%q" .TriggerAttr }}, OriginalDescription: {{ printf "%q" .OriginalDescription }}, WriteOnlyDescription: {{ printf "%q" .WriteOnlyDescription }}, TriggerDescription: {{ printf "%q" .TriggerDescription }}, ParentBlocks: []string{ {{- range .ParentBlocks }}{{ printf "%q" . }},{{- end }}}, Mode: fwutils.WriteOnlySecretModeDual, Required: {{ .RequiredOnCreate }}}
 {{- end -}}
 
-{{/* writeOnlySecretAttributes expands one generated write-only-only pair. */}}
+{{/* writeOnlySecretAttributes expands one generated write-only group: the
+     write-only attribute, its version trigger, and the plaintext fallback. */}}
 {{- define "writeOnlySecretAttributes" -}}
 fwutils.CreateWriteOnlySecretAttributes({{ .ConfigVar }}),
 {{- end -}}

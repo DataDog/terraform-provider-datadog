@@ -23,9 +23,9 @@ Terraform provides helpful [Extending Terraform][1] documentation for best pract
 
 ## Write-Only Arguments
 
-For generated resources, only an OpenAPI property with `writeOnly: true` uses Terraform write-only handling. The generated schema replaces that property with `<attr>_wo` and `<attr>_wo_version`; it does not expose or fall back to a stateful plaintext `<attr>`. Datadog `x-secret` and generator `sensitive` annotations redact ordinary attributes from display but do not keep their values out of Terraform state.
+For generated resources, only an OpenAPI property with `writeOnly: true` uses Terraform write-only handling. See the generator's [secret handling contract](./.generator-v2/docs/reference/scope.md#secrets-and-sensitivity) for the three-attribute pattern: `<attr>_wo` and `<attr>_wo_version` for Terraform 1.11+, plus a stateful plaintext `<attr>` fallback for older Terraform. Prefer the write-only path when available; the plaintext fallback stores the secret in state. Datadog `x-secret` and generator `sensitive` annotations redact ordinary attributes from display but do not keep their values out of Terraform state.
 
-Existing hand-written resources can use the compatibility-preserving helpers in [`datadog/internal/fwutils`](./datadog/internal/fwutils/README.md#write-only-secret-helpers-writeonly_helpersgo). Their existing three-attribute pattern (`<attr>`, `<attr>_wo`, `<attr>_wo_version`) is retained for already-shipped schemas; do not use that legacy shape for new generated resources.
+Generated and hand-written resources share the helpers in [`datadog/internal/fwutils`](./datadog/internal/fwutils/README.md#write-only-secret-helpers-writeonly_helpersgo). Generated resources use `WriteOnlySecretModeDual`, which honours whether the secret is required; existing hand-written callers retain `WriteOnlySecretModeLegacy`. Previously generated resources keep their existing schema until regenerated. The [decision record](./.generator-v2/docs/decisions/0003-write-only-keeps-a-plaintext-fallback.md) explains the compatibility tradeoff.
 
 ## Linting
 

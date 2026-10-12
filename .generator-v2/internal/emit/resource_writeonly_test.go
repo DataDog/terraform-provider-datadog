@@ -125,23 +125,28 @@ func renderWriteOnlyResource(op *model.Operation) (*model.Artifact, ResourceView
 	return artifact, view, string(mustRenderResource(view))
 }
 
-var _ = Describe("generated resource write-only-only contract", func() {
-	DescribeTable("replaces the original Terraform field at every supported static depth",
+var _ = Describe("generated resource write-only contract", func() {
+	DescribeTable("emits the write-only pair and its plaintext fallback at every supported static depth",
 		func(build func() *model.Operation, original, goName, parentBlocks, description string) {
 			_, _, source := renderWriteOnlyResource(build())
 
 			Expect(source).To(ContainSubstring(`"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"`))
 			Expect(source).To(ContainSubstring("fwutils.CreateWriteOnlySecretAttributes"))
+			Expect(source).To(ContainSubstring(`OriginalAttr: "` + original + `"`))
 			Expect(source).To(ContainSubstring(`WriteOnlyAttr: "` + original + `_wo"`))
 			Expect(source).To(ContainSubstring(`TriggerAttr: "` + original + `_wo_version"`))
 			Expect(regexp.MustCompile(`ParentBlocks:\s+\[\]string\{` + regexp.QuoteMeta(parentBlocks) + `\}`).MatchString(source)).To(BeTrue())
-			Expect(source).To(ContainSubstring("Mode: fwutils.WriteOnlySecretModeOnly"))
-			Expect(source).To(ContainSubstring(`WriteOnlyDescription: "` + description + ` This write-only value is not stored in Terraform state."`))
+			Expect(source).To(ContainSubstring("Mode: fwutils.WriteOnlySecretModeDual"))
+			Expect(source).To(ContainSubstring(`WriteOnlyDescription: "` + description + ` This write-only value is not stored in Terraform state. Requires Terraform 1.11+."`))
 			Expect(source).To(ContainSubstring(`TriggerDescription: "Version trigger for ` + original + `_wo rotation."`))
+			Expect(source).To(ContainSubstring(`Prefer ` + "`" + original + `_wo` + "`" + `, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state."`))
 
+			// The plaintext fallback is stateful, so it keeps a model field; the
+			// write-only pair keeps exactly one each.
+			Expect(regexp.MustCompile(goName + `\s+types\.String\s+` + "`tfsdk:\"" + original + `"` + "`").MatchString(source)).To(BeTrue())
 			Expect(regexp.MustCompile(goName + `Wo\s+types\.String\s+` + "`tfsdk:\"" + original + `_wo"` + "`").MatchString(source)).To(BeTrue())
 			Expect(regexp.MustCompile(goName + `WoVersion\s+types\.String\s+` + "`tfsdk:\"" + original + `_wo_version"` + "`").MatchString(source)).To(BeTrue())
-			Expect(source).NotTo(ContainSubstring(goName + ` types.String ` + "`tfsdk:\"" + original + `\"` + "`"))
+			Expect(strings.Count(source, "`tfsdk:\""+original+"\"`")).To(Equal(1))
 			Expect(strings.Count(source, "`tfsdk:\""+original+"_wo\"`")).To(Equal(1))
 			Expect(strings.Count(source, "`tfsdk:\""+original+"_wo_version\"`")).To(Equal(1))
 		},

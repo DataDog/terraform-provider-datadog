@@ -2019,6 +2019,22 @@ Required:
 - `interval_secs` (Number) The interval, in seconds, over which metrics are aggregated. Must be between 1 and 60. Value must be between 1 and 60.
 - `mode` (String) The aggregation mode. One of `auto`, `sum`, `latest`, `count`, `max`, `min`, `mean`. Valid values are `auto`, `sum`, `latest`, `count`, `max`, `min`, `mean`.
 
+Optional:
+
+- `aggregation_timing` (Block List) Configures how metrics are assigned to aggregation windows. When omitted, metrics are grouped using system time. (see [below for nested schema](#nestedblock--config--processor_group--processor--aggregate--aggregation_timing))
+
+<a id="nestedblock--config--processor_group--processor--aggregate--aggregation_timing"></a>
+### Nested Schema for `config.processor_group.processor.aggregate.aggregation_timing`
+
+Required:
+
+- `type` (String) Determines whether metrics are assigned to aggregation windows based on when they are processed (`system_time`) or their timestamps (`event_time`). Valid values are `system_time`, `event_time`.
+
+Optional:
+
+- `allowed_lateness_secs` (Number) Grace period, in seconds, for late-arriving metrics when using event time. Defaults to 10 seconds when omitted. Value must be between 0 and 3600.
+
+
 
 <a id="nestedblock--config--processor_group--processor--custom_processor"></a>
 ### Nested Schema for `config.processor_group.processor.custom_processor`

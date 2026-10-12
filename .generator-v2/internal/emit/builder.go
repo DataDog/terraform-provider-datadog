@@ -932,7 +932,10 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 		if a.WriteOnlySecret {
 			secret := buildWriteOnlySecretView(a, b.namer.base)
 			attrViews = append(attrViews, AttrView{TFName: tfName, WriteOnlySecret: &secret})
+			// The plaintext companion is stateful, so unlike the write-only
+			// attribute it needs a model field the plan round-trips through.
 			fields = append(fields,
+				ModelFieldView{GoField: model.SdkName(secret.OriginalAttr), GoType: "types.String", TFName: secret.OriginalAttr},
 				ModelFieldView{GoField: model.SdkName(secret.WriteOnlyAttr), GoType: "types.String", TFName: secret.WriteOnlyAttr},
 				ModelFieldView{GoField: model.SdkName(secret.TriggerAttr), GoType: "types.String", TFName: secret.TriggerAttr},
 			)
@@ -1264,15 +1267,24 @@ func buildWriteOnlySecretView(attribute *model.Attribute, artifactBase string) W
 	writeOnlyAttr := tfName + "_wo"
 	parentBlocks := writeOnlyParentBlocks(attribute.Path)
 	localStem := writeOnlyLocalStem(parentBlocks, tfName)
+	// The plaintext attribute is the Terraform <1.11 fallback: identical value,
+	// but stored in state, so its description says so rather than repeating the
+	// write-only wording.
+	exclusivity := "Exactly one of `" + tfName + "` or `" + writeOnlyAttr + "` must be set."
+	if !attribute.SecretRequiredOnCreate {
+		exclusivity = "Conflicts with `" + writeOnlyAttr + "`."
+	}
 	return WriteOnlySecretView{
-		OriginalAttr:         tfName,
-		WriteOnlyAttr:        writeOnlyAttr,
-		TriggerAttr:          tfName + "_wo_version",
-		SDKField:             sdkField,
-		ParentBlocks:         parentBlocks,
-		RequiredOnCreate:     attribute.SecretRequiredOnCreate,
-		RequiredOnUpdate:     attribute.SecretRequiredOnUpdate,
-		WriteOnlyDescription: description + "This write-only value is not stored in Terraform state.",
+		OriginalAttr:     tfName,
+		WriteOnlyAttr:    writeOnlyAttr,
+		TriggerAttr:      tfName + "_wo_version",
+		SDKField:         sdkField,
+		ParentBlocks:     parentBlocks,
+		RequiredOnCreate: attribute.SecretRequiredOnCreate,
+		RequiredOnUpdate: attribute.SecretRequiredOnUpdate,
+		OriginalDescription: description + exclusivity +
+			" Prefer `" + writeOnlyAttr + "`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.",
+		WriteOnlyDescription: description + "This write-only value is not stored in Terraform state. Requires Terraform 1.11+.",
 		TriggerDescription:   "Version trigger for " + writeOnlyAttr + " rotation.",
 		ConfigVar:            artifactBase + upperFirst(localStem) + "WriteOnlySecretConfig",
 		HandlerVar:           localStem + "WriteOnlySecretHandler",
