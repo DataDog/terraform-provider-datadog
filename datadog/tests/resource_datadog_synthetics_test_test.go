@@ -817,6 +817,90 @@ resource "datadog_synthetics_test" "bar" {
 }`, uniq, locator)
 }
 
+func TestAccDatadogSyntheticsMobileTest_TypeTextDelay(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	const resourceName = "datadog_synthetics_test.bar"
+	checkDelay := func(delay string) resource.TestCheckFunc {
+		return resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(providers.sdkV2Provider),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.0.type", "typeText"),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.0.params.0.value", "hello"),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.0.params.0.delay", delay),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.0.params.0.with_enter", "true"),
+		)
+	}
+	withoutDelay := createSyntheticsMobileTestTypeTextDelayConfig(testName, "")
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(providers.sdkV2Provider),
+		Steps: []resource.TestStep{
+			{Config: withoutDelay, Check: checkDelay("0")},
+			{Config: createSyntheticsMobileTestTypeTextDelayConfig(testName, "delay = 125"), Check: checkDelay("125")},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			{Config: createSyntheticsMobileTestTypeTextDelayConfig(testName, "delay = 0"), Check: checkDelay("0")},
+			{Config: createSyntheticsMobileTestTypeTextDelayConfig(testName, "delay = 250"), Check: checkDelay("250")},
+			{Config: withoutDelay, Check: checkDelay("0")},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			{Config: withoutDelay, PlanOnly: true},
+		},
+	})
+}
+
+func createSyntheticsMobileTestTypeTextDelayConfig(uniq, delay string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "bar" {
+  name      = %q
+  type      = "mobile"
+  status    = "paused"
+  message   = ""
+  locations = []
+
+  mobile_options_list {
+    device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+    tick_every = 43200
+    mobile_application {
+      application_id = "ab0e0aed-536d-411a-9a99-5428c27d8f8e"
+      reference_id   = "6115922a-5f5d-455e-bc7e-7955a57f3815"
+      reference_type = "version"
+    }
+  }
+
+  mobile_step {
+    name    = "Type text"
+    type    = "typeText"
+    timeout = 30
+    params {
+      value      = "hello"
+      with_enter = true
+      %s
+      element {
+        context      = "NATIVE_APP"
+        context_type = "native"
+        user_locator {
+          fail_test_on_cannot_locate = true
+          values {
+            type  = "id"
+            value = "some-input"
+          }
+        }
+      }
+    }
+  }
+}`, uniq, delay)
+}
+
 func TestAccDatadogSyntheticsMobileTest_Updated(t *testing.T) {
 	cleanupSyntheticsTests(t)
 	t.Parallel()

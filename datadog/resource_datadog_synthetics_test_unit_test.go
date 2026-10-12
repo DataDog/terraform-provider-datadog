@@ -102,3 +102,59 @@ func TestBuildDatadogParamsElementForMobileStep_Locators(t *testing.T) {
 		})
 	}
 }
+
+func TestBuildDatadogParamsForMobileStep_TypeTextDelay(t *testing.T) {
+	for _, tc := range []struct {
+		name      string
+		delay     interface{}
+		withEnter bool
+	}{
+		{name: "omitted"},
+		{name: "zero", delay: 0},
+		{name: "configured", delay: 125, withEnter: true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			rawParams := map[string]interface{}{
+				"value":      "hello",
+				"with_enter": tc.withEnter,
+				"element": []interface{}{map[string]interface{}{
+					"context": "NATIVE_APP", "context_type": "native", "text_content": "Input",
+				}},
+			}
+			if tc.delay != nil {
+				rawParams["delay"] = tc.delay
+			}
+			paramsSchema := syntheticsMobileStepParams()
+			data := schema.TestResourceDataRaw(t, map[string]*schema.Schema{"params": &paramsSchema}, map[string]interface{}{
+				"params": []interface{}{rawParams},
+			})
+			params := data.Get("params").([]interface{})[0].(map[string]interface{})
+			delay := params["delay"].(int)
+			var built datadogV1.SyntheticsMobileStepParams
+			require.NotPanics(t, func() {
+				built = buildDatadogParamsForMobileStep(datadogV1.SYNTHETICSMOBILESTEPTYPE_TYPETEXT, params)
+			})
+			assert.Equal(t, delay != 0, built.HasDelay())
+			assert.Equal(t, int64(delay), built.GetDelay())
+
+			encoded, err := json.Marshal(built)
+			require.NoError(t, err)
+			var wire map[string]interface{}
+			require.NoError(t, json.Unmarshal(encoded, &wire))
+			assert.Equal(t, "hello", wire["value"])
+			assert.Equal(t, tc.withEnter, wire["withEnter"])
+			if delay == 0 {
+				assert.NotContains(t, wire, "delay")
+			} else {
+				assert.Equal(t, float64(delay), wire["delay"])
+			}
+
+			var decoded datadogV1.SyntheticsMobileStepParams
+			require.NoError(t, json.Unmarshal(encoded, &decoded))
+			step := datadogV1.NewSyntheticsMobileStep("Type text", decoded, datadogV1.SYNTHETICSMOBILESTEPTYPE_TYPETEXT)
+			flattened := buildTerraformMobileTestSteps([]datadogV1.SyntheticsMobileStep{*step})
+			require.NoError(t, data.Set("params", flattened[0]["params"]))
+			assert.Equal(t, params, data.Get("params").([]interface{})[0])
+		})
+	}
+}
