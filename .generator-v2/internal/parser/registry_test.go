@@ -299,8 +299,11 @@ func TestPluralize(t *testing.T) {
 		"api_key":                                 "api_keys",
 		"team_membership":                         "team_memberships",
 		"sensitive_data_scanner_standard_pattern": "sensitive_data_scanner_standard_patterns",
-		"team":         "teams",
-		"status":       "statuses",
+		"team":   "teams",
+		"status": "statuses",
+		// datastore is a live case: datadog-api-spec's actions_datastore family
+		// relies on this derivation for the datadog_datastores list data source.
+		"datastore":    "datastores",
 		"powerpack":    "powerpacks",
 		"logs_archive": "logs_archives",
 		// A mass noun inflects regularly: legal, reads poorly, overridable.
