@@ -213,3 +213,79 @@ func TestBuildDatadogParamsForMobileStep_TypeTextDelay(t *testing.T) {
 		})
 	}
 }
+
+func TestSyntheticsMobileSecureVariables(t *testing.T) {
+	variable := func(name, pattern, example string) map[string]interface{} {
+		return map[string]interface{}{"name": name, "type": "text", "secure": true, "pattern": pattern, "example": example}
+	}
+	for _, tc := range []struct {
+		name     string
+		prior    []interface{}
+		response string
+		want     []map[string]string
+	}{
+		{
+			name:     "masked values survive repeated refreshes",
+			prior:    []interface{}{variable("TOKEN", "synthetic-secret", "synthetic-example")},
+			response: `[{"name":"TOKEN","type":"text","secure":true}]`,
+			want:     []map[string]string{{"pattern": "synthetic-secret", "example": "synthetic-example"}},
+		},
+		{
+			name:     "reordered variables retain their own values",
+			prior:    []interface{}{variable("FIRST", "first-secret", "first-example"), variable("SECOND", "second-secret", "second-example")},
+			response: `[{"name":"SECOND","type":"text","secure":true},{"name":"FIRST","type":"text","secure":true}]`,
+			want:     []map[string]string{{"pattern": "second-secret", "example": "second-example"}, {"pattern": "first-secret", "example": "first-example"}},
+		},
+		{
+			name:     "updated planned values survive masked response",
+			prior:    []interface{}{variable("TOKEN", "updated-secret", "updated-example")},
+			response: `[{"name":"TOKEN","type":"text","secure":true}]`,
+			want:     []map[string]string{{"pattern": "updated-secret", "example": "updated-example"}},
+		},
+		{
+			name:     "explicit API values override local values including empty strings",
+			prior:    []interface{}{variable("TOKEN", "old-secret", "old-example")},
+			response: `[{"name":"TOKEN","type":"text","secure":true,"pattern":"remote-value","example":""}]`,
+			want:     []map[string]string{{"pattern": "remote-value", "example": ""}},
+		},
+		{
+			name:     "import cannot recover unknown secrets",
+			response: `[{"name":"TOKEN","type":"text","secure":true}]`,
+			want:     []map[string]string{{"pattern": "", "example": ""}},
+		},
+		{
+			name:     "renamed variable does not inherit another secret",
+			prior:    []interface{}{variable("TOKEN", "old-secret", "old-example")},
+			response: `[{"name":"OTHER","type":"text","secure":true}]`,
+			want:     []map[string]string{{"pattern": "", "example": ""}},
+		},
+		{
+			name:     "unsecured variable does not retain omitted values",
+			prior:    []interface{}{variable("TOKEN", "old-secret", "old-example")},
+			response: `[{"name":"TOKEN","type":"text","secure":false}]`,
+			want:     []map[string]string{{"pattern": "", "example": ""}},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			data := schema.TestResourceDataRaw(t, resourceDatadogSyntheticsTest().SchemaMap(), map[string]interface{}{
+				"name": "Secure variables", "type": "mobile", "status": "paused", "locations": []interface{}{}, "config_variable": tc.prior,
+			})
+			response := buildDatadogSyntheticsMobileTest(data)
+			var variables []datadogV1.SyntheticsConfigVariable
+			require.NoError(t, json.Unmarshal([]byte(tc.response), &variables))
+			config := response.GetConfig()
+			config.SetVariables(variables)
+			response.SetConfig(config)
+			for refresh := 0; refresh < 2; refresh++ {
+				require.Empty(t, updateSyntheticsMobileTestLocalState(data, response))
+				actual := data.Get("config_variable").([]interface{})
+				require.Len(t, actual, len(tc.want))
+				for i, expected := range tc.want {
+					for key, value := range expected {
+						assert.Equal(t, value, actual[i].(map[string]interface{})[key], "refresh %d variable %d %s", refresh, i, key)
+					}
+				}
+			}
+		})
+	}
+}
