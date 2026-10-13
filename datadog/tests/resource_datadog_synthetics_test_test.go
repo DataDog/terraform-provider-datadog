@@ -9719,3 +9719,82 @@ resource "datadog_synthetics_test" "test_mcp" {
 }
 `, testName)
 }
+
+func TestAccDatadogSyntheticsMobileTest_PlaySubTest(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	const resourceName = "datadog_synthetics_test.bar"
+	checkSubtest := func(index int) resource.TestCheckFunc {
+		return resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(providers.sdkV2Provider),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.0.type", "playSubTest"),
+			resource.TestCheckResourceAttrPair(resourceName, "mobile_step.0.params.0.subtest_public_id", fmt.Sprintf("datadog_synthetics_test.child.%d", index), "id"),
+		)
+	}
+	first := createSyntheticsMobileTestPlaySubTestConfig(testName, 0)
+	second := createSyntheticsMobileTestPlaySubTestConfig(testName, 1)
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(providers.sdkV2Provider),
+		Steps: []resource.TestStep{
+			{Config: first, Check: checkSubtest(0)},
+			{Config: first, PlanOnly: true},
+			{ResourceName: resourceName, ImportState: true, ImportStateVerify: true},
+			{Config: second, PlanOnly: true, ExpectNonEmptyPlan: true},
+			{Config: second, Check: checkSubtest(1)},
+			{ResourceName: resourceName, ImportState: true, ImportStateVerify: true},
+			{Config: second, PlanOnly: true},
+		},
+	})
+}
+
+func createSyntheticsMobileTestPlaySubTestConfig(uniq string, childIndex int) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "child" {
+  count     = 2
+  name      = "%[1]s-child-${count.index}"
+  type      = "mobile"
+  status    = "paused"
+  message   = ""
+  locations = []
+
+  mobile_options_list {
+    device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+    tick_every = 43200
+    mobile_application {
+      application_id = "ab0e0aed-536d-411a-9a99-5428c27d8f8e"
+      reference_id   = "6115922a-5f5d-455e-bc7e-7955a57f3815"
+      reference_type = "version"
+    }
+  }
+}
+
+resource "datadog_synthetics_test" "bar" {
+  name      = "%[1]s"
+  type      = "mobile"
+  status    = "paused"
+  message   = ""
+  locations = []
+
+  mobile_options_list {
+    device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+    tick_every = 43200
+    mobile_application {
+      application_id = "ab0e0aed-536d-411a-9a99-5428c27d8f8e"
+      reference_id   = "6115922a-5f5d-455e-bc7e-7955a57f3815"
+      reference_type = "version"
+    }
+  }
+
+  mobile_step {
+    name    = "Run subtest"
+    type    = "playSubTest"
+    timeout = 30
+    params {
+      subtest_public_id = datadog_synthetics_test.child[%[2]d].id
+    }
+  }
+}`, uniq, childIndex)
+}

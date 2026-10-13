@@ -5776,7 +5776,7 @@ func buildTerraformMobileTestSteps(steps []datadogV1.SyntheticsMobileStep) []map
 			localParams["positions"] = positions
 		}
 		if params.HasSubtestPublicId() {
-			localParams["subtestPublicId"] = params.GetSubtestPublicId()
+			localParams["subtest_public_id"] = params.GetSubtestPublicId()
 		}
 		if params.HasValue() {
 			value := params.GetValue()
