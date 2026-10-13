@@ -4,6 +4,14 @@ package model
 // OpenAPI extension on a flagged operation. It is nil on an Operation whose
 // extension is absent, and describes the shape only — decoding lives elsewhere.
 type TrackingFieldMetadata struct {
+	// Family and Block name the tag-scoped registry address this metadata
+	// was desugared from, e.g. ("integration_databricks_account",
+	// "datasource_list"); both are empty for a legacy operation-level
+	// annotation. They exist so a diagnostic can quote the address the author
+	// actually wrote instead of a path the registry never mentions, and are not
+	// serialized: they say where the annotation lives, not what it declares.
+	Family string `json:"-"`
+	Block  string `json:"-"`
 	// ArtifactKind selects resource (full CRUD) vs data_source (read-only).
 	// Required.
 	ArtifactKind ArtifactKind `json:"artifact_kind"`
