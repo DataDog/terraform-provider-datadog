@@ -1549,7 +1549,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
-- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--distribution_definition--request))
+- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `llm_observability_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--distribution_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -1564,6 +1564,7 @@ Optional:
 
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_stats_query))
+- `llm_observability_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--llm_observability_query))
 - `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
@@ -1663,6 +1664,70 @@ Optional:
 - `alias` (String) A user-assigned alias for the column.
 - `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--distribution_definition--request--llm_observability_query"></a>
+### Nested Schema for `widget.distribution_definition.request.llm_observability_query`
+
+Required:
+
+- `index` (String) The name of the index to query.
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--llm_observability_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--llm_observability_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--llm_observability_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--distribution_definition--request--llm_observability_query--compute_query"></a>
+### Nested Schema for `widget.distribution_definition.request.llm_observability_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--distribution_definition--request--llm_observability_query--group_by"></a>
+### Nested Schema for `widget.distribution_definition.request.llm_observability_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--llm_observability_query--group_by--sort_query))
+
+<a id="nestedblock--widget--distribution_definition--request--llm_observability_query--group_by--sort_query"></a>
+### Nested Schema for `widget.distribution_definition.request.llm_observability_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--distribution_definition--request--llm_observability_query--multi_compute"></a>
+### Nested Schema for `widget.distribution_definition.request.llm_observability_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
 
 
 
@@ -3224,7 +3289,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
-- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request))
+- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `llm_observability_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -3239,6 +3304,7 @@ Optional:
 
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_stats_query))
+- `llm_observability_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--llm_observability_query))
 - `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
@@ -3338,6 +3404,70 @@ Optional:
 - `alias` (String) A user-assigned alias for the column.
 - `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--llm_observability_query"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.request.llm_observability_query`
+
+Required:
+
+- `index` (String) The name of the index to query.
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--llm_observability_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--llm_observability_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--llm_observability_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--llm_observability_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.request.llm_observability_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--llm_observability_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.request.llm_observability_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--llm_observability_query--group_by--sort_query))
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--llm_observability_query--group_by--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.request.llm_observability_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--llm_observability_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.request.llm_observability_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
 
 
 
