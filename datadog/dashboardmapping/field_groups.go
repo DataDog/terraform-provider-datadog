@@ -304,7 +304,7 @@ var formulaAndFunctionEventQuerySearchFields = []FieldSpec{
 var formulaAndFunctionEventQueryFields = []FieldSpec{
 	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "The data source for event platform-based queries.",
-		ValidValues: []string{"logs", "spans", "network", "rum", "security_signals", "profiles", "audit", "events", "ci_tests", "ci_pipelines", "incident_analytics", "product_analytics", "on_call_events", "errors", "llm_observability"}},
+		ValidValues: []string{"logs", "spans", "network", "network_device_flows", "rum", "security_signals", "profiles", "audit", "events", "ci_tests", "ci_pipelines", "incident_analytics", "product_analytics", "on_call_events", "errors", "llm_observability"}},
 	{HCLKey: "storage", Type: TypeString, OmitEmpty: true,
 		Description: "Option for storage location. Feature in Private Beta."},
 	{HCLKey: "search", Type: TypeBlock, OmitEmpty: true,
