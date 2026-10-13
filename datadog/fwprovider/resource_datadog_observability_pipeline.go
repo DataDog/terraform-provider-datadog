@@ -2188,7 +2188,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 															"enabled_metric_aggregation": schema.BoolAttribute{
 																Optional:    true,
 																Computed:    true,
-																Description: "[Recommended] Indicates whether generated metrics are automatically aggregated  before being sent to Datadog and include the `worker_uuid` tag.",
+																Description: "[Recommended] Indicates whether generated metrics are automatically aggregated and enriched with the `worker_uuid` tag before being sent to the metric destination.",
 															},
 														},
 														Blocks: map[string]schema.Block{

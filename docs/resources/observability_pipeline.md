@@ -2201,7 +2201,7 @@ Optional:
 
 Optional:
 
-- `enabled_metric_aggregation` (Boolean) [Recommended] Indicates whether generated metrics are automatically aggregated  before being sent to Datadog and include the `worker_uuid` tag.
+- `enabled_metric_aggregation` (Boolean) [Recommended] Indicates whether generated metrics are automatically aggregated and enriched with the `worker_uuid` tag before being sent to the metric destination.
 - `metric` (Block List) Configuration for generating individual metrics. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_metrics--metric))
 
 <a id="nestedblock--config--processor_group--processor--generate_metrics--metric"></a>
