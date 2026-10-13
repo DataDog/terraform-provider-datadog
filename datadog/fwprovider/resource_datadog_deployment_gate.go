@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -47,9 +48,19 @@ type deploymentGateRuleModel struct {
 }
 
 type deploymentGateRuleOptionsModel struct {
-	ExcludedResources types.List   `tfsdk:"excluded_resources"`
-	Duration          types.Int64  `tfsdk:"duration"`
-	Query             types.String `tfsdk:"query"`
+	AllowedResources    types.List                     `tfsdk:"allowed_resources"`
+	ExcludedResources   types.List                     `tfsdk:"excluded_resources"`
+	Duration            types.Int64                    `tfsdk:"duration"`
+	FailOnNoData        types.Bool                     `tfsdk:"fail_on_no_data"`
+	FailOnNoGroupsFound types.Bool                     `tfsdk:"fail_on_no_groups_found"`
+	MonitorIDs          []deploymentGateMonitorIDModel `tfsdk:"monitor_ids"`
+	Query               types.String                   `tfsdk:"query"`
+	Warmup              types.Int64                    `tfsdk:"warmup"`
+}
+
+type deploymentGateMonitorIDModel struct {
+	ID     types.String `tfsdk:"id"`
+	Groups types.List   `tfsdk:"groups"`
 }
 
 func NewDeploymentGateResource() resource.Resource {
@@ -140,11 +151,26 @@ func (r *deploymentGateResource) Schema(_ context.Context, _ resource.SchemaRequ
 								},
 								"query": schema.StringAttribute{
 									Optional:    true,
-									Description: "The query for monitor rules.",
+									Description: "A query that selects the monitors to evaluate. Mutually exclusive with monitor_ids.",
+								},
+								"monitor_ids": schema.ListNestedAttribute{
+									Optional:    true,
+									Description: "Specific monitors to evaluate. Mutually exclusive with query.",
+									NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+										"id":     schema.StringAttribute{Required: true, Description: "The monitor's decimal ID."},
+										"groups": schema.ListAttribute{Required: true, ElementType: types.StringType, Description: "Exact group names to evaluate; an empty list evaluates all groups."},
+									}},
+								},
+								"fail_on_no_data":         schema.BoolAttribute{Optional: true, Description: "Fail if a matching monitor group is in NO DATA state (API default: true)."},
+								"fail_on_no_groups_found": schema.BoolAttribute{Optional: true, Description: "Fail if no monitor groups are found (API default: false)."},
+								"warmup":                  schema.Int64Attribute{Optional: true, Description: "Seconds to wait after deployment starts before evaluating monitors (API default: 0)."},
+								"allowed_resources": schema.ListAttribute{
+									Optional: true, ElementType: types.StringType,
+									Description: "Resources to include in faulty deployment detection. Mutually exclusive with excluded_resources.",
 								},
 								"excluded_resources": schema.ListAttribute{
 									Optional:    true,
-									Description: "Resources to exclude from faulty deployment detection.",
+									Description: "Resources to exclude from faulty deployment detection. Mutually exclusive with allowed_resources.",
 									ElementType: types.StringType,
 								},
 							},
@@ -183,7 +209,7 @@ func (r *deploymentGateResource) Read(ctx context.Context, request resource.Read
 
 	r.updateState(ctx, &state, &resp)
 
-	response.Diagnostics.Append(r.readAndReconcileRules(ctx, id, &state)...)
+	response.Diagnostics.Append(r.readAndReconcileRules(ctx, id, &state, true)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -235,7 +261,7 @@ func (r *deploymentGateResource) Create(ctx context.Context, request resource.Cr
 		r.updateState(ctx, &state, &gateResp)
 	}
 
-	response.Diagnostics.Append(r.readAndReconcileRules(ctx, gateID, &state)...)
+	response.Diagnostics.Append(r.readAndReconcileRules(ctx, gateID, &state, false)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -309,7 +335,7 @@ func (r *deploymentGateResource) Update(ctx context.Context, request resource.Up
 
 	response.Diagnostics.Append(r.syncRules(ctx, id, &state)...)
 	response.Diagnostics.Append(
-		r.readAndReconcileRules(ctx, id, &state)...,
+		r.readAndReconcileRules(ctx, id, &state, false)...,
 	)
 	if response.Diagnostics.HasError() {
 		return
@@ -459,23 +485,37 @@ func (r *deploymentGateResource) validateRules(ctx context.Context, state *deplo
 
 		ruleType := rule.Type.ValueString()
 
-		// Check for faulty_deployment_detection specific options
-		hasFddOptions := !rule.Options.ExcludedResources.IsNull()
-
-		// Check for monitor specific options
-		hasMonitorOptions := !rule.Options.Query.IsNull()
+		// Options are mutually exclusive across rule types and selection modes.
+		hasFddOptions := !rule.Options.ExcludedResources.IsNull() || !rule.Options.AllowedResources.IsNull()
+		hasMonitorOptions := !rule.Options.Query.IsNull() || rule.Options.MonitorIDs != nil ||
+			!rule.Options.FailOnNoData.IsNull() || !rule.Options.FailOnNoGroupsFound.IsNull() || !rule.Options.Warmup.IsNull()
+		if !rule.Options.AllowedResources.IsNull() && !rule.Options.ExcludedResources.IsNull() {
+			diags.AddError("Invalid faulty deployment detection options", fmt.Sprintf("Rule %d: allowed_resources and excluded_resources are mutually exclusive.", i))
+		}
+		if !rule.Options.Query.IsNull() && rule.Options.MonitorIDs != nil {
+			diags.AddError("Invalid monitor options", fmt.Sprintf("Rule %d: query and monitor_ids are mutually exclusive.", i))
+		}
+		if rule.Options.MonitorIDs != nil && len(rule.Options.MonitorIDs) == 0 {
+			diags.AddError("Invalid monitor options", fmt.Sprintf("Rule %d: monitor_ids must contain at least one monitor.", i))
+		}
+		if !rule.Options.Warmup.IsNull() && !rule.Options.Warmup.IsUnknown() && rule.Options.Warmup.ValueInt64() < 0 {
+			diags.AddError("Invalid monitor options", fmt.Sprintf("Rule %d: warmup must be non-negative.", i))
+		}
+		if ruleType == "monitor" && !hasFddOptions && rule.Options.Query.IsNull() && rule.Options.MonitorIDs == nil {
+			diags.AddError("Invalid monitor options", fmt.Sprintf("Rule %d: either query or monitor_ids is required.", i))
+		}
 
 		if ruleType == "faulty_deployment_detection" && hasMonitorOptions {
 			diags.AddError(
 				"Invalid options for deployment rule type",
-				fmt.Sprintf("Rule %d: type 'faulty_deployment_detection' cannot use monitor options (query). "+
-					"Use faulty deployment detection options instead: duration, excluded_resources.", i),
+				fmt.Sprintf("Rule %d: type 'faulty_deployment_detection' cannot use monitor options. "+
+					"Use faulty deployment detection options instead: duration, allowed_resources, excluded_resources.", i),
 			)
 		} else if ruleType == "monitor" && hasFddOptions {
 			diags.AddError(
 				"Invalid options for deployment rule type",
-				fmt.Sprintf("Rule %d: type 'monitor' cannot use faulty deployment detection options (excluded_resources). "+
-					"Use monitor options instead: duration, query.", i),
+				fmt.Sprintf("Rule %d: type 'monitor' cannot use faulty deployment detection options. "+
+					"Use monitor options instead: duration, query, monitor_ids, fail_on_no_data, fail_on_no_groups_found, warmup.", i),
 			)
 		}
 	}
@@ -512,7 +552,7 @@ func (r *deploymentGateResource) createRules(ctx context.Context, gateID string,
 }
 
 // Reads all rules from a gate and removes rules not managed from terraform
-func (r *deploymentGateResource) readAndReconcileRules(ctx context.Context, gateID string, state *deploymentGateModel) diag.Diagnostics {
+func (r *deploymentGateResource) readAndReconcileRules(ctx context.Context, gateID string, state *deploymentGateModel, refresh bool) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	rulesResp, _, err := r.Api.GetDeploymentGateRules(r.Auth, gateID)
@@ -569,7 +609,7 @@ func (r *deploymentGateResource) readAndReconcileRules(ctx context.Context, gate
 		}
 
 		updated := existing
-		r.updateRuleStateFromAttributes(ctx, &updated, matched)
+		r.updateRuleStateFromAttributes(ctx, &updated, matched, refresh)
 		newRules = append(newRules, updated)
 	}
 
@@ -779,34 +819,11 @@ func (r *deploymentGateResource) buildRuleRequestBody(ctx context.Context, rule 
 		attributes.SetType(rule.Type.ValueString())
 	}
 
-	options := datadogV2.DeploymentRulesOptions{}
-
-	if rule.Type.ValueString() == "faulty_deployment_detection" {
-		fdd := datadogV2.DeploymentRuleOptionsFaultyDeploymentDetection{}
-		if !rule.Options.Duration.IsNull() {
-			fdd.Duration = rule.Options.Duration.ValueInt64Pointer()
-		}
-		if !rule.Options.ExcludedResources.IsNull() {
-			var excluded []string
-			diags.Append(rule.Options.ExcludedResources.ElementsAs(ctx, &excluded, false)...)
-			if !diags.HasError() {
-				fdd.ExcludedResources = excluded
-			}
-		}
-		options.DeploymentRuleOptionsFaultyDeploymentDetection = &fdd
-		options.DeploymentRuleOptionsMonitor = nil
-	} else if rule.Type.ValueString() == "monitor" {
-		mon := datadogV2.DeploymentRuleOptionsMonitor{}
-		if !rule.Options.Duration.IsNull() {
-			mon.Duration = rule.Options.Duration.ValueInt64Pointer()
-		}
-		if !rule.Options.Query.IsNull() {
-			mon.Query = rule.Options.Query.ValueString()
-		}
-		options.DeploymentRuleOptionsMonitor = &mon
-		options.DeploymentRuleOptionsFaultyDeploymentDetection = nil
+	options, optionDiags := buildRuleOptions(ctx, rule)
+	diags.Append(optionDiags...)
+	if diags.HasError() {
+		return nil, diags
 	}
-
 	attributes.SetOptions(options)
 
 	req := datadogV2.NewCreateDeploymentRuleParamsWithDefaults()
@@ -825,6 +842,63 @@ func (r *deploymentGateResource) buildRuleRequestBody(ctx context.Context, rule 
 	return req, diags
 }
 
+// buildRuleOptions maps both monitor selection modes and faulty deployment detection.
+func buildRuleOptions(ctx context.Context, rule *deploymentGateRuleModel) (datadogV2.DeploymentRulesOptions, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	opts := rule.Options
+	options := datadogV2.DeploymentRulesOptions{}
+	if rule.Type.ValueString() == "faulty_deployment_detection" {
+		fdd := &datadogV2.DeploymentRuleOptionsFaultyDeploymentDetection{}
+		if !opts.Duration.IsNull() {
+			fdd.SetDuration(opts.Duration.ValueInt64())
+		}
+		if !opts.AllowedResources.IsNull() {
+			allowed := []string{}
+			diags.Append(opts.AllowedResources.ElementsAs(ctx, &allowed, false)...)
+			fdd.SetAllowedResources(allowed)
+		}
+		if !opts.ExcludedResources.IsNull() {
+			excluded := []string{}
+			diags.Append(opts.ExcludedResources.ElementsAs(ctx, &excluded, false)...)
+			fdd.SetExcludedResources(excluded)
+		}
+		options.DeploymentRuleOptionsFaultyDeploymentDetection = fdd
+	} else if rule.Type.ValueString() == "monitor" {
+		if opts.MonitorIDs != nil {
+			mon := &datadogV2.DeploymentRuleOptionsMonitorIds{}
+			monitors := make([]datadogV2.DeploymentRuleOptionsMonitorId, 0, len(opts.MonitorIDs))
+			for _, selected := range opts.MonitorIDs {
+				groups := []string{}
+				diags.Append(selected.Groups.ElementsAs(ctx, &groups, false)...)
+				monitors = append(monitors, *datadogV2.NewDeploymentRuleOptionsMonitorId(groups, selected.ID.ValueString()))
+			}
+			mon.SetMonitorIds(monitors)
+			setMonitorOptions(opts, &mon.Duration, &mon.FailOnNoData, &mon.FailOnNoGroupsFound, &mon.Warmup)
+			options.DeploymentRuleOptionsMonitorIds = mon
+		} else {
+			mon := &datadogV2.DeploymentRuleOptionsMonitor{Query: opts.Query.ValueString()}
+			setMonitorOptions(opts, &mon.Duration, &mon.FailOnNoData, &mon.FailOnNoGroupsFound, &mon.Warmup)
+			options.DeploymentRuleOptionsMonitor = mon
+		}
+	}
+	return options, diags
+}
+
+func setMonitorOptions(opts *deploymentGateRuleOptionsModel, duration **int64, failOnNoData, failOnNoGroupsFound **bool, warmup **int64) {
+	if !opts.Duration.IsNull() {
+		*duration = opts.Duration.ValueInt64Pointer()
+	}
+	if !opts.FailOnNoData.IsNull() {
+		*failOnNoData = opts.FailOnNoData.ValueBoolPointer()
+	}
+	if !opts.FailOnNoGroupsFound.IsNull() {
+		*failOnNoGroupsFound = opts.FailOnNoGroupsFound.ValueBoolPointer()
+	}
+	if !opts.Warmup.IsNull() {
+		*warmup = opts.Warmup.ValueInt64Pointer()
+	}
+}
+
 // buildRuleUpdateRequestBody builds the request body for updating a rule
 func (r *deploymentGateResource) buildRuleUpdateRequestBody(ctx context.Context, rule *deploymentGateRuleModel) (*datadogV2.UpdateDeploymentRuleParams, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
@@ -837,34 +911,11 @@ func (r *deploymentGateResource) buildRuleUpdateRequestBody(ctx context.Context,
 		attributes.SetName(rule.Name.ValueString())
 	}
 
-	options := datadogV2.DeploymentRulesOptions{}
-
-	if rule.Type.ValueString() == "faulty_deployment_detection" {
-		fdd := datadogV2.DeploymentRuleOptionsFaultyDeploymentDetection{}
-		if !rule.Options.Duration.IsNull() {
-			fdd.Duration = rule.Options.Duration.ValueInt64Pointer()
-		}
-		if !rule.Options.ExcludedResources.IsNull() {
-			var excluded []string
-			diags.Append(rule.Options.ExcludedResources.ElementsAs(ctx, &excluded, false)...)
-			if !diags.HasError() {
-				fdd.ExcludedResources = excluded
-			}
-		}
-		options.DeploymentRuleOptionsFaultyDeploymentDetection = &fdd
-		options.DeploymentRuleOptionsMonitor = nil
-	} else if rule.Type.ValueString() == "monitor" {
-		mon := datadogV2.DeploymentRuleOptionsMonitor{}
-		if !rule.Options.Duration.IsNull() {
-			mon.Duration = rule.Options.Duration.ValueInt64Pointer()
-		}
-		if !rule.Options.Query.IsNull() {
-			mon.Query = rule.Options.Query.ValueString()
-		}
-		options.DeploymentRuleOptionsMonitor = &mon
-		options.DeploymentRuleOptionsFaultyDeploymentDetection = nil
+	options, optionDiags := buildRuleOptions(ctx, rule)
+	diags.Append(optionDiags...)
+	if diags.HasError() {
+		return nil, diags
 	}
-
 	attributes.SetOptions(options)
 
 	req := datadogV2.NewUpdateDeploymentRuleParamsWithDefaults()
@@ -875,7 +926,7 @@ func (r *deploymentGateResource) buildRuleUpdateRequestBody(ctx context.Context,
 	return req, diags
 }
 
-func (r *deploymentGateResource) updateRuleStateFromAttributes(_ context.Context, rule *deploymentGateRuleModel, attributes *datadogV2.DeploymentRuleResponseDataAttributes) {
+func (r *deploymentGateResource) updateRuleStateFromAttributes(ctx context.Context, rule *deploymentGateRuleModel, attributes *datadogV2.DeploymentRuleResponseDataAttributes, refresh bool) {
 	if idVal, ok := attributes.AdditionalProperties["id"]; ok {
 		if idStr, ok := idVal.(string); ok {
 			rule.ID = types.StringValue(idStr)
@@ -895,10 +946,15 @@ func (r *deploymentGateResource) updateRuleStateFromAttributes(_ context.Context
 	}
 
 	if options, ok := attributes.GetOptionsOk(); ok {
+		previous := rule.Options
 		rule.Options = &deploymentGateRuleOptionsModel{
-			ExcludedResources: types.ListNull(types.StringType),
-			Duration:          types.Int64Null(),
-			Query:             types.StringNull(),
+			AllowedResources:    types.ListNull(types.StringType),
+			ExcludedResources:   types.ListNull(types.StringType),
+			Duration:            types.Int64Null(),
+			FailOnNoData:        types.BoolNull(),
+			FailOnNoGroupsFound: types.BoolNull(),
+			Query:               types.StringNull(),
+			Warmup:              types.Int64Null(),
 		}
 
 		// Handle options based on rule type
@@ -961,6 +1017,70 @@ func (r *deploymentGateResource) updateRuleStateFromAttributes(_ context.Context
 				}
 			}
 		}
+
+		// The API client represents the options as a oneOf. Decode the selected
+		// variant (including UnparsedObject) to read fields shared by both
+		// monitor variants without depending on the client's union matching.
+		raw, err := json.Marshal(options)
+		if err == nil {
+			var decoded struct {
+				AllowedResources    []string `json:"allowed_resources"`
+				ExcludedResources   []string `json:"excluded_resources"`
+				Duration            *int64   `json:"duration"`
+				Query               *string  `json:"query"`
+				FailOnNoData        *bool    `json:"fail_on_no_data"`
+				FailOnNoGroupsFound *bool    `json:"fail_on_no_groups_found"`
+				Warmup              *int64   `json:"warmup"`
+				MonitorIDs          []struct {
+					ID     string   `json:"id"`
+					Groups []string `json:"groups"`
+				} `json:"monitor_ids"`
+			}
+			if json.Unmarshal(raw, &decoded) == nil && previous != nil {
+				if decoded.Duration != nil {
+					rule.Options.Duration = types.Int64PointerValue(decoded.Duration)
+				}
+				if decoded.Query != nil {
+					rule.Options.Query = types.StringPointerValue(decoded.Query)
+				}
+				if !previous.ExcludedResources.IsNull() && decoded.ExcludedResources != nil {
+					rule.Options.ExcludedResources, _ = types.ListValueFrom(ctx, types.StringType, decoded.ExcludedResources)
+				}
+				if decoded.AllowedResources != nil &&
+					(!previous.AllowedResources.IsNull() || refresh && len(decoded.AllowedResources) > 0) {
+					rule.Options.AllowedResources, _ = types.ListValueFrom(ctx, types.StringType, decoded.AllowedResources)
+				}
+				// The API omits monitor fields when they have their default values.
+				// Keep explicit configuration in state, but surface non-default
+				// values introduced outside Terraform during a refresh. Create and
+				// Update must not introduce values absent from the plan.
+				if !previous.FailOnNoData.IsNull() || refresh && decoded.FailOnNoData != nil && !*decoded.FailOnNoData {
+					rule.Options.FailOnNoData = types.BoolValue(true)
+					if decoded.FailOnNoData != nil {
+						rule.Options.FailOnNoData = types.BoolPointerValue(decoded.FailOnNoData)
+					}
+				}
+				if !previous.FailOnNoGroupsFound.IsNull() || refresh && decoded.FailOnNoGroupsFound != nil && *decoded.FailOnNoGroupsFound {
+					rule.Options.FailOnNoGroupsFound = types.BoolValue(false)
+					if decoded.FailOnNoGroupsFound != nil {
+						rule.Options.FailOnNoGroupsFound = types.BoolPointerValue(decoded.FailOnNoGroupsFound)
+					}
+				}
+				if !previous.Warmup.IsNull() || refresh && decoded.Warmup != nil && *decoded.Warmup != 0 {
+					rule.Options.Warmup = types.Int64Value(0)
+					if decoded.Warmup != nil {
+						rule.Options.Warmup = types.Int64PointerValue(decoded.Warmup)
+					}
+				}
+				if decoded.MonitorIDs != nil && (previous.MonitorIDs != nil || refresh && len(decoded.MonitorIDs) > 0) {
+					rule.Options.MonitorIDs = make([]deploymentGateMonitorIDModel, len(decoded.MonitorIDs))
+					for i, monitor := range decoded.MonitorIDs {
+						groups, _ := types.ListValueFrom(ctx, types.StringType, monitor.Groups)
+						rule.Options.MonitorIDs[i] = deploymentGateMonitorIDModel{ID: types.StringValue(monitor.ID), Groups: groups}
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -969,7 +1089,7 @@ func (r *deploymentGateResource) updateRuleState(ctx context.Context, rule *depl
 	data := resp.GetData()
 	rule.ID = types.StringValue(data.GetId())
 	attributes := data.GetAttributes()
-	r.updateRuleStateFromAttributes(ctx, rule, &attributes)
+	r.updateRuleStateFromAttributes(ctx, rule, &attributes, false)
 }
 
 func isEmptyOption(options *deploymentGateRuleOptionsModel) bool {
@@ -977,5 +1097,5 @@ func isEmptyOption(options *deploymentGateRuleOptionsModel) bool {
 		return true
 	}
 
-	return options.Query.IsNull() && options.ExcludedResources.IsNull() && options.Duration.IsNull()
+	return options.Query.IsNull() && options.MonitorIDs == nil && options.ExcludedResources.IsNull() && options.AllowedResources.IsNull() && options.Duration.IsNull() && options.FailOnNoData.IsNull() && options.FailOnNoGroupsFound.IsNull() && options.Warmup.IsNull()
 }
