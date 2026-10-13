@@ -533,7 +533,8 @@ type validTokenFieldToAddModel struct {
 }
 
 type generateMetricsProcessorModel struct {
-	Metrics []generatedMetricModel `tfsdk:"metric"`
+	EnabledMetricAggregation types.Bool             `tfsdk:"enabled_metric_aggregation"`
+	Metrics                  []generatedMetricModel `tfsdk:"metric"`
 }
 
 type generatedMetricModel struct {
@@ -1769,7 +1770,13 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														listvalidator.SizeAtMost(1),
 													},
 													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{},
+														Attributes: map[string]schema.Attribute{
+															"enabled_metric_aggregation": schema.BoolAttribute{
+																Optional:    true,
+																Computed:    true,
+																Description: "Whether generated metrics are automatically aggregated before being sent to Datadog. Defaults to `true`.",
+															},
+														},
 														Blocks: map[string]schema.Block{
 															"metric": schema.ListNestedBlock{
 																Description: "Configuration for generating individual metrics.",
@@ -2184,7 +2191,13 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														listvalidator.SizeAtMost(1),
 													},
 													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{},
+														Attributes: map[string]schema.Attribute{
+															"enabled_metric_aggregation": schema.BoolAttribute{
+																Optional:    true,
+																Computed:    true,
+																Description: "Whether generated metrics are automatically aggregated before being sent to a metrics destination. Defaults to `true`.",
+															},
+														},
 														Blocks: map[string]schema.Block{
 															"metric": schema.ListNestedBlock{
 																Description: "Configuration for generating individual metrics.",
@@ -4170,7 +4183,12 @@ func flattenGenerateDatadogMetricsProcessor(ctx context.Context, src *datadogV2.
 		return nil
 	}
 	model := createProcessorModel(src)
-	genMetrics := &generateMetricsProcessorModel{}
+	genMetrics := &generateMetricsProcessorModel{
+		EnabledMetricAggregation: types.BoolNull(),
+	}
+	if enabled, ok := src.GetEnabledMetricAggregationOk(); ok {
+		genMetrics.EnabledMetricAggregation = types.BoolValue(*enabled)
+	}
 	for _, metric := range src.GetMetrics() {
 		groupByList, _ := types.ListValueFrom(ctx, types.StringType, metric.GetGroupBy())
 		m := generatedMetricModel{
@@ -4993,6 +5011,9 @@ func expandSampleProcessorItem(ctx context.Context, common observability_pipelin
 func expandGenerateMetricsProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *generateMetricsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineGenerateMetricsProcessorWithDefaults()
 	common.ApplyTo(proc)
+	if !src.EnabledMetricAggregation.IsNull() && !src.EnabledMetricAggregation.IsUnknown() {
+		proc.SetEnabledMetricAggregation(src.EnabledMetricAggregation.ValueBool())
+	}
 
 	var metrics []datadogV2.ObservabilityPipelineGeneratedMetric
 	for _, m := range src.Metrics {
@@ -5339,7 +5360,12 @@ func flattenGenerateMetricsV2Processor(ctx context.Context, src *datadogV2.Obser
 		return nil
 	}
 	model := createProcessorModel(src)
-	genMetrics := &generateMetricsProcessorModel{}
+	genMetrics := &generateMetricsProcessorModel{
+		EnabledMetricAggregation: types.BoolNull(),
+	}
+	if enabled, ok := src.GetEnabledMetricAggregationOk(); ok {
+		genMetrics.EnabledMetricAggregation = types.BoolValue(*enabled)
+	}
 	for _, metric := range src.GetMetrics() {
 		groupByList, _ := types.ListValueFrom(ctx, types.StringType, metric.GetGroupBy())
 		m := generatedMetricModel{
@@ -5369,6 +5395,9 @@ func flattenGenerateMetricsV2Processor(ctx context.Context, src *datadogV2.Obser
 func expandGenerateMetricsV2ProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *generateMetricsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineGenerateMetricsV2ProcessorWithDefaults()
 	common.ApplyTo(proc)
+	if !src.EnabledMetricAggregation.IsNull() && !src.EnabledMetricAggregation.IsUnknown() {
+		proc.SetEnabledMetricAggregation(src.EnabledMetricAggregation.ValueBool())
+	}
 
 	var metrics []datadogV2.ObservabilityPipelineGeneratedMetric
 	for _, m := range src.Metrics {

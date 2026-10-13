@@ -2166,6 +2166,7 @@ Optional:
 
 Optional:
 
+- `enabled_metric_aggregation` (Boolean) Whether generated metrics are automatically aggregated before being sent to Datadog. Defaults to `true`.
 - `metric` (Block List) Configuration for generating individual metrics. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_datadog_metrics--metric))
 
 <a id="nestedblock--config--processor_group--processor--generate_datadog_metrics--metric"></a>
@@ -2201,6 +2202,7 @@ Optional:
 
 Optional:
 
+- `enabled_metric_aggregation` (Boolean) Whether generated metrics are automatically aggregated before being sent to a metrics destination. Defaults to `true`.
 - `metric` (Block List) Configuration for generating individual metrics. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_metrics--metric))
 
 <a id="nestedblock--config--processor_group--processor--generate_metrics--metric"></a>
