@@ -239,6 +239,39 @@ func (r *syntheticsPrivateLocationResource) Update(ctx context.Context, request 
 	}
 	r.updateState(ctx, &state, &resp)
 
+	// Preserve `config` across Update.
+	//
+	// The Datadog Synthetics API only emits the private-location `config`
+	// payload from the Create endpoint — Read and Update responses do not
+	// include it. `updateState` therefore leaves `state.Config` untouched.
+	//
+	// For Create-then-Update flows the `UseStateForUnknown` plan modifier
+	// carries the prior known value into the planned state, so this is a
+	// no-op. For Import-then-Update flows the prior `state.Config` is null
+	// (ImportStatePassthroughID only writes `id`, and Read can't recover
+	// `config`), the plan modifier has nothing to carry forward, and the
+	// post-apply consistency check fails with:
+	//
+	//   Provider returned invalid result object after apply ... unknown value
+	//   for datadog_synthetics_private_location.<name>.config
+	//
+	// Fall back to the prior state's `Config` (if known), otherwise a known
+	// empty string, so post-apply consistency holds. Real config data is
+	// never lost: it's only knowable at Create time, and Create populates it
+	// directly.
+	if state.Config.IsNull() || state.Config.IsUnknown() {
+		var prior syntheticsPrivateLocationModel
+		response.Diagnostics.Append(request.State.Get(ctx, &prior)...)
+		if response.Diagnostics.HasError() {
+			return
+		}
+		if !prior.Config.IsNull() && !prior.Config.IsUnknown() {
+			state.Config = prior.Config
+		} else {
+			state.Config = types.StringValue("")
+		}
+	}
+
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
