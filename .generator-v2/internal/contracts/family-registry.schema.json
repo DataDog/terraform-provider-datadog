@@ -1,8 +1,8 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://datadog.github.io/terraform-provider-datadog/contracts/family-registry.schema.json",
-    "title": "x-datadog-tf-generator (document root)",
-    "description": "OpenAPI 3.0 vendor extension at the document root: a registry of Terraform artifact families, keyed by family name. Each family declares up to three artifacts — a resource, a singular data source and a list data source — over the same API. The block key replaces artifact_kind and cardinality, and the map key is the artifact name, so neither can be repeated inconsistently across a family.",
+    "title": "x-datadog-tf-generator (tag)",
+    "description": "OpenAPI 3.0 vendor extension on an OpenAPI Tag Object: a registry of Terraform artifact families, keyed by family name. Each family declares up to three artifacts — a resource, a singular data source and a list data source — over the same API. The block key replaces artifact_kind and cardinality, and the map key is the artifact name, so neither can be repeated inconsistently across a family.",
     "type": "object",
     "minProperties": 1,
     "propertyNames": {
@@ -32,7 +32,7 @@
           { "required": ["resource"] },
           { "required": ["datasource_singular"] },
           { "required": ["datasource_list"] },
-          { "required": ["skip"] }
+          { "required": ["skip"], "properties": { "skip": { "const": true } } }
         ]
       },
 

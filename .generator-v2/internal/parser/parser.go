@@ -10,9 +10,8 @@ import (
 
 	"github.com/pb33f/libopenapi"
 	"github.com/pb33f/libopenapi/datamodel"
+	"github.com/pb33f/libopenapi/datamodel/high/base"
 	v3 "github.com/pb33f/libopenapi/datamodel/high/v3"
-	"github.com/pb33f/libopenapi/orderedmap"
-	yaml "go.yaml.in/yaml/v4"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
@@ -132,10 +131,10 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 		}
 	}
 
-	// The document-root registry is read after enumeration because a family
+	// The tag-scoped registry is read after enumeration because a family
 	// block is anchored on the operation it names, and resolved before the sort
 	// so the synthetic operations it mints sort alongside the real ones.
-	if err := fanOutRegistry(spec, rawOps, v3doc.Model.Extensions, cfg.trackingFieldName); err != nil {
+	if err := fanOutRegistry(spec, rawOps, v3doc.Model.Tags, cfg.trackingFieldName); err != nil {
 		return nil, err
 	}
 
@@ -162,7 +161,7 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 	return spec, nil
 }
 
-// fanOutRegistry decodes the document-root family registry and appends one
+// fanOutRegistry decodes the tag-scoped family registry and appends one
 // synthetic operation per artifact it declares, each carrying the desugared
 // tracking metadata. A document with no registry is left untouched, which is
 // what keeps the legacy operation-level annotation working unchanged.
@@ -175,8 +174,8 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 // more than one artifact: a family's resource and its singular data source
 // both read through the same endpoint. The clone inherits the raw handle so
 // schema normalization can still reach its request and response bodies.
-func fanOutRegistry(spec *model.Spec, rawOps map[*model.Operation]*v3.Operation, ext *orderedmap.Map[string, *yaml.Node], extensionName string) error {
-	metas, err := DecodeRegistry(ext, extensionName)
+func fanOutRegistry(spec *model.Spec, rawOps map[*model.Operation]*v3.Operation, tags []*base.Tag, extensionName string) error {
+	metas, err := decodeTagRegistries(tags, extensionName)
 	if err != nil {
 		return err
 	}

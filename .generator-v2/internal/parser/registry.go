@@ -8,6 +8,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/pb33f/libopenapi/datamodel/high/base"
 	"github.com/pb33f/libopenapi/orderedmap"
 	jsonschema "github.com/santhosh-tekuri/jsonschema/v6"
 	yaml "go.yaml.in/yaml/v4"
@@ -17,9 +18,9 @@ import (
 )
 
 // ----------------------------------------------------------------------------
-// Document-root family registry
+// Tag-scoped family registry
 //
-// The registry is the document-level form of the tracking extension: a map of
+// The registry is the tag-level form of the tracking extension: a map of
 // family name to the artifacts generated over that API. It is sugar — each
 // block desugars into exactly one model.TrackingFieldMetadata, the same value
 // an operation-level annotation produces — so everything downstream of the
@@ -51,17 +52,23 @@ var compiledRegistrySchema = sync.OnceValues(func() (*jsonschema.Schema, error) 
 // RegistryError reports a malformed or unsatisfiable family registry. It names
 // the address the author wrote — the family key and, when the fault is inside
 // one, the block — rather than an OpenAPI path, because the registry lives at
-// the document root and mentions no path.
+// a Tag Object and mentions no path.
 type RegistryError struct {
+	Tag    string
 	Family string
 	Block  string
 	Cause  error
 }
 
 func (e *RegistryError) Error() string {
+	if e.Tag != "" {
+		inner := *e
+		inner.Tag = ""
+		return fmt.Sprintf("tag %q: %s", e.Tag, inner.Error())
+	}
 	switch {
 	case e.Family == "":
-		return fmt.Sprintf("parser: invalid family registry at the document root: %v", e.Cause)
+		return fmt.Sprintf("parser: invalid family registry on a tag: %v", e.Cause)
 	case e.Block == "":
 		return fmt.Sprintf("parser: invalid family registry entry %q: %v", e.Family, e.Cause)
 	default:
@@ -103,7 +110,7 @@ type artifactBlock struct {
 	Group         *model.OperationGroup `json:"group,omitempty"`
 }
 
-// DecodeRegistry decodes and validates the document-root family registry stored
+// DecodeRegistry decodes and validates the tag-scoped family registry stored
 // under extensionName, desugaring every artifact block into the same
 // *model.TrackingFieldMetadata an operation-level annotation would have
 // produced. It returns (nil, nil) when the document carries no registry, which
@@ -281,4 +288,45 @@ func pluralizeWord(word string) string {
 
 func isVowel(b byte) bool {
 	return bytes.IndexByte([]byte("aeiou"), b) >= 0
+}
+
+// decodeTagRegistries reads each tag's declaration without merging extension
+// mappings. Family names remain unique across the spec, including skipped ones.
+func decodeTagRegistries(tags []*base.Tag, extensionName string) ([]*model.TrackingFieldMetadata, error) {
+	seenTags := map[string]bool{}
+	seenFamilies := map[string]string{}
+	var all []*model.TrackingFieldMetadata
+	for _, tag := range tags {
+		if tag == nil || tag.Extensions == nil || tag.Extensions.GetOrZero(extensionName) == nil {
+			continue
+		}
+		if seenTags[tag.Name] {
+			return nil, &RegistryError{Tag: tag.Name, Cause: fmt.Errorf("%s is declared more than once for this tag", extensionName)}
+		}
+		seenTags[tag.Name] = true
+		metas, err := DecodeRegistry(tag.Extensions, extensionName)
+		if err != nil {
+			return nil, &RegistryError{Tag: tag.Name, Cause: err}
+		}
+		// DecodeRegistry has already checked that this is a mapping with string keys.
+		var families map[string]any
+		if err := tag.Extensions.GetOrZero(extensionName).Decode(&families); err != nil {
+			return nil, &RegistryError{Tag: tag.Name, Cause: err}
+		}
+		names := make([]string, 0, len(families))
+		for family := range families {
+			names = append(names, family)
+		}
+		sort.Strings(names)
+		for _, family := range names {
+			if owner, exists := seenFamilies[family]; exists {
+				return nil, &RegistryError{Tag: tag.Name, Family: family, Cause: fmt.Errorf("family is already declared on tag %q", owner)}
+			}
+			seenFamilies[family] = tag.Name
+		}
+		all = append(all, metas...)
+	}
+	// Preserve output order if authors reorder tags in the source document.
+	sort.SliceStable(all, func(i, j int) bool { return all[i].Family < all[j].Family })
+	return all, nil
 }

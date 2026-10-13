@@ -5,16 +5,17 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/pb33f/libopenapi/datamodel/high/base"
 	"github.com/pb33f/libopenapi/orderedmap"
 	yaml "go.yaml.in/yaml/v4"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
-// rootExt builds the extensions map libopenapi hands back for a document root
+// tagExt builds the extensions map libopenapi hands back for a tag
 // carrying a single vendor extension under key, whose value is the YAML mapping
 // in body.
-func rootExt(t *testing.T, key, body string) *orderedmap.Map[string, *yaml.Node] {
+func tagExt(t *testing.T, key, body string) *orderedmap.Map[string, *yaml.Node] {
 	t.Helper()
 	var doc yaml.Node
 	if err := yaml.Unmarshal([]byte(body), &doc); err != nil {
@@ -28,7 +29,7 @@ func rootExt(t *testing.T, key, body string) *orderedmap.Map[string, *yaml.Node]
 
 func decodeRegistry(t *testing.T, body string) []*model.TrackingFieldMetadata {
 	t.Helper()
-	metas, err := DecodeRegistry(rootExt(t, DefaultTrackingFieldName, body), DefaultTrackingFieldName)
+	metas, err := DecodeRegistry(tagExt(t, DefaultTrackingFieldName, body), DefaultTrackingFieldName)
 	if err != nil {
 		t.Fatalf("DecodeRegistry: %v", err)
 	}
@@ -37,7 +38,7 @@ func decodeRegistry(t *testing.T, body string) []*model.TrackingFieldMetadata {
 
 func decodeRegistryErr(t *testing.T, body string) error {
 	t.Helper()
-	metas, err := DecodeRegistry(rootExt(t, DefaultTrackingFieldName, body), DefaultTrackingFieldName)
+	metas, err := DecodeRegistry(tagExt(t, DefaultTrackingFieldName, body), DefaultTrackingFieldName)
 	if err == nil {
 		t.Fatalf("DecodeRegistry: want error, got %d metadata", len(metas))
 	}
@@ -75,7 +76,7 @@ func TestDecodeRegistryOutOfScope(t *testing.T) {
 	// A document annotated only the legacy way must read as having no registry,
 	// which is what lets both shapes coexist during the migration.
 	t.Run("different extension key present", func(t *testing.T) {
-		got, err := DecodeRegistry(rootExt(t, "x-some-other-extension", "foo: bar\n"), DefaultTrackingFieldName)
+		got, err := DecodeRegistry(tagExt(t, "x-some-other-extension", "foo: bar\n"), DefaultTrackingFieldName)
 		if got != nil || err != nil {
 			t.Fatalf("got (%v, %v), want (nil, nil)", got, err)
 		}
@@ -314,4 +315,44 @@ func TestPluralize(t *testing.T) {
 			t.Errorf("Pluralize(%q) = %q, want %q", in, got, want)
 		}
 	}
+}
+
+func TestTagRegistries(t *testing.T) {
+	tag := func(name, body string) *base.Tag {
+		return &base.Tag{Name: name, Extensions: tagExt(t, DefaultTrackingFieldName, body)}
+	}
+	t.Run("multiple tags and stable ordering", func(t *testing.T) {
+		tags := []*base.Tag{
+			tag("Zebra", "zebra:\n  datasource_list:\n    group: {read: ListZebras}\n"),
+			tag("Things", "thing:\n  datasource_singular:\n    group: {read: GetThing}\n  datasource_list:\n    group: {read: ListThings}\n"),
+		}
+		metas, err := decodeTagRegistries(tags, DefaultTrackingFieldName)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(metas) != 3 || metas[0].ArtifactName != "thing" || metas[1].ArtifactName != "things" || metas[2].ArtifactName != "zebras" {
+			t.Fatalf("unexpected artifacts: %+v", metas)
+		}
+	})
+	t.Run("duplicate family even when skipped", func(t *testing.T) {
+		_, err := decodeTagRegistries([]*base.Tag{tag("First", "thing: {skip: true}"), tag("Second", "thing: {skip: true}")}, DefaultTrackingFieldName)
+		if err == nil || !strings.Contains(err.Error(), "already declared") {
+			t.Fatalf("got %v", err)
+		}
+	})
+	t.Run("duplicate tag declaration", func(t *testing.T) {
+		_, err := decodeTagRegistries([]*base.Tag{tag("Things", "thing: {skip: true}"), tag("Things", "other: {skip: true}")}, DefaultTrackingFieldName)
+		if err == nil || !strings.Contains(err.Error(), "more than once") {
+			t.Fatalf("got %v", err)
+		}
+	})
+	t.Run("malformed registry names its tag", func(t *testing.T) {
+		_, err := decodeTagRegistries([]*base.Tag{tag("Things", "[]")}, DefaultTrackingFieldName)
+		if err == nil || !strings.Contains(err.Error(), `tag "Things"`) {
+			t.Fatalf("got %v", err)
+		}
+	})
+	t.Run("skip false alone is not an artifact", func(t *testing.T) {
+		decodeRegistryErr(t, "thing: {skip: false}")
+	})
 }

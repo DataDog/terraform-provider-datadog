@@ -4,7 +4,7 @@ package model
 // OpenAPI extension on a flagged operation. It is nil on an Operation whose
 // extension is absent, and describes the shape only — decoding lives elsewhere.
 type TrackingFieldMetadata struct {
-	// Family and Block name the document-root registry address this metadata
+	// Family and Block name the tag-scoped registry address this metadata
 	// was desugared from, e.g. ("integration_databricks_account",
 	// "datasource_list"); both are empty for a legacy operation-level
 	// annotation. They exist so a diagnostic can quote the address the author
