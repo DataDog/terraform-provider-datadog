@@ -2249,7 +2249,11 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 		updateDiags := updateSyntheticsBrowserTestLocalState(d, &getSyntheticsBrowserTestResponse)
 		return append(diags, updateDiags...)
 	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_MOBILE {
-		syntheticsTest := buildDatadogSyntheticsMobileTest(d)
+		syntheticsTest, buildDiags := buildDatadogSyntheticsMobileTest(d)
+		diags = append(diags, buildDiags...)
+		if diags.HasError() {
+			return diags
+		}
 		createdSyntheticsTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().CreateSyntheticsMobileTest(auth, *syntheticsTest)
 		if err != nil {
 			// Note that Id won't be set, so no state will be saved.
@@ -2447,7 +2451,11 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 		updateDiags := updateSyntheticsBrowserTestLocalState(d, &updatedTest)
 		return append(diags, updateDiags...)
 	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_MOBILE {
-		syntheticsTest := buildDatadogSyntheticsMobileTest(d)
+		syntheticsTest, buildDiags := buildDatadogSyntheticsMobileTest(d)
+		diags = append(diags, buildDiags...)
+		if diags.HasError() {
+			return diags
+		}
 		updatedTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().UpdateMobileTest(auth, d.Id(), *syntheticsTest)
 		if err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
@@ -3799,7 +3807,7 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) (*datadogV1.Synth
 	return syntheticsTest, diags
 }
 
-func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.SyntheticsMobileTest {
+func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) (*datadogV1.SyntheticsMobileTest, diag.Diagnostics) {
 	syntheticsTest := datadogV1.NewSyntheticsMobileTestWithDefaults()
 
 	// There three fields that you might think should be here but are not:
@@ -3841,7 +3849,7 @@ func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.Synthet
 
 	steps := []datadogV1.SyntheticsMobileStep{}
 	if attr, ok := d.GetOk("mobile_step"); ok {
-		for _, s := range attr.([]interface{}) {
+		for i, s := range attr.([]interface{}) {
 			step := datadogV1.SyntheticsMobileStep{}
 			stepMap := s.(map[string]interface{})
 
@@ -3863,9 +3871,14 @@ func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.Synthet
 				step.SetType(datadogV1.SyntheticsMobileStepType(stepMap["type"].(string)))
 			}
 
-			params := datadogV1.SyntheticsMobileStepParams{}
-			stepParams := stepMap["params"].([]interface{})[0]
-			params = buildDatadogParamsForMobileStep(step.GetType(), stepParams.(map[string]interface{}))
+			var stepParams map[string]interface{}
+			if rawParams := stepMap["params"].([]interface{}); len(rawParams) > 0 {
+				stepParams, _ = rawParams[0].(map[string]interface{})
+			}
+			params, err := buildDatadogParamsForMobileStep(step.GetType(), stepParams)
+			if err != nil {
+				return nil, diag.Errorf("mobile_step.%d.params: %s", i, err)
+			}
 			step.SetParams(params)
 			steps = append(steps, step)
 		}
@@ -3882,7 +3895,7 @@ func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.Synthet
 		syntheticsTest.SetTags(tags)
 	}
 
-	return syntheticsTest
+	return syntheticsTest, nil
 }
 
 func buildDatadogSyntheticsNetworkTest(d *schema.ResourceData) (*datadogV2.SyntheticsNetworkTestEditRequest, diag.Diagnostics) {
@@ -5427,15 +5440,16 @@ func buildDatadogMobileTestOptions(d *schema.ResourceData) *datadogV1.Synthetics
 		if bindings, ok := d.GetOk("mobile_options_list.0.bindings"); ok {
 			optionsBindings := []datadogV1.SyntheticsTestRestrictionPolicyBinding{}
 			for _, b := range bindings.([]interface{}) {
+				bindingMap, _ := b.(map[string]interface{})
 				binding := datadogV1.NewSyntheticsTestRestrictionPolicyBinding()
-				if ps, ok := b.(map[string]interface{})["principals"]; ok {
+				if ps, ok := bindingMap["principals"]; ok {
 					principals := []string{}
 					for _, p := range ps.([]interface{}) {
 						principals = append(principals, p.(string))
 					}
 					binding.SetPrincipals(principals)
 				}
-				if r, ok := b.(map[string]interface{})["relation"]; ok {
+				if r, ok := bindingMap["relation"]; ok {
 					binding.SetRelation(datadogV1.SyntheticsTestRestrictionPolicyBindingRelation(r.(string)))
 				}
 				optionsBindings = append(optionsBindings, *binding)
@@ -5736,14 +5750,14 @@ func buildTerraformMobileTestSteps(steps []datadogV1.SyntheticsMobileStep) []map
 			localParams["element"] = localElement
 		}
 		if params.HasEnabled() {
-			localParams["enabled"] = params.GetEnabled()
+			localParams["enable"] = params.GetEnabled()
 		}
 		if params.HasMaxScrolls() {
-			localParams["maxScrolls"] = params.GetMaxScrolls()
+			localParams["max_scrolls"] = params.GetMaxScrolls()
 		}
 		if params.HasPositions() {
-			positions := params.GetPositions()
-			for i, positionsItem := range positions {
+			positions := make([]map[string]interface{}, 0, len(params.GetPositions()))
+			for _, positionsItem := range params.GetPositions() {
 				localPositionsItem := make(map[string]interface{})
 				if positionsItem.HasX() {
 					localPositionsItem["x"] = positionsItem.GetX()
@@ -5751,10 +5765,7 @@ func buildTerraformMobileTestSteps(steps []datadogV1.SyntheticsMobileStep) []map
 				if positionsItem.HasY() {
 					localPositionsItem["y"] = positionsItem.GetY()
 				}
-				positions[i] = datadogV1.SyntheticsMobileStepParamsPositionsItems{
-					X: localPositionsItem["x"].(*float64),
-					Y: localPositionsItem["y"].(*float64),
-				}
+				positions = append(positions, localPositionsItem)
 			}
 			localParams["positions"] = positions
 		}
@@ -5764,10 +5775,18 @@ func buildTerraformMobileTestSteps(steps []datadogV1.SyntheticsMobileStep) []map
 		if params.HasValue() {
 			value := params.GetValue()
 			actualValue := value.GetActualInstance()
-			localParams["value"] = actualValue
+			if number, ok := actualValue.(*int64); ok {
+				localParams["value"] = strconv.FormatInt(*number, 10)
+			} else {
+				localParams["value"] = actualValue
+			}
 		}
 		if params.HasVariable() {
-			localParams["variable"] = params.GetVariable()
+			variable := params.GetVariable()
+			localParams["variable"] = []map[string]interface{}{{
+				"name":    variable.GetName(),
+				"example": variable.GetExample(),
+			}}
 		}
 		if params.HasWithEnter() {
 			localParams["with_enter"] = params.GetWithEnter()
@@ -5779,6 +5798,14 @@ func buildTerraformMobileTestSteps(steps []datadogV1.SyntheticsMobileStep) []map
 			localParams["y"] = params.GetY()
 		}
 
+		// Keep empty parameter blocks identical after update and import. The SDK
+		// otherwise preserves configured empty strings only when prior state exists.
+		if len(localParams) == 0 {
+			localParams["check"] = ""
+			localParams["direction"] = ""
+			localParams["subtest_public_id"] = ""
+			localParams["value"] = ""
+		}
 		localStep["params"] = []interface{}{localParams}
 
 		localSteps = append(localSteps, localStep)
@@ -6478,8 +6505,15 @@ func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
 	return []string{}
 }
 
-func buildDatadogParamsForMobileStep(stepType datadogV1.SyntheticsMobileStepType, stepParams map[string]interface{}) datadogV1.SyntheticsMobileStepParams {
+func buildDatadogParamsForMobileStep(stepType datadogV1.SyntheticsMobileStepType, stepParams map[string]interface{}) (datadogV1.SyntheticsMobileStepParams, error) {
 	params := datadogV1.SyntheticsMobileStepParams{}
+	if stepParams == nil {
+		return params, nil
+	}
+	var element map[string]interface{}
+	if elements := stepParams["element"].([]interface{}); len(elements) > 0 {
+		element, _ = elements[0].(map[string]interface{})
+	}
 	switch stepType {
 	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ASSERTELEMENTCONTENT:
 		if stepParams["check"] != "" {
@@ -6489,91 +6523,91 @@ func buildDatadogParamsForMobileStep(stepType datadogV1.SyntheticsMobileStepType
 			stepParamsValue := stepParams["value"].(string)
 			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueStringAsSyntheticsMobileStepParamsValue(&stepParamsValue))
 		}
-		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
-		if len(stepParam) != 0 {
-			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
+		if len(element) != 0 {
+			params.SetElement(buildDatadogParamsElementForMobileStep(element))
 		}
-		return params
+		return params, nil
 
 	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ASSERTSCREENCONTAINS:
 		if stepParams["value"] != "" {
 			stepParamsValue := stepParams["value"].(string)
 			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueStringAsSyntheticsMobileStepParamsValue(&stepParamsValue))
 		}
-		return params
+		return params, nil
 
 	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ASSERTSCREENLACKS:
 		if stepParams["value"] != "" {
 			stepParamsValue := stepParams["value"].(string)
 			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueStringAsSyntheticsMobileStepParamsValue(&stepParamsValue))
 		}
-		return params
+		return params, nil
 
 	case datadogV1.SYNTHETICSMOBILESTEPTYPE_DOUBLETAP:
-		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
-		if len(stepParam) != 0 {
-			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
+		if len(element) != 0 {
+			params.SetElement(buildDatadogParamsElementForMobileStep(element))
 		}
-		return params
+		return params, nil
 
 	case datadogV1.SYNTHETICSMOBILESTEPTYPE_EXTRACTVARIABLE:
-		if len(stepParams["variable"].(map[string]interface{})) != 0 {
+		if variables := stepParams["variable"].([]interface{}); len(variables) > 0 && variables[0] != nil {
+			variable := variables[0].(map[string]interface{})
 			paramsVarible := datadogV1.SyntheticsMobileStepParamsVariable{}
-			paramsVarible.SetName(stepParams["variable"].(map[string]interface{})["name"].(string))
-			paramsVarible.SetExample(stepParams["variable"].(map[string]interface{})["example"].(string))
+			paramsVarible.SetName(variable["name"].(string))
+			paramsVarible.SetExample(variable["example"].(string))
 			params.SetVariable(paramsVarible)
 		}
-		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
-		if len(stepParam) != 0 {
-			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
+		if len(element) != 0 {
+			params.SetElement(buildDatadogParamsElementForMobileStep(element))
 		}
-		return params
+		return params, nil
 
 	case datadogV1.SYNTHETICSMOBILESTEPTYPE_FLICK:
-		if len(stepParams["position"].(map[string]interface{})) != 0 {
+		if rawPositions := stepParams["positions"].([]interface{}); len(rawPositions) > 0 {
 			positions := []datadogV1.SyntheticsMobileStepParamsPositionsItems{}
-			for _, position := range stepParams["position"].([]interface{}) {
+			for _, rawPosition := range rawPositions {
+				position, _ := rawPosition.(map[string]interface{})
+				x, _ := position["x"].(float64)
+				y, _ := position["y"].(float64)
 				positionItem := datadogV1.SyntheticsMobileStepParamsPositionsItems{}
-				positionItem.SetX(position.(map[string]interface{})["x"].(float64))
-				positionItem.SetY(position.(map[string]interface{})["y"].(float64))
+				positionItem.SetX(x)
+				positionItem.SetY(y)
 
 				positions = append(positions, positionItem)
 			}
 
 			params.SetPositions(positions)
 		}
-		return params
+		return params, nil
 
 	case datadogV1.SYNTHETICSMOBILESTEPTYPE_OPENDEEPLINK:
 		if stepParams["value"] != "" {
 			stepParamsValue := stepParams["value"].(string)
 			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueStringAsSyntheticsMobileStepParamsValue(&stepParamsValue))
 		}
-		return params
+		return params, nil
 
 	case datadogV1.SYNTHETICSMOBILESTEPTYPE_PLAYSUBTEST:
 		if stepParams["subtest_public_id"] != "" {
 			params.SetSubtestPublicId(stepParams["subtest_public_id"].(string))
 		}
-		return params
+		return params, nil
 
 	case datadogV1.SYNTHETICSMOBILESTEPTYPE_PRESSBACK:
-		return params
+		return params, nil
 
 	case datadogV1.SYNTHETICSMOBILESTEPTYPE_RESTARTAPPLICATION:
-		return params
+		return params, nil
 
 	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ROTATE:
 		if stepParams["value"] != "" {
 			stepParamsValue := stepParams["value"].(string)
 			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueStringAsSyntheticsMobileStepParamsValue(&stepParamsValue))
 		}
-		return params
+		return params, nil
 
 	case datadogV1.SYNTHETICSMOBILESTEPTYPE_SCROLL:
-		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
-		if len(stepParam) != 0 {
-			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
+		if len(element) != 0 {
+			params.SetElement(buildDatadogParamsElementForMobileStep(element))
 		}
 		if stepParams["x"] != "" {
 			params.SetX(stepParams["x"].(float64))
@@ -6581,42 +6615,37 @@ func buildDatadogParamsForMobileStep(stepType datadogV1.SyntheticsMobileStepType
 		if stepParams["y"] != "" {
 			params.SetY(stepParams["y"].(float64))
 		}
-		return params
+		return params, nil
 
 	case datadogV1.SYNTHETICSMOBILESTEPTYPE_SCROLLTOELEMENT:
-		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
-		if len(stepParam) != 0 {
-			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
+		if len(element) != 0 {
+			params.SetElement(buildDatadogParamsElementForMobileStep(element))
 		}
 		if stepParams["direction"] != "" {
 			params.SetDirection(datadogV1.SyntheticsMobileStepParamsDirection(stepParams["direction"].(string)))
 		}
-		if stepParams["max_scrolls"] != "" {
-			params.SetMaxScrolls(stepParams["max_scrolls"].(int64))
+		if maxScrolls := stepParams["max_scrolls"].(int); maxScrolls != 0 {
+			params.SetMaxScrolls(int64(maxScrolls))
 		}
-		return params
+		return params, nil
 
 	case datadogV1.SYNTHETICSMOBILESTEPTYPE_TAP:
-		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
-		if len(stepParam) != 0 {
-			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
+		if len(element) != 0 {
+			params.SetElement(buildDatadogParamsElementForMobileStep(element))
 		}
-		return params
+		return params, nil
 
 	case datadogV1.SYNTHETICSMOBILESTEPTYPE_TOGGLEWIFI:
-		if stepParams["enabled"] != "" {
-			params.SetEnabled(stepParams["enabled"].(bool))
-		}
-		return params
+		params.SetEnabled(stepParams["enable"].(bool))
+		return params, nil
 
 	case datadogV1.SYNTHETICSMOBILESTEPTYPE_TYPETEXT:
 		if stepParams["value"] != "" {
 			stepParamsValue := stepParams["value"].(string)
 			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueStringAsSyntheticsMobileStepParamsValue(&stepParamsValue))
 		}
-		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
-		if len(stepParam) != 0 {
-			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
+		if len(element) != 0 {
+			params.SetElement(buildDatadogParamsElementForMobileStep(element))
 		}
 		if delay, ok := stepParams["delay"].(int); ok && delay != 0 {
 			params.SetDelay(int64(delay))
@@ -6624,17 +6653,20 @@ func buildDatadogParamsForMobileStep(stepType datadogV1.SyntheticsMobileStepType
 		if stepParams["with_enter"] != "" {
 			params.SetWithEnter(stepParams["with_enter"].(bool))
 		}
-		return params
+		return params, nil
 
 	case datadogV1.SYNTHETICSMOBILESTEPTYPE_WAIT:
 		if stepParams["value"] != "" {
-			stepParamsValue := stepParams["value"].(int64)
+			stepParamsValue, err := strconv.ParseInt(stepParams["value"].(string), 10, 64)
+			if err != nil {
+				return params, errors.New("value must be an integer for a wait step")
+			}
 			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueNumberAsSyntheticsMobileStepParamsValue(&stepParamsValue))
 		}
-		return params
+		return params, nil
 	}
 
-	return params
+	return params, nil
 }
 
 func buildDatadogParamsElementForMobileStep(stepParamsElements map[string]interface{}) datadogV1.SyntheticsMobileStepParamsElement {
@@ -6649,7 +6681,7 @@ func buildDatadogParamsElementForMobileStep(stepParamsElements map[string]interf
 	if stepParamsElements["context_type"].(string) != "" {
 		elements.SetContextType(datadogV1.SyntheticsMobileStepParamsElementContextType(stepParamsElements["context_type"].(string)))
 	}
-	if userLocators, ok := stepParamsElements["user_locator"].([]interface{}); ok && len(userLocators) > 0 {
+	if userLocators, ok := stepParamsElements["user_locator"].([]interface{}); ok && len(userLocators) > 0 && userLocators[0] != nil {
 		stepParamsElement := userLocators[0].(map[string]interface{})
 		userLocator := datadogV1.SyntheticsMobileStepParamsElementUserLocator{}
 		userLocatorValues := []datadogV1.SyntheticsMobileStepParamsElementUserLocatorValuesItems{}
@@ -6657,6 +6689,9 @@ func buildDatadogParamsElementForMobileStep(stepParamsElements map[string]interf
 		userLocator.SetFailTestOnCannotLocate(stepParamsElement["fail_test_on_cannot_locate"].(bool))
 
 		for _, value := range stepParamsElement["values"].([]interface{}) {
+			if value == nil {
+				continue
+			}
 			userLocatorValue := datadogV1.SyntheticsMobileStepParamsElementUserLocatorValuesItems{}
 			userLocatorValue.SetType(datadogV1.SyntheticsMobileStepParamsElementUserLocatorValuesItemsType(value.(map[string]interface{})["type"].(string)))
 			userLocatorValue.SetValue(value.(map[string]interface{})["value"].(string))
@@ -6670,7 +6705,7 @@ func buildDatadogParamsElementForMobileStep(stepParamsElements map[string]interf
 	if stepParamsElements["element_description"].(string) != "" {
 		elements.SetElementDescription(stepParamsElements["element_description"].(string))
 	}
-	if relativePositions, ok := stepParamsElements["relative_position"].([]interface{}); ok && len(relativePositions) > 0 {
+	if relativePositions, ok := stepParamsElements["relative_position"].([]interface{}); ok && len(relativePositions) > 0 && relativePositions[0] != nil {
 		elementRelativePosition := stepParamsElements["relative_position"].([]interface{})[0].(map[string]interface{})
 		if len(elementRelativePosition) != 0 {
 			relativePosition := datadogV1.SyntheticsMobileStepParamsElementRelativePosition{}

@@ -74,7 +74,9 @@ func TestBuildDatadogParamsElementForMobileStep_Locators(t *testing.T) {
 			params := data.Get("params").([]interface{})[0].(map[string]interface{})
 			var built datadogV1.SyntheticsMobileStepParams
 			require.NotPanics(t, func() {
-				built = buildDatadogParamsForMobileStep(datadogV1.SYNTHETICSMOBILESTEPTYPE_TAP, params)
+				var err error
+				built, err = buildDatadogParamsForMobileStep(datadogV1.SYNTHETICSMOBILESTEPTYPE_TAP, params)
+				require.NoError(t, err)
 			})
 			builtElement := built.GetElement()
 			assert.Equal(t, len(tc.multiLocator) > 0, builtElement.HasMultiLocator())
@@ -187,7 +189,9 @@ func TestBuildDatadogParamsForMobileStep_TypeTextDelay(t *testing.T) {
 			delay := params["delay"].(int)
 			var built datadogV1.SyntheticsMobileStepParams
 			require.NotPanics(t, func() {
-				built = buildDatadogParamsForMobileStep(datadogV1.SYNTHETICSMOBILESTEPTYPE_TYPETEXT, params)
+				var err error
+				built, err = buildDatadogParamsForMobileStep(datadogV1.SYNTHETICSMOBILESTEPTYPE_TYPETEXT, params)
+				require.NoError(t, err)
 			})
 			assert.Equal(t, delay != 0, built.HasDelay())
 			assert.Equal(t, int64(delay), built.GetDelay())
