@@ -13,13 +13,13 @@ import (
 )
 
 // TestRegistryShapeGeneratesIdenticalSource is the claim that makes migrating
-// the spec repositories safe: the document-root family registry is sugar, so a
+// the spec repositories safe: the tag-scoped family registry is sugar, so a
 // family declared that way renders byte-for-byte what the operation-level
 // annotation rendered. Anything less and every migrated family would need its
 // generated output re-reviewed.
 //
 // It drives the real incident-type fixture twice — once as committed, once with
-// its annotation lifted into a root registry — through the full offline
+// its annotation lifted into a tag registry — through the full offline
 // pipeline, and diffs the emitted Go source.
 //
 // The fixture is a good witness precisely because its annotation sits on the
@@ -93,7 +93,7 @@ func renderIncidentType(t *testing.T, specPath string) (string, *model.Operation
 }
 
 // writeRegistryVariant rewrites the fixture into a temp file whose annotation
-// has moved from the operation to a document-root registry, and returns its
+// has moved from the operation to a tag-scoped registry, and returns its
 // path. It fails rather than silently producing an unannotated spec if the
 // fixture's shape ever changes.
 func writeRegistryVariant(t *testing.T, specPath string) string {
@@ -131,20 +131,22 @@ func writeRegistryVariant(t *testing.T, specPath string) string {
 		t.Fatalf("expected exactly one operation-level annotation in the fixture, removed %d", removed)
 	}
 
-	// The same four operations, declared as one family at the document root.
+	// The same four operations, declared as one family on a tag.
 	// tf_description is copied verbatim: a difference there would show up in the
 	// rendered schema and defeat the comparison.
-	variant := strings.Join(kept, "\n") + `
-x-datadog-tf-generator:
-  incident_type:
-    resource:
-      tf_description: Provides a Datadog incident type resource.
-      group:
-        create: CreateIncidentType
-        read: GetIncidentType
-        update: UpdateIncidentType
-        delete: DeleteIncidentType
+	registry := `
+  x-datadog-tf-generator:
+    incident_type:
+      resource:
+        tf_description: Provides a Datadog incident type resource.
+        group:
+          create: CreateIncidentType
+          read: GetIncidentType
+          update: UpdateIncidentType
+          delete: DeleteIncidentType
 `
+
+	variant := strings.Replace(strings.Join(kept, "\n"), "  name: Incidents\n", "  name: Incidents\n"+registry+"\n", 1)
 
 	path := filepath.Join(t.TempDir(), "openapi.yaml")
 	if err := os.WriteFile(path, []byte(variant), 0o600); err != nil {

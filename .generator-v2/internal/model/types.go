@@ -191,7 +191,7 @@ type Operation struct {
 	// Tracking is the decoded tracking-field extension
 	Tracking *TrackingFieldMetadata
 	// Synthetic marks an operation the parser minted to carry one artifact
-	// declared by the document-root family registry, rather than one the
+	// declared by the tag-scoped family registry, rather than one the
 	// document declares. It shares Path/Method/OperationId with the real
 	// operation it was cloned from — the artifact's primary operation — so it
 	// must be excluded anywhere operations are indexed by identity, notably the
