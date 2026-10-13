@@ -29,9 +29,9 @@ var (
 	_ resource.ResourceWithConfigure   = &datadogIntegrationDatabricksAccountResource{}
 	_ resource.ResourceWithImportState = &datadogIntegrationDatabricksAccountResource{}
 )
-var datadogIntegrationDatabricksAccountAuthenticationDatabricksIntegrationAccountBearerTokenAuthTokenWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "token", WriteOnlyAttr: "token_wo", TriggerAttr: "token_wo_version", WriteOnlyDescription: "Secret token used to authenticate with Databricks. This write-only value is not stored in Terraform state.", TriggerDescription: "Version trigger for token_wo rotation.", ParentBlocks: []string{"authentication", "databricks_integration_account_bearer_token_auth"}, Mode: fwutils.WriteOnlySecretModeOnly, Required: false}
-var datadogIntegrationDatabricksAccountAuthenticationDatabricksIntegrationAccountOAuthAuthClientSecretWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "client_secret", WriteOnlyAttr: "client_secret_wo", TriggerAttr: "client_secret_wo_version", WriteOnlyDescription: "Secret of the Databricks service principal. Generate it under User management > Service principals > Credentials & secrets in Databricks. This write-only value is not stored in Terraform state.", TriggerDescription: "Version trigger for client_secret_wo rotation.", ParentBlocks: []string{"authentication", "databricks_integration_account_o_auth_auth"}, Mode: fwutils.WriteOnlySecretModeOnly, Required: true}
-var datadogIntegrationDatabricksAccountDataflowsDatabricksDataObservabilityJobsMonitoringSettingsDdApiKeySecretWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "dd_api_key_secret", WriteOnlyAttr: "dd_api_key_secret_wo", TriggerAttr: "dd_api_key_secret_wo_version", WriteOnlyDescription: "Secret value of the Datadog API key identified by `dd_api_key_id`. This write-only value is not stored in Terraform state.", TriggerDescription: "Version trigger for dd_api_key_secret_wo rotation.", ParentBlocks: []string{"dataflows", "databricks_data_observability_jobs_monitoring", "settings"}, Mode: fwutils.WriteOnlySecretModeOnly, Required: false}
+var datadogIntegrationDatabricksAccountAuthenticationDatabricksIntegrationAccountBearerTokenAuthTokenWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "token", WriteOnlyAttr: "token_wo", TriggerAttr: "token_wo_version", OriginalDescription: "Secret token used to authenticate with Databricks. Conflicts with `token_wo`. Prefer `token_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.", WriteOnlyDescription: "Secret token used to authenticate with Databricks. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.", TriggerDescription: "Version trigger for token_wo rotation.", ParentBlocks: []string{"authentication", "databricks_integration_account_bearer_token_auth"}, Mode: fwutils.WriteOnlySecretModeDual, Required: false}
+var datadogIntegrationDatabricksAccountAuthenticationDatabricksIntegrationAccountOAuthAuthClientSecretWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "client_secret", WriteOnlyAttr: "client_secret_wo", TriggerAttr: "client_secret_wo_version", OriginalDescription: "Secret of the Databricks service principal. Generate it under User management > Service principals > Credentials & secrets in Databricks. Exactly one of `client_secret` or `client_secret_wo` must be set. Prefer `client_secret_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.", WriteOnlyDescription: "Secret of the Databricks service principal. Generate it under User management > Service principals > Credentials & secrets in Databricks. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.", TriggerDescription: "Version trigger for client_secret_wo rotation.", ParentBlocks: []string{"authentication", "databricks_integration_account_o_auth_auth"}, Mode: fwutils.WriteOnlySecretModeDual, Required: true}
+var datadogIntegrationDatabricksAccountDataflowsDatabricksDataObservabilityJobsMonitoringSettingsDdApiKeySecretWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "dd_api_key_secret", WriteOnlyAttr: "dd_api_key_secret_wo", TriggerAttr: "dd_api_key_secret_wo_version", OriginalDescription: "Secret value of the Datadog API key identified by `dd_api_key_id`. Conflicts with `dd_api_key_secret_wo`. Prefer `dd_api_key_secret_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.", WriteOnlyDescription: "Secret value of the Datadog API key identified by `dd_api_key_id`. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.", TriggerDescription: "Version trigger for dd_api_key_secret_wo rotation.", ParentBlocks: []string{"dataflows", "databricks_data_observability_jobs_monitoring", "settings"}, Mode: fwutils.WriteOnlySecretModeDual, Required: false}
 
 type datadogIntegrationDatabricksAccountResourceModel struct {
 	ID             types.String                                                                          `tfsdk:"id"`
@@ -49,6 +49,7 @@ type datadogIntegrationDatabricksAccountDatabricksIntegrationAccountAuthenticati
 
 type datadogIntegrationDatabricksAccountDatabricksIntegrationAccountAuthenticationDatabricksIntegrationAccountBearerTokenAuthModel struct {
 	AuthType       types.String `tfsdk:"auth_type"`
+	Token          types.String `tfsdk:"token"`
 	TokenWo        types.String `tfsdk:"token_wo"`
 	TokenWoVersion types.String `tfsdk:"token_wo_version"`
 }
@@ -57,6 +58,7 @@ type datadogIntegrationDatabricksAccountDatabricksIntegrationAccountAuthenticati
 	AuthType              types.String `tfsdk:"auth_type"`
 	AzureTenantId         types.String `tfsdk:"azure_tenant_id"`
 	ClientId              types.String `tfsdk:"client_id"`
+	ClientSecret          types.String `tfsdk:"client_secret"`
 	ClientSecretWo        types.String `tfsdk:"client_secret_wo"`
 	ClientSecretWoVersion types.String `tfsdk:"client_secret_wo_version"`
 }
@@ -91,6 +93,7 @@ type datadogIntegrationDatabricksAccountDatabricksDataObservabilityJobsMonitorin
 
 type datadogIntegrationDatabricksAccountDatabricksDataObservabilityJobsMonitoringIntegrationDataflowSettingsResponseModel struct {
 	DdApiKeyId                 types.String `tfsdk:"dd_api_key_id"`
+	DdApiKeySecret             types.String `tfsdk:"dd_api_key_secret"`
 	DdApiKeySecretWo           types.String `tfsdk:"dd_api_key_secret_wo"`
 	DdApiKeySecretWoVersion    types.String `tfsdk:"dd_api_key_secret_wo_version"`
 	DjmGlobalInitScriptEnabled types.Bool   `tfsdk:"djm_global_init_script_enabled"`
