@@ -17,18 +17,20 @@ integration-account resources) so you are following a route that has been walked
 ## The annotation
 
 ```yaml
-x-datadog-tf-generator:
-  artifact_kind: resource
-  artifact_name: incident_type
-  tf_description: Provides a Datadog incident type resource.
-  group:
-    create: CreateIncidentType
-    read:   GetIncidentType
-    update: UpdateIncidentType
-    delete: DeleteIncidentType
+tags:
+  - name: Incidents
+    x-datadog-tf-generator:
+      incident_type:
+        resource:
+          tf_description: Provides a Datadog incident type resource.
+          group:
+            create: CreateIncidentType
+            read: GetIncidentType
+            update: UpdateIncidentType
+            delete: DeleteIncidentType
 ```
 
-Put it on the **create** operation. `cardinality` is ignored for resources.
+Declare the resource on the API tag; the block kind supplies its artifact kind.
 
 ## What each group member does
 
@@ -37,7 +39,7 @@ Put it on the **create** operation. `cardinality` is ignored for resources.
 | `create` | Terraform `Create` calls it | Generation fails, the artifact should be a data source, not a resource |
 | `read` | `Read` refreshes state from it; required | Generation fails, the contract requires `read` or `search` |
 | `update` | Terraform `Update` calls it | **Every attribute becomes ForceNew**: any change destroys and recreates |
-| `delete` | Terraform `Destroy` calls it | No destroy path |
+| `delete` | Terraform `Destroy` calls it | Generation fails; delete is required |
 
 Omitting `update` is a design decision. If your
 API has no PATCH, practitioners get replace-on-change semantics, and they should

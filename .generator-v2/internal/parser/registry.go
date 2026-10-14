@@ -21,10 +21,8 @@ import (
 // Tag-scoped family registry
 //
 // The registry is the tag-level form of the tracking extension: a map of
-// family name to the artifacts generated over that API. It is sugar — each
-// block desugars into exactly one model.TrackingFieldMetadata, the same value
-// an operation-level annotation produces — so everything downstream of the
-// parser is unaware the shape exists.
+// family name to the artifacts generated over that API. Each block becomes one
+// model.TrackingFieldMetadata consumed by artifact generation.
 //
 // The block key carries what artifact_kind and cardinality carried before, and
 // the map key carries artifact_name, so neither can be stated inconsistently
@@ -43,7 +41,7 @@ const (
 var blockOrder = []string{BlockResource, BlockDatasourceSingular, BlockDatasourceList}
 
 // compiledRegistrySchema compiles the embedded family-registry schema exactly
-// once. As with the tracking-field schema, a failure here indicts the committed
+// once. A failure here indicts the committed
 // contract rather than the document under test.
 var compiledRegistrySchema = sync.OnceValues(func() (*jsonschema.Schema, error) {
 	return compileEmbedded(contracts.FamilyRegistrySchema, "family-registry")
@@ -110,11 +108,8 @@ type artifactBlock struct {
 	Group         *model.OperationGroup `json:"group,omitempty"`
 }
 
-// DecodeRegistry decodes and validates the tag-scoped family registry stored
-// under extensionName, desugaring every artifact block into the same
-// *model.TrackingFieldMetadata an operation-level annotation would have
-// produced. It returns (nil, nil) when the document carries no registry, which
-// is how a spec using only the legacy operation-level shape is recognized.
+// DecodeRegistry validates and decodes a tag-scoped family registry into artifact metadata.
+// An absent registry declares no artifacts.
 //
 // Results are ordered by family name, then by block (resource, singular, list),
 // so a run over an unchanged document is deterministic regardless of how the

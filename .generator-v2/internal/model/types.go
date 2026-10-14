@@ -956,7 +956,6 @@ type SkipReason string
 
 const (
 	SkipReasonTrackingFieldAbsent SkipReason = "tracking_field_absent"
-	SkipReasonTrackingFieldSkip   SkipReason = "tracking_field_skip_true"
 )
 
 // RunReport is the structured output of a tfgen generate run.

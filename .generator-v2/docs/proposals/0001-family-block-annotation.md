@@ -1,6 +1,6 @@
 # Proposal 0001: Declare Terraform families on their API tag
 
-- **Status:** implemented alongside legacy operation annotations.
+- **Status:** implemented; tag registries are the only artifact declaration format.
 - **Scope:** the `x-datadog-tf-generator` annotation surface. Generated artifact behavior is unchanged.
 
 ## Declaration
@@ -38,9 +38,9 @@ registry must be declared in one place. Multiple fragments may reference the
 same tag, but cannot each contribute a registry for it. Conflicting declarations
 are rejected rather than merged or silently overwritten.
 
-The document-root registry proposal is replaced by this design. Legacy
-operation-level annotations and property-level `sensitive` annotations remain
-supported. New family declarations use Tag Objects.
+The document-root registry proposal is replaced by this design. Operation-level
+artifact declarations and property-level `sensitive` overrides are no longer
+parsed. Sensitivity comes from `writeOnly` and `x-secret`. All families use Tag Objects.
 
 ## Names and blocks
 
@@ -52,7 +52,7 @@ pluralizes the final word (`datastore` → `datastores`, `logs_index` →
 
 Each block can override `artifact_name`. Derived names must satisfy the same
 constraints as explicit names. Global artifact-name checks detect collisions
-across tags and between tag declarations and legacy operation annotations.
+across all tag declarations.
 
 | Block | Artifact kind | Group roles |
 | --- | --- | --- |
@@ -94,8 +94,7 @@ registries and duplicate declarations.
 
 The transformer selects the registry type by extension key and `Tag` parent,
 validates its family/block fields, and retains source locations from each tag's
-spec fragment. It collects group operation IDs from tag registries and legacy
-annotations. It also compares tag registries directly during diffing so changes
+spec fragment. It collects group operation IDs from tag registries only. It also compares tag registries directly during diffing so changes
 to names, descriptions, groups, or skip flags dispatch Terraform even if no
 operation changed.
 
@@ -106,11 +105,8 @@ five spec families under their existing tags. The spec merge script needs no
 Terraform-specific root-extension handling.
 
 Tests cover naming, pluralization, skipping, malformed declarations, multiple
-tags, duplicate families/tags, and legacy compatibility. The source-equivalence
-test moves an incident-type resource declaration from its legacy GET annotation
-onto the `Incidents` tag and compares generated Go source byte for byte. Its
-synthetic anchor is POST, proving the output does not depend on the declaration's
-original position.
+tags, duplicate families/tags, and ignored legacy operation annotations.
+Generation fixtures exercise the tag-scoped format.
 
 The migration retains all five families and 17 operation IDs: four integration
 resources are enabled and the datastore list data source remains skipped.

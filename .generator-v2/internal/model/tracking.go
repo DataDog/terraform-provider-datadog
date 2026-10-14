@@ -1,13 +1,11 @@
 package model
 
 // TrackingFieldMetadata is the decoded form of the x-datadog-tf-generator
-// OpenAPI extension on a flagged operation. It is nil on an Operation whose
-// extension is absent, and describes the shape only — decoding lives elsewhere.
+// tag registry, attached to a synthetic operation for artifact generation.
 type TrackingFieldMetadata struct {
 	// Family and Block name the tag-scoped registry address this metadata
 	// was desugared from, e.g. ("integration_databricks_account",
-	// "datasource_list"); both are empty for a legacy operation-level
-	// annotation. They exist so a diagnostic can quote the address the author
+	// "datasource_list"). They exist so a diagnostic can quote the address the author
 	// actually wrote instead of a path the registry never mentions, and are not
 	// serialized: they say where the annotation lives, not what it declares.
 	Family string `json:"-"`
@@ -32,12 +30,6 @@ type TrackingFieldMetadata struct {
 	// IdStrategy is how the Terraform resource ID is derived from the API
 	// response. Defaults to "data.id" when omitted.
 	IdStrategy IdStrategy `json:"id_strategy,omitempty"`
-	// Sensitive, when attached to a Schema Object, marks the attribute as
-	// Terraform-sensitive.
-	Sensitive bool `json:"sensitive,omitempty"`
-	// Skip explicitly disables generation while keeping the annotation in
-	// place, equivalent to removing the extension.
-	Skip bool `json:"skip,omitempty"`
 	// Overwrites names the hand-written data source constructor this generated
 	// artifact supersedes, e.g. "NewDatadogTeamDataSource". When set, the
 	// generated file overwrites the hand-written one in place, that constructor is

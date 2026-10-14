@@ -6,14 +6,6 @@ paths:
   /incident_types:
     post:
       operationId: CreateIncidentType
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: incident_type
-        group:
-          create: CreateIncidentType
-          read: GetIncidentType
-          update: UpdateIncidentType
-          delete: DeleteIncidentType
       responses:
         '201':
           description: created
@@ -26,11 +18,6 @@ paths:
           required: true
           schema:
             type: string
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: team
-        group:
-          read: GetTeam
       responses:
         '200':
           description: ok
@@ -40,3 +27,19 @@ paths:
       responses:
         '200':
           description: ok
+tags:
+- name: Terraform
+  x-datadog-tf-generator:
+    incident_type:
+      resource:
+        artifact_name: incident_type
+        group:
+          create: CreateIncidentType
+          read: GetIncidentType
+          update: UpdateIncidentType
+          delete: DeleteIncidentType
+    team:
+      datasource_singular:
+        artifact_name: team
+        group:
+          read: GetTeam

@@ -223,7 +223,7 @@ var _ = Describe("generated resource write-only contract", func() {
 			Expect(source).NotTo(ContainSubstring("datadog/internal/fwutils"))
 		},
 		Entry("x-secret:true only", "x-secret"),
-		Entry("tracking sensitive:true only", "tracking-sensitive"),
+		Entry("display sensitivity only", "display-sensitive"),
 	)
 
 	It("keeps response/data-source sensitivity ordinary and never emits write-only companions", func() {
