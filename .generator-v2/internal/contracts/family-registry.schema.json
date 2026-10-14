@@ -2,15 +2,17 @@
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://datadog.github.io/terraform-provider-datadog/contracts/family-registry.schema.json",
     "title": "x-datadog-tf-generator (tag)",
-    "description": "OpenAPI 3.0 vendor extension on an OpenAPI Tag Object: a registry of Terraform artifact families, keyed by family name. Each family declares up to three artifacts — a resource, a singular data source and a list data source — over the same API. The block key replaces artifact_kind and cardinality, and the map key is the artifact name, so neither can be repeated inconsistently across a family.",
+    "description": "OpenAPI 3.0 vendor extension on an OpenAPI Tag Object: a registry of Terraform artifact families, keyed by family name. Each family declares up to three artifacts — a resource, a singular data source and a list data source — over the same API. The block key replaces artifact_kind and cardinality, and the map key is the artifact name, so neither can be repeated inconsistently across a family. Registry keys beginning with x- (case-insensitive) are vendor metadata: their values are unrestricted, they declare no artifacts, and they are excluded from duplicate-family checks.",
     "type": "object",
     "minProperties": 1,
     "propertyNames": {
-      "pattern": "^[a-z][a-z0-9_]*$",
-      "minLength": 1,
-      "maxLength": 64,
+      "anyOf": [
+        { "pattern": "^[xX]-" },
+        { "pattern": "^[a-z][a-z0-9_]*$", "minLength": 1, "maxLength": 64 }
+      ],
       "description": "Family name: the Terraform-facing artifact name without the 'datadog_' prefix, lowercase snake_case. It names the resource and the singular data source verbatim (they are separate Terraform namespaces); the list data source pluralizes it unless its block overrides artifact_name."
     },
+    "patternProperties": { "^[xX]-": true },
     "additionalProperties": { "$ref": "#/$defs/family" },
     "$defs": {
       "family": {

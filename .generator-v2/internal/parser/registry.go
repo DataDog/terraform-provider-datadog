@@ -114,7 +114,8 @@ type artifactBlock struct {
 // Results are ordered by family name, then by block (resource, singular, list),
 // so a run over an unchanged document is deterministic regardless of how the
 // document was written. A family or block setting skip:true is omitted, the
-// documented opt-out equivalent to deleting it.
+// documented opt-out equivalent to deleting it. Registry keys beginning with
+// x- (case-insensitive) are metadata, not family declarations.
 func DecodeRegistry(ext *orderedmap.Map[string, *yaml.Node], extensionName string) ([]*model.TrackingFieldMetadata, error) {
 	if ext == nil {
 		return nil, nil
@@ -143,20 +144,25 @@ func DecodeRegistry(ext *orderedmap.Map[string, *yaml.Node], extensionName strin
 	if err != nil {
 		return nil, &RegistryError{Cause: fmt.Errorf("re-encoding registry: %w", err)}
 	}
-	var registry map[string]familyDecl
+	var registry map[string]json.RawMessage
 	if err := json.Unmarshal(jsonBytes, &registry); err != nil {
 		return nil, &RegistryError{Cause: fmt.Errorf("decoding registry into declarations: %w", err)}
 	}
 
 	families := make([]string, 0, len(registry))
 	for name := range registry {
-		families = append(families, name)
+		if !isRegistryMetadata(name) {
+			families = append(families, name)
+		}
 	}
 	sort.Strings(families)
 
 	var metas []*model.TrackingFieldMetadata
 	for _, family := range families {
-		decl := registry[family]
+		var decl familyDecl
+		if err := json.Unmarshal(registry[family], &decl); err != nil {
+			return nil, &RegistryError{Family: family, Cause: fmt.Errorf("decoding family declaration: %w", err)}
+		}
 		if decl.Skip {
 			continue
 		}
@@ -285,6 +291,11 @@ func isVowel(b byte) bool {
 	return bytes.IndexByte([]byte("aeiou"), b) >= 0
 }
 
+// isRegistryMetadata matches the transformer's case-insensitive vendor prefix.
+func isRegistryMetadata(name string) bool {
+	return strings.HasPrefix(strings.ToLower(name), "x-")
+}
+
 // decodeTagRegistries reads each tag's declaration without merging extension
 // mappings. Family names remain unique across the spec, including skipped ones.
 func decodeTagRegistries(tags []*base.Tag, extensionName string) ([]*model.TrackingFieldMetadata, error) {
@@ -310,7 +321,9 @@ func decodeTagRegistries(tags []*base.Tag, extensionName string) ([]*model.Track
 		}
 		names := make([]string, 0, len(families))
 		for family := range families {
-			names = append(names, family)
+			if !isRegistryMetadata(family) {
+				names = append(names, family)
+			}
 		}
 		sort.Strings(names)
 		for _, family := range names {
