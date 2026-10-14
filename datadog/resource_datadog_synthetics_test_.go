@@ -4363,9 +4363,7 @@ func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion, 
 						previous["operator"] == string(assertionTarget.GetOperator()) && previousProperty == assertionTarget.GetProperty() {
 						previousTarget := previousTargets[0].(map[string]interface{})
 						if previousTarget["operator"] == target.GetOperator() && previousTarget["jsonpath"] == target.GetJsonPath() {
-							if value, ok := previousTarget["targetvalue"].(string); ok {
-								localTarget["targetvalue"] = value
-							}
+							localTarget["targetvalue"], _ = previousTarget["targetvalue"].(string)
 						}
 					}
 				}
