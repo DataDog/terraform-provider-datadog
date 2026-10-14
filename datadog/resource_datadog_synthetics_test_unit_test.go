@@ -213,3 +213,19 @@ func TestBuildDatadogParamsForMobileStep_TypeTextDelay(t *testing.T) {
 		})
 	}
 }
+
+func TestBuildTerraformMobileTestSteps_PlaySubTest(t *testing.T) {
+	data := schema.TestResourceDataRaw(t, map[string]*schema.Schema{"mobile_step": syntheticsTestMobileStep()}, nil)
+	for _, subtestID := range []string{"abc-def-ghi", "jkl-mno-pqr"} {
+		params := datadogV1.SyntheticsMobileStepParams{}
+		params.SetSubtestPublicId(subtestID)
+		step := datadogV1.NewSyntheticsMobileStep("Run subtest", params, datadogV1.SYNTHETICSMOBILESTEPTYPE_PLAYSUBTEST)
+		flattened := buildTerraformMobileTestSteps([]datadogV1.SyntheticsMobileStep{*step})
+		require.NoError(t, data.Set("mobile_step", flattened))
+		assert.Equal(t, subtestID, data.Get("mobile_step.0.params.0.subtest_public_id"))
+
+		storedParams := data.Get("mobile_step.0.params").([]interface{})[0].(map[string]interface{})
+		built := buildDatadogParamsForMobileStep(datadogV1.SYNTHETICSMOBILESTEPTYPE_PLAYSUBTEST, storedParams)
+		assert.Equal(t, subtestID, built.GetSubtestPublicId())
+	}
+}
