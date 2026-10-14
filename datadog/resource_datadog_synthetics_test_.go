@@ -688,6 +688,10 @@ func syntheticsAPIAssertion() *schema.Schema {
 								Description: "Expected matching value.",
 								Type:        schema.TypeString,
 								Optional:    true,
+								DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+									// isUndefined checks for a missing path and ignores comparison values.
+									return d.Get(strings.TrimSuffix(k, "targetvalue")+"operator") == "isUndefined"
+								},
 							},
 						},
 					},
@@ -2798,7 +2802,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	}
 
 	actualAssertions := config.GetAssertions()
-	localAssertions, diags := buildTerraformAssertions(actualAssertions, d.Get("assertion").([]interface{}))
+	localAssertions, diags := buildTerraformAssertions(actualAssertions)
 	if diags.HasError() {
 		return diags
 	}
@@ -2828,8 +2832,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				localStep["name"] = step.SyntheticsAPITestStep.GetName()
 				localStep["subtype"] = step.SyntheticsAPITestStep.GetSubtype()
 
-				oldAssertions, _ := d.Get(fmt.Sprintf("api_step.%d.assertion", i)).([]interface{})
-				localAssertions, diags := buildTerraformAssertions(step.SyntheticsAPITestStep.GetAssertions(), oldAssertions)
+				localAssertions, diags := buildTerraformAssertions(step.SyntheticsAPITestStep.GetAssertions())
 				if diags.HasError() {
 					return diags
 				}
@@ -4275,7 +4278,7 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 	return assertions, diags
 }
 
-func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion, priorAssertions []interface{}) ([]map[string]interface{}, diag.Diagnostics) {
+func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) ([]map[string]interface{}, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	localAssertions := make([]map[string]interface{}, len(actualAssertions))
 
@@ -4351,21 +4354,6 @@ func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion, 
 				}
 				if v, ok := target.GetElementsOperatorOk(); ok {
 					localTarget["elementsoperator"] = string(*v)
-				}
-				// The provider omits targetValue from isUndefined API requests, so
-				// the backend cannot return the configured value. Keep the planned
-				// or prior-state value for the same assertion to prevent recurring diffs.
-				if target.GetOperator() == "isUndefined" && i < len(priorAssertions) {
-					previous := priorAssertions[i].(map[string]interface{})
-					previousTargets, _ := previous["targetjsonpath"].([]interface{})
-					previousProperty, _ := previous["property"].(string)
-					if len(previousTargets) == 1 && previous["type"] == string(assertionTarget.GetType()) &&
-						previous["operator"] == string(assertionTarget.GetOperator()) && previousProperty == assertionTarget.GetProperty() {
-						previousTarget := previousTargets[0].(map[string]interface{})
-						if previousTarget["operator"] == target.GetOperator() && previousTarget["jsonpath"] == target.GetJsonPath() {
-							localTarget["targetvalue"], _ = previousTarget["targetvalue"].(string)
-						}
-					}
 				}
 				localAssertion["targetjsonpath"] = []map[string]string{localTarget}
 			}

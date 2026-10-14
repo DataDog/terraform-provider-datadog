@@ -1,11 +1,13 @@
 package datadog
 
 import (
+	"context"
 	"encoding/json"
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -160,22 +162,21 @@ func TestBuildDatadogParamsForMobileStep_TypeTextDelay(t *testing.T) {
 }
 
 func TestSyntheticsUndefinedTargetValue(t *testing.T) {
-	// Terraform converts targetvalue = false to the string "false".
-	prior := []interface{}{map[string]interface{}{
-		"type": "grpcProto", "operator": "validatesJSONPath",
-		"targetjsonpath": []interface{}{map[string]interface{}{
-			"jsonpath": "$.value", "operator": "isUndefined", "targetvalue": "false",
-		}},
-	}}
-	apiAssertions, diags := buildDatadogAssertions(prior)
-	require.False(t, diags.HasError(), "%v", diags)
-	payload, err := json.Marshal(apiAssertions)
-	require.NoError(t, err)
-	require.NotContains(t, string(payload), "targetValue")
-
-	var response []datadogV1.SyntheticsAssertion
-	require.NoError(t, json.Unmarshal(payload, &response))
-	assertions, diags := buildTerraformAssertions(response, prior)
-	require.False(t, diags.HasError(), "%v", diags)
-	require.Equal(t, "false", assertions[0]["targetjsonpath"].([]map[string]string)[0]["targetvalue"])
+	resource := &schema.Resource{Schema: map[string]*schema.Schema{"assertion": syntheticsAPIAssertion()}}
+	for _, assertionType := range []string{"body", "grpcProto"} {
+		for _, operator := range []string{"isUndefined", "is"} {
+			target := map[string]interface{}{"jsonpath": "$.value", "operator": operator}
+			config := map[string]interface{}{"assertion": []interface{}{map[string]interface{}{
+				"type": assertionType, "operator": "validatesJSONPath",
+				"targetjsonpath": []interface{}{target},
+			}}}
+			data := schema.TestResourceDataRaw(t, resource.Schema, config)
+			data.SetId("synthetics-test")
+			state := data.State()
+			target["targetvalue"] = false
+			diff, err := resource.Diff(context.Background(), state, terraform.NewResourceConfigRaw(config), nil)
+			require.NoError(t, err)
+			assert.Equal(t, operator == "isUndefined", diff.Empty(), "%s/%s", assertionType, operator)
+		}
+	}
 }
