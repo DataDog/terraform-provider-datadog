@@ -685,7 +685,7 @@ func syntheticsAPIAssertion() *schema.Schema {
 								Required:    true,
 							},
 							"targetvalue": {
-								Description: "Expected matching value. For `isUndefined`, this value is preserved in Terraform state but is not sent to the API.",
+								Description: "Expected matching value.",
 								Type:        schema.TypeString,
 								Optional:    true,
 							},
@@ -2798,12 +2798,11 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	}
 
 	actualAssertions := config.GetAssertions()
-	localAssertions, diags := buildTerraformAssertions(actualAssertions)
+	localAssertions, diags := buildTerraformAssertions(actualAssertions, d.Get("assertion").([]interface{}))
 	if diags.HasError() {
 		return diags
 	}
 
-	preserveSyntheticsUndefinedTargetValues(localAssertions, d.Get("assertion").([]interface{}))
 	if err := d.Set("assertion", localAssertions); err != nil {
 		return diag.FromErr(err)
 	}
@@ -2829,12 +2828,11 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				localStep["name"] = step.SyntheticsAPITestStep.GetName()
 				localStep["subtype"] = step.SyntheticsAPITestStep.GetSubtype()
 
-				localAssertions, diags := buildTerraformAssertions(step.SyntheticsAPITestStep.GetAssertions())
+				oldAssertions, _ := d.Get(fmt.Sprintf("api_step.%d.assertion", i)).([]interface{})
+				localAssertions, diags := buildTerraformAssertions(step.SyntheticsAPITestStep.GetAssertions(), oldAssertions)
 				if diags.HasError() {
 					return diags
 				}
-				oldAssertions, _ := d.Get(fmt.Sprintf("api_step.%d.assertion", i)).([]interface{})
-				preserveSyntheticsUndefinedTargetValues(localAssertions, oldAssertions)
 				localStep["assertion"] = localAssertions
 				localStep["extracted_value"] = buildTerraformExtractedValues(step.SyntheticsAPITestStep.GetExtractedValues())
 
@@ -4277,38 +4275,7 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 	return assertions, diags
 }
 
-// isUndefined omits targetValue on the wire, so the API cannot return the local
-// value. Keep it from the plan on create/update, or prior state on refresh. Only
-// preserve values for the same assertion; imports have no local value to keep.
-func preserveSyntheticsUndefinedTargetValues(assertions []map[string]interface{}, prior []interface{}) {
-	for i, assertion := range assertions {
-		if i >= len(prior) {
-			continue
-		}
-		targets, ok := assertion["targetjsonpath"].([]map[string]string)
-		if !ok || len(targets) != 1 || targets[0]["operator"] != "isUndefined" {
-			continue
-		}
-		oldAssertion := prior[i].(map[string]interface{})
-		oldProperty, _ := oldAssertion["property"].(string)
-		property, _ := assertion["property"].(string)
-		if oldAssertion["type"] != assertion["type"] || oldAssertion["operator"] != assertion["operator"] || oldProperty != property {
-			continue
-		}
-		oldTargets, ok := oldAssertion["targetjsonpath"].([]interface{})
-		if !ok || len(oldTargets) != 1 {
-			continue
-		}
-		oldTarget := oldTargets[0].(map[string]interface{})
-		if oldTarget["operator"] == "isUndefined" && oldTarget["jsonpath"] == targets[0]["jsonpath"] {
-			if value, ok := oldTarget["targetvalue"].(string); ok {
-				targets[0]["targetvalue"] = value
-			}
-		}
-	}
-}
-
-func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) ([]map[string]interface{}, diag.Diagnostics) {
+func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion, priorAssertions []interface{}) ([]map[string]interface{}, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	localAssertions := make([]map[string]interface{}, len(actualAssertions))
 
@@ -4384,6 +4351,23 @@ func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) 
 				}
 				if v, ok := target.GetElementsOperatorOk(); ok {
 					localTarget["elementsoperator"] = string(*v)
+				}
+				// The provider omits targetValue from isUndefined API requests, so
+				// the backend cannot return the configured value. Keep the planned
+				// or prior-state value for the same assertion to prevent recurring diffs.
+				if target.GetOperator() == "isUndefined" && i < len(priorAssertions) {
+					previous := priorAssertions[i].(map[string]interface{})
+					previousTargets, _ := previous["targetjsonpath"].([]interface{})
+					previousProperty, _ := previous["property"].(string)
+					if len(previousTargets) == 1 && previous["type"] == string(assertionTarget.GetType()) &&
+						previous["operator"] == string(assertionTarget.GetOperator()) && previousProperty == assertionTarget.GetProperty() {
+						previousTarget := previousTargets[0].(map[string]interface{})
+						if previousTarget["operator"] == target.GetOperator() && previousTarget["jsonpath"] == target.GetJsonPath() {
+							if value, ok := previousTarget["targetvalue"].(string); ok {
+								localTarget["targetvalue"] = value
+							}
+						}
+					}
 				}
 				localAssertion["targetjsonpath"] = []map[string]string{localTarget}
 			}
