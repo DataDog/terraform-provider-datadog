@@ -221,7 +221,7 @@ func TestAccDatadogDashboardJSONPauseAutoRefreshNoDiff(t *testing.T) {
 				Config: testAccCheckDatadogDashboardJSONPauseAutoRefreshNoDiff(uniqueName),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
-						"datadog_dashboard_json.timeboard_json", "dashboard", fmt.Sprintf("{\"description\":\"\",\"is_read_only\":false,\"layout_type\":\"ordered\",\"notify_list\":[],\"reflow_type\":\"fixed\",\"template_variables\":[],\"title\":\"%s\",\"widgets\":[]}", uniqueName)),
+						"datadog_dashboard_json.timeboard_json", "dashboard", fmt.Sprintf("{\"description\":\"\",\"is_read_only\":false,\"layout_type\":\"ordered\",\"notify_list\":[],\"reflow_type\":\"fixed\",\"template_variables\":[],\"title\":%q,\"widgets\":[]}", uniqueName)),
 				),
 			},
 		},
