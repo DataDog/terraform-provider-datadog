@@ -82,6 +82,46 @@ func TestDecodeRegistryOutOfScope(t *testing.T) {
 	})
 }
 
+func TestDecodeRegistryMetadata(t *testing.T) {
+	for _, metadata := range []string{
+		"x-owner: pets\n",
+		"X-owner: pets\n",
+		"x-enabled: true\n",
+		"x-version: 1\n",
+		"x-labels: [pets, users]\n",
+		"x-owner: null\n",
+		"x-owner: {team: pets}\n",
+		"x-family: {datasource_list: {group: {read: ListMetadata}}}\n",
+		"X-" + strings.Repeat("long-metadata-", 8) + ": pets\n",
+	} {
+		t.Run(strings.TrimSpace(metadata), func(t *testing.T) {
+			metas := decodeRegistry(t, metadata+databricksRegistry)
+			if len(metas) != 3 {
+				t.Fatalf("got %d artifacts, want 3", len(metas))
+			}
+			for _, meta := range metas {
+				if meta.Family != "integration_databricks_account" {
+					t.Fatalf("metadata declared an artifact: %+v", meta)
+				}
+			}
+			// The transformer also accepts a nonempty registry with only metadata.
+			if metas := decodeRegistry(t, metadata); len(metas) != 0 {
+				t.Fatalf("metadata-only registry declared %d artifacts", len(metas))
+			}
+		})
+	}
+	t.Run("metadata does not relax family validation", func(t *testing.T) {
+		for _, family := range []string{
+			"Thing: {skip: true}",
+			"thing: {}",
+			"thing: {datasource_list: {group: {search: ListThings}}}",
+			"$ref: '#/info'",
+		} {
+			decodeRegistryErr(t, "x-owner: pets\n"+family+"\n")
+		}
+	})
+}
+
 func TestDecodeRegistryFullFamily(t *testing.T) {
 	metas := decodeRegistry(t, databricksRegistry)
 	if len(metas) != 3 {
@@ -320,6 +360,29 @@ func TestTagRegistries(t *testing.T) {
 	tag := func(name, body string) *base.Tag {
 		return &base.Tag{Name: name, Extensions: tagExt(t, DefaultTrackingFieldName, body)}
 	}
+	t.Run("metadata keys may repeat across tags", func(t *testing.T) {
+		for _, key := range []string{"x-owner", "X-owner"} {
+			metas, err := decodeTagRegistries([]*base.Tag{
+				tag("Pets", key+": pets\npet: {datasource_list: {group: {read: ListPets}}}"),
+				tag("Users", key+": {team: users}\nuser: {datasource_list: {group: {read: ListUsers}}}"),
+			}, DefaultTrackingFieldName)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(metas) != 2 || metas[0].ArtifactName != "pets" || metas[1].ArtifactName != "users" {
+				t.Fatalf("unexpected artifacts: %+v", metas)
+			}
+		}
+	})
+	t.Run("metadata does not hide duplicate skipped families", func(t *testing.T) {
+		_, err := decodeTagRegistries([]*base.Tag{
+			tag("First", "x-owner: pets\nthing: {skip: true}"),
+			tag("Second", "x-owner: users\nthing: {skip: true}"),
+		}, DefaultTrackingFieldName)
+		if err == nil || !strings.Contains(err.Error(), "already declared") {
+			t.Fatalf("got %v, want duplicate family error", err)
+		}
+	})
 	t.Run("multiple tags and stable ordering", func(t *testing.T) {
 		tags := []*base.Tag{
 			tag("Zebra", "zebra:\n  datasource_list:\n    group: {read: ListZebras}\n"),

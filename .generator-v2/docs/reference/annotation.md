@@ -18,7 +18,7 @@ The tag extension declares families of Terraform resources and data sources. tfg
 
 For how to choose between the shapes, see [Generating an artifact](../generating/README.md). For what the generator can currently do with them, see [Scope](scope.md).
 
-OpenAPI 3.0 vendor extension on an OpenAPI Tag Object: a registry of Terraform artifact families, keyed by family name. Each family declares up to three artifacts — a resource, a singular data source and a list data source — over the same API. The block key replaces artifact_kind and cardinality, and the map key is the artifact name, so neither can be repeated inconsistently across a family.
+OpenAPI 3.0 vendor extension on an OpenAPI Tag Object: a registry of Terraform artifact families, keyed by family name. Each family declares up to three artifacts — a resource, a singular data source and a list data source — over the same API. The block key replaces artifact_kind and cardinality, and the map key is the artifact name, so neither can be repeated inconsistently across a family. Registry keys beginning with x- (case-insensitive) are vendor metadata: their values are unrestricted, they declare no artifacts, and they are excluded from duplicate-family checks.
 
 ## Component shapes
 
