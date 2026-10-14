@@ -47,6 +47,127 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsAPITest_globalVariableSecureLifecycle(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	variableName := getUniqueVariableName(ctx, t)
+	const resourceName = "datadog_synthetics_test.global_secure"
+	config := func(name, firstSecure, secondSecure, thirdSecure string) string {
+		return createSyntheticsAPITestGlobalVariableSecureConfig(name, variableName, firstSecure, secondSecure, thirdSecure)
+	}
+	check := func(first, second, third string) resource.TestCheckFunc {
+		return resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(providers.sdkV2Provider),
+			resource.TestCheckResourceAttr("datadog_synthetics_global_variable.foo", "secure", "true"),
+			resource.TestCheckResourceAttr(resourceName, "config_variable.0.secure", first),
+			resource.TestCheckResourceAttr(resourceName, "config_variable.1.secure", second),
+			resource.TestCheckResourceAttr(resourceName, "config_variable.2.secure", third),
+			resource.TestCheckResourceAttr(resourceName, "config_variable.3.secure", "true"),
+			resource.TestCheckResourceAttr(resourceName, "config_variable.3.pattern", "local-secret"),
+			resource.TestCheckResourceAttr(resourceName, "config_variable.3.example", "secret-example"),
+			resource.TestCheckResourceAttr(resourceName, "config_variable.4.secure", "false"),
+			resource.TestCheckResourceAttr(resourceName, "config_variable.4.pattern", "plain-value"),
+		)
+	}
+	initial := config(testName, "secure = true", "secure = false", "")
+	firstUpdate := config(testName+"-first-update", "secure = true", "secure = false", "")
+	secondUpdate := config(testName+"-second-update", "secure = true", "secure = false", "")
+	toggled := config(testName+"-second-update", "secure = false", "secure = true", "secure = true")
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(providers.sdkV2Provider),
+		Steps: []resource.TestStep{
+			{Config: initial, Check: check("true", "false", "false")},
+			{Config: initial, PlanOnly: true},
+			{Config: firstUpdate, Check: check("true", "false", "false")},
+			{Config: firstUpdate, PlanOnly: true},
+			{Config: secondUpdate, Check: check("true", "false", "false")},
+			{Config: secondUpdate, PlanOnly: true},
+			{Config: toggled, Check: check("false", "true", "true")},
+			{Config: toggled, PlanOnly: true},
+			{Config: initial, Check: check("true", "false", "false")},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+				// Reference flags and redacted local values cannot be recovered by import.
+				ImportStateVerifyIgnore: []string{"config_variable.0.secure", "config_variable.3.pattern", "config_variable.3.example"},
+				ImportStateCheck: func(states []*terraform.InstanceState) error {
+					for i := 0; i < 3; i++ {
+						if got := states[0].Attributes[fmt.Sprintf("config_variable.%d.secure", i)]; got != "false" {
+							return fmt.Errorf("imported global variable %d secure = %s, want false", i, got)
+						}
+					}
+					if got := states[0].Attributes["config_variable.3.secure"]; got != "true" {
+						return fmt.Errorf("imported local variable secure = %s, want true", got)
+					}
+					return nil
+				},
+			},
+			{Config: initial, PlanOnly: true},
+			{Config: initial, PlanOnly: true},
+		},
+	})
+}
+
+func createSyntheticsAPITestGlobalVariableSecureConfig(name, variableName, firstSecure, secondSecure, thirdSecure string) string {
+	return createSyntheticsGlobalVariableSecureConfig(variableName) + fmt.Sprintf(`
+resource "datadog_synthetics_test" "global_secure" {
+  name = %q
+  type = "api"
+  subtype = "http"
+  status = "paused"
+  locations = ["aws:us-east-1"]
+  request_definition {
+    method = "GET"
+    url = "https://example.com"
+  }
+  assertion {
+    type = "statusCode"
+    operator = "is"
+    target = "200"
+  }
+  options_list {
+    tick_every = 900
+  }
+  config_variable {
+    name = "GLOBAL_TRUE"
+    type = "global"
+    id = datadog_synthetics_global_variable.foo.id
+    %s
+  }
+  config_variable {
+    name = "GLOBAL_FALSE"
+    type = "global"
+    id = datadog_synthetics_global_variable.foo.id
+    %s
+  }
+  config_variable {
+    name = "GLOBAL_OMITTED"
+    type = "global"
+    id = datadog_synthetics_global_variable.foo.id
+    %s
+  }
+  config_variable {
+    name = "LOCAL_SECURE"
+    type = "text"
+    secure = true
+    pattern = "local-secret"
+    example = "secret-example"
+  }
+  config_variable {
+    name = "LOCAL_PLAIN"
+    type = "text"
+    secure = false
+    pattern = "plain-value"
+    example = "plain-example"
+  }
+}`, name, firstSecure, secondSecure, thirdSecure)
+}
+
 func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
 	cleanupSyntheticsTests(t)
 	t.Parallel()
