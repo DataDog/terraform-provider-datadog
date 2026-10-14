@@ -29,6 +29,8 @@ Examples:
 The full v2 spec is not vendored; point at it with --spec or the
 DATADOG_OPENAPI_V2_SPEC env var (defaults to ~/local-dev/terraform/openapi.v2.yaml).
 """
+from _registry import declare_artifact
+
 import argparse
 import os
 import re
@@ -120,24 +122,20 @@ def main(argv=None):
     if missing:
         sys.exit("operationId(s) not found in spec: " + ", ".join(missing))
 
-    ext = {
-        "artifact_kind": args.artifact_kind,
-        "artifact_name": args.artifact_name,
-    }
+    ext = {}
     if args.tf_description:
         ext["tf_description"] = args.tf_description
-    if args.cardinality == "plural":
-        ext["cardinality"] = "plural"
     if args.overwrites:
         ext["overwrites"] = args.overwrites
     ext["group"] = group
 
-    # Stamp the extension on the anchor operation (read, or search when read is
-    # absent) before slicing — build_slice carries the operation across verbatim,
-    # so the annotation lands in the slice with no second write.
+    # Declare the artifact on its owning tag before slicing.
     anchor_op = group.get("read") or group.get("search")
     apath, amethod = op_index[anchor_op]
-    spec["paths"][apath][amethod]["x-datadog-tf-generator"] = ext
+    block = "resource" if args.artifact_kind == "resource" else (
+        "datasource_list" if args.cardinality == "plural" else "datasource_singular"
+    )
+    declare_artifact(spec, spec["paths"][apath][amethod], args.artifact_name, block, ext)
 
     out_path = args.out
     if out_path:

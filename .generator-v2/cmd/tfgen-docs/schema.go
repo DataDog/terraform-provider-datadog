@@ -13,7 +13,7 @@ import (
 // required lists, additionalProperties) and ignores the rest of the spec.
 //
 // The point is provenance, not generality. The published annotation reference is
-// now a projection of internal/contracts/tracking-field.schema.json, so a field
+// now a projection of internal/contracts/family-registry.schema.json, so a field
 // that is not in the schema cannot appear in the docs, and a field that is added
 // to the schema shows up in the docs on the next `make tfgen-docs`.
 type schemaDoc struct {

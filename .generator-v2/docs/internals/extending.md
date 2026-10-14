@@ -49,7 +49,7 @@ adding a template. Follow the same route: add the role, populate it in
 The annotation contract in `internal/contracts/` is consumed outside this module, by
 spec authors and by `openapi-transformer`. So:
 
-1. Edit `tracking-field.schema.json`.
+1. Edit `family-registry.schema.json`.
 2. Run `make tfgen-docs` and commit the regenerated reference page in the same
    change. `make tfgen-docs-check` fails otherwise.
 3. Check whether `openapi-transformer` also needs the field. **A field accepted

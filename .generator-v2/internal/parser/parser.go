@@ -113,16 +113,11 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 					continue
 				}
 				upperMethod := strings.ToUpper(method)
-				tracking, err := DecodeTracking(op, opPath, upperMethod, cfg.trackingFieldName)
-				if err != nil {
-					return nil, err
-				}
 				mop := &model.Operation{
 					Path:        opPath,
 					Method:      upperMethod,
 					OperationId: op.OperationId,
 					Tag:         firstTag(op.Tags),
-					Tracking:    tracking,
 					Unstable:    declaresUnstable(op),
 				}
 				spec.Operations = append(spec.Operations, mop)
@@ -154,7 +149,7 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 	// those pointers only exist once every operation is enumerated.
 	ResolveOperationGroups(spec)
 
-	if err := NormalizeSchemas(spec, rawOps, cfg.maxDepth, cfg.trackingFieldName); err != nil {
+	if err := NormalizeSchemas(spec, rawOps, cfg.maxDepth); err != nil {
 		return nil, err
 	}
 
@@ -163,13 +158,12 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 
 // fanOutRegistry decodes the tag-scoped family registry and appends one
 // synthetic operation per artifact it declares, each carrying the desugared
-// tracking metadata. A document with no registry is left untouched, which is
-// what keeps the legacy operation-level annotation working unchanged.
+// tracking metadata. Documents without a registry declare no Terraform artifacts.
 //
 // Each artifact is anchored on its primary operation — create for a resource,
 // read (else search) for a singular data source, read for a list — so a
 // diagnostic still names a real endpoint, and the x-unstable gate set stays
-// what it was when the annotation sat on that operation. The anchor is a clone
+// consistent with the backing endpoint. The anchor is a clone
 // rather than the operation itself because one operation can be primary for
 // more than one artifact: a family's resource and its singular data source
 // both read through the same endpoint. The clone inherits the raw handle so

@@ -4,7 +4,7 @@
 // repository rather than prose a human keeps in step:
 //
 //	docs/reference/cli.md         ← the cobra command tree in internal/cli/
-//	docs/reference/annotation.md  ← internal/contracts/tracking-field.schema.json
+//	docs/reference/annotation.md  ← internal/contracts/family-registry.schema.json
 //
 // The run report has no machine-readable contract yet. When one lands in
 // internal/contracts/, add a page here rather than hand-writing its field table:
@@ -57,7 +57,7 @@ func main() {
 		{
 			path: filepath.Join("reference", "annotation.md"),
 			render: func() (string, error) {
-				return renderAnnotation(contracts.TrackingFieldSchema)
+				return renderAnnotation(contracts.FamilyRegistrySchema)
 			},
 		},
 	}
@@ -111,11 +111,11 @@ func renderAnnotation(raw []byte) (string, error) {
 		Title:            "Annotation reference: `x-datadog-tf-generator`",
 		ConfluenceParent: "7291536637",
 		ConfluenceID:     "7290816044",
-		Audience:         "anyone annotating an OpenAPI operation to produce a Terraform artifact.",
-		Source:           "`internal/contracts/tracking-field.schema.json`",
+		Audience:         "anyone declaring Terraform artifact families on OpenAPI tags.",
+		Source:           "`internal/contracts/family-registry.schema.json`",
 		Generator:        "cmd/tfgen-docs",
 	})
-	b.WriteString("The extension opts an OpenAPI operation into Terraform generation. " +
+	b.WriteString("The tag extension declares families of Terraform resources and data sources. " +
 		"tfgen validates every occurrence against the schema this page is rendered from, " +
 		"so the fields below are exactly the fields accepted. There are no undocumented ones, " +
 		"and anything missing here will fail the run.\n\n")

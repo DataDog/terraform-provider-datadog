@@ -73,8 +73,7 @@ func TestDecodeRegistryOutOfScope(t *testing.T) {
 			t.Fatalf("got (%v, %v), want (nil, nil)", got, err)
 		}
 	})
-	// A document annotated only the legacy way must read as having no registry,
-	// which is what lets both shapes coexist during the migration.
+	// Other extensions do not declare Terraform families.
 	t.Run("different extension key present", func(t *testing.T) {
 		got, err := DecodeRegistry(tagExt(t, "x-some-other-extension", "foo: bar\n"), DefaultTrackingFieldName)
 		if got != nil || err != nil {

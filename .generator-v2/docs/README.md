@@ -7,8 +7,8 @@ ddoc:
 
 # Datadog's Terraform provider generator
 
-tfgen turns annotated Datadog v2 OpenAPI operations into Terraform provider code.
-An operation carrying `x-datadog-tf-generator` becomes a generated resource or data
+tfgen turns tag-scoped Terraform family declarations into provider code.
+Each artifact block in `x-datadog-tf-generator` becomes a generated resource or data
 source, registered in the provider and shipped like any other.
 
 **Lets get started.**

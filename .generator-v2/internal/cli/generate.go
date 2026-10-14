@@ -123,15 +123,6 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 						})
 						continue
 					}
-					if op.Tracking.Skip {
-						runReport.SkippedOperations = append(runReport.SkippedOperations, model.SkippedOperation{
-							OperationId: op.OperationId,
-							Path:        op.Path,
-							Method:      op.Method,
-							Reason:      model.SkipReasonTrackingFieldSkip,
-						})
-						continue
-					}
 					if len(filter) > 0 && !filter[op.Tracking.ArtifactName] {
 						runReport.Artifacts = append(runReport.Artifacts, model.ArtifactReportEntry{
 							Name:   op.Tracking.ArtifactName,
