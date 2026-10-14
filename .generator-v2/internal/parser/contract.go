@@ -3,8 +3,9 @@ package parser
 import (
 	"bytes"
 	"fmt"
-	jsonschema "github.com/santhosh-tekuri/jsonschema/v6"
 	"regexp"
+
+	jsonschema "github.com/santhosh-tekuri/jsonschema/v6"
 )
 
 // DefaultTrackingFieldName is the tag-scoped family registry extension key.
