@@ -967,6 +967,126 @@ resource "datadog_synthetics_test" "bar" {
 }`, uniq, delay)
 }
 
+func TestAccDatadogSyntheticsMobileTest_StepParams(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	const resourceName = "datadog_synthetics_test.bar"
+	check := func(wait, maxScrolls, enabled, example, endY string) resource.TestCheckFunc {
+		return resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(providers.sdkV2Provider),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.#", "7"),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.0.params.0.variable.0.name", "EXTRACTED_VALUE"),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.0.params.0.variable.0.example", example),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.1.params.0.x", "0.2"),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.1.params.0.y", endY),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.2.params.0.enable", enabled),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.3.params.0.value", wait),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.4.params.0.max_scrolls", maxScrolls),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.5.type", "pressBack"),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.6.type", "restartApplication"),
+		)
+	}
+	initial := createSyntheticsMobileStepParamsConfig(testName, 1, 3, true, "first", 0.2)
+	updated := createSyntheticsMobileStepParamsConfig(testName, 2, 5, false, "second", 0.3)
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(providers.sdkV2Provider),
+		Steps: []resource.TestStep{
+			{Config: initial, Check: check("1", "3", "true", "first", "0.2")},
+			{ResourceName: resourceName, ImportState: true, ImportStateVerify: true},
+			{Config: initial, PlanOnly: true},
+			{Config: updated, Check: check("2", "5", "false", "second", "0.3")},
+			{ResourceName: resourceName, ImportState: true, ImportStateVerify: true},
+			{Config: updated, PlanOnly: true},
+		},
+	})
+}
+
+func createSyntheticsMobileStepParamsConfig(name string, wait, maxScrolls int, enabled bool, example string, endY float64) string {
+	element := `element {
+      context = "NATIVE_APP"
+      context_type = "native"
+      user_locator {
+        fail_test_on_cannot_locate = true
+        values {
+          type = "id"
+          value = "some-input"
+        }
+      }
+    }`
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "bar" {
+  name = %q
+  type = "mobile"
+  status = "paused"
+  message = ""
+  locations = []
+  mobile_options_list {
+    device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+    tick_every = 43200
+    mobile_application {
+      application_id = "ab0e0aed-536d-411a-9a99-5428c27d8f8e"
+      reference_id = "6115922a-5f5d-455e-bc7e-7955a57f3815"
+      reference_type = "version"
+    }
+  }
+  mobile_step {
+    name = "Extract variable"
+    type = "extractVariable"
+    params {
+      variable {
+        name = "EXTRACTED_VALUE"
+        example = %q
+      }
+      %s
+    }
+  }
+  mobile_step {
+    name = "Scroll"
+    type = "scroll"
+    params {
+      x = 0.2
+      y = %g
+    }
+  }
+  mobile_step {
+    name = "Toggle WiFi"
+    type = "toggleWiFi"
+    params {
+      enable = %t
+    }
+  }
+  mobile_step {
+    name = "Wait"
+    type = "wait"
+    params {
+      value = %q
+    }
+  }
+  mobile_step {
+    name = "Scroll to element"
+    type = "scrollToElement"
+    params {
+      direction = "down"
+      max_scrolls = %d
+      %s
+    }
+  }
+  mobile_step {
+    name = "Press back"
+    type = "pressBack"
+    params {}
+  }
+  mobile_step {
+    name = "Restart application"
+    type = "restartApplication"
+    params {}
+  }
+}`, name, example, element, endY, enabled, fmt.Sprint(wait), maxScrolls, element)
+}
+
 func TestAccDatadogSyntheticsMobileTest_Updated(t *testing.T) {
 	cleanupSyntheticsTests(t)
 	t.Parallel()
@@ -9718,4 +9838,83 @@ resource "datadog_synthetics_test" "test_mcp" {
 	}
 }
 `, testName)
+}
+
+func TestAccDatadogSyntheticsMobileTest_PlaySubTest(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	const resourceName = "datadog_synthetics_test.bar"
+	checkSubtest := func(index int) resource.TestCheckFunc {
+		return resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(providers.sdkV2Provider),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.0.type", "playSubTest"),
+			resource.TestCheckResourceAttrPair(resourceName, "mobile_step.0.params.0.subtest_public_id", fmt.Sprintf("datadog_synthetics_test.child.%d", index), "id"),
+		)
+	}
+	first := createSyntheticsMobileTestPlaySubTestConfig(testName, 0)
+	second := createSyntheticsMobileTestPlaySubTestConfig(testName, 1)
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(providers.sdkV2Provider),
+		Steps: []resource.TestStep{
+			{Config: first, Check: checkSubtest(0)},
+			{Config: first, PlanOnly: true},
+			{ResourceName: resourceName, ImportState: true, ImportStateVerify: true},
+			{Config: second, PlanOnly: true, ExpectNonEmptyPlan: true},
+			{Config: second, Check: checkSubtest(1)},
+			{ResourceName: resourceName, ImportState: true, ImportStateVerify: true},
+			{Config: second, PlanOnly: true},
+		},
+	})
+}
+
+func createSyntheticsMobileTestPlaySubTestConfig(uniq string, childIndex int) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "child" {
+  count     = 2
+  name      = "%[1]s-child-${count.index}"
+  type      = "mobile"
+  status    = "paused"
+  message   = ""
+  locations = []
+
+  mobile_options_list {
+    device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+    tick_every = 43200
+    mobile_application {
+      application_id = "ab0e0aed-536d-411a-9a99-5428c27d8f8e"
+      reference_id   = "6115922a-5f5d-455e-bc7e-7955a57f3815"
+      reference_type = "version"
+    }
+  }
+}
+
+resource "datadog_synthetics_test" "bar" {
+  name      = "%[1]s"
+  type      = "mobile"
+  status    = "paused"
+  message   = ""
+  locations = []
+
+  mobile_options_list {
+    device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+    tick_every = 43200
+    mobile_application {
+      application_id = "ab0e0aed-536d-411a-9a99-5428c27d8f8e"
+      reference_id   = "6115922a-5f5d-455e-bc7e-7955a57f3815"
+      reference_type = "version"
+    }
+  }
+
+  mobile_step {
+    name    = "Run subtest"
+    type    = "playSubTest"
+    timeout = 30
+    params {
+      subtest_public_id = datadog_synthetics_test.child[%[2]d].id
+    }
+  }
+}`, uniq, childIndex)
 }
