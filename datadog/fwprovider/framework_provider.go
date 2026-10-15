@@ -63,6 +63,8 @@ var Resources = []func() resource.Resource{
 	NewIntegrationAwsEventBridgeResource,
 	NewIntegrationAwsExternalIDResource,
 	NewAwsWifIdentityMappingResource,
+	NewGithubOidcIntakeMappingResource,
+	NewGithubOidcPersonaMappingResource,
 	NewIntegrationCloudflareAccountResource,
 	NewIntegrationConfluentAccountResource,
 	NewIntegrationConfluentResourceResource,
@@ -777,6 +779,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAWSCloudAuthPersonaMapping", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSCloudAuthPersonaMapping", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSCloudAuthPersonaMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateGitHubCloudAuthIntakeMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetGitHubCloudAuthIntakeMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteGitHubCloudAuthIntakeMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateGitHubCloudAuthPersonaMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetGitHubCloudAuthPersonaMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteGitHubCloudAuthPersonaMapping", true)
 
 	// Fleet Automation schedule reads are stable. Only mutations use Preview endpoints.
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateFleetSchedule", true)
