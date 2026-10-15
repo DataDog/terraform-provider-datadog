@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"_metadata":{"created_from":"terraform"},"attributes":{"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateRuleWithExcludedResources-local-1766049883","service":"my-service"},"type":"deployment_gate"}}
+            {"data":{"attributes":{"_metadata":{"created_from":"terraform"},"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateRuleWithExcludedResources-local-1766049883","service":"my-service"},"type":"deployment_gate"}}
         form: {}
         headers:
             Accept:
@@ -49,7 +49,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"_metadata":{"created_from":"terraform"},"attributes":{"dry_run":false,"name":"fdd_with_exclusions","options":{"duration":1300,"excluded_resources":["GET /api/v1/health","GET /api/v1/status"]},"type":"faulty_deployment_detection"},"type":"deployment_rule"}}
+            {"data":{"attributes":{"_metadata":{"created_from":"terraform"},"dry_run":false,"name":"fdd_with_exclusions","options":{"duration":1300,"excluded_resources":["GET /api/v1/health","GET /api/v1/status"]},"type":"faulty_deployment_detection"},"type":"deployment_rule"}}
         form: {}
         headers:
             Accept:

@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"_metadata":{"created_from":"terraform"},"attributes":{"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateBasic-local-1766049867","service":"my-service"},"type":"deployment_gate"}}
+            {"data":{"attributes":{"_metadata":{"created_from":"terraform"},"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateBasic-local-1766049867","service":"my-service"},"type":"deployment_gate"}}
         form: {}
         headers:
             Accept:
@@ -240,14 +240,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 74
+        content_length: 115
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"dry_run":true},"id":"","type":"deployment_gate"}}
+            {"data":{"attributes":{"_metadata":{"updated_from":"terraform"},"dry_run":true},"id":"","type":"deployment_gate"}}
         form: {}
         headers:
             Accept:

@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"_metadata":{"created_from":"terraform"},"attributes":{"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateChangeRuleType-local-1766049894","service":"my-service"},"type":"deployment_gate"}}
+            {"data":{"attributes":{"_metadata":{"created_from":"terraform"},"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateChangeRuleType-local-1766049894","service":"my-service"},"type":"deployment_gate"}}
         form: {}
         headers:
             Accept:
@@ -49,7 +49,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"_metadata":{"created_from":"terraform"},"attributes":{"dry_run":false,"name":"test_rule","options":{"duration":1300},"type":"faulty_deployment_detection"},"type":"deployment_rule"}}
+            {"data":{"attributes":{"_metadata":{"created_from":"terraform"},"dry_run":false,"name":"test_rule","options":{"duration":1300},"type":"faulty_deployment_detection"},"type":"deployment_rule"}}
         form: {}
         headers:
             Accept:
@@ -276,14 +276,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 75
+        content_length: 116
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"dry_run":false},"id":"","type":"deployment_gate"}}
+            {"data":{"attributes":{"_metadata":{"updated_from":"terraform"},"dry_run":false},"id":"","type":"deployment_gate"}}
         form: {}
         headers:
             Accept:
@@ -385,7 +385,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"_metadata":{"created_from":"terraform"},"attributes":{"dry_run":false,"name":"test_rule","options":{"duration":300,"query":"service:test"},"type":"monitor"},"type":"deployment_rule"}}
+            {"data":{"attributes":{"_metadata":{"created_from":"terraform"},"dry_run":false,"name":"test_rule","options":{"duration":300,"query":"service:test"},"type":"monitor"},"type":"deployment_rule"}}
         form: {}
         headers:
             Accept:

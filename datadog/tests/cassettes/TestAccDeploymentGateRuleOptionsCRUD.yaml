@@ -124,7 +124,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"_metadata":{"created_from":"terraform"},"attributes":{"dry_run":true,"env":"staging","identifier":"tf-TestAccDeploymentGateRuleOptionsCRUD-local-1791543257","service":"tf-dg-tf-TestAccDeploymentGateRuleOptionsCRUD-local-1791543257"},"type":"deployment_gate"}}
+            {"data":{"attributes":{"_metadata":{"created_from":"terraform"},"dry_run":true,"env":"staging","identifier":"tf-TestAccDeploymentGateRuleOptionsCRUD-local-1791543257","service":"tf-dg-tf-TestAccDeploymentGateRuleOptionsCRUD-local-1791543257"},"type":"deployment_gate"}}
         form: {}
         headers:
             Accept:
@@ -160,7 +160,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"_metadata":{"created_from":"terraform"},"attributes":{"dry_run":true,"name":"resource-selection","options":{"allowed_resources":["GET /v1/health"],"duration":900},"type":"faulty_deployment_detection"},"type":"deployment_rule"}}
+            {"data":{"attributes":{"_metadata":{"created_from":"terraform"},"dry_run":true,"name":"resource-selection","options":{"allowed_resources":["GET /v1/health"],"duration":900},"type":"faulty_deployment_detection"},"type":"deployment_rule"}}
         form: {}
         headers:
             Accept:
@@ -196,7 +196,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"_metadata":{"created_from":"terraform"},"attributes":{"dry_run":true,"name":"monitor-query","options":{"duration":300,"fail_on_no_data":false,"fail_on_no_groups_found":true,"query":"service:tf-dg-tf-TestAccDeploymentGateRuleOptionsCRUD-local-1791543257 env:staging","warmup":0},"type":"monitor"},"type":"deployment_rule"}}
+            {"data":{"attributes":{"_metadata":{"created_from":"terraform"},"dry_run":true,"name":"monitor-query","options":{"duration":300,"fail_on_no_data":false,"fail_on_no_groups_found":true,"query":"service:tf-dg-tf-TestAccDeploymentGateRuleOptionsCRUD-local-1791543257 env:staging","warmup":0},"type":"monitor"},"type":"deployment_rule"}}
         form: {}
         headers:
             Accept:
@@ -232,7 +232,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"_metadata":{"created_from":"terraform"},"attributes":{"dry_run":true,"name":"monitor-id-selection","options":{"duration":300,"fail_on_no_data":true,"fail_on_no_groups_found":false,"monitor_ids":[{"groups":[],"id":"34858926"}],"warmup":5},"type":"monitor"},"type":"deployment_rule"}}
+            {"data":{"attributes":{"_metadata":{"created_from":"terraform"},"dry_run":true,"name":"monitor-id-selection","options":{"duration":300,"fail_on_no_data":true,"fail_on_no_groups_found":false,"monitor_ids":[{"groups":[],"id":"34858926"}],"warmup":5},"type":"monitor"},"type":"deployment_rule"}}
         form: {}
         headers:
             Accept:
@@ -638,14 +638,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 74
+        content_length: 115
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"dry_run":true},"id":"","type":"deployment_gate"}}
+            {"data":{"attributes":{"_metadata":{"updated_from":"terraform"},"dry_run":true},"id":"","type":"deployment_gate"}}
         form: {}
         headers:
             Accept:
@@ -740,14 +740,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 161
+        content_length: 202
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"dry_run":true,"name":"resource-selection","options":{"allowed_resources":["GET /v2/status"],"duration":1800}},"type":"deployment_rule"}}
+            {"data":{"attributes":{"_metadata":{"updated_from":"terraform"},"dry_run":true,"name":"resource-selection","options":{"allowed_resources":["GET /v2/status"],"duration":1800}},"type":"deployment_rule"}}
         form: {}
         headers:
             Accept:
@@ -776,14 +776,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 276
+        content_length: 317
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"dry_run":true,"name":"monitor-query","options":{"duration":600,"fail_on_no_data":true,"fail_on_no_groups_found":false,"query":"service:tf-dg-tf-TestAccDeploymentGateRuleOptionsCRUD-local-1791543257 env:staging","warmup":30}},"type":"deployment_rule"}}
+            {"data":{"attributes":{"_metadata":{"updated_from":"terraform"},"dry_run":true,"name":"monitor-query","options":{"duration":600,"fail_on_no_data":true,"fail_on_no_groups_found":false,"query":"service:tf-dg-tf-TestAccDeploymentGateRuleOptionsCRUD-local-1791543257 env:staging","warmup":30}},"type":"deployment_rule"}}
         form: {}
         headers:
             Accept:
@@ -812,14 +812,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 262
+        content_length: 303
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"dry_run":true,"name":"monitor-id-selection","options":{"duration":600,"fail_on_no_data":false,"fail_on_no_groups_found":true,"monitor_ids":[{"groups":["host:dg-crud-nonexistent"],"id":"34858926"}],"warmup":45}},"type":"deployment_rule"}}
+            {"data":{"attributes":{"_metadata":{"updated_from":"terraform"},"dry_run":true,"name":"monitor-id-selection","options":{"duration":600,"fail_on_no_data":false,"fail_on_no_groups_found":true,"monitor_ids":[{"groups":["host:dg-crud-nonexistent"],"id":"34858926"}],"warmup":45}},"type":"deployment_rule"}}
         form: {}
         headers:
             Accept:
@@ -1192,14 +1192,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 74
+        content_length: 115
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"dry_run":true},"id":"","type":"deployment_gate"}}
+            {"data":{"attributes":{"_metadata":{"updated_from":"terraform"},"dry_run":true},"id":"","type":"deployment_gate"}}
         form: {}
         headers:
             Accept:
@@ -1294,14 +1294,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 162
+        content_length: 203
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"dry_run":true,"name":"resource-selection","options":{"duration":1800,"excluded_resources":["GET /v1/health"]}},"type":"deployment_rule"}}
+            {"data":{"attributes":{"_metadata":{"updated_from":"terraform"},"dry_run":true,"name":"resource-selection","options":{"duration":1800,"excluded_resources":["GET /v1/health"]}},"type":"deployment_rule"}}
         form: {}
         headers:
             Accept:
@@ -1330,14 +1330,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 276
+        content_length: 317
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"dry_run":true,"name":"monitor-query","options":{"duration":600,"fail_on_no_data":true,"fail_on_no_groups_found":false,"query":"service:tf-dg-tf-TestAccDeploymentGateRuleOptionsCRUD-local-1791543257 env:staging","warmup":30}},"type":"deployment_rule"}}
+            {"data":{"attributes":{"_metadata":{"updated_from":"terraform"},"dry_run":true,"name":"monitor-query","options":{"duration":600,"fail_on_no_data":true,"fail_on_no_groups_found":false,"query":"service:tf-dg-tf-TestAccDeploymentGateRuleOptionsCRUD-local-1791543257 env:staging","warmup":30}},"type":"deployment_rule"}}
         form: {}
         headers:
             Accept:
@@ -1366,14 +1366,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 283
+        content_length: 324
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"dry_run":true,"name":"monitor-id-selection","options":{"duration":600,"fail_on_no_data":false,"fail_on_no_groups_found":true,"query":"service:tf-dg-tf-TestAccDeploymentGateRuleOptionsCRUD-local-1791543257 env:staging","warmup":45}},"type":"deployment_rule"}}
+            {"data":{"attributes":{"_metadata":{"updated_from":"terraform"},"dry_run":true,"name":"monitor-id-selection","options":{"duration":600,"fail_on_no_data":false,"fail_on_no_groups_found":true,"query":"service:tf-dg-tf-TestAccDeploymentGateRuleOptionsCRUD-local-1791543257 env:staging","warmup":45}},"type":"deployment_rule"}}
         form: {}
         headers:
             Accept:

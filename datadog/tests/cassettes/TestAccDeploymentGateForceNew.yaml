@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"_metadata":{"created_from":"terraform"},"attributes":{"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateForceNew-local-1766049874","service":"my-service"},"type":"deployment_gate"}}
+            {"data":{"attributes":{"_metadata":{"created_from":"terraform"},"dry_run":false,"env":"production","identifier":"tf-TestAccDeploymentGateForceNew-local-1766049874","service":"my-service"},"type":"deployment_gate"}}
         form: {}
         headers:
             Accept:
@@ -311,7 +311,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"_metadata":{"created_from":"terraform"},"attributes":{"dry_run":false,"env":"staging","identifier":"tf-TestAccDeploymentGateForceNew-local-1766049874","service":"my-service"},"type":"deployment_gate"}}
+            {"data":{"attributes":{"_metadata":{"created_from":"terraform"},"dry_run":false,"env":"staging","identifier":"tf-TestAccDeploymentGateForceNew-local-1766049874","service":"my-service"},"type":"deployment_gate"}}
         form: {}
         headers:
             Accept:
@@ -609,7 +609,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"_metadata":{"created_from":"terraform"},"attributes":{"dry_run":false,"env":"staging","identifier":"tf-TestAccDeploymentGateForceNew-local-1766049874","service":"updated-service"},"type":"deployment_gate"}}
+            {"data":{"attributes":{"_metadata":{"created_from":"terraform"},"dry_run":false,"env":"staging","identifier":"tf-TestAccDeploymentGateForceNew-local-1766049874","service":"updated-service"},"type":"deployment_gate"}}
         form: {}
         headers:
             Accept:

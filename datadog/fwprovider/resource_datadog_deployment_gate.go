@@ -418,15 +418,9 @@ func (r *deploymentGateResource) buildDeploymentGateRequestBody(ctx context.Cont
 	req := datadogV2.NewCreateDeploymentGateParamsWithDefaults()
 	req.Data = *datadogV2.NewCreateDeploymentGateParamsDataWithDefaults()
 	req.Data.Type = "deployment_gate"
-	req.Data.SetAttributes(*attributes)
-
 	// Set metadata to indicate this was created from Terraform
-	if req.Data.AdditionalProperties == nil {
-		req.Data.AdditionalProperties = make(map[string]interface{})
-	}
-	req.Data.AdditionalProperties["_metadata"] = map[string]interface{}{
-		"created_from": "terraform",
-	}
+	setTerraformRequestMetadata(&attributes.AdditionalProperties, "created_from")
+	req.Data.SetAttributes(*attributes)
 
 	return req, diags
 }
@@ -442,9 +436,22 @@ func (r *deploymentGateResource) buildDeploymentGateUpdateRequestBody(ctx contex
 	req := datadogV2.NewUpdateDeploymentGateParamsWithDefaults()
 	req.Data = *datadogV2.NewUpdateDeploymentGateParamsDataWithDefaults()
 	req.Data.Type = "deployment_gate"
+	// Set metadata to indicate this was updated from Terraform
+	setTerraformRequestMetadata(&attributes.AdditionalProperties, "updated_from")
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
+}
+
+// setTerraformRequestMetadata sets the `_metadata` attribute the API uses to record
+// the origin of a change. It must be sent inside `data.attributes`.
+func setTerraformRequestMetadata(additionalProperties *map[string]interface{}, key string) {
+	if *additionalProperties == nil {
+		*additionalProperties = make(map[string]interface{})
+	}
+	(*additionalProperties)["_metadata"] = map[string]interface{}{
+		key: "terraform",
+	}
 }
 
 // validateRules validates that rule types match their options and that rule names are unique
@@ -829,15 +836,9 @@ func (r *deploymentGateResource) buildRuleRequestBody(ctx context.Context, rule 
 	req := datadogV2.NewCreateDeploymentRuleParamsWithDefaults()
 	req.Data = datadogV2.NewCreateDeploymentRuleParamsDataWithDefaults()
 	req.Data.Type = "deployment_rule"
-	req.Data.SetAttributes(*attributes)
-
 	// Set metadata to indicate this was created from Terraform
-	if req.Data.AdditionalProperties == nil {
-		req.Data.AdditionalProperties = make(map[string]interface{})
-	}
-	req.Data.AdditionalProperties["_metadata"] = map[string]interface{}{
-		"created_from": "terraform",
-	}
+	setTerraformRequestMetadata(&attributes.AdditionalProperties, "created_from")
+	req.Data.SetAttributes(*attributes)
 
 	return req, diags
 }
@@ -921,6 +922,8 @@ func (r *deploymentGateResource) buildRuleUpdateRequestBody(ctx context.Context,
 	req := datadogV2.NewUpdateDeploymentRuleParamsWithDefaults()
 	req.Data = *datadogV2.NewUpdateDeploymentRuleParamsDataWithDefaults()
 	req.Data.Type = "deployment_rule"
+	// Set metadata to indicate this was updated from Terraform
+	setTerraformRequestMetadata(&attributes.AdditionalProperties, "updated_from")
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
