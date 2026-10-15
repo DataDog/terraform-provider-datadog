@@ -30,10 +30,11 @@ type datadogTeamNotificationRuleDataSourceModel struct {
 	RuleId types.String `tfsdk:"rule_id"`
 
 	// Computed values - direct attributes (not a list)
-	Email     *emailModel     `tfsdk:"email"`
-	MsTeams   *msTeamsModel   `tfsdk:"ms_teams"`
-	Pagerduty *pagerdutyModel `tfsdk:"pagerduty"`
-	Slack     *slackModel     `tfsdk:"slack"`
+	Email      *emailModel      `tfsdk:"email"`
+	MsTeams    *msTeamsModel    `tfsdk:"ms_teams"`
+	Pagerduty  *pagerdutyModel  `tfsdk:"pagerduty"`
+	Servicenow *servicenowModel `tfsdk:"servicenow"`
+	Slack      *slackModel      `tfsdk:"slack"`
 }
 
 func NewDatadogTeamNotificationRuleDataSource() datasource.DataSource {
@@ -74,6 +75,10 @@ func (d *datadogTeamNotificationRuleDataSource) Schema(_ context.Context, _ data
 						Computed:    true,
 						Description: "Flag indicating whether email notifications should be sent",
 					},
+					"recipient_email": schema.StringAttribute{
+						Computed:    true,
+						Description: "Email address notifications are sent to instead of all team members",
+					},
 				},
 			},
 			"ms_teams": schema.SingleNestedBlock{
@@ -91,6 +96,16 @@ func (d *datadogTeamNotificationRuleDataSource) Schema(_ context.Context, _ data
 					"service_name": schema.StringAttribute{
 						Computed:    true,
 						Description: "PagerDuty service name",
+					},
+				},
+			},
+			"servicenow": schema.SingleNestedBlock{
+				Description: "The ServiceNow notification settings.",
+				Attributes: map[string]schema.Attribute{
+					"templates": schema.ListAttribute{
+						Computed:    true,
+						ElementType: types.StringType,
+						Description: "ServiceNow template handle names",
 					},
 				},
 			},
@@ -132,21 +147,24 @@ func (d *datadogTeamNotificationRuleDataSource) Read(ctx context.Context, reques
 		return
 	}
 
-	d.updateState(&state, ddResp.Data)
+	d.updateState(ctx, &state, ddResp.Data)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogTeamNotificationRuleDataSource) updateState(state *datadogTeamNotificationRuleDataSourceModel, teamNotificationRuleData *datadogV2.TeamNotificationRule) {
+func (d *datadogTeamNotificationRuleDataSource) updateState(ctx context.Context, state *datadogTeamNotificationRuleDataSourceModel, teamNotificationRuleData *datadogV2.TeamNotificationRule) {
 	state.ID = types.StringValue(fmt.Sprintf("%s:%s", state.TeamId.ValueString(), teamNotificationRuleData.GetId()))
 
 	attributes := teamNotificationRuleData.GetAttributes()
 
 	// Always populate email block with default false if not present
-	state.Email = &emailModel{Enabled: types.BoolValue(false)}
+	state.Email = &emailModel{Enabled: types.BoolValue(false), RecipientEmail: types.StringNull()}
 	if email, ok := attributes.GetEmailOk(); ok {
 		state.Email.Enabled = types.BoolValue(email.GetEnabled())
+		if recipient := email.GetRecipientEmail(); recipient != "" {
+			state.Email.RecipientEmail = types.StringValue(recipient)
+		}
 	}
 
 	// Only populate other blocks if they exist
@@ -160,6 +178,11 @@ func (d *datadogTeamNotificationRuleDataSource) updateState(state *datadogTeamNo
 		state.Pagerduty = &pagerdutyModel{
 			ServiceName: types.StringValue(pagerduty.GetServiceName()),
 		}
+	}
+
+	if servicenow, ok := attributes.GetServicenowOk(); ok {
+		templates, _ := types.ListValueFrom(ctx, types.StringType, servicenow.GetTemplates())
+		state.Servicenow = &servicenowModel{Templates: templates}
 	}
 
 	if slack, ok := attributes.GetSlackOk(); ok {
