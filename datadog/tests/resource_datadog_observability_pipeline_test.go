@@ -8137,6 +8137,300 @@ resource "datadog_observability_pipeline" "databricks_zerobus_basic" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_azureDataExplorerDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.azure_data_explorer"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "azure_data_explorer" {
+  name = "azure data explorer pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "azure-data-explorer-dest-1"
+      inputs = ["source-1"]
+
+      azure_data_explorer {
+        ingestion_endpoint_key = "AZURE_DATA_EXPLORER_INGESTION_ENDPOINT"
+        database               = "logs_db"
+        table                  = "application_logs"
+        mapping_reference      = "application_logs_mapping"
+        token_scope            = "https://kusto.kusto.windows.net/.default"
+
+        auth {
+          client_secret {
+            azure_tenant_id         = "11111111-1111-1111-1111-111111111111"
+            azure_client_id         = "22222222-2222-2222-2222-222222222222"
+            azure_client_secret_key = "AZURE_CLIENT_SECRET"
+          }
+        }
+
+        compression {
+          algorithm = "gzip"
+          level     = 6
+        }
+
+        batch {
+          max_bytes    = 2000000
+          max_events   = 1000
+          timeout_secs = 5
+        }
+
+        buffer {
+          memory {
+            max_events = 500
+          }
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "azure-data-explorer-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.ingestion_endpoint_key", "AZURE_DATA_EXPLORER_INGESTION_ENDPOINT"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.database", "logs_db"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.table", "application_logs"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.mapping_reference", "application_logs_mapping"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.token_scope", "https://kusto.kusto.windows.net/.default"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.auth.0.client_secret.0.azure_tenant_id", "11111111-1111-1111-1111-111111111111"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.auth.0.client_secret.0.azure_client_id", "22222222-2222-2222-2222-222222222222"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.auth.0.client_secret.0.azure_client_secret_key", "AZURE_CLIENT_SECRET"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.compression.0.algorithm", "gzip"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.compression.0.level", "6"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.batch.0.max_bytes", "2000000"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.batch.0.max_events", "1000"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.batch.0.timeout_secs", "5"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.buffer.0.memory.0.max_events", "500"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_azureDataExplorerDestination_basic(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.azure_data_explorer_basic"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "azure_data_explorer_basic" {
+  name = "azure data explorer pipeline (minimal)"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "azure-data-explorer-dest-basic-1"
+      inputs = ["source-1"]
+
+      azure_data_explorer {
+        database = "logs_db"
+        table    = "application_logs"
+
+        auth {
+          managed_identity {}
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "azure-data-explorer-dest-basic-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.database", "logs_db"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.table", "application_logs"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.auth.0.managed_identity.#", "1"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.ingestion_endpoint_key"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.mapping_reference"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.auth.0.managed_identity.0.user_assigned_managed_identity_id"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_azureDataExplorerDestination_authKinds(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.azure_data_explorer_auth"
+
+	config := func(auth string) string {
+		return fmt.Sprintf(`
+resource "datadog_observability_pipeline" "azure_data_explorer_auth" {
+  name = "azure data explorer pipeline (auth kinds)"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "azure-data-explorer-dest-auth-1"
+      inputs = ["source-1"]
+
+      azure_data_explorer {
+        database = "logs_db"
+        table    = "application_logs"
+
+        auth {
+%s
+        }
+      }
+    }
+  }
+}`, auth)
+	}
+
+	authPrefix := "config.0.destination.0.azure_data_explorer.0.auth.0."
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: config(`
+          azure_cli {}
+`),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"azure_cli.#", "1"),
+				),
+			},
+			{
+				Config: config(`
+          client_certificate {
+            azure_tenant_id          = "11111111-1111-1111-1111-111111111111"
+            azure_client_id          = "22222222-2222-2222-2222-222222222222"
+            certificate_path         = "/etc/certs/client.pfx"
+            certificate_password_key = "AZURE_CERTIFICATE_PASSWORD"
+          }
+`),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"azure_cli.#", "0"),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"client_certificate.0.azure_tenant_id", "11111111-1111-1111-1111-111111111111"),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"client_certificate.0.azure_client_id", "22222222-2222-2222-2222-222222222222"),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"client_certificate.0.certificate_path", "/etc/certs/client.pfx"),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"client_certificate.0.certificate_password_key", "AZURE_CERTIFICATE_PASSWORD"),
+				),
+			},
+			{
+				Config: config(`
+          managed_identity {
+            user_assigned_managed_identity_id      = "00000000-0000-0000-0000-000000000000"
+            user_assigned_managed_identity_id_type = "client_id"
+          }
+`),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"managed_identity.0.user_assigned_managed_identity_id", "00000000-0000-0000-0000-000000000000"),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"managed_identity.0.user_assigned_managed_identity_id_type", "client_id"),
+				),
+			},
+			{
+				Config: config(`
+          managed_identity_client_assertion {
+            client_assertion_client_id             = "22222222-2222-2222-2222-222222222222"
+            client_assertion_tenant_id             = "11111111-1111-1111-1111-111111111111"
+            user_assigned_managed_identity_id      = "00000000-0000-0000-0000-000000000000"
+            user_assigned_managed_identity_id_type = "object_id"
+          }
+`),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"managed_identity_client_assertion.0.client_assertion_client_id", "22222222-2222-2222-2222-222222222222"),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"managed_identity_client_assertion.0.client_assertion_tenant_id", "11111111-1111-1111-1111-111111111111"),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"managed_identity_client_assertion.0.user_assigned_managed_identity_id", "00000000-0000-0000-0000-000000000000"),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"managed_identity_client_assertion.0.user_assigned_managed_identity_id_type", "object_id"),
+				),
+			},
+			{
+				Config: config(`
+          workload_identity {
+            client_id       = "22222222-2222-2222-2222-222222222222"
+            tenant_id       = "11111111-1111-1111-1111-111111111111"
+            token_file_path = "/var/run/secrets/azure/tokens/azure-identity-token"
+          }
+`),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"workload_identity.0.client_id", "22222222-2222-2222-2222-222222222222"),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"workload_identity.0.tenant_id", "11111111-1111-1111-1111-111111111111"),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"workload_identity.0.token_file_path", "/var/run/secrets/azure/tokens/azure-identity-token"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_azureDataExplorerDestination_authValidation(t *testing.T) {
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				// Two credential kinds specified
+				Config: `
+resource "datadog_observability_pipeline" "azure_data_explorer_validation" {
+  name = "azure data explorer validation pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "azure-data-explorer-dest-validation-1"
+      inputs = ["source-1"]
+
+      azure_data_explorer {
+        database = "logs_db"
+        table    = "application_logs"
+
+        auth {
+          azure_cli {}
+          managed_identity {}
+        }
+      }
+    }
+  }
+}`,
+				ExpectError: regexp.MustCompile(`Invalid Attribute Combination`),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_splunkHecMetricsDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	resourceName := "datadog_observability_pipeline.splunk_hec_metrics_dest"
