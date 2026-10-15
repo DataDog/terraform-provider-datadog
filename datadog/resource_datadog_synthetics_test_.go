@@ -2998,6 +2998,14 @@ func updateSyntheticsMobileTestLocalState(d *schema.ResourceData, syntheticsTest
 
 	config := syntheticsTest.GetConfig()
 
+	// Secure values are omitted by the API. Match variables by name so an API
+	// reorder cannot associate a masked value with a different variable.
+	knownVariables := make(map[string]map[string]interface{})
+	for _, rawVariable := range d.Get("config_variable").([]interface{}) {
+		variable := rawVariable.(map[string]interface{})
+		knownVariables[variable["name"].(string)] = variable
+	}
+
 	actualVariables := config.GetVariables()
 	localMobileVariables := make([]map[string]interface{}, len(actualVariables))
 
@@ -3018,12 +3026,12 @@ func updateSyntheticsMobileTestLocalState(d *schema.ResourceData, syntheticsTest
 		if v, ok := variable.GetExampleOk(); ok {
 			localVariable["example"] = *v
 		} else if v, ok := localVariable["secure"].(bool); ok && v {
-			localVariable["example"] = d.Get(fmt.Sprintf("mobile_variable.%d.example", i))
+			localVariable["example"] = knownVariables[variable.GetName()]["example"]
 		}
 		if v, ok := variable.GetPatternOk(); ok {
 			localVariable["pattern"] = *v
 		} else if v, ok := localVariable["secure"].(bool); ok && v {
-			localVariable["pattern"] = d.Get(fmt.Sprintf("mobile_variable.%d.pattern", i))
+			localVariable["pattern"] = knownVariables[variable.GetName()]["pattern"]
 		}
 		localMobileVariables[i] = localVariable
 	}

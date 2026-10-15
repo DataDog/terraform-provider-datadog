@@ -9840,6 +9840,103 @@ resource "datadog_synthetics_test" "test_mcp" {
 `, testName)
 }
 
+func TestAccDatadogSyntheticsMobileTest_SecureVariables(t *testing.T) {
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	const resourceName = "datadog_synthetics_test.bar"
+	variable := func(name, pattern, example string) string {
+		return fmt.Sprintf(`
+  config_variable {
+    name = %q
+    type = "text"
+    secure = true
+    pattern = %q
+    example = %q
+  }
+`, name, pattern, example)
+	}
+	config := func(message, variables string) string {
+		return fmt.Sprintf(`
+resource "datadog_synthetics_test" "bar" {
+  name = %q
+  type = "mobile"
+  status = "paused"
+  message = %q
+  locations = []
+  %s
+  mobile_options_list {
+    device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+    tick_every = 43200
+    mobile_application {
+      application_id = "ab0e0aed-536d-411a-9a99-5428c27d8f8e"
+      reference_id = "6115922a-5f5d-455e-bc7e-7955a57f3815"
+      reference_type = "version"
+    }
+  }
+}`, testName, message, variables)
+	}
+	check := func(index, name, pattern, example string) resource.TestCheckFunc {
+		prefix := "config_variable." + index + "."
+		return resource.ComposeTestCheckFunc(
+			resource.TestCheckResourceAttr(resourceName, prefix+"name", name),
+			resource.TestCheckResourceAttr(resourceName, prefix+"secure", "true"),
+			resource.TestCheckResourceAttr(resourceName, prefix+"pattern", pattern),
+			resource.TestCheckResourceAttr(resourceName, prefix+"example", example),
+		)
+	}
+	first := variable("FIRST", "synthetic-first", "first-example")
+	second := variable("SECOND", "synthetic-second", "second-example")
+	changed := variable("FIRST", "synthetic-updated", "updated-example")
+	initialConfig := config("", first+second)
+	changedConfig := config("", changed+second)
+	reorderedConfig := config("", second+changed)
+	updatedConfig := config("Update without changing the secure values", second+changed)
+	checkReordered := resource.ComposeTestCheckFunc(
+		check("0", "SECOND", "synthetic-second", "second-example"),
+		check("1", "FIRST", "synthetic-updated", "updated-example"),
+	)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(providers.sdkV2Provider),
+		Steps: []resource.TestStep{
+			{Config: initialConfig, Check: resource.ComposeTestCheckFunc(
+				testSyntheticsTestExists(providers.sdkV2Provider),
+				check("0", "FIRST", "synthetic-first", "first-example"),
+				check("1", "SECOND", "synthetic-second", "second-example"),
+			)},
+			{Config: initialConfig, PlanOnly: true},
+			{Config: changedConfig, PlanOnly: true, ExpectNonEmptyPlan: true},
+			{Config: changedConfig, Check: check("0", "FIRST", "synthetic-updated", "updated-example")},
+			{Config: changedConfig, PlanOnly: true},
+			{Config: reorderedConfig, Check: checkReordered},
+			{Config: updatedConfig, Check: checkReordered},
+			{RefreshState: true, Check: checkReordered},
+			{Config: updatedConfig, PlanOnly: true},
+			{
+				ResourceName:            resourceName,
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"config_variable.0.pattern", "config_variable.0.example", "config_variable.1.pattern", "config_variable.1.example"},
+				ImportStateCheck: func(states []*terraform.InstanceState) error {
+					for _, state := range states {
+						for _, index := range []string{"0", "1"} {
+							for _, field := range []string{"pattern", "example"} {
+								if state.Attributes["config_variable."+index+"."+field] != "" {
+									return fmt.Errorf("import unexpectedly recovered masked variable %s %s", index, field)
+								}
+							}
+						}
+					}
+					return nil
+				},
+			},
+			{Config: updatedConfig, PlanOnly: true},
+		},
+	})
+}
+
 func TestAccDatadogSyntheticsMobileTest_PlaySubTest(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
