@@ -2058,6 +2058,10 @@ func syntheticsConfigVariable() *schema.Schema {
 					Type:        schema.TypeBool,
 					Optional:    true,
 					Default:     false,
+					DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+						// Obfuscation is controlled by the global variable itself.
+						return d.Get(strings.TrimSuffix(k, "secure")+"type") == "global"
+					},
 				},
 			},
 		},

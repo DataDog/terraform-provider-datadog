@@ -14,6 +14,32 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestSyntheticsConfigVariableSecureDiff(t *testing.T) {
+	resource := &schema.Resource{Schema: map[string]*schema.Schema{"config_variable": syntheticsConfigVariable()}}
+	for _, variableType := range []string{"global", "text"} {
+		for _, old := range []bool{false, true} {
+			for _, configured := range []interface{}{true, false, nil} {
+				variable := map[string]interface{}{"name": "TEST_VAR", "type": variableType, "secure": old}
+				config := map[string]interface{}{"config_variable": []interface{}{
+					map[string]interface{}{"name": "OTHER_VAR", "type": "text"}, variable,
+				}}
+				data := schema.TestResourceDataRaw(t, resource.Schema, config)
+				data.SetId("synthetics-test")
+				state := data.State()
+				if configured == nil {
+					delete(variable, "secure")
+				} else {
+					variable["secure"] = configured
+				}
+				diff, err := resource.Diff(context.Background(), state, terraform.NewResourceConfigRaw(config), nil)
+				require.NoError(t, err)
+				wantEmpty := variableType == "global" || old == (configured == true)
+				assert.Equal(t, wantEmpty, diff.Empty(), "type=%s old=%v configured=%v", variableType, old, configured)
+			}
+		}
+	}
+}
+
 // TestConvertStepParamsValueForConfig_EmptyVariableOrPattern reproduces the
 // panic reported by a customer: when an Optional/MaxItems(1) list-typed step
 // param such as "variable" or "pattern" is left unset in the config,
