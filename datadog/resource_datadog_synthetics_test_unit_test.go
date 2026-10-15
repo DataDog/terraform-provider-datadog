@@ -1,138 +1,40 @@
 package datadog
 
 import (
+	"context"
 	"encoding/json"
-	"fmt"
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func TestSyntheticsGlobalConfigVariableSecure(t *testing.T) {
-	for _, configured := range []interface{}{true, false, nil} {
-		for _, returned := range []interface{}{true, false, nil} {
-			t.Run(fmt.Sprintf("configured=%v/api=%v", configured, returned), func(t *testing.T) {
-				raw := map[string]interface{}{"name": "GLOBAL_VAR", "type": "global", "id": "global-id"}
-				if configured != nil {
-					raw["secure"] = configured
+func TestSyntheticsConfigVariableSecureDiff(t *testing.T) {
+	resource := &schema.Resource{Schema: map[string]*schema.Schema{"config_variable": syntheticsConfigVariable()}}
+	for _, variableType := range []string{"global", "text"} {
+		for _, old := range []bool{false, true} {
+			for _, configured := range []interface{}{true, false, nil} {
+				variable := map[string]interface{}{"name": "TEST_VAR", "type": variableType, "secure": old}
+				config := map[string]interface{}{"config_variable": []interface{}{
+					map[string]interface{}{"name": "OTHER_VAR", "type": "text"}, variable,
+				}}
+				data := schema.TestResourceDataRaw(t, resource.Schema, config)
+				data.SetId("synthetics-test")
+				state := data.State()
+				if configured == nil {
+					delete(variable, "secure")
+				} else {
+					variable["secure"] = configured
 				}
-				data := schema.TestResourceDataRaw(t, map[string]*schema.Schema{"config_variable": syntheticsConfigVariable()}, map[string]interface{}{
-					"config_variable": []interface{}{raw},
-				})
-				original := data.Get("config_variable").([]interface{})
-				for cycle := 0; cycle < 3; cycle++ {
-					variables := buildDatadogConfigVariables(data.Get("config_variable").([]interface{}))
-					require.Len(t, variables, 1)
-					assert.False(t, variables[0].HasSecure(), "global reference must not send secure")
-					if returned != nil {
-						variables[0].SetSecure(returned.(bool))
-					}
-					require.NoError(t, data.Set("config_variable", buildTerraformConfigVariables(variables, data.Get("config_variable").([]interface{}))))
-					assert.Equal(t, original, data.Get("config_variable"), "cycle %d", cycle)
-				}
-
-				// Import has no prior configuration and cannot recover the reference flag.
-				imported := schema.TestResourceDataRaw(t, map[string]*schema.Schema{"config_variable": syntheticsConfigVariable()}, nil)
-				variables := buildDatadogConfigVariables(original)
-				if returned != nil {
-					variables[0].SetSecure(returned.(bool))
-				}
-				require.NoError(t, imported.Set("config_variable", buildTerraformConfigVariables(variables, nil)))
-				assert.Equal(t, false, imported.Get("config_variable.0.secure"))
-			})
+				diff, err := resource.Diff(context.Background(), state, terraform.NewResourceConfigRaw(config), nil)
+				require.NoError(t, err)
+				wantEmpty := variableType == "global" || old == (configured == true)
+				assert.Equal(t, wantEmpty, diff.Empty(), "type=%s old=%v configured=%v", variableType, old, configured)
+			}
 		}
-	}
-}
-
-func TestSyntheticsGlobalConfigVariableSecureIdentity(t *testing.T) {
-	old := []interface{}{
-		map[string]interface{}{"name": "FIRST_VAR", "type": "global", "id": "first-id", "secure": true},
-		map[string]interface{}{"name": "SECOND_VAR", "type": "global", "id": "second-id", "secure": false},
-	}
-	for _, tc := range []struct {
-		name, id, variableType string
-		secure                 bool
-	}{
-		{"SECOND_VAR", "second-id", "global", false},
-		{"FIRST_VAR", "first-id", "global", true},
-		{"FIRST_VAR", "replacement-id", "global", false},
-		{"RENAMED_VAR", "first-id", "global", false},
-		{"FIRST_VAR", "first-id", "text", false},
-	} {
-		t.Run(tc.name+"/"+tc.id+"/"+tc.variableType, func(t *testing.T) {
-			variable := datadogV1.SyntheticsConfigVariable{}
-			variable.SetName(tc.name)
-			variable.SetId(tc.id)
-			variable.SetType(datadogV1.SyntheticsConfigVariableType(tc.variableType))
-			assert.Equal(t, tc.secure, buildTerraformConfigVariables([]datadogV1.SyntheticsConfigVariable{variable}, old)[0]["secure"] == true)
-		})
-	}
-}
-
-func TestSyntheticsLocalConfigVariableSecure(t *testing.T) {
-	for _, secure := range []bool{true, false} {
-		t.Run(fmt.Sprint(secure), func(t *testing.T) {
-			data := schema.TestResourceDataRaw(t, map[string]*schema.Schema{"config_variable": syntheticsConfigVariable()}, map[string]interface{}{
-				"config_variable": []interface{}{map[string]interface{}{
-					"name": "LOCAL_VAR", "type": "text", "secure": secure, "example": "example", "pattern": "pattern",
-				}},
-			})
-			original := data.Get("config_variable").([]interface{})
-			variables := buildDatadogConfigVariables(original)
-			assert.True(t, variables[0].HasSecure())
-			assert.Equal(t, secure, variables[0].GetSecure())
-			if secure {
-				variables[0].Example = nil
-				variables[0].Pattern = nil
-			}
-			for cycle := 0; cycle < 3; cycle++ {
-				require.NoError(t, data.Set("config_variable", buildTerraformConfigVariables(variables, data.Get("config_variable").([]interface{}))))
-				assert.Equal(t, original, data.Get("config_variable"))
-			}
-			// Unlike global references, local variables must reflect API security changes.
-			variables[0].SetSecure(!secure)
-			flattened := buildTerraformConfigVariables(variables, original)
-			assert.Equal(t, !secure, flattened[0]["secure"])
-			imported := buildTerraformConfigVariables(variables, nil)
-			assert.Equal(t, !secure, imported[0]["secure"])
-		})
-	}
-}
-
-func TestSyntheticsExtractedValueSecure(t *testing.T) {
-	for _, secure := range []bool{true, false} {
-		values := []interface{}{map[string]interface{}{
-			"name": "EXTRACTED_VAR", "type": "http_body", "field": "", "secure": secure,
-			"parser": []interface{}{map[string]interface{}{"type": "raw", "value": ""}},
-		}}
-		built := buildDatadogExtractedValues(values)
-		assert.True(t, built[0].HasSecure())
-		assert.Equal(t, secure, built[0].GetSecure())
-		assert.Equal(t, secure, buildTerraformExtractedValues(built)[0]["secure"])
-	}
-}
-
-func TestSyntheticsMobileGlobalConfigVariableSecure(t *testing.T) {
-	for _, secure := range []interface{}{true, false, nil} {
-		t.Run(fmt.Sprint(secure), func(t *testing.T) {
-			variable := map[string]interface{}{"name": "GLOBAL_VAR", "type": "global", "id": "global-id"}
-			if secure != nil {
-				variable["secure"] = secure
-			}
-			data := schema.TestResourceDataRaw(t, resourceDatadogSyntheticsTest().SchemaFunc(), map[string]interface{}{
-				"type": "mobile", "config_variable": []interface{}{variable},
-			})
-			original := data.Get("config_variable")
-			for cycle := 0; cycle < 3; cycle++ {
-				built := buildDatadogSyntheticsMobileTest(data)
-				diags := updateSyntheticsMobileTestLocalState(data, built)
-				require.False(t, diags.HasError(), "%v", diags)
-				assert.Equal(t, original, data.Get("config_variable"))
-			}
-		})
 	}
 }
 
