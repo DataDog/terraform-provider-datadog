@@ -65,6 +65,7 @@ type destinationModel struct {
 	SyslogNgDestination               []*syslogNgDestinationModel                                      `tfsdk:"syslog_ng"`
 	ElasticsearchDestination          []*elasticsearchDestinationModel                                 `tfsdk:"elasticsearch"`
 	AzureStorageDestination           []*azureStorageDestinationModel                                  `tfsdk:"azure_storage"`
+	AzureDataExplorerDestination      []*observability_pipeline.AzureDataExplorerDestinationModel      `tfsdk:"azure_data_explorer"`
 	MicrosoftSentinelDestination      []*microsoftSentinelDestinationModel                             `tfsdk:"microsoft_sentinel"`
 	GoogleSecopsDestination           []*googleSecopsDestinationModel                                  `tfsdk:"google_secops"`
 	NewRelicDestination               []*newRelicDestinationModel                                      `tfsdk:"new_relic"`
@@ -2869,6 +2870,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									"amazon_s3":                 observability_pipeline.AmazonS3DestinationSchema(),
 									"amazon_s3_generic":         observability_pipeline.AmazonS3GenericDestinationSchema(),
 									"amazon_security_lake":      observability_pipeline.AmazonSecurityLakeDestinationSchema(),
+									"azure_data_explorer":       observability_pipeline.AzureDataExplorerDestinationSchema(),
 									"crowdstrike_next_gen_siem": observability_pipeline.CrowdStrikeNextGenSiemDestinationSchema(),
 									"databricks_zerobus":        observability_pipeline.DatabricksZerobusDestinationSchema(),
 									"splunk_hec_metrics":        observability_pipeline.SplunkHECMetricsDestinationSchema(),
@@ -3222,6 +3224,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		for _, d := range dest.AmazonSecurityLakeDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandObservabilityPipelinesAmazonSecurityLakeDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
+		for _, d := range dest.AzureDataExplorerDestination {
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandAzureDataExplorerDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+		}
 		for _, d := range dest.CrowdStrikeNextGenSiemDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandCrowdStrikeNextGenSiemDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
@@ -3474,6 +3479,11 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineAmazonSecurityLakeDestination.GetId())
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineAmazonSecurityLakeDestination.GetInputs())
 			destBlock.AmazonSecurityLakeDestination = append(destBlock.AmazonSecurityLakeDestination, securitylake)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if adx := observability_pipeline.FlattenAzureDataExplorerDestination(ctx, d.ObservabilityPipelineAzureDataExplorerDestination); adx != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineAzureDataExplorerDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineAzureDataExplorerDestination.GetInputs())
+			destBlock.AzureDataExplorerDestination = append(destBlock.AzureDataExplorerDestination, adx)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
 		} else if crowdstrike := observability_pipeline.FlattenCrowdStrikeNextGenSiemDestination(ctx, d.ObservabilityPipelineCrowdStrikeNextGenSiemDestination); crowdstrike != nil {
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineCrowdStrikeNextGenSiemDestination.GetId())
