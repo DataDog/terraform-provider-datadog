@@ -19,6 +19,9 @@ import (
 //go:embed resource_datadog_on_call_team_routing_rules_test.tf
 var OnCallTeamRoutingRulesTest string
 
+//go:embed resource_datadog_on_call_team_routing_rules_reroute_test.tf
+var OnCallTeamRoutingRulesRerouteTest string
+
 func TestAccOnCallTeamRoutingRulesCreateAndUpdate(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -58,6 +61,142 @@ func TestAccOnCallTeamRoutingRulesCreateAndUpdate(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_on_call_team_routing_rules.team_rules_test", "rule.1.action.0.escalation_policy.support_hours.restriction.#", "5"),
 				),
+			},
+		},
+	})
+}
+
+func TestAccOnCallTeamRoutingRulesRerouteToTeam(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := strings.ToLower(uniqueEntityName(ctx, t))
+
+	createConfig := func(firstDest, secondDest string) string {
+		return strings.NewReplacer(
+			"TEAM_HANDLE", "team-"+uniq,
+			"TEAM_NAME", "team-"+uniq,
+			"FIRST_DEST", firstDest,
+			"SECOND_DEST", secondDest,
+		).Replace(OnCallTeamRoutingRulesRerouteTest)
+	}
+
+	resourceName := "datadog_on_call_team_routing_rules.reroute_test"
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogOnCallTeamRoutingRulesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: createConfig("reroute_dest_a", "reroute_dest_b"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogOnCallTeamRoutingRulesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "rule.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "rule.0.query", "priority:2"),
+					resource.TestCheckResourceAttrPair(resourceName, "rule.0.action.0.reroute_to_team.destination_team_id", "datadog_team.reroute_dest_a", "id"),
+					resource.TestCheckResourceAttrPair(resourceName, "rule.1.action.0.reroute_to_team.destination_team_id", "datadog_team.reroute_dest_b", "id"),
+				),
+			},
+			{
+				Config: createConfig("reroute_dest_b", "reroute_dest_a"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogOnCallTeamRoutingRulesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttrPair(resourceName, "rule.0.action.0.reroute_to_team.destination_team_id", "datadog_team.reroute_dest_b", "id"),
+					resource.TestCheckResourceAttrPair(resourceName, "rule.1.action.0.reroute_to_team.destination_team_id", "datadog_team.reroute_dest_a", "id"),
+				),
+			},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
+func TestAccOnCallTeamRoutingRulesRerouteToTeamValidation(t *testing.T) {
+	t.Parallel()
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+				resource "datadog_on_call_team_routing_rules" "reroute_validation" {
+				  id = "00000000-aba2-0000-0000-000000000000"
+				  rule {
+				    action {
+				      reroute_to_team {
+				        destination_team_id = "00000000-aba2-0000-0000-000000000002"
+				      }
+				    }
+				    action {
+				      escalation_policy {
+				        policy_id = "00000000-aba2-0000-0000-000000000001"
+				      }
+				    }
+				  }
+				}`,
+				ExpectError: regexp.MustCompile("incompatible action with reroute_to_team"),
+			},
+			{
+				Config: `
+				resource "datadog_on_call_team_routing_rules" "reroute_validation" {
+				  id = "00000000-aba2-0000-0000-000000000000"
+				  rule {
+				    escalation_policy = "00000000-aba2-0000-0000-000000000001"
+				    action {
+				      reroute_to_team {
+				        destination_team_id = "00000000-aba2-0000-0000-000000000002"
+				      }
+				    }
+				  }
+				}`,
+				ExpectError: regexp.MustCompile("incompatible action with reroute_to_team"),
+			},
+			{
+				Config: `
+				resource "datadog_on_call_team_routing_rules" "reroute_validation" {
+				  id = "00000000-aba2-0000-0000-000000000000"
+				  rule {
+				    action {
+				      reroute_to_team {
+				        destination_team_id = "00000000-aba2-0000-0000-000000000002"
+				      }
+				    }
+				    action {
+				      reroute_to_team {
+				        destination_team_id = "00000000-aba2-0000-0000-000000000003"
+				      }
+				    }
+				  }
+				}`,
+				ExpectError: regexp.MustCompile("duplicate reroute_to_team action"),
+			},
+			{
+				Config: `
+				resource "datadog_on_call_team_routing_rules" "reroute_validation" {
+				  id = "00000000-aba2-0000-0000-000000000000"
+				  rule {
+				    action {
+				      reroute_to_team {}
+				    }
+				  }
+				}`,
+				ExpectError: regexp.MustCompile("missing destination_team_id"),
+			},
+			{
+				Config: `
+				resource "datadog_on_call_team_routing_rules" "reroute_validation" {
+				  id = "00000000-aba2-0000-0000-000000000000"
+				  rule {
+				    action {
+				      reroute_to_team {
+				        destination_team_id = "not-a-uuid"
+				      }
+				    }
+				  }
+				}`,
+				ExpectError: regexp.MustCompile(`must be a\s+valid UUID`),
 			},
 		},
 	})
