@@ -2044,7 +2044,7 @@ func syntheticsConfigVariable() *schema.Schema {
 					Optional:    true,
 				},
 				"secure": {
-					Description: "Whether the value of this variable will be obfuscated in test results. For `type = \"global\"`, this flag is retained in Terraform state but has no effect; obfuscation is controlled by the referenced global variable. On import, this flag defaults to `false` for global references.",
+					Description: "Whether the value of this variable will be obfuscated in test results.",
 					Type:        schema.TypeBool,
 					Optional:    true,
 					Default:     false,
