@@ -57,6 +57,39 @@ func TestAccDatadogUsersDatasourceFilterStatus(t *testing.T) {
 	})
 }
 
+func TestAccDatadogUsersDatasourceFilterHandle(t *testing.T) {
+	t.Parallel()
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := strings.ToLower(uniqueEntityName(ctx, t))
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccDatasourceUsersFilterHandleConfig(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("data.datadog_users.all_users", "users.#", "1"),
+					resource.TestCheckResourceAttrPair("data.datadog_users.all_users", "users.0.id", "datadog_user.user_0", "id"),
+				),
+			},
+		},
+	})
+}
+
+func testAccDatasourceUsersFilterHandleConfig(uniq string) string {
+	return fmt.Sprintf(`
+data "datadog_users" "all_users" {
+	filter_handle = datadog_user.user_0.email
+}
+
+resource "datadog_user" "user_0" {
+	name = "user 0"
+	email = "%[1]s0@example.com"
+}
+`, uniq)
+}
+
 func testAccDatasourceUsersFilterConfig(uniq, filter string) string {
 	return fmt.Sprintf(`
 data "datadog_users" "all_users" {
