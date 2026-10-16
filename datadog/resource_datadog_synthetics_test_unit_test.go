@@ -550,3 +550,23 @@ func TestBuildTerraformMobileTestSteps_PlaySubTest(t *testing.T) {
 		assert.Equal(t, subtestID, built.GetSubtestPublicId())
 	}
 }
+
+func TestSyntheticsUndefinedTargetValue(t *testing.T) {
+	resource := &schema.Resource{Schema: map[string]*schema.Schema{"assertion": syntheticsAPIAssertion()}}
+	for _, assertionType := range []string{"body", "grpcProto"} {
+		for _, operator := range []string{"isUndefined", "is"} {
+			target := map[string]interface{}{"jsonpath": "$.value", "operator": operator}
+			config := map[string]interface{}{"assertion": []interface{}{map[string]interface{}{
+				"type": assertionType, "operator": "validatesJSONPath",
+				"targetjsonpath": []interface{}{target},
+			}}}
+			data := schema.TestResourceDataRaw(t, resource.Schema, config)
+			data.SetId("synthetics-test")
+			state := data.State()
+			target["targetvalue"] = false
+			diff, err := resource.Diff(context.Background(), state, terraform.NewResourceConfigRaw(config), nil)
+			require.NoError(t, err)
+			assert.Equal(t, operator == "isUndefined", diff.Empty(), "%s/%s", assertionType, operator)
+		}
+	}
+}
