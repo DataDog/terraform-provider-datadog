@@ -144,6 +144,8 @@ Optional:
 - `auth` (Block List) (see [below for nested schema](#nestedblock--config--destination--amazon_opensearch--auth))
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--amazon_opensearch--buffer))
 - `bulk_index` (String) The index or datastream to write logs to.
+- `data_stream` (Block List) Configuration options for writing to Amazon OpenSearch Data Streams instead of a fixed index. (see [below for nested schema](#nestedblock--config--destination--amazon_opensearch--data_stream))
+- `endpoint_url_key` (String) Name of the environment variable or secret that holds the Amazon OpenSearch endpoint URL.
 
 <a id="nestedblock--config--destination--amazon_opensearch--auth"></a>
 ### Nested Schema for `config.destination.amazon_opensearch.auth`
@@ -157,7 +159,9 @@ Optional:
 - `assume_role` (String) ARN of the role to assume.
 - `aws_region` (String) AWS region override (if applicable).
 - `external_id` (String) External ID for assumed role.
+- `password_key` (String) Name of the environment variable or secret that holds the Amazon OpenSearch password (used when `strategy` is `basic`).
 - `session_name` (String) Session name for assumed role.
+- `username_key` (String) Name of the environment variable or secret that holds the Amazon OpenSearch username (used when `strategy` is `basic`).
 
 
 <a id="nestedblock--config--destination--amazon_opensearch--buffer"></a>
@@ -186,6 +190,16 @@ Optional:
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
 - `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
+
+
+<a id="nestedblock--config--destination--amazon_opensearch--data_stream"></a>
+### Nested Schema for `config.destination.amazon_opensearch.data_stream`
+
+Optional:
+
+- `dataset` (String) The data stream dataset for your logs. This groups logs by their source or application.
+- `dtype` (String) The data stream type for your logs. This determines how logs are categorized within the data stream.
+- `namespace` (String) The data stream namespace for your logs. This separates logs into different environments or domains.
 
 
 

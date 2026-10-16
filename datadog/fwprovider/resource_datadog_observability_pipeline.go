@@ -400,9 +400,11 @@ type fieldValue struct {
 }
 
 type amazonOpenSearchDestinationModel struct {
-	BulkIndex types.String                                `tfsdk:"bulk_index"`
-	Auth      []amazonOpenSearchAuthModel                 `tfsdk:"auth"`
-	Buffer    []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
+	BulkIndex      types.String                                `tfsdk:"bulk_index"`
+	EndpointUrlKey types.String                                `tfsdk:"endpoint_url_key"`
+	Auth           []amazonOpenSearchAuthModel                 `tfsdk:"auth"`
+	DataStream     []opensearchDestinationDataStreamModel      `tfsdk:"data_stream"`
+	Buffer         []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type amazonOpenSearchAuthModel struct {
@@ -411,6 +413,8 @@ type amazonOpenSearchAuthModel struct {
 	AssumeRole  types.String `tfsdk:"assume_role"`
 	ExternalId  types.String `tfsdk:"external_id"`
 	SessionName types.String `tfsdk:"session_name"`
+	UsernameKey types.String `tfsdk:"username_key"`
+	PasswordKey types.String `tfsdk:"password_key"`
 }
 
 type opensearchDestinationModel struct {
@@ -2703,6 +2707,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													Optional:    true,
 													Description: "The index or datastream to write logs to.",
 												},
+												"endpoint_url_key": schema.StringAttribute{
+													Optional:    true,
+													Description: "Name of the environment variable or secret that holds the Amazon OpenSearch endpoint URL.",
+												},
 											},
 											Blocks: map[string]schema.Block{
 												"auth": schema.ListNestedBlock{
@@ -2728,11 +2736,42 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																Optional:    true,
 																Description: "Session name for assumed role.",
 															},
+															"username_key": schema.StringAttribute{
+																Optional:    true,
+																Description: "Name of the environment variable or secret that holds the Amazon OpenSearch username (used when `strategy` is `basic`).",
+															},
+															"password_key": schema.StringAttribute{
+																Optional:    true,
+																Description: "Name of the environment variable or secret that holds the Amazon OpenSearch password (used when `strategy` is `basic`).",
+															},
 														},
 													},
 													Validators: []validator.List{
 														listvalidator.IsRequired(),
 														listvalidator.SizeAtMost(1),
+													},
+												},
+												"data_stream": schema.ListNestedBlock{
+													Description: "Configuration options for writing to Amazon OpenSearch Data Streams instead of a fixed index.",
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"dtype": schema.StringAttribute{
+																Optional:    true,
+																Description: "The data stream type for your logs. This determines how logs are categorized within the data stream.",
+															},
+															"dataset": schema.StringAttribute{
+																Optional:    true,
+																Description: "The data stream dataset for your logs. This groups logs by their source or application.",
+															},
+															"namespace": schema.StringAttribute{
+																Optional:    true,
+																Description: "The data stream namespace for your logs. This separates logs into different environments or domains.",
+															},
+														},
+													},
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+														listvalidator.ConflictsWith(frameworkPath.MatchRelative().AtParent().AtName("bulk_index")),
 													},
 												},
 												"buffer": observability_pipeline.BufferOptionsSchema(),
@@ -7257,6 +7296,29 @@ func expandAmazonOpenSearchDestination(ctx context.Context, dest *destinationMod
 		amazonopensearch.SetBulkIndex(src.BulkIndex.ValueString())
 	}
 
+	// endpoint_url_key, data_stream and the basic auth keys are accepted by the API but not yet
+	// modeled in the API client, so they are sent through AdditionalProperties.
+	additionalProperties := map[string]interface{}{}
+	if !src.EndpointUrlKey.IsNull() {
+		additionalProperties["endpoint_url_key"] = src.EndpointUrlKey.ValueString()
+	}
+	if len(src.DataStream) > 0 {
+		ds := map[string]interface{}{}
+		if !src.DataStream[0].Dtype.IsNull() {
+			ds["dtype"] = src.DataStream[0].Dtype.ValueString()
+		}
+		if !src.DataStream[0].Dataset.IsNull() {
+			ds["dataset"] = src.DataStream[0].Dataset.ValueString()
+		}
+		if !src.DataStream[0].Namespace.IsNull() {
+			ds["namespace"] = src.DataStream[0].Namespace.ValueString()
+		}
+		additionalProperties["data_stream"] = ds
+	}
+	if len(additionalProperties) > 0 {
+		amazonopensearch.AdditionalProperties = additionalProperties
+	}
+
 	if len(src.Auth) > 0 {
 		authSrc := src.Auth[0]
 		auth := datadogV2.ObservabilityPipelineAmazonOpenSearchDestinationAuth{
@@ -7273,6 +7335,16 @@ func expandAmazonOpenSearchDestination(ctx context.Context, dest *destinationMod
 		}
 		if !authSrc.SessionName.IsNull() {
 			auth.SessionName = authSrc.SessionName.ValueStringPointer()
+		}
+		authAdditionalProperties := map[string]interface{}{}
+		if !authSrc.UsernameKey.IsNull() {
+			authAdditionalProperties["username_key"] = authSrc.UsernameKey.ValueString()
+		}
+		if !authSrc.PasswordKey.IsNull() {
+			authAdditionalProperties["password_key"] = authSrc.PasswordKey.ValueString()
+		}
+		if len(authAdditionalProperties) > 0 {
+			auth.AdditionalProperties = authAdditionalProperties
 		}
 		amazonopensearch.SetAuth(auth)
 	}
@@ -7300,6 +7372,15 @@ func flattenAmazonOpenSearchDestination(src *datadogV2.ObservabilityPipelineAmaz
 		model.BulkIndex = types.StringValue(*v)
 	}
 
+	model.EndpointUrlKey = additionalPropertyString(src.AdditionalProperties, "endpoint_url_key")
+	if ds, ok := src.AdditionalProperties["data_stream"].(map[string]interface{}); ok {
+		model.DataStream = []opensearchDestinationDataStreamModel{{
+			Dtype:     additionalPropertyString(ds, "dtype"),
+			Dataset:   additionalPropertyString(ds, "dataset"),
+			Namespace: additionalPropertyString(ds, "namespace"),
+		}}
+	}
+
 	model.Auth = []amazonOpenSearchAuthModel{
 		{
 			Strategy:    types.StringValue(string(src.Auth.Strategy)),
@@ -7307,6 +7388,8 @@ func flattenAmazonOpenSearchDestination(src *datadogV2.ObservabilityPipelineAmaz
 			AssumeRole:  types.StringPointerValue(src.Auth.AssumeRole),
 			ExternalId:  types.StringPointerValue(src.Auth.ExternalId),
 			SessionName: types.StringPointerValue(src.Auth.SessionName),
+			UsernameKey: additionalPropertyString(src.Auth.AdditionalProperties, "username_key"),
+			PasswordKey: additionalPropertyString(src.Auth.AdditionalProperties, "password_key"),
 		},
 	}
 	if buffer, ok := src.GetBufferOk(); ok {
@@ -7317,4 +7400,13 @@ func flattenAmazonOpenSearchDestination(src *datadogV2.ObservabilityPipelineAmaz
 	}
 
 	return model
+}
+
+// additionalPropertyString returns the string value stored under key in an API client
+// AdditionalProperties map, or a null string when the key is absent or not a string.
+func additionalPropertyString(props map[string]interface{}, key string) types.String {
+	if v, ok := props[key].(string); ok {
+		return types.StringValue(v)
+	}
+	return types.StringNull()
 }
