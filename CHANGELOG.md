@@ -26,6 +26,34 @@
 
 **Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.25.0...v4.26.0
 
+## 4.26.0 (October 16, 2026)
+
+### BUGFIXES
+* [datadog_workflow_automation] Read only run_as during validation by @DMatheo in https://github.com/DataDog/terraform-provider-datadog/pull/4367
+* [datadog_synthetics_test] Fix mobile typeText crashes by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/4354
+* [datadog_synthetics_test] Fix mobile monitor options without renotification by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/4368
+* [datadog_synthetics_test] Fix mobile subtest state mapping by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/4386
+* [datadog_governance_control] bump datadog-api-client-go/v2 to fix governance control mitigation definition decoding error by @ivanovart in https://github.com/DataDog/terraform-provider-datadog/pull/4378
+* [datadog_synthetics_test] Fix mobile step parameter panics by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/4384
+* [datadog_synthetics_test] Preserve masked mobile variable values by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/4385
+* [datadog_aws_cur_config] Clear account filters when block is removed by @kaankoseler in https://github.com/DataDog/terraform-provider-datadog/pull/4241
+* [datadog_synthetics_test] Fix drift on `secure` field for global variables by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/4393
+* [datadog_deployment_gate] Send _metadata inside request attributes by @Aaron-9900 in https://github.com/DataDog/terraform-provider-datadog/pull/4392
+### IMPROVEMENTS
+* [datadog_deployment_gate] Add deployment rule options by @Aaron-9900 in https://github.com/DataDog/terraform-provider-datadog/pull/4372
+### FEATURES
+* [datadog_provider] Add HCP Terraform dynamic provider credentials support by @tyjet in https://github.com/DataDog/terraform-provider-datadog/pull/4321
+* [datadog_observability_pipeline] Add aggregate event-time configuration by @ArunPiduguDD in https://github.com/DataDog/terraform-provider-datadog/pull/4338
+* [datadog_on_call_team_routing_rules] Add reroute_to_team action by @Bnjis in https://github.com/DataDog/terraform-provider-datadog/pull/4373
+* [datadog_synthetics_test] Add bits_ai_auto_investigate option by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/4366
+* [datadog_observability_pipelines] Add Azure data explorer destination by @petere-datadog in https://github.com/DataDog/terraform-provider-datadog/pull/4388
+* [datadog_team_notification_rule] Add recipient_email and servicenow support to team notification rules by @jcharry in https://github.com/DataDog/terraform-provider-datadog/pull/4365
+
+## New Contributors
+* @Bnjis made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4373
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.25.0...v4.26.0
+
 ## 4.25.0 (October 7, 2026)
 
 ### BUGFIXES
