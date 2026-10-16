@@ -83,6 +83,23 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TwilioIntegrationAccountCreateRequest'
+            examples:
+              default:
+                value:
+                  data:
+                    type: integration-account
+                    attributes:
+                      name: twilio-prod
+                      authentication:
+                        auth_type: basic
+                        username: SKxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                        password: twilio-basic-auth-secret
+                      settings:
+                        account_sid: ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                        censor_logs: true
+                      dataflows:
+                        twilio-messages-logs:
+                          enabled: true
         required: true
       responses:
         '201':
@@ -288,6 +305,16 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TwilioIntegrationAccountUpdateRequest'
+            examples:
+              default:
+                value:
+                  data:
+                    id: 953a0060-81ec-4221-aed4-d4733b59cd96
+                    type: integration-account
+                    attributes:
+                      name: twilio-prod-renamed
+                      settings:
+                        censor_logs: false
         required: true
       responses:
         '200':
@@ -302,13 +329,13 @@ paths:
                       id: 953a0060-81ec-4221-aed4-d4733b59cd96
                       type: integration-account
                       attributes:
-                        name: twilio-prod
+                        name: twilio-prod-renamed
                         authentication:
                           auth_type: basic
                           username: SKxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
                         settings:
                           account_sid: ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-                          censor_logs: true
+                          censor_logs: false
                         dataflows:
                           twilio-messages-logs:
                             enabled: true
