@@ -314,6 +314,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_role_test":                                                   "roles",
 	"tests/resource_datadog_rum_application_test":                                        "rum-application",
 	"tests/resource_datadog_rum_metric_test":                                             "rum-metric",
+	"tests/resource_datadog_rum_operation_test":                                          "rum-operation",
 	"tests/resource_datadog_rum_retention_filter_test":                                   "rum-retention-filter",
 	"tests/resource_datadog_rum_retention_filters_order_test":                            "rum-retention-filters-order",
 	"tests/resource_datadog_saml_idp_metadata_test":                                      "organization",

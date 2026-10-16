@@ -79,6 +79,7 @@ var Resources = []func() resource.Resource{
 	NewRumApplicationResource,
 	NewRumExclusionFilterResource,
 	NewRumMetricResource,
+	NewRumOperationResource,
 	NewRumRetentionFilterResource,
 	NewRumRetentionFiltersOrderResource,
 	NewSamlIdpMetadataResource,
@@ -765,6 +766,10 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	// Suppress raw HTTP dumps for WIT authentication until SDK redaction supports it.
 	ddClientConfig.Debug = logging.IsDebugOrHigher() && workloadIdentityConfig == nil
 
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateRUMOperation", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetRUMOperation", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateRUMOperation", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteRUMOperation", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateOpenAPI", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateOpenAPI", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetOpenAPI", true)
