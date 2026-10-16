@@ -392,6 +392,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_custom_allocation_rules_test":                                "cost-management",
 	"tests/resource_datadog_incident_type_test":                                          "incidents",
 	"tests/data_source_datadog_incident_type_test":                                       "incidents",
+	"tests/resource_datadog_incident_handle_test":                                        "incidents",
 	"tests/resource_datadog_incident_notification_template_test":                         "incidents",
 	"tests/data_source_datadog_incident_notification_template_test":                      "incidents",
 	"tests/resource_datadog_incident_notification_rule_test":                             "incidents",
