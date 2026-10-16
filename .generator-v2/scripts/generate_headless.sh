@@ -309,15 +309,10 @@ if [ -z "$SERVICE" ]; then
   SERVICE="$(python3 - "$SLICE" <<'PY' || true
 import sys, yaml
 spec = yaml.safe_load(open(sys.argv[1]))
-for item in spec.get("paths", {}).values():
-    if not isinstance(item, dict):
-        continue
-    for node in item.values():
-        if isinstance(node, dict) and "x-datadog-tf-generator" in node:
-            tags = node.get("tags") or []
-            if tags:
-                print(tags[0].lower().replace(" ", "-"))
-                sys.exit(0)
+for tag in spec.get("tags", []):
+    if tag.get("x-datadog-tf-generator"):
+        print(tag["name"].lower().replace(" ", "-"))
+        sys.exit(0)
 PY
 )"
 fi

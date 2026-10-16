@@ -13,7 +13,7 @@ failure, not a walkthrough.
 | Page | What it is | Maintained by |
 |---|---|---|
 | [scope.md](scope.md) | What tfgen supports today. The single statement; no other page restates it. | hand |
-| [annotation.md](annotation.md) | Every accepted `x-datadog-tf-generator` field. | generated from `internal/contracts/tracking-field.schema.json` |
+| [annotation.md](annotation.md) | Every accepted `x-datadog-tf-generator` field. | generated from `internal/contracts/family-registry.schema.json` |
 | [cli.md](cli.md) | `tfgen` commands, flags, and exit codes. | generated from the cobra command tree |
 | [diagnostics.md](diagnostics.md) | Reading a failed run: report structure, statuses, what each failure means. | hand |
 

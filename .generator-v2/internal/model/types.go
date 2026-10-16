@@ -190,6 +190,14 @@ type Operation struct {
 	Tag string
 	// Tracking is the decoded tracking-field extension
 	Tracking *TrackingFieldMetadata
+	// Synthetic marks an operation the parser minted to carry one artifact
+	// declared by the tag-scoped family registry, rather than one the
+	// document declares. It shares Path/Method/OperationId with the real
+	// operation it was cloned from — the artifact's primary operation — so it
+	// must be excluded anywhere operations are indexed by identity, notably the
+	// operationId index a group resolves through: two entries under one id would
+	// otherwise let a group resolve to the clone.
+	Synthetic bool
 	// Unstable records that the operation declares x-unstable. Only presence is
 	// kept; the extension's value is just a human-readable beta notice.
 	Unstable bool
@@ -948,7 +956,6 @@ type SkipReason string
 
 const (
 	SkipReasonTrackingFieldAbsent SkipReason = "tracking_field_absent"
-	SkipReasonTrackingFieldSkip   SkipReason = "tracking_field_skip_true"
 )
 
 // RunReport is the structured output of a tfgen generate run.

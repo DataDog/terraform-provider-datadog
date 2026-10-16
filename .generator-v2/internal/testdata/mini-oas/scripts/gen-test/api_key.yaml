@@ -44,7 +44,6 @@ servers:
 security:
 - apiKeyAuth: []
   appKeyAuth: []
-tags:
 - name: Key Management
   description: 'Manage your Datadog API and application keys. You need an API key and an
 
@@ -112,13 +111,6 @@ paths:
         type: safe
       x-merge-override:
         parameters: false
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: api_key
-        tf_description: Use this data source to retrieve information about an existing Datadog api key.
-        group:
-          read: GetAPIKey
-          search: ListAPIKeys
   /api/v2/api_keys:
     get:
       operationId: ListAPIKeys
@@ -807,3 +799,27 @@ components:
       name: DD-APPLICATION-KEY
       in: header
       x-env-name: DD_APP_KEY
+tags:
+- name: Key Management
+  description: 'Manage your Datadog API and application keys. You need an API key and an
+
+    application key for a user with the required permissions to interact with these endpoints.
+
+
+    Consult the following pages to view and manage your keys:
+
+
+    - [API Keys](https://app.datadoghq.com/organization-settings/api-keys)
+
+    - [Application Keys](https://app.datadoghq.com/personal-settings/application-keys)'
+  externalDocs:
+    description: Find out more at
+    url: https://docs.datadoghq.com/account_management/api-app-keys/
+  x-datadog-tf-generator:
+    api_key:
+      datasource_singular:
+        artifact_name: api_key
+        tf_description: Use this data source to retrieve information about an existing Datadog api key.
+        group:
+          read: GetAPIKey
+          search: ListAPIKeys

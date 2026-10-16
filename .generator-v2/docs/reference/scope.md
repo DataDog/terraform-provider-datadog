@@ -84,8 +84,8 @@ failure prevented the spec from loading at all.
   accepting an unset one, so a `Required` `<attr>_wo` can be satisfied from
   neither side: omitting it fails the required-argument check and setting it
   fails the version check.
-- `x-secret: true` or `writeOnly: true` default an attribute to Terraform-sensitive.
-  An explicit `sensitive: false` on the same schema node overrides that inference.
+- `x-secret: true` or `writeOnly: true` marks an attribute Terraform-sensitive.
+  Legacy `x-datadog-tf-generator.sensitive` overrides are ignored.
 - Sensitive and `x-secret` redact from display; they do **not** keep values out of
   Terraform state. Only write-only handling does that.
 
