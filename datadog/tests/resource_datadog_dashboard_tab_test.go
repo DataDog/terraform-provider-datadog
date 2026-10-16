@@ -150,7 +150,7 @@ resource "datadog_dashboard" "tab_dashboard" {
 		CheckDestroy:      checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: configCreate,
+				Config: disableDashboardPlanValidation(configCreate),
 				Check: resource.ComposeTestCheckFunc(
 					checkDashboardExists(accProvider),
 					resource.TestCheckResourceAttr("datadog_dashboard.tab_dashboard", "tab.#", "2"),
@@ -159,7 +159,7 @@ resource "datadog_dashboard" "tab_dashboard" {
 				),
 			},
 			{
-				Config: configUpdate,
+				Config: disableDashboardPlanValidation(configUpdate),
 				Check: resource.ComposeTestCheckFunc(
 					checkDashboardExists(accProvider),
 					resource.TestCheckResourceAttr("datadog_dashboard.tab_dashboard", "tab.#", "2"),
@@ -169,7 +169,7 @@ resource "datadog_dashboard" "tab_dashboard" {
 				),
 			},
 			{
-				Config: configRemove,
+				Config: disableDashboardPlanValidation(configRemove),
 				Check: resource.ComposeTestCheckFunc(
 					checkDashboardExists(accProvider),
 					resource.TestCheckResourceAttr("datadog_dashboard.tab_dashboard", "tab.#", "0"),

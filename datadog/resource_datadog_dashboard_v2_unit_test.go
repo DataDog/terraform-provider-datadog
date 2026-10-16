@@ -5,14 +5,96 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
+
+func TestDashboardResourceNamesUseV2Implementation(t *testing.T) {
+	provider := Provider()
+	canonical := provider.ResourcesMap["datadog_dashboard"]
+	alias := provider.ResourcesMap["datadog_dashboard_v2"]
+
+	if canonical == nil || alias == nil {
+		t.Fatal("both datadog_dashboard and datadog_dashboard_v2 must be registered")
+	}
+	if canonical.Description == alias.Description {
+		t.Fatal("the alias must have an alias-specific documentation notice")
+	}
+	if !strings.Contains(alias.Description, "alias for `datadog_dashboard`") {
+		t.Fatalf("unexpected alias description: %q", alias.Description)
+	}
+
+	if reflect.ValueOf(canonical.SchemaFunc).Pointer() != reflect.ValueOf(alias.SchemaFunc).Pointer() {
+		t.Fatal("datadog_dashboard and datadog_dashboard_v2 must use the same schema builder")
+	}
+	if reflect.ValueOf(canonical.CreateContext).Pointer() != reflect.ValueOf(alias.CreateContext).Pointer() ||
+		reflect.ValueOf(canonical.ReadContext).Pointer() != reflect.ValueOf(alias.ReadContext).Pointer() ||
+		reflect.ValueOf(canonical.UpdateContext).Pointer() != reflect.ValueOf(alias.UpdateContext).Pointer() ||
+		reflect.ValueOf(canonical.DeleteContext).Pointer() != reflect.ValueOf(alias.DeleteContext).Pointer() {
+		t.Fatal("datadog_dashboard and datadog_dashboard_v2 must use the same lifecycle implementation")
+	}
+
+	canonicalSchema := canonical.SchemaFunc()
+	if _, ok := canonicalSchema["validate"]; !ok {
+		t.Fatal("datadog_dashboard must use the v2 schema")
+	}
+}
+
+func TestDashboardV2PreservesLegacyCanonicalSchemaShapes(t *testing.T) {
+	resourceSchema := buildDashboardV2Schema()
+	widgetResource := resourceSchema["widget"].Elem.(*schema.Resource)
+	toplistResource := widgetResource.Schema["toplist_definition"].Elem.(*schema.Resource)
+	styleResource := toplistResource.Schema["style"].Elem.(*schema.Resource)
+	displayResource := styleResource.Schema["display"].Elem.(*schema.Resource)
+
+	legacyType := displayResource.Schema["type"]
+	if legacyType == nil || legacyType.Deprecated == "" || legacyType.DiffSuppressFunc == nil {
+		t.Fatalf("legacy toplist display type must remain accepted without normalization diffs: %#v", legacyType)
+	}
+	if !displayResource.Schema["stacked"].Computed || !displayResource.Schema["flat"].Computed {
+		t.Fatal("canonical toplist display variants must be able to coexist with legacy configuration in state")
+	}
+	resourceData := schema.TestResourceDataRaw(t, resourceSchema, map[string]interface{}{
+		"widget": []interface{}{map[string]interface{}{
+			"toplist_definition": []interface{}{map[string]interface{}{
+				"style": []interface{}{map[string]interface{}{
+					"display": []interface{}{map[string]interface{}{
+						"type":    "stacked",
+						"stacked": []interface{}{map[string]interface{}{}},
+					}},
+				}},
+			}},
+		}},
+	})
+	legacyTypePath := "widget.0.toplist_definition.0.style.0.display.0.type"
+	if !legacyType.DiffSuppressFunc(legacyTypePath, "", "stacked", resourceData) {
+		t.Fatal("matching canonical state should suppress the legacy normalization diff")
+	}
+	if legacyType.DiffSuppressFunc(legacyTypePath, "stacked", "flat", resourceData) {
+		t.Fatal("a real legacy display type change must not be suppressed")
+	}
+
+	legacyDisplay := map[string]interface{}{"type": "stacked"}
+	legacyStyle := map[string]interface{}{"display": []interface{}{legacyDisplay}}
+	legacyToplist := map[string]interface{}{"style": []interface{}{legacyStyle}}
+	legacyWidget := map[string]interface{}{"toplist_definition": []interface{}{legacyToplist}}
+	config := terraform.NewResourceConfigRaw(map[string]interface{}{
+		"title":       "Legacy toplist",
+		"layout_type": "ordered",
+		"validate":    false,
+		"widget":      []interface{}{legacyWidget},
+	})
+	if _, err := resourceDatadogDashboardV2().Diff(context.Background(), nil, config, nil); err != nil {
+		t.Fatalf("legacy canonical dashboard configuration must remain valid: %v", err)
+	}
+}
 
 func TestBuildDashboardV2SchemaValidate(t *testing.T) {
 	validateSchema, ok := buildDashboardV2Schema()["validate"]
@@ -370,5 +452,85 @@ func dashboardV2TestTimeseriesWidgets(query string) []interface{} {
 				},
 			},
 		},
+	}
+}
+
+func TestDashboardV2LegacyNoOpDescriptionFields(t *testing.T) {
+	widgets := []interface{}{
+		map[string]interface{}{
+			"log_stream_definition": []interface{}{
+				map[string]interface{}{
+					"query": "status:error",
+					"sort": []interface{}{
+						map[string]interface{}{"column": "time", "order": "desc", "description": "legacy sort"},
+					},
+				},
+			},
+		},
+		map[string]interface{}{
+			"slo_list_definition": []interface{}{
+				map[string]interface{}{
+					"request": []interface{}{
+						map[string]interface{}{
+							"request_type": "slo_list",
+							"description":  "legacy request",
+							"query": []interface{}{
+								map[string]interface{}{
+									"query_string": "env:prod",
+									"sort": []interface{}{
+										map[string]interface{}{"column": "status.sli", "order": "desc", "description": "legacy query sort"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	called := false
+	client := dashboardValidationTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+		called = true
+		for _, widget := range assertDashboardValidationRequest(t, r, 2, "ordered", "") {
+			payload, _ := json.Marshal(widget)
+			if strings.Contains(string(payload), "legacy") {
+				t.Errorf("no-op description must not be sent for validation, got %s", payload)
+			}
+		}
+		writeDashboardValidationResponse(t, w, map[string]interface{}{
+			"results": []interface{}{
+				map[string]interface{}{"is_valid": true, "widget_type": "log_stream"},
+				map[string]interface{}{"is_valid": true, "widget_type": "slo_list"},
+			},
+		})
+	})
+	providerConfig := &ProviderConfiguration{
+		Auth:                context.Background(),
+		DatadogApiInstances: &utils.ApiInstances{HttpClient: client},
+	}
+	config := terraform.NewResourceConfigRaw(map[string]interface{}{
+		"title":       "Legacy description test",
+		"layout_type": "ordered",
+		"widget":      widgets,
+	})
+	diff, err := resourceDatadogDashboardV2().Diff(context.Background(), nil, config, providerConfig)
+	if err != nil {
+		t.Fatalf("legacy description fields should still plan, got: %v", err)
+	}
+	if !called {
+		t.Fatal("plan-time validation should still run when legacy description fields are set")
+	}
+	for key := range diff.Attributes {
+		if strings.HasSuffix(key, ".description") {
+			t.Errorf("no-op description should not produce a diff, got %q", key)
+		}
+	}
+
+	for _, widget := range flattenDashboardWidgets(widgets) {
+		payload, _ := json.Marshal(widget.widget)
+		if strings.Contains(string(payload), "legacy") {
+			t.Errorf("no-op description must not be sent to the API, got %s", payload)
+		}
 	}
 }
