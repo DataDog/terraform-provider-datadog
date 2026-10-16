@@ -60,7 +60,7 @@ func (r *OrgGroupMembershipResource) Metadata(_ context.Context, _ resource.Meta
 
 func (r *OrgGroupMembershipResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog Org Group Membership resource. This can be used to manage an organization's membership in an org group.",
+		Description: "Provides a Datadog Org Group Membership resource. This can be used to manage an organization's membership in an org group. **Note**: Org Groups operations are in preview and subject to change. Access may need to be enabled for your organization. Contact [Datadog support](https://docs.datadoghq.com/help/) to request access.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"org_group_id": schema.StringAttribute{
