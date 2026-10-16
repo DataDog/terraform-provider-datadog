@@ -80,6 +80,7 @@ var Resources = []func() resource.Resource{
 	NewRumExclusionFilterResource,
 	NewRumMetricResource,
 	NewRumOperationResource,
+	NewRumOperationJourneyLinkResource,
 	NewRumRetentionFilterResource,
 	NewRumRetentionFiltersOrderResource,
 	NewSamlIdpMetadataResource,
@@ -770,6 +771,9 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetRUMOperation", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateRUMOperation", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteRUMOperation", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateRUMOperationStrongLink", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateRUMOperationStrongLink", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteRUMOperationStrongLink", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateOpenAPI", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateOpenAPI", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetOpenAPI", true)
