@@ -18,7 +18,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-var computedFields = []string{"id", "author_handle", "author_name", "created_at", "modified_at", "url"}
+var computedFields = []string{"id", "author_handle", "author_name", "created_at", "modified_at", "url", "experience_type"}
 
 const path = "/api/v1/dashboard"
 
