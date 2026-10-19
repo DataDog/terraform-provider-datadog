@@ -24632,7 +24632,7 @@ Required:
 
 Optional:
 
-- `limit` (Number) Maximum number of results to display in the table.
+- `limit` (Number) Maximum number of results to display in the table. Defaults to `100`.
 - `sort` (Block List) The facet and order to sort the data, for example: `{"column": "status.sli", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--slo_list_definition--request--query--sort))
 
 <a id="nestedblock--widget--group_definition--widget--slo_list_definition--request--query--sort"></a>
@@ -45728,7 +45728,7 @@ Required:
 
 Optional:
 
-- `limit` (Number) Maximum number of results to display in the table.
+- `limit` (Number) Maximum number of results to display in the table. Defaults to `100`.
 - `sort` (Block List) The facet and order to sort the data, for example: `{"column": "status.sli", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--slo_list_definition--request--query--sort))
 
 <a id="nestedblock--widget--slo_list_definition--request--query--sort"></a>

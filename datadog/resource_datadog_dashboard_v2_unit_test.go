@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"reflect"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/dashboardmapping"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -533,4 +535,149 @@ func TestDashboardV2LegacyNoOpDescriptionFields(t *testing.T) {
 			t.Errorf("no-op description must not be sent to the API, got %s", payload)
 		}
 	}
+}
+
+// TestDashboardV2MatchesLegacyPayloadForZeroValues builds the same config with the
+// legacy datadog_dashboard builder and the v2 engine and requires both to send the
+// same value at each path. The cassette matcher treats an absent key as equal to
+// false or 0, so replayed acceptance tests cannot catch these fields being dropped.
+func TestDashboardV2MatchesLegacyPayloadForZeroValues(t *testing.T) {
+	cases := []struct {
+		name   string
+		widget map[string]interface{}
+		paths  [][]string
+	}{
+		{
+			name: "slo show_error_budget unset is sent as false",
+			widget: map[string]interface{}{"service_level_objective_definition": []interface{}{map[string]interface{}{
+				"view_type": "detail", "slo_id": "abc", "view_mode": "overall", "time_windows": []interface{}{"7d"},
+			}}},
+			paths: [][]string{{"show_error_budget"}},
+		},
+		{
+			name: "distribution axes with only include_zero = false",
+			widget: map[string]interface{}{"distribution_definition": []interface{}{map[string]interface{}{
+				"request": []interface{}{map[string]interface{}{"q": "avg:system.cpu.user{*}"}},
+				"xaxis":   []interface{}{map[string]interface{}{"include_zero": false}},
+				"yaxis":   []interface{}{map[string]interface{}{"include_zero": false}},
+			}}},
+			paths: [][]string{{"xaxis", "include_zero"}, {"yaxis", "include_zero"}},
+		},
+		{
+			name: "powerpack show_title unset is sent as false",
+			widget: map[string]interface{}{"powerpack_definition": []interface{}{map[string]interface{}{
+				"powerpack_id": "00000000-0000-0000-0000-000000000000",
+				"template_variables": []interface{}{map[string]interface{}{
+					"controlled_by_powerpack": []interface{}{map[string]interface{}{"name": "env", "values": []interface{}{"prod"}}},
+				}},
+			}}},
+			paths: [][]string{{"show_title"}},
+		},
+		{
+			name: "formula style palette_index = 0",
+			widget: map[string]interface{}{"timeseries_definition": []interface{}{map[string]interface{}{
+				"request": []interface{}{map[string]interface{}{
+					"query": []interface{}{map[string]interface{}{"metric_query": []interface{}{map[string]interface{}{
+						"name": "query1", "query": "avg:system.cpu.user{*}",
+					}}}},
+					"formula": []interface{}{map[string]interface{}{
+						"formula_expression": "query1",
+						"style":              []interface{}{map[string]interface{}{"palette": "classic", "palette_index": 0}},
+					}},
+				}},
+			}}},
+			paths: [][]string{{"requests", "0", "formulas", "0", "style", "palette_index"}},
+		},
+		{
+			name: "slo list limit defaults to 100",
+			widget: map[string]interface{}{"slo_list_definition": []interface{}{map[string]interface{}{
+				"request": []interface{}{map[string]interface{}{
+					"request_type": "slo_list",
+					"query":        []interface{}{map[string]interface{}{"query_string": "env:prod"}},
+				}},
+			}}},
+			paths: [][]string{{"requests", "0", "query", "limit"}},
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			raw := map[string]interface{}{
+				"title":       "parity",
+				"layout_type": "ordered",
+				"widget":      []interface{}{tc.widget},
+			}
+			legacy := legacyDashboardWidgetDefinition(t, raw)
+			canonical := canonicalDashboardWidgetDefinition(t, raw)
+			for _, path := range tc.paths {
+				legacyValue, legacyOK := lookupJSONPath(legacy, path)
+				if !legacyOK {
+					t.Fatalf("legacy payload has no %v: %#v", path, legacy)
+				}
+				canonicalValue, canonicalOK := lookupJSONPath(canonical, path)
+				if !canonicalOK || !reflect.DeepEqual(legacyValue, canonicalValue) {
+					t.Errorf("%v: legacy sends %#v, v2 sends %#v (present=%v)", path, legacyValue, canonicalValue, canonicalOK)
+				}
+			}
+		})
+	}
+}
+
+func legacyDashboardWidgetDefinition(t *testing.T, raw map[string]interface{}) map[string]interface{} {
+	t.Helper()
+	d := schema.TestResourceDataRaw(t, resourceDatadogDashboard().SchemaMap(), raw)
+	dashboard, err := buildDatadogDashboard(d)
+	if err != nil {
+		t.Fatalf("legacy build failed: %v", err)
+	}
+	payload, err := json.Marshal(dashboard)
+	if err != nil {
+		t.Fatalf("legacy marshal failed: %v", err)
+	}
+	return firstWidgetDefinition(t, payload)
+}
+
+func canonicalDashboardWidgetDefinition(t *testing.T, raw map[string]interface{}) map[string]interface{} {
+	t.Helper()
+	d := schema.TestResourceDataRaw(t, buildDashboardV2Schema(), raw)
+	payload, err := dashboardmapping.MarshalDashboardJSONFromMapWithRawConfig(collectDashboardData(d), "", d)
+	if err != nil {
+		t.Fatalf("v2 build failed: %v", err)
+	}
+	return firstWidgetDefinition(t, []byte(payload))
+}
+
+func firstWidgetDefinition(t *testing.T, payload []byte) map[string]interface{} {
+	t.Helper()
+	var dashboard struct {
+		Widgets []struct {
+			Definition map[string]interface{} `json:"definition"`
+		} `json:"widgets"`
+	}
+	if err := json.Unmarshal(payload, &dashboard); err != nil || len(dashboard.Widgets) == 0 {
+		t.Fatalf("payload has no widgets (err=%v): %s", err, payload)
+	}
+	return dashboard.Widgets[0].Definition
+}
+
+func lookupJSONPath(value interface{}, path []string) (interface{}, bool) {
+	for _, key := range path {
+		switch typed := value.(type) {
+		case map[string]interface{}:
+			next, ok := typed[key]
+			if !ok {
+				return nil, false
+			}
+			value = next
+		case []interface{}:
+			index, err := strconv.Atoi(key)
+			if err != nil || index >= len(typed) {
+				return nil, false
+			}
+			value = typed[index]
+		default:
+			return nil, false
+		}
+	}
+	return value, true
 }

@@ -848,7 +848,7 @@ var distributionWidgetXAxisFields = []FieldSpec{
 		Description: "Specifies minimum value to show on the x-axis. It takes a number, percentile (p90 === 90th percentile), or auto for default behavior."},
 	{HCLKey: "max", Type: TypeString, OmitEmpty: true,
 		Description: "Specifies maximum value to show on the x-axis. It takes a number, percentile (p90 === 90th percentile), or auto for default behavior."},
-	{HCLKey: "include_zero", Type: TypeBool, OmitEmpty: true,
+	{HCLKey: "include_zero", Type: TypeBool, OmitEmpty: false,
 		Description: "True includes zero."},
 	{HCLKey: "num_buckets", Type: TypeInt, OmitEmpty: true,
 		Description: "Number of value buckets to target, also known as the resolution of the value bins."},
@@ -864,7 +864,7 @@ var distributionWidgetYAxisFields = []FieldSpec{
 		Description: "Specifies minimum value to show on the y-axis. It takes a number, or auto for default behavior."},
 	{HCLKey: "max", Type: TypeString, OmitEmpty: true,
 		Description: "Specifies the maximum value to show on the y-axis. It takes a number, or auto for default behavior."},
-	{HCLKey: "include_zero", Type: TypeBool, OmitEmpty: true,
+	{HCLKey: "include_zero", Type: TypeBool, OmitEmpty: false,
 		Description: "True includes zero."},
 	{HCLKey: "label", Type: TypeString, OmitEmpty: true,
 		Description: "The label of the axis to display on the graph."},
@@ -1420,7 +1420,7 @@ var SLOWidgetSpec = WidgetSpec{
 			ValidValues: []string{"7d", "30d", "90d", "week_to_date", "previous_week", "month_to_date", "previous_month", "global_time"},
 		},
 		// Optional fields
-		{HCLKey: "show_error_budget", Type: TypeBool, OmitEmpty: true, Description: "Whether to show the error budget or not."},
+		{HCLKey: "show_error_budget", Type: TypeBool, OmitEmpty: false, Description: "Whether to show the error budget or not."},
 		{HCLKey: "global_time_target", Type: TypeString, OmitEmpty: true, Description: "The global time target of the widget."},
 		{HCLKey: "additional_query_filters", Type: TypeString, OmitEmpty: true, Description: "Additional filters applied to the SLO query."},
 	},
@@ -1513,7 +1513,7 @@ var PowerpackWidgetSpec = WidgetSpec{
 		{HCLKey: "powerpack_id", Type: TypeString, OmitEmpty: false, Required: true, Description: "UUID of the associated powerpack."},
 		{HCLKey: "background_color", Type: TypeString, OmitEmpty: true, Description: "The background color of the powerpack title."},
 		{HCLKey: "banner_img", Type: TypeString, OmitEmpty: true, Description: "URL of image to display as a banner for the powerpack."},
-		{HCLKey: "show_title", Type: TypeBool, OmitEmpty: true, Description: "Whether to show the title of the powerpack."},
+		{HCLKey: "show_title", Type: TypeBool, OmitEmpty: false, Description: "Whether to show the title of the powerpack."},
 		// template_variables: TypeBlock (MaxItems:1) containing two TypeBlockLists
 		{
 			HCLKey:      "template_variables",

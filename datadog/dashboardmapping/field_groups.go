@@ -1055,7 +1055,7 @@ var widgetFormulaLimitFields = []FieldSpec{
 var widgetFormulaStyleFields = []FieldSpec{
 	{HCLKey: "palette", Type: TypeString, OmitEmpty: true,
 		Description: "The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors."},
-	{HCLKey: "palette_index", Type: TypeInt, OmitEmpty: true,
+	{HCLKey: "palette_index", Type: TypeInt, OmitEmpty: true, PreserveZero: true,
 		Description: "Index specifying which color to use within the palette."},
 }
 
@@ -1891,7 +1891,7 @@ var sloListSortFields = []FieldSpec{
 // components/schemas/SLOListWidgetQuery.
 var sloListQueryFields = []FieldSpec{
 	{HCLKey: "query_string", Type: TypeString, OmitEmpty: false, Required: true, Description: "Widget query."},
-	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true, Description: "Maximum number of results to display in the table."},
+	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true, Default: 100, Description: "Maximum number of results to display in the table."},
 	// sort: TypeBlockList (can be multiple)
 	{
 		HCLKey:      "sort",
