@@ -225,3 +225,71 @@ func TestDeploymentGateRuleOptionsValidation(t *testing.T) {
 		t.Fatal("expected mutually exclusive options to fail validation")
 	}
 }
+
+// The API reads `_metadata` as a JSON:API attribute, so it must be nested in
+// `data.attributes` rather than set directly on `data`.
+func TestDeploymentGateRequestMetadataInAttributes(t *testing.T) {
+	ctx := context.Background()
+	r := &deploymentGateResource{}
+	gate := &deploymentGateModel{
+		DryRun: types.BoolValue(false), Env: types.StringValue("prod"),
+		Identifier: types.StringValue("default"), Service: types.StringValue("svc"),
+	}
+	rule := &deploymentGateRuleModel{
+		Name: types.StringValue("r"), Type: types.StringValue("faulty_deployment_detection"),
+		DryRun: types.BoolValue(false), Options: testRuleOptions(),
+	}
+
+	createGate, diags := r.buildDeploymentGateRequestBody(ctx, gate)
+	if diags.HasError() {
+		t.Fatal(diags)
+	}
+	updateGate, diags := r.buildDeploymentGateUpdateRequestBody(ctx, gate)
+	if diags.HasError() {
+		t.Fatal(diags)
+	}
+	createRule, diags := r.buildRuleRequestBody(ctx, rule)
+	if diags.HasError() {
+		t.Fatal(diags)
+	}
+	updateRule, diags := r.buildRuleUpdateRequestBody(ctx, rule)
+	if diags.HasError() {
+		t.Fatal(diags)
+	}
+
+	cases := []struct {
+		name string
+		body interface{}
+		key  string
+	}{
+		{"create gate", createGate, "created_from"},
+		{"update gate", updateGate, "updated_from"},
+		{"create rule", createRule, "created_from"},
+		{"update rule", updateRule, "updated_from"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			raw, err := json.Marshal(tc.body)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var decoded struct {
+				Data struct {
+					Metadata   map[string]string `json:"_metadata"`
+					Attributes struct {
+						Metadata map[string]string `json:"_metadata"`
+					} `json:"attributes"`
+				} `json:"data"`
+			}
+			if err := json.Unmarshal(raw, &decoded); err != nil {
+				t.Fatal(err)
+			}
+			if decoded.Data.Metadata != nil {
+				t.Errorf("_metadata must not be set on data: %s", raw)
+			}
+			if got := decoded.Data.Attributes.Metadata[tc.key]; got != "terraform" {
+				t.Errorf("expected data.attributes._metadata.%s=terraform, got %q: %s", tc.key, got, raw)
+			}
+		})
+	}
+}

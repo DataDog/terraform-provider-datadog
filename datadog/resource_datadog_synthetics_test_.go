@@ -688,6 +688,14 @@ func syntheticsAPIAssertion() *schema.Schema {
 								Description: "Expected matching value.",
 								Type:        schema.TypeString,
 								Optional:    true,
+								DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+									// isUndefined checks for a missing path and doesn't have a targetvalue.
+									// For k = "assertion.0.targetjsonpath.0.targetvalue", operatorKey is
+									// "assertion.0.targetjsonpath.0.operator", whose value is compared below.
+									operatorKey := strings.TrimSuffix(k, "targetvalue") + "operator"
+									operator := d.Get(operatorKey)
+									return operator == "isUndefined"
+								},
 							},
 						},
 					},
@@ -2058,6 +2066,10 @@ func syntheticsConfigVariable() *schema.Schema {
 					Type:        schema.TypeBool,
 					Optional:    true,
 					Default:     false,
+					DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+						// Obfuscation is controlled by the global variable itself.
+						return d.Get(strings.TrimSuffix(k, "secure")+"type") == "global"
+					},
 				},
 			},
 		},
