@@ -21,6 +21,7 @@ import (
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/cloudauth"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/commandauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/terraformauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
@@ -92,6 +93,13 @@ func Provider() *schema.Provider {
 				Optional:    true,
 				Sensitive:   true,
 				Description: "Datadog credential sent in the `Authorization: Bearer <token>` header. Accepts personal access tokens (`ddpat_*`) and service-account access tokens (`ddsat_*`). When set, the provider authenticates with `Authorization: Bearer <token>` instead of the `DD-API-KEY` / `DD-APPLICATION-KEY` headers. This can also be set via the `DD_BEARER_TOKEN` or `DATADOG_BEARER_TOKEN` environment variable.",
+			},
+			"bearer_token_command": {
+				Type:          schema.TypeList,
+				Optional:      true,
+				Elem:          &schema.Schema{Type: schema.TypeString},
+				ConflictsWith: []string{"bearer_token"},
+				Description:   "Command that prints a Datadog Bearer token on stdout, as a list of the program and its arguments, for example `[\"pup\", \"auth\", \"token\"]`. No shell runs it. The provider runs it when it first needs a token and again when the token expires: at the JWT `exp` claim less one minute, or after five minutes for a token that is not a JWT. Conflicts with `bearer_token`. This can also be set via the `DD_BEARER_TOKEN_COMMAND` or `DATADOG_BEARER_TOKEN_COMMAND` environment variable, whose value is split at whitespace.",
 			},
 			"workload_identity_token_tag": {
 				Type:        schema.TypeString,
@@ -360,17 +368,28 @@ func withResourceName(meta interface{}, name string) interface{} {
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	// Unknown explicit credentials must not silently select an environment identity.
 	rawAuth := d.GetRawConfig()
-	for _, name := range []string{"cloud_provider_type", "bearer_token", "api_key", "app_key"} {
+	for _, name := range []string{"cloud_provider_type", "bearer_token", "bearer_token_command", "api_key", "app_key"} {
 		if !rawAuth.IsNull() && rawAuth.IsKnown() && rawAuth.Type().HasAttribute(name) && !rawAuth.GetAttr(name).IsKnown() {
 			return nil, diag.Errorf("%s must be known before configuring provider authentication", name)
+		}
+		if name == "bearer_token_command" {
+			if len(d.Get(name).([]interface{})) > 0 {
+				break
+			}
+			continue
 		}
 		if (name == "cloud_provider_type" || name == "bearer_token") && d.Get(name).(string) != "" {
 			break
 		}
 	}
+	var bearerTokenCommand []string
+	for _, arg := range d.Get("bearer_token_command").([]interface{}) {
+		s, _ := arg.(string)
+		bearerTokenCommand = append(bearerTokenCommand, s)
+	}
 	// Capture provider-block authentication before resolving environment defaults.
 	hasExplicitAuth := d.Get("api_key").(string) != "" || d.Get("app_key").(string) != "" ||
-		d.Get("bearer_token").(string) != "" || d.Get("cloud_provider_type").(string) != ""
+		d.Get("bearer_token").(string) != "" || len(bearerTokenCommand) > 0 || d.Get("cloud_provider_type").(string) != ""
 	apiKey := d.Get("api_key").(string)
 	if apiKey == "" {
 		apiKey, _ = utils.GetMultiEnvVar(utils.APIKeyEnvVars[:]...)
@@ -384,6 +403,19 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	bearerToken := d.Get("bearer_token").(string)
 	if bearerToken == "" && !hasExplicitAuth {
 		bearerToken, _ = utils.GetMultiEnvVar(utils.BearerTokenEnvVars...)
+		if v, err := utils.GetMultiEnvVar(utils.BearerTokenCommandEnvVars...); err == nil {
+			bearerTokenCommand = commandauth.ParseEnv(v)
+		}
+		if bearerToken != "" && len(bearerTokenCommand) > 0 {
+			return nil, diag.Errorf("set only one of DD_BEARER_TOKEN and DD_BEARER_TOKEN_COMMAND (or their DATADOG_ forms)")
+		}
+	}
+	var bearerTokenCommandConfig *datadog.DelegatedTokenConfig
+	if len(bearerTokenCommand) > 0 {
+		var err error
+		if bearerTokenCommandConfig, err = commandauth.GetDelegatedTokenConfig(bearerTokenCommand); err != nil {
+			return nil, diag.FromErr(err)
+		}
 	}
 
 	apiURL := d.Get("api_url").(string)
@@ -444,9 +476,9 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		validate, _ = strconv.ParseBool(v)
 	}
 
-	if validate && workloadIdentityConfig == nil {
+	if validate && workloadIdentityConfig == nil && bearerTokenCommandConfig == nil {
 		if cloudProviderType == "" && bearerToken == "" && (apiKey == "" || appKey == "") {
-			return nil, diag.FromErr(errors.New("credentials are required unless validate = false: configure api_key and app_key, bearer_token, AWS WIF, or Terraform Dynamic Provider Credentials"))
+			return nil, diag.FromErr(errors.New("credentials are required unless validate = false: configure api_key and app_key, bearer_token, bearer_token_command, AWS WIF, or Terraform Dynamic Provider Credentials"))
 		} else if cloudProviderType != "" && orgUUID == "" {
 			return nil, diag.FromErr(errors.New("orgUUID must be set when using cloud provider auth unless validate = false"))
 		}
@@ -475,6 +507,9 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	// Explicit provider authentication wins; otherwise prefer Terraform workload identity over environment credentials.
 	switch {
 	case workloadIdentityConfig != nil:
+		auth = context.WithValue(auth, datadog.ContextDelegatedToken, &datadog.DelegatedTokenCredentials{})
+	case bearerTokenCommandConfig != nil:
+		// Like a static bearer token, a command from the environment yields to workload identity.
 		auth = context.WithValue(auth, datadog.ContextDelegatedToken, &datadog.DelegatedTokenCredentials{})
 	case cloudProviderType != "":
 		// Allows for delegated token authentication
@@ -578,8 +613,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 
 	config.UserAgent = utils.GetUserAgent(config.UserAgent)
 	// The SDK debug logger does not redact ContextDelegatedToken credentials.
-	// Suppress raw HTTP dumps for WIT authentication until SDK redaction supports it.
-	config.Debug = logging.IsDebugOrHigher() && workloadIdentityConfig == nil
+	// Suppress raw HTTP dumps for WIT and command authentication until SDK redaction supports it.
+	config.Debug = logging.IsDebugOrHigher() && workloadIdentityConfig == nil && bearerTokenCommandConfig == nil
 	if apiURL != "" {
 		parsedAPIURL, parseErr := url.Parse(apiURL)
 		if parseErr != nil {
@@ -617,6 +652,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	config.HTTPClient = datadogHTTPClient
 	if workloadIdentityConfig != nil {
 		config.DelegatedTokenConfig = workloadIdentityConfig
+	} else if bearerTokenCommandConfig != nil {
+		config.DelegatedTokenConfig = bearerTokenCommandConfig
 	} else if cloudProviderType != "" {
 		switch cloudProviderType {
 		case "aws":

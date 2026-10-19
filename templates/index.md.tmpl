@@ -45,4 +45,16 @@ match the AWS identity resolved by the credential chain.
 
 For HCP Terraform, the provider discovers Terraform-issued workload identity tokens and exchanges them through Datadog Workload Identity Federation when authentication is not explicitly configured in the provider block. Use `workload_identity_token_tag` to select a distinct token for each provider configuration. Configure the WIF persona mapping and workspace audience as described in the [Dynamic Provider Credentials guide](guides/dynamic_provider_credentials.md).
 
+## Bearer Token from a Command
+
+`bearer_token_command` runs a command that prints a short-lived Bearer token, and runs it again before the token expires, so a long apply keeps a valid token. For example, after `pup auth login`, the [pup](https://github.com/DataDog/pup) CLI prints its current OAuth access token with `pup auth token`:
+
+```terraform
+provider "datadog" {
+  bearer_token_command = ["pup", "auth", "token"]
+}
+```
+
+Or, leaving the provider block unchanged, `export DD_BEARER_TOKEN_COMMAND="pup auth token"`. The command runs without a shell, with the provider's environment, and must print only the token.
+
 {{ .SchemaMarkdown | trimspace }}
