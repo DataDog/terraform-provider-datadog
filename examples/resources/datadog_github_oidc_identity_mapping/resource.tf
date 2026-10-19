@@ -8,7 +8,7 @@ resource "datadog_service_account" "terraform" {
   roles = [data.datadog_role.read_only.id]
 }
 
-resource "datadog_github_oidc_persona_mapping" "terraform" {
+resource "datadog_github_oidc_identity_mapping" "terraform" {
   # A service account's handle is its UUID, so `id` is both stable and already the
   # canonical value Datadog stores. Using `email` here would work, but Datadog
   # normalizes it to the handle, leaving this attribute import-unstable.

@@ -24,11 +24,11 @@ import (
 const githubOidcMappingVisibilityTimeout = 30 * time.Second
 
 var (
-	_ resource.ResourceWithConfigure   = &githubOidcPersonaMappingResource{}
-	_ resource.ResourceWithImportState = &githubOidcPersonaMappingResource{}
+	_ resource.ResourceWithConfigure   = &githubOidcIdentityMappingResource{}
+	_ resource.ResourceWithImportState = &githubOidcIdentityMappingResource{}
 )
 
-type githubOidcPersonaMappingResource struct {
+type githubOidcIdentityMappingResource struct {
 	Api  *datadogV2.CloudAuthenticationApi
 	Auth context.Context
 }
@@ -36,24 +36,24 @@ type githubOidcPersonaMappingResource struct {
 // A passthrough import writes a state with only `id`, leaving claim_matchers
 // null; the pointer field lets that null unmarshal into the model before
 // Read fills it in.
-type githubOidcPersonaMappingModel struct {
+type githubOidcIdentityMappingModel struct {
 	ID                types.String                  `tfsdk:"id"`
 	AccountIdentifier types.String                  `tfsdk:"account_identifier"`
 	AccountUUID       types.String                  `tfsdk:"account_uuid"`
 	ClaimMatchers     *githubOIDCClaimMatchersModel `tfsdk:"claim_matchers"`
 }
 
-func NewGithubOidcPersonaMappingResource() resource.Resource {
-	return &githubOidcPersonaMappingResource{}
+func NewGithubOidcIdentityMappingResource() resource.Resource {
+	return &githubOidcIdentityMappingResource{}
 }
 
-func (r *githubOidcPersonaMappingResource) Metadata(_ context.Context, _ resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = "github_oidc_persona_mapping"
+func (r *githubOidcIdentityMappingResource) Metadata(_ context.Context, _ resource.MetadataRequest, response *resource.MetadataResponse) {
+	response.TypeName = "github_oidc_identity_mapping"
 }
 
-func (r *githubOidcPersonaMappingResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *githubOidcIdentityMappingResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a GitHub Actions OIDC persona mapping for Datadog workload identity federation. The mapping allows a GitHub Actions workload whose OIDC token matches the `claim_matchers` patterns to authenticate as the Datadog user or service account identified by `account_identifier`. The identity creating the mapping must have every permission assigned to the target identity. Creating the initial mapping requires API and application credentials with the Workload Identity Federation write permission; a provider already using federation cannot bootstrap its own mapping. Mappings cannot be updated; changing any attribute replaces the mapping. This resource uses a public beta API and is subject to change.",
+		Description: "Provides a GitHub Actions OIDC identity mapping (called a persona mapping in the Datadog API) for Datadog workload identity federation. The mapping allows a GitHub Actions workload whose OIDC token matches the `claim_matchers` patterns to authenticate as the Datadog user or service account identified by `account_identifier`. The identity creating the mapping must have every permission assigned to the target identity. Creating the initial mapping requires API and application credentials with the Workload Identity Federation write permission; a provider already using federation cannot bootstrap its own mapping. Mappings cannot be updated; changing any attribute replaces the mapping. This resource uses a public beta API and is subject to change.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"account_identifier": schema.StringAttribute{
@@ -75,7 +75,7 @@ func (r *githubOidcPersonaMappingResource) Schema(_ context.Context, _ resource.
 	}
 }
 
-func (r *githubOidcPersonaMappingResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *githubOidcIdentityMappingResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	if request.ProviderData == nil {
 		return
 	}
@@ -93,12 +93,12 @@ func (r *githubOidcPersonaMappingResource) Configure(_ context.Context, request 
 	r.Auth = providerData.Auth
 }
 
-func (r *githubOidcPersonaMappingResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *githubOidcIdentityMappingResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), request, response)
 }
 
-func (r *githubOidcPersonaMappingResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state githubOidcPersonaMappingModel
+func (r *githubOidcIdentityMappingResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state githubOidcIdentityMappingModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -117,8 +117,8 @@ func (r *githubOidcPersonaMappingResource) Create(ctx context.Context, request r
 	apiResponse, httpResponse, err := r.Api.CreateGitHubCloudAuthPersonaMapping(r.Auth, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(
-			utils.TranslateClientError(err, httpResponse, "error creating GitHub OIDC persona mapping"),
-			"Error creating GitHub OIDC persona mapping",
+			utils.TranslateClientError(err, httpResponse, "error creating GitHub OIDC identity mapping"),
+			"Error creating GitHub OIDC identity mapping",
 		))
 		return
 	}
@@ -147,14 +147,14 @@ func (r *githubOidcPersonaMappingResource) Create(ctx context.Context, request r
 		return
 	}
 	if mappingID == "" {
-		response.Diagnostics.AddError("response contains no mapping ID", "The API created a GitHub OIDC persona mapping but returned an empty ID, so Terraform cannot track it.")
+		response.Diagnostics.AddError("response contains no mapping ID", "The API created a GitHub OIDC identity mapping but returned an empty ID, so Terraform cannot track it.")
 		return
 	}
 
 	apiResponse, httpResponse, err = r.readWithRetry(ctx, mappingID)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(
-			utils.TranslateClientError(err, httpResponse, "error waiting for GitHub OIDC persona mapping to become visible"), "",
+			utils.TranslateClientError(err, httpResponse, "error waiting for GitHub OIDC identity mapping to become visible"), "",
 		))
 		return
 	}
@@ -167,8 +167,8 @@ func (r *githubOidcPersonaMappingResource) Create(ctx context.Context, request r
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *githubOidcPersonaMappingResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state githubOidcPersonaMappingModel
+func (r *githubOidcIdentityMappingResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state githubOidcIdentityMappingModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -181,7 +181,7 @@ func (r *githubOidcPersonaMappingResource) Read(ctx context.Context, request res
 			return
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(
-			utils.TranslateClientError(err, httpResponse, "error retrieving GitHub OIDC persona mapping"), "",
+			utils.TranslateClientError(err, httpResponse, "error retrieving GitHub OIDC identity mapping"), "",
 		))
 		return
 	}
@@ -196,7 +196,7 @@ func (r *githubOidcPersonaMappingResource) Read(ctx context.Context, request res
 
 // A newly created mapping can intermittently return 404 even after a successful
 // GET. Retry before treating it as deleted so a refresh cannot orphan it.
-func (r *githubOidcPersonaMappingResource) readWithRetry(ctx context.Context, id string) (datadogV2.GitHubCloudAuthPersonaMappingResponse, *http.Response, error) {
+func (r *githubOidcIdentityMappingResource) readWithRetry(ctx context.Context, id string) (datadogV2.GitHubCloudAuthPersonaMappingResponse, *http.Response, error) {
 	var result datadogV2.GitHubCloudAuthPersonaMappingResponse
 	var httpResponse *http.Response
 	// RetryContext can return on cancellation while its callback is still running.
@@ -219,12 +219,12 @@ func (r *githubOidcPersonaMappingResource) readWithRetry(ctx context.Context, id
 	return result, httpResponse, err
 }
 
-func (r *githubOidcPersonaMappingResource) Update(_ context.Context, _ resource.UpdateRequest, response *resource.UpdateResponse) {
-	response.Diagnostics.AddError("Update not supported", "GitHub OIDC persona mappings cannot be updated; changing any configured attribute replaces the mapping.")
+func (r *githubOidcIdentityMappingResource) Update(_ context.Context, _ resource.UpdateRequest, response *resource.UpdateResponse) {
+	response.Diagnostics.AddError("Update not supported", "GitHub OIDC identity mappings cannot be updated; changing any configured attribute replaces the mapping.")
 }
 
-func (r *githubOidcPersonaMappingResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state githubOidcPersonaMappingModel
+func (r *githubOidcIdentityMappingResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state githubOidcIdentityMappingModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -236,12 +236,12 @@ func (r *githubOidcPersonaMappingResource) Delete(ctx context.Context, request r
 			return
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(
-			utils.TranslateClientError(err, httpResponse, "error deleting GitHub OIDC persona mapping"), "",
+			utils.TranslateClientError(err, httpResponse, "error deleting GitHub OIDC identity mapping"), "",
 		))
 	}
 }
 
-func (r *githubOidcPersonaMappingResource) updateState(state *githubOidcPersonaMappingModel, apiResponse *datadogV2.GitHubCloudAuthPersonaMappingResponse) {
+func (r *githubOidcIdentityMappingResource) updateState(state *githubOidcIdentityMappingModel, apiResponse *datadogV2.GitHubCloudAuthPersonaMappingResponse) {
 	data := apiResponse.GetData()
 	attributes := data.GetAttributes()
 

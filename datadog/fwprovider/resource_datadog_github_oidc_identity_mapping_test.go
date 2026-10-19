@@ -49,7 +49,7 @@ func testGithubOIDCClaimMatchers(sub, repository string) *githubOIDCClaimMatcher
 	return &m
 }
 
-func TestGithubOidcPersonaMappingCreate(t *testing.T) {
+func TestGithubOidcIdentityMappingCreate(t *testing.T) {
 	const (
 		mappingID         = "7c405332-7033-40d2-a046-a27a075a22cd"
 		accountIdentifier = "service-account-id"
@@ -122,14 +122,14 @@ func TestGithubOidcPersonaMappingCreate(t *testing.T) {
 			config.HTTPClient = server.Client()
 			config.SetUnstableOperationEnabled("v2.CreateGitHubCloudAuthPersonaMapping", true)
 			config.SetUnstableOperationEnabled("v2.GetGitHubCloudAuthPersonaMapping", true)
-			r := &githubOidcPersonaMappingResource{
+			r := &githubOidcIdentityMappingResource{
 				Api:  datadogV2.NewCloudAuthenticationApi(datadog.NewAPIClient(config)),
 				Auth: context.Background(),
 			}
 
 			var schemaResponse resource.SchemaResponse
 			r.Schema(ctx, resource.SchemaRequest{}, &schemaResponse)
-			planned := githubOidcPersonaMappingModel{
+			planned := githubOidcIdentityMappingModel{
 				ID:                types.StringUnknown(),
 				AccountIdentifier: types.StringValue(accountIdentifier),
 				AccountUUID:       types.StringUnknown(),
@@ -154,7 +154,7 @@ func TestGithubOidcPersonaMappingCreate(t *testing.T) {
 				if len(diags) != 1 {
 					t.Fatalf("got %d error diagnostics, want 1: %v", len(diags), diags)
 				}
-				if got := diags[0].Summary(); got != "Error creating GitHub OIDC persona mapping" {
+				if got := diags[0].Summary(); got != "Error creating GitHub OIDC identity mapping" {
 					t.Fatalf("diagnostic summary = %q", got)
 				}
 				for _, detail := range []string{test.wantDetail, "400 Bad Request", test.errorBody} {
@@ -171,7 +171,7 @@ func TestGithubOidcPersonaMappingCreate(t *testing.T) {
 				return
 			}
 
-			var state githubOidcPersonaMappingModel
+			var state githubOidcIdentityMappingModel
 			if diags := response.State.Get(ctx, &state); diags.HasError() {
 				t.Fatalf("reading response state: %v", diags.Errors())
 			}
@@ -194,18 +194,18 @@ func TestGithubOidcPersonaMappingCreate(t *testing.T) {
 	}
 }
 
-func TestGithubOidcPersonaMappingUpdateState(t *testing.T) {
-	apiResponse := newGithubOidcPersonaMappingResponse(
+func TestGithubOidcIdentityMappingUpdateState(t *testing.T) {
+	apiResponse := newGithubOidcIdentityMappingResponse(
 		"mapping-id",
 		"service-account-handle",
 		"account-uuid",
 		"repo:example-org/example-repo:ref:refs/heads/main",
 		"^example-org/example-repo$",
 	)
-	resource := &githubOidcPersonaMappingResource{}
+	resource := &githubOidcIdentityMappingResource{}
 
 	t.Run("preserves configured email when API returns handle", func(t *testing.T) {
-		state := githubOidcPersonaMappingModel{
+		state := githubOidcIdentityMappingModel{
 			AccountIdentifier: types.StringValue("terraform-service-account@example.com"),
 		}
 
@@ -220,7 +220,7 @@ func TestGithubOidcPersonaMappingUpdateState(t *testing.T) {
 	})
 
 	t.Run("uses API handle during import", func(t *testing.T) {
-		state := githubOidcPersonaMappingModel{AccountIdentifier: types.StringNull()}
+		state := githubOidcIdentityMappingModel{AccountIdentifier: types.StringNull()}
 
 		resource.updateState(&state, apiResponse)
 
@@ -230,7 +230,7 @@ func TestGithubOidcPersonaMappingUpdateState(t *testing.T) {
 	})
 
 	t.Run("maps claim matchers", func(t *testing.T) {
-		state := githubOidcPersonaMappingModel{}
+		state := githubOidcIdentityMappingModel{}
 
 		resource.updateState(&state, apiResponse)
 
@@ -246,7 +246,7 @@ func TestGithubOidcPersonaMappingUpdateState(t *testing.T) {
 	})
 }
 
-func newGithubOidcPersonaMappingResponse(id, accountIdentifier, accountUUID, sub, repository string) *datadogV2.GitHubCloudAuthPersonaMappingResponse {
+func newGithubOidcIdentityMappingResponse(id, accountIdentifier, accountUUID, sub, repository string) *datadogV2.GitHubCloudAuthPersonaMappingResponse {
 	claimMatchers := datadogV2.NewGitHubOIDCClaimPatterns(sub)
 	claimMatchers.SetRepository(repository)
 	attributes := datadogV2.NewGitHubCloudAuthPersonaMappingAttributesResponse(accountIdentifier, accountUUID, *claimMatchers)
@@ -258,7 +258,7 @@ func newGithubOidcPersonaMappingResponse(id, accountIdentifier, accountUUID, sub
 	return datadogV2.NewGitHubCloudAuthPersonaMappingResponse(*data)
 }
 
-func TestGithubOidcPersonaMappingRead(t *testing.T) {
+func TestGithubOidcIdentityMappingRead(t *testing.T) {
 	for _, tc := range []struct {
 		name        string
 		statuses    []int
@@ -286,7 +286,7 @@ func TestGithubOidcPersonaMappingRead(t *testing.T) {
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(status)
 				if status == http.StatusOK {
-					if err := json.NewEncoder(w).Encode(newGithubOidcPersonaMappingResponse(
+					if err := json.NewEncoder(w).Encode(newGithubOidcIdentityMappingResponse(
 						"mapping-id",
 						"handle",
 						"account-uuid",
@@ -308,13 +308,13 @@ func TestGithubOidcPersonaMappingRead(t *testing.T) {
 			config.OperationServers = nil
 			config.HTTPClient = server.Client()
 			config.SetUnstableOperationEnabled("v2.GetGitHubCloudAuthPersonaMapping", true)
-			r := &githubOidcPersonaMappingResource{
+			r := &githubOidcIdentityMappingResource{
 				Api:  datadogV2.NewCloudAuthenticationApi(datadog.NewAPIClient(config)),
 				Auth: context.Background(),
 			}
 			var schemaResponse resource.SchemaResponse
 			r.Schema(ctx, resource.SchemaRequest{}, &schemaResponse)
-			prior := githubOidcPersonaMappingModel{
+			prior := githubOidcIdentityMappingModel{
 				ID:                types.StringValue("mapping-id"),
 				AccountIdentifier: types.StringValue("configured@example.com"),
 				AccountUUID:       types.StringValue("account-uuid"),

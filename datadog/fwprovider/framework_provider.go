@@ -64,7 +64,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationAwsExternalIDResource,
 	NewAwsWifIdentityMappingResource,
 	NewGithubOidcIntakeMappingResource,
-	NewGithubOidcPersonaMappingResource,
+	NewGithubOidcIdentityMappingResource,
 	NewIntegrationCloudflareAccountResource,
 	NewIntegrationConfluentAccountResource,
 	NewIntegrationConfluentResourceResource,

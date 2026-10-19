@@ -14,7 +14,7 @@ import (
 
 // githubOIDCClaimMatchersModel mirrors datadogV2.GitHubOIDCClaimPatterns: the
 // required `sub` claim plus the optional GitHub Actions OIDC claim regexes.
-// It is shared by the GitHub OIDC persona and intake mapping resources.
+// It is shared by the GitHub OIDC identity and intake mapping resources.
 type githubOIDCClaimMatchersModel struct {
 	Actor                types.String `tfsdk:"actor"`
 	ActorId              types.String `tfsdk:"actor_id"`
@@ -37,7 +37,7 @@ type githubOIDCClaimMatchersModel struct {
 }
 
 // githubOIDCClaimMatchersAttribute returns the claim matchers schema shared by
-// the GitHub OIDC persona and intake mapping resources. Mappings cannot be
+// the GitHub OIDC identity and intake mapping resources. Mappings cannot be
 // updated, so every claim pattern forces replacement.
 func githubOIDCClaimMatchersAttribute() schema.SingleNestedAttribute {
 	attributes := map[string]schema.Attribute{
