@@ -10,7 +10,7 @@ description: |-
 
 `datadog_dashboard_v2` is retained as an alias for `datadog_dashboard`. The two resource names have identical schemas and behavior. `datadog_dashboard` is not deprecated. Use `datadog_dashboard` for new configurations.
 
-Existing `datadog_dashboard_v2` configurations remain supported and do not need to be renamed. Changing a resource type also changes its Terraform address, so review Terraform's state-migration requirements before renaming an existing resource and verify that the resulting plan does not replace the dashboard.
+Existing `datadog_dashboard_v2` configurations remain supported and do not need to be renamed. If you rename a resource from `datadog_dashboard_v2` to `datadog_dashboard`, its Terraform address changes. To keep Terraform from replacing the dashboard, remove the old address from state with a removed block and bring the dashboard under the new address with an import block, then confirm that terraform plan shows no replacement.
 
 ### Upgrading from the previous `datadog_dashboard` implementation
 
