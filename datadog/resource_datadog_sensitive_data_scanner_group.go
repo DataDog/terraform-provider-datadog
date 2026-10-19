@@ -15,6 +15,81 @@ import (
 
 var sensitiveDataScannerMutex = sync.Mutex{}
 
+const defaultSensitiveDataScannerSamplingRate float64 = 100.0
+
+func resourceDatadogSensitiveDataScannerGroupCustomizeDiff(_ context.Context, diff *schema.ResourceDiff, _ interface{}) error {
+	if diff.HasChange("samplings") {
+		oldRaw, newRaw := diff.GetChange("samplings")
+		oldSamplings := oldRaw.([]interface{})
+		newSamplings := newRaw.([]interface{})
+
+		if err := validateSamplingsProductUniqueness(newSamplings); err != nil {
+			return err
+		}
+
+		if samplingsEqualOrderInsensitive(oldSamplings, newSamplings) {
+			return diff.SetNew("samplings", oldSamplings)
+		}
+	} else if samplings, ok := diff.GetOk("samplings"); ok {
+		if err := validateSamplingsProductUniqueness(samplings.([]interface{})); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func validateSamplingsProductUniqueness(samplingsList []interface{}) error {
+	productsSeen := make(map[string]bool)
+
+	for i, sampling := range samplingsList {
+		samplingMap := sampling.(map[string]interface{})
+		if product, exists := samplingMap["product"].(string); exists {
+			if productsSeen[product] {
+				return fmt.Errorf("sampling[%d]: product %q appears more than once in samplings configuration", i, product)
+			}
+			productsSeen[product] = true
+		}
+	}
+
+	return nil
+}
+
+func normalizeSamplings(samplingsList []interface{}) map[string]float64 {
+	result := make(map[string]float64, len(samplingsList))
+	for _, sampling := range samplingsList {
+		samplingMap := sampling.(map[string]interface{})
+		product := samplingMap["product"].(string)
+		rate := samplingMap["rate"].(float64)
+		result[product] = rate
+	}
+	return result
+}
+
+func samplingsEqualOrderInsensitive(oldSamplings, newSamplings []interface{}) bool {
+	if len(oldSamplings) != len(newSamplings) {
+		return false
+	}
+	if len(oldSamplings) == 0 {
+		return true
+	}
+
+	oldNormalized := normalizeSamplings(oldSamplings)
+	newNormalized := normalizeSamplings(newSamplings)
+	if len(oldNormalized) != len(newNormalized) {
+		return false
+	}
+
+	for product, oldRate := range oldNormalized {
+		newRate, ok := newNormalized[product]
+		if !ok || oldRate != newRate {
+			return false
+		}
+	}
+
+	return true
+}
+
 func resourceDatadogSensitiveDataScannerGroup() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Sensitive Data Scanner group resource.",
@@ -25,23 +100,7 @@ func resourceDatadogSensitiveDataScannerGroup() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
-			if samplings, ok := diff.GetOk("samplings"); ok {
-				samplingsList := samplings.([]interface{})
-				productsSeen := make(map[string]bool)
-
-				for i, sampling := range samplingsList {
-					samplingMap := sampling.(map[string]interface{})
-					if product, exists := samplingMap["product"].(string); exists {
-						if productsSeen[product] {
-							return fmt.Errorf("sampling[%d]: product %q appears more than once in samplings configuration", i, product)
-						}
-						productsSeen[product] = true
-					}
-				}
-			}
-			return nil
-		},
+		CustomizeDiff: resourceDatadogSensitiveDataScannerGroupCustomizeDiff,
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
 				"name": {
@@ -151,6 +210,49 @@ func buildTerraformSamplings(ddSamplings []datadogV2.SensitiveDataScannerSamplin
 	return tfSamplings
 }
 
+func reconcileTerraformSamplings(apiSamplings, tfConfiguredSamplings []interface{}) []interface{} {
+	apiByProduct := make(map[string]map[string]interface{}, len(apiSamplings))
+	for _, s := range apiSamplings {
+		m := s.(map[string]interface{})
+		apiByProduct[m["product"].(string)] = m
+	}
+
+	referenceProducts := make(map[string]bool, len(tfConfiguredSamplings))
+	result := make([]interface{}, 0, len(apiSamplings))
+
+	// Keep configured products first, in reference order, using the API's rate.
+	// The API may omit samplings set to the default 100% rate, so a configured
+	// product that is absent from the response is an implicit 100% sampling and
+	// must be surfaced to keep config and state in sync.
+	for _, ref := range tfConfiguredSamplings {
+		product := ref.(map[string]interface{})["product"].(string)
+		referenceProducts[product] = true
+		if apiEntry, ok := apiByProduct[product]; ok {
+			result = append(result, apiEntry)
+		} else {
+			result = append(result, map[string]interface{}{
+				"product": product,
+				"rate":    defaultSensitiveDataScannerSamplingRate,
+			})
+		}
+	}
+
+	// Next, process products returned by the API that are not configured in
+	// Terraform. Ignore implicit default (100%) samplings, but surface any
+	// non-default rates as drift.
+	for _, s := range apiSamplings {
+		m := s.(map[string]interface{})
+		if referenceProducts[m["product"].(string)] {
+			continue
+		}
+		if rate, _ := m["rate"].(float64); rate != defaultSensitiveDataScannerSamplingRate {
+			result = append(result, m)
+		}
+	}
+
+	return result
+}
+
 func buildDatadogSamplings(tfSamplings []interface{}) []datadogV2.SensitiveDataScannerSamplings {
 	ddSamplings := make([]datadogV2.SensitiveDataScannerSamplings, 0)
 
@@ -214,7 +316,7 @@ func resourceDatadogSensitiveDataScannerGroupRead(ctx context.Context, d *schema
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
-	resp, httpResponse, err := apiInstances.GetSensitiveDataScannerApiV2().ListScanningGroups(auth)
+	resp, httpResponse, err := apiInstances.ListSensitiveDataScannerGroups(auth)
 
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error calling ListScanningGroups")
@@ -245,6 +347,7 @@ func resourceDatadogSensitiveDataScannerGroupCreate(ctx context.Context, d *sche
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResp, "error creating SensitiveDataScannerGroup")
 	}
+	apiInstances.InvalidateSensitiveDataScannerConfigCache()
 	if err := utils.CheckForUnparsed(resp); err != nil {
 		return diag.FromErr(err)
 	}
@@ -280,6 +383,7 @@ func resourceDatadogSensitiveDataScannerGroupUpdate(ctx context.Context, d *sche
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResp, "error updating SensitiveDataScannerGroup")
 	}
+	apiInstances.InvalidateSensitiveDataScannerConfigCache()
 	if err := utils.CheckForUnparsed(resp); err != nil {
 		return diag.FromErr(err)
 	}
@@ -314,6 +418,7 @@ func resourceDatadogSensitiveDataScannerGroupDelete(ctx context.Context, d *sche
 	metaVar := datadogV2.NewSensitiveDataScannerMetaVersionOnlyWithDefaults()
 	body.SetMeta(*metaVar)
 
+	defer apiInstances.InvalidateSensitiveDataScannerConfigCache()
 	_, httpResp, err := apiInstances.GetSensitiveDataScannerApiV2().DeleteScanningGroup(auth, id, *body)
 	if err != nil {
 		// API returns 404 when the specific group id doesn't exist through DELETE request.
@@ -342,10 +447,10 @@ func updateSensitiveDataScannerGroupState(d *schema.ResourceData, groupAttribute
 	if err := d.Set("filter", buildTerraformGroupFilter(groupAttributes.GetFilter())); err != nil {
 		return diag.FromErr(err)
 	}
-	if samplings := groupAttributes.GetSamplings(); len(samplings) > 0 {
-		if err := d.Set("samplings", buildTerraformSamplings(samplings)); err != nil {
-			return diag.FromErr(err)
-		}
+	apiSamplings := buildTerraformSamplings(groupAttributes.GetSamplings())
+	reference, _ := d.Get("samplings").([]interface{})
+	if err := d.Set("samplings", reconcileTerraformSamplings(apiSamplings, reference)); err != nil {
+		return diag.FromErr(err)
 	}
 	return nil
 }

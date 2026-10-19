@@ -33,6 +33,14 @@ resource "datadog_integration_aws_account" "foo" {
     namespace_filters {
       exclude_only = ["AWS/SQS", "AWS/ElasticMapReduce", "AWS/Usage"]
     }
+    metric_name_filters {
+      namespace    = "AWS/EC2"
+      include_only = ["aws.ec2.network_in"]
+    }
+    metric_name_filters {
+      namespace    = "AWS/RDS"
+      exclude_only = ["aws.rds.aurora*"]
+    }
     tag_filters {
       namespace = "AWS/EC2"
       tags      = ["datadog:true"]

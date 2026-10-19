@@ -4,7 +4,7 @@ Terraform provides helpful [Extending Terraform][1] documentation for best pract
 
 ## Prerequisites
 
-- [Terraform][2] 1.1.5 and higher (required for Protocol Version 6 with SDKv2 resources).
+- [Terraform][2] 1.11 and higher (required for write-only argument support; Protocol Version 6 requires 1.0+, SDKv2 resources via tf5to6server reqiures).
   - The [`tfenv`](https://github.com/tfutils/tfenv) project lets you easily install and switch between terraform versions
 - [Go][3] 1.23 (to build the provider plugin)
 - A clone of this repository and the [\$GOPATH environment variable][7] set
@@ -16,14 +16,16 @@ Terraform provides helpful [Extending Terraform][1] documentation for best pract
 - All new resources should be written using [Terraform Plugin Framework][11]. See [here][12] for examples of current resources implemented using Terraform Plugin Framework. **NOTE**: We use [Protocol Version 6][13], which requires Terraform CLI 1.0+ (or 1.1.5+ for SDKv2 resources using tf5to6server).
 - The documentation is generated using the `tfplugindocs` CLI.
   - Ensure each Schema attribute in the code contains a `Description` field.
-  - For nested attributes, please don't use the [Nested Attributes Types][14] but [Blocks][15]. Also don't use [ObjectType][16] as it doesn't allow to add field description
+  - For new complex structures, use [Nested Attribute Types][14] (`SingleNestedAttribute`, `ListNestedAttribute`, `SetNestedAttribute`, `MapNestedAttribute`) instead of [Blocks][15]. Blocks are reserved for preserving configuration compatibility while migrating existing legacy SDK-based schemas. Nested attributes are type-safe, fully support `Description`, and are the recommended approach in Plugin Framework v1.x. Do not use [ObjectType][16] as it does not support per-field descriptions.
 - When developing a datasource, plan to write 2 data-sources :
   - One that will have a singular name (ex: `datadog_user`) which returns exactly one objects (and fails if there is 0 or more than 0)
   - One that will have a plural name (ex: `datadog_users`) which returns a list of objects and succeed in all cases (0, 1 or more than 1 objects)
 
 ## Write-Only Arguments
 
-When adding secret/sensitive attributes to Framework resources, use the write-only helpers in [`datadog/internal/fwutils`](./datadog/internal/fwutils/README.md#write-only-secret-helpers-writeonly_helpersgo). These generate the three-attribute pattern (`<attr>`, `<attr>_wo`, `<attr>_wo_version`) required by Terraform 1.11+ write-only support while maintaining backwards compatibility.
+For generated resources, only an OpenAPI property with `writeOnly: true` uses Terraform write-only handling. See the generator's [secret handling contract](./.generator-v2/docs/reference/scope.md#secrets-and-sensitivity) for the three-attribute pattern: `<attr>_wo` and `<attr>_wo_version` for Terraform 1.11+, plus a stateful plaintext `<attr>` fallback for older Terraform. Prefer the write-only path when available; the plaintext fallback stores the secret in state. Datadog `x-secret` and generator `sensitive` annotations redact ordinary attributes from display but do not keep their values out of Terraform state.
+
+Generated and hand-written resources share the helpers in [`datadog/internal/fwutils`](./datadog/internal/fwutils/README.md#write-only-secret-helpers-writeonly_helpersgo). Generated resources use `WriteOnlySecretModeDual`, which honours whether the secret is required; existing hand-written callers retain `WriteOnlySecretModeLegacy`. Previously generated resources keep their existing schema until regenerated. The [decision record](./.generator-v2/docs/decisions/0003-write-only-keeps-a-plaintext-fallback.md) explains the compatibility tradeoff.
 
 ## Linting
 
@@ -55,7 +57,32 @@ The Datadog Provider can be built to use the binary as a terraform plugin. This 
 
 This provider can be built by running `make build`, or just `make`. This will place the binary in `$GOPATH/bin`
 
+### Quick dev override (`make dev-build`)
+
+For iterating on a feature branch, `make dev-build` automates the whole [`dev_overrides`][4] setup in one step. It:
+
+- builds the provider from your current branch into `~/.terraform.d/dev/datadog/`, and
+- generates a self-contained Terraform CLI config at `~/.terraform.d/dev/datadog.tfrc` that points the `DataDog/datadog` provider at that build.
+
+Then run Terraform against your local build by pointing `TF_CLI_CONFIG_FILE` at the generated config:
+
+```sh
+make dev-build
+
+# In your HCL directory (do NOT run `terraform init` — dev overrides bypass it):
+TF_CLI_CONFIG_FILE=~/.terraform.d/dev/datadog.tfrc terraform plan
+TF_CLI_CONFIG_FILE=~/.terraform.d/dev/datadog.tfrc terraform apply
+```
+
+Terraform prints a `Provider development overrides are in effect` warning on each run — that confirms it is using your local build. Scoping the override to `TF_CLI_CONFIG_FILE` (instead of a global `~/.terraformrc`) means only commands where you set the variable use the branch build; everything else uses registry providers as normal.
+
+Re-run `make dev-build` after each code change to pick it up. Run `make dev-clean` to remove the local build and generated config.
+
+> **Note:** don't set a `version` constraint for the `datadog` provider in your config — version constraints are ignored under a dev override.
+
 ### Local Development Setup
+
+The steps below set the override up manually (equivalent to what `make dev-build` automates above).
 
 1. Setup a `~/.terraformrc` file with the following content:
 
@@ -117,7 +144,7 @@ Documentation for this provider is autogenerated using the [`tfplugindocs`][8] C
 
 - Ensure each Schema attribute in the code contains a `Description` field
 - Place example HCL configuration files or import scripts in the `examples` folder under your resource/data-source
-- Run `make docs` to retrieve the `tfplugindocs` binary and generate documentation
+- Run `make docs` to generate documentation (the `tfplugindocs` binary is pinned via the `tool` directive in `go.mod` and built on demand via `go tool`)
 
 ## Updating the underlying Datadog SDK Clients
 

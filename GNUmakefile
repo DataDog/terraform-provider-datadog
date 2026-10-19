@@ -1,11 +1,18 @@
 TEST?=$$(go list ./...)
+# Unit-test packages: everything except the datadog/tests acceptance suite. These
+# don't interact with the API, use no cassettes, and need no terraform binary.
+UNIT_PKGS?=$$(go list ./... | grep -vE '/datadog/tests(/|$$)')
 RECORD?=false
 GOIMPORTS_FILES?=$$(find . -name '*.go')
 PKG_NAME=datadog
 DIR=~/.terraform.d/plugins
+DEV_PLUGIN_DIR=$(HOME)/.terraform.d/dev/datadog
+DEV_TFRC=$(HOME)/.terraform.d/dev/datadog.tfrc
 ZORKIAN_VERSION?=master
 API_CLIENT_VERSION?=master
 LOCAL_PACKAGE="github.com/terraform-providers/terraform-provider-datadog"
+GO?=go
+
 
 default: build
 
@@ -19,19 +26,44 @@ install: fmtcheck
 uninstall:
 	@rm -vf $(DIR)/terraform-provider-datadog
 
-# Run unit tests; these tests don't interact with the API and don't support/need RECORD
-test: get-test-deps fmtcheck
-	gotestsum --hide-summary skipped --format testname --debug --packages $(TEST) -- $(TESTARGS) -timeout=30s
+# Build the provider from the current branch and generate a Terraform CLI config
+# that points the datadog provider at this local build via dev_overrides. This lets
+# you exercise in-development changes with the regular `terraform` CLI.
+# Re-run after any code change. Usage:
+#   make dev-build
+#   TF_CLI_CONFIG_FILE=$(DEV_TFRC) terraform apply   # do NOT run `terraform init`
+dev-build:
+	@mkdir -p $(DEV_PLUGIN_DIR)
+	go build -o $(DEV_PLUGIN_DIR)/terraform-provider-datadog .
+	@printf 'provider_installation {\n  dev_overrides {\n    "DataDog/datadog" = "%s"\n  }\n  direct {}\n}\n' "$(DEV_PLUGIN_DIR)" > $(DEV_TFRC)
+	@echo ""
+	@echo "Local provider built -> $(DEV_PLUGIN_DIR)/terraform-provider-datadog"
+	@echo "CLI config written   -> $(DEV_TFRC)"
+	@echo ""
+	@echo "Run terraform against this build (do NOT run 'terraform init'):"
+	@echo "  TF_CLI_CONFIG_FILE=$(DEV_TFRC) terraform apply"
+
+dev-clean:
+	@rm -vf $(DEV_PLUGIN_DIR)/terraform-provider-datadog $(DEV_TFRC)
+
+# Run unit tests; these tests don't interact with the API and don't support/need RECORD.
+# Scoped to UNIT_PKGS so the datadog/tests acceptance suite is never compiled or run here,
+# and so these tests always run regardless of the shard -run filter passed via TESTARGS.
+test:
+	$(GO) tool gotestsum --format testname --debug --packages $(UNIT_PKGS) -- $(TESTARGS) -timeout=120s
 
 # Run acceptance tests (this runs integration CRUD tests through the terraform test framework)
-testacc: get-test-deps
-	RECORD=$(RECORD) TF_ACC=1 gotestsum --format testname --debug --rerun-fails --packages ./... -- -v $(TESTARGS) -timeout 120m
+# Set TESTACC_JSONFILE to also have gotestsum write the raw test2json stream there;
+# scripts/summarize_testacc.py turns it into the PR integration check summary. Unset
+# by default, so local runs behave exactly as before.
+testacc:
+	RECORD=$(RECORD) TF_ACC=1 $(GO) tool gotestsum --format testname --debug --rerun-fails $(if $(TESTACC_JSONFILE),--jsonfile $(TESTACC_JSONFILE)) --packages ./datadog/tests/... -- -v $(TESTARGS) -timeout 120m
 
 # Run both unit and acceptance tests
 testall: test testacc
 
-cassettes: get-test-deps fmtcheck
-	RECORD=true TF_ACC=1 gotestsum --format testname --packages ./... -- -v $(TESTARGS) -timeout 120m
+cassettes: fmtcheck
+	RECORD=true TF_ACC=1 $(GO) tool gotestsum --format testname --packages ./... -- -v $(TESTARGS) -timeout 120m
 
 vet:
 	@echo "go vet ."
@@ -43,7 +75,7 @@ vet:
 	fi
 
 fmt:
-	goimports -format-only -local $(LOCAL_PACKAGE) -w $(GOIMPORTS_FILES)
+	$(GO) tool goimports -format-only -local $(LOCAL_PACKAGE) -w $(GOIMPORTS_FILES)
 	terraform fmt -recursive examples
 
 fmtcheck:
@@ -61,13 +93,53 @@ lint-new:
 lint-fix:
 	golangci-lint run --fix ./...
 
-test-compile: get-test-deps
+test-compile:
 	@if [ "$(TEST)" = "./..." ]; then \
 		echo "ERROR: Set TEST to a specific package. For example,"; \
 		echo "  make test-compile TEST=./$(PKG_NAME)"; \
 		exit 1; \
 	fi
-	gotestsum --format testname -- -c $(TEST) $(TESTARGS)
+	$(GO) tool gotestsum --format testname -- -c $(TEST) $(TESTARGS)
+	
+# Build the tfgen binary into bin/tfgen (generator lives in its own module under .generator-v2)
+tfgen-build:
+	cd .generator-v2 && $(GO) build -o $(CURDIR)/bin/tfgen ./cmd/tfgen
+	@echo "Built tfgen -> bin/tfgen"
+
+# Run the tfgen module's unit tests
+tfgen-test:
+	cd .generator-v2 && $(GO) test ./internal/... ./cmd/tfgen/... -race -cover
+	@echo "tfgen tests passed"
+
+# Render the generated half of .generator-v2/docs/: the CLI reference (from the
+# cobra command tree) and the annotation and run-report references (from the two
+# checked-in JSON Schemas). These pages carry a DO NOT EDIT header — change the
+# source of truth and re-run this.
+tfgen-docs:
+	cd .generator-v2 && $(GO) run ./cmd/tfgen-docs --out docs
+	@echo "tfgen reference docs regenerated"
+
+# Fail if any generated reference page is stale, the same gate check-docs gives
+# the provider's own docs/ tree. Exits 3 when a page would change.
+tfgen-docs-check:
+	cd .generator-v2 && $(GO) run ./cmd/tfgen-docs --out docs --check
+	@echo "tfgen reference docs up to date"
+
+# Refresh tfgen's checked-in Go snapshots after an intentional emitter change.
+tfgen-update-goldens:
+	cd .generator-v2 && $(GO) test ./internal/emit -update
+	@echo "tfgen goldens refreshed"
+
+# Run the tfgen module's integration-tagged tests: the SDK-binding corroboration
+# and the generated-code compile gate. Both shell out and both need the PROVIDER
+# module's dependency graph on disk, so populate that cache first — the compile
+# gate runs with GOPROXY=off and will otherwise report a cold cache as a broken
+# checkout. internal/testdata is named explicitly because the go tool excludes
+# any directory called testdata from a ./... expansion. T080 wires this into CI.
+tfgen-test-integration:
+	$(GO) mod download
+	cd .generator-v2 && $(GO) test -tags=integration ./internal/... ./internal/testdata/ -count=1
+	@echo "tfgen integration tests passed"
 
 update-go-client:
 	echo "Updating the Zorkian client to ${ZORKIAN_VERSION} and the API Client to ${API_CLIENT_VERSION}"
@@ -75,28 +147,28 @@ update-go-client:
 	go get github.com/DataDog/datadog-api-client-go/v2@${API_CLIENT_VERSION}
 	go mod tidy
 
-get-test-deps:
-	gotestsum --version || go install gotest.tools/gotestsum@latest
-	which goimports || go install golang.org/x/tools/cmd/goimports@latest
-
 sweep:
 	TF_ACC=1 go test ./datadog/tests/ -run TestSweep -v -timeout 10m
 
 license-check:
 	@sh -c "'$(CURDIR)/scripts/license-check.sh'"
 
-tools:
-	go generate -tags tools tools/tools.go
-
-docs: tools
+docs:
 	@sh -c "'$(CURDIR)/scripts/generate-docs.sh'"
 
 check-docs: docs
 	@if [ "`git status --porcelain docs/`" ]; then \
 	    git diff; \
-		echo "Uncommitted changes were detected in the autogenerated docs folder. Please run 'make docs' to autogenerate the docs, and commit the changes" && echo `git status --porcelain docs/` && exit 1; \
+		echo "Uncommitted changes were detected in the autogenerated docs folder. Please run 'make docs' to autogenerate the docs, and commit the changes"; \
+		echo `git status --porcelain docs/`; \
+		echo ""; \
+		echo "HINT: 'tfplugindocs' uses the 'terraform' binary on your PATH to introspect the provider schema."; \
+		echo "      If the diff shows missing [Write-only] annotations or '> **NOTE**:' callouts, your local"; \
+		echo "      Terraform is likely older than 1.11 (write-only argument support was added in 1.11)."; \
+		echo "      Active terraform: `terraform version 2>/dev/null | head -1 || echo 'not found on PATH'`"; \
+		exit 1; \
 	else \
 		echo "Success: No generated documentation changes detected"; \
 	fi
 
-.PHONY: build check-docs docs test testall testacc cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile tools get-test-deps license-check sweep
+.PHONY: build dev-build dev-clean check-docs docs test testall testacc tfgen-build tfgen-test tfgen-docs tfgen-docs-check tfgen-update-goldens tfgen-test-integration cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile license-check sweep

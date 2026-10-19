@@ -12,12 +12,15 @@ import (
 
 // AmazonS3DestinationModel represents the Terraform model for the AmazonS3Destination
 type AmazonS3DestinationModel struct {
-	Bucket       types.String         `tfsdk:"bucket"`
-	Region       types.String         `tfsdk:"region"`
-	KeyPrefix    types.String         `tfsdk:"key_prefix"`
-	StorageClass types.String         `tfsdk:"storage_class"`
-	Auth         []AwsAuthModel       `tfsdk:"auth"`
-	Buffer       []BufferOptionsModel `tfsdk:"buffer"`
+	Bucket               types.String              `tfsdk:"bucket"`
+	Region               types.String              `tfsdk:"region"`
+	KeyPrefix            types.String              `tfsdk:"key_prefix"`
+	StorageClass         types.String              `tfsdk:"storage_class"`
+	ServerSideEncryption types.String              `tfsdk:"server_side_encryption"`
+	SseKmsKeyId          types.String              `tfsdk:"ssekms_key_id"`
+	Auth                 []AwsAuthModel            `tfsdk:"auth"`
+	Buffer               []BufferOptionsModel      `tfsdk:"buffer"`
+	Compression          []ArchiveCompressionModel `tfsdk:"compression"`
 }
 
 // AmazonS3DestinationSchema returns the schema for the AmazonS3Destination
@@ -45,10 +48,22 @@ func AmazonS3DestinationSchema() schema.ListNestedBlock {
 						stringvalidator.OneOf("STANDARD", "REDUCED_REDUNDANCY", "INTELLIGENT_TIERING", "STANDARD_IA", "EXPRESS_ONEZONE", "ONEZONE_IA", "GLACIER", "GLACIER_IR", "DEEP_ARCHIVE"),
 					},
 				},
+				"server_side_encryption": schema.StringAttribute{
+					Optional:    true,
+					Description: "The server-side encryption algorithm used when storing objects in S3. Valid values: `aws:kms`, `AES256`.",
+					Validators: []validator.String{
+						stringvalidator.OneOf("aws:kms", "AES256"),
+					},
+				},
+				"ssekms_key_id": schema.StringAttribute{
+					Optional:    true,
+					Description: "ID of the AWS KMS key to use for SSE-KMS encryption. Only applies when `server_side_encryption` is `aws:kms`.",
+				},
 			},
 			Blocks: map[string]schema.Block{
-				"auth":   AwsAuthSchema(),
-				"buffer": BufferOptionsSchema(),
+				"auth":        AwsAuthSchema(),
+				"buffer":      BufferOptionsSchema(),
+				"compression": ArchiveCompressionSchema(),
 			},
 		},
 	}
@@ -68,6 +83,14 @@ func ExpandAmazonS3Destination(ctx context.Context, id string, inputs types.List
 	dest.SetKeyPrefix(src.KeyPrefix.ValueString())
 	dest.SetStorageClass(datadogV2.ObservabilityPipelineAmazonS3DestinationStorageClass(src.StorageClass.ValueString()))
 
+	if !src.ServerSideEncryption.IsNull() {
+		dest.SetServerSideEncryption(datadogV2.ObservabilityPipelineAmazonS3DestinationServerSideEncryption(src.ServerSideEncryption.ValueString()))
+	}
+
+	if !src.SseKmsKeyId.IsNull() {
+		dest.SetSsekmsKeyId(src.SseKmsKeyId.ValueString())
+	}
+
 	if len(src.Auth) > 0 {
 		dest.SetAuth(ExpandAwsAuth(src.Auth[0]))
 	}
@@ -79,8 +102,26 @@ func ExpandAmazonS3Destination(ctx context.Context, id string, inputs types.List
 		}
 	}
 
+	if len(src.Compression) > 0 {
+		dest.SetCompression(expandAmazonS3Compression(src.Compression[0]))
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineAmazonS3Destination: dest,
+	}
+}
+
+// expandAmazonS3Compression converts the Terraform archive compression model to the API oneOf.
+func expandAmazonS3Compression(m ArchiveCompressionModel) datadogV2.ObservabilityPipelineAmazonS3DestinationCompression {
+	switch m.Algorithm.ValueString() {
+	case "zstd":
+		c := datadogV2.NewObservabilityPipelineAmazonS3DestinationCompressionZstdWithDefaults()
+		c.SetLevel(m.Level.ValueInt64())
+		return datadogV2.ObservabilityPipelineAmazonS3DestinationCompressionZstdAsObservabilityPipelineAmazonS3DestinationCompression(c)
+	default: // "gzip"
+		c := datadogV2.NewObservabilityPipelineAmazonS3DestinationCompressionGzipWithDefaults()
+		c.SetLevel(m.Level.ValueInt64())
+		return datadogV2.ObservabilityPipelineAmazonS3DestinationCompressionGzipAsObservabilityPipelineAmazonS3DestinationCompression(c)
 	}
 }
 
@@ -91,10 +132,19 @@ func FlattenAmazonS3Destination(ctx context.Context, src *datadogV2.Observabilit
 	}
 
 	model := &AmazonS3DestinationModel{
-		Bucket:       types.StringValue(src.GetBucket()),
-		Region:       types.StringValue(src.GetRegion()),
-		KeyPrefix:    types.StringValue(src.GetKeyPrefix()),
-		StorageClass: types.StringValue(string(src.GetStorageClass())),
+		Bucket:               types.StringValue(src.GetBucket()),
+		Region:               types.StringValue(src.GetRegion()),
+		KeyPrefix:            types.StringValue(src.GetKeyPrefix()),
+		StorageClass:         types.StringValue(string(src.GetStorageClass())),
+		ServerSideEncryption: types.StringNull(),
+		SseKmsKeyId:          types.StringNull(),
+	}
+
+	if v, ok := src.GetServerSideEncryptionOk(); ok {
+		model.ServerSideEncryption = types.StringValue(string(*v))
+	}
+	if v, ok := src.GetSsekmsKeyIdOk(); ok {
+		model.SseKmsKeyId = types.StringValue(*v)
 	}
 
 	if auth, ok := src.GetAuthOk(); ok {
@@ -108,5 +158,38 @@ func FlattenAmazonS3Destination(ctx context.Context, src *datadogV2.Observabilit
 		}
 	}
 
+	if compression, ok := src.GetCompressionOk(); ok {
+		model.Compression = flattenAmazonS3Compression(compression)
+	}
+
 	return model
+}
+
+// flattenAmazonS3Compression converts the API archive compression oneOf to the Terraform model.
+func flattenAmazonS3Compression(src *datadogV2.ObservabilityPipelineAmazonS3DestinationCompression) []ArchiveCompressionModel {
+	if src == nil {
+		return nil
+	}
+	switch {
+	case src.ObservabilityPipelineAmazonS3DestinationCompressionGzip != nil:
+		level := types.Int64Null()
+		if v, ok := src.ObservabilityPipelineAmazonS3DestinationCompressionGzip.GetLevelOk(); ok {
+			level = types.Int64Value(*v)
+		}
+		return []ArchiveCompressionModel{{
+			Algorithm: types.StringValue("gzip"),
+			Level:     level,
+		}}
+	case src.ObservabilityPipelineAmazonS3DestinationCompressionZstd != nil:
+		level := types.Int64Null()
+		if v, ok := src.ObservabilityPipelineAmazonS3DestinationCompressionZstd.GetLevelOk(); ok {
+			level = types.Int64Value(*v)
+		}
+		return []ArchiveCompressionModel{{
+			Algorithm: types.StringValue("zstd"),
+			Level:     level,
+		}}
+	default:
+		return nil
+	}
 }

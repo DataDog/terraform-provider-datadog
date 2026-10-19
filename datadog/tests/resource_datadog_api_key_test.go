@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
@@ -13,6 +14,7 @@ import (
 )
 
 func TestAccDatadogApiKey_Update(t *testing.T) {
+	cleanupApiKeys(t)
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")
 	}
@@ -91,6 +93,7 @@ func TestAccDatadogApiKey_Update(t *testing.T) {
 }
 
 func TestDatadogApiKey_import(t *testing.T) {
+	cleanupApiKeys(t)
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")
 	}
@@ -167,7 +170,7 @@ func datadogApiKeyDestroyHelper(ctx context.Context, s *terraform.State, apiInst
 		}
 
 		id := r.Primary.ID
-		_, httpResponse, err := apiInstances.GetKeyManagementApiV2().GetAPIKey(ctx, id)
+		resp, httpResponse, err := apiInstances.GetKeyManagementApiV2().GetAPIKey(ctx, id)
 
 		if err != nil {
 			if httpResponse.StatusCode == 404 {
@@ -176,10 +179,25 @@ func datadogApiKeyDestroyHelper(ctx context.Context, s *terraform.State, apiInst
 			return fmt.Errorf("received an error retrieving api key %s", err)
 		}
 
+		if datadogApiKeyRevoked(resp) {
+			continue
+		}
+
 		return fmt.Errorf("api key still exists")
 	}
 
 	return nil
+}
+
+// datadogApiKeyRevoked reports whether the api key has been revoked. Deleting an
+// api key revokes it: the key stops working and drops out of the org's key list,
+// but GET keeps returning it with a "revoked" status rather than a 404.
+func datadogApiKeyRevoked(resp datadogV2.APIKeyResponse) bool {
+	apiKey := resp.GetData()
+	attributes := apiKey.GetAttributes()
+	// The status attribute is not part of the API client model yet.
+	status, ok := attributes.AdditionalProperties["status"].(string)
+	return ok && status == "revoked"
 }
 
 func Ptr[T any](v T) *T {

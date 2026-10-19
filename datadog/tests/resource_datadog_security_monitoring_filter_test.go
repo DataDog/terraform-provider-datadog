@@ -5,25 +5,24 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
 const tfSecurityFilterName = "datadog_security_monitoring_filter.acceptance_test"
 
 func TestAccDatadogSecurityMonitoringFilter(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	filterName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogSecurityMonitoringFilterDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringFilterDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSecurityMonitoringFilterCreated(filterName),
@@ -32,6 +31,29 @@ func TestAccDatadogSecurityMonitoringFilter(t *testing.T) {
 			{
 				Config: testAccCheckDatadogSecurityMonitoringFilterUpdated(filterName),
 				Check:  testAccCheckDatadogSecurityMonitorFilterUpdatedCheck(accProvider, filterName),
+			},
+		},
+	})
+}
+
+func TestAccDatadogSecurityMonitoringFilter_Import(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	filterName := uniqueEntityName(ctx, t)
+	accProvider := providers.frameworkProvider
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringFilterDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSecurityMonitoringFilterCreated(filterName),
+			},
+			{
+				ResourceName:      tfSecurityFilterName,
+				ImportState:       true,
+				ImportStateVerify: true,
 			},
 		},
 	})
@@ -57,7 +79,7 @@ resource "datadog_security_monitoring_filter" "acceptance_test" {
 `, name)
 }
 
-func testAccCheckDatadogSecurityMonitorFilterCreatedCheck(accProvider func() (*schema.Provider, error), filterName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitorFilterCreatedCheck(accProvider *fwprovider.FrameworkProvider, filterName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringFilterExists(accProvider),
 		resource.TestCheckResourceAttr(
@@ -99,7 +121,7 @@ resource "datadog_security_monitoring_filter" "acceptance_test" {
 `, name)
 }
 
-func testAccCheckDatadogSecurityMonitorFilterUpdatedCheck(accProvider func() (*schema.Provider, error), filterName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitorFilterUpdatedCheck(accProvider *fwprovider.FrameworkProvider, filterName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringFilterExists(accProvider),
 		resource.TestCheckResourceAttr(
@@ -121,12 +143,10 @@ func testAccCheckDatadogSecurityMonitorFilterUpdatedCheck(accProvider func() (*s
 	)
 }
 
-func testAccCheckDatadogSecurityMonitoringFilterExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitoringFilterExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		auth := providerConf.Auth
-		apiInstances := providerConf.DatadogApiInstances
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		for _, filter := range s.RootModule().Resources {
 			_, _, err := apiInstances.GetSecurityMonitoringApiV2().GetSecurityFilter(auth, filter.Primary.ID)
@@ -138,12 +158,10 @@ func testAccCheckDatadogSecurityMonitoringFilterExists(accProvider func() (*sche
 	}
 }
 
-func testAccCheckDatadogSecurityMonitoringFilterDestroy(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitoringFilterDestroy(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		auth := providerConf.Auth
-		apiInstances := providerConf.DatadogApiInstances
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		for _, resource := range s.RootModule().Resources {
 			if resource.Type == "datadog_security_monitoring_filter" {
@@ -159,5 +177,4 @@ func testAccCheckDatadogSecurityMonitoringFilterDestroy(accProvider func() (*sch
 		}
 		return nil
 	}
-
 }

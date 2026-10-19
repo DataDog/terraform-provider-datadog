@@ -1,0 +1,36 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/wyu-rxa-xxc
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 390
+        uncompressed: false
+        body: '{"data":{"id":"wyu-rxa-xxc","type":"security_filters","attributes":{"exclusion_filters":[],"filtered_data_type":"logs","is_builtin":false,"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter_Migration_DefaultFilteredDataType-local-1778512906","query":"no exclusion - tf-TestAccDatadogSecurityMonitoringFilter_Migration_DefaultFilteredDataType-local-1778512906","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 138.2815ms

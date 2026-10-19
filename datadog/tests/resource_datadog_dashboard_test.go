@@ -1415,6 +1415,7 @@ func testAccDatadogDashboardV2WidgetUtil(t *testing.T, v1TestName string, config
 	uniq := withUniqueSurrounding(clockFromContext(ctx), v1TestName)
 	replacer := strings.NewReplacer("{{uniq}}", uniq)
 	config = replacer.Replace(config)
+	config = disableDashboardV2PlanValidation(config)
 	for i := range assertions {
 		assertions[i] = replacer.Replace(assertions[i])
 	}
@@ -1448,6 +1449,7 @@ func testAccDatadogDashboardV2WidgetUtilImport(t *testing.T, v1TestName string, 
 	uniq := withUniqueSurrounding(clockFromContext(ctx), v1TestName)
 	replacer := strings.NewReplacer("{{uniq}}", uniq)
 	config = replacer.Replace(config)
+	config = disableDashboardV2PlanValidation(config)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
@@ -1464,6 +1466,22 @@ func testAccDatadogDashboardV2WidgetUtilImport(t *testing.T, v1TestName string, 
 			},
 		},
 	})
+}
+
+// Existing v2 acceptance tests reuse v1 dashboard cassettes, which do not
+// contain plan-time validation calls. Dedicated validation tests cover that path.
+func disableDashboardV2PlanValidation(config string) string {
+	const resourceMarker = `resource "datadog_dashboard_v2"`
+	resourceStart := strings.Index(config, resourceMarker)
+	if resourceStart == -1 {
+		return config
+	}
+	openingBrace := strings.Index(config[resourceStart:], "{")
+	if openingBrace == -1 {
+		return config
+	}
+	insertAt := resourceStart + openingBrace + 1
+	return config[:insertAt] + "\n  validate = false" + config[insertAt:]
 }
 
 func datadogOpenDashboardConfig(uniqueDashboardName string) string {

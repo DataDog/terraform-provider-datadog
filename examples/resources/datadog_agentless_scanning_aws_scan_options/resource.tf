@@ -5,4 +5,5 @@ resource "datadog_agentless_scanning_aws_scan_options" "example" {
   sensitive_data     = false
   vuln_containers_os = true
   vuln_host_os       = true
+  # compliance_host  = true  # Optional. Defaults to false. Enables host compliance benchmark scanning.
 }

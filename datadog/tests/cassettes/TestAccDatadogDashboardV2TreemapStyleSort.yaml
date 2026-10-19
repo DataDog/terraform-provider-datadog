@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 639
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2TreemapStyleSort-local-1777645908","widgets":[{"definition":{"color_by":"user","requests":[{"formulas":[{"formula":"query1"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"sum:system.mem.total{*} by {service}"}],"response_format":"scalar","sort":{"count":10,"order_by":[{"order":"desc","type":"formula"}]},"style":{"palette":"datadog16"}}],"title":"Memory by service","type":"treemap"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"th8-y7s-7rc","title":"tf-TestAccDatadogDashboardV2TreemapStyleSort-local-1777645908","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/th8-y7s-7rc/tf-testaccdatadogdashboardv2treemapstylesort-local-1777645908","template_variables":[],"widgets":[{"definition":{"color_by":"user","requests":[{"formulas":[{"formula":"query1"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"sum:system.mem.total{*} by {service}"}],"response_format":"scalar","sort":{"count":10,"order_by":[{"order":"desc","type":"formula"}]},"style":{"palette":"datadog16"}}],"title":"Memory by service","type":"treemap"},"id":2443814428397575}],"notify_list":[],"created_at":"2026-05-01T14:31:51.172956+00:00","modified_at":"2026-05-01T14:31:51.172956+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 343.521375ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/th8-y7s-7rc
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"th8-y7s-7rc","title":"tf-TestAccDatadogDashboardV2TreemapStyleSort-local-1777645908","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/th8-y7s-7rc/tf-testaccdatadogdashboardv2treemapstylesort-local-1777645908","template_variables":[],"widgets":[{"definition":{"color_by":"user","requests":[{"formulas":[{"formula":"query1"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"sum:system.mem.total{*} by {service}"}],"response_format":"scalar","sort":{"count":10,"order_by":[{"order":"desc","type":"formula"}]},"style":{"palette":"datadog16"}}],"title":"Memory by service","type":"treemap"},"id":2443814428397575}],"notify_list":[],"created_at":"2026-05-01T14:31:51.172956+00:00","modified_at":"2026-05-01T14:31:51.172956+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 131.692291ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/th8-y7s-7rc
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"th8-y7s-7rc","title":"tf-TestAccDatadogDashboardV2TreemapStyleSort-local-1777645908","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/th8-y7s-7rc/tf-testaccdatadogdashboardv2treemapstylesort-local-1777645908","template_variables":[],"widgets":[{"definition":{"color_by":"user","requests":[{"formulas":[{"formula":"query1"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"sum:system.mem.total{*} by {service}"}],"response_format":"scalar","sort":{"count":10,"order_by":[{"order":"desc","type":"formula"}]},"style":{"palette":"datadog16"}}],"title":"Memory by service","type":"treemap"},"id":2443814428397575}],"notify_list":[],"created_at":"2026-05-01T14:31:51.172956+00:00","modified_at":"2026-05-01T14:31:51.172956+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 141.012292ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/th8-y7s-7rc
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"th8-y7s-7rc","title":"tf-TestAccDatadogDashboardV2TreemapStyleSort-local-1777645908","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/th8-y7s-7rc/tf-testaccdatadogdashboardv2treemapstylesort-local-1777645908","template_variables":[],"widgets":[{"definition":{"color_by":"user","requests":[{"formulas":[{"formula":"query1"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"sum:system.mem.total{*} by {service}"}],"response_format":"scalar","sort":{"count":10,"order_by":[{"order":"desc","type":"formula"}]},"style":{"palette":"datadog16"}}],"title":"Memory by service","type":"treemap"},"id":2443814428397575}],"notify_list":[],"created_at":"2026-05-01T14:31:51.172956+00:00","modified_at":"2026-05-01T14:31:51.172956+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 116.187375ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/th8-y7s-7rc
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"th8-y7s-7rc"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 571.502ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/th8-y7s-7rc
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID th8-y7s-7rc not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 136.969708ms

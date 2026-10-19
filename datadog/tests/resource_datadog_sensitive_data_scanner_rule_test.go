@@ -204,6 +204,10 @@ func TestAccSensitiveDataScannerRuleWithStandardPattern(t *testing.T) {
 					testAccCheckDatadogSensitiveDataScannerRuleRecommendedKeywords(accProvider, resource_name_2, &value_true),
 				),
 			},
+			{
+				Config:   testAccCheckDatadogSensitiveDataScannerRuleWithStandardPattern(uniq),
+				PlanOnly: true,
+			},
 		}})
 }
 
@@ -449,7 +453,6 @@ resource "datadog_sensitive_data_scanner_rule" "sp_rule_1" {
 
 resource "datadog_sensitive_data_scanner_rule" "sp_rule_2" {
 	name = data.datadog_sensitive_data_scanner_standard_pattern.sample_sp.name
-	description = data.datadog_sensitive_data_scanner_standard_pattern.sample_sp.description
 	excluded_namespaces = ["username"]
 	is_enabled = true
 	group_id = datadog_sensitive_data_scanner_group.sample_group.id

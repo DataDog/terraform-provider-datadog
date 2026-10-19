@@ -92,8 +92,8 @@ func resourceDatadogOrganizationSettings() *schema.Resource {
 							"saml_autocreate_access_role": {
 								Type:         schema.TypeString,
 								Optional:     true,
-								Default:      "st", // FIXME: leave it "unspecified" by default like the child org schema ?
-								Description:  "The access role of the user. Options are `st` (standard user), `adm` (admin user), or `ro` (read-only user). Allowed enum values: `st`, `adm` , `ro`, `ERROR`",
+								Computed:     true,
+								Description:  "The access role of the user. Options are `st` (standard user), `adm` (admin user), or `ro` (read-only user). Allowed enum values: `st`, `adm`, `ro`, `ERROR`. When omitted, the current value is left unchanged.",
 								ValidateFunc: validation.StringInSlice([]string{"st", "adm", "ro", "ERROR"}, false),
 							},
 							"saml_autocreate_users_domains": {
@@ -210,9 +210,12 @@ func buildDatadogOrganizationUpdateV1Struct(d *schema.ResourceData) *datadogV1.O
 				}
 			}
 
-			// saml_autocreate_access_role
-			if v, ok := settingsSet["saml_autocreate_access_role"]; ok {
-				settings.SetSamlAutocreateAccessRole(datadogV1.AccessRole(v.(string)))
+			// saml_autocreate_access_role: only send the value when it is explicitly set in the
+			// config, so an omitted attribute leaves the current role unchanged instead of forcing a
+			// default. The attribute is Computed, so the resolved settings map can't tell "unset"
+			// apart from a stored value; read the raw config to make that distinction.
+			if roleCty := rawSettingAttr(d, "saml_autocreate_access_role"); !roleCty.IsNull() {
+				settings.SetSamlAutocreateAccessRole(datadogV1.AccessRole(roleCty.AsString()))
 			}
 
 			// saml_autocreate_users_domains
@@ -404,6 +407,25 @@ func updateSecurityContacts(pc *ProviderConfiguration, d *schema.ResourceData) d
 	}
 
 	return updateSecurityContactState(body, d)
+}
+
+// rawSettingAttr returns the raw config value of an attribute inside the (single) settings block,
+// or a null value when the settings block or the attribute is absent. It lets the update logic tell
+// an explicitly-set attribute apart from an omitted one, which d.GetOk cannot do for a Computed attribute.
+func rawSettingAttr(d *schema.ResourceData, attr string) cty.Value {
+	root := d.GetRawConfig()
+	if root.IsNull() {
+		return cty.NullVal(cty.String)
+	}
+	settings := root.GetAttr("settings")
+	if settings.IsNull() || !settings.CanIterateElements() || settings.LengthInt() == 0 {
+		return cty.NullVal(cty.String)
+	}
+	first := settings.Index(cty.NumberIntVal(0))
+	if first.IsNull() {
+		return cty.NullVal(cty.String)
+	}
+	return first.GetAttr(attr)
 }
 
 func readNullableCtyAttr[T any](root cty.Value, attr string) (*T, diag.Diagnostics) {

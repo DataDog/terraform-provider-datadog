@@ -1,0 +1,265 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: Cloud Cost Management
+  description: The Cloud Cost Management API allows you to set up, edit, and delete Cloud Cost Management
+    accounts for AWS, Azure, and Google Cloud. You can query your cost data by using the [Metrics endpoint](https://docs.datadoghq.com/api/latest/metrics/#query-timeseries-data-across-multiple-products)
+    and the `cloud_cost` data source. For more information, see the [Cloud Cost Management documentation](https://docs.datadoghq.com/cloud_cost_management/).
+paths:
+  /api/v2/cost/azure_uc_config/{cloud_account_id}:
+    get:
+      operationId: GetCostAzureUCConfig
+      tags:
+      - Cloud Cost Management
+      summary: Get cost Azure UC config
+      description: Get a specific Azure config.
+      parameters:
+      - name: cloud_account_id
+        in: path
+        required: true
+        description: The unique identifier of the cloud account
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UCConfigPair'
+              examples:
+                default:
+                  value:
+                    data:
+                      attributes:
+                        configs:
+                        - account_id: 1234abcd-1234-abcd-1234-1234abcd1234
+                          client_id: 1234abcd-1234-abcd-1234-1234abcd1234
+                          created_at: '2023-01-01T12:00:00.000000'
+                          dataset_type: actual
+                          error_messages: []
+                          export_name: dd-actual-export
+                          export_path: dd-export-path
+                          id: '123456789123'
+                          months: 36
+                          scope: /subscriptions/1234abcd-1234-abcd-1234-1234abcd1234
+                          status: active
+                          status_updated_at: '2023-01-01T12:00:00.000000'
+                          storage_account: dd-storage-account
+                          storage_container: dd-storage-container
+                          updated_at: '2023-01-01T12:00:00.000000'
+                      id: '123456789123'
+                      type: azure_uc_configs
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      security:
+      - apiKeyAuth: []
+        appKeyAuth: []
+      - AuthZ:
+        - cloud_cost_management_read
+      x-menu-order: 10
+      x-undo:
+        type: safe
+components:
+  responses:
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    UCConfigPair:
+      type: object
+      description: The definition of `UCConfigPair` object.
+      example:
+        data:
+          attributes:
+            configs:
+            - account_id: 1234abcd-1234-abcd-1234-1234abcd1234
+              client_id: 1234abcd-1234-abcd-1234-1234abcd1234
+              created_at: '2023-01-01T12:00:00.000000'
+              dataset_type: actual
+              error_messages: []
+              export_name: dd-actual-export
+              export_path: dd-export-path
+              id: '123456789123'
+              months: 36
+              scope: /subscriptions/1234abcd-1234-abcd-1234-1234abcd1234
+              status: active
+              status_updated_at: '2023-01-01T12:00:00.000000'
+              storage_account: dd-storage-account
+              storage_container: dd-storage-container
+              updated_at: '2023-01-01T12:00:00.000000'
+          id: '123456789123'
+          type: azure_uc_configs
+      properties:
+        data:
+          $ref: '#/components/schemas/UCConfigPairData'
+    UCConfigPairData:
+      type: object
+      description: The definition of `UCConfigPairData` object.
+      required:
+      - type
+      properties:
+        attributes:
+          $ref: '#/components/schemas/UCConfigPairDataAttributes'
+        id:
+          type: string
+          description: The `UCConfigPairData` `id`.
+        type:
+          $ref: '#/components/schemas/UCConfigPairDataType'
+    UCConfigPairDataAttributes:
+      type: object
+      description: The definition of `UCConfigPairDataAttributes` object.
+      properties:
+        configs:
+          type: array
+          description: The `attributes` `configs`.
+          items:
+            $ref: '#/components/schemas/UCConfigPairDataAttributesConfigsItems'
+    UCConfigPairDataAttributesConfigsItems:
+      type: object
+      description: The definition of `UCConfigPairDataAttributesConfigsItems` object.
+      properties:
+        account_id:
+          type: string
+          description: The `items` `account_id`.
+        client_id:
+          type: string
+          description: The `items` `client_id`.
+        created_at:
+          type: string
+          description: The `items` `created_at`.
+        dataset_type:
+          type: string
+          description: The `items` `dataset_type`.
+        error_messages:
+          type: array
+          description: The `items` `error_messages`.
+          nullable: true
+          items:
+            type: string
+            description: An error message string.
+        export_name:
+          type: string
+          description: The `items` `export_name`.
+        export_path:
+          type: string
+          description: The `items` `export_path`.
+        id:
+          type: string
+          description: The `items` `id`.
+        months:
+          type: integer
+          description: The `items` `months`.
+          format: int64
+        scope:
+          type: string
+          description: The `items` `scope`.
+        status:
+          type: string
+          description: The `items` `status`.
+        status_updated_at:
+          type: string
+          description: The `items` `status_updated_at`.
+        storage_account:
+          type: string
+          description: The `items` `storage_account`.
+        storage_container:
+          type: string
+          description: The `items` `storage_container`.
+        updated_at:
+          type: string
+          description: The `items` `updated_at`.
+    UCConfigPairDataType:
+      type: string
+      description: Azure UC configs resource type.
+      default: azure_uc_configs
+      example: azure_uc_configs
+      enum:
+      - azure_uc_configs
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - AZURE_UC_CONFIGS
+  securitySchemes:
+    AuthZ:
+      type: oauth2
+      description: This API uses OAuth 2 with the implicit grant flow.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth2/v1/authorize
+          tokenUrl: /oauth2/v1/token
+          scopes: {}
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY

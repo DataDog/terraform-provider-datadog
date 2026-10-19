@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 	"testing"
 	"time"
@@ -54,6 +55,7 @@ func TestAccDatadogLogsIndex_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "exclusion_filter.0.name", "Filter coredns logs"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "exclusion_filter.0.is_enabled", "true"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "exclusion_filter.0.filter.0.query", "app:coredns"),
+					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "exclusion_filter.0.filter.0.sample_attribute", "@request_id"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "exclusion_filter.0.filter.0.sample_rate", "0.97"),
 				),
 			},
@@ -162,6 +164,7 @@ resource "datadog_logs_index" "sample_index" {
     is_enabled           = true
     filter {
       query              = "app:coredns"
+      sample_attribute   = "@request_id"
       sample_rate        = 0.97
     }
   }
@@ -207,6 +210,22 @@ resource "datadog_logs_index" "sample_index" {
   }
 }
 `, name)
+}
+
+func TestUnitDatadogLogsIndex_InvalidName(t *testing.T) {
+	t.Parallel()
+	_, accProviders := testAccProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		IsUnitTest:        true,
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccCheckDatadogLogsIndexInvalidNameConfig("invalid-index_name"),
+				ExpectError: regexp.MustCompile("must start with a lowercase letter and contain only lowercase letters, digits, or hyphens"),
+			},
+		},
+	})
 }
 
 func testAccCheckDatadogUpdateLogsIndexDisableFlexRetentionConfig(name string) string {
@@ -269,6 +288,17 @@ func TestAccDatadogLogsIndex_WithTags(t *testing.T) {
 			},
 		},
 	})
+}
+
+func testAccCheckDatadogLogsIndexInvalidNameConfig(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_logs_index" "invalid_index" {
+  name = "%s"
+  filter {
+    query = "service:test"
+  }
+}
+`, name)
 }
 
 func testAccCheckDatadogLogsIndexWithTagsConfig(name string) string {

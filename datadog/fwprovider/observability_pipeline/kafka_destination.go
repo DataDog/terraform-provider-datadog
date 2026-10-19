@@ -26,6 +26,7 @@ type KafkaDestinationModel struct {
 	Sasl                  []KafkaSaslModel        `tfsdk:"sasl"`
 	LibrdkafkaOptions     []LibrdkafkaOptionModel `tfsdk:"librdkafka_option"`
 	Tls                   []TlsModel              `tfsdk:"tls"`
+	Buffer                []BufferOptionsModel    `tfsdk:"buffer"`
 }
 
 // KafkaSaslModel represents SASL configuration
@@ -118,6 +119,13 @@ func ExpandKafkaDestination(ctx context.Context, id string, inputs types.List, s
 		d.Tls = ExpandTls(src.Tls)
 	}
 
+	if len(src.Buffer) > 0 {
+		buffer := ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			d.SetBuffer(*buffer)
+		}
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineKafkaDestination: d,
 	}
@@ -189,6 +197,13 @@ func FlattenKafkaDestination(ctx context.Context, src *datadogV2.ObservabilityPi
 	// TLS configuration
 	if src.Tls != nil {
 		out.Tls = FlattenTls(src.Tls)
+	}
+
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			out.Buffer = []BufferOptionsModel{*outBuffer}
+		}
 	}
 
 	return out
@@ -288,7 +303,8 @@ func KafkaDestinationSchema() schema.ListNestedBlock {
 						},
 					},
 				},
-				"tls": TlsSchema(),
+				"tls":    TlsSchema(),
+				"buffer": BufferOptionsSchema(),
 			},
 		},
 		Validators: []validator.List{

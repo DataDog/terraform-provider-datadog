@@ -22,12 +22,13 @@ var (
 )
 
 type securityMonitoringCriticalAssetModel struct {
-	Id        types.String `tfsdk:"id"`
-	Enabled   types.Bool   `tfsdk:"enabled"`
-	Query     types.String `tfsdk:"query"`
-	RuleQuery types.String `tfsdk:"rule_query"`
-	Severity  types.String `tfsdk:"severity"`
-	Tags      types.List   `tfsdk:"tags"`
+	Id          types.String `tfsdk:"id"`
+	Enabled     types.Bool   `tfsdk:"enabled"`
+	Query       types.String `tfsdk:"query"`
+	RuleQuery   types.String `tfsdk:"rule_query"`
+	Severity    types.String `tfsdk:"severity"`
+	Description types.String `tfsdk:"description"`
+	Tags        types.List   `tfsdk:"tags"`
 }
 
 type securityMonitoringCriticalAssetResource struct {
@@ -74,6 +75,10 @@ func (r *securityMonitoringCriticalAssetResource) Schema(_ context.Context, _ re
 				Validators: []validator.String{
 					stringvalidator.OneOf("critical", "high", "medium", "low", "info", "no-op", "increase", "decrease"),
 				},
+			},
+			"description": schema.StringAttribute{
+				Optional:    true,
+				Description: "A description of the critical asset.",
 			},
 			"tags": schema.ListAttribute{
 				Optional:    true,
@@ -202,6 +207,7 @@ func (r *securityMonitoringCriticalAssetResource) buildCreatePayload(ctx context
 
 	attributes := datadogV2.NewSecurityMonitoringCriticalAssetCreateAttributes(query, ruleQuery, severity)
 	attributes.SetEnabled(enabled)
+	attributes.Description = state.Description.ValueStringPointer()
 	if tags != nil {
 		attributes.SetTags(tags)
 	}
@@ -229,6 +235,10 @@ func (r *securityMonitoringCriticalAssetResource) buildUpdatePayload(ctx context
 	attributes.SetQuery(query)
 	attributes.SetRuleQuery(ruleQuery)
 	attributes.SetSeverity(severity)
+	// Always send the description on update (empty string when null) so it can be cleared.
+	// The API uses merge semantics, so an omitted field keeps the previous value. This mirrors
+	// how tags are handled below.
+	attributes.SetDescription(state.Description.ValueString())
 
 	if tags != nil {
 		attributes.SetTags(tags)
@@ -249,6 +259,13 @@ func (r *securityMonitoringCriticalAssetResource) updateStateFromResponse(ctx co
 	state.Query = types.StringValue(attributes.GetQuery())
 	state.RuleQuery = types.StringValue(attributes.GetRuleQuery())
 	state.Severity = types.StringValue(string(attributes.GetSeverity()))
+
+	// Only update the state if the description is not empty, or if it's not null in the plan.
+	// If the description is null in the TF config, it is omitted from the API call, and the API
+	// returns an empty string which, if written to state, would cause a state/config mismatch.
+	if description := attributes.GetDescription(); description != "" || !state.Description.IsNull() {
+		state.Description = types.StringValue(description)
+	}
 
 	if len(attributes.GetTags()) == 0 {
 		state.Tags = types.ListNull(types.StringType)

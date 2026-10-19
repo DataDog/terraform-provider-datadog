@@ -1,0 +1,54 @@
+# An acyclic chain S0 -> S1 -> ... -> S8 (8 nested $refs deep). Used to exercise
+# the --max-depth guard: deep but never cyclic.
+openapi: 3.0.0
+info:
+  title: DeepChain
+  version: 1.0.0
+paths: {}
+components:
+  schemas:
+    S0:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/S1'
+    S1:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/S2'
+    S2:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/S3'
+    S3:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/S4'
+    S4:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/S5'
+    S5:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/S6'
+    S6:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/S7'
+    S7:
+      type: object
+      properties:
+        next:
+          $ref: '#/components/schemas/S8'
+    S8:
+      type: object
+      properties:
+        leaf:
+          type: string

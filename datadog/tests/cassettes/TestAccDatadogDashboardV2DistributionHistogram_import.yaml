@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 465
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2DistributionHistogram_import-local-1778266524","widgets":[{"definition":{"requests":[{"query":{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage.dist{*}"},"request_type":"histogram","style":{"palette":"cool"}}],"show_legend":false,"title":"CPU Usage Distribution","type":"distribution"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"zvf-sjw-chn","title":"tf-TestAccDatadogDashboardV2DistributionHistogram_import-local-1778266524","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/zvf-sjw-chn/tf-testaccdatadogdashboardv2distributionhistogramimport-local-1778266524","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage.dist{*}"},"request_type":"histogram","style":{"palette":"cool"}}],"show_legend":false,"title":"CPU Usage Distribution","type":"distribution"},"id":4731746145467520}],"notify_list":[],"created_at":"2026-05-08T18:55:26.978184+00:00","modified_at":"2026-05-08T18:55:26.978184+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 220.629333ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/zvf-sjw-chn
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"zvf-sjw-chn","title":"tf-TestAccDatadogDashboardV2DistributionHistogram_import-local-1778266524","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/zvf-sjw-chn/tf-testaccdatadogdashboardv2distributionhistogramimport-local-1778266524","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage.dist{*}"},"request_type":"histogram","style":{"palette":"cool"}}],"show_legend":false,"title":"CPU Usage Distribution","type":"distribution"},"id":4731746145467520}],"notify_list":[],"created_at":"2026-05-08T18:55:26.978184+00:00","modified_at":"2026-05-08T18:55:26.978184+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 183.571208ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/zvf-sjw-chn
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"zvf-sjw-chn","title":"tf-TestAccDatadogDashboardV2DistributionHistogram_import-local-1778266524","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/zvf-sjw-chn/tf-testaccdatadogdashboardv2distributionhistogramimport-local-1778266524","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage.dist{*}"},"request_type":"histogram","style":{"palette":"cool"}}],"show_legend":false,"title":"CPU Usage Distribution","type":"distribution"},"id":4731746145467520}],"notify_list":[],"created_at":"2026-05-08T18:55:26.978184+00:00","modified_at":"2026-05-08T18:55:26.978184+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 107.32075ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/zvf-sjw-chn
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"zvf-sjw-chn","title":"tf-TestAccDatadogDashboardV2DistributionHistogram_import-local-1778266524","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/zvf-sjw-chn/tf-testaccdatadogdashboardv2distributionhistogramimport-local-1778266524","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage.dist{*}"},"request_type":"histogram","style":{"palette":"cool"}}],"show_legend":false,"title":"CPU Usage Distribution","type":"distribution"},"id":4731746145467520}],"notify_list":[],"created_at":"2026-05-08T18:55:26.978184+00:00","modified_at":"2026-05-08T18:55:26.978184+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 181.291042ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/zvf-sjw-chn
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"zvf-sjw-chn"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 602.668333ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/zvf-sjw-chn
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID zvf-sjw-chn not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 106.324958ms

@@ -10,6 +10,8 @@ type ApiInstances struct {
 	// HttpClient
 	HttpClient *datadog.APIClient
 
+	sensitiveDataScannerConfigCache sensitiveDataScannerConfigCache
+
 	// V1 APIs
 	authenticationApiV1                   *datadogV1.AuthenticationApi
 	awsIntegrationApiV1                   *datadogV1.AWSIntegrationApi
@@ -43,7 +45,7 @@ type ApiInstances struct {
 	usersApiV1                            *datadogV1.UsersApi
 	webhooksIntegrationApiV1              *datadogV1.WebhooksIntegrationApi
 
-	//V2 APIs
+	// V2 APIs
 	actionConnectionApiV2          *datadogV2.ActionConnectionApi
 	actionsDatastoresApiV2         *datadogV2.ActionsDatastoresApi
 	agentlessScanningApiV2         *datadogV2.AgentlessScanningApi
@@ -55,6 +57,7 @@ type ApiInstances struct {
 	authNMappingsApiV2             *datadogV2.AuthNMappingsApi
 	awsIntegrationApiV2            *datadogV2.AWSIntegrationApi
 	awsLogsIntegrationApiV2        *datadogV2.AWSLogsIntegrationApi
+	cloudAuthenticationApiV2       *datadogV2.CloudAuthenticationApi
 	cloudflareIntegrationApiV2     *datadogV2.CloudflareIntegrationApi
 	csmThreatsApiV2                *datadogV2.CSMThreatsApi
 	confluentCloudApiV2            *datadogV2.ConfluentCloudApi
@@ -63,10 +66,11 @@ type ApiInstances struct {
 	domainAllowlistApiV2           *datadogV2.DomainAllowlistApi
 	downtimesApiV2                 *datadogV2.DowntimesApi
 	eventsApiV2                    *datadogV2.EventsApi
+	executionPolicyApiV2           *datadogV2.ExecutionPolicyApi
 	fastlyIntegrationApiV2         *datadogV2.FastlyIntegrationApi
+	fleetAutomationApiV2           *datadogV2.FleetAutomationApi
 	gcpStsIntegrationApiV2         *datadogV2.GCPIntegrationApi
-	incidentServicesApiV2          *datadogV2.IncidentServicesApi
-	incidentTeamsApiV2             *datadogV2.IncidentTeamsApi
+	governanceConsoleApiV2         *datadogV2.GovernanceConsoleApi
 	incidentsApiV2                 *datadogV2.IncidentsApi
 	ipAllowlistApiV2               *datadogV2.IPAllowlistApi
 	keyManagementApiV2             *datadogV2.KeyManagementApi
@@ -83,6 +87,7 @@ type ApiInstances struct {
 	opsgenieIntegrationApiV2       *datadogV2.OpsgenieIntegrationApi
 	organizationsApiV2             *datadogV2.OrganizationsApi
 	orgConnectionsApiV2            *datadogV2.OrgConnectionsApi
+	orgGroupsApiV2                 *datadogV2.OrgGroupsApi
 	processesApiV2                 *datadogV2.ProcessesApi
 	powerpackApiV2                 *datadogV2.PowerpackApi
 	referenceTablesApiV2           *datadogV2.ReferenceTablesApi
@@ -96,6 +101,7 @@ type ApiInstances struct {
 	serviceAccountsApiV2           *datadogV2.ServiceAccountsApi
 	softwareCatalogApiV2           *datadogV2.SoftwareCatalogApi
 	spansMetricsApiV2              *datadogV2.SpansMetricsApi
+	statusPagesApiV2               *datadogV2.StatusPagesApi
 	syntheticsApiV2                *datadogV2.SyntheticsApi
 	teamsApiV2                     *datadogV2.TeamsApi
 	usageMeteringApiV2             *datadogV2.UsageMeteringApi
@@ -103,6 +109,9 @@ type ApiInstances struct {
 	workflowAutomationApiV2        *datadogV2.WorkflowAutomationApi
 	ccmApiV2                       *datadogV2.CloudCostManagementApi
 	deploymentGatesV2              *datadogV2.DeploymentGatesApi
+	webIntegrationsApiV2           *datadogV2.WebIntegrationsApi
+	webhooksIntegrationApiV2       *datadogV2.WebhooksIntegrationApi
+	tagRulesApiV2                  *datadogV2.TagRulesApi
 }
 
 // GetAuthenticationApiV1 get instance of AuthenticationApi
@@ -143,6 +152,14 @@ func (i *ApiInstances) GetAWSLogsIntegrationApiV2() *datadogV2.AWSLogsIntegratio
 		i.awsLogsIntegrationApiV2 = datadogV2.NewAWSLogsIntegrationApi(i.HttpClient)
 	}
 	return i.awsLogsIntegrationApiV2
+}
+
+// GetCloudAuthenticationApiV2 get instance of CloudAuthenticationApi
+func (i *ApiInstances) GetCloudAuthenticationApiV2() *datadogV2.CloudAuthenticationApi {
+	if i.cloudAuthenticationApiV2 == nil {
+		i.cloudAuthenticationApiV2 = datadogV2.NewCloudAuthenticationApi(i.HttpClient)
+	}
+	return i.cloudAuthenticationApiV2
 }
 
 // GetAzureIntegrationApiV1 get instance of AzureIntegrationApi
@@ -287,6 +304,14 @@ func (i *ApiInstances) GetOrgConnectionsApiV2() *datadogV2.OrgConnectionsApi {
 		i.orgConnectionsApiV2 = datadogV2.NewOrgConnectionsApi(i.HttpClient)
 	}
 	return i.orgConnectionsApiV2
+}
+
+// GetOrgGroupsApiV2 get instance of OrgGroupsApi
+func (i *ApiInstances) GetOrgGroupsApiV2() *datadogV2.OrgGroupsApi {
+	if i.orgGroupsApiV2 == nil {
+		i.orgGroupsApiV2 = datadogV2.NewOrgGroupsApi(i.HttpClient)
+	}
+	return i.orgGroupsApiV2
 }
 
 // GetPagerDutyIntegrationApiV1 get instance of PagerDutyIntegrationApi
@@ -441,6 +466,14 @@ func (i *ApiInstances) GetEventsApiV2() *datadogV2.EventsApi {
 	return i.eventsApiV2
 }
 
+// GetExecutionPolicyApiV2 get instance of ExecutionPolicyApi
+func (i *ApiInstances) GetExecutionPolicyApiV2() *datadogV2.ExecutionPolicyApi {
+	if i.executionPolicyApiV2 == nil {
+		i.executionPolicyApiV2 = datadogV2.NewExecutionPolicyApi(i.HttpClient)
+	}
+	return i.executionPolicyApiV2
+}
+
 // GetGCPStsIntegrationApiV2 get instance of GetGCPStsIntegration
 func (i *ApiInstances) GetGCPIntegrationApiV2() *datadogV2.GCPIntegrationApi {
 	if i.gcpStsIntegrationApiV2 == nil {
@@ -449,20 +482,12 @@ func (i *ApiInstances) GetGCPIntegrationApiV2() *datadogV2.GCPIntegrationApi {
 	return i.gcpStsIntegrationApiV2
 }
 
-// GetIncidentServicesApiV2 get instance of IncidentServicesApi
-func (i *ApiInstances) GetIncidentServicesApiV2() *datadogV2.IncidentServicesApi {
-	if i.incidentServicesApiV2 == nil {
-		i.incidentServicesApiV2 = datadogV2.NewIncidentServicesApi(i.HttpClient)
+// GetGovernanceConsoleApiV2 get instance of GovernanceConsoleApi
+func (i *ApiInstances) GetGovernanceConsoleApiV2() *datadogV2.GovernanceConsoleApi {
+	if i.governanceConsoleApiV2 == nil {
+		i.governanceConsoleApiV2 = datadogV2.NewGovernanceConsoleApi(i.HttpClient)
 	}
-	return i.incidentServicesApiV2
-}
-
-// GetIncidentTeamsApiV2 get instance of IncidentTeamsApi
-func (i *ApiInstances) GetIncidentTeamsApiV2() *datadogV2.IncidentTeamsApi {
-	if i.incidentTeamsApiV2 == nil {
-		i.incidentTeamsApiV2 = datadogV2.NewIncidentTeamsApi(i.HttpClient)
-	}
-	return i.incidentTeamsApiV2
+	return i.governanceConsoleApiV2
 }
 
 // GetIncidentsApiV2 get instance of IncidentsApi
@@ -628,7 +653,6 @@ func (i *ApiInstances) GetSecurityMonitoringApiV2() *datadogV2.SecurityMonitorin
 		i.securityMonitoringApiV2 = datadogV2.NewSecurityMonitoringApi(i.HttpClient)
 	}
 	return i.securityMonitoringApiV2
-
 }
 
 // GetSensitiveDataScannerApiV2 get instance of SensitiveDataScannerApi
@@ -653,6 +677,14 @@ func (i *ApiInstances) GetSoftwareCatalogApiV2() *datadogV2.SoftwareCatalogApi {
 		i.softwareCatalogApiV2 = datadogV2.NewSoftwareCatalogApi(i.HttpClient)
 	}
 	return i.softwareCatalogApiV2
+}
+
+// GetStatusPagesApiV2 get instance of StatusPagesApi
+func (i *ApiInstances) GetStatusPagesApiV2() *datadogV2.StatusPagesApi {
+	if i.statusPagesApiV2 == nil {
+		i.statusPagesApiV2 = datadogV2.NewStatusPagesApi(i.HttpClient)
+	}
+	return i.statusPagesApiV2
 }
 
 // GetUsageMeteringApiV2 get instance of UsageMeteringApi
@@ -693,6 +725,14 @@ func (i *ApiInstances) GetFastlyIntegrationApiV2() *datadogV2.FastlyIntegrationA
 		i.fastlyIntegrationApiV2 = datadogV2.NewFastlyIntegrationApi(i.HttpClient)
 	}
 	return i.fastlyIntegrationApiV2
+}
+
+// GetFleetAutomationApiV2 gets an instance of FleetAutomationApi.
+func (i *ApiInstances) GetFleetAutomationApiV2() *datadogV2.FleetAutomationApi {
+	if i.fleetAutomationApiV2 == nil {
+		i.fleetAutomationApiV2 = datadogV2.NewFleetAutomationApi(i.HttpClient)
+	}
+	return i.fleetAutomationApiV2
 }
 
 // GetRestrictionPoliciesApiV2 get instance of RestrictionPoliciesApi
@@ -821,4 +861,28 @@ func (i *ApiInstances) GetReferenceTablesApiV2() *datadogV2.ReferenceTablesApi {
 		i.referenceTablesApiV2 = datadogV2.NewReferenceTablesApi(i.HttpClient)
 	}
 	return i.referenceTablesApiV2
+}
+
+// GetWebIntegrationsApiV2 get instance of WebIntegrationsApi
+func (i *ApiInstances) GetWebIntegrationsApiV2() *datadogV2.WebIntegrationsApi {
+	if i.webIntegrationsApiV2 == nil {
+		i.webIntegrationsApiV2 = datadogV2.NewWebIntegrationsApi(i.HttpClient)
+	}
+	return i.webIntegrationsApiV2
+}
+
+// GetWebhooksIntegrationApiV2 get instance of WebhooksIntegrationApi
+func (i *ApiInstances) GetWebhooksIntegrationApiV2() *datadogV2.WebhooksIntegrationApi {
+	if i.webhooksIntegrationApiV2 == nil {
+		i.webhooksIntegrationApiV2 = datadogV2.NewWebhooksIntegrationApi(i.HttpClient)
+	}
+	return i.webhooksIntegrationApiV2
+}
+
+// GetTagRulesApiV2 get instance of TagRulesApi
+func (i *ApiInstances) GetTagRulesApiV2() *datadogV2.TagRulesApi {
+	if i.tagRulesApiV2 == nil {
+		i.tagRulesApiV2 = datadogV2.NewTagRulesApi(i.HttpClient)
+	}
+	return i.tagRulesApiV2
 }

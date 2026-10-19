@@ -1,0 +1,18 @@
+# A references B references A — an indirect $ref cycle.
+openapi: 3.0.0
+info:
+  title: Cycles
+  version: 1.0.0
+paths: {}
+components:
+  schemas:
+    A:
+      type: object
+      properties:
+        b:
+          $ref: '#/components/schemas/B'
+    B:
+      type: object
+      properties:
+        a:
+          $ref: '#/components/schemas/A'

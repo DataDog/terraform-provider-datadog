@@ -20,6 +20,68 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
   }
 
   rule {
+    query = "tags.service:payment"
+    action {
+      escalation_policy {
+        policy_id           = "00000000-aba2-0000-0000-000000000000"
+        ack_timeout_minutes = 30
+        urgency             = "low"
+        support_hours {
+          time_zone = "America/New_York"
+          restriction {
+            start_day  = "monday"
+            start_time = "09:00:00"
+            end_day    = "monday"
+            end_time   = "17:00:00"
+          }
+          restriction {
+            start_day  = "tuesday"
+            start_time = "09:00:00"
+            end_day    = "tuesday"
+            end_time   = "17:00:00"
+          }
+          restriction {
+            start_day  = "wednesday"
+            start_time = "09:00:00"
+            end_day    = "wednesday"
+            end_time   = "17:00:00"
+          }
+          restriction {
+            start_day  = "thursday"
+            start_time = "09:00:00"
+            end_day    = "thursday"
+            end_time   = "17:00:00"
+          }
+          restriction {
+            start_day  = "friday"
+            start_time = "09:00:00"
+            end_day    = "friday"
+            end_time   = "17:00:00"
+          }
+        }
+      }
+    }
+  }
+
+  # Reroute matching pages to another team's routing rules. A reroute can
+  # only be combined with `send_slack_message` or `send_teams_message` actions.
+  rule {
+    query = "tags.service:checkout"
+    action {
+      reroute_to_team {
+        destination_team_id = "00000000-aba2-0000-0000-000000000001"
+      }
+    }
+    action {
+      send_slack_message {
+        workspace = "workspace"
+        channel   = "channel"
+      }
+    }
+  }
+
+  # The last rule must be a catch-all: no query and no time restriction.
+  rule {
     escalation_policy = "00000000-aba2-0000-0000-000000000000"
     urgency           = "dynamic"
   }

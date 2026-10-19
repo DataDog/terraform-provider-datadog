@@ -1,0 +1,16 @@
+# Tree recurses through a oneOf variant — the kind of polymorphic schema the
+# real Datadog OAS uses heavily. Exercises the OneOf edge of the walk.
+openapi: 3.0.0
+info:
+  title: Cycles
+  version: 1.0.0
+paths: {}
+components:
+  schemas:
+    Tree:
+      oneOf:
+        - type: object
+          properties:
+            leaf:
+              type: string
+        - $ref: '#/components/schemas/Tree'

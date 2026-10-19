@@ -721,6 +721,372 @@ func TestAccDatadogSyntheticsMobileTest_NoSteps(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsMobileTest_MultiLocator(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	const resourceName = "datadog_synthetics_test.bar"
+	const elementPath = "mobile_step.0.params.0.element.0."
+	const absoluteLocator = `/*[local-name()="XCUIElementTypeStaticText"][1]`
+	const contentLocator = `[{"tagName":"XCUIElementTypeStaticText","text":"tap","textType":"directText"}]`
+	multiLocatorConfig := func(relativeLocator string) string {
+		return createSyntheticsMobileTestMultiLocatorConfig(testName, fmt.Sprintf(`
+        multi_locator = {
+          ab = %q
+          co = %q
+          ro = %q
+        }`, absoluteLocator, contentLocator, relativeLocator))
+	}
+	checkMultiLocator := func(relativeLocator string) resource.TestCheckFunc {
+		return resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(providers.sdkV2Provider),
+			resource.TestCheckResourceAttr(resourceName, elementPath+"multi_locator.%", "3"),
+			resource.TestCheckResourceAttr(resourceName, elementPath+"multi_locator.ab", absoluteLocator),
+			resource.TestCheckResourceAttr(resourceName, elementPath+"multi_locator.co", contentLocator),
+			resource.TestCheckResourceAttr(resourceName, elementPath+"multi_locator.ro", relativeLocator),
+			resource.TestCheckResourceAttr(resourceName, elementPath+"user_locator.#", "0"),
+		)
+	}
+	initialConfig := multiLocatorConfig(`//*[@name="Tap"]`)
+	updatedConfig := multiLocatorConfig(`//*[@name="Tap again"]`)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(providers.sdkV2Provider),
+		Steps: []resource.TestStep{
+			{Config: initialConfig, Check: checkMultiLocator(`//*[@name="Tap"]`)},
+			{Config: updatedConfig, Check: checkMultiLocator(`//*[@name="Tap again"]`)},
+			{
+				Config: createSyntheticsMobileTestMultiLocatorConfig(testName, `
+        user_locator {
+          fail_test_on_cannot_locate = true
+          values {
+            type  = "id"
+            value = "some_id"
+          }
+        }`),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, elementPath+"multi_locator.%", "0"),
+					resource.TestCheckResourceAttr(resourceName, elementPath+"user_locator.0.values.0.value", "some_id"),
+				),
+			},
+			{Config: initialConfig, Check: checkMultiLocator(`//*[@name="Tap"]`)},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			{Config: initialConfig, PlanOnly: true},
+		},
+	})
+}
+
+func createSyntheticsMobileTestMultiLocatorConfig(uniq, locator string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "bar" {
+  name      = %q
+  type      = "mobile"
+  status    = "paused"
+  message   = ""
+  locations = []
+
+  mobile_options_list {
+    device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+    tick_every = 43200
+    mobile_application {
+      application_id = "ab0e0aed-536d-411a-9a99-5428c27d8f8e"
+      reference_id   = "6115922a-5f5d-455e-bc7e-7955a57f3815"
+      reference_type = "version"
+    }
+  }
+
+  mobile_step {
+    name = "Tap"
+    type = "tap"
+    params {
+      element {
+        context      = "NATIVE_APP"
+        context_type = "native"
+        view_name    = "StaticText"
+        text_content = "Tap"
+        %s
+      }
+    }
+  }
+}`, uniq, locator)
+}
+
+func TestAccDatadogSyntheticsMobileTest_MonitorOptions(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	const resourceName = "datadog_synthetics_test.bar"
+	const monitorPath = "mobile_options_list.0.monitor_options.0."
+	checkMonitorOptions := func(preset, interval, occurrences string) resource.TestCheckFunc {
+		return resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(providers.sdkV2Provider),
+			resource.TestCheckResourceAttr(resourceName, monitorPath+"notification_preset_name", preset),
+			resource.TestCheckResourceAttr(resourceName, monitorPath+"renotify_interval", interval),
+			resource.TestCheckResourceAttr(resourceName, monitorPath+"renotify_occurrences", occurrences),
+		)
+	}
+	presetOnly := createSyntheticsMobileTestMonitorOptionsConfig(testName, `notification_preset_name = "hide_handles"`)
+	enabled := createSyntheticsMobileTestMonitorOptionsConfig(testName, `
+      notification_preset_name = "hide_query"
+      renotify_interval        = 30
+      renotify_occurrences     = 3`)
+	disabled := createSyntheticsMobileTestMonitorOptionsConfig(testName, `
+      notification_preset_name = "hide_handles"
+      renotify_interval        = 0
+      renotify_occurrences     = 0`)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(providers.sdkV2Provider),
+		Steps: []resource.TestStep{
+			{Config: presetOnly, Check: checkMonitorOptions("hide_handles", "0", "0")},
+			{ResourceName: resourceName, ImportState: true, ImportStateVerify: true},
+			{Config: enabled, Check: checkMonitorOptions("hide_query", "30", "3")},
+			{ResourceName: resourceName, ImportState: true, ImportStateVerify: true},
+			{Config: presetOnly, Check: checkMonitorOptions("hide_handles", "0", "0")},
+			{Config: enabled, Check: checkMonitorOptions("hide_query", "30", "3")},
+			{Config: disabled, Check: checkMonitorOptions("hide_handles", "0", "0")},
+			{ResourceName: resourceName, ImportState: true, ImportStateVerify: true},
+			{Config: disabled, PlanOnly: true},
+		},
+	})
+}
+
+func createSyntheticsMobileTestMonitorOptionsConfig(uniq, monitorOptions string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "bar" {
+  name      = %q
+  type      = "mobile"
+  status    = "paused"
+  message   = ""
+  locations = []
+
+  mobile_options_list {
+    device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+    tick_every = 43200
+    mobile_application {
+      application_id = "ab0e0aed-536d-411a-9a99-5428c27d8f8e"
+      reference_id   = "6115922a-5f5d-455e-bc7e-7955a57f3815"
+      reference_type = "version"
+    }
+    monitor_options {
+      %s
+    }
+  }
+}`, uniq, monitorOptions)
+}
+
+func TestAccDatadogSyntheticsMobileTest_TypeTextDelay(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	const resourceName = "datadog_synthetics_test.bar"
+	checkDelay := func(delay string) resource.TestCheckFunc {
+		return resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(providers.sdkV2Provider),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.0.type", "typeText"),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.0.params.0.value", "hello"),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.0.params.0.delay", delay),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.0.params.0.with_enter", "true"),
+		)
+	}
+	withoutDelay := createSyntheticsMobileTestTypeTextDelayConfig(testName, "")
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(providers.sdkV2Provider),
+		Steps: []resource.TestStep{
+			{Config: withoutDelay, Check: checkDelay("0")},
+			{Config: createSyntheticsMobileTestTypeTextDelayConfig(testName, "delay = 125"), Check: checkDelay("125")},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			{Config: createSyntheticsMobileTestTypeTextDelayConfig(testName, "delay = 0"), Check: checkDelay("0")},
+			{Config: createSyntheticsMobileTestTypeTextDelayConfig(testName, "delay = 250"), Check: checkDelay("250")},
+			{Config: withoutDelay, Check: checkDelay("0")},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			{Config: withoutDelay, PlanOnly: true},
+		},
+	})
+}
+
+func createSyntheticsMobileTestTypeTextDelayConfig(uniq, delay string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "bar" {
+  name      = %q
+  type      = "mobile"
+  status    = "paused"
+  message   = ""
+  locations = []
+
+  mobile_options_list {
+    device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+    tick_every = 43200
+    mobile_application {
+      application_id = "ab0e0aed-536d-411a-9a99-5428c27d8f8e"
+      reference_id   = "6115922a-5f5d-455e-bc7e-7955a57f3815"
+      reference_type = "version"
+    }
+  }
+
+  mobile_step {
+    name    = "Type text"
+    type    = "typeText"
+    timeout = 30
+    params {
+      value      = "hello"
+      with_enter = true
+      %s
+      element {
+        context      = "NATIVE_APP"
+        context_type = "native"
+        user_locator {
+          fail_test_on_cannot_locate = true
+          values {
+            type  = "id"
+            value = "some-input"
+          }
+        }
+      }
+    }
+  }
+}`, uniq, delay)
+}
+
+func TestAccDatadogSyntheticsMobileTest_StepParams(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	const resourceName = "datadog_synthetics_test.bar"
+	check := func(wait, maxScrolls, enabled, example, endY string) resource.TestCheckFunc {
+		return resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(providers.sdkV2Provider),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.#", "7"),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.0.params.0.variable.0.name", "EXTRACTED_VALUE"),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.0.params.0.variable.0.example", example),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.1.params.0.x", "0.2"),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.1.params.0.y", endY),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.2.params.0.enable", enabled),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.3.params.0.value", wait),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.4.params.0.max_scrolls", maxScrolls),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.5.type", "pressBack"),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.6.type", "restartApplication"),
+		)
+	}
+	initial := createSyntheticsMobileStepParamsConfig(testName, 1, 3, true, "first", 0.2)
+	updated := createSyntheticsMobileStepParamsConfig(testName, 2, 5, false, "second", 0.3)
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(providers.sdkV2Provider),
+		Steps: []resource.TestStep{
+			{Config: initial, Check: check("1", "3", "true", "first", "0.2")},
+			{ResourceName: resourceName, ImportState: true, ImportStateVerify: true},
+			{Config: initial, PlanOnly: true},
+			{Config: updated, Check: check("2", "5", "false", "second", "0.3")},
+			{ResourceName: resourceName, ImportState: true, ImportStateVerify: true},
+			{Config: updated, PlanOnly: true},
+		},
+	})
+}
+
+func createSyntheticsMobileStepParamsConfig(name string, wait, maxScrolls int, enabled bool, example string, endY float64) string {
+	element := `element {
+      context = "NATIVE_APP"
+      context_type = "native"
+      user_locator {
+        fail_test_on_cannot_locate = true
+        values {
+          type = "id"
+          value = "some-input"
+        }
+      }
+    }`
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "bar" {
+  name = %q
+  type = "mobile"
+  status = "paused"
+  message = ""
+  locations = []
+  mobile_options_list {
+    device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+    tick_every = 43200
+    mobile_application {
+      application_id = "ab0e0aed-536d-411a-9a99-5428c27d8f8e"
+      reference_id = "6115922a-5f5d-455e-bc7e-7955a57f3815"
+      reference_type = "version"
+    }
+  }
+  mobile_step {
+    name = "Extract variable"
+    type = "extractVariable"
+    params {
+      variable {
+        name = "EXTRACTED_VALUE"
+        example = %q
+      }
+      %s
+    }
+  }
+  mobile_step {
+    name = "Scroll"
+    type = "scroll"
+    params {
+      x = 0.2
+      y = %g
+    }
+  }
+  mobile_step {
+    name = "Toggle WiFi"
+    type = "toggleWiFi"
+    params {
+      enable = %t
+    }
+  }
+  mobile_step {
+    name = "Wait"
+    type = "wait"
+    params {
+      value = %q
+    }
+  }
+  mobile_step {
+    name = "Scroll to element"
+    type = "scrollToElement"
+    params {
+      direction = "down"
+      max_scrolls = %d
+      %s
+    }
+  }
+  mobile_step {
+    name = "Press back"
+    type = "pressBack"
+    params {}
+  }
+  mobile_step {
+    name = "Restart application"
+    type = "restartApplication"
+    params {}
+  }
+}`, name, example, element, endY, enabled, fmt.Sprint(wait), maxScrolls, element)
+}
+
 func TestAccDatadogSyntheticsMobileTest_Updated(t *testing.T) {
 	cleanupSyntheticsTests(t)
 	t.Parallel()
@@ -917,6 +1283,23 @@ func TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes(t *testing.T) {
 		Steps: []resource.TestStep{
 			createSyntheticsMultistepAPITestAllStepSubtypes(ctx, accProvider, t),
 			updateSyntheticsMultistepAPITestAllStepSubtypes(ctx, accProvider, t),
+		},
+	})
+}
+
+// Requires the synthetics-mcp-api-testing experiment enabled on the test org.
+func TestAccDatadogSyntheticsTestMultistepApi_MCP(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsMultistepAPITestMCP(ctx, accProvider, t),
 		},
 	})
 }
@@ -1520,6 +1903,8 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider *schema.Provid
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.0.bits_ai_auto_investigate", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.retry.0.count", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.monitor_name", fmt.Sprintf(`%s-monitor`, testName)),
@@ -1646,6 +2031,7 @@ resource "datadog_synthetics_test" "foo" {
 		min_failure_duration = 0
 		min_location_failed = 1
 		http_version = "http2"
+		bits_ai_auto_investigate = true
 		retry {
 			count = 1
 		}
@@ -2570,6 +2956,8 @@ func updateSyntheticsAPITestStep(ctx context.Context, accProvider *schema.Provid
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.0.bits_ai_auto_investigate", "false"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.retry.0.count", "3"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.retry.0.interval", "500"),
@@ -2629,6 +3017,7 @@ resource "datadog_synthetics_test" "foo" {
 		follow_redirects = false
 		min_failure_duration = 10
 		min_location_failed = 1
+		bits_ai_auto_investigate = false
 
 		retry {
 			count = 3
@@ -2952,6 +3341,8 @@ func createSyntheticsSSLTestStep(ctx context.Context, accProvider *schema.Provid
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "options_list.0.disable_aia_intermediate_fetching", "true"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options_list.0.ignore_certificate_validation", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "message", "Notify @datadog.user"),
@@ -2989,6 +3380,7 @@ resource "datadog_synthetics_test" "ssl" {
 		accept_self_signed = true
 		check_certificate_revocation = true
 		disable_aia_intermediate_fetching = true
+		ignore_certificate_validation = true
 	}
 
 	name = "%s"
@@ -4218,6 +4610,8 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider *schema.Pr
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.blocked_request_patterns.0", "https://example.com/*"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.capture_network_payloads", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
@@ -4358,6 +4752,7 @@ resource "datadog_synthetics_test" "bar" {
 		disable_cors = true
 		initial_navigation_timeout = 150
 		blocked_request_patterns   = ["https://example.com/*"]
+		capture_network_payloads   = true
 	}
 
 	name = "%[1]s"
@@ -8991,4 +9386,632 @@ resource "datadog_synthetics_test" "network" {
 		}
 	}
 }`, uniq)
+}
+
+// --- Drag and Drop tests ---
+
+func TestAccDatadogSyntheticsBrowserTest_DragDrop(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
+	testName := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsBrowserTestDragDropStep(ctx, accProvider, t, testName),
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsBrowserTest_DragDropOrphanDrag(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	t.Parallel()
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      createSyntheticsBrowserTestOrphanDragConfig(testName),
+				ExpectError: regexp.MustCompile(`a "drag" step must be immediately followed by a "drop" step`),
+			},
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsBrowserTest_DragDropOrphanDrop(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	t.Parallel()
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      createSyntheticsBrowserTestOrphanDropConfig(testName),
+				ExpectError: regexp.MustCompile(`a "drop" step must be immediately preceded by a "drag" step`),
+			},
+		},
+	})
+}
+
+func createSyntheticsBrowserTestDragDropStep(ctx context.Context, accProvider *schema.Provider, t *testing.T, testName string) resource.TestStep {
+	return resource.TestStep{
+		Config: createSyntheticsBrowserTestDragDropConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.drag_drop", "browser_step.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.drag_drop", "browser_step.0.name", "Drag element"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.drag_drop", "browser_step.0.type", "drag"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.drag_drop", "browser_step.0.params.0.drag_drop_options.0.delay", "120"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.drag_drop", "browser_step.0.params.0.drag_drop_options.0.offset.0.x", "100"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.drag_drop", "browser_step.0.params.0.drag_drop_options.0.offset.0.y", "100"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.drag_drop", "browser_step.1.name", "Drop on target"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.drag_drop", "browser_step.1.type", "drop"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.drag_drop", "browser_step.1.params.0.drag_drop_options.0.delay", "100"),
+		),
+	}
+}
+
+func createSyntheticsBrowserTestDragDropConfig(testName string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "drag_drop" {
+	type = "browser"
+
+	request_definition {
+		method = "GET"
+		url    = "https://www.datadoghq.com"
+	}
+
+	device_ids = ["laptop_large"]
+	locations  = ["aws:eu-central-1"]
+
+	options_list {
+		tick_every = 3600
+	}
+
+	name    = "%s"
+	message = ""
+	tags    = []
+	status  = "paused"
+
+	browser_step {
+		name = "Drag element"
+		type = "drag"
+		params {
+			element_user_locator {
+				value {
+					type  = "css"
+					value = "#drag-source"
+				}
+			}
+			drag_drop_options {
+				delay = 120
+				offset {
+					x = 100
+					y = 100
+				}
+			}
+		}
+	}
+
+	browser_step {
+		name = "Drop on target"
+		type = "drop"
+		params {
+			element_user_locator {
+				value {
+					type  = "css"
+					value = "#drop-target"
+				}
+			}
+			drag_drop_options {
+				delay = 100
+			}
+		}
+	}
+}
+`, testName)
+}
+
+func createSyntheticsBrowserTestOrphanDragConfig(testName string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "orphan_drag" {
+	type = "browser"
+
+	request_definition {
+		method = "GET"
+		url    = "https://www.datadoghq.com"
+	}
+
+	device_ids = ["laptop_large"]
+	locations  = ["aws:eu-central-1"]
+
+	options_list {
+		tick_every = 3600
+	}
+
+	name    = "%s"
+	message = ""
+	tags    = []
+	status  = "paused"
+
+	browser_step {
+		name = "Drag element"
+		type = "drag"
+		params {
+			element_user_locator {
+				value {
+					type  = "css"
+					value = "#drag-source"
+				}
+			}
+		}
+	}
+}
+`, testName)
+}
+
+func createSyntheticsBrowserTestOrphanDropConfig(testName string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "orphan_drop" {
+	type = "browser"
+
+	request_definition {
+		method = "GET"
+		url    = "https://www.datadoghq.com"
+	}
+
+	device_ids = ["laptop_large"]
+	locations  = ["aws:eu-central-1"]
+
+	options_list {
+		tick_every = 3600
+	}
+
+	name    = "%s"
+	message = ""
+	tags    = []
+	status  = "paused"
+
+	browser_step {
+		name = "Drop on target"
+		type = "drop"
+		params {
+			element_user_locator {
+				value {
+					type  = "css"
+					value = "#drop-target"
+				}
+			}
+		}
+	}
+}
+`, testName)
+}
+
+func TestAccDatadogSyntheticsBrowserTest_DragDropMultipleErrors(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	t.Parallel()
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      createSyntheticsBrowserTestMultipleOrphanDragsConfig(testName),
+				ExpectError: regexp.MustCompile(`(?s)browser_step\[0\].*browser_step\[2\]`),
+			},
+		},
+	})
+}
+
+func createSyntheticsBrowserTestMultipleOrphanDragsConfig(testName string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "multiple_orphan_drags" {
+	type = "browser"
+
+	request_definition {
+		method = "GET"
+		url    = "https://www.datadoghq.com"
+	}
+
+	device_ids = ["laptop_large"]
+	locations  = ["aws:eu-central-1"]
+
+	options_list {
+		tick_every = 3600
+	}
+
+	name    = "%s"
+	message = ""
+	tags    = []
+	status  = "paused"
+
+	browser_step {
+		name = "First drag"
+		type = "drag"
+		params {
+			element_user_locator {
+				value {
+					type  = "css"
+					value = "#drag-source-1"
+				}
+			}
+		}
+	}
+
+	browser_step {
+		name = "Click in between"
+		type = "click"
+		params {
+			element_user_locator {
+				value {
+					type  = "css"
+					value = "#some-element"
+				}
+			}
+		}
+	}
+
+	browser_step {
+		name = "Second drag"
+		type = "drag"
+		params {
+			element_user_locator {
+				value {
+					type  = "css"
+					value = "#drag-source-2"
+				}
+			}
+		}
+	}
+
+	browser_step {
+		name = "Another click"
+		type = "click"
+		params {
+			element_user_locator {
+				value {
+					type  = "css"
+					value = "#another-element"
+				}
+			}
+		}
+	}
+}
+`, testName)
+}
+
+func createSyntheticsMultistepAPITestMCP(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
+
+	return resource.TestStep{
+		Config: createSyntheticsMultistepAPITestConfigMCP(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "type", "api"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "subtype", "multi"),
+			// Step 0: init
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.0.subtype", "mcp"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.0.request_definition.0.call_type", "init"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.0.request_definition.0.mcp_protocol_version", "2025-06-18"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.0.request_definition.0.url", "https://example.org/mcp"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.0.assertion.1.type", "mcpRespectsSpecification"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.0.assertion.2.type", "mcpServerCapabilities"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.0.assertion.2.operator", "contains"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.0.assertion.2.target_mcp_capabilities.0.capabilities.0", "tools"),
+			// Step 1: tool_list
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.1.subtype", "mcp"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.1.request_definition.0.call_type", "tool_list"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.1.assertion.1.type", "mcpToolCount"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.1.assertion.1.target", "0"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.1.assertion.2.type", "mcpToolNameLength"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.1.assertion.2.target", "64"),
+			// Step 2: tool_call
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.2.subtype", "mcp"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.2.request_definition.0.call_type", "tool_call"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.2.request_definition.0.tool_name", "search"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.2.request_definition.0.tool_args", `{"limit":5,"query":"datadog synthetics"}`),
+		),
+	}
+}
+
+func createSyntheticsMultistepAPITestConfigMCP(testName string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "test_mcp" {
+	type      = "api"
+	subtype   = "multi"
+	status    = "paused"
+	name      = "%[1]s"
+	message   = "Notify @datadog.user"
+	tags      = ["env:sandbox"]
+	locations = ["aws:us-east-1"]
+
+	options_list {
+		tick_every           = 900
+		min_failure_duration = 0
+		min_location_failed  = 1
+	}
+
+	api_step {
+		name    = "Initialize MCP session"
+		subtype = "mcp"
+
+		assertion {
+			type     = "statusCode"
+			operator = "is"
+			target   = "200"
+		}
+		assertion {
+			type = "mcpRespectsSpecification"
+		}
+		assertion {
+			type     = "mcpServerCapabilities"
+			operator = "contains"
+			target_mcp_capabilities {
+				capabilities = ["tools"]
+			}
+		}
+
+		request_definition {
+			url                  = "https://example.org/mcp"
+			call_type            = "init"
+			mcp_protocol_version = "2025-06-18"
+		}
+	}
+
+	api_step {
+		name    = "List MCP tools"
+		subtype = "mcp"
+
+		assertion {
+			type     = "statusCode"
+			operator = "is"
+			target   = "200"
+		}
+		assertion {
+			type     = "mcpToolCount"
+			operator = "moreThan"
+			target   = "0"
+		}
+		assertion {
+			type     = "mcpToolNameLength"
+			operator = "lessThan"
+			target   = "64"
+		}
+		assertion {
+			type = "mcpRespectsSpecification"
+		}
+
+		request_definition {
+			url                  = "https://example.org/mcp"
+			call_type            = "tool_list"
+			mcp_protocol_version = "2025-06-18"
+		}
+	}
+
+	api_step {
+		name    = "Call MCP search tool"
+		subtype = "mcp"
+
+		assertion {
+			type     = "statusCode"
+			operator = "is"
+			target   = "200"
+		}
+		assertion {
+			type     = "responseTime"
+			operator = "lessThan"
+			target   = "5000"
+		}
+		assertion {
+			type = "mcpRespectsSpecification"
+		}
+
+		request_definition {
+			url                  = "https://example.org/mcp"
+			call_type            = "tool_call"
+			mcp_protocol_version = "2025-06-18"
+			tool_name            = "search"
+			tool_args            = jsonencode({ limit = 5, query = "datadog synthetics" })
+		}
+	}
+}
+`, testName)
+}
+
+func TestAccDatadogSyntheticsMobileTest_SecureVariables(t *testing.T) {
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	const resourceName = "datadog_synthetics_test.bar"
+	variable := func(name, pattern, example string) string {
+		return fmt.Sprintf(`
+  config_variable {
+    name = %q
+    type = "text"
+    secure = true
+    pattern = %q
+    example = %q
+  }
+`, name, pattern, example)
+	}
+	config := func(message, variables string) string {
+		return fmt.Sprintf(`
+resource "datadog_synthetics_test" "bar" {
+  name = %q
+  type = "mobile"
+  status = "paused"
+  message = %q
+  locations = []
+  %s
+  mobile_options_list {
+    device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+    tick_every = 43200
+    mobile_application {
+      application_id = "ab0e0aed-536d-411a-9a99-5428c27d8f8e"
+      reference_id = "6115922a-5f5d-455e-bc7e-7955a57f3815"
+      reference_type = "version"
+    }
+  }
+}`, testName, message, variables)
+	}
+	check := func(index, name, pattern, example string) resource.TestCheckFunc {
+		prefix := "config_variable." + index + "."
+		return resource.ComposeTestCheckFunc(
+			resource.TestCheckResourceAttr(resourceName, prefix+"name", name),
+			resource.TestCheckResourceAttr(resourceName, prefix+"secure", "true"),
+			resource.TestCheckResourceAttr(resourceName, prefix+"pattern", pattern),
+			resource.TestCheckResourceAttr(resourceName, prefix+"example", example),
+		)
+	}
+	first := variable("FIRST", "synthetic-first", "first-example")
+	second := variable("SECOND", "synthetic-second", "second-example")
+	changed := variable("FIRST", "synthetic-updated", "updated-example")
+	initialConfig := config("", first+second)
+	changedConfig := config("", changed+second)
+	reorderedConfig := config("", second+changed)
+	updatedConfig := config("Update without changing the secure values", second+changed)
+	checkReordered := resource.ComposeTestCheckFunc(
+		check("0", "SECOND", "synthetic-second", "second-example"),
+		check("1", "FIRST", "synthetic-updated", "updated-example"),
+	)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(providers.sdkV2Provider),
+		Steps: []resource.TestStep{
+			{Config: initialConfig, Check: resource.ComposeTestCheckFunc(
+				testSyntheticsTestExists(providers.sdkV2Provider),
+				check("0", "FIRST", "synthetic-first", "first-example"),
+				check("1", "SECOND", "synthetic-second", "second-example"),
+			)},
+			{Config: initialConfig, PlanOnly: true},
+			{Config: changedConfig, PlanOnly: true, ExpectNonEmptyPlan: true},
+			{Config: changedConfig, Check: check("0", "FIRST", "synthetic-updated", "updated-example")},
+			{Config: changedConfig, PlanOnly: true},
+			{Config: reorderedConfig, Check: checkReordered},
+			{Config: updatedConfig, Check: checkReordered},
+			{RefreshState: true, Check: checkReordered},
+			{Config: updatedConfig, PlanOnly: true},
+			{
+				ResourceName:            resourceName,
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"config_variable.0.pattern", "config_variable.0.example", "config_variable.1.pattern", "config_variable.1.example"},
+				ImportStateCheck: func(states []*terraform.InstanceState) error {
+					for _, state := range states {
+						for _, index := range []string{"0", "1"} {
+							for _, field := range []string{"pattern", "example"} {
+								if state.Attributes["config_variable."+index+"."+field] != "" {
+									return fmt.Errorf("import unexpectedly recovered masked variable %s %s", index, field)
+								}
+							}
+						}
+					}
+					return nil
+				},
+			},
+			{Config: updatedConfig, PlanOnly: true},
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsMobileTest_PlaySubTest(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	const resourceName = "datadog_synthetics_test.bar"
+	checkSubtest := func(index int) resource.TestCheckFunc {
+		return resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(providers.sdkV2Provider),
+			resource.TestCheckResourceAttr(resourceName, "mobile_step.0.type", "playSubTest"),
+			resource.TestCheckResourceAttrPair(resourceName, "mobile_step.0.params.0.subtest_public_id", fmt.Sprintf("datadog_synthetics_test.child.%d", index), "id"),
+		)
+	}
+	first := createSyntheticsMobileTestPlaySubTestConfig(testName, 0)
+	second := createSyntheticsMobileTestPlaySubTestConfig(testName, 1)
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(providers.sdkV2Provider),
+		Steps: []resource.TestStep{
+			{Config: first, Check: checkSubtest(0)},
+			{Config: first, PlanOnly: true},
+			{ResourceName: resourceName, ImportState: true, ImportStateVerify: true},
+			{Config: second, PlanOnly: true, ExpectNonEmptyPlan: true},
+			{Config: second, Check: checkSubtest(1)},
+			{ResourceName: resourceName, ImportState: true, ImportStateVerify: true},
+			{Config: second, PlanOnly: true},
+		},
+	})
+}
+
+func createSyntheticsMobileTestPlaySubTestConfig(uniq string, childIndex int) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "child" {
+  count     = 2
+  name      = "%[1]s-child-${count.index}"
+  type      = "mobile"
+  status    = "paused"
+  message   = ""
+  locations = []
+
+  mobile_options_list {
+    device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+    tick_every = 43200
+    mobile_application {
+      application_id = "ab0e0aed-536d-411a-9a99-5428c27d8f8e"
+      reference_id   = "6115922a-5f5d-455e-bc7e-7955a57f3815"
+      reference_type = "version"
+    }
+  }
+}
+
+resource "datadog_synthetics_test" "bar" {
+  name      = "%[1]s"
+  type      = "mobile"
+  status    = "paused"
+  message   = ""
+  locations = []
+
+  mobile_options_list {
+    device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+    tick_every = 43200
+    mobile_application {
+      application_id = "ab0e0aed-536d-411a-9a99-5428c27d8f8e"
+      reference_id   = "6115922a-5f5d-455e-bc7e-7955a57f3815"
+      reference_type = "version"
+    }
+  }
+
+  mobile_step {
+    name    = "Run subtest"
+    type    = "playSubTest"
+    timeout = 30
+    params {
+      subtest_public_id = datadog_synthetics_test.child[%[2]d].id
+    }
+  }
+}`, uniq, childIndex)
 }

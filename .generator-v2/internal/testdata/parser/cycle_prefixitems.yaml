@@ -1,0 +1,13 @@
+# Tuple references itself through a prefixItems entry (OpenAPI 3.1 tuple typing).
+# Exercises the PrefixItems edge of the walk.
+openapi: 3.1.0
+info:
+  title: Cycles
+  version: 1.0.0
+paths: {}
+components:
+  schemas:
+    Tuple:
+      type: array
+      prefixItems:
+        - $ref: '#/components/schemas/Tuple'

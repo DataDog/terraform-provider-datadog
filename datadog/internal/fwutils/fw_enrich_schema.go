@@ -61,6 +61,26 @@ func enrichResourceDescription(r any) resourceSchema.Attribute {
 	case resourceSchema.BoolAttribute:
 		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
 		return v
+	case resourceSchema.SingleNestedAttribute:
+		for i, attr := range v.Attributes {
+			v.Attributes[i] = enrichResourceDescription(attr)
+		}
+		return v
+	case resourceSchema.ListNestedAttribute:
+		for i, attr := range v.NestedObject.Attributes {
+			v.NestedObject.Attributes[i] = enrichResourceDescription(attr)
+		}
+		return v
+	case resourceSchema.SetNestedAttribute:
+		for i, attr := range v.NestedObject.Attributes {
+			v.NestedObject.Attributes[i] = enrichResourceDescription(attr)
+		}
+		return v
+	case resourceSchema.MapNestedAttribute:
+		for i, attr := range v.NestedObject.Attributes {
+			v.NestedObject.Attributes[i] = enrichResourceDescription(attr)
+		}
+		return v
 	default:
 		return r.(resourceSchema.Attribute)
 	}
@@ -113,6 +133,26 @@ func enrichDatasourceDescription(r any) datasourceSchema.Attribute {
 	case datasourceSchema.BoolAttribute:
 		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
 		return v
+	case datasourceSchema.SingleNestedAttribute:
+		for i, attr := range v.Attributes {
+			v.Attributes[i] = enrichDatasourceDescription(attr)
+		}
+		return v
+	case datasourceSchema.ListNestedAttribute:
+		for i, attr := range v.NestedObject.Attributes {
+			v.NestedObject.Attributes[i] = enrichDatasourceDescription(attr)
+		}
+		return v
+	case datasourceSchema.SetNestedAttribute:
+		for i, attr := range v.NestedObject.Attributes {
+			v.NestedObject.Attributes[i] = enrichDatasourceDescription(attr)
+		}
+		return v
+	case datasourceSchema.MapNestedAttribute:
+		for i, attr := range v.NestedObject.Attributes {
+			v.NestedObject.Attributes[i] = enrichDatasourceDescription(attr)
+		}
+		return v
 	default:
 		return r.(datasourceSchema.Attribute)
 	}
@@ -164,6 +204,26 @@ func enrichEphemeralDescription(r any) ephemeralSchema.Attribute {
 		return v
 	case ephemeralSchema.BoolAttribute:
 		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
+		return v
+	case ephemeralSchema.SingleNestedAttribute:
+		for i, attr := range v.Attributes {
+			v.Attributes[i] = enrichEphemeralDescription(attr)
+		}
+		return v
+	case ephemeralSchema.ListNestedAttribute:
+		for i, attr := range v.NestedObject.Attributes {
+			v.NestedObject.Attributes[i] = enrichEphemeralDescription(attr)
+		}
+		return v
+	case ephemeralSchema.SetNestedAttribute:
+		for i, attr := range v.NestedObject.Attributes {
+			v.NestedObject.Attributes[i] = enrichEphemeralDescription(attr)
+		}
+		return v
+	case ephemeralSchema.MapNestedAttribute:
+		for i, attr := range v.NestedObject.Attributes {
+			v.NestedObject.Attributes[i] = enrichEphemeralDescription(attr)
+		}
 		return v
 	default:
 		return r.(ephemeralSchema.Attribute)

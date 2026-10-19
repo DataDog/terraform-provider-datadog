@@ -1,0 +1,636 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 219
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"domain_prefix":"test-sp-maint-tmpl-updated-1787184443","name":"test-sp-maint-tmpl-updated-1787184443","type":"internal","visualization_type":"bars_and_uptime_percentage"},"type":"status_pages"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 876
+        uncompressed: false
+        body: '{"data":{"id":"367fd52c-17a6-45be-a8fd-c6ab465c0873","type":"status_pages","attributes":{"company_logo":null,"components":[],"created_at":"2026-08-20T00:07:25.703104Z","custom_domain":null,"custom_domain_enabled":false,"domain_prefix":"test-sp-maint-tmpl-updated-1787184443","email_header_image":null,"enabled":false,"favicon":null,"modified_at":"2026-08-20T00:07:25.703104Z","name":"test-sp-maint-tmpl-updated-1787184443","page_url":"https://frog.datadoghq.com/status-pages/367fd52c-17a6-45be-a8fd-c6ab465c0873/view","slack_app_icon":null,"slack_subscriptions_enabled":false,"subscriptions_enabled":false,"type":"internal","visualization_type":"bars_and_uptime_percentage"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 519.734417ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 91
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"name":"API","position":0,"type":"component"},"type":"components"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/367fd52c-17a6-45be-a8fd-c6ab465c0873/components
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 557
+        uncompressed: false
+        body: '{"data":{"id":"72178b00-a541-42ee-a3bb-a94dd8ebd2fe","type":"components","attributes":{"created_at":"2026-08-20T00:07:26.304198Z","modified_at":"2026-08-20T00:07:26.304198Z","name":"API","position":0,"status":"operational","type":"component"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"group":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"status_page":{"data":{"id":"367fd52c-17a6-45be-a8fd-c6ab465c0873","type":"status_pages"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 128.324375ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 368
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"completed_description":"Maintenance is complete.","component_ids":["72178b00-a541-42ee-a3bb-a94dd8ebd2fe"],"in_progress_description":"Maintenance is in progress.","maintenance_title":"Scheduled API maintenance","name":"test-sp-maint-tmpl-updated-1787184443","scheduled_description":"Maintenance is scheduled."},"type":"maintenance_templates"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/367fd52c-17a6-45be-a8fd-c6ab465c0873/maintenance_templates
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 789
+        uncompressed: false
+        body: '{"data":{"id":"5fa13862-26bc-4c2a-86b7-c8dd3c26d5ea","type":"maintenance_templates","attributes":{"completed_description":"Maintenance is complete.","component_ids":["72178b00-a541-42ee-a3bb-a94dd8ebd2fe"],"created_at":"2026-08-20T00:07:26.402722Z","in_progress_description":"Maintenance is in progress.","maintenance_title":"Scheduled API maintenance","modified_at":"2026-08-20T00:07:26.402722Z","name":"test-sp-maint-tmpl-updated-1787184443","scheduled_description":"Maintenance is scheduled."},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"status_page":{"data":{"id":"367fd52c-17a6-45be-a8fd-c6ab465c0873","type":"status_pages"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 89.015292ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/367fd52c-17a6-45be-a8fd-c6ab465c0873/maintenance_templates/5fa13862-26bc-4c2a-86b7-c8dd3c26d5ea
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 789
+        uncompressed: false
+        body: '{"data":{"id":"5fa13862-26bc-4c2a-86b7-c8dd3c26d5ea","type":"maintenance_templates","attributes":{"completed_description":"Maintenance is complete.","component_ids":["72178b00-a541-42ee-a3bb-a94dd8ebd2fe"],"created_at":"2026-08-20T00:07:26.402722Z","in_progress_description":"Maintenance is in progress.","maintenance_title":"Scheduled API maintenance","modified_at":"2026-08-20T00:07:26.402722Z","name":"test-sp-maint-tmpl-updated-1787184443","scheduled_description":"Maintenance is scheduled."},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"status_page":{"data":{"id":"367fd52c-17a6-45be-a8fd-c6ab465c0873","type":"status_pages"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 63.655292ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/367fd52c-17a6-45be-a8fd-c6ab465c0873
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 989
+        uncompressed: false
+        body: '{"data":{"id":"367fd52c-17a6-45be-a8fd-c6ab465c0873","type":"status_pages","attributes":{"company_logo":null,"components":[{"id":"72178b00-a541-42ee-a3bb-a94dd8ebd2fe","name":"API","type":"component","status":"operational","position":0}],"created_at":"2026-08-20T00:07:25.703104Z","custom_domain":null,"custom_domain_enabled":false,"domain_prefix":"test-sp-maint-tmpl-updated-1787184443","email_header_image":null,"enabled":false,"favicon":null,"modified_at":"2026-08-20T00:07:25.703104Z","name":"test-sp-maint-tmpl-updated-1787184443","page_url":"https://frog.datadoghq.com/status-pages/367fd52c-17a6-45be-a8fd-c6ab465c0873/view","slack_app_icon":null,"slack_subscriptions_enabled":false,"subscriptions_enabled":false,"type":"internal","visualization_type":"bars_and_uptime_percentage"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 44.887834ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/367fd52c-17a6-45be-a8fd-c6ab465c0873/components/72178b00-a541-42ee-a3bb-a94dd8ebd2fe
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 557
+        uncompressed: false
+        body: '{"data":{"id":"72178b00-a541-42ee-a3bb-a94dd8ebd2fe","type":"components","attributes":{"created_at":"2026-08-20T00:07:26.304198Z","modified_at":"2026-08-20T00:07:26.304198Z","name":"API","position":0,"status":"operational","type":"component"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"group":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"status_page":{"data":{"id":"367fd52c-17a6-45be-a8fd-c6ab465c0873","type":"status_pages"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 56.433291ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/367fd52c-17a6-45be-a8fd-c6ab465c0873/maintenance_templates/5fa13862-26bc-4c2a-86b7-c8dd3c26d5ea
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 789
+        uncompressed: false
+        body: '{"data":{"id":"5fa13862-26bc-4c2a-86b7-c8dd3c26d5ea","type":"maintenance_templates","attributes":{"completed_description":"Maintenance is complete.","component_ids":["72178b00-a541-42ee-a3bb-a94dd8ebd2fe"],"created_at":"2026-08-20T00:07:26.402722Z","in_progress_description":"Maintenance is in progress.","maintenance_title":"Scheduled API maintenance","modified_at":"2026-08-20T00:07:26.402722Z","name":"test-sp-maint-tmpl-updated-1787184443","scheduled_description":"Maintenance is scheduled."},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"status_page":{"data":{"id":"367fd52c-17a6-45be-a8fd-c6ab465c0873","type":"status_pages"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 49.13825ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/367fd52c-17a6-45be-a8fd-c6ab465c0873
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 989
+        uncompressed: false
+        body: '{"data":{"id":"367fd52c-17a6-45be-a8fd-c6ab465c0873","type":"status_pages","attributes":{"company_logo":null,"components":[{"id":"72178b00-a541-42ee-a3bb-a94dd8ebd2fe","name":"API","type":"component","status":"operational","position":0}],"created_at":"2026-08-20T00:07:25.703104Z","custom_domain":null,"custom_domain_enabled":false,"domain_prefix":"test-sp-maint-tmpl-updated-1787184443","email_header_image":null,"enabled":false,"favicon":null,"modified_at":"2026-08-20T00:07:25.703104Z","name":"test-sp-maint-tmpl-updated-1787184443","page_url":"https://frog.datadoghq.com/status-pages/367fd52c-17a6-45be-a8fd-c6ab465c0873/view","slack_app_icon":null,"slack_subscriptions_enabled":false,"subscriptions_enabled":false,"type":"internal","visualization_type":"bars_and_uptime_percentage"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 72.201167ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/367fd52c-17a6-45be-a8fd-c6ab465c0873/components/72178b00-a541-42ee-a3bb-a94dd8ebd2fe
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 557
+        uncompressed: false
+        body: '{"data":{"id":"72178b00-a541-42ee-a3bb-a94dd8ebd2fe","type":"components","attributes":{"created_at":"2026-08-20T00:07:26.304198Z","modified_at":"2026-08-20T00:07:26.304198Z","name":"API","position":0,"status":"operational","type":"component"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"group":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"status_page":{"data":{"id":"367fd52c-17a6-45be-a8fd-c6ab465c0873","type":"status_pages"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 62.884791ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/367fd52c-17a6-45be-a8fd-c6ab465c0873/maintenance_templates/5fa13862-26bc-4c2a-86b7-c8dd3c26d5ea
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 789
+        uncompressed: false
+        body: '{"data":{"id":"5fa13862-26bc-4c2a-86b7-c8dd3c26d5ea","type":"maintenance_templates","attributes":{"completed_description":"Maintenance is complete.","component_ids":["72178b00-a541-42ee-a3bb-a94dd8ebd2fe"],"created_at":"2026-08-20T00:07:26.402722Z","in_progress_description":"Maintenance is in progress.","maintenance_title":"Scheduled API maintenance","modified_at":"2026-08-20T00:07:26.402722Z","name":"test-sp-maint-tmpl-updated-1787184443","scheduled_description":"Maintenance is scheduled."},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"status_page":{"data":{"id":"367fd52c-17a6-45be-a8fd-c6ab465c0873","type":"status_pages"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 73.808459ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 432
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"completed_description":"Maintenance has completed.","component_ids":["72178b00-a541-42ee-a3bb-a94dd8ebd2fe"],"in_progress_description":"Maintenance is in progress.","maintenance_title":"Scheduled API maintenance (updated)","name":"test-sp-maint-tmpl-updated-1787184443-updated","scheduled_description":"Maintenance is scheduled."},"id":"5fa13862-26bc-4c2a-86b7-c8dd3c26d5ea","type":"maintenance_templates"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/367fd52c-17a6-45be-a8fd-c6ab465c0873/maintenance_templates/5fa13862-26bc-4c2a-86b7-c8dd3c26d5ea
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 809
+        uncompressed: false
+        body: '{"data":{"id":"5fa13862-26bc-4c2a-86b7-c8dd3c26d5ea","type":"maintenance_templates","attributes":{"completed_description":"Maintenance has completed.","component_ids":["72178b00-a541-42ee-a3bb-a94dd8ebd2fe"],"created_at":"2026-08-20T00:07:26.402722Z","in_progress_description":"Maintenance is in progress.","maintenance_title":"Scheduled API maintenance (updated)","modified_at":"2026-08-20T00:07:29.379635Z","name":"test-sp-maint-tmpl-updated-1787184443-updated","scheduled_description":"Maintenance is scheduled."},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"status_page":{"data":{"id":"367fd52c-17a6-45be-a8fd-c6ab465c0873","type":"status_pages"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 87.671542ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/367fd52c-17a6-45be-a8fd-c6ab465c0873/maintenance_templates/5fa13862-26bc-4c2a-86b7-c8dd3c26d5ea
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 809
+        uncompressed: false
+        body: '{"data":{"id":"5fa13862-26bc-4c2a-86b7-c8dd3c26d5ea","type":"maintenance_templates","attributes":{"completed_description":"Maintenance has completed.","component_ids":["72178b00-a541-42ee-a3bb-a94dd8ebd2fe"],"created_at":"2026-08-20T00:07:26.402722Z","in_progress_description":"Maintenance is in progress.","maintenance_title":"Scheduled API maintenance (updated)","modified_at":"2026-08-20T00:07:29.379635Z","name":"test-sp-maint-tmpl-updated-1787184443-updated","scheduled_description":"Maintenance is scheduled."},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"status_page":{"data":{"id":"367fd52c-17a6-45be-a8fd-c6ab465c0873","type":"status_pages"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 84.433625ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/367fd52c-17a6-45be-a8fd-c6ab465c0873
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 989
+        uncompressed: false
+        body: '{"data":{"id":"367fd52c-17a6-45be-a8fd-c6ab465c0873","type":"status_pages","attributes":{"company_logo":null,"components":[{"id":"72178b00-a541-42ee-a3bb-a94dd8ebd2fe","name":"API","type":"component","status":"operational","position":0}],"created_at":"2026-08-20T00:07:25.703104Z","custom_domain":null,"custom_domain_enabled":false,"domain_prefix":"test-sp-maint-tmpl-updated-1787184443","email_header_image":null,"enabled":false,"favicon":null,"modified_at":"2026-08-20T00:07:25.703104Z","name":"test-sp-maint-tmpl-updated-1787184443","page_url":"https://frog.datadoghq.com/status-pages/367fd52c-17a6-45be-a8fd-c6ab465c0873/view","slack_app_icon":null,"slack_subscriptions_enabled":false,"subscriptions_enabled":false,"type":"internal","visualization_type":"bars_and_uptime_percentage"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 61.808917ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/367fd52c-17a6-45be-a8fd-c6ab465c0873/components/72178b00-a541-42ee-a3bb-a94dd8ebd2fe
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 557
+        uncompressed: false
+        body: '{"data":{"id":"72178b00-a541-42ee-a3bb-a94dd8ebd2fe","type":"components","attributes":{"created_at":"2026-08-20T00:07:26.304198Z","modified_at":"2026-08-20T00:07:26.304198Z","name":"API","position":0,"status":"operational","type":"component"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"group":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"status_page":{"data":{"id":"367fd52c-17a6-45be-a8fd-c6ab465c0873","type":"status_pages"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 63.234958ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/367fd52c-17a6-45be-a8fd-c6ab465c0873/maintenance_templates/5fa13862-26bc-4c2a-86b7-c8dd3c26d5ea
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 809
+        uncompressed: false
+        body: '{"data":{"id":"5fa13862-26bc-4c2a-86b7-c8dd3c26d5ea","type":"maintenance_templates","attributes":{"completed_description":"Maintenance has completed.","component_ids":["72178b00-a541-42ee-a3bb-a94dd8ebd2fe"],"created_at":"2026-08-20T00:07:26.402722Z","in_progress_description":"Maintenance is in progress.","maintenance_title":"Scheduled API maintenance (updated)","modified_at":"2026-08-20T00:07:29.379635Z","name":"test-sp-maint-tmpl-updated-1787184443-updated","scheduled_description":"Maintenance is scheduled."},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"status_page":{"data":{"id":"367fd52c-17a6-45be-a8fd-c6ab465c0873","type":"status_pages"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 71.116ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/statuspages/367fd52c-17a6-45be-a8fd-c6ab465c0873/maintenance_templates/5fa13862-26bc-4c2a-86b7-c8dd3c26d5ea
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 65.584333ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/statuspages/367fd52c-17a6-45be-a8fd-c6ab465c0873/components/72178b00-a541-42ee-a3bb-a94dd8ebd2fe
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 85.852916ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/statuspages/367fd52c-17a6-45be-a8fd-c6ab465c0873
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 561.8325ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/367fd52c-17a6-45be-a8fd-c6ab465c0873/maintenance_templates/5fa13862-26bc-4c2a-86b7-c8dd3c26d5ea
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 67
+        uncompressed: false
+        body: '{"errors":[{"title":"Not Found","detail":"Status page not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 43.3755ms

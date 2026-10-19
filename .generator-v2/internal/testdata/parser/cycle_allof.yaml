@@ -1,0 +1,16 @@
+# Loop merges itself via allOf — a $ref cycle through composition rather than a
+# plain property. Exercises the allOf edge of the walk.
+openapi: 3.0.0
+info:
+  title: Cycles
+  version: 1.0.0
+paths: {}
+components:
+  schemas:
+    Loop:
+      allOf:
+        - type: object
+          properties:
+            name:
+              type: string
+        - $ref: '#/components/schemas/Loop'

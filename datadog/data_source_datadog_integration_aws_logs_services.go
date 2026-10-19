@@ -13,8 +13,9 @@ import (
 
 func dataSourceDatadogIntegrationAWSLogsServices() *schema.Resource {
 	return &schema.Resource{
-		Description: "Use this data source to retrieve all AWS log ready services.",
-		ReadContext: dataSourceDatadogIntegrationAWSLogsServicesRead,
+		Description:        "Use this data source to retrieve all AWS log ready services.",
+		DeprecationMessage: "This data source is deprecated — use the `datadog_integration_aws_available_logs_services` data source instead.",
+		ReadContext:        dataSourceDatadogIntegrationAWSLogsServicesRead,
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
 				// Computed

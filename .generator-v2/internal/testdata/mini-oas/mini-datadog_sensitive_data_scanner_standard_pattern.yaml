@@ -1,0 +1,202 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: Sensitive Data Scanner
+  description: Create, update, delete, and retrieve sensitive data scanner groups and rules. See the [Sensitive
+    Data Scanner page](https://docs.datadoghq.com/sensitive_data_scanner/) for more information.
+paths:
+  /api/v2/sensitive-data-scanner/config/standard-patterns:
+    get:
+      operationId: ListStandardPatterns
+      tags:
+      - Sensitive Data Scanner
+      summary: List standard patterns
+      description: Returns all standard patterns.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SensitiveDataScannerStandardPatternsResponseData'
+              examples:
+                default:
+                  value:
+                    data:
+                    - id: abc-123
+                      type: sensitive_data_scanner_standard_pattern
+                      attributes:
+                        name: Credit Card Number
+                        description: Detects credit card numbers in various formats
+                        priority: 1
+                        tags:
+                        - card_number
+                        included_keywords:
+                        - credit card
+                        - card number
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '403':
+          description: Authentication Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      x-permission:
+        operator: OR
+        permissions:
+        - data_scanner_read
+      x-undo:
+        type: safe
+      x-menu-order: 3
+components:
+  responses:
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    SensitiveDataScannerStandardPatternAttributes:
+      type: object
+      description: Attributes of the Sensitive Data Scanner standard pattern.
+      properties:
+        description:
+          type: string
+          description: Description of the standard pattern.
+        name:
+          type: string
+          description: Name of the standard pattern.
+        pattern:
+          type: string
+          description: (Deprecated) Regex to match, optionally documented for older standard rules. Refer
+            to the `description` field to understand what the rule does.
+          deprecated: true
+        tags:
+          type: array
+          description: List of tags.
+          items:
+            type: string
+            description: A tag associated with the standard pattern.
+        included_keywords:
+          type: array
+          description: List of included keywords.
+          items:
+            type: string
+            description: A keyword used to increase match precision for the standard pattern.
+        priority:
+          type: integer
+          description: Integer from 1 (high) to 5 (low) indicating standard pattern issue severity.
+          format: int64
+          minimum: 1
+          maximum: 5
+    SensitiveDataScannerStandardPatternType:
+      type: string
+      description: Sensitive Data Scanner standard pattern type.
+      default: sensitive_data_scanner_standard_pattern
+      example: sensitive_data_scanner_standard_pattern
+      enum:
+      - sensitive_data_scanner_standard_pattern
+      x-enum-varnames:
+      - SENSITIVE_DATA_SCANNER_STANDARD_PATTERN
+    SensitiveDataScannerStandardPatternsResponse:
+      type: array
+      description: List Standard patterns response.
+      items:
+        $ref: '#/components/schemas/SensitiveDataScannerStandardPatternsResponseItem'
+    SensitiveDataScannerStandardPatternsResponseData:
+      type: object
+      description: List Standard patterns response data.
+      properties:
+        data:
+          $ref: '#/components/schemas/SensitiveDataScannerStandardPatternsResponse'
+    SensitiveDataScannerStandardPatternsResponseItem:
+      type: object
+      description: Standard pattern item.
+      properties:
+        type:
+          $ref: '#/components/schemas/SensitiveDataScannerStandardPatternType'
+        id:
+          type: string
+          description: ID of the standard pattern.
+        attributes:
+          $ref: '#/components/schemas/SensitiveDataScannerStandardPatternAttributes'
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY

@@ -2,6 +2,7 @@
 """Unit tests for select_pr_tests.py."""
 
 import os
+import subprocess
 import tempfile
 import textwrap
 import unittest
@@ -173,6 +174,51 @@ class TestSelectPrTests(unittest.TestCase):
             escape_for_make=True,
         )
         self.assertEqual(result, "^TestA$$")
+
+    def test_git_ref_discovers_newly_added_test_file(self):
+        # A new test file added by a PR is absent from the (trusted base)
+        # working tree but present at the PR head ref. Filesystem mode misses
+        # it; --git-ref mode reads it from the committed blob and finds it.
+        def git(*args):
+            subprocess.run(
+                ["git", "-C", self.tmpdir, *args],
+                check=True,
+                capture_output=True,
+            )
+
+        git("init", "-q")
+        git("config", "user.email", "test@example.com")
+        git("config", "user.name", "test")
+        self._write_file(
+            "datadog/tests/resource_datadog_new_test.go",
+            '''\
+            package test
+
+            func TestAccNewResource(t *testing.T) {
+                resource "datadog_new" "x" {}
+            }
+            ''',
+        )
+        git("add", "-A")
+        git("commit", "-q", "-m", "add new test")
+        head = subprocess.run(
+            ["git", "-C", self.tmpdir, "rev-parse", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+
+        # Simulate the base checkout that lacks the new file.
+        os.remove(
+            os.path.join(self.tmpdir, "datadog/tests/resource_datadog_new_test.go")
+        )
+
+        changed = ["datadog/tests/resource_datadog_new_test.go"]
+        self.assertEqual(select_pr_tests(changed, self.tmpdir), "")
+        self.assertEqual(
+            select_pr_tests(changed, self.tmpdir, git_ref=head),
+            "^TestAccNewResource$",
+        )
 
     def test_no_matching_tests(self):
         # Resource changed but no test file references it

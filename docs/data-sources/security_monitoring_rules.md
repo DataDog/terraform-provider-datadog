@@ -139,6 +139,7 @@ Read-Only:
 Read-Only:
 
 - `baseline_user_locations` (Boolean)
+- `baseline_user_locations_duration` (Number)
 
 
 <a id="nestedobjatt--rules--options--new_value_options"></a>

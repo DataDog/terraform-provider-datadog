@@ -44,7 +44,7 @@ Email notifications can be sent to specific users by using the same `@username` 
 - `query` (String) The monitor query to notify on. Note this is not the same query you see in the UI and the syntax is different depending on the monitor type, please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. `terraform plan` will validate query contents unless `validate` is set to `false`.
 
 **Note:** APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the [detailed doc](https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/).
-- `type` (String) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created. Valid values are `composite`, `event alert`, `log alert`, `metric alert`, `process alert`, `query alert`, `rum alert`, `service check`, `synthetics alert`, `trace-analytics alert`, `slo alert`, `event-v2 alert`, `audit alert`, `ci-pipelines alert`, `ci-tests alert`, `error-tracking alert`, `database-monitoring alert`, `network-performance alert`, `cost alert`, `data-quality alert`, `network-path alert`.
+- `type` (String) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created. Valid values are `composite`, `event alert`, `log alert`, `metric alert`, `process alert`, `query alert`, `rum alert`, `service check`, `synthetics alert`, `trace-analytics alert`, `slo alert`, `event-v2 alert`, `audit alert`, `ci-pipelines alert`, `ci-tests alert`, `error-tracking alert`, `database-monitoring alert`, `network-performance alert`, `cost alert`, `data-quality alert`, `network-path alert`, `data-jobs alert`, `llm-observability alert`.
 
 ### Optional
 
@@ -59,6 +59,7 @@ For example, if the value is set to `300` (5min), the `timeframe` is set to `las
 - `force_delete` (Boolean) A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. SLO, composite monitor).
 - `group_retention_duration` (String) The time span after which groups with missing data are dropped from the monitor state. The minimum value is one hour, and the maximum value is 72 hours. Example values are: 60m, 1h, and 2d. This option is only available for APM Trace Analytics, Audit Trail, CI, Error Tracking, Event, Logs, and RUM monitors.
 - `groupby_simple_monitor` (Boolean) Whether or not to trigger one alert if any source breaches a threshold. This is only used by log monitors. Defaults to `false`.
+- `ignore_tag_keys` (Set of String) Tag keys whose drift Terraform should ignore. Use this to keep specific tags managed outside Terraform (for example, by the Datadog UI or a tagging service) without `terraform plan` reporting drift on every run. Other tags are still managed normally. Any `:value` suffix is ignored. Merged with the provider's `ignore_tag_keys` for this resource.
 - `include_tags` (Boolean) A boolean indicating whether notifications from this monitor automatically insert its triggering tags into the title. Defaults to `true`.
 - `monitor_threshold_windows` (Block List, Max: 1) A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m` . Can only be used for, and are required for, anomaly monitors. (see [below for nested schema](#nestedblock--monitor_threshold_windows))
 - `monitor_thresholds` (Block List, Max: 1) Alert thresholds of the monitor. (see [below for nested schema](#nestedblock--monitor_thresholds))
@@ -71,7 +72,7 @@ For example, if the value is set to `300` (5min), the `timeframe` is set to `las
 We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks. Defaults to `10`.
 - `notification_preset_name` (String) Toggles the display of additional content sent in the monitor notification. Valid values are `show_all`, `hide_query`, `hide_handles`, `hide_all`, `hide_query_and_handles`, `show_only_snapshot`, `hide_handles_and_footer`.
 - `notify_audit` (Boolean) A boolean indicating whether tagged users will be notified on changes to this monitor. Defaults to `false`.
-- `notify_by` (Set of String) Controls what granularity a monitor alerts on. Only available for monitors with groupings. For instance, a monitor grouped by `cluster`, `namespace`, and `pod` can be configured to only notify on each new `cluster` violating the alert conditions by setting `notify_by` to `['cluster']`. Tags mentioned in `notify_by` must be a subset of the grouping tags in the query. For example, a query grouped by `cluster` and `namespace` cannot notify on `region`. Setting `notify_by` to `[*]` configures the monitor to notify as a simple-alert.
+- `notify_by` (Set of String) Controls what granularity a monitor alerts on. Only available for monitors with groupings. For instance, a monitor grouped by `cluster`, `namespace`, and `pod` can be configured to only notify on each new `cluster` violating the alert conditions by setting `notify_by` to `['cluster']`. Tags mentioned in `notify_by` must be a proper subset of the grouping tags in the query. For example, a query grouped by `cluster` and `namespace` cannot notify on `region` because `region` is not part of the grouping tags; furthermore, the same query cannot set `notify_by` to `['cluster', 'namespace']` because that is not a proper subset. Setting `notify_by` to `[*]` configures the monitor to notify as a simple-alert.
 - `notify_no_data` (Boolean) A boolean indicating whether this monitor will notify when data stops reporting. Defaults to `false`.
 - `on_missing_data` (String) Controls how groups or monitors are treated if an evaluation does not return any data points. The default option results in different behavior depending on the monitor query type. For monitors using `Count` queries, an empty monitor evaluation is treated as 0 and is compared to the threshold conditions. For monitors using any query type other than `Count`, for example `Gauge`, `Measure`, or `Rate`, the monitor shows the last known status. This option is not available for Service Check, Composite, or SLO monitors. Valid values are: `show_no_data`, `show_and_notify_no_data`, `resolve`, and `default`.
 - `priority` (String) Integer from 1 (high) to 5 (low) indicating alert severity.
@@ -120,7 +121,9 @@ Optional:
 Optional:
 
 - `critical` (String) The monitor `CRITICAL` threshold. Must be a number.
+- `critical_query` (String) Query evaluated as a dynamic `CRITICAL` threshold. Only supported on metric monitors with a formula query and `options['variables']`. Cannot be combined with static thresholds. This field is in preview.
 - `critical_recovery` (String) The monitor `CRITICAL` recovery threshold. Must be a number.
+- `critical_recovery_query` (String) Query evaluated as a dynamic `CRITICAL` recovery threshold. Only supported on metric monitors with a formula query and `options['variables']`. Cannot be combined with static thresholds. This field is in preview.
 - `ok` (String) The monitor `OK` threshold. Only supported in monitor type `service check`. Must be a number.
 - `unknown` (String) The monitor `UNKNOWN` threshold. Only supported in monitor type `service check`. Must be a number.
 - `warning` (String) The monitor `WARNING` threshold. Must be a number.
@@ -173,9 +176,497 @@ Optional:
 
 Optional:
 
+- `aggregate_augmented_query` (Block List) Aggregate-augmented composite query variables (reference table augment joined to a metrics or events base query). (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query))
+- `aggregate_filtered_query` (Block List) Aggregate-filtered composite query variables (filter base query results using a reference table or events filter query). (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query))
 - `cloud_cost_query` (Block List, Max: 5) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--variables--cloud_cost_query))
+- `data_jobs_query` (Block List, Max: 5) The Data Jobs query using formulas and functions. (see [below for nested schema](#nestedblock--variables--data_jobs_query))
 - `data_quality_query` (Block List, Max: 5) The Data Quality query using formulas and functions. (see [below for nested schema](#nestedblock--variables--data_quality_query))
 - `event_query` (Block List) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--variables--event_query))
+
+<a id="nestedblock--variables--aggregate_augmented_query"></a>
+### Nested Schema for `variables.aggregate_augmented_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) Compute aggregations for the aggregate-augmented query. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--compute))
+- `data_source` (String) The data source for aggregate-augmented composite queries. Must be `aggregate_augmented_query`. Valid values are `aggregate_augmented_query`.
+- `group_by` (Block List, Min: 1) Group by options for the aggregate-augmented query. At least one block is required. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--group_by))
+- `join_condition` (Block List, Min: 1, Max: 1) Join condition between augment and base queries. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--join_condition))
+
+Optional:
+
+- `augment_event_query` (Block List, Max: 1) Events augment query. Do not set `augment_reference_table` in the same block. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--augment_event_query))
+- `augment_reference_table` (Block List, Max: 1) Reference table augment query. Do not set `augment_event_query` in the same block. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--augment_reference_table))
+- `base_event_query` (Block List, Max: 1) Events base query. Do not set `base_metrics_query` in the same block. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--base_event_query))
+- `base_metrics_query` (Block List, Max: 1) Metrics base query. Do not set `base_event_query` in the same block. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--base_metrics_query))
+- `name` (String) Name of the query for use in formulas.
+
+<a id="nestedblock--variables--aggregate_augmented_query--compute"></a>
+### Nested Schema for `variables.aggregate_augmented_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for compute steps. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+- `name` (String) The name assigned to this aggregation when multiple aggregations are defined.
+
+
+<a id="nestedblock--variables--aggregate_augmented_query--group_by"></a>
+### Nested Schema for `variables.aggregate_augmented_query.group_by`
+
+Required:
+
+- `facet` (String) The facet to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) Sort options for group by. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--group_by--sort))
+- `source` (String) Identifies which sub-query this facet refers to (for example `filter_query`).
+
+<a id="nestedblock--variables--aggregate_augmented_query--group_by--sort"></a>
+### Nested Schema for `variables.aggregate_augmented_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for sorting. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--variables--aggregate_augmented_query--join_condition"></a>
+### Nested Schema for `variables.aggregate_augmented_query.join_condition`
+
+Required:
+
+- `augment_attribute` (String) Attribute from the augment query to join on.
+- `base_attribute` (String) Attribute from the base query to join on.
+- `join_type` (String) Join type (for example `inner`). Valid values are `inner`, `left`.
+
+
+<a id="nestedblock--variables--aggregate_augmented_query--augment_event_query"></a>
+### Nested Schema for `variables.aggregate_augmented_query.augment_event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--augment_event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`, `audit`, `events`, `logs`, `spans`, `database_queries`, `network`, `network_path`.
+- `name` (String) The name of query for use in formulas.
+- `search` (Block List, Min: 1, Max: 1) The search options. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--augment_event_query--search))
+
+Optional:
+
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--augment_event_query--group_by))
+- `indexes` (List of String) An array of index names to query in the stream.
+
+<a id="nestedblock--variables--aggregate_augmented_query--augment_event_query--compute"></a>
+### Nested Schema for `variables.aggregate_augmented_query.augment_event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+- `name` (String) The name assigned to this aggregation when multiple aggregations are defined for a query.
+
+
+<a id="nestedblock--variables--aggregate_augmented_query--augment_event_query--search"></a>
+### Nested Schema for `variables.aggregate_augmented_query.augment_event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
+
+
+<a id="nestedblock--variables--aggregate_augmented_query--augment_event_query--group_by"></a>
+### Nested Schema for `variables.aggregate_augmented_query.augment_event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--augment_event_query--group_by--sort))
+- `source` (String) For composite aggregate-augmented queries, identifies which sub-query this group-by facet refers to (for example `filter_query`).
+
+<a id="nestedblock--variables--aggregate_augmented_query--augment_event_query--group_by--sort"></a>
+### Nested Schema for `variables.aggregate_augmented_query.augment_event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--variables--aggregate_augmented_query--augment_reference_table"></a>
+### Nested Schema for `variables.aggregate_augmented_query.augment_reference_table`
+
+Required:
+
+- `data_source` (String) Must be `reference_table`. Valid values are `reference_table`.
+- `table_name` (String) Name of the reference table.
+
+Optional:
+
+- `columns` (Block List) Columns to retrieve from the reference table. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--augment_reference_table--columns))
+- `name` (String) Name of the augment sub-query.
+- `query_filter` (String) Optional filter expression for the reference table query.
+
+<a id="nestedblock--variables--aggregate_augmented_query--augment_reference_table--columns"></a>
+### Nested Schema for `variables.aggregate_augmented_query.augment_reference_table.columns`
+
+Required:
+
+- `name` (String) Reference table column name.
+
+Optional:
+
+- `alias` (String) Optional alias for the column.
+
+
+
+<a id="nestedblock--variables--aggregate_augmented_query--base_event_query"></a>
+### Nested Schema for `variables.aggregate_augmented_query.base_event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--base_event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`, `audit`, `events`, `logs`, `spans`, `database_queries`, `network`, `network_path`.
+- `name` (String) The name of query for use in formulas.
+- `search` (Block List, Min: 1, Max: 1) The search options. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--base_event_query--search))
+
+Optional:
+
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--base_event_query--group_by))
+- `indexes` (List of String) An array of index names to query in the stream.
+
+<a id="nestedblock--variables--aggregate_augmented_query--base_event_query--compute"></a>
+### Nested Schema for `variables.aggregate_augmented_query.base_event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+- `name` (String) The name assigned to this aggregation when multiple aggregations are defined for a query.
+
+
+<a id="nestedblock--variables--aggregate_augmented_query--base_event_query--search"></a>
+### Nested Schema for `variables.aggregate_augmented_query.base_event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
+
+
+<a id="nestedblock--variables--aggregate_augmented_query--base_event_query--group_by"></a>
+### Nested Schema for `variables.aggregate_augmented_query.base_event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--base_event_query--group_by--sort))
+- `source` (String) For composite aggregate-augmented queries, identifies which sub-query this group-by facet refers to (for example `filter_query`).
+
+<a id="nestedblock--variables--aggregate_augmented_query--base_event_query--group_by--sort"></a>
+### Nested Schema for `variables.aggregate_augmented_query.base_event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--variables--aggregate_augmented_query--base_metrics_query"></a>
+### Nested Schema for `variables.aggregate_augmented_query.base_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for metrics queries. Valid values are `metrics`, `cloud_cost`, `datadog_usage`.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation method for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `mean`, `area`, `l2norm`, `percentile`, `stddev`, `count_unique`.
+- `name` (String) The name of the query for use in formulas.
+
+
+
+<a id="nestedblock--variables--aggregate_filtered_query"></a>
+### Nested Schema for `variables.aggregate_filtered_query`
+
+Required:
+
+- `data_source` (String) The data source for aggregate-filtered composite queries. Must be `aggregate_filtered_query`. Valid values are `aggregate_filtered_query`.
+- `filters` (Block List, Min: 1) Filter conditions mapping base query attributes to filter query attributes. (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query--filters))
+
+Optional:
+
+- `base_event_query` (Block List, Max: 1) Events base query. Do not set `base_metrics_query` in the same block. (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query--base_event_query))
+- `base_metrics_query` (Block List, Max: 1) Metrics base query. Do not set `base_event_query` in the same block. (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query--base_metrics_query))
+- `compute` (Block List) Optional compute aggregations for the aggregate-filtered query. (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query--compute))
+- `filter_event_query` (Block List, Max: 1) Events filter query. Do not set `filter_reference_table` in the same block. (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query--filter_event_query))
+- `filter_reference_table` (Block List, Max: 1) Reference table filter query. Do not set `filter_event_query` in the same block. (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query--filter_reference_table))
+- `group_by` (Block List) Optional group by options for the aggregate-filtered query. (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query--group_by))
+- `name` (String) Name of the query for use in formulas.
+
+<a id="nestedblock--variables--aggregate_filtered_query--filters"></a>
+### Nested Schema for `variables.aggregate_filtered_query.filters`
+
+Required:
+
+- `base_attribute` (String) Attribute from the base query to filter on.
+- `filter_attribute` (String) Attribute from the filter query to match against.
+
+Optional:
+
+- `exclude` (Boolean) When true, exclude matching records instead of including them.
+
+
+<a id="nestedblock--variables--aggregate_filtered_query--base_event_query"></a>
+### Nested Schema for `variables.aggregate_filtered_query.base_event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query--base_event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`, `audit`, `events`, `logs`, `spans`, `database_queries`, `network`, `network_path`.
+- `name` (String) The name of query for use in formulas.
+- `search` (Block List, Min: 1, Max: 1) The search options. (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query--base_event_query--search))
+
+Optional:
+
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query--base_event_query--group_by))
+- `indexes` (List of String) An array of index names to query in the stream.
+
+<a id="nestedblock--variables--aggregate_filtered_query--base_event_query--compute"></a>
+### Nested Schema for `variables.aggregate_filtered_query.base_event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+- `name` (String) The name assigned to this aggregation when multiple aggregations are defined for a query.
+
+
+<a id="nestedblock--variables--aggregate_filtered_query--base_event_query--search"></a>
+### Nested Schema for `variables.aggregate_filtered_query.base_event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
+
+
+<a id="nestedblock--variables--aggregate_filtered_query--base_event_query--group_by"></a>
+### Nested Schema for `variables.aggregate_filtered_query.base_event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query--base_event_query--group_by--sort))
+- `source` (String) For composite aggregate-augmented queries, identifies which sub-query this group-by facet refers to (for example `filter_query`).
+
+<a id="nestedblock--variables--aggregate_filtered_query--base_event_query--group_by--sort"></a>
+### Nested Schema for `variables.aggregate_filtered_query.base_event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--variables--aggregate_filtered_query--base_metrics_query"></a>
+### Nested Schema for `variables.aggregate_filtered_query.base_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for metrics queries. Valid values are `metrics`, `cloud_cost`, `datadog_usage`.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation method for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `mean`, `area`, `l2norm`, `percentile`, `stddev`, `count_unique`.
+- `name` (String) The name of the query for use in formulas.
+
+
+<a id="nestedblock--variables--aggregate_filtered_query--compute"></a>
+### Nested Schema for `variables.aggregate_filtered_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for compute steps. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+- `name` (String) The name assigned to this aggregation when multiple aggregations are defined.
+
+
+<a id="nestedblock--variables--aggregate_filtered_query--filter_event_query"></a>
+### Nested Schema for `variables.aggregate_filtered_query.filter_event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query--filter_event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`, `audit`, `events`, `logs`, `spans`, `database_queries`, `network`, `network_path`.
+- `name` (String) The name of query for use in formulas.
+- `search` (Block List, Min: 1, Max: 1) The search options. (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query--filter_event_query--search))
+
+Optional:
+
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query--filter_event_query--group_by))
+- `indexes` (List of String) An array of index names to query in the stream.
+
+<a id="nestedblock--variables--aggregate_filtered_query--filter_event_query--compute"></a>
+### Nested Schema for `variables.aggregate_filtered_query.filter_event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+- `name` (String) The name assigned to this aggregation when multiple aggregations are defined for a query.
+
+
+<a id="nestedblock--variables--aggregate_filtered_query--filter_event_query--search"></a>
+### Nested Schema for `variables.aggregate_filtered_query.filter_event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
+
+
+<a id="nestedblock--variables--aggregate_filtered_query--filter_event_query--group_by"></a>
+### Nested Schema for `variables.aggregate_filtered_query.filter_event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query--filter_event_query--group_by--sort))
+- `source` (String) For composite aggregate-augmented queries, identifies which sub-query this group-by facet refers to (for example `filter_query`).
+
+<a id="nestedblock--variables--aggregate_filtered_query--filter_event_query--group_by--sort"></a>
+### Nested Schema for `variables.aggregate_filtered_query.filter_event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--variables--aggregate_filtered_query--filter_reference_table"></a>
+### Nested Schema for `variables.aggregate_filtered_query.filter_reference_table`
+
+Required:
+
+- `data_source` (String) Must be `reference_table`. Valid values are `reference_table`.
+- `table_name` (String) Name of the reference table.
+
+Optional:
+
+- `columns` (Block List) Columns to retrieve from the reference table. (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query--filter_reference_table--columns))
+- `name` (String) Name of the filter sub-query.
+- `query_filter` (String) Optional filter expression for the reference table query.
+
+<a id="nestedblock--variables--aggregate_filtered_query--filter_reference_table--columns"></a>
+### Nested Schema for `variables.aggregate_filtered_query.filter_reference_table.columns`
+
+Required:
+
+- `name` (String) Reference table column name.
+
+Optional:
+
+- `alias` (String) Optional alias for the column.
+
+
+
+<a id="nestedblock--variables--aggregate_filtered_query--group_by"></a>
+### Nested Schema for `variables.aggregate_filtered_query.group_by`
+
+Required:
+
+- `facet` (String) The facet to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) Sort options for group by. (see [below for nested schema](#nestedblock--variables--aggregate_filtered_query--group_by--sort))
+- `source` (String) Identifies which sub-query this facet refers to (for example `filter_query`).
+
+<a id="nestedblock--variables--aggregate_filtered_query--group_by--sort"></a>
+### Nested Schema for `variables.aggregate_filtered_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for sorting. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
 
 <a id="nestedblock--variables--cloud_cost_query"></a>
 ### Nested Schema for `variables.cloud_cost_query`
@@ -186,6 +677,17 @@ Required:
 - `data_source` (String) The data source for cloud cost queries. Valid values are `metrics`, `cloud_cost`, `datadog_usage`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
+
+
+<a id="nestedblock--variables--data_jobs_query"></a>
+### Nested Schema for `variables.data_jobs_query`
+
+Required:
+
+- `job_type` (String) The type of job being monitored. Valid values include `databricks.job`, `spark.application`, `airflow.dag`, `dbt.job`, `glue.job`. Custom job types are supported with the `custom.ol.` prefix.
+- `jobs_query` (String) Filter expression used to select the jobs to monitor.
+- `name` (String) Name of the query for use in formulas. Must be `run_query`.
+- `query_dialect` (String) Query dialect for data jobs queries. Currently only `metric` is supported.
 
 
 <a id="nestedblock--variables--data_quality_query"></a>
@@ -214,7 +716,64 @@ Optional:
 - `custom_sql` (String) Custom SQL query for the monitor.
 - `custom_where` (String) Custom WHERE clause for the query.
 - `group_by_columns` (List of String) Columns to group results by.
+- `model_configuration` (Block List, Max: 1) Tuning options for the anomaly detection model used by the monitor. (see [below for nested schema](#nestedblock--variables--data_quality_query--monitor_options--model_configuration))
 - `model_type_override` (String) Override for the model type. Valid values are `freshness`, `percentage`, `any`.
+- `sensitivity` (Number) Sensitivity of the anomaly detection model, expressed as a multiplier on the width of the predicted bounds. Higher values widen the bounds and produce fewer alerts; lower values tighten them and produce more alerts. Defaults to `3.0`.
+- `source_to_target_config` (Block List, Max: 1) Compare the same measure across two data entities and alert on the difference between them. (see [below for nested schema](#nestedblock--variables--data_quality_query--monitor_options--source_to_target_config))
+
+<a id="nestedblock--variables--data_quality_query--monitor_options--model_configuration"></a>
+### Nested Schema for `variables.data_quality_query.monitor_options.model_configuration`
+
+Optional:
+
+- `auto_resolve_days` (Number) Number of days after which an open alert is automatically resolved. When unset, alerts stay open until the measure returns within bounds.
+- `enable_flatline_detection` (Boolean) Whether to alert when the measure stops changing entirely. Defaults to `true`. Defaults to `true`.
+- `function` (String) Function applied to the measure before it is compared against the predicted bounds. Valid values are `DIFF`, `DIFF_PERCENT`.
+- `min_lower_bound_size` (Number) Minimum distance between the predicted value and the lower bound. Widening the lower bound to at least this size suppresses alerts on small downward deviations. When unset, no minimum is enforced.
+- `min_upper_bound_size` (Number) Minimum distance between the predicted value and the upper bound. Widening the upper bound to at least this size suppresses alerts on small upward deviations. When unset, no minimum is enforced.
+- `model_bounds_override` (String) Restricts which predicted bound the monitor alerts on. When unset, the monitor alerts on both. Valid values are `UPPER_ONLY`, `LOWER_ONLY`.
+
+
+<a id="nestedblock--variables--data_quality_query--monitor_options--source_to_target_config"></a>
+### Nested Schema for `variables.data_quality_query.monitor_options.source_to_target_config`
+
+Required:
+
+- `diff_type` (String) How the difference between the source and target measures is computed. Valid values are `absolute`, `diff_percent`.
+- `entity_type` (String) Type of the data entities being compared.
+- `source` (Block List, Min: 1, Max: 1) Measure configuration for the source entity. (see [below for nested schema](#nestedblock--variables--data_quality_query--monitor_options--source_to_target_config--source))
+- `target` (Block List, Min: 1, Max: 1) Measure configuration for the target entity. (see [below for nested schema](#nestedblock--variables--data_quality_query--monitor_options--source_to_target_config--target))
+
+<a id="nestedblock--variables--data_quality_query--monitor_options--source_to_target_config--source"></a>
+### Nested Schema for `variables.data_quality_query.monitor_options.source_to_target_config.source`
+
+Required:
+
+- `entity_id` (String) Identifier of the data entity to measure.
+- `entity_type` (String) Type of the data entity to measure.
+
+Optional:
+
+- `custom_sql` (String) Custom SQL query used to compute the measure for this entity.
+- `custom_where` (String) Custom WHERE clause applied when computing the measure for this entity.
+- `group_by_columns` (List of String) Columns to group results by when computing the measure for this entity.
+
+
+<a id="nestedblock--variables--data_quality_query--monitor_options--source_to_target_config--target"></a>
+### Nested Schema for `variables.data_quality_query.monitor_options.source_to_target_config.target`
+
+Required:
+
+- `entity_id` (String) Identifier of the data entity to measure.
+- `entity_type` (String) Type of the data entity to measure.
+
+Optional:
+
+- `custom_sql` (String) Custom SQL query used to compute the measure for this entity.
+- `custom_where` (String) Custom WHERE clause applied when computing the measure for this entity.
+- `group_by_columns` (List of String) Columns to group results by when computing the measure for this entity.
+
+
 
 
 
@@ -244,6 +803,7 @@ Optional:
 
 - `interval` (Number) A time interval in milliseconds.
 - `metric` (String) The measurable attribute to compute.
+- `name` (String) The name assigned to this aggregation when multiple aggregations are defined for a query.
 
 
 <a id="nestedblock--variables--event_query--search"></a>
@@ -265,6 +825,7 @@ Optional:
 
 - `limit` (Number) The number of groups to return.
 - `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--variables--event_query--group_by--sort))
+- `source` (String) For composite aggregate-augmented queries, identifies which sub-query this group-by facet refers to (for example `filter_query`).
 
 <a id="nestedblock--variables--event_query--group_by--sort"></a>
 ### Nested Schema for `variables.event_query.group_by.sort`

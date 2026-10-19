@@ -199,6 +199,31 @@ var ImageWidgetSpec = WidgetSpec{
 	},
 }
 
+// EmbeddedAppWidgetSpec corresponds to OpenAPI EmbeddedAppWidgetDefinition.
+var EmbeddedAppWidgetSpec = WidgetSpec{
+	HCLKey:      "embedded_app_definition",
+	JSONType:    "embedded_app",
+	Description: "The definition for an App Builder embedded app widget.",
+	ExactlyOneOf: [][]string{
+		{"app_id", "template_id"},
+	},
+	Fields: []FieldSpec{
+		{HCLKey: "app_id", Type: TypeString, OmitEmpty: true,
+			Description: "UUID of the App Builder app to embed. Exactly one of `app_id` or `template_id` must be provided."},
+		{HCLKey: "template_id", Type: TypeString, OmitEmpty: true,
+			Description: "ID of the built-in app template to embed. Exactly one of `app_id` or `template_id` must be provided."},
+		{HCLKey: "input", JSONKey: "inputs", Type: TypeBlockList, OmitEmpty: true,
+			Description: "A nested block describing an input passed to the embedded app. Multiple `input` blocks are allowed.",
+			Children: []FieldSpec{
+				{HCLKey: "name", Type: TypeString, OmitEmpty: false, Required: true,
+					Description: "Name of the app input."},
+				{HCLKey: "value", Type: TypeJSON, OmitEmpty: false, Required: true,
+					Description: "JSON-encoded value of the app input. Use `jsonencode()` for strings, numbers, booleans, objects, and arrays."},
+			}},
+		widgetCustomLinkField,
+	},
+}
+
 // NoteWidgetSpec corresponds to OpenAPI NoteWidgetDefinition.
 var NoteWidgetSpec = WidgetSpec{
 	HCLKey:      "note_definition",
@@ -757,7 +782,36 @@ var ChangeWidgetSpec = WidgetSpec{
 	},
 }
 
+// distributionHistogramQueryFields holds the children of the singular `query`
+// block on a histogram-mode DistributionWidgetRequest. The OpenAPI spec
+// (DistributionWidgetHistogramRequestQuery) lists three valid query variants:
+// metric, event, and apm_resource_stats. We reuse the same FieldSpec children
+// already declared for plural-formula queries — flattenFormulaQueryJSON and
+// buildQueryFromMapAttrs both dispatch by data_source over this exact shape.
+var distributionHistogramQueryFields = []FieldSpec{
+	{HCLKey: "metric_query", Type: TypeBlock, OmitEmpty: true,
+		Description: "Metric query for histogram-mode distribution.",
+		Children:    formulaAndFunctionMetricQueryFields},
+	{HCLKey: "event_query", Type: TypeBlock, OmitEmpty: true,
+		Description: "Event query for histogram-mode distribution.",
+		Children:    formulaAndFunctionEventQueryFields},
+	{HCLKey: "apm_resource_stats_query", Type: TypeBlock, OmitEmpty: true,
+		Description: "APM resource stats query for histogram-mode distribution.",
+		Children:    formulaAndFunctionApmResourceStatsQueryFields},
+	{HCLKey: "apm_metrics_query", Type: TypeBlock, OmitEmpty: true,
+		Description: "APM metrics query for histogram-mode distribution.",
+		Children:    formulaAndFunctionApmMetricsQueryFields},
+}
+
 // DistributionWidgetSpec corresponds to OpenAPI DistributionWidgetDefinition.
+//
+// Distribution requests have two coexisting modes in the same flat schema
+// (per OpenAPI DistributionWidgetRequest):
+//   - Aggregated: queries[]/formulas[]/response_format (handled by the
+//     standard formula request path).
+//   - Histogram: request_type=histogram + a singular `query` block (one of
+//     three FormulaAndFunction query types). Surfaced in HCL as the
+//     `histogram_query` block and dispatched in post-processing.
 var distributionWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
 		Deprecated:    "Use queries and formulas instead.",
@@ -770,6 +824,17 @@ var distributionWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "apm_stats_query", Type: TypeBlock, OmitEmpty: true,
 		Description: "The APM stats query to use in the widget.",
 		Children:    apmStatsQueryFields},
+	// Histogram-mode distribution request fields. request_type acts as the
+	// discriminator for histogram mode; histogram_query carries the singular
+	// query body. histogram_query is SchemaOnly because the JSON key it maps
+	// to (`query`) conflicts with the existing plural `query` TypeBlockList
+	// in standardQueryFields — handled in post-processing.
+	{HCLKey: "request_type", Type: TypeString, OmitEmpty: true,
+		Description: "Set to 'histogram' for distribution-of-point-values requests.",
+		ValidValues: []string{"histogram"}},
+	{HCLKey: "histogram_query", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description: "Singular query block for histogram-mode distribution requests.",
+		Children:    distributionHistogramQueryFields},
 }, standardQueryFields...)
 
 // distributionWidgetXAxisFields corresponds to OpenAPI DistributionWidgetXAxis.
@@ -829,6 +894,21 @@ var DistributionWidgetSpec = WidgetSpec{
 }
 
 // HeatmapWidgetSpec corresponds to OpenAPI HeatMapWidgetDefinition.
+var heatmapHistogramQueryFields = []FieldSpec{
+	{HCLKey: "metric_query", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Metric query for distribution of point values.",
+		Children:    formulaAndFunctionMetricQueryFields},
+}
+
+var heatmapHistogramRequestFields = []FieldSpec{
+	{HCLKey: "histogram_query", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Singular metric query for a histogram-mode heatmap request.",
+		Children:    heatmapHistogramQueryFields},
+	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
+		Description: "The style of the widget graph. One nested block is allowed using the structure below.",
+		Children:    widgetRequestStyleFields},
+}
+
 var heatmapWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
 		Deprecated:    "Use queries and formulas instead.",
@@ -837,6 +917,10 @@ var heatmapWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
 		Description: "The style of the widget graph. One nested block is allowed using the structure below.",
 		Children:    widgetRequestStyleFields},
+	{HCLKey: "histogram_request", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description:   "Histogram request for distribution of point values.",
+		Children:      heatmapHistogramRequestFields,
+		ConflictsWith: []string{"q", "style", "log_query", "apm_query", "rum_query", "security_query", "process_query", "query", "formula"}},
 }, standardQueryFields...)
 
 // heatmapWidgetXAxisFields corresponds to OpenAPI components/schemas/HeatMapWidgetXAxis.
@@ -866,7 +950,7 @@ var HeatmapWidgetSpec = WidgetSpec{
 			Description: "The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below.",
 			Children:    widgetEventFields},
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
-			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
+			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below.",
 			Children:    heatmapWidgetRequestFields},
 		{HCLKey: "marker", JSONKey: "markers", Type: TypeBlockList, OmitEmpty: true,
 			Description: "A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `heatmap_definition` block.",
@@ -884,6 +968,41 @@ var hostmapRequestInnerFields = []FieldSpec{
 	{HCLKey: "size", Type: TypeBlock, OmitEmpty: true,
 		Description: "The query used to size the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
 		Children:    hostmapRequestFillSizeFields},
+	{HCLKey: "request_type", Type: TypeString, OmitEmpty: true,
+		Description: "Identifies an infrastructure-backed or DDSQL data-projection host map request.",
+		ValidValues: []string{"infrastructure_hostmap", "data_projection"}},
+	{HCLKey: "node_type", Type: TypeString, OmitEmpty: true,
+		Description: "Infrastructure entity type to visualize.",
+		ValidValues: []string{"host", "container", "pod", "cluster"}},
+	{HCLKey: "filter", Type: TypeString, OmitEmpty: true,
+		Description: "Filter string for the entity set in tag format, such as `env:prod`."},
+	{HCLKey: "group_by", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Ordered grouping hierarchy for infrastructure entities.",
+		Children:    hostmapInfrastructureGroupByFields},
+	{HCLKey: "enrichment", JSONKey: "enrichments", Type: TypeBlockList, OmitEmpty: true, SchemaOnly: true,
+		Description: "Metric or event queries joined to the entity set.",
+		Children:    hostmapInfrastructureEnrichmentFields},
+	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
+		Description: "Style configuration for the infrastructure host map.",
+		Children:    hostmapInfrastructureStyleFields},
+	{HCLKey: "conditional_formats", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Conditional formatting rules applied to fill values.",
+		Children:    widgetConditionalFormatFields},
+	{HCLKey: "no_group_hosts", Type: TypeBool, OmitEmpty: true,
+		Description: "Whether to hide entities that have no group assignment."},
+	{HCLKey: "no_metric_hosts", Type: TypeBool, OmitEmpty: true,
+		Description: "Whether to hide entities that have no enrichment data."},
+	{HCLKey: "child", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description: "Optional child request for one level of hierarchical visualization.",
+		Children:    hostmapInfrastructureLeafFields},
+	{HCLKey: "query", Type: TypeBlock, OmitEmpty: true,
+		Description: "Published-dataset query used by the DDSQL data-projection request.",
+		Children:    datasetListQueryFields},
+	{HCLKey: "projection", Type: TypeBlock, OmitEmpty: true,
+		Description: "Mapping from published-dataset columns to host map dimensions.",
+		Children:    hostmapProjectionFields},
+	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true,
+		Description: "Maximum number of rows to return from the DDSQL data-projection request."},
 }
 
 var HostmapWidgetSpec = WidgetSpec{
@@ -893,7 +1012,7 @@ var HostmapWidgetSpec = WidgetSpec{
 	Fields: []FieldSpec{
 		// TypeBlock (not TypeBlockList) — "requests" is a JSON object, not array
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlock, OmitEmpty: true,
-			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below.",
+			Description: "A request using the legacy metric format, the infrastructure-backed format, or the DDSQL data-projection format.",
 			Children:    hostmapRequestInnerFields},
 		{HCLKey: "node_type", Type: TypeString, OmitEmpty: true,
 			Description: "The type of node used.",
@@ -931,6 +1050,7 @@ var queryValueRequestFields = append([]FieldSpec{
 	{HCLKey: "conditional_formats", Type: TypeBlockList, OmitEmpty: true,
 		Description: "Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below.",
 		Children:    widgetConditionalFormatFields},
+	queryValueWidgetComparisonField,
 }, standardQueryFields...)
 
 var QueryValueWidgetSpec = WidgetSpec{
@@ -1051,6 +1171,11 @@ var sunburstWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
 		Description: "Define style for the widget's request.",
 		Children:    widgetRequestStyleFields},
+	// sort is SchemaOnly: the generic engine skips JSON build/flatten; the formula
+	// request helper (flattenFormulaRequest / buildFormulaRequestFromMap) handles it.
+	{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description: "The controls for sorting the widget. Only applicable for formula-style requests.",
+		Children:    widgetSortByFields},
 }, standardQueryFields...)
 
 var SunburstWidgetSpec = WidgetSpec{
@@ -1143,6 +1268,14 @@ var treemapRequestFields = []FieldSpec{
 	{HCLKey: "formula", Type: TypeBlockList, OmitEmpty: true,
 		Description: "List of formulas that operate on queries.",
 		Children:    widgetFormulaFields},
+	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
+		Description: "Define style for the widget's request.",
+		Children:    widgetRequestStyleFields},
+	// sort is SchemaOnly: the generic engine skips JSON build/flatten; the formula
+	// request helper (flattenFormulaRequest / buildFormulaRequestFromMap) handles it.
+	{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description: "The controls for sorting the widget. Only applicable for formula-style requests.",
+		Children:    widgetSortByFields},
 }
 
 var TreemapWidgetSpec = WidgetSpec{
@@ -1161,10 +1294,13 @@ var TreemapWidgetSpec = WidgetSpec{
 	},
 }
 
-// TopologyMapWidgetSpec corresponds to OpenAPI TopologyMapWidgetDefinition.
-// Note: TopologyRequest.Query is a singular struct (*TopologyQuery) in the API,
-// so "query" maps to a JSON object (TypeBlock), not a list (TypeBlockList).
-// The HCL schema uses TypeList with an implicit single element.
+// TopologyMapWidgetSpec corresponds to OpenAPI TopologyMapWidgetDefinition,
+// a oneOf over TopologyMapWidgetDefinitionServiceMap and
+// TopologyMapWidgetDefinitionDataStreams. Both variants share the same JSON
+// shape, so one spec covers them; the query's data_source picks the variant.
+// Note: the request's query is a singular struct in the API, so "query" maps to
+// a JSON object (TypeBlock), not a list (TypeBlockList). The HCL schema uses
+// TypeList with an implicit single element.
 var topologyRequestFields = []FieldSpec{
 	{HCLKey: "request_type", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "The request type for the Topology request ('topology')."},
@@ -1401,6 +1537,7 @@ var allWidgetSpecs = []WidgetSpec{
 	FreeTextWidgetSpec,
 	IFrameWidgetSpec,
 	ImageWidgetSpec,
+	EmbeddedAppWidgetSpec,
 	NoteWidgetSpec,
 	EventStreamWidgetSpec,
 	EventTimelineWidgetSpec,
@@ -1433,19 +1570,161 @@ var allWidgetSpecs = []WidgetSpec{
 	PowerpackWidgetSpec,
 	// Funnel widget (unique request structure; request_type injected by post-process hook)
 	FunnelWidgetSpec,
+	ProductAnalyticsFunnelWidgetSpec,
+	CohortWidgetSpec,
+	RetentionCurveWidgetSpec,
+	BarChartWidgetSpec,
+	SankeyWidgetSpec,
+	WildcardWidgetSpec,
+	PointPlotWidgetSpec,
 }
 
 // FunnelWidgetSpec corresponds to OpenAPI FunnelWidgetDefinition.
 // The JSON "request_type" field is always "funnel" and is injected by buildWidgetPostProcess.
 var FunnelWidgetSpec = WidgetSpec{
-	HCLKey:      "funnel_definition",
-	JSONType:    "funnel",
-	Description: "The definition for a Funnel widget.",
+	HCLKey:           "funnel_definition",
+	JSONType:         "funnel",
+	JSONMatchPath:    "requests.0.request_type",
+	JSONMatchValues:  []string{"funnel"},
+	JSONDefaultMatch: true,
+	Description:      "The definition for a Funnel widget.",
 	Fields: []FieldSpec{
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
 			MaxItems:    1,
 			Description: "A nested block describing the request to use when displaying the widget. Only one `request` block is allowed.",
 			Children:    funnelWidgetRequestFields},
+		{HCLKey: "grouped_display", Type: TypeString, OmitEmpty: true,
+			Description: "Display mode for grouped funnel results.",
+			ValidValues: []string{"stacked", "side_by_side"}},
+	},
+}
+
+// ProductAnalyticsFunnelWidgetSpec corresponds to OpenAPI
+// ProductAnalyticsFunnelWidgetDefinition. It shares JSON type "funnel" with the
+// legacy funnel widget and is selected on flatten by request_type.
+var ProductAnalyticsFunnelWidgetSpec = WidgetSpec{
+	HCLKey:          "product_analytics_funnel_definition",
+	JSONType:        "funnel",
+	JSONMatchPath:   "requests.0.request_type",
+	JSONMatchValues: []string{"user_journey_funnel"},
+	Description:     "The definition for a Product Analytics user journey funnel widget.",
+	Fields: []FieldSpec{
+		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false, Required: true, MinItems: 1,
+			Description: "User journey funnel requests.",
+			Children:    productAnalyticsFunnelRequestFields},
+		{HCLKey: "grouped_display", Type: TypeString, OmitEmpty: true,
+			Description: "Display mode for grouped funnel results.",
+			ValidValues: []string{"stacked", "side_by_side"}},
+	},
+}
+
+// CohortWidgetSpec corresponds to OpenAPI CohortWidgetDefinition.
+var CohortWidgetSpec = WidgetSpec{
+	HCLKey:      "cohort_definition",
+	JSONType:    "cohort",
+	Description: "The definition for a Cohort retention-grid widget.",
+	Fields: []FieldSpec{
+		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false, Required: true, MinItems: 1,
+			Description: "Cohort retention-grid requests.",
+			Children:    retentionGridRequestFields},
+	},
+}
+
+// RetentionCurveWidgetSpec corresponds to OpenAPI RetentionCurveWidgetDefinition.
+var RetentionCurveWidgetSpec = WidgetSpec{
+	HCLKey:      "retention_curve_definition",
+	JSONType:    "retention_curve",
+	Description: "The definition for a Retention Curve widget.",
+	Fields: []FieldSpec{
+		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false, Required: true, MinItems: 1,
+			Description: "Retention curve requests.",
+			Children:    retentionCurveWidgetRequestFields},
+	},
+}
+
+// BarChartWidgetSpec corresponds to OpenAPI BarChartWidgetDefinition.
+// Formula-capable with scalar response_format; uses scalarWithConditionalFormatsConfig.
+var BarChartWidgetSpec = WidgetSpec{
+	HCLKey:      "bar_chart_definition",
+	JSONType:    "bar_chart",
+	Description: "The definition for a Bar Chart widget.",
+	Fields: []FieldSpec{
+		{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
+			Description: "Style customization for the bar chart widget.",
+			Children:    barChartWidgetStyleFields},
+		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
+			MaxItems:    1,
+			Description: "A nested block describing the request to use when displaying the widget.",
+			Children:    barChartWidgetRequestFields},
+		widgetCustomLinkField,
+	},
+}
+
+// SankeyWidgetSpec corresponds to OpenAPI SankeyWidgetDefinition.
+// Requests use a discriminated TypeBlockList — each request item is dispatched
+// by request_type to either rum_request or network_request variant.
+var SankeyWidgetSpec = WidgetSpec{
+	HCLKey:      "sankey_definition",
+	JSONType:    "sankey",
+	Description: "The definition for a Sankey diagram widget.",
+	Fields: []FieldSpec{
+		{HCLKey: "sort_nodes", Type: TypeBool, OmitEmpty: true,
+			Description: "Whether to sort nodes in the Sankey diagram."},
+		{HCLKey: "show_other_links", Type: TypeBool, OmitEmpty: true,
+			Description: "Whether to show links for the 'other' category."},
+		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
+			Discriminator: &OneOfDiscriminator{JSONKey: "request_type"},
+			Description:   "A nested block describing the request to use when displaying the widget.",
+			Children: []FieldSpec{
+				{HCLKey: "rum_request", Type: TypeBlock, OmitEmpty: true,
+					Discriminator: &OneOfDiscriminator{Value: "sankey"},
+					Description:   "RUM request for the Sankey widget.",
+					Children:      sankeyRumRequestFields},
+				{HCLKey: "network_request", Type: TypeBlock, OmitEmpty: true,
+					Discriminator: &OneOfDiscriminator{Value: "netflow_sankey"},
+					Description:   "Network request for the Sankey widget.",
+					Children:      sankeyNetworkRequestFields},
+			}},
+	},
+}
+
+// PointPlotWidgetSpec corresponds to OpenAPI PointPlotWidgetDefinition.
+var PointPlotWidgetSpec = WidgetSpec{
+	HCLKey:      "point_plot_definition",
+	JSONType:    "point_plot",
+	Description: "The definition for a Point Plot widget.",
+	Fields: []FieldSpec{
+		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
+			Description: "A nested block describing the request to use when displaying the widget.",
+			Children:    pointPlotWidgetRequestFields},
+		{HCLKey: "yaxis", Type: TypeBlock, OmitEmpty: true,
+			Description: "A nested block describing the Y-Axis Controls. The structure of this block is described below.",
+			Children:    widgetAxisFields},
+		{HCLKey: "marker", JSONKey: "markers", Type: TypeBlockList, OmitEmpty: true,
+			Description: "A nested block describing a marker to use when displaying the widget. Multiple `marker` blocks are allowed.",
+			Children:    widgetMarkerFields},
+		{HCLKey: "legend", Type: TypeBlock, OmitEmpty: true,
+			Description: "Legend configuration for the widget.",
+			Children:    pointPlotWidgetLegendFields},
+		widgetCustomLinkField,
+	},
+}
+
+// WildcardWidgetSpec corresponds to OpenAPI WildcardWidgetDefinition.
+// Custom visualization widget using Vega or Vega-Lite specifications.
+// Request build/flatten is handled in post-processing.
+var WildcardWidgetSpec = WidgetSpec{
+	HCLKey:      "wildcard_definition",
+	JSONType:    "wildcard",
+	Description: "The definition for a Wildcard (custom visualization) widget using Vega or Vega-Lite specifications.",
+	Fields: []FieldSpec{
+		{HCLKey: "specification", Type: TypeBlock, OmitEmpty: false,
+			Description: "The Vega or Vega-Lite specification for custom visualization rendering.",
+			Children:    wildcardWidgetSpecificationFields},
+		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
+			Description: "A nested block describing the data requests for the widget.",
+			Children:    wildcardWidgetRequestFields},
+		widgetCustomLinkField,
 	},
 }
 

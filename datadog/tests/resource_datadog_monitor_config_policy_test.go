@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
@@ -35,6 +36,59 @@ func TestAccDatadogMonitorConfigPolicy_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogMonitorConfigPolicy_Downtime(t *testing.T) {
+	// Only one downtime policy is allowed per org, so this cannot run in parallel.
+	_, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorConfigPolicyDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorConfigPolicyDowntimeConfig("test", 3600000),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorConfigPolicyExists(accProvider, "datadog_monitor_config_policy.test"),
+					resource.TestCheckResourceAttr("datadog_monitor_config_policy.test", "policy_type", "downtime"),
+					resource.TestCheckResourceAttr("datadog_monitor_config_policy.test", "downtime_policy.0.max_duration_ms", "3600000"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogMonitorConfigPolicyDowntimeConfig("test", 7200000),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorConfigPolicyExists(accProvider, "datadog_monitor_config_policy.test"),
+					resource.TestCheckResourceAttr("datadog_monitor_config_policy.test", "policy_type", "downtime"),
+					resource.TestCheckResourceAttr("datadog_monitor_config_policy.test", "downtime_policy.0.max_duration_ms", "7200000"),
+				),
+			},
+			{
+				ResourceName:      "datadog_monitor_config_policy.test",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
+func TestAccDatadogMonitorConfigPolicy_DowntimeConflict(t *testing.T) {
+	// Only one downtime policy is allowed per org, so this cannot run in parallel.
+	_, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorConfigPolicyDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccCheckDatadogMonitorConfigPolicyDowntimeConflictConfig(),
+				ExpectError: regexp.MustCompile("error creating monitor config policy"),
+			},
+		},
+	})
+}
+
 func createTestCheckFunc(accProvider func() (*schema.Provider, error), tagKey string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogMonitorConfigPolicyExists(accProvider, "datadog_monitor_config_policy.test"),
@@ -57,6 +111,35 @@ func testAccCheckDatadogMonitorConfigPolicyConfig(name string, tagKey string) st
     }
   }
     `, name, tagKey)
+}
+
+func testAccCheckDatadogMonitorConfigPolicyDowntimeConfig(name string, maxDuration int) string {
+	return fmt.Sprintf(`
+  resource "datadog_monitor_config_policy" "%s" {
+    policy_type = "downtime"
+    downtime_policy {
+      max_duration_ms = %d
+    }
+  }
+    `, name, maxDuration)
+}
+
+func testAccCheckDatadogMonitorConfigPolicyDowntimeConflictConfig() string {
+	return `
+  resource "datadog_monitor_config_policy" "first" {
+    policy_type = "downtime"
+    downtime_policy {
+      max_duration_ms = 3600000
+    }
+  }
+  resource "datadog_monitor_config_policy" "second" {
+    depends_on  = [datadog_monitor_config_policy.first]
+    policy_type = "downtime"
+    downtime_policy {
+      max_duration_ms = 7200000
+    }
+  }
+`
 }
 
 func testAccCheckDatadogMonitorConfigPolicyExists(accProvider func() (*schema.Provider, error), resourceName string) resource.TestCheckFunc {

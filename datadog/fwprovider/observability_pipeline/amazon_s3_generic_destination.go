@@ -13,14 +13,17 @@ import (
 
 // AmazonS3GenericDestinationModel represents the Terraform model for the AmazonS3GenericDestination
 type AmazonS3GenericDestinationModel struct {
-	Bucket        types.String                        `tfsdk:"bucket"`
-	Region        types.String                        `tfsdk:"region"`
-	KeyPrefix     types.String                        `tfsdk:"key_prefix"`
-	StorageClass  types.String                        `tfsdk:"storage_class"`
-	Encoding      []AmazonS3GenericEncodingModel      `tfsdk:"encoding"`
-	Compression   []AmazonS3GenericCompressionModel   `tfsdk:"compression"`
-	Auth          []AwsAuthModel                      `tfsdk:"auth"`
-	BatchSettings []AmazonS3GenericBatchSettingsModel `tfsdk:"batch_settings"`
+	Bucket               types.String                        `tfsdk:"bucket"`
+	Region               types.String                        `tfsdk:"region"`
+	KeyPrefix            types.String                        `tfsdk:"key_prefix"`
+	StorageClass         types.String                        `tfsdk:"storage_class"`
+	ServerSideEncryption types.String                        `tfsdk:"server_side_encryption"`
+	SseKmsKeyId          types.String                        `tfsdk:"ssekms_key_id"`
+	Encoding             []AmazonS3GenericEncodingModel      `tfsdk:"encoding"`
+	Compression          []AmazonS3GenericCompressionModel   `tfsdk:"compression"`
+	Auth                 []AwsAuthModel                      `tfsdk:"auth"`
+	BatchSettings        []AmazonS3GenericBatchSettingsModel `tfsdk:"batch_settings"`
+	Buffer               []BufferOptionsModel                `tfsdk:"buffer"`
 }
 
 // AmazonS3GenericEncodingModel represents the encoding format for the destination.
@@ -64,6 +67,17 @@ func AmazonS3GenericDestinationSchema() schema.ListNestedBlock {
 					Validators: []validator.String{
 						stringvalidator.OneOf("STANDARD", "REDUCED_REDUNDANCY", "INTELLIGENT_TIERING", "STANDARD_IA", "EXPRESS_ONEZONE", "ONEZONE_IA", "GLACIER", "GLACIER_IR", "DEEP_ARCHIVE"),
 					},
+				},
+				"server_side_encryption": schema.StringAttribute{
+					Optional:    true,
+					Description: "The server-side encryption algorithm used when storing objects in S3. Valid values: `aws:kms`, `AES256`.",
+					Validators: []validator.String{
+						stringvalidator.OneOf("aws:kms", "AES256"),
+					},
+				},
+				"ssekms_key_id": schema.StringAttribute{
+					Optional:    true,
+					Description: "ID of the AWS KMS key to use for SSE-KMS encryption. Only applies when `server_side_encryption` is `aws:kms`.",
 				},
 			},
 			Blocks: map[string]schema.Block{
@@ -126,6 +140,7 @@ func AmazonS3GenericDestinationSchema() schema.ListNestedBlock {
 						listvalidator.SizeAtMost(1),
 					},
 				},
+				"buffer": BufferOptionsSchema(),
 			},
 		},
 		Validators: []validator.List{
@@ -151,6 +166,14 @@ func ExpandAmazonS3GenericDestination(ctx context.Context, id string, inputs typ
 		dest.SetKeyPrefix(src.KeyPrefix.ValueString())
 	}
 
+	if !src.ServerSideEncryption.IsNull() {
+		dest.SetServerSideEncryption(datadogV2.ObservabilityPipelineAmazonS3DestinationServerSideEncryption(src.ServerSideEncryption.ValueString()))
+	}
+
+	if !src.SseKmsKeyId.IsNull() {
+		dest.SetSsekmsKeyId(src.SseKmsKeyId.ValueString())
+	}
+
 	if len(src.Encoding) > 0 {
 		dest.SetEncoding(expandS3GenericEncoding(src.Encoding[0]))
 	}
@@ -165,6 +188,13 @@ func ExpandAmazonS3GenericDestination(ctx context.Context, id string, inputs typ
 
 	if len(src.BatchSettings) > 0 {
 		dest.SetBatchSettings(expandS3GenericBatchSettings(src.BatchSettings[0]))
+	}
+
+	if len(src.Buffer) > 0 {
+		buffer := ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			dest.SetBuffer(*buffer)
+		}
 	}
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
@@ -224,15 +254,25 @@ func FlattenAmazonS3GenericDestination(src *datadogV2.ObservabilityPipelineAmazo
 	}
 
 	model := &AmazonS3GenericDestinationModel{
-		Bucket:       types.StringValue(src.GetBucket()),
-		Region:       types.StringValue(src.GetRegion()),
-		StorageClass: types.StringValue(string(src.GetStorageClass())),
-		Encoding:     flattenS3GenericEncoding(src.GetEncoding()),
-		Compression:  flattenS3GenericCompression(src.GetCompression()),
+		Bucket:               types.StringValue(src.GetBucket()),
+		Region:               types.StringValue(src.GetRegion()),
+		StorageClass:         types.StringValue(string(src.GetStorageClass())),
+		ServerSideEncryption: types.StringNull(),
+		SseKmsKeyId:          types.StringNull(),
+		Encoding:             flattenS3GenericEncoding(src.GetEncoding()),
+		Compression:          flattenS3GenericCompression(src.GetCompression()),
 	}
 
 	if v, ok := src.GetKeyPrefixOk(); ok {
 		model.KeyPrefix = types.StringValue(*v)
+	}
+
+	if v, ok := src.GetServerSideEncryptionOk(); ok {
+		model.ServerSideEncryption = types.StringValue(string(*v))
+	}
+
+	if v, ok := src.GetSsekmsKeyIdOk(); ok {
+		model.SseKmsKeyId = types.StringValue(*v)
 	}
 
 	if auth, ok := src.GetAuthOk(); ok {
@@ -241,6 +281,13 @@ func FlattenAmazonS3GenericDestination(src *datadogV2.ObservabilityPipelineAmazo
 
 	if bs, ok := src.GetBatchSettingsOk(); ok {
 		model.BatchSettings = []AmazonS3GenericBatchSettingsModel{flattenS3GenericBatchSettings(bs)}
+	}
+
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			model.Buffer = []BufferOptionsModel{*outBuffer}
+		}
 	}
 
 	return model

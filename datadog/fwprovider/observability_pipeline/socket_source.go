@@ -15,7 +15,7 @@ type SocketSourceModel struct {
 	AddressKey types.String         `tfsdk:"address_key"`
 	Mode       types.String         `tfsdk:"mode"`
 	Framing    []SocketFramingModel `tfsdk:"framing"`
-	Tls        []TlsModel           `tfsdk:"tls"`
+	Tls        []MtlsServerTlsModel `tfsdk:"tls"`
 }
 
 // ExpandSocketSource converts the Terraform model to the Datadog API model
@@ -65,7 +65,7 @@ func ExpandSocketSource(src *SocketSourceModel, id string) (datadogV2.Observabil
 		}
 	}
 	if len(src.Tls) > 0 {
-		s.Tls = ExpandTls(src.Tls)
+		s.Tls = ExpandMtlsServerTls(src.Tls)
 	}
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineSocketSource: s,
@@ -86,7 +86,7 @@ func FlattenSocketSource(src *datadogV2.ObservabilityPipelineSocketSource) *Sock
 	}
 
 	if src.Tls != nil {
-		out.Tls = FlattenTls(src.Tls)
+		out.Tls = FlattenMtlsServerTls(src.Tls)
 	}
 
 	outFraming := SocketFramingModel{}
@@ -172,7 +172,7 @@ func SocketSourceSchema() schema.ListNestedBlock {
 						listvalidator.SizeAtMost(1),
 					},
 				},
-				"tls": TlsSchema(),
+				"tls": MtlsServerTlsSchema(),
 			},
 		},
 	}

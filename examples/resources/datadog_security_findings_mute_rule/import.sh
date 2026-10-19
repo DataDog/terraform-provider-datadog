@@ -1,0 +1,1 @@
+terraform import datadog_security_findings_mute_rule.accepted_risks_dev "00000000-0000-0000-0000-000000000000"

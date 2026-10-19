@@ -1,0 +1,304 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 295
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"action":{"expire_at":4070908800000,"reason":"no_fix","reason_description":"context"},"enabled":false,"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OptionalChurn-local-1790863500","rule":{"finding_types":["misconfiguration"],"query":"env:prod"}},"type":"mute_rules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 586
+        uncompressed: false
+        body: '{"data":{"id":"b8ebfb76-1ae7-4884-90d7-e99b961a5a42","type":"mute_rules","attributes":{"action":{"reason":"no_fix","reason_description":"context","expire_at":4070908800000},"created_at":1790863502983,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":false,"modified_at":1790863502983,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OptionalChurn-local-1790863500","rule":{"finding_types":["misconfiguration"],"query":"env:prod"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 235.753792ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/b8ebfb76-1ae7-4884-90d7-e99b961a5a42
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 586
+        uncompressed: false
+        body: '{"data":{"id":"b8ebfb76-1ae7-4884-90d7-e99b961a5a42","type":"mute_rules","attributes":{"action":{"reason":"no_fix","reason_description":"context","expire_at":4070908800000},"created_at":1790863502983,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":false,"modified_at":1790863502983,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OptionalChurn-local-1790863500","rule":{"finding_types":["misconfiguration"],"query":"env:prod"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 439.329916ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/b8ebfb76-1ae7-4884-90d7-e99b961a5a42
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 586
+        uncompressed: false
+        body: '{"data":{"id":"b8ebfb76-1ae7-4884-90d7-e99b961a5a42","type":"mute_rules","attributes":{"action":{"reason":"no_fix","reason_description":"context","expire_at":4070908800000},"created_at":1790863502983,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":false,"modified_at":1790863502983,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OptionalChurn-local-1790863500","rule":{"finding_types":["misconfiguration"],"query":"env:prod"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 131.966833ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/b8ebfb76-1ae7-4884-90d7-e99b961a5a42
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 586
+        uncompressed: false
+        body: '{"data":{"id":"b8ebfb76-1ae7-4884-90d7-e99b961a5a42","type":"mute_rules","attributes":{"action":{"reason":"no_fix","reason_description":"context","expire_at":4070908800000},"created_at":1790863502983,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":false,"modified_at":1790863502983,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OptionalChurn-local-1790863500","rule":{"finding_types":["misconfiguration"],"query":"env:prod"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 138.328541ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 262
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"action":{"reason":"no_fix"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OptionalChurn-local-1790863500","rule":{"finding_types":["misconfiguration"]}},"id":"b8ebfb76-1ae7-4884-90d7-e99b961a5a42","type":"mute_rules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/b8ebfb76-1ae7-4884-90d7-e99b961a5a42
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 509
+        uncompressed: false
+        body: '{"data":{"id":"b8ebfb76-1ae7-4884-90d7-e99b961a5a42","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1790863502983,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":true,"modified_at":1790863506050,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OptionalChurn-local-1790863500","rule":{"finding_types":["misconfiguration"]}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 296.592083ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/b8ebfb76-1ae7-4884-90d7-e99b961a5a42
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 509
+        uncompressed: false
+        body: '{"data":{"id":"b8ebfb76-1ae7-4884-90d7-e99b961a5a42","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1790863502983,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":true,"modified_at":1790863506050,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OptionalChurn-local-1790863500","rule":{"finding_types":["misconfiguration"]}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 281.723375ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/b8ebfb76-1ae7-4884-90d7-e99b961a5a42
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 509
+        uncompressed: false
+        body: '{"data":{"id":"b8ebfb76-1ae7-4884-90d7-e99b961a5a42","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1790863502983,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":true,"modified_at":1790863506050,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OptionalChurn-local-1790863500","rule":{"finding_types":["misconfiguration"]}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 126.688583ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/b8ebfb76-1ae7-4884-90d7-e99b961a5a42
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 267.681375ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/b8ebfb76-1ae7-4884-90d7-e99b961a5a42
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 80
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Not Found","detail":"rule does not exist"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 218.002375ms

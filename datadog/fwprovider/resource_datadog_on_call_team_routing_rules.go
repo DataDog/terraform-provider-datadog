@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/google/uuid"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -46,8 +48,11 @@ type teamTimeRestrictionsModel struct {
 	Restrictions []*restrictionsModel `tfsdk:"restriction"`
 }
 type teamRuleActionModel struct {
-	Slack *slackMessageModel `tfsdk:"send_slack_message"`
-	Teams *teamsMessageModel `tfsdk:"send_teams_message"`
+	Slack            *slackMessageModel              `tfsdk:"send_slack_message"`
+	Teams            *teamsMessageModel              `tfsdk:"send_teams_message"`
+	Workflow         *triggerWorkflowAutomationModel `tfsdk:"trigger_workflow_automation"`
+	EscalationPolicy *escalationPolicyActionModel    `tfsdk:"escalation_policy"`
+	RerouteToTeam    *rerouteToTeamActionModel       `tfsdk:"reroute_to_team"`
 }
 
 type slackMessageModel struct {
@@ -59,6 +64,26 @@ type teamsMessageModel struct {
 	Tenant  types.String `tfsdk:"tenant"`
 	Team    types.String `tfsdk:"team"`
 	Channel types.String `tfsdk:"channel"`
+}
+
+type triggerWorkflowAutomationModel struct {
+	Handle types.String `tfsdk:"handle"`
+}
+
+type rerouteToTeamActionModel struct {
+	DestinationTeamId types.String `tfsdk:"destination_team_id"`
+}
+
+type escalationPolicyActionModel struct {
+	PolicyId          types.String                       `tfsdk:"policy_id"`
+	AckTimeoutMinutes types.Int64                        `tfsdk:"ack_timeout_minutes"`
+	Urgency           types.String                       `tfsdk:"urgency"`
+	SupportHours      *escalationPolicySupportHoursModel `tfsdk:"support_hours"`
+}
+
+type escalationPolicySupportHoursModel struct {
+	TimeZone     types.String         `tfsdk:"time_zone"`
+	Restrictions []*restrictionsModel `tfsdk:"restriction"`
 }
 
 func (m *onCallTeamRoutingRulesModel) Validate() diag.Diagnostics {
@@ -76,10 +101,14 @@ func (m *onCallTeamRoutingRulesModel) Validate() diag.Diagnostics {
 			}
 		}
 
+		hasEscalationPolicyAction := false
+		hasRerouteAction := false
+		var rerouteIncompatiblePaths []path.Path
+
 		for actionIdx, action := range rule.Actions {
 			actionPath := root.AtName("action").AtListIndex(actionIdx)
-			if action.Teams == nil && action.Slack == nil {
-				diags.AddAttributeError(actionPath, "missing actions", "action must specify one of send_slack_message or send_teams_message")
+			if action.Teams == nil && action.Slack == nil && action.Workflow == nil && action.EscalationPolicy == nil && action.RerouteToTeam == nil {
+				diags.AddAttributeError(actionPath, "missing actions", "action must specify one of send_slack_message, send_teams_message, trigger_workflow_automation, escalation_policy, or reroute_to_team")
 			}
 			if action.Teams != nil {
 				teamsPath := actionPath.AtName("send_teams_message")
@@ -101,6 +130,75 @@ func (m *onCallTeamRoutingRulesModel) Validate() diag.Diagnostics {
 				if action.Slack.Channel.IsNull() {
 					diags.AddAttributeError(teamsPath, "missing channel", "channel is required")
 				}
+			}
+			if action.Workflow != nil {
+				workflowPath := actionPath.AtName("trigger_workflow_automation")
+				if action.Workflow.Handle.IsNull() {
+					diags.AddAttributeError(workflowPath, "missing handle", "handle is required")
+				}
+				rerouteIncompatiblePaths = append(rerouteIncompatiblePaths, workflowPath)
+			}
+			if action.RerouteToTeam != nil {
+				reroutePath := actionPath.AtName("reroute_to_team")
+				if hasRerouteAction {
+					diags.AddAttributeError(reroutePath, "duplicate reroute_to_team action", "at most one reroute_to_team action is allowed per rule")
+				}
+				hasRerouteAction = true
+				if action.RerouteToTeam.DestinationTeamId.IsNull() {
+					diags.AddAttributeError(reroutePath, "missing destination_team_id", "destination_team_id is required")
+				}
+			}
+			if action.EscalationPolicy != nil {
+				escalationPolicyPath := actionPath.AtName("escalation_policy")
+				if hasEscalationPolicyAction {
+					diags.AddAttributeError(escalationPolicyPath, "duplicate escalation_policy action", "at most one escalation_policy action is allowed per rule")
+				}
+				hasEscalationPolicyAction = true
+				rerouteIncompatiblePaths = append(rerouteIncompatiblePaths, escalationPolicyPath)
+				if action.EscalationPolicy.PolicyId.IsNull() {
+					diags.AddAttributeError(escalationPolicyPath, "missing policy_id", "policy_id is required")
+				}
+				if action.EscalationPolicy.SupportHours != nil {
+					supportHoursPath := escalationPolicyPath.AtName("support_hours")
+					if action.EscalationPolicy.SupportHours.TimeZone.IsNull() {
+						diags.AddAttributeError(supportHoursPath, "missing time_zone", "support_hours must specify time_zone")
+					}
+					if len(action.EscalationPolicy.SupportHours.Restrictions) == 0 {
+						diags.AddAttributeError(supportHoursPath, "missing restrictions", "support_hours must specify at least one restriction")
+					}
+					if rule.TimeRestrictions != nil {
+						diags.AddAttributeError(supportHoursPath, "conflicting time restriction configuration", "cannot combine the rule-level `time_restrictions` block with `support_hours` on an `escalation_policy` action in the same rule. Use one or the other.")
+					}
+				}
+			}
+		}
+
+		if hasRerouteAction {
+			if !rule.EscalationPolicy.IsNull() {
+				rerouteIncompatiblePaths = append(rerouteIncompatiblePaths, root.AtName("escalation_policy"))
+			}
+			for _, p := range rerouteIncompatiblePaths {
+				diags.AddAttributeError(p, "incompatible action with reroute_to_team", "a rule with a `reroute_to_team` action can only be combined with `send_slack_message` or `send_teams_message` actions.")
+			}
+		}
+
+		if len(rule.Actions) == 0 && rule.EscalationPolicy.IsNull() {
+			diags.AddAttributeError(root, "missing actions on rule", "rule must define at least one action. Add an `action` block or set `escalation_policy`.")
+		}
+
+		if hasEscalationPolicyAction && !rule.EscalationPolicy.IsNull() {
+			rootEscalationPolicyPath := root.AtName("escalation_policy")
+			diags.AddAttributeError(rootEscalationPolicyPath, "conflicting escalation policy configuration", "cannot combine rule-level `escalation_policy` attribute with an `escalation_policy` action in the same rule. Use one or the other.")
+		}
+
+		// The API requires the last rule to be a catch-all: no query and no time
+		// restriction. It rejects the whole request with a 400 otherwise.
+		if i == len(m.Rules)-1 {
+			if !rule.Query.IsNull() && !rule.Query.IsUnknown() && rule.Query.ValueString() != "" {
+				diags.AddAttributeError(root.AtName("query"), "invalid query on last rule", "the last rule acts as a catch-all and must not use a query. Remove `query` from the last rule, or move a catch-all rule to the end.")
+			}
+			if rule.TimeRestrictions != nil {
+				diags.AddAttributeError(root.AtName("time_restrictions"), "invalid time_restrictions on last rule", "the last rule acts as a catch-all and must not use a time restriction. Remove `time_restrictions` from the last rule, or move a catch-all rule to the end.")
 			}
 		}
 	}
@@ -150,7 +248,7 @@ func (r *onCallTeamRoutingRulesResource) Schema(_ context.Context, _ resource.Sc
 							Optional:    true,
 							Computed:    true,
 							Default:     stringdefault.StaticString(""),
-							Description: "Defines the query or condition that triggers this routing rule.",
+							Description: "Defines the query or condition that triggers this routing rule. Must not be set on the last rule, which acts as a catch-all rule.",
 						},
 						"escalation_policy": schema.StringAttribute{
 							Optional:    true,
@@ -159,7 +257,7 @@ func (r *onCallTeamRoutingRulesResource) Schema(_ context.Context, _ resource.Sc
 					},
 					Blocks: map[string]schema.Block{
 						"time_restrictions": schema.SingleNestedBlock{
-							Description: "Holds time zone information and a list of time restrictions for a routing rule.",
+							Description: "Holds time zone information and a list of time restrictions for a routing rule. Must not be set on the last rule, which acts as a catch-all rule.",
 							Attributes: map[string]schema.Attribute{
 								"time_zone": schema.StringAttribute{
 									Required:    false,
@@ -227,6 +325,79 @@ func (r *onCallTeamRoutingRulesResource) Schema(_ context.Context, _ resource.Sc
 											},
 										},
 									},
+									"trigger_workflow_automation": schema.SingleNestedBlock{
+										Attributes: map[string]schema.Attribute{
+											"handle": schema.StringAttribute{
+												Optional:    true,
+												Description: "The handle of the Workflow Automation to trigger.",
+											},
+										},
+									},
+									"reroute_to_team": schema.SingleNestedBlock{
+										Description: "Reroutes the page to another team's routing rules. Can only be combined with `send_slack_message` or `send_teams_message` actions in the same rule.",
+										Attributes: map[string]schema.Attribute{
+											"destination_team_id": schema.StringAttribute{
+												Optional:    true,
+												Description: "ID of the team to reroute the page to.",
+												Validators:  []validator.String{uuidValidator},
+											},
+										},
+									},
+									"escalation_policy": schema.SingleNestedBlock{
+										Attributes: map[string]schema.Attribute{
+											"policy_id": schema.StringAttribute{
+												Optional:    true,
+												Description: "Escalation policy ID.",
+											},
+											"ack_timeout_minutes": schema.Int64Attribute{
+												Optional:    true,
+												Description: "Number of minutes before an acknowledged page is re-triggered.",
+												Validators:  []validator.Int64{int64validator.Between(30, 4320)},
+											},
+											"urgency": schema.StringAttribute{
+												Optional:    true,
+												Description: "Urgency for pages created via this action.",
+												Validators:  []validator.String{stringvalidator.OneOf("high", "low", "dynamic")},
+											},
+										},
+										Blocks: map[string]schema.Block{
+											"support_hours": schema.SingleNestedBlock{
+												Description: "Support hours during which the escalation policy will trigger.",
+												Attributes: map[string]schema.Attribute{
+													"time_zone": schema.StringAttribute{
+														Optional:    true,
+														Description: "Specifies the time zone applicable to the restrictions, e.g. `America/New_York`.",
+													},
+												},
+												Blocks: map[string]schema.Block{
+													"restriction": schema.ListNestedBlock{
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{
+																"end_day": schema.StringAttribute{
+																	Optional:    true,
+																	Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewWeekdayFromValue)},
+																	Description: "The weekday when the restriction period ends.",
+																},
+																"end_time": schema.StringAttribute{
+																	Optional:    true,
+																	Description: "The time of day when the restriction ends (hh:mm:ss).",
+																},
+																"start_day": schema.StringAttribute{
+																	Optional:    true,
+																	Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewWeekdayFromValue)},
+																	Description: "The weekday when the restriction period starts.",
+																},
+																"start_time": schema.StringAttribute{
+																	Optional:    true,
+																	Description: "The time of day when the restriction begins (hh:mm:ss).",
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
 								},
 							},
 						},
@@ -268,7 +439,7 @@ func (r *onCallTeamRoutingRulesResource) Read(ctx context.Context, request resou
 		return
 	}
 
-	state = *r.stateFromResponse(&resp)
+	state = *r.stateFromResponse(&resp, &state)
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -306,7 +477,7 @@ func (r *onCallTeamRoutingRulesResource) Create(ctx context.Context, request res
 		return
 	}
 
-	state := r.stateFromResponse(&resp)
+	state := r.stateFromResponse(&resp, &plan)
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -344,7 +515,7 @@ func (r *onCallTeamRoutingRulesResource) Update(ctx context.Context, request res
 		return
 	}
 
-	state := r.stateFromResponse(&resp)
+	state := r.stateFromResponse(&resp, &plan)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -395,7 +566,13 @@ func clearUnknownPolicyActions(resp *datadogV2.TeamRoutingRules) {
 	}
 }
 
-func (r *onCallTeamRoutingRulesResource) stateFromResponse(resp *datadogV2.TeamRoutingRules) *onCallTeamRoutingRulesModel {
+// stateFromResponse projects the API response into Terraform state.
+//
+// For escalation policies, the API returns a dual view: legacy rule-level
+// fields (policy_id, urgency) and an equivalent action entry. Terraform
+// exposes these as two distinct shapes, so we use `prior` to pick which
+// shape the user wrote and drop the other.
+func (r *onCallTeamRoutingRulesResource) stateFromResponse(resp *datadogV2.TeamRoutingRules, prior *onCallTeamRoutingRulesModel) *onCallTeamRoutingRulesModel {
 	state := &onCallTeamRoutingRulesModel{}
 	state.ID = types.StringValue(resp.Data.GetId())
 
@@ -416,6 +593,17 @@ func (r *onCallTeamRoutingRulesResource) stateFromResponse(resp *datadogV2.TeamR
 		if relationships.Policy != nil && relationships.Policy.Data != nil {
 			policyId = types.StringValue(fullRule.Relationships.Policy.Data.Id)
 		}
+
+		var priorEscalationAction *escalationPolicyActionModel
+		if prior != nil && i < len(prior.Rules) && prior.Rules[i] != nil {
+			for _, a := range prior.Rules[i].Actions {
+				if a.EscalationPolicy != nil {
+					priorEscalationAction = a.EscalationPolicy
+					break
+				}
+			}
+		}
+
 		var stateRestrictions *teamTimeRestrictionsModel
 		if attributes.TimeRestriction != nil {
 			stateRestrictions = &teamTimeRestrictionsModel{
@@ -431,6 +619,7 @@ func (r *onCallTeamRoutingRulesResource) stateFromResponse(resp *datadogV2.TeamR
 			}
 		}
 		stateActions := []*teamRuleActionModel{}
+		var responseEscalationAction *escalationPolicyActionModel
 		for _, action := range attributes.Actions {
 			if action.SendSlackMessageAction != nil {
 				stateActions = append(stateActions, &teamRuleActionModel{
@@ -447,14 +636,61 @@ func (r *onCallTeamRoutingRulesResource) stateFromResponse(resp *datadogV2.TeamR
 						Channel: types.StringValue(action.SendTeamsMessageAction.Channel),
 					},
 				})
+			} else if action.TriggerWorkflowAutomationAction != nil {
+				stateActions = append(stateActions, &teamRuleActionModel{
+					Workflow: &triggerWorkflowAutomationModel{
+						Handle: types.StringValue(action.TriggerWorkflowAutomationAction.Handle),
+					},
+				})
+			} else if action.RoutingRuleRerouteToTeamAction != nil {
+				stateActions = append(stateActions, &teamRuleActionModel{
+					RerouteToTeam: &rerouteToTeamActionModel{
+						DestinationTeamId: types.StringValue(action.RoutingRuleRerouteToTeamAction.DestinationTeamId.String()),
+					},
+				})
+			} else if action.RoutingRuleEscalationPolicyAction != nil {
+				ep := action.RoutingRuleEscalationPolicyAction
+				responseEscalationAction = &escalationPolicyActionModel{
+					PolicyId:          types.StringValue(ep.PolicyId),
+					AckTimeoutMinutes: types.Int64PointerValue(ep.AckTimeoutMinutes),
+					Urgency:           types.StringPointerValue((*string)(ep.Urgency)),
+				}
+				if ep.SupportHours != nil {
+					sh := &escalationPolicySupportHoursModel{
+						TimeZone: types.StringValue(ep.SupportHours.TimeZone),
+					}
+					for _, r := range ep.SupportHours.Restrictions {
+						sh.Restrictions = append(sh.Restrictions, &restrictionsModel{
+							StartDay:  types.StringValue(string(r.GetStartDay())),
+							StartTime: types.StringValue(r.GetStartTime()),
+							EndDay:    types.StringValue(string(r.GetEndDay())),
+							EndTime:   types.StringValue(r.GetEndTime()),
+						})
+					}
+					responseEscalationAction.SupportHours = sh
+				}
 			}
+		}
+
+		ruleUrgency := types.StringPointerValue((*string)(attributes.Urgency))
+		ruleEscalationPolicy := policyId
+		if priorEscalationAction != nil {
+			ep := responseEscalationAction
+			if ep == nil {
+				ep = priorEscalationAction
+			}
+			stateActions = append(stateActions, &teamRuleActionModel{
+				EscalationPolicy: ep,
+			})
+			ruleUrgency = types.StringNull()
+			ruleEscalationPolicy = types.StringNull()
 		}
 
 		state.Rules[i] = &teamRuleModel{
 			Id:               types.StringValue(rule.Id),
 			Query:            types.StringPointerValue(fullRule.GetAttributes().Query),
-			Urgency:          types.StringPointerValue((*string)(attributes.Urgency)),
-			EscalationPolicy: policyId,
+			Urgency:          ruleUrgency,
+			EscalationPolicy: ruleEscalationPolicy,
 			TimeRestrictions: stateRestrictions,
 			Actions:          stateActions,
 		}
@@ -487,11 +723,27 @@ func (r *onCallTeamRoutingRulesResource) teamRoutingRulesRequestFromModel(state 
 		actions := []datadogV2.RoutingRuleAction{}
 		for actionIndex, plannedAction := range plannedRule.Actions {
 			action := datadogV2.RoutingRuleAction{}
-			if plannedAction.Teams != nil && plannedAction.Slack != nil {
+			configured := 0
+			if plannedAction.Teams != nil {
+				configured++
+			}
+			if plannedAction.Slack != nil {
+				configured++
+			}
+			if plannedAction.Workflow != nil {
+				configured++
+			}
+			if plannedAction.EscalationPolicy != nil {
+				configured++
+			}
+			if plannedAction.RerouteToTeam != nil {
+				configured++
+			}
+			if configured > 1 {
 				diags.AddAttributeError(
 					rulePath.AtName("action").AtListIndex(actionIndex),
 					"action can only have one configuration",
-					"only one of `send_slack_message`, `send_teams_message` is allowed per action. Consider adding a separate `action` block.")
+					"only one of `send_slack_message`, `send_teams_message`, `trigger_workflow_automation`, `escalation_policy`, `reroute_to_team` is allowed per action. Consider adding a separate `action` block.")
 				return nil, diags
 			}
 			if plannedAction.Teams != nil {
@@ -506,6 +758,51 @@ func (r *onCallTeamRoutingRulesResource) teamRoutingRulesRequestFromModel(state 
 				action.SendSlackMessageAction.Type = datadogV2.SENDSLACKMESSAGEACTIONTYPE_SEND_SLACK_MESSAGE
 				action.SendSlackMessageAction.Channel = plannedAction.Slack.Channel.ValueString()
 				action.SendSlackMessageAction.Workspace = plannedAction.Slack.Workspace.ValueString()
+			}
+			if plannedAction.Workflow != nil {
+				action.TriggerWorkflowAutomationAction = datadogV2.NewTriggerWorkflowAutomationActionWithDefaults()
+				action.TriggerWorkflowAutomationAction.Type = datadogV2.TRIGGERWORKFLOWAUTOMATIONACTIONTYPE_TRIGGER_WORKFLOW_AUTOMATION
+				action.TriggerWorkflowAutomationAction.Handle = plannedAction.Workflow.Handle.ValueString()
+			}
+			if plannedAction.EscalationPolicy != nil {
+				epAction := datadogV2.NewRoutingRuleEscalationPolicyActionWithDefaults()
+				epAction.Type = datadogV2.ROUTINGRULEESCALATIONPOLICYACTIONTYPE_ESCALATION_POLICY
+				epAction.PolicyId = plannedAction.EscalationPolicy.PolicyId.ValueString()
+				epAction.AckTimeoutMinutes = plannedAction.EscalationPolicy.AckTimeoutMinutes.ValueInt64Pointer()
+				epAction.Urgency = (*datadogV2.Urgency)(plannedAction.EscalationPolicy.Urgency.ValueStringPointer())
+				if plannedAction.EscalationPolicy.SupportHours != nil {
+					sh := datadogV2.NewRoutingRuleEscalationPolicyActionSupportHoursWithDefaults()
+					sh.TimeZone = plannedAction.EscalationPolicy.SupportHours.TimeZone.ValueString()
+					for _, plannedRestriction := range plannedAction.EscalationPolicy.SupportHours.Restrictions {
+						restriction := datadogV2.TimeRestriction{}
+						if !plannedRestriction.EndDay.IsNull() {
+							restriction.SetEndDay(datadogV2.Weekday(plannedRestriction.EndDay.ValueString()))
+						}
+						if !plannedRestriction.EndTime.IsNull() {
+							restriction.SetEndTime(plannedRestriction.EndTime.ValueString())
+						}
+						if !plannedRestriction.StartDay.IsNull() {
+							restriction.SetStartDay(datadogV2.Weekday(plannedRestriction.StartDay.ValueString()))
+						}
+						if !plannedRestriction.StartTime.IsNull() {
+							restriction.SetStartTime(plannedRestriction.StartTime.ValueString())
+						}
+						sh.Restrictions = append(sh.Restrictions, restriction)
+					}
+					epAction.SupportHours = sh
+				}
+				action.RoutingRuleEscalationPolicyAction = epAction
+			}
+			if plannedAction.RerouteToTeam != nil {
+				destinationTeamId, err := uuid.Parse(plannedAction.RerouteToTeam.DestinationTeamId.ValueString())
+				if err != nil {
+					diags.AddAttributeError(
+						rulePath.AtName("action").AtListIndex(actionIndex).AtName("reroute_to_team").AtName("destination_team_id"),
+						"invalid destination_team_id",
+						err.Error())
+					return nil, diags
+				}
+				action.RoutingRuleRerouteToTeamAction = datadogV2.NewRoutingRuleRerouteToTeamAction(destinationTeamId, datadogV2.ROUTINGRULEREROUTETOTEAMACTIONTYPE_REROUTE_TO_TEAM)
 			}
 			actions = append(actions, action)
 		}

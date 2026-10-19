@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2123
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2ProductAnalyticsWidgets_import-local-1784747918","widgets":[{"definition":{"grouped_display":"stacked","requests":[{"comparison_segments":["paid"],"comparison_time":{"type":"previous_week"},"query":{"compute":{"aggregation":"count","metric":"__dd.conversion_rate"},"data_source":"product_analytics_journey","group_by":[{"facet":"@usr.email","sort":{"aggregation":"count","order":"desc"}}],"search":{"expression":"step1 -\u003e step2","node_objects":{"step1":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/home"}},"step2":{"data_source":"product_analytics","search":{"query":"@type:action @action.name:checkout"}}}}},"request_type":"user_journey_funnel"}],"title":"Checkout journey","type":"funnel"}},{"definition":{"requests":[{"query":{"compute":{"aggregation":"count","metric":"__dd.retention_rate"},"data_source":"product_analytics_retention","name":"cohort_query","search":{"cohort_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/signup"}},"time_interval":{"type":"calendar","value":{"timezone":"UTC","type":"week"}}},"retention_entity":"@usr.id","return_condition":"conversion_on_or_after","return_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:action @action.name:purchase"}}}}},"request_type":"retention_grid"}],"title":"Weekly retention cohort","type":"cohort"}},{"definition":{"requests":[{"query":{"compute":{"aggregation":"count","metric":"__dd.retention_rate"},"data_source":"product_analytics_retention","name":"curve_query","search":{"cohort_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/signup"}},"time_interval":{"type":"calendar","value":{"timezone":"UTC","type":"week"}}},"retention_entity":"@usr.id","return_condition":"conversion_on_or_after"}},"request_type":"retention_curve","style":{"palette":"dog_classic"}}],"title":"Weekly retention curve","type":"retention_curve"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"awu-xyu-dsr","title":"tf-TestAccDatadogDashboardV2ProductAnalyticsWidgets_import-local-1784747918","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/awu-xyu-dsr/tf-testaccdatadogdashboardv2productanalyticswidgetsimport-local-1784747918","template_variables":[],"widgets":[{"definition":{"grouped_display":"stacked","requests":[{"comparison_segments":["paid"],"comparison_time":{"type":"previous_week"},"query":{"compute":{"aggregation":"count","metric":"__dd.conversion_rate"},"data_source":"product_analytics_journey","group_by":[{"facet":"@usr.email","sort":{"aggregation":"count","order":"desc"}}],"search":{"expression":"step1 -> step2","node_objects":{"step1":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/home"}},"step2":{"data_source":"product_analytics","search":{"query":"@type:action @action.name:checkout"}}}}},"request_type":"user_journey_funnel"}],"title":"Checkout journey","type":"funnel"},"id":2486862187280351},{"definition":{"requests":[{"query":{"compute":{"aggregation":"count","metric":"__dd.retention_rate"},"data_source":"product_analytics_retention","name":"cohort_query","search":{"cohort_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/signup"}},"time_interval":{"type":"calendar","value":{"timezone":"UTC","type":"week"}}},"retention_entity":"@usr.id","return_condition":"conversion_on_or_after","return_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:action @action.name:purchase"}}}}},"request_type":"retention_grid"}],"title":"Weekly retention cohort","type":"cohort"},"id":7770684109698161},{"definition":{"requests":[{"query":{"compute":{"aggregation":"count","metric":"__dd.retention_rate"},"data_source":"product_analytics_retention","name":"curve_query","search":{"cohort_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/signup"}},"time_interval":{"type":"calendar","value":{"timezone":"UTC","type":"week"}}},"retention_entity":"@usr.id","return_condition":"conversion_on_or_after"}},"request_type":"retention_curve","style":{"palette":"dog_classic"}}],"title":"Weekly retention curve","type":"retention_curve"},"id":4985519782122550}],"notify_list":[],"created_at":"2026-07-22T19:18:40.640950+00:00","modified_at":"2026-07-22T19:18:40.640950+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 406.223125ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/awu-xyu-dsr
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"awu-xyu-dsr","title":"tf-TestAccDatadogDashboardV2ProductAnalyticsWidgets_import-local-1784747918","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/awu-xyu-dsr/tf-testaccdatadogdashboardv2productanalyticswidgetsimport-local-1784747918","template_variables":[],"widgets":[{"definition":{"grouped_display":"stacked","requests":[{"comparison_segments":["paid"],"comparison_time":{"type":"previous_week"},"query":{"compute":{"aggregation":"count","metric":"__dd.conversion_rate"},"data_source":"product_analytics_journey","group_by":[{"facet":"@usr.email","sort":{"aggregation":"count","order":"desc"}}],"search":{"expression":"step1 -> step2","node_objects":{"step1":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/home"}},"step2":{"data_source":"product_analytics","search":{"query":"@type:action @action.name:checkout"}}}}},"request_type":"user_journey_funnel"}],"title":"Checkout journey","type":"funnel"},"id":2486862187280351},{"definition":{"requests":[{"query":{"compute":{"aggregation":"count","metric":"__dd.retention_rate"},"data_source":"product_analytics_retention","name":"cohort_query","search":{"cohort_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/signup"}},"time_interval":{"type":"calendar","value":{"timezone":"UTC","type":"week"}}},"retention_entity":"@usr.id","return_condition":"conversion_on_or_after","return_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:action @action.name:purchase"}}}}},"request_type":"retention_grid"}],"title":"Weekly retention cohort","type":"cohort"},"id":7770684109698161},{"definition":{"requests":[{"query":{"compute":{"aggregation":"count","metric":"__dd.retention_rate"},"data_source":"product_analytics_retention","name":"curve_query","search":{"cohort_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/signup"}},"time_interval":{"type":"calendar","value":{"timezone":"UTC","type":"week"}}},"retention_entity":"@usr.id","return_condition":"conversion_on_or_after"}},"request_type":"retention_curve","style":{"palette":"dog_classic"}}],"title":"Weekly retention curve","type":"retention_curve"},"id":4985519782122550}],"notify_list":[],"created_at":"2026-07-22T19:18:40.640950+00:00","modified_at":"2026-07-22T19:18:40.640950+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 158.971791ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/awu-xyu-dsr
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"awu-xyu-dsr","title":"tf-TestAccDatadogDashboardV2ProductAnalyticsWidgets_import-local-1784747918","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/awu-xyu-dsr/tf-testaccdatadogdashboardv2productanalyticswidgetsimport-local-1784747918","template_variables":[],"widgets":[{"definition":{"grouped_display":"stacked","requests":[{"comparison_segments":["paid"],"comparison_time":{"type":"previous_week"},"query":{"compute":{"aggregation":"count","metric":"__dd.conversion_rate"},"data_source":"product_analytics_journey","group_by":[{"facet":"@usr.email","sort":{"aggregation":"count","order":"desc"}}],"search":{"expression":"step1 -> step2","node_objects":{"step1":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/home"}},"step2":{"data_source":"product_analytics","search":{"query":"@type:action @action.name:checkout"}}}}},"request_type":"user_journey_funnel"}],"title":"Checkout journey","type":"funnel"},"id":2486862187280351},{"definition":{"requests":[{"query":{"compute":{"aggregation":"count","metric":"__dd.retention_rate"},"data_source":"product_analytics_retention","name":"cohort_query","search":{"cohort_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/signup"}},"time_interval":{"type":"calendar","value":{"timezone":"UTC","type":"week"}}},"retention_entity":"@usr.id","return_condition":"conversion_on_or_after","return_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:action @action.name:purchase"}}}}},"request_type":"retention_grid"}],"title":"Weekly retention cohort","type":"cohort"},"id":7770684109698161},{"definition":{"requests":[{"query":{"compute":{"aggregation":"count","metric":"__dd.retention_rate"},"data_source":"product_analytics_retention","name":"curve_query","search":{"cohort_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/signup"}},"time_interval":{"type":"calendar","value":{"timezone":"UTC","type":"week"}}},"retention_entity":"@usr.id","return_condition":"conversion_on_or_after"}},"request_type":"retention_curve","style":{"palette":"dog_classic"}}],"title":"Weekly retention curve","type":"retention_curve"},"id":4985519782122550}],"notify_list":[],"created_at":"2026-07-22T19:18:40.640950+00:00","modified_at":"2026-07-22T19:18:40.640950+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 187.598292ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/awu-xyu-dsr
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"awu-xyu-dsr","title":"tf-TestAccDatadogDashboardV2ProductAnalyticsWidgets_import-local-1784747918","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/awu-xyu-dsr/tf-testaccdatadogdashboardv2productanalyticswidgetsimport-local-1784747918","template_variables":[],"widgets":[{"definition":{"grouped_display":"stacked","requests":[{"comparison_segments":["paid"],"comparison_time":{"type":"previous_week"},"query":{"compute":{"aggregation":"count","metric":"__dd.conversion_rate"},"data_source":"product_analytics_journey","group_by":[{"facet":"@usr.email","sort":{"aggregation":"count","order":"desc"}}],"search":{"expression":"step1 -> step2","node_objects":{"step1":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/home"}},"step2":{"data_source":"product_analytics","search":{"query":"@type:action @action.name:checkout"}}}}},"request_type":"user_journey_funnel"}],"title":"Checkout journey","type":"funnel"},"id":2486862187280351},{"definition":{"requests":[{"query":{"compute":{"aggregation":"count","metric":"__dd.retention_rate"},"data_source":"product_analytics_retention","name":"cohort_query","search":{"cohort_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/signup"}},"time_interval":{"type":"calendar","value":{"timezone":"UTC","type":"week"}}},"retention_entity":"@usr.id","return_condition":"conversion_on_or_after","return_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:action @action.name:purchase"}}}}},"request_type":"retention_grid"}],"title":"Weekly retention cohort","type":"cohort"},"id":7770684109698161},{"definition":{"requests":[{"query":{"compute":{"aggregation":"count","metric":"__dd.retention_rate"},"data_source":"product_analytics_retention","name":"curve_query","search":{"cohort_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/signup"}},"time_interval":{"type":"calendar","value":{"timezone":"UTC","type":"week"}}},"retention_entity":"@usr.id","return_condition":"conversion_on_or_after"}},"request_type":"retention_curve","style":{"palette":"dog_classic"}}],"title":"Weekly retention curve","type":"retention_curve"},"id":4985519782122550}],"notify_list":[],"created_at":"2026-07-22T19:18:40.640950+00:00","modified_at":"2026-07-22T19:18:40.640950+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 155.409334ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/awu-xyu-dsr
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"awu-xyu-dsr"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 556.163333ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/awu-xyu-dsr
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID awu-xyu-dsr not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 116.381459ms

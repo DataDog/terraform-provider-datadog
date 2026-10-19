@@ -1,0 +1,880 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: Teams
+  description: View and manage teams within Datadog. See the [Teams page](https://docs.datadoghq.com/account_management/teams/)
+    for more information.
+paths:
+  /api/v2/team/{team_id}:
+    get:
+      operationId: GetTeam
+      tags:
+      - Teams
+      summary: Get a team
+      description: Get a single team using the team's `id`.
+      parameters:
+      - name: team_id
+        in: path
+        required: true
+        description: None
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                      id: 00000000-0000-0000-0000-000000000003
+                      type: team
+                      attributes:
+                        handle: example-team
+                        name: Example Team
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          description: API error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      security:
+      - apiKeyAuth: []
+        appKeyAuth: []
+      - AuthZ:
+        - teams_read
+      x-permission:
+        operator: OR
+        permissions:
+        - teams_read
+      x-menu-order: 24
+      x-undo:
+        type: safe
+  /api/v2/team:
+    get:
+      operationId: ListTeams
+      tags:
+      - Teams
+      summary: Get all teams
+      description: 'Get all teams.
+
+        Can be used to search for teams using the `filter[keyword]` and `filter[me]` query parameters.'
+      parameters:
+      - $ref: '#/components/parameters/PageNumber'
+      - $ref: '#/components/parameters/PageSize'
+      - name: sort
+        in: query
+        required: false
+        description: Specifies the order of the returned teams
+        schema:
+          $ref: '#/components/schemas/ListTeamsSort'
+      - name: include
+        in: query
+        required: false
+        description: 'Included related resources optionally requested. Allowed enum values: `team_links,
+          user_team_permissions`'
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListTeamsInclude'
+      - name: filter[keyword]
+        in: query
+        required: false
+        description: Search query. Can be team name, team handle, or email of team member
+        schema:
+          type: string
+      - name: filter[me]
+        in: query
+        required: false
+        description: When true, only returns teams the current user belongs to
+        schema:
+          type: boolean
+      - name: fields[team]
+        in: query
+        required: false
+        description: List of fields that need to be fetched.
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamsField'
+        explode: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamsResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                    - id: 00000000-0000-0000-0000-000000000001
+                      type: team
+                      attributes:
+                        handle: example-team
+                        name: Example Team
+                    meta:
+                      pagination:
+                        total: 1
+                        offset: 0
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      security:
+      - apiKeyAuth: []
+        appKeyAuth: []
+      - AuthZ:
+        - teams_read
+      x-permission:
+        operator: OR
+        permissions:
+        - teams_read
+      x-menu-order: 20
+      x-undo:
+        type: safe
+      x-pagination:
+        limitParam: page[size]
+        pageParam: page[number]
+        resultsPath: data
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: teams
+        tf_description: Use this data source to retrieve information about existing Datadog teams.
+        group:
+          read: ListTeams
+        cardinality: plural
+components:
+  parameters:
+    PageNumber:
+      name: page[number]
+      in: query
+      required: false
+      description: Specific page number to return.
+      schema:
+        type: integer
+        format: int64
+        default: 0
+        example: 0
+    PageSize:
+      name: page[size]
+      in: query
+      required: false
+      description: Size for a given page. The maximum allowed value is 100.
+      schema:
+        type: integer
+        format: int64
+        default: 10
+        example: 10
+  responses:
+    ForbiddenResponse:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    ListTeamsInclude:
+      type: string
+      description: Included related resources optionally requested.
+      enum:
+      - team_links
+      - user_team_permissions
+      x-enum-varnames:
+      - TEAM_LINKS
+      - USER_TEAM_PERMISSIONS
+    ListTeamsSort:
+      type: string
+      description: Specifies the order of the returned teams
+      enum:
+      - name
+      - -name
+      - user_count
+      - -user_count
+      x-enum-varnames:
+      - NAME
+      - _NAME
+      - USER_COUNT
+      - _USER_COUNT
+    OrganizationsType:
+      type: string
+      description: Organizations resource type.
+      default: orgs
+      example: orgs
+      enum:
+      - orgs
+      x-enum-varnames:
+      - ORGS
+    RelationshipToOrganization:
+      type: object
+      description: Relationship to an organization.
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/RelationshipToOrganizationData'
+    RelationshipToOrganizationData:
+      type: object
+      description: Relationship to organization object.
+      required:
+      - id
+      - type
+      properties:
+        type:
+          $ref: '#/components/schemas/OrganizationsType'
+        id:
+          type: string
+          description: ID of the organization.
+          example: 00000000-0000-beef-0000-000000000000
+    RelationshipToOrganizations:
+      type: object
+      description: Relationship to organizations.
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          description: Relationships to organization objects.
+          example: []
+          items:
+            $ref: '#/components/schemas/RelationshipToOrganizationData'
+    RelationshipToRoleData:
+      type: object
+      description: Relationship to role object.
+      properties:
+        type:
+          $ref: '#/components/schemas/RolesType'
+        id:
+          type: string
+          description: The unique identifier of the role.
+          example: 3653d3c6-0c75-11ea-ad28-fb5701eabc7d
+      x-merge-override:
+        required: false
+    RelationshipToRoles:
+      type: object
+      description: Relationship to roles.
+      properties:
+        data:
+          type: array
+          description: An array containing type and the unique identifier of a role.
+          items:
+            $ref: '#/components/schemas/RelationshipToRoleData'
+      x-merge-override:
+        required: false
+    RelationshipToTeamLinkData:
+      type: object
+      description: Relationship between a link and a team
+      required:
+      - id
+      - type
+      properties:
+        id:
+          type: string
+          description: The team link's identifier
+          example: f9bb8444-af7f-11ec-ac2c-da7ad0900001
+        type:
+          $ref: '#/components/schemas/TeamLinkType'
+      x-merge-override:
+        required: false
+    RelationshipToTeamLinks:
+      type: object
+      description: Relationship between a team and a team link
+      properties:
+        links:
+          $ref: '#/components/schemas/TeamRelationshipsLinks'
+        data:
+          type: array
+          description: Related team links
+          items:
+            $ref: '#/components/schemas/RelationshipToTeamLinkData'
+      x-merge-override:
+        required: false
+    RelationshipToUserData:
+      type: object
+      description: Relationship to user object.
+      required:
+      - id
+      - type
+      properties:
+        type:
+          $ref: '#/components/schemas/UsersType'
+        id:
+          type: string
+          description: A unique identifier that represents the user.
+          example: 00000000-0000-0000-2345-000000000000
+      x-merge-override:
+        required: false
+    RelationshipToUserTeamPermission:
+      type: object
+      description: Relationship between a user team permission and a team
+      properties:
+        links:
+          $ref: '#/components/schemas/TeamRelationshipsLinks'
+        data:
+          $ref: '#/components/schemas/RelationshipToUserTeamPermissionData'
+      x-merge-override:
+        required: false
+    RelationshipToUserTeamPermissionData:
+      type: object
+      description: Related user team permission data
+      nullable: true
+      required:
+      - id
+      - type
+      properties:
+        id:
+          type: string
+          description: The ID of the user team permission
+          example: UserTeamPermissions-aeadc05e-98a8-11ec-ac2c-da7ad0900001-416595
+        type:
+          $ref: '#/components/schemas/UserTeamPermissionType'
+      x-merge-override:
+        required: false
+    RelationshipToUsers:
+      type: object
+      description: Relationship to users.
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          description: Relationships to user objects.
+          example: []
+          items:
+            $ref: '#/components/schemas/RelationshipToUserData'
+    RolesType:
+      type: string
+      description: Roles type.
+      default: roles
+      example: roles
+      enum:
+      - roles
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - ROLES
+    Team:
+      type: object
+      description: A team
+      required:
+      - attributes
+      - id
+      - type
+      properties:
+        attributes:
+          $ref: '#/components/schemas/TeamAttributes'
+        id:
+          type: string
+          description: The team's identifier
+          example: aeadc05e-98a8-11ec-ac2c-da7ad0900001
+        relationships:
+          $ref: '#/components/schemas/TeamRelationships'
+        type:
+          $ref: '#/components/schemas/TeamType'
+      x-merge-override:
+        required: false
+    TeamAttributes:
+      type: object
+      description: Team attributes
+      required:
+      - handle
+      - name
+      properties:
+        created_at:
+          type: string
+          description: Creation date of the team
+          format: date-time
+        description:
+          type: string
+          description: Free-form markdown description/content for the team's homepage
+          nullable: true
+        handle:
+          type: string
+          description: The team's identifier
+          maxLength: 195
+          example: example-team
+        avatar:
+          type: string
+          description: Unicode representation of the avatar for the team, limited to a single grapheme
+          nullable: true
+          example: "\U0001F951"
+        banner:
+          type: integer
+          description: Banner selection for the team
+          format: int64
+          nullable: true
+        visible_modules:
+          type: array
+          description: Collection of visible modules for the team
+          nullable: true
+          items:
+            type: string
+            description: String identifier of the module
+        hidden_modules:
+          type: array
+          description: Collection of hidden modules for the team
+          nullable: true
+          items:
+            type: string
+            description: String identifier of the module
+        link_count:
+          type: integer
+          description: The number of links belonging to the team
+          format: int32
+          maximum: 2147483647
+          readOnly: true
+        modified_at:
+          type: string
+          description: Modification date of the team
+          format: date-time
+        name:
+          type: string
+          description: The name of the team
+          maxLength: 200
+          example: Example Team
+        summary:
+          type: string
+          description: A brief summary of the team, derived from the `description`
+          maxLength: 120
+          nullable: true
+        user_count:
+          type: integer
+          description: The number of users belonging to the team
+          format: int32
+          maximum: 2147483647
+          readOnly: true
+        is_managed:
+          type: boolean
+          description: Whether the team is managed from an external source
+    TeamIncluded:
+      description: Included resources related to the team
+      oneOf:
+      - $ref: '#/components/schemas/User'
+      - $ref: '#/components/schemas/TeamLink'
+      - $ref: '#/components/schemas/UserTeamPermission'
+    TeamLink:
+      type: object
+      description: Team link
+      required:
+      - attributes
+      - id
+      - type
+      properties:
+        attributes:
+          $ref: '#/components/schemas/TeamLinkAttributes'
+        id:
+          type: string
+          description: The team link's identifier
+          example: b8626d7e-cedd-11eb-abf5-da7ad0900001
+        type:
+          $ref: '#/components/schemas/TeamLinkType'
+      x-merge-override:
+        required: false
+    TeamLinkAttributes:
+      type: object
+      description: Team link attributes
+      required:
+      - label
+      - url
+      properties:
+        label:
+          type: string
+          description: The link's label
+          maxLength: 256
+          example: Link label
+        position:
+          type: integer
+          description: The link's position, used to sort links for the team
+          format: int32
+          maximum: 2147483647
+        team_id:
+          type: string
+          description: ID of the team the link is associated with
+          readOnly: true
+        url:
+          type: string
+          description: The URL for the link
+          example: https://example.com
+    TeamLinkType:
+      type: string
+      description: Team link type
+      default: team_links
+      example: team_links
+      enum:
+      - team_links
+      x-enum-varnames:
+      - TEAM_LINKS
+    TeamRelationships:
+      type: object
+      description: Resources related to a team
+      properties:
+        team_links:
+          $ref: '#/components/schemas/RelationshipToTeamLinks'
+        user_team_permissions:
+          $ref: '#/components/schemas/RelationshipToUserTeamPermission'
+    TeamRelationshipsLinks:
+      type: object
+      description: Links attributes.
+      properties:
+        related:
+          type: string
+          description: Related link.
+          example: /api/v2/team/c75a4a8e-20c7-11ee-a3a5-da7ad0900002/links
+    TeamResponse:
+      type: object
+      description: Response with a team
+      properties:
+        data:
+          $ref: '#/components/schemas/Team'
+    TeamType:
+      type: string
+      description: Team type
+      default: team
+      example: team
+      enum:
+      - team
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - TEAM
+    TeamsField:
+      type: string
+      description: Supported teams field.
+      enum:
+      - id
+      - name
+      - handle
+      - summary
+      - description
+      - avatar
+      - banner
+      - visible_modules
+      - hidden_modules
+      - created_at
+      - modified_at
+      - user_count
+      - link_count
+      - team_links
+      - user_team_permissions
+      x-enum-varnames:
+      - ID
+      - NAME
+      - HANDLE
+      - SUMMARY
+      - DESCRIPTION
+      - AVATAR
+      - BANNER
+      - VISIBLE_MODULES
+      - HIDDEN_MODULES
+      - CREATED_AT
+      - MODIFIED_AT
+      - USER_COUNT
+      - LINK_COUNT
+      - TEAM_LINKS
+      - USER_TEAM_PERMISSIONS
+    TeamsResponse:
+      type: object
+      description: Response with multiple teams
+      properties:
+        data:
+          type: array
+          description: Teams response data
+          items:
+            $ref: '#/components/schemas/Team'
+        meta:
+          $ref: '#/components/schemas/TeamsResponseMeta'
+        links:
+          $ref: '#/components/schemas/TeamsResponseLinks'
+        included:
+          type: array
+          description: Resources related to the team
+          items:
+            $ref: '#/components/schemas/TeamIncluded'
+    TeamsResponseLinks:
+      type: object
+      description: Teams response links.
+      properties:
+        self:
+          type: string
+          description: Current link.
+        last:
+          type: string
+          description: Last link.
+          nullable: true
+        next:
+          type: string
+          description: Next link.
+        prev:
+          type: string
+          description: Previous link.
+          nullable: true
+        first:
+          type: string
+          description: First link.
+      x-ignore-duplicate-object: true
+    TeamsResponseMeta:
+      type: object
+      description: Teams response metadata.
+      properties:
+        pagination:
+          $ref: '#/components/schemas/TeamsResponseMetaPagination'
+    TeamsResponseMetaPagination:
+      type: object
+      description: Teams response metadata.
+      properties:
+        offset:
+          type: integer
+          description: The offset.
+          format: int64
+        first_offset:
+          type: integer
+          description: The first offset.
+          format: int64
+        prev_offset:
+          type: integer
+          description: The previous offset.
+          format: int64
+        next_offset:
+          type: integer
+          description: The next offset.
+          format: int64
+        last_offset:
+          type: integer
+          description: The last offset.
+          format: int64
+        limit:
+          type: integer
+          description: Pagination limit.
+          format: int64
+        type:
+          type: string
+          description: Offset type.
+        total:
+          type: integer
+          description: Total results.
+          format: int64
+    User:
+      type: object
+      description: User object returned by the API.
+      properties:
+        type:
+          $ref: '#/components/schemas/UsersType'
+        id:
+          type: string
+          description: ID of the user.
+        attributes:
+          $ref: '#/components/schemas/UserAttributes'
+        relationships:
+          $ref: '#/components/schemas/UserResponseRelationships'
+      x-merge-override:
+        required: false
+    UserAttributes:
+      type: object
+      description: Attributes of user object returned by the API.
+      properties:
+        mfa_enabled:
+          type: boolean
+          description: Whether multi-factor authentication (MFA) is enabled for the user's account.
+          readOnly: true
+        name:
+          type: string
+          description: The full display name of the user as shown in the Datadog UI.
+          nullable: true
+        handle:
+          type: string
+          description: The unique handle (username) of the user, typically matching their email prefix.
+        created_at:
+          type: string
+          description: The ISO 8601 timestamp of when the user account was created.
+          format: date-time
+        modified_at:
+          type: string
+          description: The ISO 8601 timestamp of when the user account was last modified.
+          format: date-time
+        email:
+          type: string
+          description: The email address of the user, used for login and notifications.
+        icon:
+          type: string
+          description: URL of the user's profile icon, typically a Gravatar URL derived from the email
+            address.
+        title:
+          type: string
+          description: The job title of the user (for example, "Senior Engineer" or "Product Manager").
+          nullable: true
+        verified:
+          type: boolean
+          description: Whether the user's email address has been verified.
+        disabled:
+          type: boolean
+          description: Whether the user account is deactivated. Disabled users cannot log in.
+        status:
+          type: string
+          description: The current status of the user account (for example, `Active`, `Pending`, or `Disabled`).
+        service_account:
+          type: boolean
+          description: 'Whether this is a service account rather than a human user.
+
+            Service accounts are used for programmatic API access.'
+        last_login_time:
+          type: string
+          description: The ISO 8601 timestamp of the user's most recent login, or null if the user has
+            never logged in.
+          format: date-time
+          nullable: true
+          readOnly: true
+        uuid:
+          type: string
+          description: The globally unique identifier (UUID) of the user.
+          readOnly: true
+    UserResponseRelationships:
+      type: object
+      description: Relationships of the user object returned by the API.
+      properties:
+        roles:
+          $ref: '#/components/schemas/RelationshipToRoles'
+        org:
+          $ref: '#/components/schemas/RelationshipToOrganization'
+        other_users:
+          $ref: '#/components/schemas/RelationshipToUsers'
+        other_orgs:
+          $ref: '#/components/schemas/RelationshipToOrganizations'
+      x-merge-override:
+        properties: false
+    UserTeamPermission:
+      type: object
+      description: A user's permissions for a given team
+      required:
+      - id
+      - type
+      properties:
+        attributes:
+          $ref: '#/components/schemas/UserTeamPermissionAttributes'
+        id:
+          type: string
+          description: The user team permission's identifier
+          example: UserTeamPermissions-aeadc05e-98a8-11ec-ac2c-da7ad0900001-416595
+        type:
+          $ref: '#/components/schemas/UserTeamPermissionType'
+      x-merge-override:
+        required: false
+    UserTeamPermissionAttributes:
+      type: object
+      description: User team permission attributes
+      properties:
+        permissions:
+          type: object
+          description: Object of team permission actions and boolean values that a logged in user can
+            perform on this team.
+          readOnly: true
+    UserTeamPermissionType:
+      type: string
+      description: User team permission type
+      default: user_team_permissions
+      example: user_team_permissions
+      enum:
+      - user_team_permissions
+      x-enum-varnames:
+      - USER_TEAM_PERMISSIONS
+    UsersType:
+      type: string
+      description: Users resource type.
+      default: users
+      example: users
+      enum:
+      - users
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - USERS
+  securitySchemes:
+    AuthZ:
+      type: oauth2
+      description: This API uses OAuth 2 with the implicit grant flow.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth2/v1/authorize
+          tokenUrl: /oauth2/v1/token
+          scopes: {}
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY

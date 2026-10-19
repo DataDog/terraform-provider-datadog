@@ -6,3 +6,10 @@ resource "datadog_monitor_config_policy" "test" {
     valid_tag_values = ["staging", "prod"]
   }
 }
+
+resource "datadog_monitor_config_policy" "downtime_example" {
+  policy_type = "downtime"
+  downtime_policy {
+    max_duration_ms = 3600000
+  }
+}

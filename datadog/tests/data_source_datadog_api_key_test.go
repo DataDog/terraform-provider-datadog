@@ -10,6 +10,7 @@ import (
 )
 
 func TestAccDatadogApiKeyDatasource_matchId(t *testing.T) {
+	cleanupApiKeys(t)
 	t.Parallel()
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")
@@ -36,6 +37,7 @@ func TestAccDatadogApiKeyDatasource_matchId(t *testing.T) {
 }
 
 func TestAccDatadogApiKeyDatasource_matchName(t *testing.T) {
+	cleanupApiKeys(t)
 	t.Parallel()
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")
@@ -62,6 +64,7 @@ func TestAccDatadogApiKeyDatasource_matchName(t *testing.T) {
 }
 
 func TestAccDatadogApiKeyDatasource_exactMatchName(t *testing.T) {
+	cleanupApiKeys(t)
 	t.Parallel()
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")

@@ -1,0 +1,22 @@
+openapi: 3.0.0
+info:
+  title: unresolvable $ref fixture
+  version: 1.0.0
+paths:
+  /things:
+    post:
+      operationId: CreateThing
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: thing
+        group:
+          create: CreateThing
+          read: CreateThing
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DoesNotExist'
+      responses:
+        '204':
+          description: no content

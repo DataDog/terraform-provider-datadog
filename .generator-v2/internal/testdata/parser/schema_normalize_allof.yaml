@@ -1,0 +1,304 @@
+openapi: 3.0.0
+info:
+  title: normalize allOf fixture
+  version: 1.0.0
+paths:
+  /request-cases:
+    post:
+      operationId: CreateAllOfCases
+      tags:
+        - AllOf
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: allof_cases
+        group:
+          create: CreateAllOfCases
+          read: CreateAllOfCases
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ref_description:
+                  $ref: '#/components/schemas/Status'
+                  description: Local status description.
+                ref_example:
+                  $ref: '#/components/schemas/Status'
+                  example: active
+                single_authored:
+                  description: Authored single-branch description.
+                  allOf:
+                    - $ref: '#/components/schemas/Status'
+                two_objects:
+                  allOf:
+                    - $ref: '#/components/schemas/ObjectA'
+                    - $ref: '#/components/schemas/ObjectB'
+                three_objects:
+                  allOf:
+                    - $ref: '#/components/schemas/ObjectA'
+                    - $ref: '#/components/schemas/ObjectB'
+                    - $ref: '#/components/schemas/ObjectC'
+                object_with_inline:
+                  allOf:
+                    - $ref: '#/components/schemas/ObjectA'
+                    - type: object
+                      properties:
+                        delta:
+                          type: boolean
+                          description: Delta flag.
+                      required:
+                        - delta
+                outer_required:
+                  type: object
+                  required:
+                    - theta
+                  allOf:
+                    - $ref: '#/components/schemas/ObjectA'
+                    - $ref: '#/components/schemas/OptionalObject'
+                nested_objects:
+                  allOf:
+                    - $ref: '#/components/schemas/ObjectAB'
+                    - $ref: '#/components/schemas/ObjectC'
+                metadata_ref:
+                  allOf:
+                    - $ref: '#/components/schemas/DescriptionOnlyBase'
+                    - $ref: '#/components/schemas/ObjectA'
+                    - $ref: '#/components/schemas/ObjectB'
+                outer_description:
+                  type: object
+                  description: Outer description wins.
+                  allOf:
+                    - description: Annotation branch description.
+                    - $ref: '#/components/schemas/ObjectA'
+                annotation_description:
+                  allOf:
+                    - description: Annotation description wins.
+                    - $ref: '#/components/schemas/Status'
+                sensitive_overlay:
+                  allOf:
+                    - $ref: '#/components/schemas/Status'
+                    - x-datadog-tf-generator:
+                        sensitive: true
+                outer_format:
+                  format: date-time
+                  allOf:
+                    - type: string
+                outer_enum:
+                  enum:
+                    - inactive
+                    - pending
+                  allOf:
+                    - $ref: '#/components/schemas/Status'
+                constrained_annotation:
+                  allOf:
+                    - $ref: '#/components/schemas/Status'
+                    - description: This branch also constrains the value.
+                      enum:
+                        - active
+                duplicate_property:
+                  allOf:
+                    - $ref: '#/components/schemas/ObjectA'
+                    - $ref: '#/components/schemas/DuplicateAlpha'
+                mixed_kinds:
+                  allOf:
+                    - $ref: '#/components/schemas/ObjectA'
+                    - $ref: '#/components/schemas/Status'
+                no_structure:
+                  allOf:
+                    - description: Annotation without a structural branch.
+                outer_type_conflict:
+                  type: string
+                  allOf:
+                    - $ref: '#/components/schemas/ObjectA'
+                    - $ref: '#/components/schemas/ObjectB'
+                outer_properties:
+                  type: object
+                  properties:
+                    outside:
+                      type: string
+                  allOf:
+                    - $ref: '#/components/schemas/ObjectA'
+      responses:
+        '204':
+          description: No content.
+  /items:
+    get:
+      operationId: ListAllOfItems
+      tags:
+        - AllOf
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: allof_items
+        cardinality: plural
+        group:
+          read: ListAllOfItems
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllOfItemsResponse'
+                description: Local list response description.
+  /items/{item_id}:
+    get:
+      operationId: GetAllOfItem
+      tags:
+        - AllOf
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: allof_item
+        group:
+          read: GetAllOfItem
+      parameters:
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllOfItemResponse'
+  /bad-items:
+    get:
+      operationId: ListBadAllOfItems
+      tags:
+        - AllOf
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: bad_allof_items
+        cardinality: plural
+        group:
+          read: ListBadAllOfItems
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadAllOfItemsResponse'
+components:
+  schemas:
+    Status:
+      type: string
+      format: uuid
+      description: Referenced status description.
+      enum:
+        - active
+        - inactive
+    ObjectA:
+      type: object
+      properties:
+        zeta:
+          type: string
+          description: Zeta value.
+        alpha:
+          type: string
+          description: Alpha value.
+      required:
+        - zeta
+        - alpha
+    ObjectB:
+      type: object
+      properties:
+        beta:
+          type: integer
+          description: Beta value.
+      required:
+        - beta
+    ObjectC:
+      type: object
+      properties:
+        gamma:
+          type: number
+          description: Gamma value.
+      required:
+        - gamma
+    OptionalObject:
+      type: object
+      properties:
+        theta:
+          type: string
+          description: Theta value.
+    ObjectAB:
+      allOf:
+        - $ref: '#/components/schemas/ObjectA'
+        - $ref: '#/components/schemas/ObjectB'
+    DescriptionOnlyBase:
+      description: Description supplied by a metadata-only base.
+    DuplicateAlpha:
+      type: object
+      properties:
+        alpha:
+          type: integer
+          description: Conflicting alpha value.
+    AllOfItemsResponse:
+      allOf:
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/AllOfItemsData'
+              example: []
+        - type: object
+          properties:
+            meta:
+              type: string
+              description: Response metadata.
+    AllOfItemsData:
+      type: array
+      items:
+        $ref: '#/components/schemas/AllOfItem'
+    AllOfItemResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/AllOfItem'
+          description: Local item data description.
+    AllOfItem:
+      allOf:
+        - $ref: '#/components/schemas/JSONAPIIdentity'
+        - type: object
+          properties:
+            attributes:
+              $ref: '#/components/schemas/AllOfItemAttributes'
+          required:
+            - attributes
+    JSONAPIIdentity:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Item ID.
+        type:
+          type: string
+          description: Item type.
+      required:
+        - id
+        - type
+    AllOfItemAttributes:
+      type: object
+      properties:
+        result:
+          $ref: '#/components/schemas/Status'
+          description: Local result description.
+      required:
+        - result
+    BadAllOfItemsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/BadAllOfItem'
+    BadAllOfItem:
+      type: object
+      properties:
+        composed:
+          allOf:
+            - $ref: '#/components/schemas/ObjectA'
+            - $ref: '#/components/schemas/DuplicateAlpha'

@@ -1,0 +1,38 @@
+openapi: 3.0.0
+info:
+  title: group reference resolution fixture with dangling operationIds
+  version: 1.0.0
+paths:
+  /things:
+    post:
+      operationId: CreateThing
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: thing
+        group:
+          create: CreateThing
+          read: GetThing
+          # Neither operationId below is declared anywhere in this document.
+          update: PatchThingTypo
+          delete: DestroyThingTypo
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+  /things/{id}:
+    get:
+      operationId: GetThing
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string

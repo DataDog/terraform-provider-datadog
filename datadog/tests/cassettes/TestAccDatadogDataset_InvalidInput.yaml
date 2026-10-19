@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"name":"tf-test-InvalidInput-1755283626","principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"],"product_filters":[{"filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"],"product":"ci-visibility"}]},"type":"dataset"}}
+            {"data":{"attributes":{"name":"tf-test-InvalidInput-1785485101","principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"],"product_filters":[{"filters":["@application.id:404342b8-9cdd-272b-de03-cff7c71d0135"],"product":"ci-visibility"}]},"type":"dataset"}}
         form: {}
         headers:
             Accept:
@@ -26,18 +26,17 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: '{"errors":["Invalid product: Datasets are not supported for ci-visibility"]}'
+        content_length: 111
+        uncompressed: false
+        body: '{"errors":[{"title":"Generic Error","detail":"Invalid product: Datasets are not supported for ci-visibility"}]}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 146.397042ms
+        duration: 322.062875ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -50,7 +49,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"name":"tf-test-InvalidInput-1755283626","principals":["foo:invalid-principal-format"],"product_filters":[{"filters":["@application.id:ce9843b0-7a45-453c-a831-55dd15f85141"],"product":"rum"}]},"type":"dataset"}}
+            {"data":{"attributes":{"name":"tf-test-InvalidInput-1785485101","principals":["foo:invalid-principal-format"],"product_filters":[{"filters":["@application.id:404342b8-9cdd-272b-de03-cff7c71d0135"],"product":"rum"}]},"type":"dataset"}}
         form: {}
         headers:
             Accept:
@@ -63,11 +62,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
+        content_length: 178
+        uncompressed: false
         body: |
             {"errors":["Invalid request: [PrincipalInvalid] \"foo:invalid-principal-format\" is not a valid principal: [PrincipalTypeNotSupported] principal type \"foo\" is not supported"]}
         headers:
@@ -75,7 +73,7 @@ interactions:
                 - application/json
         status: 400 Bad Request
         code: 400
-        duration: 117.925ms
+        duration: 123.112459ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +86,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"name":"tf-test-InvalidInput-1755283626","principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"],"product_filters":[]},"type":"dataset"}}
+            {"data":{"attributes":{"name":"tf-test-InvalidInput-1785485101","principals":["role:94172442-be03-11e9-a77a-3b7612558ac1"],"product_filters":[]},"type":"dataset"}}
         form: {}
         headers:
             Accept:
@@ -101,11 +99,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
+        content_length: 88
+        uncompressed: false
         body: |
             {"errors":["Invalid request: [DatasetFiltersEmpty] request must have product filters"]}
         headers:
@@ -113,4 +110,4 @@ interactions:
                 - application/json
         status: 400 Bad Request
         code: 400
-        duration: 91.276666ms
+        duration: 118.235125ms

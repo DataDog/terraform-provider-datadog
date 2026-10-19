@@ -1,0 +1,656 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: Reference Tables
+  description: View and manage Reference Tables in your organization.
+paths:
+  /api/v2/reference-tables/tables/{id}:
+    get:
+      operationId: GetTable
+      tags:
+      - Reference Tables
+      summary: Get table
+      description: Get a reference table by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier of the reference table to retrieve
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableResultV2'
+              examples:
+                default:
+                  value:
+                    data:
+                      attributes:
+                        created_by: 00000000-0000-0000-0000-000000000000
+                        description: example description
+                        file_metadata:
+                          access_details: {}
+                          sync_enabled: false
+                        last_updated_by: 00000000-0000-0000-0000-000000000000
+                        row_count: 5
+                        schema:
+                          fields:
+                          - name: id
+                            type: INT32
+                          - name: name
+                            type: STRING
+                          primary_keys:
+                          - id
+                        source: S3
+                        status: DONE
+                        table_name: test_reference_table
+                        tags:
+                        - tag1
+                        updated_at: '2024-01-01T00:00:00+00:00'
+                      id: 00000000-0000-0000-0000-000000000000
+                      type: reference_table
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      security:
+      - apiKeyAuth: []
+        appKeyAuth: []
+      - AuthZ: []
+      x-menu-order: 4
+      x-undo:
+        type: safe
+  /api/v2/reference-tables/tables:
+    get:
+      operationId: ListTables
+      tags:
+      - Reference Tables
+      summary: List tables
+      description: List all reference tables in this organization.
+      parameters:
+      - name: page[limit]
+        in: query
+        required: false
+        description: Number of tables to return.
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+          maximum: 100
+          default: 15
+        example: 15
+      - name: page[offset]
+        in: query
+        required: false
+        description: Number of tables to skip for pagination.
+        schema:
+          type: integer
+          format: int64
+          minimum: 0
+          default: 0
+        example: 0
+      - name: sort
+        in: query
+        required: false
+        description: Sort field and direction for the list of reference tables. Use field name for ascending,
+          prefix with "-" for descending.
+        schema:
+          $ref: '#/components/schemas/ReferenceTableSortType'
+        example: -updated_at
+      - name: filter[status]
+        in: query
+        required: false
+        description: Filter by table status.
+        schema:
+          type: string
+        example: DONE
+      - name: filter[table_name][exact]
+        in: query
+        required: false
+        description: Filter by exact table name match.
+        schema:
+          type: string
+        example: my_reference_table
+      - name: filter[table_name][contains]
+        in: query
+        required: false
+        description: Filter by table name containing substring.
+        schema:
+          type: string
+        example: user
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableResultV2Array'
+              examples:
+                default:
+                  value:
+                    data:
+                    - id: abc-123
+                      type: reference_table
+                      attributes:
+                        table_name: my_reference_table
+                        status: DONE
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      security:
+      - apiKeyAuth: []
+        appKeyAuth: []
+      - AuthZ: []
+      x-menu-order: 3
+      x-undo:
+        type: safe
+components:
+  responses:
+    ForbiddenResponse:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+    NotFoundResponse:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    ReferenceTableSchemaFieldType:
+      type: string
+      description: The field type for reference table schema fields.
+      example: STRING
+      enum:
+      - STRING
+      - INT32
+      x-enum-varnames:
+      - STRING
+      - INT32
+    ReferenceTableSortType:
+      type: string
+      description: Sort field and direction for reference tables. Use field name for ascending, prefix
+        with "-" for descending.
+      default: -updated_at
+      enum:
+      - updated_at
+      - table_name
+      - status
+      - -updated_at
+      - -table_name
+      - -status
+      x-enum-varnames:
+      - UPDATED_AT
+      - TABLE_NAME
+      - STATUS
+      - MINUS_UPDATED_AT
+      - MINUS_TABLE_NAME
+      - MINUS_STATUS
+    ReferenceTableSourceType:
+      type: string
+      description: The source type for reference table data. Includes all possible source types that can
+        appear in responses.
+      example: LOCAL_FILE
+      enum:
+      - LOCAL_FILE
+      - S3
+      - GCS
+      - AZURE
+      - SERVICENOW
+      - SALESFORCE
+      - DATABRICKS
+      - SNOWFLAKE
+      x-enum-varnames:
+      - LOCAL_FILE
+      - S3
+      - GCS
+      - AZURE
+      - SERVICENOW
+      - SALESFORCE
+      - DATABRICKS
+      - SNOWFLAKE
+    TableResultV2:
+      type: object
+      description: A reference table resource containing its full configuration and state.
+      example:
+        data:
+          attributes:
+            created_by: 00000000-0000-0000-0000-000000000000
+            description: example description
+            file_metadata:
+              access_details:
+                aws_detail:
+                  aws_account_id: '123456789000'
+                  aws_bucket_name: my-bucket
+                  file_path: path/to/file.csv
+              sync_enabled: true
+            last_updated_by: 00000000-0000-0000-0000-000000000000
+            row_count: 5
+            schema:
+              fields:
+              - name: id
+                type: INT32
+              - name: name
+                type: STRING
+              primary_keys:
+              - id
+            source: S3
+            status: DONE
+            table_name: test_reference_table
+            tags:
+            - tag1
+            - tag2
+            updated_at: '2000-01-01T01:00:00+00:00'
+          id: 00000000-0000-0000-0000-000000000000
+          type: reference_table
+      properties:
+        data:
+          $ref: '#/components/schemas/TableResultV2Data'
+    TableResultV2Array:
+      type: object
+      description: List of reference tables.
+      example:
+        data:
+        - attributes:
+            created_by: 00000000-0000-0000-0000-000000000000
+            description: example description
+            file_metadata:
+              access_details: {}
+              error_message: ''
+              error_row_count: 0
+              upload_id: 00000000-0000-0000-0000-000000000000
+            last_updated_by: ''
+            row_count: 5
+            schema:
+              fields:
+              - name: id
+                type: INT32
+              - name: name
+                type: STRING
+              primary_keys:
+              - id
+            source: LOCAL_FILE
+            status: DONE
+            table_name: test_reference_table
+            tags:
+            - tag1
+            - tag2
+            updated_at: '2000-01-01T01:00:00+00:00'
+          id: 00000000-0000-0000-0000-000000000000
+          type: reference_table
+        - attributes:
+            created_by: 00000000-0000-0000-0000-000000000000
+            description: example description
+            file_metadata:
+              access_details:
+                aws_detail:
+                  aws_account_id: test-account-id
+                  aws_bucket_name: test-bucket
+                  file_path: test_rt.csv
+              error_message: ''
+              error_row_count: 0
+              sync_enabled: true
+            last_updated_by: 00000000-0000-0000-0000-000000000000
+            row_count: 5
+            schema:
+              fields:
+              - name: location
+                type: STRING
+              - name: file_name
+                type: STRING
+              primary_keys:
+              - location
+            source: S3
+            status: DONE
+            table_name: test_reference_table_2
+            tags:
+            - test_tag1
+            - tag2
+            - '3'
+            updated_at: '2000-01-01T01:00:00+00:00'
+          id: 00000000-0000-0000-0000-000000000000
+          type: reference_table
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          description: The reference tables.
+          items:
+            $ref: '#/components/schemas/TableResultV2Data'
+    TableResultV2Data:
+      type: object
+      description: The data object containing the reference table configuration and state.
+      required:
+      - type
+      properties:
+        attributes:
+          $ref: '#/components/schemas/TableResultV2DataAttributes'
+        id:
+          type: string
+          description: Unique identifier for the reference table.
+        type:
+          $ref: '#/components/schemas/TableResultV2DataType'
+      additionalProperties: false
+    TableResultV2DataAttributes:
+      type: object
+      description: Attributes that define the reference table's configuration and properties.
+      properties:
+        created_by:
+          type: string
+          description: UUID of the user who created the reference table.
+          example: 00000000-0000-0000-0000-000000000000
+        description:
+          type: string
+          description: Optional text describing the purpose or contents of this reference table.
+          example: example description
+        file_metadata:
+          $ref: '#/components/schemas/TableResultV2DataAttributesFileMetadata'
+        last_updated_by:
+          type: string
+          description: UUID of the user who last updated the reference table.
+          example: 00000000-0000-0000-0000-000000000000
+        row_count:
+          type: integer
+          description: The number of successfully processed rows in the reference table.
+          format: int64
+          example: 5
+        schema:
+          $ref: '#/components/schemas/TableResultV2DataAttributesSchema'
+        source:
+          $ref: '#/components/schemas/ReferenceTableSourceType'
+        status:
+          type: string
+          description: The processing status of the table.
+          example: DONE
+        table_name:
+          type: string
+          description: Unique name to identify this reference table. Used in enrichment processors and
+            API calls.
+          example: table_1
+        tags:
+          type: array
+          description: Tags for organizing and filtering reference tables.
+          example:
+          - tag_1
+          - tag_2
+          items:
+            type: string
+            description: A tag associated with the reference table.
+        updated_at:
+          type: string
+          description: When the reference table was last updated, in ISO 8601 format.
+          example: '2000-01-01T01:00:00+00:00'
+    TableResultV2DataAttributesFileMetadata:
+      type: object
+      title: FileMetadataV2
+      description: "Metadata specifying where and how to access the reference table's data file.\n\nFor
+        cloud storage tables (S3/GCS/Azure):\n  - sync_enabled and access_details will always be present\n
+        \ - error fields (error_message, error_row_count, error_type) are present only when errors occur\n\nFor
+        local file tables:\n  - error fields (error_message, error_row_count) are present only when errors
+        occur\n  - sync_enabled, access_details are never present"
+      properties:
+        sync_enabled:
+          type: boolean
+          description: Whether this table is synced automatically from cloud storage. Only applicable
+            for cloud storage sources.
+        access_details:
+          $ref: '#/components/schemas/TableResultV2DataAttributesFileMetadataOneOfAccessDetails'
+          description: Cloud storage access configuration. Only present for cloud storage sources (S3,
+            GCS, Azure).
+        error_message:
+          type: string
+          description: The error message returned from the last operation (sync for cloud storage, upload
+            for local file).
+        error_row_count:
+          type: integer
+          description: The number of rows that failed to process.
+          format: int64
+        error_type:
+          $ref: '#/components/schemas/TableResultV2DataAttributesFileMetadataCloudStorageErrorType'
+          description: The type of error that occurred during file processing. Only applicable for cloud
+            storage sources.
+      additionalProperties: false
+    TableResultV2DataAttributesFileMetadataCloudStorageErrorType:
+      type: string
+      description: The type of error that occurred during file processing. This field provides high-level
+        error categories for easier troubleshooting and is only present when there are errors.
+      enum:
+      - TABLE_SCHEMA_ERROR
+      - FILE_FORMAT_ERROR
+      - CONFIGURATION_ERROR
+      - QUOTA_EXCEEDED
+      - CONFLICT_ERROR
+      - VALIDATION_ERROR
+      - STATE_ERROR
+      - OPERATION_ERROR
+      - SYSTEM_ERROR
+      x-enum-varnames:
+      - TABLE_SCHEMA_ERROR
+      - FILE_FORMAT_ERROR
+      - CONFIGURATION_ERROR
+      - QUOTA_EXCEEDED
+      - CONFLICT_ERROR
+      - VALIDATION_ERROR
+      - STATE_ERROR
+      - OPERATION_ERROR
+      - SYSTEM_ERROR
+    TableResultV2DataAttributesFileMetadataOneOfAccessDetails:
+      type: object
+      description: Cloud storage access configuration for the reference table data file.
+      properties:
+        aws_detail:
+          $ref: '#/components/schemas/TableResultV2DataAttributesFileMetadataOneOfAccessDetailsAwsDetail'
+        azure_detail:
+          $ref: '#/components/schemas/TableResultV2DataAttributesFileMetadataOneOfAccessDetailsAzureDetail'
+        gcp_detail:
+          $ref: '#/components/schemas/TableResultV2DataAttributesFileMetadataOneOfAccessDetailsGcpDetail'
+    TableResultV2DataAttributesFileMetadataOneOfAccessDetailsAwsDetail:
+      type: object
+      description: Amazon Web Services S3 storage access configuration.
+      properties:
+        aws_account_id:
+          type: string
+          description: AWS account ID where the S3 bucket is located.
+          example: '123456789000'
+        aws_bucket_name:
+          type: string
+          description: S3 bucket containing the CSV file.
+          example: example-data-bucket
+        file_path:
+          type: string
+          description: The relative file path from the S3 bucket root to the CSV file.
+          example: reference-tables/users.csv
+      x-oneOf-parent:
+      - AwsDetail
+    TableResultV2DataAttributesFileMetadataOneOfAccessDetailsAzureDetail:
+      type: object
+      description: Azure Blob Storage access configuration.
+      properties:
+        azure_client_id:
+          type: string
+          description: Azure service principal (application) client ID with permissions to read from the
+            container.
+          example: aaaaaaaa-1111-2222-3333-bbbbbbbbbbbb
+        azure_container_name:
+          type: string
+          description: Azure Blob Storage container containing the CSV file.
+          example: reference-data
+        azure_storage_account_name:
+          type: string
+          description: Azure storage account where the container is located.
+          example: examplestorageaccount
+        azure_tenant_id:
+          type: string
+          description: Azure Active Directory tenant ID.
+          example: cccccccc-4444-5555-6666-dddddddddddd
+        file_path:
+          type: string
+          description: The relative file path from the Azure container root to the CSV file.
+          example: tables/users.csv
+      x-ignore-duplicate-object: true
+      x-oneOf-parent:
+      - AzureDetail
+    TableResultV2DataAttributesFileMetadataOneOfAccessDetailsGcpDetail:
+      type: object
+      description: Google Cloud Platform storage access configuration.
+      properties:
+        file_path:
+          type: string
+          description: The relative file path from the GCS bucket root to the CSV file.
+          example: data/reference_tables/users.csv
+        gcp_bucket_name:
+          type: string
+          description: GCP bucket containing the CSV file.
+          example: example-data-bucket
+        gcp_project_id:
+          type: string
+          description: GCP project ID where the bucket is located.
+          example: example-gcp-project-12345
+        gcp_service_account_email:
+          type: string
+          description: Service account email with read permissions for the GCS bucket.
+          example: example-service@example-gcp-project-12345.iam.gserviceaccount.com
+      x-ignore-duplicate-object: true
+      x-oneOf-parent:
+      - GcpDetail
+    TableResultV2DataAttributesSchema:
+      type: object
+      description: Schema defining the structure and columns of the reference table.
+      required:
+      - fields
+      - primary_keys
+      properties:
+        fields:
+          type: array
+          description: The schema fields.
+          items:
+            $ref: '#/components/schemas/TableResultV2DataAttributesSchemaFieldsItems'
+        primary_keys:
+          type: array
+          description: List of field names that serve as primary keys for the table. Only one primary
+            key is supported, and it is used as an ID to retrieve rows.
+          example:
+          - field_1
+          items:
+            type: string
+            description: A field name used as a primary key.
+    TableResultV2DataAttributesSchemaFieldsItems:
+      type: object
+      description: A single field (column) in the reference table schema to be returned.
+      required:
+      - name
+      - type
+      properties:
+        name:
+          type: string
+          description: The field name.
+          example: field_1
+        type:
+          $ref: '#/components/schemas/ReferenceTableSchemaFieldType'
+      x-ignore-duplicate-object: true
+    TableResultV2DataType:
+      type: string
+      description: Reference table resource type.
+      default: reference_table
+      example: reference_table
+      enum:
+      - reference_table
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - REFERENCE_TABLE
+  securitySchemes:
+    AuthZ:
+      type: oauth2
+      description: This API uses OAuth 2 with the implicit grant flow.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth2/v1/authorize
+          tokenUrl: /oauth2/v1/token
+          scopes: {}
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY

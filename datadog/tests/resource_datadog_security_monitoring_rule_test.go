@@ -7,25 +7,25 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
 const tfSecurityRuleName = "datadog_security_monitoring_rule.acceptance_test"
 
 func TestAccDatadogSecurityMonitoringRule_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSecurityMonitoringCreatedConfig(ruleName),
@@ -45,14 +45,14 @@ func TestAccDatadogSecurityMonitoringRule_Basic(t *testing.T) {
 
 func TestAccDatadogSecurityMonitoringRule_RemoveReferenceTables(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSecurityMonitoringCreatedConfig(ruleName),
@@ -68,14 +68,14 @@ func TestAccDatadogSecurityMonitoringRule_RemoveReferenceTables(t *testing.T) {
 
 func TestAccDatadogSecurityMonitoringRule_NewValueRule(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSecurityMonitoringCreatedConfigNewValueRule(ruleName),
@@ -91,14 +91,14 @@ func TestAccDatadogSecurityMonitoringRule_NewValueRule(t *testing.T) {
 
 func TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSecurityMonitoringCreatedConfigImpossibleTravelRule(ruleName),
@@ -108,20 +108,181 @@ func TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule(t *testing.T) {
 				Config: testAccCheckDatadogSecurityMonitoringUpdatedConfigImpossibleTravelRule(ruleName),
 				Check:  testAccCheckDatadogSecurityMonitorUpdatedCheckImpossibleTravelRule(accProvider, ruleName),
 			},
+			{
+				Config: testAccCheckDatadogSecurityMonitoringConfigImpossibleTravelRuleNullDuration(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitorCheckImpossibleTravelRuleNullDuration(accProvider, ruleName),
+			},
 		},
 	})
 }
 
-func TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule(t *testing.T) {
+// TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRuleMetricsField runs the same
+// geo_data (impossible travel) lifecycle as the test above, but authored with the
+// non-deprecated `metrics` list and no `metric`. The API derives and echoes `metric`
+// back from `metrics` on every response; since `metric` is Optional (not Computed) and
+// unconfigured, reconcileEmptyQueryFields must restore it to null so the echo doesn't
+// produce "inconsistent result after apply" on create/update (GitHub #3038).
+func TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRuleMetricsField(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.frameworkProvider
+
+	withMetricsChecks := func(base resource.TestCheckFunc) resource.TestCheckFunc {
+		return resource.ComposeTestCheckFunc(
+			base,
+			resource.TestCheckResourceAttr(tfSecurityRuleName, "query.0.metrics.#", "1"),
+			resource.TestCheckResourceAttr(tfSecurityRuleName, "query.0.metrics.0", "@usr.handle"),
+			// metric was never configured; the API-echoed value must be reconciled back to null.
+			resource.TestCheckNoResourceAttr(tfSecurityRuleName, "query.0.metric"),
+		)
+	}
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSecurityMonitoringCreatedConfigImpossibleTravelRuleMetricsField(ruleName),
+				Check:  withMetricsChecks(testAccCheckDatadogSecurityMonitorCreatedCheckImpossibleTravelRule(accProvider, ruleName)),
+			},
+			{
+				Config: testAccCheckDatadogSecurityMonitoringUpdatedConfigImpossibleTravelRuleMetricsField(ruleName),
+				Check:  withMetricsChecks(testAccCheckDatadogSecurityMonitorUpdatedCheckImpossibleTravelRule(accProvider, ruleName)),
+			},
+			{
+				Config: testAccCheckDatadogSecurityMonitoringConfigImpossibleTravelRuleMetricsFieldNullDuration(ruleName),
+				Check:  withMetricsChecks(testAccCheckDatadogSecurityMonitorCheckImpossibleTravelRuleNullDuration(accProvider, ruleName)),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogSecurityMonitoringCreatedConfigImpossibleTravelRuleMetricsField(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s"
+    message = "impossible travel rule triggered"
+    enabled = false
+    validate = true
+
+    query {
+        name = "my_query"
+        query = "*"
+        aggregation = "geo_data"
+        data_source = "logs"
+        metrics = ["@usr.handle"]
+        group_by_fields = ["@usr.handle"]
+		has_optional_group_by_fields = false
+    }
+
+    case {
+        name = ""
+        status = "high"
+        notifications = ["@user"]
+    }
+
+    options {
+        detection_method = "impossible_travel"
+        keep_alive = 600
+        max_signal_duration = 900
+        impossible_travel_options {
+            baseline_user_locations          = true
+            baseline_user_locations_duration = 20
+        }
+    }
+
+    tags = ["i:tomato", "u:tomato"]
+}
+`, name)
+}
+
+func testAccCheckDatadogSecurityMonitoringUpdatedConfigImpossibleTravelRuleMetricsField(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s"
+    message = "impossible travel rule triggered (updated)"
+    enabled = false
+
+    query {
+        name = "my_updated_query"
+        query = "*"
+        aggregation = "geo_data"
+        data_source = "logs"
+        metrics = ["@usr.handle"]
+        group_by_fields = ["@usr.handle"]
+		has_optional_group_by_fields = false
+    }
+
+    case {
+        name = "new case name (updated)"
+        status = "high"
+        notifications = ["@user"]
+    }
+
+    options {
+        detection_method = "impossible_travel"
+        keep_alive = 600
+        max_signal_duration = 900
+        impossible_travel_options {
+            baseline_user_locations          = true
+            baseline_user_locations_duration = 25
+        }
+    }
+
+    tags = ["i:tomato", "u:tomato"]
+}
+`, name)
+}
+
+func testAccCheckDatadogSecurityMonitoringConfigImpossibleTravelRuleMetricsFieldNullDuration(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s"
+    message = "impossible travel rule triggered (no duration)"
+    enabled = false
+
+    query {
+        name = "my_updated_query"
+        query = "*"
+        aggregation = "geo_data"
+        data_source = "logs"
+        metrics = ["@usr.handle"]
+        group_by_fields = ["@usr.handle"]
+		has_optional_group_by_fields = false
+    }
+
+    case {
+        name = "new case name (updated)"
+        status = "high"
+        notifications = ["@user"]
+    }
+
+    options {
+        detection_method = "impossible_travel"
+        keep_alive = 600
+        max_signal_duration = 900
+        impossible_travel_options {
+            baseline_user_locations = true
+        }
+    }
+
+    tags = ["i:tomato", "u:tomato"]
+}
+`, name)
+}
+
+func TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ruleName := uniqueEntityName(ctx, t)
+	accProvider := providers.frameworkProvider
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSecurityMonitoringCreatedConfigAnomalyDetectionRule(ruleName),
@@ -137,14 +298,14 @@ func TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule(t *testing.T) {
 
 func TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRuleInstantaneousBaseline(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSecurityMonitoringCreatedConfigAnomalyDetectionRuleInstantaneousBaseline(ruleName),
@@ -156,14 +317,14 @@ func TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRuleInstantaneousBasel
 
 func TestAccDatadogSecurityMonitoringRule_SequenceDetection(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSecurityMonitoringCreatedConfigSequenceDetection(ruleName),
@@ -179,18 +340,18 @@ func TestAccDatadogSecurityMonitoringRule_SequenceDetection(t *testing.T) {
 
 func TestAccDatadogSecurityMonitoringRule_CreateInvalidRule(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccCheckDatadogSecurityMonitoringCreatedConfigInvalidRule(ruleName),
-				ExpectError: regexp.MustCompile("Max signal duration must be greater than or equal to keep alive"),
+				ExpectError: regexp.MustCompile(`(?s)Max signal\s+duration must be greater than or equal to keep\s+alive.*maxSignalDuration`),
 			},
 		},
 	})
@@ -198,14 +359,14 @@ func TestAccDatadogSecurityMonitoringRule_CreateInvalidRule(t *testing.T) {
 
 func TestAccDatadogSecurityMonitoringRule_CwsRule(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSecurityMonitoringCreatedConfigCwsRule(ruleName),
@@ -221,14 +382,14 @@ func TestAccDatadogSecurityMonitoringRule_CwsRule(t *testing.T) {
 
 func TestAccDatadogSecurityMonitoringRule_AppsecRule(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSecurityMonitoringCreatedConfigAppsecRule(ruleName),
@@ -244,14 +405,14 @@ func TestAccDatadogSecurityMonitoringRule_AppsecRule(t *testing.T) {
 
 func TestAccDatadogSecurityMonitoringRule_AppSecSpansDeprecated(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSecurityMonitoringConfigAppSecSpansDeprecated(ruleName),
@@ -298,14 +459,14 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 
 func TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSecurityMonitoringCreatedRequiredConfig(ruleName),
@@ -321,14 +482,14 @@ func TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields(t *testing.T) {
 
 func TestAccDatadogSecurityMonitoringRule_Import(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSecurityMonitoringCreatedRequiredConfig(ruleName),
@@ -337,7 +498,10 @@ func TestAccDatadogSecurityMonitoringRule_Import(t *testing.T) {
 				ResourceName:      tfSecurityRuleName,
 				ImportState:       true,
 				ImportStateVerify: true,
-				Check:             testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider, ruleName),
+				// "validate" is a write-only dry-run flag; the API never returns it,
+				// so ImportState cannot reproduce it.
+				ImportStateVerifyIgnore: []string{"validate"},
+				Check:                   testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider, ruleName),
 			},
 		},
 	})
@@ -345,14 +509,14 @@ func TestAccDatadogSecurityMonitoringRule_Import(t *testing.T) {
 
 func TestAccDatadogSecurityMonitoringRule_SignalCorrelation(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSecurityMonitoringCreatedSignalCorrelationConfig(ruleName),
@@ -368,15 +532,15 @@ func TestAccDatadogSecurityMonitoringRule_SignalCorrelation(t *testing.T) {
 
 func TestAccDatadogSecurityMonitoringRule_InvalidTypes(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
 
-	invalidValueRegex, _ := regexp.Compile("Invalid enum value")
-	invalidTypeRegex, _ := regexp.Compile("Incorrect attribute value type")
+	invalidValueRegex := regexp.MustCompile("Invalid Attribute Value")
+	invalidTypeRegex := regexp.MustCompile("Incorrect attribute value type")
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccCheckDatadogSecurityMonitoringRule("\"infrastructure_configuration\"", ruleName),
@@ -400,14 +564,14 @@ func TestAccDatadogSecurityMonitoringRule_InvalidTypes(t *testing.T) {
 
 func TestAccDatadogSecurityMonitoringRule_ThirdParty(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSecurityMonitoringCreatedThirdPartyConfig(ruleName),
@@ -423,115 +587,115 @@ func TestAccDatadogSecurityMonitoringRule_ThirdParty(t *testing.T) {
 
 func TestAccDatadogSecurityMonitoringRule_DefaultTags(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, _ := testAccFrameworkMuxProviders(context.Background(), t)
 	sloName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
 		PreCheck: func() { testAccPreCheck(t) },
 		Steps: []resource.TestStep{
 			{ // New tags are correctly added and duplicates are kept
 				Config: testAccCheckDatadogSecurityMonitoringDuplicateTags(sloName),
-				ProviderFactories: map[string]func() (*schema.Provider, error){
-					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+				ProtoV6ProviderFactories: map[string]func() (tfprotov6.ProviderServer, error){
+					"datadog": withDefaultTagsFw(ctx, providers, map[string]string{
 						"default_key": "default_value",
 					}),
 				},
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.#", "4"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.#", "4"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "baz"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "baz"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "foo:bar"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "foo:bar"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "foo:double_bar"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "foo:double_bar"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "default_key:default_value"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "default_key:default_value"),
 				),
 			},
 			{ // Resource tags take precedence over default tags and duplicates stay
 				Config: testAccCheckDatadogSecurityMonitoringDuplicateTags(sloName),
-				ProviderFactories: map[string]func() (*schema.Provider, error){
-					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+				ProtoV6ProviderFactories: map[string]func() (tfprotov6.ProviderServer, error){
+					"datadog": withDefaultTagsFw(ctx, providers, map[string]string{
 						"foo": "not_bar",
 					}),
 				},
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.#", "3"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.#", "3"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "baz"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "baz"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "foo:bar"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "foo:bar"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "foo:double_bar"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "foo:double_bar"),
 				),
 			},
 			{ // Resource tags take precedence over default tags, but new tags are added
 				Config: testAccCheckDatadogSecurityMonitoringDefaultTags(sloName),
-				ProviderFactories: map[string]func() (*schema.Provider, error){
-					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+				ProtoV6ProviderFactories: map[string]func() (tfprotov6.ProviderServer, error){
+					"datadog": withDefaultTagsFw(ctx, providers, map[string]string{
 						"foo":     "not_bar",
 						"new_tag": "new_value",
 					}),
 				},
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.#", "3"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.#", "3"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "baz"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "baz"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "foo:bar"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "foo:bar"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "new_tag:new_value"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "new_tag:new_value"),
 				),
 			},
 			{ // Tags without any value work correctly
 				Config: testAccCheckDatadogSecurityMonitoringDefaultTags(sloName),
-				ProviderFactories: map[string]func() (*schema.Provider, error){
-					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+				ProtoV6ProviderFactories: map[string]func() (tfprotov6.ProviderServer, error){
+					"datadog": withDefaultTagsFw(ctx, providers, map[string]string{
 						"no_value": "",
 					}),
 				},
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.#", "3"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.#", "3"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "baz"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "baz"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "foo:bar"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "foo:bar"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "no_value"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "no_value"),
 				),
 			},
 			{ // Tags with colons in the value work correctly
 				Config: testAccCheckDatadogSecurityMonitoringDefaultTags(sloName),
-				ProviderFactories: map[string]func() (*schema.Provider, error){
-					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+				ProtoV6ProviderFactories: map[string]func() (tfprotov6.ProviderServer, error){
+					"datadog": withDefaultTagsFw(ctx, providers, map[string]string{
 						"repo_url": "https://github.com/repo/path",
 					}),
 				},
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.#", "3"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.#", "3"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "baz"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "baz"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "foo:bar"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "foo:bar"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "repo_url:https://github.com/repo/path"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "repo_url:https://github.com/repo/path"),
 				),
 			},
-			{ // Works with monitors without a tag attribute
+			{ // Works with rules without a tag attribute
 				Config: testAccCheckDatadogSecurityMonitoringNoTag(sloName),
-				ProviderFactories: map[string]func() (*schema.Provider, error){
-					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+				ProtoV6ProviderFactories: map[string]func() (tfprotov6.ProviderServer, error){
+					"datadog": withDefaultTagsFw(ctx, providers, map[string]string{
 						"default_key": "default_value",
 					}),
 				},
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "default_key:default_value"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "default_key:default_value"),
 				),
 			},
 		},
@@ -540,14 +704,14 @@ func TestAccDatadogSecurityMonitoringRule_DefaultTags(t *testing.T) {
 
 func TestAccDatadogSecurityMonitoringRule_ScheduledRule(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatadogSecurityMonitoringScheduledRuleConfig(ruleName),
@@ -646,11 +810,11 @@ resource "datadog_security_monitoring_rule" "acceptance_test%s" {
 `, suffix, name)
 }
 
-func testAccCheckDatadogSecurityMonitorCreatedCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitorCreatedCheck(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return testAccCheckDatadogSecurityMonitorCreatedCheckWithId(accProvider, ruleName, "")
 }
 
-func testAccCheckDatadogSecurityMonitorCreatedCheckWithId(accProvider func() (*schema.Provider, error), ruleName string, id string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitorCreatedCheckWithId(accProvider *fwprovider.FrameworkProvider, ruleName string, id string) resource.TestCheckFunc {
 	tfSecurityRuleNameWithId := tfSecurityRuleName
 	if id != "" {
 		tfSecurityRuleNameWithId = fmt.Sprintf("%s_%s", tfSecurityRuleNameWithId, id)
@@ -828,7 +992,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 `, name)
 }
 
-func testAccCheckDatadogSecurityMonitorCreatedCheckNewValueRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitorCreatedCheckNewValueRule(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -907,7 +1071,8 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         keep_alive = 600
         max_signal_duration = 900
         impossible_travel_options {
-            baseline_user_locations = true
+            baseline_user_locations          = true
+            baseline_user_locations_duration = 20
         }
     }
 
@@ -916,7 +1081,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 `, name)
 }
 
-func testAccCheckDatadogSecurityMonitorCreatedCheckImpossibleTravelRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitorCreatedCheckImpossibleTravelRule(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -951,6 +1116,8 @@ func testAccCheckDatadogSecurityMonitorCreatedCheckImpossibleTravelRule(accProvi
 			tfSecurityRuleName, "options.0.detection_method", "impossible_travel"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.impossible_travel_options.0.baseline_user_locations", "true"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.impossible_travel_options.0.baseline_user_locations_duration", "20"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "i:tomato"),
 		resource.TestCheckTypeSetElemAttr(
@@ -1001,7 +1168,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 `, name)
 }
 
-func testAccCheckDatadogSecurityMonitorCreatedCheckAnomalyDetectionRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitorCreatedCheckAnomalyDetectionRule(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(tfSecurityRuleName, "name", ruleName),
@@ -1059,7 +1226,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 `, name)
 }
 
-func testAccCheckDatadogSecurityMonitorCreatedCheckAnomalyDetectionRuleInstantaneousBaseline(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitorCreatedCheckAnomalyDetectionRuleInstantaneousBaseline(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(tfSecurityRuleName, "name", ruleName),
@@ -1135,7 +1302,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 `, name)
 }
 
-func testAccCheckDatadogSecurityMonitorCreatedCheckSequenceDetection(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitorCreatedCheckSequenceDetection(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -1235,7 +1402,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 `, name)
 }
 
-func testAccCheckDatadogSecurityMonitoringUpdateCheckSequenceDetection(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitoringUpdateCheckSequenceDetection(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -1303,7 +1470,8 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         keep_alive = 600
         max_signal_duration = 900
         impossible_travel_options {
-            baseline_user_locations = true
+            baseline_user_locations          = true
+            baseline_user_locations_duration = 25
         }
     }
 
@@ -1312,7 +1480,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 `, name)
 }
 
-func testAccCheckDatadogSecurityMonitorUpdatedCheckImpossibleTravelRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitorUpdatedCheckImpossibleTravelRule(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -1347,10 +1515,63 @@ func testAccCheckDatadogSecurityMonitorUpdatedCheckImpossibleTravelRule(accProvi
 			tfSecurityRuleName, "options.0.detection_method", "impossible_travel"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.impossible_travel_options.0.baseline_user_locations", "true"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.impossible_travel_options.0.baseline_user_locations_duration", "25"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "i:tomato"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "u:tomato"),
+	)
+}
+
+func testAccCheckDatadogSecurityMonitoringConfigImpossibleTravelRuleNullDuration(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s"
+    message = "impossible travel rule triggered (no duration)"
+    enabled = false
+
+    query {
+        name = "my_updated_query"
+        query = "*"
+        aggregation = "geo_data"
+        data_source = "logs"
+        metric = "@usr.handle"
+        group_by_fields = ["@usr.handle"]
+		has_optional_group_by_fields = false
+    }
+
+    case {
+        name = "new case name (updated)"
+        status = "high"
+        notifications = ["@user"]
+    }
+
+    options {
+        detection_method = "impossible_travel"
+        keep_alive = 600
+        max_signal_duration = 900
+        impossible_travel_options {
+            baseline_user_locations = true
+        }
+    }
+
+    tags = ["i:tomato", "u:tomato"]
+}
+`, name)
+}
+
+func testAccCheckDatadogSecurityMonitorCheckImpossibleTravelRuleNullDuration(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "name", ruleName),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.impossible_travel_options.0.baseline_user_locations", "true"),
+		// When duration is omitted on update, the API returns it as null in
+		// the response (no materialised default echoed back). The presence-
+		// aware extractor must keep state null instead of writing 0, so this
+		// assertion both verifies the null-preservation path and guards
+		// against the SEC-30852 null-vs-zero bug.
+		resource.TestCheckNoResourceAttr(tfSecurityRuleName, "options.0.impossible_travel_options.0.baseline_user_locations_duration"),
 	)
 }
 
@@ -1397,7 +1618,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 `, name)
 }
 
-func testAccCheckDatadogSecurityMonitorUpdatedCheckAnomalyDetectionRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitorUpdatedCheckAnomalyDetectionRule(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(tfSecurityRuleName, "name", ruleName),
@@ -1411,10 +1632,6 @@ func testAccCheckDatadogSecurityMonitorUpdatedCheckAnomalyDetectionRule(accProvi
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.anomaly_detection_options.0.instantaneous_baseline", "false"),
 	)
-}
-
-func testAccCheckDatadogSecurityMonitorInvalidRuleCheckCreateRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
-	return testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName)
 }
 
 func testAccCheckDatadogSecurityMonitoringCreatedConfigCwsRule(name string) string {
@@ -1491,7 +1708,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 `, name, strings.Replace(name, "-", "_", -1), ruleType)
 }
 
-func testAccCheckDatadogSecurityMonitoringCreatedCheckCwsRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitoringCreatedCheckCwsRule(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -1586,7 +1803,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 `, name)
 }
 
-func testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -1692,7 +1909,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 `, name)
 }
 
-func testAccCheckDatadogSecurityMonitoringUpdateCheckWithoutReferenceTables(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitoringUpdateCheckWithoutReferenceTables(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -1785,7 +2002,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 `, name)
 }
 
-func testAccCheckDatadogSecurityMonitoringUpdateCheckNewValueRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitoringUpdateCheckNewValueRule(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -1875,7 +2092,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 `, name, strings.Replace(name, "-", "_", -1))
 }
 
-func testAccCheckDatadogSecurityMonitoringUpdateCheckCwsRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitoringUpdateCheckCwsRule(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -2027,7 +2244,7 @@ func testCheckResourceAttrPairSignalCorrelation(name string, queryId int, logDet
 	return resource.TestCheckResourceAttrPair(name, signalQuery, logDetectionName, "id")
 }
 
-func testAccCheckDatadogSecurityMonitorCreatedSignalCorrelationCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitorCreatedSignalCorrelationCheck(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -2127,7 +2344,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		name)
 }
 
-func testAccCheckDatadogSecurityMonitoringUpdateSignalCorrelationCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitoringUpdateSignalCorrelationCheck(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -2177,7 +2394,7 @@ func testAccCheckDatadogSecurityMonitoringUpdateSignalCorrelationCheck(accProvid
 	)
 }
 
-func testAccCheckDatadogSecurityMonitoringEnabledDefaultCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitoringEnabledDefaultCheck(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -2262,7 +2479,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 `, name)
 }
 
-func testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -2314,6 +2531,7 @@ func testAccCheckDatadogSecurityMonitoringCreatedThirdPartyConfig(ruleName strin
 
 			options {
 				detection_method = "third_party"
+				keep_alive = 0
 				max_signal_duration = 900
 
 				third_party_rule_options {
@@ -2334,7 +2552,7 @@ func testAccCheckDatadogSecurityMonitoringCreatedThirdPartyConfig(ruleName strin
 	`, ruleName)
 }
 
-func testAccCheckDatadogSecurityMonitoringCreatedThirdPartyCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitoringCreatedThirdPartyCheck(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(tfSecurityRuleName, "name", ruleName),
@@ -2380,6 +2598,7 @@ func testAccCheckDatadogSecurityMonitoringUpdatedThirdPartyConfig(ruleName strin
 
 			options {
 				detection_method = "third_party"
+				keep_alive = 0
 				max_signal_duration = 900
 
 				third_party_rule_options {
@@ -2405,7 +2624,7 @@ func testAccCheckDatadogSecurityMonitoringUpdatedThirdPartyConfig(ruleName strin
 	`, ruleName)
 }
 
-func testAccCheckDatadogSecurityMonitoringUpdatedThirdPartyCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitoringUpdatedThirdPartyCheck(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(tfSecurityRuleName, "name", ruleName),
@@ -2431,12 +2650,10 @@ func testAccCheckDatadogSecurityMonitoringUpdatedThirdPartyCheck(accProvider fun
 	)
 }
 
-func testAccCheckDatadogSecurityMonitoringRuleExists(accProvider func() (*schema.Provider, error), rule string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitoringRuleExists(accProvider *fwprovider.FrameworkProvider, rule string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		auth := providerConf.Auth
-		apiInstances := providerConf.DatadogApiInstances
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		for _, rule := range s.RootModule().Resources {
 			_, _, err := apiInstances.GetSecurityMonitoringApiV2().GetSecurityMonitoringRule(auth, rule.Primary.ID)
@@ -2448,12 +2665,10 @@ func testAccCheckDatadogSecurityMonitoringRuleExists(accProvider func() (*schema
 	}
 }
 
-func testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		auth := providerConf.Auth
-		apiInstances := providerConf.DatadogApiInstances
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		for _, resource := range s.RootModule().Resources {
 			if resource.Type == "datadog_security_monitoring_rule" {
@@ -2469,7 +2684,6 @@ func testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider func() (*schem
 		}
 		return nil
 	}
-
 }
 
 func testAccCheckDatadogSecurityMonitoringCreatedConfigAppsecRule(name string) string {
@@ -2520,7 +2734,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 `, name)
 }
 
-func testAccCheckDatadogSecurityMonitoringCreatedCheckAppsecRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitoringCreatedCheckAppsecRule(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -2622,7 +2836,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 `, name)
 }
 
-func testAccCheckDatadogSecurityMonitoringUpdateCheckAppsecRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitoringUpdateCheckAppsecRule(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -3100,7 +3314,7 @@ func checkSecurityMonitoringCalculatedField(resourceName string, index int, name
 	)
 }
 
-func testAccDatadogSecurityMonitoringScheduledRuleCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccDatadogSecurityMonitoringScheduledRuleCheck(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		checkSecurityMonitoringScheduledRuleCommonPart(ruleName),
@@ -3192,7 +3406,7 @@ func testAccDatadogSecurityMonitoringScheduledRuleUpdateConfig(name string) stri
 	`, name)
 }
 
-func testAccDatadogSecurityMonitoringScheduledRuleUpdateCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+func testAccDatadogSecurityMonitoringScheduledRuleUpdateCheck(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		checkSecurityMonitoringScheduledRuleCommonPart(ruleName),

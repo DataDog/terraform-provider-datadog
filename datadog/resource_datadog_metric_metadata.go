@@ -33,7 +33,7 @@ func resourceDatadogMetricMetadata() *schema.Resource {
 					},
 				},
 				"type": {
-					Description: "Metric type such as `count`, `gauge`, or `rate`. Updating a metric of type `distribution` is not supported. If you would like to see the `distribution` type returned, contact [Datadog support](https://docs.datadoghq.com/help/).",
+					Description: "Metric type such as `count`, `distribution`, `gauge`, or `rate`.",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -106,10 +106,18 @@ func resourceDatadogMetricMetadataCreate(ctx context.Context, d *schema.Resource
 }
 
 func updateMetricMetadataState(d *schema.ResourceData, metadata *datadogV1.MetricMetadata) diag.Diagnostics {
-	if _, ok := d.GetOk("type"); !ok || metadata.GetType() != "distribution" {
-		if err := d.Set("type", metadata.GetType()); err != nil {
-			return diag.FromErr(err)
-		}
+	// GetMetricMetadata now reliably reports `type` for distribution metrics,
+	// so we always trust the API response here.
+	// (Previously this preserved whatever `type` was already in state whenever
+	// config had `type = "distribution"` set and the API echoed the same value,
+	// as a guard against older backend behavior where GET rarely confirmed
+	// `distribution`. That guard is what caused a `datadog_metric_metadata`
+	// resource for a distribution metric to plan a `gauge -> distribution`
+	// change forever, since Create/Update's own mutate-response for `type`
+	// remains unreliable and this Read path was the only thing that could
+	// ever correct it.)
+	if err := d.Set("type", metadata.GetType()); err != nil {
+		return diag.FromErr(err)
 	}
 	if err := d.Set("description", metadata.GetDescription()); err != nil {
 		return diag.FromErr(err)

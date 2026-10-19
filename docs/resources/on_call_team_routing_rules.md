@@ -35,6 +35,68 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
   }
 
   rule {
+    query = "tags.service:payment"
+    action {
+      escalation_policy {
+        policy_id           = "00000000-aba2-0000-0000-000000000000"
+        ack_timeout_minutes = 30
+        urgency             = "low"
+        support_hours {
+          time_zone = "America/New_York"
+          restriction {
+            start_day  = "monday"
+            start_time = "09:00:00"
+            end_day    = "monday"
+            end_time   = "17:00:00"
+          }
+          restriction {
+            start_day  = "tuesday"
+            start_time = "09:00:00"
+            end_day    = "tuesday"
+            end_time   = "17:00:00"
+          }
+          restriction {
+            start_day  = "wednesday"
+            start_time = "09:00:00"
+            end_day    = "wednesday"
+            end_time   = "17:00:00"
+          }
+          restriction {
+            start_day  = "thursday"
+            start_time = "09:00:00"
+            end_day    = "thursday"
+            end_time   = "17:00:00"
+          }
+          restriction {
+            start_day  = "friday"
+            start_time = "09:00:00"
+            end_day    = "friday"
+            end_time   = "17:00:00"
+          }
+        }
+      }
+    }
+  }
+
+  # Reroute matching pages to another team's routing rules. A reroute can
+  # only be combined with `send_slack_message` or `send_teams_message` actions.
+  rule {
+    query = "tags.service:checkout"
+    action {
+      reroute_to_team {
+        destination_team_id = "00000000-aba2-0000-0000-000000000001"
+      }
+    }
+    action {
+      send_slack_message {
+        workspace = "workspace"
+        channel   = "channel"
+      }
+    }
+  }
+
+  # The last rule must be a catch-all: no query and no time restriction.
+  rule {
     escalation_policy = "00000000-aba2-0000-0000-000000000000"
     urgency           = "dynamic"
   }
@@ -59,8 +121,8 @@ Optional:
 
 - `action` (Block List) Specifies the list of actions to perform when the routing rule is matched. (see [below for nested schema](#nestedblock--rule--action))
 - `escalation_policy` (String) ID of the policy to be applied when this routing rule matches.
-- `query` (String) Defines the query or condition that triggers this routing rule. Defaults to `""`.
-- `time_restrictions` (Block List) Holds time zone information and a list of time restrictions for a routing rule. (see [below for nested schema](#nestedblock--rule--time_restrictions))
+- `query` (String) Defines the query or condition that triggers this routing rule. Must not be set on the last rule, which acts as a catch-all rule. Defaults to `""`.
+- `time_restrictions` (Block, Optional) Holds time zone information and a list of time restrictions for a routing rule. Must not be set on the last rule, which acts as a catch-all rule. (see [below for nested schema](#nestedblock--rule--time_restrictions))
 - `urgency` (String) Defines the urgency for pages created via this rule. Only valid if `escalation_policy` is set. Valid values are `high`, `low`, `dynamic`.
 
 Read-Only:
@@ -72,13 +134,55 @@ Read-Only:
 
 Optional:
 
-- `send_slack_message` (Block List) (see [below for nested schema](#nestedblock--rule--action--send_slack_message))
-- `send_teams_message` (Block List) (see [below for nested schema](#nestedblock--rule--action--send_teams_message))
+- `escalation_policy` (Block, Optional) (see [below for nested schema](#nestedblock--rule--action--escalation_policy))
+- `reroute_to_team` (Block, Optional) Reroutes the page to another team's routing rules. Can only be combined with `send_slack_message` or `send_teams_message` actions in the same rule. (see [below for nested schema](#nestedblock--rule--action--reroute_to_team))
+- `send_slack_message` (Block, Optional) (see [below for nested schema](#nestedblock--rule--action--send_slack_message))
+- `send_teams_message` (Block, Optional) (see [below for nested schema](#nestedblock--rule--action--send_teams_message))
+- `trigger_workflow_automation` (Block, Optional) (see [below for nested schema](#nestedblock--rule--action--trigger_workflow_automation))
+
+<a id="nestedblock--rule--action--escalation_policy"></a>
+### Nested Schema for `rule.action.escalation_policy`
+
+Optional:
+
+- `ack_timeout_minutes` (Number) Number of minutes before an acknowledged page is re-triggered. Value must be between 30 and 4320.
+- `policy_id` (String) Escalation policy ID.
+- `support_hours` (Block, Optional) Support hours during which the escalation policy will execute. (see [below for nested schema](#nestedblock--rule--action--escalation_policy--support_hours))
+- `urgency` (String) Urgency for pages created via this action. Valid values are `high`, `low`, `dynamic`.
+
+<a id="nestedblock--rule--action--escalation_policy--support_hours"></a>
+### Nested Schema for `rule.action.escalation_policy.support_hours`
+
+Optional:
+
+- `restriction` (Block List) (see [below for nested schema](#nestedblock--rule--action--escalation_policy--support_hours--restriction))
+- `time_zone` (String) Specifies the time zone applicable to the restrictions, e.g. `America/New_York`.
+
+<a id="nestedblock--rule--action--escalation_policy--support_hours--restriction"></a>
+### Nested Schema for `rule.action.escalation_policy.support_hours.restriction`
+
+Optional:
+
+- `end_day` (String) The weekday when the restriction period ends. Valid values are `monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `saturday`, `sunday`.
+- `end_time` (String) The time of day when the restriction ends (hh:mm:ss).
+- `start_day` (String) The weekday when the restriction period starts. Valid values are `monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `saturday`, `sunday`.
+- `start_time` (String) The time of day when the restriction begins (hh:mm:ss).
+
+
+
+
+<a id="nestedblock--rule--action--reroute_to_team"></a>
+### Nested Schema for `rule.action.reroute_to_team`
+
+Optional:
+
+- `destination_team_id` (String) ID of the team to reroute the page to.
+
 
 <a id="nestedblock--rule--action--send_slack_message"></a>
 ### Nested Schema for `rule.action.send_slack_message`
 
-Required:
+Optional:
 
 - `channel` (String) Slack channel ID.
 - `workspace` (String) Slack workspace ID.
@@ -87,26 +191,34 @@ Required:
 <a id="nestedblock--rule--action--send_teams_message"></a>
 ### Nested Schema for `rule.action.send_teams_message`
 
-Required:
+Optional:
 
 - `channel` (String) Teams channel ID.
 - `team` (String) Teams team ID.
 - `tenant` (String) Teams tenant ID.
 
 
+<a id="nestedblock--rule--action--trigger_workflow_automation"></a>
+### Nested Schema for `rule.action.trigger_workflow_automation`
+
+Optional:
+
+- `handle` (String) The handle of the Workflow Automation to trigger.
+
+
 
 <a id="nestedblock--rule--time_restrictions"></a>
 ### Nested Schema for `rule.time_restrictions`
 
-Required:
+Optional:
 
-- `time_zone` (String) Specifies the time zone applicable to the restrictions, e.g. `America/New_York`.
 - `restriction` (Block List) List of restrictions for the rule. (see [below for nested schema](#nestedblock--rule--time_restrictions--restriction))
+- `time_zone` (String) Specifies the time zone applicable to the restrictions, e.g. `America/New_York`.
 
 <a id="nestedblock--rule--time_restrictions--restriction"></a>
 ### Nested Schema for `rule.time_restrictions.restriction`
 
-Required:
+Optional:
 
 - `end_day` (String) The weekday when the restriction period ends. Valid values are `monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `saturday`, `sunday`.
 - `end_time` (String) The time of day when the restriction ends (hh:mm:ss).
@@ -120,6 +232,6 @@ Import is supported using the following syntax:
 The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
-# Import existing on_call_team_routing_rules
+# Import an existing on_call_team_routing_rules
 terraform import datadog_on_call_team_routing_rules.test "b03a07d5-49da-43e9-83b4-5d84969b588b"
 ```

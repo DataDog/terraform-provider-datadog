@@ -16,7 +16,7 @@ Provides a Datadog Logs Index API resource. This can be used to create and manag
 # A sample Datadog logs index resource definition.
 
 resource "datadog_logs_index" "sample_index" {
-  name        = "your index"
+  name        = "your-index"
   daily_limit = 200000
   daily_limit_reset {
     reset_time       = "14:00"
@@ -103,6 +103,7 @@ Optional:
 Optional:
 
 - `query` (String) Only logs matching the filter criteria and the query of the parent index will be considered for this exclusion filter.
+- `sample_attribute` (String) The log attribute used as the sampling key. When present, logs sharing the same value are excluded or kept together at the configured sample rate (a single attribute path, e.g. `@lambda.request_id`).
 - `sample_rate` (Number) The fraction of logs excluded by the exclusion filter, when active.
 
 ## Import

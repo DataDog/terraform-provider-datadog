@@ -371,3 +371,33 @@ func ValidateSecurityMonitoringDataSource(enumValidator schema.SchemaValidateDia
 		return append(diags, enumValidator(val, path)...)
 	}
 }
+
+// Framework equivalent of ValidateSecurityMonitoringDataSource: warns on deprecated app_sec_spans.
+type securityMonitoringDataSourceWarningValidator struct{}
+
+func (securityMonitoringDataSourceWarningValidator) Description(context.Context) string {
+	return "warns when data_source is set to a deprecated value"
+}
+
+func (v securityMonitoringDataSourceWarningValidator) MarkdownDescription(ctx context.Context) string {
+	return v.Description(ctx)
+}
+
+func (securityMonitoringDataSourceWarningValidator) ValidateString(_ context.Context, req validator.StringRequest, resp *validator.StringResponse) {
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
+		return
+	}
+	if req.ConfigValue.ValueString() == "app_sec_spans" {
+		resp.Diagnostics.AddAttributeWarning(
+			req.Path,
+			"app_sec_spans datasource is deprecated",
+			"Use data_source = \"spans\" and add @appsec.security_activity:* to your query to keep the same behavior",
+		)
+	}
+}
+
+// SecurityMonitoringDataSourceWarningValidator warns on the legacy app_sec_spans value.
+// Chain with NewEnumValidator for accept/reject; this validator never errors.
+func SecurityMonitoringDataSourceWarningValidator() validator.String {
+	return securityMonitoringDataSourceWarningValidator{}
+}

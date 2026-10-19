@@ -1,0 +1,293 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 569
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"Data jobs alert triggered","name":"tf-TestAccDatadogMonitor_DataJobs_Basic-local-1779111356","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":0},"variables":[{"job_type":"databricks.job","jobs_query":"job_name:*","name":"run_query","query_dialect":"metric"}]},"priority":null,"query":"formula(\"failed_runs(run_query)\").by(job_name,workspace_name).last(10d) \u003e 0","restricted_roles":null,"tags":[],"type":"data-jobs alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 166.098209ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 569
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"Data jobs alert triggered","name":"tf-TestAccDatadogMonitor_DataJobs_Basic-local-1779111356","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":0},"variables":[{"job_type":"databricks.job","jobs_query":"job_name:*","name":"run_query","query_dialect":"metric"}]},"priority":null,"query":"formula(\"failed_runs(run_query)\").by(job_name,workspace_name).last(10d) \u003e 0","restricted_roles":null,"tags":[],"type":"data-jobs alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 163.580375ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 546
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"Data jobs alert triggered","name":"tf-TestAccDatadogMonitor_DataJobs_Basic-local-1779111356","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":0},"variables":[{"job_type":"databricks.job","jobs_query":"job_name:*","name":"run_query","query_dialect":"metric"}]},"priority":null,"query":"formula(\"failed_runs(run_query)\").by(job_name,workspace_name).last(10d) \u003e 0","restricted_roles":null,"tags":[],"type":"data-jobs alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":284316122,"org_id":321813,"type":"data-jobs alert","name":"tf-TestAccDatadogMonitor_DataJobs_Basic-local-1779111356","message":"Data jobs alert triggered","tags":[],"query":"formula(\"failed_runs(run_query)\").by(job_name,workspace_name).last(10d) > 0","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":0.0},"variables":[{"job_type":"databricks.job","jobs_query":"job_name:*","name":"run_query","query_dialect":"metric"}],"notify_audit":false,"silenced":{}},"multi":true,"created_at":1779111360000,"created":"2026-05-18T13:36:00.426473+00:00","modified":"2026-05-18T13:36:00.426473+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Pawe\u0142 Leszczy\u0144ski","handle":"pawel.leszczynski@datadoghq.com","email":"pawel.leszczynski@datadoghq.com","id":67862179}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 213.367167ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 569
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"Data jobs alert triggered","name":"tf-TestAccDatadogMonitor_DataJobs_Basic-local-1779111356","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":0},"variables":[{"job_type":"databricks.job","jobs_query":"job_name:*","name":"run_query","query_dialect":"metric"}]},"priority":null,"query":"formula(\"failed_runs(run_query)\").by(job_name,workspace_name).last(10d) \u003e 0","restricted_roles":null,"tags":[],"type":"data-jobs alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/284316122/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 183.208083ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/284316122?with_assets=true
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":284316122,"org_id":321813,"type":"data-jobs alert","name":"tf-TestAccDatadogMonitor_DataJobs_Basic-local-1779111356","message":"Data jobs alert triggered","tags":[],"query":"formula(\"failed_runs(run_query)\").by(job_name,workspace_name).last(10d) > 0","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":0.0},"variables":[{"job_type":"databricks.job","jobs_query":"job_name:*","name":"run_query","query_dialect":"metric"}],"notify_audit":false,"silenced":{}},"multi":true,"created_at":1779111360000,"created":"2026-05-18T13:36:00.426473+00:00","modified":"2026-05-18T13:36:00.426473+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Pawe\u0142 Leszczy\u0144ski","email":"pawel.leszczynski@datadoghq.com","handle":"pawel.leszczynski@datadoghq.com","id":67862179}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 201.13725ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 569
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"Data jobs alert triggered","name":"tf-TestAccDatadogMonitor_DataJobs_Basic-local-1779111356","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":0},"variables":[{"job_type":"databricks.job","jobs_query":"job_name:*","name":"run_query","query_dialect":"metric"}]},"priority":null,"query":"formula(\"failed_runs(run_query)\").by(job_name,workspace_name).last(10d) \u003e 0","restricted_roles":null,"tags":[],"type":"data-jobs alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/284316122/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 176.160459ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/284316122
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_monitor_id":284316122}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 265.313ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/284316122
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Monitor not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 184.204709ms

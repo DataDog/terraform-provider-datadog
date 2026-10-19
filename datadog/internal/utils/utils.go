@@ -40,6 +40,9 @@ const DDAPIUrlEnvName = "DD_HOST"
 // DDOrgUUIDEnvName name of env var for Org UUID
 const DDOrgUUIDEnvName = "DD_ORG_UUID"
 
+// DDBearerTokenEnvName name of env var for the Bearer-token credential (PATs, SATs, etc.)
+const DDBearerTokenEnvName = "DD_BEARER_TOKEN" //#nosec G101 -- env var name, not a credential value
+
 // DatadogAPPKeyEnvName name of env var for APP key
 const DatadogAPPKeyEnvName = "DATADOG_APP_KEY"
 
@@ -48,6 +51,9 @@ const DatadogAPIKeyEnvName = "DATADOG_API_KEY"
 
 // DatadogOrgUUIDEnvName name of env var for Org UUID
 const DatadogOrgUUIDEnvName = "DATADOG_ORG_UUID"
+
+// DatadogBearerTokenEnvName name of env var for the Bearer-token credential (PATs, SATs, etc.)
+const DatadogBearerTokenEnvName = "DATADOG_BEARER_TOKEN" //#nosec G101 -- env var name, not a credential value
 
 // DatadogAPIUrlEnvName name of env var for API key
 const DatadogAPIUrlEnvName = "DATADOG_HOST"
@@ -66,6 +72,15 @@ const DDHTTPRetryBackoffBase = "DD_HTTP_CLIENT_RETRY_BACKOFF_BASE"
 
 // DDHTTPRetryMaxRetries name of env var for max retries
 const DDHTTPRetryMaxRetries = "DD_HTTP_CLIENT_RETRY_MAX_RETRIES"
+
+// DDHTTPRetryJitter name of env var for retry jitter
+const DDHTTPRetryJitter = "DD_HTTP_CLIENT_RETRY_JITTER"
+
+// DDCloudProviderTypeEnvName name of env var for cloud provider type
+const DDCloudProviderTypeEnvName = "DD_CLOUD_PROVIDER_TYPE"
+
+// DatadogCloudProviderTypeEnvName name of env var for cloud provider type
+const DatadogCloudProviderTypeEnvName = "DATADOG_CLOUD_PROVIDER_TYPE"
 
 // AWSAccessKeyId name of env var for AWS Access Key Id
 const AWSAccessKeyId = "AWS_ACCESS_KEY_ID"
@@ -88,8 +103,14 @@ var APIKeyEnvVars = []string{DDAPIKeyEnvName, DatadogAPIKeyEnvName}
 // OrgUUIDEnvVars names of env var for Org UUID
 var OrgUUIDEnvVars = []string{DDOrgUUIDEnvName, DatadogOrgUUIDEnvName}
 
+// BearerTokenEnvVars names of env vars for the Bearer-token credential (PATs, SATs, etc.)
+var BearerTokenEnvVars = []string{DDBearerTokenEnvName, DatadogBearerTokenEnvName}
+
 // APIUrlEnvVars names of env var for API key
 var APIUrlEnvVars = []string{DDAPIUrlEnvName, DatadogAPIUrlEnvName}
+
+// CloudProviderTypeEnvVars names of env var for cloud provider type
+var CloudProviderTypeEnvVars = []string{DDCloudProviderTypeEnvName, DatadogCloudProviderTypeEnvName}
 
 // DatadogProvider holds a reference to the provider
 var DatadogProvider *schema.Provider
@@ -158,16 +179,16 @@ func TranslateClientError(err error, httpresp *http.Response, msg string) error 
 	}
 
 	if apiErr, ok := err.(CustomRequestAPIError); ok {
-		return fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
+		return fmt.Errorf("%s: %w: %s", msg, err, apiErr.Body())
 	}
 	if apiErr, ok := err.(datadog.GenericOpenAPIError); ok {
-		return fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
+		return fmt.Errorf("%s: %w: %s", msg, err, apiErr.Body())
 	}
 	if errURL, ok := err.(*url.Error); ok {
-		return fmt.Errorf(msg+" (url.Error): %s", errURL)
+		return fmt.Errorf("%s (url.Error): %w", msg, errURL)
 	}
 
-	return fmt.Errorf(msg+": %s", err.Error())
+	return fmt.Errorf("%s: %w", msg, err)
 }
 
 // CheckForUnparsed takes in a API response object and returns an error if it contains an unparsed element

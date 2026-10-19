@@ -1,0 +1,802 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: Key Management
+  description: 'Manage your Datadog API and application keys. You need an API key and an
+
+    application key for a user with the required permissions to interact with these endpoints.
+
+
+    Consult the following pages to view and manage your keys:
+
+
+    - [API Keys](https://app.datadoghq.com/organization-settings/api-keys)
+
+    - [Application Keys](https://app.datadoghq.com/personal-settings/application-keys)'
+  externalDocs:
+    description: Find out more at
+    url: https://docs.datadoghq.com/account_management/api-app-keys/
+paths:
+  /api/v2/api_keys/{api_key_id}:
+    get:
+      operationId: GetAPIKey
+      tags:
+      - Key Management
+      summary: Get API key
+      description: Get an API key.
+      parameters:
+      - $ref: '#/components/parameters/APIKeyId'
+      - $ref: '#/components/parameters/APIKeyIncludeParameter'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIKeyResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                      id: 00000000-0000-0000-0000-000000000003
+                      type: api_keys
+                      attributes:
+                        name: API Key for submitting metrics
+                        last4: abcd
+                        created_at: '2024-01-01T00:00:00+00:00'
+                        modified_at: '2024-01-01T00:00:00+00:00'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      x-permission:
+        operator: OR
+        permissions:
+        - api_keys_read
+      x-menu-order: 3
+      x-undo:
+        type: safe
+      x-merge-override:
+        parameters: false
+  /api/v2/api_keys:
+    get:
+      operationId: ListAPIKeys
+      tags:
+      - Key Management
+      summary: Get all API keys
+      description: List all API keys available for your account.
+      parameters:
+      - $ref: '#/components/parameters/PageSize'
+      - $ref: '#/components/parameters/PageNumber'
+      - $ref: '#/components/parameters/APIKeysSortParameter'
+      - $ref: '#/components/parameters/APIKeyFilterParameter'
+      - $ref: '#/components/parameters/APIKeyFilterCreatedAtStartParameter'
+      - $ref: '#/components/parameters/APIKeyFilterCreatedAtEndParameter'
+      - $ref: '#/components/parameters/APIKeyFilterModifiedAtStartParameter'
+      - $ref: '#/components/parameters/APIKeyFilterModifiedAtEndParameter'
+      - $ref: '#/components/parameters/APIKeyIncludeParameter'
+      - $ref: '#/components/parameters/APIKeyReadConfigReadEnabledParameter'
+      - $ref: '#/components/parameters/APIKeyCategoryParameter'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIKeysResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                    - id: 00000000-0000-0000-0000-000000000001
+                      type: api_keys
+                      attributes:
+                        name: API Key for submitting metrics
+                        last4: abcd
+                        created_at: '2024-01-01T00:00:00+00:00'
+                        modified_at: '2024-01-01T00:00:00+00:00'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      x-permission:
+        operator: OR
+        permissions:
+        - api_keys_read
+      x-menu-order: 5
+      x-undo:
+        type: safe
+components:
+  parameters:
+    APIKeyCategoryParameter:
+      name: filter[category]
+      in: query
+      required: false
+      description: Filter API keys by category.
+      schema:
+        type: string
+    APIKeyFilterCreatedAtEndParameter:
+      name: filter[created_at][end]
+      in: query
+      required: false
+      description: Only include API keys created on or before the specified date.
+      schema:
+        type: string
+        example: '2020-11-24T18:46:21+00:00'
+        x-merge-override:
+          format: false
+    APIKeyFilterCreatedAtStartParameter:
+      name: filter[created_at][start]
+      in: query
+      required: false
+      description: Only include API keys created on or after the specified date.
+      schema:
+        type: string
+        example: '2020-11-24T18:46:21+00:00'
+        x-merge-override:
+          format: false
+    APIKeyFilterModifiedAtEndParameter:
+      name: filter[modified_at][end]
+      in: query
+      required: false
+      description: Only include API keys modified on or before the specified date.
+      schema:
+        type: string
+        example: '2020-11-24T18:46:21+00:00'
+        x-merge-override:
+          format: false
+    APIKeyFilterModifiedAtStartParameter:
+      name: filter[modified_at][start]
+      in: query
+      required: false
+      description: Only include API keys modified on or after the specified date.
+      schema:
+        type: string
+        example: '2020-11-24T18:46:21+00:00'
+        x-merge-override:
+          format: false
+    APIKeyFilterParameter:
+      name: filter
+      in: query
+      required: false
+      description: Filter API keys by the specified string.
+      schema:
+        type: string
+    APIKeyId:
+      name: api_key_id
+      in: path
+      required: true
+      description: The ID of the API key.
+      schema:
+        type: string
+    APIKeyIncludeParameter:
+      name: include
+      in: query
+      required: false
+      description: Comma separated list of resource paths for related resources to include in the response.
+        Supported resource paths are `created_by` and `modified_by`.
+      schema:
+        type: string
+        example: created_by,modified_by
+    APIKeyReadConfigReadEnabledParameter:
+      name: filter[remote_config_read_enabled]
+      in: query
+      required: false
+      description: Filter API keys by remote config read enabled status.
+      schema:
+        type: boolean
+    APIKeysSortParameter:
+      name: sort
+      in: query
+      required: false
+      description: 'API key attribute used to sort results. Sort order is ascending
+
+        by default. In order to specify a descending sort, prefix the
+
+        attribute with a minus sign.'
+      schema:
+        $ref: '#/components/schemas/APIKeysSort'
+    PageNumber:
+      name: page[number]
+      in: query
+      required: false
+      description: Specific page number to return.
+      schema:
+        type: integer
+        format: int64
+        default: 0
+        example: 0
+    PageSize:
+      name: page[size]
+      in: query
+      required: false
+      description: Size for a given page. The maximum allowed value is 100.
+      schema:
+        type: integer
+        format: int64
+        default: 10
+        example: 10
+  responses:
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    APIKeyRelationships:
+      type: object
+      description: Resources related to the API key.
+      properties:
+        created_by:
+          $ref: '#/components/schemas/RelationshipToUser'
+        modified_by:
+          $ref: '#/components/schemas/NullableRelationshipToUser'
+    APIKeyResponse:
+      type: object
+      description: Response for retrieving an API key.
+      properties:
+        data:
+          $ref: '#/components/schemas/FullAPIKey'
+        included:
+          type: array
+          description: Array of objects related to the API key.
+          items:
+            $ref: '#/components/schemas/APIKeyResponseIncludedItem'
+          x-merge-override:
+            items: false
+    APIKeyResponseIncludedItem:
+      description: An object related to an API key.
+      oneOf:
+      - $ref: '#/components/schemas/User'
+      - $ref: '#/components/schemas/LeakedKey'
+    APIKeysResponse:
+      type: object
+      description: Response for a list of API keys.
+      properties:
+        meta:
+          $ref: '#/components/schemas/APIKeysResponseMeta'
+        data:
+          type: array
+          description: Array of API keys.
+          items:
+            $ref: '#/components/schemas/PartialAPIKey'
+        included:
+          type: array
+          description: Array of objects related to the API key.
+          items:
+            $ref: '#/components/schemas/APIKeyResponseIncludedItem'
+          x-merge-override:
+            items: false
+    APIKeysResponseMeta:
+      type: object
+      description: Additional information related to api keys response.
+      properties:
+        page:
+          $ref: '#/components/schemas/APIKeysResponseMetaPage'
+        max_allowed:
+          type: integer
+          description: Max allowed number of API keys.
+          format: int64
+    APIKeysResponseMetaPage:
+      type: object
+      description: Additional information related to the API keys response.
+      properties:
+        total_filtered_count:
+          type: integer
+          description: Total filtered application key count.
+          format: int64
+    APIKeysSort:
+      type: string
+      description: Sorting options
+      default: name
+      enum:
+      - created_at
+      - -created_at
+      - last4
+      - -last4
+      - modified_at
+      - -modified_at
+      - name
+      - -name
+      x-enum-varnames:
+      - CREATED_AT_ASCENDING
+      - CREATED_AT_DESCENDING
+      - LAST4_ASCENDING
+      - LAST4_DESCENDING
+      - MODIFIED_AT_ASCENDING
+      - MODIFIED_AT_DESCENDING
+      - NAME_ASCENDING
+      - NAME_DESCENDING
+    APIKeysType:
+      type: string
+      description: API Keys resource type.
+      default: api_keys
+      example: api_keys
+      enum:
+      - api_keys
+      x-enum-varnames:
+      - API_KEYS
+    FullAPIKey:
+      type: object
+      description: Datadog API key.
+      properties:
+        attributes:
+          $ref: '#/components/schemas/FullAPIKeyAttributes'
+        id:
+          type: string
+          description: ID of the API key.
+        relationships:
+          $ref: '#/components/schemas/APIKeyRelationships'
+        type:
+          $ref: '#/components/schemas/APIKeysType'
+      x-merge-override:
+        required: false
+    FullAPIKeyAttributes:
+      type: object
+      description: Attributes of a full API key.
+      properties:
+        created_at:
+          type: string
+          description: Creation date of the API key.
+          format: date-time
+          readOnly: true
+          example: '2020-11-23T10:00:00.000Z'
+        key:
+          type: string
+          description: The API key.
+          readOnly: true
+          x-secret: true
+        last4:
+          type: string
+          description: The last four characters of the API key.
+          maxLength: 4
+          minLength: 4
+          readOnly: true
+          example: abcd
+          x-secret: true
+        modified_at:
+          type: string
+          description: Date the API key was last modified.
+          format: date-time
+          readOnly: true
+          example: '2020-11-23T10:00:00.000Z'
+        name:
+          type: string
+          description: Name of the API key.
+          example: API Key for submitting metrics
+        category:
+          type: string
+          description: The category of the API key.
+        remote_config_read_enabled:
+          type: boolean
+          description: The remote config read enabled status.
+        date_last_used:
+          type: string
+          description: Date the API Key was last used
+          format: date-time
+          nullable: true
+          readOnly: true
+          example: '2020-11-27T10:00:00.000Z'
+    LeakedKey:
+      type: object
+      description: The definition of LeakedKey object.
+      required:
+      - attributes
+      - id
+      - type
+      properties:
+        attributes:
+          $ref: '#/components/schemas/LeakedKeyAttributes'
+        id:
+          type: string
+          description: The LeakedKey id.
+          example: id
+        type:
+          $ref: '#/components/schemas/LeakedKeyType'
+    LeakedKeyAttributes:
+      type: object
+      description: The definition of LeakedKeyAttributes object.
+      required:
+      - date
+      properties:
+        date:
+          type: string
+          description: The LeakedKeyAttributes date.
+          format: date-time
+          example: '2017-07-21T17:32:28Z'
+        leak_source:
+          type: string
+          description: The LeakedKeyAttributes leak_source.
+    LeakedKeyType:
+      type: string
+      description: The definition of LeakedKeyType object.
+      default: leaked_keys
+      example: leaked_keys
+      enum:
+      - leaked_keys
+      x-enum-varnames:
+      - LEAKED_KEYS
+    NullableRelationshipToUser:
+      type: object
+      description: Relationship to user.
+      nullable: true
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/NullableRelationshipToUserData'
+    NullableRelationshipToUserData:
+      type: object
+      description: Relationship to user object.
+      nullable: true
+      required:
+      - id
+      - type
+      properties:
+        type:
+          $ref: '#/components/schemas/UsersType'
+        id:
+          type: string
+          description: A unique identifier that represents the user.
+          example: 00000000-0000-0000-0000-000000000000
+      x-merge-override:
+        required: false
+    OrganizationsType:
+      type: string
+      description: Organizations resource type.
+      default: orgs
+      example: orgs
+      enum:
+      - orgs
+      x-enum-varnames:
+      - ORGS
+    PartialAPIKey:
+      type: object
+      description: Partial Datadog API key.
+      properties:
+        attributes:
+          $ref: '#/components/schemas/PartialAPIKeyAttributes'
+        id:
+          type: string
+          description: ID of the API key.
+        relationships:
+          $ref: '#/components/schemas/APIKeyRelationships'
+        type:
+          $ref: '#/components/schemas/APIKeysType'
+      x-merge-override:
+        required: false
+    PartialAPIKeyAttributes:
+      type: object
+      description: Attributes of a partial API key.
+      properties:
+        created_at:
+          type: string
+          description: Creation date of the API key.
+          readOnly: true
+          example: '2020-11-23T10:00:00.000Z'
+          x-merge-override:
+            format: false
+        last4:
+          type: string
+          description: The last four characters of the API key.
+          maxLength: 4
+          minLength: 4
+          readOnly: true
+          example: abcd
+          x-secret: true
+        modified_at:
+          type: string
+          description: Date the API key was last modified.
+          readOnly: true
+          example: '2020-11-23T10:00:00.000Z'
+          x-merge-override:
+            format: false
+        name:
+          type: string
+          description: Name of the API key.
+          example: API Key for submitting metrics
+        category:
+          type: string
+          description: The category of the API key.
+        remote_config_read_enabled:
+          type: boolean
+          description: The remote config read enabled status.
+        date_last_used:
+          type: string
+          description: Date the API Key was last used.
+          format: date-time
+          nullable: true
+          readOnly: true
+          example: '2020-11-27T10:00:00.000Z'
+    RelationshipToOrganization:
+      type: object
+      description: Relationship to an organization.
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/RelationshipToOrganizationData'
+    RelationshipToOrganizationData:
+      type: object
+      description: Relationship to organization object.
+      required:
+      - id
+      - type
+      properties:
+        type:
+          $ref: '#/components/schemas/OrganizationsType'
+        id:
+          type: string
+          description: ID of the organization.
+          example: 00000000-0000-beef-0000-000000000000
+    RelationshipToOrganizations:
+      type: object
+      description: Relationship to organizations.
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          description: Relationships to organization objects.
+          example: []
+          items:
+            $ref: '#/components/schemas/RelationshipToOrganizationData'
+    RelationshipToRoleData:
+      type: object
+      description: Relationship to role object.
+      properties:
+        type:
+          $ref: '#/components/schemas/RolesType'
+        id:
+          type: string
+          description: The unique identifier of the role.
+          example: 3653d3c6-0c75-11ea-ad28-fb5701eabc7d
+      x-merge-override:
+        required: false
+    RelationshipToRoles:
+      type: object
+      description: Relationship to roles.
+      properties:
+        data:
+          type: array
+          description: An array containing type and the unique identifier of a role.
+          items:
+            $ref: '#/components/schemas/RelationshipToRoleData'
+      x-merge-override:
+        required: false
+    RelationshipToUser:
+      type: object
+      description: Relationship to user.
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/RelationshipToUserData'
+    RelationshipToUserData:
+      type: object
+      description: Relationship to user object.
+      required:
+      - id
+      - type
+      properties:
+        type:
+          $ref: '#/components/schemas/UsersType'
+        id:
+          type: string
+          description: A unique identifier that represents the user.
+          example: 00000000-0000-0000-2345-000000000000
+      x-merge-override:
+        required: false
+    RelationshipToUsers:
+      type: object
+      description: Relationship to users.
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          description: Relationships to user objects.
+          example: []
+          items:
+            $ref: '#/components/schemas/RelationshipToUserData'
+    RolesType:
+      type: string
+      description: Roles type.
+      default: roles
+      example: roles
+      enum:
+      - roles
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - ROLES
+    User:
+      type: object
+      description: User object returned by the API.
+      properties:
+        type:
+          $ref: '#/components/schemas/UsersType'
+        id:
+          type: string
+          description: ID of the user.
+        attributes:
+          $ref: '#/components/schemas/UserAttributes'
+        relationships:
+          $ref: '#/components/schemas/UserResponseRelationships'
+      x-merge-override:
+        required: false
+    UserAttributes:
+      type: object
+      description: Attributes of user object returned by the API.
+      properties:
+        mfa_enabled:
+          type: boolean
+          description: Whether multi-factor authentication (MFA) is enabled for the user's account.
+          readOnly: true
+        name:
+          type: string
+          description: The full display name of the user as shown in the Datadog UI.
+          nullable: true
+        handle:
+          type: string
+          description: The unique handle (username) of the user, typically matching their email prefix.
+        created_at:
+          type: string
+          description: The ISO 8601 timestamp of when the user account was created.
+          format: date-time
+        modified_at:
+          type: string
+          description: The ISO 8601 timestamp of when the user account was last modified.
+          format: date-time
+        email:
+          type: string
+          description: The email address of the user, used for login and notifications.
+        icon:
+          type: string
+          description: URL of the user's profile icon, typically a Gravatar URL derived from the email
+            address.
+        title:
+          type: string
+          description: The job title of the user (for example, "Senior Engineer" or "Product Manager").
+          nullable: true
+        verified:
+          type: boolean
+          description: Whether the user's email address has been verified.
+        disabled:
+          type: boolean
+          description: Whether the user account is deactivated. Disabled users cannot log in.
+        status:
+          type: string
+          description: The current status of the user account (for example, `Active`, `Pending`, or `Disabled`).
+        service_account:
+          type: boolean
+          description: 'Whether this is a service account rather than a human user.
+
+            Service accounts are used for programmatic API access.'
+        last_login_time:
+          type: string
+          description: The ISO 8601 timestamp of the user's most recent login, or null if the user has
+            never logged in.
+          format: date-time
+          nullable: true
+          readOnly: true
+        uuid:
+          type: string
+          description: The globally unique identifier (UUID) of the user.
+          readOnly: true
+    UserResponseRelationships:
+      type: object
+      description: Relationships of the user object returned by the API.
+      properties:
+        roles:
+          $ref: '#/components/schemas/RelationshipToRoles'
+        org:
+          $ref: '#/components/schemas/RelationshipToOrganization'
+        other_users:
+          $ref: '#/components/schemas/RelationshipToUsers'
+        other_orgs:
+          $ref: '#/components/schemas/RelationshipToOrganizations'
+      x-merge-override:
+        properties: false
+    UsersType:
+      type: string
+      description: Users resource type.
+      default: users
+      example: users
+      enum:
+      - users
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - USERS
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY

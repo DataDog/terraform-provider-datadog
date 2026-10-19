@@ -1,0 +1,36 @@
+openapi: 3.0.0
+info:
+  title: normalize allOf probe fixture
+  version: 1.0.0
+components:
+  schemas:
+    Base:
+      type: object
+      properties:
+        base_field:
+          type: string
+      required:
+        - base_field
+paths:
+  /allof:
+    post:
+      operationId: CreateAllOf
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: allof_thing
+        group:
+          create: CreateAllOf
+          read: CreateAllOf
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Base'
+                - type: object
+                  properties:
+                    extra:
+                      type: integer
+      responses:
+        '204':
+          description: no content

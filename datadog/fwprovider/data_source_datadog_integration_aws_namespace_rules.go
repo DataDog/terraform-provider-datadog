@@ -40,7 +40,8 @@ func (d *datadogIntegrationAWSNamespaceRulesDatasource) Metadata(_ context.Conte
 
 func (d *datadogIntegrationAWSNamespaceRulesDatasource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog AWS Integration Namespace Rules data source. This can be used to retrieve all available namespace rules for a Datadog-AWS integration.",
+		Description:        "Provides a Datadog AWS Integration Namespace Rules data source. This can be used to retrieve all available namespace rules for a Datadog-AWS integration.",
+		DeprecationMessage: "This data source is deprecated — use the `datadog_integration_aws_available_namespaces` data source instead. Note: the replacement returns AWS namespace strings (e.g. `AWS/EC2`) rather than legacy Datadog IDs (e.g. `ec2`).",
 		Attributes: map[string]schema.Attribute{
 			"namespace_rules": schema.ListAttribute{
 				Description: "The list of available namespace rules for a Datadog-AWS integration.",

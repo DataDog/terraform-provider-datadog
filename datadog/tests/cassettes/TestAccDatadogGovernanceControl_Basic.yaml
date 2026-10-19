@@ -1,0 +1,942 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 55
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{},"type":"governance_control"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"unused_api_keys","type":"governance_control","attributes":{"active_detections_count":0,"category":"security","created_at":"2026-08-03T09:35:38.97538Z","created_by":"48e5159f-e308-11ef-bcfc-2666505bfd8f","description":"Identifies API keys that have not been used within your specified time threshold, helping reduce security risks from dormant credentials. The default threshold is 30 days of inactivity, and can be adjusted.","detection_frequency":"daily","detection_parameters":{},"insights":[],"last_detection_at":null,"mitigated_detections_count":0,"mitigation_parameters":{},"mitigation_type":"","mitigations":[{"id":"revoke_api_key","title":"Revoke Unused API Keys","description":"Automatically identifies and revokes inactive API keys to improve security and reduce potential attack surface.","supported_parameters":[],"permissions":["api_keys_write","api_keys_delete"],"execution_modes":["manual","automatic"]}],"name":"Unused API Keys","priority":"High","product":"api_keys","resource_type":"api_key","resource_type_display_name":"API Key","supported_detection_parameters":[{"name":"api_key_threshold","display_name":"Unused API Key Threshold","description":"Number of days of inactivity before an API key is considered unused.","type":"integer","required":false,"supported_values":null,"default_value":30},{"name":"key_name_exclusion_patterns","display_name":"Key Name Exclusion Patterns","description":"Patterns to exclude specific API key names. Supports wildcards (* and ?).","type":"pattern_list","required":false,"supported_values":null,"default_value":[]},{"name":"governance_remediation_delay","display_name":"Remediation Delay","description":"Number of days to wait before automatically remediating detections for this control","type":"integer","required":false,"supported_values":null,"default_value":7}],"type":"Proactive","usage_concern":"Security"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 199.611583ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys/notification_settings
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 211
+        uncompressed: false
+        body: '{"data":{"id":"unused_api_keys","type":"control_notification_settings","attributes":{"event_settings":[{"event_type":"new_detection","enabled":true,"targets":[{"type":"email","handle":"test@datadoghq.com"}]}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 159.826125ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"unused_api_keys","type":"governance_control","attributes":{"active_detections_count":34,"category":"security","created_at":"2026-08-03T09:35:38.97538Z","created_by":"48e5159f-e308-11ef-bcfc-2666505bfd8f","description":"Identifies API keys that have not been used within your specified time threshold, helping reduce security risks from dormant credentials. The default threshold is 30 days of inactivity, and can be adjusted.","detection_frequency":"daily","detection_parameters":{},"insights":[],"last_detection_at":"2026-08-07T12:33:53.597718Z","mitigated_detections_count":0,"mitigation_parameters":{},"mitigation_type":"","mitigations":[{"id":"revoke_api_key","title":"Revoke Unused API Keys","description":"Automatically identifies and revokes inactive API keys to improve security and reduce potential attack surface.","supported_parameters":[],"permissions":["api_keys_write","api_keys_delete"],"execution_modes":["manual","automatic"]}],"name":"Unused API Keys","priority":"High","product":"api_keys","resource_type":"api_key","resource_type_display_name":"API Key","supported_detection_parameters":[{"name":"api_key_threshold","display_name":"Unused API Key Threshold","description":"Number of days of inactivity before an API key is considered unused.","type":"integer","required":false,"supported_values":null,"default_value":30},{"name":"key_name_exclusion_patterns","display_name":"Key Name Exclusion Patterns","description":"Patterns to exclude specific API key names. Supports wildcards (* and ?).","type":"pattern_list","required":false,"supported_values":null,"default_value":[]},{"name":"governance_remediation_delay","display_name":"Remediation Delay","description":"Number of days to wait before automatically remediating detections for this control","type":"integer","required":false,"supported_values":null,"default_value":7}],"type":"Proactive","usage_concern":"Security"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 151.663334ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"unused_api_keys","type":"governance_control","attributes":{"active_detections_count":34,"category":"security","created_at":"2026-08-03T09:35:38.97538Z","created_by":"48e5159f-e308-11ef-bcfc-2666505bfd8f","description":"Identifies API keys that have not been used within your specified time threshold, helping reduce security risks from dormant credentials. The default threshold is 30 days of inactivity, and can be adjusted.","detection_frequency":"daily","detection_parameters":{},"insights":[],"last_detection_at":"2026-08-07T12:33:53.597718Z","mitigated_detections_count":0,"mitigation_parameters":{},"mitigation_type":"","mitigations":[{"id":"revoke_api_key","title":"Revoke Unused API Keys","description":"Automatically identifies and revokes inactive API keys to improve security and reduce potential attack surface.","supported_parameters":[],"permissions":["api_keys_write","api_keys_delete"],"execution_modes":["manual","automatic"]}],"name":"Unused API Keys","priority":"High","product":"api_keys","resource_type":"api_key","resource_type_display_name":"API Key","supported_detection_parameters":[{"name":"api_key_threshold","display_name":"Unused API Key Threshold","description":"Number of days of inactivity before an API key is considered unused.","type":"integer","required":false,"supported_values":null,"default_value":30},{"name":"key_name_exclusion_patterns","display_name":"Key Name Exclusion Patterns","description":"Patterns to exclude specific API key names. Supports wildcards (* and ?).","type":"pattern_list","required":false,"supported_values":null,"default_value":[]},{"name":"governance_remediation_delay","display_name":"Remediation Delay","description":"Number of days to wait before automatically remediating detections for this control","type":"integer","required":false,"supported_values":null,"default_value":7}],"type":"Proactive","usage_concern":"Security"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 144.810167ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys/notification_settings
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 211
+        uncompressed: false
+        body: '{"data":{"id":"unused_api_keys","type":"control_notification_settings","attributes":{"event_settings":[{"event_type":"new_detection","enabled":true,"targets":[{"type":"email","handle":"test@datadoghq.com"}]}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 124.841667ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"unused_api_keys","type":"governance_control","attributes":{"active_detections_count":34,"category":"security","created_at":"2026-08-03T09:35:38.97538Z","created_by":"48e5159f-e308-11ef-bcfc-2666505bfd8f","description":"Identifies API keys that have not been used within your specified time threshold, helping reduce security risks from dormant credentials. The default threshold is 30 days of inactivity, and can be adjusted.","detection_frequency":"daily","detection_parameters":{},"insights":[],"last_detection_at":"2026-08-07T12:33:53.597718Z","mitigated_detections_count":0,"mitigation_parameters":{},"mitigation_type":"","mitigations":[{"id":"revoke_api_key","title":"Revoke Unused API Keys","description":"Automatically identifies and revokes inactive API keys to improve security and reduce potential attack surface.","supported_parameters":[],"permissions":["api_keys_write","api_keys_delete"],"execution_modes":["manual","automatic"]}],"name":"Unused API Keys","priority":"High","product":"api_keys","resource_type":"api_key","resource_type_display_name":"API Key","supported_detection_parameters":[{"name":"api_key_threshold","display_name":"Unused API Key Threshold","description":"Number of days of inactivity before an API key is considered unused.","type":"integer","required":false,"supported_values":null,"default_value":30},{"name":"key_name_exclusion_patterns","display_name":"Key Name Exclusion Patterns","description":"Patterns to exclude specific API key names. Supports wildcards (* and ?).","type":"pattern_list","required":false,"supported_values":null,"default_value":[]},{"name":"governance_remediation_delay","display_name":"Remediation Delay","description":"Number of days to wait before automatically remediating detections for this control","type":"integer","required":false,"supported_values":null,"default_value":7}],"type":"Proactive","usage_concern":"Security"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 145.870667ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys/notification_settings
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 211
+        uncompressed: false
+        body: '{"data":{"id":"unused_api_keys","type":"control_notification_settings","attributes":{"event_settings":[{"event_type":"new_detection","enabled":true,"targets":[{"type":"email","handle":"test@datadoghq.com"}]}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 124.8035ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 198
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"detection_parameters":{"api_key_threshold":45,"governance_remediation_delay":14},"mitigation_parameters":{},"mitigation_type":"revoke_api_key"},"type":"governance_control"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"unused_api_keys","type":"governance_control","attributes":{"active_detections_count":0,"category":"security","created_at":"2026-08-03T09:35:38.97538Z","created_by":"48e5159f-e308-11ef-bcfc-2666505bfd8f","description":"Identifies API keys that have not been used within your specified time threshold, helping reduce security risks from dormant credentials. The default threshold is 30 days of inactivity, and can be adjusted.","detection_frequency":"daily","detection_parameters":{"api_key_threshold":45,"governance_remediation_delay":14},"insights":[],"last_detection_at":null,"mitigated_detections_count":0,"mitigation_parameters":{},"mitigation_type":"revoke_api_key","mitigations":[{"id":"revoke_api_key","title":"Revoke Unused API Keys","description":"Automatically identifies and revokes inactive API keys to improve security and reduce potential attack surface.","supported_parameters":[],"permissions":["api_keys_write","api_keys_delete"],"execution_modes":["manual","automatic"]}],"name":"Unused API Keys","priority":"High","product":"api_keys","resource_type":"api_key","resource_type_display_name":"API Key","supported_detection_parameters":[{"name":"api_key_threshold","display_name":"Unused API Key Threshold","description":"Number of days of inactivity before an API key is considered unused.","type":"integer","required":false,"supported_values":null,"default_value":30},{"name":"key_name_exclusion_patterns","display_name":"Key Name Exclusion Patterns","description":"Patterns to exclude specific API key names. Supports wildcards (* and ?).","type":"pattern_list","required":false,"supported_values":null,"default_value":[]},{"name":"governance_remediation_delay","display_name":"Remediation Delay","description":"Number of days to wait before automatically remediating detections for this control","type":"integer","required":false,"supported_values":null,"default_value":7}],"type":"Proactive","usage_concern":"Security"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 215.054833ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 189
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"event_settings":[{"enabled":true,"event_type":"new_detection","targets":[{"handle":"test@datadoghq.com","type":"email"}]}]},"type":"control_notification_settings"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys/notification_settings
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 211
+        uncompressed: false
+        body: '{"data":{"id":"unused_api_keys","type":"control_notification_settings","attributes":{"event_settings":[{"event_type":"new_detection","enabled":true,"targets":[{"type":"email","handle":"test@datadoghq.com"}]}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 190.181166ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"unused_api_keys","type":"governance_control","attributes":{"active_detections_count":0,"category":"security","created_at":"2026-08-03T09:35:38.97538Z","created_by":"48e5159f-e308-11ef-bcfc-2666505bfd8f","description":"Identifies API keys that have not been used within your specified time threshold, helping reduce security risks from dormant credentials. The default threshold is 30 days of inactivity, and can be adjusted.","detection_frequency":"daily","detection_parameters":{"api_key_threshold":45,"governance_remediation_delay":14},"insights":[],"last_detection_at":null,"mitigated_detections_count":0,"mitigation_parameters":{},"mitigation_type":"revoke_api_key","mitigations":[{"id":"revoke_api_key","title":"Revoke Unused API Keys","description":"Automatically identifies and revokes inactive API keys to improve security and reduce potential attack surface.","supported_parameters":[],"permissions":["api_keys_write","api_keys_delete"],"execution_modes":["manual","automatic"]}],"name":"Unused API Keys","priority":"High","product":"api_keys","resource_type":"api_key","resource_type_display_name":"API Key","supported_detection_parameters":[{"name":"api_key_threshold","display_name":"Unused API Key Threshold","description":"Number of days of inactivity before an API key is considered unused.","type":"integer","required":false,"supported_values":null,"default_value":30},{"name":"key_name_exclusion_patterns","display_name":"Key Name Exclusion Patterns","description":"Patterns to exclude specific API key names. Supports wildcards (* and ?).","type":"pattern_list","required":false,"supported_values":null,"default_value":[]},{"name":"governance_remediation_delay","display_name":"Remediation Delay","description":"Number of days to wait before automatically remediating detections for this control","type":"integer","required":false,"supported_values":null,"default_value":7}],"type":"Proactive","usage_concern":"Security"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 138.880291ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"unused_api_keys","type":"governance_control","attributes":{"active_detections_count":29,"category":"security","created_at":"2026-08-03T09:35:38.97538Z","created_by":"48e5159f-e308-11ef-bcfc-2666505bfd8f","description":"Identifies API keys that have not been used within your specified time threshold, helping reduce security risks from dormant credentials. The default threshold is 30 days of inactivity, and can be adjusted.","detection_frequency":"daily","detection_parameters":{"api_key_threshold":45,"governance_remediation_delay":14},"insights":[],"last_detection_at":"2026-08-03T09:35:39.770687Z","mitigated_detections_count":0,"mitigation_parameters":{},"mitigation_type":"revoke_api_key","mitigations":[{"id":"revoke_api_key","title":"Revoke Unused API Keys","description":"Automatically identifies and revokes inactive API keys to improve security and reduce potential attack surface.","supported_parameters":[],"permissions":["api_keys_write","api_keys_delete"],"execution_modes":["manual","automatic"]}],"name":"Unused API Keys","priority":"High","product":"api_keys","resource_type":"api_key","resource_type_display_name":"API Key","supported_detection_parameters":[{"name":"api_key_threshold","display_name":"Unused API Key Threshold","description":"Number of days of inactivity before an API key is considered unused.","type":"integer","required":false,"supported_values":null,"default_value":30},{"name":"key_name_exclusion_patterns","display_name":"Key Name Exclusion Patterns","description":"Patterns to exclude specific API key names. Supports wildcards (* and ?).","type":"pattern_list","required":false,"supported_values":null,"default_value":[]},{"name":"governance_remediation_delay","display_name":"Remediation Delay","description":"Number of days to wait before automatically remediating detections for this control","type":"integer","required":false,"supported_values":null,"default_value":7}],"type":"Proactive","usage_concern":"Security"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 160.587333ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"unused_api_keys","type":"governance_control","attributes":{"active_detections_count":29,"category":"security","created_at":"2026-08-03T09:35:38.97538Z","created_by":"48e5159f-e308-11ef-bcfc-2666505bfd8f","description":"Identifies API keys that have not been used within your specified time threshold, helping reduce security risks from dormant credentials. The default threshold is 30 days of inactivity, and can be adjusted.","detection_frequency":"daily","detection_parameters":{"api_key_threshold":45,"governance_remediation_delay":14},"insights":[],"last_detection_at":"2026-08-03T09:35:39.770687Z","mitigated_detections_count":0,"mitigation_parameters":{},"mitigation_type":"revoke_api_key","mitigations":[{"id":"revoke_api_key","title":"Revoke Unused API Keys","description":"Automatically identifies and revokes inactive API keys to improve security and reduce potential attack surface.","supported_parameters":[],"permissions":["api_keys_write","api_keys_delete"],"execution_modes":["manual","automatic"]}],"name":"Unused API Keys","priority":"High","product":"api_keys","resource_type":"api_key","resource_type_display_name":"API Key","supported_detection_parameters":[{"name":"api_key_threshold","display_name":"Unused API Key Threshold","description":"Number of days of inactivity before an API key is considered unused.","type":"integer","required":false,"supported_values":null,"default_value":30},{"name":"key_name_exclusion_patterns","display_name":"Key Name Exclusion Patterns","description":"Patterns to exclude specific API key names. Supports wildcards (* and ?).","type":"pattern_list","required":false,"supported_values":null,"default_value":[]},{"name":"governance_remediation_delay","display_name":"Remediation Delay","description":"Number of days to wait before automatically remediating detections for this control","type":"integer","required":false,"supported_values":null,"default_value":7}],"type":"Proactive","usage_concern":"Security"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 146.081292ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"unused_api_keys","type":"governance_control","attributes":{"active_detections_count":29,"category":"security","created_at":"2026-08-03T09:35:38.97538Z","created_by":"48e5159f-e308-11ef-bcfc-2666505bfd8f","description":"Identifies API keys that have not been used within your specified time threshold, helping reduce security risks from dormant credentials. The default threshold is 30 days of inactivity, and can be adjusted.","detection_frequency":"daily","detection_parameters":{"api_key_threshold":45,"governance_remediation_delay":14},"insights":[],"last_detection_at":"2026-08-03T09:35:39.770687Z","mitigated_detections_count":0,"mitigation_parameters":{},"mitigation_type":"revoke_api_key","mitigations":[{"id":"revoke_api_key","title":"Revoke Unused API Keys","description":"Automatically identifies and revokes inactive API keys to improve security and reduce potential attack surface.","supported_parameters":[],"permissions":["api_keys_write","api_keys_delete"],"execution_modes":["manual","automatic"]}],"name":"Unused API Keys","priority":"High","product":"api_keys","resource_type":"api_key","resource_type_display_name":"API Key","supported_detection_parameters":[{"name":"api_key_threshold","display_name":"Unused API Key Threshold","description":"Number of days of inactivity before an API key is considered unused.","type":"integer","required":false,"supported_values":null,"default_value":30},{"name":"key_name_exclusion_patterns","display_name":"Key Name Exclusion Patterns","description":"Patterns to exclude specific API key names. Supports wildcards (* and ?).","type":"pattern_list","required":false,"supported_values":null,"default_value":[]},{"name":"governance_remediation_delay","display_name":"Remediation Delay","description":"Number of days to wait before automatically remediating detections for this control","type":"integer","required":false,"supported_values":null,"default_value":7}],"type":"Proactive","usage_concern":"Security"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 148.834291ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys/notification_settings
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 211
+        uncompressed: false
+        body: '{"data":{"id":"unused_api_keys","type":"control_notification_settings","attributes":{"event_settings":[{"event_type":"new_detection","enabled":true,"targets":[{"type":"email","handle":"test@datadoghq.com"}]}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 120.663084ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"unused_api_keys","type":"governance_control","attributes":{"active_detections_count":29,"category":"security","created_at":"2026-08-03T09:35:38.97538Z","created_by":"48e5159f-e308-11ef-bcfc-2666505bfd8f","description":"Identifies API keys that have not been used within your specified time threshold, helping reduce security risks from dormant credentials. The default threshold is 30 days of inactivity, and can be adjusted.","detection_frequency":"daily","detection_parameters":{"api_key_threshold":45,"governance_remediation_delay":14},"insights":[],"last_detection_at":"2026-08-03T09:35:39.770687Z","mitigated_detections_count":0,"mitigation_parameters":{},"mitigation_type":"revoke_api_key","mitigations":[{"id":"revoke_api_key","title":"Revoke Unused API Keys","description":"Automatically identifies and revokes inactive API keys to improve security and reduce potential attack surface.","supported_parameters":[],"permissions":["api_keys_write","api_keys_delete"],"execution_modes":["manual","automatic"]}],"name":"Unused API Keys","priority":"High","product":"api_keys","resource_type":"api_key","resource_type_display_name":"API Key","supported_detection_parameters":[{"name":"api_key_threshold","display_name":"Unused API Key Threshold","description":"Number of days of inactivity before an API key is considered unused.","type":"integer","required":false,"supported_values":null,"default_value":30},{"name":"key_name_exclusion_patterns","display_name":"Key Name Exclusion Patterns","description":"Patterns to exclude specific API key names. Supports wildcards (* and ?).","type":"pattern_list","required":false,"supported_values":null,"default_value":[]},{"name":"governance_remediation_delay","display_name":"Remediation Delay","description":"Number of days to wait before automatically remediating detections for this control","type":"integer","required":false,"supported_values":null,"default_value":7}],"type":"Proactive","usage_concern":"Security"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 137.772125ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys/notification_settings
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 211
+        uncompressed: false
+        body: '{"data":{"id":"unused_api_keys","type":"control_notification_settings","attributes":{"event_settings":[{"event_type":"new_detection","enabled":true,"targets":[{"type":"email","handle":"test@datadoghq.com"}]}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 119.099ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 198
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"detection_parameters":{"api_key_threshold":45,"governance_remediation_delay":14},"mitigation_parameters":{},"mitigation_type":"revoke_api_key"},"type":"governance_control"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"unused_api_keys","type":"governance_control","attributes":{"active_detections_count":0,"category":"security","created_at":"2026-08-03T09:35:38.97538Z","created_by":"48e5159f-e308-11ef-bcfc-2666505bfd8f","description":"Identifies API keys that have not been used within your specified time threshold, helping reduce security risks from dormant credentials. The default threshold is 30 days of inactivity, and can be adjusted.","detection_frequency":"daily","detection_parameters":{"api_key_threshold":45,"governance_remediation_delay":14},"insights":[],"last_detection_at":null,"mitigated_detections_count":0,"mitigation_parameters":{},"mitigation_type":"revoke_api_key","mitigations":[{"id":"revoke_api_key","title":"Revoke Unused API Keys","description":"Automatically identifies and revokes inactive API keys to improve security and reduce potential attack surface.","supported_parameters":[],"permissions":["api_keys_write","api_keys_delete"],"execution_modes":["manual","automatic"]}],"name":"Unused API Keys","priority":"High","product":"api_keys","resource_type":"api_key","resource_type_display_name":"API Key","supported_detection_parameters":[{"name":"api_key_threshold","display_name":"Unused API Key Threshold","description":"Number of days of inactivity before an API key is considered unused.","type":"integer","required":false,"supported_values":null,"default_value":30},{"name":"key_name_exclusion_patterns","display_name":"Key Name Exclusion Patterns","description":"Patterns to exclude specific API key names. Supports wildcards (* and ?).","type":"pattern_list","required":false,"supported_values":null,"default_value":[]},{"name":"governance_remediation_delay","display_name":"Remediation Delay","description":"Number of days to wait before automatically remediating detections for this control","type":"integer","required":false,"supported_values":null,"default_value":7}],"type":"Proactive","usage_concern":"Security"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 196.054125ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 237
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"event_settings":[{"enabled":true,"event_type":"new_detection","targets":[{"handle":"test@datadoghq.com","type":"email"},{"handle":"test2@datadoghq.com","type":"email"}]}]},"type":"control_notification_settings"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys/notification_settings
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 259
+        uncompressed: false
+        body: '{"data":{"id":"unused_api_keys","type":"control_notification_settings","attributes":{"event_settings":[{"event_type":"new_detection","enabled":true,"targets":[{"type":"email","handle":"test@datadoghq.com"},{"type":"email","handle":"test2@datadoghq.com"}]}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 183.079292ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"unused_api_keys","type":"governance_control","attributes":{"active_detections_count":29,"category":"security","created_at":"2026-08-03T09:35:38.97538Z","created_by":"48e5159f-e308-11ef-bcfc-2666505bfd8f","description":"Identifies API keys that have not been used within your specified time threshold, helping reduce security risks from dormant credentials. The default threshold is 30 days of inactivity, and can be adjusted.","detection_frequency":"daily","detection_parameters":{"api_key_threshold":45,"governance_remediation_delay":14},"insights":[],"last_detection_at":"2026-08-03T09:35:39.770687Z","mitigated_detections_count":0,"mitigation_parameters":{},"mitigation_type":"revoke_api_key","mitigations":[{"id":"revoke_api_key","title":"Revoke Unused API Keys","description":"Automatically identifies and revokes inactive API keys to improve security and reduce potential attack surface.","supported_parameters":[],"permissions":["api_keys_write","api_keys_delete"],"execution_modes":["manual","automatic"]}],"name":"Unused API Keys","priority":"High","product":"api_keys","resource_type":"api_key","resource_type_display_name":"API Key","supported_detection_parameters":[{"name":"api_key_threshold","display_name":"Unused API Key Threshold","description":"Number of days of inactivity before an API key is considered unused.","type":"integer","required":false,"supported_values":null,"default_value":30},{"name":"key_name_exclusion_patterns","display_name":"Key Name Exclusion Patterns","description":"Patterns to exclude specific API key names. Supports wildcards (* and ?).","type":"pattern_list","required":false,"supported_values":null,"default_value":[]},{"name":"governance_remediation_delay","display_name":"Remediation Delay","description":"Number of days to wait before automatically remediating detections for this control","type":"integer","required":false,"supported_values":null,"default_value":7}],"type":"Proactive","usage_concern":"Security"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 142.567ms
+    - id: 19
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"unused_api_keys","type":"governance_control","attributes":{"active_detections_count":29,"category":"security","created_at":"2026-08-03T09:35:38.97538Z","created_by":"48e5159f-e308-11ef-bcfc-2666505bfd8f","description":"Identifies API keys that have not been used within your specified time threshold, helping reduce security risks from dormant credentials. The default threshold is 30 days of inactivity, and can be adjusted.","detection_frequency":"daily","detection_parameters":{"api_key_threshold":45,"governance_remediation_delay":14},"insights":[],"last_detection_at":"2026-08-03T09:35:39.770687Z","mitigated_detections_count":0,"mitigation_parameters":{},"mitigation_type":"revoke_api_key","mitigations":[{"id":"revoke_api_key","title":"Revoke Unused API Keys","description":"Automatically identifies and revokes inactive API keys to improve security and reduce potential attack surface.","supported_parameters":[],"permissions":["api_keys_write","api_keys_delete"],"execution_modes":["manual","automatic"]}],"name":"Unused API Keys","priority":"High","product":"api_keys","resource_type":"api_key","resource_type_display_name":"API Key","supported_detection_parameters":[{"name":"api_key_threshold","display_name":"Unused API Key Threshold","description":"Number of days of inactivity before an API key is considered unused.","type":"integer","required":false,"supported_values":null,"default_value":30},{"name":"key_name_exclusion_patterns","display_name":"Key Name Exclusion Patterns","description":"Patterns to exclude specific API key names. Supports wildcards (* and ?).","type":"pattern_list","required":false,"supported_values":null,"default_value":[]},{"name":"governance_remediation_delay","display_name":"Remediation Delay","description":"Number of days to wait before automatically remediating detections for this control","type":"integer","required":false,"supported_values":null,"default_value":7}],"type":"Proactive","usage_concern":"Security"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 144.096458ms
+    - id: 20
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys/notification_settings
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 259
+        uncompressed: false
+        body: '{"data":{"id":"unused_api_keys","type":"control_notification_settings","attributes":{"event_settings":[{"event_type":"new_detection","enabled":true,"targets":[{"type":"email","handle":"test@datadoghq.com"},{"type":"email","handle":"test2@datadoghq.com"}]}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 115.127917ms
+    - id: 21
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"unused_api_keys","type":"governance_control","attributes":{"active_detections_count":29,"category":"security","created_at":"2026-08-03T09:35:38.97538Z","created_by":"48e5159f-e308-11ef-bcfc-2666505bfd8f","description":"Identifies API keys that have not been used within your specified time threshold, helping reduce security risks from dormant credentials. The default threshold is 30 days of inactivity, and can be adjusted.","detection_frequency":"daily","detection_parameters":{"api_key_threshold":45,"governance_remediation_delay":14},"insights":[],"last_detection_at":"2026-08-03T09:35:39.770687Z","mitigated_detections_count":0,"mitigation_parameters":{},"mitigation_type":"revoke_api_key","mitigations":[{"id":"revoke_api_key","title":"Revoke Unused API Keys","description":"Automatically identifies and revokes inactive API keys to improve security and reduce potential attack surface.","supported_parameters":[],"permissions":["api_keys_write","api_keys_delete"],"execution_modes":["manual","automatic"]}],"name":"Unused API Keys","priority":"High","product":"api_keys","resource_type":"api_key","resource_type_display_name":"API Key","supported_detection_parameters":[{"name":"api_key_threshold","display_name":"Unused API Key Threshold","description":"Number of days of inactivity before an API key is considered unused.","type":"integer","required":false,"supported_values":null,"default_value":30},{"name":"key_name_exclusion_patterns","display_name":"Key Name Exclusion Patterns","description":"Patterns to exclude specific API key names. Supports wildcards (* and ?).","type":"pattern_list","required":false,"supported_values":null,"default_value":[]},{"name":"governance_remediation_delay","display_name":"Remediation Delay","description":"Number of days to wait before automatically remediating detections for this control","type":"integer","required":false,"supported_values":null,"default_value":7}],"type":"Proactive","usage_concern":"Security"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 153.377084ms
+    - id: 22
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys/notification_settings
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 259
+        uncompressed: false
+        body: '{"data":{"id":"unused_api_keys","type":"control_notification_settings","attributes":{"event_settings":[{"event_type":"new_detection","enabled":true,"targets":[{"type":"email","handle":"test@datadoghq.com"},{"type":"email","handle":"test2@datadoghq.com"}]}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 125.167292ms
+    - id: 23
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"unused_api_keys","type":"governance_control","attributes":{"active_detections_count":29,"category":"security","created_at":"2026-08-03T09:35:38.97538Z","created_by":"48e5159f-e308-11ef-bcfc-2666505bfd8f","description":"Identifies API keys that have not been used within your specified time threshold, helping reduce security risks from dormant credentials. The default threshold is 30 days of inactivity, and can be adjusted.","detection_frequency":"daily","detection_parameters":{"api_key_threshold":45,"governance_remediation_delay":14},"insights":[],"last_detection_at":"2026-08-03T09:35:39.770687Z","mitigated_detections_count":0,"mitigation_parameters":{},"mitigation_type":"revoke_api_key","mitigations":[{"id":"revoke_api_key","title":"Revoke Unused API Keys","description":"Automatically identifies and revokes inactive API keys to improve security and reduce potential attack surface.","supported_parameters":[],"permissions":["api_keys_write","api_keys_delete"],"execution_modes":["manual","automatic"]}],"name":"Unused API Keys","priority":"High","product":"api_keys","resource_type":"api_key","resource_type_display_name":"API Key","supported_detection_parameters":[{"name":"api_key_threshold","display_name":"Unused API Key Threshold","description":"Number of days of inactivity before an API key is considered unused.","type":"integer","required":false,"supported_values":null,"default_value":30},{"name":"key_name_exclusion_patterns","display_name":"Key Name Exclusion Patterns","description":"Patterns to exclude specific API key names. Supports wildcards (* and ?).","type":"pattern_list","required":false,"supported_values":null,"default_value":[]},{"name":"governance_remediation_delay","display_name":"Remediation Delay","description":"Number of days to wait before automatically remediating detections for this control","type":"integer","required":false,"supported_values":null,"default_value":7}],"type":"Proactive","usage_concern":"Security"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 135.371792ms
+    - id: 24
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"unused_api_keys","type":"governance_control","attributes":{"active_detections_count":29,"category":"security","created_at":"2026-08-03T09:35:38.97538Z","created_by":"48e5159f-e308-11ef-bcfc-2666505bfd8f","description":"Identifies API keys that have not been used within your specified time threshold, helping reduce security risks from dormant credentials. The default threshold is 30 days of inactivity, and can be adjusted.","detection_frequency":"daily","detection_parameters":{"api_key_threshold":45,"governance_remediation_delay":14},"insights":[],"last_detection_at":"2026-08-03T09:35:39.770687Z","mitigated_detections_count":0,"mitigation_parameters":{},"mitigation_type":"revoke_api_key","mitigations":[{"id":"revoke_api_key","title":"Revoke Unused API Keys","description":"Automatically identifies and revokes inactive API keys to improve security and reduce potential attack surface.","supported_parameters":[],"permissions":["api_keys_write","api_keys_delete"],"execution_modes":["manual","automatic"]}],"name":"Unused API Keys","priority":"High","product":"api_keys","resource_type":"api_key","resource_type_display_name":"API Key","supported_detection_parameters":[{"name":"api_key_threshold","display_name":"Unused API Key Threshold","description":"Number of days of inactivity before an API key is considered unused.","type":"integer","required":false,"supported_values":null,"default_value":30},{"name":"key_name_exclusion_patterns","display_name":"Key Name Exclusion Patterns","description":"Patterns to exclude specific API key names. Supports wildcards (* and ?).","type":"pattern_list","required":false,"supported_values":null,"default_value":[]},{"name":"governance_remediation_delay","display_name":"Remediation Delay","description":"Number of days to wait before automatically remediating detections for this control","type":"integer","required":false,"supported_values":null,"default_value":7}],"type":"Proactive","usage_concern":"Security"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 169.144917ms
+    - id: 25
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys/notification_settings
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 259
+        uncompressed: false
+        body: '{"data":{"id":"unused_api_keys","type":"control_notification_settings","attributes":{"event_settings":[{"event_type":"new_detection","enabled":true,"targets":[{"type":"email","handle":"test@datadoghq.com"},{"type":"email","handle":"test2@datadoghq.com"}]}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 128.543666ms
+    - id: 26
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"unused_api_keys","type":"governance_control","attributes":{"active_detections_count":29,"category":"security","created_at":"2026-08-03T09:35:38.97538Z","created_by":"48e5159f-e308-11ef-bcfc-2666505bfd8f","description":"Identifies API keys that have not been used within your specified time threshold, helping reduce security risks from dormant credentials. The default threshold is 30 days of inactivity, and can be adjusted.","detection_frequency":"daily","detection_parameters":{"api_key_threshold":45,"governance_remediation_delay":14},"insights":[],"last_detection_at":"2026-08-03T09:35:39.770687Z","mitigated_detections_count":0,"mitigation_parameters":{},"mitigation_type":"revoke_api_key","mitigations":[{"id":"revoke_api_key","title":"Revoke Unused API Keys","description":"Automatically identifies and revokes inactive API keys to improve security and reduce potential attack surface.","supported_parameters":[],"permissions":["api_keys_write","api_keys_delete"],"execution_modes":["manual","automatic"]}],"name":"Unused API Keys","priority":"High","product":"api_keys","resource_type":"api_key","resource_type_display_name":"API Key","supported_detection_parameters":[{"name":"api_key_threshold","display_name":"Unused API Key Threshold","description":"Number of days of inactivity before an API key is considered unused.","type":"integer","required":false,"supported_values":null,"default_value":30},{"name":"key_name_exclusion_patterns","display_name":"Key Name Exclusion Patterns","description":"Patterns to exclude specific API key names. Supports wildcards (* and ?).","type":"pattern_list","required":false,"supported_values":null,"default_value":[]},{"name":"governance_remediation_delay","display_name":"Remediation Delay","description":"Number of days to wait before automatically remediating detections for this control","type":"integer","required":false,"supported_values":null,"default_value":7}],"type":"Proactive","usage_concern":"Security"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 135.050375ms
+    - id: 27
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/governance/control/unused_api_keys/notification_settings
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 259
+        uncompressed: false
+        body: '{"data":{"id":"unused_api_keys","type":"control_notification_settings","attributes":{"event_settings":[{"event_type":"new_detection","enabled":true,"targets":[{"type":"email","handle":"test@datadoghq.com"},{"type":"email","handle":"test2@datadoghq.com"}]}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 123.261375ms

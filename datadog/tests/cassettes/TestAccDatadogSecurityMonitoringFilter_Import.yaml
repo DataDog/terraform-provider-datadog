@@ -1,0 +1,169 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 383
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"second","query":"neither does it"}],"filtered_data_type":"logs","is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter_Import-local-1778517928","query":"first query - tf-TestAccDatadogSecurityMonitoringFilter_Import-local-1778517928"},"type":"security_filters"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 432
+        uncompressed: false
+        body: '{"data":{"id":"y16-caj-cic","type":"security_filters","attributes":{"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"second","query":"neither does it"}],"filtered_data_type":"logs","is_builtin":false,"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter_Import-local-1778517928","query":"first query - tf-TestAccDatadogSecurityMonitoringFilter_Import-local-1778517928","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 210.368875ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/y16-caj-cic
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 432
+        uncompressed: false
+        body: '{"data":{"id":"y16-caj-cic","type":"security_filters","attributes":{"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"second","query":"neither does it"}],"filtered_data_type":"logs","is_builtin":false,"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter_Import-local-1778517928","query":"first query - tf-TestAccDatadogSecurityMonitoringFilter_Import-local-1778517928","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 1.592409208s
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/y16-caj-cic
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 432
+        uncompressed: false
+        body: '{"data":{"id":"y16-caj-cic","type":"security_filters","attributes":{"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"second","query":"neither does it"}],"filtered_data_type":"logs","is_builtin":false,"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter_Import-local-1778517928","query":"first query - tf-TestAccDatadogSecurityMonitoringFilter_Import-local-1778517928","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 3.816589542s
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/y16-caj-cic
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 1.316431583s
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/y16-caj-cic
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 73
+        uncompressed: false
+        body: '{"errors":["not_found(Security filter with id ''y16-caj-cic'' not found)"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 642.069416ms

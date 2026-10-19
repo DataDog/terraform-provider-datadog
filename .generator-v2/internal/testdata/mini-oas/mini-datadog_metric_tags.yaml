@@ -1,0 +1,297 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: Metrics
+  description: 'The metrics endpoint allows you to:
+
+
+    - Post metrics data so it can be graphed on Datadog’s dashboards
+
+    - Query metrics from any time period (timeseries and scalar)
+
+    - Modify tag configurations for metrics
+
+    - View tags and volumes for metrics
+
+
+    **Note**: A graph can only contain a set number of points
+
+    and as the timeframe over which a metric is viewed increases,
+
+    aggregation between points occurs to stay below that set number.
+
+
+    The Post, Patch, and Delete `manage_tags` API methods can only be performed by
+
+    a user who has the `Manage Tags for Metrics` permission.
+
+
+    See the [Metrics page](https://docs.datadoghq.com/metrics/) for more information.'
+paths:
+  /api/v2/metrics/{metric_name}/all-tags:
+    get:
+      operationId: ListTagsByMetricName
+      tags:
+      - Metrics
+      summary: List tags by metric name
+      description: 'View indexed and ingested tags for a given metric name.
+
+        Results are filtered by the `window[seconds]` parameter, which defaults to 14400 (4 hours).'
+      parameters:
+      - $ref: '#/components/parameters/MetricName'
+      - name: window[seconds]
+        in: query
+        required: false
+        description: 'The number of seconds of look back (from now) to query for tag data.
+
+          Default value is 14400 (4 hours), minimum value is 14400 (4 hours).'
+        schema:
+          type: integer
+          format: int64
+        example: 14400
+      - name: filter[tags]
+        in: query
+        required: false
+        description: 'Filter results to tags from data points that have the specified tags.
+
+          For example, `filter[tags]=env:staging,host:123` returns tags only from data points with both
+          `env:staging` and `host:123`.'
+        schema:
+          type: string
+        example: env:staging,host:123
+      - name: filter[match]
+        in: query
+        required: false
+        description: 'Filter returned tags to those matching a substring.
+
+          For example, `filter[match]=env` returns tags like `env:prod`, `environment:staging`, etc.'
+        schema:
+          type: string
+        example: env
+      - name: filter[include_tag_values]
+        in: query
+        required: false
+        description: 'Whether to include tag values in the response.
+
+          Defaults to true.'
+        schema:
+          type: boolean
+        example: true
+      - name: filter[allow_partial]
+        in: query
+        required: false
+        description: 'Whether to allow partial results.
+
+          Defaults to false.'
+        schema:
+          type: boolean
+        example: false
+      - name: page[limit]
+        in: query
+        required: false
+        description: Maximum number of results to return.
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 1000000
+          default: 1000000
+        example: 1000
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricAllTagsResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                      type: metrics
+                      id: system.cpu.user
+                      attributes:
+                        tags:
+                        - env:prod
+                        - host:myhost
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+      security:
+      - apiKeyAuth: []
+        appKeyAuth: []
+      - AuthZ:
+        - metrics_read
+      x-permission:
+        operator: OR
+        permissions:
+        - metrics_read
+      x-menu-order: 6
+      x-undo:
+        type: safe
+components:
+  parameters:
+    MetricName:
+      name: metric_name
+      in: path
+      required: true
+      description: The name of the metric.
+      schema:
+        type: string
+      example: dist.http.endpoint.request
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    MetricAllTags:
+      type: object
+      description: Object for a single metric's indexed and ingested tags.
+      properties:
+        type:
+          $ref: '#/components/schemas/MetricType'
+        id:
+          $ref: '#/components/schemas/MetricName'
+        attributes:
+          $ref: '#/components/schemas/MetricAllTagsAttributes'
+    MetricAllTagsAttributes:
+      type: object
+      description: Object containing the definition of a metric's indexed and ingested tags.
+      properties:
+        tags:
+          type: array
+          description: List of indexed tags.
+          example:
+          - sport:golf
+          - sport:football
+          - animal:dog
+          items:
+            type: string
+            description: Indexed tags for the metric.
+        ingested_tags:
+          type: array
+          description: List of ingested tags that are not indexed.
+          example:
+          - env:prod
+          - service:web
+          - version:1.0
+          items:
+            type: string
+            description: Ingested tags for the metric.
+    MetricAllTagsResponse:
+      type: object
+      description: Response object that includes a single metric's indexed and ingested tags.
+      readOnly: true
+      properties:
+        data:
+          $ref: '#/components/schemas/MetricAllTags'
+    MetricName:
+      type: string
+      description: The metric name for this resource.
+      example: test.metric.latency
+    MetricType:
+      type: string
+      description: The metric resource type.
+      default: metrics
+      example: metrics
+      enum:
+      - metrics
+      x-enum-varnames:
+      - METRICS
+  securitySchemes:
+    AuthZ:
+      type: oauth2
+      description: This API uses OAuth 2 with the implicit grant flow.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth2/v1/authorize
+          tokenUrl: /oauth2/v1/token
+          scopes: {}
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY

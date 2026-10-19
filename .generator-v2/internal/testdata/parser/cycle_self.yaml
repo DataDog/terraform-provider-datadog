@@ -1,0 +1,15 @@
+# Node references itself via `parent` — a direct $ref cycle.
+openapi: 3.0.0
+info:
+  title: Cycles
+  version: 1.0.0
+paths: {}
+components:
+  schemas:
+    Node:
+      type: object
+      properties:
+        name:
+          type: string
+        parent:
+          $ref: '#/components/schemas/Node'

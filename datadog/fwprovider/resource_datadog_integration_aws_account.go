@@ -5,6 +5,7 @@ import (
 	"regexp"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -106,6 +107,7 @@ type metricsConfigModel struct {
 	CollectCustomMetrics    types.Bool                `tfsdk:"collect_custom_metrics"`
 	Enabled                 types.Bool                `tfsdk:"enabled"`
 	TagFilters              []*metricsTagFiltersModel `tfsdk:"tag_filters"`
+	MetricNameFilters       []*metricNameFilterModel  `tfsdk:"metric_name_filters"`
 	NamespaceFilters        *namespaceFiltersModel    `tfsdk:"namespace_filters"`
 }
 
@@ -117,6 +119,12 @@ type metricsTagFiltersModel struct {
 type namespaceFiltersModel struct {
 	ExcludeOnly types.List `tfsdk:"exclude_only"`
 	IncludeOnly types.List `tfsdk:"include_only"`
+}
+
+type metricNameFilterModel struct {
+	Namespace   types.String `tfsdk:"namespace"`
+	ExcludeOnly types.List   `tfsdk:"exclude_only"`
+	IncludeOnly types.List   `tfsdk:"include_only"`
 }
 
 type resourcesConfigModel struct {
@@ -435,6 +443,30 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 							},
 						},
 					},
+					"metric_name_filters": schema.ListNestedBlock{
+						Description: "AWS CloudWatch metric name filters. Each filter applies to a single namespace and must define exactly one of `include_only` or `exclude_only`.",
+						NestedObject: schema.NestedBlockObject{
+							Attributes: map[string]schema.Attribute{
+								"namespace": schema.StringAttribute{
+									Required:    true,
+									Description: "The AWS CloudWatch namespace to which this metric name filter applies.",
+								},
+								"exclude_only": schema.ListAttribute{
+									Optional:    true,
+									Description: "Exclude metric names matching one of these patterns.",
+									ElementType: types.StringType,
+								},
+								"include_only": schema.ListAttribute{
+									Optional:    true,
+									Description: "Include only metric names matching one of these patterns.",
+									ElementType: types.StringType,
+									Validators: []validator.List{
+										listvalidator.ExactlyOneOf(path.MatchRelative().AtParent().AtName("exclude_only")),
+									},
+								},
+							},
+						},
+					},
 					"namespace_filters": schema.SingleNestedBlock{
 						Description: "AWS Metrics namespace filters. Defaults to a pre-set `exclude_only` list if block is empty.",
 						Attributes: map[string]schema.Attribute{
@@ -747,6 +779,30 @@ func buildStateMetricsConfig(ctx context.Context, attributes datadogV2.AWSAccoun
 		}
 	}
 
+	if metricNameFilters, ok := metricsConfig.GetMetricNameFiltersOk(); ok && len(*metricNameFilters) > 0 {
+		metricsConfigTf.MetricNameFilters = []*metricNameFilterModel{}
+		for _, metricNameFiltersDd := range *metricNameFilters {
+			metricNameFiltersTfItem := metricNameFilterModel{
+				ExcludeOnly: types.ListNull(types.StringType),
+				IncludeOnly: types.ListNull(types.StringType),
+			}
+
+			if metricNameFiltersDd.AWSMetricNameFiltersExcludeOnly != nil {
+				metricNameFiltersTfItem.Namespace = types.StringValue(metricNameFiltersDd.AWSMetricNameFiltersExcludeOnly.GetNamespace())
+				excludeOnly, d := types.ListValueFrom(ctx, types.StringType, metricNameFiltersDd.AWSMetricNameFiltersExcludeOnly.GetExcludeOnly())
+				metricNameFiltersTfItem.ExcludeOnly = excludeOnly
+				diags.Append(d...)
+			} else if metricNameFiltersDd.AWSMetricNameFiltersIncludeOnly != nil {
+				metricNameFiltersTfItem.Namespace = types.StringValue(metricNameFiltersDd.AWSMetricNameFiltersIncludeOnly.GetNamespace())
+				includeOnly, d := types.ListValueFrom(ctx, types.StringType, metricNameFiltersDd.AWSMetricNameFiltersIncludeOnly.GetIncludeOnly())
+				metricNameFiltersTfItem.IncludeOnly = includeOnly
+				diags.Append(d...)
+			}
+
+			metricsConfigTf.MetricNameFilters = append(metricsConfigTf.MetricNameFilters, &metricNameFiltersTfItem)
+		}
+	}
+
 	if namespaceFilters, ok := metricsConfig.GetNamespaceFiltersOk(); ok {
 		nsFiltersTf := namespaceFiltersModel{
 			ExcludeOnly: types.ListNull(types.StringType),
@@ -970,6 +1026,27 @@ func buildRequestMetricsConfig(ctx context.Context, state *integrationAwsAccount
 		tagFilters = append(tagFilters, *tagFiltersDDItem)
 	}
 	metricsConfig.SetTagFilters(tagFilters)
+
+	metricNameFilters := []datadogV2.AWSMetricNameFilters{}
+	for _, metricNameFiltersTFItem := range state.MetricsConfig.MetricNameFilters {
+		if metricNameFiltersTFItem == nil {
+			continue
+		}
+
+		namespace := metricNameFiltersTFItem.Namespace.ValueString()
+		if !metricNameFiltersTFItem.IncludeOnly.IsNull() {
+			var includeOnly []string
+			diags.Append(metricNameFiltersTFItem.IncludeOnly.ElementsAs(ctx, &includeOnly, false)...)
+			metricNameFiltersDDItem := datadogV2.NewAWSMetricNameFiltersIncludeOnly(includeOnly, namespace)
+			metricNameFilters = append(metricNameFilters, datadogV2.AWSMetricNameFiltersIncludeOnlyAsAWSMetricNameFilters(metricNameFiltersDDItem))
+		} else if !metricNameFiltersTFItem.ExcludeOnly.IsNull() {
+			var excludeOnly []string
+			diags.Append(metricNameFiltersTFItem.ExcludeOnly.ElementsAs(ctx, &excludeOnly, false)...)
+			metricNameFiltersDDItem := datadogV2.NewAWSMetricNameFiltersExcludeOnly(excludeOnly, namespace)
+			metricNameFilters = append(metricNameFilters, datadogV2.AWSMetricNameFiltersExcludeOnlyAsAWSMetricNameFilters(metricNameFiltersDDItem))
+		}
+	}
+	metricsConfig.SetMetricNameFilters(metricNameFilters)
 
 	var namespaceFiltersDD *datadogV2.AWSNamespaceFilters
 	nsFiltersTf := state.MetricsConfig.NamespaceFilters

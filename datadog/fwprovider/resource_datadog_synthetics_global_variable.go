@@ -593,6 +593,14 @@ func (r *syntheticsGlobalVariableResource) buildSyntheticsGlobalVariableRequestB
 			}
 		}
 		syntheticsGlobalVariableRequest.SetValue(value)
+	} else if state.Secure.ValueBool() && !state.ValueWoVersion.IsNull() && !state.ValueWoVersion.IsUnknown() && state.ValueWoVersion.ValueString() != "" {
+		// For partial updates of secure write-only variables (unchanged value_wo_version), the API
+		// still requires {"value":{"secure":true}} even though we're not sending the actual value.
+		// Do NOT apply this to FIDO/TOTP variables which also have secure=true but manage their
+		// value differently and reject any value field in the request.
+		var value datadogV1.SyntheticsGlobalVariableValue
+		value.SetSecure(true)
+		syntheticsGlobalVariableRequest.SetValue(value)
 	}
 
 	return syntheticsGlobalVariableRequest, diags

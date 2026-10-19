@@ -44,7 +44,7 @@ Some docs are manually maintained and excluded from auto generation. Check `scri
 ## Code Patterns
 
 - ALWAYS search `datadog/fwprovider/` for existing patterns before implementing new ones
-- Use Blocks, not Nested Attributes for complex structures
+- Use Terraform Plugin Framework nested attributes for new complex structures. Use blocks only when preserving configuration compatibility while migrating an existing legacy SDK-based schema.
 - Avoid ObjectType (breaks docs generation - no field description support)
 - Use the Datadog API client for making requests, not raw HTTP requests. If the Datadog API client does not support the API, it should be updated instead first
 

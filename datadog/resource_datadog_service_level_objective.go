@@ -92,7 +92,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 		ReadContext:   resourceDatadogServiceLevelObjectiveRead,
 		UpdateContext: resourceDatadogServiceLevelObjectiveUpdate,
 		DeleteContext: resourceDatadogServiceLevelObjectiveDelete,
-		CustomizeDiff: customdiff.All(resourceDatadogServiceLevelObjectiveCustomizeDiff, tagDiff),
+		CustomizeDiff: customdiff.All(ignoreTagKeysDiff, tagDiff, resourceDatadogServiceLevelObjectiveCustomizeDiff),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -131,6 +131,17 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 						// hash identically to "service:api". The ";' suffix matches the
 						// format used by the SDK's default HashSchema/SerializeValueForHash.
 						return schema.HashString(utils.NormalizeTag(v.(string)) + ";")
+					},
+				},
+				"ignore_tag_keys": {
+					Type:        schema.TypeSet,
+					Description: "Tag keys whose drift Terraform should ignore. Use this to keep specific tags managed outside Terraform (for example, by the Datadog UI or a tagging service) without `terraform plan` reporting drift on every run. Other tags are still managed normally. Any `:value` suffix is ignored. Merged with the provider's `ignore_tag_keys` for this resource.",
+					Optional:    true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+						StateFunc: func(val any) string {
+							return utils.NormalizeTag(val.(string))
+						},
 					},
 				},
 				"thresholds": {

@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -34,6 +35,7 @@ type agentlessScanningAwsScanOptionsResource struct {
 type agentlessScanningAwsScanOptionsResourceModel struct {
 	ID               types.String `tfsdk:"id"`
 	AwsAccountId     types.String `tfsdk:"aws_account_id"`
+	ComplianceHost   types.Bool   `tfsdk:"compliance_host"`
 	Lambda           types.Bool   `tfsdk:"lambda"`
 	SensitiveData    types.Bool   `tfsdk:"sensitive_data"`
 	VulnContainersOs types.Bool   `tfsdk:"vuln_containers_os"`
@@ -70,6 +72,12 @@ func (r *agentlessScanningAwsScanOptionsResource) Schema(_ context.Context, _ re
 					),
 				},
 			},
+			"compliance_host": schema.BoolAttribute{
+				Description: "Indicates if host compliance scanning is enabled.",
+				Optional:    true,
+				Computed:    true,
+				Default:     booldefault.StaticBool(false),
+			},
 			"lambda": schema.BoolAttribute{
 				Description: "Indicates if scanning of Lambda functions is enabled.",
 				Required:    true,
@@ -102,6 +110,7 @@ func (r *agentlessScanningAwsScanOptionsResource) Create(ctx context.Context, re
 			Id:   state.AwsAccountId.ValueString(),
 			Type: datadogV2.AWSSCANOPTIONSTYPE_AWS_SCAN_OPTIONS,
 			Attributes: datadogV2.AwsScanOptionsCreateAttributes{
+				ComplianceHost:   state.ComplianceHost.ValueBool(),
 				Lambda:           state.Lambda.ValueBool(),
 				SensitiveData:    state.SensitiveData.ValueBool(),
 				VulnContainersOs: state.VulnContainersOs.ValueBool(),
@@ -174,6 +183,7 @@ func (r *agentlessScanningAwsScanOptionsResource) Update(ctx context.Context, re
 			Id:   state.AwsAccountId.ValueString(),
 			Type: datadogV2.AWSSCANOPTIONSTYPE_AWS_SCAN_OPTIONS,
 			Attributes: datadogV2.AwsScanOptionsUpdateAttributes{
+				ComplianceHost:   boolPtr(state.ComplianceHost.ValueBool()),
 				Lambda:           boolPtr(state.Lambda.ValueBool()),
 				SensitiveData:    boolPtr(state.SensitiveData.ValueBool()),
 				VulnContainersOs: boolPtr(state.VulnContainersOs.ValueBool()),
@@ -239,6 +249,7 @@ func (r *agentlessScanningAwsScanOptionsResource) updateStateFromScanOptionsData
 	state.AwsAccountId = types.StringValue(data.GetId())
 
 	attributes := data.GetAttributes()
+	state.ComplianceHost = types.BoolValue(attributes.GetComplianceHost())
 	state.Lambda = types.BoolValue(attributes.GetLambda())
 	state.SensitiveData = types.BoolValue(attributes.GetSensitiveData())
 	state.VulnContainersOs = types.BoolValue(attributes.GetVulnContainersOs())

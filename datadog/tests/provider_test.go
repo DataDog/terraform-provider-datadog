@@ -62,6 +62,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_csm_threats_agent_rule_test":                              "cloud-workload-security",
 	"tests/data_source_datadog_csm_threats_agent_rules_test":                             "cloud-workload-security",
 	"tests/data_source_datadog_csm_threats_policies_test":                                "cloud-workload-security",
+	"tests/data_source_datadog_current_user_test":                                        "users",
 	"tests/data_source_datadog_dashboard_list_test":                                      "dashboard-lists",
 	"tests/data_source_datadog_dashboard_test":                                           "dashboard",
 	"tests/data_source_datadog_hosts_test":                                               "hosts",
@@ -93,6 +94,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_reference_table_test":                                     "reference-tables",
 	"tests/data_source_datadog_reference_table_rows_test":                                "reference-tables",
 	"tests/data_source_datadog_restriction_policy_test":                                  "restriction-policy",
+	"tests/data_source_datadog_role_permissions_test":                                    "roles",
 	"tests/data_source_datadog_role_test":                                                "roles",
 	"tests/data_source_datadog_role_users_test":                                          "roles",
 	"tests/data_source_datadog_roles_test":                                               "roles",
@@ -131,12 +133,15 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_appsec_waf_custom_rule_test":                                 "application-security",
 	"tests/resource_datadog_appsec_waf_exclusion_filter_test":                            "application-security",
 	"tests/resource_datadog_authn_mapping_test":                                          "authn_mapping",
+	"tests/resource_datadog_aws_wif_identity_mapping_test":                               "cloud-authentication",
 	"tests/resource_datadog_child_organization_test":                                     "organization",
 	"tests/resource_datadog_cloud_configuration_rule_test":                               "security-monitoring",
 	"tests/resource_datadog_cloud_inventory_sync_config_test":                            "cloud-inventory",
 	"tests/resource_datadog_cloud_workload_security_agent_rule_test":                     "cloud_workload_security",
 	"tests/resource_datadog_action_connection_test":                                      "action_connection",
+	"tests/resource_datadog_action_execution_policy_test":                                "execution_policy",
 	"tests/resource_datadog_agentless_scanning_aws_scan_options_test":                    "agentless-scanning",
+	"tests/resource_datadog_agentless_scanning_azure_scan_options_test":                  "agentless-scanning",
 	"tests/resource_datadog_agentless_scanning_gcp_scan_options_test":                    "agentless-scanning",
 	"tests/resource_datadog_csm_threats_agent_rule_test":                                 "cloud-workload-security",
 	"tests/resource_datadog_csm_threats_policy_test":                                     "cloud-workload-security",
@@ -183,16 +188,37 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_secure_embed_dashboard_test":                                 "dashboards",
 	"tests/resource_datadog_dashboard_v2_test":                                           "dashboards",
 	"tests/resource_datadog_dashboard_v2_timeseries_event_query_test":                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_network_device_flows_test":                      "dashboards",
 	"tests/resource_datadog_dashboard_v2_funnel_test":                                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_hostmap_infrastructure_test":                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_hostmap_ddsql_test":                             "dashboards",
+	"tests/resource_datadog_dashboard_v2_heatmap_histogram_test":                         "dashboards",
+	"tests/resource_datadog_dashboard_v2_bar_chart_test":                                 "dashboards",
+	"tests/resource_datadog_dashboard_v2_sankey_test":                                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_wildcard_test":                                  "dashboards",
+	"tests/resource_datadog_dashboard_v2_point_plot_test":                                "dashboards",
+	"tests/resource_datadog_dashboard_v2_distribution_histogram_test":                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_embedded_app_test":                              "dashboards",
+	"tests/resource_datadog_dashboard_v2_apm_metrics_query_test":                         "dashboards",
+	"tests/resource_datadog_dashboard_v2_wildcard_histogram_test":                        "dashboards",
 	"tests/resource_datadog_dashboard_v2_toplist_sort_test":                              "dashboards",
 	"tests/resource_datadog_dashboard_v2_toplist_display_test":                           "dashboards",
 	"tests/resource_datadog_dashboard_v2_query_value_conditional_formats_test":           "dashboards",
+	"tests/resource_datadog_dashboard_v2_query_value_comparison_test":                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_query_table_sort_test":                          "dashboards",
 	"tests/resource_datadog_dashboard_v2_timeseries_legend_columns_test":                 "dashboards",
 	"tests/resource_datadog_dashboard_v2_tab_test":                                       "dashboards",
+	"tests/resource_datadog_dashboard_v2_treemap_style_sort_test":                        "dashboards",
+	"tests/resource_datadog_dashboard_v2_sunburst_sort_test":                             "dashboards",
+	"tests/resource_datadog_dashboard_v2_product_analytics_queries_test":                 "dashboards",
+	"tests/resource_datadog_dashboard_v2_product_analytics_widgets_test":                 "dashboards",
+	"tests/resource_datadog_dashboard_v2_funnel_grouped_display_test":                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_sankey_audience_test":                           "dashboards",
 	"tests/resource_datadog_dataset_test":                                                "dataset",
 	"tests/resource_datadog_datastore_test":                                              "datastores",
 	"tests/resource_datadog_datastore_item_test":                                         "datastores",
 	"tests/resource_datadog_domain_allowlist_test":                                       "domain-allowlist",
+	"tests/resource_datadog_fleet_schedule_live_test":                                    "fleet-automation",
 	"tests/resource_datadog_security_notification_rule_test":                             "security_notification_rule",
 	"tests/resource_datadog_observability_pipeline_test":                                 "observability-pipelines",
 	"tests/resource_datadog_openapi_api_test":                                            "apimanagement",
@@ -233,7 +259,9 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_integration_aws_log_collection_test":                         "integration-aws",
 	"tests/resource_datadog_integration_aws_tag_filter_test":                             "integration-aws",
 	"tests/resource_datadog_integration_aws_test":                                        "integration-aws",
+	"tests/data_source_datadog_integration_aws_account_test":                             "integration-aws",
 	"tests/resource_datadog_integration_aws_account_test":                                "integration-aws",
+	"tests/resource_datadog_integration_aws_account_ccm_config_test":                     "integration-aws",
 	"tests/resource_datadog_integration_aws_event_bridge_test":                           "integration-aws",
 	"tests/resource_datadog_integration_aws_external_id_test":                            "integration-aws",
 	"tests/resource_datadog_integration_azure_test":                                      "integration-azure",
@@ -259,6 +287,9 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_logs_restriction_query_test":                                 "logs-restriction-queries",
 	"tests/resource_datadog_metric_metadata_test":                                        "metrics",
 	"tests/resource_datadog_metric_tag_configuration_test":                               "metrics",
+	"tests/resource_datadog_tag_indexing_rule_test":                                      "metrics",
+	"tests/resource_datadog_tag_indexing_rule_exemption_test":                            "metrics",
+	"tests/resource_datadog_tag_indexing_rule_order_test":                                "metrics",
 	"tests/resource_datadog_monitor_config_policy_test":                                  "monitor-config-policies",
 	"tests/resource_datadog_monitor_fwprovider_test":                                     "monitors",
 	"tests/resource_datadog_monitor_json_test":                                           "monitors-json",
@@ -271,6 +302,14 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_on_call_user_notification_rule_test":                         "on-call",
 	"tests/resource_datadog_organization_settings_test":                                  "organization",
 	"tests/resource_datadog_org_connection_test":                                         "org_connection",
+	"tests/resource_datadog_org_group_test":                                              "org_group",
+	"tests/resource_datadog_org_group_membership_test":                                   "org_group_membership",
+	"tests/resource_datadog_org_group_policy_test":                                       "org_group_policy",
+	"tests/resource_datadog_org_group_policy_override_test":                              "org_group_policy_override",
+	"tests/data_source_datadog_org_groups_test":                                          "org_group",
+	"tests/data_source_datadog_org_group_memberships_test":                               "org_group_membership",
+	"tests/data_source_datadog_org_group_policies_test":                                  "org_group_policy",
+	"tests/data_source_datadog_org_group_policy_overrides_test":                          "org_group_policy_override",
 	"tests/resource_datadog_reference_table_test":                                        "reference-tables",
 	"tests/resource_datadog_restriction_policy_test":                                     "restriction-policy",
 	"tests/resource_datadog_role_test":                                                   "roles",
@@ -278,11 +317,26 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_rum_metric_test":                                             "rum-metric",
 	"tests/resource_datadog_rum_retention_filter_test":                                   "rum-retention-filter",
 	"tests/resource_datadog_rum_retention_filters_order_test":                            "rum-retention-filters-order",
+	"tests/resource_datadog_saml_idp_metadata_test":                                      "organization",
 	"tests/resource_datadog_screenboard_test":                                            "dashboards",
+	"tests/resource_datadog_security_findings_default_inbox_rule_test":                   "security-monitoring",
+	"tests/resource_datadog_security_findings_due_date_rule_test":                        "security-monitoring",
+	"tests/resource_datadog_security_findings_due_date_rules_order_test":                 "security-monitoring",
+	"tests/resource_datadog_security_findings_inbox_rule_test":                           "security-monitoring",
+	"tests/resource_datadog_security_findings_inbox_rules_order_test":                    "security-monitoring",
+	"tests/resource_datadog_security_findings_mute_rule_test":                            "security-monitoring",
+	"tests/resource_datadog_security_findings_mute_rules_order_test":                     "security-monitoring",
+	"tests/resource_datadog_security_findings_severity_modifier_rule_test":               "security-monitoring",
+	"tests/resource_datadog_security_findings_severity_modifier_rules_order_test":        "security-monitoring",
+	"tests/resource_datadog_security_findings_ticket_creation_rule_test":                 "security-monitoring",
+	"tests/resource_datadog_security_findings_ticket_creation_rules_order_test":          "security-monitoring",
+	"tests/resource_datadog_security_monitoring_default_rule_migration_test":             "security-monitoring",
 	"tests/resource_datadog_security_monitoring_default_rule_test":                       "security-monitoring",
 	"tests/resource_datadog_security_monitoring_filter_test":                             "security-monitoring",
+	"tests/resource_datadog_security_monitoring_filter_migration_test":                   "security-monitoring",
 	"tests/resource_datadog_security_monitoring_rule_json_test":                          "security-monitoring",
 	"tests/resource_datadog_security_monitoring_rule_test":                               "security-monitoring",
+	"tests/resource_datadog_security_monitoring_rule_migration_test":                     "security-monitoring",
 	"tests/resource_datadog_security_monitoring_suppression_test":                        "security-monitoring",
 	"tests/resource_datadog_security_monitoring_critical_asset_test":                     "security-monitoring",
 	"tests/resource_datadog_sensitive_data_scanner_group_order_test":                     "sensitive-data-scanner",
@@ -290,6 +344,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_sensitive_data_scanner_rule_test":                            "sensitive-data-scanner",
 	"tests/resource_datadog_service_account_application_key_test":                        "users",
 	"tests/resource_datadog_service_account_test":                                        "users",
+	"tests/resource_datadog_service_access_token_test":                                   "users",
 	"tests/resource_datadog_service_definition_yaml_test":                                "service-definition",
 	"tests/resource_datadog_service_level_objective_test":                                "service-level-objectives",
 	"tests/resource_datadog_slo_correction_test":                                         "slo_correction",
@@ -314,14 +369,17 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_user_test":                                                   "users",
 	"tests/resource_datadog_user_role_test":                                              "roles",
 	"tests/resource_datadog_webhook_custom_variable_test":                                "webhook_custom_variable",
+	"tests/resource_datadog_webhook_oauth2_client_credentials_test":                      "webhook_oauth2_client_credentials",
 	"tests/resource_datadog_webhook_test":                                                "webhook",
 	"tests/resource_datadog_workflow_automation_test":                                    "workflow_automation",
 	"tests/resource_datadog_compliance_resource_evaluation_filter_test":                  "resource_filters",
 	"tests/resource_datadog_compliance_custom_framework_test":                            "compliance_custom_framework",
 	"tests/resource_datadog_cost_budget_test":                                            "cost-budget",
+	"tests/resource_datadog_cost_custom_forecast_test":                                   "cost-custom-forecast",
 	"tests/resource_datadog_tag_pipeline_ruleset_test":                                   "tag-pipeline",
 	"tests/data_source_datadog_tag_pipeline_ruleset_test":                                "tag-pipeline",
 	"tests/resource_datadog_tag_pipeline_rulesets_test":                                  "tag-pipeline",
+	"tests/resource_datadog_tag_rule_test":                                               "tag-rules",
 	"tests/resource_datadog_app_key_registration_test":                                   "app_key_registration",
 	"tests/resource_datadog_aws_cur_config_test":                                         "cost-management",
 	"tests/resource_datadog_gcp_uc_config_test":                                          "cost-management",
@@ -334,7 +392,14 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_incident_notification_template_test":                      "incidents",
 	"tests/resource_datadog_incident_notification_rule_test":                             "incidents",
 	"tests/data_source_datadog_incident_notification_rule_test":                          "incidents",
+	"tests/resource_datadog_incident_user_defined_field_test":                            "incidents",
+	"tests/resource_datadog_incident_user_defined_role_test":                             "incidents",
 	"tests/resource_datadog_deployment_gate_test":                                        "deployment-gates",
+	"tests/resource_datadog_governance_control_test":                                     "governance-console",
+	"tests/resource_datadog_status_page_test":                                            "status-page",
+	"tests/resource_datadog_status_page_component_test":                                  "status-page",
+	"tests/resource_datadog_status_page_degradation_template_test":                       "status-page",
+	"tests/resource_datadog_status_page_maintenance_template_test":                       "status-page",
 }
 
 // getEndpointTagValue traverses callstack frames to find the test function that invoked this call;
@@ -497,7 +562,7 @@ func restoreClock(t *testing.T) clockwork.FakeClock {
 		t.Logf("Could not load clock: %v", err)
 		return setClock(t)
 	}
-	now, err := time.Parse(time.RFC3339Nano, string(data))
+	now, err := time.Parse(time.RFC3339Nano, strings.TrimSpace(string(data)))
 	if err != nil {
 		t.Fatalf("Could not parse clock date: %v", err)
 	}
@@ -524,7 +589,7 @@ func restoreClockWithName(t *testing.T, name string) clockwork.FakeClock {
 		t.Logf("Could not load clock for %s: %v", name, err)
 		return setClock(t)
 	}
-	now, err := time.Parse(time.RFC3339Nano, string(data))
+	now, err := time.Parse(time.RFC3339Nano, strings.TrimSpace(string(data)))
 	if err != nil {
 		t.Fatalf("Could not parse clock date: %v", err)
 	}
@@ -1033,6 +1098,25 @@ func withDefaultTags(providerFactory func() (*schema.Provider, error), defaultTa
 	}
 }
 
+// withIgnoreTagKeys wraps an SDKv2 provider factory so the provider-level ignore_tag_keys is set,
+// mirroring withDefaultTags. It lets a test exercise the provider-block ignore_tag_keys path the
+// same way a user setting it in their provider config would.
+func withIgnoreTagKeys(providerFactory func() (*schema.Provider, error), ignoreTagKeys []string) func() (*schema.Provider, error) {
+	provider, err := providerFactory()
+	newProvider := *provider
+	return func() (*schema.Provider, error) {
+		configureFunc := func(lctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+			config, diags := provider.ConfigureContextFunc(lctx, d)
+			if config != nil {
+				config.(*datadog.ProviderConfiguration).IgnoreTagKeys = ignoreTagKeys
+			}
+			return config, diags
+		}
+		newProvider.ConfigureContextFunc = configureFunc
+		return &newProvider, err
+	}
+}
+
 func TestProvider(t *testing.T) {
 	rec := initRecorder(t)
 	defer rec.Stop()
@@ -1226,6 +1310,134 @@ func TestProviderConfigure_CloudAuthWithOnlyAppKey(t *testing.T) {
 	// Verify DelegatedTokenConfig IS set (cloud auth takes precedence)
 	if config.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig == nil {
 		t.Error("DelegatedTokenConfig should be set when cloud_provider_type is explicitly configured (cloud auth takes precedence)")
+	}
+}
+
+// TestProviderConfigure_BearerTokenOnly tests that Bearer auth works when only `bearer_token` is set.
+func TestProviderConfigure_BearerTokenOnly(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+	os.Unsetenv("DD_BEARER_TOKEN")
+	os.Unsetenv("DATADOG_BEARER_TOKEN")
+
+	d := schema.TestResourceDataRaw(t, datadog.Provider().Schema, map[string]interface{}{
+		"bearer_token": "ddpat_test_token",
+		"api_url":      "https://api.datad0g.com",
+		"validate":     "false", // Skip validation since we don't have real creds
+	})
+
+	p := datadog.Provider()
+	result, diags := p.ConfigureContextFunc(context.Background(), d)
+
+	if diags.HasError() {
+		t.Errorf("providerConfigure should not error with bearer_token only, got: %v", diags)
+	}
+	if result == nil {
+		t.Fatal("providerConfigure should return a result")
+	}
+
+	config := result.(*datadog.ProviderConfiguration)
+	// Bearer auth should be plumbed via ContextAccessToken on config.Auth.
+	if got, ok := config.Auth.Value(common.ContextAccessToken).(string); !ok || got != "ddpat_test_token" {
+		t.Errorf("ContextAccessToken should be set to the bearer token, got %q (ok=%v)", got, ok)
+	}
+	// API key context should NOT be set when only bearer_token is provided.
+	if _, ok := config.Auth.Value(common.ContextAPIKeys).(map[string]common.APIKey); ok {
+		t.Error("ContextAPIKeys should NOT be set when only bearer_token is provided")
+	}
+	// DelegatedTokenConfig should NOT be set when only bearer_token is provided.
+	if config.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig != nil {
+		t.Error("DelegatedTokenConfig should NOT be set when using Bearer auth")
+	}
+}
+
+// TestProviderConfigure_BearerTokenEnvVar tests env-var fallback for bearer_token (DD_BEARER_TOKEN).
+func TestProviderConfigure_BearerTokenEnvVar(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+	os.Setenv("DD_BEARER_TOKEN", "ddpat_from_env")
+	defer os.Unsetenv("DD_BEARER_TOKEN")
+
+	d := schema.TestResourceDataRaw(t, datadog.Provider().Schema, map[string]interface{}{
+		"api_url":  "https://api.datad0g.com",
+		"validate": "false",
+	})
+
+	p := datadog.Provider()
+	result, diags := p.ConfigureContextFunc(context.Background(), d)
+
+	if diags.HasError() {
+		t.Errorf("providerConfigure should not error with bearer_token env var, got: %v", diags)
+	}
+	if result == nil {
+		t.Fatal("providerConfigure should return a result")
+	}
+
+	config := result.(*datadog.ProviderConfiguration)
+	if got, ok := config.Auth.Value(common.ContextAccessToken).(string); !ok || got != "ddpat_from_env" {
+		t.Errorf("ContextAccessToken should be set from DD_BEARER_TOKEN, got %q (ok=%v)", got, ok)
+	}
+}
+
+// TestProviderConfigure_BearerTokenWinsOverAPIKey tests that bearer_token takes precedence over API keys
+// when both are configured: only the Bearer token is plumbed, no DD-API-KEY/DD-APPLICATION-KEY headers.
+func TestProviderConfigure_BearerTokenWinsOverAPIKey(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+	os.Unsetenv("DD_BEARER_TOKEN")
+	os.Unsetenv("DATADOG_BEARER_TOKEN")
+
+	d := schema.TestResourceDataRaw(t, datadog.Provider().Schema, map[string]interface{}{
+		"api_key":      "test_api_key",
+		"app_key":      "test_app_key",
+		"bearer_token": "ddpat_test_token",
+		"api_url":      "https://api.datad0g.com",
+		"validate":     "false",
+	})
+
+	p := datadog.Provider()
+	result, diags := p.ConfigureContextFunc(context.Background(), d)
+
+	if diags.HasError() {
+		t.Errorf("providerConfigure should not error with bearer_token + API keys, got: %v", diags)
+	}
+	if result == nil {
+		t.Fatal("providerConfigure should return a result")
+	}
+
+	config := result.(*datadog.ProviderConfiguration)
+	if got, ok := config.Auth.Value(common.ContextAccessToken).(string); !ok || got != "ddpat_test_token" {
+		t.Errorf("ContextAccessToken should be set to the bearer token when both bearer_token and API keys are provided (bearer_token wins), got %q (ok=%v)", got, ok)
+	}
+	if _, ok := config.Auth.Value(common.ContextAPIKeys).(map[string]common.APIKey); ok {
+		t.Error("ContextAPIKeys should NOT be set when bearer_token is also provided (bearer_token takes precedence)")
+	}
+}
+
+// TestProviderConfigure_NoCredentialsErrors tests that configure errors with no credentials and validate=true.
+func TestProviderConfigure_NoCredentialsErrors(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+	os.Unsetenv("DD_BEARER_TOKEN")
+	os.Unsetenv("DATADOG_BEARER_TOKEN")
+
+	d := schema.TestResourceDataRaw(t, datadog.Provider().Schema, map[string]interface{}{
+		"api_url":  "https://api.datad0g.com",
+		"validate": "true",
+	})
+
+	p := datadog.Provider()
+	_, diags := p.ConfigureContextFunc(context.Background(), d)
+	if !diags.HasError() {
+		t.Error("providerConfigure should error when no credentials are provided and validate=true")
 	}
 }
 

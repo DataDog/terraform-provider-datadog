@@ -266,6 +266,9 @@ func (r *incidentNotificationRuleResource) Create(ctx context.Context, request r
 	}
 
 	var state incidentNotificationRuleModel
+	// Seed the configured renotify_on so the flatten preserves the practitioner's
+	// null-vs-empty choice when the API echoes back an empty list (see updateStateFromResponse).
+	state.RenotifyOn = plan.RenotifyOn
 	r.updateStateFromResponse(&state, &resp)
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -489,7 +492,12 @@ func (r *incidentNotificationRuleResource) updateStateFromResponse(state *incide
 			}
 		}
 
-		if renotifyOn, renotifyOnOk := attributes.GetRenotifyOnOk(); renotifyOnOk && renotifyOn != nil {
+		// renotify_on is Optional (not Computed), so the applied state must equal the
+		// planned value. The API always echoes it back as a (possibly empty) list, which
+		// erases the null-vs-empty distinction the practitioner configured. Only overwrite
+		// from the API when it returns a non-empty list; an empty response keeps the
+		// incoming value (null when omitted, [] when set explicitly).
+		if renotifyOn, renotifyOnOk := attributes.GetRenotifyOnOk(); renotifyOnOk && renotifyOn != nil && len(*renotifyOn) > 0 {
 			state.RenotifyOn = make([]types.String, len(*renotifyOn))
 			for i, item := range *renotifyOn {
 				state.RenotifyOn[i] = types.StringValue(item)

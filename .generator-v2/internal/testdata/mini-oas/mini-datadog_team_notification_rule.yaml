@@ -1,0 +1,235 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: Teams
+  description: View and manage teams within Datadog. See the [Teams page](https://docs.datadoghq.com/account_management/teams/)
+    for more information.
+paths:
+  /api/v2/team/{team_id}/notification-rules/{rule_id}:
+    get:
+      operationId: GetTeamNotificationRule
+      tags:
+      - Teams
+      summary: Get team notification rule
+      parameters:
+      - name: team_id
+        in: path
+        required: true
+        description: None
+        schema:
+          type: string
+      - name: rule_id
+        in: path
+        required: true
+        description: None
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamNotificationRuleResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                      id: 00000000-0000-0000-0000-000000000003
+                      type: team_notification_rules
+                      attributes:
+                        email:
+                          enabled: true
+                        slack:
+                          channel: test-channel
+                          workspace: Datadog
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          description: API error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      security:
+      - apiKeyAuth: []
+        appKeyAuth: []
+      - AuthZ:
+        - teams_read
+      x-menu-order: 15
+      x-undo:
+        type: safe
+      x-permission:
+        operator: OR
+        permissions:
+        - teams_read
+components:
+  responses:
+    ForbiddenResponse:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    TeamNotificationRule:
+      type: object
+      description: Team notification rule
+      required:
+      - attributes
+      - type
+      properties:
+        attributes:
+          $ref: '#/components/schemas/TeamNotificationRuleAttributes'
+        id:
+          type: string
+          description: The identifier of the team notification rule
+          example: b8626d7e-cedd-11eb-abf5-da7ad0900001
+        type:
+          $ref: '#/components/schemas/TeamNotificationRuleType'
+    TeamNotificationRuleAttributes:
+      type: object
+      description: Team notification rule attributes
+      properties:
+        email:
+          $ref: '#/components/schemas/TeamNotificationRuleAttributesEmail'
+        ms_teams:
+          $ref: '#/components/schemas/TeamNotificationRuleAttributesMsTeams'
+        pagerduty:
+          $ref: '#/components/schemas/TeamNotificationRuleAttributesPagerduty'
+        slack:
+          $ref: '#/components/schemas/TeamNotificationRuleAttributesSlack'
+    TeamNotificationRuleAttributesEmail:
+      type: object
+      description: Email notification settings for the team
+      properties:
+        enabled:
+          type: boolean
+          description: Flag indicating email notification
+    TeamNotificationRuleAttributesMsTeams:
+      type: object
+      description: MS Teams notification settings for the team
+      properties:
+        connector_name:
+          type: string
+          description: Handle for MS Teams
+    TeamNotificationRuleAttributesPagerduty:
+      type: object
+      description: PagerDuty notification settings for the team
+      properties:
+        service_name:
+          type: string
+          description: Service name for PagerDuty
+    TeamNotificationRuleAttributesSlack:
+      type: object
+      description: Slack notification settings for the team
+      properties:
+        channel:
+          type: string
+          description: Channel for Slack notification
+        workspace:
+          type: string
+          description: Workspace for Slack notification
+    TeamNotificationRuleResponse:
+      type: object
+      description: Team notification rule response
+      properties:
+        data:
+          $ref: '#/components/schemas/TeamNotificationRule'
+    TeamNotificationRuleType:
+      type: string
+      description: Team notification rule type
+      default: team_notification_rules
+      example: team_notification_rules
+      enum:
+      - team_notification_rules
+      x-enum-varnames:
+      - TEAM_NOTIFICATION_RULES
+  securitySchemes:
+    AuthZ:
+      type: oauth2
+      description: This API uses OAuth 2 with the implicit grant flow.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth2/v1/authorize
+          tokenUrl: /oauth2/v1/token
+          scopes: {}
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY

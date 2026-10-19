@@ -45,6 +45,12 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.CreateDataset", true)
 	config.SetUnstableOperationEnabled("v2.UpdateDataset", true)
 	config.SetUnstableOperationEnabled("v2.DeleteDataset", true)
+	config.SetUnstableOperationEnabled("v2.CreateFleetSchedule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateFleetSchedule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteFleetSchedule", true)
+	config.SetUnstableOperationEnabled("v2.CreateAWSCloudAuthPersonaMapping", true)
+	config.SetUnstableOperationEnabled("v2.GetAWSCloudAuthPersonaMapping", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAWSCloudAuthPersonaMapping", true)
 
 	// Enable Logs Restriction Queries
 	config.SetUnstableOperationEnabled("v2.CreateRestrictionQuery", true)
@@ -53,6 +59,16 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.DeleteRestrictionQuery", true)
 	config.SetUnstableOperationEnabled("v2.AddRoleToRestrictionQuery", true)
 	config.SetUnstableOperationEnabled("v2.RemoveRoleFromRestrictionQuery", true)
+
+	config.SetUnstableOperationEnabled("v2.CreateAWSAccountCCMConfig", true)
+	config.SetUnstableOperationEnabled("v2.GetAWSAccountCCMConfig", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAWSAccountCCMConfig", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAWSAccountCCMConfig", true)
+
+	// Enable Custom Forecast
+	config.SetUnstableOperationEnabled("v2.UpsertCustomForecast", true)
+	config.SetUnstableOperationEnabled("v2.GetCustomForecast", true)
+	config.SetUnstableOperationEnabled("v2.DeleteCustomForecast", true)
 
 	// Enable Observability Pipelines
 	config.SetUnstableOperationEnabled("v2.CreatePipeline", true)
@@ -79,6 +95,44 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationTemplate", true)
 	config.SetUnstableOperationEnabled("v2.ListIncidentNotificationTemplates", true)
 
+	// Enable IncidentPostmortemTemplate
+	config.SetUnstableOperationEnabled("v2.CreateIncidentPostmortemTemplate", true)
+	config.SetUnstableOperationEnabled("v2.GetIncidentPostmortemTemplate", true)
+	config.SetUnstableOperationEnabled("v2.UpdateIncidentPostmortemTemplate", true)
+	config.SetUnstableOperationEnabled("v2.DeleteIncidentPostmortemTemplate", true)
+
+	config.SetUnstableOperationEnabled("v2.ListIncidentUserDefinedFields", true)
+	config.SetUnstableOperationEnabled("v2.CreateIncidentUserDefinedField", true)
+	config.SetUnstableOperationEnabled("v2.GetIncidentUserDefinedField", true)
+	config.SetUnstableOperationEnabled("v2.UpdateIncidentUserDefinedField", true)
+	config.SetUnstableOperationEnabled("v2.DeleteIncidentUserDefinedField", true)
+
+	config.SetUnstableOperationEnabled("v2.ListIncidentUserDefinedRoles", true)
+	config.SetUnstableOperationEnabled("v2.CreateIncidentUserDefinedRole", true)
+	config.SetUnstableOperationEnabled("v2.GetIncidentUserDefinedRole", true)
+	config.SetUnstableOperationEnabled("v2.UpdateIncidentUserDefinedRole", true)
+	config.SetUnstableOperationEnabled("v2.DeleteIncidentUserDefinedRole", true)
+
+	// Enable OrgGroup
+	config.SetUnstableOperationEnabled("v2.CreateOrgGroup", true)
+	config.SetUnstableOperationEnabled("v2.GetOrgGroup", true)
+	config.SetUnstableOperationEnabled("v2.UpdateOrgGroup", true)
+	config.SetUnstableOperationEnabled("v2.DeleteOrgGroup", true)
+	config.SetUnstableOperationEnabled("v2.ListOrgGroups", true)
+	config.SetUnstableOperationEnabled("v2.GetOrgGroupMembership", true)
+	config.SetUnstableOperationEnabled("v2.ListOrgGroupMemberships", true)
+	config.SetUnstableOperationEnabled("v2.UpdateOrgGroupMembership", true)
+	config.SetUnstableOperationEnabled("v2.CreateOrgGroupPolicy", true)
+	config.SetUnstableOperationEnabled("v2.GetOrgGroupPolicy", true)
+	config.SetUnstableOperationEnabled("v2.UpdateOrgGroupPolicy", true)
+	config.SetUnstableOperationEnabled("v2.DeleteOrgGroupPolicy", true)
+	config.SetUnstableOperationEnabled("v2.ListOrgGroupPolicies", true)
+	config.SetUnstableOperationEnabled("v2.CreateOrgGroupPolicyOverride", true)
+	config.SetUnstableOperationEnabled("v2.GetOrgGroupPolicyOverride", true)
+	config.SetUnstableOperationEnabled("v2.UpdateOrgGroupPolicyOverride", true)
+	config.SetUnstableOperationEnabled("v2.DeleteOrgGroupPolicyOverride", true)
+	config.SetUnstableOperationEnabled("v2.ListOrgGroupPolicyOverrides", true)
+
 	// Enable IncidentNotificationRule
 	config.SetUnstableOperationEnabled("v2.CreateIncidentNotificationRule", true)
 	config.SetUnstableOperationEnabled("v2.GetIncidentNotificationRule", true)
@@ -97,6 +151,72 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.DeleteDeploymentRule", true)
 	config.SetUnstableOperationEnabled("v2.GetDeploymentRule", true)
 	config.SetUnstableOperationEnabled("v2.GetDeploymentGateRules", true)
+
+	// Security findings automation rules
+	config.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationMuteRules", true)
+	config.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationMuteRule", true)
+	config.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationMuteRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationMuteRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationMuteRule", true)
+	config.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationMuteRules", true)
+	config.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationDueDateRules", true)
+	config.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationDueDateRule", true)
+	config.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationDueDateRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationDueDateRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationDueDateRule", true)
+	config.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationDueDateRules", true)
+	config.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationTicketCreationRules", true)
+	config.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationTicketCreationRule", true)
+	config.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationTicketCreationRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationTicketCreationRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationTicketCreationRule", true)
+	config.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationTicketCreationRules", true)
+	config.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationSeverityModifierRules", true)
+	config.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationSeverityModifierRule", true)
+	config.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationSeverityModifierRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationSeverityModifierRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationSeverityModifierRule", true)
+	config.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationSeverityModifierRules", true)
+	config.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationInboxRules", true)
+	config.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationInboxRules", true)
+	config.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationDefaultInboxRules", true)
+	config.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationDefaultInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.EnableSecurityFindingsAutomationDefaultInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.DisableSecurityFindingsAutomationDefaultInboxRule", true)
+
+	config.SetUnstableOperationEnabled("v2.CreateTagIndexingRule", true)
+	config.SetUnstableOperationEnabled("v2.GetTagIndexingRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateTagIndexingRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteTagIndexingRule", true)
+	config.SetUnstableOperationEnabled("v2.ListTagIndexingRules", true)
+	config.SetUnstableOperationEnabled("v2.ReorderTagIndexingRules", true)
+	config.SetUnstableOperationEnabled("v2.CreateTagIndexingRuleExemption", true)
+	config.SetUnstableOperationEnabled("v2.GetTagIndexingRuleExemption", true)
+	config.SetUnstableOperationEnabled("v2.DeleteTagIndexingRuleExemption", true)
+
+	// Enable Governance Controls
+	config.SetUnstableOperationEnabled("v2.GetGovernanceControl", true)
+	config.SetUnstableOperationEnabled("v2.UpdateGovernanceControl", true)
+	config.SetUnstableOperationEnabled("v2.GetGovernanceControlNotificationSettings", true)
+	config.SetUnstableOperationEnabled("v2.UpdateGovernanceControlNotificationSettings", true)
+
+	// Enable Governance Tag Rules
+	config.SetUnstableOperationEnabled("v2.CreateTagRule", true)
+	config.SetUnstableOperationEnabled("v2.GetTagRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateTagRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteTagRule", true)
+
+	// Enable Execution Policies
+	config.SetUnstableOperationEnabled("v2.CreateExecutionPolicy", true)
+	config.SetUnstableOperationEnabled("v2.GetExecutionPolicy", true)
+	config.SetUnstableOperationEnabled("v2.UpdateExecutionPolicy", true)
+	config.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
+	config.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
+	fwprovider.EnableGeneratedUnstableOperations(config)
 
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true
@@ -212,6 +332,29 @@ func initHttpClient(ctx context.Context, t *testing.T) (context.Context, *http.C
 func withDefaultTagsFw(ctx context.Context, providers *compositeProviderStruct, defaultTags map[string]string) func() (tfprotov6.ProviderServer, error) {
 	return func() (tfprotov6.ProviderServer, error) {
 		providers.frameworkProvider.DefaultTags = defaultTags
+
+		upgradedSdkProvider, err := tf5to6server.UpgradeServer(
+			ctx,
+			providers.sdkV2Provider.GRPCProvider,
+		)
+		if err != nil {
+			return nil, err
+		}
+		muxServer, err := tf6muxserver.NewMuxServer(ctx,
+			providerserver.NewProtocol6(providers.frameworkProvider),
+			func() tfprotov6.ProviderServer { return upgradedSdkProvider },
+		)
+		return muxServer, err
+	}
+}
+
+// withIgnoreTagKeysFw wraps the muxed framework provider so the provider-level ignore_tag_keys is
+// set, mirroring withDefaultTagsFw. Framework resources read it via providerData.IgnoreTagKeys in
+// Configure, so setting it on the struct before the mux server is built is what a user's provider
+// block does.
+func withIgnoreTagKeysFw(ctx context.Context, providers *compositeProviderStruct, ignoreTagKeys []string) func() (tfprotov6.ProviderServer, error) {
+	return func() (tfprotov6.ProviderServer, error) {
+		providers.frameworkProvider.IgnoreTagKeys = ignoreTagKeys
 
 		upgradedSdkProvider, err := tf5to6server.UpgradeServer(
 			ctx,
@@ -416,5 +559,131 @@ func TestFrameworkProviderConfigure_CloudAuthWithOnlyAppKey(t *testing.T) {
 	// Verify DelegatedTokenConfig IS set (cloud auth takes precedence)
 	if p.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig == nil {
 		t.Error("DelegatedTokenConfig should be set when cloud_provider_type is explicitly configured (cloud auth takes precedence)")
+	}
+}
+
+// TestFrameworkProviderConfigure_BearerTokenOnly tests that Bearer auth works when only `bearer_token` is set.
+func TestFrameworkProviderConfigure_BearerTokenOnly(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+	os.Unsetenv("DD_BEARER_TOKEN")
+	os.Unsetenv("DATADOG_BEARER_TOKEN")
+
+	p := fwprovider.New().(*fwprovider.FrameworkProvider)
+	config := &fwprovider.ProviderSchema{
+		BearerToken:            types.StringValue("ddpat_test_token"),
+		ApiUrl:                 types.StringValue("https://api.datad0g.com"),
+		Validate:               types.StringValue("false"),
+		HttpClientRetryEnabled: types.StringValue("false"),
+	}
+
+	request := &provider.ConfigureRequest{}
+	diags := p.ConfigureCallbackFunc(p, request, config)
+
+	if diags.HasError() {
+		t.Errorf("framework provider configure should not error with bearer_token only, got: %v", diags)
+	}
+	if p.DatadogApiInstances == nil {
+		t.Fatal("DatadogApiInstances should be set")
+	}
+
+	// Bearer auth should be plumbed via ContextAccessToken on p.Auth.
+	if got, ok := p.Auth.Value(common.ContextAccessToken).(string); !ok || got != "ddpat_test_token" {
+		t.Errorf("ContextAccessToken should be set to the bearer token, got %q (ok=%v)", got, ok)
+	}
+	// API key context should NOT be set when only bearer_token is provided.
+	if _, ok := p.Auth.Value(common.ContextAPIKeys).(map[string]common.APIKey); ok {
+		t.Error("ContextAPIKeys should NOT be set when only bearer_token is provided")
+	}
+}
+
+// TestFrameworkProviderConfigure_BearerTokenEnvVar tests env-var fallback for bearer_token.
+func TestFrameworkProviderConfigure_BearerTokenEnvVar(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+	os.Setenv("DD_BEARER_TOKEN", "ddpat_from_env")
+	defer os.Unsetenv("DD_BEARER_TOKEN")
+
+	p := fwprovider.New().(*fwprovider.FrameworkProvider)
+	config := &fwprovider.ProviderSchema{
+		ApiUrl:                 types.StringValue("https://api.datad0g.com"),
+		Validate:               types.StringValue("false"),
+		HttpClientRetryEnabled: types.StringValue("false"),
+	}
+
+	ctx := context.Background()
+	if diags := p.ConfigureConfigDefaults(ctx, config); diags.HasError() {
+		t.Fatalf("ConfigureConfigDefaults failed: %v", diags)
+	}
+	if got := config.BearerToken.ValueString(); got != "ddpat_from_env" {
+		t.Errorf("BearerToken should be populated from DD_BEARER_TOKEN, got %q", got)
+	}
+
+	request := &provider.ConfigureRequest{}
+	if diags := p.ConfigureCallbackFunc(p, request, config); diags.HasError() {
+		t.Errorf("framework provider configure should not error with bearer_token env var, got: %v", diags)
+	}
+	if got, ok := p.Auth.Value(common.ContextAccessToken).(string); !ok || got != "ddpat_from_env" {
+		t.Errorf("ContextAccessToken should be set from DD_BEARER_TOKEN, got %q (ok=%v)", got, ok)
+	}
+}
+
+// TestFrameworkProviderConfigure_BearerTokenWinsOverAPIKey tests that bearer_token takes precedence over API keys
+// when both are configured: only the Bearer token is plumbed, no DD-API-KEY/DD-APPLICATION-KEY headers.
+func TestFrameworkProviderConfigure_BearerTokenWinsOverAPIKey(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+	os.Unsetenv("DD_BEARER_TOKEN")
+	os.Unsetenv("DATADOG_BEARER_TOKEN")
+
+	p := fwprovider.New().(*fwprovider.FrameworkProvider)
+	config := &fwprovider.ProviderSchema{
+		ApiKey:                 types.StringValue("test_api_key"),
+		AppKey:                 types.StringValue("test_app_key"),
+		BearerToken:            types.StringValue("ddpat_test_token"),
+		ApiUrl:                 types.StringValue("https://api.datad0g.com"),
+		Validate:               types.StringValue("false"),
+		HttpClientRetryEnabled: types.StringValue("false"),
+	}
+
+	request := &provider.ConfigureRequest{}
+	diags := p.ConfigureCallbackFunc(p, request, config)
+	if diags.HasError() {
+		t.Errorf("framework provider configure should not error with bearer_token + API keys, got: %v", diags)
+	}
+	if got, ok := p.Auth.Value(common.ContextAccessToken).(string); !ok || got != "ddpat_test_token" {
+		t.Errorf("ContextAccessToken should be set to the bearer token when both bearer_token and API keys are provided (bearer_token wins), got %q (ok=%v)", got, ok)
+	}
+	if _, ok := p.Auth.Value(common.ContextAPIKeys).(map[string]common.APIKey); ok {
+		t.Error("ContextAPIKeys should NOT be set when bearer_token is also provided (bearer_token takes precedence)")
+	}
+}
+
+// TestFrameworkProviderConfigure_NoCredentials tests that configure errors with no credentials and validate=true.
+func TestFrameworkProviderConfigure_NoCredentialsErrors(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+	os.Unsetenv("DD_BEARER_TOKEN")
+	os.Unsetenv("DATADOG_BEARER_TOKEN")
+
+	p := fwprovider.New().(*fwprovider.FrameworkProvider)
+	config := &fwprovider.ProviderSchema{
+		ApiUrl:                 types.StringValue("https://api.datad0g.com"),
+		Validate:               types.StringValue("true"),
+		HttpClientRetryEnabled: types.StringValue("false"),
+	}
+
+	request := &provider.ConfigureRequest{}
+	diags := p.ConfigureCallbackFunc(p, request, config)
+	if !diags.HasError() {
+		t.Error("framework provider configure should error when no credentials are provided and validate=true")
 	}
 }

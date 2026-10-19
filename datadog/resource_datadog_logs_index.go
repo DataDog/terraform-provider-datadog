@@ -22,6 +22,10 @@ var indexSchema = map[string]*schema.Schema{
 		Type:        schema.TypeString,
 		Required:    true,
 		ForceNew:    true,
+		ValidateFunc: validation.StringMatch(
+			regexp.MustCompile(`^[a-z][a-z0-9-]*$`),
+			"must start with a lowercase letter and contain only lowercase letters, digits, or hyphens",
+		),
 	},
 	"disable_daily_limit": {
 		Description: "If true, disables the daily limit and sets `daily_limit` to null. If false, enables the daily limit. When creating an index, if this attribute is omitted, the daily limit is enabled by default. When updating an index, if this attribute is omitted, the existing value is preserved. Providing a `daily_limit` value does not re-enable the limit if it was previously disabled unless `disable_daily_limit` is explicitly set to false.",
@@ -130,6 +134,11 @@ var exclusionFilterSchema = map[string]*schema.Schema{
 			Schema: map[string]*schema.Schema{
 				"query": {
 					Description: "Only logs matching the filter criteria and the query of the parent index will be considered for this exclusion filter.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"sample_attribute": {
+					Description: "The log attribute used as the sampling key. When present, logs sharing the same value are excluded or kept together at the configured sample rate (a single attribute path, e.g. `@lambda.request_id`).",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -412,6 +421,9 @@ func buildDatadogExclusionFilter(tfEFilter map[string]interface{}) *datadogV1.Lo
 		if tfQuery, exist := tfFilter["query"].(string); exist {
 			ddFilter.SetQuery(tfQuery)
 		}
+		if tfSampleAttribute, exist := tfFilter["sample_attribute"].(string); exist && tfSampleAttribute != "" {
+			ddFilter.SetSampleAttribute(tfSampleAttribute)
+		}
 		if tfSampleRate, exist := tfFilter["sample_rate"].(float64); exist {
 			ddFilter.SetSampleRate(tfSampleRate)
 		}
@@ -432,8 +444,9 @@ func buildTerraformExclusionFilter(ddEFilter datadogV1.LogsExclusion) *map[strin
 	tfEFilter := make(map[string]interface{})
 	ddFilter := ddEFilter.GetFilter()
 	tfFilter := map[string]interface{}{
-		"query":       ddFilter.GetQuery(),
-		"sample_rate": ddFilter.GetSampleRate(),
+		"query":            ddFilter.GetQuery(),
+		"sample_attribute": ddFilter.GetSampleAttribute(),
+		"sample_rate":      ddFilter.GetSampleRate(),
 	}
 	tfEFilter["filter"] = []map[string]interface{}{tfFilter}
 	tfEFilter["name"] = ddEFilter.GetName()

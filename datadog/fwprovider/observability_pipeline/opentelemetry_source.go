@@ -10,9 +10,9 @@ import (
 
 // OpentelemetrySourceModel represents the Terraform model for opentelemetry source configuration
 type OpentelemetrySourceModel struct {
-	HttpAddressKey types.String `tfsdk:"http_address_key"`
-	GrpcAddressKey types.String `tfsdk:"grpc_address_key"`
-	Tls            []TlsModel   `tfsdk:"tls"`
+	HttpAddressKey types.String         `tfsdk:"http_address_key"`
+	GrpcAddressKey types.String         `tfsdk:"grpc_address_key"`
+	Tls            []MtlsServerTlsModel `tfsdk:"tls"`
 }
 
 // ExpandOpentelemetrySource converts the Terraform model to the Datadog API model
@@ -26,7 +26,7 @@ func ExpandOpentelemetrySource(src *OpentelemetrySourceModel, id string) datadog
 		s.SetGrpcAddressKey(src.GrpcAddressKey.ValueString())
 	}
 	if len(src.Tls) > 0 {
-		s.Tls = ExpandTls(src.Tls)
+		s.Tls = ExpandMtlsServerTls(src.Tls)
 	}
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
@@ -48,7 +48,7 @@ func FlattenOpentelemetrySource(src *datadogV2.ObservabilityPipelineOpentelemetr
 		out.GrpcAddressKey = types.StringValue(*v)
 	}
 	if src.Tls != nil {
-		out.Tls = FlattenTls(src.Tls)
+		out.Tls = FlattenMtlsServerTls(src.Tls)
 	}
 
 	return out
@@ -70,7 +70,7 @@ func OpentelemetrySourceSchema() schema.ListNestedBlock {
 				},
 			},
 			Blocks: map[string]schema.Block{
-				"tls": TlsSchema(),
+				"tls": MtlsServerTlsSchema(),
 			},
 		},
 		Validators: []validator.List{

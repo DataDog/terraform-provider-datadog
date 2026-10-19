@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -154,6 +155,26 @@ func TestAccDatadogIntegrationAzure(t *testing.T) {
 		},
 	},
 	)
+}
+
+func TestAccDatadogIntegrationAzure_MissingClientSecret(t *testing.T) {
+	t.Parallel()
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_integration_azure" "missing_secret" {
+  tenant_name = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+  client_id   = "testc7f6-1234-5678-9101-3fcbf464test"
+}`,
+				ExpectError: regexp.MustCompile("client_secret is required unless secretless_auth_enabled is true"),
+			},
+		},
+	})
 }
 
 func checkIntegrationAzureExistsHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {

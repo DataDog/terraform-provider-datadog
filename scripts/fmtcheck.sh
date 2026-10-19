@@ -6,7 +6,7 @@ set -o pipefail
 
 # Check goimports
 echo "==> Checking that code complies with goimports requirements..."
-goimports_files=$(goimports -format-only -d -l $(find . -name '*.go' | grep -v vendor))
+goimports_files=$(go tool goimports -format-only -d -l $(find . -name '*.go' | grep -v vendor))
 if [[ -n ${goimports_files} ]]; then
     echo 'gofmt needs running on the following files:'
     echo "${goimports_files}"
@@ -14,11 +14,10 @@ if [[ -n ${goimports_files} ]]; then
     EXIT_CODE=1
 fi
 
-# Check the example terraform files pass terraform fmt
-echo "==> Checking that examples pass with terraform fmt requirements"
-terraform_fmt=$(terraform fmt -recursive -check -diff examples 2>&1)
+echo "==> Checking that terraform fmt passes"
+terraform_fmt=$(terraform fmt -recursive -check -diff 2>&1)
 if [[ $? -ne 0 ]]; then
-    echo "Files in the \`example\` folder aren't terraform formatted"
+    echo "Files aren't terraform formatted"
     echo "You can use the command \`make fmt\` to reformat the following:"
     echo "${terraform_fmt}"
     EXIT_CODE=2

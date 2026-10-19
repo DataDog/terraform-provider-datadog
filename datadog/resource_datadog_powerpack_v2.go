@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
@@ -25,6 +26,13 @@ func resourceDatadogPowerpackV2() *schema.Resource {
 		DeleteContext: resourceDatadogPowerpackV2Delete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
+		},
+		CustomizeDiff: func(_ context.Context, diff *schema.ResourceDiff, _ interface{}) error {
+			widgetData := map[string]interface{}{"widget": diff.Get("widget")}
+			if errs := dashboardmapping.ValidateWidgetConflicts(widgetData); len(errs) > 0 {
+				return fmt.Errorf("%s", strings.Join(errs, "\n"))
+			}
+			return nil
 		},
 		SchemaFunc: buildPowerpackV2Schema,
 	}
@@ -327,12 +335,12 @@ func buildPowerpackWidgets(d *schema.ResourceData) ([]datadogV2.PowerpackInnerWi
 	}
 	rawWidgets := widgetList.([]interface{})
 	result := make([]datadogV2.PowerpackInnerWidgets, 0, len(rawWidgets))
-	for _, w := range rawWidgets {
+	for i, w := range rawWidgets {
 		wMap, ok := w.(map[string]interface{})
 		if !ok {
 			continue
 		}
-		widgetJSON, err := json.Marshal(dashboardmapping.BuildWidgetEngineJSONFromMap(wMap))
+		widgetJSON, err := json.Marshal(dashboardmapping.BuildWidgetEngineJSONFromMapWithRawConfig(wMap, d, cty.GetAttrPath("widget").IndexInt(i)))
 		if err != nil {
 			return nil, fmt.Errorf("error marshaling widget: %w", err)
 		}
