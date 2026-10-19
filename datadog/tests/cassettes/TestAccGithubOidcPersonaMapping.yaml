@@ -1,0 +1,235 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 287
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"account_identifier":"tf-github-oidc-replay-user@example.com","claim_matchers":{"repository":"^DataDog/terraform-provider-wif-acceptance-nonexistent$","sub":"repo:DataDog/terraform-provider-wif-acceptance-nonexistent:ref:refs/heads/main"}},"type":"github_oidc_auth_config"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_auth/github/persona_mapping
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 384
+        uncompressed: false
+        body: '{"data":{"id":"deb4b9f0-14c5-486d-bb3d-4667e56bb868","type":"github_oidc_auth_config","attributes":{"account_identifier":"tf-github-oidc-replay-user@example.com","account_uuid":"0bd557d2-6ed0-423e-9654-c0e1cd376abc","claim_matchers":{"repository":"^DataDog/terraform-provider-wif-acceptance-nonexistent$","sub":"repo:DataDog/terraform-provider-wif-acceptance-nonexistent:ref:refs/heads/main"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 164.156375ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_auth/github/persona_mapping/deb4b9f0-14c5-486d-bb3d-4667e56bb868
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 384
+        uncompressed: false
+        body: '{"data":{"id":"deb4b9f0-14c5-486d-bb3d-4667e56bb868","type":"github_oidc_auth_config","attributes":{"account_identifier":"tf-github-oidc-replay-user@example.com","account_uuid":"0bd557d2-6ed0-423e-9654-c0e1cd376abc","claim_matchers":{"repository":"^DataDog/terraform-provider-wif-acceptance-nonexistent$","sub":"repo:DataDog/terraform-provider-wif-acceptance-nonexistent:ref:refs/heads/main"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 155.054459ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_auth/github/persona_mapping/deb4b9f0-14c5-486d-bb3d-4667e56bb868
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 384
+        uncompressed: false
+        body: '{"data":{"id":"deb4b9f0-14c5-486d-bb3d-4667e56bb868","type":"github_oidc_auth_config","attributes":{"account_identifier":"tf-github-oidc-replay-user@example.com","account_uuid":"0bd557d2-6ed0-423e-9654-c0e1cd376abc","claim_matchers":{"repository":"^DataDog/terraform-provider-wif-acceptance-nonexistent$","sub":"repo:DataDog/terraform-provider-wif-acceptance-nonexistent:ref:refs/heads/main"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 117.347375ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_auth/github/persona_mapping/deb4b9f0-14c5-486d-bb3d-4667e56bb868
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 384
+        uncompressed: false
+        body: '{"data":{"id":"deb4b9f0-14c5-486d-bb3d-4667e56bb868","type":"github_oidc_auth_config","attributes":{"account_identifier":"tf-github-oidc-replay-user@example.com","account_uuid":"0bd557d2-6ed0-423e-9654-c0e1cd376abc","claim_matchers":{"repository":"^DataDog/terraform-provider-wif-acceptance-nonexistent$","sub":"repo:DataDog/terraform-provider-wif-acceptance-nonexistent:ref:refs/heads/main"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 107.79075ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_auth/github/persona_mapping/deb4b9f0-14c5-486d-bb3d-4667e56bb868
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 384
+        uncompressed: false
+        body: '{"data":{"id":"deb4b9f0-14c5-486d-bb3d-4667e56bb868","type":"github_oidc_auth_config","attributes":{"account_identifier":"tf-github-oidc-replay-user@example.com","account_uuid":"0bd557d2-6ed0-423e-9654-c0e1cd376abc","claim_matchers":{"repository":"^DataDog/terraform-provider-wif-acceptance-nonexistent$","sub":"repo:DataDog/terraform-provider-wif-acceptance-nonexistent:ref:refs/heads/main"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 124.994167ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/cloud_auth/github/persona_mapping/deb4b9f0-14c5-486d-bb3d-4667e56bb868
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 156.362375ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_auth/github/persona_mapping/deb4b9f0-14c5-486d-bb3d-4667e56bb868
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 49
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Not Found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 114.279583ms

@@ -16,14 +16,15 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-// githubOidcReplayAccountIdentifier is the caller recorded in the cassette. It is only
-// used when replaying: the API requires the caller's permissions to be a superset of
-// the mapped account's, which is guaranteed by mapping the caller to itself, so the
-// live and record paths resolve the caller through datadog_current_user instead. A
-// data source cannot be used when replaying because the cassette predates it and holds
-// no current_user interaction, and this literal cannot be used live because the
-// recorded user does not exist in other orgs. Keep it in sync with the cassette.
-const githubOidcReplayAccountIdentifier = "tf-testacccurrentuserdatasource-local@example.com"
+// githubOidcReplayAccountIdentifier is the identity the persona mapping resolves to
+// in the cassette. The live and record paths resolve the caller through
+// datadog_current_user: the API requires the caller's permissions to be a superset of
+// the mapped account's, which mapping the caller to itself guarantees. After
+// recording, the cassette is scrubbed — the current_user interactions are removed
+// and the recorded account identifiers are replaced with this synthetic handle — so
+// the recording identity never lands in the repository. The literal cannot be used
+// live; keep it in sync with the account_identifier recorded in the cassette.
+const githubOidcReplayAccountIdentifier = "tf-github-oidc-replay-user@example.com"
 
 const (
 	// The sub owner must be a GitHub organization Datadog controls: a live
