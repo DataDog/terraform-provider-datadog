@@ -67,7 +67,12 @@ func TestAccDatadogSyntheticsPrivateLocation_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsPrivateLocation_Updated(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
+	if !isReplaying() {
+		log.Println("Skipping private locations tests in non replaying mode")
+		return
+	}
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	frameworkProvider := providers.frameworkProvider
 	var createdConfig string
@@ -102,7 +107,12 @@ func TestAccDatadogSyntheticsPrivateLocation_Updated(t *testing.T) {
 // Imported locations have no config: the API only returns it during creation.
 // Updating an imported location must preserve that null value after apply.
 func TestAccDatadogSyntheticsPrivateLocation_ImportThenUpdate(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
+	if !isReplaying() {
+		log.Println("Skipping private locations tests in non replaying mode")
+		return
+	}
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	privateLocationName := uniqueEntityName(ctx, t)
 	frameworkProvider := providers.frameworkProvider
