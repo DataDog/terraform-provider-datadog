@@ -36,6 +36,10 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	//Datadog API config.HTTPClient
 	config := common.NewConfiguration()
 
+	config.SetUnstableOperationEnabled("v2.CreateRUMOperation", true)
+	config.SetUnstableOperationEnabled("v2.GetRUMOperation", true)
+	config.SetUnstableOperationEnabled("v2.UpdateRUMOperation", true)
+	config.SetUnstableOperationEnabled("v2.DeleteRUMOperation", true)
 	config.SetUnstableOperationEnabled("v2.CreateOpenAPI", true)
 	config.SetUnstableOperationEnabled("v2.UpdateOpenAPI", true)
 	config.SetUnstableOperationEnabled("v2.GetOpenAPI", true)
