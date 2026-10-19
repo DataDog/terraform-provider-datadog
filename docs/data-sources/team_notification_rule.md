@@ -34,6 +34,7 @@ data "datadog_team_notification_rule" "example" {
 - `id` (String) The ID of this resource.
 - `ms_teams` (Block, Read-only) The MS Teams notification settings. (see [below for nested schema](#nestedblock--ms_teams))
 - `pagerduty` (Block, Read-only) The PagerDuty notification settings. (see [below for nested schema](#nestedblock--pagerduty))
+- `servicenow` (Block, Read-only) The ServiceNow notification settings. (see [below for nested schema](#nestedblock--servicenow))
 - `slack` (Block, Read-only) The Slack notification settings. (see [below for nested schema](#nestedblock--slack))
 
 <a id="nestedblock--email"></a>
@@ -42,6 +43,7 @@ data "datadog_team_notification_rule" "example" {
 Read-Only:
 
 - `enabled` (Boolean) Flag indicating whether email notifications should be sent
+- `recipient_email` (String) Email address notifications are sent to instead of all team members
 
 
 <a id="nestedblock--ms_teams"></a>
@@ -58,6 +60,14 @@ Read-Only:
 Read-Only:
 
 - `service_name` (String) PagerDuty service name
+
+
+<a id="nestedblock--servicenow"></a>
+### Nested Schema for `servicenow`
+
+Read-Only:
+
+- `templates` (List of String) ServiceNow template handle names
 
 
 <a id="nestedblock--slack"></a>

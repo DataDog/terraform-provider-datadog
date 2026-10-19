@@ -13,6 +13,7 @@ API_CLIENT_VERSION?=master
 LOCAL_PACKAGE="github.com/terraform-providers/terraform-provider-datadog"
 GO?=go
 
+
 default: build
 
 build: fmtcheck

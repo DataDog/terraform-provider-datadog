@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -51,6 +52,7 @@ type teamRuleActionModel struct {
 	Teams            *teamsMessageModel              `tfsdk:"send_teams_message"`
 	Workflow         *triggerWorkflowAutomationModel `tfsdk:"trigger_workflow_automation"`
 	EscalationPolicy *escalationPolicyActionModel    `tfsdk:"escalation_policy"`
+	RerouteToTeam    *rerouteToTeamActionModel       `tfsdk:"reroute_to_team"`
 }
 
 type slackMessageModel struct {
@@ -66,6 +68,10 @@ type teamsMessageModel struct {
 
 type triggerWorkflowAutomationModel struct {
 	Handle types.String `tfsdk:"handle"`
+}
+
+type rerouteToTeamActionModel struct {
+	DestinationTeamId types.String `tfsdk:"destination_team_id"`
 }
 
 type escalationPolicyActionModel struct {
@@ -96,11 +102,13 @@ func (m *onCallTeamRoutingRulesModel) Validate() diag.Diagnostics {
 		}
 
 		hasEscalationPolicyAction := false
+		hasRerouteAction := false
+		var rerouteIncompatiblePaths []path.Path
 
 		for actionIdx, action := range rule.Actions {
 			actionPath := root.AtName("action").AtListIndex(actionIdx)
-			if action.Teams == nil && action.Slack == nil && action.Workflow == nil && action.EscalationPolicy == nil {
-				diags.AddAttributeError(actionPath, "missing actions", "action must specify one of send_slack_message, send_teams_message, trigger_workflow_automation, or escalation_policy")
+			if action.Teams == nil && action.Slack == nil && action.Workflow == nil && action.EscalationPolicy == nil && action.RerouteToTeam == nil {
+				diags.AddAttributeError(actionPath, "missing actions", "action must specify one of send_slack_message, send_teams_message, trigger_workflow_automation, escalation_policy, or reroute_to_team")
 			}
 			if action.Teams != nil {
 				teamsPath := actionPath.AtName("send_teams_message")
@@ -128,6 +136,17 @@ func (m *onCallTeamRoutingRulesModel) Validate() diag.Diagnostics {
 				if action.Workflow.Handle.IsNull() {
 					diags.AddAttributeError(workflowPath, "missing handle", "handle is required")
 				}
+				rerouteIncompatiblePaths = append(rerouteIncompatiblePaths, workflowPath)
+			}
+			if action.RerouteToTeam != nil {
+				reroutePath := actionPath.AtName("reroute_to_team")
+				if hasRerouteAction {
+					diags.AddAttributeError(reroutePath, "duplicate reroute_to_team action", "at most one reroute_to_team action is allowed per rule")
+				}
+				hasRerouteAction = true
+				if action.RerouteToTeam.DestinationTeamId.IsNull() {
+					diags.AddAttributeError(reroutePath, "missing destination_team_id", "destination_team_id is required")
+				}
 			}
 			if action.EscalationPolicy != nil {
 				escalationPolicyPath := actionPath.AtName("escalation_policy")
@@ -135,6 +154,7 @@ func (m *onCallTeamRoutingRulesModel) Validate() diag.Diagnostics {
 					diags.AddAttributeError(escalationPolicyPath, "duplicate escalation_policy action", "at most one escalation_policy action is allowed per rule")
 				}
 				hasEscalationPolicyAction = true
+				rerouteIncompatiblePaths = append(rerouteIncompatiblePaths, escalationPolicyPath)
 				if action.EscalationPolicy.PolicyId.IsNull() {
 					diags.AddAttributeError(escalationPolicyPath, "missing policy_id", "policy_id is required")
 				}
@@ -150,6 +170,15 @@ func (m *onCallTeamRoutingRulesModel) Validate() diag.Diagnostics {
 						diags.AddAttributeError(supportHoursPath, "conflicting time restriction configuration", "cannot combine the rule-level `time_restrictions` block with `support_hours` on an `escalation_policy` action in the same rule. Use one or the other.")
 					}
 				}
+			}
+		}
+
+		if hasRerouteAction {
+			if !rule.EscalationPolicy.IsNull() {
+				rerouteIncompatiblePaths = append(rerouteIncompatiblePaths, root.AtName("escalation_policy"))
+			}
+			for _, p := range rerouteIncompatiblePaths {
+				diags.AddAttributeError(p, "incompatible action with reroute_to_team", "a rule with a `reroute_to_team` action can only be combined with `send_slack_message` or `send_teams_message` actions.")
 			}
 		}
 
@@ -301,6 +330,16 @@ func (r *onCallTeamRoutingRulesResource) Schema(_ context.Context, _ resource.Sc
 											"handle": schema.StringAttribute{
 												Optional:    true,
 												Description: "The handle of the Workflow Automation to trigger.",
+											},
+										},
+									},
+									"reroute_to_team": schema.SingleNestedBlock{
+										Description: "Reroutes the page to another team's routing rules. Can only be combined with `send_slack_message` or `send_teams_message` actions in the same rule.",
+										Attributes: map[string]schema.Attribute{
+											"destination_team_id": schema.StringAttribute{
+												Optional:    true,
+												Description: "ID of the team to reroute the page to.",
+												Validators:  []validator.String{uuidValidator},
 											},
 										},
 									},
@@ -603,6 +642,12 @@ func (r *onCallTeamRoutingRulesResource) stateFromResponse(resp *datadogV2.TeamR
 						Handle: types.StringValue(action.TriggerWorkflowAutomationAction.Handle),
 					},
 				})
+			} else if action.RoutingRuleRerouteToTeamAction != nil {
+				stateActions = append(stateActions, &teamRuleActionModel{
+					RerouteToTeam: &rerouteToTeamActionModel{
+						DestinationTeamId: types.StringValue(action.RoutingRuleRerouteToTeamAction.DestinationTeamId.String()),
+					},
+				})
 			} else if action.RoutingRuleEscalationPolicyAction != nil {
 				ep := action.RoutingRuleEscalationPolicyAction
 				responseEscalationAction = &escalationPolicyActionModel{
@@ -691,11 +736,14 @@ func (r *onCallTeamRoutingRulesResource) teamRoutingRulesRequestFromModel(state 
 			if plannedAction.EscalationPolicy != nil {
 				configured++
 			}
+			if plannedAction.RerouteToTeam != nil {
+				configured++
+			}
 			if configured > 1 {
 				diags.AddAttributeError(
 					rulePath.AtName("action").AtListIndex(actionIndex),
 					"action can only have one configuration",
-					"only one of `send_slack_message`, `send_teams_message`, `trigger_workflow_automation`, `escalation_policy` is allowed per action. Consider adding a separate `action` block.")
+					"only one of `send_slack_message`, `send_teams_message`, `trigger_workflow_automation`, `escalation_policy`, `reroute_to_team` is allowed per action. Consider adding a separate `action` block.")
 				return nil, diags
 			}
 			if plannedAction.Teams != nil {
@@ -744,6 +792,17 @@ func (r *onCallTeamRoutingRulesResource) teamRoutingRulesRequestFromModel(state 
 					epAction.SupportHours = sh
 				}
 				action.RoutingRuleEscalationPolicyAction = epAction
+			}
+			if plannedAction.RerouteToTeam != nil {
+				destinationTeamId, err := uuid.Parse(plannedAction.RerouteToTeam.DestinationTeamId.ValueString())
+				if err != nil {
+					diags.AddAttributeError(
+						rulePath.AtName("action").AtListIndex(actionIndex).AtName("reroute_to_team").AtName("destination_team_id"),
+						"invalid destination_team_id",
+						err.Error())
+					return nil, diags
+				}
+				action.RoutingRuleRerouteToTeamAction = datadogV2.NewRoutingRuleRerouteToTeamAction(destinationTeamId, datadogV2.ROUTINGRULEREROUTETOTEAMACTIONTYPE_REROUTE_TO_TEAM)
 			}
 			actions = append(actions, action)
 		}
