@@ -19,8 +19,11 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
     query = "tags.service:test"
     action {
       send_slack_message {
-        workspace = "workspace"
-        channel   = "channel"
+        workspace           = "workspace"
+        channel             = "channel"
+        include_description = true
+        include_source      = true
+        mirror_replies      = true
       }
     }
     time_restrictions {
@@ -185,6 +188,9 @@ Optional:
 Optional:
 
 - `channel` (String) Slack channel ID.
+- `include_description` (Boolean) Whether to include the page description in the Slack message. Defaults to `false`.
+- `include_source` (Boolean) Whether to include the page source in the Slack message. Defaults to `false`.
+- `mirror_replies` (Boolean) Whether to mirror replies in the Slack thread to the page timeline. Defaults to `false`.
 - `workspace` (String) Slack workspace ID.
 
 
