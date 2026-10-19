@@ -299,6 +299,7 @@ func resourceDatadogMetricTagConfigurationCreate(ctx context.Context, d *schema.
 	// delete becomes visible; 30s ceiling with the SDK's built-in backoff.
 	var response datadogV2.MetricTagConfigurationResponse
 	var httpResponse *http.Response
+	defer apiInstances.InvalidateMetricTagReadCaches()
 	err = retry.RetryContext(ctx, 30*time.Second, func() *retry.RetryError {
 		response, httpResponse, err = apiInstances.GetMetricsApiV2().CreateTagConfiguration(auth, metricName, *ddObject)
 		return createTagConfigurationRetryError(metricName, err, httpResponse)
@@ -315,6 +316,10 @@ func resourceDatadogMetricTagConfigurationCreate(ctx context.Context, d *schema.
 }
 
 func updateMetricTagConfigurationState(d *schema.ResourceData, metricTagConfiguration *datadogV2.MetricTagConfiguration) diag.Diagnostics {
+	return updateMetricTagConfigurationStateWithAggregations(d, metricTagConfiguration, false)
+}
+
+func updateMetricTagConfigurationStateWithAggregations(d *schema.ResourceData, metricTagConfiguration *datadogV2.MetricTagConfiguration, preserveAggregations bool) diag.Diagnostics {
 	if attributes, ok := metricTagConfiguration.GetAttributesOk(); ok {
 		if metricType, ok := attributes.GetMetricTypeOk(); ok {
 			if err := d.Set("metric_type", metricType); err != nil {
@@ -324,7 +329,7 @@ func updateMetricTagConfigurationState(d *schema.ResourceData, metricTagConfigur
 				if err := d.Set("include_percentiles", attributes.GetIncludePercentiles()); err != nil {
 					return diag.FromErr(err)
 				}
-			} else {
+			} else if !preserveAggregations {
 				aggregationsMapArray := make([]map[string]interface{}, 0)
 				if aggregationsArray, ok := attributes.GetAggregationsOk(); ok {
 					for _, aggregation := range *aggregationsArray {
@@ -366,6 +371,14 @@ func resourceDatadogMetricTagConfigurationRead(ctx context.Context, d *schema.Re
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
+
+	// Imports need the single-resource response to populate legacy computed fields.
+	if _, initialized := d.GetOk("metric_type"); initialized {
+		if config, ok := apiInstances.CachedMetricTagConfiguration(auth, d.Id()); ok {
+			// Bulk aggregations differ from the legacy endpoint and are deprecated.
+			return updateMetricTagConfigurationStateWithAggregations(d, config, true)
+		}
+	}
 
 	metricName := d.Id()
 	metricTagConfigurationResponse, httpresp, err := apiInstances.GetMetricsApiV2().ListTagConfigurationByName(auth, metricName)
@@ -420,6 +433,7 @@ func resourceDatadogMetricTagConfigurationUpdate(ctx context.Context, d *schema.
 	ddObject := datadogV2.NewMetricTagConfigurationUpdateRequestWithDefaults()
 	ddObject.SetData(*resultMetricTagConfigurationUpdateData)
 
+	defer apiInstances.InvalidateMetricTagReadCaches()
 	response, _, err := apiInstances.GetMetricsApiV2().UpdateTagConfiguration(auth, metricName, *ddObject)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating MetricTagConfiguration")
@@ -438,6 +452,7 @@ func resourceDatadogMetricTagConfigurationDelete(ctx context.Context, d *schema.
 	var err error
 
 	metricName := d.Id()
+	defer apiInstances.InvalidateMetricTagReadCaches()
 	httpResponse, err := apiInstances.GetMetricsApiV2().DeleteTagConfiguration(auth, metricName)
 
 	if err != nil {
