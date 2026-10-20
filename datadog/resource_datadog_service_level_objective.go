@@ -59,10 +59,11 @@ func getTimeseriesQuerySchema() *schema.Schema {
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
 										"data_source": {
-											Type:        schema.TypeString,
-											Optional:    true,
-											Default:     "metrics",
-											Description: "The data source for metrics queries.",
+											Type:             schema.TypeString,
+											Optional:         true,
+											Default:          "metrics",
+											ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionMetricDataSourceFromValue),
+											Description:      "The data source for metrics queries.",
 										},
 										"query": {
 											Type:        schema.TypeString,
@@ -333,10 +334,11 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 														Elem: &schema.Resource{
 															Schema: map[string]*schema.Schema{
 																"data_source": {
-																	Type:        schema.TypeString,
-																	Optional:    true,
-																	Default:     "metrics",
-																	Description: "The data source for metrics queries.",
+																	Type:             schema.TypeString,
+																	Optional:         true,
+																	Default:          "metrics",
+																	ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionMetricDataSourceFromValue),
+																	Description:      "The data source for metrics queries.",
 																},
 																"query": {
 																	Type:        schema.TypeString,
@@ -413,7 +415,7 @@ func resourceDatadogServiceLevelObjectiveCustomizeDiff(ctx context.Context, diff
 	return nil
 }
 
-func buildSLOTimeSliceQueryStruct(d []interface{}) *datadogV1.SLOTimeSliceQuery {
+func buildSLOTimeSliceQueryStruct(d []interface{}) (*datadogV1.SLOTimeSliceQuery, error) {
 	// only use the first defined query
 	ret := datadogV1.NewSLOTimeSliceQueryWithDefaults()
 	ret.Formulas = make([]datadogV1.SLOFormula, 0)
@@ -438,7 +440,10 @@ func buildSLOTimeSliceQueryStruct(d []interface{}) *datadogV1.SLOTimeSliceQuery 
 							name := rawMetricQuery["name"].(string)
 							query := rawMetricQuery["query"].(string)
 							rawDataSource := rawMetricQuery["data_source"].(string)
-							dataSource, _ := datadogV1.NewFormulaAndFunctionMetricDataSourceFromValue(rawDataSource)
+							dataSource, err := datadogV1.NewFormulaAndFunctionMetricDataSourceFromValue(rawDataSource)
+							if err != nil {
+								return nil, err
+							}
 							ret.Queries = append(ret.Queries,
 								datadogV1.FormulaAndFunctionMetricQueryDefinitionAsSLODataSourceQueryDefinition(
 									datadogV1.NewFormulaAndFunctionMetricQueryDefinition(*dataSource, name, query)))
@@ -448,16 +453,16 @@ func buildSLOTimeSliceQueryStruct(d []interface{}) *datadogV1.SLOTimeSliceQuery 
 			}
 		}
 	}
-	return ret
+	return ret, nil
 }
 
-func buildSLOCountSpec(d []interface{}) *datadogV1.SLOCountSpec {
+func buildSLOCountSpec(d []interface{}) (*datadogV1.SLOCountSpec, error) {
 	if len(d) == 0 {
-		return nil
+		return nil, nil
 	}
 	raw, ok := d[0].(map[string]interface{})
 	if !ok {
-		return nil
+		return nil, nil
 	}
 
 	goodEventsFormula := *datadogV1.NewSLOFormula(raw["good_events_formula"].(string))
@@ -472,7 +477,10 @@ func buildSLOCountSpec(d []interface{}) *datadogV1.SLOCountSpec {
 					name := rawMetricQuery["name"].(string)
 					query := rawMetricQuery["query"].(string)
 					rawDataSource := rawMetricQuery["data_source"].(string)
-					dataSource, _ := datadogV1.NewFormulaAndFunctionMetricDataSourceFromValue(rawDataSource)
+					dataSource, err := datadogV1.NewFormulaAndFunctionMetricDataSourceFromValue(rawDataSource)
+					if err != nil {
+						return nil, err
+					}
 					queries = append(queries,
 						datadogV1.FormulaAndFunctionMetricQueryDefinitionAsSLODataSourceQueryDefinition(
 							datadogV1.NewFormulaAndFunctionMetricQueryDefinition(*dataSource, name, query)))
@@ -485,15 +493,15 @@ func buildSLOCountSpec(d []interface{}) *datadogV1.SLOCountSpec {
 		totalEventsFormula := *datadogV1.NewSLOFormula(totalEventsFormulaStr)
 		totalCountDef := datadogV1.NewSLOCountDefinitionWithTotalEventsFormula(goodEventsFormula, queries, totalEventsFormula)
 		countDef := datadogV1.SLOCountDefinitionWithTotalEventsFormulaAsSLOCountDefinition(totalCountDef)
-		return datadogV1.NewSLOCountSpec(countDef)
+		return datadogV1.NewSLOCountSpec(countDef), nil
 	} else if badEventsFormulaStr, ok := raw["bad_events_formula"].(string); ok && badEventsFormulaStr != "" {
 		badEventsFormula := *datadogV1.NewSLOFormula(badEventsFormulaStr)
 		badCountDef := datadogV1.NewSLOCountDefinitionWithBadEventsFormula(badEventsFormula, goodEventsFormula, queries)
 		countDef := datadogV1.SLOCountDefinitionWithBadEventsFormulaAsSLOCountDefinition(badCountDef)
-		return datadogV1.NewSLOCountSpec(countDef)
+		return datadogV1.NewSLOCountSpec(countDef), nil
 	}
 
-	return nil
+	return nil, nil
 }
 
 func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.ServiceLevelObjective, *datadogV1.ServiceLevelObjectiveRequest, error) {
@@ -545,7 +553,11 @@ func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.Servi
 					if len(rawTimeSliceConds) >= 1 {
 						rawTimeSliceCond := rawTimeSliceConds[0].(map[string]interface{})
 						if rawTimeSliceQuery, ok := rawTimeSliceCond["query"].([]interface{}); ok {
-							sliSpec.SLOTimeSliceSpec.TimeSlice.SetQuery(*buildSLOTimeSliceQueryStruct(rawTimeSliceQuery))
+							timeSliceQuery, err := buildSLOTimeSliceQueryStruct(rawTimeSliceQuery)
+							if err != nil {
+								return nil, nil, err
+							}
+							sliSpec.SLOTimeSliceSpec.TimeSlice.SetQuery(*timeSliceQuery)
 						}
 						if comparator, ok := rawTimeSliceCond["comparator"].(string); ok {
 							sliSpec.SLOTimeSliceSpec.TimeSlice.SetComparator(datadogV1.SLOTimeSliceComparator(comparator))
@@ -577,7 +589,10 @@ func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.Servi
 				if rawCountList, ok := rawSliSpec["count"]; ok {
 					rawCount := rawCountList.([]interface{})
 					if len(rawCount) >= 1 {
-						countSpec := buildSLOCountSpec(rawCount)
+						countSpec, err := buildSLOCountSpec(rawCount)
+						if err != nil {
+							return nil, nil, err
+						}
 						sliSpec := datadogV1.SLOCountSpecAsSLOSliSpec(countSpec)
 						slo.SetSliSpecification(sliSpec)
 						slor.SetSliSpecification(sliSpec)
