@@ -5378,6 +5378,8 @@ func flattenGenerateMetricsV2Processor(ctx context.Context, src *datadogV2.Obser
 
 func expandGenerateMetricsV2ProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *generateMetricsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineGenerateMetricsV2ProcessorWithDefaults()
+	// enabled_metric_aggregation is not exposed in the schema yet; leave it unset so the API default applies.
+	proc.EnabledMetricAggregation = nil
 	common.ApplyTo(proc)
 
 	var metrics []datadogV2.ObservabilityPipelineGeneratedMetric
