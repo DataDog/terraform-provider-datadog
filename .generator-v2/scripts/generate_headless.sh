@@ -304,14 +304,6 @@ SLICE="$(python3 "$SLICER" "${slice_args[@]}")" || die "slice_and_annotate.py fa
 [ -f "$SLICE" ] || die "slicer reported no output slice"
 jlog "slice: $SLICE"
 
-# Derive the service tag for the CI-enforced [prefix] if not supplied.
-if [ -z "$SERVICE" ]; then
-  SERVICE="$(python3 "$SCRIPT_DIR/registry_services.py" "$SLICE" --artifact "$ARTIFACT_NAME")" \
-    || die "could not derive artifact service from tag registries"
-fi
-[ -n "$SERVICE" ] || die "could not derive --service from the spec tag; pass --service explicitly"
-jlog "service prefix: [$SERVICE]"
-
 # ---------------------------------------------------------------------------
 # Stage: generate — run tfgen, capture the RunReport
 # ---------------------------------------------------------------------------
@@ -349,6 +341,18 @@ fi
 WARN_DIAGS="$(jq -c '[.artifacts[]?.diagnostics[]? | select(.severity!="error")]' "$REPORT")"
 SPEC_HASH="$(jq -r '.spec_hash // empty' "$REPORT")"
 jlog "gate passed (failed=0, no error diagnostics)"
+
+# Resolve the prefix only after tfgen has validated names and registry metadata.
+# An explicit --service still takes precedence.
+if [ -z "$SERVICE" ]; then
+  SERVICE="$(jq -r --arg name "$ARTIFACT_NAME" '
+    [.artifacts[]? | select(.kind == "data_source" and .name == $name)
+     | .tag // empty | select(length > 0)][0] // empty
+    | ascii_downcase | gsub(" "; "-")
+  ' "$REPORT")" || die "could not read artifact service from the generator report"
+fi
+[ -n "$SERVICE" ] || die "generator report has no owning tag; pass --service explicitly"
+jlog "service prefix: [$SERVICE]"
 
 # ---------------------------------------------------------------------------
 # Stage: docs + build

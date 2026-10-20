@@ -990,6 +990,9 @@ type RunSummary struct {
 
 // ArtifactReportEntry is the per-artifact section of a RunReport.
 type ArtifactReportEntry struct {
+	// Tag is the owning registry's OpenAPI tag, not the backing endpoint's tag.
+	// It is absent for retired artifacts whose declaration no longer exists.
+	Tag         string         `json:"tag,omitempty"`
 	Name        string         `json:"name"`
 	Kind        ArtifactKind   `json:"kind"`
 	Status      ArtifactStatus `json:"status"`

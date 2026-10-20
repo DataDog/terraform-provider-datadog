@@ -42,6 +42,9 @@ func TestMissingPrimaryFailsOnlyItsArtifact(t *testing.T) {
 			}
 			var healthy, failed bool
 			for _, entry := range report.Artifacts {
+				if entry.Tag != "Things" {
+					t.Errorf("missing owning tag on successful or failed artifact: %+v", entry)
+				}
 				if entry.Name == "thing" && entry.Status == model.ArtifactStatusCreated {
 					healthy = true
 				}

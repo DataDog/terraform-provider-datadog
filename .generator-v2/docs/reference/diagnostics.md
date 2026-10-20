@@ -23,7 +23,11 @@ is never byte-for-byte reproducible; compare fields, not files.
 > [../README.md](../README.md).
 
 Artifact entries carry a `name`, `kind`, `status`, output `path`, and any
-`diagnostics`. The statuses are `created`, `updated`, `unchanged`, `skipped`,
+`diagnostics`. Entries for declared artifacts also carry `tag`, the name of the
+owning registry's OpenAPI tag. This can differ from the backing endpoint's tag.
+Generation scripts use the resolved name and tag from this report for PR service
+prefixes. Retired artifacts have no declaration and omit `tag`; their prefix
+falls back to `core`. The statuses are `created`, `updated`, `unchanged`, `skipped`,
 `failed`, `retired`, `retire_blocked`, and `registration_retired`. Note that each
 generated *file* is its own entry, so the summary counts report entries rather than
 logical artifacts. One data source producing a source file and an example counts as
