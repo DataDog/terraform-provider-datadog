@@ -306,15 +306,8 @@ jlog "slice: $SLICE"
 
 # Derive the service tag for the CI-enforced [prefix] if not supplied.
 if [ -z "$SERVICE" ]; then
-  SERVICE="$(python3 - "$SLICE" <<'PY' || true
-import sys, yaml
-spec = yaml.safe_load(open(sys.argv[1]))
-for tag in spec.get("tags", []):
-    if tag.get("x-datadog-tf-generator"):
-        print(tag["name"].lower().replace(" ", "-"))
-        sys.exit(0)
-PY
-)"
+  SERVICE="$(python3 "$SCRIPT_DIR/registry_services.py" "$SLICE" --artifact "$ARTIFACT_NAME")" \
+    || die "could not derive artifact service from tag registries"
 fi
 [ -n "$SERVICE" ] || die "could not derive --service from the spec tag; pass --service explicitly"
 jlog "service prefix: [$SERVICE]"

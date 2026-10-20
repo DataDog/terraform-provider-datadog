@@ -225,28 +225,8 @@ make tfgen-build >&2 || die "make tfgen-build failed"
 # Name -> service tag, for the CI-enforced [prefix] in each PR title. Built from
 # the tag registries; retired artifacts (no longer annotated) fall back to "core".
 NAME_SERVICE_FILE="$(mktemp -t tfgen-batch-svc.XXXXXX)"
-python3 - "$SPEC" >"$NAME_SERVICE_FILE" <<'PY' || true
-import sys, yaml
-spec = yaml.safe_load(open(sys.argv[1]))
-# Match the registry's deliberately small pluralization rules.
-def pluralize(name):
-    prefix, separator, word = name.rpartition("_")
-    head = prefix + separator
-    if word.endswith("y") and len(word) > 1 and word[-2] not in "aeiou":
-        return head + word[:-1] + "ies"
-    return head + word + ("es" if word.endswith(("s", "x", "z", "ch", "sh")) else "s")
-
-for tag in spec.get("tags") or []:
-    for family, declaration in (tag.get("x-datadog-tf-generator") or {}).items():
-        if declaration.get("skip"):
-            continue
-        for kind in ("resource", "datasource_singular", "datasource_list"):
-            block = declaration.get(kind)
-            if block is None or block.get("skip"):
-                continue
-            name = block.get("artifact_name") or (pluralize(family) if kind == "datasource_list" else family)
-            print(f"{name}\t{tag['name'].lower().replace(' ', '-')}")
-PY
+python3 "$SCRIPT_DIR/registry_services.py" "$SPEC" >"$NAME_SERVICE_FILE" \
+  || die "could not derive artifact services from tag registries"
 
 service_for() {
   local name="$1" svc
