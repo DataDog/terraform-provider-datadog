@@ -6,14 +6,6 @@ paths:
   /things:
     post:
       operationId: CreateThing
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: thing
-        group:
-          create: CreateThing
-          read: GetThing
-          update: UpdateThing
-          delete: DeleteThing
       requestBody:
         content:
           application/json:
@@ -69,3 +61,14 @@ paths:
       responses:
         '204':
           description: no content
+tags:
+- name: Terraform
+  x-datadog-tf-generator:
+    thing:
+      resource:
+        artifact_name: thing
+        group:
+          create: CreateThing
+          read: GetThing
+          update: UpdateThing
+          delete: DeleteThing

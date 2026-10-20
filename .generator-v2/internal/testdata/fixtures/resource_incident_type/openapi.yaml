@@ -46,7 +46,6 @@ servers:
 security:
 - apiKeyAuth: []
   appKeyAuth: []
-tags:
 - description: Manage incident response, as well as associated attachments, metadata, and todos. See the
     [Incident Management page](https://docs.datadoghq.com/service_management/incident_management/) for
     more information.
@@ -203,15 +202,6 @@ paths:
       x-unstable: '**Note**: This endpoint is in public beta.
 
         If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).'
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: incident_type
-        tf_description: Provides a Datadog incident type resource.
-        group:
-          read: GetIncidentType
-          create: CreateIncidentType
-          update: UpdateIncidentType
-          delete: DeleteIncidentType
     patch:
       description: Update an incident type.
       operationId: UpdateIncidentType
@@ -708,3 +698,16 @@ components:
       name: DD-APPLICATION-KEY
       type: apiKey
       x-env-name: DD_APP_KEY
+tags:
+- description: Manage incident response, as well as associated attachments, metadata, and todos. See the [Incident Management page](https://docs.datadoghq.com/service_management/incident_management/) for more information.
+  name: Incidents
+  x-datadog-tf-generator:
+    incident_type:
+      resource:
+        artifact_name: incident_type
+        tf_description: Provides a Datadog incident type resource.
+        group:
+          read: GetIncidentType
+          create: CreateIncidentType
+          update: UpdateIncidentType
+          delete: DeleteIncidentType

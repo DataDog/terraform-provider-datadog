@@ -7,12 +7,6 @@ paths:
     post:
       operationId: CreateCollidingOneOf
       tags: [OneOf]
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: colliding_oneof
-        group:
-          create: CreateCollidingOneOf
-          read: CreateCollidingOneOf
       requestBody:
         required: true
         content:
@@ -33,12 +27,6 @@ paths:
     post:
       operationId: CreateHealthyAfterCollision
       tags: [OneOf]
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: healthy_after_collision
-        group:
-          create: CreateHealthyAfterCollision
-          read: CreateHealthyAfterCollision
       requestBody:
         required: true
         content:
@@ -60,3 +48,20 @@ components:
       properties:
         beta:
           type: boolean
+tags:
+- name: OneOf
+  x-datadog-tf-generator:
+    colliding_oneof:
+      resource:
+        artifact_name: colliding_oneof
+        group:
+          create: CreateCollidingOneOf
+          read: CreateCollidingOneOf
+          delete: CreateCollidingOneOf
+    healthy_after_collision:
+      resource:
+        artifact_name: healthy_after_collision
+        group:
+          create: CreateHealthyAfterCollision
+          read: CreateHealthyAfterCollision
+          delete: CreateHealthyAfterCollision

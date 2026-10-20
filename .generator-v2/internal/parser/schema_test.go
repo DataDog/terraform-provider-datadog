@@ -31,6 +31,18 @@ func opByID(spec *model.Spec, operationId string) *model.Operation {
 	return nil
 }
 
+// artifactOpByID selects the registry-created artifact, not its backing endpoint.
+func artifactOpByID(spec *model.Spec, operationId string) *model.Operation {
+	GinkgoHelper()
+	for _, op := range spec.Operations {
+		if op.OperationId == operationId && op.Tracking != nil {
+			return op
+		}
+	}
+	Fail("artifact operation " + operationId + " not found")
+	return nil
+}
+
 // schemaBoolField lets this test-first task describe metadata that T154 has
 // not added to model.Schema yet. Keeping the assertion reflective means the
 // suite compiles in the intended red state and fails specifically by naming
@@ -201,12 +213,12 @@ var _ = Describe("NormalizeSchemas field carrying", func() {
 		Expect(op.RequestSchema.Description).To(Equal("The creation timestamp of the resource."))
 	})
 
-	It("carries Sensitive=true when the schema node carries x-datadog-tf-generator.sensitive:true", func() {
+	It("ignores legacy schema sensitivity annotations", func() {
 		op := opByID(spec, "CreateSensitive")
-		Expect(op.RequestSchema.Sensitive).To(BeTrue())
+		Expect(op.RequestSchema.Sensitive).To(BeFalse())
 	})
 
-	It("defaults x-secret and writeOnly fields to Sensitive while honoring an explicit annotation", func() {
+	It("derives sensitivity from x-secret and writeOnly without legacy overrides", func() {
 		properties := opByID(spec, "CreateSensitive").RequestSchema.Properties
 
 		Expect(properties["x_secret"].Sensitive).To(BeTrue())
@@ -214,7 +226,7 @@ var _ = Describe("NormalizeSchemas field carrying", func() {
 		Expect(properties["x_secret_false"].Sensitive).To(BeFalse())
 		Expect(properties["x_secret_malformed"].Sensitive).To(BeFalse())
 		Expect(properties["write_only_false"].Sensitive).To(BeFalse())
-		Expect(properties["explicit_false"].Sensitive).To(BeFalse())
+		Expect(properties["explicit_false"].Sensitive).To(BeTrue())
 		Expect(properties["plain"].Sensitive).To(BeFalse())
 	})
 
@@ -227,9 +239,9 @@ var _ = Describe("NormalizeSchemas field carrying", func() {
 		},
 		Entry("writeOnly:true selects write-only handling", "write_only", true, true),
 		Entry("x-secret:true affects redaction only", "x_secret", false, true),
-		Entry("tracking sensitive:true affects redaction only", "tracking_sensitive", false, true),
-		Entry("tracking sensitive:false cannot disable writeOnly", "explicit_false", true, false),
-		Entry("tracking sensitive:false still overrides x-secret sensitivity", "x_secret_explicit_false", false, false),
+		Entry("legacy sensitive:true is ignored", "tracking_sensitive", false, false),
+		Entry("tracking sensitive:false cannot disable writeOnly", "explicit_false", true, true),
+		Entry("legacy sensitive:false cannot override x-secret", "x_secret_explicit_false", false, true),
 		Entry("x-secret:false selects neither behavior", "x_secret_false", false, false),
 		Entry("malformed x-secret selects neither behavior", "x_secret_malformed", false, false),
 		Entry("writeOnly:false selects neither behavior", "write_only_false", false, false),
@@ -651,7 +663,7 @@ var _ = Describe("NormalizeSchemas allOf normalization", func() {
 	BeforeEach(func() {
 		spec := loadSpecMust("schema_normalize_allof.yaml")
 		request = opByID(spec, "CreateAllOfCases").RequestSchema
-		list = opByID(spec, "ListAllOfItems")
+		list = artifactOpByID(spec, "ListAllOfItems")
 		get = opByID(spec, "GetAllOfItem")
 	})
 
@@ -766,7 +778,7 @@ var _ = Describe("NormalizeSchemas allOf normalization", func() {
 	})
 
 	It("loads the whole spec but fails only the artifact containing an unsupported composition", func() {
-		bad := opByID(loadSpecMust("schema_normalize_allof.yaml"), "ListBadAllOfItems")
+		bad := artifactOpByID(loadSpecMust("schema_normalize_allof.yaml"), "ListBadAllOfItems")
 		_, err := model.BuildArtifact(bad)
 		var unsupported *model.UnsupportedKindError
 		Expect(errors.As(err, &unsupported)).To(BeTrue(), "expected *UnsupportedKindError, got %T: %v", err, err)

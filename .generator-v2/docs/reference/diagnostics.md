@@ -23,7 +23,11 @@ is never byte-for-byte reproducible; compare fields, not files.
 > [../README.md](../README.md).
 
 Artifact entries carry a `name`, `kind`, `status`, output `path`, and any
-`diagnostics`. The statuses are `created`, `updated`, `unchanged`, `skipped`,
+`diagnostics`. Entries for declared artifacts also carry `tag`, the name of the
+owning registry's OpenAPI tag. This can differ from the backing endpoint's tag.
+Generation scripts use the resolved name and tag from this report for PR service
+prefixes. Retired artifacts have no declaration and omit `tag`; their prefix
+falls back to `core`. The statuses are `created`, `updated`, `unchanged`, `skipped`,
 `failed`, `retired`, `retire_blocked`, and `registration_retired`. Note that each
 generated *file* is its own entry, so the summary counts report entries rather than
 logical artifacts. One data source producing a source file and an example counts as
@@ -51,8 +55,8 @@ This distinction matters more than the exit code.
 
 These stop specification loading, so nothing is generated.
 
-**`invalid tracking-field extension on <METHOD> <path>`**: an annotation does not
-validate against the schema. The commonest cause is a field that is not in the
+**`tag "<tag>": parser: invalid family registry ...`**: a tag registry does not
+validate against the schema, or a tag/family is declared more than once. The commonest cause is a field that is not in the
 contract, because `additionalProperties` is `false`:
 
 ```
@@ -67,11 +71,17 @@ accepted fields are in [annotation.md](annotation.md).
 passed `--max-depth` (default 20). Raising the limit is rarely the answer; a cycle
 usually indicates a schema that cannot be projected into a Terraform schema at all.
 
-**Duplicate artifact claim**: two operations claim the same
+**Duplicate artifact claim**: two family blocks claim the same
 `(artifact_kind, artifact_name)`. Names must be unique within a kind; a resource and
 a data source may share one.
 
 ## Per-artifact failures
+
+**`group.<role> names operationId "<id>", which the document does not declare`**:
+an artifact's primary operation is missing. The diagnostic identifies the tag,
+family, and block. Fix the operation ID in that block's group. Other artifacts
+continue generating and the failed declaration appears in the report. Any
+artifact failure prevents `--reconcile` from retiring orphans in that run.
 
 **`<kind> kind "<k>" is not representable`**: a schema shape the model cannot
 express. Check it against the supported-shapes list in [scope.md](scope.md); `anyOf`
@@ -100,6 +110,11 @@ a hand-written artifact already occupies that path. Intentional takeover needs
 | `info` | Read it. Dropped audit fields and envelope flattening are normal, but this is also how the generator tells you a field you may care about is gone. |
 | `warning` | Investigate before merging. Generation continued, but something needs a human. An unexamined warning is the most common route for a real problem to reach merge. |
 | `error` | The artifact failed. |
+
+Legacy operation declarations and schema-level `sensitive` overrides produce
+warnings on stderr and remain ignored. Move declarations to tag families; use
+`writeOnly` or `x-secret` for sensitivity. Warnings name the operation or source
+line without printing annotation values.
 
 CLI-level warnings, such as the pinned SDK being unavailable for corroboration,
 go to stderr rather than attaching to an artifact entry, so check the run log as
