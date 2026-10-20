@@ -180,6 +180,9 @@ func (r *rumOperationJourneyLinkResource) isLinkConfirmed(operationID, journeyID
 		if err != nil {
 			return false, err
 		}
+		if err := utils.CheckForUnparsed(resp); err != nil {
+			return false, err
+		}
 		for _, link := range resp.GetData() {
 			attributes := link.GetAttributes()
 			if attributes.GetFeatureId() == journeyID {
