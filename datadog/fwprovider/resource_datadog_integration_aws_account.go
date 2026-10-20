@@ -417,7 +417,9 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 						Optional: true,
 						Computed: true,
 						Description: "Enable Service Quotas collection. Incurs CloudWatch `GetMetricData` " +
-							"charges on your AWS bill. Requires `resources_config.extended_collection` to be set to `true`.",
+							"charges on your AWS bill. Requires `resources_config.extended_collection` to be set to `true`, " +
+							"and the Datadog AWS integration role must allow `servicequotas:ListServices`, " +
+							"`servicequotas:ListServiceQuotas` and `servicequotas:ListRequestedServiceQuotaChangeHistory`.",
 						Default: booldefault.StaticBool(false),
 					},
 					"enabled": schema.BoolAttribute{
