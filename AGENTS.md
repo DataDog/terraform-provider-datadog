@@ -94,5 +94,6 @@ HCL↔JSON serialization, schema registration, and docs generation.
 - Reusable field groups in `field_groups.go` are named after their OpenAPI schema counterparts (e.g. `logQueryDefinitionFields` → `LogQueryDefinition`).
 - HCL uses **singular** block names; JSON uses **plural** keys. Set `JSONKey` to bridge the gap.
 - `OmitEmpty: true` for optional fields; cassette recordings are the ground truth.
+  Exception: the cassette matcher treats an absent key as equal to `false` or `0`, so it cannot verify bool and number fields. If the legacy `datadog_dashboard` builder always sends the value, use `OmitEmpty: false` (bools), `PreserveZero: true` (numbers where `0` is meaningful) or the legacy `Default`, and cover it in `TestDashboardV2MatchesLegacyPayloadForZeroValues`.
 - `TypeOneOf` handles discriminated `oneOf` unions — see `widgetNumberFormatFields.unit` for an example.
 - Widget specs registered in `allWidgetSpecs` get schema and state converters generated automatically — no changes to `fwprovider/resource_datadog_dashboard_v2.go` needed.
