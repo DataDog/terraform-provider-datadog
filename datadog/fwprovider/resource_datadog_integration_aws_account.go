@@ -106,6 +106,7 @@ type metricsConfigModel struct {
 	CollectCloudwatchAlarms types.Bool                `tfsdk:"collect_cloudwatch_alarms"`
 	CollectCustomMetrics    types.Bool                `tfsdk:"collect_custom_metrics"`
 	Enabled                 types.Bool                `tfsdk:"enabled"`
+	ServiceQuotasCollection types.Bool                `tfsdk:"service_quotas_collection"`
 	TagFilters              []*metricsTagFiltersModel `tfsdk:"tag_filters"`
 	MetricNameFilters       []*metricNameFilterModel  `tfsdk:"metric_name_filters"`
 	NamespaceFilters        *namespaceFiltersModel    `tfsdk:"namespace_filters"`
@@ -417,6 +418,13 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 						Computed:    true,
 						Description: "Enable AWS metrics collection",
 						Default:     booldefault.StaticBool(true),
+					},
+					"service_quotas_collection": schema.BoolAttribute{
+						Optional: true,
+						Computed: true,
+						Description: "Enable Service Quotas collection. Incurs CloudWatch `GetMetricData` " +
+							"charges on your AWS bill. Requires `resources_config.extended_collection` to be set to `true`.",
+						Default: booldefault.StaticBool(false),
 					},
 				},
 				Blocks: map[string]schema.Block{
@@ -763,6 +771,9 @@ func buildStateMetricsConfig(ctx context.Context, attributes datadogV2.AWSAccoun
 	if enabled, ok := metricsConfig.GetEnabledOk(); ok {
 		metricsConfigTf.Enabled = types.BoolValue(*enabled)
 	}
+	if serviceQuotasCollection, ok := metricsConfig.GetServiceQuotasCollectionOk(); ok {
+		metricsConfigTf.ServiceQuotasCollection = types.BoolValue(*serviceQuotasCollection)
+	}
 
 	if tagFilters, ok := metricsConfig.GetTagFiltersOk(); ok && len(*tagFilters) > 0 {
 		for _, tagFiltersDd := range *tagFilters {
@@ -1008,6 +1019,9 @@ func buildRequestMetricsConfig(ctx context.Context, state *integrationAwsAccount
 	}
 	if !state.MetricsConfig.Enabled.IsNull() {
 		metricsConfig.SetEnabled(state.MetricsConfig.Enabled.ValueBool())
+	}
+	if !state.MetricsConfig.ServiceQuotasCollection.IsNull() {
+		metricsConfig.SetServiceQuotasCollection(state.MetricsConfig.ServiceQuotasCollection.ValueBool())
 	}
 
 	tagFilters := []datadogV2.AWSNamespaceTagFilter{}

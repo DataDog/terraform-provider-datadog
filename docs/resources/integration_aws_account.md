@@ -54,6 +54,7 @@ resource "datadog_integration_aws_account" "foo" {
     collect_cloudwatch_alarms = true
     collect_custom_metrics    = true
     enabled                   = true
+    service_quotas_collection = true
     namespace_filters {
       exclude_only = ["AWS/SQS", "AWS/ElasticMapReduce", "AWS/Usage"]
     }
@@ -211,6 +212,7 @@ Optional:
 - `collect_custom_metrics` (Boolean) Enable custom metrics collection Defaults to `false`.
 - `enabled` (Boolean) Enable AWS metrics collection Defaults to `true`.
 - `metric_name_filters` (Block List) AWS CloudWatch metric name filters. Each filter applies to a single namespace and must define exactly one of `include_only` or `exclude_only`. (see [below for nested schema](#nestedblock--metrics_config--metric_name_filters))
+- `service_quotas_collection` (Boolean) Enable Service Quotas collection. Incurs CloudWatch `GetMetricData` charges on your AWS bill. Requires `resources_config.extended_collection` to be set to `true`. Defaults to `false`.
 - `tag_filters` (Block List) AWS Metrics Collection tag filters list. The array of custom AWS resource tags (in the form `key:value`) defines a filter that Datadog uses when collecting metrics from a specified service. Wildcards, such as `?` (match a single character) and `*` (match multiple characters), and exclusion using `!` before the tag are supported. For EC2, only hosts that match one of the defined tags will be imported into Datadog. The rest will be ignored. For example, `env:production,instance-type:c?.*,!region:us-east-1`. (see [below for nested schema](#nestedblock--metrics_config--tag_filters))
 
 <a id="nestedblock--metrics_config--namespace_filters"></a>

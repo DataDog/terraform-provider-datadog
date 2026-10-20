@@ -30,6 +30,7 @@ resource "datadog_integration_aws_account" "foo" {
     collect_cloudwatch_alarms = true
     collect_custom_metrics    = true
     enabled                   = true
+    service_quotas_collection = true
     namespace_filters {
       exclude_only = ["AWS/SQS", "AWS/ElasticMapReduce", "AWS/Usage"]
     }
