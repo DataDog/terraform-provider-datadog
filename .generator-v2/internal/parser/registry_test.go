@@ -418,3 +418,21 @@ func TestTagRegistries(t *testing.T) {
 		decodeRegistryErr(t, "thing: {skip: false}")
 	})
 }
+
+func TestRegistryErrorPreservesAddress(t *testing.T) {
+	family := strings.Repeat("a", maxArtifactNameLen)
+	_, err := decodeTagRegistries([]*base.Tag{{
+		Name:       "Things",
+		Extensions: tagExt(t, DefaultTrackingFieldName, family+": {datasource_list: {group: {read: ListThings}}}"),
+	}}, DefaultTrackingFieldName)
+	var registryErr *RegistryError
+	if !errors.As(err, &registryErr) {
+		t.Fatalf("expected RegistryError, got %v", err)
+	}
+	if registryErr.Tag != "Things" || registryErr.Family != family || registryErr.Block != BlockDatasourceList {
+		t.Fatalf("lost registry address: %+v", registryErr)
+	}
+	if strings.Count(err.Error(), "parser: invalid family registry") != 1 {
+		t.Fatalf("nested registry error: %v", err)
+	}
+}

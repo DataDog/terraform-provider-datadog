@@ -3,6 +3,7 @@ package parser
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"sort"
 	"strings"
@@ -312,6 +313,12 @@ func decodeTagRegistries(tags []*base.Tag, extensionName string) ([]*model.Track
 		seenTags[tag.Name] = true
 		metas, err := DecodeRegistry(tag.Extensions, extensionName)
 		if err != nil {
+			var registryErr *RegistryError
+			if errors.As(err, &registryErr) {
+				withTag := *registryErr
+				withTag.Tag = tag.Name
+				return nil, &withTag
+			}
 			return nil, &RegistryError{Tag: tag.Name, Cause: err}
 		}
 		// DecodeRegistry has already checked that this is a mapping with string keys.
