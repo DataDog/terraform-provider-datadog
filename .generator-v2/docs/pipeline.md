@@ -14,7 +14,7 @@ appeared, or you are trying to find the run log.
 
 | Repository | Owns |
 |---|---|
-| `DataDog/datadog-api-spec` | The operations and their annotations; building the compiled Terraform spec; **triggering generation** |
+| `DataDog/datadog-api-spec` | The operations and tag-scoped family registries; building the compiled Terraform spec; **triggering generation** |
 | `DataDog/openapi-transformer` | Validating `x-datadog-tf-generator` and carrying it into the compiled spec |
 | `DataDog/terraform-provider-datadog` | tfgen itself, the generated code, tests, examples, and documentation |
 

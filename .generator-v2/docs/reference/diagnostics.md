@@ -51,8 +51,8 @@ This distinction matters more than the exit code.
 
 These stop specification loading, so nothing is generated.
 
-**`invalid tracking-field extension on <METHOD> <path>`**: an annotation does not
-validate against the schema. The commonest cause is a field that is not in the
+**`tag "<tag>": parser: invalid family registry ...`**: a tag registry does not
+validate against the schema, or a tag/family is declared more than once. The commonest cause is a field that is not in the
 contract, because `additionalProperties` is `false`:
 
 ```
@@ -67,11 +67,17 @@ accepted fields are in [annotation.md](annotation.md).
 passed `--max-depth` (default 20). Raising the limit is rarely the answer; a cycle
 usually indicates a schema that cannot be projected into a Terraform schema at all.
 
-**Duplicate artifact claim**: two operations claim the same
+**Duplicate artifact claim**: two family blocks claim the same
 `(artifact_kind, artifact_name)`. Names must be unique within a kind; a resource and
 a data source may share one.
 
 ## Per-artifact failures
+
+**`group.<role> names operationId "<id>", which the document does not declare`**:
+an artifact's primary operation is missing. The diagnostic identifies the tag,
+family, and block. Fix the operation ID in that block's group. Other artifacts
+continue generating and the failed declaration appears in the report. Any
+artifact failure prevents `--reconcile` from retiring orphans in that run.
 
 **`<kind> kind "<k>" is not representable`**: a schema shape the model cannot
 express. Check it against the supported-shapes list in [scope.md](scope.md); `anyOf`

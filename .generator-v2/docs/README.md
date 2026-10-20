@@ -30,8 +30,8 @@ source, registered in the provider and shipped like any other.
 ## How it works
 
 ```
-OpenAPI operation (datadog-api-spec)
-  │  annotated with x-datadog-tf-generator
+OpenAPI tag (datadog-api-spec)
+  │  declares x-datadog-tf-generator families and their operation groups
   ▼
 openapi-transformer ─── validates the annotation, carries it into the compiled spec
   │
