@@ -129,6 +129,17 @@ def main(argv=None):
         ext["overwrites"] = args.overwrites
     ext["group"] = group
 
+    # This command emits exactly one artifact. Tags are copied whole by the
+    # slicer, so discard existing declarations before adding the requested one;
+    # their operations are outside this slice. Preserve registry vendor metadata.
+    for tag in spec.get("tags") or []:
+        registry = tag.pop("x-datadog-tf-generator", None)
+        if isinstance(registry, dict):
+            metadata = {key: value for key, value in registry.items()
+                        if isinstance(key, str) and key.lower().startswith("x-")}
+            if metadata:
+                tag["x-datadog-tf-generator"] = metadata
+
     # Declare the artifact on its owning tag before slicing.
     anchor_op = group.get("read") or group.get("search")
     apath, amethod = op_index[anchor_op]
