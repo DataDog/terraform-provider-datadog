@@ -90,6 +90,7 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 		Source:     path,
 		Components: v3doc.Model.Components,
 		Hash:       specHash(data),
+		Warnings:   legacySchemaWarnings(doc.GetSpecInfo().RootNode, cfg.trackingFieldName),
 	}
 
 	// Cycles found here are not errors: the walker's stack check stops the
@@ -113,6 +114,11 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 					continue
 				}
 				upperMethod := strings.ToUpper(method)
+				if op.Extensions != nil && op.Extensions.GetOrZero(cfg.trackingFieldName) != nil {
+					spec.Warnings = append(spec.Warnings, fmt.Sprintf(
+						"legacy operation %s at %s %s is ignored; declare artifacts in tags[].%s instead",
+						cfg.trackingFieldName, upperMethod, opPath, cfg.trackingFieldName))
+				}
 				mop := &model.Operation{
 					Path:        opPath,
 					Method:      upperMethod,

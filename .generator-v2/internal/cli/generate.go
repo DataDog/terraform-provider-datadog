@@ -83,6 +83,9 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 				if err != nil {
 					return err
 				}
+				for _, warning := range spec.Warnings {
+					cmd.PrintErrln("tfgen: warning:", warning)
+				}
 				runReport.SpecHash = spec.Hash
 
 				filter := parseInclude(include)

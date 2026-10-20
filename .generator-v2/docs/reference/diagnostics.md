@@ -107,6 +107,11 @@ a hand-written artifact already occupies that path. Intentional takeover needs
 | `warning` | Investigate before merging. Generation continued, but something needs a human. An unexamined warning is the most common route for a real problem to reach merge. |
 | `error` | The artifact failed. |
 
+Legacy operation declarations and schema-level `sensitive` overrides produce
+warnings on stderr and remain ignored. Move declarations to tag families; use
+`writeOnly` or `x-secret` for sensitivity. Warnings name the operation or source
+line without printing annotation values.
+
 CLI-level warnings, such as the pinned SDK being unavailable for corroboration,
 go to stderr rather than attaching to an artifact entry, so check the run log as
 well as the report.

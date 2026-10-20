@@ -175,6 +175,8 @@ type Spec struct {
 	Components *v3.Components
 	// Hash is the lowercase hex SHA-256 of the spec source
 	Hash string
+	// Warnings describe ignored legacy annotations without enabling them.
+	Warnings []string
 }
 
 // Operation is a single OpenAPI operation, tagged with whether it is in scope
