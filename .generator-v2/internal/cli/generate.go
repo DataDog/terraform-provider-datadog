@@ -132,6 +132,13 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 						continue
 					}
 
+					if op.GenerationError != nil {
+						runReport.Artifacts = append(runReport.Artifacts, failEntry(model.ArtifactReportEntry{
+							Name: op.Tracking.ArtifactName,
+							Kind: op.Tracking.ArtifactKind,
+						}, op.GenerationError))
+						continue
+					}
 					if op.Tracking.ArtifactKind == model.ArtifactKindResource {
 						entry, reg := generateResourceArtifact(op, outputRoot, check, accessors, sdkBindings)
 						runReport.Artifacts = append(runReport.Artifacts, entry)

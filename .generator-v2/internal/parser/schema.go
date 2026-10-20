@@ -107,7 +107,7 @@ func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operatio
 		return n.fillOperation(target, rawOps[target])
 	}
 	for _, op := range spec.Operations {
-		if op == nil || op.Tracking == nil {
+		if op == nil || op.Tracking == nil || op.GenerationError != nil {
 			continue
 		}
 		if err := fill(op); err != nil {

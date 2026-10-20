@@ -181,8 +181,15 @@ func fanOutRegistry(spec *model.Spec, rawOps map[*model.Operation]*v3.Operation,
 		role, operationId := primaryOperation(meta)
 		primary := byID[operationId]
 		if primary == nil {
-			return &RegistryError{Family: meta.Family, Block: meta.Block, Cause: fmt.Errorf(
-				"group.%s names operationId %q, which the document does not declare", role, operationId)}
+			spec.Operations = append(spec.Operations, &model.Operation{
+				OperationId: operationId,
+				Tracking:    meta,
+				Synthetic:   true,
+				Tag:         meta.Tag,
+				GenerationError: &RegistryError{Tag: meta.Tag, Family: meta.Family, Block: meta.Block, Cause: fmt.Errorf(
+					"group.%s names operationId %q, which the document does not declare", role, operationId)},
+			})
+			continue
 		}
 		clone := &model.Operation{
 			Path:        primary.Path,

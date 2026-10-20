@@ -198,6 +198,10 @@ type Operation struct {
 	// operationId index a group resolves through: two entries under one id would
 	// otherwise let a group resolve to the clone.
 	Synthetic bool
+	// GenerationError retains an artifact-local loading failure. The declaration
+	// remains in the spec so generation reports it and reconciliation cannot
+	// mistake the failed artifact for an orphan.
+	GenerationError error
 	// Unstable records that the operation declares x-unstable. Only presence is
 	// kept; the extension's value is just a human-readable beta notice.
 	Unstable bool

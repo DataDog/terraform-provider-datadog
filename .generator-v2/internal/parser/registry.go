@@ -332,6 +332,9 @@ func decodeTagRegistries(tags []*base.Tag, extensionName string) ([]*model.Track
 			}
 			seenFamilies[family] = tag.Name
 		}
+		for _, meta := range metas {
+			meta.Tag = tag.Name
+		}
 		all = append(all, metas...)
 	}
 	// Preserve output order if authors reorder tags in the source document.

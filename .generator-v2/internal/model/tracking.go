@@ -8,6 +8,7 @@ type TrackingFieldMetadata struct {
 	// "datasource_list"). They exist so a diagnostic can quote the address the author
 	// actually wrote instead of a path the registry never mentions, and are not
 	// serialized: they say where the annotation lives, not what it declares.
+	Tag    string `json:"-"`
 	Family string `json:"-"`
 	Block  string `json:"-"`
 	// ArtifactKind selects resource (full CRUD) vs data_source (read-only).
