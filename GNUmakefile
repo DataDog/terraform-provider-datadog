@@ -108,7 +108,7 @@ tfgen-build:
 
 # Run the tfgen module's unit tests
 tfgen-test:
-	cd .generator-v2 && $(GO) test ./internal/... ./cmd/tfgen/... -race -cover
+	cd .generator-v2 && $(GO) test ./internal/... ./cmd/tfgen/... ./cmd/tfgen-docs/... -race -cover
 	@echo "tfgen tests passed"
 
 # Render the generated half of .generator-v2/docs/: the CLI reference (from the

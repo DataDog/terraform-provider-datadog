@@ -37,6 +37,30 @@ func (s *schemaDoc) renderBody(b *strings.Builder) {
 		b.WriteString(desc + "\n\n")
 	}
 
+	if names, ok := s.root["propertyNames"].(map[string]any); ok {
+		b.WriteString("## Registry map\n\n")
+		if minimum, ok := s.root["minProperties"]; ok {
+			fmt.Fprintf(b, "The registry must contain at least %v entry.\n\n", minimum)
+		}
+		if desc := str(names["description"]); desc != "" {
+			b.WriteString(desc + "\n\n")
+		}
+		if alternatives, ok := names["anyOf"].([]any); ok {
+			b.WriteString("Each key must satisfy one of these rules:\n\n")
+			for _, alternative := range alternatives {
+				if rule, ok := alternative.(map[string]any); ok {
+					fmt.Fprintf(b, "- %s\n", s.notesFor(rule))
+				}
+			}
+			b.WriteString("\n")
+		} else {
+			b.WriteString(s.notesFor(names) + "\n\n")
+		}
+		if values, ok := s.root["additionalProperties"].(map[string]any); ok {
+			fmt.Fprintf(b, "Family values use %s. Vendor metadata values are unrestricted.\n\n", s.typeOf(values))
+		}
+	}
+
 	if _, ok := s.root["properties"]; ok {
 		b.WriteString("## Fields\n\n")
 		s.writeObject(b, s.root, 2)
@@ -70,7 +94,7 @@ func (s *schemaDoc) renderBody(b *strings.Builder) {
 	sort.Strings(names)
 
 	b.WriteString("## Component shapes\n\n")
-	b.WriteString("Referenced by the fields above.\n\n")
+	b.WriteString("Reusable definitions for the registry and its fields.\n\n")
 	for _, n := range names {
 		def, _ := s.defs[n].(map[string]any)
 		if def == nil {
@@ -95,8 +119,22 @@ func (s *schemaDoc) renderBody(b *strings.Builder) {
 
 		if _, ok := def["properties"]; ok {
 			s.writeObject(b, def, 3)
+		} else {
+			fmt.Fprintf(b, "Type: %s.\n\n", s.typeOf(def))
+			if value, ok := def["default"]; ok {
+				fmt.Fprintf(b, "Default: `%v`.\n\n", value)
+			}
+			constraints := make(map[string]any, len(def))
+			for key, value := range def {
+				if key != "description" {
+					constraints[key] = value
+				}
+			}
+			if notes := s.notesFor(constraints); notes != "" {
+				b.WriteString(notes + "\n\n")
+			}
+			s.writeChoices(b, def)
 		}
-		s.writeChoices(b, def)
 	}
 }
 
@@ -135,12 +173,18 @@ func (s *schemaDoc) writeObject(b *strings.Builder, obj map[string]any, level in
 		if req[n] {
 			required = "**yes**"
 		}
+		details := p
+		if ref := str(p["$ref"]); strings.HasPrefix(ref, "#/$defs/") {
+			if target, ok := s.defs[refName(ref)].(map[string]any); ok {
+				details = target
+			}
+		}
 		def := "none"
-		if d, ok := p["default"]; ok {
+		if d, ok := details["default"]; ok {
 			def = "`" + fmt.Sprintf("%v", d) + "`"
 		}
 		fmt.Fprintf(b, "| `%s` | %s | %s | %s | %s |\n",
-			n, s.typeOf(p), required, def, s.notesFor(p))
+			n, s.typeOf(p), required, def, s.notesFor(details))
 	}
 	b.WriteString("\n")
 
@@ -184,7 +228,16 @@ func (s *schemaDoc) writeChoices(b *strings.Builder, obj map[string]any) {
 				continue
 			}
 			if req := requiredList(m); len(req) > 0 {
-				clauses = append(clauses, strings.Join(backtickAll(req), " + "))
+				fields := backtickAll(req)
+				props, _ := m["properties"].(map[string]any)
+				for i, name := range req {
+					if field, ok := props[name].(map[string]any); ok {
+						if value, ok := field["const"]; ok {
+							fields[i] += fmt.Sprintf(" = `%v`", value)
+						}
+					}
+				}
+				clauses = append(clauses, strings.Join(fields, " + "))
 			}
 		}
 		if len(clauses) == 0 {
@@ -288,7 +341,7 @@ func anchor(s string) string {
 	s = strings.ToLower(s)
 	s = strings.ReplaceAll(s, " ", "-")
 	return strings.Map(func(r rune) rune {
-		if (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') || r == '-' {
+		if (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') || r == '-' || r == '_' {
 			return r
 		}
 		return -1

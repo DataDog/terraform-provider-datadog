@@ -20,9 +20,22 @@ For how to choose between the shapes, see [Generating an artifact](../generating
 
 OpenAPI 3.0 vendor extension on an OpenAPI Tag Object: a registry of Terraform artifact families, keyed by family name. Each family declares up to three artifacts — a resource, a singular data source and a list data source — over the same API. The block key replaces artifact_kind and cardinality, and the map key is the artifact name, so neither can be repeated inconsistently across a family. Registry keys beginning with x- (case-insensitive) are vendor metadata: their values are unrestricted, they declare no artifacts, and they are excluded from duplicate-family checks.
 
+## Registry map
+
+The registry must contain at least 1 entry.
+
+Family name: the Terraform-facing artifact name without the 'datadog_' prefix, lowercase snake_case. It names the resource and the singular data source verbatim (they are separate Terraform namespaces); the list data source pluralizes it unless its block overrides artifact_name.
+
+Each key must satisfy one of these rules:
+
+- Pattern: `^[xX]-`.
+- Pattern: `^[a-z][a-z0-9_]*$`. Min length 1, max length 64.
+
+Family values use [family](#family). Vendor metadata values are unrestricted.
+
 ## Component shapes
 
-Referenced by the fields above.
+Reusable definitions for the registry and its fields.
 
 ### artifact_name
 
@@ -30,11 +43,19 @@ Overrides the name this one artifact takes, when it must differ from the family 
 
 `$defs.artifact_name`
 
+Type: `string`.
+
+Pattern: `^[a-z][a-z0-9_]*$`. Min length 1, max length 64.
+
 ### block_skip
 
 Explicitly disable generation for this one artifact while keeping the block in place. Equivalent to deleting the block, but documented in-spec so reviewers see the choice.
 
 `$defs.block_skip`
+
+Type: `boolean`.
+
+Default: `false`.
 
 ### datasource_list
 
@@ -44,12 +65,12 @@ A read-only Terraform data source returning a filtered list. Its name defaults t
 
 | Field | Type | Required | Default | Notes |
 |---|---|---|---|---|
-| `artifact_name` | [artifact_name](#artifactname) | no | none |  |
+| `artifact_name` | [artifact_name](#artifact_name) | no | none | Overrides the name this one artifact takes, when it must differ from the family name. Omit it in a resource or singular data-source block to take the family name verbatim; omit it in a list block to take the pluralized family name. Set it in a list block when the derived plural reads badly — a mass noun inflects regularly, so 'metadata' derives 'metadatas' — or when it would collide with a name already in use. Pattern: `^[a-z][a-z0-9_]*$`. Min length 1, max length 64. |
 | `group` | `object` | **yes** | none | The list endpoint backing this data source, by operationId. A list data source names it in read, not search: search is the singular-only shape that resolves one match out of a list. |
-| `id_strategy` | [id_strategy](#idstrategy) | no | none |  |
-| `overwrites` | [overwrites](#overwrites) | no | none |  |
-| `skip` | [block_skip](#blockskip) | no | none |  |
-| `tf_description` | [tf_description](#tfdescription) | no | none |  |
+| `id_strategy` | [id_strategy](#id_strategy) | no | `data.id` | How to derive the Terraform ID from the API response. One of: `data.id`, `data.attributes.id`, `data.attributes.uuid`, `header.location`. |
+| `overwrites` | [overwrites](#overwrites) | no | none | The constructor function of the hand-written artifact this generated one replaces, e.g. "NewDatadogTeamDataSource" or "NewIncidentTypeResource". When set, the generated file overwrites the hand-written one in place (they share the same output path), the generator removes that constructor from the FrameworkProvider Datasources or Resources slice as appropriate, and registers the generated constructor in generatedDatasources or generatedResources. It is also what authorizes the takeover: without it the generator refuses to overwrite a file carrying no generated-code marker, so a name collision fails loudly instead of silently replacing hand-written code. Omit for purely additive generation. Min length 1. |
+| `skip` | [block_skip](#block_skip) | no | `false` | Explicitly disable generation for this one artifact while keeping the block in place. Equivalent to deleting the block, but documented in-spec so reviewers see the choice. |
+| `tf_description` | [tf_description](#tf_description) | no | none | Human-readable doc string for this artifact's top-level Terraform schema (the description shown in `terraform docs`). Optional; when omitted the generated Description is left empty. Convention: "Use this data source to retrieve information about an existing <thing>." Min length 1. |
 
 Unknown fields are rejected. A field absent from this table is not supported: passing one fails the run at parse time.
 
@@ -71,12 +92,12 @@ A read-only Terraform data source resolving exactly one record, by id, by search
 
 | Field | Type | Required | Default | Notes |
 |---|---|---|---|---|
-| `artifact_name` | [artifact_name](#artifactname) | no | none |  |
+| `artifact_name` | [artifact_name](#artifact_name) | no | none | Overrides the name this one artifact takes, when it must differ from the family name. Omit it in a resource or singular data-source block to take the family name verbatim; omit it in a list block to take the pluralized family name. Set it in a list block when the derived plural reads badly — a mass noun inflects regularly, so 'metadata' derives 'metadatas' — or when it would collide with a name already in use. Pattern: `^[a-z][a-z0-9_]*$`. Min length 1, max length 64. |
 | `group` | `object` | **yes** | none | The read endpoints backing this data source, by operationId. At least one of read or search is required. |
-| `id_strategy` | [id_strategy](#idstrategy) | no | none |  |
-| `overwrites` | [overwrites](#overwrites) | no | none |  |
-| `skip` | [block_skip](#blockskip) | no | none |  |
-| `tf_description` | [tf_description](#tfdescription) | no | none |  |
+| `id_strategy` | [id_strategy](#id_strategy) | no | `data.id` | How to derive the Terraform ID from the API response. One of: `data.id`, `data.attributes.id`, `data.attributes.uuid`, `header.location`. |
+| `overwrites` | [overwrites](#overwrites) | no | none | The constructor function of the hand-written artifact this generated one replaces, e.g. "NewDatadogTeamDataSource" or "NewIncidentTypeResource". When set, the generated file overwrites the hand-written one in place (they share the same output path), the generator removes that constructor from the FrameworkProvider Datasources or Resources slice as appropriate, and registers the generated constructor in generatedDatasources or generatedResources. It is also what authorizes the takeover: without it the generator refuses to overwrite a file carrying no generated-code marker, so a name collision fails loudly instead of silently replacing hand-written code. Omit for purely additive generation. Min length 1. |
+| `skip` | [block_skip](#block_skip) | no | `false` | Explicitly disable generation for this one artifact while keeping the block in place. Equivalent to deleting the block, but documented in-spec so reviewers see the choice. |
+| `tf_description` | [tf_description](#tf_description) | no | none | Human-readable doc string for this artifact's top-level Terraform schema (the description shown in `terraform docs`). Optional; when omitted the generated Description is left empty. Convention: "Use this data source to retrieve information about an existing <thing>." Min length 1. |
 
 Unknown fields are rejected. A field absent from this table is not supported: passing one fails the run at parse time.
 
@@ -101,16 +122,14 @@ One artifact family. At least one artifact block must be present, or skip must b
 
 | Field | Type | Required | Default | Notes |
 |---|---|---|---|---|
-| `datasource_list` | [datasource_list](#datasourcelist) | no | none |  |
-| `datasource_singular` | [datasource_singular](#datasourcesingular) | no | none |  |
-| `resource` | [resource](#resource) | no | none |  |
+| `datasource_list` | [datasource_list](#datasource_list) | no | none | A read-only Terraform data source returning a filtered list. Its name defaults to the pluralized family name. |
+| `datasource_singular` | [datasource_singular](#datasource_singular) | no | none | A read-only Terraform data source resolving exactly one record, by id, by search, or by both. |
+| `resource` | [resource](#resource) | no | none | A Terraform resource with a full CRUD lifecycle. |
 | `skip` | `boolean` | no | `false` | Explicitly disable generation for every artifact in this family while keeping the registry entry in place. Equivalent to deleting the entry, but documented in-spec so reviewers see the choice. |
 
 Unknown fields are rejected. A field absent from this table is not supported: passing one fails the run at parse time.
 
-Constraint: at least one of `resource` or `datasource_singular` or `datasource_list` or `skip` must be present.
-
-Constraint: at least one of `resource` or `datasource_singular` or `datasource_list` or `skip` must be present.
+Constraint: at least one of `resource` or `datasource_singular` or `datasource_list` or `skip` = `true` must be present.
 
 ### id_strategy
 
@@ -118,11 +137,21 @@ How to derive the Terraform ID from the API response.
 
 `$defs.id_strategy`
 
+Type: `string`.
+
+Default: `data.id`.
+
+One of: `data.id`, `data.attributes.id`, `data.attributes.uuid`, `header.location`.
+
 ### overwrites
 
 The constructor function of the hand-written artifact this generated one replaces, e.g. "NewDatadogTeamDataSource" or "NewIncidentTypeResource". When set, the generated file overwrites the hand-written one in place (they share the same output path), the generator removes that constructor from the FrameworkProvider Datasources or Resources slice as appropriate, and registers the generated constructor in generatedDatasources or generatedResources. It is also what authorizes the takeover: without it the generator refuses to overwrite a file carrying no generated-code marker, so a name collision fails loudly instead of silently replacing hand-written code. Omit for purely additive generation.
 
 `$defs.overwrites`
+
+Type: `string`.
+
+Min length 1.
 
 ### resource
 
@@ -132,12 +161,12 @@ A Terraform resource with a full CRUD lifecycle.
 
 | Field | Type | Required | Default | Notes |
 |---|---|---|---|---|
-| `artifact_name` | [artifact_name](#artifactname) | no | none |  |
+| `artifact_name` | [artifact_name](#artifact_name) | no | none | Overrides the name this one artifact takes, when it must differ from the family name. Omit it in a resource or singular data-source block to take the family name verbatim; omit it in a list block to take the pluralized family name. Set it in a list block when the derived plural reads badly — a mass noun inflects regularly, so 'metadata' derives 'metadatas' — or when it would collide with a name already in use. Pattern: `^[a-z][a-z0-9_]*$`. Min length 1, max length 64. |
 | `group` | `object` | **yes** | none | The CRUD lifecycle backing this resource, by operationId. Create and read are load-bearing for the schema — without create nothing is Required, without read nothing is Computed — and delete for the lifecycle, so all three are required. |
-| `id_strategy` | [id_strategy](#idstrategy) | no | none |  |
-| `overwrites` | [overwrites](#overwrites) | no | none |  |
-| `skip` | [block_skip](#blockskip) | no | none |  |
-| `tf_description` | [tf_description](#tfdescription) | no | none |  |
+| `id_strategy` | [id_strategy](#id_strategy) | no | `data.id` | How to derive the Terraform ID from the API response. One of: `data.id`, `data.attributes.id`, `data.attributes.uuid`, `header.location`. |
+| `overwrites` | [overwrites](#overwrites) | no | none | The constructor function of the hand-written artifact this generated one replaces, e.g. "NewDatadogTeamDataSource" or "NewIncidentTypeResource". When set, the generated file overwrites the hand-written one in place (they share the same output path), the generator removes that constructor from the FrameworkProvider Datasources or Resources slice as appropriate, and registers the generated constructor in generatedDatasources or generatedResources. It is also what authorizes the takeover: without it the generator refuses to overwrite a file carrying no generated-code marker, so a name collision fails loudly instead of silently replacing hand-written code. Omit for purely additive generation. Min length 1. |
+| `skip` | [block_skip](#block_skip) | no | `false` | Explicitly disable generation for this one artifact while keeping the block in place. Equivalent to deleting the block, but documented in-spec so reviewers see the choice. |
+| `tf_description` | [tf_description](#tf_description) | no | none | Human-readable doc string for this artifact's top-level Terraform schema (the description shown in `terraform docs`). Optional; when omitted the generated Description is left empty. Convention: "Use this data source to retrieve information about an existing <thing>." Min length 1. |
 
 Unknown fields are rejected. A field absent from this table is not supported: passing one fails the run at parse time.
 
@@ -159,4 +188,8 @@ Unknown fields are rejected. A field absent from this table is not supported: pa
 Human-readable doc string for this artifact's top-level Terraform schema (the description shown in `terraform docs`). Optional; when omitted the generated Description is left empty. Convention: "Use this data source to retrieve information about an existing <thing>."
 
 `$defs.tf_description`
+
+Type: `string`.
+
+Min length 1.
 
