@@ -46,8 +46,10 @@ func (r *githubOidcIntakeMappingResource) Schema(_ context.Context, _ resource.S
 	response.Schema = schema.Schema{
 		Description: "Provides a GitHub Actions OIDC intake mapping for Datadog workload identity federation. The mapping allows GitHub Actions workloads whose OIDC tokens match the `claim_matchers` patterns to send telemetry to Datadog intake endpoints. Mappings cannot be updated; changing any attribute replaces the mapping. This resource uses a public beta API and is subject to change.",
 		Attributes: map[string]schema.Attribute{
-			"id":             utils.ResourceIDAttribute(),
-			"claim_matchers": githubOIDCClaimMatchersAttribute(),
+			"id": utils.ResourceIDAttribute(),
+		},
+		Blocks: map[string]schema.Block{
+			"claim_matchers": githubOIDCClaimMatchersBlock(),
 		},
 	}
 }

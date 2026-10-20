@@ -13,7 +13,7 @@ resource "datadog_github_oidc_identity_mapping" "terraform" {
   # canonical value Datadog stores. Using `email` here would work, but Datadog
   # normalizes it to the handle, leaving this attribute import-unstable.
   account_identifier = datadog_service_account.terraform.id
-  claim_matchers = {
+  claim_matchers {
     # The owner in the `sub` prefix must be a literal, not a regex. Replace
     # my-org/terraform with a repository you control: the mapping grants the
     # mapped identity's Datadog access to every workflow that can mint a

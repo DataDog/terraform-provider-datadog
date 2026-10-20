@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -36,10 +37,16 @@ type githubOIDCClaimMatchersModel struct {
 	WorkflowRef          types.String `tfsdk:"workflow_ref"`
 }
 
-// githubOIDCClaimMatchersAttribute returns the claim matchers schema shared by
-// the GitHub OIDC identity and intake mapping resources. Mappings cannot be
-// updated, so every claim pattern forces replacement.
-func githubOIDCClaimMatchersAttribute() schema.SingleNestedAttribute {
+// githubOIDCClaimMatchersBlock returns the claim matchers schema shared by the
+// GitHub OIDC identity and intake mapping resources. It is a block rather than
+// a nested attribute because Terraform core silently drops unknown keys when
+// converting nested attributes to their schema type (hashicorp/terraform#33570):
+// a typo'd claim would plan successfully and reach the API without the intended
+// restriction. Unknown arguments in blocks are rejected at plan time. Blocks
+// cannot be marked Required, so objectvalidator.IsRequired enforces the block's
+// presence instead. Mappings cannot be updated, so every claim pattern forces
+// replacement.
+func githubOIDCClaimMatchersBlock() schema.SingleNestedBlock {
 	attributes := map[string]schema.Attribute{
 		"sub": schema.StringAttribute{
 			Description: "Regular expression matched against the required `sub` claim of the GitHub Actions OIDC token. It must start with the literal `repo:<OWNER>/` prefix; the owner cannot be a regex.",
@@ -69,10 +76,12 @@ func githubOIDCClaimMatchersAttribute() schema.SingleNestedAttribute {
 			},
 		}
 	}
-	return schema.SingleNestedAttribute{
-		Description: "GitHub Actions OIDC claims to match against. Each attribute is a regular expression; `sub` is required and all other claims are optional. A token matches only when all provided patterns match simultaneously (AND semantics).",
+	return schema.SingleNestedBlock{
+		Description: "GitHub Actions OIDC claims to match against. Each argument is a regular expression; `sub` is required and all other claims are optional. A token matches only when all provided patterns match simultaneously (AND semantics).",
 		Attributes:  attributes,
-		Required:    true,
+		Validators: []validator.Object{
+			objectvalidator.IsRequired(),
+		},
 	}
 }
 

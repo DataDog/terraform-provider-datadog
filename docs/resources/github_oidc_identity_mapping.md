@@ -28,7 +28,7 @@ resource "datadog_github_oidc_identity_mapping" "terraform" {
   # canonical value Datadog stores. Using `email` here would work, but Datadog
   # normalizes it to the handle, leaving this attribute import-unstable.
   account_identifier = datadog_service_account.terraform.id
-  claim_matchers = {
+  claim_matchers {
     # The owner in the `sub` prefix must be a literal, not a regex. Replace
     # my-org/terraform with a repository you control: the mapping grants the
     # mapped identity's Datadog access to every workflow that can mint a
@@ -45,14 +45,17 @@ resource "datadog_github_oidc_identity_mapping" "terraform" {
 ### Required
 
 - `account_identifier` (String) The email or handle of the Datadog user or service account that the GitHub workload authenticates as. For a Terraform-managed service account, prefer the stable UUID exported by `datadog_service_account.id`; Datadog accepts it as the service account identifier. Datadog normalizes an email to the account's handle, so the handle form is the only value that survives `terraform import` unchanged — importing a mapping configured by email produces a diff on this attribute, which forces replacement. String length must be at least 1.
-- `claim_matchers` (Attributes) GitHub Actions OIDC claims to match against. Each attribute is a regular expression; `sub` is required and all other claims are optional. A token matches only when all provided patterns match simultaneously (AND semantics). (see [below for nested schema](#nestedatt--claim_matchers))
+
+### Optional
+
+- `claim_matchers` (Block, Optional) GitHub Actions OIDC claims to match against. Each argument is a regular expression; `sub` is required and all other claims are optional. A token matches only when all provided patterns match simultaneously (AND semantics). (see [below for nested schema](#nestedblock--claim_matchers))
 
 ### Read-Only
 
 - `account_uuid` (String) The UUID of the Datadog user or service account resolved from `account_identifier`.
 - `id` (String) The ID of this resource.
 
-<a id="nestedatt--claim_matchers"></a>
+<a id="nestedblock--claim_matchers"></a>
 ### Nested Schema for `claim_matchers`
 
 Required:

@@ -46,7 +46,7 @@ func TestAccGithubOidcIntakeMapping(t *testing.T) {
 func testAccGithubOidcIntakeMappingConfig() string {
 	return fmt.Sprintf(`
 resource "datadog_github_oidc_intake_mapping" "test" {
-  claim_matchers = {
+  claim_matchers {
     sub        = %[1]q
     repository = %[2]q
   }

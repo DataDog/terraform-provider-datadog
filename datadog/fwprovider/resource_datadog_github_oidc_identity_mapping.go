@@ -70,7 +70,9 @@ func (r *githubOidcIdentityMappingResource) Schema(_ context.Context, _ resource
 				Description: "The UUID of the Datadog user or service account resolved from `account_identifier`.",
 				Computed:    true,
 			},
-			"claim_matchers": githubOIDCClaimMatchersAttribute(),
+		},
+		Blocks: map[string]schema.Block{
+			"claim_matchers": githubOIDCClaimMatchersBlock(),
 		},
 	}
 }

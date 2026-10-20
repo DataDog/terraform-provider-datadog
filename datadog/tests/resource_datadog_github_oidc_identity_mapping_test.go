@@ -136,7 +136,7 @@ func testAccGithubOidcIdentityMappingConfigWithIdentity(accountIdentifier, ident
 
 resource "datadog_github_oidc_identity_mapping" "test" {
   account_identifier = %[1]s
-  claim_matchers = {
+  claim_matchers {
     sub        = %[3]q
     repository = %[4]q
   }
