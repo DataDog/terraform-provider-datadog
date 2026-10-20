@@ -1,7 +1,30 @@
-# Proposal 0001: Declare Terraform families on their API tag
+---
+ddoc:
+  confluence_space: "API"
+  confluence_parent: "7291274458"
+---
 
-- **Status:** implemented; tag registries are the only artifact declaration format.
+# 0004: Declare Terraform families on their API tag
+
+For generator maintainers, this record explains the ownership model and rollout
+of the tag-scoped Terraform annotation contract.
+
+- **Date:** 2026-10-20
+
+- **Status:** accepted; provider implementation pending merge in #4376.
 - **Scope:** the `x-datadog-tf-generator` annotation surface. Generated artifact behavior is unchanged.
+
+## Context and decision
+
+An operation can participate in several artifacts, and an artifact can use
+several operations. Keeping the declaration on a single endpoint obscures that
+relationship and requires authors to repeat kind and cardinality fields.
+
+Use each API's existing top-level tag as the owner of a family registry. This
+keeps declarations with the owning team while allowing explicit references to
+operations anywhere in the document. Support one declaration format; do not
+introduce a dual-format compatibility period. The generated
+[annotation reference](../reference/annotation.md) defines the accepted fields.
 
 ## Declaration
 
@@ -100,13 +123,27 @@ operation changed.
 
 ## Migration and validation
 
-Merge transformer and provider support first, in either order. Then move the
-five spec families under their existing tags. The spec merge script needs no
-Terraform-specific root-extension handling.
+The rollout uses an annotation-free transition so the transformer can stop
+accepting the old format before new declarations are introduced:
 
-Tests cover naming, pluralization, skipping, malformed declarations, multiple
-tags, duplicate families/tags, and ignored legacy operation annotations.
-Generation fixtures exercise the tag-scoped format.
+1. Remove the five legacy operation declarations from the spec and allow
+   annotation-free build releases to accumulate. This landed in
+   [datadog-api-spec#7066](https://github.com/ddoghq/datadog-api-spec/pull/7066).
+2. Land transformer support and coordinate deployment of the matching validator.
+   [openapi-transformer#516](https://github.com/DataDog/openapi-transformer/pull/516)
+   is merged; merge status alone does not establish deployment status.
+3. Merge provider support in
+   [terraform-provider-datadog#4376](https://github.com/DataDog/terraform-provider-datadog/pull/4376).
+4. Restore the declarations as tag families through
+   [datadog-api-spec#7039](https://github.com/ddoghq/datadog-api-spec/pull/7039),
+   once both consumers and the validator support the new format.
 
-The migration retains all five families and 17 operation IDs: four integration
-resources are enabled and the datastore list data source remains skipped.
+Historical build assets keep their old annotations. Rebase branches using those
+merge bases onto an annotation-free or migrated baseline before generation.
+
+The restoration preserves four enabled integration resources and the skipped
+datastore list data source. Tests cover naming, pluralization, skipping,
+malformed declarations, duplicate families/tags, metadata, and ignored legacy
+annotations. Fixtures exercise the tag-scoped format. Missing primary operation
+IDs fail their own artifact, appear in the report, and prevent orphan retirement
+for that run.
