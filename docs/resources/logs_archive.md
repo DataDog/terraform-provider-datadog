@@ -36,7 +36,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
 ### Optional
 
 - `azure_archive` (Block List, Max: 1) Definition of an azure archive. (see [below for nested schema](#nestedblock--azure_archive))
-- `compression_method` (String) The compression method for the archive. Valid values are `GZIP`, `ZSTD`. Defaults to `"GZIP"`.
+- `compression_method` (String) The compression method for the archive. Valid values are `GZIP`, `ZSTD`. Defaults to `"ZSTD"`.
 - `gcs_archive` (Block List, Max: 1) Definition of a GCS archive. (see [below for nested schema](#nestedblock--gcs_archive))
 - `include_tags` (Boolean) To store the tags in the archive, set the value `true`. If it is set to `false`, the tags will be dropped when the logs are sent to the archive. Defaults to `false`.
 - `lookup_attributes` (List of String) An array of attributes to use as lookup keys for the archive.
