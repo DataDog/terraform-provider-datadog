@@ -1,0 +1,302 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 399
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"application_id":"9ff07c10-11f9-402c-a9d4-9eca42ef4a64","category":"form_submission","description":"Checkout flow","journey_rum":{"rum_steps":[{"nodes":[{"query":"@view.name:/checkout"}],"type":"start"},{"nodes":[{"query":"@view.name:/checkout/complete"}],"type":"stop"}]},"name":"tf-TestAccRumOperationJourneyLink-local-1792410333","tags":["team:rum"]},"type":"operations"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/operations
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 754
+        uncompressed: false
+        body: '{"data":{"id":"ywt-8xs-z2m","type":"operations","attributes":{"application_id":"9ff07c10-11f9-402c-a9d4-9eca42ef4a64","category":"form_submission","created_at":"2026-10-19T11:45:36.075471Z","created_by":{"UUID":"77a6e659-561a-4627-9b23-66d451c4e7d6","name":"Tim Gallois","email":"tim.gallois@datadoghq.com","handle":"tim.gallois@datadoghq.com"},"description":"Checkout flow","display_name":"tf-TestAccRumOperationJourneyLink-local-1792410333","feature_ids":[],"journey_rum":{"rum_steps":[{"type":"start","nodes":[{"id":"58m-ry4-e74","query":"@view.name:/checkout"}]},{"type":"stop","nodes":[{"id":"nev-e54-x3k","query":"@view.name:/checkout/complete"}]}]},"name":"tf-TestAccRumOperationJourneyLink-local-1792410333","org_id":321813,"tags":["team:rum"]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 1.368476709s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 129
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"feature_id":"tf-test-journey","operation_id":"ywt-8xs-z2m","status":"CONFIRMED"},"type":"strong_links"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/operations/strong_links
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 216
+        uncompressed: false
+        body: '{"data":{"id":"ywt-8xs-z2m:tf-test-journey","type":"strong_links","attributes":{"created_at":"2026-10-19T11:45:37.451061Z","feature_id":"tf-test-journey","operation_id":"ywt-8xs-z2m","status":"CONFIRMED","tags":[]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 110.452791ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/operations/ywt-8xs-z2m
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 754
+        uncompressed: false
+        body: '{"data":{"id":"ywt-8xs-z2m","type":"operations","attributes":{"application_id":"9ff07c10-11f9-402c-a9d4-9eca42ef4a64","category":"form_submission","created_at":"2026-10-19T11:45:36.075471Z","created_by":{"UUID":"77a6e659-561a-4627-9b23-66d451c4e7d6","name":"Tim Gallois","email":"tim.gallois@datadoghq.com","handle":"tim.gallois@datadoghq.com"},"description":"Checkout flow","display_name":"tf-TestAccRumOperationJourneyLink-local-1792410333","feature_ids":[],"journey_rum":{"rum_steps":[{"type":"start","nodes":[{"id":"58m-ry4-e74","query":"@view.name:/checkout"}]},{"type":"stop","nodes":[{"id":"nev-e54-x3k","query":"@view.name:/checkout/complete"}]}]},"name":"tf-TestAccRumOperationJourneyLink-local-1792410333","org_id":321813,"tags":["team:rum"]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 121.052958ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/operations/strong_links?operation_id=ywt-8xs-z2m&page%5Blimit%5D=200&page%5Boffset%5D=0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 362
+        uncompressed: false
+        body: '{"data":[{"id":"ywt-8xs-z2m:tf-test-journey","type":"strong_links","attributes":{"created_at":"2026-10-19T11:45:37.451061Z","feature_id":"tf-test-journey","operation_id":"ywt-8xs-z2m","status":"CONFIRMED","tags":[]}}],"meta":{"page":{"type":"offset_limit","offset":0,"limit":200,"total":1,"first_offset":0,"prev_offset":null,"next_offset":null,"last_offset":0}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 103.117ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/operations/strong_links?operation_id=ywt-8xs-z2m&page%5Blimit%5D=200&page%5Boffset%5D=0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 362
+        uncompressed: false
+        body: '{"data":[{"id":"ywt-8xs-z2m:tf-test-journey","type":"strong_links","attributes":{"created_at":"2026-10-19T11:45:37.451061Z","feature_id":"tf-test-journey","operation_id":"ywt-8xs-z2m","status":"CONFIRMED","tags":[]}}],"meta":{"page":{"type":"offset_limit","offset":0,"limit":200,"total":1,"first_offset":0,"prev_offset":null,"next_offset":null,"last_offset":0}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 109.645208ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/rum/operations/strong_links/ywt-8xs-z2m/tf-test-journey
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 115.890083ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/rum/operations/ywt-8xs-z2m
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 3.538185083s
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/operations/ywt-8xs-z2m
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 44
+        uncompressed: false
+        body: '{"errors":[{"title":"Operation not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 109.054625ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/operations/strong_links?operation_id=ywt-8xs-z2m
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 154
+        uncompressed: false
+        body: '{"data":[],"meta":{"page":{"type":"offset_limit","offset":0,"limit":50,"total":0,"first_offset":0,"prev_offset":null,"next_offset":null,"last_offset":0}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 106.211333ms
