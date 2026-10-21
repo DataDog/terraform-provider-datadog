@@ -1,0 +1,301 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 244
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"claim_matchers":{"repository":"^DataDog/terraform-provider-wif-acceptance-nonexistent$","sub":"repo:DataDog/terraform-provider-wif-acceptance-nonexistent:ref:refs/heads/main"}},"type":"github_oidc_auth_intake_mapping"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_auth/github/intake_mapping
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 287
+        uncompressed: false
+        body: '{"data":{"id":"2757def4-182e-49e1-b46e-764bf512754b","type":"github_oidc_auth_intake_mapping","attributes":{"claim_matchers":{"repository":"^DataDog/terraform-provider-wif-acceptance-nonexistent$","sub":"repo:DataDog/terraform-provider-wif-acceptance-nonexistent:ref:refs/heads/main"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 202.067375ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_auth/github/intake_mapping/2757def4-182e-49e1-b46e-764bf512754b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 287
+        uncompressed: false
+        body: '{"data":{"id":"2757def4-182e-49e1-b46e-764bf512754b","type":"github_oidc_auth_intake_mapping","attributes":{"claim_matchers":{"repository":"^DataDog/terraform-provider-wif-acceptance-nonexistent$","sub":"repo:DataDog/terraform-provider-wif-acceptance-nonexistent:ref:refs/heads/main"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 269.027292ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_auth/github/intake_mapping/2757def4-182e-49e1-b46e-764bf512754b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 287
+        uncompressed: false
+        body: '{"data":{"id":"2757def4-182e-49e1-b46e-764bf512754b","type":"github_oidc_auth_intake_mapping","attributes":{"claim_matchers":{"repository":"^DataDog/terraform-provider-wif-acceptance-nonexistent$","sub":"repo:DataDog/terraform-provider-wif-acceptance-nonexistent:ref:refs/heads/main"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 117.645917ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_auth/github/intake_mapping/2757def4-182e-49e1-b46e-764bf512754b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 287
+        uncompressed: false
+        body: '{"data":{"id":"2757def4-182e-49e1-b46e-764bf512754b","type":"github_oidc_auth_intake_mapping","attributes":{"claim_matchers":{"repository":"^DataDog/terraform-provider-wif-acceptance-nonexistent$","sub":"repo:DataDog/terraform-provider-wif-acceptance-nonexistent:ref:refs/heads/main"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 112.258709ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_auth/github/intake_mapping/2757def4-182e-49e1-b46e-764bf512754b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 287
+        uncompressed: false
+        body: '{"data":{"id":"2757def4-182e-49e1-b46e-764bf512754b","type":"github_oidc_auth_intake_mapping","attributes":{"claim_matchers":{"repository":"^DataDog/terraform-provider-wif-acceptance-nonexistent$","sub":"repo:DataDog/terraform-provider-wif-acceptance-nonexistent:ref:refs/heads/main"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 117.004833ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/cloud_auth/github/intake_mapping/2757def4-182e-49e1-b46e-764bf512754b
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 165.290583ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_auth/github/intake_mapping/2757def4-182e-49e1-b46e-764bf512754b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 287
+        uncompressed: false
+        body: '{"data":{"id":"2757def4-182e-49e1-b46e-764bf512754b","type":"github_oidc_auth_intake_mapping","attributes":{"claim_matchers":{"repository":"^DataDog/terraform-provider-wif-acceptance-nonexistent$","sub":"repo:DataDog/terraform-provider-wif-acceptance-nonexistent:ref:refs/heads/main"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 119.054416ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_auth/github/intake_mapping/2757def4-182e-49e1-b46e-764bf512754b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 287
+        uncompressed: false
+        body: '{"data":{"id":"2757def4-182e-49e1-b46e-764bf512754b","type":"github_oidc_auth_intake_mapping","attributes":{"claim_matchers":{"repository":"^DataDog/terraform-provider-wif-acceptance-nonexistent$","sub":"repo:DataDog/terraform-provider-wif-acceptance-nonexistent:ref:refs/heads/main"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 108.176709ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_auth/github/intake_mapping/2757def4-182e-49e1-b46e-764bf512754b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 49
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Not Found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 109.607ms
