@@ -372,7 +372,7 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Validators: []validator.List{
 					listvalidator.ConflictsWith(path.MatchRoot("bearer_token")),
 				},
-				Description: "Command that prints a Datadog Bearer token on stdout, as a list of the program and its arguments, for example `[\"pup\", \"auth\", \"token\"]`. No shell runs it. The provider runs it when it first needs a token and again when the token expires: at the JWT `exp` claim less one minute, or after five minutes for a token that is not a JWT. Conflicts with `bearer_token`. This can also be set via the `DD_BEARER_TOKEN_COMMAND` or `DATADOG_BEARER_TOKEN_COMMAND` environment variable, whose value is split at whitespace.",
+				Description: "Command that prints a Datadog Bearer token on stdout, as a list of the program and its arguments, for example `[\"pup\", \"auth\", \"token\"]`. It runs without a shell. The provider runs it when it first needs a token and again when the token expires: one minute before the JWT `exp` claim, or after five minutes for a token that is not a JWT. Conflicts with `bearer_token`. This can also be set via the `DD_BEARER_TOKEN_COMMAND` or `DATADOG_BEARER_TOKEN_COMMAND` environment variable, whose value is split at whitespace.",
 			},
 			"workload_identity_token_tag": schema.StringAttribute{
 				Optional:    true,
