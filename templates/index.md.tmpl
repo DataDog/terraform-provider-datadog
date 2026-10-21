@@ -23,7 +23,7 @@ For HCP Terraform, the provider discovers Terraform-issued workload identity tok
 
 ## Bearer Token from a Command
 
-`bearer_token_command` runs a command that prints a short-lived Bearer token, and runs it again before the token expires, so a long apply keeps a valid token. For example, after `pup auth login`, the [pup](https://github.com/DataDog/pup) CLI prints its current OAuth access token with `pup auth token`:
+`bearer_token_command` runs a command that prints a short-lived Bearer token. It runs the command again before the token expires, so a long apply keeps a valid token. For example, after `pup auth login`, the [pup](https://github.com/DataDog/pup) CLI prints its current OAuth access token with `pup auth token`:
 
 ```terraform
 provider "datadog" {
@@ -31,6 +31,6 @@ provider "datadog" {
 }
 ```
 
-Or, leaving the provider block unchanged, `export DD_BEARER_TOKEN_COMMAND="pup auth token"`. The command runs without a shell, with the provider's environment, and must print only the token.
+Or, to leave the provider block unchanged, run `export DD_BEARER_TOKEN_COMMAND="pup auth token"`. The command runs without a shell, uses the provider's environment, and must print only the token.
 
 {{ .SchemaMarkdown | trimspace }}
