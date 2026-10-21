@@ -146,7 +146,7 @@ examples/resources/datadog_tag_rule/**                    @DataDog/aaa-governanc
 scripts/*cloud-cost-import-existing-resources*            @DataDog/cloud-cost-management
 templates/**/org_group*.md.tmpl                           @DataDog/org-management
 docs/resources/governance_control.md                      @DataDog/aaa-governance-console
-docs/resources/github_oidc_identity_mapping.md            @DataDog/delegated-auth-login
-docs/resources/github_oidc_intake_mapping.md              @DataDog/delegated-auth-login
-examples/resources/datadog_github_oidc_identity_mapping/  @DataDog/delegated-auth-login
-examples/resources/datadog_github_oidc_intake_mapping/    @DataDog/delegated-auth-login
+docs/resources/github_oidc_identity_mapping.md            @DataDog/aaa-authn
+docs/resources/github_oidc_intake_mapping.md              @DataDog/aaa-authn
+examples/resources/datadog_github_oidc_identity_mapping/  @DataDog/aaa-authn
+examples/resources/datadog_github_oidc_intake_mapping/    @DataDog/aaa-authn
