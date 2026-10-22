@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"reflect"
 	"regexp"
+	"slices"
 	"sort"
 	"strings"
 
@@ -866,14 +867,20 @@ func (r *actionConnectionResource) ModifyPlan(ctx context.Context, request resou
 		return
 	}
 
+	// Without resource or provider tags, Terraform does not own connection tags; keep tags set outside Terraform.
+	if plan.Tags.IsNull() && len(r.DefaultTags) == 0 {
+		unmanagedTags := types.SetNull(types.StringType)
+		if !request.State.Raw.IsNull() {
+			unmanagedTags = state.EffectiveTags
+		}
+		response.Diagnostics.Append(response.Plan.SetAttribute(ctx, path.Root("effective_tags"), unmanagedTags)...)
+		return
+	}
+
 	effectiveTags, diags := fwutils.CombineTags(ctx, plan.Tags, r.DefaultTags)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
-	}
-	if plan.Tags.IsNull() && len(r.DefaultTags) == 0 &&
-		(state.EffectiveTags.IsNull() || state.EffectiveTags.IsUnknown() || len(state.EffectiveTags.Elements()) == 0) {
-		effectiveTags = types.SetNull(types.StringType)
 	}
 
 	if !effectiveTags.IsNull() {
@@ -1372,8 +1379,11 @@ func setActionConnectionTags(ctx context.Context, tags types.Set, set func([]str
 func connectionModelToUpdateApiRequest(ctx context.Context, plan, oldState connectionResourceModel) (*datadogV2.UpdateActionConnectionRequest, error) {
 	attributes := datadogV2.NewActionConnectionAttributesUpdate()
 	attributes.SetName(plan.Name.ValueString())
-	setActionConnectionTags(ctx, plan.EffectiveTags, attributes.SetTags)
+	if !plan.EffectiveTags.Equal(oldState.EffectiveTags) {
+		setActionConnectionTags(ctx, plan.EffectiveTags, attributes.SetTags)
+	}
 
+	// The live API does not reliably persist AWS tag/name-only updates without integration.
 	if plan.AWS != nil {
 		assumeRoleParams := datadogV2.NewAWSAssumeRoleUpdate(datadogV2.AWSASSUMEROLETYPE_AWSASSUMEROLE)
 		assumeRoleParams.SetAccountId(plan.AWS.AssumeRole.AccountID.ValueString())
@@ -1385,58 +1395,93 @@ func connectionModelToUpdateApiRequest(ctx context.Context, plan, oldState conne
 		attributes.SetIntegration(integration)
 	}
 
-	if plan.HTTP != nil {
-		httpTokenAuth := datadogV2.NewHTTPTokenAuthUpdate(datadogV2.HTTPTOKENAUTHTYPE_HTTPTOKENAUTH)
-
-		buildHttpDeletions(plan, oldState, httpTokenAuth)
-
-		for _, token := range plan.HTTP.TokenAuth.Tokens {
-			tokenType, err := datadogV2.NewTokenTypeFromValue(token.Type.ValueString())
-			if err != nil {
-				return nil, err
-			}
-
-			tokenModel := datadogV2.NewHTTPTokenUpdate(token.Name.ValueString(), *tokenType, token.Value.ValueString())
-			httpTokenAuth.Tokens = append(httpTokenAuth.Tokens, *tokenModel)
-		}
-
-		for _, header := range plan.HTTP.TokenAuth.Headers {
-			headerUpdate := datadogV2.NewHTTPHeaderUpdate(header.Name.ValueString())
-			headerUpdate.SetValue(header.Value.ValueString())
-			httpTokenAuth.Headers = append(httpTokenAuth.Headers, *headerUpdate)
-		}
-
-		for _, urlParam := range plan.HTTP.TokenAuth.URLParameters {
-			paramUpdate := datadogV2.NewUrlParamUpdate(urlParam.Name.ValueString())
-			paramUpdate.SetValue(urlParam.Value.ValueString())
-			httpTokenAuth.UrlParameters = append(httpTokenAuth.UrlParameters, *paramUpdate)
-		}
-
-		httpTokenAuth.Body = datadogV2.NewHTTPBody()
-		if plan.HTTP.TokenAuth.Body != nil {
-			if !plan.HTTP.TokenAuth.Body.ContentType.IsNull() {
-				httpTokenAuth.Body.SetContentType(plan.HTTP.TokenAuth.Body.ContentType.ValueString())
-			}
-			if !plan.HTTP.TokenAuth.Body.Content.IsNull() {
-				httpTokenAuth.Body.SetContent(plan.HTTP.TokenAuth.Body.Content.ValueString())
-			}
-		}
-
-		httpCredentials := datadogV2.HTTPTokenAuthUpdateAsHTTPCredentialsUpdate(httpTokenAuth)
+	if plan.HTTP != nil && !reflect.DeepEqual(plan.HTTP, oldState.HTTP) {
 		httpIntegration := datadogV2.NewHTTPIntegrationUpdate(datadogV2.HTTPINTEGRATIONTYPE_HTTP)
-		httpIntegration.SetBaseUrl(plan.HTTP.BaseURL.ValueString())
-		httpIntegration.SetCredentials(httpCredentials)
+		if oldState.HTTP == nil || !plan.HTTP.BaseURL.Equal(oldState.HTTP.BaseURL) {
+			httpIntegration.SetBaseUrl(plan.HTTP.BaseURL.ValueString())
+		}
+		var previousAuth *httpTokenAuthConnectionModel
+		if oldState.HTTP != nil {
+			previousAuth = oldState.HTTP.TokenAuth
+		}
+		httpTokenAuth := datadogV2.NewHTTPTokenAuthUpdate(datadogV2.HTTPTOKENAUTHTYPE_HTTPTOKENAUTH)
+		if !reflect.DeepEqual(plan.HTTP.TokenAuth, previousAuth) {
+			if previousAuth != nil {
+				buildHttpDeletions(plan, oldState, httpTokenAuth)
+			}
+
+			for _, token := range plan.HTTP.TokenAuth.Tokens {
+				if previousAuth != nil && slices.ContainsFunc(previousAuth.Tokens, func(previous *httpConnectionTokenModel) bool {
+					return token.Name.Equal(previous.Name) && reflect.DeepEqual(token, previous)
+				}) {
+					continue
+				}
+				tokenType, err := datadogV2.NewTokenTypeFromValue(token.Type.ValueString())
+				if err != nil {
+					return nil, err
+				}
+				tokenModel := datadogV2.NewHTTPTokenUpdate(token.Name.ValueString(), *tokenType, token.Value.ValueString())
+				httpTokenAuth.Tokens = append(httpTokenAuth.Tokens, *tokenModel)
+			}
+
+			for _, header := range plan.HTTP.TokenAuth.Headers {
+				if previousAuth != nil && slices.ContainsFunc(previousAuth.Headers, func(previous *httpConnectionHeaderModel) bool {
+					return header.Name.Equal(previous.Name) && reflect.DeepEqual(header, previous)
+				}) {
+					continue
+				}
+				headerUpdate := datadogV2.NewHTTPHeaderUpdate(header.Name.ValueString())
+				headerUpdate.SetValue(header.Value.ValueString())
+				httpTokenAuth.Headers = append(httpTokenAuth.Headers, *headerUpdate)
+			}
+
+			for _, urlParam := range plan.HTTP.TokenAuth.URLParameters {
+				if previousAuth != nil && slices.ContainsFunc(previousAuth.URLParameters, func(previous *httpConnectionUrlParameterModel) bool {
+					return urlParam.Name.Equal(previous.Name) && reflect.DeepEqual(urlParam, previous)
+				}) {
+					continue
+				}
+				paramUpdate := datadogV2.NewUrlParamUpdate(urlParam.Name.ValueString())
+				paramUpdate.SetValue(urlParam.Value.ValueString())
+				httpTokenAuth.UrlParameters = append(httpTokenAuth.UrlParameters, *paramUpdate)
+			}
+
+			if previousAuth == nil || !reflect.DeepEqual(plan.HTTP.TokenAuth.Body, previousAuth.Body) {
+				httpTokenAuth.Body = datadogV2.NewHTTPBody()
+				if plan.HTTP.TokenAuth.Body != nil {
+					if !plan.HTTP.TokenAuth.Body.ContentType.IsNull() {
+						httpTokenAuth.Body.SetContentType(plan.HTTP.TokenAuth.Body.ContentType.ValueString())
+					}
+					if !plan.HTTP.TokenAuth.Body.Content.IsNull() {
+						httpTokenAuth.Body.SetContent(plan.HTTP.TokenAuth.Body.Content.ValueString())
+					}
+				}
+			}
+
+		}
+		// The API needs the credential type to apply base URL changes without resending tokens.
+		httpIntegration.SetCredentials(datadogV2.HTTPTokenAuthUpdateAsHTTPCredentialsUpdate(httpTokenAuth))
 
 		integration := datadogV2.HTTPIntegrationUpdateAsActionConnectionIntegrationUpdate(httpIntegration)
 		attributes.SetIntegration(integration)
 	}
 
 	if plan.AWS == nil && plan.HTTP == nil {
-		integration, err := additionalUpdateActionConnectionIntegration(plan)
+		plannedIntegration, err := additionalActionConnectionIntegrationData(plan)
 		if err != nil {
 			return nil, err
 		}
-		attributes.SetIntegration(*integration)
+		previousIntegration, err := additionalActionConnectionIntegrationData(oldState)
+		if err != nil {
+			return nil, err
+		}
+		if !reflect.DeepEqual(plannedIntegration, previousIntegration) {
+			integration, err := additionalUpdateActionConnectionIntegration(plan)
+			if err != nil {
+				return nil, err
+			}
+			attributes.SetIntegration(*integration)
+		}
 	}
 
 	data := datadogV2.NewActionConnectionDataUpdate(*attributes, datadogV2.ACTIONCONNECTIONDATATYPE_ACTION_CONNECTION)

@@ -82,7 +82,7 @@ func (r *securityFindingsSeverityModifierRuleResource) Schema(_ context.Context,
 			},
 			"rule": securityFindingsAutomationRuleScopeAttribute(),
 			"action": schema.SingleNestedAttribute{
-				Description: "The action to take when the severity modifier rule matches a finding. Exactly one of `set` or `shift` must be provided.",
+				Description: "The action to take when a severity modifier rule matches a finding. This is a discriminated union on `type`: `set` assigns a fixed severity, while `shift` moves the severity up or down by one severity rank. In this resource the union is expressed as the `set` and `shift` blocks; exactly one must be provided. A severity modifier rule's `rule.query` must not filter on `@severity` or on the `@severity_details.user_adjusted.*` namespace. Use `@severity_details.adjusted.value` instead, which reflects the severity before user-defined adjustments.",
 				Required:    true,
 				Attributes: map[string]schema.Attribute{
 					"set": schema.SingleNestedAttribute{
@@ -202,7 +202,7 @@ func (r *securityFindingsSeverityModifierRuleResource) Update(ctx context.Contex
 		return
 	}
 
-	data, diags := r.buildRuleData(ctx, &state)
+	data, diags := r.buildRuleUpdateData(ctx, &state, id)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -290,8 +290,8 @@ func (r *securityFindingsSeverityModifierRuleResource) updateState(ctx context.C
 	return diags
 }
 
-// buildRuleData builds the JSON:API data object shared by the create and update requests.
-func (r *securityFindingsSeverityModifierRuleResource) buildRuleData(ctx context.Context, state *securityFindingsSeverityModifierRuleModel) (*datadogV2.SeverityModifierRuleDataCreate, diag.Diagnostics) {
+// buildRuleAttributes builds the attributes object shared by the create and update payloads.
+func (r *securityFindingsSeverityModifierRuleResource) buildRuleAttributes(ctx context.Context, state *securityFindingsSeverityModifierRuleModel) (*datadogV2.SeverityModifierRuleAttributesCreate, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	scope, d := buildAutomationRuleScope(ctx, state.Rule)
@@ -324,8 +324,27 @@ func (r *securityFindingsSeverityModifierRuleResource) buildRuleData(ctx context
 	attributes := datadogV2.NewSeverityModifierRuleAttributesCreate(action, state.Name.ValueString(), *scope)
 	attributes.SetEnabled(state.Enabled.ValueBool())
 
-	data := datadogV2.NewSeverityModifierRuleDataCreateWithDefaults()
-	data.SetType(datadogV2.SEVERITYMODIFIERRULETYPE_SEVERITY_MODIFIER_RULES)
-	data.SetAttributes(*attributes)
-	return data, diags
+	return attributes, diags
+}
+
+// buildRuleData builds the JSON:API data object for a create request.
+func (r *securityFindingsSeverityModifierRuleResource) buildRuleData(ctx context.Context, state *securityFindingsSeverityModifierRuleModel) (*datadogV2.SeverityModifierRuleDataCreate, diag.Diagnostics) {
+	attributes, diags := r.buildRuleAttributes(ctx, state)
+	if diags.HasError() {
+		return nil, diags
+	}
+
+	return datadogV2.NewSeverityModifierRuleDataCreate(*attributes, datadogV2.SEVERITYMODIFIERRULETYPE_SEVERITY_MODIFIER_RULES), diags
+}
+
+// buildRuleUpdateData builds the JSON:API data object for an update request.
+// The API requires the resource id in the update body, matching the rule_id
+// path parameter.
+func (r *securityFindingsSeverityModifierRuleResource) buildRuleUpdateData(ctx context.Context, state *securityFindingsSeverityModifierRuleModel, id uuid.UUID) (*datadogV2.SeverityModifierRuleDataUpdate, diag.Diagnostics) {
+	attributes, diags := r.buildRuleAttributes(ctx, state)
+	if diags.HasError() {
+		return nil, diags
+	}
+
+	return datadogV2.NewSeverityModifierRuleDataUpdate(*attributes, id, datadogV2.SEVERITYMODIFIERRULETYPE_SEVERITY_MODIFIER_RULES), diags
 }

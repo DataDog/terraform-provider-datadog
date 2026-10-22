@@ -85,7 +85,7 @@ datadog/**/*datadog_integration_ms_teams*         @DataDog/api-reliability @Data
 datadog/**/*datadog_ip_ranges*                    @DataDog/api-reliability @DataDog/team-aaa
 datadog/**/*datadog_on_call*                      @DataDog/api-reliability @DataDog/on-call
 datadog/**/*datadog_open_api*                     @DataDog/api-reliability @DataDog/service-catalog
-datadog/**/*datadog_organization_settings*        @DataDog/api-reliability @DataDog/aaa-omg @DataDog/trust-and-safety
+datadog/**/*datadog_organization_settings*        @DataDog/api-reliability @DataDog/teams-and-ownership @DataDog/trust-and-safety
 datadog/**/*datadog_restriction_policy*           @DataDog/api-reliability @DataDog/aaa-granular-access
 datadog/**/*datadog_logs_restriction_query*       @DataDog/api-reliability @DataDog/aaa-granular-access
 datadog/**/*datadog_sensitive_data_scanner*       @DataDog/api-reliability @DataDog/sensitive-data-scanner
@@ -94,7 +94,7 @@ datadog/**/*datadog_service_access_token*         @DataDog/api-reliability @Data
 datadog/**/*datadog_software_catalog*             @DataDog/api-reliability @DataDog/service-catalog
 datadog/**/*datadog_spans_metric*                 @DataDog/api-reliability @DataDog/apm-trace-intake
 datadog/**/*datadog_synthetics*                   @DataDog/api-reliability @DataDog/synthetics-orchestrating-managing
-datadog/**/*datadog_team*                         @DataDog/api-reliability @DataDog/aaa-omg
+datadog/**/*datadog_team*                         @DataDog/api-reliability @DataDog/teams-and-ownership
 datadog/**/*datadog_user*                         @DataDog/api-reliability @DataDog/team-aaa
 datadog/**/*datadog_webhook*                      @DataDog/api-reliability @DataDog/collaboration-integrations
 datadog/**/*datadog_workflow_automation*          @DataDog/api-reliability @DataDog/workflow-automation-backend
@@ -121,6 +121,7 @@ datadog/**/*datadog_governance_control*           @DataDog/api-reliability @Data
 datadog/**/*datadog_tag_rule*                     @DataDog/api-reliability @DataDog/aaa-governance-console @DataDog/odp-governance
 datadog/**/*datadog_status_page*                  @DataDog/api-reliability @DataDog/incident-app
 datadog/**/*fleet_schedule*                       @DataDog/api-reliability @DataDog/fleet-automation
+datadog/**/*github_oidc*                          @DataDog/api-reliability @DataDog/aaa-authn
 
 # Team-specific
 docs/resources/observability_pipeline.md                  @DataDog/observability-pipelines
@@ -134,6 +135,8 @@ docs/resources/fleet_schedule.md                          @DataDog/fleet-automat
 docs/data-sources/fleet_schedule*.md                      @DataDog/fleet-automation
 docs/resources/tag_indexing_rule*.md                      @DataDog/metrics-experience
 docs/resources/tag_rule.md                                @DataDog/aaa-governance-console @DataDog/odp-governance
+docs/resources/team*.md                                   @DataDog/teams-and-ownership
+docs/data-sources/team*.md                                @DataDog/teams-and-ownership
 examples/**/datadog_org_group*/**                         @DataDog/org-management
 examples/resources/datadog_on_call_team_routing_rules/**  @DataDog/on-call
 examples/resources/datadog_security_findings_*/**         @DataDog/k9-shared-capabilities
@@ -142,6 +145,11 @@ examples/**/datadog_status_page*/**                       @DataDog/incident-app
 examples/**/datadog_fleet_schedule*/**                    @DataDog/fleet-automation
 examples/resources/datadog_tag_indexing_rule*/**          @DataDog/metrics-experience
 examples/resources/datadog_tag_rule/**                    @DataDog/aaa-governance-console @DataDog/odp-governance
+examples/**/datadog_team*/**                              @DataDog/teams-and-ownership
 scripts/*cloud-cost-import-existing-resources*            @DataDog/cloud-cost-management
 templates/**/org_group*.md.tmpl                           @DataDog/org-management
 docs/resources/governance_control.md                      @DataDog/aaa-governance-console
+docs/resources/github_oidc_identity_mapping.md            @DataDog/aaa-authn
+docs/resources/github_oidc_intake_mapping.md              @DataDog/aaa-authn
+examples/resources/datadog_github_oidc_identity_mapping/  @DataDog/aaa-authn
+examples/resources/datadog_github_oidc_intake_mapping/    @DataDog/aaa-authn

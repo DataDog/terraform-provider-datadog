@@ -18,7 +18,7 @@ Provides a Datadog Dataset resource. This can be used to create and manage Datad
 
 resource "datadog_dataset" "foo" {
   name       = "HR Dataset"
-  principals = ["role:00000000-0000-1111-0000-000000000000"]
+  principals = ["role:00000000-0000-1111-0000-000000000000", "user:00000000-0000-2222-0000-000000000000"]
 
   product_filters {
     product = "rum"
@@ -33,7 +33,7 @@ resource "datadog_dataset" "foo" {
 ### Required
 
 - `name` (String) The name of the dataset.
-- `principals` (Set of String) An array of principals. A principal is a subject or group of subjects. Each principal is formatted as `type:id`. Supported types: `role` and `team`.
+- `principals` (Set of String) An array of principals. A principal is a subject or group of subjects. Each principal is formatted as `type:id`. Supported types: `role`, `team`, and `user`. `user` principals are supported only for Agents and Automated Processes.
 
 ### Optional
 

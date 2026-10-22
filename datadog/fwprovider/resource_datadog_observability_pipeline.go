@@ -65,6 +65,7 @@ type destinationModel struct {
 	SyslogNgDestination               []*syslogNgDestinationModel                                      `tfsdk:"syslog_ng"`
 	ElasticsearchDestination          []*elasticsearchDestinationModel                                 `tfsdk:"elasticsearch"`
 	AzureStorageDestination           []*azureStorageDestinationModel                                  `tfsdk:"azure_storage"`
+	AzureDataExplorerDestination      []*observability_pipeline.AzureDataExplorerDestinationModel      `tfsdk:"azure_data_explorer"`
 	MicrosoftSentinelDestination      []*microsoftSentinelDestinationModel                             `tfsdk:"microsoft_sentinel"`
 	GoogleSecopsDestination           []*googleSecopsDestinationModel                                  `tfsdk:"google_secops"`
 	NewRelicDestination               []*newRelicDestinationModel                                      `tfsdk:"new_relic"`
@@ -185,33 +186,34 @@ type processorModel struct {
 	Include     types.String `tfsdk:"include"`
 	DisplayName types.String `tfsdk:"display_name"`
 
-	FilterProcessor               []*filterProcessorModel                                     `tfsdk:"filter"`
-	ParseJsonProcessor            []*parseJsonProcessorModel                                  `tfsdk:"parse_json"`
-	AddFieldsProcessor            []*addFieldsProcessor                                       `tfsdk:"add_fields"`
-	RenameFieldsProcessor         []*renameFieldsProcessorModel                               `tfsdk:"rename_fields"`
-	RemoveFieldsProcessor         []*removeFieldsProcessorModel                               `tfsdk:"remove_fields"`
-	QuotaProcessor                []*quotaProcessorModel                                      `tfsdk:"quota"`
-	GenerateMetricsProcessor      []*generateMetricsProcessorModel                            `tfsdk:"generate_datadog_metrics"`
-	ParseGrokProcessor            []*observability_pipeline.ParseGrokProcessorModel           `tfsdk:"parse_grok"`
-	SampleProcessor               []*sampleProcessorModel                                     `tfsdk:"sample"`
-	SensitiveDataScannerProcessor []*sensitiveDataScannerProcessorModel                       `tfsdk:"sensitive_data_scanner"`
-	DedupeProcessor               []*dedupeProcessorModel                                     `tfsdk:"dedupe"`
-	ReduceProcessor               []*reduceProcessorModel                                     `tfsdk:"reduce"`
-	ThrottleProcessor             []*throttleProcessorModel                                   `tfsdk:"throttle"`
-	AddEnvVarsProcessor           []*addEnvVarsProcessorModel                                 `tfsdk:"add_env_vars"`
-	EnrichmentTableProcessor      []*enrichmentTableProcessorModel                            `tfsdk:"enrichment_table"`
-	OcsfMapperProcessor           []*ocsfMapperProcessorModel                                 `tfsdk:"ocsf_mapper"`
-	DatadogTagsProcessor          []*observability_pipeline.DatadogTagsProcessorModel         `tfsdk:"datadog_tags"`
-	CustomProcessor               []*observability_pipeline.CustomProcessorModel              `tfsdk:"custom_processor"`
-	AddHostnameProcessor          []*addHostnameProcessorModel                                `tfsdk:"add_hostname"`
-	ParseXMLProcessor             []*parseXMLProcessorModel                                   `tfsdk:"parse_xml"`
-	SplitArrayProcessor           []*splitArrayProcessorModel                                 `tfsdk:"split_array"`
-	MetricTagsProcessor           []*metricTagsProcessorModel                                 `tfsdk:"metric_tags"`
-	GenerateMetricsV2Processor    []*generateMetricsProcessorModel                            `tfsdk:"generate_metrics"`
-	AddMetricTagsProcessor        []*observability_pipeline.AddMetricTagsProcessorModel       `tfsdk:"add_metric_tags"`
-	AggregateProcessor            []*observability_pipeline.AggregateProcessorModel           `tfsdk:"aggregate"`
-	RenameMetricTagsProcessor     []*observability_pipeline.RenameMetricTagsProcessorModel    `tfsdk:"rename_metric_tags"`
-	TagCardinalityLimitProcessor  []*observability_pipeline.TagCardinalityLimitProcessorModel `tfsdk:"tag_cardinality_limit"`
+	FilterProcessor                []*filterProcessorModel                                       `tfsdk:"filter"`
+	ParseJsonProcessor             []*parseJsonProcessorModel                                    `tfsdk:"parse_json"`
+	AddFieldsProcessor             []*addFieldsProcessor                                         `tfsdk:"add_fields"`
+	RenameFieldsProcessor          []*renameFieldsProcessorModel                                 `tfsdk:"rename_fields"`
+	RemoveFieldsProcessor          []*removeFieldsProcessorModel                                 `tfsdk:"remove_fields"`
+	QuotaProcessor                 []*quotaProcessorModel                                        `tfsdk:"quota"`
+	GenerateMetricsProcessor       []*generateMetricsProcessorModel                              `tfsdk:"generate_datadog_metrics"`
+	ParseGrokProcessor             []*observability_pipeline.ParseGrokProcessorModel             `tfsdk:"parse_grok"`
+	SampleProcessor                []*sampleProcessorModel                                       `tfsdk:"sample"`
+	SensitiveDataScannerProcessor  []*sensitiveDataScannerProcessorModel                         `tfsdk:"sensitive_data_scanner"`
+	DedupeProcessor                []*dedupeProcessorModel                                       `tfsdk:"dedupe"`
+	ReduceProcessor                []*reduceProcessorModel                                       `tfsdk:"reduce"`
+	ThrottleProcessor              []*throttleProcessorModel                                     `tfsdk:"throttle"`
+	AddEnvVarsProcessor            []*addEnvVarsProcessorModel                                   `tfsdk:"add_env_vars"`
+	EnrichmentTableProcessor       []*enrichmentTableProcessorModel                              `tfsdk:"enrichment_table"`
+	OcsfMapperProcessor            []*ocsfMapperProcessorModel                                   `tfsdk:"ocsf_mapper"`
+	DatadogTagsProcessor           []*observability_pipeline.DatadogTagsProcessorModel           `tfsdk:"datadog_tags"`
+	CustomProcessor                []*observability_pipeline.CustomProcessorModel                `tfsdk:"custom_processor"`
+	AddHostnameProcessor           []*addHostnameProcessorModel                                  `tfsdk:"add_hostname"`
+	ParseXMLProcessor              []*parseXMLProcessorModel                                     `tfsdk:"parse_xml"`
+	SplitArrayProcessor            []*splitArrayProcessorModel                                   `tfsdk:"split_array"`
+	MetricTagsProcessor            []*metricTagsProcessorModel                                   `tfsdk:"metric_tags"`
+	GenerateMetricsV2Processor     []*generateMetricsProcessorModel                              `tfsdk:"generate_metrics"`
+	AddMetricTagsProcessor         []*observability_pipeline.AddMetricTagsProcessorModel         `tfsdk:"add_metric_tags"`
+	AggregateProcessor             []*observability_pipeline.AggregateProcessorModel             `tfsdk:"aggregate"`
+	RenameMetricTagsProcessor      []*observability_pipeline.RenameMetricTagsProcessorModel      `tfsdk:"rename_metric_tags"`
+	TagCardinalityLimitProcessor   []*observability_pipeline.TagCardinalityLimitProcessorModel   `tfsdk:"tag_cardinality_limit"`
+	MetricEnrichmentTableProcessor []*observability_pipeline.MetricEnrichmentTableProcessorModel `tfsdk:"metric_enrichment_table"`
 }
 
 type metricTagsProcessorModel struct {
@@ -2121,13 +2123,14 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														},
 													},
 												},
-												"ocsf_mapper":           observability_pipeline.OcsfMapperProcessorSchema(),
-												"datadog_tags":          observability_pipeline.DatadogTagsProcessorSchema(),
-												"custom_processor":      observability_pipeline.CustomProcessorSchema(),
-												"add_metric_tags":       observability_pipeline.AddMetricTagsProcessorSchema(),
-												"aggregate":             observability_pipeline.AggregateProcessorSchema(),
-												"rename_metric_tags":    observability_pipeline.RenameMetricTagsProcessorSchema(),
-												"tag_cardinality_limit": observability_pipeline.TagCardinalityLimitProcessorSchema(),
+												"ocsf_mapper":             observability_pipeline.OcsfMapperProcessorSchema(),
+												"datadog_tags":            observability_pipeline.DatadogTagsProcessorSchema(),
+												"custom_processor":        observability_pipeline.CustomProcessorSchema(),
+												"add_metric_tags":         observability_pipeline.AddMetricTagsProcessorSchema(),
+												"aggregate":               observability_pipeline.AggregateProcessorSchema(),
+												"rename_metric_tags":      observability_pipeline.RenameMetricTagsProcessorSchema(),
+												"tag_cardinality_limit":   observability_pipeline.TagCardinalityLimitProcessorSchema(),
+												"metric_enrichment_table": observability_pipeline.MetricEnrichmentTableProcessorSchema(),
 												"metric_tags": schema.ListNestedBlock{
 													Description: "The `metric_tags` processor filters metrics based on their tags using Datadog tag key patterns.",
 													Validators: []validator.List{
@@ -2867,6 +2870,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									"amazon_s3":                 observability_pipeline.AmazonS3DestinationSchema(),
 									"amazon_s3_generic":         observability_pipeline.AmazonS3GenericDestinationSchema(),
 									"amazon_security_lake":      observability_pipeline.AmazonSecurityLakeDestinationSchema(),
+									"azure_data_explorer":       observability_pipeline.AzureDataExplorerDestinationSchema(),
 									"crowdstrike_next_gen_siem": observability_pipeline.CrowdStrikeNextGenSiemDestinationSchema(),
 									"databricks_zerobus":        observability_pipeline.DatabricksZerobusDestinationSchema(),
 									"splunk_hec_metrics":        observability_pipeline.SplunkHECMetricsDestinationSchema(),
@@ -3220,6 +3224,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		for _, d := range dest.AmazonSecurityLakeDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandObservabilityPipelinesAmazonSecurityLakeDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
+		for _, d := range dest.AzureDataExplorerDestination {
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandAzureDataExplorerDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+		}
 		for _, d := range dest.CrowdStrikeNextGenSiemDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandCrowdStrikeNextGenSiemDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
@@ -3472,6 +3479,11 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineAmazonSecurityLakeDestination.GetId())
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineAmazonSecurityLakeDestination.GetInputs())
 			destBlock.AmazonSecurityLakeDestination = append(destBlock.AmazonSecurityLakeDestination, securitylake)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if adx := observability_pipeline.FlattenAzureDataExplorerDestination(ctx, d.ObservabilityPipelineAzureDataExplorerDestination); adx != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineAzureDataExplorerDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineAzureDataExplorerDestination.GetInputs())
+			destBlock.AzureDataExplorerDestination = append(destBlock.AzureDataExplorerDestination, adx)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
 		} else if crowdstrike := observability_pipeline.FlattenCrowdStrikeNextGenSiemDestination(ctx, d.ObservabilityPipelineCrowdStrikeNextGenSiemDestination); crowdstrike != nil {
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineCrowdStrikeNextGenSiemDestination.GetId())
@@ -3730,6 +3742,8 @@ func flattenProcessorGroup(ctx context.Context, group *datadogV2.ObservabilityPi
 			procModel = flattenRenameMetricTagsProcessor(ctx, p.ObservabilityPipelineRenameMetricTagsProcessor)
 		} else if p.ObservabilityPipelineTagCardinalityLimitProcessor != nil {
 			procModel = flattenTagCardinalityLimitProcessor(ctx, p.ObservabilityPipelineTagCardinalityLimitProcessor)
+		} else if p.ObservabilityPipelineMetricEnrichmentTableProcessor != nil {
+			procModel = flattenMetricEnrichmentTableProcessor(ctx, p.ObservabilityPipelineMetricEnrichmentTableProcessor)
 		}
 
 		if procModel != nil {
@@ -3877,6 +3891,9 @@ func expandProcessorTypes(ctx context.Context, processor *processorModel) []data
 	}
 	for _, p := range processor.TagCardinalityLimitProcessor {
 		items = append(items, observability_pipeline.ExpandTagCardinalityLimitProcessor(common, p))
+	}
+	for _, p := range processor.MetricEnrichmentTableProcessor {
+		items = append(items, observability_pipeline.ExpandMetricEnrichmentTableProcessor(common, p))
 	}
 
 	return items
@@ -4553,6 +4570,16 @@ func flattenTagCardinalityLimitProcessor(ctx context.Context, src *datadogV2.Obs
 	if f := observability_pipeline.FlattenTagCardinalityLimitProcessor(src); f != nil {
 		model.TagCardinalityLimitProcessor = append(model.TagCardinalityLimitProcessor, f)
 	}
+	return model
+}
+
+func flattenMetricEnrichmentTableProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineMetricEnrichmentTableProcessor) *processorModel {
+	base, f := observability_pipeline.FlattenMetricEnrichmentTableProcessor(src)
+	if base == nil {
+		return nil
+	}
+	model := createProcessorModel(base)
+	model.MetricEnrichmentTableProcessor = append(model.MetricEnrichmentTableProcessor, f)
 	return model
 }
 

@@ -66,7 +66,7 @@ func (r *DatasetResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				Required:    true,
 			},
 			"principals": schema.SetAttribute{
-				Description: "An array of principals. A principal is a subject or group of subjects. Each principal is formatted as `type:id`. Supported types: `role` and `team`.",
+				Description: "An array of principals. A principal is a subject or group of subjects. Each principal is formatted as `type:id`. Supported types: `role`, `team`, and `user`. `user` principals are supported only for Agents and Automated Processes.",
 				ElementType: types.StringType,
 				Required:    true,
 			},

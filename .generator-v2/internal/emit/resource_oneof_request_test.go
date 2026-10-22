@@ -31,19 +31,53 @@ func roleBasicAuth(refName string, password bool) *model.Schema {
 // sdkbind (see buildUnionView), which is what keeps the fixture from freezing
 // today's wrapper/member/constructor derivation into an assertion.
 func roleUnion(unionRef string, alternative *model.Schema) *model.Schema {
-	member := alternative.RefName
-	if alternative.Kind != model.SchemaKindObject {
-		member = model.UpperFirst(alternative.Type)
-	}
-	tfName := model.SnakeCase(member)
-	return &model.Schema{Kind: model.SchemaKindOneOf, RefName: unionRef, OneOf: &model.OneOfSpec{
-		Name: unionRef, Path: "resource.data.attributes.auth", RefName: unionRef,
-		Variants: []model.OneOfVariant{{
+	return roleUnionOf(unionRef, alternative)
+}
+
+// roleUnionOf is roleUnion over several alternatives, so one role can list an
+// alternative another role does not.
+func roleUnionOf(unionRef string, alternatives ...*model.Schema) *model.Schema {
+	variants := make([]model.OneOfVariant, 0, len(alternatives))
+	for _, alternative := range alternatives {
+		member := alternative.RefName
+		if alternative.Kind != model.SchemaKindObject {
+			member = model.UpperFirst(alternative.Type)
+		}
+		tfName := model.SnakeCase(member)
+		variants = append(variants, model.OneOfVariant{
 			TFName: tfName, GoName: model.SdkName(tfName), Schema: alternative,
 			RefName:      alternative.RefName,
 			ValueWrapped: alternative.Kind != model.SchemaKindObject,
-		}},
+		})
+	}
+	return &model.Schema{Kind: model.SchemaKindOneOf, RefName: unionRef, OneOf: &model.OneOfSpec{
+		Name: unionRef, Path: "resource.data.attributes.auth", RefName: unionRef,
+		Variants: variants,
 	}}
+}
+
+// roleTokenAuth is one role's spelling of a second alternative whose token is
+// a write-only secret on the roles that send it; a response never returns it.
+func roleTokenAuth(refName string, token bool) *model.Schema {
+	properties := map[string]*model.Schema{
+		"auth_type": {Kind: model.SchemaKindPrimitive, Type: "string"},
+	}
+	if token {
+		properties["token"] = &model.Schema{Kind: model.SchemaKindPrimitive, Type: "string", WriteOnlySecret: true}
+	}
+	return &model.Schema{Kind: model.SchemaKindObject, RefName: refName, Properties: properties}
+}
+
+// updateOnlyTokenOperation is the Databricks shape: the token alternative is
+// accepted on Update and returned by Read, but Create cannot send it.
+func updateOnlyTokenOperation() *model.Operation {
+	return widgetUnionOperation(
+		roleUnionOf("WidgetAuthRequest", roleBasicAuth("WidgetBasicAuthRequest", true)),
+		roleUnionOf("WidgetAuthUpdate", roleBasicAuth("WidgetBasicAuthUpdate", true),
+			roleTokenAuth("WidgetTokenAuthUpdate", true)),
+		roleUnionOf("WidgetAuthResponse", roleBasicAuth("WidgetBasicAuthResponse", false),
+			roleTokenAuth("WidgetTokenAuthResponse", false)),
+	)
 }
 
 // widgetUnionOperation is widgetResourceOperation plus a required "auth" union
@@ -171,6 +205,65 @@ var _ = Describe("BuildResourceView oneOf request expansion", func() {
 		By("the selection diagnostic names the union's path and its variants")
 		Expect(create.SelectionMessage).To(Equal(
 			`resource.data.attributes.auth: exactly one of "widget_basic_auth" must be set, got %d`))
+	})
+
+	It("rejects on Create an alternative only Update accepts, instead of failing generation", func() {
+		view := buildUnionView(updateOnlyTokenOperation())
+
+		create := requestFieldByGoField(view.Create.Envelope.Fields, "Auth").OneOf
+		Expect(create.Rejected).To(HaveLen(1))
+		Expect(create.Rejected[0].TFName).To(Equal("widget_token_auth"))
+		Expect(create.Rejected[0].ModelExpr).To(Equal("state.Auth.WidgetTokenAuth"))
+		Expect(create.Rejected[0].Message).To(Equal(
+			`resource.data.attributes.auth: "widget_token_auth" cannot be set on create; set exactly one of "widget_basic_auth" instead`))
+		By("Create counts and names only what it can send")
+		Expect(create.Variants).To(HaveLen(1))
+		Expect(create.Variants[0].TFName).To(Equal("widget_basic_auth"))
+		Expect(create.SelectionMessage).To(Equal(
+			`resource.data.attributes.auth: exactly one of "widget_basic_auth" must be set, got %d`))
+
+		By("Update accepts both and builds the token through its own wrapper")
+		update := requestFieldByGoField(view.Update.Envelope.Fields, "Auth").OneOf
+		Expect(update.Rejected).To(BeEmpty())
+		Expect(update.Variants).To(HaveLen(2))
+		Expect(update.Variants[1].TFName).To(Equal("widget_token_auth"))
+		Expect(update.Variants[1].Constructor).To(Equal("datadogV2.NewWidgetTokenAuthUpdateWithDefaults()"))
+	})
+
+	It("renders the rejection before the selection count and the SDK call", func() {
+		src, err := RenderResource(buildUnionView(updateOnlyTokenOperation()))
+		Expect(err).NotTo(HaveOccurred())
+		formatted, err := format.Source(src)
+		Expect(err).NotTo(HaveOccurred(), "rendered output must be valid Go:\n%s", src)
+		Expect(string(formatted)).To(Equal(string(src)), "rendered output must already be gofmt-canonical")
+
+		out := string(src)
+		guard := strings.Index(out, `if state.Auth.WidgetTokenAuth != nil {`)
+		rejection := strings.Index(out, `cannot be set on create`)
+		Expect(guard).To(BeNumerically(">", 0))
+		Expect(rejection).To(BeNumerically(">", guard))
+		Expect(rejection).To(BeNumerically("<", strings.Index(out, "authMatches := 0")))
+		Expect(rejection).To(BeNumerically("<", strings.Index(out, "r.Api.CreateWidget(")))
+		Expect(out).NotTo(ContainSubstring("cannot be set on update"))
+
+		By("the rejected alternative's write-only token is read only on the role that sends it")
+		Expect(out).NotTo(ContainSubstring("GetSecretForCreate"))
+		Expect(out).To(ContainSubstring("GetSecretForUpdate"))
+	})
+
+	It("rejects on Update an alternative only Create accepts", func() {
+		view := buildUnionView(widgetUnionOperation(
+			roleUnionOf("WidgetAuthRequest", roleBasicAuth("WidgetBasicAuthRequest", true),
+				roleTokenAuth("WidgetTokenAuthRequest", false)),
+			roleUnionOf("WidgetAuthUpdate", roleBasicAuth("WidgetBasicAuthUpdate", true)),
+			roleUnionOf("WidgetAuthResponse", roleBasicAuth("WidgetBasicAuthResponse", false),
+				roleTokenAuth("WidgetTokenAuthResponse", false)),
+		))
+
+		Expect(requestFieldByGoField(view.Create.Envelope.Fields, "Auth").OneOf.Rejected).To(BeEmpty())
+		update := requestFieldByGoField(view.Update.Envelope.Fields, "Auth").OneOf
+		Expect(update.Rejected).To(HaveLen(1))
+		Expect(update.Rejected[0].Message).To(ContainSubstring(`"widget_token_auth" cannot be set on update`))
 	})
 
 	It("renders a required union as a guarded, counted expansion that fails before the SDK call", func() {

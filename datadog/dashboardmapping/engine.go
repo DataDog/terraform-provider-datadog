@@ -128,6 +128,10 @@ type FieldSpec struct {
 	// Deprecated: non-empty string = deprecation message
 	Deprecated string
 
+	// NotEmpty: reject the empty string for a required TypeString field.
+	// Generates validation.StringIsNotEmpty automatically.
+	NotEmpty bool
+
 	// ValidValues: valid string values for enum fields.
 	// Generates validators.ValidateEnumValue automatically.
 	// Use instead of SDK-based enum validators.
@@ -148,6 +152,11 @@ type FieldSpec struct {
 	// BuildEngineJSON skips it. Use for fields like dashboard_lists
 	// that are managed as side effects, not serialized to the API.
 	SchemaOnly bool
+
+	// IgnoreChanges: suppress all diffs on this field. Use with SchemaOnly for
+	// legacy no-op fields that are accepted in config but never sent to or
+	// returned by the API, so refreshed state never matches the config.
+	IgnoreChanges bool
 
 	// Discriminator configures polymorphic oneOf behavior for TypeOneOf fields.
 	// Set on the TypeOneOf parent (JSONKey) and on each child variant (Value/Values/DefaultVariant).
@@ -189,6 +198,10 @@ type WidgetSpec struct {
 	// Fields are the widget-specific fields.
 	// CommonWidgetFields are automatically merged in by the engine.
 	Fields []FieldSpec
+
+	// ExactlyOneOf contains groups of widget-definition fields where exactly one
+	// field must be configured. These constraints are checked during planning.
+	ExactlyOneOf [][]string
 
 	// JSONMatchPath and JSONMatchValues disambiguate widget schemas that share
 	// the same JSON type. The path supports object keys and array indexes, for
@@ -2650,6 +2663,34 @@ func buildGroupWidgetsJSONFromMap(defMap map[string]interface{}, ctx mapBuildCon
 // buildWidgetPostProcessFromMap runs all per-widget post-processing in the build direction.
 // Parallel to buildWidgetPostProcess in engine.go but reads from map[string]interface{}.
 func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpec, defJSON map[string]interface{}, ctx mapBuildContext) {
+	// ---- Toplist legacy display discriminator ----
+	// datadog_dashboard historically represented the toplist display oneOf as
+	// display { type = "flat"|"stacked" }. Keep accepting that form while the
+	// canonical v2 form uses display { flat {} } / display { stacked {} }.
+	if spec.JSONType == "toplist" {
+		if styleMap := getBlockFromMap(defMap, "style"); styleMap != nil {
+			if displayMap := getBlockFromMap(styleMap, "display"); displayMap != nil {
+				if legacyType := getStringFromMap(displayMap, "type"); legacyType != "" {
+					styleJSON, _ := defJSON["style"].(map[string]interface{})
+					if styleJSON == nil {
+						styleJSON = map[string]interface{}{}
+						defJSON["style"] = styleJSON
+					}
+					// The legacy scalar is authoritative when configured. Do not retain
+					// fields from a computed canonical variant left in refreshed state.
+					display := map[string]interface{}{"type": legacyType}
+					// The legacy datadog_dashboard implementation always sent
+					// legend=automatic alongside a stacked display. Keep emitting it so
+					// legacy configs produce byte-identical API payloads.
+					if legacyType == "stacked" {
+						display["legend"] = "automatic"
+					}
+					styleJSON["display"] = display
+				}
+			}
+		}
+	}
+
 	// ---- Formula/query blocks ----
 	if isFormulaCapableWidget(spec.JSONType) {
 		requestList := getBlockListFromMap(defMap, "request")
@@ -3122,12 +3163,12 @@ func normalizeNumericID(v interface{}) string {
 }
 
 // ============================================================
-// Validation — check FieldSpec ConflictsWith at plan time
+// Validation — check widget constraints at plan time
 // ============================================================
 
-// ValidateWidgetConflicts walks the widget tree and checks ConflictsWith
-// constraints on request-level fields. Returns a list of human-readable
-// error strings for any violations found.
+// ValidateWidgetConflicts walks the widget tree and checks widget-level
+// ExactlyOneOf groups and request-level ConflictsWith constraints. Returns a
+// list of human-readable error strings for any violations found.
 //
 // This is driven by the ConflictsWith annotations on FieldSpec declarations
 // (e.g., the "q" field conflicts with "query" and "formula").
@@ -3150,6 +3191,28 @@ func ValidateWidgetConflicts(data map[string]interface{}) []string {
 			defMap, ok := defList[0].(map[string]interface{})
 			if !ok {
 				continue
+			}
+
+			for _, group := range spec.ExactlyOneOf {
+				setFields := make([]string, 0, len(group))
+				for _, fieldName := range group {
+					for _, field := range spec.Fields {
+						if field.HCLKey == fieldName && fieldIsSetInMap(defMap, field) {
+							setFields = append(setFields, fieldName)
+							break
+						}
+					}
+				}
+				if len(setFields) != 1 {
+					quotedFields := make([]string, len(group))
+					for i, fieldName := range group {
+						quotedFields[i] = fmt.Sprintf("%q", fieldName)
+					}
+					errs = append(errs, fmt.Sprintf(
+						"widget[%d].%s: exactly one of %s must be configured",
+						wi, spec.HCLKey, strings.Join(quotedFields, " or "),
+					))
+				}
 			}
 
 			// Check ConflictsWith constraints on request fields

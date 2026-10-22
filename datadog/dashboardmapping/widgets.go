@@ -199,6 +199,31 @@ var ImageWidgetSpec = WidgetSpec{
 	},
 }
 
+// EmbeddedAppWidgetSpec corresponds to OpenAPI EmbeddedAppWidgetDefinition.
+var EmbeddedAppWidgetSpec = WidgetSpec{
+	HCLKey:      "embedded_app_definition",
+	JSONType:    "embedded_app",
+	Description: "The definition for an App Builder embedded app widget.",
+	ExactlyOneOf: [][]string{
+		{"app_id", "template_id"},
+	},
+	Fields: []FieldSpec{
+		{HCLKey: "app_id", Type: TypeString, OmitEmpty: true,
+			Description: "UUID of the App Builder app to embed. Exactly one of `app_id` or `template_id` must be provided."},
+		{HCLKey: "template_id", Type: TypeString, OmitEmpty: true,
+			Description: "ID of the built-in app template to embed. Exactly one of `app_id` or `template_id` must be provided."},
+		{HCLKey: "input", JSONKey: "inputs", Type: TypeBlockList, OmitEmpty: true,
+			Description: "A nested block describing an input passed to the embedded app. Multiple `input` blocks are allowed.",
+			Children: []FieldSpec{
+				{HCLKey: "name", Type: TypeString, OmitEmpty: false, Required: true,
+					Description: "Name of the app input."},
+				{HCLKey: "value", Type: TypeJSON, OmitEmpty: false, Required: true,
+					Description: "JSON-encoded value of the app input. Use `jsonencode()` for strings, numbers, booleans, objects, and arrays."},
+			}},
+		widgetCustomLinkField,
+	},
+}
+
 // NoteWidgetSpec corresponds to OpenAPI NoteWidgetDefinition.
 var NoteWidgetSpec = WidgetSpec{
 	HCLKey:      "note_definition",
@@ -210,6 +235,7 @@ var NoteWidgetSpec = WidgetSpec{
 			Type:        TypeString,
 			OmitEmpty:   false,
 			Required:    true,
+			NotEmpty:    true,
 			Description: "The content of the note.",
 		},
 		{
@@ -409,6 +435,7 @@ var LogStreamWidgetSpec = WidgetSpec{
 		{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true,
 			Description: "The facet and order to sort the data, for example: `{\"column\": \"time\", \"order\": \"desc\"}`.",
 			Children: []FieldSpec{
+				legacyNoOpDescriptionField,
 				{
 					HCLKey:      "column",
 					Type:        TypeString,
@@ -821,7 +848,7 @@ var distributionWidgetXAxisFields = []FieldSpec{
 		Description: "Specifies minimum value to show on the x-axis. It takes a number, percentile (p90 === 90th percentile), or auto for default behavior."},
 	{HCLKey: "max", Type: TypeString, OmitEmpty: true,
 		Description: "Specifies maximum value to show on the x-axis. It takes a number, percentile (p90 === 90th percentile), or auto for default behavior."},
-	{HCLKey: "include_zero", Type: TypeBool, OmitEmpty: true,
+	{HCLKey: "include_zero", Type: TypeBool, OmitEmpty: false,
 		Description: "True includes zero."},
 	{HCLKey: "num_buckets", Type: TypeInt, OmitEmpty: true,
 		Description: "Number of value buckets to target, also known as the resolution of the value bins."},
@@ -837,7 +864,7 @@ var distributionWidgetYAxisFields = []FieldSpec{
 		Description: "Specifies minimum value to show on the y-axis. It takes a number, or auto for default behavior."},
 	{HCLKey: "max", Type: TypeString, OmitEmpty: true,
 		Description: "Specifies the maximum value to show on the y-axis. It takes a number, or auto for default behavior."},
-	{HCLKey: "include_zero", Type: TypeBool, OmitEmpty: true,
+	{HCLKey: "include_zero", Type: TypeBool, OmitEmpty: false,
 		Description: "True includes zero."},
 	{HCLKey: "label", Type: TypeString, OmitEmpty: true,
 		Description: "The label of the axis to display on the graph."},
@@ -1393,7 +1420,7 @@ var SLOWidgetSpec = WidgetSpec{
 			ValidValues: []string{"7d", "30d", "90d", "week_to_date", "previous_week", "month_to_date", "previous_month", "global_time"},
 		},
 		// Optional fields
-		{HCLKey: "show_error_budget", Type: TypeBool, OmitEmpty: true, Description: "Whether to show the error budget or not."},
+		{HCLKey: "show_error_budget", Type: TypeBool, OmitEmpty: false, Description: "Whether to show the error budget or not."},
 		{HCLKey: "global_time_target", Type: TypeString, OmitEmpty: true, Description: "The global time target of the widget."},
 		{HCLKey: "additional_query_filters", Type: TypeString, OmitEmpty: true, Description: "Additional filters applied to the SLO query."},
 	},
@@ -1486,7 +1513,7 @@ var PowerpackWidgetSpec = WidgetSpec{
 		{HCLKey: "powerpack_id", Type: TypeString, OmitEmpty: false, Required: true, Description: "UUID of the associated powerpack."},
 		{HCLKey: "background_color", Type: TypeString, OmitEmpty: true, Description: "The background color of the powerpack title."},
 		{HCLKey: "banner_img", Type: TypeString, OmitEmpty: true, Description: "URL of image to display as a banner for the powerpack."},
-		{HCLKey: "show_title", Type: TypeBool, OmitEmpty: true, Description: "Whether to show the title of the powerpack."},
+		{HCLKey: "show_title", Type: TypeBool, OmitEmpty: false, Description: "Whether to show the title of the powerpack."},
 		// template_variables: TypeBlock (MaxItems:1) containing two TypeBlockLists
 		{
 			HCLKey:      "template_variables",
@@ -1512,6 +1539,7 @@ var allWidgetSpecs = []WidgetSpec{
 	FreeTextWidgetSpec,
 	IFrameWidgetSpec,
 	ImageWidgetSpec,
+	EmbeddedAppWidgetSpec,
 	NoteWidgetSpec,
 	EventStreamWidgetSpec,
 	EventTimelineWidgetSpec,

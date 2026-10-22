@@ -312,6 +312,11 @@ type resourceMerger struct {
 	artifact        string
 	diagnostics     []Diagnostic
 	warnedWriteOnly map[string]struct{}
+	// createAbsentDepth and updateAbsentDepth count the enclosing oneOf
+	// alternatives that role's union does not list. Beneath one, that role's
+	// schema is nil at every position because the whole alternative is
+	// unavailable on it, not because a write-only field was left out.
+	createAbsentDepth, updateAbsentDepth int
 }
 
 func resourceArtifactName(group *ResolvedGroup) string {
@@ -372,10 +377,10 @@ func (m *resourceMerger) warnWriteOnlyResponseConflict(path string) {
 // caller from each enclosing request object's Required list (a node cannot
 // answer either fact about itself).
 func (m *resourceMerger) mergeNode(create, update, read *Schema, createRequired, updateRequired bool, path string) (*Schema, error) {
-	if create != nil && create.WriteOnlySecret && update == nil {
+	if create != nil && create.WriteOnlySecret && update == nil && m.updateAbsentDepth == 0 {
 		return nil, &WriteOnlyLifecycleError{Path: path, MissingRole: "Update"}
 	}
-	if update != nil && update.WriteOnlySecret && create == nil {
+	if update != nil && update.WriteOnlySecret && create == nil && m.createAbsentDepth == 0 {
 		return nil, &WriteOnlyLifecycleError{Path: path, MissingRole: "Create"}
 	}
 	if err := m.validateRequestDefault(create, update, path); err != nil {
@@ -758,7 +763,8 @@ func anySensitive(create, update, read *Schema) (sensitive, disagreed bool) {
 
 // OneOfMergeError reports a union the Create request, Update request and Read
 // response bodies describe in ways that cannot be correlated into one
-// Terraform envelope: the bodies list alternatives that do not line up even
+// Terraform envelope: a request lists an alternative the Read response cannot
+// return, the bodies otherwise list alternatives that do not line up even
 // after their CRUD-role suffixes are removed, or one body names two
 // alternatives that collapse onto the same stripped name.
 type OneOfMergeError struct {
@@ -814,9 +820,12 @@ func (m *resourceMerger) mergeOneOf(create, update, read *Schema, createRequired
 				Reason: fmt.Sprintf("alternative %q has no normalized schema in any body", name),
 			}
 		}
-		// An alternative is a choice, never an entry in an enclosing object's
-		// required list, so it is never itself request-required.
-		merged, err := m.mergeNode(altCreate, altUpdate, altRead, false, false, ChildPath(path, name))
+		// A nil side is a body that never reaches the union: no opinion.
+		_, onCreate := sides.create[name]
+		_, onUpdate := sides.update[name]
+		absentOnCreate := sides.create != nil && !onCreate
+		absentOnUpdate := sides.update != nil && !onUpdate
+		merged, err := m.mergeAlternative(altCreate, altUpdate, altRead, absentOnCreate, absentOnUpdate, ChildPath(path, name))
 		if err != nil {
 			return nil, err
 		}
@@ -830,6 +839,8 @@ func (m *resourceMerger) mergeOneOf(create, update, read *Schema, createRequired
 			SDKConstructor: source.SDKConstructor,
 			SDKPointer:     source.SDKPointer,
 			ValueWrapped:   OneOfValueWrapped(merged),
+			AbsentOnCreate: absentOnCreate,
+			AbsentOnUpdate: absentOnUpdate,
 		})
 	}
 
@@ -856,26 +867,50 @@ func (m *resourceMerger) mergeOneOf(create, update, read *Schema, createRequired
 	}, create, update, read, createRequired, updateRequired, path), nil
 }
 
+// mergeAlternative merges one correlated alternative, recording for the walk
+// beneath it which request roles do not list it at all. An alternative is a
+// choice, never an entry in an enclosing object's required list, so it is
+// never itself request-required.
+func (m *resourceMerger) mergeAlternative(create, update, read *Schema, absentOnCreate, absentOnUpdate bool, path string) (*Schema, error) {
+	if absentOnCreate {
+		m.createAbsentDepth++
+		defer func() { m.createAbsentDepth-- }()
+	}
+	if absentOnUpdate {
+		m.updateAbsentDepth++
+		defer func() { m.updateAbsentDepth-- }()
+	}
+	return m.mergeNode(create, update, read, false, false, path)
+}
+
 // correlateOneOf lines the three bodies' alternatives up under one name each,
 // returning a create/update/read triple of name-keyed alternatives plus the
 // sorted names they agreed on. A nil map is a body that does not reach the
 // union. The bodies' own names are tried first, since a spelling every body
 // shares is already role-independent; only if they disagree is
 // StripOneOfRoleSuffix applied, to every side at once so the comparison stays
-// symmetric.
+// symmetric. The stripped pass also accepts requests that list only some of
+// the alternatives, as long as the Read response lists every one of them: an
+// API may accept an alternative on Update only, but refresh must be able to
+// read back whatever a request can send.
 func correlateOneOf(create, update, read *Schema, path string) (sides oneOfSides, names []string, err error) {
 	for _, strip := range []bool{false, true} {
 		if sides, err = indexOneOfSides(create, update, read, path, strip); err != nil {
 			return sides, nil, err
 		}
-		if names = sides.names(); sides.agree(len(names)) {
+		if names = sides.names(); sides.agree(len(names)) || strip && sides.readListsAll(len(names)) {
 			return sides, names, nil
 		}
 	}
+	reason := "the bodies that reach this union do not list the same alternatives, " +
+		"even after their CRUD-role suffixes are removed"
+	if missing := sides.missingFromRead(); len(missing) > 0 {
+		reason = fmt.Sprintf("alternative(s) %q are accepted on a request but missing from the Read response, "+
+			"so refresh could not read them back", missing)
+	}
 	return sides, nil, &OneOfMergeError{
-		Path: path,
-		Reason: "the bodies that reach this union do not list the same alternatives, " +
-			"even after their CRUD-role suffixes are removed",
+		Path:   path,
+		Reason: reason,
 		Create: alternativeNames(create),
 		Update: alternativeNames(update),
 		Read:   alternativeNames(read),
@@ -936,6 +971,30 @@ func (s oneOfSides) agree(total int) bool {
 		}
 	}
 	return true
+}
+
+// readListsAll reports whether the Read response reaches the union and carries
+// every alternative any body does, so each request's alternatives are a subset
+// of Read's.
+func (s oneOfSides) readListsAll(total int) bool {
+	return s.read != nil && len(s.read) == total
+}
+
+// missingFromRead returns, sorted, the alternatives a request lists but a Read
+// response that reaches the union does not; nil when Read does not reach it.
+func (s oneOfSides) missingFromRead() []string {
+	if s.read == nil {
+		return nil
+	}
+	missing := map[string]struct{}{}
+	for _, side := range []map[string]OneOfVariant{s.create, s.update} {
+		for name := range side {
+			if _, ok := s.read[name]; !ok {
+				missing[name] = struct{}{}
+			}
+		}
+	}
+	return slices.Sorted(maps.Keys(missing))
 }
 
 // oneOfAlternativesByName indexes one body's alternatives by name, optionally

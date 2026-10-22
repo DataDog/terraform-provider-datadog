@@ -516,6 +516,8 @@ func (b *treeBuilder) oneOfVariant(
 		SDKConstructor: variant.SDKConstructor,
 		SDKPointer:     variant.SDKPointer,
 		ValueWrapped:   valueWrapped,
+		AbsentOnCreate: variant.AbsentOnCreate,
+		AbsentOnUpdate: variant.AbsentOnUpdate,
 		Attribute:      block,
 	}, nil
 }

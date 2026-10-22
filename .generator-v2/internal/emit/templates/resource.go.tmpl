@@ -417,12 +417,23 @@ response omitted from reaching final Create state. */}}
   Set<Field> call takes. It renders inside the caller's "if <envelope> != nil"
   block, so its locals are scoped to that envelope. Every variant is inspected
   and the selections counted, then exactly one is required, checked before the
-  SDK call so an invalid selection costs no request. An object alternative
+  SDK call so an invalid selection costs no request. An alternative this role
+  cannot send (Rejected) is refused first, with its own message, so choosing
+  it never reads as a miscount. An object alternative
   builds its member with New<Member>WithDefaults() and fills it through
   requestField; a value-wrapped one converts its single "value" child.
 */}}
 {{- define "requestOneOfValue" -}}
 	var {{ .Var }} {{ .SDKType }}
+{{- range .Rejected }}
+	if {{ .ModelExpr }} != nil {
+		response.Diagnostics.AddError(
+			{{ printf "Invalid %s" $.TFName | printf "%q" }},
+			{{ printf "%q" .Message }},
+		)
+		return
+	}
+{{- end }}
 	{{ .MatchVar }} := 0
 {{- range .Variants }}
 	if {{ .ModelExpr }} != nil {

@@ -1,0 +1,1 @@
+terraform import datadog_security_findings_default_inbox_rule.secret secret_default_rule

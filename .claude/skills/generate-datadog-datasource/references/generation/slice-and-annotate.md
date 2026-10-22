@@ -6,14 +6,15 @@ is Phase 2b (`running-tfgen.md`).
 
 ## What the script does
 
-`tfgen` only acts on an operation carrying the `x-datadog-tf-generator` extension, and the
-full v2 spec is enormous and unannotated. `slice_and_annotate.py` does two jobs in one pass:
+`tfgen` generates artifacts declared in `tags[].x-datadog-tf-generator` family
+registries. `slice_and_annotate.py` prepares one artifact from the full v2 spec:
 
 1. **Slices** the full spec down to only the chosen operation(s) + their transitive `$ref`
    closure (schemas, params, responses, security schemes) — a valid standalone OpenAPI 3.0
    document.
-2. **Stamps** the `x-datadog-tf-generator` extension onto the anchor operation, built from
-   the flags you pass.
+2. **Declares** the requested artifact on the anchor operation's owning top-level
+   tag, using the flags you pass. It removes other artifact declarations from the
+   slice while preserving registry vendor metadata.
 
 It writes the slice to a temp file and prints **only that path on stdout**, so you capture
 it and feed it to tfgen. The script lives at
@@ -21,19 +22,18 @@ it and feed it to tfgen. The script lives at
 
 ## How the annotation works
 
-`x-datadog-tf-generator` is the extension tfgen reads. Schema of record:
-`.generator-v2/internal/contracts/tracking-field.schema.json`.
+The contract is `.generator-v2/internal/contracts/family-registry.schema.json`;
+its generated reference is `.generator-v2/docs/reference/annotation.md`.
+The family key supplies the artifact name. Blocks are named `resource`,
+`datasource_singular`, or `datasource_list`, and each block names its backing
+operation IDs in `group`.
 
-| Field | Meaning |
-|---|---|
-| `artifact_kind` | `data_source` (this skill) or `resource`. Required. |
-| `artifact_name` | TF name without `datadog_`; `^[a-z][a-z0-9_]*$`, ≤64. Required. |
-| `tf_description` | Doc string shown in `terraform docs`. |
-| `cardinality` | `singular` (default) or `plural`. |
-| `group` | Backing operations by operationId: `read` (by-id), `search` (list), and `create`/`update`/`delete` for resources. ≥1 of read/search. |
-| `overwrites` | Constructor of a hand-written data source to retire in place. Data sources only. |
+The script's `--artifact-kind` and `--cardinality` flags choose the block; they
+are CLI inputs, not fields written into the registry. It sets an explicit
+`artifact_name` to preserve the requested name, including plural names.
+`tf_description` and `overwrites` are block-level fields.
 
-`operationId` = the Go client method name (`GetTeam`, `ListTeams`).
+`operationId` is the Go client method name (`GetTeam`, `ListTeams`).
 
 ## Running it
 

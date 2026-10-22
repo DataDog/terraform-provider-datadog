@@ -16,12 +16,6 @@ paths:
   /direct-ref:
     post:
       operationId: CreateDirectRef
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: direct_ref
-        group:
-          create: CreateDirectRef
-          read: CreateDirectRef
       requestBody:
         content:
           application/json:
@@ -33,12 +27,6 @@ paths:
   /nested-ref:
     post:
       operationId: CreateNestedRef
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: nested_ref
-        group:
-          create: CreateNestedRef
-          read: CreateNestedRef
       requestBody:
         content:
           application/json:
@@ -47,3 +35,20 @@ paths:
       responses:
         '204':
           description: no content
+tags:
+- name: Terraform
+  x-datadog-tf-generator:
+    direct_ref:
+      resource:
+        artifact_name: direct_ref
+        group:
+          create: CreateDirectRef
+          read: CreateDirectRef
+          delete: CreateDirectRef
+    nested_ref:
+      resource:
+        artifact_name: nested_ref
+        group:
+          create: CreateNestedRef
+          read: CreateNestedRef
+          delete: CreateNestedRef

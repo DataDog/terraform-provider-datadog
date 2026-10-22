@@ -175,6 +175,8 @@ type Spec struct {
 	Components *v3.Components
 	// Hash is the lowercase hex SHA-256 of the spec source
 	Hash string
+	// Warnings describe ignored legacy annotations without enabling them.
+	Warnings []string
 }
 
 // Operation is a single OpenAPI operation, tagged with whether it is in scope
@@ -190,6 +192,18 @@ type Operation struct {
 	Tag string
 	// Tracking is the decoded tracking-field extension
 	Tracking *TrackingFieldMetadata
+	// Synthetic marks an operation the parser minted to carry one artifact
+	// declared by the tag-scoped family registry, rather than one the
+	// document declares. It shares Path/Method/OperationId with the real
+	// operation it was cloned from — the artifact's primary operation — so it
+	// must be excluded anywhere operations are indexed by identity, notably the
+	// operationId index a group resolves through: two entries under one id would
+	// otherwise let a group resolve to the clone.
+	Synthetic bool
+	// GenerationError retains an artifact-local loading failure. The declaration
+	// remains in the spec so generation reports it and reconciliation cannot
+	// mistake the failed artifact for an orphan.
+	GenerationError error
 	// Unstable records that the operation declares x-unstable. Only presence is
 	// kept; the extension's value is just a human-readable beta notice.
 	Unstable bool
@@ -566,6 +580,14 @@ type OneOfVariant struct {
 	// Terraform variant model exposes a single field named value. Object
 	// alternatives expose their generated fields directly.
 	ValueWrapped bool
+	// AbsentOnCreate and AbsentOnUpdate are set only by the resource merge, on
+	// an alternative that role's request body does not list although the body
+	// does reach the union. The zero value means accepted, which is also what a
+	// role with no opinion (a body that never reaches the union, or no Update
+	// endpoint) reads as. Read needs no flag: the merge rejects any alternative
+	// the Read response cannot return.
+	AbsentOnCreate bool
+	AbsentOnUpdate bool
 }
 
 // ----------------------------------------------------------------------------
@@ -762,6 +784,11 @@ type OneOfEnvelopeVariant struct {
 	// or a directly nested union — whose block holds a single child named
 	// "value". Object alternatives expose their own fields directly instead.
 	ValueWrapped bool
+	// AbsentOnCreate and AbsentOnUpdate are carried through from
+	// OneOfVariant: the variant's block is configurable, but that role's
+	// request cannot send it.
+	AbsentOnCreate bool
+	AbsentOnUpdate bool
 	// Attribute is this variant's projected block — the same pointer as the
 	// envelope-carrying attribute's Children entry at this index. Children
 	// drives schema rendering; this reaches a block without re-deriving order.
@@ -935,7 +962,6 @@ type SkipReason string
 
 const (
 	SkipReasonTrackingFieldAbsent SkipReason = "tracking_field_absent"
-	SkipReasonTrackingFieldSkip   SkipReason = "tracking_field_skip_true"
 )
 
 // RunReport is the structured output of a tfgen generate run.
@@ -964,6 +990,9 @@ type RunSummary struct {
 
 // ArtifactReportEntry is the per-artifact section of a RunReport.
 type ArtifactReportEntry struct {
+	// Tag is the owning registry's OpenAPI tag, not the backing endpoint's tag.
+	// It is absent for retired artifacts whose declaration no longer exists.
+	Tag         string         `json:"tag,omitempty"`
 	Name        string         `json:"name"`
 	Kind        ArtifactKind   `json:"kind"`
 	Status      ArtifactStatus `json:"status"`

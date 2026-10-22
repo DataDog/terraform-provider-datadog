@@ -109,6 +109,7 @@ Optional:
 - `amazon_s3` (Block List) The `amazon_s3` destination sends your logs in Datadog-rehydratable format to an Amazon S3 bucket for archiving. (see [below for nested schema](#nestedblock--config--destination--amazon_s3))
 - `amazon_s3_generic` (Block List) The `amazon_s3_generic` destination sends your logs to an Amazon S3 bucket. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic))
 - `amazon_security_lake` (Block List) The `amazon_security_lake` destination sends your logs to Amazon Security Lake. (see [below for nested schema](#nestedblock--config--destination--amazon_security_lake))
+- `azure_data_explorer` (Block List) The `azure_data_explorer` destination sends log events to an Azure Data Explorer table. (see [below for nested schema](#nestedblock--config--destination--azure_data_explorer))
 - `azure_storage` (Block List) The `azure_storage` destination forwards logs to an Azure Blob Storage container. (see [below for nested schema](#nestedblock--config--destination--azure_storage))
 - `clickhouse` (Block List) The `clickhouse` destination forwards logs to a ClickHouse server via HTTP. (see [below for nested schema](#nestedblock--config--destination--clickhouse))
 - `cloud_prem` (Block List) The `cloud_prem` destination sends logs to Datadog CloudPrem. (see [below for nested schema](#nestedblock--config--destination--cloud_prem))
@@ -407,6 +408,146 @@ Optional:
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+
+
+
+<a id="nestedblock--config--destination--azure_data_explorer"></a>
+### Nested Schema for `config.destination.azure_data_explorer`
+
+Required:
+
+- `database` (String) The name of the Azure Data Explorer database to ingest into. Supports template syntax.
+- `table` (String) The name of the Azure Data Explorer table to ingest into. Supports template syntax.
+
+Optional:
+
+- `auth` (Block List) Authentication configuration for Azure Data Explorer. Exactly one of `azure_cli`, `client_secret`, `client_certificate`, `managed_identity`, `managed_identity_client_assertion`, or `workload_identity` must be specified. (see [below for nested schema](#nestedblock--config--destination--azure_data_explorer--auth))
+- `batch` (Block List) Event batching settings for Azure Data Explorer ingestion. (see [below for nested schema](#nestedblock--config--destination--azure_data_explorer--batch))
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--azure_data_explorer--buffer))
+- `compression` (Block List) Compression configuration for ingested data. Only `gzip` is supported. (see [below for nested schema](#nestedblock--config--destination--azure_data_explorer--compression))
+- `ingestion_endpoint_key` (String) Name of the environment variable or secret that holds the Azure Data Explorer ingestion endpoint URL. Defaults to `DESTINATION_AZURE_DATA_EXPLORER_INGESTION_ENDPOINT`.
+- `mapping_reference` (String) The name of a pre-created ingestion mapping on the table used to map incoming events to columns. Supports template syntax.
+- `token_scope` (String) The OAuth scope requested when acquiring an access token for Azure Data Explorer. Defaults to `https://kusto.kusto.windows.net/.default`.
+
+<a id="nestedblock--config--destination--azure_data_explorer--auth"></a>
+### Nested Schema for `config.destination.azure_data_explorer.auth`
+
+Optional:
+
+- `azure_cli` (Block List) Authenticate using the Azure CLI credentials available in the environment. (see [below for nested schema](#nestedblock--config--destination--azure_data_explorer--auth--azure_cli))
+- `client_certificate` (Block List) Authenticate using a Microsoft Entra application client certificate. (see [below for nested schema](#nestedblock--config--destination--azure_data_explorer--auth--client_certificate))
+- `client_secret` (Block List) Authenticate using a Microsoft Entra application client secret. (see [below for nested schema](#nestedblock--config--destination--azure_data_explorer--auth--client_secret))
+- `managed_identity` (Block List) Authenticate using an Azure managed identity. (see [below for nested schema](#nestedblock--config--destination--azure_data_explorer--auth--managed_identity))
+- `managed_identity_client_assertion` (Block List) Authenticate using a managed identity as a client assertion for a Microsoft Entra application. (see [below for nested schema](#nestedblock--config--destination--azure_data_explorer--auth--managed_identity_client_assertion))
+- `workload_identity` (Block List) Authenticate using Azure Workload Identity (for example, on Kubernetes). (see [below for nested schema](#nestedblock--config--destination--azure_data_explorer--auth--workload_identity))
+
+<a id="nestedblock--config--destination--azure_data_explorer--auth--azure_cli"></a>
+### Nested Schema for `config.destination.azure_data_explorer.auth.azure_cli`
+
+
+<a id="nestedblock--config--destination--azure_data_explorer--auth--client_certificate"></a>
+### Nested Schema for `config.destination.azure_data_explorer.auth.client_certificate`
+
+Required:
+
+- `azure_client_id` (String) The Microsoft Entra application (client) ID.
+- `azure_tenant_id` (String) The Microsoft Entra tenant ID.
+- `certificate_path` (String) Path to the `.pfx` client certificate file on the Worker.
+
+Optional:
+
+- `certificate_password_key` (String) Name of the environment variable or secret that holds the password for the client certificate.
+
+
+<a id="nestedblock--config--destination--azure_data_explorer--auth--client_secret"></a>
+### Nested Schema for `config.destination.azure_data_explorer.auth.client_secret`
+
+Required:
+
+- `azure_client_id` (String) The Microsoft Entra application (client) ID.
+- `azure_client_secret_key` (String) Name of the environment variable or secret that holds the Microsoft Entra application client secret.
+- `azure_tenant_id` (String) The Microsoft Entra tenant ID.
+
+
+<a id="nestedblock--config--destination--azure_data_explorer--auth--managed_identity"></a>
+### Nested Schema for `config.destination.azure_data_explorer.auth.managed_identity`
+
+Optional:
+
+- `user_assigned_managed_identity_id` (String) The ID of the user-assigned managed identity. If omitted, the system-assigned managed identity is used.
+- `user_assigned_managed_identity_id_type` (String) The type of the user-assigned managed identity ID. Valid values are `client_id`, `object_id`, and `resource_id`. Valid values are `client_id`, `object_id`, `resource_id`.
+
+
+<a id="nestedblock--config--destination--azure_data_explorer--auth--managed_identity_client_assertion"></a>
+### Nested Schema for `config.destination.azure_data_explorer.auth.managed_identity_client_assertion`
+
+Required:
+
+- `client_assertion_client_id` (String) The client ID of the Microsoft Entra application that trusts the managed identity.
+- `client_assertion_tenant_id` (String) The tenant ID of the Microsoft Entra application that trusts the managed identity.
+
+Optional:
+
+- `user_assigned_managed_identity_id` (String) The ID of the user-assigned managed identity. If omitted, the system-assigned managed identity is used.
+- `user_assigned_managed_identity_id_type` (String) The type of the user-assigned managed identity ID. Valid values are `client_id`, `object_id`, and `resource_id`. Valid values are `client_id`, `object_id`, `resource_id`.
+
+
+<a id="nestedblock--config--destination--azure_data_explorer--auth--workload_identity"></a>
+### Nested Schema for `config.destination.azure_data_explorer.auth.workload_identity`
+
+Optional:
+
+- `client_id` (String) The client ID of the Microsoft Entra application. If omitted, it is read from the environment.
+- `tenant_id` (String) The Microsoft Entra tenant ID. If omitted, it is read from the environment.
+- `token_file_path` (String) Path to the federated token file. If omitted, it is read from the environment.
+
+
+
+<a id="nestedblock--config--destination--azure_data_explorer--batch"></a>
+### Nested Schema for `config.destination.azure_data_explorer.batch`
+
+Optional:
+
+- `max_bytes` (Number) Maximum batch size in bytes. Value must be between 1 and 4000000.
+- `max_events` (Number) Maximum number of events per batch before it is flushed. Value must be at least 1.
+- `timeout_secs` (Number) Maximum number of seconds to wait before flushing a partial batch. Value must be at least 1.
+
+
+<a id="nestedblock--config--destination--azure_data_explorer--buffer"></a>
+### Nested Schema for `config.destination.azure_data_explorer.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--azure_data_explorer--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--azure_data_explorer--buffer--memory))
+
+<a id="nestedblock--config--destination--azure_data_explorer--buffer--disk"></a>
+### Nested Schema for `config.destination.azure_data_explorer.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--azure_data_explorer--buffer--memory"></a>
+### Nested Schema for `config.destination.azure_data_explorer.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+
+<a id="nestedblock--config--destination--azure_data_explorer--compression"></a>
+### Nested Schema for `config.destination.azure_data_explorer.compression`
+
+Required:
+
+- `algorithm` (String) Compression algorithm. Must be `gzip`. Valid values are `gzip`.
+- `level` (Number) Gzip compression level (1-9). Value must be between 1 and 9.
 
 
 
@@ -1939,6 +2080,7 @@ Optional:
 
 **Deprecated:** This processor is deprecated, you should now use the `generate_metrics` processor. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_datadog_metrics))
 - `generate_metrics` (Block List) The `generate_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields. There must be a destination whose `inputs` reference this processor with the `<processor-id>.metrics` suffix to route the generated metrics. All destination types normally supported for `metrics` pipelines are also supported as metrics destinations in `logs` pipelines. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_metrics))
+- `metric_enrichment_table` (Block List) Configures the `enrichment_table` processor for `metrics` pipelines. The processor enriches metrics with tags from a static CSV file or a Datadog reference table. It looks up a row using the metric name or a metric tag value. It then adds each column of the matching row as a metric tag, overwriting any existing tag with the same key. Exactly one of `file` or `reference_table` must be configured. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_enrichment_table))
 - `metric_tags` (Block List) The `metric_tags` processor filters metrics based on their tags using Datadog tag key patterns. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_tags))
 - `ocsf_mapper` (Block List) The `ocsf_mapper` processor transforms logs into the OCSF schema using predefined library mappings or custom mapping configuration. (see [below for nested schema](#nestedblock--config--processor_group--processor--ocsf_mapper))
 - `parse_grok` (Block List) The `parse_grok` processor extracts structured fields from unstructured log messages using Grok patterns. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok))
@@ -2017,6 +2159,22 @@ Required:
 
 - `interval_secs` (Number) The interval, in seconds, over which metrics are aggregated. Must be between 1 and 60. Value must be between 1 and 60.
 - `mode` (String) The aggregation mode. One of `auto`, `sum`, `latest`, `count`, `max`, `min`, `mean`. Valid values are `auto`, `sum`, `latest`, `count`, `max`, `min`, `mean`.
+
+Optional:
+
+- `aggregation_timing` (Block List) Configures how metrics are assigned to aggregation windows. When omitted, metrics are grouped using system time. (see [below for nested schema](#nestedblock--config--processor_group--processor--aggregate--aggregation_timing))
+
+<a id="nestedblock--config--processor_group--processor--aggregate--aggregation_timing"></a>
+### Nested Schema for `config.processor_group.processor.aggregate.aggregation_timing`
+
+Required:
+
+- `type` (String) Determines whether metrics are assigned to aggregation windows based on when they are processed (`system_time`) or their timestamps (`event_time`). Valid values are `system_time`, `event_time`.
+
+Optional:
+
+- `allowed_lateness_secs` (Number) Grace period, in seconds, for late-arriving metrics when using event time. Defaults to 10 seconds when omitted. Value must be between 0 and 3600.
+
 
 
 <a id="nestedblock--config--processor_group--processor--custom_processor"></a>
@@ -2210,6 +2368,96 @@ Required:
 Optional:
 
 - `field` (String) Name of the log field containing the numeric value to increment the metric by (used only for `increment_by_field`).
+
+
+
+
+<a id="nestedblock--config--processor_group--processor--metric_enrichment_table"></a>
+### Nested Schema for `config.processor_group.processor.metric_enrichment_table`
+
+Optional:
+
+- `file` (Block List) Defines a static enrichment table loaded from a CSV file for metric enrichment. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_enrichment_table--file))
+- `reference_table` (Block List) Uses a Datadog reference table to enrich metrics. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_enrichment_table--reference_table))
+
+<a id="nestedblock--config--processor_group--processor--metric_enrichment_table--file"></a>
+### Nested Schema for `config.processor_group.processor.metric_enrichment_table.file`
+
+Required:
+
+- `path` (String) Path to the CSV file.
+
+Optional:
+
+- `encoding` (Block List) File encoding format. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_enrichment_table--file--encoding))
+- `key` (Block List) Defines how to map a metric lookup value to a CSV column during enrichment table lookups. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_enrichment_table--file--key))
+
+<a id="nestedblock--config--processor_group--processor--metric_enrichment_table--file--encoding"></a>
+### Nested Schema for `config.processor_group.processor.metric_enrichment_table.file.encoding`
+
+Required:
+
+- `delimiter` (String) The single character that separates columns in the file.
+- `includes_headers` (Boolean) Whether the first row of the file contains column headers.
+- `type` (String) The encoding format of the file. The value should always be `csv`.
+
+
+<a id="nestedblock--config--processor_group--processor--metric_enrichment_table--file--key"></a>
+### Nested Schema for `config.processor_group.processor.metric_enrichment_table.file.key`
+
+Required:
+
+- `column` (String) The CSV column name or index to match against the lookup value.
+
+Optional:
+
+- `source` (Block List) Specifies the source of the key value used for metric enrichment table lookups. The lookup key can be either the metric name or a metric tag. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_enrichment_table--file--key--source))
+
+<a id="nestedblock--config--processor_group--processor--metric_enrichment_table--file--key--source"></a>
+### Nested Schema for `config.processor_group.processor.metric_enrichment_table.file.key.source`
+
+Required:
+
+- `type` (String) The lookup source type. Use `metric_name` to look up the metric name, or `tag` to look up the value of the metric tag set in `name`. Valid values are `metric_name`, `tag`.
+
+Optional:
+
+- `name` (String) The Datadog tag key used as the lookup key. Required when `type` is `tag`.
+
+
+
+
+<a id="nestedblock--config--processor_group--processor--metric_enrichment_table--reference_table"></a>
+### Nested Schema for `config.processor_group.processor.metric_enrichment_table.reference_table`
+
+Required:
+
+- `table_id` (String) The unique identifier of the reference table.
+
+Optional:
+
+- `app_key_key` (String) The name of the environment variable or secret that holds the Datadog application key used to access the reference table.
+- `columns` (List of String) A list of column names to include from the reference table. If not provided, all columns are included.
+- `key` (Block List) Defines the metric lookup value used as the reference-table row ID. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_enrichment_table--reference_table--key))
+
+<a id="nestedblock--config--processor_group--processor--metric_enrichment_table--reference_table--key"></a>
+### Nested Schema for `config.processor_group.processor.metric_enrichment_table.reference_table.key`
+
+Optional:
+
+- `source` (Block List) Specifies the source of the key value used for metric enrichment table lookups. The lookup key can be either the metric name or a metric tag. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_enrichment_table--reference_table--key--source))
+
+<a id="nestedblock--config--processor_group--processor--metric_enrichment_table--reference_table--key--source"></a>
+### Nested Schema for `config.processor_group.processor.metric_enrichment_table.reference_table.key.source`
+
+Required:
+
+- `type` (String) The lookup source type. Use `metric_name` to look up the metric name, or `tag` to look up the value of the metric tag set in `name`. Valid values are `metric_name`, `tag`.
+
+Optional:
+
+- `name` (String) The Datadog tag key used as the lookup key. Required when `type` is `tag`.
+
 
 
 

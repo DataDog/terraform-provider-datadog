@@ -3,6 +3,7 @@ package dashboardmapping
 import (
 	"testing"
 
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -35,5 +36,22 @@ func TestFieldSpecListConstraints(t *testing.T) {
 	elem, ok := statesSchema.Elem.(*schema.Schema)
 	if !ok || elem.ValidateDiagFunc == nil {
 		t.Fatalf("string-list enum validation was not registered: %#v", statesSchema.Elem)
+	}
+}
+
+func TestFieldSpecJSONValidation(t *testing.T) {
+	jsonSchema := FieldSpecToSDKv2(FieldSpec{
+		HCLKey:   "value",
+		Type:     TypeJSON,
+		Required: true,
+	})
+	if jsonSchema.ValidateDiagFunc == nil {
+		t.Fatal("JSON validation was not registered")
+	}
+	if diags := jsonSchema.ValidateDiagFunc(`{"valid":true}`, cty.Path{}); diags.HasError() {
+		t.Fatalf("expected valid JSON to pass validation: %v", diags)
+	}
+	if diags := jsonSchema.ValidateDiagFunc("not-json", cty.Path{}); !diags.HasError() {
+		t.Fatal("expected invalid JSON to fail validation")
 	}
 }

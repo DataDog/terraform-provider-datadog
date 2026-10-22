@@ -10,9 +10,14 @@ shared.yaml (global info/servers/security/shared error responses) plus the
 integration_accounts fragments themselves -- and then reuses _build_mini's
 generic build_slice() against that merged spec.
 
+The spec repo carries no x-datadog-tf-generator annotation, so the script adds
+the one each slice needs (TF_GENERATOR below) to opt its resource in.
+
 Point at the datadog-api-spec checkout with DATADOG_API_SPEC_REPO (defaults to
 ~/go/src/github.com/DataDog/datadog-api-spec).
 """
+from _registry import declare_artifact
+
 import os
 import sys
 
@@ -32,7 +37,6 @@ FRAGMENTS = [
     os.path.join(V2_DIR, "header.yaml"),
     os.path.join(V2_DIR, "shared.yaml"),
     os.path.join(IA_DIR, "integration_accounts.yaml"),
-    os.path.join(IA_DIR, "integration_account_auth_methods.yaml"),
     os.path.join(IA_DIR, "interfaces", "twilio", "twilio.yaml"),
     os.path.join(IA_DIR, "interfaces", "twilio", "twilio_config.yaml"),
     os.path.join(IA_DIR, "interfaces", "elastic_cloud", "elastic_cloud.yaml"),
@@ -61,6 +65,31 @@ SLICES = [
         ],
     ),
 ]
+
+
+# operationId -> x-datadog-tf-generator annotation added to the slice.
+TF_GENERATOR = {
+    "GetTwilioIntegrationAccount": {
+        "artifact_name": "integration_twilio_account",
+        "tf_description": "Provides a Datadog Twilio integration account resource.",
+        "group": {
+            "create": "CreateTwilioIntegrationAccount",
+            "read": "GetTwilioIntegrationAccount",
+            "update": "UpdateTwilioIntegrationAccount",
+            "delete": "DeleteTwilioIntegrationAccount",
+        },
+    },
+    "CreateElasticCloudIntegrationAccount": {
+        "artifact_name": "integration_elastic_cloud",
+        "tf_description": "Provide a Datadog Elastic Cloud integration account resource.",
+        "group": {
+            "create": "CreateElasticCloudIntegrationAccount",
+            "read": "GetElasticCloudIntegrationAccount",
+            "update": "UpdateElasticCloudIntegrationAccount",
+            "delete": "DeleteElasticCloudIntegrationAccount",
+        },
+    },
+}
 
 
 def deep_merge(dst, src):
@@ -115,6 +144,12 @@ def main():
         for method, node in item.items():
             if method in HTTP_METHODS and isinstance(node, dict) and "operationId" in node:
                 op_index[node["operationId"]] = (path, method)
+
+    for op, annotation in TF_GENERATOR.items():
+        path, method = op_index[op]
+        fields = dict(annotation)
+        name = fields.pop("artifact_name")
+        declare_artifact(spec, spec["paths"][path][method], name, "resource", fields)
 
     for filename, ops in SLICES:
         missing = [op for op in ops if op not in op_index]

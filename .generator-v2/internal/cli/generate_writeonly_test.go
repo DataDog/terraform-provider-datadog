@@ -22,18 +22,22 @@ type writeOnlyResourceFixture struct {
 	name     string
 	spec     string
 	resource string
+	// basicAuth is the authentication variant block holding the password.
+	basicAuth string
 }
 
 var writeOnlyResourceFixtures = []writeOnlyResourceFixture{
 	{
-		name:     "Twilio",
-		spec:     "mini-datadog_integration_twilio_account.yaml",
-		resource: "resource_datadog_integration_twilio_account.go",
+		name:      "Twilio",
+		spec:      "mini-datadog_integration_twilio_account.yaml",
+		resource:  "resource_datadog_integration_twilio_account.go",
+		basicAuth: "twilio_integration_account_basic_auth",
 	},
 	{
-		name:     "Elastic Cloud",
-		spec:     "mini-datadog_integration_elastic_cloud_account.yaml",
-		resource: "resource_datadog_integration_elastic_cloud.go",
+		name:      "Elastic Cloud",
+		spec:      "mini-datadog_integration_elastic_cloud_account.yaml",
+		resource:  "resource_datadog_integration_elastic_cloud.go",
+		basicAuth: "elastic_cloud_integration_account_basic_auth",
 	},
 }
 
@@ -55,7 +59,7 @@ func TestGenerateWriteOnlyResources(t *testing.T) {
 				t.Fatalf("two independent generations of the %s resource differ", fixture.name)
 			}
 
-			assertGeneratedWriteOnlyContract(t, first)
+			assertGeneratedWriteOnlyContract(t, first, fixture.basicAuth)
 			assertGeneratedDefaultContract(t, first)
 
 			firstStaged = append(firstStaged, testinfra.StagedFile{
@@ -150,7 +154,7 @@ func assertNoFailedArtifacts(t *testing.T, reportPath string) {
 	}
 }
 
-func assertGeneratedWriteOnlyContract(t *testing.T, source []byte) {
+func assertGeneratedWriteOnlyContract(t *testing.T, source []byte, basicAuth string) {
 	t.Helper()
 	text := string(source)
 
@@ -158,28 +162,25 @@ func assertGeneratedWriteOnlyContract(t *testing.T, source []byte) {
 		`OriginalAttr: "password"`,
 		`WriteOnlyAttr: "password_wo"`,
 		`TriggerAttr: "password_wo_version"`,
-		`ParentBlocks: []string{"authentication", "integration_account_basic_auth"}`,
-		`Mode: fwutils.WriteOnlySecretModeOnly`,
+		`ParentBlocks: []string{"authentication", "` + basicAuth + `"}`,
+		`Mode: fwutils.WriteOnlySecretModeDual`,
 		`fwutils.CreateWriteOnlySecretAttributes(`,
 	} {
 		if !strings.Contains(text, want) {
 			t.Errorf("generated resource is missing write-only contract %q", want)
 		}
 	}
-	if got := strings.Count(text, "`tfsdk:\"password_wo\"`"); got != 1 {
-		t.Errorf("password_wo model field count = %d, want 1", got)
-	}
-	if got := strings.Count(text, "`tfsdk:\"password_wo_version\"`"); got != 1 {
-		t.Errorf("password_wo_version model field count = %d, want 1", got)
-	}
-	for _, forbidden := range []string{
-		"`tfsdk:\"password\"`",
-		`"password": schema.StringAttribute{`,
-		"Sensitive: true",
-	} {
-		if strings.Contains(text, forbidden) {
-			t.Errorf("generated resource contains forbidden plaintext/sensitive schema form %q", forbidden)
+	// The plaintext fallback is stateful and so has its own model field; the
+	// write-only pair keeps exactly one each.
+	for _, field := range []string{"password", "password_wo", "password_wo_version"} {
+		if got := strings.Count(text, "`tfsdk:\""+field+"\"`"); got != 1 {
+			t.Errorf("%s model field count = %d, want 1", field, got)
 		}
+	}
+	// fwutils owns the three attributes, so the plaintext fallback must not also
+	// be declared inline by the generated schema.
+	if strings.Contains(text, `"password": schema.StringAttribute{`) {
+		t.Error("generated resource declares the plaintext password inline instead of through fwutils")
 	}
 
 	for _, method := range []struct {
@@ -270,14 +271,17 @@ import (
 )
 
 func TestTfgenWriteOnlySchemasValidate(t *testing.T) {
-	constructors := map[string]func() resource.Resource{
-		"twilio": NewDatadogIntegrationTwilioAccountResource,
-		"elastic_cloud": NewDatadogIntegrationElasticCloudResource,
+	resources := map[string]struct {
+		constructor func() resource.Resource
+		basicAuth   string
+	}{
+		"twilio":        {NewDatadogIntegrationTwilioAccountResource, "twilio_integration_account_basic_auth"},
+		"elastic_cloud": {NewDatadogIntegrationElasticCloudResource, "elastic_cloud_integration_account_basic_auth"},
 	}
-	for name, constructor := range constructors {
+	for name, r := range resources {
 		t.Run(name, func(t *testing.T) {
 			var response resource.SchemaResponse
-			constructor().Schema(context.Background(), resource.SchemaRequest{}, &response)
+			r.constructor().Schema(context.Background(), resource.SchemaRequest{}, &response)
 			if response.Diagnostics.HasError() {
 				t.Fatalf("Schema returned errors: %v", response.Diagnostics)
 			}
@@ -286,26 +290,33 @@ func TestTfgenWriteOnlySchemasValidate(t *testing.T) {
 			if !ok {
 				t.Fatalf("authentication is %T, want SingleNestedAttribute", response.Schema.Attributes["authentication"])
 			}
-			basic, ok := authentication.Attributes["integration_account_basic_auth"].(resourceschema.SingleNestedAttribute)
+			basic, ok := authentication.Attributes[r.basicAuth].(resourceschema.SingleNestedAttribute)
 			if !ok {
-				t.Fatalf("integration_account_basic_auth is %T, want SingleNestedAttribute", authentication.Attributes["integration_account_basic_auth"])
+				t.Fatalf("%s is %T, want SingleNestedAttribute", r.basicAuth, authentication.Attributes[r.basicAuth])
 			}
-			if _, exists := basic.Attributes["password"]; exists {
-				t.Fatal("plaintext password attribute is exposed")
+			// Dual mode keeps the plaintext attribute as the Terraform <1.11
+			// fallback. All three are Optional: requiredness is enforced by the
+			// ExactlyOneOf pair, since neither half can be Required on its own.
+			plaintext, ok := basic.Attributes["password"].(resourceschema.StringAttribute)
+			if !ok {
+				t.Fatalf("password is %T, want StringAttribute", basic.Attributes["password"])
+			}
+			if plaintext.WriteOnly || !plaintext.Sensitive || !plaintext.Optional || plaintext.Required || plaintext.Computed {
+				t.Fatalf("password flags = %#v, want optional sensitive plaintext fallback", plaintext)
 			}
 			password, ok := basic.Attributes["password_wo"].(resourceschema.StringAttribute)
 			if !ok {
 				t.Fatalf("password_wo is %T, want StringAttribute", basic.Attributes["password_wo"])
 			}
-			if !password.WriteOnly || password.Sensitive || !password.Required || password.Optional || password.Computed {
-				t.Fatalf("password_wo flags = %#v, want required write-only and not sensitive/optional/computed", password)
+			if !password.WriteOnly || !password.Sensitive || !password.Optional || password.Required || password.Computed {
+				t.Fatalf("password_wo flags = %#v, want optional sensitive write-only", password)
 			}
 			version, ok := basic.Attributes["password_wo_version"].(resourceschema.StringAttribute)
 			if !ok {
 				t.Fatalf("password_wo_version is %T, want StringAttribute", basic.Attributes["password_wo_version"])
 			}
-			if version.WriteOnly || version.Sensitive || !version.Required || version.Optional || version.Computed {
-				t.Fatalf("password_wo_version flags = %#v, want required stateful trigger", version)
+			if version.WriteOnly || version.Sensitive || version.Required || !version.Optional || version.Computed {
+				t.Fatalf("password_wo_version flags = %#v, want optional stateful trigger", version)
 			}
 			authType, ok := basic.Attributes["auth_type"].(resourceschema.StringAttribute)
 			if !ok {

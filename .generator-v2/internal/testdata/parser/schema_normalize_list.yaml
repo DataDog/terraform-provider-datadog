@@ -8,12 +8,6 @@ paths:
       operationId: ListThings
       tags:
       - Things
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: things
-        cardinality: plural
-        group:
-          read: ListThings
       parameters:
       - $ref: '#/components/parameters/PageNumber'
       - $ref: '#/components/parameters/PageSize'
@@ -59,11 +53,6 @@ paths:
       operationId: GetThing
       tags:
       - Things
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: thing
-        group:
-          read: GetThing
       parameters:
       - name: thing_id
         in: path
@@ -134,3 +123,16 @@ components:
           type: integer
           format: int64
           description: How many.
+tags:
+- name: Things
+  x-datadog-tf-generator:
+    things:
+      datasource_list:
+        artifact_name: things
+        group:
+          read: ListThings
+    thing:
+      datasource_singular:
+        artifact_name: thing
+        group:
+          read: GetThing

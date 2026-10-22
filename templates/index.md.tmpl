@@ -41,4 +41,8 @@ values remain supported but are not required. Workload Identity Federation must
 be enabled for the Datadog organization, and its identity or intake mapping must
 match the AWS identity resolved by the credential chain.
 
+## Terraform Dynamic Provider Credentials
+
+For HCP Terraform, the provider discovers Terraform-issued workload identity tokens and exchanges them through Datadog Workload Identity Federation when authentication is not explicitly configured in the provider block. Use `workload_identity_token_tag` to select a distinct token for each provider configuration. Configure the WIF persona mapping and workspace audience as described in the [Dynamic Provider Credentials guide](guides/dynamic_provider_credentials.md).
+
 {{ .SchemaMarkdown | trimspace }}

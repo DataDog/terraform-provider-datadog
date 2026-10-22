@@ -6,8 +6,12 @@ import (
 	"log"
 	"testing"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -71,14 +75,100 @@ func TestAccDatadogSyntheticsPrivateLocation_Updated(t *testing.T) {
 	}
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	frameworkProvider := providers.frameworkProvider
+	var createdConfig string
+	createStep := createSyntheticsPrivateLocationStep(ctx, frameworkProvider, t)
+	createStep.Check = resource.ComposeTestCheckFunc(createStep.Check,
+		resource.TestCheckResourceAttrWith("datadog_synthetics_private_location.foo", "config", func(value string) error {
+			createdConfig = value
+			return nil
+		}),
+	)
+	updateStep := updateSyntheticsPrivateLocationStep(ctx, frameworkProvider, t)
+	updateStep.Check = resource.ComposeTestCheckFunc(updateStep.Check,
+		resource.TestCheckResourceAttrWith("datadog_synthetics_private_location.foo", "config", func(value string) error {
+			if value != createdConfig {
+				return fmt.Errorf("private location config changed during update")
+			}
+			return nil
+		}),
+	)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsPrivateLocationIsDestroyed(frameworkProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsPrivateLocationStep(ctx, frameworkProvider, t),
-			updateSyntheticsPrivateLocationStep(ctx, frameworkProvider, t),
+			createStep,
+			updateStep,
+		},
+	})
+}
+
+// Imported locations have no config: the API only returns it during creation.
+// Updating an imported location must preserve that null value after apply.
+func TestAccDatadogSyntheticsPrivateLocation_ImportThenUpdate(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	t.Parallel()
+	if !isReplaying() {
+		log.Println("Skipping private locations tests in non replaying mode")
+		return
+	}
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	privateLocationName := uniqueEntityName(ctx, t)
+	frameworkProvider := providers.frameworkProvider
+	updatedName := privateLocationName + "_updated"
+	updatedConfig := updateSyntheticsPrivateLocationConfig(updatedName)
+	var privateLocationID string
+
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() {
+			testAccPreCheck(t)
+			api := frameworkProvider.DatadogApiInstances.GetSyntheticsApiV1()
+			body := datadogV1.NewSyntheticsPrivateLocationWithDefaults()
+			body.SetName(privateLocationName)
+			body.SetDescription("a private location")
+			body.SetTags([]string{"foo:bar", "baz"})
+			created, _, err := api.CreatePrivateLocation(frameworkProvider.Auth, *body)
+			if err != nil {
+				t.Fatalf("creating private location for import: %v", err)
+			}
+			privateLocationID = created.PrivateLocation.GetId()
+			t.Cleanup(func() {
+				// Also clean up if import fails before Terraform can manage the location.
+				resp, err := api.DeletePrivateLocation(frameworkProvider.Auth, privateLocationID)
+				if err != nil && (resp == nil || resp.StatusCode != 404) {
+					t.Errorf("cleaning up imported private location: %v", err)
+				}
+			})
+		},
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsPrivateLocationIsDestroyed(frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config:             createSyntheticsPrivateLocationConfig(privateLocationName),
+				ResourceName:       "datadog_synthetics_private_location.foo",
+				ImportState:        true,
+				ImportStatePersist: true,
+				ImportStateIdFunc: func(*terraform.State) (string, error) {
+					return privateLocationID, nil
+				},
+			},
+			{
+				Config: updatedConfig,
+				Check: resource.ComposeTestCheckFunc(
+					testSyntheticsPrivateLocationExists(frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_synthetics_private_location.foo", "name", updatedName),
+					resource.TestCheckResourceAttr("datadog_synthetics_private_location.foo", "description", "an updated private location"),
+					resource.TestCheckResourceAttr("datadog_synthetics_private_location.foo", "tags.#", "3"),
+				),
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue("datadog_synthetics_private_location.foo", tfjsonpath.New("config"), knownvalue.Null()),
+				},
+			},
+			{
+				Config:   updatedConfig,
+				PlanOnly: true,
+			},
 		},
 	})
 }

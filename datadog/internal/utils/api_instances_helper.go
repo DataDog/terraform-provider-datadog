@@ -57,6 +57,7 @@ type ApiInstances struct {
 	authNMappingsApiV2             *datadogV2.AuthNMappingsApi
 	awsIntegrationApiV2            *datadogV2.AWSIntegrationApi
 	awsLogsIntegrationApiV2        *datadogV2.AWSLogsIntegrationApi
+	cloudAuthenticationApiV2       *datadogV2.CloudAuthenticationApi
 	cloudflareIntegrationApiV2     *datadogV2.CloudflareIntegrationApi
 	csmThreatsApiV2                *datadogV2.CSMThreatsApi
 	confluentCloudApiV2            *datadogV2.ConfluentCloudApi
@@ -94,6 +95,7 @@ type ApiInstances struct {
 	rolesApiV2                     *datadogV2.RolesApi
 	rumApiV2                       *datadogV2.RUMApi
 	rumMetricsApiV2                *datadogV2.RumMetricsApi
+	rumOperationsApiV2             *datadogV2.RUMOperationsApi
 	rumRetentionFiltersApiV2       *datadogV2.RumRetentionFiltersApi
 	securityMonitoringApiV2        *datadogV2.SecurityMonitoringApi
 	sensitiveDataScannerApiV2      *datadogV2.SensitiveDataScannerApi
@@ -151,6 +153,14 @@ func (i *ApiInstances) GetAWSLogsIntegrationApiV2() *datadogV2.AWSLogsIntegratio
 		i.awsLogsIntegrationApiV2 = datadogV2.NewAWSLogsIntegrationApi(i.HttpClient)
 	}
 	return i.awsLogsIntegrationApiV2
+}
+
+// GetCloudAuthenticationApiV2 get instance of CloudAuthenticationApi
+func (i *ApiInstances) GetCloudAuthenticationApiV2() *datadogV2.CloudAuthenticationApi {
+	if i.cloudAuthenticationApiV2 == nil {
+		i.cloudAuthenticationApiV2 = datadogV2.NewCloudAuthenticationApi(i.HttpClient)
+	}
+	return i.cloudAuthenticationApiV2
 }
 
 // GetAzureIntegrationApiV1 get instance of AzureIntegrationApi
@@ -628,6 +638,14 @@ func (i *ApiInstances) GetRumMetricsApiV2() *datadogV2.RumMetricsApi {
 		i.rumMetricsApiV2 = datadogV2.NewRumMetricsApi(i.HttpClient)
 	}
 	return i.rumMetricsApiV2
+}
+
+// GetRUMOperationsApiV2 get instance of RUMOperationsApi
+func (i *ApiInstances) GetRUMOperationsApiV2() *datadogV2.RUMOperationsApi {
+	if i.rumOperationsApiV2 == nil {
+		i.rumOperationsApiV2 = datadogV2.NewRUMOperationsApi(i.HttpClient)
+	}
+	return i.rumOperationsApiV2
 }
 
 // GetRumRetentionFiltersApiV2 get instance of RumRetentionFiltersApi
