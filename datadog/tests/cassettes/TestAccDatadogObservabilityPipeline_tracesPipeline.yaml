@@ -1,0 +1,212 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1590
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"buffer":{"max_events":5000,"type":"memory","when_full":"drop_newest"},"id":"datadog-traces-1","inputs":["traces-group-1"],"type":"datadog_traces"},{"id":"datadog-metrics-1","inputs":["gen-metrics-1.metrics"],"type":"datadog_metrics"}],"pipeline_type":"traces","processor_groups":[{"enabled":true,"id":"traces-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"service:checkout","type":"filter"},{"enabled":true,"group_by":["service","env"],"id":"sample-1","include":"*","percentage":25,"type":"sample"},{"enabled":true,"id":"sds-1","include":"*","rules":[{"name":"Redact secrets","on_match":{"action":"redact","options":{"replace":"[REDACTED]"}},"pattern":{"options":{"rule":"\\bsecret-[a-z0-9]+\\b"},"type":"custom"},"scope":{"target":"all"},"tags":["secret"]}],"type":"sensitive_data_scanner"},{"enabled":true,"id":"custom-1","include":"*","remaps":[{"drop_on_error":false,"enabled":true,"include":"*","name":"Tag spans","source":".tags.pipeline = \"traces\""}],"type":"custom_processor"},{"enabled":true,"enabled_metric_aggregation":true,"id":"gen-metrics-1","include":"*","metrics":[{"group_by":["service"],"include":"*","metric_type":"count","name":"traces.spans","value":{"strategy":"increment_by_one"}}],"type":"generate_metrics"}]}],"sources":[{"address_key":"DD_AGENT_TRACES_ADDRESS","id":"source-1","tls":{"ca_file":"/etc/certs/ca.crt","crt_file":"/etc/certs/agent.crt","key_file":"/etc/certs/agent.key"},"type":"datadog_agent"}]},"name":"traces-pipeline"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"a0cbafd0-d13f-11f1-af0d-da7ad0900002","type":"pipelines","attributes":{"name":"traces-pipeline","config":{"destinations":[{"buffer":{"max_events":5000,"type":"memory","when_full":"drop_newest"},"id":"datadog-traces-1","inputs":["traces-group-1"],"type":"datadog_traces"},{"id":"datadog-metrics-1","inputs":["gen-metrics-1.metrics"],"type":"datadog_metrics"}],"pipeline_type":"traces","processor_groups":[{"enabled":true,"id":"traces-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"service:checkout","type":"filter"},{"enabled":true,"group_by":["service","env"],"id":"sample-1","include":"*","percentage":25,"type":"sample"},{"enabled":true,"id":"sds-1","include":"*","rules":[{"name":"Redact secrets","on_match":{"action":"redact","options":{"replace":"[REDACTED]"}},"pattern":{"options":{"rule":"\\bsecret-[a-z0-9]+\\b"},"type":"custom"},"scope":{"target":"all"},"tags":["secret"]}],"type":"sensitive_data_scanner"},{"enabled":true,"id":"custom-1","include":"*","remaps":[{"drop_on_error":false,"enabled":true,"include":"*","name":"Tag spans","source":".tags.pipeline = \"traces\""}],"type":"custom_processor"},{"enabled":true,"enabled_metric_aggregation":true,"id":"gen-metrics-1","include":"*","metrics":[{"group_by":["service"],"include":"*","metric_type":"count","name":"traces.spans","value":{"strategy":"increment_by_one"}}],"type":"generate_metrics"}]}],"processors":[{"enabled":true,"id":"traces-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"service:checkout","type":"filter"},{"enabled":true,"group_by":["service","env"],"id":"sample-1","include":"*","percentage":25,"type":"sample"},{"enabled":true,"id":"sds-1","include":"*","rules":[{"name":"Redact secrets","on_match":{"action":"redact","options":{"replace":"[REDACTED]"}},"pattern":{"options":{"rule":"\\bsecret-[a-z0-9]+\\b"},"type":"custom"},"scope":{"target":"all"},"tags":["secret"]}],"type":"sensitive_data_scanner"},{"enabled":true,"id":"custom-1","include":"*","remaps":[{"drop_on_error":false,"enabled":true,"include":"*","name":"Tag spans","source":".tags.pipeline = \"traces\""}],"type":"custom_processor"},{"enabled":true,"enabled_metric_aggregation":true,"id":"gen-metrics-1","include":"*","metrics":[{"group_by":["service"],"include":"*","metric_type":"count","name":"traces.spans","value":{"strategy":"increment_by_one"}}],"type":"generate_metrics"}]}],"sources":[{"address_key":"DD_AGENT_TRACES_ADDRESS","id":"source-1","tls":{"ca_file":"/etc/certs/ca.crt","crt_file":"/etc/certs/agent.crt","key_file":"/etc/certs/agent.key"},"type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 612.439167ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/a0cbafd0-d13f-11f1-af0d-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"a0cbafd0-d13f-11f1-af0d-da7ad0900002","type":"pipelines","attributes":{"name":"traces-pipeline","config":{"destinations":[{"buffer":{"max_events":5000,"type":"memory","when_full":"drop_newest"},"id":"datadog-traces-1","inputs":["traces-group-1"],"type":"datadog_traces"},{"id":"datadog-metrics-1","inputs":["gen-metrics-1.metrics"],"type":"datadog_metrics"}],"pipeline_type":"traces","processor_groups":[{"enabled":true,"id":"traces-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"service:checkout","type":"filter"},{"enabled":true,"group_by":["service","env"],"id":"sample-1","include":"*","percentage":25,"type":"sample"},{"enabled":true,"id":"sds-1","include":"*","rules":[{"name":"Redact secrets","on_match":{"action":"redact","options":{"replace":"[REDACTED]"}},"pattern":{"options":{"rule":"\\bsecret-[a-z0-9]+\\b"},"type":"custom"},"scope":{"target":"all"},"tags":["secret"]}],"type":"sensitive_data_scanner"},{"enabled":true,"id":"custom-1","include":"*","remaps":[{"drop_on_error":false,"enabled":true,"include":"*","name":"Tag spans","source":".tags.pipeline = \"traces\""}],"type":"custom_processor"},{"enabled":true,"enabled_metric_aggregation":true,"id":"gen-metrics-1","include":"*","metrics":[{"group_by":["service"],"include":"*","metric_type":"count","name":"traces.spans","value":{"strategy":"increment_by_one"}}],"type":"generate_metrics"}]}],"processors":[{"enabled":true,"id":"traces-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"service:checkout","type":"filter"},{"enabled":true,"group_by":["service","env"],"id":"sample-1","include":"*","percentage":25,"type":"sample"},{"enabled":true,"id":"sds-1","include":"*","rules":[{"name":"Redact secrets","on_match":{"action":"redact","options":{"replace":"[REDACTED]"}},"pattern":{"options":{"rule":"\\bsecret-[a-z0-9]+\\b"},"type":"custom"},"scope":{"target":"all"},"tags":["secret"]}],"type":"sensitive_data_scanner"},{"enabled":true,"id":"custom-1","include":"*","remaps":[{"drop_on_error":false,"enabled":true,"include":"*","name":"Tag spans","source":".tags.pipeline = \"traces\""}],"type":"custom_processor"},{"enabled":true,"enabled_metric_aggregation":true,"id":"gen-metrics-1","include":"*","metrics":[{"group_by":["service"],"include":"*","metric_type":"count","name":"traces.spans","value":{"strategy":"increment_by_one"}}],"type":"generate_metrics"}]}],"sources":[{"address_key":"DD_AGENT_TRACES_ADDRESS","id":"source-1","tls":{"ca_file":"/etc/certs/ca.crt","crt_file":"/etc/certs/agent.crt","key_file":"/etc/certs/agent.key"},"type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 351.299292ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/a0cbafd0-d13f-11f1-af0d-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"a0cbafd0-d13f-11f1-af0d-da7ad0900002","type":"pipelines","attributes":{"name":"traces-pipeline","config":{"destinations":[{"buffer":{"max_events":5000,"type":"memory","when_full":"drop_newest"},"id":"datadog-traces-1","inputs":["traces-group-1"],"type":"datadog_traces"},{"id":"datadog-metrics-1","inputs":["gen-metrics-1.metrics"],"type":"datadog_metrics"}],"pipeline_type":"traces","processor_groups":[{"enabled":true,"id":"traces-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"service:checkout","type":"filter"},{"enabled":true,"group_by":["service","env"],"id":"sample-1","include":"*","percentage":25,"type":"sample"},{"enabled":true,"id":"sds-1","include":"*","rules":[{"name":"Redact secrets","on_match":{"action":"redact","options":{"replace":"[REDACTED]"}},"pattern":{"options":{"rule":"\\bsecret-[a-z0-9]+\\b"},"type":"custom"},"scope":{"target":"all"},"tags":["secret"]}],"type":"sensitive_data_scanner"},{"enabled":true,"id":"custom-1","include":"*","remaps":[{"drop_on_error":false,"enabled":true,"include":"*","name":"Tag spans","source":".tags.pipeline = \"traces\""}],"type":"custom_processor"},{"enabled":true,"enabled_metric_aggregation":true,"id":"gen-metrics-1","include":"*","metrics":[{"group_by":["service"],"include":"*","metric_type":"count","name":"traces.spans","value":{"strategy":"increment_by_one"}}],"type":"generate_metrics"}]}],"processors":[{"enabled":true,"id":"traces-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"service:checkout","type":"filter"},{"enabled":true,"group_by":["service","env"],"id":"sample-1","include":"*","percentage":25,"type":"sample"},{"enabled":true,"id":"sds-1","include":"*","rules":[{"name":"Redact secrets","on_match":{"action":"redact","options":{"replace":"[REDACTED]"}},"pattern":{"options":{"rule":"\\bsecret-[a-z0-9]+\\b"},"type":"custom"},"scope":{"target":"all"},"tags":["secret"]}],"type":"sensitive_data_scanner"},{"enabled":true,"id":"custom-1","include":"*","remaps":[{"drop_on_error":false,"enabled":true,"include":"*","name":"Tag spans","source":".tags.pipeline = \"traces\""}],"type":"custom_processor"},{"enabled":true,"enabled_metric_aggregation":true,"id":"gen-metrics-1","include":"*","metrics":[{"group_by":["service"],"include":"*","metric_type":"count","name":"traces.spans","value":{"strategy":"increment_by_one"}}],"type":"generate_metrics"}]}],"sources":[{"address_key":"DD_AGENT_TRACES_ADDRESS","id":"source-1","tls":{"ca_file":"/etc/certs/ca.crt","crt_file":"/etc/certs/agent.crt","key_file":"/etc/certs/agent.key"},"type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 289.307125ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 256
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"datadog-traces-1","inputs":["source-1"],"type":"datadog_traces"}],"pipeline_type":"traces","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"traces-pipeline"},"id":"","type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/a0cbafd0-d13f-11f1-af0d-da7ad0900002
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 330
+        uncompressed: false
+        body: |
+            {"data":{"id":"a0cbafd0-d13f-11f1-af0d-da7ad0900002","type":"pipelines","attributes":{"name":"traces-pipeline","config":{"destinations":[{"id":"datadog-traces-1","inputs":["source-1"],"type":"datadog_traces"}],"pipeline_type":"traces","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 518.223042ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/a0cbafd0-d13f-11f1-af0d-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 330
+        uncompressed: false
+        body: |
+            {"data":{"id":"a0cbafd0-d13f-11f1-af0d-da7ad0900002","type":"pipelines","attributes":{"name":"traces-pipeline","config":{"destinations":[{"id":"datadog-traces-1","inputs":["source-1"],"type":"datadog_traces"}],"pipeline_type":"traces","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 300.117917ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/a0cbafd0-d13f-11f1-af0d-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 545.682542ms

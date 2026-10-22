@@ -90,7 +90,7 @@ resource "datadog_observability_pipeline" "test" {
 Optional:
 
 - `destination` (Block List) List of destinations. (see [below for nested schema](#nestedblock--config--destination))
-- `pipeline_type` (String) The type of data being ingested. Defaults to `logs` if not specified. Valid values are `logs`, `metrics`.
+- `pipeline_type` (String) The type of data being ingested. Defaults to `logs` if not specified. Valid values are `logs`, `metrics`, `traces`.
 - `processor_group` (Block List) A processor group containing common configuration and nested processors. (see [below for nested schema](#nestedblock--config--processor_group))
 - `source` (Block List) List of sources. (see [below for nested schema](#nestedblock--config--source))
 - `use_legacy_search_syntax` (Boolean) Set to `true` to continue using the legacy search syntax while migrating filter queries. After migrating all queries to the new syntax, set to `false`. The legacy syntax is deprecated and will eventually be removed. Requires Observability Pipelines Worker 2.11 or later. Only applies to `logs` pipelines. This field is ignored for `metrics` pipelines. See https://docs.datadoghq.com/observability_pipelines/guide/upgrade_your_filter_queries_to_the_new_search_syntax/ for more information.
@@ -117,6 +117,7 @@ Optional:
 - `databricks_zerobus` (Block List) The `databricks_zerobus` destination sends logs to Databricks via the Zerobus ingestion API. (see [below for nested schema](#nestedblock--config--destination--databricks_zerobus))
 - `datadog_logs` (Block List) The `datadog_logs` destination forwards logs to Datadog Log Management. (see [below for nested schema](#nestedblock--config--destination--datadog_logs))
 - `datadog_metrics` (Block List) The `datadog_metrics` destination forwards metrics to Datadog. (see [below for nested schema](#nestedblock--config--destination--datadog_metrics))
+- `datadog_traces` (Block List) The `datadog_traces` destination forwards traces to Datadog. (see [below for nested schema](#nestedblock--config--destination--datadog_traces))
 - `elasticsearch` (Block List) The `elasticsearch` destination writes logs or metrics to an Elasticsearch cluster. (see [below for nested schema](#nestedblock--config--destination--elasticsearch))
 - `google_cloud_storage` (Block List) The `google_cloud_storage` destination stores logs in a Google Cloud Storage (GCS) bucket. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage))
 - `google_pubsub` (Block List) The `google_pubsub` destination publishes logs to a Google Cloud Pub/Sub topic. (see [below for nested schema](#nestedblock--config--destination--google_pubsub))
@@ -126,7 +127,7 @@ Optional:
 - `microsoft_sentinel` (Block List) The `microsoft_sentinel` destination forwards logs to Microsoft Sentinel. (see [below for nested schema](#nestedblock--config--destination--microsoft_sentinel))
 - `new_relic` (Block List) The `new_relic` destination sends logs to the New Relic platform. (see [below for nested schema](#nestedblock--config--destination--new_relic))
 - `opensearch` (Block List) The `opensearch` destination writes logs to an OpenSearch cluster. (see [below for nested schema](#nestedblock--config--destination--opensearch))
-- `opentelemetry` (Block List) The `opentelemetry` destination forwards metrics using the OpenTelemetry Protocol (OTLP) over HTTP. (see [below for nested schema](#nestedblock--config--destination--opentelemetry))
+- `opentelemetry` (Block List) The `opentelemetry` destination forwards metrics or traces using the OpenTelemetry Protocol (OTLP) over HTTP. (see [below for nested schema](#nestedblock--config--destination--opentelemetry))
 - `prometheus_remote_write` (Block List) The `prometheus_remote_write` destination sends metrics to a Prometheus Remote Write compatible endpoint. (see [below for nested schema](#nestedblock--config--destination--prometheus_remote_write))
 - `rsyslog` (Block List) The `rsyslog` destination forwards logs to an external `rsyslog` server over TCP or UDP using the syslog protocol. (see [below for nested schema](#nestedblock--config--destination--rsyslog))
 - `sentinel_one` (Block List) The `sentinel_one` destination sends logs to SentinelOne. (see [below for nested schema](#nestedblock--config--destination--sentinel_one))
@@ -946,6 +947,42 @@ Optional:
 ### Nested Schema for `config.destination.datadog_metrics`
 
 
+<a id="nestedblock--config--destination--datadog_traces"></a>
+### Nested Schema for `config.destination.datadog_traces`
+
+Optional:
+
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--datadog_traces--buffer))
+
+<a id="nestedblock--config--destination--datadog_traces--buffer"></a>
+### Nested Schema for `config.destination.datadog_traces.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--datadog_traces--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--datadog_traces--buffer--memory))
+
+<a id="nestedblock--config--destination--datadog_traces--buffer--disk"></a>
+### Nested Schema for `config.destination.datadog_traces.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--datadog_traces--buffer--memory"></a>
+### Nested Schema for `config.destination.datadog_traces.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+
+
 <a id="nestedblock--config--destination--elasticsearch"></a>
 ### Nested Schema for `config.destination.elasticsearch`
 
@@ -1549,7 +1586,7 @@ Optional:
 Optional:
 
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--opentelemetry--buffer))
-- `http_client_uri_key` (String) Environment variable name containing the URI of the OTLP HTTP endpoint to send metrics to.
+- `http_client_uri_key` (String) Environment variable name containing the URI of the OTLP HTTP endpoint to send metrics or traces to.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--opentelemetry--tls))
 
 <a id="nestedblock--config--destination--opentelemetry--buffer"></a>

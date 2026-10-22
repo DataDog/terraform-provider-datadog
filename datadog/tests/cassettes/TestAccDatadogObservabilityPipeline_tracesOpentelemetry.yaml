@@ -1,0 +1,107 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 399
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"http_client_uri_key":"DESTINATION_OTEL_HTTP_CLIENT_URI","id":"otel-destination-1","inputs":["otel-source-1"],"type":"opentelemetry"}],"pipeline_type":"traces","sources":[{"grpc_address_key":"OTEL_GRPC_ADDRESS","http_address_key":"OTEL_HTTP_ADDRESS","id":"otel-source-1","type":"opentelemetry"}]},"name":"traces-otel-pipeline"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 481
+        uncompressed: false
+        body: |
+            {"data":{"id":"a90a4c24-d13f-11f1-b305-da7ad0900002","type":"pipelines","attributes":{"name":"traces-otel-pipeline","config":{"destinations":[{"http_client_uri_key":"DESTINATION_OTEL_HTTP_CLIENT_URI","id":"otel-destination-1","inputs":["otel-source-1"],"type":"opentelemetry"}],"pipeline_type":"traces","processor_groups":[],"processors":[],"sources":[{"grpc_address_key":"OTEL_GRPC_ADDRESS","http_address_key":"OTEL_HTTP_ADDRESS","id":"otel-source-1","type":"opentelemetry"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 474.712792ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/a90a4c24-d13f-11f1-b305-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 481
+        uncompressed: false
+        body: |
+            {"data":{"id":"a90a4c24-d13f-11f1-b305-da7ad0900002","type":"pipelines","attributes":{"name":"traces-otel-pipeline","config":{"destinations":[{"http_client_uri_key":"DESTINATION_OTEL_HTTP_CLIENT_URI","id":"otel-destination-1","inputs":["otel-source-1"],"type":"opentelemetry"}],"pipeline_type":"traces","processor_groups":[],"processors":[],"sources":[{"grpc_address_key":"OTEL_GRPC_ADDRESS","http_address_key":"OTEL_HTTP_ADDRESS","id":"otel-source-1","type":"opentelemetry"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 236.840084ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/a90a4c24-d13f-11f1-b305-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 530.377541ms

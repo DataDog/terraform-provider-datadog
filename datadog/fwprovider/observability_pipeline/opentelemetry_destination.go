@@ -10,16 +10,16 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-// OpentelemetryMetricsDestinationModel represents the Terraform model for OpenTelemetry metrics destination configuration
-type OpentelemetryMetricsDestinationModel struct {
+// OpentelemetryDestinationModel represents the Terraform model for the OpenTelemetry destination configuration
+type OpentelemetryDestinationModel struct {
 	HttpClientUriKey types.String         `tfsdk:"http_client_uri_key"`
 	Tls              []TlsModel           `tfsdk:"tls"`
 	Buffer           []BufferOptionsModel `tfsdk:"buffer"`
 }
 
-// ExpandOpentelemetryMetricsDestination converts the Terraform model to the Datadog API model
-func ExpandOpentelemetryMetricsDestination(ctx context.Context, id string, inputs types.List, src *OpentelemetryMetricsDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
-	dest := datadogV2.NewObservabilityPipelineOpentelemetryMetricsDestinationWithDefaults()
+// ExpandOpentelemetryDestination converts the Terraform model to the Datadog API model
+func ExpandOpentelemetryDestination(ctx context.Context, id string, inputs types.List, src *OpentelemetryDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	dest := datadogV2.NewObservabilityPipelineOpentelemetryDestinationWithDefaults()
 	dest.SetId(id)
 
 	var inputsList []string
@@ -40,17 +40,17 @@ func ExpandOpentelemetryMetricsDestination(ctx context.Context, id string, input
 	}
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
-		ObservabilityPipelineOpentelemetryMetricsDestination: dest,
+		ObservabilityPipelineOpentelemetryDestination: dest,
 	}
 }
 
-// FlattenOpentelemetryMetricsDestination converts the Datadog API model to the Terraform model
-func FlattenOpentelemetryMetricsDestination(src *datadogV2.ObservabilityPipelineOpentelemetryMetricsDestination) *OpentelemetryMetricsDestinationModel {
+// FlattenOpentelemetryDestination converts the Datadog API model to the Terraform model
+func FlattenOpentelemetryDestination(src *datadogV2.ObservabilityPipelineOpentelemetryDestination) *OpentelemetryDestinationModel {
 	if src == nil {
 		return nil
 	}
 
-	out := &OpentelemetryMetricsDestinationModel{}
+	out := &OpentelemetryDestinationModel{}
 
 	if v, ok := src.GetHttpClientUriKeyOk(); ok {
 		out.HttpClientUriKey = types.StringValue(*v)
@@ -68,15 +68,15 @@ func FlattenOpentelemetryMetricsDestination(src *datadogV2.ObservabilityPipeline
 	return out
 }
 
-// OpentelemetryMetricsDestinationSchema returns the schema for the OpenTelemetry metrics destination
-func OpentelemetryMetricsDestinationSchema() schema.ListNestedBlock {
+// OpentelemetryDestinationSchema returns the schema for the OpenTelemetry destination
+func OpentelemetryDestinationSchema() schema.ListNestedBlock {
 	return schema.ListNestedBlock{
-		Description: "The `opentelemetry` destination forwards metrics using the OpenTelemetry Protocol (OTLP) over HTTP.",
+		Description: "The `opentelemetry` destination forwards metrics or traces using the OpenTelemetry Protocol (OTLP) over HTTP.",
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
 				"http_client_uri_key": schema.StringAttribute{
 					Optional:    true,
-					Description: "Environment variable name containing the URI of the OTLP HTTP endpoint to send metrics to.",
+					Description: "Environment variable name containing the URI of the OTLP HTTP endpoint to send metrics or traces to.",
 				},
 			},
 			Blocks: map[string]schema.Block{
