@@ -73,6 +73,9 @@ func TestAccDatadogTagPipelineRulesetDataSource_MappingRule(t *testing.T) {
 }
 
 func TestAccDatadogTagPipelineRulesetDataSource_ReferenceTableRule(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("requires pre-existing reference tables synced with Cloud Cost Management (TF-140)")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
