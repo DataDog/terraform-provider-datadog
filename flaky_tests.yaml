@@ -204,10 +204,6 @@ skipped_tests:
     author: fpighi
 
   # Provider bugs (3 tests)
-  - test: TestAccDatadogApmRetentionFilterOrder
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
   - test: TestAccServiceAccountApplicationKeyBasic_import
     reason: "Initial sync of tests failing on master branch"
     added: "2026-03-02"
