@@ -66,8 +66,10 @@ func TestAccDatadogTagIndexingRule_Basic(t *testing.T) {
 				// modified_at advances between create and import read (server-side clock skew).
 				// options.* appear after import because the API always returns default options
 				// even when the rule was created without configuring them explicitly.
+				// rule_order: the server renumbers it when parallel sibling tests delete their rules.
 				ImportStateVerifyIgnore: []string{
 					"modified_at",
+					"rule_order",
 					"options.%",
 					"options.data.%",
 					"options.data.manage_preexisting_metrics",
@@ -105,10 +107,11 @@ func TestAccDatadogTagIndexingRule_WithOptions(t *testing.T) {
 				),
 			},
 			{
-				ResourceName:            "datadog_tag_indexing_rule.bar",
-				ImportState:             true,
-				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"modified_at"},
+				ResourceName:      "datadog_tag_indexing_rule.bar",
+				ImportState:       true,
+				ImportStateVerify: true,
+				// rule_order: the server renumbers it when parallel sibling tests delete their rules.
+				ImportStateVerifyIgnore: []string{"modified_at", "rule_order"},
 			},
 		},
 	})
@@ -169,10 +172,11 @@ func TestAccDatadogTagIndexingRule_ExcludeMode(t *testing.T) {
 				),
 			},
 			{
-				ResourceName:            "datadog_tag_indexing_rule.exclude",
-				ImportState:             true,
-				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"modified_at"},
+				ResourceName:      "datadog_tag_indexing_rule.exclude",
+				ImportState:       true,
+				ImportStateVerify: true,
+				// rule_order: the server renumbers it when parallel sibling tests delete their rules.
+				ImportStateVerifyIgnore: []string{"modified_at", "rule_order"},
 			},
 		},
 	})
