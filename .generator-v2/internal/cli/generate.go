@@ -83,6 +83,9 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 				if err != nil {
 					return err
 				}
+				for _, warning := range spec.Warnings {
+					cmd.PrintErrln("tfgen: warning:", warning)
+				}
 				runReport.SpecHash = spec.Hash
 
 				filter := parseInclude(include)
@@ -123,17 +126,9 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 						})
 						continue
 					}
-					if op.Tracking.Skip {
-						runReport.SkippedOperations = append(runReport.SkippedOperations, model.SkippedOperation{
-							OperationId: op.OperationId,
-							Path:        op.Path,
-							Method:      op.Method,
-							Reason:      model.SkipReasonTrackingFieldSkip,
-						})
-						continue
-					}
 					if len(filter) > 0 && !filter[op.Tracking.ArtifactName] {
 						runReport.Artifacts = append(runReport.Artifacts, model.ArtifactReportEntry{
+							Tag:    op.Tracking.Tag,
 							Name:   op.Tracking.ArtifactName,
 							Kind:   op.Tracking.ArtifactKind,
 							Status: model.ArtifactStatusSkipped,
@@ -141,6 +136,14 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 						continue
 					}
 
+					if op.GenerationError != nil {
+						runReport.Artifacts = append(runReport.Artifacts, failEntry(model.ArtifactReportEntry{
+							Tag:  op.Tracking.Tag,
+							Name: op.Tracking.ArtifactName,
+							Kind: op.Tracking.ArtifactKind,
+						}, op.GenerationError))
+						continue
+					}
 					if op.Tracking.ArtifactKind == model.ArtifactKindResource {
 						entry, reg := generateResourceArtifact(op, outputRoot, check, accessors, sdkBindings)
 						runReport.Artifacts = append(runReport.Artifacts, entry)
@@ -153,9 +156,11 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 					entry, testEntry, exampleEntry, reg := generateArtifact(op, outputRoot, testsOutputRoot, examplesOutputRoot, emitTests, check, accessors, sdkBindings)
 					runReport.Artifacts = append(runReport.Artifacts, entry)
 					if testEntry != nil {
+						testEntry.Tag = op.Tracking.Tag
 						runReport.Artifacts = append(runReport.Artifacts, *testEntry)
 					}
 					if exampleEntry != nil {
+						exampleEntry.Tag = op.Tracking.Tag
 						runReport.Artifacts = append(runReport.Artifacts, *exampleEntry)
 					}
 					if reg != nil {
@@ -262,6 +267,7 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 // and its registration. The registration is nil for a failed artifact.
 func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examplesOutputRoot string, emitTests, check bool, accessors map[string]string, sdkBindings *sdkbinding.Inventory) (model.ArtifactReportEntry, *model.ArtifactReportEntry, *model.ArtifactReportEntry, *emit.GeneratedRegistration) {
 	entry := model.ArtifactReportEntry{
+		Tag:  op.Tracking.Tag,
 		Name: op.Tracking.ArtifactName,
 		Kind: op.Tracking.ArtifactKind,
 	}
@@ -348,6 +354,7 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examples
 // is nil for a failed artifact.
 func generateResourceArtifact(op *model.Operation, outputRoot string, check bool, accessors map[string]string, sdkBindings *sdkbinding.Inventory) (model.ArtifactReportEntry, *emit.GeneratedRegistration) {
 	entry := model.ArtifactReportEntry{
+		Tag:  op.Tracking.Tag,
 		Name: op.Tracking.ArtifactName,
 		Kind: op.Tracking.ArtifactKind,
 	}

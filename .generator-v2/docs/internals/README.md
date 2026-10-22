@@ -23,7 +23,7 @@ OpenAPI document
   │     resolve refs, normalize schemas, decode annotations
   │
   ├─ 2. MODEL ────────────────────── internal/model/      → model.Artifact
-  │     project one annotated operation into a Terraform-facing artifact
+  │     project one declared artifact into a Terraform-facing artifact
   │
   ├─ 3. BIND ─────────── internal/sdkbind{,ing}/          → model.SDKCall
   │     resolve the Datadog Go SDK call the artifact must make
@@ -91,7 +91,7 @@ Worth knowing before you change anything, because they are load-bearing:
 `internal/contracts/` holds the machine-readable contracts, embedded so the binary
 never depends on its working directory:
 
-- `tracking-field.schema.json`: the annotation. `parser.DecodeTracking` compiles it
+- `family-registry.schema.json`: the annotation. `parser.DecodeRegistry` compiles it
   once and validates every occurrence.
 
 It is rendered into [reference/annotation.md](../reference/annotation.md) by

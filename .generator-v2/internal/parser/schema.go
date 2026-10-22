@@ -26,8 +26,8 @@ const jsonMediaType = "application/json"
 // endpoint's page/limit query parameters and result-array property.
 const paginationExtension = "x-pagination"
 
-// secretExtension is Datadog's schema-level credential marker. It defaults an
-// attribute to sensitive unless the tracking extension overrides it.
+// secretExtension is Datadog's schema-level credential marker. It marks an
+// attribute sensitive independently of legacy Terraform annotations.
 const secretExtension = "x-secret"
 
 // defaultResultsPath is the JSON:API response property holding a list's
@@ -85,14 +85,13 @@ func backtickedToken(s string) (string, bool) {
 // lowest-numbered 2xx code that has one. A missing body leaves the field nil, a
 // missing $ref target yields *UnresolvableRefError, and a local oneOf naming
 // failure becomes an Unsupported node. Requires ResolveOperationGroups first.
-func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operation, maxDepth int, trackingFieldName string) error {
+func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operation, maxDepth int) error {
 	if spec == nil {
 		return nil
 	}
 	n := &schemaNormalizer{
-		components:        spec.Components,
-		maxDepth:          maxDepth,
-		trackingFieldName: trackingFieldName,
+		components: spec.Components,
+		maxDepth:   maxDepth,
 	}
 
 	// Each tracked operation fills its own bodies and its group's, which may
@@ -108,7 +107,7 @@ func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operatio
 		return n.fillOperation(target, rawOps[target])
 	}
 	for _, op := range spec.Operations {
-		if op == nil || op.Tracking == nil {
+		if op == nil || op.Tracking == nil || op.GenerationError != nil {
 			continue
 		}
 		if err := fill(op); err != nil {
@@ -124,11 +123,10 @@ func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operatio
 }
 
 // schemaNormalizer holds the per-pass state: the component set for $ref
-// resolution, the depth bound, and the tracking extension key.
+// resolution and the depth bound.
 type schemaNormalizer struct {
-	components        *v3.Components
-	maxDepth          int
-	trackingFieldName string
+	components *v3.Components
+	maxDepth   int
 	// refStack is the $ref chain currently being expanded, in order. A $ref
 	// re-entering the chain closes a cycle, which becomes a terminal node
 	// instead of recursing forever.
@@ -639,7 +637,7 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 		HasDefault:      s.Default != nil,
 		ReadOnly:        schemaReadOnly(s),
 		WriteOnlySecret: schemaWriteOnly(s),
-		Sensitive:       n.isSensitive(s),
+		Sensitive:       schemaSensitive(s),
 		Description:     s.Description,
 		// The component name that led here — the go-sdk names its generated
 		// model after it. ctx carries the first $ref of the chain; a node
@@ -1078,7 +1076,7 @@ type allOfAnnotations struct {
 func (n *schemaNormalizer) outerAnnotations(s *base.Schema) allOfAnnotations {
 	a := allOfAnnotations{
 		outerDescription: s.Description,
-		sensitive:        n.isSensitive(s),
+		sensitive:        schemaSensitive(s),
 		readOnly:         schemaReadOnly(s),
 		writeOnlySecret:  schemaWriteOnly(s),
 	}
@@ -1613,34 +1611,9 @@ func sortedRequired(s *base.Schema) []string {
 	return req
 }
 
-// isSensitive derives Terraform sensitivity from the explicit tracking
-// annotation when present; otherwise writeOnly or x-secret default the field to
-// sensitive, so an omitted annotation cannot expose a credential in a plan.
-func (n *schemaNormalizer) isSensitive(s *base.Schema) bool {
-	if explicit, ok := n.explicitSensitivity(s); ok {
-		return explicit
-	}
+// schemaSensitive derives display sensitivity only from OpenAPI secret markers.
+func schemaSensitive(s *base.Schema) bool {
 	return schemaWriteOnly(s) || boolExtension(s, secretExtension)
-}
-
-// explicitSensitivity distinguishes an omitted annotation from an explicit
-// false, so the derived default can be overridden in either direction. A
-// malformed annotation counts as absent, leaving x-secret/writeOnly in force.
-func (n *schemaNormalizer) explicitSensitivity(s *base.Schema) (bool, bool) {
-	if s.Extensions == nil {
-		return false, false
-	}
-	node := s.Extensions.GetOrZero(n.trackingFieldName)
-	if node == nil {
-		return false, false
-	}
-	var ext struct {
-		Sensitive *bool `yaml:"sensitive"`
-	}
-	if err := node.Decode(&ext); err != nil || ext.Sensitive == nil {
-		return false, false
-	}
-	return *ext.Sensitive, true
 }
 
 func schemaWriteOnly(s *base.Schema) bool {

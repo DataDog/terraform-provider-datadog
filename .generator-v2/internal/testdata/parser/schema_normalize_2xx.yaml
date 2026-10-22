@@ -6,12 +6,6 @@ paths:
   /skip-bodiless:
     post:
       operationId: CreateSkipBodiless
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: skip_bodiless
-        group:
-          create: CreateSkipBodiless
-          read: CreateSkipBodiless
       responses:
         '201':
           description: created (no JSON body)
@@ -24,12 +18,6 @@ paths:
   /prefer-lower:
     post:
       operationId: CreatePreferLower
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: prefer_lower
-        group:
-          create: CreatePreferLower
-          read: CreatePreferLower
       responses:
         '200':
           description: ok — lower code wins
@@ -47,12 +35,30 @@ paths:
   /only-204:
     post:
       operationId: CreateOnly204
-      x-datadog-tf-generator:
-        artifact_kind: resource
+      responses:
+        '204':
+          description: no content
+tags:
+- name: Terraform
+  x-datadog-tf-generator:
+    skip_bodiless:
+      resource:
+        artifact_name: skip_bodiless
+        group:
+          create: CreateSkipBodiless
+          read: CreateSkipBodiless
+          delete: CreateSkipBodiless
+    prefer_lower:
+      resource:
+        artifact_name: prefer_lower
+        group:
+          create: CreatePreferLower
+          read: CreatePreferLower
+          delete: CreatePreferLower
+    only_204:
+      resource:
         artifact_name: only_204
         group:
           create: CreateOnly204
           read: CreateOnly204
-      responses:
-        '204':
-          description: no content
+          delete: CreateOnly204

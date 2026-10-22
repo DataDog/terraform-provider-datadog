@@ -17,7 +17,7 @@ ddoc:
 1. Read and hash the specification (`spec_hash` in the report is a SHA-256 of it).
 2. Build the OpenAPI v3 model, via `pb33f/libopenapi`.
 3. Detect reference cycles and paths exceeding `--max-depth` (`cycles.go`).
-4. Decode `x-datadog-tf-generator` annotations (`tracking.go`).
+4. Decode `x-datadog-tf-generator` annotations (`registry.go`).
 5. Sort operations deterministically by path and method.
 6. Reject duplicate `(artifact_kind, artifact_name)` claims (`duplicates.go`).
 7. Normalize request and response schemas for tracked operation groups
@@ -28,24 +28,16 @@ asymmetry is the single most important thing to preserve when changing this pack
 
 ## Annotation decoding
 
-`DecodeTracking` validates every occurrence against the embedded
-`tracking-field.schema.json` using `santhosh-tekuri/jsonschema/v6`. The schema sets
+`DecodeRegistry` validates every occurrence against the embedded
+`family-registry.schema.json` using `santhosh-tekuri/jsonschema/v6`. The schema sets
 `additionalProperties: false`, so an unknown field is a hard error rather than a
 warning.
 
 The extension key is configurable via `--tracking-field`, which exists for fixtures
 rather than for production use.
 
-**Schema-node annotations take a different path.** A `sensitive` marker on a Schema
-Object is read by `isSensitive` through a narrow struct decode, which does *not* run
-the JSON-Schema validation that operation annotations get. That is why a bare
-`{sensitive: true}` works even though the flat contract nominally requires
-`artifact_kind` and `artifact_name` on every occurrence. If you unify these paths, a
-lot of existing specs will start failing validation, intentionally or not.
-
-A malformed `sensitive` annotation counts as absent, leaving `writeOnly` / `x-secret`
-inference in force. That direction is deliberate: it fails safe, so a typo cannot
-expose a credential in a plan.
+Schema sensitivity comes only from `writeOnly` and `x-secret`. Neither operation
+artifact annotations nor schema-level `x-datadog-tf-generator` overrides are read.
 
 ## Normalization
 

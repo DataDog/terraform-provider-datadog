@@ -1,3 +1,19 @@
+## 4.27.0 (October 21, 2026)
+
+### BUGFIXES
+* [datadog_dashboard] Fix list_stream clustering_pattern_field_path and group_by not read into state by @lemon0333 in https://github.com/DataDog/terraform-provider-datadog/pull/4183
+* [datadog_synthetics_private_location] Preserve config across Update for imported resources by @laf-rge in https://github.com/DataDog/terraform-provider-datadog/pull/3748
+### FEATURES
+* [datadog_dashboard] Use the v2 implementation by default by @Jiawen23 in https://github.com/DataDog/terraform-provider-datadog/pull/4246
+* [datadog_rum_operation] Add resource for RUM operations by @Marsonge in https://github.com/DataDog/terraform-provider-datadog/pull/4380
+* [datadog_rum_operation_journey_link] Add resource linking RUM operations to journeys by @Marsonge in https://github.com/DataDog/terraform-provider-datadog/pull/4381
+
+## New Contributors
+* @laf-rge made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3748
+* @Marsonge made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4380
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.26.0...v4.27.0
+
 ## 4.26.0 (October 16, 2026)
 
 ### BUGFIXES

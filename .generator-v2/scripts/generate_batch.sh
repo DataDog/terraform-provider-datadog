@@ -35,7 +35,7 @@ CAPTURE_DIR="$(mktemp -d -t tfgen-batch-docs.XXXXXX)"
 cleanup() {
   [[ -n "${PROMPTS_DIR:-}" ]] && rm -rf "$PROMPTS_DIR" 2>/dev/null || true
   [[ -n "${CAPTURE_DIR:-}" ]] && rm -rf "$CAPTURE_DIR" 2>/dev/null || true
-  rm -f "${CLAUDE_COST_FILE:-}" "${REPORT:-}" "${NAME_SERVICE_FILE:-}" 2>/dev/null || true
+  rm -f "${CLAUDE_COST_FILE:-}" "${REPORT:-}" 2>/dev/null || true
   # Best-effort return to the branch we started on; never touch pushed branches.
   [[ -n "${ORIG_BRANCH:-}" ]] && git checkout "$ORIG_BRANCH" >/dev/null 2>&1 || true
   [[ -n "${STAGING_BRANCH:-}" ]] && git branch -D "$STAGING_BRANCH" >/dev/null 2>&1 || true
@@ -222,28 +222,14 @@ STAGE="tfgen-build"
 make tfgen-build >&2 || die "make tfgen-build failed"
 [[ -x bin/tfgen ]] || die "bin/tfgen missing after build"
 
-# Name -> service tag, for the CI-enforced [prefix] in each PR title. Built from
-# the annotated ops; retired artifacts (no longer annotated) fall back to "core".
-NAME_SERVICE_FILE="$(mktemp -t tfgen-batch-svc.XXXXXX)"
-python3 - "$SPEC" >"$NAME_SERVICE_FILE" <<'PY' || true
-import sys, yaml
-spec = yaml.safe_load(open(sys.argv[1]))
-for item in (spec.get("paths") or {}).values():
-    if not isinstance(item, dict):
-        continue
-    for node in item.values():
-        if isinstance(node, dict) and "x-datadog-tf-generator" in node:
-            ext = node.get("x-datadog-tf-generator") or {}
-            name = ext.get("artifact_name")
-            tags = node.get("tags") or []
-            if name and tags:
-                print(f"{name}\t{tags[0].lower().replace(' ', '-')}")
-PY
-
+# Use the decoder's resolved artifact names and owning tags. Retired artifacts
+# no longer have declarations, so retain the existing "core" fallback.
 service_for() {
-  local name="$1" svc
-  svc="$(awk -F'\t' -v n="$name" '$1==n {print $2; exit}' "$NAME_SERVICE_FILE" 2>/dev/null || true)"
-  printf '%s' "${svc:-core}"
+  jq -r --arg name "$1" '
+    [.artifacts[]? | select(.kind == "data_source" and .name == $name)
+     | .tag // empty | select(length > 0)][0] // "core"
+    | ascii_downcase | gsub(" "; "-")
+  ' "$REPORT"
 }
 
 # ---------------------------------------------------------------------------

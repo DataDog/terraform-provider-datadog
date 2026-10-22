@@ -6,12 +6,6 @@ paths:
   /depth:
     post:
       operationId: CreateAllOfDepth
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: allof_depth
-        group:
-          create: CreateAllOfDepth
-          read: CreateAllOfDepth
       requestBody:
         content:
           application/json:
@@ -30,3 +24,13 @@ components:
         - $ref: '#/components/schemas/Status'
     Status:
       type: string
+tags:
+- name: Terraform
+  x-datadog-tf-generator:
+    allof_depth:
+      resource:
+        artifact_name: allof_depth
+        group:
+          create: CreateAllOfDepth
+          read: CreateAllOfDepth
+          delete: CreateAllOfDepth

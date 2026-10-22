@@ -181,11 +181,16 @@ func annotateReadOp(src, artifact, tmpDir string) (string, bool) {
 	if chosenOp == nil {
 		return "", false
 	}
-	chosenOp["x-datadog-tf-generator"] = map[string]any{
-		"artifact_kind": "data_source",
-		"artifact_name": artifact,
-		"group":         map[string]any{"read": chosenOp["operationId"]},
-	}
+	spec["tags"] = []any{map[string]any{
+		"name": "Terraform",
+		"x-datadog-tf-generator": map[string]any{
+			artifact: map[string]any{
+				"datasource_singular": map[string]any{
+					"group": map[string]any{"read": chosenOp["operationId"]},
+				},
+			},
+		},
+	}}
 
 	out, err := yaml.Marshal(spec)
 	Expect(err).To(Succeed())

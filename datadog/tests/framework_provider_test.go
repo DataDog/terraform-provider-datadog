@@ -36,6 +36,13 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	//Datadog API config.HTTPClient
 	config := common.NewConfiguration()
 
+	config.SetUnstableOperationEnabled("v2.CreateRUMOperation", true)
+	config.SetUnstableOperationEnabled("v2.GetRUMOperation", true)
+	config.SetUnstableOperationEnabled("v2.UpdateRUMOperation", true)
+	config.SetUnstableOperationEnabled("v2.DeleteRUMOperation", true)
+	config.SetUnstableOperationEnabled("v2.CreateRUMOperationStrongLink", true)
+	config.SetUnstableOperationEnabled("v2.UpdateRUMOperationStrongLink", true)
+	config.SetUnstableOperationEnabled("v2.DeleteRUMOperationStrongLink", true)
 	config.SetUnstableOperationEnabled("v2.CreateOpenAPI", true)
 	config.SetUnstableOperationEnabled("v2.UpdateOpenAPI", true)
 	config.SetUnstableOperationEnabled("v2.GetOpenAPI", true)
@@ -51,6 +58,12 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.CreateAWSCloudAuthPersonaMapping", true)
 	config.SetUnstableOperationEnabled("v2.GetAWSCloudAuthPersonaMapping", true)
 	config.SetUnstableOperationEnabled("v2.DeleteAWSCloudAuthPersonaMapping", true)
+	config.SetUnstableOperationEnabled("v2.CreateGitHubCloudAuthIntakeMapping", true)
+	config.SetUnstableOperationEnabled("v2.GetGitHubCloudAuthIntakeMapping", true)
+	config.SetUnstableOperationEnabled("v2.DeleteGitHubCloudAuthIntakeMapping", true)
+	config.SetUnstableOperationEnabled("v2.CreateGitHubCloudAuthPersonaMapping", true)
+	config.SetUnstableOperationEnabled("v2.GetGitHubCloudAuthPersonaMapping", true)
+	config.SetUnstableOperationEnabled("v2.DeleteGitHubCloudAuthPersonaMapping", true)
 
 	// Enable Logs Restriction Queries
 	config.SetUnstableOperationEnabled("v2.CreateRestrictionQuery", true)
