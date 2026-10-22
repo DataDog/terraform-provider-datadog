@@ -80,6 +80,7 @@ type destinationModel struct {
 	DatabricksZerobusDestination      []*observability_pipeline.DatabricksZerobusDestinationModel      `tfsdk:"databricks_zerobus"`
 	SplunkHecMetricsDestination       []*observability_pipeline.SplunkHECMetricsDestinationModel       `tfsdk:"splunk_hec_metrics"`
 	OpentelemetryDestination          []*observability_pipeline.OpentelemetryDestinationModel          `tfsdk:"opentelemetry"`
+	DatadogTracesDestination          []*observability_pipeline.DatadogTracesDestinationModel          `tfsdk:"datadog_traces"`
 	ClickhouseDestination             []*observability_pipeline.ClickhouseDestinationModel             `tfsdk:"clickhouse"`
 	DatadogMetricsDestination         []*datadogMetricsDestinationModel                                `tfsdk:"datadog_metrics"`
 	HttpClientDestination             []*httpClientDestinationModel                                    `tfsdk:"http_client"`
@@ -827,7 +828,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 							Computed:    true,
 							Description: "The type of data being ingested. Defaults to `logs` if not specified.",
 							Validators: []validator.String{
-								stringvalidator.OneOf("logs", "metrics"),
+								stringvalidator.OneOf("logs", "metrics", "traces"),
 							},
 						},
 						"use_legacy_search_syntax": schema.BoolAttribute{
@@ -2884,6 +2885,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									"databricks_zerobus":        observability_pipeline.DatabricksZerobusDestinationSchema(),
 									"splunk_hec_metrics":        observability_pipeline.SplunkHECMetricsDestinationSchema(),
 									"opentelemetry":             observability_pipeline.OpentelemetryDestinationSchema(),
+									"datadog_traces":            observability_pipeline.DatadogTracesDestinationSchema(),
 									"clickhouse":                observability_pipeline.ClickhouseDestinationSchema(),
 									"cloud_prem":                observability_pipeline.CloudPremDestinationSchema(),
 									"kafka":                     observability_pipeline.KafkaDestinationSchema(),
@@ -3248,6 +3250,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		for _, d := range dest.OpentelemetryDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandOpentelemetryDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
+		for _, d := range dest.DatadogTracesDestination {
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandDatadogTracesDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+		}
 		for _, d := range dest.ClickhouseDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandClickhouseDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
@@ -3513,6 +3518,11 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineOpentelemetryDestination.GetId())
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineOpentelemetryDestination.GetInputs())
 			destBlock.OpentelemetryDestination = append(destBlock.OpentelemetryDestination, otel)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if ddTraces := observability_pipeline.FlattenDatadogTracesDestination(d.ObservabilityPipelineDatadogTracesDestination); ddTraces != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineDatadogTracesDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineDatadogTracesDestination.GetInputs())
+			destBlock.DatadogTracesDestination = append(destBlock.DatadogTracesDestination, ddTraces)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
 		} else if clickhouse := observability_pipeline.FlattenClickhouseDestination(ctx, d.ObservabilityPipelineClickhouseDestination); clickhouse != nil {
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineClickhouseDestination.GetId())

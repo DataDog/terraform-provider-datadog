@@ -9898,3 +9898,243 @@ resource "datadog_observability_pipeline" "metric_enrichment_table" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_tracesPipeline(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.traces"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// Rich config: every processor traces pipelines support, a buffered
+				// datadog_traces destination, and generated metrics routed to datadog_metrics.
+				Config: `
+resource "datadog_observability_pipeline" "traces" {
+  name = "traces-pipeline"
+
+  config {
+    pipeline_type = "traces"
+
+    source {
+      id = "source-1"
+      datadog_agent {
+        address_key = "DD_AGENT_TRACES_ADDRESS"
+
+        tls {
+          crt_file = "/etc/certs/agent.crt"
+          ca_file  = "/etc/certs/ca.crt"
+          key_file = "/etc/certs/agent.key"
+        }
+      }
+    }
+
+    processor_group {
+      id      = "traces-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "filter-1"
+        enabled = true
+        include = "service:checkout"
+        filter {}
+      }
+
+      processor {
+        id      = "sample-1"
+        enabled = true
+        include = "*"
+        sample {
+          percentage = 25
+          group_by   = ["service", "env"]
+        }
+      }
+
+      processor {
+        id      = "sds-1"
+        enabled = true
+        include = "*"
+        sensitive_data_scanner {
+          rule {
+            name = "Redact secrets"
+            tags = ["secret"]
+
+            pattern {
+              custom {
+                rule = "\\bsecret-[a-z0-9]+\\b"
+              }
+            }
+
+            scope {
+              all = true
+            }
+
+            on_match {
+              redact {
+                replace = "[REDACTED]"
+              }
+            }
+          }
+        }
+      }
+
+      processor {
+        id      = "custom-1"
+        enabled = true
+        include = "*"
+        custom_processor {
+          remap {
+            include       = "*"
+            name          = "Tag spans"
+            enabled       = true
+            source        = ".tags.pipeline = \"traces\""
+            drop_on_error = false
+          }
+        }
+      }
+
+      processor {
+        id      = "gen-metrics-1"
+        enabled = true
+        include = "*"
+        generate_metrics {
+          metric {
+            name        = "traces.spans"
+            include     = "*"
+            metric_type = "count"
+            group_by    = ["service"]
+
+            value {
+              strategy = "increment_by_one"
+            }
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "datadog-traces-1"
+      inputs = ["traces-group-1"]
+
+      datadog_traces {
+        buffer {
+          memory {
+            max_events = 5000
+            when_full  = "drop_newest"
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "datadog-metrics-1"
+      inputs = ["gen-metrics-1.metrics"]
+      datadog_metrics {}
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "traces"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.datadog_agent.0.address_key", "DD_AGENT_TRACES_ADDRESS"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.datadog_agent.0.tls.0.crt_file", "/etc/certs/agent.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.id", "filter-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.filter.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.1.sample.0.percentage", "25"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.1.sample.0.group_by.1", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.2.sensitive_data_scanner.0.rule.0.name", "Redact secrets"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.2.sensitive_data_scanner.0.rule.0.on_match.0.redact.0.replace", "[REDACTED]"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.3.custom_processor.0.remap.0.name", "Tag spans"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.4.generate_metrics.0.metric.0.name", "traces.spans"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "datadog-traces-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "traces-group-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_traces.0.buffer.0.memory.0.max_events", "5000"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_traces.0.buffer.0.memory.0.when_full", "drop_newest"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.1.inputs.0", "gen-metrics-1.metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.1.datadog_metrics.#", "1"),
+				),
+			},
+			{
+				// Minimal config: only required fields, so optional ones must clear.
+				Config: `
+resource "datadog_observability_pipeline" "traces" {
+  name = "traces-pipeline"
+
+  config {
+    pipeline_type = "traces"
+
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    destination {
+      id     = "datadog-traces-1"
+      inputs = ["source-1"]
+      datadog_traces {}
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "traces"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.datadog_agent.0.tls.#", "0"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.#", "0"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_traces.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_traces.0.buffer.#", "0"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_tracesOpentelemetry(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.traces_otel"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// Traces pipelines require an opentelemetry source to use the opentelemetry destination.
+				Config: `
+resource "datadog_observability_pipeline" "traces_otel" {
+  name = "traces-otel-pipeline"
+
+  config {
+    pipeline_type = "traces"
+
+    source {
+      id = "otel-source-1"
+      opentelemetry {
+        grpc_address_key = "OTEL_GRPC_ADDRESS"
+        http_address_key = "OTEL_HTTP_ADDRESS"
+      }
+    }
+
+    destination {
+      id     = "otel-destination-1"
+      inputs = ["otel-source-1"]
+
+      opentelemetry {
+        http_client_uri_key = "DESTINATION_OTEL_HTTP_CLIENT_URI"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "traces"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.opentelemetry.0.grpc_address_key", "OTEL_GRPC_ADDRESS"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.http_client_uri_key", "DESTINATION_OTEL_HTTP_CLIENT_URI"),
+				),
+			},
+		},
+	})
+}
