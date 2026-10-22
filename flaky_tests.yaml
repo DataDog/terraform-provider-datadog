@@ -272,10 +272,6 @@ skipped_tests:
     reason: "Intermittent 503 Service Unavailable from /api/v1/monitor/validate"
     added: "2026-04-24"
     author: fpighi
-  - test: TestAccDatadogTagPipelineRulesets_OverrideFalseUnmanagedAtEnd
-    reason: "Intermittent 429 Too Many Requests — rate limiting on ccm_list_tag_enrichment_rulesets"
-    added: "2026-04-24"
-    author: fpighi
 
   # Azure integration — 500 Internal Server Error on list (2 tests)
   - test: TestAccDatadogIntegrationAzure
