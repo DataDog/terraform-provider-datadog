@@ -16,6 +16,7 @@ import (
 )
 
 func TestAccDatadogRole_CreateUpdate(t *testing.T) {
+	t.Cleanup(datadog.ResetPermissionsCache())
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	rolename := strings.ToLower(uniqueEntityName(ctx, t))
 	accProvider := testAccProvider(t, accProviders)
@@ -89,13 +90,15 @@ func TestAccDatadogRole_CreateUpdate(t *testing.T) {
 						"data.datadog_permissions.foo",
 						"permissions.monitors_read",
 					),
+					resource.TestCheckResourceAttr("datadog_role.foo", "permission.#", fmt.Sprint(2+len(implicitRolePermissions))),
 				),
 			},
 			{
 				Config: testAccCheckDatadogRoleConfigNoRestrictedPerm(rolename),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogRoleExists(accProvider, "datadog_role.foo"),
-					resource.TestCheckResourceAttr("datadog_role.foo", "permission.#", "0"),
+					resource.TestCheckResourceAttr("datadog_role.foo", "permission.#", fmt.Sprint(len(implicitRolePermissions))),
+					testCheckRolePermissions("datadog_role.foo", "data.datadog_permissions.foo", implicitRolePermissions),
 				),
 			},
 		},
@@ -131,6 +134,14 @@ func testCheckRolePermission(rolename string, permissionsSource string, permissi
 			"id": permissionID,
 		})(s)
 	}
+}
+
+func testCheckRolePermissions(rolename string, permissionsSource string, permissionNames []string) resource.TestCheckFunc {
+	checks := make([]resource.TestCheckFunc, 0, len(permissionNames))
+	for _, name := range permissionNames {
+		checks = append(checks, testCheckRolePermission(rolename, permissionsSource, "permissions."+name))
+	}
+	return resource.ComposeTestCheckFunc(checks...)
 }
 
 func testAccCheckDatadogRoleDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
@@ -193,6 +204,26 @@ resource "datadog_role" "foo" {
 }`, uniq)
 }
 
+// The API keeps these restricted permissions on every role, also with
+// default_permissions_opt_out = true, and returns them in the role relationships.
+// They are not removable until Minimal Access Roles is enabled on the org, so an
+// opt-out config must list them to get an empty plan.
+var implicitRolePermissions = []string{
+	"appsec_vm_library_read",
+	"built_in_features",
+	"events_read",
+	"hosts_read",
+	"metrics_read",
+	"static_analysis_settings_read",
+	"timeseries_query",
+	"user_self_profile_read",
+	"user_self_profile_write",
+}
+
+func implicitRolePermissionsHCL() string {
+	return fmt.Sprintf(`["%s"]`, strings.Join(implicitRolePermissions, `", "`))
+}
+
 func testAccCheckDatadogRoleWithRestrictedPermsConfig(uniq string) string {
 	return fmt.Sprintf(`
 data "datadog_permissions" foo {
@@ -207,8 +238,14 @@ resource "datadog_role" "foo" {
   permission {
     id = "${data.datadog_permissions.foo.permissions.monitors_read}"
   }
+  dynamic "permission" {
+    for_each = %s
+    content {
+      id = data.datadog_permissions.foo.permissions[permission.value]
+    }
+  }
   default_permissions_opt_out = true
-}`, uniq)
+}`, uniq, implicitRolePermissionsHCL())
 }
 
 func testAccCheckDatadogRoleConfigUpdated(uniq string) string {
@@ -237,12 +274,20 @@ resource "datadog_role" "foo" {
 
 func testAccCheckDatadogRoleConfigNoRestrictedPerm(uniq string) string {
 	return fmt.Sprintf(`
-data "datadog_permissions" foo {}
+data "datadog_permissions" foo {
+  include_restricted = true
+}
 
 resource "datadog_role" "foo" {
   name      = "%s"
+  dynamic "permission" {
+    for_each = %s
+    content {
+      id = data.datadog_permissions.foo.permissions[permission.value]
+    }
+  }
   default_permissions_opt_out = true
-}`, uniq)
+}`, uniq, implicitRolePermissionsHCL())
 }
 
 func testAccCheckDatadogRoleConfigInvalidNonexistentPerm(uniq string) string {
