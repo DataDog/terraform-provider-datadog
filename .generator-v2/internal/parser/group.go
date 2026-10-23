@@ -19,6 +19,35 @@ func ResolveOperationGroups(spec *model.Spec) {
 			continue
 		}
 		op.ResolvedGroup = resolveGroup(op.Tracking.Group, byID)
+		recordLifecycleRoles(op.ResolvedGroup)
+	}
+}
+
+// recordLifecycleRoles stamps each resolved operation with the group slots it
+// fills. An operation can fill several — a minimal annotation may name the same
+// operationId as both create and read — so the roles accumulate rather than
+// overwrite, and a repeated resolution never duplicates one.
+//
+// Downstream this is how a consumer tells a create from a read without
+// re-walking the group: cassette selection needs it to know that a path
+// parameter appearing only on the read/update/delete paths carries the
+// identity the create response minted, and so needs no example of its own.
+func recordLifecycleRoles(group *model.ResolvedGroup) {
+	if group == nil {
+		return
+	}
+	for _, role := range []model.GroupRole{
+		model.GroupRoleCreate,
+		model.GroupRoleRead,
+		model.GroupRoleSearch,
+		model.GroupRoleUpdate,
+		model.GroupRoleDelete,
+	} {
+		target := group.Op(role)
+		if target == nil || target.HasLifecycleRole(role) {
+			continue
+		}
+		target.LifecycleRoles = append(target.LifecycleRoles, role)
 	}
 }
 
