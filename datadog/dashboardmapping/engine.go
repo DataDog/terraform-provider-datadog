@@ -350,6 +350,12 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 		}
 		jsonVal := getAtJSONPath(data, f.effectiveJSONPath())
 		if jsonVal == nil {
+			// The API omits optional fields that were never set. SDKv2 would
+			// read them back as false, but the UI renders a missing field
+			// using its default (e.g. has_padding = true), so match that.
+			if b, ok := f.Default.(bool); ok && b && f.Type == TypeBool {
+				result[f.HCLKey] = true
+			}
 			continue
 		}
 
