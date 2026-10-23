@@ -255,6 +255,7 @@ var _ = Describe("run report contract", func() {
 				Expect(validateAgainstContract(schema, report)).To(Succeed())
 			},
 			Entry("generated", CassetteStatusGenerated),
+			Entry("skipped", CassetteStatusSkipped),
 			Entry("ineligible", CassetteStatusIneligible),
 		)
 
@@ -282,7 +283,7 @@ var _ = Describe("run report contract", func() {
 
 		It("declares no write action or status the model cannot produce", func() {
 			Expect(enumValues("cassetteResult", "write_action")).To(HaveLen(4))
-			Expect(enumValues("cassetteResult", "status")).To(HaveLen(2))
+			Expect(enumValues("cassetteResult", "status")).To(HaveLen(3))
 		})
 
 		DescribeTable("rejects a value the model cannot produce",

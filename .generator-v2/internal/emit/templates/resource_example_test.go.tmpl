@@ -1,10 +1,11 @@
 {{- define "resource_example_test" -}}
 // {{ .Marker }}
 //
-// The configuration below came from the OpenAPI description's own examples,
-// with anything the description left out synthesized — see the cassette
-// generation entry in the run report for the source anchors, and for which
-// values were invented rather than declared.
+// Every value in the configuration below was declared by the OpenAPI
+// description: an example, or a schema default. Nothing here was invented. A
+// description that could not supply a required value produces no test at all,
+// so there is no such thing as a partly-guessed one — see the cassette entry
+// in the run report for the source anchors.
 //
 // The cassette this replays is recorded, not generated: run with RECORD=true
 // to record it against a real org, RECORD=false to replay it. A recording run
@@ -31,9 +32,10 @@ import (
 
 func {{ .FuncName }}(t *testing.T) {
 	// Skips before any provider setup. The configuration below comes from the
-	// description's own examples, with anything it left out synthesized, so a
-	// recording run may be rejected by the API — that is the expected way to
-	// learn the description is wrong. Replay needs a cassette recorded first.
+	// description's own examples, so a recording run may still be rejected by
+	// the API — an example can be stale or a placeholder, and that is the
+	// expected way to learn the description is wrong. Replay needs a cassette
+	// recorded first.
 	if !isRecording() && !isReplaying() {
 		t.Skip("{{ .FuncName }} needs RECORD=true to record a cassette, or RECORD=false to replay one")
 	}

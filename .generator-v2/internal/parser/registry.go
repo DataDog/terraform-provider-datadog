@@ -101,7 +101,7 @@ func (f familyDecl) block(name string) *artifactBlock {
 // artifactBlock is one artifact's declaration. Every field is per-artifact by
 // construction: the block is the only place they can be written.
 type artifactBlock struct {
-	Cassette      bool                  `json:"cassette,omitempty"`
+	Cassette      *bool                 `json:"cassette,omitempty"`
 	ArtifactName  string                `json:"artifact_name,omitempty"`
 	TfDescription string                `json:"tf_description,omitempty"`
 	IdStrategy    model.IdStrategy      `json:"id_strategy,omitempty"`

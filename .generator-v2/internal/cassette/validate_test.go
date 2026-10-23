@@ -134,7 +134,7 @@ var _ = Describe("scenario validation", func() {
 					UnsupportedReason: "recursive $ref exceeded the depth limit",
 				},
 			}, "payload")
-			set := setWith(model.MaterializedValue{Path: "payload", Value: "dummy-payload"})
+			set := setWith(model.MaterializedValue{Path: "payload", Value: "a-value"})
 
 			err := ValidateSet(requestKey(), set, schema)
 			Expect(err).To(HaveOccurred())
@@ -150,7 +150,7 @@ var _ = Describe("scenario validation", func() {
 					UnsupportedReason: "recursive $ref exceeded the depth limit",
 				},
 			}, "payload")
-			set := setWith(model.MaterializedValue{Path: "payload", Value: "dummy-payload"})
+			set := setWith(model.MaterializedValue{Path: "payload", Value: "a-value"})
 
 			err := ValidateSet(requestKey(), set, schema)
 			Expect(err).To(HaveOccurred())
@@ -159,23 +159,6 @@ var _ = Describe("scenario validation", func() {
 	})
 
 	Describe("what it must not report", func() {
-		// A synthesized leaf is schema-valid by construction and is already
-		// reported on SynthesizedPaths. Treating it as a violation would make
-		// every artifact whose description omits a required example ineligible
-		// again, which is the refusal the synthesis change deliberately
-		// removed.
-		It("accepts a synthesized value and leaves it to SynthesizedPaths", func() {
-			schema := objectSchema(map[string]*model.Schema{
-				"state": {Kind: model.SchemaKindPrimitive, Type: "string", Enum: []string{"active"}},
-			}, "state")
-			set := MaterializedSet{
-				Values:           []model.MaterializedValue{{Path: "state", Value: "active"}},
-				SynthesizedPaths: []string{"state"},
-			}
-
-			Expect(ValidateSet(requestKey(), set, schema)).To(Succeed())
-		})
-
 		// A replaced secret holds a safe stand-in, not what the description
 		// declared, so checking it against the schema checks the replacement
 		// rather than the example.

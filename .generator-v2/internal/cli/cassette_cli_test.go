@@ -68,11 +68,12 @@ func readCassetteReport(t *testing.T, path string) model.RunReport {
 	return report
 }
 
-// An artifact that does not carry cassette: true has to produce exactly what it
-// produced before the feature existed — no bundle, and no cassette fields in
-// the report. The opt-in is the only thing separating the two runs, so this
-// uses the same fixture with that one line removed.
-func TestGenerateWithoutTheOptInIsUnchanged(t *testing.T) {
+// Generation is on by default, so declining is now an act: cassette: false.
+// An artifact that declines has to produce exactly what it produced before the
+// feature existed — no test, and no cassette fields in the report. The opt-out
+// is the only thing separating the two runs, so this uses the same fixture with
+// that one line flipped.
+func TestGenerateWithTheOptOutIsUnchanged(t *testing.T) {
 	dir := t.TempDir()
 	source := filepath.Join("..", "testdata", "mini-oas",
 		"mini-datadog_integration_twilio_account.yaml")
@@ -80,9 +81,10 @@ func TestGenerateWithoutTheOptInIsUnchanged(t *testing.T) {
 	if err != nil {
 		t.Fatalf("reading fixture: %v", err)
 	}
-	optedOut := bytes.Replace(raw, []byte("        cassette: true\n"), nil, 1)
+	optedOut := bytes.Replace(raw,
+		[]byte("        cassette: true\n"), []byte("        cassette: false\n"), 1)
 	if bytes.Equal(raw, optedOut) {
-		t.Fatal("fixture no longer carries the cassette opt-in this test removes")
+		t.Fatal("fixture no longer carries the cassette line this test flips")
 	}
 	spec := filepath.Join(dir, "opted-out.yaml")
 	if err := os.WriteFile(spec, optedOut, 0o644); err != nil {
@@ -104,13 +106,13 @@ func TestGenerateWithoutTheOptInIsUnchanged(t *testing.T) {
 
 	report := readCassetteReport(t, reportPath)
 	if len(report.Cassettes) != 0 {
-		t.Errorf("report carries %d cassette results without the opt-in", len(report.Cassettes))
+		t.Errorf("report carries %d cassette results despite the opt-out", len(report.Cassettes))
 	}
 	if report.CassetteSummary != nil {
-		t.Error("report carries a cassette summary without the opt-in")
+		t.Error("report carries a cassette summary despite the opt-out")
 	}
 	if _, err := os.Stat(filepath.Join(dir, "tests")); !os.IsNotExist(err) {
-		t.Error("a tests directory was created without the opt-in")
+		t.Error("a tests directory was created despite the opt-out")
 	}
 }
 

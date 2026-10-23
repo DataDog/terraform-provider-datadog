@@ -191,13 +191,6 @@ func (t ResourceTarget) updateStep(createRequest, createResponse MaterializedSet
 	if equivalentJSON(response.Body, createResponse.Body) {
 		return updatedState{}, false, nil
 	}
-	// An update whose every value was invented describes no state the author
-	// wrote down, so it earns no step: the recorded PATCH would assert values
-	// the description never gave. Synthesis exists so a target can be recorded
-	// over, not to manufacture a lifecycle nobody described.
-	if whollySynthesized(request) || whollySynthesized(response) {
-		return updatedState{}, false, nil
-	}
 	// The recorded request is what the provider will send: the created
 	// resource with the update's changes applied, not the example's delta.
 	return updatedState{request: createRequest.overlaidWith(request), response: response}, true, nil
@@ -215,28 +208,6 @@ func (m MaterializedSet) configuration() *model.MaterializedConfiguration {
 		RequestValues:         m.Values,
 		SensitiveReplacements: m.SensitiveReplacements,
 	}
-}
-
-// whollySynthesized reports a set none of whose values the description
-// supplied. Compared as a set rather than by count: a synthesized collection
-// records both its own path and its elements', so the two lists are not
-// one-to-one.
-func whollySynthesized(set MaterializedSet) bool {
-	if len(set.Values) == 0 {
-		// Nothing described, but nothing invented either — a bodyless
-		// operation is legitimate.
-		return false
-	}
-	invented := make(map[string]bool, len(set.SynthesizedPaths))
-	for _, path := range set.SynthesizedPaths {
-		invented[path] = true
-	}
-	for _, value := range set.Values {
-		if !invented[value.Path] {
-			return false
-		}
-	}
-	return true
 }
 
 // equivalentJSON reports whether two bodies carry the same values, used to tell
