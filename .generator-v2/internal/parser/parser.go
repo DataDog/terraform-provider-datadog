@@ -91,6 +91,7 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 		Components: v3doc.Model.Components,
 		Hash:       specHash(data),
 		Warnings:   legacySchemaWarnings(doc.GetSpecInfo().RootNode, cfg.trackingFieldName),
+		ServerURL:  resolveServerURL(v3doc.Model.Servers),
 	}
 
 	// Cycles found here are not errors: the walker's stack check stops the
@@ -103,7 +104,7 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 	// rawOps maps each projected operation back to the libopenapi operation it
 	// came from, so NormalizeSchemas can reach request/response bodies, which
 	// the model itself does not retain.
-	rawOps := make(map[*model.Operation]*v3.Operation)
+	raw := newRawContext()
 	if paths := v3doc.Model.Paths; paths != nil && paths.PathItems != nil {
 		for opPath, item := range paths.PathItems.FromOldest() {
 			if item == nil {
@@ -127,7 +128,7 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 					Unstable:    declaresUnstable(op),
 				}
 				spec.Operations = append(spec.Operations, mop)
-				rawOps[mop] = op
+				raw.add(mop, op, item)
 			}
 		}
 	}
@@ -135,7 +136,7 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 	// The tag-scoped registry is read after enumeration because a family
 	// block is anchored on the operation it names, and resolved before the sort
 	// so the synthetic operations it mints sort alongside the real ones.
-	if err := fanOutRegistry(spec, rawOps, v3doc.Model.Tags, cfg.trackingFieldName); err != nil {
+	if err := fanOutRegistry(spec, raw, v3doc.Model.Tags, cfg.trackingFieldName); err != nil {
 		return nil, err
 	}
 
@@ -155,7 +156,7 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 	// those pointers only exist once every operation is enumerated.
 	ResolveOperationGroups(spec)
 
-	if err := NormalizeSchemas(spec, rawOps, cfg.maxDepth); err != nil {
+	if err := NormalizeSchemas(spec, raw, cfg.maxDepth); err != nil {
 		return nil, err
 	}
 
@@ -174,7 +175,7 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 // more than one artifact: a family's resource and its singular data source
 // both read through the same endpoint. The clone inherits the raw handle so
 // schema normalization can still reach its request and response bodies.
-func fanOutRegistry(spec *model.Spec, rawOps map[*model.Operation]*v3.Operation, tags []*base.Tag, extensionName string) error {
+func fanOutRegistry(spec *model.Spec, raw *RawContext, tags []*base.Tag, extensionName string) error {
 	metas, err := decodeTagRegistries(tags, extensionName)
 	if err != nil {
 		return err
@@ -207,7 +208,8 @@ func fanOutRegistry(spec *model.Spec, rawOps map[*model.Operation]*v3.Operation,
 			Synthetic:   true,
 		}
 		spec.Operations = append(spec.Operations, clone)
-		rawOps[clone] = rawOps[primary]
+		raw.Operations[clone] = raw.Operations[primary]
+		raw.PathItemParams[clone] = raw.PathItemParams[primary]
 	}
 	return nil
 }
