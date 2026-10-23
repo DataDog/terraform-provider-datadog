@@ -775,6 +775,8 @@ func buildStateMetricsConfig(ctx context.Context, attributes datadogV2.AWSAccoun
 	}
 	if serviceQuotasCollection, ok := metricsConfig.GetCollectServiceQuotasOk(); ok {
 		metricsConfigTf.CollectServiceQuotas = types.BoolValue(*serviceQuotasCollection)
+	} else {
+		metricsConfigTf.CollectServiceQuotas = types.BoolValue(false)
 	}
 
 	if tagFilters, ok := metricsConfig.GetTagFiltersOk(); ok && len(*tagFilters) > 0 {
