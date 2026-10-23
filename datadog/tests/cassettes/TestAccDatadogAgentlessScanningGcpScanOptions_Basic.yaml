@@ -17,7 +17,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/test-project
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/tf-86e608df0c8ac86b4
         method: GET
       response:
         proto: HTTP/1.1
@@ -25,51 +25,51 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 139
+        content_length: 99
         uncompressed: false
-        body: '{"data":{"id":"test-project","type":"gcp_scan_options","attributes":{"cloud_function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
+        body: '{"errors":[{"status":"404","detail":"no gcp scan options found for project tf-86e608df0c8ac86b4"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 849.756833ms
+        status: 404 Not Found
+        code: 404
+        duration: 108.131038ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 140
+        content_length: 172
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"cloud_function":true,"vuln_containers_os":true,"vuln_host_os":true},"id":"test-project","type":"gcp_scan_options"}}
+            {"data":{"attributes":{"cloud_function":true,"compliance_host":false,"vuln_containers_os":true,"vuln_host_os":true},"id":"tf-86e608df0c8ac86b4","type":"gcp_scan_options"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/test-project
-        method: PATCH
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp
+        method: POST
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 139
+        content_length: 171
         uncompressed: false
-        body: '{"data":{"id":"test-project","type":"gcp_scan_options","attributes":{"cloud_function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
+        body: '{"data":{"id":"tf-86e608df0c8ac86b4","type":"gcp_scan_options","attributes":{"cloud_function":true,"compliance_host":false,"vuln_containers_os":true,"vuln_host_os":true}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 236.684791ms
+        status: 201 Created
+        code: 201
+        duration: 114.295672ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/test-project
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/tf-86e608df0c8ac86b4
         method: GET
       response:
         proto: HTTP/1.1
@@ -94,15 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 139
+        content_length: 171
         uncompressed: false
-        body: '{"data":{"id":"test-project","type":"gcp_scan_options","attributes":{"cloud_function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
+        body: '{"data":{"id":"tf-86e608df0c8ac86b4","type":"gcp_scan_options","attributes":{"cloud_function":true,"compliance_host":false,"vuln_containers_os":true,"vuln_host_os":true}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 234.115666ms
+        duration: 107.877851ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/test-project
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/tf-86e608df0c8ac86b4
         method: GET
       response:
         proto: HTTP/1.1
@@ -127,15 +127,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 139
+        content_length: 171
         uncompressed: false
-        body: '{"data":{"id":"test-project","type":"gcp_scan_options","attributes":{"cloud_function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
+        body: '{"data":{"id":"tf-86e608df0c8ac86b4","type":"gcp_scan_options","attributes":{"cloud_function":true,"compliance_host":false,"vuln_containers_os":true,"vuln_host_os":true}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 233.34675ms
+        duration: 107.538411ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -152,7 +152,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/test-project
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/tf-86e608df0c8ac86b4
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -166,7 +166,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 226.154ms
+        duration: 137.028226ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -183,7 +183,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/test-project
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/gcp/tf-86e608df0c8ac86b4
         method: GET
       response:
         proto: HTTP/1.1
@@ -191,12 +191,12 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 91
+        content_length: 99
         uncompressed: false
-        body: '{"errors":[{"status":"404","detail":"no gcp scan options found for project test-project"}]}'
+        body: '{"errors":[{"status":"404","detail":"no gcp scan options found for project tf-86e608df0c8ac86b4"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 236.0365ms
+        duration: 106.544619ms
