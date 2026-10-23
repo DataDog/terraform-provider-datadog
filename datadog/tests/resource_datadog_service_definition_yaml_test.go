@@ -77,6 +77,25 @@ func TestAccDatadogServiceDefinition_BasicV2_2(t *testing.T) {
 	})
 }
 
+func TestAccDatadogServiceDefinition_BasicV3(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniq := strings.ToLower(uniqueEntityName(ctx, t))
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogServiceDefinitionDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogServiceDefinitionV3(uniq),
+				Check:  checkServiceDefinitionExists(accProvider),
+			},
+		},
+	})
+}
+
 func TestAccDatadogServiceDefinition_BasicBackstage(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -170,7 +189,7 @@ links:
 tags:
   - my:tag
   - service:tag
-team: my-team  
+team: my-team
 EOF
 }`, uniq)
 }
@@ -213,6 +232,52 @@ languages:
   - go
   - python
 type: web
+EOF
+}`, uniq)
+}
+
+func testAccCheckDatadogServiceDefinitionV3(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_service_definition_yaml" "service_definition" {
+  service_definition =<<EOF
+schema-version: v3
+dd-service: %s
+contacts:
+  - contact: contact@datadoghq.com
+    name: Team Email
+    type: email
+extensions:
+  myorgextension: extensionvalue
+integrations:
+  opsgenie:
+    region: US
+    service-url: https://my-org.opsgenie.com/service/123e4567-e89b-12d3-a456-426614174000
+  pagerduty:
+    service-url: https://my-org.pagerduty.com/service-directory/PMyService
+links:
+  - name: Architecture
+    type: doc
+    provider: Google Drive
+    url: https://my-runbook
+  - name: Runbook
+    type: runbook
+    url: https://my-runbook
+  - name: Source Code
+    type: repo
+    provider: GitHub
+    url: https://github.com/DataDog/schema
+tags:
+  - my:tag
+  - service:tag
+team: my-team  
+languages:
+  - go
+  - python
+type: web
+lifecycle: production
+tier: high
+application: e-commerce
+description: A test service using schema v3
 EOF
 }`, uniq)
 }
