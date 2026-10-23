@@ -305,20 +305,20 @@ skipped_tests:
     added: "2026-07-09"
     author: andrei.patru
 
-  # CSM Threats policy — write lock held by a deployment that does not finish (4 tests, TF-402)
+  # CSM Threats policy — write lock held by a deployment that does not finish (4 tests)
   - test: TestAccCSMThreatsAgentRule_CreateAndUpdate
-    reason: "423 Locked on update / 409 Conflict on delete — new policies stay in 'ongoing deployment' for more than 27 min in the test org (TF-402)"
+    reason: "423 Locked on update / 409 Conflict on delete — new policies stay in 'ongoing deployment' for more than 27 min in the test org"
     added: "2026-10-22"
     author: fpighi
   - test: TestAccCSMThreatsAgentRulesDataSource
-    reason: "423 Locked on update / 409 Conflict on delete — new policies stay in 'ongoing deployment' for more than 27 min in the test org (TF-402)"
+    reason: "423 Locked on update / 409 Conflict on delete — new policies stay in 'ongoing deployment' for more than 27 min in the test org"
     added: "2026-10-22"
     author: fpighi
   - test: TestAccCSMThreatsPolicy_CreateAndUpdate
-    reason: "423 Locked on update / 409 Conflict on delete — new policies stay in 'ongoing deployment' for more than 27 min in the test org (TF-402)"
+    reason: "423 Locked on update / 409 Conflict on delete — new policies stay in 'ongoing deployment' for more than 27 min in the test org"
     added: "2026-10-22"
     author: fpighi
   - test: TestAccCSMThreatsPolicy_CreateAndUpdateWithHostTagsLists
-    reason: "423 Locked on update / 409 Conflict on delete — new policies stay in 'ongoing deployment' for more than 27 min in the test org (TF-402)"
+    reason: "423 Locked on update / 409 Conflict on delete — new policies stay in 'ongoing deployment' for more than 27 min in the test org"
     added: "2026-10-22"
     author: fpighi
