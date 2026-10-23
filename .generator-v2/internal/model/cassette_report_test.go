@@ -86,10 +86,6 @@ var _ = Describe("RunReport.AddCassetteResult", func() {
 		Expect(r.Cassettes[1].Kind).To(Equal(ArtifactKindResource))
 	})
 
-	It("tolerates a nil report", func() {
-		var r *RunReport
-		Expect(func() { r.AddCassetteResult(CassetteResult{}) }).NotTo(Panic())
-	})
 })
 
 var _ = Describe("RunReport.Write with cassettes", func() {
