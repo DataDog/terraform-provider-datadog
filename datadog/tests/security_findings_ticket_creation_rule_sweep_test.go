@@ -13,8 +13,8 @@ import (
 
 const ticketCreationRuleTestPrefix = "tf-TestAccDatadogSecurityFindingsTicketCreationRule"
 
-// ticketCreationRuleMinAge protects rules of a concurrent run (scheduled and PR
-// integration runs share the org). Rules younger than this are kept.
+// ticketCreationRuleMinAge is the age a rule must reach before the sweeper
+// deletes it, so that a test that is still running keeps its rules.
 const ticketCreationRuleMinAge = 2 * time.Hour
 
 // ticketCreationRuleTimestamp extracts the Unix time that withUniqueSurrounding
