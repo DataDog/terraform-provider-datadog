@@ -31,8 +31,8 @@ func TestSweepTagIndexingRules(t *testing.T) {
 }
 
 // Rules leaked into the shared test org by the datadog-api-client BDD suites. They are
-// deleted only after foreignTagIndexingRuleMinAge so that a BDD run in progress keeps
-// its rules. tf-* rules have no age guard: datadog_tag_indexing_rule_order requires
+// deleted only after foreignTagIndexingRuleMinAge, so that a test that is still running
+// keeps its rules. tf-* rules have no age guard: datadog_tag_indexing_rule_order requires
 // rule_ids to be the complete set of active rules, so any rule left by an interrupted
 // provider run, however recent, fails that test.
 var foreignTagIndexingRuleTimestampName = regexp.MustCompile(`^TestTypescript\w*?(\d{10})$`)
