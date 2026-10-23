@@ -28,8 +28,8 @@ resource "datadog_child_organization" "organization" {
 
 ### Read-Only
 
-- `api_key` (List of Object) Datadog API key. (see [below for nested schema](#nestedatt--api_key))
-- `application_key` (List of Object) An application key with its associated metadata. (see [below for nested schema](#nestedatt--application_key))
+- `api_key` (List of Object, Sensitive) Datadog API key. (see [below for nested schema](#nestedatt--api_key))
+- `application_key` (List of Object, Sensitive) An application key with its associated metadata. (see [below for nested schema](#nestedatt--application_key))
 - `description` (String) Description of the organization.
 - `id` (String) The ID of this resource.
 - `public_id` (String) The `public_id` of the organization you are operating within.
