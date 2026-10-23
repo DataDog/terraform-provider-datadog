@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -109,9 +108,8 @@ func (r *tagIndexingRuleResource) Schema(_ context.Context, _ resource.SchemaReq
 			"rule_order": schema.Int64Attribute{
 				Computed:    true,
 				Description: "Evaluation order within the org. Lower values are evaluated first. Server-assigned on create; use `datadog_tag_indexing_rule_order` to control ordering.",
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
+				// No UseStateForUnknown: the server renumbers rule_order when any other rule in the
+				// org is deleted, so the prior value is not a valid plan value for Update.
 			},
 			"created_at": schema.StringAttribute{
 				Computed:    true,
