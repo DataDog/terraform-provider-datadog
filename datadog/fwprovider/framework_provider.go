@@ -15,8 +15,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -25,6 +27,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/commandauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/terraformauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -277,6 +280,7 @@ type ProviderSchema struct {
 	ApiKey                           types.String `tfsdk:"api_key"`
 	AppKey                           types.String `tfsdk:"app_key"`
 	BearerToken                      types.String `tfsdk:"bearer_token"`
+	BearerTokenCommand               types.List   `tfsdk:"bearer_token_command"`
 	WorkloadIdentityTokenTag         types.String `tfsdk:"workload_identity_token_tag"`
 	ApiUrl                           types.String `tfsdk:"api_url"`
 	Validate                         types.String `tfsdk:"validate"`
@@ -360,6 +364,14 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Optional:    true,
 				Sensitive:   true,
 				Description: "Datadog credential sent in the `Authorization: Bearer <token>` header. Accepts personal access tokens (`ddpat_*`) and service-account access tokens (`ddsat_*`). When set, the provider authenticates with `Authorization: Bearer <token>` instead of the `DD-API-KEY` / `DD-APPLICATION-KEY` headers. This can also be set via the `DD_BEARER_TOKEN` or `DATADOG_BEARER_TOKEN` environment variable.",
+			},
+			"bearer_token_command": schema.ListAttribute{
+				Optional:    true,
+				ElementType: types.StringType,
+				Validators: []validator.List{
+					listvalidator.ConflictsWith(path.MatchRoot("bearer_token")),
+				},
+				Description: "Command that prints a Datadog Bearer token on stdout, as a list of the program and its arguments, for example `[\"pup\", \"auth\", \"token\"]`. It runs without a shell. The provider runs it when it first needs a token and again when the token expires: one minute before the JWT `exp` claim, or after five minutes for a token that is not a JWT. Conflicts with `bearer_token`. This can also be set via the `DD_BEARER_TOKEN_COMMAND` or `DATADOG_BEARER_TOKEN_COMMAND` environment variable, whose value is split at whitespace.",
 			},
 			"workload_identity_token_tag": schema.StringAttribute{
 				Optional:    true,
@@ -493,8 +505,13 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 			break
 		}
 	}
+	if config.CloudProviderType.ValueString() == "" && config.BearerToken.ValueString() == "" && config.BearerTokenCommand.IsUnknown() {
+		diags.AddError("Unknown provider authentication", "bearer_token_command must be known before configuring provider authentication")
+		return diags
+	}
+	hasBearerTokenCommand := !config.BearerTokenCommand.IsNull() && !config.BearerTokenCommand.IsUnknown() && len(config.BearerTokenCommand.Elements()) > 0
 	p.hasExplicitAuth = config.ApiKey.ValueString() != "" || config.AppKey.ValueString() != "" ||
-		config.BearerToken.ValueString() != "" || config.CloudProviderType.ValueString() != ""
+		config.BearerToken.ValueString() != "" || hasBearerTokenCommand || config.CloudProviderType.ValueString() != ""
 
 	if config.ApiKey.IsNull() {
 		apiKey, err := utils.GetMultiEnvVar(utils.APIKeyEnvVars[:]...)
@@ -514,6 +531,17 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 		bearerToken, err := utils.GetMultiEnvVar(utils.BearerTokenEnvVars...)
 		if err == nil {
 			config.BearerToken = types.StringValue(bearerToken)
+		}
+		if v, err := utils.GetMultiEnvVar(utils.BearerTokenCommandEnvVars...); err == nil {
+			var elements []attr.Value
+			for _, arg := range commandauth.ParseEnv(v) {
+				elements = append(elements, types.StringValue(arg))
+			}
+			config.BearerTokenCommand = types.ListValueMust(types.StringType, elements)
+		}
+		if config.BearerToken.ValueString() != "" && len(config.BearerTokenCommand.Elements()) > 0 {
+			diags.AddError("set only one of DD_BEARER_TOKEN and DD_BEARER_TOKEN_COMMAND (or their DATADOG_ forms)", "")
+			return diags
 		}
 	}
 
@@ -691,10 +719,23 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	awsSecretAccessKey := config.AWSSecretAccessKey.ValueString()
 	awsSessionToken := config.AWSSessionToken.ValueString()
 	bearerToken := config.BearerToken.ValueString()
+	var bearerTokenCommandConfig *datadog.DelegatedTokenConfig
+	if !config.BearerTokenCommand.IsNull() && len(config.BearerTokenCommand.Elements()) > 0 {
+		var argv []string
+		diags.Append(config.BearerTokenCommand.ElementsAs(context.Background(), &argv, false)...)
+		if diags.HasError() {
+			return diags
+		}
+		var err error
+		if bearerTokenCommandConfig, err = commandauth.GetDelegatedTokenConfig(argv); err != nil {
+			diags.AddError("Invalid bearer_token_command", err.Error())
+			return diags
+		}
+	}
 
-	if validate && workloadIdentityConfig == nil {
+	if validate && workloadIdentityConfig == nil && bearerTokenCommandConfig == nil {
 		if cloudProviderType == "" && bearerToken == "" && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
-			diags.AddError("credentials are required unless validate = false: configure api_key and app_key, bearer_token, AWS WIF, or Terraform Dynamic Provider Credentials", "")
+			diags.AddError("credentials are required unless validate = false: configure api_key and app_key, bearer_token, bearer_token_command, AWS WIF, or Terraform Dynamic Provider Credentials", "")
 			return diags
 		} else if cloudProviderType != "" && orgUUID == "" {
 			diags.AddError("orgUUID must be set when using cloud provider auth unless validate = false", "")
@@ -722,6 +763,9 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	// Explicit provider authentication wins; otherwise prefer Terraform workload identity over environment credentials.
 	switch {
 	case workloadIdentityConfig != nil:
+		auth = context.WithValue(auth, datadog.ContextDelegatedToken, &datadog.DelegatedTokenCredentials{})
+	case bearerTokenCommandConfig != nil:
+		// Like a static bearer token, a command from the environment yields to workload identity.
 		auth = context.WithValue(auth, datadog.ContextDelegatedToken, &datadog.DelegatedTokenCredentials{})
 	case cloudProviderType != "":
 		// Allows for delegated token authentication
@@ -767,7 +811,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.UserAgent = utils.GetUserAgentFramework(ddClientConfig.UserAgent, request.TerraformVersion)
 	// The SDK debug logger does not redact ContextDelegatedToken credentials.
 	// Suppress raw HTTP dumps for WIT authentication until SDK redaction supports it.
-	ddClientConfig.Debug = logging.IsDebugOrHigher() && workloadIdentityConfig == nil
+	ddClientConfig.Debug = logging.IsDebugOrHigher() && workloadIdentityConfig == nil && bearerTokenCommandConfig == nil
 
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateRUMOperation", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetRUMOperation", true)
@@ -1037,6 +1081,8 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.HTTPClient = utils.NewHTTPClient()
 	if workloadIdentityConfig != nil {
 		ddClientConfig.DelegatedTokenConfig = workloadIdentityConfig
+	} else if bearerTokenCommandConfig != nil {
+		ddClientConfig.DelegatedTokenConfig = bearerTokenCommandConfig
 	} else if cloudProviderType != "" {
 		switch cloudProviderType {
 		case "aws":
