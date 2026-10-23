@@ -28,7 +28,7 @@ var (
 	_ resource.ResourceWithConfigure   = &datadogIntegrationElasticCloudAccountResource{}
 	_ resource.ResourceWithImportState = &datadogIntegrationElasticCloudAccountResource{}
 )
-var datadogIntegrationElasticCloudAccountAuthenticationElasticCloudIntegrationAccountBasicAuthPasswordWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "password", WriteOnlyAttr: "password_wo", TriggerAttr: "password_wo_version", WriteOnlyDescription: "Secret password or private key. This write-only value is not stored in Terraform state.", TriggerDescription: "Version trigger for password_wo rotation.", ParentBlocks: []string{"authentication", "elastic_cloud_integration_account_basic_auth"}, Mode: fwutils.WriteOnlySecretModeOnly, Required: true}
+var datadogIntegrationElasticCloudAccountAuthenticationElasticCloudIntegrationAccountBasicAuthPasswordWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "password", WriteOnlyAttr: "password_wo", TriggerAttr: "password_wo_version", OriginalDescription: "Secret password or private key. Exactly one of `password` or `password_wo` must be set. Prefer `password_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.", WriteOnlyDescription: "Secret password or private key. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.", TriggerDescription: "Version trigger for password_wo rotation.", ParentBlocks: []string{"authentication", "elastic_cloud_integration_account_basic_auth"}, Mode: fwutils.WriteOnlySecretModeDual, Required: true}
 
 type datadogIntegrationElasticCloudAccountResourceModel struct {
 	ID             types.String                                                                              `tfsdk:"id"`
@@ -44,6 +44,7 @@ type datadogIntegrationElasticCloudAccountElasticCloudIntegrationAccountAuthenti
 
 type datadogIntegrationElasticCloudAccountElasticCloudIntegrationAccountAuthenticationElasticCloudIntegrationAccountBasicAuthModel struct {
 	AuthType          types.String `tfsdk:"auth_type"`
+	Password          types.String `tfsdk:"password"`
 	PasswordWo        types.String `tfsdk:"password_wo"`
 	PasswordWoVersion types.String `tfsdk:"password_wo_version"`
 	Username          types.String `tfsdk:"username"`
