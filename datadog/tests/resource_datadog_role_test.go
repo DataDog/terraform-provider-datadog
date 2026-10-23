@@ -221,7 +221,11 @@ var implicitRolePermissions = []string{
 }
 
 func implicitRolePermissionsHCL() string {
-	return fmt.Sprintf(`["%s"]`, strings.Join(implicitRolePermissions, `", "`))
+	quoted := make([]string, len(implicitRolePermissions))
+	for i, p := range implicitRolePermissions {
+		quoted[i] = fmt.Sprintf("%q", p)
+	}
+	return "[" + strings.Join(quoted, ", ") + "]"
 }
 
 func testAccCheckDatadogRoleWithRestrictedPermsConfig(uniq string) string {
