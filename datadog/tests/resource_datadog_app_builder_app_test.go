@@ -404,11 +404,11 @@ func testAppBuilderAppExampleJSON(t *testing.T, appName string) []byte {
 	if err != nil {
 		t.Fatalf("error reading file: %s", err)
 	}
-	fixedID := []byte(fmt.Sprintf(`"id": "%s"`, testAppBuilderAppFixedID))
+	fixedID := []byte(fmt.Sprintf(`"id": %q`, testAppBuilderAppFixedID))
 	if bytes.Count(b, fixedID) != 1 {
 		t.Fatalf("expected exactly one %s in example app JSON", fixedID)
 	}
-	return bytes.Replace(b, fixedID, []byte(fmt.Sprintf(`"id": "%s"`, testAppBuilderAppID(appName))), 1)
+	return bytes.Replace(b, fixedID, []byte(fmt.Sprintf(`"id": %q`, testAppBuilderAppID(appName))), 1)
 }
 
 func testLoadFromFileAppBuilderAppResourceConfig(fileName string, appName string) string {
