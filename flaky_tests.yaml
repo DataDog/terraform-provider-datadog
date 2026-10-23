@@ -248,26 +248,6 @@ skipped_tests:
     author: fpighi
 
   # Intermittent — Transient API timeouts and rate limits (5 tests, APIR-2793)
-  - test: TestAccDatadogMonitor_DataQuality_EmptyMonitorOptions
-    reason: "Intermittent 512 Timeout from /api/v1/monitor/validate"
-    added: "2026-04-10"
-    author: fpighi
-  - test: TestAccDatadogMonitor_WithTagConfig
-    reason: "Intermittent 512 Timeout from /api/v1/monitor/validate"
-    added: "2026-04-10"
-    author: fpighi
-  - test: TestAccDatadogDashboardQueryValueFormula_import
-    reason: "Intermittent 503 Service Unavailable — upstream connect error"
-    added: "2026-04-10"
-    author: fpighi
-  - test: TestAccDatadogSecurityMonitoringRule_AppSecSpansDeprecated
-    reason: "Intermittent non-empty plan — deprecated app_sec_spans data_source normalization"
-    added: "2026-04-10"
-    author: fpighi
-  - test: TestAccDatadogCustomAllocationRules_OverrideFalseUnmanagedAtEnd
-    reason: "Intermittent 429 Too Many Requests — rate limiting on CustomAllocationRules API"
-    added: "2026-04-10"
-    author: fpighi
   - test: TestAccMonitor_Fwprovider_FormulaFunction_Cost
     reason: "Intermittent 503 Service Unavailable from /api/v1/monitor/validate"
     added: "2026-04-24"
