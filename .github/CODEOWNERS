@@ -153,3 +153,9 @@ docs/resources/github_oidc_identity_mapping.md            @DataDog/aaa-authn
 docs/resources/github_oidc_intake_mapping.md              @DataDog/aaa-authn
 examples/resources/datadog_github_oidc_identity_mapping/  @DataDog/aaa-authn
 examples/resources/datadog_github_oidc_intake_mapping/    @DataDog/aaa-authn
+
+# Metrics Experience tag-only resource and migration documentation
+docs/resources/metric_tag_configuration_v2.md             @DataDog/api-reliability @DataDog/metrics-experience @DataDog/documentation
+docs/guides/metric_tag_configuration_v2_migration.md       @DataDog/api-reliability @DataDog/metrics-experience @DataDog/documentation
+templates/guides/metric_tag_configuration_v2_migration.md.tmpl @DataDog/api-reliability @DataDog/metrics-experience
+examples/resources/datadog_metric_tag_configuration_v2/   @DataDog/api-reliability @DataDog/metrics-experience
