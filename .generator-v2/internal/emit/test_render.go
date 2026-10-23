@@ -1,9 +1,7 @@
 package emit
 
 import (
-	"bytes"
 	"fmt"
-	"go/format"
 	"strings"
 )
 
@@ -143,14 +141,5 @@ func hclFilterValue(tfType string) (string, bool) {
 // gofmt-canonical Go source. The result is a scaffold: it compiles and runs,
 // but needs a recorded cassette, seed resources and assertions to pass replay.
 func RenderDataSourceTest(v DataSourceView) ([]byte, error) {
-	var buf bytes.Buffer
-	if err := templates.ExecuteTemplate(&buf, "data_source_test", buildTestView(v)); err != nil {
-		return nil, fmt.Errorf("emit: executing data source test template for %q: %w", v.TypeName, err)
-	}
-
-	formatted, err := format.Source(buf.Bytes())
-	if err != nil {
-		return nil, fmt.Errorf("emit: gofmt of generated test %q: %w\n--- raw output ---\n%s", v.TypeName, err, buf.String())
-	}
-	return dropBlankLineAfterBrace(formatted), nil
+	return renderGoTemplate("data_source_test", "data source test", v.TypeName, buildTestView(v))
 }
