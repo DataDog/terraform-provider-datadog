@@ -190,7 +190,7 @@ func expandAzureDataExplorerAuth(src AzureDataExplorerAuthModel) *datadogV2.Obse
 		return &auth
 	case len(src.ManagedIdentityClientAssertion) > 0:
 		m := src.ManagedIdentityClientAssertion[0]
-		a := datadogV2.NewObservabilityPipelineAzureDataExplorerDestinationAuthManagedIdentityClientAssertionWithDefaults()
+		a := datadogV2.NewObservabilityPipelineAzureDataExplorerManagedIdentityClientAssertionWithDefaults()
 		a.SetClientAssertionClientId(m.ClientAssertionClientId.ValueString())
 		a.SetClientAssertionTenantId(m.ClientAssertionTenantId.ValueString())
 		if !m.UserAssignedManagedIdentityId.IsNull() && !m.UserAssignedManagedIdentityId.IsUnknown() {
@@ -199,7 +199,7 @@ func expandAzureDataExplorerAuth(src AzureDataExplorerAuthModel) *datadogV2.Obse
 		if !m.UserAssignedManagedIdentityIdType.IsNull() && !m.UserAssignedManagedIdentityIdType.IsUnknown() {
 			a.SetUserAssignedManagedIdentityIdType(datadogV2.ObservabilityPipelineAzureDataExplorerDestinationManagedIdentityIdType(m.UserAssignedManagedIdentityIdType.ValueString()))
 		}
-		auth := datadogV2.ObservabilityPipelineAzureDataExplorerDestinationAuthManagedIdentityClientAssertionAsObservabilityPipelineAzureDataExplorerDestinationAuth(a)
+		auth := datadogV2.ObservabilityPipelineAzureDataExplorerManagedIdentityClientAssertionAsObservabilityPipelineAzureDataExplorerDestinationAuth(a)
 		return &auth
 	case len(src.WorkloadIdentity) > 0:
 		m := src.WorkloadIdentity[0]
@@ -327,8 +327,8 @@ func flattenAzureDataExplorerAuth(src *datadogV2.ObservabilityPipelineAzureDataE
 			m.UserAssignedManagedIdentityIdType = types.StringValue(string(*v))
 		}
 		out.ManagedIdentity = []AzureDataExplorerAuthManagedIdentityModel{m}
-	case src.ObservabilityPipelineAzureDataExplorerDestinationAuthManagedIdentityClientAssertion != nil:
-		a := src.ObservabilityPipelineAzureDataExplorerDestinationAuthManagedIdentityClientAssertion
+	case src.ObservabilityPipelineAzureDataExplorerManagedIdentityClientAssertion != nil:
+		a := src.ObservabilityPipelineAzureDataExplorerManagedIdentityClientAssertion
 		m := AzureDataExplorerAuthManagedIdentityClientAssertionModel{
 			ClientAssertionClientId:           types.StringValue(a.GetClientAssertionClientId()),
 			ClientAssertionTenantId:           types.StringValue(a.GetClientAssertionTenantId()),
