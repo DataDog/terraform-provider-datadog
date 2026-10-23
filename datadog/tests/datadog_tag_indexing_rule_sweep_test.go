@@ -4,16 +4,20 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 )
 
+var tagIndexingRuleSweepOnce sync.Once
+
 // cleanupTagIndexingRules removes stale tag indexing rules left behind by failed
 // or interrupted test runs. Call this at the top of tag indexing rule test
 // functions, before resource.Test(). It is a no-op on replay so it never runs
-// against a cassette or affects recorded interactions.
+// against a cassette or affects recorded interactions. It sweeps once per test
+// binary: one sweep per test hit 429 on the list and delete endpoints.
 func cleanupTagIndexingRules(t *testing.T) {
 	t.Helper()
 
@@ -21,7 +25,7 @@ func cleanupTagIndexingRules(t *testing.T) {
 		return
 	}
 
-	doSweepTagIndexingRules(t)
+	tagIndexingRuleSweepOnce.Do(func() { doSweepTagIndexingRules(t) })
 }
 
 // TestSweepTagIndexingRules is a standalone sweep test for CI / manual invocation
