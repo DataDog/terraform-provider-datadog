@@ -30,12 +30,12 @@ import (
 )
 
 func {{ .FuncName }}(t *testing.T) {
-	// Skips before any provider setup. This fixture was generated from the
-	// description rather than recorded against an org, so it is only ever
-	// meaningful in replay; running it live would create real objects whose
-	// ids could not match the cassette.
-	if !isReplaying() {
-		t.Skip("{{ .FuncName }} replays a generated cassette; run with RECORD=false")
+	// Skips before any provider setup. The configuration below comes from the
+	// description's own examples, with anything it left out synthesized, so a
+	// recording run may be rejected by the API — that is the expected way to
+	// learn the description is wrong. Replay needs a cassette recorded first.
+	if !isRecording() && !isReplaying() {
+		t.Skip("{{ .FuncName }} needs RECORD=true to record a cassette, or RECORD=false to replay one")
 	}
 	t.Parallel()
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)

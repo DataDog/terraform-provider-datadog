@@ -101,6 +101,7 @@ func (f familyDecl) block(name string) *artifactBlock {
 // artifactBlock is one artifact's declaration. Every field is per-artifact by
 // construction: the block is the only place they can be written.
 type artifactBlock struct {
+	Cassette      bool                  `json:"cassette,omitempty"`
 	ArtifactName  string                `json:"artifact_name,omitempty"`
 	TfDescription string                `json:"tf_description,omitempty"`
 	IdStrategy    model.IdStrategy      `json:"id_strategy,omitempty"`
@@ -188,6 +189,7 @@ func DecodeRegistry(ext *orderedmap.Map[string, *yaml.Node], extensionName strin
 func desugarBlock(family, blockName string, block *artifactBlock) (*model.TrackingFieldMetadata, error) {
 	meta := &model.TrackingFieldMetadata{
 		Family:        family,
+		Cassette:      block.Cassette,
 		Block:         blockName,
 		TfDescription: block.TfDescription,
 		Group:         block.Group,

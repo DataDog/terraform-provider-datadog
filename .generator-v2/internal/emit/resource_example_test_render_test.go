@@ -71,12 +71,12 @@ var _ = Describe("RenderResourceExampleTest", func() {
 		}
 	})
 
-	// Generated from the description rather than recorded, so it is only ever
-	// meaningful in replay — and it must skip before provider setup.
-	It("guards on replay mode ahead of any provider setup", func() {
+	// The test records as well as replays, and either way it must skip before
+	// provider setup so an unset RECORD costs nothing.
+	It("guards on record-or-replay ahead of any provider setup", func() {
 		source := renderTwilioExampleTest()
 		body := source[strings.Index(source, "func TestAccDatadog"):]
-		guard := strings.Index(body, "if !isReplaying()")
+		guard := strings.Index(body, "if !isRecording() && !isReplaying()")
 		setup := strings.Index(body, "testAccFrameworkMuxProviders")
 		Expect(guard).To(BeNumerically(">", 0))
 		Expect(guard).To(BeNumerically("<", setup), "the skip must precede provider setup")
