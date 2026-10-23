@@ -15,8 +15,7 @@ import (
 var sdsSweepOnce sync.Once
 
 // sdsGroupMinAge is the age a timestamped group must reach before the sweeper
-// deletes it. The scheduled and PR integration workflows share the org, so a
-// younger group can belong to a run in progress. It equals the testacc timeout.
+// deletes it, so that a test that is still running keeps its group.
 const sdsGroupMinAge = 2 * time.Hour
 
 // sdsGroupNameTimestamp captures the trailing unix timestamp that
