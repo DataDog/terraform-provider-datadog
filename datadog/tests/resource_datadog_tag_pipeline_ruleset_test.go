@@ -95,7 +95,7 @@ func TestAccDatadogTagPipelineRuleset_QueryRule(t *testing.T) {
 
 func TestAccDatadogTagPipelineRuleset_ReferenceTableRule(t *testing.T) {
 	if !isReplaying() {
-		t.Skip("requires pre-existing reference tables synced with Cloud Cost Management (TF-140)")
+		t.Skip("requires pre-existing reference tables synced with Cloud Cost Management")
 	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -129,7 +129,7 @@ func TestAccDatadogTagPipelineRuleset_ReferenceTableRule(t *testing.T) {
 
 func TestAccDatadogTagPipelineRuleset_MultipleRules(t *testing.T) {
 	if !isReplaying() {
-		t.Skip("requires pre-existing reference tables synced with Cloud Cost Management (TF-140)")
+		t.Skip("requires pre-existing reference tables synced with Cloud Cost Management")
 	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -290,7 +290,7 @@ func TestAccDatadogTagPipelineRuleset_QueryRuleIfTagExists(t *testing.T) {
 
 func TestAccDatadogTagPipelineRuleset_ReferenceTableRuleIfTagExists(t *testing.T) {
 	if !isReplaying() {
-		t.Skip("requires pre-existing reference tables synced with Cloud Cost Management (TF-140)")
+		t.Skip("requires pre-existing reference tables synced with Cloud Cost Management")
 	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
