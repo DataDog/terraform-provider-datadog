@@ -104,6 +104,25 @@ type MaterializedValue struct {
 	Sensitive bool
 }
 
+// OverlayMaterializedValues applies a step's values to the desired state.
+// Arrays replace their indexed descendants; changing a union branch removes
+// the old alternative's fields. Other updates remain sparse overlays.
+func OverlayMaterializedValues(base, updates map[string]MaterializedValue) {
+	for path, value := range updates {
+		_, isArray := value.Value.([]any)
+		replaceVariant := value.Variant != "" && base[path].Variant != value.Variant
+		if !isArray && !replaceVariant {
+			continue
+		}
+		for previous := range base {
+			if strings.HasPrefix(previous, path+"[") || replaceVariant && strings.HasPrefix(previous, path+".") {
+				delete(base, previous)
+			}
+		}
+	}
+	maps.Copy(base, updates)
+}
+
 // MaterializedConfiguration is the provider-facing configuration and request
 // values for one test state, built from a selected example scenario.
 type MaterializedConfiguration struct {
