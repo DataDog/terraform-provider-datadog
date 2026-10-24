@@ -484,11 +484,21 @@ func setDashboardStateSDKv2(d *schema.ResourceData, resp map[string]interface{})
 	var diags diag.Diagnostics
 
 	// Simple string fields
-	for _, key := range []string{"title", "layout_type", "reflow_type", "description", "url"} {
+	for _, key := range []string{"title", "layout_type", "url"} {
 		if v, ok := resp[key]; ok && v != nil {
 			if err := d.Set(key, fmt.Sprintf("%v", v)); err != nil {
 				diags = append(diags, diag.FromErr(err)...)
 			}
+		}
+	}
+	// Optional strings must be reset when the API omits them or returns null.
+	for _, key := range []string{"reflow_type", "description"} {
+		value := ""
+		if v, ok := resp[key]; ok && v != nil {
+			value = fmt.Sprintf("%v", v)
+		}
+		if err := d.Set(key, value); err != nil {
+			diags = append(diags, diag.FromErr(err)...)
 		}
 	}
 
@@ -505,6 +515,9 @@ func setDashboardStateSDKv2(d *schema.ResourceData, resp map[string]interface{})
 			diags = append(diags, diag.FromErr(err)...)
 		}
 	} else {
+		if err := d.Set("restricted_roles", []string{}); err != nil {
+			diags = append(diags, diag.FromErr(err)...)
+		}
 		isReadOnly := false
 		if v, ok := resp["is_read_only"].(bool); ok {
 			isReadOnly = v
@@ -515,41 +528,39 @@ func setDashboardStateSDKv2(d *schema.ResourceData, resp map[string]interface{})
 	}
 
 	// notify_list
+	notifyList := []string{}
 	if v, ok := resp["notify_list"].([]interface{}); ok {
-		notifyList := make([]string, len(v))
+		notifyList = make([]string, len(v))
 		for i, n := range v {
 			notifyList[i] = fmt.Sprintf("%v", n)
 		}
-		if err := d.Set("notify_list", notifyList); err != nil {
-			diags = append(diags, diag.FromErr(err)...)
-		}
+	}
+	if err := d.Set("notify_list", notifyList); err != nil {
+		diags = append(diags, diag.FromErr(err)...)
 	}
 
 	// tags
+	tags := []string{}
 	if v, ok := resp["tags"].([]interface{}); ok {
-		tags := make([]string, len(v))
+		tags = make([]string, len(v))
 		for i, t := range v {
 			tags[i] = fmt.Sprintf("%v", t)
 		}
-		if err := d.Set("tags", tags); err != nil {
-			diags = append(diags, diag.FromErr(err)...)
-		}
+	}
+	if err := d.Set("tags", tags); err != nil {
+		diags = append(diags, diag.FromErr(err)...)
 	}
 
 	// template_variable
-	if v, ok := resp["template_variables"].([]interface{}); ok {
-		flattened := dashboardmapping.FlattenTemplateVariables(v)
-		if err := d.Set("template_variable", flattened); err != nil {
-			diags = append(diags, diag.FromErr(err)...)
-		}
+	templateVariables, _ := resp["template_variables"].([]interface{})
+	if err := d.Set("template_variable", dashboardmapping.FlattenTemplateVariables(templateVariables)); err != nil {
+		diags = append(diags, diag.FromErr(err)...)
 	}
 
 	// template_variable_preset
-	if v, ok := resp["template_variable_presets"].([]interface{}); ok {
-		flattened := dashboardmapping.FlattenTemplateVariablePresets(v)
-		if err := d.Set("template_variable_preset", flattened); err != nil {
-			diags = append(diags, diag.FromErr(err)...)
-		}
+	templateVariablePresets, _ := resp["template_variable_presets"].([]interface{})
+	if err := d.Set("template_variable_preset", dashboardmapping.FlattenTemplateVariablePresets(templateVariablePresets)); err != nil {
+		diags = append(diags, diag.FromErr(err)...)
 	}
 
 	// widgets
@@ -576,11 +587,9 @@ func setDashboardStateSDKv2(d *schema.ResourceData, resp map[string]interface{})
 	}
 
 	// tabs — flatten after widgets so we can reverse-map widget IDs to @N references
-	if v, ok := resp["tabs"].([]interface{}); ok && len(v) > 0 {
-		flatTabs := dashboardmapping.FlattenTabs(v, apiWidgets)
-		if err := d.Set("tab", flatTabs); err != nil {
-			diags = append(diags, diag.FromErr(err)...)
-		}
+	tabs, _ := resp["tabs"].([]interface{})
+	if err := d.Set("tab", dashboardmapping.FlattenTabs(tabs, apiWidgets)); err != nil {
+		diags = append(diags, diag.FromErr(err)...)
 	}
 
 	// dashboard_lists_removed: clear after apply
