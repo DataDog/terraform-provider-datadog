@@ -139,6 +139,14 @@ func (r *LogsRestrictionQueryResource) Create(ctx context.Context, request resou
 	respData := resp.GetData()
 	data.ID = types.StringValue(respData.GetId())
 
+	// Record the query before binding roles. If a bind fails below, Terraform keeps the created
+	// query in state (tainted) instead of losing its ID and creating another one on the next apply.
+	response.Diagnostics.Append(response.State.SetAttribute(ctx, frameworkPath.Root("id"), data.ID)...)
+	response.Diagnostics.Append(response.State.SetAttribute(ctx, frameworkPath.Root("restriction_query"), data.RestrictionQuery)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
 	// Handle role assignments
 	if !data.RoleIds.IsNull() && !data.RoleIds.IsUnknown() {
 		var roleIds []string
