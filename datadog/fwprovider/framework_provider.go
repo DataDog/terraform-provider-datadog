@@ -62,6 +62,7 @@ var Resources = []func() resource.Resource{
 	NewFeatureFlagResource,
 	NewFeatureFlagEnvironmentResource,
 	NewFeatureFlagEnvironmentConfigResource,
+	NewFeatureFlagAllocationsResource,
 	NewIntegrationAzureResource,
 	NewIntegrationAwsEventBridgeResource,
 	NewIntegrationAwsExternalIDResource,
