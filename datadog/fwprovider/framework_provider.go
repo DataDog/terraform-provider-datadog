@@ -59,6 +59,7 @@ var Resources = []func() resource.Resource{
 	NewDomainAllowlistResource,
 	NewDowntimeScheduleResource,
 	NewFleetScheduleResource,
+	NewFeatureFlagResource,
 	NewIntegrationAzureResource,
 	NewIntegrationAwsEventBridgeResource,
 	NewIntegrationAwsExternalIDResource,

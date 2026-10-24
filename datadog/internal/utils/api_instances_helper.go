@@ -68,6 +68,7 @@ type ApiInstances struct {
 	eventsApiV2                    *datadogV2.EventsApi
 	executionPolicyApiV2           *datadogV2.ExecutionPolicyApi
 	fastlyIntegrationApiV2         *datadogV2.FastlyIntegrationApi
+	featureFlagsApiV2              *datadogV2.FeatureFlagsApi
 	fleetAutomationApiV2           *datadogV2.FleetAutomationApi
 	gcpStsIntegrationApiV2         *datadogV2.GCPIntegrationApi
 	governanceConsoleApiV2         *datadogV2.GovernanceConsoleApi
@@ -734,6 +735,14 @@ func (i *ApiInstances) GetFastlyIntegrationApiV2() *datadogV2.FastlyIntegrationA
 		i.fastlyIntegrationApiV2 = datadogV2.NewFastlyIntegrationApi(i.HttpClient)
 	}
 	return i.fastlyIntegrationApiV2
+}
+
+// GetFeatureFlagsApiV2 get instance of FeatureFlagsApi
+func (i *ApiInstances) GetFeatureFlagsApiV2() *datadogV2.FeatureFlagsApi {
+	if i.featureFlagsApiV2 == nil {
+		i.featureFlagsApiV2 = datadogV2.NewFeatureFlagsApi(i.HttpClient)
+	}
+	return i.featureFlagsApiV2
 }
 
 // GetFleetAutomationApiV2 gets an instance of FleetAutomationApi.
