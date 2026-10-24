@@ -29,7 +29,7 @@ package dashboardmapping
 var widgetCustomLinkFields = []FieldSpec{
 	{HCLKey: "label", Type: TypeString, OmitEmpty: true,
 		Description: "The label for the custom link URL. Keep the label short and descriptive. Use metrics and tags as variables."},
-	{HCLKey: "link", Type: TypeString, OmitEmpty: false,
+	{HCLKey: "link", Type: TypeString, OmitEmpty: true,
 		Description: "The URL of the custom link. URL must include `http` or `https`. A relative URL must start with `/`."},
 	{HCLKey: "is_hidden", Type: TypeBool, OmitEmpty: true,
 		Description: "The flag for toggling context menu link visibility."},
