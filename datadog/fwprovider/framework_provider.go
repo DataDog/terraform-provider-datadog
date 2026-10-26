@@ -214,6 +214,7 @@ var Datasources = []func() datasource.DataSource{
 	NewHostsDataSource,
 	NewIPRangesDataSource,
 	NewRumApplicationDataSource,
+	NewDatadogRumApplicationsDataSource,
 	NewRumRetentionFiltersDataSource,
 	NewSensitiveDataScannerGroupOrderDatasource,
 	NewDatadogUsersDataSource,
