@@ -45,11 +45,16 @@ type observabilityPipelineModel struct {
 }
 
 type configModel struct {
-	PipelineType          types.String           `tfsdk:"pipeline_type"`
-	UseLegacySearchSyntax types.Bool             `tfsdk:"use_legacy_search_syntax"`
-	Sources               []*sourceModel         `tfsdk:"source"`
-	ProcessorGroups       []*processorGroupModel `tfsdk:"processor_group"`
-	Destinations          []*destinationModel    `tfsdk:"destination"`
+	PipelineType          types.String            `tfsdk:"pipeline_type"`
+	UseLegacySearchSyntax types.Bool              `tfsdk:"use_legacy_search_syntax"`
+	AnomalyDetection      []anomalyDetectionModel `tfsdk:"anomaly_detection"`
+	Sources               []*sourceModel          `tfsdk:"source"`
+	ProcessorGroups       []*processorGroupModel  `tfsdk:"processor_group"`
+	Destinations          []*destinationModel     `tfsdk:"destination"`
+}
+
+type anomalyDetectionModel struct {
+	Enabled types.Bool `tfsdk:"enabled"`
 }
 
 type destinationModel struct {
@@ -837,6 +842,23 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 						},
 					},
 					Blocks: map[string]schema.Block{
+						"anomaly_detection": schema.ListNestedBlock{
+							Description: "Anomaly detection settings for the pipeline. When enabled, the Worker collects log signatures from the logs sent to each destination so that anomalies can be detected. " +
+								"Requires Observability Pipelines Worker 2.25 or later. " +
+								"Only supported for `logs` pipelines. " +
+								"The `DD_OP_ANOMALY_DETECTION_ENABLED` Worker environment variable, when set, takes priority over this setting.",
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"enabled": schema.BoolAttribute{
+										Required:    true,
+										Description: "Set to `true` to enable anomaly detection for the pipeline.",
+									},
+								},
+							},
+							Validators: []validator.List{
+								listvalidator.SizeAtMost(1),
+							},
+						},
 						"source": schema.ListNestedBlock{
 							Description: "List of sources.",
 							NestedObject: schema.NestedBlockObject{
@@ -3076,6 +3098,11 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		config.SetUseLegacySearchSyntax(state.Config[0].UseLegacySearchSyntax.ValueBool())
 	}
 
+	if len(state.Config) > 0 && len(state.Config[0].AnomalyDetection) > 0 {
+		anomalyDetection := state.Config[0].AnomalyDetection[0]
+		config.SetAnomalyDetection(*datadogV2.NewObservabilityPipelineAnomalyDetection(anomalyDetection.Enabled.ValueBool()))
+	}
+
 	// Sources
 	for _, sourceBlock := range state.Config[0].Sources {
 		sourceId := sourceBlock.Id.ValueString()
@@ -3281,6 +3308,10 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		useLegacySearchSyntax = types.BoolValue(*v)
 	}
 	outCfg.UseLegacySearchSyntax = useLegacySearchSyntax
+
+	if anomalyDetection, ok := cfg.GetAnomalyDetectionOk(); ok {
+		outCfg.AnomalyDetection = []anomalyDetectionModel{{Enabled: types.BoolValue(anomalyDetection.GetEnabled())}}
+	}
 
 	for _, src := range cfg.GetSources() {
 		sourceBlock := &sourceModel{}

@@ -9897,3 +9897,70 @@ resource "datadog_observability_pipeline" "metric_enrichment_table" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_anomalyDetection(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.anomaly_detection"
+
+	config := func(anomalyDetection string) string {
+		return fmt.Sprintf(`
+resource "datadog_observability_pipeline" "anomaly_detection" {
+  name = "anomaly-detection-pipeline"
+
+  config {
+%s
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["source-1"]
+      datadog_logs {
+      }
+    }
+  }
+}
+`, anomalyDetection)
+	}
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: config(`
+    anomaly_detection {
+      enabled = true
+    }
+`),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.anomaly_detection.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.anomaly_detection.0.enabled", "true"),
+				),
+			},
+			{
+				Config: config(`
+    anomaly_detection {
+      enabled = false
+    }
+`),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.anomaly_detection.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.anomaly_detection.0.enabled", "false"),
+				),
+			},
+			{
+				Config: config(""),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.anomaly_detection.#", "0"),
+				),
+			},
+		},
+	})
+}
