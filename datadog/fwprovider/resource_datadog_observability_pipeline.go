@@ -208,7 +208,7 @@ type processorModel struct {
 	ParseXMLProcessor              []*parseXMLProcessorModel                                     `tfsdk:"parse_xml"`
 	SplitArrayProcessor            []*splitArrayProcessorModel                                   `tfsdk:"split_array"`
 	MetricTagsProcessor            []*metricTagsProcessorModel                                   `tfsdk:"metric_tags"`
-	GenerateMetricsV2Processor     []*generateMetricsProcessorModel                              `tfsdk:"generate_metrics"`
+	GenerateMetricsV2Processor     []*generateMetricsV2ProcessorModel                            `tfsdk:"generate_metrics"`
 	AddMetricTagsProcessor         []*observability_pipeline.AddMetricTagsProcessorModel         `tfsdk:"add_metric_tags"`
 	AggregateProcessor             []*observability_pipeline.AggregateProcessorModel             `tfsdk:"aggregate"`
 	RenameMetricTagsProcessor      []*observability_pipeline.RenameMetricTagsProcessorModel      `tfsdk:"rename_metric_tags"`
@@ -534,6 +534,10 @@ type validTokenFieldToAddModel struct {
 }
 
 type generateMetricsProcessorModel struct {
+	Metrics []generatedMetricModel `tfsdk:"metric"`
+}
+
+type generateMetricsV2ProcessorModel struct {
 	EnabledMetricAggregation types.Bool             `tfsdk:"enabled_metric_aggregation"`
 	Metrics                  []generatedMetricModel `tfsdk:"metric"`
 }
@@ -5355,7 +5359,7 @@ func flattenGenerateMetricsV2Processor(ctx context.Context, src *datadogV2.Obser
 		return nil
 	}
 	model := createProcessorModel(src)
-	genMetrics := &generateMetricsProcessorModel{
+	genMetrics := &generateMetricsV2ProcessorModel{
 		EnabledMetricAggregation: types.BoolNull(),
 	}
 	if enabled, ok := src.GetEnabledMetricAggregationOk(); ok {
@@ -5387,7 +5391,7 @@ func flattenGenerateMetricsV2Processor(ctx context.Context, src *datadogV2.Obser
 	return model
 }
 
-func expandGenerateMetricsV2ProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *generateMetricsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+func expandGenerateMetricsV2ProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *generateMetricsV2ProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineGenerateMetricsV2ProcessorWithDefaults()
 	common.ApplyTo(proc)
 	if !src.EnabledMetricAggregation.IsNull() && !src.EnabledMetricAggregation.IsUnknown() {
