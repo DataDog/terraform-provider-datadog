@@ -35,6 +35,7 @@ resource "datadog_logs_archive" "my_azure_archive" {
     storage_account = "storageaccount"
     path            = "/path/blou"
   }
+  compression_method = "GZIP"
 }`, uniq, uniq)
 }
 
@@ -101,6 +102,7 @@ resource "datadog_logs_archive" "my_gcs_archive" {
 	client_email = "%s@awesome-project-id.iam.gserviceaccount.com"
 	project_id   = "%s"
   }
+  compression_method = "GZIP"
 }`, uniq, uniq, uniq, uniq)
 }
 
@@ -284,6 +286,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
   }
   include_tags = false
 	rehydration_max_scan_size_in_gb = 345
+  compression_method = "GZIP"
 }`, uniq, uniq, encryption)
 }
 

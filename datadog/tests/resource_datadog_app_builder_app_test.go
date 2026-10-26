@@ -1,10 +1,10 @@
 package test
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"os"
 	"regexp"
 	"testing"
@@ -197,15 +197,7 @@ func TestAccDatadogAppBuilderAppResource_FromFile(t *testing.T) {
 	appName := uniqueEntityName(ctx, t)
 	resourceName := "datadog_app_builder_app.test_app_from_file"
 
-	exampleFile, err := os.Open("../../examples/resources/datadog_app_builder_app/resource.json")
-	if err != nil {
-		panic(fmt.Errorf("error opening file: %s", err))
-	}
-	defer exampleFile.Close()
-	exampleFileBytes, err := io.ReadAll(exampleFile)
-	if err != nil {
-		panic(fmt.Errorf("error reading file: %s", err))
-	}
+	exampleFileBytes := testAppBuilderAppExampleJSON(t, appName)
 	exampleFileString := string(exampleFileBytes)
 
 	// create temporary file to hold large app json & avoid ${} interpolation by TF
@@ -256,15 +248,7 @@ func TestAccDatadogAppBuilderAppResource_FromFile_Import(t *testing.T) {
 	appName := uniqueEntityName(ctx, t)
 	resourceName := "datadog_app_builder_app.test_app_from_file"
 
-	exampleFile, err := os.Open("../../examples/resources/datadog_app_builder_app/resource.json")
-	if err != nil {
-		panic(fmt.Errorf("error opening file: %s", err))
-	}
-	defer exampleFile.Close()
-	exampleFileBytes, err := io.ReadAll(exampleFile)
-	if err != nil {
-		panic(fmt.Errorf("error reading file: %s", err))
-	}
+	exampleFileBytes := testAppBuilderAppExampleJSON(t, appName)
 
 	// create temporary file to hold large app json & avoid ${} interpolation by TF
 	file, err := os.CreateTemp("", "test_app_json.*.json")
@@ -349,11 +333,11 @@ func testAppBuilderAppEscapedInterpolatedResourceConfig(name string) string {
 		app_json = jsonencode(
 			%s
 		)
-	}`, name, testAppBuilderAppEscapedInterpolatedAppJSON())
+	}`, name, testAppBuilderAppEscapedInterpolatedAppJSON(testAppBuilderAppID(name)))
 }
 
-func testAppBuilderAppEscapedInterpolatedAppJSON() string {
-	return `
+func testAppBuilderAppEscapedInterpolatedAppJSON(appID string) string {
+	return fmt.Sprintf(`
     {
 		"queries" : [
 			{
@@ -371,7 +355,7 @@ func testAppBuilderAppEscapedInterpolatedAppJSON() string {
 				}
 			}
 		],
-		"id" : "11111111-2222-3333-4444-555555555555",
+		"id" : "%s",
 		"components" : [
 			{
 				"events" : [],
@@ -399,7 +383,32 @@ func testAppBuilderAppEscapedInterpolatedAppJSON() string {
 			"app_version_id" : "00000000-0000-0000-0000-000000000000"
 		}
     }
-	`
+	`, appID)
+}
+
+// testAppBuilderAppFixedID is the top-level app "id" in the example app JSON. The
+// API honors a client-supplied app ID and returns 409 when it exists, so tests
+// replace it with testAppBuilderAppID.
+const testAppBuilderAppFixedID = "11111111-2222-3333-4444-555555555555"
+
+// testAppBuilderAppID derives the app ID from the unique entity name: stable in
+// cassette replay (frozen clock), unique per live run and per test.
+func testAppBuilderAppID(appName string) string {
+	return uuid.NewSHA1(uuid.NameSpaceURL, []byte(appName)).String()
+}
+
+// testAppBuilderAppExampleJSON returns the user-facing example app JSON with its
+// fixed top-level "id" replaced by testAppBuilderAppID(appName).
+func testAppBuilderAppExampleJSON(t *testing.T, appName string) []byte {
+	b, err := os.ReadFile("../../examples/resources/datadog_app_builder_app/resource.json")
+	if err != nil {
+		t.Fatalf("error reading file: %s", err)
+	}
+	fixedID := []byte(fmt.Sprintf(`"id": %q`, testAppBuilderAppFixedID))
+	if bytes.Count(b, fixedID) != 1 {
+		t.Fatalf("expected exactly one %s in example app JSON", fixedID)
+	}
+	return bytes.Replace(b, fixedID, []byte(fmt.Sprintf(`"id": %q`, testAppBuilderAppID(appName))), 1)
 }
 
 func testLoadFromFileAppBuilderAppResourceConfig(fileName string, appName string) string {

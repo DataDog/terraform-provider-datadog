@@ -29,8 +29,8 @@ var (
 	_ resource.ResourceWithConfigure   = &datadogIntegrationSnowflakeAccountResource{}
 	_ resource.ResourceWithImportState = &datadogIntegrationSnowflakeAccountResource{}
 )
-var datadogIntegrationSnowflakeAccountAuthenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "private_key", WriteOnlyAttr: "private_key_wo", TriggerAttr: "private_key_wo_version", WriteOnlyDescription: "The private key, in PEM format. This write-only value is not stored in Terraform state.", TriggerDescription: "Version trigger for private_key_wo rotation.", ParentBlocks: []string{"authentication", "snowflake_integration_account_private_key_auth"}, Mode: fwutils.WriteOnlySecretModeOnly, Required: true}
-var datadogIntegrationSnowflakeAccountAuthenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyPassphraseWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "private_key_passphrase", WriteOnlyAttr: "private_key_passphrase_wo", TriggerAttr: "private_key_passphrase_wo_version", WriteOnlyDescription: "Passphrase that decrypts the private key. Provide it only when the key is encrypted. This write-only value is not stored in Terraform state.", TriggerDescription: "Version trigger for private_key_passphrase_wo rotation.", ParentBlocks: []string{"authentication", "snowflake_integration_account_private_key_auth"}, Mode: fwutils.WriteOnlySecretModeOnly, Required: false}
+var datadogIntegrationSnowflakeAccountAuthenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "private_key", WriteOnlyAttr: "private_key_wo", TriggerAttr: "private_key_wo_version", OriginalDescription: "The private key, in PEM format. Exactly one of `private_key` or `private_key_wo` must be set. Prefer `private_key_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.", WriteOnlyDescription: "The private key, in PEM format. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.", TriggerDescription: "Version trigger for private_key_wo rotation.", ParentBlocks: []string{"authentication", "snowflake_integration_account_private_key_auth"}, Mode: fwutils.WriteOnlySecretModeDual, Required: true}
+var datadogIntegrationSnowflakeAccountAuthenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyPassphraseWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "private_key_passphrase", WriteOnlyAttr: "private_key_passphrase_wo", TriggerAttr: "private_key_passphrase_wo_version", OriginalDescription: "Passphrase that decrypts the private key. Provide it only when the key is encrypted. Conflicts with `private_key_passphrase_wo`. Prefer `private_key_passphrase_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.", WriteOnlyDescription: "Passphrase that decrypts the private key. Provide it only when the key is encrypted. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.", TriggerDescription: "Version trigger for private_key_passphrase_wo rotation.", ParentBlocks: []string{"authentication", "snowflake_integration_account_private_key_auth"}, Mode: fwutils.WriteOnlySecretModeDual, Required: false}
 
 type datadogIntegrationSnowflakeAccountResourceModel struct {
 	ID             types.String                                                                        `tfsdk:"id"`
@@ -46,9 +46,11 @@ type datadogIntegrationSnowflakeAccountSnowflakeIntegrationAccountAuthentication
 
 type datadogIntegrationSnowflakeAccountSnowflakeIntegrationAccountAuthenticationSnowflakeIntegrationAccountPrivateKeyAuthModel struct {
 	AuthType                      types.String `tfsdk:"auth_type"`
+	PrivateKey                    types.String `tfsdk:"private_key"`
 	PrivateKeyWo                  types.String `tfsdk:"private_key_wo"`
 	PrivateKeyWoVersion           types.String `tfsdk:"private_key_wo_version"`
 	PrivateKeyName                types.String `tfsdk:"private_key_name"`
+	PrivateKeyPassphrase          types.String `tfsdk:"private_key_passphrase"`
 	PrivateKeyPassphraseWo        types.String `tfsdk:"private_key_passphrase_wo"`
 	PrivateKeyPassphraseWoVersion types.String `tfsdk:"private_key_passphrase_wo_version"`
 }
