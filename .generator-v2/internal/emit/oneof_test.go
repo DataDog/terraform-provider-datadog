@@ -198,7 +198,7 @@ var _ = Describe("oneOf envelope emission", func() {
 	})
 
 	Context("the schema", func() {
-		It("renders the union as a single nested block holding one block per variant", func() {
+		It("renders the union as a single nested attribute holding one attribute per variant", func() {
 			view := unionView(unionOperation())
 			block := blockByName(view.Schema.Blocks, "notification")
 
@@ -379,8 +379,9 @@ var _ = Describe("oneOf envelope emission", func() {
 			out := string(src)
 			Expect(out).To(ContainSubstring("type datadogIncidentTypeIncidentNotificationModel struct {"))
 			Expect(out).To(ContainSubstring("WebhookNotification *datadogIncidentTypeIncidentNotificationWebhookNotificationModel `tfsdk:\"webhook_notification\"`"))
-			Expect(out).To(ContainSubstring(`"notification": schema.SingleNestedBlock{`))
-			Expect(out).To(ContainSubstring(`"webhook_notification": schema.SingleNestedBlock{`))
+			Expect(out).To(ContainSubstring(`"notification": schema.SingleNestedAttribute{`))
+			Expect(out).To(ContainSubstring(`"webhook_notification": schema.SingleNestedAttribute{`))
+			Expect(out).NotTo(ContainSubstring(`Blocks: map[string]schema.Block`))
 		})
 
 		It("renders deterministically", func() {
@@ -407,7 +408,7 @@ func unionListOperation() *model.Operation {
 }
 
 var _ = Describe("oneOf envelope in a collection", func() {
-	It("holds the envelope by slice and renders a list nested block of variants", func() {
+	It("holds the envelope by slice and renders a list nested attribute of variants", func() {
 		view := unionView(unionListOperation())
 
 		parent := modelByName(view, "datadogIncidentTypeDataSourceModel")
@@ -432,7 +433,8 @@ var _ = Describe("oneOf envelope in a collection", func() {
 	It("renders gofmt-clean Go", func() {
 		src, err := RenderDataSource(unionView(unionListOperation()))
 		Expect(err).NotTo(HaveOccurred())
-		Expect(string(src)).To(ContainSubstring(`"notifications": schema.ListNestedBlock{`))
+		Expect(string(src)).To(ContainSubstring(`"notifications": schema.ListNestedAttribute{`))
+		Expect(string(src)).NotTo(ContainSubstring(`Blocks: map[string]schema.Block`))
 	})
 })
 

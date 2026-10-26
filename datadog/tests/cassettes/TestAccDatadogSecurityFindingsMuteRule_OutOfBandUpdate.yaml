@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"action":{"reason":"no_fix"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1782480025","rule":{"finding_types":["misconfiguration"]}},"type":"mute_rules"}}
+            {"data":{"attributes":{"action":{"reason":"no_fix"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1790863500","rule":{"finding_types":["misconfiguration"]}},"type":"mute_rules"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: 511
         uncompressed: false
-        body: '{"data":{"id":"d2713333-c0e2-44ac-ab25-56802b2dc92d","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1782480027897,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782480027897,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1782480025","rule":{"finding_types":["misconfiguration"]}}}}'
+        body: '{"data":{"id":"0f280404-1a9e-41ef-afca-731657f5d72e","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1790863503204,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":true,"modified_at":1790863503204,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1790863500","rule":{"finding_types":["misconfiguration"]}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 559.088042ms
+        duration: 486.346167ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/d2713333-c0e2-44ac-ab25-56802b2dc92d
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/0f280404-1a9e-41ef-afca-731657f5d72e
         method: GET
       response:
         proto: HTTP/1.1
@@ -63,13 +63,13 @@ interactions:
         trailer: {}
         content_length: 511
         uncompressed: false
-        body: '{"data":{"id":"d2713333-c0e2-44ac-ab25-56802b2dc92d","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1782480027897,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782480027897,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1782480025","rule":{"finding_types":["misconfiguration"]}}}}'
+        body: '{"data":{"id":"0f280404-1a9e-41ef-afca-731657f5d72e","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1790863503204,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":true,"modified_at":1790863503204,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1790863500","rule":{"finding_types":["misconfiguration"]}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 126.978375ms
+        duration: 335.020125ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/d2713333-c0e2-44ac-ab25-56802b2dc92d
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/0f280404-1a9e-41ef-afca-731657f5d72e
         method: GET
       response:
         proto: HTTP/1.1
@@ -96,13 +96,13 @@ interactions:
         trailer: {}
         content_length: 511
         uncompressed: false
-        body: '{"data":{"id":"d2713333-c0e2-44ac-ab25-56802b2dc92d","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1782480027897,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782480027897,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1782480025","rule":{"finding_types":["misconfiguration"]}}}}'
+        body: '{"data":{"id":"0f280404-1a9e-41ef-afca-731657f5d72e","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1790863503204,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":true,"modified_at":1790863503204,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1790863500","rule":{"finding_types":["misconfiguration"]}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 128.666208ms
+        duration: 155.541917ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/d2713333-c0e2-44ac-ab25-56802b2dc92d
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/0f280404-1a9e-41ef-afca-731657f5d72e
         method: GET
       response:
         proto: HTTP/1.1
@@ -129,13 +129,13 @@ interactions:
         trailer: {}
         content_length: 511
         uncompressed: false
-        body: '{"data":{"id":"d2713333-c0e2-44ac-ab25-56802b2dc92d","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1782480027897,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782480027897,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1782480025","rule":{"finding_types":["misconfiguration"]}}}}'
+        body: '{"data":{"id":"0f280404-1a9e-41ef-afca-731657f5d72e","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1790863503204,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":true,"modified_at":1790863503204,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1790863500","rule":{"finding_types":["misconfiguration"]}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 130.622834ms
+        duration: 264.044333ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -152,7 +152,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/d2713333-c0e2-44ac-ab25-56802b2dc92d
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/0f280404-1a9e-41ef-afca-731657f5d72e
         method: GET
       response:
         proto: HTTP/1.1
@@ -162,33 +162,33 @@ interactions:
         trailer: {}
         content_length: 511
         uncompressed: false
-        body: '{"data":{"id":"d2713333-c0e2-44ac-ab25-56802b2dc92d","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1782480027897,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782480027897,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1782480025","rule":{"finding_types":["misconfiguration"]}}}}'
+        body: '{"data":{"id":"0f280404-1a9e-41ef-afca-731657f5d72e","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1790863503204,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":true,"modified_at":1790863503204,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1790863500","rule":{"finding_types":["misconfiguration"]}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 128.087667ms
+        duration: 293.820458ms
     - id: 5
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 228
+        content_length: 272
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"action":{"reason":"no_fix"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1782480025-drifted","rule":{"finding_types":["misconfiguration"]}},"type":"mute_rules"}}
+            {"data":{"attributes":{"action":{"reason":"no_fix"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1790863500-drifted","rule":{"finding_types":["misconfiguration"]}},"id":"0f280404-1a9e-41ef-afca-731657f5d72e","type":"mute_rules"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/d2713333-c0e2-44ac-ab25-56802b2dc92d
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/0f280404-1a9e-41ef-afca-731657f5d72e
         method: PUT
       response:
         proto: HTTP/1.1
@@ -198,13 +198,13 @@ interactions:
         trailer: {}
         content_length: 519
         uncompressed: false
-        body: '{"data":{"id":"d2713333-c0e2-44ac-ab25-56802b2dc92d","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1782480027897,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782480030022,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1782480025-drifted","rule":{"finding_types":["misconfiguration"]}}}}'
+        body: '{"data":{"id":"0f280404-1a9e-41ef-afca-731657f5d72e","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1790863503204,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":true,"modified_at":1790863506792,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1790863500-drifted","rule":{"finding_types":["misconfiguration"]}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 248.129792ms
+        duration: 294.160458ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -221,7 +221,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/d2713333-c0e2-44ac-ab25-56802b2dc92d
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/0f280404-1a9e-41ef-afca-731657f5d72e
         method: GET
       response:
         proto: HTTP/1.1
@@ -231,13 +231,13 @@ interactions:
         trailer: {}
         content_length: 519
         uncompressed: false
-        body: '{"data":{"id":"d2713333-c0e2-44ac-ab25-56802b2dc92d","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1782480027897,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782480030022,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1782480025-drifted","rule":{"finding_types":["misconfiguration"]}}}}'
+        body: '{"data":{"id":"0f280404-1a9e-41ef-afca-731657f5d72e","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1790863503204,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":true,"modified_at":1790863506792,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1790863500-drifted","rule":{"finding_types":["misconfiguration"]}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 133.844209ms
+        duration: 161.348583ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -254,7 +254,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/d2713333-c0e2-44ac-ab25-56802b2dc92d
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/0f280404-1a9e-41ef-afca-731657f5d72e
         method: GET
       response:
         proto: HTTP/1.1
@@ -264,33 +264,33 @@ interactions:
         trailer: {}
         content_length: 519
         uncompressed: false
-        body: '{"data":{"id":"d2713333-c0e2-44ac-ab25-56802b2dc92d","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1782480027897,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782480030022,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1782480025-drifted","rule":{"finding_types":["misconfiguration"]}}}}'
+        body: '{"data":{"id":"0f280404-1a9e-41ef-afca-731657f5d72e","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1790863503204,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":true,"modified_at":1790863506792,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1790863500-drifted","rule":{"finding_types":["misconfiguration"]}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 162.737666ms
+        duration: 275.986167ms
     - id: 8
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 220
+        content_length: 264
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"action":{"reason":"no_fix"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1782480025","rule":{"finding_types":["misconfiguration"]}},"type":"mute_rules"}}
+            {"data":{"attributes":{"action":{"reason":"no_fix"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1790863500","rule":{"finding_types":["misconfiguration"]}},"id":"0f280404-1a9e-41ef-afca-731657f5d72e","type":"mute_rules"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/d2713333-c0e2-44ac-ab25-56802b2dc92d
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/0f280404-1a9e-41ef-afca-731657f5d72e
         method: PUT
       response:
         proto: HTTP/1.1
@@ -300,13 +300,13 @@ interactions:
         trailer: {}
         content_length: 511
         uncompressed: false
-        body: '{"data":{"id":"d2713333-c0e2-44ac-ab25-56802b2dc92d","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1782480027897,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782480031805,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1782480025","rule":{"finding_types":["misconfiguration"]}}}}'
+        body: '{"data":{"id":"0f280404-1a9e-41ef-afca-731657f5d72e","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1790863503204,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":true,"modified_at":1790863509615,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1790863500","rule":{"finding_types":["misconfiguration"]}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 265.026291ms
+        duration: 278.453917ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -323,7 +323,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/d2713333-c0e2-44ac-ab25-56802b2dc92d
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/0f280404-1a9e-41ef-afca-731657f5d72e
         method: GET
       response:
         proto: HTTP/1.1
@@ -333,13 +333,13 @@ interactions:
         trailer: {}
         content_length: 511
         uncompressed: false
-        body: '{"data":{"id":"d2713333-c0e2-44ac-ab25-56802b2dc92d","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1782480027897,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782480031805,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1782480025","rule":{"finding_types":["misconfiguration"]}}}}'
+        body: '{"data":{"id":"0f280404-1a9e-41ef-afca-731657f5d72e","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1790863503204,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":true,"modified_at":1790863509615,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1790863500","rule":{"finding_types":["misconfiguration"]}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 128.125416ms
+        duration: 143.120833ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -356,7 +356,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/d2713333-c0e2-44ac-ab25-56802b2dc92d
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/0f280404-1a9e-41ef-afca-731657f5d72e
         method: GET
       response:
         proto: HTTP/1.1
@@ -366,13 +366,13 @@ interactions:
         trailer: {}
         content_length: 511
         uncompressed: false
-        body: '{"data":{"id":"d2713333-c0e2-44ac-ab25-56802b2dc92d","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1782480027897,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782480031805,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1782480025","rule":{"finding_types":["misconfiguration"]}}}}'
+        body: '{"data":{"id":"0f280404-1a9e-41ef-afca-731657f5d72e","type":"mute_rules","attributes":{"action":{"reason":"no_fix"},"created_at":1790863503204,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":true,"modified_at":1790863509615,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsMuteRule_OutOfBandUpdate-local-1790863500","rule":{"finding_types":["misconfiguration"]}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 188.855959ms
+        duration: 132.153667ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -389,7 +389,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/d2713333-c0e2-44ac-ab25-56802b2dc92d
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/0f280404-1a9e-41ef-afca-731657f5d72e
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -403,7 +403,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 222.190583ms
+        duration: 269.083ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -420,7 +420,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/d2713333-c0e2-44ac-ab25-56802b2dc92d
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/mute_rules/0f280404-1a9e-41ef-afca-731657f5d72e
         method: GET
       response:
         proto: HTTP/1.1
@@ -436,4 +436,4 @@ interactions:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 110.025292ms
+        duration: 111.540209ms

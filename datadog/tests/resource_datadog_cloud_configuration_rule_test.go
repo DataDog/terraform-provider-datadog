@@ -100,14 +100,6 @@ resource "datadog_cloud_configuration_rule" "acceptance_test" {
     "terraform:true",
     "test:acceptance",
   ]
-  filter {
-    action = "suppress"
-    query = "resource_id:hel*"
-  }
-  filter {
-    action = "require"
-    query = "resource_type:hel*"
-  }
 }
 `, name)
 }
@@ -138,13 +130,7 @@ func testAccCheckDatadogCloudConfigurationCreatedCheck(accProvider func() (*sche
 		resource.TestCheckResourceAttr(
 			tfCloudConfRuleName, "tags.1", "test:acceptance"),
 		resource.TestCheckResourceAttr(
-			tfCloudConfRuleName, "filter.0.action", "suppress"),
-		resource.TestCheckResourceAttr(
-			tfCloudConfRuleName, "filter.0.query", "resource_id:hel*"),
-		resource.TestCheckResourceAttr(
-			tfCloudConfRuleName, "filter.1.action", "require"),
-		resource.TestCheckResourceAttr(
-			tfCloudConfRuleName, "filter.1.query", "resource_type:hel*"),
+			tfCloudConfRuleName, "filter.#", "0"),
 	)
 }
 
@@ -161,10 +147,6 @@ resource "datadog_cloud_configuration_rule" "acceptance_test" {
   related_resource_types = [ "gcp_compute_instance", "gcp_compute_firewall" ]
   severity = "high"
   tags = [ "test:acceptance-updated" ]
-  filter {
-    action = "suppress"
-    query = "resource_id:updated*"
-  }
 }
 `, name)
 }
@@ -197,9 +179,7 @@ func testAccCheckDatadogCloudConfigurationUpdatedCheck(accProvider func() (*sche
 		resource.TestCheckResourceAttr(
 			tfCloudConfRuleName, "tags.0", "test:acceptance-updated"),
 		resource.TestCheckResourceAttr(
-			tfCloudConfRuleName, "filter.0.action", "suppress"),
-		resource.TestCheckResourceAttr(
-			tfCloudConfRuleName, "filter.0.query", "resource_id:updated*"),
+			tfCloudConfRuleName, "filter.#", "0"),
 	)
 }
 

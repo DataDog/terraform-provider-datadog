@@ -136,7 +136,7 @@ func testAccCheckDatadogSecureEmbedDashboardDestroy(provider *fwprovider.Framewo
 // minimalDashboardConfig returns a shared config block creating a simple dashboard.
 // The dashboard ID is referenced via datadog_dashboard.test.id.
 func minimalDashboardConfig(title string) string {
-	return fmt.Sprintf(`
+	return disableDashboardPlanValidation(fmt.Sprintf(`
 resource "datadog_dashboard" "test" {
   title        = "%s"
   layout_type  = "ordered"
@@ -153,7 +153,7 @@ resource "datadog_dashboard" "test" {
     }
   }
 }
-`, title)
+`, title))
 }
 
 func testAccCheckDatadogSecureEmbedDashboardBasic(title string) string {

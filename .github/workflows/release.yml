@@ -53,9 +53,11 @@ jobs:
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           # Shared runner has public egress, so Go is resolved and downloaded
-          # from go.dev. Track the minor line; must satisfy go.mod's `go`
-          # directive (currently 1.25.8).
-          go-version: "1.25"
+          # from go.dev. setup-go exports GOTOOLCHAIN=local, so the installed
+          # Go must satisfy go.mod; a hardcoded version breaks the release when
+          # a dependency bump raises the `go` directive. go-version-file
+          # installs the `toolchain` directive, else the `go` directive.
+          go-version-file: go.mod
       - name: Import GPG key
         id: import_gpg
         uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
@@ -65,8 +67,14 @@ jobs:
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94 # v7.2.3
         with:
-          version: latest
-          args: release --clean
+          version: 2.17.1
+          # Default parallelism is NumCPU (16 here), so all 13 targets compile
+          # and link concurrently. Each target peaks near 6.2GB RSS, so the
+          # aggregate exceeds runner RAM and the VM is OOM-killed mid-build:
+          # the job reports "runner has received a shutdown signal" with no
+          # goreleaser error. 4 holds the peak near 25GB, at the cost of
+          # building in waves.
+          args: release --clean --parallelism 4
         env:
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

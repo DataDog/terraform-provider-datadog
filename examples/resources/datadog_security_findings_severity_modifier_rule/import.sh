@@ -1,0 +1,1 @@
+terraform import datadog_security_findings_severity_modifier_rule.escalate_prod_secrets "00000000-0000-0000-0000-000000000000"

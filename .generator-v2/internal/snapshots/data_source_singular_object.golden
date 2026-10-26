@@ -68,9 +68,8 @@ func (d *datadogApmRetentionFilterDataSource) Schema(_ context.Context, _ dataso
 				Description: "The name of the retention filter.",
 				Computed:    true,
 			},
-		},
-		Blocks: map[string]schema.Block{
-			"filter": schema.SingleNestedBlock{
+
+			"filter": schema.SingleNestedAttribute{
 				Description: "",
 
 				Attributes: map[string]schema.Attribute{
@@ -83,9 +82,8 @@ func (d *datadogApmRetentionFilterDataSource) Schema(_ context.Context, _ dataso
 						ElementType: types.StringType,
 						Computed:    true,
 					},
-				},
-				Blocks: map[string]schema.Block{
-					"metadata": schema.SingleNestedBlock{
+
+					"metadata": schema.SingleNestedAttribute{
 						Description: "",
 
 						Attributes: map[string]schema.Attribute{
@@ -94,8 +92,10 @@ func (d *datadogApmRetentionFilterDataSource) Schema(_ context.Context, _ dataso
 								Computed:    true,
 							},
 						},
+						Computed: true,
 					},
 				},
+				Computed: true,
 			},
 		},
 	}
@@ -157,9 +157,9 @@ func (d *datadogApmRetentionFilterDataSource) updateState(ctx context.Context, s
 			filterModel.Metadata = metadataModel
 		}
 		if tags, ok := filter.GetTagsOk(); ok && tags != nil {
-			var listDiags diag.Diagnostics
-			filterModel.Tags, listDiags = types.ListValueFrom(ctx, types.StringType, *tags)
-			diags.Append(listDiags...)
+			var collectionDiags diag.Diagnostics
+			filterModel.Tags, collectionDiags = types.ListValueFrom(ctx, types.StringType, *tags)
+			diags.Append(collectionDiags...)
 		} else {
 			filterModel.Tags = types.ListNull(types.StringType)
 		}

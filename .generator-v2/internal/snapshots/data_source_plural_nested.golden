@@ -58,11 +58,10 @@ func (d *datadogWidgetsDataSource) Schema(_ context.Context, _ datasource.Schema
 		Description: "Use this data source to retrieve information about existing widgets.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
-		},
-		Blocks: map[string]schema.Block{
-			"widgets": schema.ListNestedBlock{
+
+			"widgets": schema.ListNestedAttribute{
 				Description: "List of widgets",
-				NestedObject: schema.NestedBlockObject{
+				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"id": schema.StringAttribute{
 							Description: "The widget's identifier.",
@@ -72,11 +71,10 @@ func (d *datadogWidgetsDataSource) Schema(_ context.Context, _ datasource.Schema
 							Description: "The name of the widget.",
 							Computed:    true,
 						},
-					},
-					Blocks: map[string]schema.Block{
-						"parts": schema.ListNestedBlock{
+
+						"parts": schema.ListNestedAttribute{
 							Description: "The parts that make up the widget.",
-							NestedObject: schema.NestedBlockObject{
+							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"label": schema.StringAttribute{
 										Description: "The label of the part.",

@@ -196,7 +196,7 @@ func (r *securityFindingsDueDateRuleResource) Update(ctx context.Context, reques
 		return
 	}
 
-	data, diags := r.buildRuleData(ctx, &state)
+	data, diags := r.buildRuleUpdateData(ctx, &state, id)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -278,8 +278,8 @@ func (r *securityFindingsDueDateRuleResource) updateState(ctx context.Context, s
 	return diags
 }
 
-// buildRuleData builds the JSON:API data object shared by the create and update requests.
-func (r *securityFindingsDueDateRuleResource) buildRuleData(ctx context.Context, state *securityFindingsDueDateRuleModel) (*datadogV2.DueDateRuleDataCreate, diag.Diagnostics) {
+// buildRuleAttributes builds the attributes object shared by the create and update payloads.
+func (r *securityFindingsDueDateRuleResource) buildRuleAttributes(ctx context.Context, state *securityFindingsDueDateRuleModel) (*datadogV2.DueDateRuleAttributesCreate, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	scope, d := buildAutomationRuleScope(ctx, state.Rule)
@@ -309,10 +309,29 @@ func (r *securityFindingsDueDateRuleResource) buildRuleData(ctx context.Context,
 	attributes.SetRule(*scope)
 	attributes.SetAction(*action)
 
-	data := datadogV2.NewDueDateRuleDataCreateWithDefaults()
-	data.SetType(datadogV2.DUEDATERULETYPE_DUE_DATE_RULES)
-	data.SetAttributes(*attributes)
-	return data, diags
+	return attributes, diags
+}
+
+// buildRuleData builds the JSON:API data object for a create request.
+func (r *securityFindingsDueDateRuleResource) buildRuleData(ctx context.Context, state *securityFindingsDueDateRuleModel) (*datadogV2.DueDateRuleDataCreate, diag.Diagnostics) {
+	attributes, diags := r.buildRuleAttributes(ctx, state)
+	if diags.HasError() {
+		return nil, diags
+	}
+
+	return datadogV2.NewDueDateRuleDataCreate(*attributes, datadogV2.DUEDATERULETYPE_DUE_DATE_RULES), diags
+}
+
+// buildRuleUpdateData builds the JSON:API data object for an update request.
+// The API requires the resource id in the update body, matching the rule_id
+// path parameter.
+func (r *securityFindingsDueDateRuleResource) buildRuleUpdateData(ctx context.Context, state *securityFindingsDueDateRuleModel, id uuid.UUID) (*datadogV2.DueDateRuleDataUpdate, diag.Diagnostics) {
+	attributes, diags := r.buildRuleAttributes(ctx, state)
+	if diags.HasError() {
+		return nil, diags
+	}
+
+	return datadogV2.NewDueDateRuleDataUpdate(*attributes, id, datadogV2.DUEDATERULETYPE_DUE_DATE_RULES), diags
 }
 
 // uniqueDueDateSeverityValidator ensures each severity appears at most once in a

@@ -64,11 +64,10 @@ func (d *datadogCostBudgetDataSource) Schema(_ context.Context, _ datasource.Sch
 				Description: "The name of the budget.",
 				Computed:    true,
 			},
-		},
-		Blocks: map[string]schema.Block{
-			"entries": schema.ListNestedBlock{
+
+			"entries": schema.ListNestedAttribute{
 				Description: "The list of monthly budget entries.",
-				NestedObject: schema.NestedBlockObject{
+				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"amount": schema.Float64Attribute{
 							Description: "The budgeted amount for this entry.",
@@ -78,11 +77,10 @@ func (d *datadogCostBudgetDataSource) Schema(_ context.Context, _ datasource.Sch
 							Description: "The month this budget entry applies to.",
 							Computed:    true,
 						},
-					},
-					Blocks: map[string]schema.Block{
-						"tag_filters": schema.ListNestedBlock{
+
+						"tag_filters": schema.ListNestedAttribute{
 							Description: "The list of tag filters scoping this entry.",
-							NestedObject: schema.NestedBlockObject{
+							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"tag_key": schema.StringAttribute{
 										Description: "The tag key to filter on.",
@@ -94,9 +92,11 @@ func (d *datadogCostBudgetDataSource) Schema(_ context.Context, _ datasource.Sch
 									},
 								},
 							},
+							Computed: true,
 						},
 					},
 				},
+				Computed: true,
 			},
 		},
 	}

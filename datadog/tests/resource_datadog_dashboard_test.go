@@ -1208,7 +1208,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 		CheckDestroy:      checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: datadogOrderedDashboardConfig(dbName),
+				Config: disableDashboardPlanValidation(datadogOrderedDashboardConfig(dbName)),
 				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
@@ -1234,7 +1234,7 @@ func TestAccDatadogFreeDashboard(t *testing.T) {
 		CheckDestroy:      checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: datadogFreeDashboardConfig(dbName),
+				Config: disableDashboardPlanValidation(datadogFreeDashboardConfig(dbName)),
 				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
@@ -1257,13 +1257,13 @@ func TestAccDatadogDashboardLayoutForceNew(t *testing.T) {
 		CheckDestroy:      checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: datadogSimpleFreeDashboardConfig(dbName),
+				Config: disableDashboardPlanValidation(datadogSimpleFreeDashboardConfig(dbName)),
 				Check: resource.ComposeTestCheckFunc(
 					testCheckResourceAttrs("datadog_dashboard.simple_dashboard", checkDashboardExists(accProvider), freeAsserts)...,
 				),
 			},
 			{
-				Config: datadogSimpleOrderedDashboardConfig(dbName),
+				Config: disableDashboardPlanValidation(datadogSimpleOrderedDashboardConfig(dbName)),
 				Check: resource.ComposeTestCheckFunc(
 					testCheckResourceAttrs("datadog_dashboard.simple_dashboard", checkDashboardExists(accProvider), orderedAsserts)...,
 				),
@@ -1284,7 +1284,7 @@ func TestAccDatadogDashboard_import(t *testing.T) {
 		CheckDestroy:      checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: datadogOrderedDashboardConfig(dbName),
+				Config: disableDashboardPlanValidation(datadogOrderedDashboardConfig(dbName)),
 			},
 			{
 				ResourceName:      "datadog_dashboard.ordered_dashboard",
@@ -1292,7 +1292,7 @@ func TestAccDatadogDashboard_import(t *testing.T) {
 				ImportStateVerify: true,
 			},
 			{
-				Config: datadogFreeDashboardConfig(dbName),
+				Config: disableDashboardPlanValidation(datadogFreeDashboardConfig(dbName)),
 			},
 			{
 				ResourceName:      "datadog_dashboard.free_dashboard",
@@ -1354,6 +1354,7 @@ func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string,
 	uniq := uniqueEntityName(ctx, t)
 	replacer := strings.NewReplacer("{{uniq}}", uniq)
 	config = replacer.Replace(config)
+	config = disableDashboardPlanValidation(config)
 	for i := range assertions {
 		assertions[i] = replacer.Replace(assertions[i])
 	}
@@ -1380,6 +1381,7 @@ func testAccDatadogDashboardWidgetUtilImport(t *testing.T, config string, name s
 	uniq := uniqueEntityName(ctx, t)
 	replacer := strings.NewReplacer("{{uniq}}", uniq)
 	config = replacer.Replace(config)
+	config = disableDashboardPlanValidation(config)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -1415,6 +1417,7 @@ func testAccDatadogDashboardV2WidgetUtil(t *testing.T, v1TestName string, config
 	uniq := withUniqueSurrounding(clockFromContext(ctx), v1TestName)
 	replacer := strings.NewReplacer("{{uniq}}", uniq)
 	config = replacer.Replace(config)
+	config = disableDashboardPlanValidation(config)
 	for i := range assertions {
 		assertions[i] = replacer.Replace(assertions[i])
 	}
@@ -1448,6 +1451,7 @@ func testAccDatadogDashboardV2WidgetUtilImport(t *testing.T, v1TestName string, 
 	uniq := withUniqueSurrounding(clockFromContext(ctx), v1TestName)
 	replacer := strings.NewReplacer("{{uniq}}", uniq)
 	config = replacer.Replace(config)
+	config = disableDashboardPlanValidation(config)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
@@ -1464,6 +1468,34 @@ func testAccDatadogDashboardV2WidgetUtilImport(t *testing.T, v1TestName string, 
 			},
 		},
 	})
+}
+
+// Existing dashboard acceptance cassettes do not contain plan-time validation
+// calls. Dedicated validation tests cover that path, so disable it for both the
+// canonical resource and its v2 alias in cassette-backed tests.
+func disableDashboardPlanValidation(config string) string {
+	for _, resourceMarker := range []string{
+		`resource "datadog_dashboard"`,
+		`resource "datadog_dashboard_v2"`,
+	} {
+		searchFrom := 0
+		for {
+			resourceOffset := strings.Index(config[searchFrom:], resourceMarker)
+			if resourceOffset == -1 {
+				break
+			}
+			resourceStart := searchFrom + resourceOffset
+			openingBrace := strings.Index(config[resourceStart:], "{")
+			if openingBrace == -1 {
+				break
+			}
+			insertAt := resourceStart + openingBrace + 1
+			insertion := "\n  validate = false"
+			config = config[:insertAt] + insertion + config[insertAt:]
+			searchFrom = insertAt + len(insertion)
+		}
+	}
+	return config
 }
 
 func datadogOpenDashboardConfig(uniqueDashboardName string) string {
@@ -1536,7 +1568,7 @@ func TestAccDatadogDashboardRbac_createOpen(t *testing.T) {
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: datadogOpenDashboardConfig(boardName),
+				Config: disableDashboardPlanValidation(datadogOpenDashboardConfig(boardName)),
 				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
@@ -1556,7 +1588,7 @@ func TestAccDatadogDashboardRbac_createAdmin(t *testing.T) {
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: datadogAdminDashboardConfig(boardName),
+				Config: disableDashboardPlanValidation(datadogAdminDashboardConfig(boardName)),
 				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
@@ -1577,7 +1609,7 @@ func TestAccDatadogDashboardRbac_createRbac(t *testing.T) {
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: datadogRbacDashboardConfig(boardName, roleName),
+				Config: disableDashboardPlanValidation(datadogRbacDashboardConfig(boardName, roleName)),
 				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
@@ -1597,10 +1629,10 @@ func TestAccDatadogDashboardRbac_updateToAdmin(t *testing.T) {
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: datadogOpenDashboardConfig(boardName),
+				Config: disableDashboardPlanValidation(datadogOpenDashboardConfig(boardName)),
 			},
 			{
-				Config: datadogAdminDashboardConfig(boardName),
+				Config: disableDashboardPlanValidation(datadogAdminDashboardConfig(boardName)),
 				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
@@ -1621,10 +1653,10 @@ func TestAccDatadogDashboardRbac_updateToRbac(t *testing.T) {
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: datadogOpenDashboardConfig(boardName),
+				Config: disableDashboardPlanValidation(datadogOpenDashboardConfig(boardName)),
 			},
 			{
-				Config: datadogRbacDashboardConfig(boardName, roleName),
+				Config: disableDashboardPlanValidation(datadogRbacDashboardConfig(boardName, roleName)),
 				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
@@ -1645,17 +1677,17 @@ func TestAccDatadogDashboardRbac_updateToOpen(t *testing.T) {
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: datadogAdminDashboardConfig(boardName),
+				Config: disableDashboardPlanValidation(datadogAdminDashboardConfig(boardName)),
 			},
 			{
-				Config: datadogOpenDashboardConfig(boardName),
+				Config: disableDashboardPlanValidation(datadogOpenDashboardConfig(boardName)),
 				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 			{
-				Config: datadogRbacDashboardConfig(boardName, roleName),
+				Config: disableDashboardPlanValidation(datadogRbacDashboardConfig(boardName, roleName)),
 			},
 			{
-				Config: datadogOpenDashboardConfig(boardName),
+				Config: disableDashboardPlanValidation(datadogOpenDashboardConfig(boardName)),
 				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
@@ -1676,10 +1708,10 @@ func TestAccDatadogDashboardRbac_adminToRbac(t *testing.T) {
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: datadogAdminDashboardConfig(boardName),
+				Config: disableDashboardPlanValidation(datadogAdminDashboardConfig(boardName)),
 			},
 			{
-				Config: datadogRbacDashboardConfig(boardName, roleName),
+				Config: disableDashboardPlanValidation(datadogRbacDashboardConfig(boardName, roleName)),
 				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
@@ -1788,7 +1820,7 @@ func TestAccDatadogDashboardMultiSizeLayout_createFixed(t *testing.T) {
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: datadogMultiSizeLayoutFixedDashboardConfig(boardName),
+				Config: disableDashboardPlanValidation(datadogMultiSizeLayoutFixedDashboardConfig(boardName)),
 				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
@@ -1808,7 +1840,7 @@ func TestAccDatadogDashboardMultiSizeLayout_createAuto(t *testing.T) {
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: datadogMultiSizeLayoutAutoDashboardConfig(boardName),
+				Config: disableDashboardPlanValidation(datadogMultiSizeLayoutAutoDashboardConfig(boardName)),
 				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
@@ -1864,7 +1896,7 @@ func TestAccDatadogDashboardNotifyListDiff(t *testing.T) {
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: datadogDashboardNotifyListConfig(boardName),
+				Config: disableDashboardPlanValidation(datadogDashboardNotifyListConfig(boardName)),
 				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
@@ -1963,7 +1995,7 @@ func TestAccDatadogDashboardTemplateVariables(t *testing.T) {
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: datadogDashboardTemplateVariablesConfig(boardName),
+				Config: disableDashboardPlanValidation(datadogDashboardTemplateVariablesConfig(boardName)),
 				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},

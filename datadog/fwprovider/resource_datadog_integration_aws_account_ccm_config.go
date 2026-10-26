@@ -300,5 +300,13 @@ func (r *integrationAwsAccountCcmConfigResource) buildIntegrationAwsAccountCcmCo
 	req.Data = *datadogV2.NewAWSCcmConfigRequestDataWithDefaults()
 	req.Data.SetAttributes(*attributes)
 
+	// Set metadata to indicate this request is coming from Terraform.
+	if req.AdditionalProperties == nil {
+		req.AdditionalProperties = make(map[string]interface{})
+	}
+	req.AdditionalProperties["meta"] = map[string]interface{}{
+		"setup_method": "terraform",
+	}
+
 	return req, diags
 }

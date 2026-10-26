@@ -1,0 +1,337 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 353
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"action_pattern":{"action_fqns":["*"],"integration":"INTEGRATION_KUBERNETES"},"effect":"allow","name":"tf-TestAccDatadogActionExecutionPolicy_Kubernetes-local-1787229677","scope":{"kubernetes":{"rules":[{"target_namespaces":["default"]}]}},"targets":[{"agent_tags":["env:test"],"name":"test-agents"}]},"type":"execution_policy"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 584
+        uncompressed: false
+        body: '{"data":{"id":"1167c42b-b09c-4262-a1eb-ba4267f90db9","type":"execution_policy","attributes":{"action_pattern":{"integration":"INTEGRATION_KUBERNETES","action_fqns":["*"]},"created_at":"2026-08-20T12:41:21Z","created_by":"d72ee86c-6207-4077-b40c-93fded100245","effect":"allow","name":"tf-TestAccDatadogActionExecutionPolicy_Kubernetes-local-1787229677","scope":{"kubernetes":{"rules":[{"target_namespaces":["default"]}]}},"targets":[{"agent_tags":["env:test"],"name":"test-agents"}],"updated_at":"2026-08-20T12:41:21Z","updated_by":"d72ee86c-6207-4077-b40c-93fded100245","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 264.783125ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies/1167c42b-b09c-4262-a1eb-ba4267f90db9
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 584
+        uncompressed: false
+        body: '{"data":{"id":"1167c42b-b09c-4262-a1eb-ba4267f90db9","type":"execution_policy","attributes":{"action_pattern":{"integration":"INTEGRATION_KUBERNETES","action_fqns":["*"]},"created_at":"2026-08-20T12:41:21Z","created_by":"d72ee86c-6207-4077-b40c-93fded100245","effect":"allow","name":"tf-TestAccDatadogActionExecutionPolicy_Kubernetes-local-1787229677","scope":{"kubernetes":{"rules":[{"target_namespaces":["default"]}]}},"targets":[{"agent_tags":["env:test"],"name":"test-agents"}],"updated_at":"2026-08-20T12:41:21Z","updated_by":"d72ee86c-6207-4077-b40c-93fded100245","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 172.934792ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies/1167c42b-b09c-4262-a1eb-ba4267f90db9
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 584
+        uncompressed: false
+        body: '{"data":{"id":"1167c42b-b09c-4262-a1eb-ba4267f90db9","type":"execution_policy","attributes":{"action_pattern":{"integration":"INTEGRATION_KUBERNETES","action_fqns":["*"]},"created_at":"2026-08-20T12:41:21Z","created_by":"d72ee86c-6207-4077-b40c-93fded100245","effect":"allow","name":"tf-TestAccDatadogActionExecutionPolicy_Kubernetes-local-1787229677","scope":{"kubernetes":{"rules":[{"target_namespaces":["default"]}]}},"targets":[{"agent_tags":["env:test"],"name":"test-agents"}],"updated_at":"2026-08-20T12:41:21Z","updated_by":"d72ee86c-6207-4077-b40c-93fded100245","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 143.52975ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies/1167c42b-b09c-4262-a1eb-ba4267f90db9
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 584
+        uncompressed: false
+        body: '{"data":{"id":"1167c42b-b09c-4262-a1eb-ba4267f90db9","type":"execution_policy","attributes":{"action_pattern":{"integration":"INTEGRATION_KUBERNETES","action_fqns":["*"]},"created_at":"2026-08-20T12:41:21Z","created_by":"d72ee86c-6207-4077-b40c-93fded100245","effect":"allow","name":"tf-TestAccDatadogActionExecutionPolicy_Kubernetes-local-1787229677","scope":{"kubernetes":{"rules":[{"target_namespaces":["default"]}]}},"targets":[{"agent_tags":["env:test"],"name":"test-agents"}],"updated_at":"2026-08-20T12:41:21Z","updated_by":"d72ee86c-6207-4077-b40c-93fded100245","version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 133.08175ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 418
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"action_pattern":{"action_fqns":["*"],"integration":"INTEGRATION_KUBERNETES"},"effect":"deny","name":"tf-TestAccDatadogActionExecutionPolicy_Kubernetes-local-1787229677-updated","scope":{"kubernetes":{"rules":[{"target_namespaces":["default","kube-system"]}]}},"targets":[{"agent_tags":["env:test"],"name":"test-agents"}]},"id":"1167c42b-b09c-4262-a1eb-ba4267f90db9","type":"execution_policy"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies/1167c42b-b09c-4262-a1eb-ba4267f90db9
+        method: PUT
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 605
+        uncompressed: false
+        body: '{"data":{"id":"1167c42b-b09c-4262-a1eb-ba4267f90db9","type":"execution_policy","attributes":{"action_pattern":{"integration":"INTEGRATION_KUBERNETES","action_fqns":["*"]},"created_at":"2026-08-20T12:41:21Z","created_by":"d72ee86c-6207-4077-b40c-93fded100245","effect":"deny","name":"tf-TestAccDatadogActionExecutionPolicy_Kubernetes-local-1787229677-updated","scope":{"kubernetes":{"rules":[{"target_namespaces":["default","kube-system"]}]}},"targets":[{"agent_tags":["env:test"],"name":"test-agents"}],"updated_at":"2026-08-20T12:41:23Z","updated_by":"d72ee86c-6207-4077-b40c-93fded100245","version":2}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 160.458042ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies/1167c42b-b09c-4262-a1eb-ba4267f90db9
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 605
+        uncompressed: false
+        body: '{"data":{"id":"1167c42b-b09c-4262-a1eb-ba4267f90db9","type":"execution_policy","attributes":{"action_pattern":{"integration":"INTEGRATION_KUBERNETES","action_fqns":["*"]},"created_at":"2026-08-20T12:41:21Z","created_by":"d72ee86c-6207-4077-b40c-93fded100245","effect":"deny","name":"tf-TestAccDatadogActionExecutionPolicy_Kubernetes-local-1787229677-updated","scope":{"kubernetes":{"rules":[{"target_namespaces":["default","kube-system"]}]}},"targets":[{"agent_tags":["env:test"],"name":"test-agents"}],"updated_at":"2026-08-20T12:41:23Z","updated_by":"d72ee86c-6207-4077-b40c-93fded100245","version":2}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 151.054208ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies/1167c42b-b09c-4262-a1eb-ba4267f90db9
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 605
+        uncompressed: false
+        body: '{"data":{"id":"1167c42b-b09c-4262-a1eb-ba4267f90db9","type":"execution_policy","attributes":{"action_pattern":{"integration":"INTEGRATION_KUBERNETES","action_fqns":["*"]},"created_at":"2026-08-20T12:41:21Z","created_by":"d72ee86c-6207-4077-b40c-93fded100245","effect":"deny","name":"tf-TestAccDatadogActionExecutionPolicy_Kubernetes-local-1787229677-updated","scope":{"kubernetes":{"rules":[{"target_namespaces":["default","kube-system"]}]}},"targets":[{"agent_tags":["env:test"],"name":"test-agents"}],"updated_at":"2026-08-20T12:41:23Z","updated_by":"d72ee86c-6207-4077-b40c-93fded100245","version":2}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 144.404ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies/1167c42b-b09c-4262-a1eb-ba4267f90db9
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 605
+        uncompressed: false
+        body: '{"data":{"id":"1167c42b-b09c-4262-a1eb-ba4267f90db9","type":"execution_policy","attributes":{"action_pattern":{"integration":"INTEGRATION_KUBERNETES","action_fqns":["*"]},"created_at":"2026-08-20T12:41:21Z","created_by":"d72ee86c-6207-4077-b40c-93fded100245","effect":"deny","name":"tf-TestAccDatadogActionExecutionPolicy_Kubernetes-local-1787229677-updated","scope":{"kubernetes":{"rules":[{"target_namespaces":["default","kube-system"]}]}},"targets":[{"agent_tags":["env:test"],"name":"test-agents"}],"updated_at":"2026-08-20T12:41:23Z","updated_by":"d72ee86c-6207-4077-b40c-93fded100245","version":2}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 127.970834ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies/1167c42b-b09c-4262-a1eb-ba4267f90db9
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 178.5165ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/execution-policies/1167c42b-b09c-4262-a1eb-ba4267f90db9
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 80
+        uncompressed: false
+        body: '{"errors":[{"title":"Generic Error","detail":"error getting execution policy"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 150.565333ms

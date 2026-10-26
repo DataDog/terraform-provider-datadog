@@ -129,7 +129,7 @@ func resourceDatadogLogsArchive() *schema.Resource {
 					Description:      "The compression method for the archive.",
 					Type:             schema.TypeString,
 					Optional:         true,
-					Default:          string(datadogV2.LOGSARCHIVEATTRIBUTESCOMPRESSIONMETHOD_GZIP),
+					Default:          string(datadogV2.LOGSARCHIVEATTRIBUTESCOMPRESSIONMETHOD_ZSTD),
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewLogsArchiveAttributesCompressionMethodFromValue),
 				},
 				"partitioning_attributes": {

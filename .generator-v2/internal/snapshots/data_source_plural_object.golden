@@ -58,11 +58,10 @@ func (d *datadogGizmosDataSource) Schema(_ context.Context, _ datasource.SchemaR
 		Description: "Use this data source to retrieve information about existing gizmos.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
-		},
-		Blocks: map[string]schema.Block{
-			"gizmos": schema.ListNestedBlock{
+
+			"gizmos": schema.ListNestedAttribute{
 				Description: "List of gizmos",
-				NestedObject: schema.NestedBlockObject{
+				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"id": schema.StringAttribute{
 							Description: "The gizmo's identifier.",
@@ -72,9 +71,8 @@ func (d *datadogGizmosDataSource) Schema(_ context.Context, _ datasource.SchemaR
 							Description: "The name of the gizmo.",
 							Computed:    true,
 						},
-					},
-					Blocks: map[string]schema.Block{
-						"spec": schema.SingleNestedBlock{
+
+						"spec": schema.SingleNestedAttribute{
 							Description: "",
 
 							Attributes: map[string]schema.Attribute{

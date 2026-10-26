@@ -65,6 +65,7 @@ type destinationModel struct {
 	SyslogNgDestination               []*syslogNgDestinationModel                                      `tfsdk:"syslog_ng"`
 	ElasticsearchDestination          []*elasticsearchDestinationModel                                 `tfsdk:"elasticsearch"`
 	AzureStorageDestination           []*azureStorageDestinationModel                                  `tfsdk:"azure_storage"`
+	AzureDataExplorerDestination      []*observability_pipeline.AzureDataExplorerDestinationModel      `tfsdk:"azure_data_explorer"`
 	MicrosoftSentinelDestination      []*microsoftSentinelDestinationModel                             `tfsdk:"microsoft_sentinel"`
 	GoogleSecopsDestination           []*googleSecopsDestinationModel                                  `tfsdk:"google_secops"`
 	NewRelicDestination               []*newRelicDestinationModel                                      `tfsdk:"new_relic"`
@@ -78,11 +79,13 @@ type destinationModel struct {
 	CrowdStrikeNextGenSiemDestination []*observability_pipeline.CrowdStrikeNextGenSiemDestinationModel `tfsdk:"crowdstrike_next_gen_siem"`
 	DatabricksZerobusDestination      []*observability_pipeline.DatabricksZerobusDestinationModel      `tfsdk:"databricks_zerobus"`
 	SplunkHecMetricsDestination       []*observability_pipeline.SplunkHECMetricsDestinationModel       `tfsdk:"splunk_hec_metrics"`
+	OpentelemetryMetricsDestination   []*observability_pipeline.OpentelemetryMetricsDestinationModel   `tfsdk:"opentelemetry"`
 	ClickhouseDestination             []*observability_pipeline.ClickhouseDestinationModel             `tfsdk:"clickhouse"`
 	DatadogMetricsDestination         []*datadogMetricsDestinationModel                                `tfsdk:"datadog_metrics"`
 	HttpClientDestination             []*httpClientDestinationModel                                    `tfsdk:"http_client"`
 	CloudPremDestination              []*observability_pipeline.CloudPremDestinationModel              `tfsdk:"cloud_prem"`
 	KafkaDestination                  []*observability_pipeline.KafkaDestinationModel                  `tfsdk:"kafka"`
+	PrometheusRemoteWriteDestination  []*observability_pipeline.PrometheusRemoteWriteDestinationModel  `tfsdk:"prometheus_remote_write"`
 }
 
 type datadogMetricsDestinationModel struct {
@@ -95,6 +98,7 @@ type httpClientDestinationModel struct {
 	PasswordKey  types.String                                `tfsdk:"password_key"`
 	UriKey       types.String                                `tfsdk:"uri_key"`
 	UsernameKey  types.String                                `tfsdk:"username_key"`
+	CustomKey    types.String                                `tfsdk:"custom_key"`
 	Compression  []httpClientDestinationCompressionModel     `tfsdk:"compression"`
 	AuthStrategy types.String                                `tfsdk:"auth_strategy"`
 	Tls          []observability_pipeline.ClientTlsModel     `tfsdk:"tls"`
@@ -106,25 +110,26 @@ type httpClientDestinationCompressionModel struct {
 }
 
 type sourceModel struct {
-	Id                       types.String                                       `tfsdk:"id"`
-	DatadogAgentSource       []*datadogAgentSourceModel                         `tfsdk:"datadog_agent"`
-	KafkaSource              []*kafkaSourceModel                                `tfsdk:"kafka"`
-	RsyslogSource            []*rsyslogSourceModel                              `tfsdk:"rsyslog"`
-	SyslogNgSource           []*syslogNgSourceModel                             `tfsdk:"syslog_ng"`
-	SumoLogicSource          []*sumoLogicSourceModel                            `tfsdk:"sumo_logic"`
-	FluentdSource            []*fluentdSourceModel                              `tfsdk:"fluentd"`
-	FluentBitSource          []*fluentBitSourceModel                            `tfsdk:"fluent_bit"`
-	HttpServerSource         []*httpServerSourceModel                           `tfsdk:"http_server"`
-	AmazonS3Source           []*amazonS3SourceModel                             `tfsdk:"amazon_s3"`
-	SplunkHecSource          []*splunkHecSourceModel                            `tfsdk:"splunk_hec"`
-	SplunkTcpSource          []*splunkTcpSourceModel                            `tfsdk:"splunk_tcp"`
-	AmazonDataFirehoseSource []*amazonDataFirehoseSourceModel                   `tfsdk:"amazon_data_firehose"`
-	HttpClientSource         []*httpClientSourceModel                           `tfsdk:"http_client"`
-	GooglePubSubSource       []*googlePubSubSourceModel                         `tfsdk:"google_pubsub"`
-	LogstashSource           []*logstashSourceModel                             `tfsdk:"logstash"`
-	SocketSource             []*observability_pipeline.SocketSourceModel        `tfsdk:"socket"`
-	OpentelemetrySource      []*observability_pipeline.OpentelemetrySourceModel `tfsdk:"opentelemetry"`
-	WebsocketSource          []*observability_pipeline.WebsocketSourceModel     `tfsdk:"websocket"`
+	Id                          types.String                                               `tfsdk:"id"`
+	DatadogAgentSource          []*datadogAgentSourceModel                                 `tfsdk:"datadog_agent"`
+	KafkaSource                 []*kafkaSourceModel                                        `tfsdk:"kafka"`
+	RsyslogSource               []*rsyslogSourceModel                                      `tfsdk:"rsyslog"`
+	SyslogNgSource              []*syslogNgSourceModel                                     `tfsdk:"syslog_ng"`
+	SumoLogicSource             []*sumoLogicSourceModel                                    `tfsdk:"sumo_logic"`
+	FluentdSource               []*fluentdSourceModel                                      `tfsdk:"fluentd"`
+	FluentBitSource             []*fluentBitSourceModel                                    `tfsdk:"fluent_bit"`
+	HttpServerSource            []*httpServerSourceModel                                   `tfsdk:"http_server"`
+	AmazonS3Source              []*amazonS3SourceModel                                     `tfsdk:"amazon_s3"`
+	SplunkHecSource             []*splunkHecSourceModel                                    `tfsdk:"splunk_hec"`
+	SplunkTcpSource             []*splunkTcpSourceModel                                    `tfsdk:"splunk_tcp"`
+	AmazonDataFirehoseSource    []*amazonDataFirehoseSourceModel                           `tfsdk:"amazon_data_firehose"`
+	HttpClientSource            []*httpClientSourceModel                                   `tfsdk:"http_client"`
+	GooglePubSubSource          []*googlePubSubSourceModel                                 `tfsdk:"google_pubsub"`
+	LogstashSource              []*logstashSourceModel                                     `tfsdk:"logstash"`
+	SocketSource                []*observability_pipeline.SocketSourceModel                `tfsdk:"socket"`
+	OpentelemetrySource         []*observability_pipeline.OpentelemetrySourceModel         `tfsdk:"opentelemetry"`
+	WebsocketSource             []*observability_pipeline.WebsocketSourceModel             `tfsdk:"websocket"`
+	PrometheusRemoteWriteSource []*observability_pipeline.PrometheusRemoteWriteSourceModel `tfsdk:"prometheus_remote_write"`
 }
 
 type logstashSourceModel struct {
@@ -181,33 +186,34 @@ type processorModel struct {
 	Include     types.String `tfsdk:"include"`
 	DisplayName types.String `tfsdk:"display_name"`
 
-	FilterProcessor               []*filterProcessorModel                                     `tfsdk:"filter"`
-	ParseJsonProcessor            []*parseJsonProcessorModel                                  `tfsdk:"parse_json"`
-	AddFieldsProcessor            []*addFieldsProcessor                                       `tfsdk:"add_fields"`
-	RenameFieldsProcessor         []*renameFieldsProcessorModel                               `tfsdk:"rename_fields"`
-	RemoveFieldsProcessor         []*removeFieldsProcessorModel                               `tfsdk:"remove_fields"`
-	QuotaProcessor                []*quotaProcessorModel                                      `tfsdk:"quota"`
-	GenerateMetricsProcessor      []*generateMetricsProcessorModel                            `tfsdk:"generate_datadog_metrics"`
-	ParseGrokProcessor            []*observability_pipeline.ParseGrokProcessorModel           `tfsdk:"parse_grok"`
-	SampleProcessor               []*sampleProcessorModel                                     `tfsdk:"sample"`
-	SensitiveDataScannerProcessor []*sensitiveDataScannerProcessorModel                       `tfsdk:"sensitive_data_scanner"`
-	DedupeProcessor               []*dedupeProcessorModel                                     `tfsdk:"dedupe"`
-	ReduceProcessor               []*reduceProcessorModel                                     `tfsdk:"reduce"`
-	ThrottleProcessor             []*throttleProcessorModel                                   `tfsdk:"throttle"`
-	AddEnvVarsProcessor           []*addEnvVarsProcessorModel                                 `tfsdk:"add_env_vars"`
-	EnrichmentTableProcessor      []*enrichmentTableProcessorModel                            `tfsdk:"enrichment_table"`
-	OcsfMapperProcessor           []*ocsfMapperProcessorModel                                 `tfsdk:"ocsf_mapper"`
-	DatadogTagsProcessor          []*observability_pipeline.DatadogTagsProcessorModel         `tfsdk:"datadog_tags"`
-	CustomProcessor               []*observability_pipeline.CustomProcessorModel              `tfsdk:"custom_processor"`
-	AddHostnameProcessor          []*addHostnameProcessorModel                                `tfsdk:"add_hostname"`
-	ParseXMLProcessor             []*parseXMLProcessorModel                                   `tfsdk:"parse_xml"`
-	SplitArrayProcessor           []*splitArrayProcessorModel                                 `tfsdk:"split_array"`
-	MetricTagsProcessor           []*metricTagsProcessorModel                                 `tfsdk:"metric_tags"`
-	GenerateMetricsV2Processor    []*generateMetricsProcessorModel                            `tfsdk:"generate_metrics"`
-	AddMetricTagsProcessor        []*observability_pipeline.AddMetricTagsProcessorModel       `tfsdk:"add_metric_tags"`
-	AggregateProcessor            []*observability_pipeline.AggregateProcessorModel           `tfsdk:"aggregate"`
-	RenameMetricTagsProcessor     []*observability_pipeline.RenameMetricTagsProcessorModel    `tfsdk:"rename_metric_tags"`
-	TagCardinalityLimitProcessor  []*observability_pipeline.TagCardinalityLimitProcessorModel `tfsdk:"tag_cardinality_limit"`
+	FilterProcessor                []*filterProcessorModel                                       `tfsdk:"filter"`
+	ParseJsonProcessor             []*parseJsonProcessorModel                                    `tfsdk:"parse_json"`
+	AddFieldsProcessor             []*addFieldsProcessor                                         `tfsdk:"add_fields"`
+	RenameFieldsProcessor          []*renameFieldsProcessorModel                                 `tfsdk:"rename_fields"`
+	RemoveFieldsProcessor          []*removeFieldsProcessorModel                                 `tfsdk:"remove_fields"`
+	QuotaProcessor                 []*quotaProcessorModel                                        `tfsdk:"quota"`
+	GenerateMetricsProcessor       []*generateMetricsProcessorModel                              `tfsdk:"generate_datadog_metrics"`
+	ParseGrokProcessor             []*observability_pipeline.ParseGrokProcessorModel             `tfsdk:"parse_grok"`
+	SampleProcessor                []*sampleProcessorModel                                       `tfsdk:"sample"`
+	SensitiveDataScannerProcessor  []*sensitiveDataScannerProcessorModel                         `tfsdk:"sensitive_data_scanner"`
+	DedupeProcessor                []*dedupeProcessorModel                                       `tfsdk:"dedupe"`
+	ReduceProcessor                []*reduceProcessorModel                                       `tfsdk:"reduce"`
+	ThrottleProcessor              []*throttleProcessorModel                                     `tfsdk:"throttle"`
+	AddEnvVarsProcessor            []*addEnvVarsProcessorModel                                   `tfsdk:"add_env_vars"`
+	EnrichmentTableProcessor       []*enrichmentTableProcessorModel                              `tfsdk:"enrichment_table"`
+	OcsfMapperProcessor            []*ocsfMapperProcessorModel                                   `tfsdk:"ocsf_mapper"`
+	DatadogTagsProcessor           []*observability_pipeline.DatadogTagsProcessorModel           `tfsdk:"datadog_tags"`
+	CustomProcessor                []*observability_pipeline.CustomProcessorModel                `tfsdk:"custom_processor"`
+	AddHostnameProcessor           []*addHostnameProcessorModel                                  `tfsdk:"add_hostname"`
+	ParseXMLProcessor              []*parseXMLProcessorModel                                     `tfsdk:"parse_xml"`
+	SplitArrayProcessor            []*splitArrayProcessorModel                                   `tfsdk:"split_array"`
+	MetricTagsProcessor            []*metricTagsProcessorModel                                   `tfsdk:"metric_tags"`
+	GenerateMetricsV2Processor     []*generateMetricsProcessorModel                              `tfsdk:"generate_metrics"`
+	AddMetricTagsProcessor         []*observability_pipeline.AddMetricTagsProcessorModel         `tfsdk:"add_metric_tags"`
+	AggregateProcessor             []*observability_pipeline.AggregateProcessorModel             `tfsdk:"aggregate"`
+	RenameMetricTagsProcessor      []*observability_pipeline.RenameMetricTagsProcessorModel      `tfsdk:"rename_metric_tags"`
+	TagCardinalityLimitProcessor   []*observability_pipeline.TagCardinalityLimitProcessorModel   `tfsdk:"tag_cardinality_limit"`
+	MetricEnrichmentTableProcessor []*observability_pipeline.MetricEnrichmentTableProcessorModel `tfsdk:"metric_enrichment_table"`
 }
 
 type metricTagsProcessorModel struct {
@@ -545,18 +551,20 @@ type generatedMetricValue struct {
 }
 
 type splunkTcpSourceModel struct {
-	AddressKey types.String                                `tfsdk:"address_key"`
-	Tls        []observability_pipeline.MtlsServerTlsModel `tfsdk:"tls"`
+	AddressKey                types.String                                `tfsdk:"address_key"`
+	MaxConnectionDurationSecs types.Int64                                 `tfsdk:"max_connection_duration_secs"`
+	Tls                       []observability_pipeline.MtlsServerTlsModel `tfsdk:"tls"`
 }
 
 type gcsDestinationModel struct {
-	Bucket       types.String                                `tfsdk:"bucket"`
-	KeyPrefix    types.String                                `tfsdk:"key_prefix"`
-	StorageClass types.String                                `tfsdk:"storage_class"`
-	Acl          types.String                                `tfsdk:"acl"`
-	Auth         []gcpAuthModel                              `tfsdk:"auth"`
-	Metadata     []metadataEntry                             `tfsdk:"metadata"`
-	Buffer       []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
+	Bucket       types.String                                     `tfsdk:"bucket"`
+	KeyPrefix    types.String                                     `tfsdk:"key_prefix"`
+	StorageClass types.String                                     `tfsdk:"storage_class"`
+	Acl          types.String                                     `tfsdk:"acl"`
+	Auth         []gcpAuthModel                                   `tfsdk:"auth"`
+	Metadata     []metadataEntry                                  `tfsdk:"metadata"`
+	Buffer       []observability_pipeline.BufferOptionsModel      `tfsdk:"buffer"`
+	Compression  []observability_pipeline.ArchiveCompressionModel `tfsdk:"compression"`
 }
 
 type metadataEntry struct {
@@ -639,10 +647,11 @@ type elasticsearchDestinationCompressionModel struct {
 }
 
 type azureStorageDestinationModel struct {
-	ContainerName       types.String                                `tfsdk:"container_name"`
-	BlobPrefix          types.String                                `tfsdk:"blob_prefix"`
-	ConnectionStringKey types.String                                `tfsdk:"connection_string_key"`
-	Buffer              []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
+	ContainerName       types.String                                     `tfsdk:"container_name"`
+	BlobPrefix          types.String                                     `tfsdk:"blob_prefix"`
+	ConnectionStringKey types.String                                     `tfsdk:"connection_string_key"`
+	Buffer              []observability_pipeline.BufferOptionsModel      `tfsdk:"buffer"`
+	Compression         []observability_pipeline.ArchiveCompressionModel `tfsdk:"compression"`
 }
 
 type microsoftSentinelDestinationModel struct {
@@ -1073,6 +1082,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													Optional:    true,
 													Description: "Name of the environment variable or secret that holds the listen address for the Splunk TCP receiver.",
 												},
+												"max_connection_duration_secs": schema.Int64Attribute{
+													Optional:    true,
+													Description: "Maximum duration, in seconds, that a connection can remain open before it is closed. When unset, connections can remain open indefinitely.",
+												},
 											},
 											Blocks: map[string]schema.Block{
 												"tls": observability_pipeline.MtlsServerTlsSchema(),
@@ -1227,9 +1240,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											},
 										},
 									},
-									"socket":        observability_pipeline.SocketSourceSchema(),
-									"opentelemetry": observability_pipeline.OpentelemetrySourceSchema(),
-									"websocket":     observability_pipeline.WebsocketSourceSchema(),
+									"socket":                  observability_pipeline.SocketSourceSchema(),
+									"opentelemetry":           observability_pipeline.OpentelemetrySourceSchema(),
+									"websocket":               observability_pipeline.WebsocketSourceSchema(),
+									"prometheus_remote_write": observability_pipeline.PrometheusRemoteWriteSourceSchema(),
 								},
 							},
 						},
@@ -1466,7 +1480,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 															},
 															"overflow_action": schema.StringAttribute{
 																Optional:    true,
-																Description: "The action to take when the quota is exceeded: `drop`, `no_action`, or `overflow_routing`.",
+																Description: "The action to take when the quota is exceeded: `drop`, `no_action`, or `overflow_routing`. When `overflow_routing` is used, there must be a destination whose `inputs` reference this processor with the `<processor-id>.overflow_events` suffix to route the overflowing events. Only the following destination types support overflow inputs: `amazon_s3_generic`, `amazon_s3`, `google_cloud_storage`, and `azure_storage`.",
 															},
 															"too_many_buckets_action": schema.StringAttribute{
 																Optional:    true,
@@ -1588,7 +1602,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																			NestedObject: schema.NestedBlockObject{
 																				Blocks: map[string]schema.Block{
 																					"custom": schema.ListNestedBlock{
-																						Description: "Pattern detection using a custom regular expression.",
+																						Description: "Pattern detection using a custom regular expression. Exactly one of `custom` or `library` must be specified.",
 																						NestedObject: schema.NestedBlockObject{
 																							Attributes: map[string]schema.Attribute{
 																								"rule": schema.StringAttribute{
@@ -1603,6 +1617,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																						},
 																						Validators: []validator.List{
 																							listvalidator.SizeAtMost(1),
+																							listvalidator.ExactlyOneOf(frameworkPath.MatchRelative().AtParent().AtName("library")),
 																						},
 																					},
 																					"library": schema.ListNestedBlock{
@@ -1631,6 +1646,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																				},
 																			},
 																			Validators: []validator.List{
+																				listvalidator.IsRequired(),
 																				listvalidator.SizeAtMost(1),
 																			},
 																		},
@@ -1639,7 +1655,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																			NestedObject: schema.NestedBlockObject{
 																				Blocks: map[string]schema.Block{
 																					"include": schema.ListNestedBlock{
-																						Description: "Explicitly include these fields for scanning.",
+																						Description: "Explicitly include these fields for scanning. Exactly one of `include`, `exclude`, or `all` must be specified.",
 																						NestedObject: schema.NestedBlockObject{
 																							Attributes: map[string]schema.Attribute{
 																								"fields": schema.ListAttribute{
@@ -1651,6 +1667,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																						},
 																						Validators: []validator.List{
 																							listvalidator.SizeAtMost(1),
+																							listvalidator.ExactlyOneOf(
+																								frameworkPath.MatchRelative().AtParent().AtName("exclude"),
+																								frameworkPath.MatchRelative().AtParent().AtName("all"),
+																							),
 																						},
 																					},
 																					"exclude": schema.ListNestedBlock{
@@ -1677,6 +1697,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																				},
 																			},
 																			Validators: []validator.List{
+																				listvalidator.IsRequired(),
 																				listvalidator.SizeAtMost(1),
 																			},
 																		},
@@ -1685,7 +1706,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																			NestedObject: schema.NestedBlockObject{
 																				Blocks: map[string]schema.Block{
 																					"redact": schema.ListNestedBlock{
-																						Description: "Redacts the matched value.",
+																						Description: "Redacts the matched value. Exactly one of `redact`, `hash`, or `partial_redact` must be specified.",
 																						NestedObject: schema.NestedBlockObject{
 																							Attributes: map[string]schema.Attribute{
 																								"replace": schema.StringAttribute{
@@ -1696,6 +1717,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																						},
 																						Validators: []validator.List{
 																							listvalidator.SizeAtMost(1),
+																							listvalidator.ExactlyOneOf(
+																								frameworkPath.MatchRelative().AtParent().AtName("hash"),
+																								frameworkPath.MatchRelative().AtParent().AtName("partial_redact"),
+																							),
 																						},
 																					},
 																					"hash": schema.ListNestedBlock{
@@ -1728,6 +1753,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																				},
 																			},
 																			Validators: []validator.List{
+																				listvalidator.IsRequired(),
 																				listvalidator.SizeAtMost(1),
 																			},
 																		},
@@ -1738,7 +1764,8 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													},
 												},
 												"generate_datadog_metrics": schema.ListNestedBlock{
-													Description: "The `generate_datadog_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields.",
+													Description:        "The `generate_datadog_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields.\n\n**Deprecated:** This processor is deprecated, you should now use the `generate_metrics` processor.",
+													DeprecationMessage: "This processor is deprecated, use `generate_metrics` instead.",
 													Validators: []validator.List{
 														listvalidator.SizeAtMost(1),
 													},
@@ -2096,13 +2123,14 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														},
 													},
 												},
-												"ocsf_mapper":           observability_pipeline.OcsfMapperProcessorSchema(),
-												"datadog_tags":          observability_pipeline.DatadogTagsProcessorSchema(),
-												"custom_processor":      observability_pipeline.CustomProcessorSchema(),
-												"add_metric_tags":       observability_pipeline.AddMetricTagsProcessorSchema(),
-												"aggregate":             observability_pipeline.AggregateProcessorSchema(),
-												"rename_metric_tags":    observability_pipeline.RenameMetricTagsProcessorSchema(),
-												"tag_cardinality_limit": observability_pipeline.TagCardinalityLimitProcessorSchema(),
+												"ocsf_mapper":             observability_pipeline.OcsfMapperProcessorSchema(),
+												"datadog_tags":            observability_pipeline.DatadogTagsProcessorSchema(),
+												"custom_processor":        observability_pipeline.CustomProcessorSchema(),
+												"add_metric_tags":         observability_pipeline.AddMetricTagsProcessorSchema(),
+												"aggregate":               observability_pipeline.AggregateProcessorSchema(),
+												"rename_metric_tags":      observability_pipeline.RenameMetricTagsProcessorSchema(),
+												"tag_cardinality_limit":   observability_pipeline.TagCardinalityLimitProcessorSchema(),
+												"metric_enrichment_table": observability_pipeline.MetricEnrichmentTableProcessorSchema(),
 												"metric_tags": schema.ListNestedBlock{
 													Description: "The `metric_tags` processor filters metrics based on their tags using Datadog tag key patterns.",
 													Validators: []validator.List{
@@ -2152,7 +2180,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													},
 												},
 												"generate_metrics": schema.ListNestedBlock{
-													Description: "The `generate_metrics` processor creates custom metrics from logs. The generated metrics must be routed to a metrics destination using the input `<processor-id>.metrics`.",
+													Description: "The `generate_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields. There must be a destination whose `inputs` reference this processor with the `<processor-id>.metrics` suffix to route the generated metrics. All destination types normally supported for `metrics` pipelines are also supported as metrics destinations in `logs` pipelines.",
 													Validators: []validator.List{
 														listvalidator.SizeAtMost(1),
 													},
@@ -2296,11 +2324,15 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													Optional:    true,
 													Description: "Name of the environment variable or secret that holds the username.",
 												},
+												"custom_key": schema.StringAttribute{
+													Optional:    true,
+													Description: "Name of the environment variable or secret that holds the custom authentication header value. Used with the `custom` auth strategy.",
+												},
 												"auth_strategy": schema.StringAttribute{
 													Optional:    true,
 													Description: "HTTP authentication strategy.",
 													Validators: []validator.String{
-														stringvalidator.OneOf("none", "basic", "bearer"),
+														stringvalidator.OneOf("none", "basic", "bearer", "custom"),
 													},
 												},
 											},
@@ -2365,7 +2397,8 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														},
 													},
 												},
-												"buffer": observability_pipeline.BufferOptionsSchema(),
+												"buffer":      observability_pipeline.BufferOptionsSchema(),
+												"compression": observability_pipeline.ArchiveCompressionSchema(),
 											},
 										},
 									},
@@ -2724,7 +2757,8 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"buffer": observability_pipeline.BufferOptionsSchema(),
+												"buffer":      observability_pipeline.BufferOptionsSchema(),
+												"compression": observability_pipeline.ArchiveCompressionSchema(),
 											},
 										},
 									},
@@ -2836,12 +2870,15 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									"amazon_s3":                 observability_pipeline.AmazonS3DestinationSchema(),
 									"amazon_s3_generic":         observability_pipeline.AmazonS3GenericDestinationSchema(),
 									"amazon_security_lake":      observability_pipeline.AmazonSecurityLakeDestinationSchema(),
+									"azure_data_explorer":       observability_pipeline.AzureDataExplorerDestinationSchema(),
 									"crowdstrike_next_gen_siem": observability_pipeline.CrowdStrikeNextGenSiemDestinationSchema(),
 									"databricks_zerobus":        observability_pipeline.DatabricksZerobusDestinationSchema(),
 									"splunk_hec_metrics":        observability_pipeline.SplunkHECMetricsDestinationSchema(),
+									"opentelemetry":             observability_pipeline.OpentelemetryMetricsDestinationSchema(),
 									"clickhouse":                observability_pipeline.ClickhouseDestinationSchema(),
 									"cloud_prem":                observability_pipeline.CloudPremDestinationSchema(),
 									"kafka":                     observability_pipeline.KafkaDestinationSchema(),
+									"prometheus_remote_write":   observability_pipeline.PrometheusRemoteWriteDestinationSchema(),
 								},
 							},
 						},
@@ -3106,6 +3143,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 			}
 			config.Sources = append(config.Sources, item)
 		}
+		for _, p := range sourceBlock.PrometheusRemoteWriteSource {
+			config.Sources = append(config.Sources, observability_pipeline.ExpandPrometheusRemoteWriteSource(p, sourceId))
+		}
 	}
 
 	// Processors - iterate through processor groups
@@ -3184,6 +3224,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		for _, d := range dest.AmazonSecurityLakeDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandObservabilityPipelinesAmazonSecurityLakeDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
+		for _, d := range dest.AzureDataExplorerDestination {
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandAzureDataExplorerDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+		}
 		for _, d := range dest.CrowdStrikeNextGenSiemDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandCrowdStrikeNextGenSiemDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
@@ -3193,6 +3236,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		for _, d := range dest.SplunkHecMetricsDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandSplunkHECMetricsDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
+		for _, d := range dest.OpentelemetryMetricsDestination {
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandOpentelemetryMetricsDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+		}
 		for _, d := range dest.ClickhouseDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandClickhouseDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
@@ -3201,6 +3247,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		}
 		for _, d := range dest.KafkaDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandKafkaDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+		}
+		for _, d := range dest.PrometheusRemoteWriteDestination {
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandPrometheusRemoteWriteDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
 	}
 
@@ -3307,6 +3356,10 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		} else if w := observability_pipeline.FlattenWebsocketSource(src.ObservabilityPipelineWebsocketSource); w != nil {
 			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineWebsocketSource.GetId())
 			sourceBlock.WebsocketSource = append(sourceBlock.WebsocketSource, w)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if p := observability_pipeline.FlattenPrometheusRemoteWriteSource(src.ObservabilityPipelinePrometheusRemoteWriteSource); p != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelinePrometheusRemoteWriteSource.GetId())
+			sourceBlock.PrometheusRemoteWriteSource = append(sourceBlock.PrometheusRemoteWriteSource, p)
 			outCfg.Sources = append(outCfg.Sources, sourceBlock)
 		}
 	}
@@ -3427,6 +3480,11 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineAmazonSecurityLakeDestination.GetInputs())
 			destBlock.AmazonSecurityLakeDestination = append(destBlock.AmazonSecurityLakeDestination, securitylake)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if adx := observability_pipeline.FlattenAzureDataExplorerDestination(ctx, d.ObservabilityPipelineAzureDataExplorerDestination); adx != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineAzureDataExplorerDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineAzureDataExplorerDestination.GetInputs())
+			destBlock.AzureDataExplorerDestination = append(destBlock.AzureDataExplorerDestination, adx)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
 		} else if crowdstrike := observability_pipeline.FlattenCrowdStrikeNextGenSiemDestination(ctx, d.ObservabilityPipelineCrowdStrikeNextGenSiemDestination); crowdstrike != nil {
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineCrowdStrikeNextGenSiemDestination.GetId())
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineCrowdStrikeNextGenSiemDestination.GetInputs())
@@ -3442,6 +3500,11 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineSplunkHecMetricsDestination.GetInputs())
 			destBlock.SplunkHecMetricsDestination = append(destBlock.SplunkHecMetricsDestination, splunkMetrics)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if otelMetrics := observability_pipeline.FlattenOpentelemetryMetricsDestination(d.ObservabilityPipelineOpentelemetryMetricsDestination); otelMetrics != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineOpentelemetryMetricsDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineOpentelemetryMetricsDestination.GetInputs())
+			destBlock.OpentelemetryMetricsDestination = append(destBlock.OpentelemetryMetricsDestination, otelMetrics)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
 		} else if clickhouse := observability_pipeline.FlattenClickhouseDestination(ctx, d.ObservabilityPipelineClickhouseDestination); clickhouse != nil {
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineClickhouseDestination.GetId())
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineClickhouseDestination.GetInputs())
@@ -3456,6 +3519,11 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineKafkaDestination.GetId())
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineKafkaDestination.GetInputs())
 			destBlock.KafkaDestination = append(destBlock.KafkaDestination, kafka)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if promRW := observability_pipeline.FlattenPrometheusRemoteWriteDestination(d.ObservabilityPipelinePrometheusRemoteWriteDestination); promRW != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelinePrometheusRemoteWriteDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelinePrometheusRemoteWriteDestination.GetInputs())
+			destBlock.PrometheusRemoteWriteDestination = append(destBlock.PrometheusRemoteWriteDestination, promRW)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
 		}
 	}
@@ -3674,6 +3742,8 @@ func flattenProcessorGroup(ctx context.Context, group *datadogV2.ObservabilityPi
 			procModel = flattenRenameMetricTagsProcessor(ctx, p.ObservabilityPipelineRenameMetricTagsProcessor)
 		} else if p.ObservabilityPipelineTagCardinalityLimitProcessor != nil {
 			procModel = flattenTagCardinalityLimitProcessor(ctx, p.ObservabilityPipelineTagCardinalityLimitProcessor)
+		} else if p.ObservabilityPipelineMetricEnrichmentTableProcessor != nil {
+			procModel = flattenMetricEnrichmentTableProcessor(ctx, p.ObservabilityPipelineMetricEnrichmentTableProcessor)
 		}
 
 		if procModel != nil {
@@ -3821,6 +3891,9 @@ func expandProcessorTypes(ctx context.Context, processor *processorModel) []data
 	}
 	for _, p := range processor.TagCardinalityLimitProcessor {
 		items = append(items, observability_pipeline.ExpandTagCardinalityLimitProcessor(common, p))
+	}
+	for _, p := range processor.MetricEnrichmentTableProcessor {
+		items = append(items, observability_pipeline.ExpandMetricEnrichmentTableProcessor(common, p))
 	}
 
 	return items
@@ -4497,6 +4570,16 @@ func flattenTagCardinalityLimitProcessor(ctx context.Context, src *datadogV2.Obs
 	if f := observability_pipeline.FlattenTagCardinalityLimitProcessor(src); f != nil {
 		model.TagCardinalityLimitProcessor = append(model.TagCardinalityLimitProcessor, f)
 	}
+	return model
+}
+
+func flattenMetricEnrichmentTableProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineMetricEnrichmentTableProcessor) *processorModel {
+	base, f := observability_pipeline.FlattenMetricEnrichmentTableProcessor(src)
+	if base == nil {
+		return nil
+	}
+	model := createProcessorModel(base)
+	model.MetricEnrichmentTableProcessor = append(model.MetricEnrichmentTableProcessor, f)
 	return model
 }
 
@@ -5433,6 +5516,9 @@ func expandHttpClientDestination(ctx context.Context, dest *destinationModel, sr
 	if !src.UsernameKey.IsNull() {
 		d.SetUsernameKey(src.UsernameKey.ValueString())
 	}
+	if !src.CustomKey.IsNull() {
+		d.SetCustomKey(src.CustomKey.ValueString())
+	}
 	if !src.AuthStrategy.IsNull() {
 		d.SetAuthStrategy(datadogV2.ObservabilityPipelineHttpClientDestinationAuthStrategy(src.AuthStrategy.ValueString()))
 	}
@@ -5477,6 +5563,9 @@ func flattenHttpClientDestination(ctx context.Context, src *datadogV2.Observabil
 	}
 	if v, ok := src.GetUsernameKeyOk(); ok {
 		out.UsernameKey = types.StringValue(*v)
+	}
+	if v, ok := src.GetCustomKeyOk(); ok {
+		out.CustomKey = types.StringValue(*v)
 	}
 	if src.Tls != nil {
 		out.Tls = observability_pipeline.FlattenClientTls(src.Tls)
@@ -5862,8 +5951,26 @@ func expandGoogleCloudStorageDestination(ctx context.Context, destModel *destina
 		}
 	}
 
+	if len(d.Compression) > 0 {
+		dest.SetCompression(expandGoogleCloudStorageCompression(d.Compression[0]))
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineGoogleCloudStorageDestination: dest,
+	}
+}
+
+// expandGoogleCloudStorageCompression converts the archive compression model to the API oneOf.
+func expandGoogleCloudStorageCompression(m observability_pipeline.ArchiveCompressionModel) datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationCompression {
+	switch m.Algorithm.ValueString() {
+	case "zstd":
+		c := datadogV2.NewObservabilityPipelineGoogleCloudStorageDestinationCompressionZstdWithDefaults()
+		c.SetLevel(m.Level.ValueInt64())
+		return datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationCompressionZstdAsObservabilityPipelineGoogleCloudStorageDestinationCompression(c)
+	default: // "gzip"
+		c := datadogV2.NewObservabilityPipelineGoogleCloudStorageDestinationCompressionGzipWithDefaults()
+		c.SetLevel(m.Level.ValueInt64())
+		return datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationCompressionGzipAsObservabilityPipelineGoogleCloudStorageDestinationCompression(c)
 	}
 }
 
@@ -5902,7 +6009,40 @@ func flattenGoogleCloudStorageDestination(ctx context.Context, src *datadogV2.Ob
 		}
 	}
 
+	if compression, ok := src.GetCompressionOk(); ok {
+		out.Compression = flattenGoogleCloudStorageCompression(compression)
+	}
+
 	return out
+}
+
+// flattenGoogleCloudStorageCompression converts the API archive compression oneOf to the Terraform model.
+func flattenGoogleCloudStorageCompression(src *datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationCompression) []observability_pipeline.ArchiveCompressionModel {
+	if src == nil {
+		return nil
+	}
+	switch {
+	case src.ObservabilityPipelineGoogleCloudStorageDestinationCompressionGzip != nil:
+		level := types.Int64Null()
+		if v, ok := src.ObservabilityPipelineGoogleCloudStorageDestinationCompressionGzip.GetLevelOk(); ok {
+			level = types.Int64Value(*v)
+		}
+		return []observability_pipeline.ArchiveCompressionModel{{
+			Algorithm: types.StringValue("gzip"),
+			Level:     level,
+		}}
+	case src.ObservabilityPipelineGoogleCloudStorageDestinationCompressionZstd != nil:
+		level := types.Int64Null()
+		if v, ok := src.ObservabilityPipelineGoogleCloudStorageDestinationCompressionZstd.GetLevelOk(); ok {
+			level = types.Int64Value(*v)
+		}
+		return []observability_pipeline.ArchiveCompressionModel{{
+			Algorithm: types.StringValue("zstd"),
+			Level:     level,
+		}}
+	default:
+		return nil
+	}
 }
 
 func expandGooglePubSubDestination(ctx context.Context, dest *destinationModel, d *googlePubSubDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
@@ -5982,6 +6122,9 @@ func expandSplunkTcpSource(src *splunkTcpSourceModel, id string) datadogV2.Obser
 	if !src.AddressKey.IsNull() {
 		s.SetAddressKey(src.AddressKey.ValueString())
 	}
+	if !src.MaxConnectionDurationSecs.IsNull() {
+		s.SetMaxConnectionDurationSecs(src.MaxConnectionDurationSecs.ValueInt64())
+	}
 	s.Tls = observability_pipeline.ExpandMtlsServerTls(src.Tls)
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
@@ -5996,6 +6139,9 @@ func flattenSplunkTcpSource(src *datadogV2.ObservabilityPipelineSplunkTcpSource)
 	out := &splunkTcpSourceModel{}
 	if v, ok := src.GetAddressKeyOk(); ok {
 		out.AddressKey = types.StringValue(*v)
+	}
+	if v, ok := src.GetMaxConnectionDurationSecsOk(); ok {
+		out.MaxConnectionDurationSecs = types.Int64Value(*v)
 	}
 	if src.Tls != nil {
 		out.Tls = observability_pipeline.FlattenMtlsServerTls(src.Tls)
@@ -6486,8 +6632,26 @@ func expandAzureStorageDestination(ctx context.Context, dest *destinationModel, 
 		}
 	}
 
+	if len(src.Compression) > 0 {
+		obj.SetCompression(expandAzureStorageCompression(src.Compression[0]))
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		AzureStorageDestination: obj,
+	}
+}
+
+// expandAzureStorageCompression converts the Terraform archive compression model to the API oneOf.
+func expandAzureStorageCompression(m observability_pipeline.ArchiveCompressionModel) datadogV2.ObservabilityPipelineAzureStorageDestinationCompression {
+	switch m.Algorithm.ValueString() {
+	case "zstd":
+		c := datadogV2.NewObservabilityPipelineAzureStorageDestinationCompressionZstdWithDefaults()
+		c.SetLevel(m.Level.ValueInt64())
+		return datadogV2.ObservabilityPipelineAzureStorageDestinationCompressionZstdAsObservabilityPipelineAzureStorageDestinationCompression(c)
+	default: // "gzip"
+		c := datadogV2.NewObservabilityPipelineAzureStorageDestinationCompressionGzipWithDefaults()
+		c.SetLevel(m.Level.ValueInt64())
+		return datadogV2.ObservabilityPipelineAzureStorageDestinationCompressionGzipAsObservabilityPipelineAzureStorageDestinationCompression(c)
 	}
 }
 
@@ -6512,7 +6676,41 @@ func flattenAzureStorageDestination(ctx context.Context, src *datadogV2.AzureSto
 			out.Buffer = []observability_pipeline.BufferOptionsModel{*outBuffer}
 		}
 	}
+
+	if compression, ok := src.GetCompressionOk(); ok {
+		out.Compression = flattenAzureStorageCompression(compression)
+	}
+
 	return out
+}
+
+// flattenAzureStorageCompression converts the API archive compression oneOf to the Terraform model.
+func flattenAzureStorageCompression(src *datadogV2.ObservabilityPipelineAzureStorageDestinationCompression) []observability_pipeline.ArchiveCompressionModel {
+	if src == nil {
+		return nil
+	}
+	switch {
+	case src.ObservabilityPipelineAzureStorageDestinationCompressionGzip != nil:
+		level := types.Int64Null()
+		if v, ok := src.ObservabilityPipelineAzureStorageDestinationCompressionGzip.GetLevelOk(); ok {
+			level = types.Int64Value(*v)
+		}
+		return []observability_pipeline.ArchiveCompressionModel{{
+			Algorithm: types.StringValue("gzip"),
+			Level:     level,
+		}}
+	case src.ObservabilityPipelineAzureStorageDestinationCompressionZstd != nil:
+		level := types.Int64Null()
+		if v, ok := src.ObservabilityPipelineAzureStorageDestinationCompressionZstd.GetLevelOk(); ok {
+			level = types.Int64Value(*v)
+		}
+		return []observability_pipeline.ArchiveCompressionModel{{
+			Algorithm: types.StringValue("zstd"),
+			Level:     level,
+		}}
+	default:
+		return nil
+	}
 }
 
 func expandMicrosoftSentinelDestination(ctx context.Context, dest *destinationModel, src *microsoftSentinelDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {

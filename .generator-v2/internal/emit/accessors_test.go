@@ -53,21 +53,36 @@ func (i *ApiInstances) HttpClient() {}
 var _ = Describe("ApplyAPIAccessor", func() {
 	accessors := map[string]string{"RUMApi": "GetRumApiV2"}
 
-	It("overrides the accessor when the provider names it differently", func() {
+	It("prefers a discovered accessor when the provider names it differently", func() {
 		view := &DataSourceView{APIStruct: "RUMApi", APIAccessor: "GetRUMApiV2"}
-		ApplyAPIAccessor(view, accessors)
+		Expect(ApplyAPIAccessor(view, accessors)).To(Succeed())
 		Expect(view.APIAccessor).To(Equal("GetRumApiV2"))
+		Expect(view.APIConstructor).To(BeEmpty())
 	})
 
-	It("leaves the derived accessor when the struct name matches the accessor base", func() {
-		view := &DataSourceView{APIStruct: "TeamsApi", APIAccessor: "GetTeamsApiV2"}
-		ApplyAPIAccessor(view, accessors)
-		Expect(view.APIAccessor).To(Equal("GetTeamsApiV2"))
+	It("derives the SDK generator's constructor when no helper accessor exists", func() {
+		view := &DataSourceView{
+			SDKPackage:  "datadogV2",
+			APIStruct:   "CaseManagementApi",
+			APIAccessor: "GetCaseManagementApiV2",
+		}
+		Expect(ApplyAPIAccessor(view, accessors)).To(Succeed())
+		Expect(view.APIAccessor).To(BeEmpty())
+		Expect(view.APIConstructor).To(Equal("NewCaseManagementApi"))
 	})
 
-	It("leaves the derived accessor when no accessor map was resolved", func() {
-		view := &DataSourceView{APIStruct: "RUMApi", APIAccessor: "GetRUMApiV2"}
-		ApplyAPIAccessor(view, nil)
-		Expect(view.APIAccessor).To(Equal("GetRUMApiV2"))
+	It("fails when the OpenAPI tag could not produce an API struct", func() {
+		view := &DataSourceView{
+			SDKPackage:  "datadogV2",
+			APIStruct:   "Api",
+			APIAccessor: "GetApiV2",
+		}
+		err := ApplyAPIAccessor(view, accessors)
+		Expect(err).To(MatchError(And(
+			ContainSubstring("datadogV2.Api"),
+			ContainSubstring("no usable API tag"),
+		)))
+		Expect(view.APIAccessor).To(BeEmpty())
+		Expect(view.APIConstructor).To(BeEmpty())
 	})
 })

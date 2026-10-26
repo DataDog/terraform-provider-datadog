@@ -36,6 +36,13 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	//Datadog API config.HTTPClient
 	config := common.NewConfiguration()
 
+	config.SetUnstableOperationEnabled("v2.CreateRUMOperation", true)
+	config.SetUnstableOperationEnabled("v2.GetRUMOperation", true)
+	config.SetUnstableOperationEnabled("v2.UpdateRUMOperation", true)
+	config.SetUnstableOperationEnabled("v2.DeleteRUMOperation", true)
+	config.SetUnstableOperationEnabled("v2.CreateRUMOperationStrongLink", true)
+	config.SetUnstableOperationEnabled("v2.UpdateRUMOperationStrongLink", true)
+	config.SetUnstableOperationEnabled("v2.DeleteRUMOperationStrongLink", true)
 	config.SetUnstableOperationEnabled("v2.CreateOpenAPI", true)
 	config.SetUnstableOperationEnabled("v2.UpdateOpenAPI", true)
 	config.SetUnstableOperationEnabled("v2.GetOpenAPI", true)
@@ -45,13 +52,18 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.CreateDataset", true)
 	config.SetUnstableOperationEnabled("v2.UpdateDataset", true)
 	config.SetUnstableOperationEnabled("v2.DeleteDataset", true)
-
-	// Enable Web Integrations (AMS) — Databricks resource depends on these.
-	config.SetUnstableOperationEnabled("v2.CreateWebIntegrationAccount", true)
-	config.SetUnstableOperationEnabled("v2.GetWebIntegrationAccount", true)
-	config.SetUnstableOperationEnabled("v2.ListWebIntegrationAccounts", true)
-	config.SetUnstableOperationEnabled("v2.UpdateWebIntegrationAccount", true)
-	config.SetUnstableOperationEnabled("v2.DeleteWebIntegrationAccount", true)
+	config.SetUnstableOperationEnabled("v2.CreateFleetSchedule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateFleetSchedule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteFleetSchedule", true)
+	config.SetUnstableOperationEnabled("v2.CreateAWSCloudAuthPersonaMapping", true)
+	config.SetUnstableOperationEnabled("v2.GetAWSCloudAuthPersonaMapping", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAWSCloudAuthPersonaMapping", true)
+	config.SetUnstableOperationEnabled("v2.CreateGitHubCloudAuthIntakeMapping", true)
+	config.SetUnstableOperationEnabled("v2.GetGitHubCloudAuthIntakeMapping", true)
+	config.SetUnstableOperationEnabled("v2.DeleteGitHubCloudAuthIntakeMapping", true)
+	config.SetUnstableOperationEnabled("v2.CreateGitHubCloudAuthPersonaMapping", true)
+	config.SetUnstableOperationEnabled("v2.GetGitHubCloudAuthPersonaMapping", true)
+	config.SetUnstableOperationEnabled("v2.DeleteGitHubCloudAuthPersonaMapping", true)
 
 	// Enable Logs Restriction Queries
 	config.SetUnstableOperationEnabled("v2.CreateRestrictionQuery", true)
@@ -95,6 +107,12 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateIncidentNotificationTemplate", true)
 	config.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationTemplate", true)
 	config.SetUnstableOperationEnabled("v2.ListIncidentNotificationTemplates", true)
+
+	// Enable IncidentPostmortemTemplate
+	config.SetUnstableOperationEnabled("v2.CreateIncidentPostmortemTemplate", true)
+	config.SetUnstableOperationEnabled("v2.GetIncidentPostmortemTemplate", true)
+	config.SetUnstableOperationEnabled("v2.UpdateIncidentPostmortemTemplate", true)
+	config.SetUnstableOperationEnabled("v2.DeleteIncidentPostmortemTemplate", true)
 
 	config.SetUnstableOperationEnabled("v2.ListIncidentUserDefinedFields", true)
 	config.SetUnstableOperationEnabled("v2.CreateIncidentUserDefinedField", true)
@@ -166,6 +184,22 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationTicketCreationRule", true)
 	config.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationTicketCreationRule", true)
 	config.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationTicketCreationRules", true)
+	config.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationSeverityModifierRules", true)
+	config.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationSeverityModifierRule", true)
+	config.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationSeverityModifierRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationSeverityModifierRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationSeverityModifierRule", true)
+	config.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationSeverityModifierRules", true)
+	config.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationInboxRules", true)
+	config.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationInboxRules", true)
+	config.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationDefaultInboxRules", true)
+	config.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationDefaultInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.EnableSecurityFindingsAutomationDefaultInboxRule", true)
+	config.SetUnstableOperationEnabled("v2.DisableSecurityFindingsAutomationDefaultInboxRule", true)
 
 	config.SetUnstableOperationEnabled("v2.CreateTagIndexingRule", true)
 	config.SetUnstableOperationEnabled("v2.GetTagIndexingRule", true)
@@ -176,6 +210,26 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.CreateTagIndexingRuleExemption", true)
 	config.SetUnstableOperationEnabled("v2.GetTagIndexingRuleExemption", true)
 	config.SetUnstableOperationEnabled("v2.DeleteTagIndexingRuleExemption", true)
+
+	// Enable Governance Controls
+	config.SetUnstableOperationEnabled("v2.GetGovernanceControl", true)
+	config.SetUnstableOperationEnabled("v2.UpdateGovernanceControl", true)
+	config.SetUnstableOperationEnabled("v2.GetGovernanceControlNotificationSettings", true)
+	config.SetUnstableOperationEnabled("v2.UpdateGovernanceControlNotificationSettings", true)
+
+	// Enable Governance Tag Rules
+	config.SetUnstableOperationEnabled("v2.CreateTagRule", true)
+	config.SetUnstableOperationEnabled("v2.GetTagRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateTagRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteTagRule", true)
+
+	// Enable Execution Policies
+	config.SetUnstableOperationEnabled("v2.CreateExecutionPolicy", true)
+	config.SetUnstableOperationEnabled("v2.GetExecutionPolicy", true)
+	config.SetUnstableOperationEnabled("v2.UpdateExecutionPolicy", true)
+	config.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
+	config.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
+	fwprovider.EnableGeneratedUnstableOperations(config)
 
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true

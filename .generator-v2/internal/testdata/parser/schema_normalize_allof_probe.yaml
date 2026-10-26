@@ -15,12 +15,6 @@ paths:
   /allof:
     post:
       operationId: CreateAllOf
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: allof_thing
-        group:
-          create: CreateAllOf
-          read: CreateAllOf
       requestBody:
         content:
           application/json:
@@ -34,3 +28,13 @@ paths:
       responses:
         '204':
           description: no content
+tags:
+- name: Terraform
+  x-datadog-tf-generator:
+    allof_thing:
+      resource:
+        artifact_name: allof_thing
+        group:
+          create: CreateAllOf
+          read: CreateAllOf
+          delete: CreateAllOf

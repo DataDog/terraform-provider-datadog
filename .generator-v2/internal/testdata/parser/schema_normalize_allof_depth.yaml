@@ -1,0 +1,36 @@
+openapi: 3.0.0
+info:
+  title: normalize allOf depth fixture
+  version: 1.0.0
+paths:
+  /depth:
+    post:
+      operationId: CreateAllOfDepth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                depth_limited:
+                  $ref: '#/components/schemas/NestedOverlay'
+      responses:
+        '204':
+          description: No content.
+components:
+  schemas:
+    NestedOverlay:
+      allOf:
+        - $ref: '#/components/schemas/Status'
+    Status:
+      type: string
+tags:
+- name: Terraform
+  x-datadog-tf-generator:
+    allof_depth:
+      resource:
+        artifact_name: allof_depth
+        group:
+          create: CreateAllOfDepth
+          read: CreateAllOfDepth
+          delete: CreateAllOfDepth

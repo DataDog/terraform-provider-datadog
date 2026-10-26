@@ -13,6 +13,7 @@ API_CLIENT_VERSION?=master
 LOCAL_PACKAGE="github.com/terraform-providers/terraform-provider-datadog"
 GO?=go
 
+
 default: build
 
 build: fmtcheck
@@ -56,13 +57,13 @@ test:
 # scripts/summarize_testacc.py turns it into the PR integration check summary. Unset
 # by default, so local runs behave exactly as before.
 testacc:
-	RECORD=$(RECORD) TF_ACC=1 $(GO) tool gotestsum --format testname --debug --rerun-fails $(if $(TESTACC_JSONFILE),--jsonfile $(TESTACC_JSONFILE)) --packages ./datadog/tests/... -- -v $(TESTARGS) -timeout 120m
+	RECORD=$(RECORD) TF_ACC=1 $(GO) tool gotestsum --format testname --debug --rerun-fails $(if $(TESTACC_JSONFILE),--jsonfile $(TESTACC_JSONFILE)) --packages ./datadog/tests/... -- -v $(TESTARGS) -timeout 180m
 
 # Run both unit and acceptance tests
 testall: test testacc
 
 cassettes: fmtcheck
-	RECORD=true TF_ACC=1 $(GO) tool gotestsum --format testname --packages ./... -- -v $(TESTARGS) -timeout 120m
+	RECORD=true TF_ACC=1 $(GO) tool gotestsum --format testname --packages ./... -- -v $(TESTARGS) -timeout 180m
 
 vet:
 	@echo "go vet ."
@@ -107,8 +108,38 @@ tfgen-build:
 
 # Run the tfgen module's unit tests
 tfgen-test:
-	cd .generator-v2 && $(GO) test ./internal/... ./cmd/tfgen/... -race -cover
+	cd .generator-v2 && $(GO) test ./internal/... ./cmd/tfgen/... ./cmd/tfgen-docs/... -race -cover
 	@echo "tfgen tests passed"
+
+# Render the generated half of .generator-v2/docs/: the CLI reference (from the
+# cobra command tree) and the annotation and run-report references (from the two
+# checked-in JSON Schemas). These pages carry a DO NOT EDIT header — change the
+# source of truth and re-run this.
+tfgen-docs:
+	cd .generator-v2 && $(GO) run ./cmd/tfgen-docs --out docs
+	@echo "tfgen reference docs regenerated"
+
+# Fail if any generated reference page is stale, the same gate check-docs gives
+# the provider's own docs/ tree. Exits 3 when a page would change.
+tfgen-docs-check:
+	cd .generator-v2 && $(GO) run ./cmd/tfgen-docs --out docs --check
+	@echo "tfgen reference docs up to date"
+
+# Refresh tfgen's checked-in Go snapshots after an intentional emitter change.
+tfgen-update-goldens:
+	cd .generator-v2 && $(GO) test ./internal/emit -update
+	@echo "tfgen goldens refreshed"
+
+# Run the tfgen module's integration-tagged tests: the SDK-binding corroboration
+# and the generated-code compile gate. Both shell out and both need the PROVIDER
+# module's dependency graph on disk, so populate that cache first — the compile
+# gate runs with GOPROXY=off and will otherwise report a cold cache as a broken
+# checkout. internal/testdata is named explicitly because the go tool excludes
+# any directory called testdata from a ./... expansion. T080 wires this into CI.
+tfgen-test-integration:
+	$(GO) mod download
+	cd .generator-v2 && $(GO) test -tags=integration ./internal/... ./internal/testdata/ -count=1
+	@echo "tfgen integration tests passed"
 
 update-go-client:
 	echo "Updating the Zorkian client to ${ZORKIAN_VERSION} and the API Client to ${API_CLIENT_VERSION}"
@@ -140,4 +171,4 @@ check-docs: docs
 		echo "Success: No generated documentation changes detected"; \
 	fi
 
-.PHONY: build dev-build dev-clean check-docs docs test testall testacc tfgen-build tfgen-test cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile license-check sweep
+.PHONY: build dev-build dev-clean check-docs docs test testall testacc tfgen-build tfgen-test tfgen-docs tfgen-docs-check tfgen-update-goldens tfgen-test-integration cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile license-check sweep

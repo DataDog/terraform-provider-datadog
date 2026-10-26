@@ -13,12 +13,21 @@ Each fixture is a directory under this one:
 ├── openapi.yaml         # Input spec with x-datadog-tf-generator annotations
 ├── out/                 # Expected golden output (committed)
 │   └── *.go
+├── terraform/           # (resources) config driving the cassette lifecycle
+│   └── main.tf
+├── cassettes/           # (optional) recorded HTTP traffic for the lifecycle
 └── README.md            # (optional) what this fixture exercises
 ```
 
 - **`openapi.yaml`** — the OpenAPI spec the generator reads. The resources and data sources to generate are marked with the `x-datadog-tf-generator` extension.
 - **`out/`** — the golden output: the `.go` files the generator is expected to emit. These are committed and diffed against on every run. When generator behavior changes intentionally, regenerate this directory and review the diff by hand.
+- **`terraform/main.tf`** *(resource fixtures)* — the Terraform configuration the E2E suite drives through create → refresh → update → destroy against the fixture's cassettes.
+- **`cassettes/`** *(optional)* — recorded and sanitized HTTP traffic for that lifecycle, replayed via `go-vcr`.
 - **`README.md`** *(optional)* — a short note describing the capability the fixture targets (e.g. a particular schema shape, a hook, or an error path).
+
+## Reproducing a golden
+
+Generating into a bare temporary directory does not always reproduce a committed `out/` — the generator reads parts of the provider checkout through paths relative to `--output-root`. Each fixture's own README states what its golden depends on.
 
 ## Naming
 
@@ -28,5 +37,10 @@ Name each fixture after the artifact it generates so the catalogue reads as a li
 - `resource_<name>` — a generated resource.
 - Append a distinguishing suffix when a fixture targets a variant or edge case (e.g. `data_source_team_with_hooks`, `broken_hook_signature`).
 
-> [!NOTE]
-> This catalogue is currently empty. Fixtures are added in later phases as the corresponding generator capabilities land.
+## Contents
+
+| Fixture | What it pins |
+|---|---|
+| [`resource_incident_type`](./resource_incident_type/) | A full-CRUD resource from a real v2 slice: the three-body schema merge, the JSON:API request envelope and its `type` discriminator, per-role request components, a request-settable nested object and an enum leaf inside it. |
+
+More fixtures are added as the corresponding generator capabilities land.

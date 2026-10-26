@@ -7,12 +7,6 @@ paths:
     post:
       operationId: CreateInlineOneOf
       tags: [OneOf]
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: inline_oneof
-        group:
-          create: CreateInlineOneOf
-          read: CreateInlineOneOf
       requestBody:
         required: true
         content:
@@ -29,12 +23,6 @@ paths:
     post:
       operationId: CreateReorderedInlineOneOf
       tags: [OneOf]
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: reordered_inline_oneof
-        group:
-          create: CreateReorderedInlineOneOf
-          read: CreateReorderedInlineOneOf
       requestBody:
         required: true
         content:
@@ -51,12 +39,6 @@ paths:
     post:
       operationId: CreateAnimal
       tags: [OneOf]
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: animal
-        group:
-          create: CreateAnimal
-          read: CreateAnimal
       requestBody:
         required: true
         content:
@@ -74,12 +56,6 @@ paths:
     post:
       operationId: CreateNestedOneOf
       tags: [OneOf]
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: nested_oneof
-        group:
-          create: CreateNestedOneOf
-          read: CreateNestedOneOf
       requestBody:
         required: true
         content:
@@ -119,12 +95,6 @@ paths:
     post:
       operationId: CreateOneOfWithSiblings
       tags: [OneOf]
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: oneof_with_siblings
-        group:
-          create: CreateOneOfWithSiblings
-          read: CreateOneOfWithSiblings
       requestBody:
         required: true
         content:
@@ -145,12 +115,6 @@ paths:
     post:
       operationId: CreateOneOfWithRequiredOnlySibling
       tags: [OneOf]
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: oneof_with_required_only_sibling
-        group:
-          create: CreateOneOfWithRequiredOnlySibling
-          read: CreateOneOfWithRequiredOnlySibling
       requestBody:
         required: true
         content:
@@ -160,6 +124,62 @@ paths:
               required: [kind]
               oneOf:
                 - $ref: "#/components/schemas/AlphaVariant"
+                - $ref: "#/components/schemas/BetaVariant"
+      responses:
+        "204":
+          description: no content
+  /allof-sibling:
+    post:
+      operationId: CreateOneOfWithAllOfSibling
+      tags: [OneOf]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: "#/components/schemas/AlphaVariant"
+                - $ref: "#/components/schemas/BetaVariant"
+              allOf:
+                - type: object
+                  required: [shared]
+                  properties:
+                    shared:
+                      type: string
+      responses:
+        "204":
+          description: no content
+  /independent-unions:
+    post:
+      operationId: CreateIndependentUnions
+      tags: [OneOf]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: "#/components/schemas/AlphaVariant"
+                - $ref: "#/components/schemas/BetaVariant"
+              allOf:
+                - oneOf:
+                    - type: string
+                    - type: boolean
+      responses:
+        "204":
+          description: no content
+  /ref-sibling-alternative:
+    post:
+      operationId: CreateOneOfRefSiblingAlternative
+      tags: [OneOf]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: "#/components/schemas/AlphaVariant"
+                  description: Local alpha description.
                 - $ref: "#/components/schemas/BetaVariant"
       responses:
         "204":
@@ -214,3 +234,69 @@ components:
           type: string
         bark:
           type: boolean
+tags:
+- name: OneOf
+  x-datadog-tf-generator:
+    inline_oneof:
+      resource:
+        artifact_name: inline_oneof
+        group:
+          create: CreateInlineOneOf
+          read: CreateInlineOneOf
+          delete: CreateInlineOneOf
+    reordered_inline_oneof:
+      resource:
+        artifact_name: reordered_inline_oneof
+        group:
+          create: CreateReorderedInlineOneOf
+          read: CreateReorderedInlineOneOf
+          delete: CreateReorderedInlineOneOf
+    animal:
+      resource:
+        artifact_name: animal
+        group:
+          create: CreateAnimal
+          read: CreateAnimal
+          delete: CreateAnimal
+    nested_oneof:
+      resource:
+        artifact_name: nested_oneof
+        group:
+          create: CreateNestedOneOf
+          read: CreateNestedOneOf
+          delete: CreateNestedOneOf
+    oneof_with_siblings:
+      resource:
+        artifact_name: oneof_with_siblings
+        group:
+          create: CreateOneOfWithSiblings
+          read: CreateOneOfWithSiblings
+          delete: CreateOneOfWithSiblings
+    oneof_with_required_only_sibling:
+      resource:
+        artifact_name: oneof_with_required_only_sibling
+        group:
+          create: CreateOneOfWithRequiredOnlySibling
+          read: CreateOneOfWithRequiredOnlySibling
+          delete: CreateOneOfWithRequiredOnlySibling
+    oneof_with_allof_sibling:
+      resource:
+        artifact_name: oneof_with_allof_sibling
+        group:
+          create: CreateOneOfWithAllOfSibling
+          read: CreateOneOfWithAllOfSibling
+          delete: CreateOneOfWithAllOfSibling
+    independent_unions:
+      resource:
+        artifact_name: independent_unions
+        group:
+          create: CreateIndependentUnions
+          read: CreateIndependentUnions
+          delete: CreateIndependentUnions
+    oneof_ref_sibling_alternative:
+      resource:
+        artifact_name: oneof_ref_sibling_alternative
+        group:
+          create: CreateOneOfRefSiblingAlternative
+          read: CreateOneOfRefSiblingAlternative
+          delete: CreateOneOfRefSiblingAlternative

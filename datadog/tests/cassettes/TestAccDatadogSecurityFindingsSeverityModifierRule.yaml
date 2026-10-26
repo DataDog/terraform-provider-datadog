@@ -1,0 +1,337 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 313
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"action":{"description":"Secrets in production are always critical","severity":"critical","type":"set"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRule-local-1790863500","rule":{"finding_types":["secret"],"query":"env:prod"}},"type":"severity_modifier_rules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 604
+        uncompressed: false
+        body: '{"data":{"id":"a7c3664a-aed3-439b-8a56-f290728f32c2","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"critical","description":"Secrets in production are always critical"},"created_at":1790863502932,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":true,"modified_at":1790863502932,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRule-local-1790863500","rule":{"finding_types":["secret"],"query":"env:prod"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 268.467916ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/a7c3664a-aed3-439b-8a56-f290728f32c2
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 604
+        uncompressed: false
+        body: '{"data":{"id":"a7c3664a-aed3-439b-8a56-f290728f32c2","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"critical","description":"Secrets in production are always critical"},"created_at":1790863502932,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":true,"modified_at":1790863502932,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRule-local-1790863500","rule":{"finding_types":["secret"],"query":"env:prod"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 327.790667ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/a7c3664a-aed3-439b-8a56-f290728f32c2
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 604
+        uncompressed: false
+        body: '{"data":{"id":"a7c3664a-aed3-439b-8a56-f290728f32c2","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"critical","description":"Secrets in production are always critical"},"created_at":1790863502932,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":true,"modified_at":1790863502932,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRule-local-1790863500","rule":{"finding_types":["secret"],"query":"env:prod"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 127.423875ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/a7c3664a-aed3-439b-8a56-f290728f32c2
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 604
+        uncompressed: false
+        body: '{"data":{"id":"a7c3664a-aed3-439b-8a56-f290728f32c2","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"critical","description":"Secrets in production are always critical"},"created_at":1790863502932,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":true,"modified_at":1790863502932,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRule-local-1790863500","rule":{"finding_types":["secret"],"query":"env:prod"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 133.807417ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 334
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"action":{"severity_delta":"down_one","type":"shift"},"enabled":false,"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRule-local-1790863500-updated","rule":{"finding_types":["misconfiguration","secret"],"query":"env:dev"}},"id":"a7c3664a-aed3-439b-8a56-f290728f32c2","type":"severity_modifier_rules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/a7c3664a-aed3-439b-8a56-f290728f32c2
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 581
+        uncompressed: false
+        body: '{"data":{"id":"a7c3664a-aed3-439b-8a56-f290728f32c2","type":"severity_modifier_rules","attributes":{"action":{"type":"shift","severity_delta":"down_one"},"created_at":1790863502932,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":false,"modified_at":1790863506000,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRule-local-1790863500-updated","rule":{"finding_types":["misconfiguration","secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 390.859959ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/a7c3664a-aed3-439b-8a56-f290728f32c2
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 581
+        uncompressed: false
+        body: '{"data":{"id":"a7c3664a-aed3-439b-8a56-f290728f32c2","type":"severity_modifier_rules","attributes":{"action":{"type":"shift","severity_delta":"down_one"},"created_at":1790863502932,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":false,"modified_at":1790863506000,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRule-local-1790863500-updated","rule":{"finding_types":["misconfiguration","secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 202.997791ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/a7c3664a-aed3-439b-8a56-f290728f32c2
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 581
+        uncompressed: false
+        body: '{"data":{"id":"a7c3664a-aed3-439b-8a56-f290728f32c2","type":"severity_modifier_rules","attributes":{"action":{"type":"shift","severity_delta":"down_one"},"created_at":1790863502932,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":false,"modified_at":1790863506000,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRule-local-1790863500-updated","rule":{"finding_types":["misconfiguration","secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 146.635208ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/a7c3664a-aed3-439b-8a56-f290728f32c2
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 581
+        uncompressed: false
+        body: '{"data":{"id":"a7c3664a-aed3-439b-8a56-f290728f32c2","type":"severity_modifier_rules","attributes":{"action":{"type":"shift","severity_delta":"down_one"},"created_at":1790863502932,"created_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"enabled":false,"modified_at":1790863506000,"modified_by":{"type":"user","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","name":"frog"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRule-local-1790863500-updated","rule":{"finding_types":["misconfiguration","secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 146.295375ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/a7c3664a-aed3-439b-8a56-f290728f32c2
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 257.715792ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/a7c3664a-aed3-439b-8a56-f290728f32c2
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 80
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Not Found","detail":"rule does not exist"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 195.589ms

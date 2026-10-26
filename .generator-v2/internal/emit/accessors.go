@@ -6,11 +6,13 @@ import (
 	"go/parser"
 	"go/token"
 	"strings"
+
+	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
 // ResolveAPIAccessors parses the provider's ApiInstances helper at path and maps
-// each V2 SDK API struct to the accessor method that returns it, e.g. "RUMApi" ->
-// "GetRumApiV2". It is the source of truth for accessor names, which diverge from
+// each V2 SDK API struct to the accessor method returning it, e.g. "RUMApi" ->
+// "GetRumApiV2". Names are read rather than derived because they diverge from
 // the struct name for a few APIs (RUM, APM, Observability Pipelines).
 func ResolveAPIAccessors(path string) (map[string]string, error) {
 	fset := token.NewFileSet()
@@ -71,11 +73,39 @@ func singleV2ResultType(ft *ast.FuncType) string {
 	return sel.Sel.Name
 }
 
-// ApplyAPIAccessor overrides view.APIAccessor with the accessor the provider
-// actually exposes for view.APIStruct when accessors resolved one; absent a match
-// it leaves the builder's derived name in place.
-func ApplyAPIAccessor(view *DataSourceView, accessors map[string]string) {
-	if acc, ok := accessors[view.APIStruct]; ok {
-		view.APIAccessor = acc
+// ApplyAPIAccessor points view at the provider's existing ApiInstances accessor
+// when one returns view.APIStruct, and otherwise derives the client constructor
+// from the SDK's deterministic New<APIStruct> rule — so provider aliases win
+// without the pinned SDK source being needed.
+func ApplyAPIAccessor(view *DataSourceView, accessors map[string]string) error {
+	accessor, constructor, err := resolveAPIAccessor(view.SDKPackage, view.APIStruct, accessors)
+	view.APIAccessor, view.APIConstructor = accessor, constructor
+	return err
+}
+
+// ApplyResourceAPIAccessor is ApplyAPIAccessor for a ResourceView.
+func ApplyResourceAPIAccessor(view *ResourceView, accessors map[string]string) error {
+	accessor, constructor, err := resolveAPIAccessor(view.SDKPackage, view.APIStruct, accessors)
+	view.APIAccessor, view.APIConstructor = accessor, constructor
+	return err
+}
+
+// defaultAPIAccessor is the Get<Struct><V1|V2> accessor a call resolves to by
+// convention, e.g. "GetTeamsApiV2". It seeds a freshly built view so rendering
+// is valid before accessor resolution overwrites it from the provider's real
+// ApiInstances helper.
+func defaultAPIAccessor(call *model.SDKCall) string {
+	return "Get" + call.GoApiStruct + strings.TrimPrefix(call.GoPackage, "datadog")
+}
+
+// resolveAPIAccessor returns exactly one of accessor and constructor non-empty
+// on success; an operation with no usable API tag is an error.
+func resolveAPIAccessor(sdkPackage, apiStruct string, accessors map[string]string) (accessor, constructor string, err error) {
+	if acc, ok := accessors[apiStruct]; ok {
+		return acc, "", nil
 	}
+	if apiStruct == "" || apiStruct == "Api" {
+		return "", "", fmt.Errorf("resolve SDK API client %s.%s: OpenAPI operation has no usable API tag", sdkPackage, apiStruct)
+	}
+	return "", "New" + apiStruct, nil
 }

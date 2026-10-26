@@ -10,11 +10,6 @@ paths:
   /siblings:
     get:
       operationId: GetSiblings
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: siblings
-        group:
-          read: GetSiblings
       responses:
         '200':
           content:
@@ -46,6 +41,32 @@ paths:
                   kind:
                     $ref: '#/components/schemas/TokenType'
                     example: SECRET
+                  # $ref + readOnly: the sibling asserts nothing, so the
+                  # referenced shape survives and the annotation is lifted onto it.
+                  guarded_object:
+                    $ref: '#/components/schemas/UrlParam'
+                    readOnly: true
+                  # $ref + nullable, the most common sibling in the v2 spec.
+                  nullable_ref:
+                    $ref: '#/components/schemas/TokenName'
+                    nullable: true
+                  # $ref + a keyword the parser does not model: the residual has
+                  # to cover keywords no enumeration would have listed.
+                  unmodelled:
+                    $ref: '#/components/schemas/TokenName'
+                    externalDocs:
+                      url: https://example.com/docs
+                  # $ref + default: the branch is skipped structurally, so the
+                  # default has to be lifted off it.
+                  defaulted:
+                    $ref: '#/components/schemas/TokenType'
+                    default: SECRET
+                  # An empty branch is the one exclusion: it declares nothing, so
+                  # it stays an arbitrary untyped value.
+                  empty_branch:
+                    allOf:
+                    - {}
+                    - $ref: '#/components/schemas/TokenName'
                   # a collection whose element is a $ref with a sibling
                   params:
                     type: array
@@ -78,3 +99,11 @@ components:
         value:
           type: string
           description: The UrlParam value.
+tags:
+- name: Terraform
+  x-datadog-tf-generator:
+    siblings:
+      datasource_singular:
+        artifact_name: siblings
+        group:
+          read: GetSiblings

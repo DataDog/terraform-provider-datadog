@@ -6,8 +6,8 @@ import (
 )
 
 // FrameworkType is the context-blind type table: one schema node in, its two
-// framework type strings out. Objects always map to the block form here — the
-// builder rewrites to attribute form, not this function (see schema_test.go).
+// framework type strings out. New protocol-v6 schemas use nested attributes for
+// object containers so callers never need a compatibility-only block form.
 var _ = Describe("FrameworkType", func() {
 
 	DescribeTable("maps a representable schema node to its framework type strings",
@@ -38,25 +38,37 @@ var _ = Describe("FrameworkType", func() {
 		Entry("a boolean primitive becomes BoolAttribute / types.Bool",
 			&Schema{Kind: SchemaKindPrimitive, Type: "boolean"},
 			"schema.BoolAttribute", "types.Bool"),
-		Entry("an object becomes SingleNestedBlock / types.Object (block-default, context-blind)",
+		Entry("an object becomes SingleNestedAttribute / types.Object",
 			&Schema{Kind: SchemaKindObject},
-			"schema.SingleNestedBlock", "types.Object"),
+			"schema.SingleNestedAttribute", "types.Object"),
 		Entry("an array of primitive becomes ListAttribute / types.List",
 			&Schema{Kind: SchemaKindArray, Items: &Schema{Kind: SchemaKindPrimitive, Type: "string"}},
 			"schema.ListAttribute", "types.List"),
-		Entry("an array of object becomes ListNestedBlock / types.List",
+		Entry("an array of array becomes ListAttribute / types.List",
+			arrSchema(arrSchema(primSchema("string"))),
+			"schema.ListAttribute", "types.List"),
+		Entry("an array of map becomes ListAttribute / types.List",
+			arrSchema(mapSchema(primSchema("string"))),
+			"schema.ListAttribute", "types.List"),
+		Entry("an array of object becomes ListNestedAttribute / types.List",
 			&Schema{Kind: SchemaKindArray, Items: &Schema{Kind: SchemaKindObject}},
-			"schema.ListNestedBlock", "types.List"),
+			"schema.ListNestedAttribute", "types.List"),
 		Entry("a map of primitive becomes MapAttribute / types.Map",
 			&Schema{Kind: SchemaKindMap, Items: &Schema{Kind: SchemaKindPrimitive, Type: "string"}},
+			"schema.MapAttribute", "types.Map"),
+		Entry("a map of array becomes MapAttribute / types.Map",
+			mapSchema(arrSchema(primSchema("string"))),
+			"schema.MapAttribute", "types.Map"),
+		Entry("a map of map becomes MapAttribute / types.Map",
+			mapSchema(mapSchema(primSchema("string"))),
 			"schema.MapAttribute", "types.Map"),
 		Entry("a map of object becomes MapNestedAttribute / types.Map",
 			&Schema{Kind: SchemaKindMap, Items: &Schema{Kind: SchemaKindObject}},
 			"schema.MapNestedAttribute", "types.Map"),
-		Entry("an array of oneOf nests its element's variant blocks, like an array of object",
+		Entry("an array of oneOf nests its element's variant attributes, like an array of object",
 			&Schema{Kind: SchemaKindArray, Items: &Schema{Kind: SchemaKindOneOf}},
-			"schema.ListNestedBlock", "types.List"),
-		Entry("a map of oneOf nests its value's variant blocks, like a map of object",
+			"schema.ListNestedAttribute", "types.List"),
+		Entry("a map of oneOf nests its value's variant attributes, like a map of object",
 			&Schema{Kind: SchemaKindMap, Items: &Schema{Kind: SchemaKindOneOf}},
 			"schema.MapNestedAttribute", "types.Map"),
 	)
@@ -73,29 +85,34 @@ var _ = Describe("FrameworkType", func() {
 			&Schema{Kind: SchemaKindRefCycle}, "ref_cycle"),
 		Entry("an unsupported node has no framework equivalent",
 			&Schema{Kind: SchemaKindUnsupported}, "unsupported"),
+		// The reason is the actionable half of the message: a cycle names the
+		// chain that produced it. Reached through a list or a map the node is not
+		// the one being mapped, so its explanation has to be carried across.
+		Entry("a cyclic node carries its own explanation",
+			&Schema{Kind: SchemaKindRefCycle, UnsupportedReason: "circular $ref: A -> B -> A"},
+			"circular $ref: A -> B -> A"),
+		Entry("a cyclic array element carries its explanation",
+			&Schema{Kind: SchemaKindArray, Items: &Schema{
+				Kind: SchemaKindRefCycle, UnsupportedReason: "circular $ref: A -> B -> A"}},
+			"circular $ref: A -> B -> A"),
+		Entry("a cyclic map value carries its explanation",
+			&Schema{Kind: SchemaKindMap, Items: &Schema{
+				Kind: SchemaKindRefCycle, UnsupportedReason: "circular $ref: A -> B -> A"}},
+			"circular $ref: A -> B -> A"),
 		Entry("a primitive with an unrecognized type names that type",
 			&Schema{Kind: SchemaKindPrimitive, Type: "decimal"}, "decimal"),
 		Entry("a primitive with an empty type cannot be mapped",
 			&Schema{Kind: SchemaKindPrimitive, Type: ""}, "primitive type"),
 		Entry("an array with nil items has no element type to map",
 			&Schema{Kind: SchemaKindArray}, "nil items"),
-		Entry("an array of array is deferred — error names the element kind",
-			&Schema{Kind: SchemaKindArray, Items: &Schema{Kind: SchemaKindArray, Items: &Schema{Kind: SchemaKindPrimitive, Type: "string"}}},
-			`"array"`),
-		Entry("an array of map is deferred — error names the element kind",
-			&Schema{Kind: SchemaKindArray, Items: &Schema{Kind: SchemaKindMap, Items: &Schema{Kind: SchemaKindPrimitive, Type: "string"}}},
-			`"map"`),
-		Entry("a map of map is deferred — error names the value kind",
-			&Schema{Kind: SchemaKindMap, Items: &Schema{Kind: SchemaKindMap, Items: &Schema{Kind: SchemaKindPrimitive, Type: "string"}}},
-			`"map"`),
 	)
 })
 
-// ElementType is only meaningful for collection-of-primitive nodes; nested
-// (object) collections carry their shape in Children, not an element type.
+// ElementType represents any list/map chain ending in a primitive; object
+// collections carry their shape in Children instead.
 var _ = Describe("ElementType", func() {
 
-	DescribeTable("maps a primitive element/value schema to its framework attr.Type",
+	DescribeTable("maps a primitive-terminal element/value schema to its framework attr.Type",
 		func(elem *Schema, want string) {
 			got, err := ElementType(elem)
 			Expect(err).NotTo(HaveOccurred())
@@ -109,18 +126,25 @@ var _ = Describe("ElementType", func() {
 			&Schema{Kind: SchemaKindPrimitive, Type: "number"}, "types.Float64Type"),
 		Entry("a boolean element becomes types.BoolType",
 			&Schema{Kind: SchemaKindPrimitive, Type: "boolean"}, "types.BoolType"),
+		Entry("an array element becomes a recursive ListType",
+			arrSchema(primSchema("string")), "types.ListType{ElemType: types.StringType}"),
+		Entry("a map element becomes a recursive MapType",
+			mapSchema(primSchema("string")), "types.MapType{ElemType: types.StringType}"),
+		Entry("a deep map-map-list element preserves every level",
+			mapSchema(mapSchema(arrSchema(primSchema("string")))),
+			"types.MapType{ElemType: types.MapType{ElemType: types.ListType{ElemType: types.StringType}}}"),
 	)
 
-	DescribeTable("errors for a non-primitive element (those use nested forms, not ElementType)",
+	DescribeTable("errors for elements that do not terminate in a primitive",
 		func(elem *Schema) {
 			_, err := ElementType(elem)
 			Expect(err).To(HaveOccurred())
 		},
 		Entry("an object element has no scalar element type",
 			&Schema{Kind: SchemaKindObject}),
-		Entry("an array element has no scalar element type",
-			&Schema{Kind: SchemaKindArray, Items: &Schema{Kind: SchemaKindPrimitive, Type: "string"}}),
-		Entry("a map element has no scalar element type",
-			&Schema{Kind: SchemaKindMap, Items: &Schema{Kind: SchemaKindPrimitive, Type: "string"}}),
+		Entry("an array ending in unsupported JSON has no element type",
+			arrSchema(&Schema{Kind: SchemaKindUnsupported})),
+		Entry("a map ending in an object uses nested form",
+			mapSchema(objSchema(nil))),
 	)
 })

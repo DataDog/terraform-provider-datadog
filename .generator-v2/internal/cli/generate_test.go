@@ -9,7 +9,6 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/emit"
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
-	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/parser"
 )
 
 // runTfgen builds the root command exactly as Execute does, but with explicit
@@ -23,6 +22,88 @@ func runTfgen(args ...string) error {
 	root.SetArgs(args)
 	root.SilenceErrors = true
 	return root.Execute()
+}
+
+// TestGenerateHandlesUUIDResponseAndOptionalFilter drives a production-shaped
+// incident-notification-template list operation through parsing, pinned-SDK
+// binding, model construction, and rendering. Its response data ID and optional
+// incident-type filter are both UUIDs, covering the two emitter boundaries
+// together.
+func TestGenerateHandlesUUIDResponseAndOptionalFilter(t *testing.T) {
+	spec, err := os.ReadFile(filepath.Join("..", "testdata", "mini-oas", "mini-datadog_incident_notification_template.yaml"))
+	if err != nil {
+		t.Fatalf("reading incident notification template spec: %v", err)
+	}
+	annotation := `
+- name: Terraform Test
+  x-datadog-tf-generator:
+    incident_notification_template:
+      datasource_list:
+        tf_description: Use this data source to retrieve incident notification templates.
+        group:
+          read: ListIncidentNotificationTemplates
+`
+	annotated := strings.Replace(string(spec), "tags:\n", "tags:\n"+annotation, 1)
+
+	dir := t.TempDir()
+	specPath := filepath.Join(dir, "incident_notification_templates.yaml")
+	if err := os.WriteFile(specPath, []byte(annotated), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := runTfgen("generate", "--spec", specPath,
+		"--output-root", dir,
+		"--examples-output-root", filepath.Join(dir, "examples"),
+		"--report", filepath.Join(dir, "report.json")); err != nil {
+		t.Fatalf("generate: %v", err)
+	}
+
+	generated := mustRead(t, filepath.Join(dir, "data_source_datadog_incident_notification_templates.go"))
+	for _, want := range []string{
+		`"github.com/google/uuid"`,
+		`parsedFilterIncidentType, err := uuid.Parse(state.FilterIncidentType.ValueString())`,
+		`optionalParams.WithFilterIncidentType(parsedFilterIncidentType)`,
+		`types.StringValue(item.GetId().String())`,
+	} {
+		if !strings.Contains(generated, want) {
+			t.Errorf("generated data source missing %q:\n%s", want, generated)
+		}
+	}
+}
+
+// TestGenerateDoesNotRequireEndpointInPinnedSDK proves an OpenAPI operation can
+// be generated before the corresponding client release is pinned. The method
+// name is intentionally absent from the current SDK; generated Go is the
+// artifact that will compile once the SDK update lands.
+func TestGenerateDoesNotRequireEndpointInPinnedSDK(t *testing.T) {
+	spec, err := os.ReadFile(filepath.Join("..", "testdata", "mini-oas", "scripts", "gen-test", "datastore.yaml"))
+	if err != nil {
+		t.Fatalf("reading datastore spec: %v", err)
+	}
+	future := strings.ReplaceAll(string(spec), "GetDatastore", "GetFutureDatastore")
+	if future == string(spec) {
+		t.Fatal("failed to replace datastore operationId")
+	}
+
+	dir := t.TempDir()
+	specPath := filepath.Join(dir, "future-datastore.yaml")
+	if err := os.WriteFile(specPath, []byte(future), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := runTfgen("generate", "--spec", specPath,
+		"--output-root", dir,
+		"--examples-output-root", filepath.Join(dir, "examples"),
+		"--report", filepath.Join(dir, "report.json")); err != nil {
+		t.Fatalf("generate operation absent from pinned SDK: %v", err)
+	}
+
+	generated := mustRead(t, filepath.Join(dir, "data_source_datadog_datastore.go"))
+	if !strings.Contains(generated, ".GetFutureDatastore(d.Auth") {
+		t.Fatalf("generated data source did not use future OpenAPI method:\n%s", generated)
+	}
+	report := mustRead(t, filepath.Join(dir, "report.json"))
+	if !strings.Contains(report, `"failed": 0`) {
+		t.Fatalf("future endpoint was not an ordinary successful artifact:\n%s", report)
+	}
 }
 
 // TestGenerateWiresMaxDepth proves the --max-depth flag value reaches LoadSpec:
@@ -39,15 +120,48 @@ func TestGenerateWiresMaxDepth(t *testing.T) {
 	}
 }
 
-// TestGenerateSurfacesCycleError proves cycle detection is reachable through the
-// command and surfaces the typed error.
-func TestGenerateSurfacesCycleError(t *testing.T) {
+// TestGenerateToleratesUnreachedCycle proves a cyclic component that no artifact
+// expands does not fail the run. Documents carry components no annotation
+// reaches, and one recursive component among them used to abort the whole run
+// before any report was written.
+func TestGenerateToleratesUnreachedCycle(t *testing.T) {
 	self := filepath.Join("..", "testdata", "parser", "cycle_self.yaml")
 
-	err := runTfgen("generate", "--spec", self)
-	var cycleErr *parser.RefCycleError
-	if !errors.As(err, &cycleErr) {
-		t.Fatalf("error %v (%T) is not a *parser.RefCycleError", err, err)
+	if err := runTfgen("generate", "--spec", self); err != nil {
+		t.Fatalf("a cycle no artifact reaches should not fail the run, got: %v", err)
+	}
+}
+
+// TestGenerateFailsOnlyTheCyclicArtifact proves the other half: a cycle an
+// artifact does expand fails that artifact, names the offending path, and leaves
+// its neighbour in the same run generated and reported.
+func TestGenerateFailsOnlyTheCyclicArtifact(t *testing.T) {
+	dir := t.TempDir()
+	spec := filepath.Join("..", "testdata", "parser", "cycle_artifact.yaml")
+	reportPath := filepath.Join(dir, "report.json")
+
+	err := runTfgen("generate", "--spec", spec, "--output-root", dir, "--report", reportPath)
+	if err == nil {
+		t.Fatal("a run with a failed artifact should report failure")
+	}
+
+	report := mustRead(t, reportPath)
+	if !strings.Contains(report, `"failed": 1`) {
+		t.Fatalf("expected exactly one failed artifact:\n%s", report)
+	}
+	// The kind is quoted inside the diagnostic string, so the report escapes it.
+	if !strings.Contains(report, `ref_cycle`) {
+		t.Fatalf("report does not classify the failure as a $ref cycle:\n%s", report)
+	}
+	if !strings.Contains(report, "response.data.attributes.child") {
+		t.Fatalf("report does not name the cyclic path:\n%s", report)
+	}
+
+	if _, statErr := os.Stat(filepath.Join(dir, "data_source_datadog_leaf.go")); statErr != nil {
+		t.Fatalf("the acyclic artifact in the same run should still be written: %v", statErr)
+	}
+	if _, statErr := os.Stat(filepath.Join(dir, "data_source_datadog_tree.go")); statErr == nil {
+		t.Fatal("the cyclic artifact should not have been written")
 	}
 }
 

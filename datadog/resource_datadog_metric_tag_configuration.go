@@ -3,13 +3,16 @@ package datadog
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"regexp"
+	"time"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -250,6 +253,33 @@ func buildDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, existingMe
 	return result, nil
 }
 
+// createTagConfigurationRetryError classifies the outcome of a
+// CreateTagConfiguration call for retry.RetryContext.
+//
+// A ForceNew change to metric_type makes Terraform do destroy-then-create. The
+// create is issued milliseconds after the delete, but Datadog's tag-config
+// conflict check reads an eventually-consistent store that can still show the
+// just-deleted config for several seconds (minutes when the CDC pipeline is
+// degraded), so the create is rejected with HTTP 409 ("conflicts with existing
+// tag configuration, use PATCH to update"). We retry ONLY on 409 until the
+// delete becomes visible; every other error (and success) is terminal.
+//
+// We intentionally do NOT GET-before-retry: right after a delete the GET reads
+// the same stale store and would return 200, masking the transient race as a
+// real conflict.
+func createTagConfigurationRetryError(metricName string, err error, httpResponse *http.Response) *retry.RetryError {
+	if err == nil {
+		return nil
+	}
+	if httpResponse != nil && httpResponse.StatusCode == http.StatusConflict {
+		return retry.RetryableError(fmt.Errorf(
+			"tag configuration for %q still conflicts with a recently deleted configuration, retrying: %w",
+			metricName, err))
+	}
+	return retry.NonRetryableError(
+		utils.TranslateClientError(err, httpResponse, "error creating MetricTagConfiguration"))
+}
+
 func resourceDatadogMetricTagConfigurationCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
@@ -263,9 +293,18 @@ func resourceDatadogMetricTagConfigurationCreate(ctx context.Context, d *schema.
 	ddObject.SetData(*resultMetricTagConfigurationData)
 	metricName := d.Get("metric_name").(string)
 
-	response, httpResponse, err := apiInstances.GetMetricsApiV2().CreateTagConfiguration(auth, metricName, *ddObject)
+	// Retry the create on HTTP 409: after a destroy-then-create (ForceNew on
+	// metric_type), Datadog's eventually-consistent conflict check can still see
+	// the just-deleted config and reject the create. Retry only the 409 until the
+	// delete becomes visible; 30s ceiling with the SDK's built-in backoff.
+	var response datadogV2.MetricTagConfigurationResponse
+	var httpResponse *http.Response
+	err = retry.RetryContext(ctx, 30*time.Second, func() *retry.RetryError {
+		response, httpResponse, err = apiInstances.GetMetricsApiV2().CreateTagConfiguration(auth, metricName, *ddObject)
+		return createTagConfigurationRetryError(metricName, err, httpResponse)
+	})
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating MetricTagConfiguration")
+		return diag.FromErr(err)
 	}
 	if err := utils.CheckForUnparsed(response); err != nil {
 		return diag.FromErr(err)

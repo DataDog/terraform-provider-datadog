@@ -3,6 +3,7 @@ package parser
 import (
 	"errors"
 	"path/filepath"
+	"reflect"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -28,6 +29,31 @@ func opByID(spec *model.Spec, operationId string) *model.Operation {
 	}
 	Fail("operation " + operationId + " not found in spec")
 	return nil
+}
+
+// artifactOpByID selects the registry-created artifact, not its backing endpoint.
+func artifactOpByID(spec *model.Spec, operationId string) *model.Operation {
+	GinkgoHelper()
+	for _, op := range spec.Operations {
+		if op.OperationId == operationId && op.Tracking != nil {
+			return op
+		}
+	}
+	Fail("artifact operation " + operationId + " not found")
+	return nil
+}
+
+// schemaBoolField lets this test-first task describe metadata that T154 has
+// not added to model.Schema yet. Keeping the assertion reflective means the
+// suite compiles in the intended red state and fails specifically by naming
+// the missing field, rather than failing package compilation before Ginkgo can
+// report which contract is absent.
+func schemaBoolField(schema *model.Schema, name string) bool {
+	GinkgoHelper()
+	value := reflect.ValueOf(schema).Elem().FieldByName(name)
+	Expect(value.IsValid()).To(BeTrue(), "model.Schema is missing %s metadata", name)
+	Expect(value.Kind()).To(Equal(reflect.Bool), "model.Schema.%s must be boolean", name)
+	return value.Bool()
 }
 
 // -------------------------------------------------------------------
@@ -110,17 +136,19 @@ var _ = Describe("NormalizeSchemas unsupported classification", func() {
 		Expect(op.RequestSchema.Type).To(Equal("string"))
 	})
 
-	DescribeTable("downgrades a collection-of-collection element to unsupported, since a list/map element must be a primitive or object",
-		func(operationId string, wantParentKind model.SchemaKind) {
+	DescribeTable("preserves recursively typed collection elements",
+		func(operationId string, wantParentKind, wantChildKind model.SchemaKind) {
 			op := opByID(spec, operationId)
 			Expect(op.RequestSchema.Kind).To(Equal(wantParentKind), "the outer collection keeps its structural kind")
 			Expect(op.RequestSchema.Items).NotTo(BeNil())
-			Expect(op.RequestSchema.Items.Kind).To(Equal(model.SchemaKindUnsupported), "the nested-collection element is rewritten to the unsupported sentinel")
+			Expect(op.RequestSchema.Items.Kind).To(Equal(wantChildKind))
+			Expect(op.RequestSchema.Items.Items).NotTo(BeNil())
+			Expect(op.RequestSchema.Items.Items.Kind).To(Equal(model.SchemaKindPrimitive))
 		},
-		Entry("array-of-array → array with an unsupported element", "CreateArrayOfArray", model.SchemaKindArray),
-		Entry("array-of-map → array with an unsupported element", "CreateArrayOfMap", model.SchemaKindArray),
-		Entry("map-of-array → map with an unsupported value", "CreateMapOfArray", model.SchemaKindMap),
-		Entry("map-of-map → map with an unsupported value", "CreateMapOfMap", model.SchemaKindMap),
+		Entry("array-of-array", "CreateArrayOfArray", model.SchemaKindArray, model.SchemaKindArray),
+		Entry("array-of-map", "CreateArrayOfMap", model.SchemaKindArray, model.SchemaKindMap),
+		Entry("map-of-array", "CreateMapOfArray", model.SchemaKindMap, model.SchemaKindArray),
+		Entry("map-of-map", "CreateMapOfMap", model.SchemaKindMap, model.SchemaKindMap),
 	)
 })
 
@@ -185,9 +213,55 @@ var _ = Describe("NormalizeSchemas field carrying", func() {
 		Expect(op.RequestSchema.Description).To(Equal("The creation timestamp of the resource."))
 	})
 
-	It("carries Sensitive=true when the schema node carries x-datadog-tf-generator.sensitive:true", func() {
+	It("ignores legacy schema sensitivity annotations", func() {
 		op := opByID(spec, "CreateSensitive")
-		Expect(op.RequestSchema.Sensitive).To(BeTrue())
+		Expect(op.RequestSchema.Sensitive).To(BeFalse())
+	})
+
+	It("derives sensitivity from x-secret and writeOnly without legacy overrides", func() {
+		properties := opByID(spec, "CreateSensitive").RequestSchema.Properties
+
+		Expect(properties["x_secret"].Sensitive).To(BeTrue())
+		Expect(properties["write_only"].Sensitive).To(BeTrue())
+		Expect(properties["x_secret_false"].Sensitive).To(BeFalse())
+		Expect(properties["x_secret_malformed"].Sensitive).To(BeFalse())
+		Expect(properties["write_only_false"].Sensitive).To(BeFalse())
+		Expect(properties["explicit_false"].Sensitive).To(BeTrue())
+		Expect(properties["plain"].Sensitive).To(BeFalse())
+	})
+
+	DescribeTable("retains OpenAPI writeOnly independently from display-sensitivity selectors",
+		func(property string, wantWriteOnly, wantSensitive bool) {
+			schema := opByID(spec, "CreateSensitive").RequestSchema.Properties[property]
+			Expect(schema).NotTo(BeNil())
+			Expect(schemaBoolField(schema, "WriteOnlySecret")).To(Equal(wantWriteOnly))
+			Expect(schema.Sensitive).To(Equal(wantSensitive))
+		},
+		Entry("writeOnly:true selects write-only handling", "write_only", true, true),
+		Entry("x-secret:true affects redaction only", "x_secret", false, true),
+		Entry("legacy sensitive:true is ignored", "tracking_sensitive", false, false),
+		Entry("tracking sensitive:false cannot disable writeOnly", "explicit_false", true, true),
+		Entry("legacy sensitive:false cannot override x-secret", "x_secret_explicit_false", false, true),
+		Entry("x-secret:false selects neither behavior", "x_secret_false", false, false),
+		Entry("malformed x-secret selects neither behavior", "x_secret_malformed", false, false),
+		Entry("writeOnly:false selects neither behavior", "write_only_false", false, false),
+		Entry("an unmarked field selects neither behavior", "plain", false, false),
+	)
+
+	It("marks the unannotated Elastic Cloud password sensitive from its OpenAPI secret markers", func() {
+		elastic, err := LoadSpec(filepath.Join(
+			"../testdata/mini-oas",
+			"mini-datadog_integration_elastic_cloud_account.yaml",
+		))
+		Expect(err).NotTo(HaveOccurred())
+
+		request := opByID(elastic, "CreateElasticCloudIntegrationAccount").RequestSchema
+		authentication := request.Properties["data"].Properties["attributes"].Properties["authentication"]
+		Expect(authentication.OneOf).NotTo(BeNil())
+		Expect(authentication.OneOf.Variants).To(HaveLen(1))
+		password := authentication.OneOf.Variants[0].Schema.Properties["password"]
+		Expect(password).NotTo(BeNil())
+		Expect(password.Sensitive).To(BeTrue())
 	})
 
 	It("leaves Sensitive=false when no sensitive extension is present on the schema", func() {
@@ -386,6 +460,43 @@ var _ = Describe("NormalizeSchemas oneOf metadata", func() {
 		))
 	})
 
+	It("normalizes one adjacent allOf and merges it into every oneOf alternative", func() {
+		union := oneOfFor("CreateOneOfWithAllOfSibling")
+		Expect(union.Variants).To(HaveLen(2))
+
+		for _, variant := range union.Variants {
+			Expect(variant.Schema.Kind).To(Equal(model.SchemaKindObject))
+			Expect(variant.Schema.Properties).To(HaveKey("shared"))
+			Expect(variant.Schema.Required).To(ContainElement("shared"))
+		}
+	})
+
+	It("does not Cartesian-expand multiple independent unions", func() {
+		union := oneOfFor("CreateIndependentUnions")
+		Expect(union.Variants).To(HaveLen(2))
+
+		for _, variant := range union.Variants {
+			Expect(variant.Schema.Kind).To(Equal(model.SchemaKindUnsupported))
+			Expect(variant.Schema.UnsupportedReason).To(ContainSubstring("conflicts with adjacent schema kind"))
+		}
+	})
+
+	It("retains naming and local metadata for a oneOf alternative using a $ref sibling", func() {
+		union := oneOfFor("CreateOneOfRefSiblingAlternative")
+		Expect(union.Variants).To(HaveLen(2))
+
+		var alpha *model.OneOfVariant
+		for i := range union.Variants {
+			if union.Variants[i].RefName == "AlphaVariant" {
+				alpha = &union.Variants[i]
+				break
+			}
+		}
+		Expect(alpha).NotTo(BeNil())
+		Expect(alpha.Schema.Kind).To(Equal(model.SchemaKindObject))
+		Expect(alpha.Schema.Description).To(Equal("Local alpha description."))
+	})
+
 	It("produces stable names and sorted variants across independent loads", func() {
 		first := oneOfFor("CreateInlineOneOf")
 		secondSpec := loadSpecMust("schema_normalize_oneof.yaml")
@@ -445,7 +556,7 @@ var _ = Describe("NormalizeSchemas oneOf naming failures", func() {
 			Properties: map[string]*model.Schema{"shared": {Kind: model.SchemaKindPrimitive, Type: "string"}},
 		}
 
-		Expect(mergeNormalizedSchemas(unsupported, common)).To(BeIdenticalTo(unsupported))
+		Expect(model.MergeNormalizedSchemas(unsupported, common)).To(BeIdenticalTo(unsupported))
 		Expect(unsupported.UnsupportedReason).To(ContainSubstring("colliding variant name"))
 	})
 })
@@ -536,6 +647,168 @@ var _ = Describe("NormalizeSchemas $ref resolution", func() {
 		Expect(ok).To(BeTrue(), "Properties must contain 'inner'")
 		Expect(inner.Kind).To(Equal(model.SchemaKindPrimitive))
 		Expect(inner.Type).To(Equal("string"))
+	})
+})
+
+// -------------------------------------------------------------------
+//  allOf normalization
+// -------------------------------------------------------------------
+
+var _ = Describe("NormalizeSchemas allOf normalization", func() {
+
+	var request *model.Schema
+	var list *model.Operation
+	var get *model.Operation
+
+	BeforeEach(func() {
+		spec := loadSpecMust("schema_normalize_allof.yaml")
+		request = opByID(spec, "CreateAllOfCases").RequestSchema
+		list = artifactOpByID(spec, "ListAllOfItems")
+		get = opByID(spec, "GetAllOfItem")
+	})
+
+	It("preserves a local description on an OpenAPI 3.0 $ref sibling while resolving the referenced shape", func() {
+		status := schemaProperty(request, "ref_description")
+		Expect(status.Kind).To(Equal(model.SchemaKindPrimitive))
+		Expect(status.Type).To(Equal("string"))
+		Expect(status.Format).To(Equal("uuid"))
+		Expect(status.Enum).To(Equal([]string{"active", "inactive"}))
+		Expect(status.Description).To(Equal("Local status description."))
+	})
+
+	It("ignores a non-structural example sibling without losing the referenced description", func() {
+		status := schemaProperty(request, "ref_example")
+		Expect(status.Kind).To(Equal(model.SchemaKindPrimitive))
+		Expect(status.Description).To(Equal("Referenced status description."))
+	})
+
+	It("treats an authored single-branch allOf as a metadata overlay", func() {
+		status := schemaProperty(request, "single_authored")
+		Expect(status.Kind).To(Equal(model.SchemaKindPrimitive))
+		Expect(status.Type).To(Equal("string"))
+		Expect(status.Description).To(Equal("Authored single-branch description."))
+	})
+
+	DescribeTable("merges object branches with deterministic properties and required fields",
+		func(property string, wantProperties, wantRequired []string) {
+			composed := schemaProperty(request, property)
+			Expect(composed.Kind).To(Equal(model.SchemaKindObject))
+			Expect(composed.Properties).To(HaveLen(len(wantProperties)))
+			for _, name := range wantProperties {
+				Expect(composed.Properties).To(HaveKey(name))
+			}
+			Expect(composed.Required).To(Equal(wantRequired))
+		},
+		Entry("two referenced objects", "two_objects", []string{"alpha", "beta", "zeta"}, []string{"alpha", "beta", "zeta"}),
+		Entry("three referenced objects", "three_objects", []string{"alpha", "beta", "gamma", "zeta"}, []string{"alpha", "beta", "gamma", "zeta"}),
+		Entry("a reference and an inline object", "object_with_inline", []string{"alpha", "delta", "zeta"}, []string{"alpha", "delta", "zeta"}),
+		Entry("outer required fields", "outer_required", []string{"alpha", "theta", "zeta"}, []string{"alpha", "theta", "zeta"}),
+		Entry("a nested composition", "nested_objects", []string{"alpha", "beta", "gamma", "zeta"}, []string{"alpha", "beta", "gamma", "zeta"}),
+	)
+
+	It("uses a referenced metadata-only branch as the composed object's description", func() {
+		composed := schemaProperty(request, "metadata_ref")
+		Expect(composed.Kind).To(Equal(model.SchemaKindObject))
+		Expect(composed.Description).To(Equal("Description supplied by a metadata-only base."))
+	})
+
+	It("applies description precedence outer schema, annotation branch, then structural branch", func() {
+		Expect(schemaProperty(request, "outer_description").Description).To(Equal("Outer description wins."))
+		Expect(schemaProperty(request, "annotation_description").Description).To(Equal("Annotation description wins."))
+		Expect(schemaProperty(request, "ref_example").Description).To(Equal("Referenced status description."))
+	})
+
+	It("ORs the sensitive marker from an annotation-only branch onto the structural result", func() {
+		status := schemaProperty(request, "sensitive_overlay")
+		Expect(status.Kind).To(Equal(model.SchemaKindPrimitive))
+		Expect(status.Sensitive).To(BeTrue())
+	})
+
+	It("preserves supported outer scalar constraints", func() {
+		formatted := schemaProperty(request, "outer_format")
+		Expect(formatted.Kind).To(Equal(model.SchemaKindPrimitive))
+		Expect(formatted.Type).To(Equal("string"))
+		Expect(formatted.Format).To(Equal("date-time"))
+
+		enumerated := schemaProperty(request, "outer_enum")
+		Expect(enumerated.Kind).To(Equal(model.SchemaKindPrimitive))
+		Expect(enumerated.Enum).To(Equal([]string{"inactive"}))
+	})
+
+	It("preserves the existing reference-depth limit through allOf", func() {
+		limited := opByID(loadSpecMust("schema_normalize_allof_depth.yaml", WithMaxDepth(1)), "CreateAllOfDepth").RequestSchema
+		Expect(schemaProperty(limited, "depth_limited").Kind).To(Equal(model.SchemaKindDepthExceeded))
+	})
+
+	DescribeTable("keeps unsupported intersections local to their schema node and explains why",
+		func(property, reason string) {
+			unsupported := schemaProperty(request, property)
+			Expect(unsupported.Kind).To(Equal(model.SchemaKindUnsupported))
+			Expect(unsupported.UnsupportedReason).To(Equal(reason))
+		},
+		Entry("duplicate property", "duplicate_property", `allOf property "alpha" is declared by branches 1 and 2`),
+		Entry("mixed object and primitive", "mixed_kinds", `allOf branch 2 has schema kind "primitive"; multi-branch composition supports objects only`),
+		Entry("annotations without structure", "no_structure", "allOf has no structural branches"),
+		Entry("outer type conflict", "outer_type_conflict", `allOf object composition conflicts with outer type "string"`),
+		Entry("outer and branch properties", "outer_properties", "allOf combined with outer properties is not supported"),
+		Entry("constraint-bearing annotation branch", "constrained_annotation", `allOf branch 2 has unsupported schema kind "unsupported"`),
+	)
+
+	It("normalizes representative JSON:API responses and retains SDK reference identities through overlays", func() {
+		Expect(list.ResponseRefName).To(Equal("AllOfItemsResponse"))
+		Expect(list.ItemRefName).To(Equal("AllOfItem"))
+		Expect(list.ResponseDataRefName).To(BeEmpty())
+		Expect(get.ResponseRefName).To(Equal("AllOfItemResponse"))
+		Expect(get.ResponseDataRefName).To(Equal("AllOfItem"))
+
+		data := schemaProperty(list.ResponseSchema, "data")
+		Expect(data.Kind).To(Equal(model.SchemaKindArray))
+		Expect(data.Items.Kind).To(Equal(model.SchemaKindObject))
+		Expect(data.Items.Properties).To(HaveKey("id"))
+		Expect(data.Items.Properties).To(HaveKey("type"))
+		attributes := schemaProperty(data.Items, "attributes")
+		result := schemaProperty(attributes, "result")
+		Expect(result.Kind).To(Equal(model.SchemaKindPrimitive))
+		Expect(result.Description).To(Equal("Local result description."))
+
+		artifact, err := model.BuildArtifact(list)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(artifact.Schema.Attributes).To(HaveLen(1))
+		Expect(artifact.Schema.Attributes[0].Path).To(Equal("response.data"))
+	})
+
+	It("loads the whole spec but fails only the artifact containing an unsupported composition", func() {
+		bad := artifactOpByID(loadSpecMust("schema_normalize_allof.yaml"), "ListBadAllOfItems")
+		_, err := model.BuildArtifact(bad)
+		var unsupported *model.UnsupportedKindError
+		Expect(errors.As(err, &unsupported)).To(BeTrue(), "expected *UnsupportedKindError, got %T: %v", err, err)
+		Expect(unsupported.Path).To(Equal("response.data[].composed"))
+		Expect(unsupported.Reason).To(Equal(`allOf property "alpha" is declared by branches 1 and 2`))
+
+		artifact, goodErr := model.BuildArtifact(list)
+		Expect(goodErr).NotTo(HaveOccurred())
+		Expect(artifact.Name).To(Equal("allof_items"))
+	})
+})
+
+var _ = Describe("raw schema identity traversal", func() {
+
+	It("terminates property lookup through a recursive allOf", func() {
+		components := loadComponents("schema_raw_traversal_cycles.yaml")
+		normalizer := &schemaNormalizer{components: components, maxDepth: 16}
+
+		property, err := normalizer.findPropertyProxy(componentProxy(components, "PropertyLoop"), "missing")
+		Expect(err).To(Succeed())
+		Expect(property).To(BeNil())
+	})
+
+	It("terminates overlay resolution through a recursive allOf", func() {
+		components := loadComponents("schema_raw_traversal_cycles.yaml")
+		normalizer := &schemaNormalizer{components: components, maxDepth: 16}
+
+		schema, err := normalizer.resolveOverlayToSchema(componentProxy(components, "OverlayLoop"))
+		Expect(err).To(Succeed())
+		Expect(schema).To(BeNil())
 	})
 })
 
@@ -729,7 +1002,7 @@ var _ = Describe("NormalizeSchemas list operation", func() {
 		list = opByID(loadSpecMust("schema_normalize_list.yaml"), "ListThings")
 	})
 
-	It("captures only in:query parameters, sorted by name, preserving bracketed names", func() {
+	It("captures query parameters sorted by name, preserving bracketed names", func() {
 		var names []string
 		for _, p := range list.QueryParams {
 			names = append(names, p.Name)
@@ -737,6 +1010,16 @@ var _ = Describe("NormalizeSchemas list operation", func() {
 		Expect(names).To(Equal([]string{
 			"filter[keyword]", "filter[me]", "include", "page[number]", "page[size]", "sort",
 		}))
+	})
+
+	It("retains OpenAPI declaration order for SDK signature derivation", func() {
+		want := map[string]int{
+			"page[number]": 1, "page[size]": 2, "sort": 3,
+			"include": 4, "filter[keyword]": 5, "filter[me]": 6,
+		}
+		for _, parameter := range list.QueryParams {
+			Expect(parameter.DeclarationOrder).To(Equal(want[parameter.Name]), parameter.Name)
+		}
 	})
 
 	It("resolves a $ref parameter (#/components/parameters) and normalizes its schema", func() {
@@ -771,6 +1054,10 @@ var _ = Describe("NormalizeSchemas list operation", func() {
 	It("retains a get-by-id data object $ref as ResponseDataRefName, leaving ItemRefName empty", func() {
 		get := opByID(loadSpecMust("schema_normalize_list.yaml"), "GetThing")
 		Expect(get.QueryParams).To(BeEmpty())
+		Expect(get.PathParams).To(HaveLen(1))
+		Expect(get.PathParams[0].Name).To(Equal("thing_id"))
+		Expect(get.PathParams[0].Required).To(BeTrue())
+		Expect(get.PathParams[0].Schema.Type).To(Equal("string"))
 		Expect(get.Pagination).To(BeNil())
 		Expect(get.ItemRefName).To(BeEmpty())
 		Expect(get.ResponseDataRefName).To(Equal("Thing"))
@@ -793,10 +1080,9 @@ func paramByName(op *model.Operation, name string) model.QueryParam {
 //  $ref with sibling keywords
 // -------------------------------------------------------------------
 
-// OpenAPI 3.0 specifies that keywords beside a $ref are ignored. libopenapi
-// surfaces such a node as a non-reference schema carrying only the siblings, so
-// normalization must follow the $ref itself or the node silently loses its type
-// and fails its artifact as "unsupported".
+// libopenapi surfaces a $ref with siblings as a synthetic allOf. Normalization
+// must retain the referenced shape while preserving supported local annotation
+// metadata such as descriptions.
 var _ = Describe("NormalizeSchemas $ref with sibling keywords", func() {
 
 	var props map[string]*model.Schema
@@ -812,7 +1098,7 @@ var _ = Describe("NormalizeSchemas $ref with sibling keywords", func() {
 	// wantType is the OpenAPI "type" keyword the referenced schema declares.
 	// normalizeSchema records it for every kind, not only primitives, so an object
 	// alternative carries "object" here.
-	DescribeTable("resolves the reference and ignores the sibling",
+	DescribeTable("resolves the reference alongside supported sibling metadata",
 		func(property string, wantKind model.SchemaKind, wantType string) {
 			got := props[property]
 			Expect(got).NotTo(BeNil(), "property %q missing from the normalized object", property)
@@ -824,7 +1110,37 @@ var _ = Describe("NormalizeSchemas $ref with sibling keywords", func() {
 		Entry("$ref + example + description", "multi", model.SchemaKindPrimitive, "string"),
 		Entry("a bare $ref (control)", "plain", model.SchemaKindPrimitive, "string"),
 		Entry("$ref to an object + example", "nested", model.SchemaKindObject, "object"),
+		Entry("$ref + readOnly", "guarded_object", model.SchemaKindObject, "object"),
+		Entry("$ref + nullable", "nullable_ref", model.SchemaKindPrimitive, "string"),
+		Entry("$ref + an unmodelled keyword", "unmodelled", model.SchemaKindPrimitive, "string"),
+		Entry("$ref + default", "defaulted", model.SchemaKindPrimitive, "string"),
 	)
+
+	// The property under test is "declares no assertion", never "names this
+	// keyword" — the entries above are sampled spec shapes, not the coverage.
+	It("does not lose the referenced schema behind a sibling it does not model", func() {
+		guarded := props["guarded_object"]
+		Expect(guarded.RefName).To(Equal("UrlParam"))
+		Expect(guarded.Properties).To(HaveKey("name"))
+		Expect(guarded.Required).To(ConsistOf("name", "value"))
+	})
+
+	// The one exclusion: an empty branch declares nothing, so it stays an
+	// arbitrary untyped value instead of being skipped as an annotation.
+	It("still rejects an allOf carrying an empty branch", func() {
+		Expect(props["empty_branch"].Kind).To(Equal(model.SchemaKindUnsupported))
+	})
+
+	// A skipped branch asserts nothing, but the metadata it declares is still
+	// recorded, so it has to be lifted rather than dropped with the branch.
+	It("lifts readOnly and default out of the skipped annotation branch", func() {
+		Expect(props["guarded_object"].ReadOnly).To(BeTrue())
+		Expect(props["defaulted"].HasDefault).To(BeTrue())
+
+		By("without inventing either on a node that declares neither")
+		Expect(props["plain"].ReadOnly).To(BeFalse())
+		Expect(props["plain"].HasDefault).To(BeFalse())
+	})
 
 	It("keeps the referenced enum when a sibling is present", func() {
 		Expect(props["kind"].Kind).To(Equal(model.SchemaKindPrimitive))
@@ -845,5 +1161,82 @@ var _ = Describe("NormalizeSchemas $ref with sibling keywords", func() {
 		Expect(name).NotTo(BeNil())
 		Expect(name.Kind).To(Equal(model.SchemaKindPrimitive))
 		Expect(name.Type).To(Equal("string"))
+	})
+})
+
+// schemaProperty returns a named normalized object property or fails the test.
+func schemaProperty(schema *model.Schema, name string) *model.Schema {
+	GinkgoHelper()
+	Expect(schema).NotTo(BeNil())
+	Expect(schema.Kind).To(Equal(model.SchemaKindObject))
+	property, ok := schema.Properties[name]
+	Expect(ok).To(BeTrue(), "schema property %s not found", name)
+	Expect(property).NotTo(BeNil())
+	return property
+}
+
+var _ = Describe("NormalizeSchemas scalar defaults", func() {
+	var properties map[string]*model.Schema
+	var responseProperties map[string]*model.Schema
+
+	BeforeEach(func() {
+		spec := loadSpecMust("schema_normalize_defaults.yaml")
+		op := opByID(spec, "CreateDefaults")
+		properties = op.RequestSchema.Properties
+		responseProperties = op.ResponseSchema.Properties
+	})
+
+	DescribeTable("preserves typed direct defaults, including falsy values",
+		func(property string, want *model.ScalarDefault) {
+			got := properties[property]
+			Expect(got.HasDefault).To(BeTrue())
+			Expect(got.Default.Problem).To(BeEmpty())
+			Expect(got.Default.Value).ToNot(BeNil())
+			Expect(got.Default.Value.Equal(want)).To(BeTrue())
+		},
+		Entry("empty string", "direct_string", model.NewStringDefault("")),
+		Entry("false", "direct_bool", model.NewBoolDefault(false)),
+		Entry("zero integer", "direct_integer", model.NewInt64Default(0)),
+		Entry("zero number", "direct_number", model.NewFloat64Default(0)),
+	)
+
+	DescribeTable("preserves a valid enum default through indirection",
+		func(property string) {
+			got := properties[property]
+			Expect(got.Default.Problem).To(BeEmpty())
+			Expect(got.Default.Value.Equal(model.NewStringDefault("basic"))).To(BeTrue())
+			Expect(got.Enum).To(ConsistOf("basic", "token"))
+		},
+		Entry("reference", "referenced"),
+		Entry("allOf", "composed"),
+	)
+
+	It("records null and compound declarations without producing a usable value or problem", func() {
+		for _, property := range []string{"null_default", "array_default", "object_default"} {
+			got := properties[property]
+			Expect(got.HasDefault).To(BeTrue(), property)
+			Expect(got.Default.Value).To(BeNil(), property)
+			Expect(got.Default.Problem).To(BeEmpty(), property)
+		}
+	})
+
+	DescribeTable("retains unusable scalar defaults as validation problems",
+		func(property, problem string) {
+			got := properties[property]
+			Expect(got.HasDefault).To(BeTrue())
+			Expect(got.Default.Value).To(BeNil())
+			Expect(got.Default.Problem).To(ContainSubstring(problem))
+		},
+		Entry("wrong scalar type", "invalid_type", "want integer"),
+		Entry("invalid enum member", "invalid_enum", "allowed values"),
+		Entry("integer overflow", "integer_overflow", "cannot be decoded"),
+		Entry("non-finite number", "non_finite", "finite number"),
+	)
+
+	It("retains a response-only validation problem for lifecycle code to ignore", func() {
+		got := responseProperties["response_invalid"]
+		Expect(got.HasDefault).To(BeTrue())
+		Expect(got.Default.Value).To(BeNil())
+		Expect(got.Default.Problem).To(ContainSubstring("want integer"))
 	})
 })

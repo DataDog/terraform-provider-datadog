@@ -1,0 +1,701 @@
+package datadog
+
+import (
+	"context"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"reflect"
+	"strconv"
+	"strings"
+	"testing"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/dashboardmapping"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+)
+
+func TestDashboardResourceNamesUseV2Implementation(t *testing.T) {
+	provider := Provider()
+	canonical := provider.ResourcesMap["datadog_dashboard"]
+	alias := provider.ResourcesMap["datadog_dashboard_v2"]
+
+	if canonical == nil || alias == nil {
+		t.Fatal("both datadog_dashboard and datadog_dashboard_v2 must be registered")
+	}
+	if canonical.Description == alias.Description {
+		t.Fatal("the alias must have an alias-specific documentation notice")
+	}
+	if !strings.Contains(alias.Description, "alias for `datadog_dashboard`") {
+		t.Fatalf("unexpected alias description: %q", alias.Description)
+	}
+
+	if reflect.ValueOf(canonical.SchemaFunc).Pointer() != reflect.ValueOf(alias.SchemaFunc).Pointer() {
+		t.Fatal("datadog_dashboard and datadog_dashboard_v2 must use the same schema builder")
+	}
+	if reflect.ValueOf(canonical.CreateContext).Pointer() != reflect.ValueOf(alias.CreateContext).Pointer() ||
+		reflect.ValueOf(canonical.ReadContext).Pointer() != reflect.ValueOf(alias.ReadContext).Pointer() ||
+		reflect.ValueOf(canonical.UpdateContext).Pointer() != reflect.ValueOf(alias.UpdateContext).Pointer() ||
+		reflect.ValueOf(canonical.DeleteContext).Pointer() != reflect.ValueOf(alias.DeleteContext).Pointer() {
+		t.Fatal("datadog_dashboard and datadog_dashboard_v2 must use the same lifecycle implementation")
+	}
+
+	canonicalSchema := canonical.SchemaFunc()
+	if _, ok := canonicalSchema["validate"]; !ok {
+		t.Fatal("datadog_dashboard must use the v2 schema")
+	}
+}
+
+func TestDashboardV2PreservesLegacyCanonicalSchemaShapes(t *testing.T) {
+	resourceSchema := buildDashboardV2Schema()
+	widgetResource := resourceSchema["widget"].Elem.(*schema.Resource)
+	toplistResource := widgetResource.Schema["toplist_definition"].Elem.(*schema.Resource)
+	styleResource := toplistResource.Schema["style"].Elem.(*schema.Resource)
+	displayResource := styleResource.Schema["display"].Elem.(*schema.Resource)
+
+	legacyType := displayResource.Schema["type"]
+	if legacyType == nil || legacyType.Deprecated == "" || legacyType.DiffSuppressFunc == nil {
+		t.Fatalf("legacy toplist display type must remain accepted without normalization diffs: %#v", legacyType)
+	}
+	if !displayResource.Schema["stacked"].Computed || !displayResource.Schema["flat"].Computed {
+		t.Fatal("canonical toplist display variants must be able to coexist with legacy configuration in state")
+	}
+	resourceData := schema.TestResourceDataRaw(t, resourceSchema, map[string]interface{}{
+		"widget": []interface{}{map[string]interface{}{
+			"toplist_definition": []interface{}{map[string]interface{}{
+				"style": []interface{}{map[string]interface{}{
+					"display": []interface{}{map[string]interface{}{
+						"type":    "stacked",
+						"stacked": []interface{}{map[string]interface{}{}},
+					}},
+				}},
+			}},
+		}},
+	})
+	legacyTypePath := "widget.0.toplist_definition.0.style.0.display.0.type"
+	if !legacyType.DiffSuppressFunc(legacyTypePath, "", "stacked", resourceData) {
+		t.Fatal("matching canonical state should suppress the legacy normalization diff")
+	}
+	if legacyType.DiffSuppressFunc(legacyTypePath, "stacked", "flat", resourceData) {
+		t.Fatal("a real legacy display type change must not be suppressed")
+	}
+
+	legacyDisplay := map[string]interface{}{"type": "stacked"}
+	legacyStyle := map[string]interface{}{"display": []interface{}{legacyDisplay}}
+	legacyToplist := map[string]interface{}{"style": []interface{}{legacyStyle}}
+	legacyWidget := map[string]interface{}{"toplist_definition": []interface{}{legacyToplist}}
+	config := terraform.NewResourceConfigRaw(map[string]interface{}{
+		"title":       "Legacy toplist",
+		"layout_type": "ordered",
+		"validate":    false,
+		"widget":      []interface{}{legacyWidget},
+	})
+	if _, err := resourceDatadogDashboardV2().Diff(context.Background(), nil, config, nil); err != nil {
+		t.Fatalf("legacy canonical dashboard configuration must remain valid: %v", err)
+	}
+}
+
+func TestBuildDashboardV2SchemaValidate(t *testing.T) {
+	validateSchema, ok := buildDashboardV2Schema()["validate"]
+	if !ok {
+		t.Fatal("validate schema is missing")
+	}
+	if !validateSchema.Optional || validateSchema.Type.String() != "TypeBool" {
+		t.Fatalf("validate schema should be an optional bool, got %#v", validateSchema)
+	}
+	if validateSchema.DiffSuppressFunc == nil || !validateSchema.DiffSuppressFunc("validate", "false", "true", nil) {
+		t.Fatal("validate must not create a persistent diff")
+	}
+}
+
+func TestFlattenDashboardWidgets(t *testing.T) {
+	widgets := []interface{}{
+		map[string]interface{}{
+			"group_definition": []interface{}{
+				map[string]interface{}{
+					"layout_type": "ordered",
+					"title":       "Service overview",
+					"widget": []interface{}{
+						map[string]interface{}{
+							"timeseries_definition": []interface{}{
+								map[string]interface{}{
+									"request": []interface{}{
+										map[string]interface{}{
+											"display_type": "line",
+											"q":            "avg:system.load.1{*}",
+										},
+									},
+								},
+							},
+							"widget_layout": []interface{}{
+								map[string]interface{}{
+									"x":      0,
+									"y":      1,
+									"width":  4,
+									"height": 2,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	validationWidgets := flattenDashboardWidgets(widgets)
+	if len(validationWidgets) != 2 {
+		t.Fatalf("expected group and child widgets, got %d", len(validationWidgets))
+	}
+	if got := validationWidgets[0].terraformPath; got != "widget.0.group_definition.0" {
+		t.Fatalf("unexpected group path %q", got)
+	}
+	groupDefinition := validationWidgets[0].widget["definition"].(map[string]interface{})
+	if got := groupDefinition["type"]; got != "group" {
+		t.Fatalf("unexpected group type %#v", got)
+	}
+	if children, ok := groupDefinition["widgets"].([]interface{}); !ok || len(children) != 0 {
+		t.Fatalf("group validation payload should not contain children, got %#v", groupDefinition["widgets"])
+	}
+	if got := validationWidgets[1].terraformPath; got != "widget.0.group_definition.0.widget.0.timeseries_definition.0" {
+		t.Fatalf("unexpected child path %q", got)
+	}
+	childDefinition := validationWidgets[1].widget["definition"].(map[string]interface{})
+	if got := childDefinition["type"]; got != "timeseries" {
+		t.Fatalf("unexpected child type %#v", got)
+	}
+	childLayout := validationWidgets[1].widget["layout"].(map[string]interface{})
+	if childLayout["x"] != 0 || childLayout["y"] != 1 {
+		t.Fatalf("child validation payload should preserve its layout, got %#v", childLayout)
+	}
+}
+
+func TestDashboardV2PlanValidationCanBeDisabled(t *testing.T) {
+	config := map[string]interface{}{
+		"title":       "Plan-time validation test",
+		"layout_type": "ordered",
+		"validate":    false,
+		"widget":      dashboardV2TestTimeseriesWidgets("avg:system.load.1{*}"),
+	}
+
+	// A nil provider configuration would panic if the validation HTTP call
+	// were reached, so a successful diff proves the call was skipped.
+	if _, err := resourceDatadogDashboardV2().Diff(
+		context.Background(),
+		nil,
+		terraform.NewResourceConfigRaw(config),
+		nil,
+	); err != nil {
+		t.Fatalf("unexpected diff error: %v", err)
+	}
+}
+
+func TestDashboardV2PlanValidationSkipsUnknownInputValues(t *testing.T) {
+	// This is the SDKv2 sentinel accepted by terraform.NewResourceConfigRaw for
+	// values that will only become known after dependencies are resolved.
+	const unknownValue = "74D93920-ED26-11E3-AC10-0800200C9A66"
+
+	tests := map[string]map[string]interface{}{
+		"widget": {
+			"title":       "Plan-time validation test",
+			"layout_type": "ordered",
+			"widget":      dashboardV2TestTimeseriesWidgets(unknownValue),
+		},
+		"layout_type": {
+			"title":       "Plan-time validation test",
+			"layout_type": unknownValue,
+			"widget":      dashboardV2TestTimeseriesWidgets("avg:system.load.1{*}"),
+		},
+		"reflow_type": {
+			"title":       "Plan-time validation test",
+			"layout_type": "ordered",
+			"reflow_type": unknownValue,
+			"widget":      dashboardV2TestTimeseriesWidgets("avg:system.load.1{*}"),
+		},
+	}
+
+	for name, rawConfig := range tests {
+		t.Run(name, func(t *testing.T) {
+			called := false
+			client := dashboardValidationTestClient(t, func(http.ResponseWriter, *http.Request) {
+				called = true
+			})
+			providerConfig := &ProviderConfiguration{
+				Auth: context.Background(),
+				DatadogApiInstances: &utils.ApiInstances{
+					HttpClient: client,
+				},
+			}
+			config := terraform.NewResourceConfigRaw(rawConfig)
+
+			if _, err := resourceDatadogDashboardV2().Diff(context.Background(), nil, config, providerConfig); err != nil {
+				t.Fatalf("unexpected diff error: %v", err)
+			}
+			if called {
+				t.Fatal("validation endpoint must not be called while input values are unknown")
+			}
+		})
+	}
+}
+
+func TestDashboardV2PlanValidationCallsEndpointByDefault(t *testing.T) {
+	called := false
+	client := dashboardValidationTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+		called = true
+		assertDashboardValidationRequest(t, r, 1, "ordered", "")
+		writeDashboardValidationResponse(t, w, map[string]interface{}{
+			"results": []interface{}{map[string]interface{}{"is_valid": true, "widget_type": "timeseries"}},
+		})
+	})
+	providerConfig := &ProviderConfiguration{
+		Auth: context.Background(),
+		DatadogApiInstances: &utils.ApiInstances{
+			HttpClient: client,
+		},
+	}
+	config := terraform.NewResourceConfigRaw(map[string]interface{}{
+		"title":       "Plan-time validation test",
+		"layout_type": "ordered",
+		"widget":      dashboardV2TestTimeseriesWidgets("avg:system.load.1{*}"),
+	})
+
+	if _, err := resourceDatadogDashboardV2().Diff(context.Background(), nil, config, providerConfig); err != nil {
+		t.Fatalf("unexpected diff error: %v", err)
+	}
+	if !called {
+		t.Fatal("expected plan-time validation endpoint to be called")
+	}
+}
+
+func TestDashboardV2PlanValidationRejectsMalformedQuery(t *testing.T) {
+	const malformedQuery = "sum:metric.name{env:test} by {service.ad_count()"
+
+	client := dashboardValidationTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+		widgets := assertDashboardValidationRequest(t, r, 1, "ordered", "")
+		definition := widgets[0]["definition"].(map[string]interface{})
+		requests, ok := definition["requests"].([]interface{})
+		if !ok || len(requests) != 1 {
+			t.Fatalf("expected one widget request, got %#v", definition["requests"])
+		}
+		request, ok := requests[0].(map[string]interface{})
+		if !ok || request["q"] != malformedQuery {
+			t.Fatalf("expected malformed query %q, got %#v", malformedQuery, requests[0])
+		}
+		writeDashboardValidationResponse(t, w, map[string]interface{}{
+			"results": []interface{}{map[string]interface{}{
+				"is_valid":      false,
+				"widget_type":   "timeseries",
+				"error_path":    "['requests', 0, 'q']",
+				"error_message": "invalid metric query: missing closing brace",
+			}},
+		})
+	})
+	providerConfig := &ProviderConfiguration{
+		Auth: context.Background(),
+		DatadogApiInstances: &utils.ApiInstances{
+			HttpClient: client,
+		},
+	}
+	config := terraform.NewResourceConfigRaw(map[string]interface{}{
+		"title":       "Plan-time validation test",
+		"layout_type": "ordered",
+		"widget":      dashboardV2TestTimeseriesWidgets(malformedQuery),
+	})
+
+	_, err := resourceDatadogDashboardV2().Diff(context.Background(), nil, config, providerConfig)
+	if err == nil {
+		t.Fatal("expected malformed dashboard query to fail planning")
+	}
+	for _, expected := range []string{"widget.0.timeseries_definition.0.request.0.q", "timeseries", "missing closing brace"} {
+		if !strings.Contains(err.Error(), expected) {
+			t.Fatalf("expected error %q to contain %q", err, expected)
+		}
+	}
+}
+
+func TestValidateDashboardWidgets(t *testing.T) {
+	validationWidgets := []dashboardWidget{
+		{
+			terraformPath: "widget.0.group_definition.0.widget.0.timeseries_definition.0",
+			widget: map[string]interface{}{
+				"definition": map[string]interface{}{
+					"type": "timeseries",
+					"requests": []interface{}{
+						map[string]interface{}{"q": "avg:system.load.1{*}", "display_type": "line"},
+					},
+				},
+			},
+		},
+	}
+
+	t.Run("valid", func(t *testing.T) {
+		client := dashboardValidationTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+			assertDashboardValidationRequest(t, r, 1, "ordered", "fixed")
+			writeDashboardValidationResponse(t, w, map[string]interface{}{
+				"results": []interface{}{map[string]interface{}{"is_valid": true, "widget_type": "timeseries"}},
+			})
+		})
+
+		if err := validateDashboardWidgets(context.Background(), context.Background(), client, validationWidgets, "ordered", "fixed"); err != nil {
+			t.Fatalf("unexpected validation error: %v", err)
+		}
+	})
+
+	t.Run("invalid query", func(t *testing.T) {
+		client := dashboardValidationTestClient(t, func(w http.ResponseWriter, _ *http.Request) {
+			writeDashboardValidationResponse(t, w, map[string]interface{}{
+				"results": []interface{}{map[string]interface{}{
+					"is_valid":      false,
+					"widget_type":   "timeseries",
+					"error_path":    "['requests', 0, 'q']",
+					"error_message": "invalid metric query: missing closing brace",
+				}},
+			})
+		})
+
+		err := validateDashboardWidgets(context.Background(), context.Background(), client, validationWidgets, "ordered", "")
+		if err == nil {
+			t.Fatal("expected validation error")
+		}
+		for _, expected := range []string{"widget.0.group_definition.0.widget.0.timeseries_definition.0.request.0.q", "timeseries", "missing closing brace"} {
+			if !strings.Contains(err.Error(), expected) {
+				t.Fatalf("expected error %q to contain %q", err, expected)
+			}
+		}
+	})
+
+	t.Run("response cardinality mismatch", func(t *testing.T) {
+		client := dashboardValidationTestClient(t, func(w http.ResponseWriter, _ *http.Request) {
+			writeDashboardValidationResponse(t, w, map[string]interface{}{"results": []interface{}{}})
+		})
+
+		err := validateDashboardWidgets(context.Background(), context.Background(), client, validationWidgets, "ordered", "")
+		if err == nil || !strings.Contains(err.Error(), "0 results for 1 widgets") {
+			t.Fatalf("expected cardinality error, got %v", err)
+		}
+	})
+
+	t.Run("endpoint error", func(t *testing.T) {
+		client := dashboardValidationTestClient(t, func(w http.ResponseWriter, _ *http.Request) {
+			w.WriteHeader(http.StatusBadRequest)
+			_, _ = w.Write([]byte(`{"errors":["invalid request"]}`))
+		})
+
+		err := validateDashboardWidgets(context.Background(), context.Background(), client, validationWidgets, "ordered", "")
+		if err == nil || !strings.Contains(err.Error(), "error validating dashboard widgets") {
+			t.Fatalf("expected endpoint error, got %v", err)
+		}
+	})
+}
+
+func dashboardValidationTestClient(t *testing.T, handler http.HandlerFunc) *datadog.APIClient {
+	t.Helper()
+	server := httptest.NewServer(handler)
+	t.Cleanup(server.Close)
+
+	configuration := datadog.NewConfiguration()
+	configuration.HTTPClient = server.Client()
+	configuration.Servers = datadog.ServerConfigurations{{URL: server.URL}}
+	return datadog.NewAPIClient(configuration)
+}
+
+func assertDashboardValidationRequest(t *testing.T, request *http.Request, widgetCount int, layoutType, reflowType string) []map[string]interface{} {
+	t.Helper()
+	if request.Method != http.MethodPost {
+		t.Fatalf("expected POST, got %s", request.Method)
+	}
+	if request.URL.Path != dashboardWidgetValidationPath {
+		t.Fatalf("expected path %q, got %q", dashboardWidgetValidationPath, request.URL.Path)
+	}
+	var body struct {
+		Widgets    []map[string]interface{} `json:"widgets"`
+		LayoutType string                   `json:"layout_type"`
+		ReflowType *string                  `json:"reflow_type"`
+	}
+	if err := json.NewDecoder(request.Body).Decode(&body); err != nil {
+		t.Fatalf("decode request: %v", err)
+	}
+	if len(body.Widgets) != widgetCount {
+		t.Fatalf("expected %d widgets, got %d", widgetCount, len(body.Widgets))
+	}
+	if body.LayoutType != layoutType {
+		t.Fatalf("expected layout type %q, got %q", layoutType, body.LayoutType)
+	}
+	if reflowType == "" && body.ReflowType != nil {
+		t.Fatalf("expected reflow type to be omitted, got %q", *body.ReflowType)
+	}
+	if reflowType != "" && (body.ReflowType == nil || *body.ReflowType != reflowType) {
+		t.Fatalf("expected reflow type %q, got %#v", reflowType, body.ReflowType)
+	}
+	return body.Widgets
+}
+
+func writeDashboardValidationResponse(t *testing.T, writer http.ResponseWriter, response interface{}) {
+	t.Helper()
+	writer.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(writer).Encode(response); err != nil {
+		t.Fatalf("encode response: %v", err)
+	}
+}
+
+func dashboardV2TestTimeseriesWidgets(query string) []interface{} {
+	return []interface{}{
+		map[string]interface{}{
+			"timeseries_definition": []interface{}{
+				map[string]interface{}{
+					"request": []interface{}{
+						map[string]interface{}{
+							"display_type": "line",
+							"q":            query,
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func TestDashboardV2LegacyNoOpDescriptionFields(t *testing.T) {
+	widgets := []interface{}{
+		map[string]interface{}{
+			"log_stream_definition": []interface{}{
+				map[string]interface{}{
+					"query": "status:error",
+					"sort": []interface{}{
+						map[string]interface{}{"column": "time", "order": "desc", "description": "legacy sort"},
+					},
+				},
+			},
+		},
+		map[string]interface{}{
+			"slo_list_definition": []interface{}{
+				map[string]interface{}{
+					"request": []interface{}{
+						map[string]interface{}{
+							"request_type": "slo_list",
+							"description":  "legacy request",
+							"query": []interface{}{
+								map[string]interface{}{
+									"query_string": "env:prod",
+									"sort": []interface{}{
+										map[string]interface{}{"column": "status.sli", "order": "desc", "description": "legacy query sort"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	called := false
+	client := dashboardValidationTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+		called = true
+		for _, widget := range assertDashboardValidationRequest(t, r, 2, "ordered", "") {
+			payload, _ := json.Marshal(widget)
+			if strings.Contains(string(payload), "legacy") {
+				t.Errorf("no-op description must not be sent for validation, got %s", payload)
+			}
+		}
+		writeDashboardValidationResponse(t, w, map[string]interface{}{
+			"results": []interface{}{
+				map[string]interface{}{"is_valid": true, "widget_type": "log_stream"},
+				map[string]interface{}{"is_valid": true, "widget_type": "slo_list"},
+			},
+		})
+	})
+	providerConfig := &ProviderConfiguration{
+		Auth:                context.Background(),
+		DatadogApiInstances: &utils.ApiInstances{HttpClient: client},
+	}
+	config := terraform.NewResourceConfigRaw(map[string]interface{}{
+		"title":       "Legacy description test",
+		"layout_type": "ordered",
+		"widget":      widgets,
+	})
+	diff, err := resourceDatadogDashboardV2().Diff(context.Background(), nil, config, providerConfig)
+	if err != nil {
+		t.Fatalf("legacy description fields should still plan, got: %v", err)
+	}
+	if !called {
+		t.Fatal("plan-time validation should still run when legacy description fields are set")
+	}
+	for key := range diff.Attributes {
+		if strings.HasSuffix(key, ".description") {
+			t.Errorf("no-op description should not produce a diff, got %q", key)
+		}
+	}
+
+	for _, widget := range flattenDashboardWidgets(widgets) {
+		payload, _ := json.Marshal(widget.widget)
+		if strings.Contains(string(payload), "legacy") {
+			t.Errorf("no-op description must not be sent to the API, got %s", payload)
+		}
+	}
+}
+
+// TestDashboardV2MatchesLegacyPayloadForZeroValues builds the same config with the
+// legacy datadog_dashboard builder and the v2 engine and requires both to send the
+// same value at each path. The cassette matcher treats an absent key as equal to
+// false or 0, so replayed acceptance tests cannot catch these fields being dropped.
+func TestDashboardV2MatchesLegacyPayloadForZeroValues(t *testing.T) {
+	cases := []struct {
+		name   string
+		widget map[string]interface{}
+		paths  [][]string
+	}{
+		{
+			name: "slo show_error_budget unset is sent as false",
+			widget: map[string]interface{}{"service_level_objective_definition": []interface{}{map[string]interface{}{
+				"view_type": "detail", "slo_id": "abc", "view_mode": "overall", "time_windows": []interface{}{"7d"},
+			}}},
+			paths: [][]string{{"show_error_budget"}},
+		},
+		{
+			name: "distribution axes with only include_zero = false",
+			widget: map[string]interface{}{"distribution_definition": []interface{}{map[string]interface{}{
+				"request": []interface{}{map[string]interface{}{"q": "avg:system.cpu.user{*}"}},
+				"xaxis":   []interface{}{map[string]interface{}{"include_zero": false}},
+				"yaxis":   []interface{}{map[string]interface{}{"include_zero": false}},
+			}}},
+			paths: [][]string{{"xaxis", "include_zero"}, {"yaxis", "include_zero"}},
+		},
+		{
+			name: "powerpack show_title unset is sent as false",
+			widget: map[string]interface{}{"powerpack_definition": []interface{}{map[string]interface{}{
+				"powerpack_id": "00000000-0000-0000-0000-000000000000",
+				"template_variables": []interface{}{map[string]interface{}{
+					"controlled_by_powerpack": []interface{}{map[string]interface{}{"name": "env", "values": []interface{}{"prod"}}},
+				}},
+			}}},
+			paths: [][]string{{"show_title"}},
+		},
+		{
+			name: "formula style palette_index = 0",
+			widget: map[string]interface{}{"timeseries_definition": []interface{}{map[string]interface{}{
+				"request": []interface{}{map[string]interface{}{
+					"query": []interface{}{map[string]interface{}{"metric_query": []interface{}{map[string]interface{}{
+						"name": "query1", "query": "avg:system.cpu.user{*}",
+					}}}},
+					"formula": []interface{}{map[string]interface{}{
+						"formula_expression": "query1",
+						"style":              []interface{}{map[string]interface{}{"palette": "classic", "palette_index": 0}},
+					}},
+				}},
+			}}},
+			paths: [][]string{{"requests", "0", "formulas", "0", "style", "palette_index"}},
+		},
+		{
+			name: "slo list limit defaults to 100",
+			widget: map[string]interface{}{"slo_list_definition": []interface{}{map[string]interface{}{
+				"request": []interface{}{map[string]interface{}{
+					"request_type": "slo_list",
+					"query":        []interface{}{map[string]interface{}{"query_string": "env:prod"}},
+				}},
+			}}},
+			paths: [][]string{{"requests", "0", "query", "limit"}},
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			raw := map[string]interface{}{
+				"title":       "parity",
+				"layout_type": "ordered",
+				"widget":      []interface{}{tc.widget},
+			}
+			legacy := legacyDashboardWidgetDefinition(t, raw)
+			canonical := canonicalDashboardWidgetDefinition(t, raw)
+			for _, path := range tc.paths {
+				legacyValue, legacyOK := lookupJSONPath(legacy, path)
+				if !legacyOK {
+					t.Fatalf("legacy payload has no %v: %#v", path, legacy)
+				}
+				canonicalValue, canonicalOK := lookupJSONPath(canonical, path)
+				if !canonicalOK || !reflect.DeepEqual(legacyValue, canonicalValue) {
+					t.Errorf("%v: legacy sends %#v, v2 sends %#v (present=%v)", path, legacyValue, canonicalValue, canonicalOK)
+				}
+			}
+		})
+	}
+}
+
+func TestDashboardV2MatchesLegacyPayloadForHiddenCustomLink(t *testing.T) {
+	raw := map[string]interface{}{
+		"title":       "parity",
+		"layout_type": "ordered",
+		"widget": []interface{}{map[string]interface{}{"query_value_definition": []interface{}{map[string]interface{}{
+			"request":     []interface{}{map[string]interface{}{"q": "avg:system.cpu.user{*}"}},
+			"custom_link": []interface{}{map[string]interface{}{"is_hidden": true, "override_label": "logs"}},
+		}}}},
+	}
+	path := []string{"custom_links", "0", "link"}
+	if v, ok := lookupJSONPath(legacyDashboardWidgetDefinition(t, raw), path); ok {
+		t.Fatalf("legacy payload unexpectedly sends link %#v", v)
+	}
+	if v, ok := lookupJSONPath(canonicalDashboardWidgetDefinition(t, raw), path); ok {
+		t.Errorf("v2 sends link %#v for a hidden context menu link, legacy omits it", v)
+	}
+}
+
+func legacyDashboardWidgetDefinition(t *testing.T, raw map[string]interface{}) map[string]interface{} {
+	t.Helper()
+	d := schema.TestResourceDataRaw(t, resourceDatadogDashboard().SchemaMap(), raw)
+	dashboard, err := buildDatadogDashboard(d)
+	if err != nil {
+		t.Fatalf("legacy build failed: %v", err)
+	}
+	payload, err := json.Marshal(dashboard)
+	if err != nil {
+		t.Fatalf("legacy marshal failed: %v", err)
+	}
+	return firstWidgetDefinition(t, payload)
+}
+
+func canonicalDashboardWidgetDefinition(t *testing.T, raw map[string]interface{}) map[string]interface{} {
+	t.Helper()
+	d := schema.TestResourceDataRaw(t, buildDashboardV2Schema(), raw)
+	payload, err := dashboardmapping.MarshalDashboardJSONFromMapWithRawConfig(collectDashboardData(d), "", d)
+	if err != nil {
+		t.Fatalf("v2 build failed: %v", err)
+	}
+	return firstWidgetDefinition(t, []byte(payload))
+}
+
+func firstWidgetDefinition(t *testing.T, payload []byte) map[string]interface{} {
+	t.Helper()
+	var dashboard struct {
+		Widgets []struct {
+			Definition map[string]interface{} `json:"definition"`
+		} `json:"widgets"`
+	}
+	if err := json.Unmarshal(payload, &dashboard); err != nil || len(dashboard.Widgets) == 0 {
+		t.Fatalf("payload has no widgets (err=%v): %s", err, payload)
+	}
+	return dashboard.Widgets[0].Definition
+}
+
+func lookupJSONPath(value interface{}, path []string) (interface{}, bool) {
+	for _, key := range path {
+		switch typed := value.(type) {
+		case map[string]interface{}:
+			next, ok := typed[key]
+			if !ok {
+				return nil, false
+			}
+			value = next
+		case []interface{}:
+			index, err := strconv.Atoi(key)
+			if err != nil || index >= len(typed) {
+				return nil, false
+			}
+			value = typed[index]
+		default:
+			return nil, false
+		}
+	}
+	return value, true
+}

@@ -48,6 +48,13 @@ func ToTerraformInt32(v *int32, ok bool) types.Int32 {
 	return types.Int32Null()
 }
 
+func ToTerraformFloat64(v *float64, ok bool) types.Float64 {
+	if ok && v != nil {
+		return types.Float64Value(*v)
+	}
+	return types.Float64Null()
+}
+
 func ToTerraformInt64(v *int64, ok bool) types.Int64 {
 	if ok && v != nil {
 		return types.Int64Value(*v)
@@ -72,6 +79,12 @@ func SetOptString(s types.String, set func(string)) {
 func SetOptInt32(i types.Int32, set func(int32)) {
 	if !i.IsNull() && !i.IsUnknown() {
 		set(i.ValueInt32())
+	}
+}
+
+func SetOptFloat64(f types.Float64, set func(float64)) {
+	if !f.IsNull() && !f.IsUnknown() {
+		set(f.ValueFloat64())
 	}
 }
 

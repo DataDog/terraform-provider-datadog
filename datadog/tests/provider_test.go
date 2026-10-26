@@ -133,11 +133,15 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_appsec_waf_custom_rule_test":                                 "application-security",
 	"tests/resource_datadog_appsec_waf_exclusion_filter_test":                            "application-security",
 	"tests/resource_datadog_authn_mapping_test":                                          "authn_mapping",
+	"tests/resource_datadog_aws_wif_identity_mapping_test":                               "cloud-authentication",
+	"tests/resource_datadog_github_oidc_intake_mapping_test":                             "cloud-authentication",
+	"tests/resource_datadog_github_oidc_identity_mapping_test":                           "cloud-authentication",
 	"tests/resource_datadog_child_organization_test":                                     "organization",
 	"tests/resource_datadog_cloud_configuration_rule_test":                               "security-monitoring",
 	"tests/resource_datadog_cloud_inventory_sync_config_test":                            "cloud-inventory",
 	"tests/resource_datadog_cloud_workload_security_agent_rule_test":                     "cloud_workload_security",
 	"tests/resource_datadog_action_connection_test":                                      "action_connection",
+	"tests/resource_datadog_action_execution_policy_test":                                "execution_policy",
 	"tests/resource_datadog_agentless_scanning_aws_scan_options_test":                    "agentless-scanning",
 	"tests/resource_datadog_agentless_scanning_azure_scan_options_test":                  "agentless-scanning",
 	"tests/resource_datadog_agentless_scanning_gcp_scan_options_test":                    "agentless-scanning",
@@ -186,12 +190,18 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_secure_embed_dashboard_test":                                 "dashboards",
 	"tests/resource_datadog_dashboard_v2_test":                                           "dashboards",
 	"tests/resource_datadog_dashboard_v2_timeseries_event_query_test":                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_network_device_flows_test":                      "dashboards",
 	"tests/resource_datadog_dashboard_v2_funnel_test":                                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_hostmap_infrastructure_test":                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_hostmap_ddsql_test":                             "dashboards",
+	"tests/resource_datadog_dashboard_v2_heatmap_histogram_test":                         "dashboards",
 	"tests/resource_datadog_dashboard_v2_bar_chart_test":                                 "dashboards",
 	"tests/resource_datadog_dashboard_v2_sankey_test":                                    "dashboards",
 	"tests/resource_datadog_dashboard_v2_wildcard_test":                                  "dashboards",
 	"tests/resource_datadog_dashboard_v2_point_plot_test":                                "dashboards",
 	"tests/resource_datadog_dashboard_v2_distribution_histogram_test":                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_embedded_app_test":                              "dashboards",
+	"tests/resource_datadog_dashboard_v2_apm_metrics_query_test":                         "dashboards",
 	"tests/resource_datadog_dashboard_v2_wildcard_histogram_test":                        "dashboards",
 	"tests/resource_datadog_dashboard_v2_toplist_sort_test":                              "dashboards",
 	"tests/resource_datadog_dashboard_v2_toplist_display_test":                           "dashboards",
@@ -210,6 +220,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_datastore_test":                                              "datastores",
 	"tests/resource_datadog_datastore_item_test":                                         "datastores",
 	"tests/resource_datadog_domain_allowlist_test":                                       "domain-allowlist",
+	"tests/resource_datadog_fleet_schedule_live_test":                                    "fleet-automation",
 	"tests/resource_datadog_security_notification_rule_test":                             "security_notification_rule",
 	"tests/resource_datadog_observability_pipeline_test":                                 "observability-pipelines",
 	"tests/resource_datadog_openapi_api_test":                                            "apimanagement",
@@ -250,6 +261,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_integration_aws_log_collection_test":                         "integration-aws",
 	"tests/resource_datadog_integration_aws_tag_filter_test":                             "integration-aws",
 	"tests/resource_datadog_integration_aws_test":                                        "integration-aws",
+	"tests/data_source_datadog_integration_aws_account_test":                             "integration-aws",
 	"tests/resource_datadog_integration_aws_account_test":                                "integration-aws",
 	"tests/resource_datadog_integration_aws_account_ccm_config_test":                     "integration-aws",
 	"tests/resource_datadog_integration_aws_event_bridge_test":                           "integration-aws",
@@ -257,7 +269,6 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_integration_azure_test":                                      "integration-azure",
 	"tests/resource_datadog_integration_cloudflare_account_test":                         "integration-cloudflare",
 	"tests/resource_datadog_integration_confluent_account_test":                          "integration-confluend-account",
-	"tests/resource_datadog_integration_databricks_account_test":                         "integration-databricks-account",
 	"tests/resource_datadog_integration_confluent_resource_test":                         "integration-confluend-resource",
 	"tests/resource_datadog_integration_fastly_account_test":                             "integration-fastly-account",
 	"tests/resource_datadog_integration_gcp_sts_test":                                    "integration-gcp",
@@ -306,13 +317,21 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_role_test":                                                   "roles",
 	"tests/resource_datadog_rum_application_test":                                        "rum-application",
 	"tests/resource_datadog_rum_metric_test":                                             "rum-metric",
+	"tests/resource_datadog_rum_operation_journey_link_test":                             "rum-operation",
+	"tests/resource_datadog_rum_operation_test":                                          "rum-operation",
 	"tests/resource_datadog_rum_retention_filter_test":                                   "rum-retention-filter",
 	"tests/resource_datadog_rum_retention_filters_order_test":                            "rum-retention-filters-order",
+	"tests/resource_datadog_saml_idp_metadata_test":                                      "organization",
 	"tests/resource_datadog_screenboard_test":                                            "dashboards",
+	"tests/resource_datadog_security_findings_default_inbox_rule_test":                   "security-monitoring",
 	"tests/resource_datadog_security_findings_due_date_rule_test":                        "security-monitoring",
 	"tests/resource_datadog_security_findings_due_date_rules_order_test":                 "security-monitoring",
+	"tests/resource_datadog_security_findings_inbox_rule_test":                           "security-monitoring",
+	"tests/resource_datadog_security_findings_inbox_rules_order_test":                    "security-monitoring",
 	"tests/resource_datadog_security_findings_mute_rule_test":                            "security-monitoring",
 	"tests/resource_datadog_security_findings_mute_rules_order_test":                     "security-monitoring",
+	"tests/resource_datadog_security_findings_severity_modifier_rule_test":               "security-monitoring",
+	"tests/resource_datadog_security_findings_severity_modifier_rules_order_test":        "security-monitoring",
 	"tests/resource_datadog_security_findings_ticket_creation_rule_test":                 "security-monitoring",
 	"tests/resource_datadog_security_findings_ticket_creation_rules_order_test":          "security-monitoring",
 	"tests/resource_datadog_security_monitoring_default_rule_migration_test":             "security-monitoring",
@@ -354,6 +373,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_user_test":                                                   "users",
 	"tests/resource_datadog_user_role_test":                                              "roles",
 	"tests/resource_datadog_webhook_custom_variable_test":                                "webhook_custom_variable",
+	"tests/resource_datadog_webhook_oauth2_client_credentials_test":                      "webhook_oauth2_client_credentials",
 	"tests/resource_datadog_webhook_test":                                                "webhook",
 	"tests/resource_datadog_workflow_automation_test":                                    "workflow_automation",
 	"tests/resource_datadog_compliance_resource_evaluation_filter_test":                  "resource_filters",
@@ -363,6 +383,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_tag_pipeline_ruleset_test":                                   "tag-pipeline",
 	"tests/data_source_datadog_tag_pipeline_ruleset_test":                                "tag-pipeline",
 	"tests/resource_datadog_tag_pipeline_rulesets_test":                                  "tag-pipeline",
+	"tests/resource_datadog_tag_rule_test":                                               "tag-rules",
 	"tests/resource_datadog_app_key_registration_test":                                   "app_key_registration",
 	"tests/resource_datadog_aws_cur_config_test":                                         "cost-management",
 	"tests/resource_datadog_gcp_uc_config_test":                                          "cost-management",
@@ -378,6 +399,11 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_incident_user_defined_field_test":                            "incidents",
 	"tests/resource_datadog_incident_user_defined_role_test":                             "incidents",
 	"tests/resource_datadog_deployment_gate_test":                                        "deployment-gates",
+	"tests/resource_datadog_governance_control_test":                                     "governance-console",
+	"tests/resource_datadog_status_page_test":                                            "status-page",
+	"tests/resource_datadog_status_page_component_test":                                  "status-page",
+	"tests/resource_datadog_status_page_degradation_template_test":                       "status-page",
+	"tests/resource_datadog_status_page_maintenance_template_test":                       "status-page",
 }
 
 // getEndpointTagValue traverses callstack frames to find the test function that invoked this call;
@@ -540,7 +566,7 @@ func restoreClock(t *testing.T) clockwork.FakeClock {
 		t.Logf("Could not load clock: %v", err)
 		return setClock(t)
 	}
-	now, err := time.Parse(time.RFC3339Nano, string(data))
+	now, err := time.Parse(time.RFC3339Nano, strings.TrimSpace(string(data)))
 	if err != nil {
 		t.Fatalf("Could not parse clock date: %v", err)
 	}
@@ -567,7 +593,7 @@ func restoreClockWithName(t *testing.T, name string) clockwork.FakeClock {
 		t.Logf("Could not load clock for %s: %v", name, err)
 		return setClock(t)
 	}
-	now, err := time.Parse(time.RFC3339Nano, string(data))
+	now, err := time.Parse(time.RFC3339Nano, strings.TrimSpace(string(data)))
 	if err != nil {
 		t.Fatalf("Could not parse clock date: %v", err)
 	}
@@ -780,6 +806,7 @@ func matchInteraction(r *http.Request, i cassette.Request) bool {
 // jsonEquivalent compares two JSON strings for semantic equality, ignoring:
 //   - key ordering (Go map vs struct serialization)
 //   - absent vs zero-value fields ("id":"" vs no "id" key)
+//   - widget IDs the cassette did not record (see dropUnrecordedWidgetIDs)
 //
 // This allows v1 (typed struct serialization) and v2 (map serialization) request
 // bodies to match against the same cassette.
@@ -791,7 +818,52 @@ func jsonEquivalent(a, b string) bool {
 	if err := json.Unmarshal([]byte(b), &vb); err != nil {
 		return false
 	}
+	dropUnrecordedWidgetIDs(va, vb)
 	return deepEquivalent(va, vb)
+}
+
+// dropUnrecordedWidgetIDs removes numeric widget "id" fields from the request
+// wherever the matching cassette widget has none. v1 never sent widget IDs on
+// update, while v2 sends back the IDs it read from state, so v1-era cassettes
+// would otherwise never match. Cassettes that do record widget IDs still
+// require an exact match.
+func dropUnrecordedWidgetIDs(req, cas interface{}) {
+	switch rv := req.(type) {
+	case map[string]interface{}:
+		cv, ok := cas.(map[string]interface{})
+		if !ok {
+			return
+		}
+		for k, v := range rv {
+			if k == "widgets" {
+				rw, rok := v.([]interface{})
+				cw, cok := cv[k].([]interface{})
+				if rok && cok && len(rw) == len(cw) {
+					for i := range rw {
+						rWidget, rok := rw[i].(map[string]interface{})
+						cWidget, cok := cw[i].(map[string]interface{})
+						if !rok || !cok {
+							continue
+						}
+						if _, isNum := rWidget["id"].(float64); isNum {
+							if _, recorded := cWidget["id"]; !recorded {
+								delete(rWidget, "id")
+							}
+						}
+					}
+				}
+			}
+			dropUnrecordedWidgetIDs(v, cv[k])
+		}
+	case []interface{}:
+		cv, ok := cas.([]interface{})
+		if !ok || len(rv) != len(cv) {
+			return
+		}
+		for i := range rv {
+			dropUnrecordedWidgetIDs(rv[i], cv[i])
+		}
+	}
 }
 
 // deepEquivalent recursively compares two JSON values, treating absent keys
