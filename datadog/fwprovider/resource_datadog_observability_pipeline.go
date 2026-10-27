@@ -215,6 +215,7 @@ type processorModel struct {
 	RenameMetricTagsProcessor      []*observability_pipeline.RenameMetricTagsProcessorModel      `tfsdk:"rename_metric_tags"`
 	TagCardinalityLimitProcessor   []*observability_pipeline.TagCardinalityLimitProcessorModel   `tfsdk:"tag_cardinality_limit"`
 	MetricEnrichmentTableProcessor []*observability_pipeline.MetricEnrichmentTableProcessorModel `tfsdk:"metric_enrichment_table"`
+	SpikeProtectionProcessor       []*observability_pipeline.SpikeProtectionProcessorModel       `tfsdk:"spike_protection"`
 }
 
 type metricTagsProcessorModel struct {
@@ -2131,6 +2132,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												"aggregate":               observability_pipeline.AggregateProcessorSchema(),
 												"rename_metric_tags":      observability_pipeline.RenameMetricTagsProcessorSchema(),
 												"tag_cardinality_limit":   observability_pipeline.TagCardinalityLimitProcessorSchema(),
+												"spike_protection":        observability_pipeline.SpikeProtectionProcessorSchema(),
 												"metric_enrichment_table": observability_pipeline.MetricEnrichmentTableProcessorSchema(),
 												"metric_tags": schema.ListNestedBlock{
 													Description: "The `metric_tags` processor filters metrics based on their tags using Datadog tag key patterns.",
@@ -3754,6 +3756,8 @@ func flattenProcessorGroup(ctx context.Context, group *datadogV2.ObservabilityPi
 			procModel = flattenTagCardinalityLimitProcessor(ctx, p.ObservabilityPipelineTagCardinalityLimitProcessor)
 		} else if p.ObservabilityPipelineMetricEnrichmentTableProcessor != nil {
 			procModel = flattenMetricEnrichmentTableProcessor(ctx, p.ObservabilityPipelineMetricEnrichmentTableProcessor)
+		} else if p.ObservabilityPipelineSpikeProtectionProcessor != nil {
+			procModel = flattenSpikeProtectionProcessor(ctx, p.ObservabilityPipelineSpikeProtectionProcessor)
 		}
 
 		if procModel != nil {
@@ -3904,6 +3908,9 @@ func expandProcessorTypes(ctx context.Context, processor *processorModel) []data
 	}
 	for _, p := range processor.MetricEnrichmentTableProcessor {
 		items = append(items, observability_pipeline.ExpandMetricEnrichmentTableProcessor(common, p))
+	}
+	for _, p := range processor.SpikeProtectionProcessor {
+		items = append(items, observability_pipeline.ExpandSpikeProtectionProcessor(common, p))
 	}
 
 	return items
@@ -4579,6 +4586,17 @@ func flattenTagCardinalityLimitProcessor(ctx context.Context, src *datadogV2.Obs
 	model := createProcessorModel(src)
 	if f := observability_pipeline.FlattenTagCardinalityLimitProcessor(src); f != nil {
 		model.TagCardinalityLimitProcessor = append(model.TagCardinalityLimitProcessor, f)
+	}
+	return model
+}
+
+func flattenSpikeProtectionProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineSpikeProtectionProcessor) *processorModel {
+	if src == nil {
+		return nil
+	}
+	model := createProcessorModel(src)
+	if f := observability_pipeline.FlattenSpikeProtectionProcessor(src); f != nil {
+		model.SpikeProtectionProcessor = append(model.SpikeProtectionProcessor, f)
 	}
 	return model
 }

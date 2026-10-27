@@ -9076,6 +9076,161 @@ resource "datadog_observability_pipeline" "tag_cardinality_limit" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_spikeProtectionProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.spike_protection"
+	processorPath := "config.0.processor_group.0.processor.0.spike_protection.0"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "spike_protection" {
+  name = "spike protection processor test"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "spike-protection-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "spike-protection-processor"
+        enabled = true
+        include = "*"
+
+        spike_protection {
+          name         = "minimal rule"
+          spike_action = "drop"
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["spike-protection-group-1"]
+      datadog_logs {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".name", "minimal rule"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".spike_action", "drop"),
+					resource.TestCheckNoResourceAttr(resourceName, processorPath+".spike_threshold"),
+					resource.TestCheckNoResourceAttr(resourceName, processorPath+".minimal_threshold"),
+					resource.TestCheckNoResourceAttr(resourceName, processorPath+".action_when_missing_partitions"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.#", "0"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "spike_protection" {
+  name = "spike protection processor test"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "spike-protection-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id           = "spike-protection-processor"
+        enabled      = true
+        include      = "service:my-service"
+        display_name = "Spike protection"
+
+        spike_protection {
+          name                           = "full rule"
+          spike_action                   = "no_action"
+          spike_threshold                = 3.5
+          minimal_threshold              = 1073741824
+          partition_fields               = ["service", "env"]
+          action_when_missing_partitions = "default_bucket"
+
+          minimal_threshold_override {
+            field {
+              name  = "service"
+              value = "checkout"
+            }
+            field {
+              name  = "env"
+              value = "prod"
+            }
+            minimal_threshold {
+              type  = "threshold"
+              bytes = 2147483648
+            }
+          }
+
+          minimal_threshold_override {
+            field {
+              name  = "service"
+              value = "audit"
+            }
+            minimal_threshold {
+              type = "always_keep"
+            }
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["spike-protection-group-1"]
+      datadog_logs {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.display_name", "Spike protection"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".name", "full rule"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".spike_action", "no_action"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".spike_threshold", "3.5"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold", "1073741824"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".partition_fields.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".partition_fields.0", "service"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".partition_fields.1", "env"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".action_when_missing_partitions", "default_bucket"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.0.field.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.0.field.0.name", "service"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.0.field.0.value", "checkout"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.0.field.1.name", "env"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.0.field.1.value", "prod"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.0.minimal_threshold.0.type", "threshold"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.0.minimal_threshold.0.bytes", "2147483648"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.1.field.0.name", "service"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.1.field.0.value", "audit"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.1.minimal_threshold.0.type", "always_keep"),
+					resource.TestCheckNoResourceAttr(resourceName, processorPath+".minimal_threshold_override.1.minimal_threshold.0.bytes"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_clickhouseDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
