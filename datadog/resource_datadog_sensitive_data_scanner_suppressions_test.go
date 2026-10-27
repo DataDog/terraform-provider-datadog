@@ -37,7 +37,16 @@ func TestSensitiveDataScannerSuppressionsPayload(t *testing.T) {
 							"starts_with": []interface{}{"prefix"}, "ends_with": []interface{}{"suffix"}, "exact_match": []interface{}{"exact"},
 						}}
 					}
-					data := schema.TestResourceDataRaw(t, resourceDatadogSensitiveDataScannerRule().SchemaMap(), config)
+					r := resourceDatadogSensitiveDataScannerRule()
+					data := schema.TestResourceDataRaw(t, r.SchemaMap(), config)
+					data.SetId("payload")
+					state := data.State()
+					state.ID = ""
+					delete(state.Attributes, "id")
+					rawPlan, err := state.AttrsAsObjectValue(r.CoreConfigSchema().ImpliedType())
+					require.NoError(t, err)
+					state.RawPlan = rawPlan
+					data = r.Data(state)
 					attributes := buildSensitiveDataScannerRuleAttributes(data)
 					if !standard && !populated {
 						assert.False(t, attributes.HasSuppressions(), "custom-rule creation without lists preserves the existing request shape")
@@ -67,6 +76,41 @@ func TestSensitiveDataScannerSuppressionsPayload(t *testing.T) {
 				})
 			}
 		}
+	}
+}
+
+func TestSensitiveDataScannerSuppressionsPlanAndStatePayload(t *testing.T) {
+	for _, tc := range []struct {
+		name  string
+		plan  cty.Value
+		state cty.Value
+		want  interface{}
+	}{
+		{name: "planned false overrides saved true", plan: cty.False, state: cty.True, want: false},
+		{name: "planned true overrides saved false", plan: cty.True, state: cty.False, want: true},
+		{name: "missing plan preserves saved false", state: cty.False, want: false},
+		{name: "missing plan preserves saved true", state: cty.True, want: true},
+		{name: "unknown plan does not reuse saved true", plan: cty.UnknownVal(cty.Bool), state: cty.True},
+		{name: "null planned choice does not reuse saved true", plan: cty.NullVal(cty.Bool), state: cty.True},
+		{name: "missing choice remains omitted"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			state := &terraform.InstanceState{ID: "rule", Attributes: map[string]string{"standard_pattern_id": "standard"}}
+			if tc.plan != cty.NilVal {
+				state.RawPlan = cty.ObjectVal(map[string]cty.Value{"use_recommended_suppressions": tc.plan})
+			}
+			if tc.state != cty.NilVal {
+				state.RawState = cty.ObjectVal(map[string]cty.Value{"use_recommended_suppressions": tc.state})
+			}
+			data := resourceDatadogSensitiveDataScannerRule().Data(state)
+			payload := buildSensitiveDataScannerSuppressions(data)
+			if tc.want == nil {
+				assert.False(t, payload.HasUseRecommendedSuppressions())
+			} else {
+				require.True(t, payload.HasUseRecommendedSuppressions())
+				assert.Equal(t, tc.want, payload.GetUseRecommendedSuppressions())
+			}
+		})
 	}
 }
 
@@ -174,7 +218,7 @@ func TestSensitiveDataScannerSuppressionsRead(t *testing.T) {
 	data := resourceDatadogSensitiveDataScannerRule().Data(&terraform.InstanceState{ID: "legacy", Attributes: map[string]string{"standard_pattern_id": "standard"}})
 	attributes := datadogV2.NewSensitiveDataScannerRuleAttributesWithDefaults()
 	require.False(t, updateSensitiveDataScannerRuleState(data, attributes).HasError())
-	_, known := data.GetOkExists("use_recommended_suppressions")
+	_, known := data.State().Attributes["use_recommended_suppressions"]
 	assert.False(t, known, "missing API choice must remain unset")
 	payload := buildSensitiveDataScannerSuppressions(data)
 	assert.False(t, payload.HasUseRecommendedSuppressions())
@@ -263,6 +307,13 @@ func TestSensitiveDataScannerSuppressionsLifecycle(t *testing.T) {
 				require.NoError(t, err)
 				if diff != nil && !diff.Empty() {
 					diff.RawConfig = state.RawConfig
+					diff.RawState, err = state.AttrsAsObjectValue(r.CoreConfigSchema().ImpliedType())
+					require.NoError(t, err)
+					plannedAttributes, err := diff.Apply(state.Attributes, r.CoreConfigSchema())
+					require.NoError(t, err)
+					plannedState := &terraform.InstanceState{Attributes: plannedAttributes}
+					diff.RawPlan, err = plannedState.AttrsAsObjectValue(r.CoreConfigSchema().ImpliedType())
+					require.NoError(t, err)
 					updated, diags := r.Apply(ctx, state, diff, provider)
 					require.False(t, diags.HasError(), "%v", diags)
 					state = updated

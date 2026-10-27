@@ -473,13 +473,29 @@ func buildSensitiveDataScannerSuppressions(d *schema.ResourceData) datadogV2.Sen
 	}
 
 	if _, hasStandardPattern := d.GetOk("standard_pattern_id"); hasStandardPattern {
-		if useRecommendedSuppressions, hasRecommendationChoice := d.GetOkExists("use_recommended_suppressions"); hasRecommendationChoice {
-			suppressions.SetUseRecommendedSuppressions(useRecommendedSuppressions.(bool))
+		if useRecommendedSuppressions, hasRecommendationChoice := sensitiveDataScannerRecommendationChoice(d); hasRecommendationChoice {
+			suppressions.SetUseRecommendedSuppressions(useRecommendedSuppressions)
 		} else if d.IsNewResource() || d.Id() == "" {
 			suppressions.SetUseRecommendedSuppressions(true)
 		}
 	}
 	return *suppressions
+}
+
+func sensitiveDataScannerRecommendationChoice(d *schema.ResourceData) (bool, bool) {
+	values := d.GetRawPlan()
+	if values.IsNull() {
+		values = d.GetRawState()
+	}
+	if values.IsNull() || !values.IsKnown() {
+		return false, false
+	}
+
+	choice := values.GetAttr("use_recommended_suppressions")
+	if choice.IsNull() || !choice.IsKnown() {
+		return false, false
+	}
+	return choice.True(), true
 }
 
 func isSensitiveDataScannerRuleBlockConfigured(d *schema.ResourceData, attr string) bool {
