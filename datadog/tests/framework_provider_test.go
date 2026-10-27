@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"runtime"
 	"testing"
@@ -210,6 +211,9 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.CreateTagIndexingRuleExemption", true)
 	config.SetUnstableOperationEnabled("v2.GetTagIndexingRuleExemption", true)
 	config.SetUnstableOperationEnabled("v2.DeleteTagIndexingRuleExemption", true)
+	config.SetUnstableOperationEnabled("v2.CreateHistoricalMetricsConfiguration", true)
+	config.SetUnstableOperationEnabled("v2.GetHistoricalMetricsConfiguration", true)
+	config.SetUnstableOperationEnabled("v2.DeleteHistoricalMetricsConfiguration", true)
 
 	// Enable Governance Controls
 	config.SetUnstableOperationEnabled("v2.GetGovernanceControl", true)
@@ -445,6 +449,15 @@ func TestFrameworkProviderConfigure_APIKeyOnly(t *testing.T) {
 	}
 	if p.DatadogApiInstances == nil {
 		t.Fatal("DatadogApiInstances should be set")
+	}
+
+	for _, operation := range []string{"v2.CreateHistoricalMetricsConfiguration", "v2.GetHistoricalMetricsConfiguration", "v2.DeleteHistoricalMetricsConfiguration"} {
+		if !p.DatadogApiInstances.HttpClient.GetConfig().IsUnstableOperationEnabled(operation) {
+			t.Errorf("historical operation %s is not enabled by provider configuration", operation)
+		}
+		if !buildFrameworkDatadogClient(context.Background(), http.DefaultClient).GetConfig().IsUnstableOperationEnabled(operation) {
+			t.Errorf("historical operation %s is not enabled by the acceptance client", operation)
+		}
 	}
 
 	// Verify DelegatedTokenConfig is NOT set (API key auth is used)
@@ -699,4 +712,44 @@ func TestFrameworkProviderConfigure_NoCredentialsErrors(t *testing.T) {
 	if !diags.HasError() {
 		t.Error("framework provider configure should error when no credentials are provided and validate=true")
 	}
+}
+
+func TestFrameworkProviderConfigure_HistoricalCustomURL(t *testing.T) {
+
+	var calls int
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+
+		calls++
+
+		if req.URL.Path != "/api/v2/metrics/historical-metrics-configurations/example.metric" || req.Method != http.MethodGet {
+			t.Errorf("unexpected request: %s %s", req.Method, req.URL.Path)
+		}
+
+		if req.Header.Get("DD-API-KEY") != "api-key" || req.Header.Get("DD-APPLICATION-KEY") != "app-key" {
+			t.Error("provider auth missing")
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprint(w, `{"data":{"id":"example.metric","type":"historical_metrics_configurations"}}`)
+
+	}))
+
+	defer server.Close()
+
+	p := fwprovider.New().(*fwprovider.FrameworkProvider)
+
+	cfg := &fwprovider.ProviderSchema{ApiKey: types.StringValue("api-key"), AppKey: types.StringValue("app-key"), ApiUrl: types.StringValue(server.URL), Validate: types.StringValue("false"), HttpClientRetryEnabled: types.StringValue("false")}
+
+	if d := p.ConfigureCallbackFunc(p, &provider.ConfigureRequest{}, cfg); d.HasError() {
+		t.Fatalf("configure: %v", d)
+	}
+
+	result, h, err := p.DatadogApiInstances.GetMetricsApiV2().GetHistoricalMetricsConfiguration(p.Auth, "example.metric")
+
+	data := result.GetData()
+	if err != nil || h == nil || h.StatusCode != 200 || data.GetId() != "example.metric" || calls != 1 {
+		t.Fatalf("result=%v http=%v err=%v calls=%d", result, h, err, calls)
+	}
+
 }

@@ -104,6 +104,7 @@ var Resources = []func() resource.Resource{
 	NewSpansMetricResource,
 	NewTagIndexingRuleResource,
 	NewTagIndexingRuleExemptionResource,
+	NewMetricHistoricalIngestionResource,
 	NewTagIndexingRuleOrderResource,
 	NewSyntheticsConcurrencyCapResource,
 	NewSyntheticsGlobalVariableResource,
@@ -957,6 +958,10 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateTagIndexingRuleExemption", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetTagIndexingRuleExemption", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteTagIndexingRuleExemption", true)
+
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateHistoricalMetricsConfiguration", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetHistoricalMetricsConfiguration", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteHistoricalMetricsConfiguration", true)
 
 	// Enable Governance Controls
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetGovernanceControl", true)
