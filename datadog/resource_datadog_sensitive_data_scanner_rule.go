@@ -149,11 +149,17 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 					Description:  "Priority level of the rule (optional). Used to order sensitive data discovered in the sds summary page. It must be between 1 and 5 (1 being the most important).",
 					ValidateFunc: validation.IntBetween(1, 5),
 				},
+				"use_recommended_suppressions": {
+					Type:        schema.TypeBool,
+					Optional:    true,
+					Computed:    true,
+					Description: "Whether to use the standard pattern's recommended suppressions. Requires `standard_pattern_id` when true. Defaults to true for new standard-pattern rules. When omitted for an existing or imported rule, preserves the current API choice. Custom suppressions are managed separately in the `suppressions` block and are retained when this setting changes.",
+				},
 				"suppressions": {
 					Type:        schema.TypeList,
 					Optional:    true,
 					MaxItems:    1,
-					Description: "Object defining a set of suppressions to skip matches based on a set of rules. The available suppression types are `starts_with`, `ends_with`, and `exact_match`.",
+					Description: "Object defining custom suppressions to skip matches based on `starts_with`, `ends_with`, and `exact_match` rules. Custom lists are managed independently of `use_recommended_suppressions`; replacing or removing this block updates or clears the custom lists while preserving the recommendation choice. Recommended suppressions are not copied into these lists.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"starts_with": {
@@ -183,6 +189,9 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 }
 
 func resourceDatadogSensitiveDataScannerRuleCustomizeDiff(_ context.Context, diff *schema.ResourceDiff, _ interface{}) error {
+	if err := customizeSensitiveDataScannerRecommendedSuppressions(diff); err != nil {
+		return err
+	}
 	if _, ok := diff.GetOk("text_replacement"); ok {
 		// Only allow should_save_match when type == "replacement_string"
 		if typeValRaw, ok := diff.GetOk("text_replacement.0.type"); ok {
@@ -210,6 +219,30 @@ func resourceDatadogSensitiveDataScannerRuleCustomizeDiff(_ context.Context, dif
 		return diff.SetNew("description", "")
 	}
 	return diff.Clear("description")
+}
+
+func customizeSensitiveDataScannerRecommendedSuppressions(diff *schema.ResourceDiff) error {
+	if !diff.NewValueKnown("standard_pattern_id") {
+		return nil
+	}
+	_, hasStandardPatternID := diff.GetOk("standard_pattern_id")
+	recommendedSuppressionsConfig, configDiagnostics := diff.GetRawConfigAt(cty.GetAttrPath("use_recommended_suppressions"))
+	if configDiagnostics.HasError() {
+		return nil
+	}
+	isNewRule := diff.Id() == ""
+	isRecommendationChoiceOmitted := recommendedSuppressionsConfig.IsNull()
+	if isNewRule && isRecommendationChoiceOmitted {
+		return diff.SetNew("use_recommended_suppressions", hasStandardPatternID)
+	}
+	if !hasStandardPatternID && isSensitiveDataScannerRecommendedSuppressionsExplicitlyEnabled(recommendedSuppressionsConfig) {
+		return fmt.Errorf("use_recommended_suppressions requires standard_pattern_id when set to true")
+	}
+	return nil
+}
+
+func isSensitiveDataScannerRecommendedSuppressionsExplicitlyEnabled(config cty.Value) bool {
+	return config.IsKnown() && !config.IsNull() && config.True()
 }
 
 func isSensitiveDataScannerRuleDescriptionConfigured(diff *schema.ResourceDiff) bool {
@@ -418,29 +451,35 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 		attributes.SetPriority(int64(priority.(int)))
 	}
 
-	if isSensitiveDataScannerRuleBlockConfigured(d, "suppressions") {
-		suppressionsList := d.Get("suppressions").([]interface{})
-		if len(suppressionsList) > 0 && suppressionsList[0] != nil {
-			suppressionsMap := suppressionsList[0].(map[string]interface{})
-			suppressions := datadogV2.NewSensitiveDataScannerSuppressions()
-
-			if startsWith, ok := suppressionsMap["starts_with"].([]interface{}); ok && len(startsWith) > 0 {
-				suppressions.SetStartsWith(buildSensitiveDataScannerStringList(startsWith))
-			}
-			if endsWith, ok := suppressionsMap["ends_with"].([]interface{}); ok && len(endsWith) > 0 {
-				suppressions.SetEndsWith(buildSensitiveDataScannerStringList(endsWith))
-			}
-			if exactMatch, ok := suppressionsMap["exact_match"].([]interface{}); ok && len(exactMatch) > 0 {
-				suppressions.SetExactMatch(buildSensitiveDataScannerStringList(exactMatch))
-			}
-
-			if suppressions.HasStartsWith() || suppressions.HasEndsWith() || suppressions.HasExactMatch() {
-				attributes.SetSuppressions(*suppressions)
-			}
-		}
+	_, hasStandardPattern := d.GetOk("standard_pattern_id")
+	if hasStandardPattern || d.Id() != "" || len(d.Get("suppressions").([]interface{})) > 0 {
+		attributes.SetSuppressions(buildSensitiveDataScannerSuppressions(d))
 	}
 
 	return attributes
+}
+
+func buildSensitiveDataScannerSuppressions(d *schema.ResourceData) datadogV2.SensitiveDataScannerSuppressions {
+	suppressions := datadogV2.NewSensitiveDataScannerSuppressions()
+	suppressions.SetStartsWith([]string{})
+	suppressions.SetEndsWith([]string{})
+	suppressions.SetExactMatch([]string{})
+
+	if suppressionBlocks := d.Get("suppressions").([]interface{}); len(suppressionBlocks) > 0 && suppressionBlocks[0] != nil {
+		customSuppressions := suppressionBlocks[0].(map[string]interface{})
+		suppressions.SetStartsWith(buildSensitiveDataScannerStringList(customSuppressions["starts_with"].([]interface{})))
+		suppressions.SetEndsWith(buildSensitiveDataScannerStringList(customSuppressions["ends_with"].([]interface{})))
+		suppressions.SetExactMatch(buildSensitiveDataScannerStringList(customSuppressions["exact_match"].([]interface{})))
+	}
+
+	if _, hasStandardPattern := d.GetOk("standard_pattern_id"); hasStandardPattern {
+		if useRecommendedSuppressions, hasRecommendationChoice := d.GetOkExists("use_recommended_suppressions"); hasRecommendationChoice {
+			suppressions.SetUseRecommendedSuppressions(useRecommendedSuppressions.(bool))
+		} else if d.IsNewResource() || d.Id() == "" {
+			suppressions.SetUseRecommendedSuppressions(true)
+		}
+	}
+	return *suppressions
 }
 
 func isSensitiveDataScannerRuleBlockConfigured(d *schema.ResourceData, attr string) bool {
@@ -470,11 +509,6 @@ func resourceDatadogSensitiveDataScannerRuleUpdate(ctx context.Context, d *schem
 	id := d.Id()
 
 	attributes := buildSensitiveDataScannerRuleAttributes(d)
-	if !attributes.HasSuppressions() {
-		// The SDS API preserves existing suppressions when the field is omitted on update,
-		// so we must send an explicit empty object to clear previously configured values.
-		attributes.SetSuppressions(*datadogV2.NewSensitiveDataScannerSuppressions())
-	}
 
 	req := datadogV2.NewSensitiveDataScannerRuleUpdateRequestWithDefaults()
 	req.Data = *datadogV2.NewSensitiveDataScannerRuleUpdateWithDefaults()
@@ -591,6 +625,18 @@ func updateSensitiveDataScannerRuleState(d *schema.ResourceData, ruleAttributes 
 		return diag.FromErr(err)
 	}
 
+	if _, hasStandardPattern := d.GetOk("standard_pattern_id"); !hasStandardPattern {
+		if err := d.Set("use_recommended_suppressions", false); err != nil {
+			return diag.FromErr(err)
+		}
+	} else if suppressions, ok := ruleAttributes.GetSuppressionsOk(); ok {
+		if useRecommendedSuppressions, hasRecommendationChoice := suppressions.GetUseRecommendedSuppressionsOk(); hasRecommendationChoice {
+			if err := d.Set("use_recommended_suppressions", *useRecommendedSuppressions); err != nil {
+				return diag.FromErr(err)
+			}
+		}
+	}
+
 	if suppressions, ok := ruleAttributes.GetSuppressionsOk(); ok && suppressions != nil {
 		suppressionsState := make(map[string]interface{})
 		suppressionsList := make([]map[string]interface{}, 0, 1)
@@ -605,7 +651,8 @@ func updateSensitiveDataScannerRuleState(d *schema.ResourceData, ruleAttributes 
 			suppressionsState["exact_match"] = *exactMatch
 		}
 
-		if len(suppressionsState) > 0 {
+		hasConfiguredSuppressionsBlock := len(d.Get("suppressions").([]interface{})) > 0 && isSensitiveDataScannerRuleBlockConfigured(d, "suppressions")
+		if len(suppressionsState) > 0 || hasConfiguredSuppressionsBlock {
 			suppressionsList = append(suppressionsList, suppressionsState)
 			if err := d.Set("suppressions", suppressionsList); err != nil {
 				return diag.FromErr(err)
