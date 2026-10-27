@@ -2130,6 +2130,7 @@ Optional:
 - `rename_metric_tags` (Block List) The `rename_metric_tags` processor changes the keys of tags on metrics. (see [below for nested schema](#nestedblock--config--processor_group--processor--rename_metric_tags))
 - `sample` (Block List) The `sample` processor allows probabilistic sampling of logs at a fixed rate. (see [below for nested schema](#nestedblock--config--processor_group--processor--sample))
 - `sensitive_data_scanner` (Block List) The `sensitive_data_scanner` processor detects and optionally redacts sensitive data in log events. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner))
+- `spike_protection` (Block List) The `spike_protection` processor learns the normal log volume and detects spikes, optionally dropping or rerouting the excess events. (see [below for nested schema](#nestedblock--config--processor_group--processor--spike_protection))
 - `split_array` (Block List) The `split_array` processor splits array fields into separate events based on configured rules. (see [below for nested schema](#nestedblock--config--processor_group--processor--split_array))
 - `tag_cardinality_limit` (Block List) The `tag_cardinality_limit` processor caps the number of distinct tag value combinations on metrics, dropping tags or events once the limit is exceeded. (see [below for nested schema](#nestedblock--config--processor_group--processor--tag_cardinality_limit))
 - `throttle` (Block List) The `throttle` processor limits the number of events that pass through over a given time window. (see [below for nested schema](#nestedblock--config--processor_group--processor--throttle))
@@ -2947,6 +2948,53 @@ Optional:
 
 - `fields` (List of String) The fields to include in scanning.
 
+
+
+
+
+<a id="nestedblock--config--processor_group--processor--spike_protection"></a>
+### Nested Schema for `config.processor_group.processor.spike_protection`
+
+Required:
+
+- `name` (String) Name of the spike protection rule.
+- `spike_action` (String) The action to take when a spike is detected. One of `drop`, `no_action`, `overflow_routing`. When `overflow_routing` is used, there must be a destination whose `inputs` reference this processor with the `<processor-id>.overflow_events` suffix to route the overflowing events. Valid values are `drop`, `no_action`, `overflow_routing`.
+
+Optional:
+
+- `action_when_missing_partitions` (String) The action to take when an event is missing one of the `partition_fields`. One of `ignore`, `default_bucket`. Valid values are `ignore`, `default_bucket`.
+- `minimal_threshold` (Number) The minimum volume, in bytes, that must be observed within 24 hours before spike protection can activate. Defaults to 100 GiB.
+- `minimal_threshold_override` (Block List) A list of per-partition overrides for the minimal threshold, identified by matching field values. Requires `partition_fields` to be set. (see [below for nested schema](#nestedblock--config--processor_group--processor--spike_protection--minimal_threshold_override))
+- `partition_fields` (List of String) A list of fields used to segment log traffic. Volume is learned and evaluated independently for each unique combination of these field values. A maximum of five fields is supported.
+- `spike_threshold` (Number) The number of standard deviations above the learned mean volume that must be exceeded before a spike is detected. Defaults to `5`.
+
+<a id="nestedblock--config--processor_group--processor--spike_protection--minimal_threshold_override"></a>
+### Nested Schema for `config.processor_group.processor.spike_protection.minimal_threshold_override`
+
+Optional:
+
+- `field` (Block List) The set of field matchers that identifies the partition this override applies to. Every field name listed must also appear in `partition_fields`. (see [below for nested schema](#nestedblock--config--processor_group--processor--spike_protection--minimal_threshold_override--field))
+- `minimal_threshold` (Block List) The minimal threshold to apply to the matching partition. (see [below for nested schema](#nestedblock--config--processor_group--processor--spike_protection--minimal_threshold_override--minimal_threshold))
+
+<a id="nestedblock--config--processor_group--processor--spike_protection--minimal_threshold_override--field"></a>
+### Nested Schema for `config.processor_group.processor.spike_protection.minimal_threshold_override.field`
+
+Required:
+
+- `name` (String) The field name.
+- `value` (String) The field value.
+
+
+<a id="nestedblock--config--processor_group--processor--spike_protection--minimal_threshold_override--minimal_threshold"></a>
+### Nested Schema for `config.processor_group.processor.spike_protection.minimal_threshold_override.minimal_threshold`
+
+Required:
+
+- `type` (String) The minimal threshold type. One of `threshold`, `always_keep`. `always_keep` exempts the matching partition from spike protection. Valid values are `threshold`, `always_keep`.
+
+Optional:
+
+- `bytes` (Number) The minimum volume, in bytes, that must be observed within 24 hours before spike protection can activate for the matching partition. Used only when `type` is `threshold`.
 
 
 
