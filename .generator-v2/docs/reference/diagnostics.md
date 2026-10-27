@@ -136,9 +136,13 @@ A diagnostic such as `cannot build attribute at
 `additionalProperties declares unconstrained values` identifies a map declared
 with `additionalProperties: {}`, `additionalProperties: true`, or a value of
 `type: object` without properties. tfgen cannot choose a Terraform value type
-from that schema. When the value is a `$ref`, the diagnostic names the
-referenced component instead, since that is where the type is missing. The path includes `[]` for list
-items and `{}` for map values containing named properties.
+from that schema. When the value is a `$ref`, the diagnostic names the component
+at the end of the `$ref` chain instead, since that is where the type is missing.
+
+The path names the map attribute itself, not its value: an unrepresentable
+element or value type is reported at the collection's own path. `[]` and `{}`
+appear only for the enclosing collections, as in `environments[]` above, where
+the map sits inside the items of a list.
 
 Describe the actual API values with a concrete schema or `$ref` under
 `additionalProperties`. If the API returns an array, correct the declaration to

@@ -36,6 +36,20 @@ func (e *UnsupportedKindError) Error() string {
 		e.Path, e.Kind, reasonText(e.Reason))
 }
 
+// AttributeError reports a representable node whose framework or element type
+// cannot be mapped, naming the attribute path. Err is the mapping failure; its
+// own "model: " prefix is dropped so the message carries the package once.
+type AttributeError struct {
+	Path string
+	Err  error
+}
+
+func (e *AttributeError) Error() string {
+	return fmt.Sprintf("model: cannot build attribute at %q: %s", e.Path, strings.TrimPrefix(e.Err.Error(), "model: "))
+}
+
+func (e *AttributeError) Unwrap() error { return e.Err }
+
 // OneOfProjectionError reports a union that cannot be projected into a Terraform
 // envelope, naming the envelope, the offending alternative and the schema path,
 // and wrapping the underlying per-alternative failure when there is one.
@@ -176,7 +190,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 
 	tfType, goType, err := FrameworkType(s)
 	if err != nil {
-		return nil, fmt.Errorf("model: cannot build attribute at %q: %w", path, err)
+		return nil, &AttributeError{Path: path, Err: err}
 	}
 
 	attr := &Attribute{
@@ -237,7 +251,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 			var err error
 			attr.ElementType, attr.ElementFormat, attr.ElementIsEnum, err = elementInfo(s.Items)
 			if err != nil {
-				return nil, fmt.Errorf("model: cannot build attribute at %q: %w", path, err)
+				return nil, &AttributeError{Path: path, Err: err}
 			}
 		}
 
@@ -260,7 +274,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 			var err error
 			attr.ElementType, attr.ElementFormat, attr.ElementIsEnum, err = elementInfo(s.Items)
 			if err != nil {
-				return nil, fmt.Errorf("model: cannot build attribute at %q: %w", path, err)
+				return nil, &AttributeError{Path: path, Err: err}
 			}
 		}
 	}
