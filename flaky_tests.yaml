@@ -131,6 +131,20 @@ skipped_tests:
     added: "2026-03-02"
     author: fpighi
 
+  # Confluent integration — CI org mismatch (3 tests)
+  - test: TestAccIntegrationConfluentAccountBasic
+    reason: "PR integration CI keys do not belong to the test org (fasjyydbcgwwc2uc) — isTestOrg() fails in RECORD=none mode"
+    added: "2026-06-10"
+    author: ieguinoa
+  - test: TestAccIntegrationConfluentAccountUpdated
+    reason: "PR integration CI keys do not belong to the test org (fasjyydbcgwwc2uc) — isTestOrg() fails in RECORD=none mode"
+    added: "2026-06-10"
+    author: ieguinoa
+  - test: TestAccIntegrationConfluentResourceBasic
+    reason: "PR integration CI keys do not belong to the test org (fasjyydbcgwwc2uc) — isTestOrg() fails in RECORD=none mode"
+    added: "2026-06-10"
+    author: ieguinoa
+
   # External service config missing (2 tests)
   - test: TestAccMSTeamsWorkflowsWebhookHandlesBasic
     reason: "Initial sync of tests failing on master branch"
