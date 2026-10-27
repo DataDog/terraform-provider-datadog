@@ -1174,6 +1174,10 @@ func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaC
 		schema *model.Schema
 	}
 	branches := make([]structuralBranch, 0, len(s.AllOf))
+	// For a map value, keep checking after an untyped branch so the advice
+	// applies only if every branch lacks a value type. Preserve the first
+	// failure when a later branch supplies a type or a different constraint.
+	var firstUnsupported string
 	for i, proxy := range s.AllOf {
 		branch, err := n.normalizeProxyAt(proxy, depth, ctx)
 		if err != nil {
@@ -1198,11 +1202,23 @@ func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaC
 			if reason == "" {
 				reason = fmt.Sprintf("allOf branch %d has unsupported schema kind %q", i+1, branch.Kind)
 			}
-			return unsupported(reason), nil
+			if firstUnsupported == "" {
+				firstUnsupported = reason
+			}
+			if ctx.lastRef == nil || !declaresNoMapValueType(raw, branch) {
+				return unsupported(firstUnsupported), nil
+			}
+			continue
 		}
 		branches = append(branches, structuralBranch{index: i + 1, schema: branch})
 	}
 
+	if firstUnsupported != "" {
+		if len(branches) == 0 {
+			return unsupported(allOfNoValueTypeReason), nil
+		}
+		return unsupported(firstUnsupported), nil
+	}
 	if len(branches) == 0 {
 		return unsupported(allOfNoStructuralBranchesReason), nil
 	}
@@ -1524,6 +1540,10 @@ func nonNullTypes(types []string) []string {
 // annotates: it declares no value type of its own.
 const allOfNoStructuralBranchesReason = "allOf has no structural branches"
 
+// allOfNoValueTypeReason marks a composition whose structural branches all
+// declare no value type, including free-form objects and nested compositions.
+const allOfNoValueTypeReason = "allOf branches declare no value type"
+
 // unconstrainedMapValueReason explains a map value that declares no value type.
 // A value reached through a $ref names the component at the end of the chain,
 // since that is where the fix belongs. An unconstrained map needs an explicit
@@ -1551,8 +1571,8 @@ func declaresNoMapValueType(s *base.Schema, value *model.Schema) bool {
 	switch value.UnsupportedReason {
 	case "":
 		return declaresNoValueType(s)
-	case allOfNoStructuralBranchesReason:
-		// Every branch only annotated, so the outer schema alone decides.
+	case allOfNoStructuralBranchesReason, allOfNoValueTypeReason:
+		// Every branch lacks a value type, so the outer schema alone decides.
 		outer := *s
 		outer.AllOf = nil
 		return declaresNoValueType(&outer)

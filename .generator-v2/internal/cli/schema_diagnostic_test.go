@@ -74,6 +74,58 @@ func TestGenerateReportsUnconstrainedMapPath(t *testing.T) {
 			components: "    ItemlessList:\n      type: array\n",
 			notWant:    unconstrained,
 		},
+		{
+			name:   "allOf wrapping free-form object",
+			schema: "type: object\n              additionalProperties:\n                allOf:\n                  - type: object",
+			want:   unconstrained,
+		},
+		{
+			name:   "allOf with multiple untyped branches",
+			schema: "type: object\n              additionalProperties:\n                allOf:\n                  - type: object\n                  - type: object\n                    minProperties: 1",
+			want:   unconstrained,
+		},
+		{
+			name:   "nested allOf wrapping free-form object",
+			schema: "type: object\n              additionalProperties:\n                allOf:\n                  - allOf:\n                      - type: object",
+			want:   unconstrained,
+		},
+		{
+			name:       "ref with siblings to free-form object",
+			schema:     "type: object\n              additionalProperties:\n                $ref: '#/components/schemas/Blob'\n                description: A value.",
+			components: "    Blob:\n      type: object\n",
+			want:       append([]string{`its $ref "Blob" has no properties and no scalar type`}, unconstrained...),
+		},
+		{
+			name:       "ref with siblings to literal empty component",
+			schema:     "type: object\n              additionalProperties:\n                $ref: '#/components/schemas/AnyValue'\n                description: A value.",
+			components: "    AnyValue: {}\n",
+			want:       append([]string{`its $ref "AnyValue" has no properties and no scalar type`}, unconstrained...),
+		},
+		{
+			name:    "allOf untyped then typed branch",
+			schema:  "type: object\n              additionalProperties:\n                allOf:\n                  - type: object\n                  - type: string",
+			notWant: unconstrained,
+		},
+		{
+			name:    "allOf untyped then itemless array branch",
+			schema:  "type: object\n              additionalProperties:\n                allOf:\n                  - type: object\n                  - type: array",
+			notWant: unconstrained,
+		},
+		{
+			name:    "allOf untyped then anyOf branch",
+			schema:  "type: object\n              additionalProperties:\n                allOf:\n                  - type: object\n                  - anyOf:\n                      - type: string\n                      - type: integer",
+			notWant: unconstrained,
+		},
+		{
+			name:    "allOf typed then untyped branch",
+			schema:  "type: object\n              additionalProperties:\n                allOf:\n                  - type: string\n                  - type: object",
+			notWant: unconstrained,
+		},
+		{
+			name:    "allOf with constrained outer schema",
+			schema:  "type: object\n              additionalProperties:\n                type: string\n                allOf:\n                  - type: object",
+			notWant: unconstrained,
+		},
 		{name: "object value counting properties", schema: "type: object\n              additionalProperties:\n                type: object\n                minProperties: 1", want: unconstrained},
 		{name: "object value requiring properties", schema: "type: object\n              additionalProperties:\n                type: object\n                required: [id]", want: unconstrained},
 		{name: "empty object value", schema: "type: object\n              additionalProperties:\n                type: object\n                additionalProperties: false", want: unconstrained},

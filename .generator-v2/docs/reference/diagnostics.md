@@ -142,10 +142,15 @@ with `additionalProperties: {}`, `additionalProperties: true`, or a value of
 value is a `$ref`, the diagnostic names the component at the end of the `$ref`
 chain instead, since that is where the type is missing.
 
-The path names the map attribute itself, not its value: an unrepresentable
-element or value type is reported at the collection's own path. `[]` and `{}`
-appear only for the enclosing collections, as in `environments[]` above, where
-the map sits inside the items of a list.
+For a map attribute, the path names the map itself, not its value. If the map
+is directly a list's item schema, the error is instead reported at the list's
+path with `collection element kind "unsupported" has no framework element type`
+followed by the unconstrained-value explanation. Nested collection failures
+currently report the enclosing collection's path; pointing to the failing
+level is tracked in [TF-413](https://datadoghq.atlassian.net/browse/TF-413).
+`[]` and `{}` can still appear for enclosing collections traversed before the
+failure, as in `environments[]` above, where the map is a named property of the
+list's object items.
 
 Describe the actual API values with a concrete schema or `$ref` under
 `additionalProperties`. If the API returns an array, correct the declaration to
