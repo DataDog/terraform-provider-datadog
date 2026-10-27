@@ -128,3 +128,17 @@ Retirement is fail-closed, so a refusal is the system working.
   artifact was adopted. Nothing is deleted; a human decides.
 - `registration_retired`: a stale registration whose implementation files are
   already gone.
+
+## Unconstrained map values
+
+A diagnostic such as `cannot build attribute at
+"resource.data.attributes.environments[].allocations"` followed by
+`additionalProperties declares unconstrained values` identifies a map declared
+with `additionalProperties: {}` or `additionalProperties: true`. tfgen cannot
+choose a Terraform value type from that schema. The path includes `[]` for list
+items and `{}` for map values containing named properties.
+
+Describe the actual API values with a concrete schema or `$ref` under
+`additionalProperties`. If the API returns an array, correct the declaration to
+`type: array` with typed `items` instead. Do not choose a type merely to make
+generation pass: the generated SDK and Terraform mapping must match the response.

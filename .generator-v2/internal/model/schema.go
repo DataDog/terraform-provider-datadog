@@ -176,7 +176,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 
 	tfType, goType, err := FrameworkType(s)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("model: cannot build attribute at %q: %w", path, err)
 	}
 
 	attr := &Attribute{
@@ -237,7 +237,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 			var err error
 			attr.ElementType, attr.ElementFormat, attr.ElementIsEnum, err = elementInfo(s.Items)
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("model: cannot build attribute at %q: %w", path, err)
 			}
 		}
 
@@ -260,7 +260,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 			var err error
 			attr.ElementType, attr.ElementFormat, attr.ElementIsEnum, err = elementInfo(s.Items)
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("model: cannot build attribute at %q: %w", path, err)
 			}
 		}
 	}
