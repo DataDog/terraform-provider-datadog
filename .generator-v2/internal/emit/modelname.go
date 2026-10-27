@@ -15,8 +15,10 @@ import (
 //
 // Both halves are load-bearing, and each closes a distinct collision scope.
 //
-// The **artifact base** (dsGoName, e.g. "datadogActionConnection") closes the
-// cross-artifact scope. Every generated data source lands in package fwprovider, so
+// The **artifact base** (dsGoName for data sources, dsGoName + "Resource"
+// for resources, e.g. "datadogActionConnectionResource") closes the
+// cross-artifact scope, including a resource and data source sharing a name.
+// Every generated artifact lands in package fwprovider, so
 // two artifacts that share an OpenAPI component would otherwise each declare the
 // same struct and neither could be compiled alongside the other. That is not
 // hypothetical: 54 of the components in the mini-OAS corpus appear in more than one
@@ -37,7 +39,7 @@ import (
 // A component-derived stem also makes two uses of one component in one artifact
 // converge on a single struct, which dedupeModels then collapses.
 type modelNamer struct {
-	// base is the artifact's Go name stem, already lowerCamel (dsGoName).
+	// base is the artifact's lowerCamel stem, with a Resource suffix for resources.
 	base string
 }
 

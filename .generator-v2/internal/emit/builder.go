@@ -1876,7 +1876,10 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 
 	primary := lc.Read
 	goName := dsGoName(a.Name)
-	b := &dataSourceBuilder{receiver: "attributes", namer: modelNamer{base: goName}}
+	// Resources and data sources may share a Terraform name, but all emitted
+	// Go models live in fwprovider. Scope resource nested models separately;
+	// keep existing data-source names stable.
+	b := &dataSourceBuilder{receiver: "attributes", namer: modelNamer{base: goName + "Resource"}}
 
 	// Split the path parameters back out: they are not part of the JSON:API
 	// envelope, so flattenEnvelope would drop them as stray siblings. Keyed on
@@ -1895,7 +1898,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		return ResourceView{}, &UnsupportedEmitError{Nodes: b.unsupported}
 	}
 
-	rootStruct := b.namer.qualify("ResourceModel")
+	rootStruct := b.namer.qualify("Model")
 	b.filterByResponse = true
 	recordAttrs, recordBlocks, recordScalars, recordLists := b.walk(rootStruct, "", b.receiver, "state", env.leaves)
 

@@ -1,6 +1,9 @@
 package emit
 
 import (
+	"go/ast"
+	"go/parser"
+	"go/token"
 	"strings"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -110,6 +113,52 @@ func modelNames(view DataSourceView) []string {
 }
 
 var _ = Describe("generated model naming", func() {
+
+	It("keeps same-name resource and data-source declarations disjoint", func() {
+		op := widgetResourceOperation()
+		resourceView, err := BuildResourceView(mustArtifact(op))
+		Expect(err).NotTo(HaveOccurred())
+
+		read := *op.ResolvedGroup.Read
+		read.Tracking = &model.TrackingFieldMetadata{
+			ArtifactKind: model.ArtifactKindDataSource,
+			ArtifactName: "widget",
+			IdStrategy:   model.IdStrategyDataID,
+			Group:        &model.OperationGroup{Read: read.OperationId},
+		}
+		dataSourceView, err := BuildDataSourceView(mustArtifact(&read))
+		Expect(err).NotTo(HaveOccurred())
+		resourceSource, err := RenderResource(resourceView)
+		Expect(err).NotTo(HaveOccurred())
+		dataSourceSource, err := RenderDataSource(dataSourceView)
+		Expect(err).NotTo(HaveOccurred())
+
+		// Both files land in fwprovider. Formatting each file alone cannot
+		// detect duplicate package-level declarations across artifacts.
+		declared := map[string]string{}
+		for filename, source := range map[string][]byte{
+			"resource.go": resourceSource, "data_source.go": dataSourceSource,
+		} {
+			file, err := parser.ParseFile(token.NewFileSet(), filename, source, 0)
+			Expect(err).NotTo(HaveOccurred())
+			for _, decl := range file.Decls {
+				gen, ok := decl.(*ast.GenDecl)
+				if !ok || gen.Tok != token.TYPE {
+					continue
+				}
+				for _, spec := range gen.Specs {
+					name := spec.(*ast.TypeSpec).Name.Name
+					Expect(declared).NotTo(HaveKey(name), "%s redeclares %s from %s", filename, name, declared[name])
+					declared[name] = filename
+				}
+			}
+		}
+		Expect(declared).To(HaveKey("datadogWidgetResourceModel"))
+		Expect(declared).To(HaveKey("datadogWidgetDataSourceModel"))
+		Expect(string(resourceSource)).To(ContainSubstring("*datadogWidgetResourceWidgetSettingsResponseModel"))
+		Expect(string(resourceSource)).To(ContainSubstring("*datadogWidgetResourceWidgetLimitsResponseModel"))
+		Expect(string(dataSourceSource)).To(ContainSubstring("*datadogWidgetWidgetSettingsResponseModel"))
+	})
 
 	Context("two objects under one property name", func() {
 		It("names each after its own component instead of colliding", func() {
