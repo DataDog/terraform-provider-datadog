@@ -101,6 +101,11 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateIncidentType", true)
 	config.SetUnstableOperationEnabled("v2.DeleteIncidentType", true)
 
+	// Enable IncidentHandle
+	config.SetUnstableOperationEnabled("v2.CreateGlobalIncidentHandle", true)
+	config.SetUnstableOperationEnabled("v2.ListGlobalIncidentHandles", true)
+	config.SetUnstableOperationEnabled("v2.UpdateGlobalIncidentHandle", true)
+
 	// Enable IncidentNotificationTemplate
 	config.SetUnstableOperationEnabled("v2.CreateIncidentNotificationTemplate", true)
 	config.SetUnstableOperationEnabled("v2.GetIncidentNotificationTemplate", true)
