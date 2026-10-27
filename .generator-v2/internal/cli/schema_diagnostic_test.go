@@ -30,7 +30,7 @@ func TestGenerateReportsUnconstrainedMapPath(t *testing.T) {
 			name:       "ref to empty component",
 			schema:     "type: object\n              additionalProperties:\n                $ref: '#/components/schemas/AnyValue'",
 			components: "    AnyValue:\n      description: Any value.\n",
-			want:       append([]string{`its $ref "AnyValue" has no value type`}, unconstrained...),
+			want:       append([]string{`its $ref "AnyValue" has no type or properties`}, unconstrained...),
 			notWant:    []string{"under additionalProperties"},
 		},
 		{
@@ -39,7 +39,7 @@ func TestGenerateReportsUnconstrainedMapPath(t *testing.T) {
 			name:       "ref chain to empty component",
 			schema:     "type: object\n              additionalProperties:\n                $ref: '#/components/schemas/AnyValueAlias'",
 			components: "    AnyValueAlias:\n      $ref: '#/components/schemas/AnyValue'\n    AnyValue:\n      description: Any value.\n",
-			want:       append([]string{`its $ref "AnyValue" has no value type`}, unconstrained...),
+			want:       append([]string{`its $ref "AnyValue" has no type or properties`}, unconstrained...),
 			notWant:    []string{`"AnyValueAlias"`},
 		},
 		{
@@ -50,6 +50,8 @@ func TestGenerateReportsUnconstrainedMapPath(t *testing.T) {
 			components: "    ItemlessList:\n      type: array\n",
 			notWant:    unconstrained,
 		},
+		{name: "object value counting properties", schema: "type: object\n              additionalProperties:\n                type: object\n                minProperties: 1", want: unconstrained},
+		{name: "object value requiring properties", schema: "type: object\n              additionalProperties:\n                type: object\n                required: [id]", want: unconstrained},
 		{name: "empty object value", schema: "type: object\n              additionalProperties:\n                type: object\n                additionalProperties: false", want: unconstrained},
 		{
 			// Constrained but unsupported: the unconstrained advice would point

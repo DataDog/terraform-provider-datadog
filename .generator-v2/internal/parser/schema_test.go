@@ -5,6 +5,8 @@ import (
 	"path/filepath"
 	"reflect"
 
+	"github.com/pb33f/libopenapi/datamodel/high/base"
+
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
@@ -809,6 +811,21 @@ var _ = Describe("raw schema identity traversal", func() {
 		schema, err := normalizer.resolveOverlayToSchema(componentProxy(components, "OverlayLoop"))
 		Expect(err).To(Succeed())
 		Expect(schema).To(BeNil())
+	})
+})
+
+var _ = Describe("unconstrained map value reason", func() {
+
+	// The reason only explains a failure already recorded on the value, so a
+	// lookup error must not abort normalization.
+	It("falls back to no reason when the value's $ref cannot be resolved", func() {
+		normalizer := &schemaNormalizer{maxDepth: 16}
+		proxy := base.CreateSchemaProxyRef("#/components/schemas/Missing")
+
+		_, _, err := normalizer.resolveRefChain(proxy, 0)
+		var unresolvable *UnresolvableRefError
+		Expect(errors.As(err, &unresolvable)).To(BeTrue(), "expected the lookup itself to fail, got %v", err)
+		Expect(normalizer.unconstrainedMapValueReason(proxy, 0)).To(BeEmpty())
 	})
 })
 

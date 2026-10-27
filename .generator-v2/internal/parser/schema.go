@@ -371,9 +371,13 @@ func (n *schemaNormalizer) singleAllOfStructuralBranchAt(s *base.Schema, depth i
 	}
 	var structural *base.SchemaProxy
 	for _, branch := range s.AllOf {
-		raw, err := n.resolveToSchemaAt(branch, depth, onStack)
+		end, _, err := n.resolveRefChainAt(branch, depth, "", onStack)
 		if err != nil {
 			return nil, false, err
+		}
+		var raw *base.Schema
+		if end != nil {
+			raw = end.Schema()
 		}
 		if isAnnotationOnlySchema(raw) {
 			continue
@@ -443,27 +447,39 @@ func (n *schemaNormalizer) findPropertyProxyAt(proxy *base.SchemaProxy, name str
 // *base.Schema, returning the raw libopenapi node so callers can read $ref
 // names the normalized model discards.
 func (n *schemaNormalizer) resolveToSchema(proxy *base.SchemaProxy) (*base.Schema, error) {
-	return n.resolveToSchemaAt(proxy, 0, make(map[string]bool))
+	end, _, err := n.resolveRefChain(proxy, 0)
+	if err != nil || end == nil {
+		return nil, err
+	}
+	return end.Schema(), nil
 }
 
-func (n *schemaNormalizer) resolveToSchemaAt(proxy *base.SchemaProxy, depth int, onStack map[string]bool) (*base.Schema, error) {
+// resolveRefChain follows a proxy through its $ref hops, with depth counting
+// the hops already followed, and returns the proxy at the end of the chain with
+// the last $ref followed ("" for an inline proxy). A cycle or the depth budget
+// yields a nil proxy.
+func (n *schemaNormalizer) resolveRefChain(proxy *base.SchemaProxy, depth int) (*base.SchemaProxy, string, error) {
+	return n.resolveRefChainAt(proxy, depth, "", make(map[string]bool))
+}
+
+func (n *schemaNormalizer) resolveRefChainAt(proxy *base.SchemaProxy, depth int, last string, onStack map[string]bool) (*base.SchemaProxy, string, error) {
 	if proxy == nil {
-		return nil, nil
+		return nil, "", nil
 	}
 	if proxy.IsReference() {
 		ref := proxy.GetReference()
 		if onStack[ref] || (n.maxDepth > 0 && depth >= n.maxDepth) {
-			return nil, nil
+			return nil, "", nil
 		}
 		target, err := n.resolveRef(ref)
 		if err != nil {
-			return nil, err
+			return nil, "", err
 		}
 		onStack[ref] = true
 		defer delete(onStack, ref)
-		return n.resolveToSchemaAt(target, depth+1, onStack)
+		return n.resolveRefChainAt(target, depth+1, ref, onStack)
 	}
-	return proxy.Schema(), nil
+	return proxy, last, nil
 }
 
 // lastRefSegment returns the component name after the final "/" of a $ref,
@@ -695,11 +711,7 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 			out.Items = collectionElement(value)
 			// Keep a reason the value already carries; it is more specific.
 			if out.Items.Kind == model.SchemaKindUnsupported && out.Items.UnsupportedReason == "" {
-				reason, err := n.unconstrainedMapValueReason(s.AdditionalProperties.A)
-				if err != nil {
-					return nil, err
-				}
-				out.Items.UnsupportedReason = reason
+				out.Items.UnsupportedReason = n.unconstrainedMapValueReason(s.AdditionalProperties.A, depth)
 			}
 		} else {
 			out.Items = &model.Schema{Kind: model.SchemaKindUnsupported, UnsupportedReason: unconstrainedMapReason}
@@ -1500,7 +1512,7 @@ func nonNullTypes(types []string) []string {
 
 // An unconstrained map needs an explicit API value schema before tfgen can
 // choose a Terraform element type. Do not guess a string or JSON representation.
-var unconstrainedMapReason = "additionalProperties declares unconstrained values ({}, true, or type: object without properties); " +
+var unconstrainedMapReason = "additionalProperties declares unconstrained values: no value schema, or one without a type or properties; " +
 	unconstrainedMapValueAdvice("with a type or $ref under additionalProperties")
 
 // unconstrainedMapValueAdvice says what to change; where names the place the
@@ -1510,66 +1522,48 @@ func unconstrainedMapValueAdvice(where string) string {
 }
 
 // unconstrainedMapValueReason explains an Unsupported map value that declares
-// no value type. A value reached through a $ref names the component at the end
-// of the chain, since that is where the fix belongs. It returns "" for a value
-// that is constrained but still unsupported (anyOf, an itemless array) or could
-// not be built: the unconstrained advice would point those at the wrong fix.
-func (n *schemaNormalizer) unconstrainedMapValueReason(proxy *base.SchemaProxy) (string, error) {
-	raw, ref, err := n.resolveRefTarget(proxy)
-	if err != nil || raw == nil || !declaresNoValueType(raw) {
-		return "", err
+// no value type, with depth counting the $ref hops already followed. A value
+// reached through a $ref names the component at the end of the chain, since
+// that is where the fix belongs. It only builds a message, so it never fails:
+// it returns "" for a value that is constrained but still unsupported (anyOf,
+// an itemless array) or cannot be resolved, which keeps its own diagnostic.
+func (n *schemaNormalizer) unconstrainedMapValueReason(proxy *base.SchemaProxy, depth int) string {
+	end, ref, err := n.resolveRefChain(proxy, depth)
+	if err != nil || end == nil {
+		return ""
+	}
+	// A $ref with sibling keywords merges like an allOf; its siblings alone do
+	// not say whether the values are typed.
+	if _, siblings := schemaRef(end); siblings {
+		return ""
+	}
+	if raw := end.Schema(); raw == nil || !declaresNoValueType(raw) {
+		return ""
 	}
 	if ref != "" {
 		name := lastRefSegment(ref)
-		return fmt.Sprintf("additionalProperties declares unconstrained values: its $ref %q has no value type; ", name) +
-			unconstrainedMapValueAdvice(fmt.Sprintf("in %q", name)), nil
+		return fmt.Sprintf("additionalProperties declares unconstrained values: its $ref %q has no type or properties; ", name) +
+			unconstrainedMapValueAdvice(fmt.Sprintf("in %q", name))
 	}
-	return unconstrainedMapReason, nil
-}
-
-// resolveRefTarget follows a proxy's $ref chain to the schema at its end and
-// returns the last $ref followed, or "" for an inline schema. Unlike
-// resolveToSchema it also follows a $ref written with sibling keywords, reading
-// it as schemaRef does. A cycle or the depth budget yields a nil schema.
-func (n *schemaNormalizer) resolveRefTarget(proxy *base.SchemaProxy) (*base.Schema, string, error) {
-	last := ""
-	onStack := make(map[string]bool)
-	for depth := 0; proxy != nil; depth++ {
-		ref, ok := schemaRef(proxy)
-		if !ok {
-			return proxy.Schema(), last, nil
-		}
-		if onStack[ref] || (n.maxDepth > 0 && depth >= n.maxDepth) {
-			return nil, "", nil
-		}
-		onStack[ref] = true
-		target, err := n.resolveRef(ref)
-		if err != nil {
-			return nil, "", err
-		}
-		proxy, last = target, ref
-	}
-	return nil, "", nil
+	return unconstrainedMapReason
 }
 
 // declaresNoValueType reports whether s leaves its values unconstrained: no
-// structural or constraint keyword at all, or a free-form `type: object` with
-// nothing describing the object — the common free-form map value shape.
-// `additionalProperties: false` alone describes nothing either: it leaves an
-// always-empty object, still with no value type.
+// type, or `type: object`, and nothing describing the value's contents. The
+// object keywords that only count or forbid properties (required,
+// min/maxProperties, `additionalProperties: false`) and format still leave the
+// value type unknown, so they do not count as a description.
 func declaresNoValueType(s *base.Schema) bool {
-	if !hasStructuralOrConstraintKeywords(s) {
-		return true
-	}
-	if types := nonNullTypes(s.Type); len(types) != 1 || types[0] != "object" {
+	if types := nonNullTypes(s.Type); len(s.Type) > 0 && (len(types) != 1 || types[0] != "object") {
 		return false
 	}
-	untyped := *s
-	untyped.Type = nil
-	if ap := untyped.AdditionalProperties; ap != nil && ap.IsB() && !ap.B {
-		untyped.AdditionalProperties = nil
+	bare := *s
+	bare.Type, bare.Format = nil, ""
+	bare.Required, bare.MinProperties, bare.MaxProperties = nil, nil, nil
+	if ap := bare.AdditionalProperties; ap != nil && ap.IsB() && !ap.B {
+		bare.AdditionalProperties = nil
 	}
-	return !hasStructuralOrConstraintKeywords(&untyped)
+	return !hasStructuralOrConstraintKeywords(&bare)
 }
 
 // classifyKind derives the SchemaKind from structure, not type alone. First
