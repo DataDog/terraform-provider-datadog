@@ -83,7 +83,8 @@ type ruleCaseActionModel struct {
 }
 
 type ruleCaseActionOptionsModel struct {
-	Duration types.Int64 `tfsdk:"duration"`
+	Duration         types.Int64  `tfsdk:"duration"`
+	UserBehaviorName types.String `tfsdk:"user_behavior_name"`
 }
 
 type thirdPartyCaseModel struct {
@@ -318,36 +319,7 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 						},
 					},
 					Blocks: map[string]schema.Block{
-						"action": schema.ListNestedBlock{
-							Description: "Action to perform when the case trigger",
-							NestedObject: schema.NestedBlockObject{
-								Attributes: map[string]schema.Attribute{
-									"type": schema.StringAttribute{
-										Required:    true,
-										Description: "Type of action to perform when the case triggers.",
-										Validators: []validator.String{
-											validators.NewEnumValidator[validator.String](datadogV2.NewSecurityMonitoringRuleCaseActionTypeFromValue),
-										},
-									},
-								},
-								Blocks: map[string]schema.Block{
-									"options": schema.ListNestedBlock{
-										Description: "Options for the action.",
-										Validators: []validator.List{
-											listvalidator.SizeAtMost(1),
-										},
-										NestedObject: schema.NestedBlockObject{
-											Attributes: map[string]schema.Attribute{
-												"duration": schema.Int64Attribute{
-													Optional:    true,
-													Description: "Duration of the action in seconds.",
-												},
-											},
-										},
-									},
-								},
-							},
-						},
+						"action": ruleCaseActionBlock(),
 					},
 				},
 			},
@@ -1245,6 +1217,44 @@ func extractRuleCases(ctx context.Context, responseRulesCases []datadogV2.Securi
 	return ruleCases, diags
 }
 
+// ruleCaseActionBlock is the `action` block shared by the rule and default rule resources.
+func ruleCaseActionBlock() schema.ListNestedBlock {
+	return schema.ListNestedBlock{
+		Description: "Action to perform when the case trigger",
+		NestedObject: schema.NestedBlockObject{
+			Attributes: map[string]schema.Attribute{
+				"type": schema.StringAttribute{
+					Required:    true,
+					Description: "Type of action to perform when the case triggers.",
+					Validators: []validator.String{
+						validators.NewEnumValidator[validator.String](datadogV2.NewSecurityMonitoringRuleCaseActionTypeFromValue),
+					},
+				},
+			},
+			Blocks: map[string]schema.Block{
+				"options": schema.ListNestedBlock{
+					Description: "Options for the action.",
+					Validators: []validator.List{
+						listvalidator.SizeAtMost(1),
+					},
+					NestedObject: schema.NestedBlockObject{
+						Attributes: map[string]schema.Attribute{
+							"duration": schema.Int64Attribute{
+								Optional:    true,
+								Description: "Duration of the action in seconds.",
+							},
+							"user_behavior_name": schema.StringAttribute{
+								Optional:    true,
+								Description: "Name of the risk tag applied to users triggering a `user_behavior` case action.",
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
 func extractRuleCaseActions(apiActions []datadogV2.SecurityMonitoringRuleCaseAction) []ruleCaseActionModel {
 	tfActions := make([]ruleCaseActionModel, len(apiActions))
 	for idx, action := range apiActions {
@@ -1256,7 +1266,10 @@ func extractRuleCaseActions(apiActions []datadogV2.SecurityMonitoringRuleCaseAct
 			if duration, ok := options.GetDurationOk(); ok {
 				tfOptions.Duration = types.Int64Value(*duration)
 			}
-			if !tfOptions.Duration.IsNull() {
+			if userBehaviorName, ok := options.GetUserBehaviorNameOk(); ok {
+				tfOptions.UserBehaviorName = types.StringValue(*userBehaviorName)
+			}
+			if !tfOptions.Duration.IsNull() || !tfOptions.UserBehaviorName.IsNull() {
 				tfAction.Options = []ruleCaseActionOptionsModel{tfOptions}
 			}
 		}
@@ -2110,6 +2123,7 @@ func buildPayloadCaseActions(actions []ruleCaseActionModel) []datadogV2.Security
 		payloadOptions := datadogV2.NewSecurityMonitoringRuleCaseActionOptions()
 		if len(a.Options) > 0 {
 			fwutils.SetOptInt64(a.Options[0].Duration, payloadOptions.SetDuration)
+			fwutils.SetOptString(a.Options[0].UserBehaviorName, payloadOptions.SetUserBehaviorName)
 		}
 		payloadActions[idx] = datadogV2.SecurityMonitoringRuleCaseAction{
 			Type:    &actionType,

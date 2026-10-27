@@ -353,3 +353,107 @@ func testAccCheckDatadogSecurityMonitoringDefaultCustomQueryExtensionClear() res
 			tfSecurityDefaultRuleName, "query.0.custom_query_extension", ""),
 	)
 }
+
+func TestAccDatadogSecurityMonitoringDefaultRule_AppsecRule(t *testing.T) {
+	t.Parallel()
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			// Define an existing default rule as one we want to import
+			{
+				Config: testAccDatadogSecurityMonitoringDefaultRuleAppsec(),
+			},
+			// Import the rule
+			{
+				Config:             testAccCheckDatadogSecurityMonitoringAppsec(),
+				ResourceName:       tfSecurityDefaultRuleName,
+				ImportState:        true,
+				ImportStateIdFunc:  idFromDatasource,
+				ImportStatePersist: true,
+			},
+			// Add case actions to the imported rule
+			{
+				Config: testAccDatadogSecurityMonitoringDefaultRuleUpdateCase(),
+				Check:  testAccCheckDatadogSecurityMonitoringDefaultRuleUpdateCase(),
+			},
+		},
+	})
+}
+
+func testAccDatadogSecurityMonitoringDefaultRuleAppsec() string {
+	return `
+data "datadog_security_monitoring_rules" "bruteforce" {
+	tags_filter = ["source:application-security", "category:unauthorized_traffic"]
+	default_only_filter = true
+	user_only_filter = false
+}
+`
+}
+
+func testAccCheckDatadogSecurityMonitoringAppsec() string {
+	return `
+data "datadog_security_monitoring_rules" "bruteforce" {
+	tags_filter = ["source:application-security", "category:unauthorized_traffic"]
+	default_only_filter = true
+	user_only_filter = false
+}
+
+resource "datadog_security_monitoring_default_rule" "acceptance_test" {
+}
+`
+}
+
+func testAccDatadogSecurityMonitoringDefaultRuleUpdateCase() string {
+	return `
+resource "datadog_security_monitoring_default_rule" "acceptance_test" {
+
+	case {
+		status = "medium"
+		notifications = ["team@example.com"]
+		action {
+			type = "block_ip"
+			options {
+				duration = 3600
+			}
+		}
+		action {
+			type = "block_user"
+		}
+		action {
+			type = "user_behavior"
+			options {
+				user_behavior_name = "test"
+			}
+		}
+	}
+}
+`
+}
+
+func testAccCheckDatadogSecurityMonitoringDefaultRuleUpdateCase() resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "case.0.status", "medium"),
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "case.0.notifications.0", "team@example.com"),
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "case.0.action.#", "3"),
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "case.0.action.0.type", "block_ip"),
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "case.0.action.0.options.#", "1"),
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "case.0.action.0.options.0.duration", "3600"),
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "case.0.action.1.type", "block_user"),
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "case.0.action.2.type", "user_behavior"),
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "case.0.action.2.options.#", "1"),
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "case.0.action.2.options.0.user_behavior_name", "test"),
+	)
+}
