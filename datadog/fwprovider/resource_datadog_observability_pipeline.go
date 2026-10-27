@@ -845,8 +845,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 						"anomaly_detection": schema.ListNestedBlock{
 							Description: "Anomaly detection settings for the pipeline. When enabled, the Worker collects log signatures from the logs sent to each destination so that anomalies can be detected. " +
 								"Requires Observability Pipelines Worker 2.25 or later. " +
-								"Only supported for `logs` pipelines. " +
-								"The `DD_OP_ANOMALY_DETECTION_ENABLED` Worker environment variable, when set, takes priority over this setting.",
+								"Only supported for `logs` pipelines.",
 							NestedObject: schema.NestedBlockObject{
 								Attributes: map[string]schema.Attribute{
 									"enabled": schema.BoolAttribute{
