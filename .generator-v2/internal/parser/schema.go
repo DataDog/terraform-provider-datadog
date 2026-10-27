@@ -1510,16 +1510,16 @@ func unconstrainedMapValueAdvice(where string) string {
 }
 
 // unconstrainedMapValueReason explains an Unsupported map value that declares
-// no value type. A value reached through a $ref names the component, since
-// that is where the fix belongs. It returns "" for a value that is constrained
-// but still unsupported (anyOf, an itemless array) or could not be built: the
-// unconstrained advice would point those at the wrong fix.
+// no value type. A value reached through a $ref names the component at the end
+// of the chain, since that is where the fix belongs. It returns "" for a value
+// that is constrained but still unsupported (anyOf, an itemless array) or could
+// not be built: the unconstrained advice would point those at the wrong fix.
 func (n *schemaNormalizer) unconstrainedMapValueReason(proxy *base.SchemaProxy) (string, error) {
-	raw, err := n.resolveToSchema(proxy)
+	raw, ref, err := n.resolveRefTarget(proxy)
 	if err != nil || raw == nil || !declaresNoValueType(raw) {
 		return "", err
 	}
-	if ref, ok := schemaRef(proxy); ok {
+	if ref != "" {
 		name := lastRefSegment(ref)
 		return fmt.Sprintf("additionalProperties declares unconstrained values: its $ref %q has no value type; ", name) +
 			unconstrainedMapValueAdvice(fmt.Sprintf("in %q", name)), nil
@@ -1527,9 +1527,36 @@ func (n *schemaNormalizer) unconstrainedMapValueReason(proxy *base.SchemaProxy) 
 	return unconstrainedMapReason, nil
 }
 
+// resolveRefTarget follows a proxy's $ref chain to the schema at its end and
+// returns the last $ref followed, or "" for an inline schema. Unlike
+// resolveToSchema it also follows a $ref written with sibling keywords, reading
+// it as schemaRef does. A cycle or the depth budget yields a nil schema.
+func (n *schemaNormalizer) resolveRefTarget(proxy *base.SchemaProxy) (*base.Schema, string, error) {
+	last := ""
+	onStack := make(map[string]bool)
+	for depth := 0; proxy != nil; depth++ {
+		ref, ok := schemaRef(proxy)
+		if !ok {
+			return proxy.Schema(), last, nil
+		}
+		if onStack[ref] || (n.maxDepth > 0 && depth >= n.maxDepth) {
+			return nil, "", nil
+		}
+		onStack[ref] = true
+		target, err := n.resolveRef(ref)
+		if err != nil {
+			return nil, "", err
+		}
+		proxy, last = target, ref
+	}
+	return nil, "", nil
+}
+
 // declaresNoValueType reports whether s leaves its values unconstrained: no
 // structural or constraint keyword at all, or a free-form `type: object` with
 // nothing describing the object — the common free-form map value shape.
+// `additionalProperties: false` alone describes nothing either: it leaves an
+// always-empty object, still with no value type.
 func declaresNoValueType(s *base.Schema) bool {
 	if !hasStructuralOrConstraintKeywords(s) {
 		return true
@@ -1539,6 +1566,9 @@ func declaresNoValueType(s *base.Schema) bool {
 	}
 	untyped := *s
 	untyped.Type = nil
+	if ap := untyped.AdditionalProperties; ap != nil && ap.IsB() && !ap.B {
+		untyped.AdditionalProperties = nil
+	}
 	return !hasStructuralOrConstraintKeywords(&untyped)
 }
 

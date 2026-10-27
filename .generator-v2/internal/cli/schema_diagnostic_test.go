@@ -34,6 +34,24 @@ func TestGenerateReportsUnconstrainedMapPath(t *testing.T) {
 			notWant:    []string{"under additionalProperties"},
 		},
 		{
+			// An alias only points elsewhere; the type is missing at the end of
+			// the chain, so that is the component to name.
+			name:       "ref chain to empty component",
+			schema:     "type: object\n              additionalProperties:\n                $ref: '#/components/schemas/AnyValueAlias'",
+			components: "    AnyValueAlias:\n      $ref: '#/components/schemas/AnyValue'\n    AnyValue:\n      description: Any value.\n",
+			want:       append([]string{`its $ref "AnyValue" has no value type`}, unconstrained...),
+			notWant:    []string{`"AnyValueAlias"`},
+		},
+		{
+			// The siblings carry no type, but the referenced component does
+			// constrain its values: it is not unconstrained.
+			name:       "ref with siblings to itemless array",
+			schema:     "type: object\n              additionalProperties:\n                $ref: '#/components/schemas/ItemlessList'\n                description: A list.",
+			components: "    ItemlessList:\n      type: array\n",
+			notWant:    unconstrained,
+		},
+		{name: "empty object value", schema: "type: object\n              additionalProperties:\n                type: object\n                additionalProperties: false", want: unconstrained},
+		{
 			// Constrained but unsupported: the unconstrained advice would point
 			// at the wrong fix.
 			name:    "anyOf value",
