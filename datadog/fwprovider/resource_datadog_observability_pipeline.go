@@ -2192,7 +2192,6 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														Attributes: map[string]schema.Attribute{
 															"enabled_metric_aggregation": schema.BoolAttribute{
 																Optional:    true,
-																Computed:    true,
 																Description: "[Recommended] Indicates whether generated metrics are automatically aggregated and enriched with the `worker_uuid` tag before being sent to the metric destination.",
 															},
 														},
@@ -5393,6 +5392,9 @@ func flattenGenerateMetricsV2Processor(ctx context.Context, src *datadogV2.Obser
 
 func expandGenerateMetricsV2ProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *generateMetricsV2ProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineGenerateMetricsV2ProcessorWithDefaults()
+	// The generated client currently defaults this optional field to true. Clear
+	// it so omitted Terraform configuration remains omitted from the payload.
+	proc.EnabledMetricAggregation = nil
 	common.ApplyTo(proc)
 	if !src.EnabledMetricAggregation.IsNull() && !src.EnabledMetricAggregation.IsUnknown() {
 		proc.SetEnabledMetricAggregation(src.EnabledMetricAggregation.ValueBool())
