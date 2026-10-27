@@ -140,6 +140,20 @@ type schemaContext struct {
 	path     string
 	required bool
 	refName  string
+	// mapValue marks a map's value schema (additionalProperties), which gets
+	// its own diagnostic when it declares no value type. It applies to that
+	// node only: normalizeSchema clears it before descending.
+	mapValue bool
+	// lastRef, when set, receives each $ref followed while normalizing the node,
+	// so it ends holding the component at the end of the chain.
+	lastRef *string
+}
+
+// recordRef stores ref as the latest $ref followed, when the node asks for it.
+func (ctx schemaContext) recordRef(ref string) {
+	if ctx.lastRef != nil {
+		*ctx.lastRef = ref
+	}
 }
 
 // fillOperation normalizes raw's request and 2xx response bodies into op,
@@ -371,13 +385,9 @@ func (n *schemaNormalizer) singleAllOfStructuralBranchAt(s *base.Schema, depth i
 	}
 	var structural *base.SchemaProxy
 	for _, branch := range s.AllOf {
-		end, _, err := n.resolveRefChainAt(branch, depth, "", onStack)
+		raw, err := n.resolveToSchemaAt(branch, depth, onStack)
 		if err != nil {
 			return nil, false, err
-		}
-		var raw *base.Schema
-		if end != nil {
-			raw = end.Schema()
 		}
 		if isAnnotationOnlySchema(raw) {
 			continue
@@ -447,39 +457,27 @@ func (n *schemaNormalizer) findPropertyProxyAt(proxy *base.SchemaProxy, name str
 // *base.Schema, returning the raw libopenapi node so callers can read $ref
 // names the normalized model discards.
 func (n *schemaNormalizer) resolveToSchema(proxy *base.SchemaProxy) (*base.Schema, error) {
-	end, _, err := n.resolveRefChain(proxy, 0)
-	if err != nil || end == nil {
-		return nil, err
-	}
-	return end.Schema(), nil
+	return n.resolveToSchemaAt(proxy, 0, make(map[string]bool))
 }
 
-// resolveRefChain follows a proxy through its $ref hops, with depth counting
-// the hops already followed, and returns the proxy at the end of the chain with
-// the last $ref followed ("" for an inline proxy). A cycle or the depth budget
-// yields a nil proxy.
-func (n *schemaNormalizer) resolveRefChain(proxy *base.SchemaProxy, depth int) (*base.SchemaProxy, string, error) {
-	return n.resolveRefChainAt(proxy, depth, "", make(map[string]bool))
-}
-
-func (n *schemaNormalizer) resolveRefChainAt(proxy *base.SchemaProxy, depth int, last string, onStack map[string]bool) (*base.SchemaProxy, string, error) {
+func (n *schemaNormalizer) resolveToSchemaAt(proxy *base.SchemaProxy, depth int, onStack map[string]bool) (*base.Schema, error) {
 	if proxy == nil {
-		return nil, "", nil
+		return nil, nil
 	}
 	if proxy.IsReference() {
 		ref := proxy.GetReference()
 		if onStack[ref] || (n.maxDepth > 0 && depth >= n.maxDepth) {
-			return nil, "", nil
+			return nil, nil
 		}
 		target, err := n.resolveRef(ref)
 		if err != nil {
-			return nil, "", err
+			return nil, err
 		}
 		onStack[ref] = true
 		defer delete(onStack, ref)
-		return n.resolveRefChainAt(target, depth+1, ref, onStack)
+		return n.resolveToSchemaAt(target, depth+1, onStack)
 	}
-	return proxy, last, nil
+	return proxy.Schema(), nil
 }
 
 // lastRefSegment returns the component name after the final "/" of a $ref,
@@ -604,6 +602,7 @@ func (n *schemaNormalizer) normalizeProxyAt(proxy *base.SchemaProxy, depth int, 
 		// Popped by the defer, so the chain unwinds even when a branch errors.
 		n.refStack = append(n.refStack, ref)
 		defer func() { n.refStack = n.refStack[:len(n.refStack)-1] }()
+		ctx.recordRef(ref)
 		return n.normalizeProxyAt(target, depth+1, ctx)
 	}
 	// A $ref with sibling keywords is a synthetic allOf: retain the referenced
@@ -638,6 +637,18 @@ func (n *schemaNormalizer) resolveRef(ref string) (*base.SchemaProxy, error) {
 func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schemaContext) (*model.Schema, error) {
 	if s == nil {
 		return nil, nil
+	}
+	if ctx.mapValue {
+		ctx.mapValue = false
+		out, err := n.normalizeSchema(s, depth, ctx)
+		if err == nil && out != nil && declaresNoMapValueType(s, out) {
+			ref := ""
+			if ctx.lastRef != nil {
+				ref = *ctx.lastRef
+			}
+			out.UnsupportedReason = unconstrainedMapValueReason(ref)
+		}
+		return out, err
 	}
 	// allOf flattens here only without an adjacent oneOf; when both are
 	// present oneOf wins, and its sibling merge applies the allOf intersection
@@ -701,20 +712,19 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 		// no value schema, so its values are unconstrained — which TF cannot
 		// represent, hence an Unsupported sentinel.
 		if s.AdditionalProperties != nil && s.AdditionalProperties.IsA() {
+			var valueRef string
 			value, err := n.normalizeProxyAt(s.AdditionalProperties.A, depth, schemaContext{
 				path:     model.ChildPath(ctx.path, "{}"),
 				required: true,
+				mapValue: true,
+				lastRef:  &valueRef,
 			})
 			if err != nil {
 				return nil, err
 			}
 			out.Items = collectionElement(value)
-			// Keep a reason the value already carries; it is more specific.
-			if out.Items.Kind == model.SchemaKindUnsupported && out.Items.UnsupportedReason == "" {
-				out.Items.UnsupportedReason = n.unconstrainedMapValueReason(s.AdditionalProperties.A, depth)
-			}
 		} else {
-			out.Items = &model.Schema{Kind: model.SchemaKindUnsupported, UnsupportedReason: unconstrainedMapReason}
+			out.Items = &model.Schema{Kind: model.SchemaKindUnsupported, UnsupportedReason: unconstrainedMapValueReason("")}
 		}
 
 	case model.SchemaKindOneOf:
@@ -1194,7 +1204,7 @@ func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaC
 	}
 
 	if len(branches) == 0 {
-		return unsupported("allOf has no structural branches"), nil
+		return unsupported(allOfNoStructuralBranchesReason), nil
 	}
 
 	outerType := firstType(s)
@@ -1510,42 +1520,45 @@ func nonNullTypes(types []string) []string {
 	return out
 }
 
-// An unconstrained map needs an explicit API value schema before tfgen can
-// choose a Terraform element type. Do not guess a string or JSON representation.
-var unconstrainedMapReason = "additionalProperties declares unconstrained values: no value schema, or one without a type or properties; " +
-	unconstrainedMapValueAdvice("with a type or $ref under additionalProperties")
+// allOfNoStructuralBranchesReason marks an allOf whose every branch only
+// annotates: it declares no value type of its own.
+const allOfNoStructuralBranchesReason = "allOf has no structural branches"
 
-// unconstrainedMapValueAdvice says what to change; where names the place the
-// value type belongs.
-func unconstrainedMapValueAdvice(where string) string {
-	return "tfgen requires a concrete map value schema. Describe the API values " + where + "; if the API returns a list, use type: array with typed items instead"
-}
-
-// unconstrainedMapValueReason explains an Unsupported map value that declares
-// no value type, with depth counting the $ref hops already followed. A value
-// reached through a $ref names the component at the end of the chain, since
-// that is where the fix belongs. It only builds a message, so it never fails:
-// it returns "" for a value that is constrained but still unsupported (anyOf,
-// an itemless array) or cannot be resolved, which keeps its own diagnostic.
-func (n *schemaNormalizer) unconstrainedMapValueReason(proxy *base.SchemaProxy, depth int) string {
-	end, ref, err := n.resolveRefChain(proxy, depth)
-	if err != nil || end == nil {
-		return ""
-	}
-	// A $ref with sibling keywords merges like an allOf; its siblings alone do
-	// not say whether the values are typed.
-	if _, siblings := schemaRef(end); siblings {
-		return ""
-	}
-	if raw := end.Schema(); raw == nil || !declaresNoValueType(raw) {
-		return ""
-	}
+// unconstrainedMapValueReason explains a map value that declares no value type.
+// A value reached through a $ref names the component at the end of the chain,
+// since that is where the fix belongs. An unconstrained map needs an explicit
+// API value schema before tfgen can choose a Terraform element type; do not
+// guess a string or JSON representation.
+func unconstrainedMapValueReason(ref string) string {
+	what, where := "the value schema has no properties and no scalar type", "with a type or $ref under additionalProperties"
 	if ref != "" {
 		name := lastRefSegment(ref)
-		return fmt.Sprintf("additionalProperties declares unconstrained values: its $ref %q has no type or properties; ", name) +
-			unconstrainedMapValueAdvice(fmt.Sprintf("in %q", name))
+		what, where = fmt.Sprintf("its $ref %q has no properties and no scalar type", name), fmt.Sprintf("in %q", name)
 	}
-	return unconstrainedMapReason
+	return "additionalProperties declares unconstrained values: " + what +
+		"; tfgen requires a concrete map value schema. Describe the API values " + where +
+		"; if the API returns a list, use type: array with typed items instead"
+}
+
+// declaresNoMapValueType reports whether a normalized map value failed only
+// because its schema s declares no value type, so the unconstrained advice
+// applies. A value that is constrained but still unsupported (anyOf, an
+// itemless array, a cycle) keeps its own, more specific reason.
+func declaresNoMapValueType(s *base.Schema, value *model.Schema) bool {
+	if value.Kind != model.SchemaKindUnsupported {
+		return false
+	}
+	switch value.UnsupportedReason {
+	case "":
+		return declaresNoValueType(s)
+	case allOfNoStructuralBranchesReason:
+		// Every branch only annotated, so the outer schema alone decides.
+		outer := *s
+		outer.AllOf = nil
+		return declaresNoValueType(&outer)
+	default:
+		return false
+	}
 }
 
 // declaresNoValueType reports whether s leaves its values unconstrained: no

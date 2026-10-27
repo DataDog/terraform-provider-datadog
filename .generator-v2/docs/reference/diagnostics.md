@@ -83,9 +83,11 @@ family, and block. Fix the operation ID in that block's group. Other artifacts
 continue generating and the failed declaration appears in the report. Any
 artifact failure prevents `--reconcile` from retiring orphans in that run.
 
-**`<kind> kind "<k>" is not representable`**: a schema shape the model cannot
-express. Check it against the supported-shapes list in [scope.md](scope.md); `anyOf`
-and a `oneOf` used as a map value are the usual answers.
+**`cannot build attribute at "<path>": <kind> kind "<k>" is not representable`**:
+a schema shape the model cannot express, at that attribute path. Check it against
+the supported-shapes list in [scope.md](scope.md); `anyOf`, a `oneOf` used as a
+map value, and a map whose values declare no type (see
+[Unconstrained map values](#unconstrained-map-values)) are the usual answers.
 
 **`resource schema merge conflict at "<path>"`**: the create, update, and read
 bodies disagree about that path in a way the merge will not reconcile. Most often
@@ -135,9 +137,10 @@ A diagnostic such as `cannot build attribute at
 "resource.data.attributes.environments[].allocations"` followed by
 `additionalProperties declares unconstrained values` identifies a map declared
 with `additionalProperties: {}`, `additionalProperties: true`, or a value of
-`type: object` without properties. tfgen cannot choose a Terraform value type
-from that schema. When the value is a `$ref`, the diagnostic names the component
-at the end of the `$ref` chain instead, since that is where the type is missing.
+`type: object` without properties, also when written through a `$ref` or an
+`allOf`. tfgen cannot choose a Terraform value type from that schema. When the
+value is a `$ref`, the diagnostic names the component at the end of the `$ref`
+chain instead, since that is where the type is missing.
 
 The path names the map attribute itself, not its value: an unrepresentable
 element or value type is reported at the collection's own path. `[]` and `{}`

@@ -30,7 +30,7 @@ func TestGenerateReportsUnconstrainedMapPath(t *testing.T) {
 			name:       "ref to empty component",
 			schema:     "type: object\n              additionalProperties:\n                $ref: '#/components/schemas/AnyValue'",
 			components: "    AnyValue:\n      description: Any value.\n",
-			want:       append([]string{`its $ref "AnyValue" has no type or properties`}, unconstrained...),
+			want:       append([]string{`its $ref "AnyValue" has no properties and no scalar type`}, unconstrained...),
 			notWant:    []string{"under additionalProperties"},
 		},
 		{
@@ -39,8 +39,32 @@ func TestGenerateReportsUnconstrainedMapPath(t *testing.T) {
 			name:       "ref chain to empty component",
 			schema:     "type: object\n              additionalProperties:\n                $ref: '#/components/schemas/AnyValueAlias'",
 			components: "    AnyValueAlias:\n      $ref: '#/components/schemas/AnyValue'\n    AnyValue:\n      description: Any value.\n",
-			want:       append([]string{`its $ref "AnyValue" has no type or properties`}, unconstrained...),
+			want:       append([]string{`its $ref "AnyValue" has no properties and no scalar type`}, unconstrained...),
 			notWant:    []string{`"AnyValueAlias"`},
+		},
+		{
+			// A free-form object component has a type; the message must not
+			// claim otherwise.
+			name:       "ref to free-form object component",
+			schema:     "type: object\n              additionalProperties:\n                $ref: '#/components/schemas/Blob'",
+			components: "    Blob:\n      type: object\n",
+			want:       append([]string{`its $ref "Blob" has no properties and no scalar type`}, unconstrained...),
+			notWant:    []string{"no type or properties"},
+		},
+		{
+			// The Datadog spec usually writes $ref with sibling keywords, which
+			// normalizes as an allOf.
+			name:       "ref with siblings to empty component",
+			schema:     "type: object\n              additionalProperties:\n                $ref: '#/components/schemas/AnyValue'\n                description: A value.",
+			components: "    AnyValue:\n      description: Any value.\n",
+			want:       append([]string{`its $ref "AnyValue" has no properties and no scalar type`}, unconstrained...),
+		},
+		{
+			name:       "allOf wrapping an empty component",
+			schema:     "type: object\n              additionalProperties:\n                allOf:\n                  - $ref: '#/components/schemas/AnyValue'",
+			components: "    AnyValue:\n      description: Any value.\n",
+			want:       append([]string{`its $ref "AnyValue" has no properties and no scalar type`}, unconstrained...),
+			notWant:    []string{"allOf has no structural branches"},
 		},
 		{
 			// The siblings carry no type, but the referenced component does
