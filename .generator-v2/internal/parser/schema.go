@@ -693,11 +693,16 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 				return nil, err
 			}
 			out.Items = collectionElement(value)
-			if out.Items.Kind == model.SchemaKindUnsupported && !hasStructuralOrConstraintKeywords(s.AdditionalProperties.A.Schema()) {
-				out.Items.UnsupportedReason = unconstrainedMapValueReason
+			// Keep a reason the value already carries; it is more specific.
+			if out.Items.Kind == model.SchemaKindUnsupported && out.Items.UnsupportedReason == "" {
+				reason, err := n.unconstrainedMapValueReason(s.AdditionalProperties.A)
+				if err != nil {
+					return nil, err
+				}
+				out.Items.UnsupportedReason = reason
 			}
 		} else {
-			out.Items = &model.Schema{Kind: model.SchemaKindUnsupported, UnsupportedReason: unconstrainedMapValueReason}
+			out.Items = &model.Schema{Kind: model.SchemaKindUnsupported, UnsupportedReason: unconstrainedMapReason}
 		}
 
 	case model.SchemaKindOneOf:
@@ -1495,7 +1500,47 @@ func nonNullTypes(types []string) []string {
 
 // An unconstrained map needs an explicit API value schema before tfgen can
 // choose a Terraform element type. Do not guess a string or JSON representation.
-const unconstrainedMapValueReason = "additionalProperties declares unconstrained values ({} or true); tfgen requires a concrete map value schema. Describe the API values with a type or $ref under additionalProperties; if the API returns a list, use type: array with typed items instead"
+var unconstrainedMapReason = "additionalProperties declares unconstrained values ({}, true, or type: object without properties); " +
+	unconstrainedMapValueAdvice("with a type or $ref under additionalProperties")
+
+// unconstrainedMapValueAdvice says what to change; where names the place the
+// value type belongs.
+func unconstrainedMapValueAdvice(where string) string {
+	return "tfgen requires a concrete map value schema. Describe the API values " + where + "; if the API returns a list, use type: array with typed items instead"
+}
+
+// unconstrainedMapValueReason explains an Unsupported map value that declares
+// no value type. A value reached through a $ref names the component, since
+// that is where the fix belongs. It returns "" for a value that is constrained
+// but still unsupported (anyOf, an itemless array) or could not be built: the
+// unconstrained advice would point those at the wrong fix.
+func (n *schemaNormalizer) unconstrainedMapValueReason(proxy *base.SchemaProxy) (string, error) {
+	raw, err := n.resolveToSchema(proxy)
+	if err != nil || raw == nil || !declaresNoValueType(raw) {
+		return "", err
+	}
+	if ref, ok := schemaRef(proxy); ok {
+		name := lastRefSegment(ref)
+		return fmt.Sprintf("additionalProperties declares unconstrained values: its $ref %q has no value type; ", name) +
+			unconstrainedMapValueAdvice(fmt.Sprintf("in %q", name)), nil
+	}
+	return unconstrainedMapReason, nil
+}
+
+// declaresNoValueType reports whether s leaves its values unconstrained: no
+// structural or constraint keyword at all, or a free-form `type: object` with
+// nothing describing the object — the common free-form map value shape.
+func declaresNoValueType(s *base.Schema) bool {
+	if !hasStructuralOrConstraintKeywords(s) {
+		return true
+	}
+	if types := nonNullTypes(s.Type); len(types) != 1 || types[0] != "object" {
+		return false
+	}
+	untyped := *s
+	untyped.Type = nil
+	return !hasStructuralOrConstraintKeywords(&untyped)
+}
 
 // classifyKind derives the SchemaKind from structure, not type alone. First
 // match wins, since a node can satisfy several at once: anyOf → unsupported;

@@ -134,8 +134,10 @@ Retirement is fail-closed, so a refusal is the system working.
 A diagnostic such as `cannot build attribute at
 "resource.data.attributes.environments[].allocations"` followed by
 `additionalProperties declares unconstrained values` identifies a map declared
-with `additionalProperties: {}` or `additionalProperties: true`. tfgen cannot
-choose a Terraform value type from that schema. The path includes `[]` for list
+with `additionalProperties: {}`, `additionalProperties: true`, or a value of
+`type: object` without properties. tfgen cannot choose a Terraform value type
+from that schema. When the value is a `$ref`, the diagnostic names the
+referenced component instead, since that is where the type is missing. The path includes `[]` for list
 items and `{}` for map values containing named properties.
 
 Describe the actual API values with a concrete schema or `$ref` under
