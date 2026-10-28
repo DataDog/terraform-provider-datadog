@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 390
+        content_length: 419
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity"},"database":"logs_db","id":"azure-data-explorer-dest-basic-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"azure data explorer pipeline (minimal)"},"type":"pipelines"}}
+            {"data":{"attributes":{"config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity"},"database":"logs_db","id":"azure-data-explorer-dest-basic-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"azure data explorer pipeline (minimal)"},"type":"pipelines"}}
         form: {}
         headers:
             Accept:
@@ -28,16 +28,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 472
+        content_length: 501
         uncompressed: false
         body: |
-            {"data":{"id":"ebec1f56-c733-11f1-ba36-da7ad0900002","type":"pipelines","attributes":{"name":"azure data explorer pipeline (minimal)","config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity"},"database":"logs_db","id":"azure-data-explorer-dest-basic-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"85a1c08c-d2d4-11f1-ad2f-da7ad0900002","type":"pipelines","attributes":{"name":"azure data explorer pipeline (minimal)","config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity"},"database":"logs_db","id":"azure-data-explorer-dest-basic-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 768.968708ms
+        duration: 380.934167ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ebec1f56-c733-11f1-ba36-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/85a1c08c-d2d4-11f1-ad2f-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -62,16 +62,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 472
+        content_length: 501
         uncompressed: false
         body: |
-            {"data":{"id":"ebec1f56-c733-11f1-ba36-da7ad0900002","type":"pipelines","attributes":{"name":"azure data explorer pipeline (minimal)","config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity"},"database":"logs_db","id":"azure-data-explorer-dest-basic-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"85a1c08c-d2d4-11f1-ad2f-da7ad0900002","type":"pipelines","attributes":{"name":"azure data explorer pipeline (minimal)","config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity"},"database":"logs_db","id":"azure-data-explorer-dest-basic-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 322.058709ms
+        duration: 227.194208ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ebec1f56-c733-11f1-ba36-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/85a1c08c-d2d4-11f1-ad2f-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 1.040429792s
+        duration: 408.984708ms
