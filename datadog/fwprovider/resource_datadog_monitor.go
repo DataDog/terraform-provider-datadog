@@ -2552,6 +2552,15 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 	CloudCostQueryStates := []CloudCostQuery{}
 	metricQueryStates := []CloudCostQuery{}
 	isCostMonitor := state.Type.ValueString() == string(datadogV1.MONITORTYPE_COST_ALERT)
+	priorCost, priorMetric := map[string]bool{}, map[string]bool{}
+	for _, pv := range state.Variables {
+		for _, q := range pv.CloudCostQuery {
+			priorCost[q.Name.ValueString()] = true
+		}
+		for _, q := range pv.MetricQuery {
+			priorMetric[q.Name.ValueString()] = true
+		}
+	}
 	DataQualityQueryStates := []DataQualityQuery{}
 	aggregateAugmentedStates := []AggregateAugmentedQuery{}
 	aggregateFilteredStates := []AggregateFilteredQuery{}
@@ -2561,7 +2570,7 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 		if eventQState := r.buildEventQueryState(ctx, v.MonitorFormulaAndFunctionEventQueryDefinition); eventQState != nil {
 			eventQueryStates = append(eventQueryStates, *eventQState)
 		}
-		if costQState := r.buildCloudCostQueryState(v.MonitorFormulaAndFunctionCostQueryDefinition); costQState != nil && !isCostMonitor && costQState.DataSource.ValueString() == string(datadogV1.MONITORFORMULAANDFUNCTIONCOSTDATASOURCE_METRICS) {
+		if costQState := r.buildCloudCostQueryState(v.MonitorFormulaAndFunctionCostQueryDefinition); costQState != nil && isMetricQueryVariable(costQState.Name.ValueString(), costQState.DataSource.ValueString(), isCostMonitor, priorCost, priorMetric) {
 			metricQueryStates = append(metricQueryStates, *costQState)
 		} else if costQState != nil {
 			CloudCostQueryStates = append(CloudCostQueryStates, *costQState)
@@ -2830,6 +2839,15 @@ func (r *monitorResource) buildAggregateFilteredQueryState(ctx context.Context, 
 	}
 
 	return &out
+}
+
+// isMetricQueryVariable decides whether an API cost-type variable reads back as `metric_query`.
+// Names already in prior state keep their block so existing `cloud_cost_query` configs never flip.
+func isMetricQueryVariable(name, dataSource string, isCostMonitor bool, priorCost, priorMetric map[string]bool) bool {
+	if dataSource != string(datadogV1.MONITORFORMULAANDFUNCTIONCOSTDATASOURCE_METRICS) || priorCost[name] {
+		return false
+	}
+	return priorMetric[name] || !isCostMonitor
 }
 
 func (r *monitorResource) buildCloudCostQueryState(cloudCostQ *datadogV1.MonitorFormulaAndFunctionCostQueryDefinition) *CloudCostQuery {

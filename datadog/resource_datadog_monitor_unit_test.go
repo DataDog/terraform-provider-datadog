@@ -4,6 +4,7 @@ import (
 	"math"
 	"testing"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/stretchr/testify/assert"
 )
@@ -231,24 +232,48 @@ func TestBuildTerraformDataQualityMonitorOptionsRoundTrip(t *testing.T) {
 	assert.False(t, *modelConfiguration["enable_flatline_detection"].(*bool))
 }
 
-func TestMonitorMetricQueryVariableRoundTrip(t *testing.T) {
+func metricAndCostVariables() []datadogV1.MonitorFormulaAndFunctionQueryDefinition {
 	metric := buildMonitorFormulaAndFunctionCloudCostQuery(map[string]interface{}{
 		"data_source": "metrics", "name": "q1", "query": "avg:system.cpu.user{*}", "aggregator": "avg",
 	})
 	cost := buildMonitorFormulaAndFunctionCloudCostQuery(map[string]interface{}{
-		"data_source": "cloud_cost", "name": "q2", "query": "sum:aws.cost{*}",
+		"data_source": "cloud_cost", "name": "q2", "query": "sum:aws.cost{*}", "aggregator": "sum",
 	})
-	vars := []datadogV1.MonitorFormulaAndFunctionQueryDefinition{*metric, *cost}
+	return []datadogV1.MonitorFormulaAndFunctionQueryDefinition{*metric, *cost}
+}
 
-	out := buildTerraformMonitorVariables(vars)
-	if len(out) != 1 {
-		t.Fatalf("expected one variables block, got %v", out)
-	}
-	mq, ok := out[0]["metric_query"].([]map[string]interface{})
-	if !ok || len(mq) != 1 || mq[0]["name"] != "q1" || mq[0]["aggregator"] != "avg" || mq[0]["data_source"] != "metrics" {
-		t.Fatalf("unexpected metric_query: %v", out[0])
-	}
-	if _, ok := out[0]["cloud_cost_query"]; ok {
-		t.Fatalf("cloud_cost_query should not be read for non-cost monitors: %v", out[0])
-	}
+func TestMonitorMetricQueryVariableRead(t *testing.T) {
+	event := datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(
+		datadogV1.NewMonitorFormulaAndFunctionEventQueryDefinition(
+			*datadogV1.NewMonitorFormulaAndFunctionEventQueryDefinitionCompute(datadogV1.MONITORFORMULAANDFUNCTIONEVENTAGGREGATION_COUNT),
+			datadogV1.MONITORFORMULAANDFUNCTIONEVENTSDATASOURCE_LOGS, "e1"))
+	aug := datadogV1.MonitorFormulaAndFunctionQueryDefinition{MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition: &datadogV1.MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition{Name: datadog.PtrString("a1")}}
+	fil := datadogV1.MonitorFormulaAndFunctionQueryDefinition{MonitorFormulaAndFunctionAggregateFilteredQueryDefinition: &datadogV1.MonitorFormulaAndFunctionAggregateFilteredQueryDefinition{Name: datadog.PtrString("f1")}}
+	vars := append(metricAndCostVariables(), event, aug, fil)
+
+	q1 := map[string]interface{}{"data_source": "metrics", "name": "q1", "query": "avg:system.cpu.user{*}", "aggregator": "avg"}
+	q2 := map[string]interface{}{"data_source": "cloud_cost", "name": "q2", "query": "sum:aws.cost{*}", "aggregator": "sum"}
+
+	t.Run("metric monitor maps metrics source to metric_query alongside other variables", func(t *testing.T) {
+		out := buildTerraformMonitorVariables(vars, nil, nil)
+		assert.Len(t, out, 1)
+		assert.Equal(t, []map[string]interface{}{q1}, out[0]["metric_query"])
+		assert.Equal(t, []map[string]interface{}{q2}, out[0]["cloud_cost_query"])
+		assert.Len(t, out[0]["event_query"], 1)
+		assert.Len(t, out[0]["aggregate_augmented_query"], 1)
+		assert.Len(t, out[0]["aggregate_filtered_query"], 1)
+	})
+	t.Run("existing cloud_cost_query config keeps its block", func(t *testing.T) {
+		out := buildTerraformMonitorVariables(vars, map[string]bool{"q1": true}, nil)
+		assert.Nil(t, out[0]["metric_query"])
+		assert.Equal(t, []map[string]interface{}{q1, q2}, out[0]["cloud_cost_query"])
+	})
+	t.Run("cost monitor reads as cloud_cost_query", func(t *testing.T) {
+		out := buildTerraformCostMonitorVariables(metricAndCostVariables(), nil, nil)
+		assert.Equal(t, []map[string]interface{}{{"cloud_cost_query": []map[string]interface{}{q1, q2}}}, out)
+	})
+	t.Run("cost monitor keeps metric_query from prior state", func(t *testing.T) {
+		out := buildTerraformCostMonitorVariables(metricAndCostVariables(), nil, map[string]bool{"q1": true})
+		assert.Equal(t, []map[string]interface{}{{"cloud_cost_query": []map[string]interface{}{q2}, "metric_query": []map[string]interface{}{q1}}}, out)
+	})
 }

@@ -3347,3 +3347,110 @@ func createOnMissingDataMonitor(ctx context.Context, p *fwprovider.FrameworkProv
 	}
 	return strconv.FormatInt(created.GetId(), 10), nil
 }
+
+// Cassettes pending: record with RECORD=true (requires API keys).
+func TestAccDatadogMonitor_MetricQueryVariable(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorMetricQueryVariable(monitorName, ""),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.#", "2"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.0.name", "q1"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.0.data_source", "metrics"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.cloud_cost_query.#", "0"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "monitor_thresholds.0.critical_query", "formula(\"q2\").last(\"5m\")"),
+				),
+			},
+			{
+				Config:   testAccCheckDatadogMonitorMetricQueryVariable(monitorName, ""),
+				PlanOnly: true,
+			},
+			{
+				ResourceName:            "datadog_monitor.foo",
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"validate"},
+			},
+		},
+	})
+}
+
+// Cassettes pending: record with RECORD=true (requires API keys).
+func TestAccDatadogMonitor_MetricQueryMixedVariables(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+	eventQuery := `
+    event_query {
+      data_source = "logs"
+      name        = "e1"
+      indexes     = ["*"]
+      compute {
+        aggregation = "count"
+      }
+      search {
+        query = "service:foo"
+      }
+    }`
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorMetricQueryVariable(monitorName, eventQuery),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.#", "2"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.event_query.#", "1"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.event_query.0.name", "e1"),
+				),
+			},
+			{
+				Config:   testAccCheckDatadogMonitorMetricQueryVariable(monitorName, eventQuery),
+				PlanOnly: true,
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogMonitorMetricQueryVariable(uniq, extraVariables string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name    = "%[1]s"
+  type    = "query alert"
+  message = "metric_query variable test"
+  query   = "formula(\"q1\").last(\"5m\") > formula(\"q2\").last(\"5m\")"
+
+  monitor_thresholds {
+    critical_query = "formula(\"q2\").last(\"5m\")"
+  }
+
+  variables {
+    metric_query {
+      name       = "q1"
+      query      = "avg:system.cpu.user{*}"
+      aggregator = "avg"
+    }
+    metric_query {
+      data_source = "metrics"
+      name        = "q2"
+      query       = "avg:system.cpu.system{*}"
+      aggregator  = "avg"
+    }
+%[2]s
+  }
+}`, uniq, extraVariables)
+}

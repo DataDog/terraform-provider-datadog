@@ -240,3 +240,35 @@ func TestDataQualityMonitorOptionsRoundTrip(t *testing.T) {
 	assert.Equal(t, original.SourceToTargetConfig, got.SourceToTargetConfig)
 	assert.Equal(t, original.ModelConfiguration, got.ModelConfiguration)
 }
+
+func TestUpdateVariablesStateMetricQuery(t *testing.T) {
+	r := &monitorResource{}
+	q := CloudCostQuery{
+		DataSource: types.StringValue("metrics"),
+		Query:      types.StringValue("avg:system.cpu.user{*}"),
+		Name:       types.StringValue("q1"),
+		Aggregator: types.StringValue("avg"),
+	}
+	opts := &datadogV1.MonitorOptions{Variables: r.buildCloudCostQueryStruct([]CloudCostQuery{q})}
+	read := func(monitorType string, prior []Variable) Variable {
+		state := &monitorResourceModel{Variables: prior}
+		state.Type.StringValue = types.StringValue(monitorType)
+		r.updateVariablesState(context.Background(), state, opts)
+		return state.Variables[0]
+	}
+
+	v := read("query alert", nil)
+	assert.Equal(t, []CloudCostQuery{q}, v.MetricQuery)
+	assert.Empty(t, v.CloudCostQuery)
+
+	v = read("query alert", []Variable{{CloudCostQuery: []CloudCostQuery{q}}})
+	assert.Equal(t, []CloudCostQuery{q}, v.CloudCostQuery)
+	assert.Empty(t, v.MetricQuery)
+
+	v = read("cost alert", nil)
+	assert.Equal(t, []CloudCostQuery{q}, v.CloudCostQuery)
+	assert.Empty(t, v.MetricQuery)
+
+	v = read("cost alert", []Variable{{MetricQuery: []CloudCostQuery{q}}})
+	assert.Equal(t, []CloudCostQuery{q}, v.MetricQuery)
+}
