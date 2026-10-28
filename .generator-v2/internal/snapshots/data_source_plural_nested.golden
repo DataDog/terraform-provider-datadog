@@ -19,17 +19,17 @@ var (
 
 type datadogWidgetsDataSourceModel struct {
 	// Results
-	ID      types.String                 `tfsdk:"id"`
-	Widgets []*datadogWidgetsWidgetModel `tfsdk:"widgets"`
+	ID      types.String                  `tfsdk:"id"`
+	Widgets []*datadogWidgets_WidgetModel `tfsdk:"widgets"`
 }
 
-type datadogWidgetsWidgetModel struct {
-	ID    types.String                      `tfsdk:"id"`
-	Name  types.String                      `tfsdk:"name"`
-	Parts []*datadogWidgetsWidgetPartsModel `tfsdk:"parts"`
+type datadogWidgets_WidgetModel struct {
+	ID    types.String                       `tfsdk:"id"`
+	Name  types.String                       `tfsdk:"name"`
+	Parts []*datadogWidgets_WidgetPartsModel `tfsdk:"parts"`
 }
 
-type datadogWidgetsWidgetPartsModel struct {
+type datadogWidgets_WidgetPartsModel struct {
 	Label    types.String `tfsdk:"label"`
 	Quantity types.Int64  `tfsdk:"quantity"`
 }
@@ -118,15 +118,15 @@ func (d *datadogWidgetsDataSource) Read(ctx context.Context, request datasource.
 
 func (d *datadogWidgetsDataSource) updateState(ctx context.Context, state *datadogWidgetsDataSourceModel, data *[]datadogV2.Widget) diag.Diagnostics {
 	var diags diag.Diagnostics
-	results := make([]*datadogWidgetsWidgetModel, 0, len(*data))
+	results := make([]*datadogWidgets_WidgetModel, 0, len(*data))
 	for _, item := range *data {
-		r := datadogWidgetsWidgetModel{
+		r := datadogWidgets_WidgetModel{
 			ID:   types.StringValue(item.GetId()),
 			Name: types.StringValue(item.Attributes.GetName()),
 		}
 		if parts, ok := item.Attributes.GetPartsOk(); ok && parts != nil {
 			for _, partsItem := range *parts {
-				partsModel := &datadogWidgetsWidgetPartsModel{}
+				partsModel := &datadogWidgets_WidgetPartsModel{}
 				if label, ok := partsItem.GetLabelOk(); ok && label != nil {
 					partsModel.Label = types.StringValue(*label)
 				}

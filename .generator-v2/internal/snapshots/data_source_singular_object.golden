@@ -17,19 +17,19 @@ var (
 )
 
 type datadogApmRetentionFilterDataSourceModel struct {
-	ID      types.String                          `tfsdk:"id"`
-	Enabled types.Bool                            `tfsdk:"enabled"`
-	Filter  *datadogApmRetentionFilterFilterModel `tfsdk:"filter"`
-	Name    types.String                          `tfsdk:"name"`
+	ID      types.String                           `tfsdk:"id"`
+	Enabled types.Bool                             `tfsdk:"enabled"`
+	Filter  *datadogApmRetentionFilter_FilterModel `tfsdk:"filter"`
+	Name    types.String                           `tfsdk:"name"`
 }
 
-type datadogApmRetentionFilterFilterModel struct {
-	Metadata *datadogApmRetentionFilterFilterMetadataModel `tfsdk:"metadata"`
-	Query    types.String                                  `tfsdk:"query"`
-	Tags     types.List                                    `tfsdk:"tags"`
+type datadogApmRetentionFilter_FilterModel struct {
+	Metadata *datadogApmRetentionFilter_FilterMetadataModel `tfsdk:"metadata"`
+	Query    types.String                                   `tfsdk:"query"`
+	Tags     types.List                                     `tfsdk:"tags"`
 }
 
-type datadogApmRetentionFilterFilterMetadataModel struct {
+type datadogApmRetentionFilter_FilterMetadataModel struct {
 	CreatedBy types.String `tfsdk:"created_by"`
 }
 
@@ -145,12 +145,12 @@ func (d *datadogApmRetentionFilterDataSource) updateState(ctx context.Context, s
 		state.Name = types.StringValue(*name)
 	}
 	if filter, ok := attributes.GetFilterOk(); ok && filter != nil {
-		filterModel := &datadogApmRetentionFilterFilterModel{}
+		filterModel := &datadogApmRetentionFilter_FilterModel{}
 		if query, ok := filter.GetQueryOk(); ok && query != nil {
 			filterModel.Query = types.StringValue(*query)
 		}
 		if metadata, ok := filter.GetMetadataOk(); ok && metadata != nil {
-			metadataModel := &datadogApmRetentionFilterFilterMetadataModel{}
+			metadataModel := &datadogApmRetentionFilter_FilterMetadataModel{}
 			if createdBy, ok := metadata.GetCreatedByOk(); ok && createdBy != nil {
 				metadataModel.CreatedBy = types.StringValue(*createdBy)
 			}

@@ -8,24 +8,34 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
-// modelNamer is the single authority for the Go struct name of every model a
-// generated artifact declares. Every name is built the same way:
+// modelNamer is the single authority for the Go name of every nested model a
+// generated artifact declares, and of the package-level write-only secret
+// configs. Every name is built the same way:
 //
-//	<artifact base><stem>Model
+//	<artifact base>_<stem>
 //
-// Both halves are load-bearing, and each closes a distinct collision scope.
+// The root state struct is not built here: it keeps the plain
+// <dsGoName>DataSourceModel / <dsGoName>ResourceModel spelling, and since it
+// contains no "_" it can never equal a name built here.
 //
-// The **artifact base** (dsGoName for data sources, dsGoName + "Resource"
-// for resources, e.g. "datadogActionConnectionResource") closes the
-// cross-artifact scope, including a resource and data source sharing a name.
-// Every generated artifact lands in package fwprovider, so
-// two artifacts that share an OpenAPI component would otherwise each declare the
-// same struct and neither could be compiled alongside the other. That is not
-// hypothetical: 54 of the components in the mini-OAS corpus appear in more than one
-// slice (GoogleMeetConfigurationReference and IncidentTypeAttributes in three
-// each). Prefixing also makes nested models unexported, which is the provider's own
-// convention for data-source models — hostListMetadataModel, rowModel — so this
-// moves toward the hand-written set rather than away from it.
+// The **artifact base** closes the cross-artifact scope. Every generated artifact
+// lands in package fwprovider, so two artifacts that share an OpenAPI component
+// would otherwise each declare the same struct and neither could be compiled
+// alongside the other. That is not hypothetical: 54 of the components in the
+// mini-OAS corpus appear in more than one slice (GoogleMeetConfigurationReference
+// and IncidentTypeAttributes in three each). The base also encodes the artifact
+// kind — dsGoName for a data source ("datadogWidget"), "resource" + dsGoName for a
+// resource ("resourceDatadogWidget") — because a resource and a data source may
+// share a Terraform name. A data-source base always starts with "datadog", so the
+// two kinds can never produce the same base.
+//
+// The **"_" separator** makes the mapping injective. Without it, plain
+// concatenation is ambiguous: data source widget with component ResourceTag,
+// data source widget_resource with component Tag, and resource widget with
+// component Tag would all spell one name. model.SdkName never emits "_", so the
+// first "_" always ends the base, and two names are equal only if their kind,
+// artifact and stem are all equal. Every name stays unexported, which is the
+// provider's own convention for data-source models.
 //
 // The **stem** closes the within-file scope. It prefers the OpenAPI component name
 // that supplied the object schema (Attribute.ModelRefName) and falls back to the
@@ -39,16 +49,27 @@ import (
 // A component-derived stem also makes two uses of one component in one artifact
 // converge on a single struct, which dedupeModels then collapses.
 type modelNamer struct {
-	// base is the artifact's lowerCamel stem, with a Resource suffix for resources.
+	// base is the artifact's kind-scoped lowerCamel stem; see dataSourceNamer
+	// and resourceNamer.
 	base string
 }
 
-// qualify scopes an unqualified model name to the artifact. It is the one place an
+// dataSourceNamer names the models of the data source with Terraform name name.
+func dataSourceNamer(name string) modelNamer {
+	return modelNamer{base: dsGoName(name)}
+}
+
+// resourceNamer names the models of the resource with Terraform name name.
+func resourceNamer(name string) modelNamer {
+	return modelNamer{base: "resource" + upperFirst(dsGoName(name))}
+}
+
+// qualify scopes an unqualified name to the artifact. It is the one place an
 // artifact prefix is applied, so the model layer's OneOfEnvelope.GoModel can stay
 // artifact-agnostic: the model layer does not know which artifact is rendering a
 // reusable union, and emit does.
 func (n modelNamer) qualify(unqualified string) string {
-	return n.base + upperFirst(unqualified)
+	return n.base + "_" + upperFirst(unqualified)
 }
 
 // nested returns the qualified struct name for the model backing a, plus the stem

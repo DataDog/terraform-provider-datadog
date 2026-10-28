@@ -145,11 +145,11 @@ var _ = Describe("oneOf envelope emission", func() {
 	Context("the envelope model", func() {
 		It("holds one pointer field per variant, keyed on the Terraform variant name", func() {
 			view := unionView(unionOperation())
-			envelope := modelByName(view, "datadogIncidentTypeIncidentNotificationModel")
+			envelope := modelByName(view, "datadogIncidentType_IncidentNotificationModel")
 
 			Expect(envelope.Fields).To(Equal([]ModelFieldView{
-				{GoField: "String", GoType: "*datadogIncidentTypeIncidentNotificationStringModel", TFName: "string"},
-				{GoField: "WebhookNotification", GoType: "*datadogIncidentTypeIncidentNotificationWebhookNotificationModel", TFName: "webhook_notification"},
+				{GoField: "String", GoType: "*datadogIncidentType_IncidentNotificationStringModel", TFName: "string"},
+				{GoField: "WebhookNotification", GoType: "*datadogIncidentType_IncidentNotificationWebhookNotificationModel", TFName: "webhook_notification"},
 			}))
 		})
 
@@ -166,17 +166,17 @@ var _ = Describe("oneOf envelope emission", func() {
 				}
 			}
 			Expect(field.GoField).To(Equal("Notification"))
-			Expect(field.GoType).To(Equal("*datadogIncidentTypeIncidentNotificationModel"))
+			Expect(field.GoType).To(Equal("*datadogIncidentType_IncidentNotificationModel"))
 		})
 
 		It("gives an object variant its own fields and a scalar variant a single value field", func() {
 			view := unionView(unionOperation())
 
-			Expect(modelByName(view, "datadogIncidentTypeIncidentNotificationWebhookNotificationModel").Fields).To(Equal([]ModelFieldView{
+			Expect(modelByName(view, "datadogIncidentType_IncidentNotificationWebhookNotificationModel").Fields).To(Equal([]ModelFieldView{
 				{GoField: "Enabled", GoType: "types.Bool", TFName: "enabled"},
 				{GoField: "Url", GoType: "types.String", TFName: "url"},
 			}))
-			Expect(modelByName(view, "datadogIncidentTypeIncidentNotificationStringModel").Fields).To(Equal([]ModelFieldView{
+			Expect(modelByName(view, "datadogIncidentType_IncidentNotificationStringModel").Fields).To(Equal([]ModelFieldView{
 				{GoField: "Value", GoType: "types.String", TFName: "value"},
 			}))
 		})
@@ -186,9 +186,9 @@ var _ = Describe("oneOf envelope emission", func() {
 			var envelopeAt, variantAt = -1, -1
 			for i, m := range view.Models {
 				switch m.Name {
-				case "datadogIncidentTypeIncidentNotificationModel":
+				case "datadogIncidentType_IncidentNotificationModel":
 					envelopeAt = i
-				case "datadogIncidentTypeIncidentNotificationWebhookNotificationModel":
+				case "datadogIncidentType_IncidentNotificationWebhookNotificationModel":
 					variantAt = i
 				}
 			}
@@ -243,7 +243,7 @@ var _ = Describe("oneOf envelope emission", func() {
 
 			var envelopeModels int
 			for _, m := range view.Models {
-				if m.Name == "datadogIncidentTypeIncidentNotificationModel" {
+				if m.Name == "datadogIncidentType_IncidentNotificationModel" {
 					envelopeModels++
 				}
 			}
@@ -269,7 +269,7 @@ var _ = Describe("oneOf envelope emission", func() {
 			assign := oneOfAssignmentAt(view, "response.data.attributes.notification")
 
 			Expect(assign.SDKType).To(Equal("IncidentNotification"))
-			Expect(assign.GoModel).To(Equal("datadogIncidentTypeIncidentNotificationModel"))
+			Expect(assign.GoModel).To(Equal("datadogIncidentType_IncidentNotificationModel"))
 			Expect(assign.LHS).To(Equal("state.Notification"))
 			// The wrapper itself is a normal field on its parent; only its members
 			// lack getters.
@@ -377,8 +377,8 @@ var _ = Describe("oneOf envelope emission", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			out := string(src)
-			Expect(out).To(ContainSubstring("type datadogIncidentTypeIncidentNotificationModel struct {"))
-			Expect(out).To(ContainSubstring("WebhookNotification *datadogIncidentTypeIncidentNotificationWebhookNotificationModel `tfsdk:\"webhook_notification\"`"))
+			Expect(out).To(ContainSubstring("type datadogIncidentType_IncidentNotificationModel struct {"))
+			Expect(out).To(ContainSubstring("WebhookNotification *datadogIncidentType_IncidentNotificationWebhookNotificationModel `tfsdk:\"webhook_notification\"`"))
 			Expect(out).To(ContainSubstring(`"notification": schema.SingleNestedAttribute{`))
 			Expect(out).To(ContainSubstring(`"webhook_notification": schema.SingleNestedAttribute{`))
 			Expect(out).NotTo(ContainSubstring(`Blocks: map[string]schema.Block`))
@@ -418,7 +418,7 @@ var _ = Describe("oneOf envelope in a collection", func() {
 				field = f
 			}
 		}
-		Expect(field.GoType).To(Equal("[]*datadogIncidentTypeIncidentNotificationModel"),
+		Expect(field.GoType).To(Equal("[]*datadogIncidentType_IncidentNotificationModel"),
 			"each element of the list is one envelope")
 
 		block := blockByName(view.Schema.Blocks, "notifications")
@@ -501,7 +501,7 @@ var _ = Describe("oneOf response mapping", func() {
 		src := string(mustRender(op))
 		// The inner wrapper is reached with an ordinary getter off the outer variant.
 		Expect(src).To(ContainSubstring("if target, ok := webhookNotificationVariant.GetTargetOk(); ok && target != nil {"))
-		Expect(src).To(ContainSubstring("targetEnvelope := &datadogIncidentTypeNotificationTargetModel{}"))
+		Expect(src).To(ContainSubstring("targetEnvelope := &datadogIncidentType_NotificationTargetModel{}"))
 		Expect(src).To(ContainSubstring("targetMatches++"))
 	})
 

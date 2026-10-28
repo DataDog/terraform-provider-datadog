@@ -134,30 +134,42 @@ var _ = Describe("generated model naming", func() {
 		Expect(err).NotTo(HaveOccurred())
 
 		// Both files land in fwprovider. Formatting each file alone cannot
-		// detect duplicate package-level declarations across artifacts.
+		// detect duplicate package-level declarations across artifacts, and a
+		// var or func collides as surely as a type.
 		declared := map[string]string{}
 		for filename, source := range map[string][]byte{
 			"resource.go": resourceSource, "data_source.go": dataSourceSource,
 		} {
 			file, err := parser.ParseFile(token.NewFileSet(), filename, source, 0)
 			Expect(err).NotTo(HaveOccurred())
-			for _, decl := range file.Decls {
-				gen, ok := decl.(*ast.GenDecl)
-				if !ok || gen.Tok != token.TYPE {
-					continue
-				}
-				for _, spec := range gen.Specs {
-					name := spec.(*ast.TypeSpec).Name.Name
-					Expect(declared).NotTo(HaveKey(name), "%s redeclares %s from %s", filename, name, declared[name])
-					declared[name] = filename
-				}
+			for _, name := range packageLevelNames(file) {
+				Expect(declared).NotTo(HaveKey(name), "%s redeclares %s from %s", filename, name, declared[name])
+				declared[name] = filename
 			}
 		}
 		Expect(declared).To(HaveKey("datadogWidgetResourceModel"))
 		Expect(declared).To(HaveKey("datadogWidgetDataSourceModel"))
-		Expect(string(resourceSource)).To(ContainSubstring("*datadogWidgetResourceWidgetSettingsResponseModel"))
-		Expect(string(resourceSource)).To(ContainSubstring("*datadogWidgetResourceWidgetLimitsResponseModel"))
-		Expect(string(dataSourceSource)).To(ContainSubstring("*datadogWidgetWidgetSettingsResponseModel"))
+		Expect(string(resourceSource)).To(ContainSubstring("*resourceDatadogWidget_WidgetSettingsResponseModel"))
+		Expect(string(resourceSource)).To(ContainSubstring("*resourceDatadogWidget_WidgetLimitsResponseModel"))
+		Expect(string(dataSourceSource)).To(ContainSubstring("*datadogWidget_WidgetSettingsResponseModel"))
+	})
+
+	// Plain concatenation spelled all three of these datadogWidgetResourceTagModel.
+	It("keeps kind, artifact and stem apart so prefix-sharing artifacts cannot collide", func() {
+		names := []string{
+			resourceNamer("widget").qualify("TagModel"),
+			dataSourceNamer("widget").qualify("ResourceTagModel"),
+			dataSourceNamer("widget_resource").qualify("TagModel"),
+			dataSourceNamer("team").qualify("MembershipsFooModel"),
+			dataSourceNamer("team_memberships").qualify("FooModel"),
+		}
+		Expect(names).To(Equal([]string{
+			"resourceDatadogWidget_TagModel",
+			"datadogWidget_ResourceTagModel",
+			"datadogWidgetResource_TagModel",
+			"datadogTeam_MembershipsFooModel",
+			"datadogTeamMemberships_FooModel",
+		}))
 	})
 
 	Context("two objects under one property name", func() {
@@ -166,8 +178,8 @@ var _ = Describe("generated model naming", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			names := modelNames(view)
-			Expect(names).To(ContainElement("datadogIntegrationAwsAccountAWSLogSourceTagFilterModel"))
-			Expect(names).To(ContainElement("datadogIntegrationAwsAccountAWSNamespaceTagFilterModel"))
+			Expect(names).To(ContainElement("datadogIntegrationAwsAccount_AWSLogSourceTagFilterModel"))
+			Expect(names).To(ContainElement("datadogIntegrationAwsAccount_AWSNamespaceTagFilterModel"))
 		})
 
 		It("declares every model exactly once", func() {
@@ -187,14 +199,14 @@ var _ = Describe("generated model naming", func() {
 			view, err := BuildDataSourceView(mustArtifact(twoTagFiltersOperation()))
 			Expect(err).NotTo(HaveOccurred())
 
-			logSource := modelByName(view, "datadogIntegrationAwsAccountAWSLogSourceConfigModel")
+			logSource := modelByName(view, "datadogIntegrationAwsAccount_AWSLogSourceConfigModel")
 			Expect(logSource.Fields).To(Equal([]ModelFieldView{
-				{GoField: "TagFilters", GoType: "[]*datadogIntegrationAwsAccountAWSLogSourceTagFilterModel", TFName: "tag_filters"},
+				{GoField: "TagFilters", GoType: "[]*datadogIntegrationAwsAccount_AWSLogSourceTagFilterModel", TFName: "tag_filters"},
 			}))
 
-			metrics := modelByName(view, "datadogIntegrationAwsAccountAWSMetricsConfigModel")
+			metrics := modelByName(view, "datadogIntegrationAwsAccount_AWSMetricsConfigModel")
 			Expect(metrics.Fields).To(Equal([]ModelFieldView{
-				{GoField: "TagFilters", GoType: "[]*datadogIntegrationAwsAccountAWSNamespaceTagFilterModel", TFName: "tag_filters"},
+				{GoField: "TagFilters", GoType: "[]*datadogIntegrationAwsAccount_AWSNamespaceTagFilterModel", TFName: "tag_filters"},
 			}))
 		})
 
@@ -239,7 +251,7 @@ var _ = Describe("generated model naming", func() {
 
 			var creators int
 			for _, n := range modelNames(view) {
-				if n == "datadogWidgetCreatorModel" {
+				if n == "datadogWidget_CreatorModel" {
 					creators++
 				}
 			}
@@ -252,7 +264,7 @@ var _ = Describe("generated model naming", func() {
 					types = append(types, f.GoType)
 				}
 			}
-			Expect(types).To(Equal([]string{"*datadogWidgetCreatorModel", "*datadogWidgetCreatorModel"}))
+			Expect(types).To(Equal([]string{"*datadogWidget_CreatorModel", "*datadogWidget_CreatorModel"}))
 		})
 	})
 
@@ -310,3 +322,32 @@ var _ = Describe("generated model naming", func() {
 		})
 	})
 })
+
+// packageLevelNames lists every identifier file declares at package scope:
+// types, vars, consts and plain funcs. Methods are scoped to their receiver,
+// and blank identifiers and init never collide.
+func packageLevelNames(file *ast.File) []string {
+	var names []string
+	for _, decl := range file.Decls {
+		switch d := decl.(type) {
+		case *ast.FuncDecl:
+			if d.Recv == nil && d.Name.Name != "init" {
+				names = append(names, d.Name.Name)
+			}
+		case *ast.GenDecl:
+			for _, spec := range d.Specs {
+				switch sp := spec.(type) {
+				case *ast.TypeSpec:
+					names = append(names, sp.Name.Name)
+				case *ast.ValueSpec:
+					for _, n := range sp.Names {
+						if n.Name != "_" {
+							names = append(names, n.Name)
+						}
+					}
+				}
+			}
+		}
+	}
+	return names
+}

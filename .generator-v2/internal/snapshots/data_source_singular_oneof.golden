@@ -17,23 +17,23 @@ var (
 )
 
 type datadogIncidentTypeDataSourceModel struct {
-	ID           types.String                                  `tfsdk:"id"`
-	Description  types.String                                  `tfsdk:"description"`
-	IsDefault    types.Bool                                    `tfsdk:"is_default"`
-	Name         types.String                                  `tfsdk:"name"`
-	Notification *datadogIncidentTypeIncidentNotificationModel `tfsdk:"notification"`
+	ID           types.String                                   `tfsdk:"id"`
+	Description  types.String                                   `tfsdk:"description"`
+	IsDefault    types.Bool                                     `tfsdk:"is_default"`
+	Name         types.String                                   `tfsdk:"name"`
+	Notification *datadogIncidentType_IncidentNotificationModel `tfsdk:"notification"`
 }
 
-type datadogIncidentTypeIncidentNotificationModel struct {
-	String              *datadogIncidentTypeIncidentNotificationStringModel              `tfsdk:"string"`
-	WebhookNotification *datadogIncidentTypeIncidentNotificationWebhookNotificationModel `tfsdk:"webhook_notification"`
+type datadogIncidentType_IncidentNotificationModel struct {
+	String              *datadogIncidentType_IncidentNotificationStringModel              `tfsdk:"string"`
+	WebhookNotification *datadogIncidentType_IncidentNotificationWebhookNotificationModel `tfsdk:"webhook_notification"`
 }
 
-type datadogIncidentTypeIncidentNotificationStringModel struct {
+type datadogIncidentType_IncidentNotificationStringModel struct {
 	Value types.String `tfsdk:"value"`
 }
 
-type datadogIncidentTypeIncidentNotificationWebhookNotificationModel struct {
+type datadogIncidentType_IncidentNotificationWebhookNotificationModel struct {
 	Enabled types.Bool   `tfsdk:"enabled"`
 	Url     types.String `tfsdk:"url"`
 }
@@ -163,16 +163,16 @@ func (d *datadogIncidentTypeDataSource) updateState(ctx context.Context, state *
 		state.Name = types.StringValue(*name)
 	}
 	if notification, ok := attributes.GetNotificationOk(); ok && notification != nil {
-		notificationEnvelope := &datadogIncidentTypeIncidentNotificationModel{}
+		notificationEnvelope := &datadogIncidentType_IncidentNotificationModel{}
 		notificationMatches := 0
 		if stringVariant := notification.String; stringVariant != nil {
-			stringModel := &datadogIncidentTypeIncidentNotificationStringModel{}
+			stringModel := &datadogIncidentType_IncidentNotificationStringModel{}
 			stringModel.Value = types.StringValue(*stringVariant)
 			notificationEnvelope.String = stringModel
 			notificationMatches++
 		}
 		if webhookNotificationVariant := notification.WebhookNotification; webhookNotificationVariant != nil {
-			webhookNotificationModel := &datadogIncidentTypeIncidentNotificationWebhookNotificationModel{}
+			webhookNotificationModel := &datadogIncidentType_IncidentNotificationWebhookNotificationModel{}
 			if enabled, ok := webhookNotificationVariant.GetEnabledOk(); ok && enabled != nil {
 				webhookNotificationModel.Enabled = types.BoolValue(*enabled)
 			}

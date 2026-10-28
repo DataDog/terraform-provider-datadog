@@ -268,7 +268,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 		return buildPluralView(a)
 	}
 
-	b := &dataSourceBuilder{receiver: envelopeReceiver, namer: modelNamer{base: dsGoName(a.Name)}}
+	b := &dataSourceBuilder{receiver: envelopeReceiver, namer: dataSourceNamer(a.Name)}
 
 	// Resolve the SDK calls. read backs the by-id lookup, search the list; the
 	// presence of each selects the resolution shape (read-only / search / both).
@@ -325,7 +325,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 	}
 
 	goName := dsGoName(a.Name)
-	rootStruct := b.namer.qualify("DataSourceModel")
+	rootStruct := goName + "DataSourceModel"
 	env := b.flattenEnvelope(topLevel, idStrategy, rootExpr)
 
 	if len(b.unsupported) > 0 {
@@ -931,7 +931,7 @@ func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, a
 		tfName := tfNameOf(a.Path)
 		field := model.SdkName(tfName)
 		if a.WriteOnlySecret {
-			secret := buildWriteOnlySecretView(a, b.namer.base)
+			secret := buildWriteOnlySecretView(a, b.namer)
 			attrViews = append(attrViews, AttrView{TFName: tfName, WriteOnlySecret: &secret})
 			// The plaintext companion is stateful, so unlike the write-only
 			// attribute it needs a model field the plan round-trips through.
@@ -1252,7 +1252,7 @@ func hasWriteOnlySecrets(attributes []AttrView) bool {
 	return false
 }
 
-func buildWriteOnlySecretView(attribute *model.Attribute, artifactBase string) WriteOnlySecretView {
+func buildWriteOnlySecretView(attribute *model.Attribute, namer modelNamer) WriteOnlySecretView {
 	tfName := tfNameOf(attribute.Path)
 	sdkField := model.SdkName(attribute.OpenAPIName)
 	if sdkField == "" {
@@ -1287,7 +1287,7 @@ func buildWriteOnlySecretView(attribute *model.Attribute, artifactBase string) W
 			" Prefer `" + writeOnlyAttr + "`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.",
 		WriteOnlyDescription: description + "This write-only value is not stored in Terraform state. Requires Terraform 1.11+.",
 		TriggerDescription:   "Version trigger for " + writeOnlyAttr + " rotation.",
-		ConfigVar:            artifactBase + upperFirst(localStem) + "WriteOnlySecretConfig",
+		ConfigVar:            namer.qualify(localStem + "WriteOnlySecretConfig"),
 		HandlerVar:           localStem + "WriteOnlySecretHandler",
 		ResultVar:            localStem + "SecretResult",
 	}
@@ -1524,7 +1524,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 	// b hosts walk, so list-of-object item fields generate their element structs,
 	// and buildInputViews, so an input's plan-modifier package is registered for
 	// the import block (a plural data source's filters carry none).
-	b := &dataSourceBuilder{namer: modelNamer{base: goName}}
+	b := &dataSourceBuilder{namer: dataSourceNamer(a.Name)}
 
 	inputAttrs, inputFields := b.buildInputViews(inputLeaves)
 	filterParams, filterUUID, filterStrconv := buildFilterParams(call, filterLeaves, &unsupported)
@@ -1661,7 +1661,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 
 	// Models: parent, the item struct, then any element structs walked for
 	// list-of-object item fields.
-	rootStruct := b.namer.qualify("DataSourceModel")
+	rootStruct := goName + "DataSourceModel"
 	models := []ModelStructView{
 		{Name: rootStruct, Fields: parentFields},
 		{Name: itemStruct, Fields: itemFields},
@@ -1879,10 +1879,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 
 	primary := lc.Read
 	goName := dsGoName(a.Name)
-	// Resources and data sources may share a Terraform name, but all emitted
-	// Go models live in fwprovider. Scope resource nested models separately;
-	// keep existing data-source names stable.
-	b := &dataSourceBuilder{receiver: "attributes", namer: modelNamer{base: goName + "Resource"}}
+	b := &dataSourceBuilder{receiver: "attributes", namer: resourceNamer(a.Name)}
 
 	// Split the path parameters back out: they are not part of the JSON:API
 	// envelope, so flattenEnvelope would drop them as stray siblings. Keyed on
@@ -1901,7 +1898,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		return ResourceView{}, &UnsupportedEmitError{Nodes: b.unsupported}
 	}
 
-	rootStruct := b.namer.qualify("Model")
+	rootStruct := goName + "ResourceModel"
 	b.filterByResponse = true
 	recordAttrs, recordBlocks, recordScalars, recordLists := b.walk(rootStruct, "", b.receiver, "state", env.leaves)
 
@@ -2240,7 +2237,7 @@ func buildRequestFields(attrs []*model.Attribute, role *model.Schema, stateExpr,
 		field := model.SdkName(tfName)
 		childState := stateExpr + "." + field
 		if a.WriteOnlySecret {
-			secret := buildWriteOnlySecretView(a, "")
+			secret := buildWriteOnlySecretView(a, modelNamer{})
 			fields = append(fields, RequestFieldView{
 				GoField:         secret.SDKField,
 				Target:          target,
