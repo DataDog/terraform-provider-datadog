@@ -1254,10 +1254,7 @@ func hasWriteOnlySecrets(attributes []AttrView) bool {
 
 func buildWriteOnlySecretView(attribute *model.Attribute, namer modelNamer) WriteOnlySecretView {
 	tfName := tfNameOf(attribute.Path)
-	sdkField := model.SdkName(attribute.OpenAPIName)
-	if sdkField == "" {
-		sdkField = model.SdkName(tfName)
-	}
+	sdkField, resultVar := writeOnlySecretRequestNames(attribute)
 	description := strings.TrimSpace(attribute.WriteOnlyDescription)
 	if description == "" {
 		description = strings.TrimSpace(attribute.Description)
@@ -1289,8 +1286,21 @@ func buildWriteOnlySecretView(attribute *model.Attribute, namer modelNamer) Writ
 		TriggerDescription:   "Version trigger for " + writeOnlyAttr + " rotation.",
 		ConfigVar:            namer.qualify(localStem + "WriteOnlySecretConfig"),
 		HandlerVar:           localStem + "WriteOnlySecretHandler",
-		ResultVar:            localStem + "SecretResult",
+		ResultVar:            resultVar,
 	}
+}
+
+// writeOnlySecretRequestNames returns the two names a request body needs for
+// a write-only secret: the SDK setter's field and the local the resolved
+// value is read from. Request-field building needs only these, not the full
+// view, which also qualifies package-level names through an artifact namer.
+func writeOnlySecretRequestNames(attribute *model.Attribute) (sdkField, resultVar string) {
+	tfName := tfNameOf(attribute.Path)
+	sdkField = model.SdkName(attribute.OpenAPIName)
+	if sdkField == "" {
+		sdkField = model.SdkName(tfName)
+	}
+	return sdkField, writeOnlyLocalStem(writeOnlyParentBlocks(attribute.Path), tfName) + "SecretResult"
 }
 
 func (b *dataSourceBuilder) collectWriteOnlySecret(secret WriteOnlySecretView) {
@@ -2237,11 +2247,11 @@ func buildRequestFields(attrs []*model.Attribute, role *model.Schema, stateExpr,
 		field := model.SdkName(tfName)
 		childState := stateExpr + "." + field
 		if a.WriteOnlySecret {
-			secret := buildWriteOnlySecretView(a, modelNamer{})
+			sdkField, resultVar := writeOnlySecretRequestNames(a)
 			fields = append(fields, RequestFieldView{
-				GoField:         secret.SDKField,
+				GoField:         sdkField,
 				Target:          target,
-				WriteOnlyResult: secret.ResultVar,
+				WriteOnlyResult: resultVar,
 			})
 			continue
 		}
