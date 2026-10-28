@@ -29,9 +29,12 @@ type DataSourceView struct {
 	// TypeName is the Terraform type suffix written to response.TypeName
 	TypeName string
 	// GoName is the lowerCamel identifier base, e.g. "incidentType". It builds
-	// the Go type names <GoName>DataSource and <GoName>DataSourceModel and,
-	// title-cased, the New<GoName>DataSource constructor.
+	// the Go type name <GoName>DataSource and, title-cased, the
+	// New<GoName>DataSource constructor.
 	GoName string
+	// RootModel is the Go struct the data source's state decodes into, named by
+	// modelNamer.root. Templates must not rebuild it from GoName.
+	RootModel string
 	// Description is the schema-level data-source description.
 	Description string
 
@@ -329,8 +332,8 @@ type AttrView struct {
 
 // ModelStructView is one Go struct in the generated file's data model.
 type ModelStructView struct {
-	// Name is the Go struct type name, e.g. "incidentTypeDataSourceModel" or
-	// "TeamModel".
+	// Name is the Go struct type name, e.g. "datadogIncidentType_Model" or
+	// "datadogIncidentType_FieldsModel".
 	Name string
 	// Fields are emitted in declaration order; a field's leading Comment groups
 	// it in the output (e.g. "Query Parameters", "Results").
@@ -536,8 +539,11 @@ type OneOfVariantAssignment struct {
 
 // ResourceView is the render-ready data context for the resource template.
 type ResourceView struct {
-	TypeName    string
-	GoName      string
+	TypeName string
+	GoName   string
+	// RootModel is the Go struct the resource's state decodes into, named by
+	// modelNamer.root. Templates must not rebuild it from GoName.
+	RootModel   string
 	Description string
 
 	SDKPackage     string

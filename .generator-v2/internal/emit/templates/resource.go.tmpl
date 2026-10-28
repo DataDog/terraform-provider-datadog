@@ -116,7 +116,7 @@ func (r *{{ .GoName }}Resource) ImportState(ctx context.Context, request resourc
 }
 
 func (r *{{ .GoName }}Resource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state {{ .GoName }}ResourceModel
+	var state {{ .RootModel }}
 {{ template "decodePlan" . }}
 
 {{ template "writeOnlySecretResults" .Create.WriteOnlySecrets }}
@@ -131,7 +131,7 @@ func (r *{{ .GoName }}Resource) Create(ctx context.Context, request resource.Cre
 }
 
 func (r *{{ .GoName }}Resource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state {{ .GoName }}ResourceModel
+	var state {{ .RootModel }}
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -154,7 +154,7 @@ func (r *{{ .GoName }}Resource) Update(ctx context.Context, request resource.Upd
 {{- if .UpdateUnsupported }}
 	response.Diagnostics.AddError("Update should not be called", "Updating this resource should replace it.")
 {{- else }}
-	var state {{ .GoName }}ResourceModel
+	var state {{ .RootModel }}
 {{ template "decodePlan" . }}
 
 {{ template "writeOnlySecretResults" .Update.WriteOnlySecrets }}
@@ -170,7 +170,7 @@ func (r *{{ .GoName }}Resource) Update(ctx context.Context, request resource.Upd
 }
 
 func (r *{{ .GoName }}Resource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state {{ .GoName }}ResourceModel
+	var state {{ .RootModel }}
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -190,7 +190,7 @@ func (r *{{ .GoName }}Resource) Delete(ctx context.Context, request resource.Del
 // rather than writing them so it stays free of the resource request/response
 // types and can fail at a specific schema path. Shared by Create, Read and
 // Update, which all resolve the same response type.
-func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .GoName }}ResourceModel, {{ .State.ParamName }} {{ .State.ParamType }}) diag.Diagnostics {
+func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .RootModel }}, {{ .State.ParamName }} {{ .State.ParamType }}) diag.Diagnostics {
 {{- template "updateStateBody" . }}
 }
 {{- end -}}
