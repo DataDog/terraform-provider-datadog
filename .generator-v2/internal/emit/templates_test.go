@@ -53,6 +53,20 @@ var _ = Describe("data-source templates", func() {
 			Expect(first).To(Equal(second), "render of %q is non-deterministic", v.TypeName)
 		}
 	})
+
+	DescribeTable("rejects a RootModel the templates cannot type state with",
+		func(rootModel, wantErr string) {
+			v := caseConstructorView()
+			v.RootModel = rootModel
+			_, err := RenderDataSource(v)
+			Expect(err).To(MatchError(ContainSubstring(wantErr)))
+
+			_, err = RenderResource(ResourceView{TypeName: "case", RootModel: rootModel, Models: v.Models})
+			Expect(err).To(MatchError(ContainSubstring(wantErr)))
+		},
+		Entry("empty", "", "RootModel is empty"),
+		Entry("not a declared model", "datadogCase_OtherModel", "RootModel datadogCase_OtherModel is not among the declared models"),
+	)
 })
 
 var _ = Describe("data-source acceptance-test scaffolds", func() {

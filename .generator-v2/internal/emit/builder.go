@@ -1254,7 +1254,7 @@ func hasWriteOnlySecrets(attributes []AttrView) bool {
 
 func buildWriteOnlySecretView(attribute *model.Attribute, namer modelNamer) WriteOnlySecretView {
 	tfName := tfNameOf(attribute.Path)
-	sdkField, resultVar := writeOnlySecretRequestNames(attribute)
+	names := writeOnlySecretNamesOf(attribute)
 	description := strings.TrimSpace(attribute.WriteOnlyDescription)
 	if description == "" {
 		description = strings.TrimSpace(attribute.Description)
@@ -1263,8 +1263,6 @@ func buildWriteOnlySecretView(attribute *model.Attribute, namer modelNamer) Writ
 		description += " "
 	}
 	writeOnlyAttr := tfName + "_wo"
-	parentBlocks := writeOnlyParentBlocks(attribute.Path)
-	localStem := writeOnlyLocalStem(parentBlocks, tfName)
 	// The plaintext attribute is the Terraform <1.11 fallback: identical value,
 	// but stored in state, so its description says so rather than repeating the
 	// write-only wording.
@@ -1276,31 +1274,54 @@ func buildWriteOnlySecretView(attribute *model.Attribute, namer modelNamer) Writ
 		OriginalAttr:     tfName,
 		WriteOnlyAttr:    writeOnlyAttr,
 		TriggerAttr:      tfName + "_wo_version",
-		SDKField:         sdkField,
-		ParentBlocks:     parentBlocks,
+		SDKField:         names.sdkField,
+		ParentBlocks:     names.parentBlocks,
 		RequiredOnCreate: attribute.SecretRequiredOnCreate,
 		RequiredOnUpdate: attribute.SecretRequiredOnUpdate,
 		OriginalDescription: description + exclusivity +
 			" Prefer `" + writeOnlyAttr + "`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.",
 		WriteOnlyDescription: description + "This write-only value is not stored in Terraform state. Requires Terraform 1.11+.",
 		TriggerDescription:   "Version trigger for " + writeOnlyAttr + " rotation.",
-		ConfigVar:            namer.qualify(localStem + "WriteOnlySecretConfig"),
-		HandlerVar:           localStem + "WriteOnlySecretHandler",
-		ResultVar:            resultVar,
+		ConfigVar:            namer.qualify(names.localStem + "WriteOnlySecretConfig"),
+		HandlerVar:           names.localStem + "WriteOnlySecretHandler",
+		ResultVar:            names.resultVar(),
 	}
 }
 
-// writeOnlySecretRequestNames returns the two names a request body needs for
-// a write-only secret: the SDK setter's field and the local the resolved
-// value is read from. Request-field building needs only these, not the full
-// view, which also qualifies package-level names through an artifact namer.
-func writeOnlySecretRequestNames(attribute *model.Attribute) (sdkField, resultVar string) {
+// writeOnlySecretNames holds the names a write-only secret's generated code is
+// built from. Both the full view and request-field building derive from one
+// value, so the request body's result local always matches the one the
+// template declares. Request-field building needs only sdkField and
+// resultVar, not the full view, which also qualifies package-level names
+// through an artifact namer.
+type writeOnlySecretNames struct {
+	// sdkField is the SDK setter's field name.
+	sdkField string
+	// parentBlocks are the enclosing blocks between data.attributes and the
+	// secret.
+	parentBlocks []string
+	// localStem prefixes every function-local the template declares for the
+	// secret.
+	localStem string
+}
+
+func writeOnlySecretNamesOf(attribute *model.Attribute) writeOnlySecretNames {
 	tfName := tfNameOf(attribute.Path)
-	sdkField = model.SdkName(attribute.OpenAPIName)
+	sdkField := model.SdkName(attribute.OpenAPIName)
 	if sdkField == "" {
 		sdkField = model.SdkName(tfName)
 	}
-	return sdkField, writeOnlyLocalStem(writeOnlyParentBlocks(attribute.Path), tfName) + "SecretResult"
+	parentBlocks := writeOnlyParentBlocks(attribute.Path)
+	return writeOnlySecretNames{
+		sdkField:     sdkField,
+		parentBlocks: parentBlocks,
+		localStem:    writeOnlyLocalStem(parentBlocks, tfName),
+	}
+}
+
+// resultVar is the local the resolved secret value is read from.
+func (n writeOnlySecretNames) resultVar() string {
+	return n.localStem + "SecretResult"
 }
 
 func (b *dataSourceBuilder) collectWriteOnlySecret(secret WriteOnlySecretView) {
@@ -2247,11 +2268,11 @@ func buildRequestFields(attrs []*model.Attribute, role *model.Schema, stateExpr,
 		field := model.SdkName(tfName)
 		childState := stateExpr + "." + field
 		if a.WriteOnlySecret {
-			sdkField, resultVar := writeOnlySecretRequestNames(a)
+			names := writeOnlySecretNamesOf(a)
 			fields = append(fields, RequestFieldView{
-				GoField:         sdkField,
+				GoField:         names.sdkField,
 				Target:          target,
-				WriteOnlyResult: resultVar,
+				WriteOnlyResult: names.resultVar(),
 			})
 			continue
 		}
