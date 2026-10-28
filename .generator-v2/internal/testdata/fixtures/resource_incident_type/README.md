@@ -31,6 +31,10 @@ it is a residual.
 
 ## Regenerating `out/`
 
+Run `make tfgen-update-goldens`. `TestFixtureGoldensMatchGeneratorOutput`
+(`internal/cli`) regenerates this fixture under the two conditions below and
+fails `make tfgen-test` whenever `out/` drifts from it. By hand, the run is:
+
 ```sh
 tfgen generate --spec internal/testdata/fixtures/resource_incident_type/openapi.yaml \
                --output-root <dir>

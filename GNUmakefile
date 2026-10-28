@@ -125,9 +125,11 @@ tfgen-docs-check:
 	cd .generator-v2 && $(GO) run ./cmd/tfgen-docs --out docs --check
 	@echo "tfgen reference docs up to date"
 
-# Refresh tfgen's checked-in Go snapshots after an intentional emitter change.
+# Refresh tfgen's checked-in Go snapshots and fixture goldens after an
+# intentional emitter change.
 tfgen-update-goldens:
 	cd .generator-v2 && $(GO) test ./internal/emit -update
+	cd .generator-v2 && $(GO) test ./internal/cli -run TestFixtureGoldensMatchGeneratorOutput -update
 	@echo "tfgen goldens refreshed"
 
 # Run the tfgen module's integration-tagged tests: the SDK-binding corroboration
