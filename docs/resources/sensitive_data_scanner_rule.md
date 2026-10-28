@@ -134,7 +134,7 @@ resource "datadog_sensitive_data_scanner_rule" "mylibraryrule_with_custom_suppre
 - `suppressions` (Block List, Max: 1) Object defining custom suppressions to skip matches based on `starts_with`, `ends_with`, and `exact_match` rules. Custom lists are managed independently of `use_recommended_suppressions`; replacing or removing this block updates or clears the custom lists while preserving the recommendation choice. Recommended suppressions are not copied into these lists. (see [below for nested schema](#nestedblock--suppressions))
 - `tags` (List of String) List of tags.
 - `text_replacement` (Block List, Max: 1) Object describing how the scanned event will be replaced. Defaults to `type: none` (see [below for nested schema](#nestedblock--text_replacement))
-- `use_recommended_suppressions` (Boolean) Whether to use the standard pattern's recommended suppressions. Requires `standard_pattern_id` when true. Defaults to true for new standard-pattern rules. When omitted for an existing or imported rule, preserves the current API choice. Custom suppressions are managed separately in the `suppressions` block and are retained when this setting changes.
+- `use_recommended_suppressions` (Boolean) Whether to use the standard pattern's recommended suppressions. Requires `standard_pattern_id` when true. Defaults to `true` for new standard-pattern rules. When omitted for an existing or imported rule, preserves the current API choice. Custom suppressions are managed separately in the `suppressions` block and are retained when this setting changes.
 
 ### Read-Only
 
