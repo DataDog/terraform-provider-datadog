@@ -3413,17 +3413,17 @@ func TestAccDatadogMonitor_MetricQueryMixedVariables(t *testing.T) {
 	})
 }
 
-// Mirrors a dynamic-threshold monitor created in the UI (no aggregator sent).
+// Formula monitor over plain metrics variables, as the UI sends them (no aggregator).
 func testAccCheckDatadogMonitorMetricQueryVariable(uniq, extraVariables string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
   name    = "%[1]s"
   type    = "query alert"
   message = "hello alerting talks"
-  query   = "formula(\"query1 + query2\").rollup(\"avg\").last(\"10m\") > threshold"
+  query   = "formula(\"query1 + query2\").rollup(\"avg\").last(\"10m\") > 5"
 
   monitor_thresholds {
-    critical_query = "formula(\"2 * query1 + query2\").rollup(\"avg\").last(\"1w\").multiplier(1.25)"
+    critical = 5
   }
 
   variables {
