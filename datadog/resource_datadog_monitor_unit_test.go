@@ -237,8 +237,8 @@ func TestMonitorMetricQueryVariableRead(t *testing.T) {
 	q1 := map[string]interface{}{"data_source": "metrics", "name": "q1", "query": "avg:system.cpu.user{*}"}
 	q2 := map[string]interface{}{"data_source": "cloud_cost", "name": "q2", "query": "sum:aws.cost{*}", "aggregator": "sum"}
 	vars := []datadogV1.MonitorFormulaAndFunctionQueryDefinition{
-		*buildMonitorFormulaAndFunctionCloudCostQuery(q1),
-		*buildMonitorFormulaAndFunctionCloudCostQuery(q2),
+		*buildMonitorFormulaAndFunctionCostQuery(q1),
+		*buildMonitorFormulaAndFunctionCostQuery(q2),
 		{MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition: &datadogV1.MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition{Name: datadog.PtrString("a1")}},
 	}
 	none := []map[string]interface{}(nil)

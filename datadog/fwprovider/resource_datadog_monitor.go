@@ -143,7 +143,7 @@ type Recurrence struct {
 type Variable struct {
 	EventQuery              []EventQuery              `tfsdk:"event_query"`
 	CloudCostQuery          []CloudCostQuery          `tfsdk:"cloud_cost_query"`
-	MetricQuery             []CloudCostQuery          `tfsdk:"metric_query"`
+	MetricQuery             []MetricQuery             `tfsdk:"metric_query"`
 	DataQualityQuery        []DataQualityQuery        `tfsdk:"data_quality_query"`
 	AggregateAugmentedQuery []AggregateAugmentedQuery `tfsdk:"aggregate_augmented_query"`
 	AggregateFilteredQuery  []AggregateFilteredQuery  `tfsdk:"aggregate_filtered_query"`
@@ -244,6 +244,14 @@ type Sort struct {
 	Aggregation types.String `tfsdk:"aggregation"`
 	Metric      types.String `tfsdk:"metric"`
 	Order       types.String `tfsdk:"order"`
+}
+
+// MetricQuery shares CloudCostQuery's fields (and API type), so the two convert directly.
+type MetricQuery struct {
+	DataSource types.String `tfsdk:"data_source"`
+	Query      types.String `tfsdk:"query"`
+	Aggregator types.String `tfsdk:"aggregator"`
+	Name       types.String `tfsdk:"name"`
 }
 
 type CloudCostQuery struct {
@@ -1986,7 +1994,7 @@ func (r *monitorResource) buildVariablesStruct(ctx context.Context, variables []
 	if cloudCostReq := r.buildCloudCostQueryStruct(variable.CloudCostQuery); len(cloudCostReq) > 0 {
 		variablesReq = append(variablesReq, cloudCostReq...)
 	}
-	if metricReq := r.buildCloudCostQueryStruct(variable.MetricQuery); len(metricReq) > 0 {
+	if metricReq := r.buildMetricQueryStruct(variable.MetricQuery); len(metricReq) > 0 {
 		variablesReq = append(variablesReq, metricReq...)
 	}
 	if dataQualityReq := r.buildDataQualityQueryStruct(ctx, variable.DataQualityQuery); len(dataQualityReq) > 0 {
@@ -2060,6 +2068,14 @@ func (r *monitorResource) buildEventQueryStruct(ctx context.Context, eventQs []E
 		variablesReq = append(variablesReq, variableReq)
 	}
 	return variablesReq
+}
+
+func (r *monitorResource) buildMetricQueryStruct(metricQs []MetricQuery) []datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	costQs := make([]CloudCostQuery, len(metricQs))
+	for i, q := range metricQs {
+		costQs[i] = CloudCostQuery(q)
+	}
+	return r.buildCloudCostQueryStruct(costQs)
 }
 
 func (r *monitorResource) buildCloudCostQueryStruct(cloudCostQs []CloudCostQuery) []datadogV1.MonitorFormulaAndFunctionQueryDefinition {
@@ -2550,7 +2566,7 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 	}
 	eventQueryStates := []EventQuery{}
 	CloudCostQueryStates := []CloudCostQuery{}
-	metricQueryStates := []CloudCostQuery{}
+	metricQueryStates := []MetricQuery{}
 	isCostMonitor := state.Type.ValueString() == string(datadogV1.MONITORTYPE_COST_ALERT)
 	priorCost, priorMetric := map[string]bool{}, map[string]bool{}
 	for _, pv := range state.Variables {
@@ -2571,7 +2587,7 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 			eventQueryStates = append(eventQueryStates, *eventQState)
 		}
 		if costQState := r.buildCloudCostQueryState(v.MonitorFormulaAndFunctionCostQueryDefinition); costQState != nil && isMetricQueryVariable(costQState.Name.ValueString(), costQState.DataSource.ValueString(), isCostMonitor, priorCost, priorMetric) {
-			metricQueryStates = append(metricQueryStates, *costQState)
+			metricQueryStates = append(metricQueryStates, MetricQuery(*costQState))
 		} else if costQState != nil {
 			CloudCostQueryStates = append(CloudCostQueryStates, *costQState)
 		}

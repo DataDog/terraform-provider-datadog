@@ -1560,7 +1560,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 					queries, _ := query.([]interface{})
 					for _, q := range queries {
 						if queryMap, ok := q.(map[string]interface{}); ok {
-							monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionCloudCostQuery(queryMap))
+							monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionCostQuery(queryMap))
 						}
 					}
 				}
@@ -1574,7 +1574,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 						if !ok {
 							continue
 						}
-						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionCloudCostQuery(queryMap))
+						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionCostQuery(queryMap))
 					}
 				}
 				if query, ok := m["data_quality_query"]; ok {
@@ -1988,7 +1988,7 @@ func buildMonitorFormulaAndFunctionEventQuery(data map[string]interface{}) *data
 	return &definition
 }
 
-func buildMonitorFormulaAndFunctionCloudCostQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+func buildMonitorFormulaAndFunctionCostQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
 	dataSource := datadogV1.MonitorFormulaAndFunctionCostDataSource(data["data_source"].(string))
 
 	cloudCostQuery := datadogV1.NewMonitorFormulaAndFunctionCostQueryDefinition(dataSource, data["name"].(string), data["query"].(string))
