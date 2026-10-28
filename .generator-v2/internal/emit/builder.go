@@ -388,6 +388,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 		Cardinality: Singular,
 		TypeName:    a.Name,
 		GoName:      goName,
+		RootModel:   rootStruct,
 		Description: a.Description,
 		SDKPackage:  primary.GoPackage,
 		APIStruct:   primary.GoApiStruct,
@@ -1660,8 +1661,9 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 
 	// Models: parent, the item struct, then any element structs walked for
 	// list-of-object item fields.
+	rootStruct := b.namer.qualify("DataSourceModel")
 	models := []ModelStructView{
-		{Name: b.namer.qualify("DataSourceModel"), Fields: parentFields},
+		{Name: rootStruct, Fields: parentFields},
 		{Name: itemStruct, Fields: itemFields},
 	}
 	models = append(models, b.models...)
@@ -1674,6 +1676,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 		Cardinality: Plural,
 		TypeName:    a.Name,
 		GoName:      goName,
+		RootModel:   rootStruct,
 		Description: a.Description,
 		SDKPackage:  call.GoPackage,
 		APIStruct:   call.GoApiStruct,
@@ -1827,8 +1830,8 @@ func lowerFirst(s string) string {
 }
 
 // dsGoName is the lowerCamel identifier base for a generated data source, e.g.
-// "datadogTeam". The Datadog prefix is unconditional, so <dsGoName>DataSource,
-// <dsGoName>DataSourceModel and New<title dsGoName>DataSource all line up.
+// "datadogTeam". The Datadog prefix is unconditional, so <dsGoName>DataSource
+// and New<title dsGoName>DataSource line up.
 func dsGoName(name string) string {
 	return lowerFirst("Datadog" + model.SdkName(name))
 }
@@ -1986,6 +1989,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	return ResourceView{
 		TypeName:    a.Name,
 		GoName:      goName,
+		RootModel:   rootStruct,
 		Description: a.Description,
 		SDKPackage:  primary.GoPackage,
 		APIStruct:   primary.GoApiStruct,

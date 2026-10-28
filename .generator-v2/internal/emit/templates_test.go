@@ -187,6 +187,7 @@ func caseConstructorView() DataSourceView {
 		TypeName:    "case",
 		UsesFmt:     true,
 		GoName:      "datadogCase",
+		RootModel:   "datadogCaseDataSourceModel",
 		Description: "Use this data source to retrieve a case.",
 		SDKPackage:  "datadogV2",
 		APIStruct:   "CaseManagementApi",
@@ -222,6 +223,7 @@ func pluralFixture() DataSourceView {
 		// every view it produces. This fixture's filter hash reaches fmt.Sprintf.
 		UsesFmt:     true,
 		GoName:      "datadogTeams",
+		RootModel:   "datadogTeamsDataSourceModel",
 		Description: "Use this data source to retrieve information about existing teams for use in other resources.",
 		SDKPackage:  "datadogV2",
 		APIStruct:   "TeamsApi",
