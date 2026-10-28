@@ -87,6 +87,10 @@ func compareGolden(t *testing.T, golden, generated string) {
 
 func rewriteGolden(t *testing.T, golden, generated string) {
 	t.Helper()
+	// A new fixture has no out/ yet; create it so -update can bootstrap one.
+	if err := os.MkdirAll(golden, 0o755); err != nil {
+		t.Fatal(err)
+	}
 	for _, name := range goFiles(t, golden) {
 		if err := os.Remove(filepath.Join(golden, name)); err != nil {
 			t.Fatal(err)
