@@ -102,6 +102,7 @@ var Resources = []func() resource.Resource{
 	NewServiceAccountApplicationKeyResource,
 	NewServiceAccessTokenResource,
 	NewSpansMetricResource,
+	NewMetricTagConfigurationV2Resource,
 	NewTagIndexingRuleResource,
 	NewTagIndexingRuleExemptionResource,
 	NewTagIndexingRuleOrderResource,
