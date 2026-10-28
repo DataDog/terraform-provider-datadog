@@ -23,6 +23,17 @@ type PermAttributes struct {
 // allPermissions is a map of all permission IDs to its attributes (name, restricted)
 var allPermissions map[string]PermAttributes
 
+// ResetPermissionsCache is test-only. The cache is per-process and cassettes carry
+// different permission catalogs, so a cache filled by one cassette rejects permission
+// IDs that only another cassette contains. The returned func restores the previous
+// cache, so later tests in the process see the same cache as without the reset.
+// Not safe to call concurrently with role CRUD.
+func ResetPermissionsCache() (restore func()) {
+	previous := allPermissions
+	allPermissions = nil
+	return func() { allPermissions = previous }
+}
+
 func resourceDatadogRole() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog role resource. This can be used to create and manage Datadog roles.",
