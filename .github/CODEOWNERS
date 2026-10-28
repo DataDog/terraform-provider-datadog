@@ -29,7 +29,7 @@ datadog/*datadog_monitor*                       @DataDog/monitor-app
 datadog/*datadog_screenboard*                   @DataDog/dashboards-backend
 datadog/*datadog_security_monitoring*           @DataDog/cloud-siem
 datadog/*datadog_security_notification_rule*    @DataDog/k9-shared-capabilities
-datadog/*datadog_service_definition*            @DataDog/service-catalog
+datadog/*datadog_service_definition*            @DataDog/idp
 datadog/*datadog_service_level_objective*       @DataDog/slo-app
 datadog/*datadog_synthetics*                    @DataDog/synthetics-orchestrating-managing
 datadog/*datadog_timeboard*                     @DataDog/dashboards-backend
@@ -62,7 +62,7 @@ datadog/**/*datadog_dataset*                      @DataDog/api-reliability @Data
 datadog/**/*datadog_datastore*                    @DataDog/api-reliability @DataDog/action-platform @DataDog/workflow-automation-backend
 datadog/**/*datadog_incident*                     @DataDog/api-reliability @DataDog/incident-app
 datadog/**/*datadog_ip_allowlist*                 @DataDog/api-reliability @DataDog/team-aaa
-datadog/**/*datadog_openapi*                      @DataDog/api-reliability @DataDog/service-catalog
+datadog/**/*datadog_openapi*                      @DataDog/api-reliability @DataDog/idp
 datadog/**/*datadog_org_connection*               @DataDog/api-reliability @DataDog/aaa-granular-access
 datadog/**/*datadog_org_group*                    @DataDog/api-reliability @DataDog/org-management
 datadog/**/*datadog_reference_table*              @DataDog/api-reliability @DataDog/redapl-experiences
@@ -84,14 +84,14 @@ datadog/**/*datadog_integration_microsoft_teams*  @DataDog/api-reliability @Data
 datadog/**/*datadog_integration_ms_teams*         @DataDog/api-reliability @DataDog/chat-integrations
 datadog/**/*datadog_ip_ranges*                    @DataDog/api-reliability @DataDog/team-aaa
 datadog/**/*datadog_on_call*                      @DataDog/api-reliability @DataDog/on-call
-datadog/**/*datadog_open_api*                     @DataDog/api-reliability @DataDog/service-catalog
+datadog/**/*datadog_open_api*                     @DataDog/api-reliability @DataDog/idp
 datadog/**/*datadog_organization_settings*        @DataDog/api-reliability @DataDog/teams-and-ownership @DataDog/trust-and-safety
 datadog/**/*datadog_restriction_policy*           @DataDog/api-reliability @DataDog/aaa-granular-access
 datadog/**/*datadog_logs_restriction_query*       @DataDog/api-reliability @DataDog/aaa-granular-access
 datadog/**/*datadog_sensitive_data_scanner*       @DataDog/api-reliability @DataDog/sensitive-data-scanner
 datadog/**/*datadog_service_account*              @DataDog/api-reliability @DataDog/team-aaa
 datadog/**/*datadog_service_access_token*         @DataDog/api-reliability @DataDog/credential-management
-datadog/**/*datadog_software_catalog*             @DataDog/api-reliability @DataDog/service-catalog
+datadog/**/*datadog_software_catalog*             @DataDog/api-reliability @DataDog/idp
 datadog/**/*datadog_spans_metric*                 @DataDog/api-reliability @DataDog/apm-trace-intake
 datadog/**/*datadog_synthetics*                   @DataDog/api-reliability @DataDog/synthetics-orchestrating-managing
 datadog/**/*datadog_team*                         @DataDog/api-reliability @DataDog/teams-and-ownership
@@ -121,6 +121,7 @@ datadog/**/*datadog_governance_control*           @DataDog/api-reliability @Data
 datadog/**/*datadog_tag_rule*                     @DataDog/api-reliability @DataDog/aaa-governance-console @DataDog/odp-governance
 datadog/**/*datadog_status_page*                  @DataDog/api-reliability @DataDog/incident-app
 datadog/**/*fleet_schedule*                       @DataDog/api-reliability @DataDog/fleet-automation
+datadog/**/*github_oidc*                          @DataDog/api-reliability @DataDog/aaa-authn
 
 # Team-specific
 docs/resources/observability_pipeline.md                  @DataDog/observability-pipelines
@@ -148,3 +149,7 @@ examples/**/datadog_team*/**                              @DataDog/teams-and-own
 scripts/*cloud-cost-import-existing-resources*            @DataDog/cloud-cost-management
 templates/**/org_group*.md.tmpl                           @DataDog/org-management
 docs/resources/governance_control.md                      @DataDog/aaa-governance-console
+docs/resources/github_oidc_identity_mapping.md            @DataDog/aaa-authn
+docs/resources/github_oidc_intake_mapping.md              @DataDog/aaa-authn
+examples/resources/datadog_github_oidc_identity_mapping/  @DataDog/aaa-authn
+examples/resources/datadog_github_oidc_intake_mapping/    @DataDog/aaa-authn

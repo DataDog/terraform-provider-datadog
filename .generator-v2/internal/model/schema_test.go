@@ -507,6 +507,22 @@ var _ = Describe("BuildResponseTree defensive guard", func() {
 		))
 	})
 
+	It("names the attribute path once when a map value type cannot be mapped", func() {
+		tree, _, err := BuildResponseTree(objSchema(map[string]*Schema{
+			"labels": {
+				Kind:  SchemaKindMap,
+				Items: &Schema{Kind: SchemaKindUnsupported, UnsupportedReason: "no value type"},
+			},
+		}))
+		Expect(tree).To(BeNil())
+		var attrErr *AttributeError
+		Expect(errors.As(err, &attrErr)).To(BeTrue(), "expected *AttributeError, got %T: %v", err, err)
+		Expect(attrErr.Path).To(Equal("response.labels"))
+		Expect(err.Error()).To(Equal(
+			`model: cannot build attribute at "response.labels": map value kind "unsupported" is not representable: no value type`,
+		))
+	})
+
 	It("builds a recursively typed non-object root", func() {
 		tree, _, err := BuildResponseTree(arrSchema(arrSchema(primSchema("string"))))
 		Expect(err).NotTo(HaveOccurred())

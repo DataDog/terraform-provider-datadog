@@ -8875,6 +8875,7 @@ resource "datadog_observability_pipeline" "generate_metrics_v2" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.id", "gen-metrics-v2-group"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.id", "gen-metrics-v2-proc"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.enabled_metric_aggregation"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.0.name", "logs.processed"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.0.include", "service:billing"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.0.metric_type", "count"),

@@ -247,7 +247,9 @@ var _ = Describe("BindOperation", func() {
 			failed := BindSpec(spec)
 			var failedIDs []string
 			for op := range failed {
-				failedIDs = append(failedIDs, op.OperationId)
+				if op.Tracking != nil {
+					failedIDs = append(failedIDs, op.OperationId)
+				}
 			}
 			Expect(failedIDs).To(ConsistOf("GetWidgetUnnamed"))
 

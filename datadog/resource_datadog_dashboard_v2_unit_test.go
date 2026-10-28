@@ -623,6 +623,24 @@ func TestDashboardV2MatchesLegacyPayloadForZeroValues(t *testing.T) {
 	}
 }
 
+func TestDashboardV2MatchesLegacyPayloadForHiddenCustomLink(t *testing.T) {
+	raw := map[string]interface{}{
+		"title":       "parity",
+		"layout_type": "ordered",
+		"widget": []interface{}{map[string]interface{}{"query_value_definition": []interface{}{map[string]interface{}{
+			"request":     []interface{}{map[string]interface{}{"q": "avg:system.cpu.user{*}"}},
+			"custom_link": []interface{}{map[string]interface{}{"is_hidden": true, "override_label": "logs"}},
+		}}}},
+	}
+	path := []string{"custom_links", "0", "link"}
+	if v, ok := lookupJSONPath(legacyDashboardWidgetDefinition(t, raw), path); ok {
+		t.Fatalf("legacy payload unexpectedly sends link %#v", v)
+	}
+	if v, ok := lookupJSONPath(canonicalDashboardWidgetDefinition(t, raw), path); ok {
+		t.Errorf("v2 sends link %#v for a hidden context menu link, legacy omits it", v)
+	}
+}
+
 func legacyDashboardWidgetDefinition(t *testing.T, raw map[string]interface{}) map[string]interface{} {
 	t.Helper()
 	d := schema.TestResourceDataRaw(t, resourceDatadogDashboard().SchemaMap(), raw)

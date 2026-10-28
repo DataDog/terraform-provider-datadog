@@ -70,7 +70,11 @@ format-sensitivity here without a reason; it was a conscious simplification.
 
 Unrepresentable element or value kinds produce
 `array element kind %q is not representable` / `map value kind %q is not
-representable`, carrying the underlying `UnsupportedReason` through.
+representable`, and a nested collection's inner element produces
+`collection element kind %q has no framework element type`. Each carries the
+underlying `UnsupportedReason` through. The tree builder wraps these in
+`AttributeError`, which prefixes the attribute path:
+`model: cannot build attribute at "<path>": map value kind ...`.
 
 ## Unsupported shapes stay explicit
 

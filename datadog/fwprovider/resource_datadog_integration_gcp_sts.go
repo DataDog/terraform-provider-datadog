@@ -142,7 +142,7 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 			"is_cspm_enabled": schema.BoolAttribute{
 				Optional:    true,
 				Computed:    true,
-				Description: "Whether Datadog collects cloud security posture management resources from your GCP project. If enabled, requires `resource_collection_enabled` to also be enabled.",
+				Description: "Whether Datadog collects cloud security posture management resources from your GCP project. If enabled, requires `resource_collection_enabled` or `is_org_folder_resource_collection_enabled` to also be enabled.",
 			},
 			"is_security_command_center_enabled": schema.BoolAttribute{
 				Description: "When enabled, Datadog will attempt to collect Security Command Center Findings. Note: This requires additional permissions on the service account.",

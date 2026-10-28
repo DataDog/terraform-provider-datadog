@@ -63,6 +63,8 @@ var Resources = []func() resource.Resource{
 	NewIntegrationAwsEventBridgeResource,
 	NewIntegrationAwsExternalIDResource,
 	NewAwsWifIdentityMappingResource,
+	NewGithubOidcIntakeMappingResource,
+	NewGithubOidcIdentityMappingResource,
 	NewIntegrationCloudflareAccountResource,
 	NewIntegrationConfluentAccountResource,
 	NewIntegrationConfluentResourceResource,
@@ -79,6 +81,8 @@ var Resources = []func() resource.Resource{
 	NewRumApplicationResource,
 	NewRumExclusionFilterResource,
 	NewRumMetricResource,
+	NewRumOperationResource,
+	NewRumOperationJourneyLinkResource,
 	NewRumRetentionFilterResource,
 	NewRumRetentionFiltersOrderResource,
 	NewSamlIdpMetadataResource,
@@ -765,6 +769,13 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	// Suppress raw HTTP dumps for WIT authentication until SDK redaction supports it.
 	ddClientConfig.Debug = logging.IsDebugOrHigher() && workloadIdentityConfig == nil
 
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateRUMOperation", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetRUMOperation", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateRUMOperation", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteRUMOperation", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateRUMOperationStrongLink", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateRUMOperationStrongLink", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteRUMOperationStrongLink", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateOpenAPI", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateOpenAPI", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetOpenAPI", true)
@@ -777,6 +788,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAWSCloudAuthPersonaMapping", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSCloudAuthPersonaMapping", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSCloudAuthPersonaMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateGitHubCloudAuthIntakeMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetGitHubCloudAuthIntakeMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteGitHubCloudAuthIntakeMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateGitHubCloudAuthPersonaMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetGitHubCloudAuthPersonaMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteGitHubCloudAuthPersonaMapping", true)
 
 	// Fleet Automation schedule reads are stable. Only mutations use Preview endpoints.
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateFleetSchedule", true)

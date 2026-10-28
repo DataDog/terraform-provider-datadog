@@ -17,6 +17,9 @@ func BuildArtifact(op *Operation) (*Artifact, error) {
 	if op == nil || op.Tracking == nil {
 		return nil, fmt.Errorf("model: BuildArtifact requires a tracked operation")
 	}
+	if op.GenerationError != nil {
+		return nil, op.GenerationError
+	}
 	artifact, err := buildArtifact(op)
 	if err != nil {
 		return nil, err

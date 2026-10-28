@@ -44,7 +44,6 @@ servers:
 security:
 - apiKeyAuth: []
   appKeyAuth: []
-tags:
 - name: Incidents
   description: Manage incident response, as well as associated attachments, metadata, and todos. See the
     [Incident Management page](https://docs.datadoghq.com/service_management/incident_management/) for
@@ -102,13 +101,6 @@ paths:
       x-unstable: '**Note**: This endpoint is in public beta.
 
         If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).'
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: incident_type
-        tf_description: Use this data source to retrieve information about an existing Datadog incident
-          type.
-        group:
-          read: GetIncidentType
 components:
   parameters:
     IncidentTypeIDPathParameter:
@@ -395,3 +387,13 @@ components:
       name: DD-APPLICATION-KEY
       in: header
       x-env-name: DD_APP_KEY
+tags:
+- name: Incidents
+  description: Manage incident response, as well as associated attachments, metadata, and todos. See the [Incident Management page](https://docs.datadoghq.com/service_management/incident_management/) for more information.
+  x-datadog-tf-generator:
+    incident_type:
+      datasource_singular:
+        artifact_name: incident_type
+        tf_description: Use this data source to retrieve information about an existing Datadog incident type.
+        group:
+          read: GetIncidentType

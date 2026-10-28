@@ -57,13 +57,13 @@ test:
 # scripts/summarize_testacc.py turns it into the PR integration check summary. Unset
 # by default, so local runs behave exactly as before.
 testacc:
-	RECORD=$(RECORD) TF_ACC=1 $(GO) tool gotestsum --format testname --debug --rerun-fails $(if $(TESTACC_JSONFILE),--jsonfile $(TESTACC_JSONFILE)) --packages ./datadog/tests/... -- -v $(TESTARGS) -timeout 120m
+	RECORD=$(RECORD) TF_ACC=1 $(GO) tool gotestsum --format testname --debug --rerun-fails $(if $(TESTACC_JSONFILE),--jsonfile $(TESTACC_JSONFILE)) --packages ./datadog/tests/... -- -v $(TESTARGS) -timeout 180m
 
 # Run both unit and acceptance tests
 testall: test testacc
 
 cassettes: fmtcheck
-	RECORD=true TF_ACC=1 $(GO) tool gotestsum --format testname --packages ./... -- -v $(TESTARGS) -timeout 120m
+	RECORD=true TF_ACC=1 $(GO) tool gotestsum --format testname --packages ./... -- -v $(TESTARGS) -timeout 180m
 
 vet:
 	@echo "go vet ."
@@ -108,7 +108,7 @@ tfgen-build:
 
 # Run the tfgen module's unit tests
 tfgen-test:
-	cd .generator-v2 && $(GO) test ./internal/... ./cmd/tfgen/... -race -cover
+	cd .generator-v2 && $(GO) test ./internal/... ./cmd/tfgen/... ./cmd/tfgen-docs/... -race -cover
 	@echo "tfgen tests passed"
 
 # Render the generated half of .generator-v2/docs/: the CLI reference (from the

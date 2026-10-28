@@ -8,12 +8,6 @@ paths:
       operationId: CreateAllOfCases
       tags:
         - AllOf
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: allof_cases
-        group:
-          create: CreateAllOfCases
-          read: CreateAllOfCases
       requestBody:
         content:
           application/json:
@@ -78,8 +72,7 @@ paths:
                 sensitive_overlay:
                   allOf:
                     - $ref: '#/components/schemas/Status'
-                    - x-datadog-tf-generator:
-                        sensitive: true
+                    - x-secret: true
                 outer_format:
                   format: date-time
                   allOf:
@@ -127,12 +120,6 @@ paths:
       operationId: ListAllOfItems
       tags:
         - AllOf
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: allof_items
-        cardinality: plural
-        group:
-          read: ListAllOfItems
       responses:
         '200':
           description: OK.
@@ -146,11 +133,6 @@ paths:
       operationId: GetAllOfItem
       tags:
         - AllOf
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: allof_item
-        group:
-          read: GetAllOfItem
       parameters:
         - name: item_id
           in: path
@@ -169,12 +151,6 @@ paths:
       operationId: ListBadAllOfItems
       tags:
         - AllOf
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: bad_allof_items
-        cardinality: plural
-        group:
-          read: ListBadAllOfItems
       responses:
         '200':
           description: OK.
@@ -302,3 +278,28 @@ components:
           allOf:
             - $ref: '#/components/schemas/ObjectA'
             - $ref: '#/components/schemas/DuplicateAlpha'
+tags:
+- name: AllOf
+  x-datadog-tf-generator:
+    allof_cases:
+      resource:
+        artifact_name: allof_cases
+        group:
+          create: CreateAllOfCases
+          read: CreateAllOfCases
+          delete: CreateAllOfCases
+    allof_items:
+      datasource_list:
+        artifact_name: allof_items
+        group:
+          read: ListAllOfItems
+    allof_item:
+      datasource_singular:
+        artifact_name: allof_item
+        group:
+          read: GetAllOfItem
+    bad_allof_items:
+      datasource_list:
+        artifact_name: bad_allof_items
+        group:
+          read: ListBadAllOfItems
