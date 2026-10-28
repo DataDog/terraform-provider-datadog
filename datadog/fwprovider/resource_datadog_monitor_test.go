@@ -243,32 +243,34 @@ func TestDataQualityMonitorOptionsRoundTrip(t *testing.T) {
 
 func TestUpdateVariablesStateMetricQuery(t *testing.T) {
 	r := &monitorResource{}
+	// No aggregator, as sent by the UI: it must stay null after read.
 	q := CloudCostQuery{
 		DataSource: types.StringValue("metrics"),
 		Query:      types.StringValue("avg:system.cpu.user{*}"),
 		Name:       types.StringValue("q1"),
-		Aggregator: types.StringValue("avg"),
 	}
 	opts := &datadogV1.MonitorOptions{Variables: r.buildCloudCostQueryStruct([]CloudCostQuery{q})}
-	read := func(monitorType string, prior []Variable) Variable {
-		state := &monitorResourceModel{Variables: prior}
-		state.Type.StringValue = types.StringValue(monitorType)
-		r.updateVariablesState(context.Background(), state, opts)
-		return state.Variables[0]
+	tests := []struct {
+		monitorType string
+		prior       []Variable
+		wantMetric  bool
+	}{
+		{"query alert", nil, true},
+		{"query alert", []Variable{{CloudCostQuery: []CloudCostQuery{q}}}, false},
+		{"cost alert", nil, false},
+		{"cost alert", []Variable{{MetricQuery: []CloudCostQuery{q}}}, true},
 	}
-
-	v := read("query alert", nil)
-	assert.Equal(t, []CloudCostQuery{q}, v.MetricQuery)
-	assert.Empty(t, v.CloudCostQuery)
-
-	v = read("query alert", []Variable{{CloudCostQuery: []CloudCostQuery{q}}})
-	assert.Equal(t, []CloudCostQuery{q}, v.CloudCostQuery)
-	assert.Empty(t, v.MetricQuery)
-
-	v = read("cost alert", nil)
-	assert.Equal(t, []CloudCostQuery{q}, v.CloudCostQuery)
-	assert.Empty(t, v.MetricQuery)
-
-	v = read("cost alert", []Variable{{MetricQuery: []CloudCostQuery{q}}})
-	assert.Equal(t, []CloudCostQuery{q}, v.MetricQuery)
+	for _, tt := range tests {
+		state := &monitorResourceModel{Variables: tt.prior}
+		state.Type.StringValue = types.StringValue(tt.monitorType)
+		r.updateVariablesState(context.Background(), state, opts)
+		v := state.Variables[0]
+		if tt.wantMetric {
+			assert.Equal(t, []CloudCostQuery{q}, v.MetricQuery, tt.monitorType)
+			assert.Empty(t, v.CloudCostQuery, tt.monitorType)
+		} else {
+			assert.Equal(t, []CloudCostQuery{q}, v.CloudCostQuery, tt.monitorType)
+			assert.Empty(t, v.MetricQuery, tt.monitorType)
+		}
+	}
 }

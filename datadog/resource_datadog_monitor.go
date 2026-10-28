@@ -2876,7 +2876,6 @@ func buildTerraformCompositeMonitorVariables(datadogVariables []datadogV1.Monito
 	var aggFiltered []map[string]interface{}
 	for _, query := range datadogVariables {
 		switch {
-
 		case query.MonitorFormulaAndFunctionEventQueryDefinition != nil:
 			eventQueries = append(eventQueries, terraformEventQueryDefinitionToMap(query.MonitorFormulaAndFunctionEventQueryDefinition))
 		case query.MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition != nil:

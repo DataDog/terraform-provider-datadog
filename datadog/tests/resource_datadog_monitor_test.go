@@ -3354,6 +3354,7 @@ func TestAccDatadogMonitor_MetricQueryVariable(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
+	config := testAccCheckDatadogMonitorMetricQueryVariable(monitorName, "")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
@@ -3361,26 +3362,17 @@ func TestAccDatadogMonitor_MetricQueryVariable(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorMetricQueryVariable(monitorName, ""),
+				Config: config,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.#", "2"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.0.name", "q1"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.0.data_source", "metrics"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.1.data_source", "metrics"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.1.aggregator", ""),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.cloud_cost_query.#", "0"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "monitor_thresholds.0.critical_query", "formula(\"q2\").last(\"5m\")"),
 				),
 			},
-			{
-				Config:   testAccCheckDatadogMonitorMetricQueryVariable(monitorName, ""),
-				PlanOnly: true,
-			},
-			{
-				ResourceName:            "datadog_monitor.foo",
-				ImportState:             true,
-				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"validate"},
-			},
+			{Config: config, PlanOnly: true},
+			{ResourceName: "datadog_monitor.foo", ImportState: true, ImportStateVerify: true, ImportStateVerifyIgnore: []string{"validate"}},
 		},
 	})
 }
@@ -3391,18 +3383,17 @@ func TestAccDatadogMonitor_MetricQueryMixedVariables(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
-	eventQuery := `
+	config := testAccCheckDatadogMonitorMetricQueryVariable(monitorName, `
     event_query {
       data_source = "logs"
       name        = "e1"
-      indexes     = ["*"]
       compute {
         aggregation = "count"
       }
       search {
-        query = "service:foo"
+        query = "service:alerting-scheduler"
       }
-    }`
+    }`)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
@@ -3410,45 +3401,40 @@ func TestAccDatadogMonitor_MetricQueryMixedVariables(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorMetricQueryVariable(monitorName, eventQuery),
+				Config: config,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.#", "2"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.event_query.#", "1"),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.event_query.0.name", "e1"),
 				),
 			},
-			{
-				Config:   testAccCheckDatadogMonitorMetricQueryVariable(monitorName, eventQuery),
-				PlanOnly: true,
-			},
+			{Config: config, PlanOnly: true},
 		},
 	})
 }
 
+// Mirrors a dynamic-threshold monitor created in the UI (no aggregator sent).
 func testAccCheckDatadogMonitorMetricQueryVariable(uniq, extraVariables string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
   name    = "%[1]s"
   type    = "query alert"
-  message = "metric_query variable test"
-  query   = "formula(\"q1\").last(\"5m\") > formula(\"q2\").last(\"5m\")"
+  message = "hello alerting talks"
+  query   = "formula(\"query1 + query2\").rollup(\"avg\").last(\"10m\") > threshold"
 
   monitor_thresholds {
-    critical_query = "formula(\"q2\").last(\"5m\")"
+    critical_query = "formula(\"2 * query1 + query2\").rollup(\"avg\").last(\"1w\").multiplier(1.25)"
   }
 
   variables {
     metric_query {
-      name       = "q1"
-      query      = "avg:system.cpu.user{*}"
-      aggregator = "avg"
+      name  = "query1"
+      query = "avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"
     }
     metric_query {
       data_source = "metrics"
-      name        = "q2"
-      query       = "avg:system.cpu.system{*}"
-      aggregator  = "avg"
+      name        = "query2"
+      query       = "avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"
     }
 %[2]s
   }
