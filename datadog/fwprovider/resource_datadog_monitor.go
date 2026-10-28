@@ -143,6 +143,7 @@ type Recurrence struct {
 type Variable struct {
 	EventQuery              []EventQuery              `tfsdk:"event_query"`
 	CloudCostQuery          []CloudCostQuery          `tfsdk:"cloud_cost_query"`
+	MetricQuery             []CloudCostQuery          `tfsdk:"metric_query"`
 	DataQualityQuery        []DataQualityQuery        `tfsdk:"data_quality_query"`
 	AggregateAugmentedQuery []AggregateAugmentedQuery `tfsdk:"aggregate_augmented_query"`
 	AggregateFilteredQuery  []AggregateFilteredQuery  `tfsdk:"aggregate_filtered_query"`
@@ -1145,6 +1146,35 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 							Description:  "A timeseries formula and functions events query.",
 							NestedObject: r.variablesEventQueryNestedObject(),
 						},
+						"metric_query": schema.ListNestedBlock{
+							Description: "A metrics query for use in formulas, e.g. with `monitor_thresholds.critical_query`.",
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"data_source": schema.StringAttribute{
+										Optional:    true,
+										Computed:    true,
+										Default:     stringdefault.StaticString("metrics"),
+										Description: "The data source for metrics queries.",
+										Validators:  []validator.String{stringvalidator.OneOf("metrics")},
+									},
+									"name": schema.StringAttribute{
+										Required:    true,
+										Description: "The name of the query for use in formulas.",
+									},
+									"query": schema.StringAttribute{
+										Required:    true,
+										Description: "The metrics query definition.",
+									},
+									"aggregator": schema.StringAttribute{
+										Optional:    true,
+										Description: "The aggregation method for metrics queries.",
+										Validators: []validator.String{
+											stringvalidator.OneOf(r.getAllowCloudCostAggregator()...),
+										},
+									},
+								},
+							},
+						},
 						"cloud_cost_query": schema.ListNestedBlock{
 							Description: "The Cloud Cost query using formulas and functions.",
 							Validators: []validator.List{
@@ -1956,6 +1986,9 @@ func (r *monitorResource) buildVariablesStruct(ctx context.Context, variables []
 	if cloudCostReq := r.buildCloudCostQueryStruct(variable.CloudCostQuery); len(cloudCostReq) > 0 {
 		variablesReq = append(variablesReq, cloudCostReq...)
 	}
+	if metricReq := r.buildCloudCostQueryStruct(variable.MetricQuery); len(metricReq) > 0 {
+		variablesReq = append(variablesReq, metricReq...)
+	}
 	if dataQualityReq := r.buildDataQualityQueryStruct(ctx, variable.DataQualityQuery); len(dataQualityReq) > 0 {
 		variablesReq = append(variablesReq, dataQualityReq...)
 	}
@@ -2517,6 +2550,8 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 	}
 	eventQueryStates := []EventQuery{}
 	CloudCostQueryStates := []CloudCostQuery{}
+	metricQueryStates := []CloudCostQuery{}
+	isCostMonitor := state.Type.ValueString() == string(datadogV1.MONITORTYPE_COST_ALERT)
 	DataQualityQueryStates := []DataQualityQuery{}
 	aggregateAugmentedStates := []AggregateAugmentedQuery{}
 	aggregateFilteredStates := []AggregateFilteredQuery{}
@@ -2526,7 +2561,9 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 		if eventQState := r.buildEventQueryState(ctx, v.MonitorFormulaAndFunctionEventQueryDefinition); eventQState != nil {
 			eventQueryStates = append(eventQueryStates, *eventQState)
 		}
-		if costQState := r.buildCloudCostQueryState(v.MonitorFormulaAndFunctionCostQueryDefinition); costQState != nil {
+		if costQState := r.buildCloudCostQueryState(v.MonitorFormulaAndFunctionCostQueryDefinition); costQState != nil && !isCostMonitor && costQState.DataSource.ValueString() == string(datadogV1.MONITORFORMULAANDFUNCTIONCOSTDATASOURCE_METRICS) {
+			metricQueryStates = append(metricQueryStates, *costQState)
+		} else if costQState != nil {
 			CloudCostQueryStates = append(CloudCostQueryStates, *costQState)
 		}
 		if dataQualityQState := r.buildDataQualityQueryState(ctx, v.MonitorFormulaAndFunctionDataQualityQueryDefinition); dataQualityQState != nil {
@@ -2545,6 +2582,7 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 	state.Variables = []Variable{{
 		EventQuery:              eventQueryStates,
 		CloudCostQuery:          CloudCostQueryStates,
+		MetricQuery:             metricQueryStates,
 		DataQualityQuery:        DataQualityQueryStates,
 		AggregateAugmentedQuery: aggregateAugmentedStates,
 		AggregateFilteredQuery:  aggregateFilteredStates,

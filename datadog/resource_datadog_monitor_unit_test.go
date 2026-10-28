@@ -230,3 +230,25 @@ func TestBuildTerraformDataQualityMonitorOptionsRoundTrip(t *testing.T) {
 	assert.Equal(t, int32(7), *modelConfiguration["auto_resolve_days"].(*int32))
 	assert.False(t, *modelConfiguration["enable_flatline_detection"].(*bool))
 }
+
+func TestMonitorMetricQueryVariableRoundTrip(t *testing.T) {
+	metric := buildMonitorFormulaAndFunctionCloudCostQuery(map[string]interface{}{
+		"data_source": "metrics", "name": "q1", "query": "avg:system.cpu.user{*}", "aggregator": "avg",
+	})
+	cost := buildMonitorFormulaAndFunctionCloudCostQuery(map[string]interface{}{
+		"data_source": "cloud_cost", "name": "q2", "query": "sum:aws.cost{*}",
+	})
+	vars := []datadogV1.MonitorFormulaAndFunctionQueryDefinition{*metric, *cost}
+
+	out := buildTerraformMonitorVariables(vars)
+	if len(out) != 1 {
+		t.Fatalf("expected one variables block, got %v", out)
+	}
+	mq, ok := out[0]["metric_query"].([]map[string]interface{})
+	if !ok || len(mq) != 1 || mq[0]["name"] != "q1" || mq[0]["aggregator"] != "avg" || mq[0]["data_source"] != "metrics" {
+		t.Fatalf("unexpected metric_query: %v", out[0])
+	}
+	if _, ok := out[0]["cloud_cost_query"]; ok {
+		t.Fatalf("cloud_cost_query should not be read for non-cost monitors: %v", out[0])
+	}
+}
