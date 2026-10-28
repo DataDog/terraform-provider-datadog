@@ -147,8 +147,8 @@ var _ = Describe("generated model naming", func() {
 				declared[name] = filename
 			}
 		}
-		Expect(declared).To(HaveKey("datadogWidgetResourceModel"))
-		Expect(declared).To(HaveKey("datadogWidgetDataSourceModel"))
+		Expect(declared).To(HaveKey("resourceDatadogWidget_Model"))
+		Expect(declared).To(HaveKey("datadogWidget_Model"))
 		Expect(string(resourceSource)).To(ContainSubstring("*resourceDatadogWidget_WidgetSettingsResponseModel"))
 		Expect(string(resourceSource)).To(ContainSubstring("*resourceDatadogWidget_WidgetLimitsResponseModel"))
 		Expect(string(dataSourceSource)).To(ContainSubstring("*datadogWidget_WidgetSettingsResponseModel"))
@@ -257,7 +257,7 @@ var _ = Describe("generated model naming", func() {
 			}
 			Expect(creators).To(Equal(1))
 
-			root := modelByName(view, "datadogWidgetDataSourceModel")
+			root := modelByName(view, "datadogWidget_Model")
 			var types []string
 			for _, f := range root.Fields {
 				if f.TFName == "primary_contact" || f.TFName == "secondary_contact" {

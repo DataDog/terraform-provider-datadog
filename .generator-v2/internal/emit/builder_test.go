@@ -491,7 +491,7 @@ var _ = Describe("RenderDataSource duplicate field guard", func() {
 		view.Models = append(view.Models, ModelStructView{Name: view.Models[0].Name})
 
 		_, err := RenderDataSource(view)
-		Expect(err).To(MatchError(ContainSubstring(`model datadogIncidentTypeDataSourceModel is declared twice`)))
+		Expect(err).To(MatchError(ContainSubstring(`model datadogIncidentType_Model is declared twice`)))
 	})
 })
 
@@ -944,7 +944,7 @@ var _ = Describe("BuildDataSourceView singular nested arrays", func() {
 		for _, m := range view.Models {
 			names = append(names, m.Name)
 		}
-		Expect(names).To(Equal([]string{"datadogCostBudgetDataSourceModel", "datadogCostBudget_EntriesModel", "datadogCostBudget_EntriesTagFiltersModel"}))
+		Expect(names).To(Equal([]string{"datadogCostBudget_Model", "datadogCostBudget_EntriesModel", "datadogCostBudget_EntriesTagFiltersModel"}))
 	})
 
 	It("maps each element through a guarded loop, recursing for nested arrays", func() {
@@ -1430,7 +1430,7 @@ var _ = Describe("BuildDataSourceView plural nested arrays", func() {
 		for _, m := range view.Models {
 			names = append(names, m.Name)
 		}
-		Expect(names).To(Equal([]string{"datadogWidgetsDataSourceModel", "datadogWidgets_WidgetModel", "datadogWidgets_WidgetPartsModel"}))
+		Expect(names).To(Equal([]string{"datadogWidgets_Model", "datadogWidgets_WidgetModel", "datadogWidgets_WidgetPartsModel"}))
 	})
 
 	It("maps the object array off item.Attributes into the item accumulator", func() {
@@ -1543,7 +1543,7 @@ var _ = Describe("BuildDataSourceView singular nested objects", func() {
 		for _, m := range view.Models {
 			names = append(names, m.Name)
 		}
-		Expect(names).To(Equal([]string{"datadogApmRetentionFilterDataSourceModel", "datadogApmRetentionFilter_FilterModel", "datadogApmRetentionFilter_FilterMetadataModel"}))
+		Expect(names).To(Equal([]string{"datadogApmRetentionFilter_Model", "datadogApmRetentionFilter_FilterModel", "datadogApmRetentionFilter_FilterMetadataModel"}))
 	})
 
 	It("maps the object through a guarded assignment, recursing into the nested object", func() {
@@ -1611,7 +1611,7 @@ var _ = Describe("BuildDataSourceView singular nested objects", func() {
 			names = append(names, modelView.Name)
 		}
 		Expect(names).To(Equal([]string{
-			"datadogApmRetentionFilterDataSourceModel",
+			"datadogApmRetentionFilter_Model",
 			"datadogApmRetentionFilter_FilterModel",
 			"datadogApmRetentionFilter_FilterMetadataModel",
 			"datadogApmRetentionFilter_PrimaryModel",
@@ -1681,7 +1681,7 @@ var _ = Describe("BuildDataSourceView plural nested objects", func() {
 		for _, m := range view.Models {
 			names = append(names, m.Name)
 		}
-		Expect(names).To(Equal([]string{"datadogGizmosDataSourceModel", "datadogGizmos_GizmoModel", "datadogGizmos_GizmoSpecModel"}))
+		Expect(names).To(Equal([]string{"datadogGizmos_Model", "datadogGizmos_GizmoModel", "datadogGizmos_GizmoSpecModel"}))
 	})
 
 	It("maps the object off item.Attributes into the item accumulator", func() {

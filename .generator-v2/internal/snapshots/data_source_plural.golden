@@ -18,7 +18,7 @@ var (
 	_ datasource.DataSourceWithConfigure = &datadogTeamsDataSource{}
 )
 
-type datadogTeamsDataSourceModel struct {
+type datadogTeams_Model struct {
 	// Query Parameters
 	FilterKeyword types.String `tfsdk:"filter_keyword"`
 	FilterMe      types.Bool   `tfsdk:"filter_me"`
@@ -123,7 +123,7 @@ func (d *datadogTeamsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 }
 
 func (d *datadogTeamsDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state datadogTeamsDataSourceModel
+	var state datadogTeams_Model
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -155,7 +155,7 @@ func (d *datadogTeamsDataSource) Read(ctx context.Context, request datasource.Re
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogTeamsDataSource) updateState(ctx context.Context, state *datadogTeamsDataSourceModel, data *[]datadogV2.Team) diag.Diagnostics {
+func (d *datadogTeamsDataSource) updateState(ctx context.Context, state *datadogTeams_Model, data *[]datadogV2.Team) diag.Diagnostics {
 	var diags diag.Diagnostics
 	results := make([]*datadogTeams_TeamModel, 0, len(*data))
 	for _, item := range *data {

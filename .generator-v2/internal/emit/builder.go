@@ -325,7 +325,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 	}
 
 	goName := dsGoName(a.Name)
-	rootStruct := goName + "DataSourceModel"
+	rootStruct := b.namer.root()
 	env := b.flattenEnvelope(topLevel, idStrategy, rootExpr)
 
 	if len(b.unsupported) > 0 {
@@ -1671,7 +1671,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 
 	// Models: parent, the item struct, then any element structs walked for
 	// list-of-object item fields.
-	rootStruct := goName + "DataSourceModel"
+	rootStruct := b.namer.root()
 	models := []ModelStructView{
 		{Name: rootStruct, Fields: parentFields},
 		{Name: itemStruct, Fields: itemFields},
@@ -1908,7 +1908,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		return ResourceView{}, &UnsupportedEmitError{Nodes: b.unsupported}
 	}
 
-	rootStruct := goName + "ResourceModel"
+	rootStruct := b.namer.root()
 	b.filterByResponse = true
 	recordAttrs, recordBlocks, recordScalars, recordLists := b.walk(rootStruct, "", b.receiver, "state", env.leaves)
 

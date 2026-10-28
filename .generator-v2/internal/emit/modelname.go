@@ -9,14 +9,14 @@ import (
 )
 
 // modelNamer is the single authority for the Go name of every nested model a
-// generated artifact declares, and of the package-level write-only secret
-// configs. Every name is built the same way:
+// generated artifact declares, its root state struct, and the package-level
+// write-only secret configs. Every name is built the same way:
 //
 //	<artifact base>_<stem>
 //
-// The root state struct is not built here: it keeps the plain
-// <dsGoName>DataSourceModel / <dsGoName>ResourceModel spelling, and since it
-// contains no "_" it can never equal a name built here.
+// The root state struct is the one name with an empty stem,
+// <artifact base>_Model; every nested stem is non-empty, so no nested model can
+// take that name.
 //
 // The **artifact base** closes the cross-artifact scope. Every generated artifact
 // lands in package fwprovider, so two artifacts that share an OpenAPI component
@@ -29,13 +29,19 @@ import (
 // share a Terraform name. A data-source base always starts with "datadog", so the
 // two kinds can never produce the same base.
 //
-// The **"_" separator** makes the mapping injective. Without it, plain
-// concatenation is ambiguous: data source widget with component ResourceTag,
-// data source widget_resource with component Tag, and resource widget with
-// component Tag would all spell one name. model.SdkName never emits "_", so the
-// first "_" always ends the base, and two names are equal only if their kind,
-// artifact and stem are all equal. Every name stays unexported, which is the
-// provider's own convention for data-source models.
+// The **"_" separator** keeps artifacts apart. Without it, plain concatenation is
+// ambiguous: data source widget with component ResourceTag, data source
+// widget_resource with component Tag, and resource widget with component Tag
+// would all spell one name. model.SdkName never emits "_", so the first "_"
+// always ends the base, and names from different artifacts or kinds never
+// collide. Every name stays unexported, which is the provider's own convention
+// for data-source models.
+//
+// This avoids most collisions, not all of them: within one artifact a stem is
+// still a plain concatenation (see nestedStem), so a component named
+// SettingsLimits and an inline property limits under component Settings both
+// stem to SettingsLimits. dedupeModels catches that case and fails the artifact
+// rather than emitting a redeclaration.
 //
 // The **stem** closes the within-file scope. It prefers the OpenAPI component name
 // that supplied the object schema (Attribute.ModelRefName) and falls back to the
@@ -62,6 +68,12 @@ func dataSourceNamer(name string) modelNamer {
 // resourceNamer names the models of the resource with Terraform name name.
 func resourceNamer(name string) modelNamer {
 	return modelNamer{base: "resource" + upperFirst(dsGoName(name))}
+}
+
+// root returns the artifact's root state struct name: the base qualified with an
+// empty stem, which no nested model has.
+func (n modelNamer) root() string {
+	return n.qualify("Model")
 }
 
 // qualify scopes an unqualified name to the artifact. It is the one place an

@@ -17,7 +17,7 @@ var (
 	_ datasource.DataSourceWithConfigure = &datadogWidgetsDataSource{}
 )
 
-type datadogWidgetsDataSourceModel struct {
+type datadogWidgets_Model struct {
 	// Results
 	ID      types.String                  `tfsdk:"id"`
 	Widgets []*datadogWidgets_WidgetModel `tfsdk:"widgets"`
@@ -95,7 +95,7 @@ func (d *datadogWidgetsDataSource) Schema(_ context.Context, _ datasource.Schema
 }
 
 func (d *datadogWidgetsDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state datadogWidgetsDataSourceModel
+	var state datadogWidgets_Model
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -116,7 +116,7 @@ func (d *datadogWidgetsDataSource) Read(ctx context.Context, request datasource.
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogWidgetsDataSource) updateState(ctx context.Context, state *datadogWidgetsDataSourceModel, data *[]datadogV2.Widget) diag.Diagnostics {
+func (d *datadogWidgetsDataSource) updateState(ctx context.Context, state *datadogWidgets_Model, data *[]datadogV2.Widget) diag.Diagnostics {
 	var diags diag.Diagnostics
 	results := make([]*datadogWidgets_WidgetModel, 0, len(*data))
 	for _, item := range *data {

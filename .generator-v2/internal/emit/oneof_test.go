@@ -157,7 +157,7 @@ var _ = Describe("oneOf envelope emission", func() {
 			// The projection leaves GoType as types.Object; a generated model field has
 			// to be a pointer to the envelope struct or nothing selects a variant.
 			view := unionView(unionOperation())
-			parent := modelByName(view, "datadogIncidentTypeDataSourceModel")
+			parent := modelByName(view, "datadogIncidentType_Model")
 
 			var field ModelFieldView
 			for _, f := range parent.Fields {
@@ -411,7 +411,7 @@ var _ = Describe("oneOf envelope in a collection", func() {
 	It("holds the envelope by slice and renders a list nested attribute of variants", func() {
 		view := unionView(unionListOperation())
 
-		parent := modelByName(view, "datadogIncidentTypeDataSourceModel")
+		parent := modelByName(view, "datadogIncidentType_Model")
 		var field ModelFieldView
 		for _, f := range parent.Fields {
 			if f.TFName == "notifications" {

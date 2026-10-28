@@ -16,7 +16,7 @@ var (
 	_ datasource.DataSourceWithConfigure = &datadogIncidentTypeDataSource{}
 )
 
-type datadogIncidentTypeDataSourceModel struct {
+type datadogIncidentType_Model struct {
 	ID            types.String                                     `tfsdk:"id"`
 	Description   types.String                                     `tfsdk:"description"`
 	IsDefault     types.Bool                                       `tfsdk:"is_default"`
@@ -118,7 +118,7 @@ func (d *datadogIncidentTypeDataSource) Schema(_ context.Context, _ datasource.S
 }
 
 func (d *datadogIncidentTypeDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state datadogIncidentTypeDataSourceModel
+	var state datadogIncidentType_Model
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -148,7 +148,7 @@ func (d *datadogIncidentTypeDataSource) Read(ctx context.Context, request dataso
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogIncidentTypeDataSource) updateState(ctx context.Context, state *datadogIncidentTypeDataSourceModel, resp *datadogV2.IncidentTypeResponse) diag.Diagnostics {
+func (d *datadogIncidentTypeDataSource) updateState(ctx context.Context, state *datadogIncidentType_Model, resp *datadogV2.IncidentTypeResponse) diag.Diagnostics {
 	var diags diag.Diagnostics
 	attributes := resp.Data.GetAttributes()
 	if id, ok := resp.Data.GetIdOk(); ok && id != nil {

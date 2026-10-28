@@ -16,7 +16,7 @@ var (
 	_ datasource.DataSourceWithConfigure = &datadogApmRetentionFilterDataSource{}
 )
 
-type datadogApmRetentionFilterDataSourceModel struct {
+type datadogApmRetentionFilter_Model struct {
 	ID      types.String                           `tfsdk:"id"`
 	Enabled types.Bool                             `tfsdk:"enabled"`
 	Filter  *datadogApmRetentionFilter_FilterModel `tfsdk:"filter"`
@@ -102,7 +102,7 @@ func (d *datadogApmRetentionFilterDataSource) Schema(_ context.Context, _ dataso
 }
 
 func (d *datadogApmRetentionFilterDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state datadogApmRetentionFilterDataSourceModel
+	var state datadogApmRetentionFilter_Model
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -132,7 +132,7 @@ func (d *datadogApmRetentionFilterDataSource) Read(ctx context.Context, request 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogApmRetentionFilterDataSource) updateState(ctx context.Context, state *datadogApmRetentionFilterDataSourceModel, resp *datadogV2.RetentionFilterResponse) diag.Diagnostics {
+func (d *datadogApmRetentionFilterDataSource) updateState(ctx context.Context, state *datadogApmRetentionFilter_Model, resp *datadogV2.RetentionFilterResponse) diag.Diagnostics {
 	var diags diag.Diagnostics
 	attributes := resp.Data.GetAttributes()
 	if id, ok := resp.Data.GetIdOk(); ok && id != nil {

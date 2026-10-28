@@ -16,7 +16,7 @@ var (
 	_ datasource.DataSourceWithConfigure = &datadogCostBudgetDataSource{}
 )
 
-type datadogCostBudgetDataSourceModel struct {
+type datadogCostBudget_Model struct {
 	ID      types.String                      `tfsdk:"id"`
 	Entries []*datadogCostBudget_EntriesModel `tfsdk:"entries"`
 	Name    types.String                      `tfsdk:"name"`
@@ -103,7 +103,7 @@ func (d *datadogCostBudgetDataSource) Schema(_ context.Context, _ datasource.Sch
 }
 
 func (d *datadogCostBudgetDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state datadogCostBudgetDataSourceModel
+	var state datadogCostBudget_Model
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -133,7 +133,7 @@ func (d *datadogCostBudgetDataSource) Read(ctx context.Context, request datasour
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogCostBudgetDataSource) updateState(ctx context.Context, state *datadogCostBudgetDataSourceModel, resp *datadogV2.BudgetWithEntries) diag.Diagnostics {
+func (d *datadogCostBudgetDataSource) updateState(ctx context.Context, state *datadogCostBudget_Model, resp *datadogV2.BudgetWithEntries) diag.Diagnostics {
 	var diags diag.Diagnostics
 	attributes := resp.Data.GetAttributes()
 	if id, ok := resp.Data.GetIdOk(); ok && id != nil {

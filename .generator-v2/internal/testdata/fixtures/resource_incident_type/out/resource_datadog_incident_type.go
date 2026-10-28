@@ -27,7 +27,7 @@ var (
 	_ resource.ResourceWithImportState = &datadogIncidentTypeResource{}
 )
 
-type datadogIncidentTypeResourceModel struct {
+type resourceDatadogIncidentType_Model struct {
 	ID             types.String                                                `tfsdk:"id"`
 	Configuration  *resourceDatadogIncidentType_IncidentTypeConfigurationModel `tfsdk:"configuration"`
 	Description    types.String                                                `tfsdk:"description"`
@@ -218,7 +218,7 @@ func (r *datadogIncidentTypeResource) ImportState(ctx context.Context, request r
 }
 
 func (r *datadogIncidentTypeResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state datadogIncidentTypeResourceModel
+	var state resourceDatadogIncidentType_Model
 	var plan types.Object
 	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
 	if response.Diagnostics.HasError() {
@@ -342,7 +342,7 @@ func (r *datadogIncidentTypeResource) Create(ctx context.Context, request resour
 }
 
 func (r *datadogIncidentTypeResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state datadogIncidentTypeResourceModel
+	var state resourceDatadogIncidentType_Model
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -366,7 +366,7 @@ func (r *datadogIncidentTypeResource) Read(ctx context.Context, request resource
 }
 
 func (r *datadogIncidentTypeResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state datadogIncidentTypeResourceModel
+	var state resourceDatadogIncidentType_Model
 	var plan types.Object
 	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
 	if response.Diagnostics.HasError() {
@@ -453,7 +453,7 @@ func (r *datadogIncidentTypeResource) Update(ctx context.Context, request resour
 }
 
 func (r *datadogIncidentTypeResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state datadogIncidentTypeResourceModel
+	var state resourceDatadogIncidentType_Model
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -472,7 +472,7 @@ func (r *datadogIncidentTypeResource) Delete(ctx context.Context, request resour
 // rather than writing them so it stays free of the resource request/response
 // types and can fail at a specific schema path. Shared by Create, Read and
 // Update, which all resolve the same response type.
-func (r *datadogIncidentTypeResource) updateState(ctx context.Context, state *datadogIncidentTypeResourceModel, resp *datadogV2.IncidentTypeResponse) diag.Diagnostics {
+func (r *datadogIncidentTypeResource) updateState(ctx context.Context, state *resourceDatadogIncidentType_Model, resp *datadogV2.IncidentTypeResponse) diag.Diagnostics {
 	var diags diag.Diagnostics
 	attributes := resp.Data.GetAttributes()
 	if id, ok := resp.Data.GetIdOk(); ok && id != nil {
