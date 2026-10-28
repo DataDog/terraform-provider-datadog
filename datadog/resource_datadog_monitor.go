@@ -1560,7 +1560,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 					queries, _ := query.([]interface{})
 					for _, q := range queries {
 						if queryMap, ok := q.(map[string]interface{}); ok {
-							monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionCostQuery(queryMap))
+							monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionMetricQuery(queryMap))
 						}
 					}
 				}
@@ -1574,7 +1574,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 						if !ok {
 							continue
 						}
-						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionCostQuery(queryMap))
+						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionCloudCostQuery(queryMap))
 					}
 				}
 				if query, ok := m["data_quality_query"]; ok {
@@ -1988,7 +1988,18 @@ func buildMonitorFormulaAndFunctionEventQuery(data map[string]interface{}) *data
 	return &definition
 }
 
-func buildMonitorFormulaAndFunctionCostQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+// metric_query is sent as the API's cost-type definition, the shape it decodes plain metrics variables into.
+func buildMonitorFormulaAndFunctionMetricQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	metricQuery := datadogV1.NewMonitorFormulaAndFunctionCostQueryDefinition(
+		datadogV1.MonitorFormulaAndFunctionCostDataSource(data["data_source"].(string)), data["name"].(string), data["query"].(string))
+	if v, ok := data["aggregator"].(string); ok && v != "" {
+		metricQuery.SetAggregator(datadogV1.MonitorFormulaAndFunctionCostAggregator(v))
+	}
+	definition := datadogV1.MonitorFormulaAndFunctionCostQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(metricQuery)
+	return &definition
+}
+
+func buildMonitorFormulaAndFunctionCloudCostQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
 	dataSource := datadogV1.MonitorFormulaAndFunctionCostDataSource(data["data_source"].(string))
 
 	cloudCostQuery := datadogV1.NewMonitorFormulaAndFunctionCostQueryDefinition(dataSource, data["name"].(string), data["query"].(string))

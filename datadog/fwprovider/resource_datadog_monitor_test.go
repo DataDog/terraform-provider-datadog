@@ -249,7 +249,7 @@ func TestUpdateVariablesStateMetricQuery(t *testing.T) {
 		Query:      types.StringValue("avg:system.cpu.user{*}"),
 		Name:       types.StringValue("q1"),
 	}
-	m := MetricQuery(q)
+	m := MetricQuery{DataSource: q.DataSource, Query: q.Query, Name: q.Name}
 	opts := &datadogV1.MonitorOptions{Variables: r.buildMetricQueryStruct([]MetricQuery{m})}
 	tests := []struct {
 		monitorType string
