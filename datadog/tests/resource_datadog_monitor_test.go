@@ -3348,7 +3348,7 @@ func createOnMissingDataMonitor(ctx context.Context, p *fwprovider.FrameworkProv
 	return strconv.FormatInt(created.GetId(), 10), nil
 }
 
-// Cassettes pending: record with RECORD=true (requires API keys).
+// Cassettes pending: record with RECORD=true (requires API keys and an org with the `monitors-dynamic-thresholds` feature flag).
 func TestAccDatadogMonitor_MetricQueryVariable(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -3377,7 +3377,7 @@ func TestAccDatadogMonitor_MetricQueryVariable(t *testing.T) {
 	})
 }
 
-// Cassettes pending: record with RECORD=true (requires API keys).
+// Cassettes pending: record with RECORD=true (requires API keys and an org with the `monitors-dynamic-thresholds` feature flag).
 func TestAccDatadogMonitor_MetricQueryMixedVariables(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -3413,17 +3413,17 @@ func TestAccDatadogMonitor_MetricQueryMixedVariables(t *testing.T) {
 	})
 }
 
-// Formula monitor over plain metrics variables, as the UI sends them (no aggregator).
+// Mirrors a dynamic-threshold monitor created in the UI (no aggregator sent).
 func testAccCheckDatadogMonitorMetricQueryVariable(uniq, extraVariables string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
   name    = "%[1]s"
   type    = "query alert"
   message = "hello alerting talks"
-  query   = "formula(\"query1 + query2\").rollup(\"avg\").last(\"10m\") > 5"
+  query   = "formula(\"query1 + query2\").rollup(\"avg\").last(\"10m\") > threshold"
 
   monitor_thresholds {
-    critical = 5
+    critical_query = "formula(\"2 * query1 + query2\").rollup(\"avg\").last(\"1w\").multiplier(1.25)"
   }
 
   variables {
