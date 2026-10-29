@@ -3348,7 +3348,7 @@ func createOnMissingDataMonitor(ctx context.Context, p *fwprovider.FrameworkProv
 	return strconv.FormatInt(created.GetId(), 10), nil
 }
 
-// Cassettes pending: record with RECORD=true (requires API keys and an org with the `monitors-dynamic-thresholds` feature flag).
+// Requires an org with the `monitors-dynamic-thresholds` feature flag to record/run.
 func TestAccDatadogMonitor_MetricQueryVariable(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
