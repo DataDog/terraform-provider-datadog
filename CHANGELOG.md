@@ -1,3 +1,23 @@
+## 4.28.0 (October 29, 2026)
+
+### BUGFIXES
+* [datadog_dashboard_v2] Read missing bool fields as their true default  by @bonnierhee in https://github.com/DataDog/terraform-provider-datadog/pull/4402
+* [datadog_observability_pipeline] Preserve omitted metric aggregation by @20agbekodo in https://github.com/DataDog/terraform-provider-datadog/pull/4438
+### FEATURES
+* [datadog_github_oidc_persona_mapping] Add datadog_github_oidc_persona_mapping and datadog_github_oidc_intake_mapping resources by @juliendoutre in https://github.com/DataDog/terraform-provider-datadog/pull/4391
+* [datadog_observability_pipeline] Add generated metric aggregation option by @20agbekodo in https://github.com/DataDog/terraform-provider-datadog/pull/4379
+* [datadog_integration_aws_account] Add service quotas collection by @josueriosv in https://github.com/DataDog/terraform-provider-datadog/pull/4409
+
+## New Contributors
+* @gie2910 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4411
+* @bonnierhee made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4402
+* @josueriosv made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4408
+* @ChrisHansenDatadog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4349
+* @guillaumerob-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4428
+* @skedida made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4114
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.27.0...v4.28.0
+
 ## 4.27.0 (October 21, 2026)
 
 ### BUGFIXES
