@@ -24,7 +24,7 @@ import (
 
 const RumRetentionFilterImportIdDelimiter = ":"
 
-const rumRetentionFilterCreateRetryTimeout = time.Minute
+const rumRetentionFilterOperationRetryTimeout = time.Minute
 
 var (
 	_ resource.ResourceWithConfigure   = &rumRetentionFilterResource{}
@@ -150,8 +150,12 @@ func (r *rumRetentionFilterResource) Create(ctx context.Context, request resourc
 	}
 	appId := state.ApplicationID.ValueString()
 
-	resp, err := createRumRetentionFilterWithRetry(ctx, func() (datadogV2.RumRetentionFilterResponse, *http.Response, error) {
-		return r.Api.CreateRetentionFilter(r.Auth, appId, *body)
+	var resp datadogV2.RumRetentionFilterResponse
+	err := retryRumRetentionFilterOperation(ctx, func() (*http.Response, error) {
+		var httpResp *http.Response
+		var err error
+		resp, httpResp, err = r.Api.CreateRetentionFilter(r.Auth, appId, *body)
+		return httpResp, err
 	})
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RumRetentionFilter"))
@@ -167,18 +171,9 @@ func (r *rumRetentionFilterResource) Create(ctx context.Context, request resourc
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func createRumRetentionFilterWithRetry(
-	ctx context.Context,
-	create func() (datadogV2.RumRetentionFilterResponse, *http.Response, error),
-) (datadogV2.RumRetentionFilterResponse, error) {
-	var (
-		resp datadogV2.RumRetentionFilterResponse
-		err  error
-	)
-
-	err = retry.RetryContext(ctx, rumRetentionFilterCreateRetryTimeout, func() *retry.RetryError {
-		var httpResp *http.Response
-		resp, httpResp, err = create()
+func retryRumRetentionFilterOperation(ctx context.Context, operation func() (*http.Response, error)) error {
+	return retry.RetryContext(ctx, rumRetentionFilterOperationRetryTimeout, func() *retry.RetryError {
+		httpResp, err := operation()
 		if err == nil {
 			return nil
 		}
@@ -187,8 +182,6 @@ func createRumRetentionFilterWithRetry(
 		}
 		return retry.NonRetryableError(err)
 	})
-
-	return resp, err
 }
 
 func isRumRetentionFilterConcurrentModification(err error, httpResp *http.Response) bool {
@@ -208,7 +201,13 @@ func (r *rumRetentionFilterResource) Update(ctx context.Context, request resourc
 		return
 	}
 
-	resp, _, err := r.Api.UpdateRetentionFilter(r.Auth, state.ApplicationID.ValueString(), state.ID.ValueString(), *body)
+	var resp datadogV2.RumRetentionFilterResponse
+	err := retryRumRetentionFilterOperation(ctx, func() (*http.Response, error) {
+		var httpResp *http.Response
+		var err error
+		resp, httpResp, err = r.Api.UpdateRetentionFilter(r.Auth, state.ApplicationID.ValueString(), state.ID.ValueString(), *body)
+		return httpResp, err
+	})
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RumRetentionFilter"))
 		return
@@ -230,7 +229,12 @@ func (r *rumRetentionFilterResource) Delete(ctx context.Context, request resourc
 		return
 	}
 
-	httpResp, err := r.Api.DeleteRetentionFilter(r.Auth, state.ApplicationID.ValueString(), state.ID.ValueString())
+	var httpResp *http.Response
+	err := retryRumRetentionFilterOperation(ctx, func() (*http.Response, error) {
+		var err error
+		httpResp, err = r.Api.DeleteRetentionFilter(r.Auth, state.ApplicationID.ValueString(), state.ID.ValueString())
+		return httpResp, err
+	})
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return

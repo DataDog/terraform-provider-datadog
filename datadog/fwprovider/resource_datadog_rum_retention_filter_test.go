@@ -5,20 +5,19 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func TestCreateRumRetentionFilterWithRetry(t *testing.T) {
+func TestRetryRumRetentionFilterOperation(t *testing.T) {
 	attempts := 0
 
-	_, err := createRumRetentionFilterWithRetry(t.Context(), func() (datadogV2.RumRetentionFilterResponse, *http.Response, error) {
+	err := retryRumRetentionFilterOperation(t.Context(), func() (*http.Response, error) {
 		attempts++
 		if attempts == 1 {
-			return datadogV2.RumRetentionFilterResponse{}, &http.Response{StatusCode: http.StatusConflict}, errors.New("ConcurrentModification: retry")
+			return &http.Response{StatusCode: http.StatusConflict}, errors.New("ConcurrentModification: retry")
 		}
-		return datadogV2.RumRetentionFilterResponse{}, nil, nil
+		return nil, nil
 	})
 
 	require.NoError(t, err)
