@@ -3509,9 +3509,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineSplunkHecMetricsDestination.GetInputs())
 			destBlock.SplunkHecMetricsDestination = append(destBlock.SplunkHecMetricsDestination, splunkMetrics)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
-		} else if otelMetrics := observability_pipeline.FlattenOpentelemetryMetricsDestination(d.ObservabilityPipelineOpentelemetryMetricsDestination); otelMetrics != nil {
-			destBlock.Id = types.StringValue(d.ObservabilityPipelineOpentelemetryMetricsDestination.GetId())
-			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineOpentelemetryMetricsDestination.GetInputs())
+		} else if otelMetrics := observability_pipeline.FlattenOpentelemetryMetricsDestination(d.ObservabilityPipelineOpentelemetryDestination); otelMetrics != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineOpentelemetryDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineOpentelemetryDestination.GetInputs())
 			destBlock.OpentelemetryMetricsDestination = append(destBlock.OpentelemetryMetricsDestination, otelMetrics)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
 		} else if clickhouse := observability_pipeline.FlattenClickhouseDestination(ctx, d.ObservabilityPipelineClickhouseDestination); clickhouse != nil {

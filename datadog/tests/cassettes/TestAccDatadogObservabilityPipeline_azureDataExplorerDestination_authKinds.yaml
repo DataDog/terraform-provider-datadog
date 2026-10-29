@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 385
+        content_length: 414
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"config":{"destinations":[{"auth":{"azure_credential_kind":"azure_cli"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"azure data explorer pipeline (auth kinds)"},"type":"pipelines"}}
+            {"data":{"attributes":{"config":{"destinations":[{"auth":{"azure_credential_kind":"azure_cli"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"azure data explorer pipeline (auth kinds)"},"type":"pipelines"}}
         form: {}
         headers:
             Accept:
@@ -23,21 +23,21 @@ interactions:
         url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
         method: POST
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 467
+        content_length: 496
         uncompressed: false
         body: |
-            {"data":{"id":"f0ad5168-c733-11f1-ae37-da7ad0900002","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"azure_cli"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"ace979ee-d3df-11f1-a1d2-da7ad0900001","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"azure_cli"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 781.504208ms
+        duration: 339.441083ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -46,7 +46,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -54,24 +54,24 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f0ad5168-c733-11f1-ae37-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ace979ee-d3df-11f1-a1d2-da7ad0900001
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 467
+        content_length: 496
         uncompressed: false
         body: |
-            {"data":{"id":"f0ad5168-c733-11f1-ae37-da7ad0900002","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"azure_cli"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"ace979ee-d3df-11f1-a1d2-da7ad0900001","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"azure_cli"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 246.099167ms
+        duration: 213.106167ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -80,7 +80,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -88,61 +88,61 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f0ad5168-c733-11f1-ae37-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ace979ee-d3df-11f1-a1d2-da7ad0900001
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 467
+        content_length: 496
         uncompressed: false
         body: |
-            {"data":{"id":"f0ad5168-c733-11f1-ae37-da7ad0900002","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"azure_cli"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"ace979ee-d3df-11f1-a1d2-da7ad0900001","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"azure_cli"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 596.787375ms
+        duration: 170.491125ms
     - id: 3
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 626
+        content_length: 655
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"config":{"destinations":[{"auth":{"azure_client_id":"22222222-2222-2222-2222-222222222222","azure_credential_kind":"client_certificate_credential","azure_tenant_id":"11111111-1111-1111-1111-111111111111","certificate_password_key":"AZURE_CERTIFICATE_PASSWORD","certificate_path":"/etc/certs/client.pfx"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"azure data explorer pipeline (auth kinds)"},"id":"","type":"pipelines"}}
+            {"data":{"attributes":{"config":{"destinations":[{"auth":{"azure_client_id":"22222222-2222-2222-2222-222222222222","azure_credential_kind":"client_certificate_credential","azure_tenant_id":"11111111-1111-1111-1111-111111111111","certificate_password_key":"AZURE_CERTIFICATE_PASSWORD","certificate_path":"/etc/certs/client.pfx"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"azure data explorer pipeline (auth kinds)"},"id":"","type":"pipelines"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f0ad5168-c733-11f1-ae37-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ace979ee-d3df-11f1-a1d2-da7ad0900001
         method: PUT
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 700
+        content_length: 729
         uncompressed: false
         body: |
-            {"data":{"id":"f0ad5168-c733-11f1-ae37-da7ad0900002","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_client_id":"22222222-2222-2222-2222-222222222222","azure_credential_kind":"client_certificate_credential","azure_tenant_id":"11111111-1111-1111-1111-111111111111","certificate_password_key":"AZURE_CERTIFICATE_PASSWORD","certificate_path":"/etc/certs/client.pfx"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"ace979ee-d3df-11f1-a1d2-da7ad0900001","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_client_id":"22222222-2222-2222-2222-222222222222","azure_credential_kind":"client_certificate_credential","azure_tenant_id":"11111111-1111-1111-1111-111111111111","certificate_password_key":"AZURE_CERTIFICATE_PASSWORD","certificate_path":"/etc/certs/client.pfx"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 869.010917ms
+        duration: 415.506083ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -151,7 +151,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -159,24 +159,24 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f0ad5168-c733-11f1-ae37-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ace979ee-d3df-11f1-a1d2-da7ad0900001
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 700
+        content_length: 729
         uncompressed: false
         body: |
-            {"data":{"id":"f0ad5168-c733-11f1-ae37-da7ad0900002","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_client_id":"22222222-2222-2222-2222-222222222222","azure_credential_kind":"client_certificate_credential","azure_tenant_id":"11111111-1111-1111-1111-111111111111","certificate_password_key":"AZURE_CERTIFICATE_PASSWORD","certificate_path":"/etc/certs/client.pfx"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"ace979ee-d3df-11f1-a1d2-da7ad0900001","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_client_id":"22222222-2222-2222-2222-222222222222","azure_credential_kind":"client_certificate_credential","azure_tenant_id":"11111111-1111-1111-1111-111111111111","certificate_password_key":"AZURE_CERTIFICATE_PASSWORD","certificate_path":"/etc/certs/client.pfx"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 527.628542ms
+        duration: 273.920958ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -185,7 +185,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -193,61 +193,61 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f0ad5168-c733-11f1-ae37-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ace979ee-d3df-11f1-a1d2-da7ad0900001
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 700
+        content_length: 729
         uncompressed: false
         body: |
-            {"data":{"id":"f0ad5168-c733-11f1-ae37-da7ad0900002","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_client_id":"22222222-2222-2222-2222-222222222222","azure_credential_kind":"client_certificate_credential","azure_tenant_id":"11111111-1111-1111-1111-111111111111","certificate_password_key":"AZURE_CERTIFICATE_PASSWORD","certificate_path":"/etc/certs/client.pfx"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"ace979ee-d3df-11f1-a1d2-da7ad0900001","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_client_id":"22222222-2222-2222-2222-222222222222","azure_credential_kind":"client_certificate_credential","azure_tenant_id":"11111111-1111-1111-1111-111111111111","certificate_password_key":"AZURE_CERTIFICATE_PASSWORD","certificate_path":"/etc/certs/client.pfx"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 288.512875ms
+        duration: 291.922208ms
     - id: 6
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 528
+        content_length: 557
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity","user_assigned_managed_identity_id":"00000000-0000-0000-0000-000000000000","user_assigned_managed_identity_id_type":"client_id"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"azure data explorer pipeline (auth kinds)"},"id":"","type":"pipelines"}}
+            {"data":{"attributes":{"config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity","user_assigned_managed_identity_id":"00000000-0000-0000-0000-000000000000","user_assigned_managed_identity_id_type":"client_id"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"azure data explorer pipeline (auth kinds)"},"id":"","type":"pipelines"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f0ad5168-c733-11f1-ae37-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ace979ee-d3df-11f1-a1d2-da7ad0900001
         method: PUT
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 602
+        content_length: 631
         uncompressed: false
         body: |
-            {"data":{"id":"f0ad5168-c733-11f1-ae37-da7ad0900002","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity","user_assigned_managed_identity_id":"00000000-0000-0000-0000-000000000000","user_assigned_managed_identity_id_type":"client_id"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"ace979ee-d3df-11f1-a1d2-da7ad0900001","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity","user_assigned_managed_identity_id":"00000000-0000-0000-0000-000000000000","user_assigned_managed_identity_id_type":"client_id"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 1.382883292s
+        duration: 549.554625ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -256,7 +256,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -264,24 +264,24 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f0ad5168-c733-11f1-ae37-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ace979ee-d3df-11f1-a1d2-da7ad0900001
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 602
+        content_length: 631
         uncompressed: false
         body: |
-            {"data":{"id":"f0ad5168-c733-11f1-ae37-da7ad0900002","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity","user_assigned_managed_identity_id":"00000000-0000-0000-0000-000000000000","user_assigned_managed_identity_id_type":"client_id"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"ace979ee-d3df-11f1-a1d2-da7ad0900001","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity","user_assigned_managed_identity_id":"00000000-0000-0000-0000-000000000000","user_assigned_managed_identity_id_type":"client_id"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 256.584541ms
+        duration: 371.4065ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -290,7 +290,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -298,61 +298,61 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f0ad5168-c733-11f1-ae37-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ace979ee-d3df-11f1-a1d2-da7ad0900001
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 602
+        content_length: 631
         uncompressed: false
         body: |
-            {"data":{"id":"f0ad5168-c733-11f1-ae37-da7ad0900002","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity","user_assigned_managed_identity_id":"00000000-0000-0000-0000-000000000000","user_assigned_managed_identity_id_type":"client_id"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"ace979ee-d3df-11f1-a1d2-da7ad0900001","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity","user_assigned_managed_identity_id":"00000000-0000-0000-0000-000000000000","user_assigned_managed_identity_id_type":"client_id"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 260.694458ms
+        duration: 202.516167ms
     - id: 9
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 681
+        content_length: 710
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity_client_assertion","client_assertion_client_id":"22222222-2222-2222-2222-222222222222","client_assertion_tenant_id":"11111111-1111-1111-1111-111111111111","user_assigned_managed_identity_id":"00000000-0000-0000-0000-000000000000","user_assigned_managed_identity_id_type":"object_id"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"azure data explorer pipeline (auth kinds)"},"id":"","type":"pipelines"}}
+            {"data":{"attributes":{"config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity_client_assertion","client_assertion_client_id":"22222222-2222-2222-2222-222222222222","client_assertion_tenant_id":"11111111-1111-1111-1111-111111111111","user_assigned_managed_identity_id":"00000000-0000-0000-0000-000000000000","user_assigned_managed_identity_id_type":"object_id"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"azure data explorer pipeline (auth kinds)"},"id":"","type":"pipelines"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f0ad5168-c733-11f1-ae37-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ace979ee-d3df-11f1-a1d2-da7ad0900001
         method: PUT
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 755
+        content_length: 784
         uncompressed: false
         body: |
-            {"data":{"id":"f0ad5168-c733-11f1-ae37-da7ad0900002","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity_client_assertion","client_assertion_client_id":"22222222-2222-2222-2222-222222222222","client_assertion_tenant_id":"11111111-1111-1111-1111-111111111111","user_assigned_managed_identity_id":"00000000-0000-0000-0000-000000000000","user_assigned_managed_identity_id_type":"object_id"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"ace979ee-d3df-11f1-a1d2-da7ad0900001","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity_client_assertion","client_assertion_client_id":"22222222-2222-2222-2222-222222222222","client_assertion_tenant_id":"11111111-1111-1111-1111-111111111111","user_assigned_managed_identity_id":"00000000-0000-0000-0000-000000000000","user_assigned_managed_identity_id_type":"object_id"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 798.050625ms
+        duration: 569.185ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -361,7 +361,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -369,24 +369,24 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f0ad5168-c733-11f1-ae37-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ace979ee-d3df-11f1-a1d2-da7ad0900001
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 755
+        content_length: 784
         uncompressed: false
         body: |
-            {"data":{"id":"f0ad5168-c733-11f1-ae37-da7ad0900002","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity_client_assertion","client_assertion_client_id":"22222222-2222-2222-2222-222222222222","client_assertion_tenant_id":"11111111-1111-1111-1111-111111111111","user_assigned_managed_identity_id":"00000000-0000-0000-0000-000000000000","user_assigned_managed_identity_id_type":"object_id"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"ace979ee-d3df-11f1-a1d2-da7ad0900001","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity_client_assertion","client_assertion_client_id":"22222222-2222-2222-2222-222222222222","client_assertion_tenant_id":"11111111-1111-1111-1111-111111111111","user_assigned_managed_identity_id":"00000000-0000-0000-0000-000000000000","user_assigned_managed_identity_id_type":"object_id"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 290.059166ms
+        duration: 198.854334ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -395,7 +395,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -403,61 +403,61 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f0ad5168-c733-11f1-ae37-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ace979ee-d3df-11f1-a1d2-da7ad0900001
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 755
+        content_length: 784
         uncompressed: false
         body: |
-            {"data":{"id":"f0ad5168-c733-11f1-ae37-da7ad0900002","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity_client_assertion","client_assertion_client_id":"22222222-2222-2222-2222-222222222222","client_assertion_tenant_id":"11111111-1111-1111-1111-111111111111","user_assigned_managed_identity_id":"00000000-0000-0000-0000-000000000000","user_assigned_managed_identity_id_type":"object_id"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"ace979ee-d3df-11f1-a1d2-da7ad0900001","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"managed_identity_client_assertion","client_assertion_client_id":"22222222-2222-2222-2222-222222222222","client_assertion_tenant_id":"11111111-1111-1111-1111-111111111111","user_assigned_managed_identity_id":"00000000-0000-0000-0000-000000000000","user_assigned_managed_identity_id_type":"object_id"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 312.075625ms
+        duration: 203.186666ms
     - id: 12
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 574
+        content_length: 603
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"config":{"destinations":[{"auth":{"azure_credential_kind":"workload_identity","client_id":"22222222-2222-2222-2222-222222222222","tenant_id":"11111111-1111-1111-1111-111111111111","token_file_path":"/var/run/secrets/azure/tokens/azure-identity-token"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"azure data explorer pipeline (auth kinds)"},"id":"","type":"pipelines"}}
+            {"data":{"attributes":{"config":{"destinations":[{"auth":{"azure_credential_kind":"workload_identity","client_id":"22222222-2222-2222-2222-222222222222","tenant_id":"11111111-1111-1111-1111-111111111111","token_file_path":"/var/run/secrets/azure/tokens/azure-identity-token"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"azure data explorer pipeline (auth kinds)"},"id":"","type":"pipelines"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f0ad5168-c733-11f1-ae37-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ace979ee-d3df-11f1-a1d2-da7ad0900001
         method: PUT
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 648
+        content_length: 677
         uncompressed: false
         body: |
-            {"data":{"id":"f0ad5168-c733-11f1-ae37-da7ad0900002","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"workload_identity","client_id":"22222222-2222-2222-2222-222222222222","tenant_id":"11111111-1111-1111-1111-111111111111","token_file_path":"/var/run/secrets/azure/tokens/azure-identity-token"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"ace979ee-d3df-11f1-a1d2-da7ad0900001","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"workload_identity","client_id":"22222222-2222-2222-2222-222222222222","tenant_id":"11111111-1111-1111-1111-111111111111","token_file_path":"/var/run/secrets/azure/tokens/azure-identity-token"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 976.801958ms
+        duration: 451.800083ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -466,7 +466,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -474,24 +474,24 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f0ad5168-c733-11f1-ae37-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ace979ee-d3df-11f1-a1d2-da7ad0900001
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 648
+        content_length: 677
         uncompressed: false
         body: |
-            {"data":{"id":"f0ad5168-c733-11f1-ae37-da7ad0900002","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"workload_identity","client_id":"22222222-2222-2222-2222-222222222222","tenant_id":"11111111-1111-1111-1111-111111111111","token_file_path":"/var/run/secrets/azure/tokens/azure-identity-token"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"ace979ee-d3df-11f1-a1d2-da7ad0900001","type":"pipelines","attributes":{"name":"azure data explorer pipeline (auth kinds)","config":{"destinations":[{"auth":{"azure_credential_kind":"workload_identity","client_id":"22222222-2222-2222-2222-222222222222","tenant_id":"11111111-1111-1111-1111-111111111111","token_file_path":"/var/run/secrets/azure/tokens/azure-identity-token"},"database":"logs_db","id":"azure-data-explorer-dest-auth-1","ingestion_mode":"streaming","inputs":["source-1"],"table":"application_logs","type":"azure_data_explorer"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 279.139167ms
+        duration: 203.3795ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -500,7 +500,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datadoghq.com
+        host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -508,12 +508,12 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f0ad5168-c733-11f1-ae37-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ace979ee-d3df-11f1-a1d2-da7ad0900001
         method: DELETE
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
         content_length: 0
@@ -524,4 +524,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 842.693292ms
+        duration: 241.090792ms

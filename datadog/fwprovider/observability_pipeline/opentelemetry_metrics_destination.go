@@ -19,7 +19,7 @@ type OpentelemetryMetricsDestinationModel struct {
 
 // ExpandOpentelemetryMetricsDestination converts the Terraform model to the Datadog API model
 func ExpandOpentelemetryMetricsDestination(ctx context.Context, id string, inputs types.List, src *OpentelemetryMetricsDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
-	dest := datadogV2.NewObservabilityPipelineOpentelemetryMetricsDestinationWithDefaults()
+	dest := datadogV2.NewObservabilityPipelineOpentelemetryDestinationWithDefaults()
 	dest.SetId(id)
 
 	var inputsList []string
@@ -40,12 +40,12 @@ func ExpandOpentelemetryMetricsDestination(ctx context.Context, id string, input
 	}
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
-		ObservabilityPipelineOpentelemetryMetricsDestination: dest,
+		ObservabilityPipelineOpentelemetryDestination: dest,
 	}
 }
 
 // FlattenOpentelemetryMetricsDestination converts the Datadog API model to the Terraform model
-func FlattenOpentelemetryMetricsDestination(src *datadogV2.ObservabilityPipelineOpentelemetryMetricsDestination) *OpentelemetryMetricsDestinationModel {
+func FlattenOpentelemetryMetricsDestination(src *datadogV2.ObservabilityPipelineOpentelemetryDestination) *OpentelemetryMetricsDestinationModel {
 	if src == nil {
 		return nil
 	}
