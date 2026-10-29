@@ -153,13 +153,13 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 					Type:        schema.TypeBool,
 					Optional:    true,
 					Computed:    true,
-					Description: "Whether to use the standard pattern's recommended suppressions. Requires `standard_pattern_id` when true. Defaults to true for new standard-pattern rules. When omitted for an existing or imported rule, preserves the current API choice. Custom suppressions are managed separately in the `suppressions` block and are retained when this setting changes.",
+					Description: "Whether to use the standard pattern's recommended suppressions. Requires `standard_pattern_id` when true. Defaults to `true` for new standard-pattern rules. When omitted for an existing or imported rule, preserves the current API choice. Custom suppressions are managed separately in the `suppressions` block and are retained when this setting changes.",
 				},
 				"suppressions": {
 					Type:        schema.TypeList,
 					Optional:    true,
 					MaxItems:    1,
-					Description: "Object defining custom suppressions to skip matches based on `starts_with`, `ends_with`, and `exact_match` rules. Custom lists are managed independently of `use_recommended_suppressions`; replacing or removing this block updates or clears the custom lists while preserving the recommendation choice. Recommended suppressions are not copied into these lists.",
+					Description: "Object defining custom suppressions to skip matches based on `starts_with`, `ends_with`, and `exact_match` rules. Custom lists are managed independently of `use_recommended_suppressions`. Replacing or removing `suppressions` updates or clears the custom lists without affecting `use_recommended_suppressions`. Recommended suppressions are not copied into these lists.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"starts_with": {
