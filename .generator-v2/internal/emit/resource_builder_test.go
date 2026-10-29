@@ -534,6 +534,31 @@ var _ = Describe("BuildResourceView", func() {
 })
 
 var _ = Describe("RenderResource", func() {
+	DescribeTable("matches the Delete operation's SDK return values",
+		func(method, responseType, assignment string) {
+			op := incidentTypeResourceOperation(true)
+			op.ResolvedGroup.Delete.Method = method
+			op.ResolvedGroup.Delete.ResponseRefName = responseType
+			art, err := model.BuildArtifact(op)
+			Expect(err).NotTo(HaveOccurred())
+			view, err := BuildResourceView(art)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(view.Delete.GoResponseType).To(Equal(responseType))
+
+			out := string(mustRenderResource(view))
+			deleteStart := strings.Index(out, "func (r *datadogIncidentTypeResource) Delete(")
+			deleteEnd := strings.Index(out[deleteStart:], "// updateState") + deleteStart
+			deleteMethod := out[deleteStart:deleteEnd]
+			Expect(deleteMethod).To(ContainSubstring("\n\t" + assignment + " := r.Api.DeleteIncidentType(r.Auth, state.ID.ValueString())"))
+			Expect(deleteMethod).To(ContainSubstring("httpResp != nil && httpResp.StatusCode == 404"))
+			Expect(deleteMethod).To(ContainSubstring(`utils.FrameworkErrorDiag(err, "error deleting incident_type")`))
+			Expect(deleteMethod).NotTo(ContainSubstring("updateState("))
+		},
+		Entry("bodyless DELETE", "DELETE", "", "httpResp, err"),
+		Entry("DELETE returning a body", "DELETE", "DeletionResponse", "_, httpResp, err"),
+		Entry("archive POST returning a body", "POST", "IncidentTypeResponse", "_, httpResp, err"),
+	)
+
 	It("renders gofmt-canonical, syntactically valid Go for a full-CRUD resource", func() {
 		art, err := model.BuildArtifact(incidentTypeResourceOperation(true))
 		Expect(err).NotTo(HaveOccurred())

@@ -177,7 +177,7 @@ func (r *{{ .GoName }}Resource) Delete(ctx context.Context, request resource.Del
 	}
 
 {{ template "argPrep" .Delete.Arguments }}
-	httpResp, err := r.Api.{{ .Delete.Method }}(r.Auth{{ range .Delete.Arguments }}, {{ .Expression }}{{ end }})
+	{{ if .Delete.GoResponseType }}_, {{ end }}httpResp, err := r.Api.{{ .Delete.Method }}(r.Auth{{ range .Delete.Arguments }}, {{ .Expression }}{{ end }})
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return

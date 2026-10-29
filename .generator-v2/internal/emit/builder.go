@@ -2034,7 +2034,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		Update:            updateView,
 		UpdateUnsupported: lc.UpdateUnsupported,
 		Delete: CRUDCallView{
-			Method: lc.Delete.GoMethod, Arguments: deleteArgs,
+			Method: lc.Delete.GoMethod, GoResponseType: lc.Delete.GoResponseType, Arguments: deleteArgs,
 		},
 		Models: models,
 		Schema: SchemaView{
