@@ -57,6 +57,7 @@ var Resources = []func() resource.Resource{
 	NewCatalogEntityResource,
 	NewDashboardListResource,
 	NewDatasetResource,
+	NewDerivedMetricResource,
 	NewDomainAllowlistResource,
 	NewDowntimeScheduleResource,
 	NewFleetScheduleResource,
