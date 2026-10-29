@@ -1043,7 +1043,9 @@ func compareOptions(currentOptions, payloadOptions *datadogV2.SecurityMonitoring
 }
 
 // defaultRuleActionsEqual reports whether the planned actions match the API actions.
-// Order is significant. Options are only compared when set in the plan.
+// Order is significant. The comparison is strict and mirrors what Read stores in
+// state: an option omitted from the plan must also be absent from the API, otherwise
+// Read would surface it and produce a diff that Update never resolves.
 func defaultRuleActionsEqual(planActions []ruleCaseActionModel, apiActions []datadogV2.SecurityMonitoringRuleCaseAction) bool {
 	if len(planActions) != len(apiActions) {
 		return false
@@ -1052,15 +1054,22 @@ func defaultRuleActionsEqual(planActions []ruleCaseActionModel, apiActions []dat
 		if planAction.Type.ValueString() != string(apiActions[i].GetType()) {
 			return false
 		}
-		if len(planAction.Options) == 0 {
-			continue
+		planOptions := ruleCaseActionOptionsModel{
+			Duration:         types.Int64Null(),
+			UserBehaviorName: types.StringNull(),
 		}
-		planOptions := planAction.Options[0]
+		if len(planAction.Options) > 0 {
+			planOptions = planAction.Options[0]
+		}
 		apiOptions := apiActions[i].GetOptions()
-		if !planOptions.Duration.IsNull() && planOptions.Duration.ValueInt64() != apiOptions.GetDuration() {
+		apiDuration, hasAPIDuration := apiOptions.GetDurationOk()
+		if planOptions.Duration.IsNull() == hasAPIDuration ||
+			(hasAPIDuration && planOptions.Duration.ValueInt64() != *apiDuration) {
 			return false
 		}
-		if !planOptions.UserBehaviorName.IsNull() && planOptions.UserBehaviorName.ValueString() != apiOptions.GetUserBehaviorName() {
+		apiUserBehaviorName, hasAPIUserBehaviorName := apiOptions.GetUserBehaviorNameOk()
+		if planOptions.UserBehaviorName.IsNull() == hasAPIUserBehaviorName ||
+			(hasAPIUserBehaviorName && planOptions.UserBehaviorName.ValueString() != *apiUserBehaviorName) {
 			return false
 		}
 	}

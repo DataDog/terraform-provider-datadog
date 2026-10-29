@@ -1220,12 +1220,12 @@ func extractRuleCases(ctx context.Context, responseRulesCases []datadogV2.Securi
 // ruleCaseActionBlock is the `action` block shared by the rule and default rule resources.
 func ruleCaseActionBlock() schema.ListNestedBlock {
 	return schema.ListNestedBlock{
-		Description: "Action to perform when the case trigger",
+		Description: "Action to perform when the case is triggered.",
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
 				"type": schema.StringAttribute{
 					Required:    true,
-					Description: "Type of action to perform when the case triggers.",
+					Description: "Type of action to perform when the case is triggered.",
 					Validators: []validator.String{
 						validators.NewEnumValidator[validator.String](datadogV2.NewSecurityMonitoringRuleCaseActionTypeFromValue),
 					},
