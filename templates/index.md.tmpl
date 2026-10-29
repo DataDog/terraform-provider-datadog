@@ -45,4 +45,21 @@ match the AWS identity resolved by the credential chain.
 
 For HCP Terraform, the provider discovers Terraform-issued workload identity tokens and exchanges them through Datadog Workload Identity Federation when authentication is not explicitly configured in the provider block. Use `workload_identity_token_tag` to select a distinct token for each provider configuration. Configure the WIF persona mapping and workspace audience as described in the [Dynamic Provider Credentials guide](guides/dynamic_provider_credentials.md).
 
+## Authenticate with pup
+
+For local development, the provider can use the OAuth session that the [pup](https://github.com/DataDog/pup) CLI keeps after `pup auth login`, so no API key, application key or access token needs to be created or stored. Set `use_pup = true`, or `export DD_USE_PUP=true`:
+
+```terraform
+provider "datadog" {
+  use_pup  = true
+  org_uuid = "00000000-0000-0000-0000-000000000000"
+}
+```
+
+The provider then gets its token from `pup auth token`, and a fresh one when that token expires, so a long apply keeps a valid token. pup is used only as a last resort: API and application keys, `bearer_token`, cloud provider authentication, and Terraform Dynamic Provider Credentials all take precedence, whether set in the provider block or the environment.
+
+- **The pup session can change during a run.** If pup is logged in as someone else partway through, the provider stops at its next token rather than continuing as a different user. Set `org_uuid` to make sure every token belongs to the intended organization.
+- **pup's site must match `api_url`.** The provider uses whichever site pup is logged in to.
+- **Parallel runs** each run `pup auth token`. When several refresh an expired session at once, the provider retries a failed `pup auth token` a few times before giving up.
+
 {{ .SchemaMarkdown | trimspace }}

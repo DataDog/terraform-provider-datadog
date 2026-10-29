@@ -21,6 +21,7 @@ import (
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/cloudauth"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/pupauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/terraformauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
@@ -92,6 +93,11 @@ func Provider() *schema.Provider {
 				Optional:    true,
 				Sensitive:   true,
 				Description: "Datadog credential sent in the `Authorization: Bearer <token>` header. Accepts personal access tokens (`ddpat_*`) and service-account access tokens (`ddsat_*`). When set, the provider authenticates with `Authorization: Bearer <token>` instead of the `DD-API-KEY` / `DD-APPLICATION-KEY` headers. This can also be set via the `DD_BEARER_TOKEN` or `DATADOG_BEARER_TOKEN` environment variable.",
+			},
+			"use_pup": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Description: "Get a Bearer token from the pup CLI (`pup auth token`) after `pup auth login`, so no API, application or access token needs to be stored. Used only as a last resort: when api_key, app_key, bearer_token, cloud provider authentication and Terraform Dynamic Provider Credentials are all absent. The provider gets a fresh token when the current one expires, and stops if pup is then logged in as a different user. When `org_uuid` is set, every token must belong to that organization. This can also be set via the `DD_USE_PUP` environment variable.",
 			},
 			"workload_identity_token_tag": {
 				Type:        schema.TypeString,
@@ -444,9 +450,24 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		validate, _ = strconv.ParseBool(v)
 	}
 
-	if validate && workloadIdentityConfig == nil {
+	// The environment applies only when use_pup is unset, so use_pup = false wins.
+	// GetOkExists is the only way to tell an explicit false from unset.
+	usePupValue, usePupSet := d.GetOkExists("use_pup") //nolint:staticcheck // see above
+	usePup, _ := usePupValue.(bool)
+	if !usePupSet {
+		if v, err := utils.GetMultiEnvVar(utils.UsePupEnvVars...); err == nil {
+			usePup, _ = strconv.ParseBool(v)
+		}
+	}
+	// pup is the credential of last resort, used only when nothing else is configured.
+	var pupConfig *datadog.DelegatedTokenConfig
+	if usePup && workloadIdentityConfig == nil && cloudProviderType == "" && bearerToken == "" && apiKey == "" && appKey == "" {
+		pupConfig = pupauth.GetDelegatedTokenConfig(orgUUID)
+	}
+
+	if validate && workloadIdentityConfig == nil && pupConfig == nil {
 		if cloudProviderType == "" && bearerToken == "" && (apiKey == "" || appKey == "") {
-			return nil, diag.FromErr(errors.New("credentials are required unless validate = false: configure api_key and app_key, bearer_token, AWS WIF, or Terraform Dynamic Provider Credentials"))
+			return nil, diag.FromErr(errors.New("credentials are required unless validate = false: configure api_key and app_key, bearer_token, use_pup, AWS WIF, or Terraform Dynamic Provider Credentials"))
 		} else if cloudProviderType != "" && orgUUID == "" {
 			return nil, diag.FromErr(errors.New("orgUUID must be set when using cloud provider auth unless validate = false"))
 		}
@@ -517,6 +538,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 				},
 			},
 		)
+	case pupConfig != nil:
+		auth = context.WithValue(auth, datadog.ContextDelegatedToken, &datadog.DelegatedTokenCredentials{})
 	}
 
 	config := datadog.NewConfiguration()
@@ -578,8 +601,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 
 	config.UserAgent = utils.GetUserAgent(config.UserAgent)
 	// The SDK debug logger does not redact ContextDelegatedToken credentials.
-	// Suppress raw HTTP dumps for WIT authentication until SDK redaction supports it.
-	config.Debug = logging.IsDebugOrHigher() && workloadIdentityConfig == nil
+	// Suppress raw HTTP dumps for WIT and pup authentication until SDK redaction supports it.
+	config.Debug = logging.IsDebugOrHigher() && workloadIdentityConfig == nil && pupConfig == nil
 	if apiURL != "" {
 		parsedAPIURL, parseErr := url.Parse(apiURL)
 		if parseErr != nil {
@@ -617,6 +640,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	config.HTTPClient = datadogHTTPClient
 	if workloadIdentityConfig != nil {
 		config.DelegatedTokenConfig = workloadIdentityConfig
+	} else if pupConfig != nil {
+		config.DelegatedTokenConfig = pupConfig
 	} else if cloudProviderType != "" {
 		switch cloudProviderType {
 		case "aws":

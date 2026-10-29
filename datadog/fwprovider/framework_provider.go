@@ -27,6 +27,7 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/cloudauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/pupauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/terraformauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
@@ -279,6 +280,7 @@ type ProviderSchema struct {
 	ApiKey                           types.String `tfsdk:"api_key"`
 	AppKey                           types.String `tfsdk:"app_key"`
 	BearerToken                      types.String `tfsdk:"bearer_token"`
+	UsePup                           types.Bool   `tfsdk:"use_pup"`
 	WorkloadIdentityTokenTag         types.String `tfsdk:"workload_identity_token_tag"`
 	ApiUrl                           types.String `tfsdk:"api_url"`
 	Validate                         types.String `tfsdk:"validate"`
@@ -362,6 +364,10 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Optional:    true,
 				Sensitive:   true,
 				Description: "Datadog credential sent in the `Authorization: Bearer <token>` header. Accepts personal access tokens (`ddpat_*`) and service-account access tokens (`ddsat_*`). When set, the provider authenticates with `Authorization: Bearer <token>` instead of the `DD-API-KEY` / `DD-APPLICATION-KEY` headers. This can also be set via the `DD_BEARER_TOKEN` or `DATADOG_BEARER_TOKEN` environment variable.",
+			},
+			"use_pup": schema.BoolAttribute{
+				Optional:    true,
+				Description: "Get a Bearer token from the pup CLI (`pup auth token`) after `pup auth login`, so no API, application or access token needs to be stored. Used only as a last resort: when api_key, app_key, bearer_token, cloud provider authentication and Terraform Dynamic Provider Credentials are all absent. The provider gets a fresh token when the current one expires, and stops if pup is then logged in as a different user. When `org_uuid` is set, every token must belong to that organization. This can also be set via the `DD_USE_PUP` environment variable.",
 			},
 			"workload_identity_token_tag": schema.StringAttribute{
 				Optional:    true,
@@ -516,6 +522,13 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 		bearerToken, err := utils.GetMultiEnvVar(utils.BearerTokenEnvVars...)
 		if err == nil {
 			config.BearerToken = types.StringValue(bearerToken)
+		}
+	}
+
+	if config.UsePup.IsNull() {
+		if v, err := utils.GetMultiEnvVar(utils.UsePupEnvVars...); err == nil {
+			usePup, _ := strconv.ParseBool(v)
+			config.UsePup = types.BoolValue(usePup)
 		}
 	}
 
@@ -693,10 +706,16 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	awsSecretAccessKey := config.AWSSecretAccessKey.ValueString()
 	awsSessionToken := config.AWSSessionToken.ValueString()
 	bearerToken := config.BearerToken.ValueString()
+	// pup is the credential of last resort, used only when nothing else is configured.
+	var pupConfig *datadog.DelegatedTokenConfig
+	if config.UsePup.ValueBool() && workloadIdentityConfig == nil && cloudProviderType == "" && bearerToken == "" &&
+		config.ApiKey.ValueString() == "" && config.AppKey.ValueString() == "" {
+		pupConfig = pupauth.GetDelegatedTokenConfig(orgUUID)
+	}
 
-	if validate && workloadIdentityConfig == nil {
+	if validate && workloadIdentityConfig == nil && pupConfig == nil {
 		if cloudProviderType == "" && bearerToken == "" && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
-			diags.AddError("credentials are required unless validate = false: configure api_key and app_key, bearer_token, AWS WIF, or Terraform Dynamic Provider Credentials", "")
+			diags.AddError("credentials are required unless validate = false: configure api_key and app_key, bearer_token, use_pup, AWS WIF, or Terraform Dynamic Provider Credentials", "")
 			return diags
 		} else if cloudProviderType != "" && orgUUID == "" {
 			diags.AddError("orgUUID must be set when using cloud provider auth unless validate = false", "")
@@ -769,12 +788,14 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 				},
 			},
 		)
+	case pupConfig != nil:
+		auth = context.WithValue(auth, datadog.ContextDelegatedToken, &datadog.DelegatedTokenCredentials{})
 	}
 	ddClientConfig := datadog.NewConfiguration()
 	ddClientConfig.UserAgent = utils.GetUserAgentFramework(ddClientConfig.UserAgent, request.TerraformVersion)
 	// The SDK debug logger does not redact ContextDelegatedToken credentials.
-	// Suppress raw HTTP dumps for WIT authentication until SDK redaction supports it.
-	ddClientConfig.Debug = logging.IsDebugOrHigher() && workloadIdentityConfig == nil
+	// Suppress raw HTTP dumps for WIT and pup authentication until SDK redaction supports it.
+	ddClientConfig.Debug = logging.IsDebugOrHigher() && workloadIdentityConfig == nil && pupConfig == nil
 
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateRUMOperation", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetRUMOperation", true)
@@ -1047,6 +1068,8 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.HTTPClient = datadogHTTPClient
 	if workloadIdentityConfig != nil {
 		ddClientConfig.DelegatedTokenConfig = workloadIdentityConfig
+	} else if pupConfig != nil {
+		ddClientConfig.DelegatedTokenConfig = pupConfig
 	} else if cloudProviderType != "" {
 		switch cloudProviderType {
 		case "aws":

@@ -106,6 +106,9 @@ var OrgUUIDEnvVars = []string{DDOrgUUIDEnvName, DatadogOrgUUIDEnvName}
 // BearerTokenEnvVars names of env vars for the Bearer-token credential (PATs, SATs, etc.)
 var BearerTokenEnvVars = []string{DDBearerTokenEnvName, DatadogBearerTokenEnvName}
 
+// UsePupEnvVars names of env vars that turn on getting a Bearer token from pup
+var UsePupEnvVars = []string{"DD_USE_PUP", "DATADOG_USE_PUP"}
+
 // APIUrlEnvVars names of env var for API key
 var APIUrlEnvVars = []string{DDAPIUrlEnvName, DatadogAPIUrlEnvName}
 
