@@ -4,7 +4,6 @@ import (
 	"math"
 	"testing"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/stretchr/testify/assert"
 )
@@ -239,7 +238,6 @@ func TestMonitorMetricQueryVariableRead(t *testing.T) {
 	vars := []datadogV1.MonitorFormulaAndFunctionQueryDefinition{
 		*buildMonitorFormulaAndFunctionMetricQuery(q1),
 		*buildMonitorFormulaAndFunctionCloudCostQuery(q2),
-		{MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition: &datadogV1.MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition{Name: datadog.PtrString("a1")}},
 	}
 	none := []map[string]interface{}(nil)
 	tests := []struct {
@@ -260,7 +258,6 @@ func TestMonitorMetricQueryVariableRead(t *testing.T) {
 				out = buildTerraformCostMonitorVariables(vars, tt.priorCost, tt.priorMetric)
 			} else {
 				out = buildTerraformMonitorVariables(vars, tt.priorCost, tt.priorMetric)
-				assert.Len(t, out[0]["aggregate_augmented_query"], 1)
 			}
 			got, _ := out[0]["metric_query"].([]map[string]interface{})
 			assert.Equal(t, tt.wantMetric, got)

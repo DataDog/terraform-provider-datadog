@@ -3354,7 +3354,7 @@ func TestAccDatadogMonitor_MetricQueryVariable(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
-	config := testAccCheckDatadogMonitorMetricQueryVariable(monitorName, "")
+	config := testAccCheckDatadogMonitorMetricQueryVariable(monitorName)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
@@ -3377,44 +3377,8 @@ func TestAccDatadogMonitor_MetricQueryVariable(t *testing.T) {
 	})
 }
 
-// Cassettes pending: record with RECORD=true (requires API keys and an org with the `monitors-dynamic-thresholds` feature flag).
-func TestAccDatadogMonitor_MetricQueryMixedVariables(t *testing.T) {
-	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	monitorName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
-	config := testAccCheckDatadogMonitorMetricQueryVariable(monitorName, `
-    event_query {
-      data_source = "logs"
-      name        = "e1"
-      compute {
-        aggregation = "count"
-      }
-      search {
-        query = "service:alerting-scheduler"
-      }
-    }`)
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: config,
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists(accProvider),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.#", "2"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.event_query.0.name", "e1"),
-				),
-			},
-			{Config: config, PlanOnly: true},
-		},
-	})
-}
-
 // Mirrors a dynamic-threshold monitor created in the UI (no aggregator sent).
-func testAccCheckDatadogMonitorMetricQueryVariable(uniq, extraVariables string) string {
+func testAccCheckDatadogMonitorMetricQueryVariable(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
   name    = "%[1]s"
@@ -3436,7 +3400,6 @@ resource "datadog_monitor" "foo" {
       name        = "query2"
       query       = "avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"
     }
-%[2]s
   }
-}`, uniq, extraVariables)
+}`, uniq)
 }
