@@ -534,7 +534,7 @@ Optional:
 
 Required:
 
-- `connection_id` (String) ID of an AWS action connection in the same organization used to retrieve secrets. String length must be at least 1.
+- `connection_id` (String) ID of an AWS connection in the same organization used to retrieve secrets. String length must be at least 1.
 - `region` (String) AWS region containing the secrets. String length must be at least 1.
 
 

@@ -62,12 +62,12 @@ func (r *actionConnectionAWSSecretReferenceModel) apiValue() *datadogV2.ActionCo
 	return value
 }
 
-func actionConnectionValue(literal types.String, reference *actionConnectionAWSSecretReferenceModel) datadogV2.ActionConnectionCredentialValue {
+func actionConnectionValue(literal types.String, reference *actionConnectionAWSSecretReferenceModel) datadogV2.HTTPTokenValue {
 	if reference != nil {
-		return datadogV2.ActionConnectionAWSSecretsManagerReferenceAsActionConnectionCredentialValue(reference.apiValue())
+		return datadogV2.ActionConnectionAWSSecretsManagerReferenceAsHTTPTokenValue(reference.apiValue())
 	}
 	value := literal.ValueString()
-	return datadogV2.ActionConnectionCredentialValue{String: &value}
+	return datadogV2.HTTPTokenValue{String: &value}
 }
 
 func actionConnectionExternalSettings(model *actionConnectionExternalSecretsManagerModel) (datadogV2.ActionConnectionAWSSecretsManager, error) {
@@ -101,7 +101,7 @@ func addActionConnectionAWSSecretSchema(s *schema.Schema) {
 			response.RequiresReplace = !request.StateValue.IsNull() && request.PlanValue.IsNull()
 		}, "Removing external secrets manager settings requires replacing the connection.", "Removing external secrets manager settings requires replacing the connection.")},
 		Attributes: map[string]schema.Attribute{
-			"connection_id": schema.StringAttribute{Description: "ID of an AWS action connection in the same organization used to retrieve secrets.", Required: true, Validators: []validator.String{stringvalidator.LengthAtLeast(1)}},
+			"connection_id": schema.StringAttribute{Description: "ID of an AWS connection in the same organization used to retrieve secrets.", Required: true, Validators: []validator.String{stringvalidator.LengthAtLeast(1)}},
 			"region":        schema.StringAttribute{Description: "AWS region containing the secrets.", Required: true, Validators: []validator.String{stringvalidator.LengthAtLeast(1)}},
 		},
 	}
@@ -160,7 +160,7 @@ func actionConnectionReferenceDataSourceAttribute() dsschema.SingleNestedAttribu
 
 func addActionConnectionAWSSecretDataSourceSchema(s *dsschema.Schema) {
 	s.Attributes["external_secrets_manager"] = dsschema.SingleNestedAttribute{Computed: true, Description: "AWS Secrets Manager settings shared by credential references.", Attributes: map[string]dsschema.Attribute{
-		"connection_id": dsschema.StringAttribute{Computed: true, Description: "ID of the AWS action connection used to retrieve secrets."},
+		"connection_id": dsschema.StringAttribute{Computed: true, Description: "ID of the AWS connection used to retrieve secrets."},
 		"region":        dsschema.StringAttribute{Computed: true, Description: "AWS region containing the secrets."},
 	}}
 	addActionConnectionReferenceDataSourceBlocks(s.Blocks, reflect.TypeOf(connectionModel{}))

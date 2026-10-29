@@ -393,7 +393,7 @@ Read-Only:
 
 Read-Only:
 
-- `connection_id` (String) ID of the AWS action connection used to retrieve secrets.
+- `connection_id` (String) ID of the AWS connection used to retrieve secrets.
 - `region` (String) AWS region containing the secrets.
 
 
