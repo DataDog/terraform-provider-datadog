@@ -30,7 +30,7 @@ resource "datadog_aws_wif_intake_mapping" "agent" {
 
 ### Required
 
-- `arn_pattern` (String) The AWS caller ARN pattern allowed to authenticate. Currently, only the `aws` partition is supported. For role-based authentication, use the STS assumed-role ARN returned by `aws sts get-caller-identity`, not the IAM role ARN shown in the AWS console. A pattern may contain one wildcard only, as a trailing `/*` after a specific resource, for example `arn:aws:sts::123456789012:assumed-role/DatadogAgentRole/*`. String length must be at least 1.
+- `arn_pattern` (String) The AWS caller ARN pattern allowed to authenticate. Currently, only the `aws` partition is supported. For role-based authentication, use the STS assumed-role ARN returned by `aws sts get-caller-identity`, not the IAM role ARN shown in the AWS console. A pattern may contain one wildcard only, as a trailing `/*` after a specific resource; for example, `arn:aws:sts::123456789012:assumed-role/DatadogAgentRole/*`. String length must be at least 1.
 
 ### Read-Only
 
