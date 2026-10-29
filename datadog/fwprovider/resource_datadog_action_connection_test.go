@@ -237,6 +237,7 @@ func TestActionConnectionHTTPUpdateOmitsUnchangedTokens(t *testing.T) {
 			{Type: types.StringValue("SECRET"), Name: types.StringValue("appKey"), Value: types.StringValue("PLACEHOLDER_FILL_IN_UI")},
 		},
 		Headers: []*httpConnectionHeaderModel{{Name: types.StringValue("X-Test"), Value: types.StringValue("old")}},
+		Body:    &httpConnectionBodyModel{ContentType: types.StringValue("application/json"), Content: types.StringValue(`{"foo":"{{ apiKey }}"}`)},
 	}
 	oldHTTP := &httpConnectionModel{BaseURL: types.StringValue("https://example.com"), TokenAuth: oldAuth}
 	newHeaderAuth := *oldAuth
@@ -306,6 +307,10 @@ func TestActionConnectionHTTPUpdateOmitsUnchangedTokens(t *testing.T) {
 			}
 			if _, exists := credentials["headers"]; exists != tt.wantHeaders {
 				t.Fatalf("headers present = %t, want %t", exists, tt.wantHeaders)
+			}
+			// The API clears the stored body when an HTTP credentials update omits it.
+			if got, want := string(credentials["body"]), `{"content":"{\"foo\":\"{{ apiKey }}\"}","content_type":"application/json"}`; got != want {
+				t.Fatalf("body = %s, want %s", got, want)
 			}
 			var tokens []json.RawMessage
 			if raw, exists := credentials["tokens"]; exists {

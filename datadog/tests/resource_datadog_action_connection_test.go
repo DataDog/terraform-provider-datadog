@@ -165,6 +165,94 @@ func TestAccDatadogActionConnectionResource_HTTP_TokenAuth(t *testing.T) {
 	})
 }
 
+// The API clears the stored body when an HTTP credentials update omits it, so check the body through the API after each update.
+func TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody(t *testing.T) {
+	t.Parallel()
+
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	connectionName := uniqueEntityName(ctx, t)
+	resourceName := "datadog_action_connection.http_token_auth_update"
+	body := `{"key":"{{ token1 }}"}`
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogConnectionDestroy(providers.frameworkProvider, resourceName),
+		Steps: []resource.TestStep{
+			{
+				Config: testHTTPTokenAuthUpdateConfig(connectionName, testConnectionBaseURL, "secret value 1", true),
+				Check:  testAccCheckDatadogHTTPConnectionBody(providers.frameworkProvider, resourceName, body),
+			},
+			{
+				Config: testHTTPTokenAuthUpdateConfig(connectionName, testConnectionBaseURL, "rotated value 1", true),
+				Check:  testAccCheckDatadogHTTPConnectionBody(providers.frameworkProvider, resourceName, body),
+			},
+			{
+				Config: testHTTPTokenAuthUpdateConfig(connectionName, testConnectionBaseURL+"/v2", "rotated value 1", true),
+				Check:  testAccCheckDatadogHTTPConnectionBody(providers.frameworkProvider, resourceName, body),
+			},
+			{
+				Config: testHTTPTokenAuthUpdateConfig(connectionName, testConnectionBaseURL+"/v2", "rotated value 1", false),
+				Check:  testAccCheckDatadogHTTPConnectionBody(providers.frameworkProvider, resourceName, ""),
+			},
+		},
+	})
+}
+
+func testHTTPTokenAuthUpdateConfig(name, baseURL, tokenValue string, withBody bool) string {
+	body := ""
+	if withBody {
+		body = `
+				body {
+					content_type = "application/json"
+					content = jsonencode({
+						key = "{{ token1 }}"
+					})
+				}`
+	}
+	return fmt.Sprintf(`
+	resource "datadog_action_connection" "http_token_auth_update" {
+		name = "%s"
+
+		http {
+			base_url = "%s"
+
+			token_auth {
+				token {
+					type = "SECRET"
+					name = "token1"
+					value = "%s"
+				}
+
+				header {
+					name = "header-name"
+					value = "header-value"
+				}
+%s
+			}
+		}
+	}`, name, baseURL, tokenValue, body)
+}
+
+func testAccCheckDatadogHTTPConnectionBody(accProvider *fwprovider.FrameworkProvider, resourceName, wantContent string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		id := s.RootModule().Resources[resourceName].Primary.ID
+		connection, _, err := accProvider.DatadogApiInstances.GetActionConnectionApiV2().GetActionConnection(accProvider.Auth, id)
+		if err != nil {
+			return fmt.Errorf("received an error retrieving connection: %s", err)
+		}
+		httpIntegration := connection.Data.Attributes.Integration.HTTPIntegration
+		if httpIntegration == nil || httpIntegration.Credentials.HTTPTokenAuth == nil {
+			return fmt.Errorf("connection %s is not an HTTP token auth connection", id)
+		}
+		if got := httpIntegration.Credentials.HTTPTokenAuth.Body.GetContent(); got != wantContent {
+			return fmt.Errorf("body content = %q, want %q", got, wantContent)
+		}
+		return nil
+	}
+}
+
 func testHTTPTokenAuthConnectionResourceConfig(name string) string {
 	return fmt.Sprintf(`
 	resource "datadog_action_connection" "http_token_auth_conn" {
