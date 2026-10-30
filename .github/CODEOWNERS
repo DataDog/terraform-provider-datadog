@@ -122,6 +122,7 @@ datadog/**/*datadog_tag_rule*                     @DataDog/api-reliability @Data
 datadog/**/*datadog_status_page*                  @DataDog/api-reliability @DataDog/incident-app
 datadog/**/*fleet_schedule*                       @DataDog/api-reliability @DataDog/fleet-automation
 datadog/**/*github_oidc*                          @DataDog/api-reliability @DataDog/aaa-authn
+datadog/**/*aws_wif*                              @DataDog/api-reliability @DataDog/aaa-authn
 
 # Team-specific
 docs/resources/observability_pipeline.md                  @DataDog/observability-pipelines
