@@ -876,6 +876,9 @@ type SDKCall struct {
 	// all. A body that does not must not call SetId: the SDK generates that
 	// setter only for a declared property, so the call would not compile.
 	RequestDeclaresID bool
+	// RequestIDRequired and RequestIDReadOnly come from this operation's create/update schema.
+	RequestIDRequired bool
+	RequestIDReadOnly bool
 	// RequestIDGoType is the Go type the SDK's SetId takes on this body's data
 	// member, derived from the data.id schema via SDKScalarGoType, e.g.
 	// "string" or "uuid.UUID". Empty when the body declares no id, or its
