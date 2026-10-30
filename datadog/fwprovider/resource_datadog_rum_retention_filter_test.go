@@ -16,7 +16,10 @@ func TestRetryRumRetentionFilterOperation(t *testing.T) {
 	err := retryRumRetentionFilterOperation(t.Context(), func() (*http.Response, error) {
 		attempts++
 		if attempts == 1 {
-			return &http.Response{StatusCode: http.StatusConflict}, errors.New("ConcurrentModification: retry")
+			return &http.Response{StatusCode: http.StatusConflict}, datadog.GenericOpenAPIError{
+				ErrorMessage: "409 Conflict",
+				ErrorBody:    []byte("ConcurrentModification: retry"),
+			}
 		}
 		return nil, nil
 	})
@@ -38,6 +41,11 @@ func TestIsRumRetentionFilterConcurrentModification(t *testing.T) {
 		},
 		"other conflict": {
 			err:       errors.New("duplicate retention filter"),
+			httpResp:  &http.Response{StatusCode: http.StatusConflict},
+			wantRetry: false,
+		},
+		"plain concurrency error": {
+			err:       errors.New("ConcurrentModification: retry"),
 			httpResp:  &http.Response{StatusCode: http.StatusConflict},
 			wantRetry: false,
 		},

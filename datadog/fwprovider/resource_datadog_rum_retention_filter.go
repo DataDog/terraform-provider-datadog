@@ -190,10 +190,10 @@ func isRumRetentionFilterConcurrentModification(err error, httpResp *http.Respon
 	}
 
 	var bodyError interface{ Body() []byte }
-	if errors.As(err, &bodyError) {
-		return strings.Contains(string(bodyError.Body()), "ConcurrentModification")
+	if !errors.As(err, &bodyError) {
+		return false
 	}
-	return strings.Contains(err.Error(), "ConcurrentModification")
+	return strings.Contains(string(bodyError.Body()), "ConcurrentModification")
 }
 
 func (r *rumRetentionFilterResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
