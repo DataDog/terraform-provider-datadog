@@ -49,6 +49,148 @@ var widgetCustomLinkField = FieldSpec{
 	Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 }
 
+// HeatgridWidgetFormula is intentionally separate from WidgetFormula: the
+// Heatgrid API does not accept table-only formula fields.
+var heatgridWidgetFormulaFields = []FieldSpec{
+	{HCLKey: "formula_expression", JSONKey: "formula", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Expression built from the queries in this request."},
+	{HCLKey: "limit", Type: TypeBlock, OmitEmpty: true,
+		Description: "Limit on the formula results.", Children: widgetFormulaLimitFields},
+	{HCLKey: "alias", Type: TypeString, OmitEmpty: true,
+		Description: "Expression alias."},
+	{HCLKey: "conditional_formats", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Conditional formatting rules stored with the formula; these do not control heatgrid cell colors.",
+		Children:    widgetConditionalFormatFields},
+	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
+		Description: "Formula style.", Children: widgetFormulaStyleFields},
+	{HCLKey: "number_format", Type: TypeBlock, OmitEmpty: true,
+		Description: "Formula number format.", Children: widgetNumberFormatFields},
+}
+
+// HeatgridWidgetRequest contains only formula/function queries. Its
+// response_format is injected by heatgridFormulaRequestConfig.
+var heatgridWidgetRequestFields = []FieldSpec{
+	{HCLKey: "query", JSONKey: "queries", Type: TypeBlockList, OmitEmpty: false, Required: true, MinItems: 1,
+		Description: "Queries returned directly or combined in a formula.",
+		Children:    formulaAndFunctionQueryFields},
+	{HCLKey: "formula", JSONKey: "formulas", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Formula displayed by the heatgrid.",
+		Children:    heatgridWidgetFormulaFields},
+}
+
+var heatgridSortByValueFields = []FieldSpec{
+	{HCLKey: "order", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Sort direction.", ValidValues: []string{"asc", "desc"}},
+	{HCLKey: "aggregation", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Aggregation over the displayed time range.", ValidValues: []string{"avg", "min", "max", "sum"}},
+}
+
+var heatgridSortByLabelFields = []FieldSpec{
+	{HCLKey: "order", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Sort direction.", ValidValues: []string{"asc", "desc"}},
+}
+
+var heatgridSortFields = []FieldSpec{
+	{HCLKey: "nesting_display", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Display groups as flat rows.", ValidValues: []string{"flat"}},
+	{HCLKey: "sort_by", Type: TypeOneOf, OmitEmpty: false, Required: true,
+		Description:   "Sort rows by aggregated value or by group label.",
+		Discriminator: &OneOfDiscriminator{JSONKey: "property"},
+		Children: []FieldSpec{
+			{HCLKey: "value", Type: TypeBlock, OmitEmpty: true,
+				Description:   "Sort by aggregated value.",
+				Discriminator: &OneOfDiscriminator{Value: "value"},
+				Children:      heatgridSortByValueFields},
+			{HCLKey: "label", Type: TypeBlock, OmitEmpty: true,
+				Description:   "Sort by group label.",
+				Discriminator: &OneOfDiscriminator{Value: "label"},
+				Children:      heatgridSortByLabelFields},
+		}},
+}
+
+var heatgridColorStopFields = []FieldSpec{
+	{HCLKey: "position", Type: TypeInt, OmitEmpty: true, PreserveZero: true, Required: true,
+		Description: "Position in the gradient, from 0 to 100."},
+	{HCLKey: "color", Type: TypeJSON, OmitEmpty: false, Required: true,
+		Description: "Color as a JSON string or a two-element array of light and dark colors. Use `jsonencode()` to encode."},
+}
+
+var heatgridColorBinFields = []FieldSpec{
+	{HCLKey: "color", Type: TypeJSON, OmitEmpty: false, Required: true,
+		Description: "Color as a JSON string or a two-element array of light and dark colors. Use `jsonencode()` to encode."},
+	{HCLKey: "lower_bound", Type: TypeFloat, OmitEmpty: true, PreserveZero: true,
+		Description: "Inclusive lower threshold. Omit on the first bin."},
+	{HCLKey: "label", Type: TypeString, OmitEmpty: true,
+		Description: "Name of the bin shown in the cell tooltip."},
+}
+
+// The OpenAPI color oneOf uses both mode and source as discriminators. A flat
+// block preserves all four variants without requiring per-variant engine logic.
+var heatgridColorConfigFields = []FieldSpec{
+	{HCLKey: "mode", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Continuous gradient or discrete thresholds.", ValidValues: []string{"gradient", "discrete"}},
+	{HCLKey: "source", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Preset palette or custom colors.", ValidValues: []string{"preset", "custom"}},
+	{HCLKey: "preset_name", Type: TypeString, OmitEmpty: true,
+		Description: "Palette name when source is preset."},
+	{HCLKey: "stop", JSONKey: "stops", Type: TypeBlockList, OmitEmpty: true, MinItems: 2, MaxItems: 6,
+		Description: "Custom gradient stops in ascending position order.", Children: heatgridColorStopFields},
+	{HCLKey: "bin", JSONKey: "bins", Type: TypeBlockList, OmitEmpty: true, MinItems: 2, MaxItems: 6,
+		Description: "Custom discrete color bins in ascending lower-bound order.", Children: heatgridColorBinFields},
+}
+
+var heatgridLegendFields = []FieldSpec{
+	{HCLKey: "show_caption", Type: TypeBool, OmitEmpty: true,
+		Description: "Whether to display the legend caption."},
+}
+
+var heatgridTextFormatMatchFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Comparison used to match a group label.",
+		ValidValues: []string{"is", "is_not", "contains", "does_not_contain", "starts_with", "ends_with"}},
+	{HCLKey: "value", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "String to compare with the group label."},
+}
+
+var heatgridTextFormatReplaceAllFields = []FieldSpec{
+	{HCLKey: "with", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Replacement string for the entire group label."},
+}
+
+var heatgridTextFormatReplaceSubstringFields = []FieldSpec{
+	{HCLKey: "substring", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Substring to replace."},
+	{HCLKey: "with", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Replacement string for the substring."},
+}
+
+var heatgridTextFormatRuleFields = []FieldSpec{
+	{HCLKey: "match", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Match a group label against a string.", Children: heatgridTextFormatMatchFields},
+	{HCLKey: "replace", Type: TypeOneOf, OmitEmpty: true,
+		Description:   "Optionally replace all or part of a matching group label.",
+		Discriminator: &OneOfDiscriminator{JSONKey: "type"},
+		Children: []FieldSpec{
+			{HCLKey: "all", Type: TypeBlock, OmitEmpty: true,
+				Description:   "Replace the entire matching group label.",
+				Discriminator: &OneOfDiscriminator{Value: "all"},
+				Children:      heatgridTextFormatReplaceAllFields},
+			{HCLKey: "substring", Type: TypeBlock, OmitEmpty: true,
+				Description:   "Replace a substring of the matching group label.",
+				Discriminator: &OneOfDiscriminator{Value: "substring"},
+				Children:      heatgridTextFormatReplaceSubstringFields},
+		}},
+}
+
+var heatgridLabelColumnFields = []FieldSpec{
+	{HCLKey: "width", Type: TypeString, OmitEmpty: true,
+		Description: "Width of the group label column. Omit to size automatically.",
+		ValidValues: []string{"xs", "s", "m", "l", "xl"}},
+	{HCLKey: "text_format", JSONKey: "text_formats", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Ordered string replacement rules for the group labels.",
+		Children:    heatgridTextFormatRuleFields},
+}
+
 // widgetTimeField corresponds to OpenAPI components/schemas/WidgetLegacyLiveSpan
 // (the live_span variant of WidgetTime, which is the form used by HCL).
 // HCL flattens this to a single "live_span" string field on the widget definition,
