@@ -51,9 +51,6 @@ func resourceDatadogMonitor() *schema.Resource {
 					Description: "A message to include with notifications for this monitor.\n\nEmail notifications can be sent to specific users by using the same `@username` notation as events.",
 					Type:        schema.TypeString,
 					Required:    true,
-					StateFunc: func(val interface{}) string {
-						return strings.TrimSpace(val.(string))
-					},
 				},
 				"escalation_message": {
 					Description: "A message to include with a re-notification. Supports the `@username` notification allowed elsewhere.",
