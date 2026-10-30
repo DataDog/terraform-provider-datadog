@@ -5,6 +5,7 @@ permissions:
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
     branches:
       - master
       - v3
@@ -55,14 +56,16 @@ jobs:
   # EDIT." header) must only be produced by tfgen, never hand-edited. The
   # generate/* and retire/* branches are created by the tfgen-split workflow
   # itself and are allowed to touch them, as are PRs opened by bots or GitHub
-  # Apps.
+  # Apps. The force-regenaration label also permits regenerated output after
+  # generator changes.
   no-generated-file-edits:
     runs-on: ubuntu-latest
     if: >
       github.event_name == 'pull_request' &&
       github.event.pull_request.user.type != 'Bot' &&
       !startsWith(github.head_ref, 'generate/') &&
-      !startsWith(github.head_ref, 'retire/')
+      !startsWith(github.head_ref, 'retire/') &&
+      !contains(github.event.pull_request.labels.*.name, 'force-regenaration')
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -89,6 +92,7 @@ jobs:
           if [ -n "$generated" ]; then
             echo "::error::The following generated files were edited by hand. They are produced by tfgen and must not be edited directly - update the OpenAPI spec or generator instead:"
             echo "$generated"
+            echo "For intentional regeneration after generator changes, add the force-regenaration PR label. This label does not run the generator."
             exit 1
           fi
           echo "No generated files were edited."
