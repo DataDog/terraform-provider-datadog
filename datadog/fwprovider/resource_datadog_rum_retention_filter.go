@@ -3,7 +3,9 @@ package fwprovider
 import (
 	"context"
 	"errors"
+	"net/http"
 	"strings"
+	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -15,11 +17,14 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 const RumRetentionFilterImportIdDelimiter = ":"
+
+const rumRetentionFilterOperationRetryTimeout = time.Minute
 
 var (
 	_ resource.ResourceWithConfigure   = &rumRetentionFilterResource{}
@@ -145,7 +150,13 @@ func (r *rumRetentionFilterResource) Create(ctx context.Context, request resourc
 	}
 	appId := state.ApplicationID.ValueString()
 
-	resp, _, err := r.Api.CreateRetentionFilter(r.Auth, appId, *body)
+	var resp datadogV2.RumRetentionFilterResponse
+	err := retryRumRetentionFilterOperation(ctx, func() (*http.Response, error) {
+		var httpResp *http.Response
+		var err error
+		resp, httpResp, err = r.Api.CreateRetentionFilter(r.Auth, appId, *body)
+		return httpResp, err
+	})
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RumRetentionFilter"))
 		return
@@ -158,6 +169,31 @@ func (r *rumRetentionFilterResource) Create(ctx context.Context, request resourc
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+}
+
+func retryRumRetentionFilterOperation(ctx context.Context, operation func() (*http.Response, error)) error {
+	return retry.RetryContext(ctx, rumRetentionFilterOperationRetryTimeout, func() *retry.RetryError {
+		httpResp, err := operation()
+		if err == nil {
+			return nil
+		}
+		if isRumRetentionFilterConcurrentModification(err, httpResp) {
+			return retry.RetryableError(err)
+		}
+		return retry.NonRetryableError(err)
+	})
+}
+
+func isRumRetentionFilterConcurrentModification(err error, httpResp *http.Response) bool {
+	if err == nil || httpResp == nil || httpResp.StatusCode != http.StatusConflict {
+		return false
+	}
+
+	var bodyError interface{ Body() []byte }
+	if !errors.As(err, &bodyError) {
+		return false
+	}
+	return strings.Contains(string(bodyError.Body()), "ConcurrentModification")
 }
 
 func (r *rumRetentionFilterResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
@@ -173,7 +209,13 @@ func (r *rumRetentionFilterResource) Update(ctx context.Context, request resourc
 		return
 	}
 
-	resp, _, err := r.Api.UpdateRetentionFilter(r.Auth, state.ApplicationID.ValueString(), state.ID.ValueString(), *body)
+	var resp datadogV2.RumRetentionFilterResponse
+	err := retryRumRetentionFilterOperation(ctx, func() (*http.Response, error) {
+		var httpResp *http.Response
+		var err error
+		resp, httpResp, err = r.Api.UpdateRetentionFilter(r.Auth, state.ApplicationID.ValueString(), state.ID.ValueString(), *body)
+		return httpResp, err
+	})
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RumRetentionFilter"))
 		return
@@ -195,7 +237,12 @@ func (r *rumRetentionFilterResource) Delete(ctx context.Context, request resourc
 		return
 	}
 
-	httpResp, err := r.Api.DeleteRetentionFilter(r.Auth, state.ApplicationID.ValueString(), state.ID.ValueString())
+	var httpResp *http.Response
+	err := retryRumRetentionFilterOperation(ctx, func() (*http.Response, error) {
+		var err error
+		httpResp, err = r.Api.DeleteRetentionFilter(r.Auth, state.ApplicationID.ValueString(), state.ID.ValueString())
+		return httpResp, err
+	})
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
