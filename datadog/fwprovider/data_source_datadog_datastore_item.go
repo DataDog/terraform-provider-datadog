@@ -71,7 +71,7 @@ func (d *datastoreItemDataSource) Schema(_ context.Context, _ datasource.SchemaR
 			"value": schema.MapAttribute{
 				Computed:    true,
 				ElementType: types.StringType,
-				Description: "The data content (as key-value pairs) of the datastore item.",
+				Description: "The data content (as key-value pairs) of the datastore item. A column of the datastore's JSON type is returned as a JSON string, so `jsondecode` can read it.",
 			},
 			"created_at": schema.StringAttribute{
 				Computed:    true,
@@ -169,10 +169,7 @@ func (d *datastoreItemDataSource) updateState(ctx context.Context, state *datast
 
 	// Convert value map to types.Map
 	if value, ok := attributes.GetValueOk(); ok && value != nil {
-		valueMap := make(map[string]string)
-		for k, v := range *value {
-			valueMap[k] = fmt.Sprintf("%v", v)
-		}
+		valueMap := datastoreItemValueToMap(*value)
 		mapValue, diags := types.MapValueFrom(ctx, types.StringType, valueMap)
 		if !diags.HasError() {
 			state.Value = mapValue
