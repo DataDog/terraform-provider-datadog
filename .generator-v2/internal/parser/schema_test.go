@@ -573,6 +573,22 @@ var _ = Describe("NormalizeSchemas 2xx response selection", func() {
 		spec = loadSpecMust("schema_normalize_2xx.yaml")
 	})
 
+	DescribeTable("selects a response schema independently of the media type",
+		func(operationID, schemaType string) {
+			op := opByID(spec, operationID)
+			if schemaType == "" {
+				Expect(op.ResponseSchema).To(BeNil())
+				return
+			}
+			Expect(op.ResponseSchema).NotTo(BeNil())
+			Expect(op.ResponseSchema.Type).To(Equal(schemaType))
+		},
+		Entry("lower non-JSON status wins", "DeletePreferLowerText", "string"),
+		Entry("JSON remains preferred within one status", "DeletePreferJSON", "integer"),
+		Entry("media without a schema are skipped", "DeleteSkipEmptyMedia", "boolean"),
+		Entry("error bodies do not imply a success body", "DeleteErrorBodyOnly", ""),
+	)
+
 	It("skips a bodiless 2xx code and picks the first code that has an application/json body", func() {
 		// 201 has no JSON body; 202 does — the 202 schema is selected
 		op := opByID(spec, "CreateSkipBodiless")
@@ -589,7 +605,7 @@ var _ = Describe("NormalizeSchemas 2xx response selection", func() {
 		Expect(op.ResponseSchema.Format).To(Equal("uuid"))
 	})
 
-	It("leaves ResponseSchema nil when no 2xx code carries an application/json body", func() {
+	It("leaves ResponseSchema nil when no 2xx code carries a body", func() {
 		op := opByID(spec, "CreateOnly204")
 		Expect(op.ResponseSchema).To(BeNil())
 	})

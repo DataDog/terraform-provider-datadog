@@ -501,9 +501,9 @@ func requestBodySchemaProxy(op *v3.Operation) *base.SchemaProxy {
 	return mt.Schema
 }
 
-// responseBodySchemaProxy returns the application/json schema of the
-// lowest-numbered 2xx response code that has one, or nil. Codes without a JSON
-// body are skipped; numeric ordering makes the choice deterministic.
+// responseBodySchemaProxy returns a schema from the lowest-numbered 2xx
+// response with a body. Prefer application/json, then the first declared media
+// type with a schema. A non-JSON response still adds an SDK return value.
 func responseBodySchemaProxy(op *v3.Operation) *base.SchemaProxy {
 	if op.Responses == nil || op.Responses.Codes == nil {
 		return nil
@@ -527,10 +527,14 @@ func responseBodySchemaProxy(op *v3.Operation) *base.SchemaProxy {
 			continue
 		}
 		mt := cr.resp.Content.GetOrZero(jsonMediaType)
-		if mt == nil || mt.Schema == nil {
-			continue
+		if mt != nil && mt.Schema != nil {
+			return mt.Schema
 		}
-		return mt.Schema
+		for _, media := range cr.resp.Content.FromOldest() {
+			if media != nil && media.Schema != nil {
+				return media.Schema
+			}
+		}
 	}
 	return nil
 }

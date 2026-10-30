@@ -600,12 +600,13 @@ type ResourceView struct {
 }
 
 // CRUDCallView describes one lifecycle SDK call. GoRequestType is empty for
-// Read and Delete, which send no body; GoResponseType is empty for Delete,
-// whose 204 response carries none.
+// Read and Delete, which send no request body. GoResponseType names a response
+// component when available; HasResponseBody also covers unnamed responses.
 type CRUDCallView struct {
-	Method         string
-	GoRequestType  string
-	GoResponseType string
+	Method          string
+	GoRequestType   string
+	GoResponseType  string
+	HasResponseBody bool
 	// Arguments are the positional SDK call arguments in call order (e.g. the
 	// terminal path id, aliased to "id").
 	Arguments []SDKArgumentView
