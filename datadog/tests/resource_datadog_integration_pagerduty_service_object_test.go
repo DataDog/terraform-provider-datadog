@@ -3,10 +3,12 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/tfversion"
 )
 
 // We're not testing for schedules because Datadog actively verifies it with Pagerduty
@@ -61,6 +63,79 @@ func TestAccDatadogIntegrationPagerdutyServiceObject_Basic(t *testing.T) {
 			},
 		},
 	})
+}
+
+func TestAccDatadogIntegrationPagerdutyServiceObject_WriteOnly(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	serviceName := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
+	accProvider := testAccProvider(t, accProviders)
+	resourceName := "datadog_integration_pagerduty_service_object.testing_wo"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
+		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+			tfversion.SkipBelow(tfversion.Version1_11_0),
+		},
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogIntegrationPagerdutyServiceObjectWriteOnlyConfig(serviceName, `
+  service_key            = "9876543210123456789"
+  service_key_wo         = "9876543210123456789"
+  service_key_wo_version = "1"`),
+				ExpectError: regexp.MustCompile("only one of `service_key,service_key_wo` can be specified"),
+			},
+			{
+				// Start from the plaintext attribute to cover the migration to the write-only one.
+				Config: testAccCheckDatadogIntegrationPagerdutyServiceObjectWriteOnlyConfig(serviceName, `
+  service_key = "9876543210123456789"`),
+				Check: resource.TestCheckResourceAttr(resourceName, "service_key", "9876543210123456789"),
+			},
+			{
+				Config: testAccCheckDatadogIntegrationPagerdutyServiceObjectWriteOnlyConfig(serviceName, `
+  service_key_wo         = "9876543210123456789_2"
+  service_key_wo_version = "1"`),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "service_name", serviceName+"_wo"),
+					resource.TestCheckResourceAttr(resourceName, "service_key", ""),
+					resource.TestCheckNoResourceAttr(resourceName, "service_key_wo"),
+					resource.TestCheckResourceAttr(resourceName, "service_key_wo_version", "1"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogIntegrationPagerdutyServiceObjectWriteOnlyConfig(serviceName, `
+  service_key_wo         = "9876543210123456789_3"
+  service_key_wo_version = "2"`),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "service_key", ""),
+					resource.TestCheckNoResourceAttr(resourceName, "service_key_wo"),
+					resource.TestCheckResourceAttr(resourceName, "service_key_wo_version", "2"),
+				),
+			},
+			{
+				// Renaming replaces the object, which covers creating it with the write-only attribute.
+				Config: testAccCheckDatadogIntegrationPagerdutyServiceObjectWriteOnlyConfig(serviceName+"_new", `
+  service_key_wo         = "9876543210123456789_4"
+  service_key_wo_version = "1"`),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "service_name", serviceName+"_new_wo"),
+					resource.TestCheckNoResourceAttr(resourceName, "service_key"),
+					resource.TestCheckNoResourceAttr(resourceName, "service_key_wo"),
+					resource.TestCheckResourceAttr(resourceName, "service_key_wo_version", "1"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogIntegrationPagerdutyServiceObjectWriteOnlyConfig(uniq string, serviceKeyAttrs string) string {
+	return fmt.Sprintf(`
+resource "datadog_integration_pagerduty_service_object" "testing_wo" {
+  service_name = "%s_wo"
+%s
+}`, uniq, serviceKeyAttrs)
 }
 
 func testAccCheckDatadogIntegrationPagerdutyServiceObjectConfig(uniq string) string {
