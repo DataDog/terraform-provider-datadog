@@ -564,9 +564,9 @@ var _ = Describe("RenderResource", func() {
 			out := string(mustRenderResource(view))
 			deleteStart := strings.Index(out, "func (r *datadogIncidentTypeResource) Delete(")
 			Expect(deleteStart).To(BeNumerically(">=", 0), "missing Delete method")
-			deleteEnd := strings.Index(out[deleteStart:], "// updateState")
-			Expect(deleteEnd).To(BeNumerically(">=", 0), "missing marker after Delete method")
-			deleteMethod := out[deleteStart : deleteStart+deleteEnd]
+			deleteEnd := strings.Index(out[deleteStart+1:], "\nfunc (r *")
+			Expect(deleteEnd).To(BeNumerically(">=", 0), "missing method after Delete")
+			deleteMethod := out[deleteStart : deleteStart+1+deleteEnd]
 			assignment := "httpResp, err"
 			if hasBody {
 				assignment = "_, " + assignment

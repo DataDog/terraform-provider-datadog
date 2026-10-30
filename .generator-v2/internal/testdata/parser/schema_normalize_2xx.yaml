@@ -15,19 +15,19 @@ paths:
             application/json:
               schema:
                 type: string
-  /prefer-lower:
+  /prefer-first:
     post:
-      operationId: CreatePreferLower
+      operationId: CreatePreferFirst
       responses:
-        '200':
-          description: ok — lower code wins
+        '202':
+          description: accepted — first declared code wins
           content:
             application/json:
               schema:
                 type: string
                 format: uuid
         '201':
-          description: created — higher code loses
+          description: created — lower code declared later loses
           content:
             application/json:
               schema:
@@ -40,7 +40,7 @@ paths:
           description: no content
   /plain-text-before-json:
     delete:
-      operationId: DeletePreferLowerText
+      operationId: DeletePreferFirstText
       responses:
         '200':
           description: Plain text response
@@ -56,7 +56,7 @@ paths:
                 type: integer
   /multiple-media:
     delete:
-      operationId: DeletePreferJSON
+      operationId: DeletePreferFirstMedia
       responses:
         '200':
           description: Multiple formats
@@ -83,6 +83,18 @@ paths:
     delete:
       operationId: DeleteErrorBodyOnly
       responses:
+        default:
+          description: Default body does not determine the Go return type
+          content:
+            application/json:
+              schema:
+                type: integer
+        '302':
+          description: Redirect body does not determine the Go return type
+          content:
+            application/json:
+              schema:
+                type: boolean
         '204':
           description: No content
         '400':
@@ -101,13 +113,13 @@ tags:
           create: CreateSkipBodiless
           read: CreateSkipBodiless
           delete: CreateSkipBodiless
-    prefer_lower:
+    prefer_first:
       resource:
-        artifact_name: prefer_lower
+        artifact_name: prefer_first
         group:
-          create: CreatePreferLower
-          read: CreatePreferLower
-          delete: CreatePreferLower
+          create: CreatePreferFirst
+          read: CreatePreferFirst
+          delete: CreatePreferFirst
     only_204:
       resource:
         artifact_name: only_204
@@ -115,18 +127,18 @@ tags:
           create: CreateOnly204
           read: CreateOnly204
           delete: CreateOnly204
-    delete_preferlowertext:
+    delete_preferfirsttext:
       resource:
         group:
-          create: DeletePreferLowerText
-          read: DeletePreferLowerText
-          delete: DeletePreferLowerText
-    delete_preferjson:
+          create: DeletePreferFirstText
+          read: DeletePreferFirstText
+          delete: DeletePreferFirstText
+    delete_preferfirstmedia:
       resource:
         group:
-          create: DeletePreferJSON
-          read: DeletePreferJSON
-          delete: DeletePreferJSON
+          create: DeletePreferFirstMedia
+          read: DeletePreferFirstMedia
+          delete: DeletePreferFirstMedia
     delete_skipemptymedia:
       resource:
         group:

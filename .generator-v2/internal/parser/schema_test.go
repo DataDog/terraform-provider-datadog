@@ -583,10 +583,10 @@ var _ = Describe("NormalizeSchemas 2xx response selection", func() {
 			Expect(op.ResponseSchema).NotTo(BeNil())
 			Expect(op.ResponseSchema.Type).To(Equal(schemaType))
 		},
-		Entry("lower non-JSON status wins", "DeletePreferLowerText", "string"),
-		Entry("JSON remains preferred within one status", "DeletePreferJSON", "integer"),
+		Entry("first declared non-JSON response wins", "DeletePreferFirstText", "string"),
+		Entry("first declared media type wins over JSON", "DeletePreferFirstMedia", "string"),
 		Entry("media without a schema are skipped", "DeleteSkipEmptyMedia", "boolean"),
-		Entry("error bodies do not imply a success body", "DeleteErrorBodyOnly", ""),
+		Entry("default, redirect and error bodies do not imply a success body", "DeleteErrorBodyOnly", ""),
 	)
 
 	It("skips a bodiless 2xx code and picks the first code that has an application/json body", func() {
@@ -597,9 +597,9 @@ var _ = Describe("NormalizeSchemas 2xx response selection", func() {
 		Expect(op.ResponseSchema.Type).To(Equal("string"))
 	})
 
-	It("prefers the numerically lower 2xx code when multiple have JSON bodies", func() {
-		// 200 (string/uuid) and 201 (integer) both have JSON; 200 is lower so it wins
-		op := opByID(spec, "CreatePreferLower")
+	It("selects the first declared 2xx code even when a lower code also has a body", func() {
+		// 202 (string/uuid) precedes 201 (integer); declaration order wins.
+		op := opByID(spec, "CreatePreferFirst")
 		Expect(op.ResponseSchema).NotTo(BeNil())
 		Expect(op.ResponseSchema.Type).To(Equal("string"))
 		Expect(op.ResponseSchema.Format).To(Equal("uuid"))
