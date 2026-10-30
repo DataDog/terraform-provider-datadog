@@ -17,8 +17,9 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
-// jsonMediaType is the only request/response content type normalized; picking
-// exactly one keeps the projected schema deterministic.
+// jsonMediaType is the only request body content type normalized; picking
+// exactly one keeps the projected schema deterministic. Response bodies follow
+// the Go SDK's media type rule instead (see responseBodySchemaProxy).
 const jsonMediaType = "application/json"
 
 // paginationExtension is the OpenAPI vendor extension describing a list

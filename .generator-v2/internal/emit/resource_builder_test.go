@@ -501,6 +501,19 @@ var _ = Describe("BuildResourceView", func() {
 		Expect(err.Error()).To(ContainSubstring("differs from Read's"))
 	})
 
+	It("fails when Read's response is unnamed, even if a bodyless Create matches it", func() {
+		op := incidentTypeResourceOperation(true)
+		op.ResolvedGroup.Read.ResponseRefName = ""
+		op.ResolvedGroup.Create.ResponseRefName = ""
+		op.ResolvedGroup.Create.ResponseSchema = nil
+
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+
+		_, err = BuildResourceView(art)
+		Expect(err).To(MatchError(ContainSubstring("Read has no named response type")))
+	})
+
 	It("normalizes computed unknowns recursively without touching configured siblings", func() {
 		attributes := []*model.Attribute{
 			{
