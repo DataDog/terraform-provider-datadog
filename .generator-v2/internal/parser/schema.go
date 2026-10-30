@@ -6,7 +6,6 @@ import (
 	"math"
 	"slices"
 	"sort"
-	"strconv"
 	"strings"
 
 	"github.com/pb33f/libopenapi/datamodel/high/base"
@@ -81,10 +80,11 @@ func backtickedToken(s string) (string, bool) {
 
 // NormalizeSchemas fills RequestSchema and ResponseSchema on every tracked
 // operation and on every operation its resolved group names, reading from
-// rawOps the application/json requestBody and the application/json body of the
-// lowest-numbered 2xx code that has one. A missing body leaves the field nil, a
-// missing $ref target yields *UnresolvableRefError, and a local oneOf naming
-// failure becomes an Unsupported node. Requires ResolveOperationGroups first.
+// rawOps the application/json requestBody and the first declared 2xx response
+// with a schema, using the first declared media type with a schema to match the
+// Go SDK. A missing body leaves the field nil; a missing $ref target yields
+// *UnresolvableRefError, and a local oneOf naming failure becomes an Unsupported
+// node. Requires ResolveOperationGroups first.
 func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operation, maxDepth int) error {
 	if spec == nil {
 		return nil
@@ -501,36 +501,22 @@ func requestBodySchemaProxy(op *v3.Operation) *base.SchemaProxy {
 	return mt.Schema
 }
 
-// responseBodySchemaProxy returns the application/json schema of the
-// lowest-numbered 2xx response code that has one, or nil. Codes without a JSON
-// body are skipped; numeric ordering makes the choice deterministic.
+// responseBodySchemaProxy matches the Go SDK's first_2xx_schema selection:
+// visit 2xx responses in declaration order and take the first declared media
+// type with a schema, skipping responses and media types without schemas.
 func responseBodySchemaProxy(op *v3.Operation) *base.SchemaProxy {
 	if op.Responses == nil || op.Responses.Codes == nil {
 		return nil
 	}
-	type codedResponse struct {
-		code int
-		resp *v3.Response
-	}
-	var twoXX []codedResponse
 	for code, resp := range op.Responses.Codes.FromOldest() {
-		num, err := strconv.Atoi(code)
-		if err != nil || num < 200 || num > 299 || resp == nil {
+		if !strings.HasPrefix(code, "2") || resp == nil || resp.Content == nil {
 			continue
 		}
-		twoXX = append(twoXX, codedResponse{code: num, resp: resp})
-	}
-	sort.Slice(twoXX, func(i, j int) bool { return twoXX[i].code < twoXX[j].code })
-
-	for _, cr := range twoXX {
-		if cr.resp.Content == nil {
-			continue
+		for _, media := range resp.Content.FromOldest() {
+			if media != nil && media.Schema != nil {
+				return media.Schema
+			}
 		}
-		mt := cr.resp.Content.GetOrZero(jsonMediaType)
-		if mt == nil || mt.Schema == nil {
-			continue
-		}
-		return mt.Schema
 	}
 	return nil
 }

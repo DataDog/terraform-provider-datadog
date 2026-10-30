@@ -863,8 +863,10 @@ type SDKCall struct {
 	GoRequestType string
 	// GoResponseType is the SDK response type, e.g. "OrgGroupResponse".
 	// Rule: last path component of the 2xx response schema $ref. Empty when the
-	// operation returns no body (e.g. 204 No Content).
+	// operation returns no body or its response schema is unnamed.
 	GoResponseType string
+	// HasResponseBody distinguishes unnamed response bodies from bodyless calls.
+	HasResponseBody bool
 	// GoRequestDataType is the SDK type of the request body's JSON:API "data"
 	// member, e.g. "IncidentTypeCreateData": the RefName of RequestSchema's
 	// "data" property, read per role since Create's and Update's routinely

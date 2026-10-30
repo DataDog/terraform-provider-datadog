@@ -1967,7 +1967,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		requestImps = requestImps.or(updateImps)
 		updateView = CRUDCallView{
 			Method: lc.Update.GoMethod, GoRequestType: lc.Update.GoRequestType,
-			GoResponseType: lc.Update.GoResponseType, Arguments: updateArgs,
+			GoResponseType: lc.Update.GoResponseType, HasResponseBody: lc.Update.HasResponseBody, Arguments: updateArgs,
 			Envelope: buildRequestEnvelope(a.Name, "Update", primary.GoPackage, lc.Update, updateFields, &b.unsupported),
 			WriteOnlySecrets: writeOnlySecretsForFields(
 				b.writeOnlySecrets, updateFields, "GetSecretForUpdate(ctx, &request.Config, &request)"),
@@ -2024,17 +2024,17 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		APIAccessor: defaultAPIAccessor(primary),
 		Create: CRUDCallView{
 			Method: lc.Create.GoMethod, GoRequestType: lc.Create.GoRequestType,
-			GoResponseType: lc.Create.GoResponseType, Arguments: createArgs,
+			GoResponseType: lc.Create.GoResponseType, HasResponseBody: lc.Create.HasResponseBody, Arguments: createArgs,
 			Envelope: createEnvelope, WriteOnlySecrets: createWriteOnlySecrets,
 			NormalizeUnknowns: buildUnknownNormalizations(env.leaves, "state"),
 		},
 		Read: CRUDCallView{
-			Method: lc.Read.GoMethod, GoResponseType: lc.Read.GoResponseType, Arguments: readArgs,
+			Method: lc.Read.GoMethod, GoResponseType: lc.Read.GoResponseType, HasResponseBody: lc.Read.HasResponseBody, Arguments: readArgs,
 		},
 		Update:            updateView,
 		UpdateUnsupported: lc.UpdateUnsupported,
 		Delete: CRUDCallView{
-			Method: lc.Delete.GoMethod, Arguments: deleteArgs,
+			Method: lc.Delete.GoMethod, GoResponseType: lc.Delete.GoResponseType, HasResponseBody: lc.Delete.HasResponseBody, Arguments: deleteArgs,
 		},
 		Models: models,
 		Schema: SchemaView{

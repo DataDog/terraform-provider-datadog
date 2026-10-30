@@ -3,12 +3,14 @@ package emit
 import (
 	"errors"
 	"go/format"
+	"path/filepath"
 	"strings"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
+	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/parser"
 )
 
 var _ = Describe("BuildResourceView", func() {
@@ -93,7 +95,7 @@ var _ = Describe("BuildResourceView", func() {
 			},
 		}))
 		Expect(view.Read).To(Equal(CRUDCallView{
-			Method: "GetIncidentType", GoResponseType: "IncidentTypeResponse",
+			Method: "GetIncidentType", GoResponseType: "IncidentTypeResponse", HasResponseBody: true,
 			Arguments: []SDKArgumentView{{Expression: "state.ID.ValueString()", TFName: "id", GoType: "string"}},
 		}))
 		By("Update builds its own envelope: a PATCH's data and attributes components are distinct types from Create's")
@@ -534,6 +536,56 @@ var _ = Describe("BuildResourceView", func() {
 })
 
 var _ = Describe("RenderResource", func() {
+	DescribeTable("matches parsed Delete response bodies to SDK return values",
+		func(operationID, responseType string, hasBody bool) {
+			spec, err := parser.LoadSpec(filepath.Join("../testdata/parser", "delete_response_bodies.yaml"))
+			Expect(err).NotTo(HaveOccurred())
+			var parsed *model.Operation
+			for _, candidate := range spec.Operations {
+				if candidate.OperationId == operationID {
+					parsed = candidate
+					break
+				}
+			}
+			Expect(parsed).NotTo(BeNil())
+			Expect(parsed.ResponseRefName).To(Equal(responseType))
+			Expect(parsed.ResponseSchema != nil).To(Equal(hasBody))
+
+			op := incidentTypeResourceOperation(true)
+			op.ResolvedGroup.Delete.ResponseRefName = parsed.ResponseRefName
+			op.ResolvedGroup.Delete.ResponseSchema = parsed.ResponseSchema
+			art, err := model.BuildArtifact(op)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(art.Lifecycle.Delete.HasResponseBody).To(Equal(hasBody))
+			view, err := BuildResourceView(art)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(view.Delete.HasResponseBody).To(Equal(hasBody))
+
+			out := string(mustRenderResource(view))
+			deleteStart := strings.Index(out, "func (r *datadogIncidentTypeResource) Delete(")
+			Expect(deleteStart).To(BeNumerically(">=", 0), "missing Delete method")
+			deleteEnd := strings.Index(out[deleteStart+1:], "\nfunc (r *")
+			Expect(deleteEnd).To(BeNumerically(">=", 0), "missing method after Delete")
+			deleteMethod := out[deleteStart : deleteStart+1+deleteEnd]
+			assignment := "httpResp, err"
+			if hasBody {
+				assignment = "_, " + assignment
+			}
+			Expect(deleteMethod).To(ContainSubstring("\n\t" + assignment + " := r.Api.DeleteIncidentType(r.Auth, state.ID.ValueString())"))
+			Expect(deleteMethod).To(ContainSubstring("httpResp != nil && httpResp.StatusCode == 404"))
+			Expect(deleteMethod).To(ContainSubstring(`utils.FrameworkErrorDiag(err, "error deleting incident_type")`))
+			Expect(deleteMethod).NotTo(ContainSubstring("updateState("))
+		},
+		Entry("bodyless", "DeleteNoBody", "", false),
+		Entry("named body", "DeleteNamed", "DeletionResponse", true),
+		Entry("inline object", "DeleteInline", "", true),
+		Entry("array", "DeleteArray", "", true),
+		Entry("allOf", "DeleteAllOf", "", true),
+		Entry("oneOf", "DeleteOneOf", "", true),
+		Entry("text/plain", "DeletePlainText", "", true),
+		Entry("vendor JSON", "DeleteVendorJSON", "DeletionResponse", true),
+	)
+
 	It("renders gofmt-canonical, syntactically valid Go for a full-CRUD resource", func() {
 		art, err := model.BuildArtifact(incidentTypeResourceOperation(true))
 		Expect(err).NotTo(HaveOccurred())

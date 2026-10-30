@@ -64,8 +64,8 @@ func buildResourceLifecycle(op *Operation) (*LifecycleBindings, []Diagnostic, er
 	bindings := &LifecycleBindings{
 		Create: bodyCall(g.Create, false),
 		Read:   sdkCall(g.Read, true),
-		// A delete takes the terminal path id and sends no body; a 204 response
-		// leaves GoResponseType empty.
+		// Delete takes the terminal path id and sends no request body. Its
+		// response may have a body, including an unnamed one.
 		Delete:     sdkCall(g.Delete, true),
 		IdStrategy: op.Tracking.IdStrategy,
 	}

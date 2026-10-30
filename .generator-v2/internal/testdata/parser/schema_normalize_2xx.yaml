@@ -15,19 +15,19 @@ paths:
             application/json:
               schema:
                 type: string
-  /prefer-lower:
+  /prefer-first:
     post:
-      operationId: CreatePreferLower
+      operationId: CreatePreferFirst
       responses:
-        '200':
-          description: ok — lower code wins
+        '202':
+          description: accepted — first declared code wins
           content:
             application/json:
               schema:
                 type: string
                 format: uuid
         '201':
-          description: created — higher code loses
+          description: created — lower code declared later loses
           content:
             application/json:
               schema:
@@ -38,6 +38,71 @@ paths:
       responses:
         '204':
           description: no content
+  /plain-text-before-json:
+    delete:
+      operationId: DeletePreferFirstText
+      responses:
+        '200':
+          description: Plain text response
+          content:
+            text/plain:
+              schema:
+                type: string
+        '201':
+          description: JSON response
+          content:
+            application/json:
+              schema:
+                type: integer
+  /multiple-media:
+    delete:
+      operationId: DeletePreferFirstMedia
+      responses:
+        '200':
+          description: Multiple formats
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: integer
+  /empty-media:
+    delete:
+      operationId: DeleteSkipEmptyMedia
+      responses:
+        '200':
+          description: Skip media without schemas
+          content:
+            application/json: {}
+            text/plain: {}
+            application/vnd.api+json:
+              schema:
+                type: boolean
+  /error-body-only:
+    delete:
+      operationId: DeleteErrorBodyOnly
+      responses:
+        default:
+          description: Default body does not determine the Go return type
+          content:
+            application/json:
+              schema:
+                type: integer
+        '302':
+          description: Redirect body does not determine the Go return type
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '204':
+          description: No content
+        '400':
+          description: Error body is not a success body
+          content:
+            application/json:
+              schema:
+                type: string
 tags:
 - name: Terraform
   x-datadog-tf-generator:
@@ -48,13 +113,13 @@ tags:
           create: CreateSkipBodiless
           read: CreateSkipBodiless
           delete: CreateSkipBodiless
-    prefer_lower:
+    prefer_first:
       resource:
-        artifact_name: prefer_lower
+        artifact_name: prefer_first
         group:
-          create: CreatePreferLower
-          read: CreatePreferLower
-          delete: CreatePreferLower
+          create: CreatePreferFirst
+          read: CreatePreferFirst
+          delete: CreatePreferFirst
     only_204:
       resource:
         artifact_name: only_204
@@ -62,3 +127,27 @@ tags:
           create: CreateOnly204
           read: CreateOnly204
           delete: CreateOnly204
+    delete_preferfirsttext:
+      resource:
+        group:
+          create: DeletePreferFirstText
+          read: DeletePreferFirstText
+          delete: DeletePreferFirstText
+    delete_preferfirstmedia:
+      resource:
+        group:
+          create: DeletePreferFirstMedia
+          read: DeletePreferFirstMedia
+          delete: DeletePreferFirstMedia
+    delete_skipemptymedia:
+      resource:
+        group:
+          create: DeleteSkipEmptyMedia
+          read: DeleteSkipEmptyMedia
+          delete: DeleteSkipEmptyMedia
+    delete_errorbodyonly:
+      resource:
+        group:
+          create: DeleteErrorBodyOnly
+          read: DeleteErrorBodyOnly
+          delete: DeleteErrorBodyOnly
