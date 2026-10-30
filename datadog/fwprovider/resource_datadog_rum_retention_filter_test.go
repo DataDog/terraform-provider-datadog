@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -31,7 +32,7 @@ func TestIsRumRetentionFilterConcurrentModification(t *testing.T) {
 		wantRetry bool
 	}{
 		"concurrent modification conflict": {
-			err:       errors.New("ConcurrentModification: retry"),
+			err:       datadog.GenericOpenAPIError{ErrorMessage: "409 Conflict", ErrorBody: []byte("ConcurrentModification: retry")},
 			httpResp:  &http.Response{StatusCode: http.StatusConflict},
 			wantRetry: true,
 		},

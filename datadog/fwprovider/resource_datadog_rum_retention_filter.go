@@ -185,7 +185,15 @@ func retryRumRetentionFilterOperation(ctx context.Context, operation func() (*ht
 }
 
 func isRumRetentionFilterConcurrentModification(err error, httpResp *http.Response) bool {
-	return err != nil && httpResp != nil && httpResp.StatusCode == http.StatusConflict && strings.Contains(err.Error(), "ConcurrentModification")
+	if err == nil || httpResp == nil || httpResp.StatusCode != http.StatusConflict {
+		return false
+	}
+
+	var bodyError interface{ Body() []byte }
+	if errors.As(err, &bodyError) {
+		return strings.Contains(string(bodyError.Body()), "ConcurrentModification")
+	}
+	return strings.Contains(err.Error(), "ConcurrentModification")
 }
 
 func (r *rumRetentionFilterResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
