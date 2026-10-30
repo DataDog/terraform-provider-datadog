@@ -108,8 +108,9 @@ func (r *tagIndexingRuleResource) Schema(_ context.Context, _ resource.SchemaReq
 			"rule_order": schema.Int64Attribute{
 				Computed:    true,
 				Description: "Evaluation order within the org. Lower values are evaluated first. Server-assigned on create; use `datadog_tag_indexing_rule_order` to control ordering.",
-				// No UseStateForUnknown: the server renumbers rule_order when any other rule in the
-				// org is deleted, so the prior value is not a valid plan value for Update.
+				// No UseStateForUnknown: the server renumbers rule_order when another rule in the
+				// org is deleted. A known planned value must equal the apply result, so a deletion
+				// between plan and apply would fail Update with "inconsistent result after apply".
 			},
 			"created_at": schema.StringAttribute{
 				Computed:    true,
