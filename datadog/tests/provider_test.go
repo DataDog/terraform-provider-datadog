@@ -134,6 +134,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_appsec_waf_exclusion_filter_test":                            "application-security",
 	"tests/resource_datadog_authn_mapping_test":                                          "authn_mapping",
 	"tests/resource_datadog_aws_wif_identity_mapping_test":                               "cloud-authentication",
+	"tests/resource_datadog_aws_wif_intake_mapping_test":                                 "cloud-authentication",
 	"tests/resource_datadog_github_oidc_intake_mapping_test":                             "cloud-authentication",
 	"tests/resource_datadog_github_oidc_identity_mapping_test":                           "cloud-authentication",
 	"tests/resource_datadog_child_organization_test":                                     "organization",

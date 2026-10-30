@@ -64,6 +64,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationAwsEventBridgeResource,
 	NewIntegrationAwsExternalIDResource,
 	NewAwsWifIdentityMappingResource,
+	NewAwsWifIntakeMappingResource,
 	NewGithubOidcIntakeMappingResource,
 	NewGithubOidcIdentityMappingResource,
 	NewIntegrationCloudflareAccountResource,
@@ -794,6 +795,9 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAWSCloudAuthPersonaMapping", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSCloudAuthPersonaMapping", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSCloudAuthPersonaMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAWSCloudAuthIntakeMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSCloudAuthIntakeMapping", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSCloudAuthIntakeMapping", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateGitHubCloudAuthIntakeMapping", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetGitHubCloudAuthIntakeMapping", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteGitHubCloudAuthIntakeMapping", true)
