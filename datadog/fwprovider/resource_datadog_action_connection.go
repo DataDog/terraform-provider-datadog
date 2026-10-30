@@ -1446,18 +1446,16 @@ func connectionModelToUpdateApiRequest(ctx context.Context, plan, oldState conne
 				httpTokenAuth.UrlParameters = append(httpTokenAuth.UrlParameters, *paramUpdate)
 			}
 
-			if previousAuth == nil || !reflect.DeepEqual(plan.HTTP.TokenAuth.Body, previousAuth.Body) {
-				httpTokenAuth.Body = datadogV2.NewHTTPBody()
-				if plan.HTTP.TokenAuth.Body != nil {
-					if !plan.HTTP.TokenAuth.Body.ContentType.IsNull() {
-						httpTokenAuth.Body.SetContentType(plan.HTTP.TokenAuth.Body.ContentType.ValueString())
-					}
-					if !plan.HTTP.TokenAuth.Body.Content.IsNull() {
-						httpTokenAuth.Body.SetContent(plan.HTTP.TokenAuth.Body.Content.ValueString())
-					}
-				}
+		}
+		// The API clears the stored body when an HTTP credentials update omits it.
+		httpTokenAuth.Body = datadogV2.NewHTTPBody()
+		if plan.HTTP.TokenAuth.Body != nil {
+			if !plan.HTTP.TokenAuth.Body.ContentType.IsNull() {
+				httpTokenAuth.Body.SetContentType(plan.HTTP.TokenAuth.Body.ContentType.ValueString())
 			}
-
+			if !plan.HTTP.TokenAuth.Body.Content.IsNull() {
+				httpTokenAuth.Body.SetContent(plan.HTTP.TokenAuth.Body.Content.ValueString())
+			}
 		}
 		// The API needs the credential type to apply base URL changes without resending tokens.
 		httpIntegration.SetCredentials(datadogV2.HTTPTokenAuthUpdateAsHTTPCredentialsUpdate(httpTokenAuth))
