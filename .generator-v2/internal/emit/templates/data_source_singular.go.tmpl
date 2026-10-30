@@ -72,7 +72,7 @@ func (d *{{ .GoName }}DataSource) Schema(_ context.Context, _ datasource.SchemaR
 }
 
 func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state {{ .GoName }}DataSourceModel
+	var state {{ .RootModel }}
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -138,7 +138,7 @@ func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.R
   updateState returns diagnostics rather than writing them, so it can fail at a
   specific schema path.
 */}}
-func (d *{{ .GoName }}DataSource) updateState(ctx context.Context, state *{{ .GoName }}DataSourceModel, {{ .State.ParamName }} {{ .State.ParamType }}) diag.Diagnostics {
+func (d *{{ .GoName }}DataSource) updateState(ctx context.Context, state *{{ .RootModel }}, {{ .State.ParamName }} {{ .State.ParamType }}) diag.Diagnostics {
 {{- template "updateStateBody" . }}
 }
 {{- end -}}

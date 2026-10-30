@@ -99,7 +99,7 @@ func ElementType(elem *Schema) (string, error) {
 		}
 		return "types.MapType{ElemType: " + child + "}", nil
 	default:
-		return "", fmt.Errorf("model: collection element kind %q has no framework element type", elem.Kind)
+		return "", fmt.Errorf("model: collection element kind %q has no framework element type%s", elem.Kind, reasonText(elem.UnsupportedReason))
 	}
 }
 

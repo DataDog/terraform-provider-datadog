@@ -18,7 +18,7 @@ var (
 	_ datasource.DataSourceWithConfigure = &datadogPowerpackDataSource{}
 )
 
-type datadogPowerpackDataSourceModel struct {
+type datadogPowerpack_Model struct {
 	// Datasource ID
 	ID types.String `tfsdk:"id"`
 
@@ -71,7 +71,7 @@ func (d *datadogPowerpackDataSource) Schema(_ context.Context, _ datasource.Sche
 }
 
 func (d *datadogPowerpackDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state datadogPowerpackDataSourceModel
+	var state datadogPowerpack_Model
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -113,7 +113,7 @@ func (d *datadogPowerpackDataSource) Read(ctx context.Context, request datasourc
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogPowerpackDataSource) updateState(ctx context.Context, state *datadogPowerpackDataSourceModel, data datadogV2.PowerpackData) diag.Diagnostics {
+func (d *datadogPowerpackDataSource) updateState(ctx context.Context, state *datadogPowerpack_Model, data datadogV2.PowerpackData) diag.Diagnostics {
 	var diags diag.Diagnostics
 	attributes := data.GetAttributes()
 	if id, ok := data.GetIdOk(); ok && id != nil {

@@ -79,7 +79,7 @@ type destinationModel struct {
 	CrowdStrikeNextGenSiemDestination []*observability_pipeline.CrowdStrikeNextGenSiemDestinationModel `tfsdk:"crowdstrike_next_gen_siem"`
 	DatabricksZerobusDestination      []*observability_pipeline.DatabricksZerobusDestinationModel      `tfsdk:"databricks_zerobus"`
 	SplunkHecMetricsDestination       []*observability_pipeline.SplunkHECMetricsDestinationModel       `tfsdk:"splunk_hec_metrics"`
-	OpentelemetryMetricsDestination   []*observability_pipeline.OpentelemetryMetricsDestinationModel   `tfsdk:"opentelemetry"`
+	OpentelemetryDestination          []*observability_pipeline.OpentelemetryDestinationModel          `tfsdk:"opentelemetry"`
 	ClickhouseDestination             []*observability_pipeline.ClickhouseDestinationModel             `tfsdk:"clickhouse"`
 	DatadogMetricsDestination         []*datadogMetricsDestinationModel                                `tfsdk:"datadog_metrics"`
 	HttpClientDestination             []*httpClientDestinationModel                                    `tfsdk:"http_client"`
@@ -2192,7 +2192,6 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														Attributes: map[string]schema.Attribute{
 															"enabled_metric_aggregation": schema.BoolAttribute{
 																Optional:    true,
-																Computed:    true,
 																Description: "[Recommended] Indicates whether generated metrics are automatically aggregated and enriched with the `worker_uuid` tag before being sent to the metric destination.",
 															},
 														},
@@ -2884,7 +2883,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									"crowdstrike_next_gen_siem": observability_pipeline.CrowdStrikeNextGenSiemDestinationSchema(),
 									"databricks_zerobus":        observability_pipeline.DatabricksZerobusDestinationSchema(),
 									"splunk_hec_metrics":        observability_pipeline.SplunkHECMetricsDestinationSchema(),
-									"opentelemetry":             observability_pipeline.OpentelemetryMetricsDestinationSchema(),
+									"opentelemetry":             observability_pipeline.OpentelemetryDestinationSchema(),
 									"clickhouse":                observability_pipeline.ClickhouseDestinationSchema(),
 									"cloud_prem":                observability_pipeline.CloudPremDestinationSchema(),
 									"kafka":                     observability_pipeline.KafkaDestinationSchema(),
@@ -3246,8 +3245,8 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		for _, d := range dest.SplunkHecMetricsDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandSplunkHECMetricsDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
-		for _, d := range dest.OpentelemetryMetricsDestination {
-			config.Destinations = append(config.Destinations, observability_pipeline.ExpandOpentelemetryMetricsDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+		for _, d := range dest.OpentelemetryDestination {
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandOpentelemetryDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
 		for _, d := range dest.ClickhouseDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandClickhouseDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
@@ -3510,10 +3509,10 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineSplunkHecMetricsDestination.GetInputs())
 			destBlock.SplunkHecMetricsDestination = append(destBlock.SplunkHecMetricsDestination, splunkMetrics)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
-		} else if otelMetrics := observability_pipeline.FlattenOpentelemetryMetricsDestination(d.ObservabilityPipelineOpentelemetryDestination); otelMetrics != nil {
+		} else if otel := observability_pipeline.FlattenOpentelemetryDestination(d.ObservabilityPipelineOpentelemetryDestination); otel != nil {
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineOpentelemetryDestination.GetId())
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineOpentelemetryDestination.GetInputs())
-			destBlock.OpentelemetryMetricsDestination = append(destBlock.OpentelemetryMetricsDestination, otelMetrics)
+			destBlock.OpentelemetryDestination = append(destBlock.OpentelemetryDestination, otel)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
 		} else if clickhouse := observability_pipeline.FlattenClickhouseDestination(ctx, d.ObservabilityPipelineClickhouseDestination); clickhouse != nil {
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineClickhouseDestination.GetId())
@@ -5393,6 +5392,9 @@ func flattenGenerateMetricsV2Processor(ctx context.Context, src *datadogV2.Obser
 
 func expandGenerateMetricsV2ProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *generateMetricsV2ProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineGenerateMetricsV2ProcessorWithDefaults()
+	// The generated client currently defaults this optional field to true. Clear
+	// it so omitted Terraform configuration remains omitted from the payload.
+	proc.EnabledMetricAggregation = nil
 	common.ApplyTo(proc)
 	if !src.EnabledMetricAggregation.IsNull() && !src.EnabledMetricAggregation.IsUnknown() {
 		proc.SetEnabledMetricAggregation(src.EnabledMetricAggregation.ValueBool())
