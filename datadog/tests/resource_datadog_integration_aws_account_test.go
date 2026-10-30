@@ -312,6 +312,74 @@ resource "datadog_integration_aws_account" "foo" {
 }`, accountID, uniq)
 }
 
+func TestAccIntegrationAwsAccount_ResourceTypeTagFilters(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+	accountID := uniqueAWSAccountID(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogIntegrationAwsAccountDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogIntegrationAwsAccount_ResourceTypeTagFilters(accountID, uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogIntegrationAwsAccountExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "aws_account_id", accountID),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "metrics_config.resource_type_tag_filters.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "metrics_config.resource_type_tag_filters.0.service", "AWS/EC2"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "metrics_config.resource_type_tag_filters.0.resource_types.0", "instance"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "metrics_config.resource_type_tag_filters.0.expression", "env:production AND !region:us-east-1"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "metrics_config.resource_type_tag_filters.1.custom", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "metrics_config.resource_type_tag_filters.1.expression", "team:backend"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogIntegrationAwsAccount_ResourceTypeTagFilters(accountID, uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_integration_aws_account" "foo" {
+    aws_account_id = %s
+    account_tags = ["tag:%s"]
+    aws_partition = "aws"
+    aws_regions {}
+    auth_config {
+        aws_auth_config_role {
+            role_name = "test"
+        }
+    }
+    logs_config {
+        lambda_forwarder {}
+    }
+    metrics_config {
+        namespace_filters {}
+        resource_type_tag_filters {
+            service = "AWS/EC2"
+            resource_types = ["instance"]
+            expression = "env:production AND !region:us-east-1"
+        }
+        resource_type_tag_filters {
+            custom = true
+            expression = "team:backend"
+        }
+    }
+    resources_config {}
+    traces_config {
+        xray_services {}
+    }
+}`, accountID, uniq)
+}
+
 func TestAccIntegrationAwsAccountKeyBased(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)

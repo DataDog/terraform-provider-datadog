@@ -102,18 +102,26 @@ type logsTagFiltersModel struct {
 }
 
 type metricsConfigModel struct {
-	AutomuteEnabled         types.Bool                `tfsdk:"automute_enabled"`
-	CollectCloudwatchAlarms types.Bool                `tfsdk:"collect_cloudwatch_alarms"`
-	CollectCustomMetrics    types.Bool                `tfsdk:"collect_custom_metrics"`
-	Enabled                 types.Bool                `tfsdk:"enabled"`
-	TagFilters              []*metricsTagFiltersModel `tfsdk:"tag_filters"`
-	MetricNameFilters       []*metricNameFilterModel  `tfsdk:"metric_name_filters"`
-	NamespaceFilters        *namespaceFiltersModel    `tfsdk:"namespace_filters"`
+	AutomuteEnabled         types.Bool                     `tfsdk:"automute_enabled"`
+	CollectCloudwatchAlarms types.Bool                     `tfsdk:"collect_cloudwatch_alarms"`
+	CollectCustomMetrics    types.Bool                     `tfsdk:"collect_custom_metrics"`
+	Enabled                 types.Bool                     `tfsdk:"enabled"`
+	TagFilters              []*metricsTagFiltersModel      `tfsdk:"tag_filters"`
+	ResourceTypeTagFilters  []*resourceTypeTagFiltersModel `tfsdk:"resource_type_tag_filters"`
+	MetricNameFilters       []*metricNameFilterModel       `tfsdk:"metric_name_filters"`
+	NamespaceFilters        *namespaceFiltersModel         `tfsdk:"namespace_filters"`
 }
 
 type metricsTagFiltersModel struct {
 	Namespace types.String `tfsdk:"namespace"`
 	Tags      types.List   `tfsdk:"tags"`
+}
+
+type resourceTypeTagFiltersModel struct {
+	Service       types.String `tfsdk:"service"`
+	ResourceTypes types.List   `tfsdk:"resource_types"`
+	Custom        types.Bool   `tfsdk:"custom"`
+	Expression    types.String `tfsdk:"expression"`
 }
 
 type namespaceFiltersModel struct {
@@ -421,6 +429,7 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 				},
 				Blocks: map[string]schema.Block{
 					"tag_filters": schema.ListNestedBlock{
+						DeprecationMessage: "Deprecated in favor of `resource_type_tag_filters`. The two fields are mutually exclusive on an account.",
 						Description: "AWS Metrics Collection tag filters list. " +
 							"The array of custom AWS resource tags (in the form `key:value`) defines a filter that " +
 							"Datadog uses when collecting metrics from a specified service. Wildcards, such as `?` " +
@@ -439,6 +448,34 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 									Description: "The AWS resource tags to filter on for the service specified by `namespace`. Defaults to `[]`.",
 									ElementType: types.StringType,
 									Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
+								},
+							},
+						},
+					},
+					"resource_type_tag_filters": schema.ListNestedBlock{
+						Description: "AWS Metrics Collection resource type tag filters list. " +
+							"Each entry defines a tag filter expression applied when collecting metrics for a specific " +
+							"AWS resource type. Wildcards, such as `?` (match a single character) and `*` (match multiple " +
+							"characters), and exclusion using `!` before the tag are supported. " +
+							"For example, `env:production AND !region:us-east-1`.",
+						NestedObject: schema.NestedBlockObject{
+							Attributes: map[string]schema.Attribute{
+								"service": schema.StringAttribute{
+									Optional:    true,
+									Description: "The AWS service for which the tag filter expression is applied.",
+								},
+								"resource_types": schema.ListAttribute{
+									Optional:    true,
+									Description: "The AWS resource types within `service` for which the tag filter expression is applied.",
+									ElementType: types.StringType,
+								},
+								"custom": schema.BoolAttribute{
+									Optional:    true,
+									Description: "Whether this filter applies to custom resources.",
+								},
+								"expression": schema.StringAttribute{
+									Required:    true,
+									Description: "The tag filter expression used when collecting metrics for the specified resource types.",
 								},
 							},
 						},
@@ -779,6 +816,30 @@ func buildStateMetricsConfig(ctx context.Context, attributes datadogV2.AWSAccoun
 		}
 	}
 
+	if resourceTypeTagFilters, ok := metricsConfig.GetResourceTypeTagFiltersOk(); ok && len(*resourceTypeTagFilters) > 0 {
+		metricsConfigTf.ResourceTypeTagFilters = []*resourceTypeTagFiltersModel{}
+		for _, resourceTypeTagFiltersDd := range *resourceTypeTagFilters {
+			resourceTypeTagFiltersTfItem := resourceTypeTagFiltersModel{
+				ResourceTypes: types.ListNull(types.StringType),
+			}
+			if service, ok := resourceTypeTagFiltersDd.GetServiceOk(); ok {
+				resourceTypeTagFiltersTfItem.Service = types.StringValue(*service)
+			}
+			if resourceTypes, ok := resourceTypeTagFiltersDd.GetResourceTypesOk(); ok {
+				resourceTypesTf, d := types.ListValueFrom(ctx, types.StringType, *resourceTypes)
+				resourceTypeTagFiltersTfItem.ResourceTypes = resourceTypesTf
+				diags.Append(d...)
+			}
+			if custom, ok := resourceTypeTagFiltersDd.GetCustomOk(); ok {
+				resourceTypeTagFiltersTfItem.Custom = types.BoolValue(*custom)
+			}
+			if expression, ok := resourceTypeTagFiltersDd.GetExpressionOk(); ok {
+				resourceTypeTagFiltersTfItem.Expression = types.StringValue(*expression)
+			}
+			metricsConfigTf.ResourceTypeTagFilters = append(metricsConfigTf.ResourceTypeTagFilters, &resourceTypeTagFiltersTfItem)
+		}
+	}
+
 	if metricNameFilters, ok := metricsConfig.GetMetricNameFiltersOk(); ok && len(*metricNameFilters) > 0 {
 		metricsConfigTf.MetricNameFilters = []*metricNameFilterModel{}
 		for _, metricNameFiltersDd := range *metricNameFilters {
@@ -1026,6 +1087,30 @@ func buildRequestMetricsConfig(ctx context.Context, state *integrationAwsAccount
 		tagFilters = append(tagFilters, *tagFiltersDDItem)
 	}
 	metricsConfig.SetTagFilters(tagFilters)
+
+	if len(state.MetricsConfig.ResourceTypeTagFilters) > 0 {
+		resourceTypeTagFilters := []datadogV2.AWSResourceTypeTagFilter{}
+		for _, resourceTypeTagFiltersTFItem := range state.MetricsConfig.ResourceTypeTagFilters {
+			if resourceTypeTagFiltersTFItem == nil {
+				continue
+			}
+			resourceTypeTagFiltersDDItem := datadogV2.NewAWSResourceTypeTagFilterWithDefaults()
+			resourceTypeTagFiltersDDItem.SetExpression(resourceTypeTagFiltersTFItem.Expression.ValueString())
+			if !resourceTypeTagFiltersTFItem.Service.IsNull() {
+				resourceTypeTagFiltersDDItem.SetService(resourceTypeTagFiltersTFItem.Service.ValueString())
+			}
+			if !resourceTypeTagFiltersTFItem.ResourceTypes.IsNull() {
+				resourceTypes := []string{}
+				diags.Append(resourceTypeTagFiltersTFItem.ResourceTypes.ElementsAs(ctx, &resourceTypes, false)...)
+				resourceTypeTagFiltersDDItem.SetResourceTypes(resourceTypes)
+			}
+			if !resourceTypeTagFiltersTFItem.Custom.IsNull() {
+				resourceTypeTagFiltersDDItem.SetCustom(resourceTypeTagFiltersTFItem.Custom.ValueBool())
+			}
+			resourceTypeTagFilters = append(resourceTypeTagFilters, *resourceTypeTagFiltersDDItem)
+		}
+		metricsConfig.SetResourceTypeTagFilters(resourceTypeTagFilters)
+	}
 
 	metricNameFilters := []datadogV2.AWSMetricNameFilters{}
 	for _, metricNameFiltersTFItem := range state.MetricsConfig.MetricNameFilters {
