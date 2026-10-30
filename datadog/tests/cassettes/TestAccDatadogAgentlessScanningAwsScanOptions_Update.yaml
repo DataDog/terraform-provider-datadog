@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 155
+        content_length: 179
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"lambda":true,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true},"id":"123456789012","type":"aws_scan_options"}}
+            {"data":{"attributes":{"compliance_host":false,"lambda":true,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true},"id":"545456555355","type":"aws_scan_options"}}
         form: {}
         headers:
             Accept:
@@ -28,15 +28,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 154
+        content_length: 178
         uncompressed: false
-        body: '{"data":{"id":"123456789012","type":"aws_scan_options","attributes":{"lambda":true,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}}}'
+        body: '{"data":{"id":"545456555355","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":true,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 602.902041ms
+        duration: 124.561534ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -61,15 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 303
+        content_length: 860
         uncompressed: false
-        body: '{"data":[{"id":"000000000002","type":"aws_scan_options","attributes":{"lambda":false,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"123456789012","type":"aws_scan_options","attributes":{"lambda":true,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}}]}'
+        body: '{"data":[{"id":"000000000002","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":false,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"123456789012","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":true,"sensitive_data":true,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"505551102100","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":true,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"545456555355","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":true,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"555056549997","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":true,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 160.019416ms
+        duration: 98.957576ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -94,15 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 303
+        content_length: 860
         uncompressed: false
-        body: '{"data":[{"id":"000000000002","type":"aws_scan_options","attributes":{"lambda":false,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"123456789012","type":"aws_scan_options","attributes":{"lambda":true,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}}]}'
+        body: '{"data":[{"id":"000000000002","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":false,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"123456789012","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":true,"sensitive_data":true,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"505551102100","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":true,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"545456555355","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":true,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"555056549997","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":true,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 157.071458ms
+        duration: 98.713848ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -127,35 +127,35 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 303
+        content_length: 860
         uncompressed: false
-        body: '{"data":[{"id":"000000000002","type":"aws_scan_options","attributes":{"lambda":false,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"123456789012","type":"aws_scan_options","attributes":{"lambda":true,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}}]}'
+        body: '{"data":[{"id":"000000000002","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":false,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"123456789012","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":true,"sensitive_data":true,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"505551102100","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":true,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"545456555355","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":true,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"555056549997","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":true,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 153.162833ms
+        duration: 123.948443ms
     - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 157
+        content_length: 181
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"lambda":false,"sensitive_data":true,"vuln_containers_os":false,"vuln_host_os":false},"id":"123456789012","type":"aws_scan_options"}}
+            {"data":{"attributes":{"compliance_host":false,"lambda":false,"sensitive_data":true,"vuln_containers_os":false,"vuln_host_os":false},"id":"545456555355","type":"aws_scan_options"}}
         form: {}
         headers:
             Accept:
                 - '*/*'
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/aws/123456789012
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/aws/545456555355
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -169,7 +169,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 169.091334ms
+        duration: 117.664592ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -194,15 +194,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 305
+        content_length: 692
         uncompressed: false
-        body: '{"data":[{"id":"000000000002","type":"aws_scan_options","attributes":{"lambda":false,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"123456789012","type":"aws_scan_options","attributes":{"lambda":false,"sensitive_data":true,"vuln_containers_os":false,"vuln_host_os":false}}]}'
+        body: '{"data":[{"id":"000000000002","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":false,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"123456789012","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":true,"sensitive_data":true,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"505551102100","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":true,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"545456555355","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":false,"sensitive_data":true,"vuln_containers_os":false,"vuln_host_os":false}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 164.793542ms
+        duration: 99.278546ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -227,15 +227,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 305
+        content_length: 692
         uncompressed: false
-        body: '{"data":[{"id":"000000000002","type":"aws_scan_options","attributes":{"lambda":false,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"123456789012","type":"aws_scan_options","attributes":{"lambda":false,"sensitive_data":true,"vuln_containers_os":false,"vuln_host_os":false}}]}'
+        body: '{"data":[{"id":"000000000002","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":false,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"123456789012","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":true,"sensitive_data":true,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"505551102100","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":true,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"545456555355","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":false,"sensitive_data":true,"vuln_containers_os":false,"vuln_host_os":false}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 151.535459ms
+        duration: 154.679576ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -260,15 +260,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 305
+        content_length: 522
         uncompressed: false
-        body: '{"data":[{"id":"000000000002","type":"aws_scan_options","attributes":{"lambda":false,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"123456789012","type":"aws_scan_options","attributes":{"lambda":false,"sensitive_data":true,"vuln_containers_os":false,"vuln_host_os":false}}]}'
+        body: '{"data":[{"id":"000000000002","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":false,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"123456789012","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":true,"sensitive_data":true,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"545456555355","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":false,"sensitive_data":true,"vuln_containers_os":false,"vuln_host_os":false}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 152.774708ms
+        duration: 98.716113ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -285,7 +285,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/aws/123456789012
+        url: https://api.datadoghq.com/api/v2/agentless_scanning/accounts/aws/545456555355
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -301,7 +301,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 155.713167ms
+        duration: 119.444795ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -326,12 +326,12 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 157
+        content_length: 350
         uncompressed: false
-        body: '{"data":[{"id":"000000000002","type":"aws_scan_options","attributes":{"lambda":false,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}}]}'
+        body: '{"data":[{"id":"000000000002","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":false,"sensitive_data":false,"vuln_containers_os":true,"vuln_host_os":true}},{"id":"123456789012","type":"aws_scan_options","attributes":{"compliance_host":false,"lambda":true,"sensitive_data":true,"vuln_containers_os":true,"vuln_host_os":true}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 154.913709ms
+        duration: 98.089943ms

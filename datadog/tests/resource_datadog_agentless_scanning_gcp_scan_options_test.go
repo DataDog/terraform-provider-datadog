@@ -15,8 +15,8 @@ import (
 
 func TestAccDatadogAgentlessScanningGcpScanOptions_Basic(t *testing.T) {
 	t.Parallel()
-	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	projectID := "test-project" // Test GCP project ID
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	projectID := uniqueGCPProjectID(ctx, t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -58,8 +58,8 @@ func TestAccDatadogAgentlessScanningGcpScanOptions_InvalidProjectID(t *testing.T
 
 func TestAccDatadogAgentlessScanningGcpScanOptions_Update(t *testing.T) {
 	t.Parallel()
-	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	projectID := "test-project" // Test GCP project ID
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	projectID := uniqueGCPProjectID(ctx, t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -92,8 +92,8 @@ func TestAccDatadogAgentlessScanningGcpScanOptions_Update(t *testing.T) {
 
 func TestAccDatadogAgentlessScanningGcpScanOptions_Import(t *testing.T) {
 	t.Parallel()
-	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	projectID := "test-project" // Test GCP project ID
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	projectID := uniqueGCPProjectID(ctx, t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },

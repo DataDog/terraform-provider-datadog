@@ -651,6 +651,12 @@ func uniqueAWSAccountID(ctx context.Context, t *testing.T) string {
 	return result[:12]
 }
 
+// uniqueGCPProjectID matches the GCP project ID format: lowercase, starts with a letter, 6-30 chars.
+func uniqueGCPProjectID(ctx context.Context, t *testing.T) string {
+	hash := fmt.Sprintf("%x", sha256.Sum256([]byte(uniqueEntityName(ctx, t))))
+	return "tf-" + hash[:17]
+}
+
 // uniqueAgentRuleName takes the current/frozen time and uses it to generate a unique agent
 // rule name that changes in CI, but is stable locally.
 func uniqueAgentRuleName(ctx context.Context) string {
