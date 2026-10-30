@@ -35,6 +35,7 @@ var executionPolicyScopeIntegrations = map[string]string{
 	"kubernetes":           string(datadogV2.EXECUTIONPOLICYINTEGRATION_INTEGRATION_KUBERNETES),
 	"scripts":              string(datadogV2.EXECUTIONPOLICYINTEGRATION_INTEGRATION_SCRIPT),
 	"remote_action_rshell": string(datadogV2.EXECUTIONPOLICYINTEGRATION_INTEGRATION_REMOTE_ACTION),
+	"slack":                string(datadogV2.EXECUTIONPOLICYINTEGRATION_INTEGRATION_SLACK),
 }
 
 type actionExecutionPolicyResource struct {
@@ -65,6 +66,7 @@ type executionPolicyScopeModel struct {
 	Kubernetes         *executionPolicyKubernetesScopeModel         `tfsdk:"kubernetes"`
 	Scripts            *executionPolicyScriptScopeModel             `tfsdk:"scripts"`
 	RemoteActionRshell *executionPolicyRemoteActionRshellScopeModel `tfsdk:"remote_action_rshell"`
+	Slack              *executionPolicySlackScopeModel              `tfsdk:"slack"`
 }
 
 type executionPolicyKubernetesScopeModel struct {
@@ -90,6 +92,14 @@ type executionPolicyRemoteActionRshellScopeModel struct {
 type executionPolicyRemoteActionRshellScopeRuleModel struct {
 	TargetPaths types.List   `tfsdk:"target_paths"`
 	Access      types.String `tfsdk:"access"`
+}
+
+type executionPolicySlackScopeModel struct {
+	Rule []*executionPolicySlackScopeRuleModel `tfsdk:"rule"`
+}
+
+type executionPolicySlackScopeRuleModel struct {
+	ChannelNameSelectors types.List `tfsdk:"channel_name_selectors"`
 }
 
 type executionPolicyTargetModel struct {
@@ -142,13 +152,16 @@ func (r *actionExecutionPolicyResource) ValidateConfig(ctx context.Context, requ
 	if config.Scope.RemoteActionRshell != nil {
 		set = append(set, "remote_action_rshell")
 	}
+	if config.Scope.Slack != nil {
+		set = append(set, "slack")
+	}
 
 	if len(set) > 1 {
 		response.Diagnostics.AddAttributeError(
 			frameworkPath.Root("scope"),
 			"Conflicting scope blocks",
 			fmt.Sprintf(
-				"At most one of `kubernetes`, `scripts` or `remote_action_rshell` may be set, but %s were.",
+				"At most one of `kubernetes`, `scripts`, `remote_action_rshell` or `slack` may be set, but %s were.",
 				strings.Join(set, ", "),
 			),
 		)
@@ -159,7 +172,7 @@ func (r *actionExecutionPolicyResource) ValidateConfig(ctx context.Context, requ
 		response.Diagnostics.AddAttributeError(
 			frameworkPath.Root("scope"),
 			"Empty scope block",
-			"A configured `scope` block must contain one of `kubernetes`, `scripts` or `remote_action_rshell`. Omit `scope` when the policy has no scope restriction.",
+			"A configured `scope` block must contain one of `kubernetes`, `scripts`, `remote_action_rshell` or `slack`. Omit `scope` when the policy has no scope restriction.",
 		)
 		return
 	}
@@ -172,6 +185,8 @@ func (r *actionExecutionPolicyResource) ValidateConfig(ctx context.Context, requ
 		ruleCount = len(config.Scope.Scripts.Rule)
 	case "remote_action_rshell":
 		ruleCount = len(config.Scope.RemoteActionRshell.Rule)
+	case "slack":
+		ruleCount = len(config.Scope.Slack.Rule)
 	}
 	if ruleCount == 0 {
 		response.Diagnostics.AddAttributeError(
@@ -201,7 +216,7 @@ func (r *actionExecutionPolicyResource) ValidateConfig(ctx context.Context, requ
 
 func (r *actionExecutionPolicyResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog Execution Policy resource. Execution policies control which Action Platform actions may run against your infrastructure, and where. Each policy pairs an effect (`allow` or `deny`) with a pattern of actions, optionally narrowed to specific Kubernetes namespaces, scripts or remote shell paths, and optionally scoped to agents matching a set of Fleet Automation tags.",
+		Description: "Provides a Datadog Execution Policy resource. Execution policies control which Action Platform actions may run, and where. Each policy pairs an effect (`allow` or `deny`) with a pattern of actions, optionally narrowed to specific Kubernetes namespaces, scripts, remote shell paths or Slack channel names, and optionally scoped to targets matching a set of tags, such as agents matching Fleet Automation tags or a Slack workspace.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"name": schema.StringAttribute{
@@ -257,6 +272,7 @@ func (r *actionExecutionPolicyResource) Schema(_ context.Context, _ resource.Sch
 								string(datadogV2.EXECUTIONPOLICYINTEGRATION_INTEGRATION_KUBERNETES),
 								string(datadogV2.EXECUTIONPOLICYINTEGRATION_INTEGRATION_SCRIPT),
 								string(datadogV2.EXECUTIONPOLICYINTEGRATION_INTEGRATION_REMOTE_ACTION),
+								string(datadogV2.EXECUTIONPOLICYINTEGRATION_INTEGRATION_SLACK),
 							),
 						},
 					},
@@ -271,7 +287,7 @@ func (r *actionExecutionPolicyResource) Schema(_ context.Context, _ resource.Sch
 				},
 			},
 			"scope": schema.SingleNestedBlock{
-				Description: "Restricts where the policy applies, beyond `action_pattern`. When configured, exactly one of `kubernetes`, `scripts` or `remote_action_rshell` must be set, and it must match `action_pattern.integration`. Omitting this block means the policy has no scope restriction.",
+				Description: "Restricts where the policy applies, beyond `action_pattern`. When configured, exactly one of `kubernetes`, `scripts`, `remote_action_rshell` or `slack` must be set, and it must match `action_pattern.integration`. Omitting this block means the policy has no scope restriction.",
 				Blocks: map[string]schema.Block{
 					"kubernetes": schema.SingleNestedBlock{
 						Description: "Restricts the policy to specific Kubernetes namespaces. Requires `action_pattern.integration` to be `INTEGRATION_KUBERNETES`.",
@@ -352,10 +368,35 @@ func (r *actionExecutionPolicyResource) Schema(_ context.Context, _ resource.Sch
 							},
 						},
 					},
+					"slack": schema.SingleNestedBlock{
+						Description: "Restricts the policy to specific Slack channel names. Requires `action_pattern.integration` to be `INTEGRATION_SLACK`.",
+						Blocks: map[string]schema.Block{
+							"rule": schema.ListNestedBlock{
+								Description: "A rule restricting the Slack scope to specific channel names.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"channel_name_selectors": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "The channel name selectors this rule applies to, for example `incident-*`. Use `*` to match any channel name.",
+											Validators: []validator.List{
+												listvalidator.SizeBetween(1, 100),
+												listvalidator.UniqueValues(),
+												listvalidator.ValueStringsAre(stringvalidator.LengthBetween(1, 80)),
+											},
+										},
+									},
+								},
+								Validators: []validator.List{
+									listvalidator.SizeAtLeast(1),
+								},
+							},
+						},
+					},
 				},
 			},
 			"target": schema.SetNestedBlock{
-				Description: "A target this policy is scoped to, expressed as a set of Agent tags. Each target is matched independently; omitting all `target` blocks applies the policy fleet-wide.",
+				Description: "A target this policy is scoped to, expressed as a set of tags. Each target is matched independently; omitting all `target` blocks applies the policy fleet-wide.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{
@@ -365,7 +406,7 @@ func (r *actionExecutionPolicyResource) Schema(_ context.Context, _ resource.Sch
 						"agent_tags": schema.SetAttribute{
 							Required:    true,
 							ElementType: types.StringType,
-							Description: "The Agent tags identifying the target, for example `env:prod`.",
+							Description: "The tags identifying the target, for example `env:prod` for Agents or `slack_workspace_id:T0123456789` for a Slack workspace.",
 							Validators: []validator.Set{
 								setvalidator.SizeAtLeast(1),
 							},
@@ -586,7 +627,17 @@ func flattenExecutionPolicyScope(ctx context.Context, scope *datadogV2.Execution
 		model.RemoteActionRshell = &executionPolicyRemoteActionRshellScopeModel{Rule: rules}
 	}
 
-	if model.Kubernetes == nil && model.Scripts == nil && model.RemoteActionRshell == nil {
+	if scope.Slack != nil {
+		rules := make([]*executionPolicySlackScopeRuleModel, 0, len(scope.Slack.Rules))
+		for _, rule := range scope.Slack.Rules {
+			rules = append(rules, &executionPolicySlackScopeRuleModel{
+				ChannelNameSelectors: executionPolicyStringListValue(ctx, rule.ChannelNameSelectors, diags),
+			})
+		}
+		model.Slack = &executionPolicySlackScopeModel{Rule: rules}
+	}
+
+	if model.Kubernetes == nil && model.Scripts == nil && model.RemoteActionRshell == nil && model.Slack == nil {
 		return nil
 	}
 	return model
@@ -673,6 +724,17 @@ func expandExecutionPolicyScope(ctx context.Context, scope *executionPolicyScope
 			))
 		}
 		apiScope.SetRemoteActionRshell(*datadogV2.NewExecutionPolicyRemoteActionRshellScope(rules))
+		set = true
+	}
+
+	if scope.Slack != nil {
+		rules := make([]datadogV2.ExecutionPolicySlackScopeRule, 0, len(scope.Slack.Rule))
+		for _, rule := range scope.Slack.Rule {
+			rules = append(rules, *datadogV2.NewExecutionPolicySlackScopeRule(
+				executionPolicyStringSlice(ctx, rule.ChannelNameSelectors, diags),
+			))
+		}
+		apiScope.SetSlack(*datadogV2.NewExecutionPolicySlackScope(rules))
 		set = true
 	}
 
