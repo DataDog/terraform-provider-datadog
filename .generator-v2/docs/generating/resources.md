@@ -118,14 +118,10 @@ Continue at [shipping/](../shipping/README.md).
 
 ## Caller-assigned resource identity
 
-When the create request requires a writable JSON:API `data.id`, tfgen exposes
-a required string `id` with replacement-on-change semantics and sends it in
-the create body. No additional annotation is needed. SDK scalar conversions
-are shared with update-body identity handling. Read, update, delete, and import
-continue using the same Terraform identity.
+For APIs that require a caller-assigned `data.id`, configure a nonempty `id` in
+Terraform. Changing it replaces the resource. The configured or imported value
+is preserved across create, read, and update responses, including when the API
+returns a canonicalized ID.
 
-An absent or read-only create ID retains computed-only identity. Optional writable
-create IDs fail generation with an actionable diagnostic: the generator cannot
-infer whether callers or the server should assign them. Do not change the API
-schema to bypass this diagnostic. Lifecycle acceptance coverage is still required
-before adopting a generated resource.
+See [identity support and limitations](../reference/scope.md#caller-assigned-resource-identity)
+for the inference rules and unsupported optional-ID cases.

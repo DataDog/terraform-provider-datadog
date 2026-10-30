@@ -1952,11 +1952,11 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	callerAssignedID := lc.Create.RequestDeclaresID && !lc.Create.RequestIDReadOnly
 	if callerAssignedID {
 		var reason string
-		if !lc.Create.RequestIDRequired {
+		// A nil envelope already has an actionable construction diagnostic.
+		switch {
+		case !lc.Create.RequestIDRequired:
 			reason = "optional create data.id is unsupported: the generator cannot infer whether identity is caller-assigned or server-assigned; omit this artifact until optional identity semantics are supported"
-		} else if createEnvelope == nil {
-			reason = "required create data.id has no constructible request envelope"
-		} else {
+		case createEnvelope != nil:
 			reason = setRequestBodyID(createEnvelope, lc.Create, createArgs)
 		}
 		if reason != "" {
@@ -2026,7 +2026,9 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	}
 
 	assignments := recordScalars
-	if env.idAssign != nil {
+	// Caller-assigned identity comes from the plan (or existing/imported state).
+	// API canonicalization must not overwrite a required, non-computed value.
+	if env.idAssign != nil && !callerAssignedID {
 		assignments = append([]StateAssignment{*env.idAssign}, assignments...)
 	}
 
@@ -2036,11 +2038,13 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 			Description: "Caller-assigned resource ID. Changing this value replaces the resource.",
 			Required:    true, PlanModifierType: "String",
 			PlanModifiers: []string{"stringplanmodifier.RequiresReplace"},
+			Validators:    []string{"stringvalidator.LengthAtLeast(1)"}, ValidatorType: "String",
 		}}, recordAttrs...)
 		if b.planModifierPkgs == nil {
 			b.planModifierPkgs = make(map[string]struct{})
 		}
 		b.planModifierPkgs["stringplanmodifier"] = struct{}{}
+		b.usesStringValidators = true
 	}
 
 	planModifierPkgs := sortedKeys(b.planModifierPkgs)

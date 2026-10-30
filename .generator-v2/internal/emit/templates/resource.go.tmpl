@@ -279,7 +279,7 @@ response omitted from reaching final Create state. */}}
       bodyAttributes := pkg.New<Attrs>WithDefaults()   // request fields set here
       bodyData       := pkg.New<Data>WithDefaults()
       bodyData.SetType(pkg.<TypeEnum>("<value>"))     // the JSON:API discriminator
-      bodyData.SetId(...)                             // update only; a create has no id
+      bodyData.SetId(...)                             // update, or create with a required caller-assigned id
       bodyData.SetAttributes(*bodyAttributes)
       body           := pkg.New<Request>WithDefaults()
       body.SetData(*bodyData)

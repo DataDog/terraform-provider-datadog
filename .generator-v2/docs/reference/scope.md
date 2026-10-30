@@ -130,10 +130,11 @@ Two of these are listed because earlier documentation described them as working.
 ## Caller-assigned resource identity
 
 When the create request requires a writable JSON:API `data.id`, tfgen exposes
-a required string `id` with replacement-on-change semantics and sends it in
+a required nonempty string `id` with replacement-on-change semantics and sends it in
 the create body. No additional annotation is needed. SDK scalar conversions
 are shared with update-body identity handling. Read, update, delete, and import
-continue using the same Terraform identity.
+continue using the same Terraform identity. Response mapping preserves the
+configured or imported ID even when the API returns a canonicalized value.
 
 An absent or read-only create ID retains computed-only identity. Optional writable
 create IDs fail generation with an actionable diagnostic: the generator cannot

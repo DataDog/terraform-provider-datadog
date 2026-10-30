@@ -5,12 +5,14 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -64,6 +66,9 @@ func (r *datadogDerivedMetricResource) Schema(_ context.Context, _ resource.Sche
 			"id": schema.StringAttribute{
 				Description: "Caller-assigned resource ID. Changing this value replaces the resource.",
 				Required:    true,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
 
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -257,9 +262,6 @@ func (r *datadogDerivedMetricResource) Delete(ctx context.Context, request resou
 func (r *datadogDerivedMetricResource) updateState(ctx context.Context, state *resourceDatadogDerivedMetric_Model, resp *datadogV2.DerivedMetricResponse) diag.Diagnostics {
 	var diags diag.Diagnostics
 	attributes := resp.Data.GetAttributes()
-	if id, ok := resp.Data.GetIdOk(); ok && id != nil {
-		state.ID = types.StringValue(*id)
-	}
 	if definition, ok := attributes.GetDefinitionOk(); ok && definition != nil {
 		definitionModel := state.Definition
 		if definitionModel == nil {

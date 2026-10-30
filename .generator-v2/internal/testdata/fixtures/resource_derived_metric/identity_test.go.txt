@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"sync/atomic"
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -13,16 +14,24 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 // API-contract regression: create requires a caller-selected data.id.
 func TestDerivedMetricCallerAssignedIdentity(t *testing.T) {
+	for _, responseID := range []string{"assessment.metric", "ASSESSMENT.METRIC"} {
+		t.Run(responseID, func(t *testing.T) { testDerivedMetricIdentity(t, responseID) })
+	}
+}
+
+func testDerivedMetricIdentity(t *testing.T, responseID string) {
+	t.Helper()
 	ctx := context.Background()
-	called := false
+	var called atomic.Bool
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		called = true
+		called.Store(true)
 		wantPath := "/api/v2/metrics/derived-metrics"
 		if req.Method != "POST" {
 			wantPath += "/assessment.metric"
@@ -49,7 +58,7 @@ func TestDerivedMetricCallerAssignedIdentity(t *testing.T) {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(w, `{"data":{"id":"assessment.metric","type":"derived_metrics","attributes":{"definition":{"formula":"a","queries":[{"data_source":"metrics","name":"a","query":"avg:system.cpu.user{*}"}]}}}}`)
+		fmt.Fprintf(w, `{"data":{"id":%q,"type":"derived_metrics","attributes":{"definition":{"formula":"a","queries":[{"data_source":"metrics","name":"a","query":"avg:system.cpu.user{*}"}]}}}}`, responseID)
 	}))
 	defer server.Close()
 	cfg := datadog.NewConfiguration()
@@ -79,10 +88,21 @@ func TestDerivedMetricCallerAssignedIdentity(t *testing.T) {
 	if state.ID.ValueString() != "assessment.metric" {
 		t.Fatalf("state ID: %v", state.ID)
 	}
-	if !called {
+	if !called.Load() {
 		t.Fatal("test did not exercise generated create")
 	}
 	idSchema := schemaResponse.Schema.Attributes["id"].(schema.StringAttribute)
+	for _, value := range []string{"", "assessment.metric"} {
+		hasError := false
+		for _, check := range idSchema.Validators {
+			result := validator.StringResponse{}
+			check.ValidateString(ctx, validator.StringRequest{ConfigValue: types.StringValue(value)}, &result)
+			hasError = hasError || result.Diagnostics.HasError()
+		}
+		if hasError != (value == "") {
+			t.Fatalf("id %q: validation error = %v", value, hasError)
+		}
+	}
 	for _, changed := range []bool{false, true} {
 		value := types.StringValue("assessment.metric")
 		if changed {
@@ -108,6 +128,12 @@ func TestDerivedMetricCallerAssignedIdentity(t *testing.T) {
 	r.Read(ctx, resource.ReadRequest{State: response.State}, &read)
 	if read.Diagnostics.HasError() {
 		t.Fatal(read.Diagnostics)
+	}
+	if diags := read.State.Get(ctx, &state); diags.HasError() {
+		t.Fatal(diags)
+	}
+	if state.ID.ValueString() != "assessment.metric" {
+		t.Fatalf("read ID: %v", state.ID)
 	}
 	update := resource.UpdateResponse{State: read.State}
 	r.Update(ctx, resource.UpdateRequest{Plan: plan, State: read.State}, &update)
