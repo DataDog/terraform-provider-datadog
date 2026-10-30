@@ -24,19 +24,18 @@ import (
 
 // Ensure provider defined types fully satisfy framework interfaces.
 var (
-	_ resource.ResourceWithConfigure   = &tagRuleResource{}
-	_ resource.ResourceWithImportState = &tagRuleResource{}
+	_ resource.ResourceWithConfigure      = &tagRuleResource{}
+	_ resource.ResourceWithImportState    = &tagRuleResource{}
+	_ resource.ResourceWithValidateConfig = &tagRuleResource{}
 )
 
 var (
 	// tagValuePatternCharsetRegex mirrors the character class the API restricts
 	// tag_value_patterns to.
 	tagValuePatternCharsetRegex = regexp.MustCompile(`^[A-Za-z0-9_.,:/*-]+$`)
-	// tagValuePatternNonWildcardRegex matches if the pattern has at least one
-	// non-wildcard character. The API rejects a pattern made up only of `*`
-	// (for example a bare "*") with a generic 400 invalid request, so this is
-	// caught at plan time instead.
-	tagValuePatternNonWildcardRegex = regexp.MustCompile(`[A-Za-z0-9_.,:/-]`)
+	// tagValuePatternWildcardOnlyRegex matches a pattern made up only of `*`,
+	// which accepts any value of the tag.
+	tagValuePatternWildcardOnlyRegex = regexp.MustCompile(`^\*+$`)
 )
 
 type tagRuleResource struct {
@@ -122,14 +121,13 @@ func (r *tagRuleResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				Required:    true,
 			},
 			"tag_value_patterns": schema.ListAttribute{
-				Description: "One or more patterns that valid values for the tag key must match. At least one pattern is required. These are not regular expressions: the API restricts pattern characters to `A-Za-z0-9_:-.,/*`, with `*` acting as a wildcard. A pattern made up only of wildcards (for example a bare `*`) is rejected by the API.",
+				Description: "One or more patterns that valid values for the tag key must match. At least one pattern is required. These are not regular expressions: the API restricts pattern characters to `A-Za-z0-9_:-.,/*`, with `*` acting as a wildcard. A bare `*` accepts any value, so `[\"*\"]` with `required = true` means the tag must be present with any value, and `[\"*\"]` with `negated = true` means the tag must be absent. A bare `*` cannot be combined with `required` and `negated` both `false` (the rule would have no effect) or both `true` (no value could comply).",
 				Required:    true,
 				ElementType: types.StringType,
 				Validators: []validator.List{
 					listvalidator.SizeAtLeast(1),
 					listvalidator.ValueStringsAre(
 						stringvalidator.RegexMatches(tagValuePatternCharsetRegex, "must only contain characters in A-Za-z0-9_:-.,/* (with * as a wildcard)"),
-						stringvalidator.RegexMatches(tagValuePatternNonWildcardRegex, "must contain at least one non-wildcard character; the API rejects a pattern made up only of wildcards"),
 					),
 				},
 			},
@@ -185,6 +183,60 @@ func (r *tagRuleResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 			},
 		},
 	}
+}
+
+// ValidateConfig checks the combinations of tag_value_patterns, required and
+// negated that the API rejects. A field validator on tag_value_patterns cannot
+// do this because whether a bare `*` is valid depends on the two sibling flags.
+func (r *tagRuleResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
+	var patterns types.List
+	var required, negated types.Bool
+	response.Diagnostics.Append(request.Config.GetAttribute(ctx, path.Root("tag_value_patterns"), &patterns)...)
+	response.Diagnostics.Append(request.Config.GetAttribute(ctx, path.Root("required"), &required)...)
+	response.Diagnostics.Append(request.Config.GetAttribute(ctx, path.Root("negated"), &negated)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	if required.IsUnknown() || negated.IsUnknown() || !hasWildcardOnlyTagValuePattern(patterns) {
+		return
+	}
+
+	// Omitted flags default to false on the API side.
+	switch {
+	case !required.ValueBool() && !negated.ValueBool():
+		response.Diagnostics.AddAttributeError(
+			path.Root("tag_value_patterns"),
+			"Tag rule has no effect",
+			"A `*` pattern with `required` and `negated` both false accepts every value and does not require the tag, so the API rejects it. "+
+				"Set `required = true` to require the tag with any value, set `negated = true` to require the tag to be absent, or list the allowed values.",
+		)
+	case required.ValueBool() && negated.ValueBool():
+		response.Diagnostics.AddAttributeError(
+			path.Root("tag_value_patterns"),
+			"Tag rule cannot be satisfied",
+			"A `*` pattern with `required` and `negated` both true requires the tag but disallows every value, so the API rejects it. "+
+				"Set `negated = false` to require the tag with any value, or list the specific values to disallow.",
+		)
+	}
+}
+
+// hasWildcardOnlyTagValuePattern reports whether any known pattern is made up
+// only of `*`.
+func hasWildcardOnlyTagValuePattern(patterns types.List) bool {
+	if patterns.IsNull() || patterns.IsUnknown() {
+		return false
+	}
+	for _, element := range patterns.Elements() {
+		pattern, ok := element.(types.String)
+		if !ok || pattern.IsNull() || pattern.IsUnknown() {
+			continue
+		}
+		if tagValuePatternWildcardOnlyRegex.MatchString(pattern.ValueString()) {
+			return true
+		}
+	}
+	return false
 }
 
 func (r *tagRuleResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
