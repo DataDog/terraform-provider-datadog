@@ -5392,9 +5392,6 @@ func flattenGenerateMetricsV2Processor(ctx context.Context, src *datadogV2.Obser
 
 func expandGenerateMetricsV2ProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *generateMetricsV2ProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineGenerateMetricsV2ProcessorWithDefaults()
-	// The generated client currently defaults this optional field to true. Clear
-	// it so omitted Terraform configuration remains omitted from the payload.
-	proc.EnabledMetricAggregation = nil
 	common.ApplyTo(proc)
 	if !src.EnabledMetricAggregation.IsNull() && !src.EnabledMetricAggregation.IsUnknown() {
 		proc.SetEnabledMetricAggregation(src.EnabledMetricAggregation.ValueBool())
