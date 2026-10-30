@@ -612,6 +612,11 @@ var heatmapFormulaRequestConfig = FormulaRequestConfig{
 	StyleFields:    widgetRequestStyleFields,
 }
 
+var heatgridFormulaRequestConfig = FormulaRequestConfig{
+	ResponseFormat: "timeseries",
+	FormulaFields:  heatgridWidgetFormulaFields,
+}
+
 var changeFormulaRequestConfig = FormulaRequestConfig{
 	ResponseFormat: "scalar",
 	StyleFields:    widgetRequestStyleFields,
@@ -685,6 +690,8 @@ func formulaRequestConfigForWidget(jsonType string) FormulaRequestConfig {
 		return timeseriesFormulaRequestConfig
 	case "heatmap":
 		return heatmapFormulaRequestConfig
+	case "heatgrid":
+		return heatgridFormulaRequestConfig
 	case "change":
 		return changeFormulaRequestConfig
 	case "query_value":
@@ -801,7 +808,7 @@ var dataSourceToQueryType = map[string]string{
 // formula/query-style requests (response_format: "scalar" or "timeseries").
 func isFormulaCapableWidget(jsonType string) bool {
 	switch jsonType {
-	case "timeseries", "heatmap", "change", "query_value", "toplist", "sunburst", "geomap", "treemap", "bar_chart":
+	case "timeseries", "heatmap", "heatgrid", "change", "query_value", "toplist", "sunburst", "geomap", "treemap", "bar_chart":
 		return true
 	}
 	return false

@@ -961,6 +961,31 @@ var HeatmapWidgetSpec = WidgetSpec{
 	},
 }
 
+// HeatgridWidgetSpec corresponds to OpenAPI HeatgridWidgetDefinition.
+var HeatgridWidgetSpec = WidgetSpec{
+	HCLKey:      "heatgrid_definition",
+	JSONType:    "heatgrid",
+	Description: "The definition for a Heatgrid widget.",
+	Fields: []FieldSpec{
+		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false, Required: true, MinItems: 1,
+			Description: "Timeseries formula requests for the heatgrid.",
+			Children:    heatgridWidgetRequestFields},
+		{HCLKey: "sort", Type: TypeBlock, OmitEmpty: false, Required: true,
+			Description: "Ordering of the heatgrid rows.",
+			Children:    heatgridSortFields},
+		{HCLKey: "color", Type: TypeBlock, OmitEmpty: true,
+			Description: "Continuous gradient or discrete threshold colors.",
+			Children:    heatgridColorConfigFields},
+		{HCLKey: "legend", Type: TypeBlock, OmitEmpty: true,
+			Description: "Legend configuration for the heatgrid widget.",
+			Children:    heatgridLegendFields},
+		{HCLKey: "label_column", Type: TypeBlock, OmitEmpty: true,
+			Description: "Width and text replacement rules for group labels.",
+			Children:    heatgridLabelColumnFields},
+		widgetCustomLinkField,
+	},
+}
+
 // HostmapWidgetSpec corresponds to OpenAPI HostMapWidgetDefinition.
 // "requests" is a JSON *object* (fill + size keys), not an array.
 var hostmapRequestInnerFields = []FieldSpec{
@@ -1554,6 +1579,7 @@ var allWidgetSpecs = []WidgetSpec{
 	ChangeWidgetSpec,
 	DistributionWidgetSpec,
 	HeatmapWidgetSpec,
+	HeatgridWidgetSpec,
 	HostmapWidgetSpec,
 	QueryValueWidgetSpec,
 	ToplistWidgetSpec,
