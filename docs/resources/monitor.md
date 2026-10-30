@@ -853,7 +853,6 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation method for metrics queries. Valid values are `avg`, `sum`, `max`, `min`, `last`, `area`, `l2norm`, `percentile`, `stddev`.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 ## Import

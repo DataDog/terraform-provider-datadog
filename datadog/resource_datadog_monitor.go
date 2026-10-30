@@ -1103,12 +1103,6 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 								Required:    true,
 								Description: "The metrics query definition.",
 							},
-							"aggregator": {
-								Type:             schema.TypeString,
-								Optional:         true,
-								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionCostAggregatorFromValue),
-								Description:      "The aggregation method for metrics queries.",
-							},
 						},
 					},
 				},
@@ -1992,9 +1986,6 @@ func buildMonitorFormulaAndFunctionEventQuery(data map[string]interface{}) *data
 func buildMonitorFormulaAndFunctionMetricQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
 	metricQuery := datadogV1.NewMonitorFormulaAndFunctionCostQueryDefinition(
 		datadogV1.MonitorFormulaAndFunctionCostDataSource(data["data_source"].(string)), data["name"].(string), data["query"].(string))
-	if v, ok := data["aggregator"].(string); ok && v != "" {
-		metricQuery.SetAggregator(datadogV1.MonitorFormulaAndFunctionCostAggregator(v))
-	}
 	definition := datadogV1.MonitorFormulaAndFunctionCostQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(metricQuery)
 	return &definition
 }
@@ -2953,14 +2944,14 @@ func splitTerraformCostVariables(datadogVariables []datadogV1.MonitorFormulaAndF
 			"name":        q.GetName(),
 			"query":       q.GetQuery(),
 		}
+		if isMetricQueryVariable(q.GetName(), string(q.GetDataSource()), isCostMonitor, priorCost, priorMetric) {
+			metric = append(metric, m)
+			continue
+		}
 		if aggregator, ok := q.GetAggregatorOk(); ok {
 			m["aggregator"] = string(*aggregator)
 		}
-		if isMetricQueryVariable(q.GetName(), string(q.GetDataSource()), isCostMonitor, priorCost, priorMetric) {
-			metric = append(metric, m)
-		} else {
-			cost = append(cost, m)
-		}
+		cost = append(cost, m)
 	}
 	return metric, cost
 }

@@ -243,7 +243,6 @@ func TestDataQualityMonitorOptionsRoundTrip(t *testing.T) {
 
 func TestUpdateVariablesStateMetricQuery(t *testing.T) {
 	r := &monitorResource{}
-	// No aggregator, as sent by the UI: it must stay null after read.
 	q := CloudCostQuery{
 		DataSource: types.StringValue("metrics"),
 		Query:      types.StringValue("avg:system.cpu.user{*}"),

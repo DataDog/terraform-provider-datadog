@@ -249,7 +249,6 @@ type Sort struct {
 type MetricQuery struct {
 	DataSource types.String `tfsdk:"data_source"`
 	Query      types.String `tfsdk:"query"`
-	Aggregator types.String `tfsdk:"aggregator"`
 	Name       types.String `tfsdk:"name"`
 }
 
@@ -1172,13 +1171,6 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 										Required:    true,
 										Description: "The metrics query definition.",
 									},
-									"aggregator": schema.StringAttribute{
-										Optional:    true,
-										Description: "The aggregation method for metrics queries.",
-										Validators: []validator.String{
-											stringvalidator.OneOf(r.getAllowCloudCostAggregator()...),
-										},
-									},
 								},
 							},
 						},
@@ -2079,9 +2071,6 @@ func (r *monitorResource) buildMetricQueryStruct(metricQs []MetricQuery) []datad
 		if !metricQ.DataSource.IsNull() {
 			metricQueryReq.SetDataSource(datadogV1.MonitorFormulaAndFunctionCostDataSource(metricQ.DataSource.ValueString()))
 		}
-		if !metricQ.Aggregator.IsNull() {
-			metricQueryReq.SetAggregator(datadogV1.MonitorFormulaAndFunctionCostAggregator(metricQ.Aggregator.ValueString()))
-		}
 		variablesReq = append(variablesReq, datadogV1.MonitorFormulaAndFunctionQueryDefinition{MonitorFormulaAndFunctionCostQueryDefinition: &metricQueryReq})
 	}
 	return variablesReq
@@ -2876,15 +2865,11 @@ func isMetricQueryVariable(name, dataSource string, isCostMonitor bool, priorCos
 }
 
 func (r *monitorResource) buildMetricQueryState(metricQ *datadogV1.MonitorFormulaAndFunctionCostQueryDefinition) MetricQuery {
-	metricQueryState := MetricQuery{
+	return MetricQuery{
 		DataSource: types.StringValue(string(metricQ.GetDataSource())),
 		Query:      fwutils.ToTerraformStr(metricQ.GetQueryOk()),
 		Name:       fwutils.ToTerraformStr(metricQ.GetNameOk()),
 	}
-	if aggregator, ok := metricQ.GetAggregatorOk(); ok && aggregator != nil {
-		metricQueryState.Aggregator = types.StringValue(string(*aggregator))
-	}
-	return metricQueryState
 }
 
 func (r *monitorResource) buildCloudCostQueryState(cloudCostQ *datadogV1.MonitorFormulaAndFunctionCostQueryDefinition) *CloudCostQuery {

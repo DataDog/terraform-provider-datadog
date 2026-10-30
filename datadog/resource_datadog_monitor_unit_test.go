@@ -232,7 +232,7 @@ func TestBuildTerraformDataQualityMonitorOptionsRoundTrip(t *testing.T) {
 }
 
 func TestMonitorMetricQueryVariableRead(t *testing.T) {
-	// q1 has no aggregator, as sent by the UI; it must read back without one.
+	// q1 is a metric_query variable (no aggregator, matching the API schema).
 	q1 := map[string]interface{}{"data_source": "metrics", "name": "q1", "query": "avg:system.cpu.user{*}"}
 	q2 := map[string]interface{}{"data_source": "cloud_cost", "name": "q2", "query": "sum:aws.cost{*}", "aggregator": "sum"}
 	vars := []datadogV1.MonitorFormulaAndFunctionQueryDefinition{

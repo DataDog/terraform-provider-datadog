@@ -3367,7 +3367,6 @@ func TestAccDatadogMonitor_MetricQueryVariable(t *testing.T) {
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.#", "2"),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.1.data_source", "metrics"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.1.aggregator", ""),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.cloud_cost_query.#", "0"),
 				),
 			},
