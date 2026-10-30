@@ -1153,7 +1153,7 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 							NestedObject: r.variablesEventQueryNestedObject(),
 						},
 						"metric_query": schema.ListNestedBlock{
-							Description: "A metrics query for use in formulas, e.g. with `monitor_thresholds.critical_query`.",
+							Description: "A metrics query for use in formulas in metric monitors; cost monitors should use `cloud_cost_query`, which requires an aggregator.",
 							NestedObject: schema.NestedBlockObject{
 								Attributes: map[string]schema.Attribute{
 									"data_source": schema.StringAttribute{

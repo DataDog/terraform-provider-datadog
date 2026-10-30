@@ -182,7 +182,7 @@ Optional:
 - `data_jobs_query` (Block List, Max: 5) The Data Jobs query using formulas and functions. (see [below for nested schema](#nestedblock--variables--data_jobs_query))
 - `data_quality_query` (Block List, Max: 5) The Data Quality query using formulas and functions. (see [below for nested schema](#nestedblock--variables--data_quality_query))
 - `event_query` (Block List) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--variables--event_query))
-- `metric_query` (Block List) A metrics query for use in formulas, e.g. with `monitor_thresholds.critical_query`. (see [below for nested schema](#nestedblock--variables--metric_query))
+- `metric_query` (Block List) A metrics query for use in formulas in metric monitors; cost monitors should use `cloud_cost_query`, which requires an aggregator. (see [below for nested schema](#nestedblock--variables--metric_query))
 
 <a id="nestedblock--variables--aggregate_augmented_query"></a>
 ### Nested Schema for `variables.aggregate_augmented_query`

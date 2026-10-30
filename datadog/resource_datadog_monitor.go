@@ -1083,7 +1083,7 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 				"metric_query": {
 					Type:        schema.TypeList,
 					Optional:    true,
-					Description: "A metrics query for use in formulas, e.g. with `monitor_thresholds.critical_query`.",
+					Description: "A metrics query for use in formulas in metric monitors; cost monitors should use `cloud_cost_query`, which requires an aggregator.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"data_source": {
