@@ -79,33 +79,34 @@ type connectionDatasourceModel struct {
 }
 
 type connectionModel struct {
-	ID           types.String                 `tfsdk:"id"`
-	Name         types.String                 `tfsdk:"name"`
-	Tags         types.Set                    `tfsdk:"tags"`
-	AWS          *awsConnectionModel          `tfsdk:"aws"`
-	Anthropic    *apiTokenConnectionModel     `tfsdk:"anthropic"`
-	Asana        *asanaConnectionModel        `tfsdk:"asana"`
-	Azure        *azureConnectionModel        `tfsdk:"azure"`
-	CircleCI     *apiTokenConnectionModel     `tfsdk:"circle_ci"`
-	Clickup      *apiTokenConnectionModel     `tfsdk:"clickup"`
-	Cloudflare   *cloudflareConnectionModel   `tfsdk:"cloudflare"`
-	ConfigCat    *configCatConnectionModel    `tfsdk:"config_cat"`
-	Datadog      *datadogConnectionModel      `tfsdk:"datadog"`
-	Fastly       *apiKeyConnectionModel       `tfsdk:"fastly"`
-	Freshservice *freshserviceConnectionModel `tfsdk:"freshservice"`
-	GCP          *gcpConnectionModel          `tfsdk:"gcp"`
-	Gemini       *apiKeyConnectionModel       `tfsdk:"gemini"`
-	Gitlab       *apiTokenConnectionModel     `tfsdk:"gitlab"`
-	GreyNoise    *apiKeyConnectionModel       `tfsdk:"grey_noise"`
-	HTTP         *httpConnectionModel         `tfsdk:"http"`
-	LaunchDarkly *apiTokenConnectionModel     `tfsdk:"launch_darkly"`
-	Notion       *apiTokenConnectionModel     `tfsdk:"notion"`
-	Okta         *oktaConnectionModel         `tfsdk:"okta"`
-	OpenAI       *apiTokenConnectionModel     `tfsdk:"openai"`
-	ServiceNow   *serviceNowConnectionModel   `tfsdk:"service_now"`
-	Split        *apiKeyConnectionModel       `tfsdk:"split"`
-	Statsig      *apiKeyConnectionModel       `tfsdk:"statsig"`
-	VirusTotal   *apiKeyConnectionModel       `tfsdk:"virus_total"`
+	ExternalSecretsManager *actionConnectionExternalSecretsManagerModel `tfsdk:"external_secrets_manager"`
+	ID                     types.String                                 `tfsdk:"id"`
+	Name                   types.String                                 `tfsdk:"name"`
+	Tags                   types.Set                                    `tfsdk:"tags"`
+	AWS                    *awsConnectionModel                          `tfsdk:"aws"`
+	Anthropic              *apiTokenConnectionModel                     `tfsdk:"anthropic"`
+	Asana                  *asanaConnectionModel                        `tfsdk:"asana"`
+	Azure                  *azureConnectionModel                        `tfsdk:"azure"`
+	CircleCI               *apiTokenConnectionModel                     `tfsdk:"circle_ci"`
+	Clickup                *apiTokenConnectionModel                     `tfsdk:"clickup"`
+	Cloudflare             *cloudflareConnectionModel                   `tfsdk:"cloudflare"`
+	ConfigCat              *configCatConnectionModel                    `tfsdk:"config_cat"`
+	Datadog                *datadogConnectionModel                      `tfsdk:"datadog"`
+	Fastly                 *apiKeyConnectionModel                       `tfsdk:"fastly"`
+	Freshservice           *freshserviceConnectionModel                 `tfsdk:"freshservice"`
+	GCP                    *gcpConnectionModel                          `tfsdk:"gcp"`
+	Gemini                 *apiKeyConnectionModel                       `tfsdk:"gemini"`
+	Gitlab                 *apiTokenConnectionModel                     `tfsdk:"gitlab"`
+	GreyNoise              *apiKeyConnectionModel                       `tfsdk:"grey_noise"`
+	HTTP                   *httpConnectionModel                         `tfsdk:"http"`
+	LaunchDarkly           *apiTokenConnectionModel                     `tfsdk:"launch_darkly"`
+	Notion                 *apiTokenConnectionModel                     `tfsdk:"notion"`
+	Okta                   *oktaConnectionModel                         `tfsdk:"okta"`
+	OpenAI                 *apiTokenConnectionModel                     `tfsdk:"openai"`
+	ServiceNow             *serviceNowConnectionModel                   `tfsdk:"service_now"`
+	Split                  *apiKeyConnectionModel                       `tfsdk:"split"`
+	Statsig                *apiKeyConnectionModel                       `tfsdk:"statsig"`
+	VirusTotal             *apiKeyConnectionModel                       `tfsdk:"virus_total"`
 }
 
 type awsConnectionModel struct {
@@ -132,9 +133,10 @@ type httpTokenAuthConnectionModel struct {
 }
 
 type httpConnectionTokenModel struct {
-	Type  types.String `tfsdk:"type"`
-	Name  types.String `tfsdk:"name"`
-	Value types.String `tfsdk:"value"`
+	Type                   types.String                             `tfsdk:"type"`
+	Name                   types.String                             `tfsdk:"name"`
+	Value                  types.String                             `tfsdk:"value"`
+	ValueAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"value_aws_secrets_manager"`
 }
 
 type httpConnectionHeaderModel struct {
@@ -157,7 +159,8 @@ type apiTokenConnectionModel struct {
 }
 
 type apiTokenCredentialModel struct {
-	APIToken types.String `tfsdk:"api_token"`
+	APIToken                  types.String                             `tfsdk:"api_token"`
+	APITokenAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"api_token_aws_secrets_manager"`
 }
 
 type apiKeyConnectionModel struct {
@@ -165,7 +168,8 @@ type apiKeyConnectionModel struct {
 }
 
 type apiKeyCredentialModel struct {
-	APIKey types.String `tfsdk:"api_key"`
+	APIKey                  types.String                             `tfsdk:"api_key"`
+	APIKeyAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"api_key_aws_secrets_manager"`
 }
 
 type asanaConnectionModel struct {
@@ -173,7 +177,8 @@ type asanaConnectionModel struct {
 }
 
 type asanaAccessTokenCredentialModel struct {
-	AccessToken types.String `tfsdk:"access_token"`
+	AccessToken                  types.String                             `tfsdk:"access_token"`
+	AccessTokenAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"access_token_aws_secrets_manager"`
 }
 
 type azureConnectionModel struct {
@@ -193,12 +198,15 @@ type cloudflareConnectionModel struct {
 }
 
 type cloudflareAPITokenCredentialModel struct {
-	APIToken types.String `tfsdk:"api_token"`
+	APIToken                  types.String                             `tfsdk:"api_token"`
+	APITokenAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"api_token_aws_secrets_manager"`
 }
 
 type cloudflareGlobalAPITokenCredentialModel struct {
-	AuthEmail    types.String `tfsdk:"auth_email"`
-	GlobalAPIKey types.String `tfsdk:"global_api_key"`
+	AuthEmail                     types.String                             `tfsdk:"auth_email"`
+	AuthEmailAWSSecretsManager    *actionConnectionAWSSecretReferenceModel `tfsdk:"auth_email_aws_secrets_manager"`
+	GlobalAPIKey                  types.String                             `tfsdk:"global_api_key"`
+	GlobalAPIKeyAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"global_api_key_aws_secrets_manager"`
 }
 
 type configCatConnectionModel struct {
@@ -206,9 +214,12 @@ type configCatConnectionModel struct {
 }
 
 type configCatSDKKeyCredentialModel struct {
-	APIPassword types.String `tfsdk:"api_password"`
-	APIUsername types.String `tfsdk:"api_username"`
-	SDKKey      types.String `tfsdk:"sdk_key"`
+	APIPassword                  types.String                             `tfsdk:"api_password"`
+	APIPasswordAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"api_password_aws_secrets_manager"`
+	APIUsername                  types.String                             `tfsdk:"api_username"`
+	APIUsernameAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"api_username_aws_secrets_manager"`
+	SDKKey                       types.String                             `tfsdk:"sdk_key"`
+	SDKKeyAWSSecretsManager      *actionConnectionAWSSecretReferenceModel `tfsdk:"sdk_key_aws_secrets_manager"`
 }
 
 type datadogConnectionModel struct {
@@ -216,10 +227,14 @@ type datadogConnectionModel struct {
 }
 
 type datadogAPIKeyCredentialModel struct {
-	APIKey     types.String `tfsdk:"api_key"`
-	AppKey     types.String `tfsdk:"app_key"`
-	Datacenter types.String `tfsdk:"datacenter"`
-	Subdomain  types.String `tfsdk:"subdomain"`
+	APIKey                      types.String                             `tfsdk:"api_key"`
+	APIKeyAWSSecretsManager     *actionConnectionAWSSecretReferenceModel `tfsdk:"api_key_aws_secrets_manager"`
+	AppKey                      types.String                             `tfsdk:"app_key"`
+	AppKeyAWSSecretsManager     *actionConnectionAWSSecretReferenceModel `tfsdk:"app_key_aws_secrets_manager"`
+	Datacenter                  types.String                             `tfsdk:"datacenter"`
+	DatacenterAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"datacenter_aws_secrets_manager"`
+	Subdomain                   types.String                             `tfsdk:"subdomain"`
+	SubdomainAWSSecretsManager  *actionConnectionAWSSecretReferenceModel `tfsdk:"subdomain_aws_secrets_manager"`
 }
 
 type freshserviceConnectionModel struct {
@@ -227,8 +242,10 @@ type freshserviceConnectionModel struct {
 }
 
 type freshserviceAPIKeyCredentialModel struct {
-	APIKey types.String `tfsdk:"api_key"`
-	Domain types.String `tfsdk:"domain"`
+	APIKey                  types.String                             `tfsdk:"api_key"`
+	APIKeyAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"api_key_aws_secrets_manager"`
+	Domain                  types.String                             `tfsdk:"domain"`
+	DomainAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"domain_aws_secrets_manager"`
 }
 
 type gcpConnectionModel struct {
@@ -236,8 +253,10 @@ type gcpConnectionModel struct {
 }
 
 type gcpServiceAccountCredentialModel struct {
-	PrivateKey          types.String `tfsdk:"private_key"`
-	ServiceAccountEmail types.String `tfsdk:"service_account_email"`
+	PrivateKey                           types.String                             `tfsdk:"private_key"`
+	PrivateKeyAWSSecretsManager          *actionConnectionAWSSecretReferenceModel `tfsdk:"private_key_aws_secrets_manager"`
+	ServiceAccountEmail                  types.String                             `tfsdk:"service_account_email"`
+	ServiceAccountEmailAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"service_account_email_aws_secrets_manager"`
 }
 
 type oktaConnectionModel struct {
@@ -245,8 +264,10 @@ type oktaConnectionModel struct {
 }
 
 type oktaAPITokenCredentialModel struct {
-	APIToken types.String `tfsdk:"api_token"`
-	Domain   types.String `tfsdk:"domain"`
+	APIToken                  types.String                             `tfsdk:"api_token"`
+	APITokenAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"api_token_aws_secrets_manager"`
+	Domain                    types.String                             `tfsdk:"domain"`
+	DomainAWSSecretsManager   *actionConnectionAWSSecretReferenceModel `tfsdk:"domain_aws_secrets_manager"`
 }
 
 type serviceNowConnectionModel struct {
@@ -254,9 +275,12 @@ type serviceNowConnectionModel struct {
 }
 
 type serviceNowBasicAuthCredentialModel struct {
-	Instance types.String `tfsdk:"instance"`
-	Password types.String `tfsdk:"password"`
-	Username types.String `tfsdk:"username"`
+	Instance                  types.String                             `tfsdk:"instance"`
+	InstanceAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"instance_aws_secrets_manager"`
+	Password                  types.String                             `tfsdk:"password"`
+	PasswordAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"password_aws_secrets_manager"`
+	Username                  types.String                             `tfsdk:"username"`
+	UsernameAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"username_aws_secrets_manager"`
 }
 
 type actionConnectionFieldSpec struct {
@@ -542,10 +566,11 @@ func (r *actionConnectionResource) ValidateConfig(ctx context.Context, request r
 	}
 
 	validateAdditionalConnectionCredentials(conn, response)
+	validateActionConnectionSecretReferences(conn, response)
 }
 
 func validateAdditionalConnectionCredentials(conn connectionResourceModel, response *resource.ValidateConfigResponse) {
-	connValue := reflect.ValueOf(conn)
+	connValue := reflect.ValueOf(conn.connectionModel)
 	for _, integrationSpec := range additionalActionConnectionSpecs {
 		integrationField, ok := lookupTFSDKField(connValue, integrationSpec.Name)
 		if !ok || integrationField.IsNil() {
@@ -584,7 +609,7 @@ func validateAdditionalConnectionCredentials(conn connectionResourceModel, respo
 			}
 			// A null value means the field was omitted. Unknown values (e.g. references
 			// resolved at apply time) can't be validated here, so we let them through.
-			if value, ok := fieldValue.Interface().(types.String); ok && value.IsNull() {
+			if value, ok := fieldValue.Interface().(types.String); ok && value.IsNull() && !actionConnectionHasReference(credentialValues[credentialSpec.Name], fieldSpec.Name) {
 				missingFields = append(missingFields, fieldSpec.Name)
 			}
 		}
@@ -637,7 +662,7 @@ func (r *actionConnectionResource) Metadata(_ context.Context, request resource.
 
 func (r *actionConnectionResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "A connection that can be used in Actions, including in the Workflow Automation and App Builder products. This resource requires a [registered application key](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration).",
+		Description: "A connection that can be used in Actions, including in the Workflow Automation and App Builder products. AWS Secrets Manager references are available for supported token-based credentials and HTTP authentication token values. AWS AssumeRole, Azure credentials, and HTTP request metadata use literal values. This resource requires a [registered application key](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration).",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"name": schema.StringAttribute{
@@ -806,6 +831,7 @@ func (r *actionConnectionResource) Schema(_ context.Context, _ resource.SchemaRe
 	for _, integrationSpec := range additionalActionConnectionSpecs {
 		response.Schema.Blocks[integrationSpec.Name] = actionConnectionResourceBlock(integrationSpec)
 	}
+	addActionConnectionAWSSecretSchema(&response.Schema)
 }
 
 func actionConnectionResourceBlock(integrationSpec actionConnectionIntegrationSpec) schema.Block {
@@ -844,11 +870,22 @@ func actionConnectionResourceBlock(integrationSpec actionConnectionIntegrationSp
 	}
 }
 
-func replaceActionConnectionIfFieldRemoved(_ context.Context, request planmodifier.StringRequest, response *stringplanmodifier.RequiresReplaceIfFuncResponse) {
+func replaceActionConnectionIfFieldRemoved(ctx context.Context, request planmodifier.StringRequest, response *stringplanmodifier.RequiresReplaceIfFuncResponse) {
 	if request.StateValue.IsNull() || request.StateValue.IsUnknown() {
 		return
 	}
 	response.RequiresReplace = request.PlanValue.IsNull()
+	if response.RequiresReplace {
+		steps := request.Path.Steps()
+		name := string(steps[len(steps)-1].(path.PathStepAttributeName))
+		referencePath := request.Path.ParentPath().AtName(name + actionConnectionAWSSecretSuffix)
+		if _, diags := request.Plan.Schema.AttributeAtPath(ctx, referencePath); diags.HasError() {
+			return
+		}
+		var reference types.Object
+		response.Diagnostics.Append(request.Plan.GetAttribute(ctx, referencePath, &reference)...)
+		response.RequiresReplace = reference.IsNull()
+	}
 }
 
 func (r *actionConnectionResource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
@@ -1085,6 +1122,15 @@ func apiResponseToConnectionModel(ctx context.Context, connection datadogV2.GetA
 				Name: types.StringValue(token.Name),
 			})
 		}
+		if len(httpAttr.Credentials.HTTPTokenAuth.HttpTokens) > 0 {
+			tokens = nil
+			for _, token := range httpAttr.Credentials.HTTPTokenAuth.HttpTokens {
+				tokens = append(tokens, &httpConnectionTokenModel{
+					Type: types.StringValue("SECRET"),
+					Name: types.StringValue(token.Name),
+				})
+			}
+		}
 		if len(tokens) > 0 {
 			tokenAuth.Tokens = tokens
 		}
@@ -1132,6 +1178,9 @@ func apiResponseToConnectionModel(ctx context.Context, connection datadogV2.GetA
 		return nil, err
 	}
 
+	if err := readActionConnectionAWSSecretReferences(connModel, attributes); err != nil {
+		return nil, err
+	}
 	return connModel, nil
 }
 
@@ -1285,6 +1334,13 @@ func connectionModelToCreateApiRequest(ctx context.Context, connectionModel conn
 	attributes := datadogV2.NewActionConnectionAttributesWithDefaults()
 	attributes.SetName(connectionModel.Name.ValueString())
 	setActionConnectionTags(ctx, connectionModel.EffectiveTags, attributes.SetTags)
+	if connectionModel.ExternalSecretsManager != nil {
+		settings, err := actionConnectionExternalSettings(connectionModel.ExternalSecretsManager)
+		if err != nil {
+			return nil, err
+		}
+		attributes.SetExternalSecretsManager(settings)
+	}
 
 	if connectionModel.AWS != nil {
 		assumeRoleParams := datadogV2.NewAWSAssumeRole(
@@ -1311,7 +1367,7 @@ func connectionModelToCreateApiRequest(ctx context.Context, connectionModel conn
 				return nil, err
 			}
 
-			tokenModel := datadogV2.NewHTTPToken(token.Name.ValueString(), *tokenType, token.Value.ValueString())
+			tokenModel := datadogV2.NewHTTPToken(token.Name.ValueString(), *tokenType, actionConnectionValue(token.Value, token.ValueAWSSecretsManager))
 			httpTokenAuth.Tokens = append(httpTokenAuth.Tokens, *tokenModel)
 		}
 
@@ -1379,6 +1435,13 @@ func setActionConnectionTags(ctx context.Context, tags types.Set, set func([]str
 func connectionModelToUpdateApiRequest(ctx context.Context, plan, oldState connectionResourceModel) (*datadogV2.UpdateActionConnectionRequest, error) {
 	attributes := datadogV2.NewActionConnectionAttributesUpdate()
 	attributes.SetName(plan.Name.ValueString())
+	if plan.ExternalSecretsManager != nil {
+		settings, err := actionConnectionExternalSettings(plan.ExternalSecretsManager)
+		if err != nil {
+			return nil, err
+		}
+		attributes.SetExternalSecretsManager(settings)
+	}
 	if !plan.EffectiveTags.Equal(oldState.EffectiveTags) {
 		setActionConnectionTags(ctx, plan.EffectiveTags, attributes.SetTags)
 	}
@@ -1420,7 +1483,7 @@ func connectionModelToUpdateApiRequest(ctx context.Context, plan, oldState conne
 				if err != nil {
 					return nil, err
 				}
-				tokenModel := datadogV2.NewHTTPTokenUpdate(token.Name.ValueString(), *tokenType, token.Value.ValueString())
+				tokenModel := datadogV2.NewHTTPTokenUpdate(token.Name.ValueString(), *tokenType, actionConnectionValue(token.Value, token.ValueAWSSecretsManager))
 				httpTokenAuth.Tokens = append(httpTokenAuth.Tokens, *tokenModel)
 			}
 
@@ -1530,7 +1593,7 @@ func additionalUpdateActionConnectionIntegration(connectionModel connectionResou
 	return &integration, nil
 }
 
-func additionalActionConnectionIntegrationData(connectionModel connectionResourceModel) (map[string]interface{}, error) {
+func additionalActionConnectionLiteralIntegrationData(connectionModel connectionResourceModel) (map[string]interface{}, error) {
 	switch {
 	case connectionModel.Anthropic != nil && connectionModel.Anthropic.APIKey != nil:
 		return actionConnectionIntegrationData("Anthropic", "AnthropicAPIKey", map[string]types.String{
@@ -1676,8 +1739,8 @@ func buildHttpDeletions(plan, oldState connectionResourceModel, updateModel *dat
 	}
 
 	for _, deletedToken := range deletedTokens {
-		tokenUpdate := datadogV2.NewHTTPTokenUpdate(deletedToken.Name.ValueString(), datadogV2.TOKENTYPE_SECRET, deletedToken.Value.ValueString())
-		tokenUpdate.SetValue("")
+		tokenUpdate := datadogV2.NewHTTPTokenUpdate(deletedToken.Name.ValueString(), datadogV2.TOKENTYPE_SECRET, actionConnectionValue(types.StringValue(""), nil))
+		tokenUpdate.SetValue(actionConnectionValue(types.StringValue(""), nil))
 		tokenUpdate.SetDeleted(true)
 		updateModel.Tokens = append(updateModel.Tokens, *tokenUpdate)
 	}
@@ -1757,7 +1820,7 @@ func readConnection(authCtx context.Context, api *datadogV2.ActionConnectionApi,
 			// API returned tokens — copy values from state for matching tokens
 			for _, stateToken := range currentState.HTTP.TokenAuth.Tokens {
 				for _, responseToken := range connModel.HTTP.TokenAuth.Tokens {
-					if stateToken.Name.Equal(responseToken.Name) {
+					if stateToken.Name.Equal(responseToken.Name) && stateToken.ValueAWSSecretsManager == nil && responseToken.ValueAWSSecretsManager == nil {
 						responseToken.Value = stateToken.Value
 					}
 				}
@@ -1776,11 +1839,15 @@ func readConnection(authCtx context.Context, api *datadogV2.ActionConnectionApi,
 func preserveAdditionalConnectionSecrets(connModel *connectionResourceModel, currentState connectionResourceModel) {
 	if currentState.Anthropic != nil && currentState.Anthropic.APIKey != nil &&
 		connModel.Anthropic != nil && connModel.Anthropic.APIKey != nil {
-		connModel.Anthropic.APIKey.APIToken = currentState.Anthropic.APIKey.APIToken
+		if connModel.Anthropic.APIKey.APITokenAWSSecretsManager == nil && currentState.Anthropic.APIKey.APITokenAWSSecretsManager == nil {
+			connModel.Anthropic.APIKey.APIToken = currentState.Anthropic.APIKey.APIToken
+		}
 	}
 	if currentState.Asana != nil && currentState.Asana.AccessToken != nil &&
 		connModel.Asana != nil && connModel.Asana.AccessToken != nil {
-		connModel.Asana.AccessToken.AccessToken = currentState.Asana.AccessToken.AccessToken
+		if connModel.Asana.AccessToken.AccessTokenAWSSecretsManager == nil && currentState.Asana.AccessToken.AccessTokenAWSSecretsManager == nil {
+			connModel.Asana.AccessToken.AccessToken = currentState.Asana.AccessToken.AccessToken
+		}
 	}
 	if currentState.Azure != nil && currentState.Azure.Tenant != nil &&
 		connModel.Azure != nil && connModel.Azure.Tenant != nil {
@@ -1788,84 +1855,128 @@ func preserveAdditionalConnectionSecrets(connModel *connectionResourceModel, cur
 	}
 	if currentState.CircleCI != nil && currentState.CircleCI.APIKey != nil &&
 		connModel.CircleCI != nil && connModel.CircleCI.APIKey != nil {
-		connModel.CircleCI.APIKey.APIToken = currentState.CircleCI.APIKey.APIToken
+		if connModel.CircleCI.APIKey.APITokenAWSSecretsManager == nil && currentState.CircleCI.APIKey.APITokenAWSSecretsManager == nil {
+			connModel.CircleCI.APIKey.APIToken = currentState.CircleCI.APIKey.APIToken
+		}
 	}
 	if currentState.Clickup != nil && currentState.Clickup.APIKey != nil &&
 		connModel.Clickup != nil && connModel.Clickup.APIKey != nil {
-		connModel.Clickup.APIKey.APIToken = currentState.Clickup.APIKey.APIToken
+		if connModel.Clickup.APIKey.APITokenAWSSecretsManager == nil && currentState.Clickup.APIKey.APITokenAWSSecretsManager == nil {
+			connModel.Clickup.APIKey.APIToken = currentState.Clickup.APIKey.APIToken
+		}
 	}
 	if currentState.Cloudflare != nil && connModel.Cloudflare != nil {
 		if currentState.Cloudflare.APIToken != nil && connModel.Cloudflare.APIToken != nil {
-			connModel.Cloudflare.APIToken.APIToken = currentState.Cloudflare.APIToken.APIToken
+			if connModel.Cloudflare.APIToken.APITokenAWSSecretsManager == nil && currentState.Cloudflare.APIToken.APITokenAWSSecretsManager == nil {
+				connModel.Cloudflare.APIToken.APIToken = currentState.Cloudflare.APIToken.APIToken
+			}
 		}
 		if currentState.Cloudflare.GlobalAPIToken != nil && connModel.Cloudflare.GlobalAPIToken != nil {
-			connModel.Cloudflare.GlobalAPIToken.GlobalAPIKey = currentState.Cloudflare.GlobalAPIToken.GlobalAPIKey
+			if connModel.Cloudflare.GlobalAPIToken.GlobalAPIKeyAWSSecretsManager == nil && currentState.Cloudflare.GlobalAPIToken.GlobalAPIKeyAWSSecretsManager == nil {
+				connModel.Cloudflare.GlobalAPIToken.GlobalAPIKey = currentState.Cloudflare.GlobalAPIToken.GlobalAPIKey
+			}
 		}
 	}
 	if currentState.ConfigCat != nil && currentState.ConfigCat.SDKKey != nil &&
 		connModel.ConfigCat != nil && connModel.ConfigCat.SDKKey != nil {
-		connModel.ConfigCat.SDKKey.APIPassword = currentState.ConfigCat.SDKKey.APIPassword
-		connModel.ConfigCat.SDKKey.SDKKey = currentState.ConfigCat.SDKKey.SDKKey
+		if connModel.ConfigCat.SDKKey.APIPasswordAWSSecretsManager == nil && currentState.ConfigCat.SDKKey.APIPasswordAWSSecretsManager == nil {
+			connModel.ConfigCat.SDKKey.APIPassword = currentState.ConfigCat.SDKKey.APIPassword
+		}
+		if connModel.ConfigCat.SDKKey.SDKKeyAWSSecretsManager == nil && currentState.ConfigCat.SDKKey.SDKKeyAWSSecretsManager == nil {
+			connModel.ConfigCat.SDKKey.SDKKey = currentState.ConfigCat.SDKKey.SDKKey
+		}
 	}
 	if currentState.Datadog != nil && currentState.Datadog.APIKey != nil &&
 		connModel.Datadog != nil && connModel.Datadog.APIKey != nil {
-		connModel.Datadog.APIKey.APIKey = currentState.Datadog.APIKey.APIKey
-		connModel.Datadog.APIKey.AppKey = currentState.Datadog.APIKey.AppKey
+		if connModel.Datadog.APIKey.APIKeyAWSSecretsManager == nil && currentState.Datadog.APIKey.APIKeyAWSSecretsManager == nil {
+			connModel.Datadog.APIKey.APIKey = currentState.Datadog.APIKey.APIKey
+		}
+		if connModel.Datadog.APIKey.AppKeyAWSSecretsManager == nil && currentState.Datadog.APIKey.AppKeyAWSSecretsManager == nil {
+			connModel.Datadog.APIKey.AppKey = currentState.Datadog.APIKey.AppKey
+		}
 	}
 	if currentState.Fastly != nil && currentState.Fastly.APIKey != nil &&
 		connModel.Fastly != nil && connModel.Fastly.APIKey != nil {
-		connModel.Fastly.APIKey.APIKey = currentState.Fastly.APIKey.APIKey
+		if connModel.Fastly.APIKey.APIKeyAWSSecretsManager == nil && currentState.Fastly.APIKey.APIKeyAWSSecretsManager == nil {
+			connModel.Fastly.APIKey.APIKey = currentState.Fastly.APIKey.APIKey
+		}
 	}
 	if currentState.Freshservice != nil && currentState.Freshservice.APIKey != nil &&
 		connModel.Freshservice != nil && connModel.Freshservice.APIKey != nil {
-		connModel.Freshservice.APIKey.APIKey = currentState.Freshservice.APIKey.APIKey
+		if connModel.Freshservice.APIKey.APIKeyAWSSecretsManager == nil && currentState.Freshservice.APIKey.APIKeyAWSSecretsManager == nil {
+			connModel.Freshservice.APIKey.APIKey = currentState.Freshservice.APIKey.APIKey
+		}
 	}
 	if currentState.GCP != nil && currentState.GCP.ServiceAccount != nil &&
 		connModel.GCP != nil && connModel.GCP.ServiceAccount != nil {
-		connModel.GCP.ServiceAccount.PrivateKey = currentState.GCP.ServiceAccount.PrivateKey
+		if connModel.GCP.ServiceAccount.PrivateKeyAWSSecretsManager == nil && currentState.GCP.ServiceAccount.PrivateKeyAWSSecretsManager == nil {
+			connModel.GCP.ServiceAccount.PrivateKey = currentState.GCP.ServiceAccount.PrivateKey
+		}
 	}
 	if currentState.Gemini != nil && currentState.Gemini.APIKey != nil &&
 		connModel.Gemini != nil && connModel.Gemini.APIKey != nil {
-		connModel.Gemini.APIKey.APIKey = currentState.Gemini.APIKey.APIKey
+		if connModel.Gemini.APIKey.APIKeyAWSSecretsManager == nil && currentState.Gemini.APIKey.APIKeyAWSSecretsManager == nil {
+			connModel.Gemini.APIKey.APIKey = currentState.Gemini.APIKey.APIKey
+		}
 	}
 	if currentState.Gitlab != nil && currentState.Gitlab.APIKey != nil &&
 		connModel.Gitlab != nil && connModel.Gitlab.APIKey != nil {
-		connModel.Gitlab.APIKey.APIToken = currentState.Gitlab.APIKey.APIToken
+		if connModel.Gitlab.APIKey.APITokenAWSSecretsManager == nil && currentState.Gitlab.APIKey.APITokenAWSSecretsManager == nil {
+			connModel.Gitlab.APIKey.APIToken = currentState.Gitlab.APIKey.APIToken
+		}
 	}
 	if currentState.GreyNoise != nil && currentState.GreyNoise.APIKey != nil &&
 		connModel.GreyNoise != nil && connModel.GreyNoise.APIKey != nil {
-		connModel.GreyNoise.APIKey.APIKey = currentState.GreyNoise.APIKey.APIKey
+		if connModel.GreyNoise.APIKey.APIKeyAWSSecretsManager == nil && currentState.GreyNoise.APIKey.APIKeyAWSSecretsManager == nil {
+			connModel.GreyNoise.APIKey.APIKey = currentState.GreyNoise.APIKey.APIKey
+		}
 	}
 	if currentState.LaunchDarkly != nil && currentState.LaunchDarkly.APIKey != nil &&
 		connModel.LaunchDarkly != nil && connModel.LaunchDarkly.APIKey != nil {
-		connModel.LaunchDarkly.APIKey.APIToken = currentState.LaunchDarkly.APIKey.APIToken
+		if connModel.LaunchDarkly.APIKey.APITokenAWSSecretsManager == nil && currentState.LaunchDarkly.APIKey.APITokenAWSSecretsManager == nil {
+			connModel.LaunchDarkly.APIKey.APIToken = currentState.LaunchDarkly.APIKey.APIToken
+		}
 	}
 	if currentState.Notion != nil && currentState.Notion.APIKey != nil &&
 		connModel.Notion != nil && connModel.Notion.APIKey != nil {
-		connModel.Notion.APIKey.APIToken = currentState.Notion.APIKey.APIToken
+		if connModel.Notion.APIKey.APITokenAWSSecretsManager == nil && currentState.Notion.APIKey.APITokenAWSSecretsManager == nil {
+			connModel.Notion.APIKey.APIToken = currentState.Notion.APIKey.APIToken
+		}
 	}
 	if currentState.Okta != nil && currentState.Okta.APIToken != nil &&
 		connModel.Okta != nil && connModel.Okta.APIToken != nil {
-		connModel.Okta.APIToken.APIToken = currentState.Okta.APIToken.APIToken
+		if connModel.Okta.APIToken.APITokenAWSSecretsManager == nil && currentState.Okta.APIToken.APITokenAWSSecretsManager == nil {
+			connModel.Okta.APIToken.APIToken = currentState.Okta.APIToken.APIToken
+		}
 	}
 	if currentState.OpenAI != nil && currentState.OpenAI.APIKey != nil &&
 		connModel.OpenAI != nil && connModel.OpenAI.APIKey != nil {
-		connModel.OpenAI.APIKey.APIToken = currentState.OpenAI.APIKey.APIToken
+		if connModel.OpenAI.APIKey.APITokenAWSSecretsManager == nil && currentState.OpenAI.APIKey.APITokenAWSSecretsManager == nil {
+			connModel.OpenAI.APIKey.APIToken = currentState.OpenAI.APIKey.APIToken
+		}
 	}
 	if currentState.ServiceNow != nil && currentState.ServiceNow.BasicAuth != nil &&
 		connModel.ServiceNow != nil && connModel.ServiceNow.BasicAuth != nil {
-		connModel.ServiceNow.BasicAuth.Password = currentState.ServiceNow.BasicAuth.Password
+		if connModel.ServiceNow.BasicAuth.PasswordAWSSecretsManager == nil && currentState.ServiceNow.BasicAuth.PasswordAWSSecretsManager == nil {
+			connModel.ServiceNow.BasicAuth.Password = currentState.ServiceNow.BasicAuth.Password
+		}
 	}
 	if currentState.Split != nil && currentState.Split.APIKey != nil &&
 		connModel.Split != nil && connModel.Split.APIKey != nil {
-		connModel.Split.APIKey.APIKey = currentState.Split.APIKey.APIKey
+		if connModel.Split.APIKey.APIKeyAWSSecretsManager == nil && currentState.Split.APIKey.APIKeyAWSSecretsManager == nil {
+			connModel.Split.APIKey.APIKey = currentState.Split.APIKey.APIKey
+		}
 	}
 	if currentState.Statsig != nil && currentState.Statsig.APIKey != nil &&
 		connModel.Statsig != nil && connModel.Statsig.APIKey != nil {
-		connModel.Statsig.APIKey.APIKey = currentState.Statsig.APIKey.APIKey
+		if connModel.Statsig.APIKey.APIKeyAWSSecretsManager == nil && currentState.Statsig.APIKey.APIKeyAWSSecretsManager == nil {
+			connModel.Statsig.APIKey.APIKey = currentState.Statsig.APIKey.APIKey
+		}
 	}
 	if currentState.VirusTotal != nil && currentState.VirusTotal.APIKey != nil &&
 		connModel.VirusTotal != nil && connModel.VirusTotal.APIKey != nil {
-		connModel.VirusTotal.APIKey.APIKey = currentState.VirusTotal.APIKey.APIKey
+		if connModel.VirusTotal.APIKey.APIKeyAWSSecretsManager == nil && currentState.VirusTotal.APIKey.APIKeyAWSSecretsManager == nil {
+			connModel.VirusTotal.APIKey.APIKey = currentState.VirusTotal.APIKey.APIKey
+		}
 	}
 }

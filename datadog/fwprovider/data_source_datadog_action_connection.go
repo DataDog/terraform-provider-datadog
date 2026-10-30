@@ -161,6 +161,7 @@ func (d *actionConnectionDatasource) Schema(_ context.Context, request datasourc
 	for _, integrationSpec := range additionalActionConnectionSpecs {
 		response.Schema.Blocks[integrationSpec.Name] = actionConnectionDataSourceBlock(integrationSpec)
 	}
+	addActionConnectionAWSSecretDataSourceSchema(&response.Schema)
 }
 
 func actionConnectionDataSourceBlock(integrationSpec actionConnectionIntegrationSpec) schema.Block {
