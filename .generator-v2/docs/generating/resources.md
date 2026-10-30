@@ -115,3 +115,13 @@ anything. A resource test must exercise the full lifecycle (create, update in
 place, and destroy), which is more work than a data-source test and more valuable.
 
 Continue at [shipping/](../shipping/README.md).
+
+## Caller-assigned resource identity
+
+For APIs that require a caller-assigned `data.id`, configure a nonempty `id` in
+Terraform. Changing it replaces the resource. The configured or imported value
+is preserved across create, read, and update responses, including when the API
+returns a canonicalized ID.
+
+See [identity support and limitations](../reference/scope.md#caller-assigned-resource-identity)
+for the inference rules and unsupported optional-ID cases.

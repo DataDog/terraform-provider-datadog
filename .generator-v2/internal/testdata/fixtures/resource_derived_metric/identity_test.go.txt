@@ -1,0 +1,174 @@
+package fwprovider
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"sync/atomic"
+	"testing"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+)
+
+// API-contract regression: create requires a caller-selected data.id.
+func TestDerivedMetricCallerAssignedIdentity(t *testing.T) {
+	for _, responseID := range []string{"assessment.metric", "ASSESSMENT.METRIC"} {
+		t.Run(responseID, func(t *testing.T) { testDerivedMetricIdentity(t, responseID) })
+	}
+}
+
+func testDerivedMetricIdentity(t *testing.T, responseID string) {
+	t.Helper()
+	ctx := context.Background()
+	var called atomic.Bool
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		called.Store(true)
+		wantPath := "/api/v2/metrics/derived-metrics"
+		if req.Method != "POST" {
+			wantPath += "/assessment.metric"
+		}
+		if req.URL.Path != wantPath {
+			t.Errorf("unexpected path: %s", req.URL.Path)
+		}
+		if req.Method == "DELETE" {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		if req.Method == "POST" || req.Method == "PATCH" {
+			var body struct {
+				Data struct {
+					ID string `json:"id"`
+				} `json:"data"`
+			}
+			if err := json.NewDecoder(req.Body).Decode(&body); err != nil {
+				t.Error(err)
+			}
+			if body.Data.ID != "assessment.metric" {
+				t.Errorf("%s data.id = %q", req.Method, body.Data.ID)
+			}
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintf(w, `{"data":{"id":%q,"type":"derived_metrics","attributes":{"definition":{"formula":"a","queries":[{"data_source":"metrics","name":"a","query":"avg:system.cpu.user{*}"}]}}}}`, responseID)
+	}))
+	defer server.Close()
+	cfg := datadog.NewConfiguration()
+	cfg.Servers = datadog.ServerConfigurations{{URL: server.URL}}
+	cfg.OperationServers = nil
+	cfg.HTTPClient = server.Client()
+	r := &datadogDerivedMetricResource{Api: datadogV2.NewMetricsApi(datadog.NewAPIClient(cfg)), Auth: ctx}
+	var schemaResponse resource.SchemaResponse
+	r.Schema(ctx, resource.SchemaRequest{}, &schemaResponse)
+	if id := schemaResponse.Schema.Attributes["id"]; !id.IsRequired() || id.IsComputed() {
+		t.Error("API contract violated: no configurable metric-name/id input")
+	}
+	model := resourceDatadogDerivedMetric_Model{ID: types.StringValue("assessment.metric"), Definition: &resourceDatadogDerivedMetric_DerivedMetricDefinitionModel{Formula: types.StringValue("a"), Queries: []*resourceDatadogDerivedMetric_DerivedMetricQueryModel{{DataSource: types.StringValue("metrics"), Name: types.StringValue("a"), Query: types.StringValue("avg:system.cpu.user{*}")}}}}
+	plan := tfsdk.Plan{Schema: schemaResponse.Schema}
+	if diags := plan.Set(ctx, &model); diags.HasError() {
+		t.Fatalf("plan setup: %v", diags)
+	}
+	response := resource.CreateResponse{State: tfsdk.State{Schema: schemaResponse.Schema}}
+	r.Create(ctx, resource.CreateRequest{Plan: plan}, &response)
+	if response.Diagnostics.HasError() {
+		t.Fatalf("create: %v", response.Diagnostics)
+	}
+	var state resourceDatadogDerivedMetric_Model
+	if diags := response.State.Get(ctx, &state); diags.HasError() {
+		t.Fatal(diags)
+	}
+	if state.ID.ValueString() != "assessment.metric" {
+		t.Fatalf("state ID: %v", state.ID)
+	}
+	if !called.Load() {
+		t.Fatal("test did not exercise generated create")
+	}
+	idSchema := schemaResponse.Schema.Attributes["id"].(schema.StringAttribute)
+	for _, value := range []string{"", "assessment.metric"} {
+		hasError := false
+		for _, check := range idSchema.Validators {
+			result := validator.StringResponse{}
+			check.ValidateString(ctx, validator.StringRequest{ConfigValue: types.StringValue(value)}, &result)
+			hasError = hasError || result.Diagnostics.HasError()
+		}
+		if hasError != (value == "") {
+			t.Fatalf("id %q: validation error = %v", value, hasError)
+		}
+	}
+	for _, changed := range []bool{false, true} {
+		value := types.StringValue("assessment.metric")
+		if changed {
+			value = types.StringValue("renamed.metric")
+		}
+		requiresReplace := false
+		for _, modifier := range idSchema.PlanModifiers {
+			result := planmodifier.StringResponse{}
+			modifier.PlanModifyString(ctx, planmodifier.StringRequest{
+				Plan: plan, State: response.State,
+				PlanValue: value, StateValue: types.StringValue("assessment.metric"), ConfigValue: value,
+			}, &result)
+			if result.Diagnostics.HasError() {
+				t.Fatal(result.Diagnostics)
+			}
+			requiresReplace = requiresReplace || result.RequiresReplace
+		}
+		if requiresReplace != changed {
+			t.Fatalf("identity changed=%v, requires replacement=%v", changed, requiresReplace)
+		}
+	}
+	read := resource.ReadResponse{State: response.State}
+	r.Read(ctx, resource.ReadRequest{State: response.State}, &read)
+	if read.Diagnostics.HasError() {
+		t.Fatal(read.Diagnostics)
+	}
+	if diags := read.State.Get(ctx, &state); diags.HasError() {
+		t.Fatal(diags)
+	}
+	if state.ID.ValueString() != "assessment.metric" {
+		t.Fatalf("read ID: %v", state.ID)
+	}
+	update := resource.UpdateResponse{State: read.State}
+	r.Update(ctx, resource.UpdateRequest{Plan: plan, State: read.State}, &update)
+	if update.Diagnostics.HasError() {
+		t.Fatal(update.Diagnostics)
+	}
+	if diags := update.State.Get(ctx, &state); diags.HasError() {
+		t.Fatal(diags)
+	}
+	if state.ID.ValueString() != "assessment.metric" {
+		t.Fatalf("updated ID: %v", state.ID)
+	}
+	imported := resource.ImportStateResponse{State: tfsdk.State{Schema: schemaResponse.Schema}}
+	if diags := imported.State.Set(ctx, &resourceDatadogDerivedMetric_Model{}); diags.HasError() {
+		t.Fatal(diags)
+	}
+	r.ImportState(ctx, resource.ImportStateRequest{ID: "assessment.metric"}, &imported)
+	if imported.Diagnostics.HasError() {
+		t.Fatal(imported.Diagnostics)
+	}
+	refresh := resource.ReadResponse{State: imported.State}
+	r.Read(ctx, resource.ReadRequest{State: imported.State}, &refresh)
+	if refresh.Diagnostics.HasError() {
+		t.Fatal(refresh.Diagnostics)
+	}
+	if diags := refresh.State.Get(ctx, &state); diags.HasError() {
+		t.Fatal(diags)
+	}
+	if state.ID.ValueString() != "assessment.metric" {
+		t.Fatalf("imported ID: %v", state.ID)
+	}
+	deleted := resource.DeleteResponse{State: refresh.State}
+	r.Delete(ctx, resource.DeleteRequest{State: refresh.State}, &deleted)
+	if deleted.Diagnostics.HasError() {
+		t.Fatal(deleted.Diagnostics)
+	}
+
+}
