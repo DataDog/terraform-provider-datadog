@@ -1080,6 +1080,32 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 						Schema: eventQueryVariableSchema(),
 					},
 				},
+				"metric_query": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					Description: "A metrics query for use in formulas in metric monitors; cost monitors should use `cloud_cost_query`, which requires an aggregator.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"data_source": {
+								Type:         schema.TypeString,
+								Optional:     true,
+								Default:      "metrics",
+								ValidateFunc: validation.StringInSlice([]string{"metrics"}, false),
+								Description:  "The data source for metrics queries.",
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The name of the query for use in formulas.",
+							},
+							"query": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The metrics query definition.",
+							},
+						},
+					},
+				},
 				"cloud_cost_query": {
 					Type:        schema.TypeList,
 					Optional:    true,
@@ -1524,6 +1550,14 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionEventQuery(queryMap))
 					}
 				}
+				if query, ok := m["metric_query"]; ok {
+					queries, _ := query.([]interface{})
+					for _, q := range queries {
+						if queryMap, ok := q.(map[string]interface{}); ok {
+							monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionMetricQuery(queryMap))
+						}
+					}
+				}
 				if query, ok := m["cloud_cost_query"]; ok {
 					queries, _ := query.([]interface{})
 					for _, q := range queries {
@@ -1945,6 +1979,14 @@ func buildMonitorFormulaAndFunctionEventQuery(data map[string]interface{}) *data
 	}
 
 	definition := datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(eventQuery)
+	return &definition
+}
+
+// metric_query is sent as the API's cost-type definition, the shape it decodes plain metrics variables into.
+func buildMonitorFormulaAndFunctionMetricQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	metricQuery := datadogV1.NewMonitorFormulaAndFunctionCostQueryDefinition(
+		datadogV1.MonitorFormulaAndFunctionCostDataSource(data["data_source"].(string)), data["name"].(string), data["query"].(string))
+	definition := datadogV1.MonitorFormulaAndFunctionCostQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(metricQuery)
 	return &definition
 }
 
@@ -2439,7 +2481,7 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if variables, ok := m.Options.GetVariablesOk(); ok && len(*variables) > 0 {
 		log.Printf("[INFO] variables: %d, %+v", len(*variables), *variables)
 		if m.GetType() == datadogV1.MONITORTYPE_COST_ALERT {
-			terraformVariables := buildTerraformCostMonitorVariables(*variables)
+			terraformVariables := buildTerraformCostMonitorVariables(*variables, priorVariableNames(d, "cloud_cost_query"), priorVariableNames(d, "metric_query"))
 			if err := d.Set("variables", terraformVariables); err != nil {
 				return diag.FromErr(err)
 			}
@@ -2454,7 +2496,7 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 				return diag.FromErr(err)
 			}
 		} else {
-			terraformVariables := buildTerraformMonitorVariables(*variables)
+			terraformVariables := buildTerraformMonitorVariables(*variables, priorVariableNames(d, "cloud_cost_query"), priorVariableNames(d, "metric_query"))
 			if err := d.Set("variables", terraformVariables); err != nil {
 				return diag.FromErr(err)
 			}
@@ -2861,36 +2903,77 @@ func buildTerraformCompositeMonitorVariables(datadogVariables []datadogV1.Monito
 	return terraformVariables
 }
 
-func buildTerraformMonitorVariables(datadogVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition) []map[string]interface{} {
-	return buildTerraformCompositeMonitorVariables(datadogVariables)
+func buildTerraformMonitorVariables(datadogVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition, priorCost, priorMetric map[string]bool) []map[string]interface{} {
+	out := buildTerraformCompositeMonitorVariables(datadogVariables)
+	metricQueries, costQueries := splitTerraformCostVariables(datadogVariables, false, priorCost, priorMetric)
+	if out == nil {
+		if len(metricQueries) == 0 && len(costQueries) == 0 {
+			return nil
+		}
+		out = []map[string]interface{}{{}}
+	}
+	if len(metricQueries) > 0 {
+		out[0]["metric_query"] = metricQueries
+	}
+	if len(costQueries) > 0 {
+		out[0]["cloud_cost_query"] = costQueries
+	}
+	return out
 }
 
-func buildTerraformCostMonitorVariables(datadogVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition) []map[string]interface{} {
-	queries := make([]map[string]interface{}, len(datadogVariables))
-	for i, query := range datadogVariables {
-		terraformQuery := map[string]interface{}{}
-		terraformCostQueryDefinition := query.MonitorFormulaAndFunctionCostQueryDefinition
-		if terraformCostQueryDefinition != nil {
-			if dataSource, ok := terraformCostQueryDefinition.GetDataSourceOk(); ok {
-				terraformQuery["data_source"] = dataSource
+func buildTerraformCostMonitorVariables(datadogVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition, priorCost, priorMetric map[string]bool) []map[string]interface{} {
+	metricQueries, costQueries := splitTerraformCostVariables(datadogVariables, true, priorCost, priorMetric)
+	root := map[string]interface{}{"cloud_cost_query": costQueries}
+	if len(metricQueries) > 0 {
+		root["metric_query"] = metricQueries
+	}
+	return []map[string]interface{}{root}
+}
+
+// splitTerraformCostVariables routes API cost-type variables to `metric_query` or `cloud_cost_query`.
+// A name already present in prior state keeps its block so existing configs never flip; otherwise
+// cost monitors default to `cloud_cost_query` and other monitors map `metrics` sources to `metric_query`.
+func splitTerraformCostVariables(datadogVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition, isCostMonitor bool, priorCost, priorMetric map[string]bool) (metric, cost []map[string]interface{}) {
+	for _, query := range datadogVariables {
+		q := query.MonitorFormulaAndFunctionCostQueryDefinition
+		if q == nil {
+			continue
+		}
+		m := map[string]interface{}{
+			"data_source": string(q.GetDataSource()),
+			"name":        q.GetName(),
+			"query":       q.GetQuery(),
+		}
+		if isMetricQueryVariable(q.GetName(), string(q.GetDataSource()), isCostMonitor, priorCost, priorMetric) {
+			metric = append(metric, m)
+			continue
+		}
+		if aggregator, ok := q.GetAggregatorOk(); ok {
+			m["aggregator"] = string(*aggregator)
+		}
+		cost = append(cost, m)
+	}
+	return metric, cost
+}
+
+func isMetricQueryVariable(name, dataSource string, isCostMonitor bool, priorCost, priorMetric map[string]bool) bool {
+	if dataSource != string(datadogV1.MONITORFORMULAANDFUNCTIONCOSTDATASOURCE_METRICS) || priorCost[name] {
+		return false
+	}
+	return priorMetric[name] || !isCostMonitor
+}
+
+func priorVariableNames(d *schema.ResourceData, block string) map[string]bool {
+	names := map[string]bool{}
+	list, _ := d.Get("variables.0." + block).([]interface{})
+	for _, v := range list {
+		if m, ok := v.(map[string]interface{}); ok {
+			if n, ok := m["name"].(string); ok {
+				names[n] = true
 			}
-			if name, ok := terraformCostQueryDefinition.GetNameOk(); ok {
-				terraformQuery["name"] = name
-			}
-			if queryStr, ok := terraformCostQueryDefinition.GetQueryOk(); ok {
-				terraformQuery["query"] = queryStr
-			}
-			if aggregator, ok := terraformCostQueryDefinition.GetAggregatorOk(); ok {
-				terraformQuery["aggregator"] = aggregator
-			}
-			queries[i] = terraformQuery
 		}
 	}
-	terraformVariables := make([]map[string]interface{}, 1)
-	terraformVariables[0] = map[string]interface{}{"cloud_cost_query": queries}
-
-	log.Printf("[INFO] queries: %+v", terraformVariables)
-	return terraformVariables
+	return names
 }
 
 func buildTerraformDataQualityMonitorVariables(datadogVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition) []map[string]interface{} {

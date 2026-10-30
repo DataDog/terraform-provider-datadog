@@ -143,6 +143,7 @@ type Recurrence struct {
 type Variable struct {
 	EventQuery              []EventQuery              `tfsdk:"event_query"`
 	CloudCostQuery          []CloudCostQuery          `tfsdk:"cloud_cost_query"`
+	MetricQuery             []MetricQuery             `tfsdk:"metric_query"`
 	DataQualityQuery        []DataQualityQuery        `tfsdk:"data_quality_query"`
 	AggregateAugmentedQuery []AggregateAugmentedQuery `tfsdk:"aggregate_augmented_query"`
 	AggregateFilteredQuery  []AggregateFilteredQuery  `tfsdk:"aggregate_filtered_query"`
@@ -243,6 +244,12 @@ type Sort struct {
 	Aggregation types.String `tfsdk:"aggregation"`
 	Metric      types.String `tfsdk:"metric"`
 	Order       types.String `tfsdk:"order"`
+}
+
+type MetricQuery struct {
+	DataSource types.String `tfsdk:"data_source"`
+	Query      types.String `tfsdk:"query"`
+	Name       types.String `tfsdk:"name"`
 }
 
 type CloudCostQuery struct {
@@ -1145,6 +1152,28 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 							Description:  "A timeseries formula and functions events query.",
 							NestedObject: r.variablesEventQueryNestedObject(),
 						},
+						"metric_query": schema.ListNestedBlock{
+							Description: "A metrics query for use in formulas in metric monitors; cost monitors should use `cloud_cost_query`, which requires an aggregator.",
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"data_source": schema.StringAttribute{
+										Optional:    true,
+										Computed:    true,
+										Default:     stringdefault.StaticString("metrics"),
+										Description: "The data source for metrics queries.",
+										Validators:  []validator.String{stringvalidator.OneOf("metrics")},
+									},
+									"name": schema.StringAttribute{
+										Required:    true,
+										Description: "The name of the query for use in formulas.",
+									},
+									"query": schema.StringAttribute{
+										Required:    true,
+										Description: "The metrics query definition.",
+									},
+								},
+							},
+						},
 						"cloud_cost_query": schema.ListNestedBlock{
 							Description: "The Cloud Cost query using formulas and functions.",
 							Validators: []validator.List{
@@ -1956,6 +1985,9 @@ func (r *monitorResource) buildVariablesStruct(ctx context.Context, variables []
 	if cloudCostReq := r.buildCloudCostQueryStruct(variable.CloudCostQuery); len(cloudCostReq) > 0 {
 		variablesReq = append(variablesReq, cloudCostReq...)
 	}
+	if metricReq := r.buildMetricQueryStruct(variable.MetricQuery); len(metricReq) > 0 {
+		variablesReq = append(variablesReq, metricReq...)
+	}
 	if dataQualityReq := r.buildDataQualityQueryStruct(ctx, variable.DataQualityQuery); len(dataQualityReq) > 0 {
 		variablesReq = append(variablesReq, dataQualityReq...)
 	}
@@ -2025,6 +2057,21 @@ func (r *monitorResource) buildEventQueryStruct(ctx context.Context, eventQs []E
 		}
 		variableReq.MonitorFormulaAndFunctionEventQueryDefinition = &eventQueryReq
 		variablesReq = append(variablesReq, variableReq)
+	}
+	return variablesReq
+}
+
+// metric_query is sent as the API's cost-type definition, the shape it decodes plain metrics variables into.
+func (r *monitorResource) buildMetricQueryStruct(metricQs []MetricQuery) []datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	var variablesReq []datadogV1.MonitorFormulaAndFunctionQueryDefinition
+	for _, metricQ := range metricQs {
+		metricQueryReq := datadogV1.MonitorFormulaAndFunctionCostQueryDefinition{}
+		fwutils.SetOptString(metricQ.Query, metricQueryReq.SetQuery)
+		fwutils.SetOptString(metricQ.Name, metricQueryReq.SetName)
+		if !metricQ.DataSource.IsNull() {
+			metricQueryReq.SetDataSource(datadogV1.MonitorFormulaAndFunctionCostDataSource(metricQ.DataSource.ValueString()))
+		}
+		variablesReq = append(variablesReq, datadogV1.MonitorFormulaAndFunctionQueryDefinition{MonitorFormulaAndFunctionCostQueryDefinition: &metricQueryReq})
 	}
 	return variablesReq
 }
@@ -2517,6 +2564,17 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 	}
 	eventQueryStates := []EventQuery{}
 	CloudCostQueryStates := []CloudCostQuery{}
+	metricQueryStates := []MetricQuery{}
+	isCostMonitor := state.Type.ValueString() == string(datadogV1.MONITORTYPE_COST_ALERT)
+	priorCost, priorMetric := map[string]bool{}, map[string]bool{}
+	for _, pv := range state.Variables {
+		for _, q := range pv.CloudCostQuery {
+			priorCost[q.Name.ValueString()] = true
+		}
+		for _, q := range pv.MetricQuery {
+			priorMetric[q.Name.ValueString()] = true
+		}
+	}
 	DataQualityQueryStates := []DataQualityQuery{}
 	aggregateAugmentedStates := []AggregateAugmentedQuery{}
 	aggregateFilteredStates := []AggregateFilteredQuery{}
@@ -2526,7 +2584,9 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 		if eventQState := r.buildEventQueryState(ctx, v.MonitorFormulaAndFunctionEventQueryDefinition); eventQState != nil {
 			eventQueryStates = append(eventQueryStates, *eventQState)
 		}
-		if costQState := r.buildCloudCostQueryState(v.MonitorFormulaAndFunctionCostQueryDefinition); costQState != nil {
+		if costQ := v.MonitorFormulaAndFunctionCostQueryDefinition; costQ != nil && isMetricQueryVariable(costQ.GetName(), string(costQ.GetDataSource()), isCostMonitor, priorCost, priorMetric) {
+			metricQueryStates = append(metricQueryStates, r.buildMetricQueryState(costQ))
+		} else if costQState := r.buildCloudCostQueryState(costQ); costQState != nil {
 			CloudCostQueryStates = append(CloudCostQueryStates, *costQState)
 		}
 		if dataQualityQState := r.buildDataQualityQueryState(ctx, v.MonitorFormulaAndFunctionDataQualityQueryDefinition); dataQualityQState != nil {
@@ -2545,6 +2605,7 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 	state.Variables = []Variable{{
 		EventQuery:              eventQueryStates,
 		CloudCostQuery:          CloudCostQueryStates,
+		MetricQuery:             metricQueryStates,
 		DataQualityQuery:        DataQualityQueryStates,
 		AggregateAugmentedQuery: aggregateAugmentedStates,
 		AggregateFilteredQuery:  aggregateFilteredStates,
@@ -2792,6 +2853,23 @@ func (r *monitorResource) buildAggregateFilteredQueryState(ctx context.Context, 
 	}
 
 	return &out
+}
+
+// isMetricQueryVariable decides whether an API cost-type variable reads back as `metric_query`.
+// Names already in prior state keep their block so existing `cloud_cost_query` configs never flip.
+func isMetricQueryVariable(name, dataSource string, isCostMonitor bool, priorCost, priorMetric map[string]bool) bool {
+	if dataSource != string(datadogV1.MONITORFORMULAANDFUNCTIONCOSTDATASOURCE_METRICS) || priorCost[name] {
+		return false
+	}
+	return priorMetric[name] || !isCostMonitor
+}
+
+func (r *monitorResource) buildMetricQueryState(metricQ *datadogV1.MonitorFormulaAndFunctionCostQueryDefinition) MetricQuery {
+	return MetricQuery{
+		DataSource: types.StringValue(string(metricQ.GetDataSource())),
+		Query:      fwutils.ToTerraformStr(metricQ.GetQueryOk()),
+		Name:       fwutils.ToTerraformStr(metricQ.GetNameOk()),
+	}
 }
 
 func (r *monitorResource) buildCloudCostQueryState(cloudCostQ *datadogV1.MonitorFormulaAndFunctionCostQueryDefinition) *CloudCostQuery {

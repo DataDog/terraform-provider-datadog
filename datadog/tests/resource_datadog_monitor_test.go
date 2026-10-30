@@ -3347,3 +3347,58 @@ func createOnMissingDataMonitor(ctx context.Context, p *fwprovider.FrameworkProv
 	}
 	return strconv.FormatInt(created.GetId(), 10), nil
 }
+
+// Requires an org with the `monitors-dynamic-thresholds` feature flag to record/run.
+func TestAccDatadogMonitor_MetricQueryVariable(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+	config := testAccCheckDatadogMonitorMetricQueryVariable(monitorName)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: config,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.#", "2"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.1.data_source", "metrics"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.cloud_cost_query.#", "0"),
+				),
+			},
+			{Config: config, PlanOnly: true},
+			{ResourceName: "datadog_monitor.foo", ImportState: true, ImportStateVerify: true, ImportStateVerifyIgnore: []string{"validate"}},
+		},
+	})
+}
+
+// Mirrors a dynamic-threshold monitor created in the UI (no aggregator sent).
+func testAccCheckDatadogMonitorMetricQueryVariable(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name    = "%[1]s"
+  type    = "query alert"
+  message = "hello alerting talks"
+  query   = "formula(\"query1 + query2\").rollup(\"avg\").last(\"10m\") > threshold"
+
+  monitor_thresholds {
+    critical_query = "formula(\"2 * query1 + query2\").rollup(\"avg\").last(\"1w\").multiplier(1.25)"
+  }
+
+  variables {
+    metric_query {
+      name  = "query1"
+      query = "avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"
+    }
+    metric_query {
+      data_source = "metrics"
+      name        = "query2"
+      query       = "avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"
+    }
+  }
+}`, uniq)
+}
