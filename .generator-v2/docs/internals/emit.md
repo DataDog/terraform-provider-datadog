@@ -59,8 +59,13 @@ ambiguous, or unparsed unions instead of partial state.
 
 ## Naming
 
-`modelname.go` derives generated Go model names using component identity, so two
-distinct OpenAPI components cannot collide on one struct name. `accessors.go`
+`modelname.go` derives every generated Go model name as `<artifact base>_<stem>`:
+`datadogWidget_TagModel` for a data source, `resourceDatadogWidget_TagModel` for a
+resource, and `<artifact base>_Model` for the root state struct. The artifact base
+keeps artifacts and kinds apart, and the stem comes from the OpenAPI component when
+there is one, so most collisions are avoided. Within one artifact, an inline stem
+is still a plain concatenation and can equal a component name; `dedupeModels`
+fails the artifact in that case instead of emitting a redeclaration. `accessors.go`
 resolves provider API accessors; `apipath.go` handles path construction;
 `unstable_operations.go` handles operations the SDK marks unstable.
 

@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -109,7 +110,7 @@ func (r *rumRetentionFiltersOrderResource) Create(ctx context.Context, request r
 		return
 	}
 
-	r.orderRetentionFiltersAndUpdateState(&state, &response.Diagnostics)
+	r.orderRetentionFiltersAndUpdateState(ctx, &state, &response.Diagnostics)
 
 	response.Diagnostics.Append(response.State.Set(ctx, state)...)
 }
@@ -121,7 +122,7 @@ func (r *rumRetentionFiltersOrderResource) Update(ctx context.Context, request r
 		return
 	}
 
-	r.orderRetentionFiltersAndUpdateState(&state, &response.Diagnostics)
+	r.orderRetentionFiltersAndUpdateState(ctx, &state, &response.Diagnostics)
 
 	response.Diagnostics.Append(response.State.Set(ctx, state)...)
 }
@@ -129,7 +130,7 @@ func (r *rumRetentionFiltersOrderResource) Update(ctx context.Context, request r
 func (r *rumRetentionFiltersOrderResource) Delete(_ context.Context, _ resource.DeleteRequest, _ *resource.DeleteResponse) {
 }
 
-func (r *rumRetentionFiltersOrderResource) orderRetentionFiltersAndUpdateState(state *rumRetentionFiltersOrderResourceModel, diagnostics *diag.Diagnostics) {
+func (r *rumRetentionFiltersOrderResource) orderRetentionFiltersAndUpdateState(ctx context.Context, state *rumRetentionFiltersOrderResourceModel, diagnostics *diag.Diagnostics) {
 	body, diags := r.buildRetentionFiltersOrderRequestBody(state)
 	diagnostics.Append(diags...)
 	if diagnostics.HasError() {
@@ -137,7 +138,13 @@ func (r *rumRetentionFiltersOrderResource) orderRetentionFiltersAndUpdateState(s
 	}
 	state.ID = state.ApplicationID
 
-	resp, _, err := r.Api.OrderRetentionFilters(r.Auth, state.ApplicationID.ValueString(), *body)
+	var resp datadogV2.RumRetentionFiltersOrderResponse
+	err := retryRumRetentionFilterOperation(ctx, func() (*http.Response, error) {
+		var httpResp *http.Response
+		var err error
+		resp, httpResp, err = r.Api.OrderRetentionFilters(r.Auth, state.ApplicationID.ValueString(), *body)
+		return httpResp, err
+	})
 	if err != nil {
 		diagnostics.Append(utils.FrameworkErrorDiag(err, "error re-ordering retention filters"))
 		return

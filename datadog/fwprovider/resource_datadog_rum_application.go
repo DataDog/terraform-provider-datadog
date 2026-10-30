@@ -247,8 +247,8 @@ func (r *rumApplicationResource) updateState(ctx context.Context, state *rumAppl
 func (r *rumApplicationResource) buildRumApplicationRequestBody(ctx context.Context, state *rumApplicationModel) (*datadogV2.RUMApplicationCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewRUMApplicationCreateAttributesWithDefaults()
-	// The generated client defaults create_default_retention_filters to true. It is not
-	// exposed in the schema, so leave it unset and let the API default apply.
+	// The generated client defaults this optional field to true. Clear it so the
+	// request matches what this resource sent before it existed.
 	attributes.CreateDefaultRetentionFilters = nil
 
 	attributes.SetName(state.Name.ValueString())
