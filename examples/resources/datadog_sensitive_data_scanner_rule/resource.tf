@@ -68,3 +68,31 @@ resource "datadog_sensitive_data_scanner_rule" "mylibraryrule_with_recommended_k
 
   // SDS will set the recommended keywords by default.
 }
+
+# Combine recommended suppressions with custom exceptions.
+# New standard-pattern rules also default to true when the toggle is omitted.
+resource "datadog_sensitive_data_scanner_rule" "mylibraryrule_with_recommended_and_custom_suppressions" {
+  name                         = "My library rule with recommended and custom suppressions"
+  group_id                     = datadog_sensitive_data_scanner_group.mygroup.id
+  standard_pattern_id          = data.datadog_sensitive_data_scanner_standard_pattern.aws_sp.id
+  is_enabled                   = true
+  use_recommended_suppressions = true
+
+  suppressions {
+    exact_match = ["AKIAIOSFODNN7EXAMPLE"]
+  }
+}
+
+# Use only custom exceptions by explicitly disabling recommended suppressions.
+# Changing the toggle retains the custom lists.
+resource "datadog_sensitive_data_scanner_rule" "mylibraryrule_with_custom_suppressions" {
+  name                         = "My library rule with custom suppressions"
+  group_id                     = datadog_sensitive_data_scanner_group.mygroup.id
+  standard_pattern_id          = data.datadog_sensitive_data_scanner_standard_pattern.aws_sp.id
+  is_enabled                   = true
+  use_recommended_suppressions = false
+
+  suppressions {
+    exact_match = ["AKIAIOSFODNN7EXAMPLE"]
+  }
+}
