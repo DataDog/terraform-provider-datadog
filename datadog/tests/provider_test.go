@@ -288,6 +288,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_logs_metric_test":                                            "logs-metric",
 	"tests/resource_datadog_logs_restriction_query_test":                                 "logs-restriction-queries",
 	"tests/resource_datadog_metric_metadata_test":                                        "metrics",
+	"tests/resource_datadog_derived_metric_test":                                         "metrics",
 	"tests/resource_datadog_metric_tag_configuration_test":                               "metrics",
 	"tests/resource_datadog_tag_indexing_rule_test":                                      "metrics",
 	"tests/resource_datadog_tag_indexing_rule_exemption_test":                            "metrics",
