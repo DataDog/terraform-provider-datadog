@@ -1896,6 +1896,12 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	if lc == nil || lc.Create == nil || lc.Read == nil || lc.Delete == nil {
 		return ResourceView{}, fmt.Errorf("emit: resource %q is missing a required lifecycle binding (Create/Read/Delete)", a.Name)
 	}
+	// updateState takes a *<Read response type>; with none, a bodyless Create or
+	// Update would also match the empty name and render uncompilable calls.
+	if lc.Read.GoResponseType == "" {
+		return ResourceView{}, fmt.Errorf(
+			"emit: resource %q: Read has no named response type — updateState needs one", a.Name)
+	}
 	if err := checkResponseTypeMatches(a.Name, "Create", lc.Create.GoResponseType, lc.Read.GoResponseType); err != nil {
 		return ResourceView{}, err
 	}
@@ -2034,7 +2040,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		Update:            updateView,
 		UpdateUnsupported: lc.UpdateUnsupported,
 		Delete: CRUDCallView{
-			Method: lc.Delete.GoMethod, Arguments: deleteArgs,
+			Method: lc.Delete.GoMethod, HasResponseBody: lc.Delete.HasResponseBody, Arguments: deleteArgs,
 		},
 		Models: models,
 		Schema: SchemaView{

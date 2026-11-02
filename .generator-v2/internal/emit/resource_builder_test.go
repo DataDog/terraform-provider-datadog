@@ -2,13 +2,18 @@ package emit
 
 import (
 	"errors"
+	"go/ast"
 	"go/format"
+	goparser "go/parser"
+	"go/token"
+	"path/filepath"
 	"strings"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
+	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/parser"
 )
 
 var _ = Describe("BuildResourceView", func() {
@@ -499,6 +504,28 @@ var _ = Describe("BuildResourceView", func() {
 		Expect(err.Error()).To(ContainSubstring("differs from Read's"))
 	})
 
+	DescribeTable("rejects an unnamed Read response before rendering state or CRUD calls",
+		func(bodylessRole string) {
+			op := incidentTypeResourceOperation(true)
+			op.ResolvedGroup.Read.ResponseRefName = ""
+			if bodylessRole == "Create" {
+				op.ResolvedGroup.Create.ResponseRefName = ""
+				op.ResolvedGroup.Create.ResponseSchema = nil
+			} else if bodylessRole == "Update" {
+				op.ResolvedGroup.Create.ResponseRefName = ""
+				op.ResolvedGroup.Update.ResponseRefName = ""
+				op.ResolvedGroup.Update.ResponseSchema = nil
+			}
+			art, err := model.BuildArtifact(op)
+			Expect(err).NotTo(HaveOccurred())
+			_, err = BuildResourceView(art)
+			Expect(err).To(MatchError(ContainSubstring("Read has no named response type")))
+		},
+		Entry("inline Read alone", ""),
+		Entry("inline Read and bodyless Create", "Create"),
+		Entry("inline Read and bodyless Update", "Update"),
+	)
+
 	It("normalizes computed unknowns recursively without touching configured siblings", func() {
 		attributes := []*model.Attribute{
 			{
@@ -534,6 +561,63 @@ var _ = Describe("BuildResourceView", func() {
 })
 
 var _ = Describe("RenderResource", func() {
+	DescribeTable("matches parsed Delete response bodies to SDK return values",
+		func(operationID, responseType string, hasBody bool) {
+			spec, err := parser.LoadSpec(filepath.Join("../testdata/parser", "delete_response_bodies.yaml"))
+			Expect(err).NotTo(HaveOccurred())
+			var parsed *model.Operation
+			for _, candidate := range spec.Operations {
+				if candidate.OperationId == operationID {
+					parsed = candidate
+					break
+				}
+			}
+			Expect(parsed).NotTo(BeNil())
+			Expect(parsed.ResponseRefName).To(Equal(responseType))
+			Expect(parsed.ResponseSchema != nil).To(Equal(hasBody))
+
+			op := incidentTypeResourceOperation(true)
+			op.ResolvedGroup.Delete.ResponseRefName = parsed.ResponseRefName
+			op.ResolvedGroup.Delete.ResponseSchema = parsed.ResponseSchema
+			art, err := model.BuildArtifact(op)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(art.Lifecycle.Delete.HasResponseBody).To(Equal(hasBody))
+			view, err := BuildResourceView(art)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(view.Delete.HasResponseBody).To(Equal(hasBody))
+
+			out := string(mustRenderResource(view))
+			fset := token.NewFileSet()
+			file, err := goparser.ParseFile(fset, "resource.go", out, 0)
+			Expect(err).NotTo(HaveOccurred())
+			var deleteMethod string
+			for _, decl := range file.Decls {
+				method, ok := decl.(*ast.FuncDecl)
+				if ok && method.Recv != nil && method.Name.Name == "Delete" {
+					deleteMethod = out[fset.Position(method.Pos()).Offset:fset.Position(method.End()).Offset]
+					break
+				}
+			}
+			Expect(deleteMethod).NotTo(BeEmpty(), "missing Delete method")
+			assignment := "httpResp, err"
+			if hasBody {
+				assignment = "_, " + assignment
+			}
+			Expect(deleteMethod).To(ContainSubstring("\n\t" + assignment + " := r.Api.DeleteIncidentType(r.Auth, state.ID.ValueString())"))
+			Expect(deleteMethod).To(ContainSubstring("httpResp != nil && httpResp.StatusCode == 404"))
+			Expect(deleteMethod).To(ContainSubstring(`utils.FrameworkErrorDiag(err, "error deleting incident_type")`))
+			Expect(deleteMethod).NotTo(ContainSubstring("updateState("))
+		},
+		Entry("bodyless", "DeleteNoBody", "", false),
+		Entry("named body", "DeleteNamed", "DeletionResponse", true),
+		Entry("inline object", "DeleteInline", "", true),
+		Entry("array", "DeleteArray", "", true),
+		Entry("allOf", "DeleteAllOf", "", true),
+		Entry("oneOf", "DeleteOneOf", "", true),
+		Entry("text/plain", "DeletePlainText", "", true),
+		Entry("vendor JSON", "DeleteVendorJSON", "DeletionResponse", true),
+	)
+
 	It("renders gofmt-canonical, syntactically valid Go for a full-CRUD resource", func() {
 		art, err := model.BuildArtifact(incidentTypeResourceOperation(true))
 		Expect(err).NotTo(HaveOccurred())
