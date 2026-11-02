@@ -27,16 +27,21 @@ func TestDerivedMetricReplacementPlan(t *testing.T) {
 		formula     string
 		query       string
 		wantReplace bool
+		imported    bool
 	}{
-		{"unchanged", "custom.cpu.original", "a", "avg:system.cpu.user{*}", false},
-		{"rename", "custom.cpu.renamed", "a", "avg:system.cpu.user{*}", true},
-		{"formula update", "custom.cpu.original", "a * 2", "avg:system.cpu.user{*}", false},
-		{"query update", "custom.cpu.original", "a", "avg:system.cpu.system{*}", false},
+		{"unchanged", "custom.cpu.original", "a", "avg:system.cpu.user{*}", false, false},
+		{"adopt name after import", "custom.cpu.original", "a", "avg:system.cpu.user{*}", false, true},
+		{"rename", "custom.cpu.renamed", "a", "avg:system.cpu.user{*}", true, false},
+		{"formula update", "custom.cpu.original", "a * 2", "avg:system.cpu.user{*}", false, false},
+		{"query update", "custom.cpu.original", "a", "avg:system.cpu.system{*}", false, false},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			ctx := context.Background()
 			server := providerserver.NewProtocol6(New())()
 			prior := derivedMetricTestState(t)
+			if test.imported {
+				prior.Name = types.StringNull()
+			}
 			config := prior
 			config.ID = types.StringNull()
 			config.Name = types.StringValue(test.metricName)

@@ -56,6 +56,8 @@ func TestAccDerivedMetricBasic(t *testing.T) {
 				ResourceName:      resourceName,
 				ImportState:       true,
 				ImportStateVerify: true,
+				// The create-only name input is adopted on the first apply after import.
+				ImportStateVerifyIgnore: []string{"name"},
 			},
 		},
 	})

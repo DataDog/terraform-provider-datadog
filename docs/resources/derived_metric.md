@@ -40,7 +40,7 @@ resource "datadog_derived_metric" "cpu_total" {
 ### Required
 
 - `definition` (Attributes) The definition of a derived metric as a formula over one or more queries. (see [below for nested schema](#nestedatt--definition))
-- `name` (String) Caller-assigned name sent as the create ID. Changing this value replaces the resource. String length must be at least 1.
+- `name` (String) Caller-assigned name sent as the create ID. After import, the first apply adopts the configured name through an update using the canonical API ID, without replacing the resource. Once the name is stored in state, changing it replaces the resource. String length must be at least 1.
 
 ### Read-Only
 
