@@ -71,12 +71,12 @@ func FlattenOpentelemetryDestination(src *datadogV2.ObservabilityPipelineOpentel
 // OpentelemetryDestinationSchema returns the schema for the OpenTelemetry destination
 func OpentelemetryDestinationSchema() schema.ListNestedBlock {
 	return schema.ListNestedBlock{
-		Description: "The `opentelemetry` destination forwards metrics using the OpenTelemetry Protocol (OTLP) over HTTP.",
+		Description: "The `opentelemetry` destination forwards metrics or traces using the OpenTelemetry Protocol (OTLP) over HTTP.",
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
 				"http_client_uri_key": schema.StringAttribute{
 					Optional:    true,
-					Description: "Environment variable name containing the URI of the OTLP HTTP endpoint to send metrics to.",
+					Description: "Environment variable name containing the URI of the OTLP HTTP endpoint to send metrics or traces to.",
 				},
 			},
 			Blocks: map[string]schema.Block{
