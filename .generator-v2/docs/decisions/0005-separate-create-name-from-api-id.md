@@ -31,9 +31,17 @@ or parent path parameter already claims it, fail generation with a diagnostic;
 do not silently alias unrelated fields. A configurable mapping can be designed
 later if an actual API needs it. Require a response ID to recover API identity.
 
-Import takes the API ID, as other resources do. The first refresh fills a null
-name from that ID, since the original spelling cannot be recovered. Users adopt
-that name in configuration. Existing configured names are never rewritten.
+Import takes the API ID, as other resources do. For resources with an update
+API, refresh leaves an absent name null because the original spelling cannot
+be recovered. The first apply adopts the configured name through the normal
+update operation using the canonical ID; this is not a state-only operation.
+Only changes to a previously adopted name require replacement. Existing
+configured names are never rewritten.
+
+Resources without an update API retain replacement-on-change semantics and
+initialize an absent name from the API ID during refresh. Users must configure
+that canonical name to avoid replacement; allowing adoption here would invoke
+an unsupported update.
 
 No production resource is registered by this change. Changing the unshipped
 fixture now avoids a later breaking rename of a configurable `id`.
@@ -43,7 +51,10 @@ fixture now avoids a later breaking rename of a configurable `id`.
 The offline lifecycle fixture returns an unchanged or canonicalized ID and only
 serves subsequent operations at the returned ID. It verifies PUT body identity,
 unknown computed identity during update, configured-name preservation, import,
-and replacement when the name changes. Enum identity must retain its named SDK
+and replacement when the name changes. A Terraform CLI test imports an existing
+object, adopts the configured name without create/delete calls, updates its
+definition, verifies clean subsequent plans, and checks replacement on rename.
+Enum identity must retain its named SDK
 type and use the validating constructor; unsupported enum shapes fail closed.
 Live acceptance remains a prerequisite for adopting a production resource and
 must establish that API's normalization and import behavior.

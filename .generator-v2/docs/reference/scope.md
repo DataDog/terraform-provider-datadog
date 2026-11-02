@@ -44,6 +44,13 @@ Only `data.id` is supported for data-source identity. The annotation schema acce
 all four `id_strategy` values, and the parser carries them, but emission rejects the
 others with `id_strategy %q is not yet supported (only data.id)`.
 
+Resource and singular data-source IDs are Terraform strings. Response `data.id`
+fields that map to integer, floating-point, or boolean values fail generation;
+ordinary numeric attributes and IDs inside plural result items retain their own
+types. Existing string, named string-enum, and UUID response mappings are retained.
+Request-body ID conversion is separate from this response restriction; it does
+not relax the existing schema-merge checks between lifecycle operations.
+
 ## Schema shapes
 
 **Supported:**
@@ -138,8 +145,11 @@ required nonempty `name` with replacement-on-change semantics. Create sends that
 value as `data.id`; computed `id` comes from the API response. Read, update
 (including its body ID), and delete use the API ID, including when it differs
 from the configured name. Refresh preserves the configured name. Import accepts
-the API ID and initializes an absent name from the refreshed ID; configure that
-name when adopting an imported resource.
+the API ID. With an update API, import leaves `name` unset; the first apply
+adopts the configured name through an update using the canonical ID, without
+recreating the resource. Later name changes require replacement. Without an
+update API, refresh initializes an absent name from the API ID; configure that
+canonical name to avoid replacement.
 
 The generator reserves `name` for this input and rejects collisions with an
 existing top-level attribute or path parameter. A response `data.id` is required.

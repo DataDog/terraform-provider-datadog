@@ -11,18 +11,28 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/provider"
+	providerschema "github.com/hashicorp/terraform-plugin-framework/provider/schema"
+	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
+	testingresource "github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 )
 
 // API-contract regression: create requires a caller-selected data.id.
 func TestDerivedMetricCallerAssignedIdentity(t *testing.T) {
 	for _, responseID := range []string{"assessment.metric", "ASSESSMENT.METRIC"} {
-		t.Run(responseID, func(t *testing.T) { testDerivedMetricIdentity(t, responseID) })
+		t.Run(responseID, func(t *testing.T) {
+			testDerivedMetricIdentity(t, responseID)
+			t.Run("terraform_import", func(t *testing.T) { testDerivedMetricImportAdoption(t, responseID) })
+		})
 	}
 }
 
@@ -174,7 +184,7 @@ func testDerivedMetricIdentity(t *testing.T, responseID string) {
 	if state.ID.ValueString() != responseID {
 		t.Fatalf("imported ID: %v", state.ID)
 	}
-	if state.Name.ValueString() != responseID {
+	if !state.Name.IsNull() {
 		t.Fatalf("imported name: %v", state.Name)
 	}
 	deleted := resource.DeleteResponse{State: refresh.State}
@@ -190,4 +200,133 @@ func testDerivedMetricIdentity(t *testing.T, responseID string) {
 			t.Errorf("%s calls = %d, want %d", method, calls[method], want)
 		}
 	}
+}
+
+// Use the generated resource with a private local API, without provider credentials.
+type identityTestProvider struct {
+	FrameworkProvider
+	api *datadogV2.MetricsApi
+}
+
+func (p *identityTestProvider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
+	resp.TypeName = "datadog"
+}
+
+func (p *identityTestProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
+	resp.Schema = providerschema.Schema{}
+}
+func (p *identityTestProvider) Configure(context.Context, provider.ConfigureRequest, *provider.ConfigureResponse) {
+}
+func (p *identityTestProvider) Resources(context.Context) []func() resource.Resource {
+	return []func() resource.Resource{func() resource.Resource {
+		return &identityTestResource{datadogDerivedMetricResource: &datadogDerivedMetricResource{Api: p.api, Auth: context.Background()}}
+	}}
+}
+
+func (p *identityTestProvider) DataSources(context.Context) []func() datasource.DataSource {
+	return nil
+}
+
+type identityTestResource struct{ *datadogDerivedMetricResource }
+
+func (r *identityTestResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_derived_metric"
+}
+
+func (r *identityTestResource) Configure(context.Context, resource.ConfigureRequest, *resource.ConfigureResponse) {
+}
+
+func testDerivedMetricImportAdoption(t *testing.T, canonicalID string) {
+	var mu sync.Mutex
+	calls := map[string]int{}
+	formula := "a"
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		mu.Lock()
+		defer mu.Unlock()
+		calls[req.Method]++
+		if req.URL.Path != "/api/v2/metrics/derived-metrics/"+canonicalID {
+			t.Errorf("unexpected canonical path: %s", req.URL.Path)
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+		switch req.Method {
+		case "DELETE":
+			w.WriteHeader(http.StatusNoContent)
+			return
+		case "PUT":
+			var body struct {
+				Data struct {
+					ID         string `json:"id"`
+					Attributes struct {
+						Definition struct {
+							Formula string `json:"formula"`
+						} `json:"definition"`
+					} `json:"attributes"`
+				} `json:"data"`
+			}
+			if err := json.NewDecoder(req.Body).Decode(&body); err != nil {
+				t.Error(err)
+			}
+			if body.Data.ID != canonicalID {
+				t.Errorf("update id = %q", body.Data.ID)
+			}
+			formula = body.Data.Attributes.Definition.Formula
+		case "GET":
+		default:
+			t.Errorf("unexpected method: %s", req.Method)
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintf(w, `{"data":{"id":%q,"type":"derived_metrics","attributes":{"definition":{"formula":%q,"queries":[{"data_source":"metrics","name":"a","query":"avg:system.cpu.user{*}"}]}}}}`, canonicalID, formula)
+	}))
+	defer server.Close()
+	cfg := datadog.NewConfiguration()
+	cfg.Servers = datadog.ServerConfigurations{{URL: server.URL}}
+	cfg.OperationServers = nil
+	cfg.HTTPClient = server.Client()
+	api := datadogV2.NewMetricsApi(datadog.NewAPIClient(cfg))
+	config := func(name, formula string) string {
+		return fmt.Sprintf(`
+ provider "datadog" {}
+ resource "datadog_derived_metric" "test" {
+  name = %q
+  definition = {
+   formula = %q
+   queries = [{ data_source = "metrics", name = "a", query = "avg:system.cpu.user{*}" }]
+  }
+ }
+ `, name, formula)
+	}
+	address := "datadog_derived_metric.test"
+	checkCalls := func(puts int) func() {
+		return func() {
+			mu.Lock()
+			defer mu.Unlock()
+			if calls["POST"] != 0 || calls["DELETE"] != 0 || calls["PUT"] != puts {
+				t.Fatalf("unexpected API calls before cleanup: %v; want %d updates", calls, puts)
+			}
+		}
+	}
+	testingresource.UnitTest(t, testingresource.TestCase{
+		ProtoV6ProviderFactories: map[string]func() (tfprotov6.ProviderServer, error){
+			"datadog": providerserver.NewProtocol6WithError(&identityTestProvider{api: api}),
+		},
+		Steps: []testingresource.TestStep{
+			{Config: config("assessment.metric", "a"), ResourceName: address, ImportState: true, ImportStateId: canonicalID, ImportStatePersist: true},
+			{Config: config("assessment.metric", "a"), PreConfig: checkCalls(0),
+				ConfigPlanChecks: testingresource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(address, plancheck.ResourceActionUpdate)}},
+				Check:            testingresource.ComposeTestCheckFunc(testingresource.TestCheckResourceAttr(address, "id", canonicalID), testingresource.TestCheckResourceAttr(address, "name", "assessment.metric")),
+			},
+			{Config: config("assessment.metric", "a"), PreConfig: checkCalls(1), PlanOnly: true},
+			{Config: config("assessment.metric", "a * 2"),
+				ConfigPlanChecks: testingresource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(address, plancheck.ResourceActionUpdate)}},
+				Check:            testingresource.TestCheckResourceAttr(address, "name", "assessment.metric"),
+			},
+			{Config: config("assessment.metric", "a * 2"), PreConfig: checkCalls(2), PlanOnly: true},
+			{Config: config("renamed.metric", "a * 2"), PlanOnly: true, ExpectNonEmptyPlan: true,
+				ConfigPlanChecks: testingresource.ConfigPlanChecks{PostApplyPreRefresh: []plancheck.PlanCheck{plancheck.ExpectResourceAction(address, plancheck.ResourceActionReplace)}},
+			},
+		},
+	})
 }

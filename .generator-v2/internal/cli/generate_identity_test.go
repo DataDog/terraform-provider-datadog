@@ -24,7 +24,8 @@ func TestGenerateCallerAssignedIdentity(t *testing.T) {
 		t.Fatal(err)
 	}
 	result, err := testinfra.RunTests([]testinfra.StagedFile{
-		{ProviderPath: filepath.Join("datadog", "fwprovider", fixture.resource), SourcePath: firstPath},
+		// Keep the fixture additive when a hand-written resource owns its production path.
+		{ProviderPath: filepath.Join("datadog", "fwprovider", "zz_tfgen_fixture_derived_metric.go"), SourcePath: firstPath},
 		{ProviderPath: filepath.Join("datadog", "fwprovider", "zz_tfgen_identity_test.go"), SourcePath: probe},
 	}, "^TestDerivedMetricCallerAssignedIdentity$")
 	if err != nil {

@@ -23,6 +23,18 @@ var (
 	_ resource.ResourceWithImportState = &datadogDerivedMetricResource{}
 )
 
+// datadogDerivedMetricNameRequiresReplace allows the first configured name after import.
+// Once adopted, changing the create identity requires a replacement.
+func datadogDerivedMetricNameRequiresReplace() planmodifier.String {
+	return stringplanmodifier.RequiresReplaceIf(
+		func(ctx context.Context, request planmodifier.StringRequest, response *stringplanmodifier.RequiresReplaceIfFuncResponse) {
+			response.RequiresReplace = !request.StateValue.IsNull()
+		},
+		"Changing an adopted name replaces the resource.",
+		"Changing an adopted name replaces the resource.",
+	)
+}
+
 type resourceDatadogDerivedMetric_Model struct {
 	ID         types.String                                               `tfsdk:"id"`
 	Definition *resourceDatadogDerivedMetric_DerivedMetricDefinitionModel `tfsdk:"definition"`
@@ -73,7 +85,7 @@ func (r *datadogDerivedMetricResource) Schema(_ context.Context, _ resource.Sche
 				},
 
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
+					datadogDerivedMetricNameRequiresReplace(),
 				},
 			},
 
@@ -189,9 +201,6 @@ func (r *datadogDerivedMetricResource) Read(ctx context.Context, request resourc
 	}
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
-	if !response.Diagnostics.HasError() && state.Name.IsNull() {
-		response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("name"), state.ID)...)
-	}
 }
 
 func (r *datadogDerivedMetricResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {

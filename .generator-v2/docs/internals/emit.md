@@ -52,8 +52,9 @@ learns a field is gone.
 For resources, `BuildResourceView` additionally binds create-body identity from
 per-operation metadata in `SDKCall`. `setRequestBodyID` uses the create input or
 API ID as appropriate and retains named enum types through SDK conversion.
-`CallerAssignedID` selects prior-state ID recovery during Update and initialization
-of an absent name during import refresh. See the
+`CallerAssignedID` selects prior-state ID recovery during Update. For resources
+with an update API, a conditional name modifier allows initial adoption after
+import. Without an update API, refresh initializes an absent name from the API ID. See the
 [identity contract](../reference/scope.md#caller-assigned-resource-identity) and
 [decision record](../decisions/0005-separate-create-name-from-api-id.md).
 

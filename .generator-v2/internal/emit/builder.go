@@ -739,6 +739,15 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 
 	var idAssign *StateAssignment
 	if id != nil {
+		// Resource and singular data-source IDs are always types.String, unlike
+		// ordinary payload attributes and IDs inside plural result items.
+		if id.GoType != "types.String" {
+			b.unsupported = append(b.unsupported, UnsupportedNode{
+				Path:   id.Path,
+				Reason: fmt.Sprintf("response data.id maps to %s; Terraform identity requires types.String; non-string response IDs are unsupported", id.GoType),
+			})
+			return nil
+		}
 		idAssign = &StateAssignment{
 			Var:      "id",
 			GetterOk: rootExpr + ".GetIdOk()",
@@ -2047,12 +2056,16 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 				return ResourceView{}, &UnsupportedEmitError{Nodes: []UnsupportedNode{{Path: "response.name", Reason: "caller-assigned identity reserves name; an existing attribute or path parameter collides with it"}}}
 			}
 		}
+		nameModifier := "stringplanmodifier.RequiresReplace"
+		if !lc.UpdateUnsupported {
+			nameModifier = goName + "NameRequiresReplace"
+		}
 		models[0].Fields = append(models[0].Fields, ModelFieldView{GoField: "Name", GoType: "types.String", TFName: "name"})
 		recordAttrs = append([]AttrView{{
 			TFName: "name", TFType: "schema.StringAttribute",
 			Description: "Caller-assigned name sent as the create ID. Changing this value replaces the resource.",
 			Required:    true, PlanModifierType: "String",
-			PlanModifiers: []string{"stringplanmodifier.RequiresReplace"},
+			PlanModifiers: []string{nameModifier},
 			Validators:    []string{"stringvalidator.LengthAtLeast(1)"}, ValidatorType: "String",
 		}}, recordAttrs...)
 		if b.planModifierPkgs == nil {

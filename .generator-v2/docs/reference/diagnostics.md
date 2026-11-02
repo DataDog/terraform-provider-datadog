@@ -180,3 +180,13 @@ only if the API actually returns that field.
 found. Check the request schema's component reference, scalar type, and format.
 See [identity support and limitations](scope.md#caller-assigned-resource-identity)
 for supported conversions; do not change an accurate API contract to force emission.
+
+## Non-string response identity
+
+`non-string response IDs are unsupported` means response `data.id` would produce
+a value incompatible with the string Terraform identity field. Generation stops
+instead of emitting an invalid Go assignment. This applies to resource and
+singular data-source identity, not ordinary payload attributes or plural result
+items. Preserve the authoritative response schema; a generator conversion needs
+to be implemented before adopting an API with such an ID. See
+[Terraform identity](scope.md#terraform-identity).

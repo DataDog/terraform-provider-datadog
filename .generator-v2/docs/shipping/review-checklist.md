@@ -66,7 +66,9 @@ report together.
 - [ ] For a resource: create, update, and destroy are all exercised; assertions
       inspect the update body for the actual HTTP method, including PUT.
 - [ ] For caller-assigned identity: cover name replacement, canonical-ID routing,
-      import, and a no-change plan after refresh.
+      import, first-apply name adoption when updates are supported, and a no-change
+      plan after refresh. Without an update API, verify import uses the canonical
+      name and name changes require replacement.
 - [ ] The cassette was read, not just produced. See [cassettes.md](cassettes.md).
 - [ ] `RECORD=none` passed against the live API.
 

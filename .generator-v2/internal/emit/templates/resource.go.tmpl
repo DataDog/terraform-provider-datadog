@@ -62,6 +62,20 @@ var (
 	_ resource.ResourceWithImportState = &{{ .GoName }}Resource{}
 )
 
+{{- if and .CallerAssignedID (not .UpdateUnsupported) }}
+// {{ .GoName }}NameRequiresReplace allows the first configured name after import.
+// Once adopted, changing the create identity requires a replacement.
+func {{ .GoName }}NameRequiresReplace() planmodifier.String {
+	return stringplanmodifier.RequiresReplaceIf(
+		func(ctx context.Context, request planmodifier.StringRequest, response *stringplanmodifier.RequiresReplaceIfFuncResponse) {
+			response.RequiresReplace = !request.StateValue.IsNull()
+		},
+		"Changing an adopted name replaces the resource.",
+		"Changing an adopted name replaces the resource.",
+	)
+}
+{{- end }}
+
 {{- range .WriteOnlySecrets }}
 var {{ .ConfigVar }} = {{ template "writeOnlySecretConfigValue" . }}
 {{- end }}
@@ -148,7 +162,7 @@ func (r *{{ .GoName }}Resource) Read(ctx context.Context, request resource.ReadR
 		return
 	}
 {{ template "commitState" .Read }}
-{{- if .CallerAssignedID }}
+{{- if and .CallerAssignedID .UpdateUnsupported }}
 	if !response.Diagnostics.HasError() && state.Name.IsNull() {
 		response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("name"), state.ID)...)
 	}
