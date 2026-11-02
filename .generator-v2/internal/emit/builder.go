@@ -739,6 +739,15 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 
 	var idAssign *StateAssignment
 	if id != nil {
+		// Resource and singular data-source IDs are always types.String, unlike
+		// ordinary payload attributes and IDs inside plural result items.
+		if id.GoType != "types.String" {
+			b.unsupported = append(b.unsupported, UnsupportedNode{
+				Path:   id.Path,
+				Reason: fmt.Sprintf("response data.id maps to %s; Terraform identity requires types.String; non-string response IDs are unsupported", id.GoType),
+			})
+			return nil
+		}
 		idAssign = &StateAssignment{
 			Var:      "id",
 			GetterOk: rootExpr + ".GetIdOk()",
@@ -1955,6 +1964,25 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	// untypable body id fails rather than rendering an empty or ill-typed body.
 	createEnvelope := buildRequestEnvelope(a.Name, "Create", primary.GoPackage, lc.Create, createFields, &b.unsupported)
 
+	callerAssignedID := lc.Create.RequestDeclaresID && !lc.Create.RequestIDReadOnly
+	if callerAssignedID {
+		var reason string
+		// A nil envelope already has an actionable construction diagnostic.
+		switch {
+		case !lc.Create.RequestIDRequired:
+			reason = "optional create data.id is unsupported: the generator cannot infer whether identity is caller-assigned or server-assigned; omit this artifact until optional identity semantics are supported"
+		case createEnvelope != nil:
+			reason = setRequestBodyID(createEnvelope, lc.Create, createArgs, "state.Name")
+		}
+		if reason != "" {
+			b.unsupported = append(b.unsupported, UnsupportedNode{Path: "sdk." + lc.Create.GoMethod + ".data.id", Reason: reason})
+		}
+		if createEnvelope != nil && createEnvelope.IDPrep != nil {
+			u, str, _ := parseCallImports(createEnvelope.IDPrep.ParseCall)
+			createUUID, createStrconv = createUUID || u, createStrconv || str
+		}
+	}
+
 	updateView := CRUDCallView{}
 	var updateUUID, updateStrconv bool
 	if lc.Update != nil {
@@ -1981,7 +2009,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		// Keyed on whether the body itself declares an id, and of what type —
 		// not on env.idAssign, which describes only the response side.
 		if envelope := updateView.Envelope; envelope != nil {
-			if reason := setUpdateBodyID(envelope, lc.Update, updateArgs); reason != "" {
+			if reason := setRequestBodyID(envelope, lc.Update, updateArgs, "state.ID"); reason != "" {
 				b.unsupported = append(b.unsupported, UnsupportedNode{
 					Path:   "sdk." + lc.Update.GoMethod + ".data.id",
 					Reason: reason,
@@ -2017,17 +2045,56 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		assignments = append([]StateAssignment{*env.idAssign}, assignments...)
 	}
 
+	if callerAssignedID {
+		hasResponseID := false
+		for _, attr := range topLevel {
+			if tfNameOf(attr.Path) == "data" {
+				for _, child := range attr.Children {
+					hasResponseID = hasResponseID || (tfNameOf(child.Path) == "id" && child.InResponse)
+				}
+			}
+		}
+		if !hasResponseID {
+			return ResourceView{}, &UnsupportedEmitError{Nodes: []UnsupportedNode{{Path: "response.data.id", Reason: "caller-assigned identity requires a response data.id for canonical API identity"}}}
+		}
+		for _, field := range models[0].Fields {
+			if field.TFName == "name" {
+				return ResourceView{}, &UnsupportedEmitError{Nodes: []UnsupportedNode{{Path: "response.name", Reason: "caller-assigned identity reserves name; an existing attribute or path parameter collides with it"}}}
+			}
+		}
+		nameModifier := "stringplanmodifier.RequiresReplace"
+		nameDescription := "Caller-assigned name sent as the create ID. Changing this value replaces the resource. After import, configure the canonical API ID as the name to avoid replacement."
+		if !lc.UpdateUnsupported {
+			nameModifier = goName + "NameRequiresReplace"
+			nameDescription = "Caller-assigned name sent as the create ID. After import, the first apply adopts the configured name through an update using the canonical API ID, without replacing the resource. Once the name is stored in state, changing it replaces the resource."
+		}
+		models[0].Fields = append(models[0].Fields, ModelFieldView{GoField: "Name", GoType: "types.String", TFName: "name"})
+		recordAttrs = append([]AttrView{{
+			TFName: "name", TFType: "schema.StringAttribute",
+			Description: nameDescription,
+			Required:    true, PlanModifierType: "String",
+			PlanModifiers: []string{nameModifier},
+			Validators:    []string{"stringvalidator.LengthAtLeast(1)"}, ValidatorType: "String",
+		}}, recordAttrs...)
+		if b.planModifierPkgs == nil {
+			b.planModifierPkgs = make(map[string]struct{})
+		}
+		b.planModifierPkgs["stringplanmodifier"] = struct{}{}
+		b.usesStringValidators = true
+	}
+
 	planModifierPkgs := sortedKeys(b.planModifierPkgs)
 	defaultPkgs := sortedKeys(b.defaultPkgs)
 
 	return ResourceView{
-		TypeName:    a.Name,
-		GoName:      goName,
-		RootModel:   rootStruct,
-		Description: a.Description,
-		SDKPackage:  primary.GoPackage,
-		APIStruct:   primary.GoApiStruct,
-		APIAccessor: defaultAPIAccessor(primary),
+		CallerAssignedID: callerAssignedID,
+		TypeName:         a.Name,
+		GoName:           goName,
+		RootModel:        rootStruct,
+		Description:      a.Description,
+		SDKPackage:       primary.GoPackage,
+		APIStruct:        primary.GoApiStruct,
+		APIAccessor:      defaultAPIAccessor(primary),
 		Create: CRUDCallView{
 			Method: lc.Create.GoMethod, GoRequestType: lc.Create.GoRequestType,
 			GoResponseType: lc.Create.GoResponseType, Arguments: createArgs,
@@ -2077,44 +2144,46 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	}, nil
 }
 
-// setUpdateBodyID fills in how a JSON:API update body sets its data.id: the
+// setRequestBodyID fills in how a JSON:API create or update body sets its data.id: the
 // expression, plus the argument view declaring a parsed local when the value
 // must be recovered from the string Terraform holds. The type comes from the
 // body's own data.id, never from the path parameter naming the same record
 // (rum_replay_playlist pairs an int64 path id with a string data.id); the path
 // argument's local is reused only when the types agree, found by name, since a
 // sub-resource's path names a parent first and index 0 is not the record id.
-func setUpdateBodyID(envelope *RequestEnvelopeView, call *model.SDKCall, args []SDKArgumentView) (reason string) {
+func setRequestBodyID(envelope *RequestEnvelopeView, call *model.SDKCall, args []SDKArgumentView, source string) (reason string) {
 	// A body declaring no id has nothing to set, and no generated setter.
 	if !call.RequestDeclaresID {
 		return ""
 	}
 	goType := call.RequestIDGoType
 	if goType == "" {
-		return "the update body's data.id carries a format the SDK generator itself cannot type, so there is no expression to set it from"
+		return "the request body's data.id has an unsupported type or enum; enums require a named string schema component"
 	}
 
 	// Reuse the path argument's local when the type matches, so the string is
 	// parsed once. By name, never by position.
 	for _, arg := range args {
-		if arg.TFName == "id" && arg.GoType == goType {
+		if source == "state.ID" && arg.TFName == "id" && arg.GoType == goType {
 			envelope.IDExpr = arg.Expression
 			return ""
 		}
 	}
 
 	// Otherwise the body parses under a name of its own, since a path argument
-	// of another type may already hold parsedIDVar here. hasEnum is always
-	// false: RequestIDGoType reads type and format only, so an enum-typed
-	// data.id arrives spelled "string".
+	// of another type may already hold parsedIDVar here.
 	expr, parsedVar, parseCall, unsupportedReason := idArgumentExpression(
-		call.GoPackage, "state.ID", requestIDVar, goType, false)
+		call.GoPackage, source, requestIDVar, goType, call.RequestIDEnum)
 	if unsupportedReason != "" {
 		return unsupportedReason
 	}
 	envelope.IDExpr = expr
 	if parsedVar != "" {
-		envelope.IDPrep = &SDKArgumentView{ParsedVar: parsedVar, ParseCall: parseCall, TFName: "id"}
+		tfName := "id"
+		if source == "state.Name" {
+			tfName = "name"
+		}
+		envelope.IDPrep = &SDKArgumentView{ParsedVar: parsedVar, ParseCall: parseCall, TFName: tfName}
 	}
 	return ""
 }
@@ -2143,7 +2212,7 @@ func buildImportView(pathAttrs []AttrView) ImportView {
 const (
 	requestDataVar       = "bodyData"
 	requestAttributesVar = "bodyAttributes"
-	// requestIDVar holds the update body's data.id when it must be parsed
+	// requestIDVar holds the request body's data.id when it must be parsed
 	// independently of the path argument, whose local is parsedIDVar.
 	requestIDVar = "parsedBodyId"
 	// parsedIDVar is the local idArgumentExpression declares for an id-aliased

@@ -539,8 +539,10 @@ type OneOfVariantAssignment struct {
 
 // ResourceView is the render-ready data context for the resource template.
 type ResourceView struct {
-	TypeName string
-	GoName   string
+	// CallerAssignedID separates the create name from computed API identity.
+	CallerAssignedID bool
+	TypeName         string
+	GoName           string
 	// RootModel is the Go struct the resource's state decodes into, named by
 	// modelNamer.root. Templates must not rebuild it from GoName.
 	RootModel   string

@@ -156,3 +156,37 @@ Describe the actual API values with a concrete schema or `$ref` under
 `additionalProperties`. If the API returns an array, correct the declaration to
 `type: array` with typed `items` instead. Do not choose a type merely to make
 generation pass: the generated SDK and Terraform mapping must match the response.
+
+## Optional create identity
+
+`optional create data.id is unsupported` means a writable ID is present but
+not required by the create schema. tfgen cannot infer caller/server assignment
+semantics and refuses to emit an incomplete resource. Omit that artifact until
+optional identity semantics are supported; preserve the authoritative API schema.
+See [identity support and limitations](scope.md#caller-assigned-resource-identity).
+
+## Caller-assigned identity conflicts
+
+`caller-assigned identity reserves name` means a payload attribute or parent
+path parameter already uses the generated create input's name. The generator
+cannot safely alias those fields. Omit the artifact until an explicit mapping
+is available; do not remove a real API property to bypass the collision.
+
+`caller-assigned identity requires a response data.id` means the read schema
+cannot supply API identity. Check the authoritative read schema and correct it
+only if the API actually returns that field.
+
+`data.id has an unsupported type or enum` means no safe SDK conversion was
+found. Check the request schema's component reference, scalar type, and format.
+See [identity support and limitations](scope.md#caller-assigned-resource-identity)
+for supported conversions; do not change an accurate API contract to force emission.
+
+## Non-string response identity
+
+`non-string response IDs are unsupported` means response `data.id` would produce
+a value incompatible with the string Terraform identity field. Generation stops
+instead of emitting an invalid Go assignment. This applies to resource and
+singular data-source identity, not ordinary payload attributes or plural result
+items. Preserve the authoritative response schema; a generator conversion needs
+to be implemented before adopting an API with such an ID. See
+[Terraform identity](scope.md#terraform-identity).
