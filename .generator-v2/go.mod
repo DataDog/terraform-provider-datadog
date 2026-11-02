@@ -2,6 +2,8 @@ module github.com/terraform-providers/terraform-provider-datadog/generator
 
 go 1.26.1
 
+toolchain go1.26.10
+
 require (
 	github.com/google/uuid v1.6.0
 	github.com/onsi/ginkgo/v2 v2.29.0
