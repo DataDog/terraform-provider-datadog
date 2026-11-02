@@ -123,6 +123,10 @@ Two of these are listed because earlier documentation described them as working.
 
 - Generated acceptance tests are scaffolds requiring human completion. This is
   currently the main cost of adopting a generated artifact.
+- Array `minItems` is not emitted as a Terraform list-length validator. For
+  example, a required `queries` list can still pass `terraform validate` when
+  empty even if the API requires at least one query. Check API constraints as
+  part of acceptance testing; requiredness alone does not enforce list length.
 - Artifact processing in the delivery pipeline is sequential.
 - Retirement is fail-closed: a file without the tfgen marker, or one with a recorded
   cassette, is never deleted automatically.
@@ -139,8 +143,10 @@ name when adopting an imported resource.
 
 The generator reserves `name` for this input and rejects collisions with an
 existing top-level attribute or path parameter. A response `data.id` is required.
-Named string enums use the SDK's validating constructor; anonymous and non-string
-enums fail generation. Scalar conversions are shared with update-body handling.
+Named enums backed by a Go string use the SDK's validating constructor before
+sending the request. Anonymous enums and enums whose format maps to another Go
+type (including numeric and UUID enums) fail generation. Scalar conversions are
+shared with update-body handling.
 
 An absent or read-only create ID retains computed-only identity. Optional writable
 create IDs fail generation because assignment semantics cannot be inferred.

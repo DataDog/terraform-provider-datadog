@@ -37,13 +37,13 @@ Declare the resource on the API tag; the block kind supplies its artifact kind.
 | Member | Effect if present | Effect if absent |
 |---|---|---|
 | `create` | Terraform `Create` calls it | Generation fails, the artifact should be a data source, not a resource |
-| `read` | `Read` refreshes state from it; required | Generation fails, the contract requires `read` or `search` |
+| `read` | `Read` refreshes state from it; required | Generation fails; resources require `read` |
 | `update` | Terraform `Update` calls it | **Every attribute becomes ForceNew**: any change destroys and recreates |
 | `delete` | Terraform `Destroy` calls it | Generation fails; delete is required |
 
-Omitting `update` is a design decision. If your
-API has no PATCH, practitioners get replace-on-change semantics, and they should
-learn that from your `tf_description`.
+Omitting `update` is a design decision. If your API has no update operation
+(such as PUT or PATCH), practitioners get replace-on-change semantics, and they
+should learn that from your `tf_description`.
 
 ## How the schema is built
 
@@ -57,24 +57,24 @@ OpenAPI shapes, one Terraform schema. Two consequences worth anticipating:
   incompatible on the other, the merge reports
   `resource schema merge conflict at "<path>"` rather than guessing.
 
-### The flag matrix
+### Attribute flags
 
-Generated resource attributes follow one rule set:
+The merged schema uses request/response presence, create requiredness, and
+applicable defaults to derive Required, Optional, and Computed flags. A
+response-only field is computed; a request-only field is not automatically
+computed. Check the generated schema against the API contract rather than
+assuming every non-required field is Optional+Computed.
 
-- a property in the create body's `required` list → **Required**
-- everything else → **Optional + Computed**, with `UseStateForUnknown`
-
-Optional+Computed means a practitioner may omit the field and let the API decide,
-without Terraform reporting perpetual drift. It also means you cannot tell from the
-schema alone whether the API will populate a field, which is why the acceptance
-test matters.
+Identity and write-only secrets have separate rules; see
+[caller-assigned identity](../reference/scope.md#caller-assigned-resource-identity)
+and [secret handling](../reference/scope.md#secrets-and-sensitivity).
 
 ### What gets dropped
 
 The generator flattens the JSON:API envelope and omits what Terraform should not
 manage, each with an informational diagnostic in the run report:
 
-- `data.id` becomes the top-level `id`; `data.type` is omitted
+- response `data.id` becomes the top-level computed `id`; `data.type` is omitted
 - fields under `data.attributes` are lifted to top level
 - `data.relationships`, sideloaded data, and request metadata are omitted
 - server-managed audit fields (`created_at`, `created_by`, `modified_at`) are
@@ -87,8 +87,10 @@ Read it rather than assuming the generator missed it.
 
 Generated Create and Update build the JSON:API envelope level by level, set the
 `type` discriminator from the spec, and, for update, source `data.id` from
-Terraform state rather than from the path parameter alone. Nested request objects
-are expanded and mapped back in `updateState`. Enum leaves get a
+Terraform state rather than from the path parameter alone. For create identity,
+see [the identity contract](../reference/scope.md#caller-assigned-resource-identity).
+Nested request objects are expanded and mapped back in `updateState`. Ordinary
+enum attributes get a
 `stringvalidator.OneOf` and are converted through their generated SDK type.
 
 ## Taking over a hand-written resource
@@ -110,9 +112,9 @@ annotation change.
 
 ## Then finish it
 
-Generation gives you a resource that compiles and a test that does not yet prove
-anything. A resource test must exercise the full lifecycle (create, update in
-place, and destroy), which is more work than a data-source test and more valuable.
+Generation produces code whose build and behavior still need verification. A
+resource test must exercise the full lifecycle (create, update in place, and
+destroy), which is more work than a data-source test and more valuable.
 
 For caller-assigned identity, see [identity support and limitations](../reference/scope.md#caller-assigned-resource-identity).
 

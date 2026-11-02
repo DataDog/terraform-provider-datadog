@@ -1,3 +1,9 @@
+---
+ddoc:
+  confluence_space: "API"
+  confluence_parent: "7291274458"
+---
+
 # 0005: Separate the caller-assigned create name from API identity
 
 For generator maintainers, this record defines identity for APIs requiring a caller-assigned JSON:API `data.id`.
@@ -14,8 +20,7 @@ because the computed value in its plan may be unknown. Update body IDs also use
 the API ID, so the body and path agree.
 
 This follows the separate name/ID shape of the hand-written metric resources.
-Unlike blindly copying their response mapping, refresh preserves the configured
-name: overwriting a required input with a normalized value violates Terraform's
+Refresh preserves the configured name: overwriting a required input with a normalized value violates Terraform's
 plan/state consistency contract. Keeping a single required `id` instead would
 lose canonical identity and assume the API accepts the original input forever.
 

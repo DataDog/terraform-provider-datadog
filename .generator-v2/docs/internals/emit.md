@@ -36,7 +36,7 @@ conditionals.
 `flattenEnvelope` turns the Datadog v2 JSON:API envelope into a flat Terraform
 schema:
 
-- `data.id` → top-level `id`
+- response `data.id` → top-level `id`
 - `data.attributes.*` → top-level attributes
 - `data.type` omitted
 - relationships, sideloaded data, request metadata omitted
@@ -49,10 +49,20 @@ source the same transformation applies per item.
 Every omission emits a diagnostic. Keep that property: the report is how a reviewer
 learns a field is gone.
 
+For resources, `BuildResourceView` additionally binds create-body identity from
+per-operation metadata in `SDKCall`. `setRequestBodyID` uses the create input or
+API ID as appropriate and retains named enum types through SDK conversion.
+`CallerAssignedID` selects prior-state ID recovery during Update and initialization
+of an absent name during import refresh. See the
+[identity contract](../reference/scope.md#caller-assigned-resource-identity) and
+[decision record](../decisions/0005-separate-create-name-from-api-id.md).
+
 ## State mapping
 
-Generated mapping uses the SDK's presence-aware getters, so an omitted API field
-becomes a Terraform **null** rather than an empty string or zero. Lists, maps, nested
+Generated mapping uses the SDK's presence-aware getters. Resource mapping starts
+from the plan or existing state and preserves values omitted by the response;
+new data-source results have no prior values to preserve. Do not substitute an
+empty string or zero for an absent value. Lists, maps, nested
 objects, enums, UUIDs, and dates each get type-specific mapping. A `oneOf` mapper
 verifies that exactly one alternative matched and produces a diagnostic for missing,
 ambiguous, or unparsed unions instead of partial state.
