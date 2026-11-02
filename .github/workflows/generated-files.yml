@@ -8,13 +8,11 @@ on:
     types: [opened, synchronize, reopened, labeled, unlabeled]
     branches:
       - master
-      - v3
   # Emit the existing skipped result on merge-queue pushes so requiring this
   # check does not leave queued commits waiting for a missing check.
   push:
     branches:
       - mq-working-branch-master-**
-      - mq-working-branch-v3-**
 
 concurrency:
   group: generated-files-${{ github.event.pull_request.number || github.run_id }}
