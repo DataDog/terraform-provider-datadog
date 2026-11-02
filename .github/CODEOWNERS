@@ -50,6 +50,7 @@ datadog/*datadog_slo_correction*                @DataDog/slo-app
 datadog/**/*datadog_dashboard*                    @DataDog/api-reliability @DataDog/dashboards-backend
 datadog/**/*datadog_downtime*                     @DataDog/api-reliability @DataDog/monitor-app
 datadog/**/*datadog_domain_allowlist*             @DataDog/api-reliability @DataDog/team-aaa
+datadog/**/*datadog_derived_metric*               @DataDog/api-reliability @DataDog/metrics-experience
 datadog/**/*datadog_logs*                         @DataDog/api-reliability @DataDog/logs-backend @DataDog/logs-core @DataDog/logs-forwarding @DataDog/logs-app
 datadog/**/*datadog_metric*                       @DataDog/api-reliability @DataDog/metrics-intake @DataDog/timeseries-query @DataDog/metrics-storage-platform
 datadog/**/*datadog_metric_tag_configuration*     @DataDog/api-reliability @DataDog/metrics-experience
@@ -124,6 +125,7 @@ datadog/**/*fleet_schedule*                       @DataDog/api-reliability @Data
 datadog/**/*github_oidc*                          @DataDog/api-reliability @DataDog/aaa-authn
 
 # Team-specific
+docs/resources/derived_metric.md                         @DataDog/metrics-experience
 docs/resources/observability_pipeline.md                  @DataDog/observability-pipelines
 docs/resources/on_call_team_routing_rules.md              @DataDog/on-call
 docs/resources/secure_embed_dashboard.md                  @DataDog/reporting-and-sharing
@@ -138,6 +140,7 @@ docs/resources/tag_rule.md                                @DataDog/aaa-governanc
 docs/resources/team*.md                                   @DataDog/teams-and-ownership
 docs/data-sources/team*.md                                @DataDog/teams-and-ownership
 examples/**/datadog_org_group*/**                         @DataDog/org-management
+examples/resources/datadog_derived_metric/**              @DataDog/metrics-experience
 examples/resources/datadog_on_call_team_routing_rules/**  @DataDog/on-call
 examples/resources/datadog_security_findings_*/**         @DataDog/k9-shared-capabilities
 examples/resources/datadog_service_access_token/          @DataDog/credential-management
