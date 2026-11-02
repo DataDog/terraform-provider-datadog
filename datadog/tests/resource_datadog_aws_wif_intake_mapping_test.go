@@ -32,6 +32,7 @@ func TestAccAwsWifIntakeMapping(t *testing.T) {
 				Config: testAccAwsWifIntakeMappingConfig(accountID, "DatadogAgentRole"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckAwsWifIntakeMappingExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "par_enrollment_enabled", "false"),
 					func(state *terraform.State) error {
 						originalID = state.RootModule().Resources[resourceName].Primary.ID
 						return nil
@@ -48,6 +49,7 @@ func TestAccAwsWifIntakeMapping(t *testing.T) {
 				Config: testAccAwsWifIntakeMappingConfig(accountID, "DatadogAgentRoleUpdated"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckAwsWifIntakeMappingExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "par_enrollment_enabled", "false"),
 					resource.TestCheckResourceAttr(resourceName, "arn_pattern", fmt.Sprintf("arn:aws:sts::%s:assumed-role/DatadogAgentRoleUpdated/*", accountID)),
 					func(state *terraform.State) error {
 						if state.RootModule().Resources[resourceName].Primary.ID == originalID {

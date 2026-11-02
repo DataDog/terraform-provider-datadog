@@ -35,6 +35,7 @@ resource "datadog_aws_wif_intake_mapping" "agent" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `par_enrollment_enabled` (Boolean) Whether the mapping allows Private Action Runner enrollment. This permission is managed separately from the ARN pattern and cannot be changed with this resource. Defaults to false when omitted by the API.
 
 ## Import
 

@@ -24,17 +24,21 @@ func TestAwsWifIntakeMappingCreate(t *testing.T) {
 	)
 
 	tests := []struct {
-		name         string
-		errorBody    string
-		wantDetail   string
-		responseType string
-		cancel       bool
-		wantGet      bool
-		success      bool
-		propagation  bool
-		missingID    bool
+		name              string
+		errorBody         string
+		wantDetail        string
+		responseType      string
+		cancel            bool
+		wantGet           bool
+		success           bool
+		propagation       bool
+		missingID         bool
+		parEnrollment     string
+		wantParEnrollment bool
 	}{
-		{name: "success", responseType: "aws_cloud_auth_intake_mapping", wantGet: true, success: true},
+		{name: "success with enrollment omitted", responseType: "aws_cloud_auth_intake_mapping", wantGet: true, success: true},
+		{name: "success with enrollment enabled", responseType: "aws_cloud_auth_intake_mapping", wantGet: true, success: true, parEnrollment: `,"par_enrollment_enabled":true`, wantParEnrollment: true},
+		{name: "success with enrollment disabled", responseType: "aws_cloud_auth_intake_mapping", wantGet: true, success: true, parEnrollment: `,"par_enrollment_enabled":false`},
 		{name: "integration propagation retries", responseType: "aws_cloud_auth_intake_mapping", wantGet: true, success: true, propagation: true},
 		{name: "missing ID rejected", responseType: "aws_cloud_auth_intake_mapping", missingID: true},
 		{
@@ -108,12 +112,12 @@ func TestAwsWifIntakeMappingCreate(t *testing.T) {
 						responseID = ""
 					}
 					w.WriteHeader(http.StatusCreated)
-					fmt.Fprintf(w, `{"data":{"id":%q,"type":%q,"attributes":{"arn_pattern":%q,"par_enrollment_enabled":true}}}`,
-						responseID, test.responseType, arnPattern)
+					fmt.Fprintf(w, `{"data":{"id":%q,"type":%q,"attributes":{"arn_pattern":%q%s}}}`,
+						responseID, test.responseType, arnPattern, test.parEnrollment)
 				case request.Method == http.MethodGet && request.URL.Path == "/api/v2/wif/aws/intake_mapping/"+mappingID:
 					sawGet = true
 					if test.success {
-						fmt.Fprintf(w, `{"data":{"id":%q,"type":"aws_cloud_auth_intake_mapping","attributes":{"arn_pattern":%q,"par_enrollment_enabled":true}}}`, mappingID, arnPattern)
+						fmt.Fprintf(w, `{"data":{"id":%q,"type":"aws_cloud_auth_intake_mapping","attributes":{"arn_pattern":%q%s}}}`, mappingID, arnPattern, test.parEnrollment)
 						return
 					}
 					w.WriteHeader(http.StatusForbidden)
@@ -139,8 +143,9 @@ func TestAwsWifIntakeMappingCreate(t *testing.T) {
 			var schemaResponse resource.SchemaResponse
 			r.Schema(ctx, resource.SchemaRequest{}, &schemaResponse)
 			planned := awsWifIntakeMappingModel{
-				ID:         types.StringUnknown(),
-				ArnPattern: types.StringValue(arnPattern),
+				ID:                   types.StringUnknown(),
+				ParEnrollmentEnabled: types.BoolUnknown(),
+				ArnPattern:           types.StringValue(arnPattern),
 			}
 			plan := tfsdk.Plan{Schema: schemaResponse.Schema}
 			if diags := plan.Set(ctx, &planned); diags.HasError() {
@@ -189,6 +194,9 @@ func TestAwsWifIntakeMappingCreate(t *testing.T) {
 			if diags := response.State.Get(ctx, &state); diags.HasError() {
 				t.Fatalf("reading response state: %v", diags.Errors())
 			}
+			if test.success && !state.ParEnrollmentEnabled.Equal(types.BoolValue(test.wantParEnrollment)) {
+				t.Errorf("par_enrollment_enabled = %v, want %t", state.ParEnrollmentEnabled, test.wantParEnrollment)
+			}
 			if got := state.ID.ValueString(); got != mappingID {
 				t.Fatalf("id = %q, want %q", got, mappingID)
 			}
@@ -201,12 +209,16 @@ func TestAwsWifIntakeMappingCreate(t *testing.T) {
 
 func TestAwsWifIntakeMappingRead(t *testing.T) {
 	for _, tc := range []struct {
-		name        string
-		statuses    []int
-		cancel      bool
-		wantError   bool
-		wantRemoved bool
+		name              string
+		statuses          []int
+		cancel            bool
+		wantError         bool
+		wantRemoved       bool
+		parEnrollment     string
+		wantParEnrollment bool
 	}{
+		{name: "enrollment enabled", statuses: []int{http.StatusOK}, parEnrollment: `,"par_enrollment_enabled":true`, wantParEnrollment: true},
+		{name: "enrollment disabled", statuses: []int{http.StatusOK}, parEnrollment: `,"par_enrollment_enabled":false`},
 		{name: "transient 404 preserves mapping", statuses: []int{http.StatusNotFound, http.StatusOK}},
 		{name: "persistent 404 removes mapping", statuses: []int{http.StatusNotFound}, wantRemoved: true},
 		{name: "forbidden preserves mapping", statuses: []int{http.StatusForbidden}, wantError: true},
@@ -227,7 +239,7 @@ func TestAwsWifIntakeMappingRead(t *testing.T) {
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(status)
 				if status == http.StatusOK {
-					fmt.Fprint(w, `{"data":{"id":"mapping-id","type":"aws_cloud_auth_intake_mapping","attributes":{"arn_pattern":"arn:aws:sts::123456789012:assumed-role/terraform-runner/*"}}}`)
+					fmt.Fprintf(w, `{"data":{"id":"mapping-id","type":"aws_cloud_auth_intake_mapping","attributes":{"arn_pattern":"arn:aws:sts::123456789012:assumed-role/terraform-runner/*"%s}}}`, tc.parEnrollment)
 				} else {
 					fmt.Fprint(w, `{"errors":[{"detail":"read failed"}]}`)
 				}
@@ -248,8 +260,9 @@ func TestAwsWifIntakeMappingRead(t *testing.T) {
 			var schemaResponse resource.SchemaResponse
 			r.Schema(ctx, resource.SchemaRequest{}, &schemaResponse)
 			prior := awsWifIntakeMappingModel{
-				ID:         types.StringValue("mapping-id"),
-				ArnPattern: types.StringValue("arn:aws:sts::123456789012:assumed-role/terraform-runner/*"),
+				ID:                   types.StringValue("mapping-id"),
+				ParEnrollmentEnabled: types.BoolValue(true),
+				ArnPattern:           types.StringValue("arn:aws:sts::123456789012:assumed-role/terraform-runner/*"),
 			}
 			state := tfsdk.State{Schema: schemaResponse.Schema}
 			if diags := state.Set(ctx, &prior); diags.HasError() {
@@ -262,6 +275,12 @@ func TestAwsWifIntakeMappingRead(t *testing.T) {
 			}
 			if response.State.Raw.IsNull() != tc.wantRemoved {
 				t.Fatalf("state removed = %t, want %t", response.State.Raw.IsNull(), tc.wantRemoved)
+			}
+			if !tc.wantError && !tc.wantRemoved {
+				prior.ParEnrollmentEnabled = types.BoolValue(tc.wantParEnrollment)
+				if diags := state.Set(ctx, &prior); diags.HasError() {
+					t.Fatal(diags)
+				}
 			}
 			if !tc.wantRemoved && !response.State.Raw.Equal(state.Raw) {
 				t.Fatal("read did not preserve the existing mapping")

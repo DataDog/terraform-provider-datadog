@@ -124,6 +124,8 @@ datadog/**/*fleet_schedule*                       @DataDog/api-reliability @Data
 datadog/**/*github_oidc*                          @DataDog/api-reliability @DataDog/delegated-auth-login @DataDog/credential-management
 datadog/**/*aws_wif*                              @DataDog/api-reliability @DataDog/delegated-auth-login @DataDog/credential-management
 
+datadog/fwprovider/cloud_auth_mapping*           @DataDog/api-reliability @DataDog/delegated-auth-login @DataDog/credential-management
+
 # Team-specific
 docs/resources/observability_pipeline.md                  @DataDog/observability-pipelines
 docs/resources/on_call_team_routing_rules.md              @DataDog/on-call

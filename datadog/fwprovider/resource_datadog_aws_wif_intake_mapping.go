@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"sync"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -37,8 +36,9 @@ type awsWifIntakeMappingResource struct {
 }
 
 type awsWifIntakeMappingModel struct {
-	ID         types.String `tfsdk:"id"`
-	ArnPattern types.String `tfsdk:"arn_pattern"`
+	ID                   types.String `tfsdk:"id"`
+	ArnPattern           types.String `tfsdk:"arn_pattern"`
+	ParEnrollmentEnabled types.Bool   `tfsdk:"par_enrollment_enabled"`
 }
 
 func NewAwsWifIntakeMappingResource() resource.Resource {
@@ -54,6 +54,10 @@ func (r *awsWifIntakeMappingResource) Schema(_ context.Context, _ resource.Schem
 		Description: "Provides an AWS Workload Identity Federation (WIF) intake mapping. The mapping allows Datadog Agents with an AWS identity matching `arn_pattern` to authenticate for telemetry submission using a Datadog-managed, automatically rotated API key. The AWS account in the ARN must already be integrated with Datadog, and managed API key rotation must be enabled for the organization. Creating the mapping requires the Workload Identity Federation write permission. Configure the Agent separately to use WIF with the target organization UUID. The API rejects ARN patterns that conflict with existing intake or identity mappings. Mapping changes may take several minutes to affect authentication. This resource uses a public beta API and is subject to change.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
+			"par_enrollment_enabled": schema.BoolAttribute{
+				Description: "Whether the mapping allows Private Action Runner enrollment. This permission is managed separately from the ARN pattern and cannot be changed with this resource. Defaults to false when omitted by the API.",
+				Computed:    true,
+			},
 			"arn_pattern": schema.StringAttribute{
 				Description: "The AWS caller ARN pattern allowed to authenticate. Currently, only the `aws` partition is supported. For role-based authentication, use the STS assumed-role ARN returned by `aws sts get-caller-identity`, not the IAM role ARN shown in the AWS console. A pattern may contain one wildcard only, as a trailing `/*` after a specific resource; for example, `arn:aws:sts::123456789012:assumed-role/DatadogAgentRole/*`.",
 				Required:    true,
@@ -194,29 +198,10 @@ func (r *awsWifIntakeMappingResource) Read(ctx context.Context, request resource
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-// A newly created mapping can intermittently return 404 even after a successful
-// GET. Retry before treating it as deleted so a refresh cannot orphan it.
 func (r *awsWifIntakeMappingResource) readWithRetry(ctx context.Context, id string) (datadogV2.AWSCloudAuthIntakeMappingResponse, *http.Response, error) {
-	var result datadogV2.AWSCloudAuthIntakeMappingResponse
-	var httpResponse *http.Response
-	// RetryContext can return on cancellation while its callback is still running.
-	var resultMu sync.Mutex
-	err := retry.RetryContext(ctx, awsWifIntakeMappingVisibilityTimeout, func() *retry.RetryError {
-		readResponse, readHTTPResponse, err := r.Api.GetAWSCloudAuthIntakeMapping(r.Auth, id)
-		resultMu.Lock()
-		result, httpResponse = readResponse, readHTTPResponse
-		resultMu.Unlock()
-		if err == nil {
-			return nil
-		}
-		if readHTTPResponse != nil && readHTTPResponse.StatusCode == http.StatusNotFound {
-			return retry.RetryableError(err)
-		}
-		return retry.NonRetryableError(err)
+	return readCloudAuthMappingWithRetry(ctx, awsWifIntakeMappingVisibilityTimeout, func() (datadogV2.AWSCloudAuthIntakeMappingResponse, *http.Response, error) {
+		return r.Api.GetAWSCloudAuthIntakeMapping(r.Auth, id)
 	})
-	resultMu.Lock()
-	defer resultMu.Unlock()
-	return result, httpResponse, err
 }
 
 func (r *awsWifIntakeMappingResource) Update(_ context.Context, _ resource.UpdateRequest, response *resource.UpdateResponse) {
@@ -247,4 +232,5 @@ func (r *awsWifIntakeMappingResource) updateState(state *awsWifIntakeMappingMode
 
 	state.ID = types.StringValue(data.GetId())
 	state.ArnPattern = types.StringValue(attributes.GetArnPattern())
+	state.ParEnrollmentEnabled = types.BoolValue(attributes.GetParEnrollmentEnabled())
 }
