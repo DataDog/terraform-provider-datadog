@@ -4428,6 +4428,92 @@ resource "datadog_observability_pipeline" "amazon_opensearch_basic" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_amazonOpenSearchDestination_endpointAndDataStream(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.amazon_opensearch_data_stream"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "amazon_opensearch_data_stream" {
+  name = "amazon opensearch data stream"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+    destination {
+      id     = "destination-1"
+      inputs = ["source-1"]
+      amazon_opensearch {
+        endpoint_url_key = "AMAZON_OPENSEARCH_ENDPOINT_URL"
+
+        auth {
+          strategy     = "basic"
+          username_key = "AMAZON_OPENSEARCH_USERNAME"
+          password_key = "AMAZON_OPENSEARCH_PASSWORD"
+        }
+
+        data_stream {
+          dtype     = "logs"
+          dataset   = "app"
+          namespace = "default"
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.endpoint_url_key", "AMAZON_OPENSEARCH_ENDPOINT_URL"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.auth.0.strategy", "basic"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.auth.0.username_key", "AMAZON_OPENSEARCH_USERNAME"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.auth.0.password_key", "AMAZON_OPENSEARCH_PASSWORD"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.data_stream.0.dtype", "logs"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.data_stream.0.dataset", "app"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.data_stream.0.namespace", "default"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.bulk_index"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "amazon_opensearch_data_stream" {
+  name = "amazon opensearch data stream"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+    destination {
+      id     = "destination-1"
+      inputs = ["source-1"]
+      amazon_opensearch {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.#", "1"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.endpoint_url_key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.auth.#", "0"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.data_stream.#", "0"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_datadogTagsProcessor(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
