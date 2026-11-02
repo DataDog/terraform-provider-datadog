@@ -138,7 +138,7 @@ jobs:
         terraform_version:
           - "1.1.5"
           - "1.13.1"
-        shard: [0, 1, 2, 3]
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
         platform: [ubuntu-latest]
 
     runs-on: ${{ matrix.platform }}
@@ -162,7 +162,7 @@ jobs:
       - name: Build shard test args
         id: shard
         run: |
-          SHARD_REGEX=$(python3 scripts/shard_tests.py --shard ${{ matrix.shard }} --total 4 --escape-for-make)
+          SHARD_REGEX=$(python3 scripts/shard_tests.py --shard ${{ matrix.shard }} --total 8 --escape-for-make)
           echo "test_args=-run '${SHARD_REGEX}'" >> "$GITHUB_OUTPUT"
       - name: Test
         run: make testacc
@@ -180,7 +180,7 @@ jobs:
         tofu_version:
           - "1.10.5"
           - "1.11.2"
-        shard: [0, 1, 2, 3]
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
 
     runs-on: [ubuntu-latest]
     steps:
@@ -204,7 +204,7 @@ jobs:
       - name: Build shard test args
         id: shard
         run: |
-          SHARD_REGEX=$(python3 scripts/shard_tests.py --shard ${{ matrix.shard }} --total 4 --escape-for-make)
+          SHARD_REGEX=$(python3 scripts/shard_tests.py --shard ${{ matrix.shard }} --total 8 --escape-for-make)
           echo "test_args=-run '${SHARD_REGEX}'" >> "$GITHUB_OUTPUT"
       - name: Test
         run: make testacc
