@@ -2057,13 +2057,15 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 			}
 		}
 		nameModifier := "stringplanmodifier.RequiresReplace"
+		nameDescription := "Caller-assigned name sent as the create ID. Changing this value replaces the resource. After import, configure the canonical API ID as the name to avoid replacement."
 		if !lc.UpdateUnsupported {
 			nameModifier = goName + "NameRequiresReplace"
+			nameDescription = "Caller-assigned name sent as the create ID. After import, the first apply adopts the configured name through an update using the canonical API ID, without replacing the resource. Once the name is stored in state, changing it replaces the resource."
 		}
 		models[0].Fields = append(models[0].Fields, ModelFieldView{GoField: "Name", GoType: "types.String", TFName: "name"})
 		recordAttrs = append([]AttrView{{
 			TFName: "name", TFType: "schema.StringAttribute",
-			Description: "Caller-assigned name sent as the create ID. Changing this value replaces the resource.",
+			Description: nameDescription,
 			Required:    true, PlanModifierType: "String",
 			PlanModifiers: []string{nameModifier},
 			Validators:    []string{"stringvalidator.LengthAtLeast(1)"}, ValidatorType: "String",
