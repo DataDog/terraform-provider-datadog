@@ -879,10 +879,12 @@ type SDKCall struct {
 	// RequestIDRequired and RequestIDReadOnly come from this operation's create/update schema.
 	RequestIDRequired bool
 	RequestIDReadOnly bool
+	// RequestIDEnum marks a named string enum; other enum shapes fail closed.
+	RequestIDEnum bool
 	// RequestIDGoType is the Go type the SDK's SetId takes on this body's data
-	// member, derived from the data.id schema via SDKScalarGoType, e.g.
-	// "string" or "uuid.UUID". Empty when the body declares no id, or its
-	// format is one the SDK generator cannot type. Read from the body, not
+	// member, derived from the data.id scalar schema or named string enum, e.g.
+	// "string", "uuid.UUID", or an enum component. Empty for unsupported enums,
+	// absent IDs, or formats the SDK cannot type. Read from the body, not
 	// borrowed from the path parameter: an int64 path id can carry a string id.
 	RequestIDGoType string
 	// RequestDiscriminator describes the request body's JSON:API data.type

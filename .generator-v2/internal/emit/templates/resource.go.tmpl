@@ -148,6 +148,11 @@ func (r *{{ .GoName }}Resource) Read(ctx context.Context, request resource.ReadR
 		return
 	}
 {{ template "commitState" .Read }}
+{{- if .CallerAssignedID }}
+	if !response.Diagnostics.HasError() && state.Name.IsNull() {
+		response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("name"), state.ID)...)
+	}
+{{- end }}
 }
 
 func (r *{{ .GoName }}Resource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
@@ -156,6 +161,12 @@ func (r *{{ .GoName }}Resource) Update(ctx context.Context, request resource.Upd
 {{- else }}
 	var state {{ .RootModel }}
 {{ template "decodePlan" . }}
+{{- if .CallerAssignedID }}
+	response.Diagnostics.Append(request.State.GetAttribute(ctx, path.Root("id"), &state.ID)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+{{- end }}
 
 {{ template "writeOnlySecretResults" .Update.WriteOnlySecrets }}
 {{ template "argPrep" .Update.Arguments }}

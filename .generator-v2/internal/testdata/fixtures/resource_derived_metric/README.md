@@ -5,5 +5,5 @@ create schema requires `data.id`; no production resource is registered by this f
 
 The golden test checks generated output. The integration test generates twice,
 checks stability, then runs `identity_test.go.txt` against the generated resource
-with a local HTTP server. It covers required ID configuration, request identity,
+with a local HTTP server. It covers required name configuration, computed API identity, canonical-ID routing, PUT bodies,
 replacement modifiers, CRUD state, and import/refresh without live API calls.

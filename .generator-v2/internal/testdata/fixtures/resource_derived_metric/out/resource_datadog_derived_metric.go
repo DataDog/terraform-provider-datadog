@@ -26,6 +26,7 @@ var (
 type resourceDatadogDerivedMetric_Model struct {
 	ID         types.String                                               `tfsdk:"id"`
 	Definition *resourceDatadogDerivedMetric_DerivedMetricDefinitionModel `tfsdk:"definition"`
+	Name       types.String                                               `tfsdk:"name"`
 }
 
 type resourceDatadogDerivedMetric_DerivedMetricDefinitionModel struct {
@@ -63,8 +64,9 @@ func (r *datadogDerivedMetricResource) Schema(_ context.Context, _ resource.Sche
 		Description: "Manages a derived metric computed from a formula and metric queries.",
 
 		Attributes: map[string]schema.Attribute{
-			"id": schema.StringAttribute{
-				Description: "Caller-assigned resource ID. Changing this value replaces the resource.",
+			"id": utils.ResourceIDAttribute(),
+			"name": schema.StringAttribute{
+				Description: "Caller-assigned name sent as the create ID. Changing this value replaces the resource.",
 				Required:    true,
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
@@ -148,7 +150,7 @@ func (r *datadogDerivedMetricResource) Create(ctx context.Context, request resou
 	bodyAttributes.SetDefinition(*definitionValue)
 	bodyData := datadogV2.NewDerivedMetricCreateDataWithDefaults()
 	bodyData.SetType(datadogV2.DerivedMetricsType("derived_metrics"))
-	bodyData.SetId(state.ID.ValueString())
+	bodyData.SetId(state.Name.ValueString())
 	bodyData.SetAttributes(*bodyAttributes)
 	body := datadogV2.NewDerivedMetricCreateRequestWithDefaults()
 	body.SetData(*bodyData)
@@ -187,6 +189,9 @@ func (r *datadogDerivedMetricResource) Read(ctx context.Context, request resourc
 	}
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	if !response.Diagnostics.HasError() && state.Name.IsNull() {
+		response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("name"), state.ID)...)
+	}
 }
 
 func (r *datadogDerivedMetricResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
@@ -197,6 +202,10 @@ func (r *datadogDerivedMetricResource) Update(ctx context.Context, request resou
 		return
 	}
 	response.Diagnostics.Append(plan.As(ctx, &state, basetypes.ObjectAsOptions{UnhandledUnknownAsEmpty: true})...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+	response.Diagnostics.Append(request.State.GetAttribute(ctx, path.Root("id"), &state.ID)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -262,6 +271,9 @@ func (r *datadogDerivedMetricResource) Delete(ctx context.Context, request resou
 func (r *datadogDerivedMetricResource) updateState(ctx context.Context, state *resourceDatadogDerivedMetric_Model, resp *datadogV2.DerivedMetricResponse) diag.Diagnostics {
 	var diags diag.Diagnostics
 	attributes := resp.Data.GetAttributes()
+	if id, ok := resp.Data.GetIdOk(); ok && id != nil {
+		state.ID = types.StringValue(*id)
+	}
 	if definition, ok := attributes.GetDefinitionOk(); ok && definition != nil {
 		definitionModel := state.Definition
 		if definitionModel == nil {

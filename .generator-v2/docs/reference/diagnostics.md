@@ -163,4 +163,4 @@ generation pass: the generated SDK and Terraform mapping must match the response
 not required by the create schema. tfgen cannot infer caller/server assignment
 semantics and refuses to emit an incomplete resource. Omit that artifact until
 optional identity semantics are supported; preserve the authoritative API schema.
-Required caller-assigned IDs and absent/read-only server-assigned IDs are supported.
+See [identity support and limitations](scope.md#caller-assigned-resource-identity).

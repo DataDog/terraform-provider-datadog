@@ -130,14 +130,21 @@ Two of these are listed because earlier documentation described them as working.
 ## Caller-assigned resource identity
 
 When the create request requires a writable JSON:API `data.id`, tfgen exposes
-a required nonempty string `id` with replacement-on-change semantics and sends it in
-the create body. No additional annotation is needed. SDK scalar conversions
-are shared with update-body identity handling. Read, update, delete, and import
-continue using the same Terraform identity. Response mapping preserves the
-configured or imported ID even when the API returns a canonicalized value.
+required nonempty `name` with replacement-on-change semantics. Create sends that
+value as `data.id`; computed `id` comes from the API response. Read, update
+(including its body ID), and delete use the API ID, including when it differs
+from the configured name. Refresh preserves the configured name. Import accepts
+the API ID and initializes an absent name from the refreshed ID; configure that
+name when adopting an imported resource.
+
+The generator reserves `name` for this input and rejects collisions with an
+existing top-level attribute or path parameter. A response `data.id` is required.
+Named string enums use the SDK's validating constructor; anonymous and non-string
+enums fail generation. Scalar conversions are shared with update-body handling.
 
 An absent or read-only create ID retains computed-only identity. Optional writable
-create IDs fail generation with an actionable diagnostic: the generator cannot
-infer whether callers or the server should assign them. Do not change the API
-schema to bypass this diagnostic. Lifecycle acceptance coverage is still required
-before adopting a generated resource.
+create IDs fail generation because assignment semantics cannot be inferred.
+Preserve the authoritative API schema instead of bypassing these diagnostics.
+Lifecycle acceptance coverage is still required before adopting a generated
+resource. The HTTP fixture tests canonical-ID routing, not the live API's
+normalization rules. See the [identity decision](../decisions/0005-separate-create-name-from-api-id.md).

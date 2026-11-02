@@ -1957,7 +1957,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		case !lc.Create.RequestIDRequired:
 			reason = "optional create data.id is unsupported: the generator cannot infer whether identity is caller-assigned or server-assigned; omit this artifact until optional identity semantics are supported"
 		case createEnvelope != nil:
-			reason = setRequestBodyID(createEnvelope, lc.Create, createArgs)
+			reason = setRequestBodyID(createEnvelope, lc.Create, createArgs, "state.Name")
 		}
 		if reason != "" {
 			b.unsupported = append(b.unsupported, UnsupportedNode{Path: "sdk." + lc.Create.GoMethod + ".data.id", Reason: reason})
@@ -1994,7 +1994,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		// Keyed on whether the body itself declares an id, and of what type —
 		// not on env.idAssign, which describes only the response side.
 		if envelope := updateView.Envelope; envelope != nil {
-			if reason := setRequestBodyID(envelope, lc.Update, updateArgs); reason != "" {
+			if reason := setRequestBodyID(envelope, lc.Update, updateArgs, "state.ID"); reason != "" {
 				b.unsupported = append(b.unsupported, UnsupportedNode{
 					Path:   "sdk." + lc.Update.GoMethod + ".data.id",
 					Reason: reason,
@@ -2026,16 +2026,31 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	}
 
 	assignments := recordScalars
-	// Caller-assigned identity comes from the plan (or existing/imported state).
-	// API canonicalization must not overwrite a required, non-computed value.
-	if env.idAssign != nil && !callerAssignedID {
+	if env.idAssign != nil {
 		assignments = append([]StateAssignment{*env.idAssign}, assignments...)
 	}
 
 	if callerAssignedID {
+		hasResponseID := false
+		for _, attr := range topLevel {
+			if tfNameOf(attr.Path) == "data" {
+				for _, child := range attr.Children {
+					hasResponseID = hasResponseID || (tfNameOf(child.Path) == "id" && child.InResponse)
+				}
+			}
+		}
+		if !hasResponseID {
+			return ResourceView{}, &UnsupportedEmitError{Nodes: []UnsupportedNode{{Path: "response.data.id", Reason: "caller-assigned identity requires a response data.id for canonical API identity"}}}
+		}
+		for _, field := range models[0].Fields {
+			if field.TFName == "name" {
+				return ResourceView{}, &UnsupportedEmitError{Nodes: []UnsupportedNode{{Path: "response.name", Reason: "caller-assigned identity reserves name; an existing attribute or path parameter collides with it"}}}
+			}
+		}
+		models[0].Fields = append(models[0].Fields, ModelFieldView{GoField: "Name", GoType: "types.String", TFName: "name"})
 		recordAttrs = append([]AttrView{{
-			TFName: "id", TFType: "schema.StringAttribute",
-			Description: "Caller-assigned resource ID. Changing this value replaces the resource.",
+			TFName: "name", TFType: "schema.StringAttribute",
+			Description: "Caller-assigned name sent as the create ID. Changing this value replaces the resource.",
 			Required:    true, PlanModifierType: "String",
 			PlanModifiers: []string{"stringplanmodifier.RequiresReplace"},
 			Validators:    []string{"stringvalidator.LengthAtLeast(1)"}, ValidatorType: "String",
@@ -2051,13 +2066,14 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	defaultPkgs := sortedKeys(b.defaultPkgs)
 
 	return ResourceView{
-		TypeName:    a.Name,
-		GoName:      goName,
-		RootModel:   rootStruct,
-		Description: a.Description,
-		SDKPackage:  primary.GoPackage,
-		APIStruct:   primary.GoApiStruct,
-		APIAccessor: defaultAPIAccessor(primary),
+		CallerAssignedID: callerAssignedID,
+		TypeName:         a.Name,
+		GoName:           goName,
+		RootModel:        rootStruct,
+		Description:      a.Description,
+		SDKPackage:       primary.GoPackage,
+		APIStruct:        primary.GoApiStruct,
+		APIAccessor:      defaultAPIAccessor(primary),
 		Create: CRUDCallView{
 			Method: lc.Create.GoMethod, GoRequestType: lc.Create.GoRequestType,
 			GoResponseType: lc.Create.GoResponseType, Arguments: createArgs,
@@ -2077,7 +2093,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 			Attributes:          recordAttrs,
 			Blocks:              recordBlocks,
 			HasWriteOnlySecrets: hasWriteOnlySecrets(recordAttrs),
-			IncludeResourceID:   !callerAssignedID,
+			IncludeResourceID:   true,
 		},
 		State: StateView{
 			ParamName:   "resp",
@@ -2114,37 +2130,39 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 // (rum_replay_playlist pairs an int64 path id with a string data.id); the path
 // argument's local is reused only when the types agree, found by name, since a
 // sub-resource's path names a parent first and index 0 is not the record id.
-func setRequestBodyID(envelope *RequestEnvelopeView, call *model.SDKCall, args []SDKArgumentView) (reason string) {
+func setRequestBodyID(envelope *RequestEnvelopeView, call *model.SDKCall, args []SDKArgumentView, source string) (reason string) {
 	// A body declaring no id has nothing to set, and no generated setter.
 	if !call.RequestDeclaresID {
 		return ""
 	}
 	goType := call.RequestIDGoType
 	if goType == "" {
-		return "the request body's data.id carries a format the SDK generator itself cannot type, so there is no expression to set it from"
+		return "the request body's data.id has an unsupported type or enum; enums require a named string schema component"
 	}
 
 	// Reuse the path argument's local when the type matches, so the string is
 	// parsed once. By name, never by position.
 	for _, arg := range args {
-		if arg.TFName == "id" && arg.GoType == goType {
+		if source == "state.ID" && arg.TFName == "id" && arg.GoType == goType {
 			envelope.IDExpr = arg.Expression
 			return ""
 		}
 	}
 
 	// Otherwise the body parses under a name of its own, since a path argument
-	// of another type may already hold parsedIDVar here. hasEnum is always
-	// false: RequestIDGoType reads type and format only, so an enum-typed
-	// data.id arrives spelled "string".
+	// of another type may already hold parsedIDVar here.
 	expr, parsedVar, parseCall, unsupportedReason := idArgumentExpression(
-		call.GoPackage, "state.ID", requestIDVar, goType, false)
+		call.GoPackage, source, requestIDVar, goType, call.RequestIDEnum)
 	if unsupportedReason != "" {
 		return unsupportedReason
 	}
 	envelope.IDExpr = expr
 	if parsedVar != "" {
-		envelope.IDPrep = &SDKArgumentView{ParsedVar: parsedVar, ParseCall: parseCall, TFName: "id"}
+		tfName := "id"
+		if source == "state.Name" {
+			tfName = "name"
+		}
+		envelope.IDPrep = &SDKArgumentView{ParsedVar: parsedVar, ParseCall: parseCall, TFName: tfName}
 	}
 	return ""
 }

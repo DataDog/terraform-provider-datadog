@@ -126,6 +126,14 @@ func bodyCall(op *Operation, aliasTerminalID bool) *SDKCall {
 		call.RequestIDRequired = slices.Contains(data.Required, "id")
 		call.RequestIDReadOnly = id.ReadOnly
 		call.RequestIDGoType, _ = SDKScalarGoType(id)
+		if len(id.Enum) > 0 {
+			scalarType := call.RequestIDGoType
+			call.RequestIDGoType = ""
+			if scalarType == "string" && IsBareSDKTypeName(id.RefName) {
+				call.RequestIDGoType = id.RefName
+				call.RequestIDEnum = true
+			}
+		}
 	}
 	// SDKDefaulted reproduces the SDK generator's own predicate rather than
 	// reading the generated source: model_simple.j2 assigns a property in
