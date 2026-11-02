@@ -2,7 +2,10 @@ package emit
 
 import (
 	"errors"
+	"go/ast"
 	"go/format"
+	goparser "go/parser"
+	"go/token"
 	"path/filepath"
 	"strings"
 
@@ -95,7 +98,7 @@ var _ = Describe("BuildResourceView", func() {
 			},
 		}))
 		Expect(view.Read).To(Equal(CRUDCallView{
-			Method: "GetIncidentType", GoResponseType: "IncidentTypeResponse", HasResponseBody: true,
+			Method: "GetIncidentType", GoResponseType: "IncidentTypeResponse",
 			Arguments: []SDKArgumentView{{Expression: "state.ID.ValueString()", TFName: "id", GoType: "string"}},
 		}))
 		By("Update builds its own envelope: a PATCH's data and attributes components are distinct types from Create's")
@@ -501,18 +504,27 @@ var _ = Describe("BuildResourceView", func() {
 		Expect(err.Error()).To(ContainSubstring("differs from Read's"))
 	})
 
-	It("fails when Read's response is unnamed, even if a bodyless Create matches it", func() {
-		op := incidentTypeResourceOperation(true)
-		op.ResolvedGroup.Read.ResponseRefName = ""
-		op.ResolvedGroup.Create.ResponseRefName = ""
-		op.ResolvedGroup.Create.ResponseSchema = nil
-
-		art, err := model.BuildArtifact(op)
-		Expect(err).NotTo(HaveOccurred())
-
-		_, err = BuildResourceView(art)
-		Expect(err).To(MatchError(ContainSubstring("Read has no named response type")))
-	})
+	DescribeTable("rejects an unnamed Read response before rendering state or CRUD calls",
+		func(bodylessRole string) {
+			op := incidentTypeResourceOperation(true)
+			op.ResolvedGroup.Read.ResponseRefName = ""
+			if bodylessRole == "Create" {
+				op.ResolvedGroup.Create.ResponseRefName = ""
+				op.ResolvedGroup.Create.ResponseSchema = nil
+			} else if bodylessRole == "Update" {
+				op.ResolvedGroup.Create.ResponseRefName = ""
+				op.ResolvedGroup.Update.ResponseRefName = ""
+				op.ResolvedGroup.Update.ResponseSchema = nil
+			}
+			art, err := model.BuildArtifact(op)
+			Expect(err).NotTo(HaveOccurred())
+			_, err = BuildResourceView(art)
+			Expect(err).To(MatchError(ContainSubstring("Read has no named response type")))
+		},
+		Entry("inline Read alone", ""),
+		Entry("inline Read and bodyless Create", "Create"),
+		Entry("inline Read and bodyless Update", "Update"),
+	)
 
 	It("normalizes computed unknowns recursively without touching configured siblings", func() {
 		attributes := []*model.Attribute{
@@ -575,11 +587,18 @@ var _ = Describe("RenderResource", func() {
 			Expect(view.Delete.HasResponseBody).To(Equal(hasBody))
 
 			out := string(mustRenderResource(view))
-			deleteStart := strings.Index(out, "func (r *datadogIncidentTypeResource) Delete(")
-			Expect(deleteStart).To(BeNumerically(">=", 0), "missing Delete method")
-			deleteEnd := strings.Index(out[deleteStart+1:], "\nfunc (r *")
-			Expect(deleteEnd).To(BeNumerically(">=", 0), "missing method after Delete")
-			deleteMethod := out[deleteStart : deleteStart+1+deleteEnd]
+			fset := token.NewFileSet()
+			file, err := goparser.ParseFile(fset, "resource.go", out, 0)
+			Expect(err).NotTo(HaveOccurred())
+			var deleteMethod string
+			for _, decl := range file.Decls {
+				method, ok := decl.(*ast.FuncDecl)
+				if ok && method.Recv != nil && method.Name.Name == "Delete" {
+					deleteMethod = out[fset.Position(method.Pos()).Offset:fset.Position(method.End()).Offset]
+					break
+				}
+			}
+			Expect(deleteMethod).NotTo(BeEmpty(), "missing Delete method")
 			assignment := "httpResp, err"
 			if hasBody {
 				assignment = "_, " + assignment

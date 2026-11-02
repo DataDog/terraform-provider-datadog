@@ -164,6 +164,7 @@ func TestBindCorroboratesResponseBody(t *testing.T) {
 type ThingsApi struct{}
 func (a *ThingsApi) DeleteThing(ctx context.Context) (*_nethttp.Response, error) { return nil, nil }
 func (a *ThingsApi) GetThing(ctx context.Context) (ThingResponse, *_nethttp.Response, error) { return ThingResponse{}, nil, nil }
+func (a *ThingsApi) GetNamedThing(ctx context.Context) (body ThingResponse, response *_nethttp.Response, err error) { return }
 `)
 	body := &model.Schema{Kind: model.SchemaKindObject}
 	tests := []struct {
@@ -171,6 +172,7 @@ func (a *ThingsApi) GetThing(ctx context.Context) (ThingResponse, *_nethttp.Resp
 		op          *model.Operation
 		wantMessage string
 	}{
+		{name: "named return values match", op: &model.Operation{OperationId: "GetNamedThing", ResponseSchema: body, ResponseRefName: "ThingResponse"}},
 		{name: "bodyless matches", op: &model.Operation{OperationId: "DeleteThing"}},
 		{name: "named body matches", op: &model.Operation{OperationId: "GetThing", ResponseSchema: body, ResponseRefName: "ThingResponse"}},
 		{name: "unnamed body matches arity", op: &model.Operation{OperationId: "GetThing", ResponseSchema: body}},
@@ -192,7 +194,11 @@ func (a *ThingsApi) GetThing(ctx context.Context) (ThingResponse, *_nethttp.Resp
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
+			originalSchema, originalRef := test.op.ResponseSchema, test.op.ResponseRefName
 			diagnostics, err := Bind(test.op, inventory)
+			if test.op.ResponseSchema != originalSchema || test.op.ResponseRefName != originalRef {
+				t.Fatal("SDK corroboration changed the OpenAPI response binding")
+			}
 			if err != nil {
 				t.Fatal(err)
 			}

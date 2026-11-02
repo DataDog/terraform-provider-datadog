@@ -601,7 +601,8 @@ type ResourceView struct {
 
 // CRUDCallView describes one lifecycle SDK call. GoRequestType is empty for
 // Read and Delete, which send no request body. GoResponseType names a response
-// component when available; HasResponseBody also covers unnamed responses.
+// component when available. HasResponseBody is used only by Delete to select
+// the SDK assignment arity, including for unnamed responses.
 type CRUDCallView struct {
 	Method          string
 	GoRequestType   string
