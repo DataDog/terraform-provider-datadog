@@ -167,6 +167,7 @@ jobs:
       contents: read
       checks: write
       actions: read # Required to download the results artifact
+      id-token: write # Required to report generated PR results to api-spec
     steps:
       # No ref: for workflow_run this checks out the default branch, so both the
       # summarizer and the workflow driving it come from base-branch code.
@@ -200,6 +201,7 @@ jobs:
             echo "CHECK_SUMMARY_EOF"
           } >> "$GITHUB_OUTPUT"
       - name: Complete check run
+        id: complete
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
@@ -246,3 +248,23 @@ jobs:
             -f conclusion="${conclusion}" \
             -f "output[title]=${title}" \
             -f "output[summary]=${summary}"
+
+          echo "conclusion=${conclusion}" >> "$GITHUB_OUTPUT"
+      - name: Get api-spec reporting token
+        id: api-spec-token
+        if: >-
+          always() && steps.complete.outputs.conclusion != '' &&
+          github.event.workflow_run.event == 'pull_request' &&
+          github.event.workflow_run.head_repository.full_name == github.repository &&
+          startsWith(github.event.workflow_run.head_branch, 'datadog-api-spec/generated/')
+        uses: DataDog/dd-octo-sts-action@96a25462dbcb10ebf0bfd6e2ccc917d2ab235b9a # v1.0.4
+        with:
+          scope: ddoghq/datadog-api-spec
+          policy: terraform-provider-datadog.test_pr_integration.post-status
+      - name: Report integration status to api-spec
+        if: always() && steps.api-spec-token.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ steps.api-spec-token.outputs.token }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          INTEGRATION_CONCLUSION: ${{ steps.complete.outputs.conclusion }}
+        run: bash scripts/report_api_spec_integration.sh
