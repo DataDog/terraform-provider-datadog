@@ -47,7 +47,7 @@ func (d *datadogOrgGroupsDataSource) Metadata(_ context.Context, _ datasource.Me
 
 func (d *datadogOrgGroupsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Use this data source to retrieve all org groups in the organization.",
+		Description: "Use this data source to retrieve all org groups in the organization. **Note**: Org Groups operations are in preview and subject to change. Access may need to be enabled for your organization. Contact [Datadog support](https://docs.datadoghq.com/help/) to request access.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"groups": schema.ListAttribute{

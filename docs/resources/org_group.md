@@ -3,12 +3,12 @@
 page_title: "datadog_org_group Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Org Group resource. This can be used to create and manage Datadog organization groups.
+  Provides a Datadog Org Group resource. This can be used to create and manage Datadog organization groups. Note: Org Groups operations are in preview and subject to change. Access may need to be enabled for your organization. Contact Datadog support https://docs.datadoghq.com/help/ to request access.
 ---
 
 # datadog_org_group (Resource)
 
-Provides a Datadog Org Group resource. This can be used to create and manage Datadog organization groups.
+Provides a Datadog Org Group resource. This can be used to create and manage Datadog organization groups. **Note**: Org Groups operations are in preview and subject to change. Access may need to be enabled for your organization. Contact [Datadog support](https://docs.datadoghq.com/help/) to request access.
 
 ## Example Usage
 

@@ -2,12 +2,12 @@
 page_title: "Resource datadog_org_group_policy_override - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Org Group Policy Override resource. An override exempts a specific organization from a policy applied at the org group level.
+  Provides a Datadog Org Group Policy Override resource. An override exempts a specific organization from a policy applied at the org group level. Note: Org Groups operations are in preview and subject to change. Access may need to be enabled for your organization. Contact Datadog support https://docs.datadoghq.com/help/ to request access.
 ---
 
 # Resource (datadog_org_group_policy_override)
 
-Provides a Datadog Org Group Policy Override resource. An override exempts a specific organization from a policy applied at the org group level.
+Provides a Datadog Org Group Policy Override resource. An override exempts a specific organization from a policy applied at the org group level. **Note**: Org Groups operations are in preview and subject to change. Access may need to be enabled for your organization. Contact [Datadog support](https://docs.datadoghq.com/help/) to request access.
 
 ## Example Usage
 
