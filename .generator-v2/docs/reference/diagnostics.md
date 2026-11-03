@@ -142,15 +142,23 @@ with `additionalProperties: {}`, `additionalProperties: true`, or a value of
 value is a `$ref`, the diagnostic names the component at the end of the `$ref`
 chain instead, since that is where the type is missing.
 
-For a map attribute, the path names the map itself, not its value. If the map
-is directly a list's item schema, the error is instead reported at the list's
-path with `collection element kind "unsupported" has no framework element type`
-followed by the unconstrained-value explanation. Nested collection failures
-currently report the enclosing collection's path; pointing to the failing
-level is tracked in [TF-413](https://datadoghq.atlassian.net/browse/TF-413).
-`[]` and `{}` can still appear for enclosing collections traversed before the
-failure, as in `environments[]` above, where the map is a named property of the
-list's object items.
+For a single-level collection, the diagnostic names the collection attribute
+itself, preserving the existing message format. A nested collection failure also
+names the failing element, appending `[]` for each list item and `{}` for each map
+value. For an attribute `labels`:
+
+| Schema | Failing element path |
+| --- | --- |
+| `map<map<{}>>` | `labels{}{}` |
+| `list<map<{}>>` | `labels[]{}` |
+| `map<list<{}>>` | `labels{}[]` |
+
+For example, a list of maps with unconstrained values reports
+`model: cannot build attribute at "resource.labels": element at "resource.labels[]{}": collection element kind "unsupported" has no framework element type`
+followed by the unconstrained-value explanation. The attribute path stays
+unchanged; the additional element path identifies which `items` or
+`additionalProperties` declaration needs fixing. Enclosing object collections
+remain part of both paths, as in `environments[].labels{}{}`.
 
 Describe the actual API values with a concrete schema or `$ref` under
 `additionalProperties`. If the API returns an array, correct the declaration to
