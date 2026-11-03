@@ -2977,7 +2977,7 @@ Required:
 
 Optional:
 
-- `action_when_missing_partitions` (String) The action to take when an event is missing one of the `partition_fields`. One of `ignore`, `default_bucket`. Valid values are `ignore`, `default_bucket`.
+- `action_when_missing_partitions` (String) The action to take when an event is missing one of the `partition_fields`. One of `ignore`, `default_bucket`. Valid values are `ignore`, `default_bucket`. Defaults to `"ignore"`.
 - `minimal_threshold` (Number) The minimum volume, in bytes, that must be observed within 24 hours before spike protection can activate. Defaults to 100 GiB.
 - `minimal_threshold_override` (Block List) A list of per-partition overrides for the minimal threshold, identified by matching field values. Requires `partition_fields` to be set. (see [below for nested schema](#nestedblock--config--processor_group--processor--spike_protection--minimal_threshold_override))
 - `partition_fields` (List of String) A list of fields used to segment log traffic. Volume is learned and evaluated independently for each unique combination of these field values. A maximum of five fields is supported.

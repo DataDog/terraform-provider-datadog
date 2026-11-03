@@ -9217,7 +9217,7 @@ resource "datadog_observability_pipeline" "spike_protection" {
 					resource.TestCheckResourceAttr(resourceName, processorPath+".spike_action", "drop"),
 					resource.TestCheckNoResourceAttr(resourceName, processorPath+".spike_threshold"),
 					resource.TestCheckNoResourceAttr(resourceName, processorPath+".minimal_threshold"),
-					resource.TestCheckNoResourceAttr(resourceName, processorPath+".action_when_missing_partitions"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".action_when_missing_partitions", "ignore"),
 					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.#", "0"),
 				),
 			},

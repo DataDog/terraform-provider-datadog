@@ -5,6 +5,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -68,6 +69,8 @@ func SpikeProtectionProcessorSchema() schema.ListNestedBlock {
 				},
 				"action_when_missing_partitions": schema.StringAttribute{
 					Optional:    true,
+					Computed:    true,
+					Default:     stringdefault.StaticString("ignore"),
 					Description: "The action to take when an event is missing one of the `partition_fields`. One of `ignore`, `default_bucket`.",
 					Validators: []validator.String{
 						stringvalidator.OneOf("ignore", "default_bucket"),
