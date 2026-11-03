@@ -14,6 +14,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 var (
@@ -22,8 +24,9 @@ var (
 )
 
 type statusPageDegradationTemplateResource struct {
-	Api  *datadogV2.StatusPagesApi
-	Auth context.Context
+	Api          *datadogV2.StatusPagesApi
+	ApiInstances *utils.ApiInstances
+	Auth         context.Context
 }
 
 type statusPageDegradationTemplateModel struct {
@@ -146,6 +149,7 @@ func (r *statusPageDegradationTemplateResource) Configure(_ context.Context, req
 	}
 
 	r.Api = providerData.DatadogApiInstances.GetStatusPagesApiV2()
+	r.ApiInstances = providerData.DatadogApiInstances
 	r.Auth = providerData.Auth
 }
 
@@ -236,6 +240,9 @@ func (r *statusPageDegradationTemplateResource) Create(ctx context.Context, requ
 	state.PageID = plan.PageID
 	r.updateStateFromResponse(&state, &resp)
 
+	// The page listing is now stale for this page.
+	r.ApiInstances.InvalidateStatusPageDegradationTemplateCache(pageID)
+
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -264,20 +271,36 @@ func (r *statusPageDegradationTemplateResource) Read(ctx context.Context, reques
 		return
 	}
 
-	resp, httpResp, err := r.Api.GetDegradationTemplate(r.Auth, pageID, templateID)
+	// Read through the page listing rather than fetching this template on its
+	// own: refreshing a page with many templates otherwise issues one request
+	// per template and exhausts the endpoint's 60 req/min per-user rate limit.
+	listing, httpResp, err := r.ApiInstances.ListStatusPageDegradationTemplates(r.Auth, pageID)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
 			return
 		}
 		response.Diagnostics.AddError(
-			"Error reading degradation template",
-			"Could not read degradation template ID "+state.ID.ValueString()+": "+err.Error(),
+			"Error reading degradation templates",
+			"Could not list degradation templates for status page "+state.PageID.ValueString()+": "+err.Error(),
 		)
 		return
 	}
 
-	r.updateStateFromResponse(&state, &resp)
+	wanted := templateID.String()
+	var data *datadogV2.DegradationTemplateData
+	for _, template := range listing.GetData() {
+		if template.GetId() == wanted {
+			data = &template
+			break
+		}
+	}
+	if data == nil {
+		response.State.RemoveResource(ctx)
+		return
+	}
+
+	r.updateStateFromResponseData(&state, data)
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -342,6 +365,9 @@ func (r *statusPageDegradationTemplateResource) Update(ctx context.Context, requ
 	}
 
 	r.updateStateFromResponse(&plan, &resp)
+
+	// The page listing is now stale for this page.
+	r.ApiInstances.InvalidateStatusPageDegradationTemplateCache(pageID)
 
 	response.Diagnostics.Append(response.State.Set(ctx, &plan)...)
 }
@@ -409,6 +435,7 @@ func (r *statusPageDegradationTemplateResource) Delete(ctx context.Context, requ
 	httpResp, err := r.Api.DeleteDegradationTemplate(r.Auth, pageID, templateID)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
+			r.ApiInstances.InvalidateStatusPageDegradationTemplateCache(pageID)
 			return
 		}
 		response.Diagnostics.AddError(
@@ -417,6 +444,9 @@ func (r *statusPageDegradationTemplateResource) Delete(ctx context.Context, requ
 		)
 		return
 	}
+
+	// The page listing is now stale for this page.
+	r.ApiInstances.InvalidateStatusPageDegradationTemplateCache(pageID)
 }
 
 func (r *statusPageDegradationTemplateResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
@@ -431,7 +461,10 @@ func (r *statusPageDegradationTemplateResource) ImportState(ctx context.Context,
 
 func (r *statusPageDegradationTemplateResource) updateStateFromResponse(state *statusPageDegradationTemplateModel, resp *datadogV2.DegradationTemplate) {
 	data := resp.GetData()
+	r.updateStateFromResponseData(state, &data)
+}
 
+func (r *statusPageDegradationTemplateResource) updateStateFromResponseData(state *statusPageDegradationTemplateModel, data *datadogV2.DegradationTemplateData) {
 	state.ID = types.StringValue(data.GetId())
 
 	if relationships, ok := data.GetRelationshipsOk(); ok && relationships != nil {
