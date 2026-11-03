@@ -3,12 +3,12 @@
 page_title: "datadog_metric_tag_configuration Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog metric tag configuration resource. This can be used to modify tag configurations for metrics.
+  Provides a Datadog metric tag configuration resource. This can be used to modify tag configurations for metrics. For distribution metrics this legacy resource also manages include_percentiles, including when that argument is omitted. For tags-only management, use datadog_metric_tag_configuration_v2. Do not manage the same tag configuration with both resources. See the migration guide https://registry.terraform.io/providers/DataDog/datadog/latest/docs/guides/metric_tag_configuration_v2_migration before transferring ownership; existing runtime behavior is unchanged.
 ---
 
 # datadog_metric_tag_configuration (Resource)
 
-Provides a Datadog metric tag configuration resource. This can be used to modify tag configurations for metrics.
+Provides a Datadog metric tag configuration resource. This can be used to modify tag configurations for metrics. For distribution metrics this legacy resource also manages include_percentiles, including when that argument is omitted. For tags-only management, use datadog_metric_tag_configuration_v2. Do not manage the same tag configuration with both resources. See the [migration guide](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/guides/metric_tag_configuration_v2_migration) before transferring ownership; existing runtime behavior is unchanged.
 
 ## Example Usage
 
