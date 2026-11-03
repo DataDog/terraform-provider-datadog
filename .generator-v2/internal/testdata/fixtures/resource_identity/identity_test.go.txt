@@ -27,7 +27,7 @@ import (
 )
 
 // API-contract regression: create requires a caller-selected data.id.
-func TestDerivedMetricCallerAssignedIdentity(t *testing.T) {
+func TestTFGenCallerAssignedIdentity(t *testing.T) {
 	for _, responseID := range []string{"assessment.metric", "ASSESSMENT.METRIC"} {
 		t.Run(responseID, func(t *testing.T) {
 			testDerivedMetricIdentity(t, responseID)
@@ -84,13 +84,13 @@ func testDerivedMetricIdentity(t *testing.T, responseID string) {
 	cfg.Servers = datadog.ServerConfigurations{{URL: server.URL}}
 	cfg.OperationServers = nil
 	cfg.HTTPClient = server.Client()
-	r := &datadogDerivedMetricResource{Api: datadogV2.NewMetricsApi(datadog.NewAPIClient(cfg)), Auth: ctx}
+	r := &datadogTfgenIdentityFixtureResource{Api: datadogV2.NewMetricsApi(datadog.NewAPIClient(cfg)), Auth: ctx}
 	var schemaResponse resource.SchemaResponse
 	r.Schema(ctx, resource.SchemaRequest{}, &schemaResponse)
 	if id := schemaResponse.Schema.Attributes["id"]; id.IsRequired() || !id.IsComputed() {
 		t.Error("API contract violated: API identity must be computed")
 	}
-	model := resourceDatadogDerivedMetric_Model{ID: types.StringUnknown(), Name: types.StringValue("assessment.metric"), Definition: &resourceDatadogDerivedMetric_DerivedMetricDefinitionModel{Formula: types.StringValue("a"), Queries: []*resourceDatadogDerivedMetric_DerivedMetricQueryModel{{DataSource: types.StringValue("metrics"), Name: types.StringValue("a"), Query: types.StringValue("avg:system.cpu.user{*}")}}}}
+	model := resourceDatadogTfgenIdentityFixture_Model{ID: types.StringUnknown(), Name: types.StringValue("assessment.metric"), Definition: &resourceDatadogTfgenIdentityFixture_DerivedMetricDefinitionModel{Formula: types.StringValue("a"), Queries: []*resourceDatadogTfgenIdentityFixture_DerivedMetricQueryModel{{DataSource: types.StringValue("metrics"), Name: types.StringValue("a"), Query: types.StringValue("avg:system.cpu.user{*}")}}}}
 	plan := tfsdk.Plan{Schema: schemaResponse.Schema}
 	if diags := plan.Set(ctx, &model); diags.HasError() {
 		t.Fatalf("plan setup: %v", diags)
@@ -100,7 +100,7 @@ func testDerivedMetricIdentity(t *testing.T, responseID string) {
 	if response.Diagnostics.HasError() {
 		t.Fatalf("create: %v", response.Diagnostics)
 	}
-	var state resourceDatadogDerivedMetric_Model
+	var state resourceDatadogTfgenIdentityFixture_Model
 	if diags := response.State.Get(ctx, &state); diags.HasError() {
 		t.Fatal(diags)
 	}
@@ -166,7 +166,7 @@ func testDerivedMetricIdentity(t *testing.T, responseID string) {
 		t.Fatalf("updated identity: id=%v name=%v", state.ID, state.Name)
 	}
 	imported := resource.ImportStateResponse{State: tfsdk.State{Schema: schemaResponse.Schema}}
-	if diags := imported.State.Set(ctx, &resourceDatadogDerivedMetric_Model{}); diags.HasError() {
+	if diags := imported.State.Set(ctx, &resourceDatadogTfgenIdentityFixture_Model{}); diags.HasError() {
 		t.Fatal(diags)
 	}
 	r.ImportState(ctx, resource.ImportStateRequest{ID: responseID}, &imported)
@@ -219,7 +219,7 @@ func (p *identityTestProvider) Configure(context.Context, provider.ConfigureRequ
 }
 func (p *identityTestProvider) Resources(context.Context) []func() resource.Resource {
 	return []func() resource.Resource{func() resource.Resource {
-		return &identityTestResource{datadogDerivedMetricResource: &datadogDerivedMetricResource{Api: p.api, Auth: context.Background()}}
+		return &identityTestResource{datadogTfgenIdentityFixtureResource: &datadogTfgenIdentityFixtureResource{Api: p.api, Auth: context.Background()}}
 	}}
 }
 
@@ -227,10 +227,10 @@ func (p *identityTestProvider) DataSources(context.Context) []func() datasource.
 	return nil
 }
 
-type identityTestResource struct{ *datadogDerivedMetricResource }
+type identityTestResource struct{ *datadogTfgenIdentityFixtureResource }
 
 func (r *identityTestResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_derived_metric"
+	resp.TypeName = req.ProviderTypeName + "_tfgen_identity_fixture"
 }
 
 func (r *identityTestResource) Configure(context.Context, resource.ConfigureRequest, *resource.ConfigureResponse) {
@@ -289,7 +289,7 @@ func testDerivedMetricImportAdoption(t *testing.T, canonicalID string) {
 	config := func(name, formula string) string {
 		return fmt.Sprintf(`
  provider "datadog" {}
- resource "datadog_derived_metric" "test" {
+ resource "datadog_tfgen_identity_fixture" "test" {
   name = %q
   definition = {
    formula = %q
@@ -298,7 +298,7 @@ func testDerivedMetricImportAdoption(t *testing.T, canonicalID string) {
  }
  `, name, formula)
 	}
-	address := "datadog_derived_metric.test"
+	address := "datadog_tfgen_identity_fixture.test"
 	checkCalls := func(puts int) func() {
 		return func() {
 			mu.Lock()
