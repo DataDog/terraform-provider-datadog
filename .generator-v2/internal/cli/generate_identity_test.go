@@ -54,10 +54,12 @@ func TestGenerateCallerAssignedIdentity(t *testing.T) {
 		if err := os.WriteFile(brokenPath, broken, 0o600); err != nil {
 			t.Fatal(err)
 		}
+		// One direct CRUD case is enough to expose the bad POST ID. Skip
+		// the second canonical ID and the Terraform import/adoption tests.
 		result, err := testinfra.RunTests([]testinfra.StagedFile{
 			{ProviderPath: filepath.Join("datadog", "fwprovider", fixture.resource), SourcePath: brokenPath},
 			{ProviderPath: filepath.Join("datadog", "fwprovider", "zz_tfgen_identity_test.go"), SourcePath: probe},
-		}, "^TestTFGenCallerAssignedIdentity$")
+		}, "^TestTFGenCallerAssignedIdentity$/^assessment[.]metric$/^crud$")
 		if err != nil {
 			t.Fatal(err)
 		}

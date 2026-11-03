@@ -20,5 +20,8 @@ A negative subtest changes the generated create request to use the unknown
 computed ID instead of the configured name. It requires the probe to fail with
 the empty POST ID diagnostic, so a compilation or environment failure cannot
 accidentally satisfy the negative test.
+Only one direct CRUD subtest runs against the mutated source; the negative test
+does not repeat generation or Terraform import/adoption. The changed source
+still requires a separate Go test invocation to compile and execute it.
 
 Run `make tfgen-test-integration` from the repository root.

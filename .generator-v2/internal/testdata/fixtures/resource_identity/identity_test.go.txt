@@ -30,7 +30,7 @@ import (
 func TestTFGenCallerAssignedIdentity(t *testing.T) {
 	for _, responseID := range []string{"assessment.metric", "ASSESSMENT.METRIC"} {
 		t.Run(responseID, func(t *testing.T) {
-			testDerivedMetricIdentity(t, responseID)
+			t.Run("crud", func(t *testing.T) { testDerivedMetricIdentity(t, responseID) })
 			t.Run("terraform_import", func(t *testing.T) { testDerivedMetricImportAdoption(t, responseID) })
 		})
 	}
