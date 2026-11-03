@@ -187,6 +187,9 @@ func TestGenerateReportsUnconstrainedMapPath(t *testing.T) {
 				if !strings.Contains(message, want) {
 					t.Errorf("diagnostic missing %q: %s", want, message)
 				}
+			} else if strings.Contains(message, "element at") {
+				// Single-level failures keep their original wording.
+				t.Errorf("single-level diagnostic unexpectedly names an element path: %s", message)
 			}
 			for _, notWant := range tc.notWant {
 				if strings.Contains(message, notWant) {
