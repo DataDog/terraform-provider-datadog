@@ -68,6 +68,7 @@ func TestTagRuleValidateConfig_AcceptsWildcardCombinationsTheAPIAccepts(t *testi
 		"specific values, both flags false":    {tagRulePatterns("prod", "staging"), false, false},
 		"prefix wildcard, both flags false":    {tagRulePatterns("web-*"), false, false},
 		"specific values, both flags true":     {tagRulePatterns("prod"), true, true},
+		"repeated wildcard, both flags false":  {tagRulePatterns("**"), false, false},
 		"unknown patterns":                     {tftypes.NewValue(tftypes.List{ElementType: tftypes.String}, tftypes.UnknownValue), false, false},
 		"unknown required":                     {tagRulePatterns("*"), tftypes.UnknownValue, false},
 		"unknown pattern element": {
@@ -92,7 +93,6 @@ func TestTagRuleValidateConfig_RejectsWildcardCombinationsTheAPIRejects(t *testi
 		"both flags false":                {tagRulePatterns("*"), false, false, "Tag rule has no effect"},
 		"both flags omitted":              {tagRulePatterns("*"), nil, nil, "Tag rule has no effect"},
 		"wildcard alongside other values": {tagRulePatterns("prod", "*"), false, false, "Tag rule has no effect"},
-		"repeated wildcard, both false":   {tagRulePatterns("**"), false, false, "Tag rule has no effect"},
 		"both flags true":                 {tagRulePatterns("*"), true, true, "Tag rule cannot be satisfied"},
 	}
 	for name, tc := range cases {

@@ -29,14 +29,14 @@ var (
 	_ resource.ResourceWithValidateConfig = &tagRuleResource{}
 )
 
-var (
-	// tagValuePatternCharsetRegex mirrors the character class the API restricts
-	// tag_value_patterns to.
-	tagValuePatternCharsetRegex = regexp.MustCompile(`^[A-Za-z0-9_.,:/*-]+$`)
-	// tagValuePatternWildcardOnlyRegex matches a pattern made up only of `*`,
-	// which accepts any value of the tag.
-	tagValuePatternWildcardOnlyRegex = regexp.MustCompile(`^\*+$`)
-)
+// tagValuePatternCharsetRegex mirrors the character class the API restricts
+// tag_value_patterns to.
+var tagValuePatternCharsetRegex = regexp.MustCompile(`^[A-Za-z0-9_.,:/*-]+$`)
+
+// tagValuePatternBareWildcard accepts any value of the tag. The API applies its
+// wildcard combination check to this exact pattern only, so `**` is not
+// treated the same way.
+const tagValuePatternBareWildcard = "*"
 
 type tagRuleResource struct {
 	Api  *datadogV2.TagRulesApi
@@ -198,7 +198,7 @@ func (r *tagRuleResource) ValidateConfig(ctx context.Context, request resource.V
 		return
 	}
 
-	if required.IsUnknown() || negated.IsUnknown() || !hasWildcardOnlyTagValuePattern(patterns) {
+	if required.IsUnknown() || negated.IsUnknown() || !hasBareWildcardTagValuePattern(patterns) {
 		return
 	}
 
@@ -221,9 +221,9 @@ func (r *tagRuleResource) ValidateConfig(ctx context.Context, request resource.V
 	}
 }
 
-// hasWildcardOnlyTagValuePattern reports whether any known pattern is made up
-// only of `*`.
-func hasWildcardOnlyTagValuePattern(patterns types.List) bool {
+// hasBareWildcardTagValuePattern reports whether any known pattern is exactly
+// `*`.
+func hasBareWildcardTagValuePattern(patterns types.List) bool {
 	if patterns.IsNull() || patterns.IsUnknown() {
 		return false
 	}
@@ -232,7 +232,7 @@ func hasWildcardOnlyTagValuePattern(patterns types.List) bool {
 		if !ok || pattern.IsNull() || pattern.IsUnknown() {
 			continue
 		}
-		if tagValuePatternWildcardOnlyRegex.MatchString(pattern.ValueString()) {
+		if pattern.ValueString() == tagValuePatternBareWildcard {
 			return true
 		}
 	}
