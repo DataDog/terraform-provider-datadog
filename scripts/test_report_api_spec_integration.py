@@ -44,7 +44,7 @@ class ReportIntegrationTests(unittest.TestCase):
             return result, requests
 
     def test_sdk_status_contract(self):
-        for conclusion, state in [("success", "success"), ("failure", "failure"), ("cancelled", "pending")]:
+        for conclusion, state in [("pending", "pending"), ("success", "success"), ("failure", "failure"), ("cancelled", "pending")]:
             with self.subTest(conclusion=conclusion):
                 result, calls = self.run_report(conclusion)
                 self.assertEqual(result.returncode, 0, result.stderr)

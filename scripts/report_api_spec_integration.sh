@@ -11,7 +11,7 @@ spec_pr="${BASH_REMATCH[1]}"
 
 case "${INTEGRATION_CONCLUSION}" in
   success) state=success ;;
-  cancelled) state=pending ;;
+  pending|cancelled) state=pending ;;
   failure) state=failure ;;
   *) echo "Unexpected integration conclusion: ${INTEGRATION_CONCLUSION}" >&2; exit 1 ;;
 esac

@@ -37,6 +37,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       checks: write
+      contents: read # Required to check out the trusted reporting script
+      id-token: write # Required to report generated PR results to api-spec
     outputs:
       check_run_id: ${{ steps.create.outputs.check_run_id }}
     steps:
@@ -56,6 +58,28 @@ jobs:
             -f 'output[summary]=Integration tests affected by this PR are running against the live API.' \
             --jq .id)
           echo "check_run_id=${check_run_id}" >> "$GITHUB_OUTPUT"
+      # workflow_run checks out the default branch, not the PR's code.
+      - name: Checkout base branch for api-spec reporting
+        id: api-spec-checkout
+        if: >-
+          github.event.workflow_run.event == 'pull_request' &&
+          github.event.workflow_run.head_repository.full_name == github.repository &&
+          startsWith(github.event.workflow_run.head_branch, 'datadog-api-spec/generated/')
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Get api-spec reporting token
+        id: api-spec-token
+        if: steps.api-spec-checkout.outcome == 'success'
+        uses: DataDog/dd-octo-sts-action@96a25462dbcb10ebf0bfd6e2ccc917d2ab235b9a # v1.0.4
+        with:
+          scope: ddoghq/datadog-api-spec
+          policy: terraform-provider-datadog.test_pr_integration.post-status
+      - name: Report pending integration status to api-spec
+        if: steps.api-spec-token.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ steps.api-spec-token.outputs.token }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          INTEGRATION_CONCLUSION: pending
+        run: bash scripts/report_api_spec_integration.sh
 
   pr-tests-selection:
     runs-on: ubuntu-latest
