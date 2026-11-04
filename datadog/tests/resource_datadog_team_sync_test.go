@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -65,7 +66,10 @@ func TestAccTeamSyncServiceNow(t *testing.T) {
 		Steps: []resource.TestStep{
 			// Step 1: Create scoped to a ServiceNow instance
 			{
-				PreConfig: pauseExistingTeamSync(t, providers.frameworkProvider, datadogV2.TEAMSYNCATTRIBUTESSOURCE_SERVICENOW),
+				PreConfig: func() {
+					waitForTeamSyncRateLimit()
+					pauseExistingTeamSync(t, providers.frameworkProvider, datadogV2.TEAMSYNCATTRIBUTESSOURCE_SERVICENOW)()
+				},
 				Config: `
 resource "datadog_team_sync" "foo" {
 	source    = "servicenow"
@@ -93,6 +97,7 @@ resource "datadog_team_sync" "foo" {
 			},
 			// Step 2: Update to a single ServiceNow group
 			{
+				PreConfig: waitForTeamSyncRateLimit,
 				Config: `
 resource "datadog_team_sync" "foo" {
 	source    = "servicenow"
@@ -112,8 +117,9 @@ resource "datadog_team_sync" "foo" {
 					resource.TestCheckResourceAttr("datadog_team_sync.foo", "selection_state.0.external_id.value", "tf-test-instance/0123456789abcdef0123456789abcdef"),
 				),
 			},
-			// Step 3: Import by source name
+			// Step 3: Import by source name. The wait also spaces out the destroy that follows.
 			{
+				PreConfig:         waitForTeamSyncRateLimit,
 				ResourceName:      "datadog_team_sync.foo",
 				ImportState:       true,
 				ImportStateId:     "servicenow",
@@ -150,7 +156,17 @@ func pauseExistingTeamSync(t *testing.T, accProvider *fwprovider.FrameworkProvid
 		if err != nil {
 			t.Fatalf("failed to pause existing team sync: %s", err)
 		}
+		waitForTeamSyncRateLimit()
 	}
+}
+
+// waitForTeamSyncRateLimit spaces out live calls to POST /api/v2/team/sync, which is
+// rate limited to one request per minute per org. It is a no-op when replaying cassettes.
+func waitForTeamSyncRateLimit() {
+	if isReplaying() {
+		return
+	}
+	time.Sleep(61 * time.Second)
 }
 
 func testAccCheckDatadogTeamSyncDestroy(accProvider *fwprovider.FrameworkProvider, source datadogV2.TeamSyncAttributesSource) func(*terraform.State) error {
