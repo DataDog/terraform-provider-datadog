@@ -76,6 +76,14 @@ underlying `UnsupportedReason` through. The tree builder wraps these in
 `AttributeError`, which prefixes the attribute path:
 `model: cannot build attribute at "<path>": map value kind ...`.
 
+For nested collection failures, `ElementType` retains a relative element path in
+an internal error wrapper. The tree builder adds the outer collection's marker
+and attribute path to populate `AttributeError.ElementPath`. The message includes
+`element at "<element path>"`, using `[]` for list items and `{}` for map values.
+`AttributeError.Path` continues to identify the attribute, and `Unwrap` preserves
+the mapping failure for `errors.As` and other error inspection. Single-level
+failures leave `ElementPath` empty and retain their previous message format.
+
 ## Unsupported shapes stay explicit
 
 `RefCycle`, `DepthExceeded`, and `UnsupportedReason` are all retained on the schema
