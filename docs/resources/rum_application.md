@@ -20,7 +20,7 @@ resource "datadog_rum_application" "rum_application" {
   product_analytics_retention_state = "NONE"
 }
 
-# Create the application without the default retention filters, to manage them yourself.
+# Create the application without the default retention filters to manage them yourself.
 resource "datadog_rum_application" "rum_application_custom_filters" {
   name                             = "my-application-custom-filters"
   type                             = "browser"
@@ -37,7 +37,7 @@ resource "datadog_rum_application" "rum_application_custom_filters" {
 
 ### Optional
 
-- `create_default_retention_filters` (Boolean) Whether to create the default retention filters (`Sessions with errors` and `Sessions`, both at 100%) when the application is created. Defaults to `true` on the API side. Set to `false` to create the application without them, for example when you manage its retention filters in the same configuration. Permanent retention filters are always created. Only used at creation: changing it later doesn't add or remove filters on an existing application.
+- `create_default_retention_filters` (Boolean) Whether to create the default retention filters (`Sessions with errors` and `Sessions`, both at 100%) when the application is created. Defaults to `true` on the API side. Set to `false` to create the application without them, such as when you manage its retention filters in the same configuration. Permanent retention filters are always created. This setting only applies during application creation. Changing it afterward doesn't add or remove filters.
 - `product_analytics_retention_state` (String) Controls the retention policy for Product Analytics data derived from RUM events. Valid values are `MAX`, `NONE`.
 - `rum_event_processing_state` (String) Configures which RUM events are processed and stored for the application. Valid values are `ALL`, `ERROR_FOCUSED_MODE`, `NONE`.
 - `type` (String) Type of the RUM application. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`. Defaults to `"browser"`.
