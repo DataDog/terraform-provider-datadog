@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import subprocess
 import tempfile
+import textwrap
 import unittest
 
 
@@ -73,6 +74,41 @@ class ReportIntegrationTests(unittest.TestCase):
         result, calls = self.run_report(fail_lookup=True)
         self.assertNotEqual(result.returncode, 0)
         self.assertEqual(len(calls), 1)
+
+
+class CompleteIntegrationCheckTests(unittest.TestCase):
+    def test_conclusion_survives_check_publication_failure(self):
+        workflow = (SCRIPT.parent.parent / ".github/workflows/test_pr_integration.yml").read_text()
+        # Exercise the actual shell step, including GitHub's fail-fast behavior.
+        step = workflow.split("      - name: Complete check run\n", 1)[1]
+        command = textwrap.dedent(step.split("        run: |\n", 1)[1].split("\n  report-api-spec-finish:", 1)[0])
+        for check_id in ["123", ""]:
+            for tests_result in ["success", "failure", "cancelled"]:
+                with self.subTest(check_id=check_id, tests_result=tests_result), tempfile.TemporaryDirectory() as directory:
+                    root = Path(directory)
+                    output = root / "output"
+                    calls = root / "calls"
+                    gh = root / "gh"
+                    gh.write_text('#!/bin/sh\necho called >> "$CALLS"\nexit 1\n')
+                    gh.chmod(0o755)
+                    env = {
+                        **os.environ,
+                        "PATH": f"{root}:{os.environ['PATH']}",
+                        "GITHUB_OUTPUT": str(output),
+                        "GITHUB_REPOSITORY": "DataDog/terraform-provider-datadog",
+                        "CALLS": str(calls),
+                        "CHECK_RUN_ID": check_id,
+                        "SELECTION_CONCLUSION": "success",
+                        "SELECTION_RESULT": "success",
+                        "SHOULD_RUN": "true",
+                        "TESTS_RESULT": tests_result,
+                        "TESTS_TITLE": "",
+                        "TESTS_SUMMARY": "",
+                    }
+                    result = subprocess.run(["bash", "-e", "-c", command], env=env, capture_output=True, text=True)
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertEqual(output.read_text(), f"conclusion={tests_result}\n")
+                    self.assertEqual(calls.exists(), bool(check_id))
 
 
 if __name__ == "__main__":
