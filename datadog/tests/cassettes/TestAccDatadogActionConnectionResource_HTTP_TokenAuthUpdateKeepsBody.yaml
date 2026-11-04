@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"integration":{"base_url":"https://catfact.ninja","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"tokens":[{"name":"token1","type":"SECRET","value":"secret value 1"}],"type":"HTTPTokenAuth"},"type":"HTTP"},"name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793391648"},"type":"action_connection"}}
+            {"data":{"attributes":{"integration":{"base_url":"https://catfact.ninja","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"tokens":[{"name":"token1","type":"SECRET","value":"secret value 1"}],"type":"HTTPTokenAuth"},"type":"HTTP"},"name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793823980"},"type":"action_connection"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: 607
         uncompressed: false
-        body: '{"data":{"id":"2bb5e5f1-4938-48dc-8a93-6ce1f7e63544","type":"action_connection","attributes":{"acting_user_can_resolve":false,"environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793391648"}}}'
+        body: '{"data":{"id":"9378c722-adf7-4b3b-bc15-827807dd8035","type":"action_connection","attributes":{"acting_user_can_resolve":false,"environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793823980"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 104.014621ms
+        duration: 80.649076ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/actions/connections/2bb5e5f1-4938-48dc-8a93-6ce1f7e63544
+        url: https://api.datadoghq.com/api/v2/actions/connections/9378c722-adf7-4b3b-bc15-827807dd8035
         method: GET
       response:
         proto: HTTP/1.1
@@ -61,15 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 816
+        content_length: 818
         uncompressed: false
-        body: '{"data":{"id":"2bb5e5f1-4938-48dc-8a93-6ce1f7e63544","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-10-30 20:20:50.23635 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-10-30 20:20:50.23635 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793391648"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
+        body: '{"data":{"id":"9378c722-adf7-4b3b-bc15-827807dd8035","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-11-04 20:26:24.928255 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-11-04 20:26:24.928255 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793823980"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 39.519728ms
+        duration: 30.470233ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/actions/connections/2bb5e5f1-4938-48dc-8a93-6ce1f7e63544
+        url: https://api.datadoghq.com/api/v2/actions/connections/9378c722-adf7-4b3b-bc15-827807dd8035
         method: GET
       response:
         proto: HTTP/1.1
@@ -94,15 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 816
+        content_length: 818
         uncompressed: false
-        body: '{"data":{"id":"2bb5e5f1-4938-48dc-8a93-6ce1f7e63544","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-10-30 20:20:50.23635 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-10-30 20:20:50.23635 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793391648"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
+        body: '{"data":{"id":"9378c722-adf7-4b3b-bc15-827807dd8035","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-11-04 20:26:24.928255 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-11-04 20:26:24.928255 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793823980"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 37.572956ms
+        duration: 32.723045ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/actions/connections/2bb5e5f1-4938-48dc-8a93-6ce1f7e63544
+        url: https://api.datadoghq.com/api/v2/actions/connections/9378c722-adf7-4b3b-bc15-827807dd8035
         method: GET
       response:
         proto: HTTP/1.1
@@ -127,15 +127,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 816
+        content_length: 818
         uncompressed: false
-        body: '{"data":{"id":"2bb5e5f1-4938-48dc-8a93-6ce1f7e63544","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-10-30 20:20:50.23635 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-10-30 20:20:50.23635 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793391648"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
+        body: '{"data":{"id":"9378c722-adf7-4b3b-bc15-827807dd8035","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-11-04 20:26:24.928255 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-11-04 20:26:24.928255 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793823980"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 39.170867ms
+        duration: 28.286032ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -148,14 +148,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"integration":{"credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"tokens":[{"name":"token1","type":"SECRET","value":"rotated value 1"}],"type":"HTTPTokenAuth"},"type":"HTTP"},"name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793391648"},"type":"action_connection"}}
+            {"data":{"attributes":{"integration":{"credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"tokens":[{"name":"token1","type":"SECRET","value":"rotated value 1"}],"type":"HTTPTokenAuth"},"type":"HTTP"},"name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793823980"},"type":"action_connection"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/actions/connections/2bb5e5f1-4938-48dc-8a93-6ce1f7e63544
+        url: https://api.datadoghq.com/api/v2/actions/connections/9378c722-adf7-4b3b-bc15-827807dd8035
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -163,15 +163,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 818
+        content_length: 819
         uncompressed: false
-        body: '{"data":{"id":"2bb5e5f1-4938-48dc-8a93-6ce1f7e63544","type":"action_connection","attributes":{"acting_user_can_resolve":false,"created_at":"2026-10-30 20:20:50.23635 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-10-30 20:20:54.450582 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793391648"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
+        body: '{"data":{"id":"9378c722-adf7-4b3b-bc15-827807dd8035","type":"action_connection","attributes":{"acting_user_can_resolve":false,"created_at":"2026-11-04 20:26:24.928255 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-11-04 20:26:31.702953 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793823980"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 108.838382ms
+        duration: 120.708214ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/actions/connections/2bb5e5f1-4938-48dc-8a93-6ce1f7e63544
+        url: https://api.datadoghq.com/api/v2/actions/connections/9378c722-adf7-4b3b-bc15-827807dd8035
         method: GET
       response:
         proto: HTTP/1.1
@@ -196,15 +196,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 817
+        content_length: 818
         uncompressed: false
-        body: '{"data":{"id":"2bb5e5f1-4938-48dc-8a93-6ce1f7e63544","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-10-30 20:20:50.23635 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-10-30 20:20:54.450582 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793391648"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
+        body: '{"data":{"id":"9378c722-adf7-4b3b-bc15-827807dd8035","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-11-04 20:26:24.928255 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-11-04 20:26:31.702953 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793823980"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 33.449066ms
+        duration: 32.966218ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -221,7 +221,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/actions/connections/2bb5e5f1-4938-48dc-8a93-6ce1f7e63544
+        url: https://api.datadoghq.com/api/v2/actions/connections/9378c722-adf7-4b3b-bc15-827807dd8035
         method: GET
       response:
         proto: HTTP/1.1
@@ -229,15 +229,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 817
+        content_length: 818
         uncompressed: false
-        body: '{"data":{"id":"2bb5e5f1-4938-48dc-8a93-6ce1f7e63544","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-10-30 20:20:50.23635 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-10-30 20:20:54.450582 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793391648"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
+        body: '{"data":{"id":"9378c722-adf7-4b3b-bc15-827807dd8035","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-11-04 20:26:24.928255 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-11-04 20:26:31.702953 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793823980"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 39.415155ms
+        duration: 46.896277ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -254,7 +254,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/actions/connections/2bb5e5f1-4938-48dc-8a93-6ce1f7e63544
+        url: https://api.datadoghq.com/api/v2/actions/connections/9378c722-adf7-4b3b-bc15-827807dd8035
         method: GET
       response:
         proto: HTTP/1.1
@@ -262,15 +262,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 817
+        content_length: 818
         uncompressed: false
-        body: '{"data":{"id":"2bb5e5f1-4938-48dc-8a93-6ce1f7e63544","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-10-30 20:20:50.23635 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-10-30 20:20:54.450582 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793391648"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
+        body: '{"data":{"id":"9378c722-adf7-4b3b-bc15-827807dd8035","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-11-04 20:26:24.928255 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-11-04 20:26:31.702953 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793823980"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 42.676764ms
+        duration: 32.182802ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -283,14 +283,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"integration":{"base_url":"https://catfact.ninja/v2","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"type":"HTTPTokenAuth"},"type":"HTTP"},"name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793391648"},"type":"action_connection"}}
+            {"data":{"attributes":{"integration":{"base_url":"https://catfact.ninja/v2","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"type":"HTTPTokenAuth"},"type":"HTTP"},"name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793823980"},"type":"action_connection"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/actions/connections/2bb5e5f1-4938-48dc-8a93-6ce1f7e63544
+        url: https://api.datadoghq.com/api/v2/actions/connections/9378c722-adf7-4b3b-bc15-827807dd8035
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -298,15 +298,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 820
+        content_length: 822
         uncompressed: false
-        body: '{"data":{"id":"2bb5e5f1-4938-48dc-8a93-6ce1f7e63544","type":"action_connection","attributes":{"acting_user_can_resolve":false,"created_at":"2026-10-30 20:20:50.23635 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja/v2","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-10-30 20:20:58.67815 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793391648"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
+        body: '{"data":{"id":"9378c722-adf7-4b3b-bc15-827807dd8035","type":"action_connection","attributes":{"acting_user_can_resolve":false,"created_at":"2026-11-04 20:26:24.928255 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja/v2","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-11-04 20:26:38.628116 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793823980"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 97.649341ms
+        duration: 93.175675ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -323,7 +323,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/actions/connections/2bb5e5f1-4938-48dc-8a93-6ce1f7e63544
+        url: https://api.datadoghq.com/api/v2/actions/connections/9378c722-adf7-4b3b-bc15-827807dd8035
         method: GET
       response:
         proto: HTTP/1.1
@@ -331,15 +331,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 819
+        content_length: 821
         uncompressed: false
-        body: '{"data":{"id":"2bb5e5f1-4938-48dc-8a93-6ce1f7e63544","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-10-30 20:20:50.23635 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja/v2","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-10-30 20:20:58.67815 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793391648"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
+        body: '{"data":{"id":"9378c722-adf7-4b3b-bc15-827807dd8035","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-11-04 20:26:24.928255 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja/v2","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-11-04 20:26:38.628116 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793823980"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 38.317529ms
+        duration: 27.133514ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -356,7 +356,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/actions/connections/2bb5e5f1-4938-48dc-8a93-6ce1f7e63544
+        url: https://api.datadoghq.com/api/v2/actions/connections/9378c722-adf7-4b3b-bc15-827807dd8035
         method: GET
       response:
         proto: HTTP/1.1
@@ -364,15 +364,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 819
+        content_length: 821
         uncompressed: false
-        body: '{"data":{"id":"2bb5e5f1-4938-48dc-8a93-6ce1f7e63544","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-10-30 20:20:50.23635 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja/v2","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-10-30 20:20:58.67815 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793391648"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
+        body: '{"data":{"id":"9378c722-adf7-4b3b-bc15-827807dd8035","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-11-04 20:26:24.928255 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja/v2","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-11-04 20:26:38.628116 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793823980"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 38.294621ms
+        duration: 29.838652ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -388,143 +388,8 @@ interactions:
         form: {}
         headers:
             Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/actions/connections/2bb5e5f1-4938-48dc-8a93-6ce1f7e63544
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 819
-        uncompressed: false
-        body: '{"data":{"id":"2bb5e5f1-4938-48dc-8a93-6ce1f7e63544","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-10-30 20:20:50.23635 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja/v2","credentials":{"body":{"content":"{\"key\":\"{{ token1 }}\"}","content_type":"application/json"},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-10-30 20:20:58.67815 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793391648"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 38.00395ms
-    - id: 12
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 230
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":{"attributes":{"integration":{"credentials":{"body":{},"type":"HTTPTokenAuth"},"type":"HTTP"},"name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793391648"},"type":"action_connection"}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/actions/connections/2bb5e5f1-4938-48dc-8a93-6ce1f7e63544
-        method: PATCH
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 747
-        uncompressed: false
-        body: '{"data":{"id":"2bb5e5f1-4938-48dc-8a93-6ce1f7e63544","type":"action_connection","attributes":{"acting_user_can_resolve":false,"created_at":"2026-10-30 20:20:50.23635 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja/v2","credentials":{"body":{},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-10-30 20:21:02.9065 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793391648"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 96.552881ms
-    - id: 13
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/actions/connections/2bb5e5f1-4938-48dc-8a93-6ce1f7e63544
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 746
-        uncompressed: false
-        body: '{"data":{"id":"2bb5e5f1-4938-48dc-8a93-6ce1f7e63544","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-10-30 20:20:50.23635 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja/v2","credentials":{"body":{},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-10-30 20:21:02.9065 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793391648"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 36.915128ms
-    - id: 14
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/actions/connections/2bb5e5f1-4938-48dc-8a93-6ce1f7e63544
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 746
-        uncompressed: false
-        body: '{"data":{"id":"2bb5e5f1-4938-48dc-8a93-6ce1f7e63544","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-10-30 20:20:50.23635 +0000 UTC","environment":"DATACENTER","external_secrets_manager":null,"integration":{"base_url":"https://catfact.ninja/v2","credentials":{"body":{},"headers":[{"name":"header-name","value":"header-value"}],"http_tokens":[{"name":"token1","value":""}],"type":"HTTPTokenAuth"},"testing":{},"type":"HTTP"},"is_favorite":false,"last_updated":"2026-10-30 20:21:02.9065 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody-local-1793391648"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 33.407952ms
-    - id: 15
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/actions/connections/2bb5e5f1-4938-48dc-8a93-6ce1f7e63544
+        url: https://api.datadoghq.com/api/v2/actions/connections/9378c722-adf7-4b3b-bc15-827807dd8035
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -538,8 +403,8 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 51.465098ms
-    - id: 16
+        duration: 42.942095ms
+    - id: 12
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -555,7 +420,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/actions/connections/2bb5e5f1-4938-48dc-8a93-6ce1f7e63544
+        url: https://api.datadoghq.com/api/v2/actions/connections/9378c722-adf7-4b3b-bc15-827807dd8035
         method: GET
       response:
         proto: HTTP/1.1
@@ -571,4 +436,4 @@ interactions:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 33.467208ms
+        duration: 27.503043ms

@@ -181,36 +181,22 @@ func TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody(t *tes
 		CheckDestroy:             testAccCheckDatadogConnectionDestroy(providers.frameworkProvider, resourceName),
 		Steps: []resource.TestStep{
 			{
-				Config: testHTTPTokenAuthUpdateConfig(connectionName, testConnectionBaseURL, "secret value 1", true),
+				Config: testHTTPTokenAuthUpdateConfig(connectionName, testConnectionBaseURL, "secret value 1"),
 				Check:  testAccCheckDatadogHTTPConnectionBody(providers.frameworkProvider, resourceName, body),
 			},
 			{
-				Config: testHTTPTokenAuthUpdateConfig(connectionName, testConnectionBaseURL, "rotated value 1", true),
+				Config: testHTTPTokenAuthUpdateConfig(connectionName, testConnectionBaseURL, "rotated value 1"),
 				Check:  testAccCheckDatadogHTTPConnectionBody(providers.frameworkProvider, resourceName, body),
 			},
 			{
-				Config: testHTTPTokenAuthUpdateConfig(connectionName, testConnectionBaseURL+"/v2", "rotated value 1", true),
+				Config: testHTTPTokenAuthUpdateConfig(connectionName, testConnectionBaseURL+"/v2", "rotated value 1"),
 				Check:  testAccCheckDatadogHTTPConnectionBody(providers.frameworkProvider, resourceName, body),
-			},
-			{
-				Config: testHTTPTokenAuthUpdateConfig(connectionName, testConnectionBaseURL+"/v2", "rotated value 1", false),
-				Check:  testAccCheckDatadogHTTPConnectionBody(providers.frameworkProvider, resourceName, ""),
 			},
 		},
 	})
 }
 
-func testHTTPTokenAuthUpdateConfig(name, baseURL, tokenValue string, withBody bool) string {
-	body := ""
-	if withBody {
-		body = `
-				body {
-					content_type = "application/json"
-					content = jsonencode({
-						key = "{{ token1 }}"
-					})
-				}`
-	}
+func testHTTPTokenAuthUpdateConfig(name, baseURL, tokenValue string) string {
 	return fmt.Sprintf(`
 	resource "datadog_action_connection" "http_token_auth_update" {
 		name = "%s"
@@ -229,10 +215,16 @@ func testHTTPTokenAuthUpdateConfig(name, baseURL, tokenValue string, withBody bo
 					name = "header-name"
 					value = "header-value"
 				}
-%s
+
+				body {
+					content_type = "application/json"
+					content = jsonencode({
+						key = "{{ token1 }}"
+					})
+				}
 			}
 		}
-	}`, name, baseURL, tokenValue, body)
+	}`, name, baseURL, tokenValue)
 }
 
 func testAccCheckDatadogHTTPConnectionBody(accProvider *fwprovider.FrameworkProvider, resourceName, wantContent string) resource.TestCheckFunc {
@@ -240,7 +232,7 @@ func testAccCheckDatadogHTTPConnectionBody(accProvider *fwprovider.FrameworkProv
 		id := s.RootModule().Resources[resourceName].Primary.ID
 		connection, _, err := accProvider.DatadogApiInstances.GetActionConnectionApiV2().GetActionConnection(accProvider.Auth, id)
 		if err != nil {
-			return fmt.Errorf("received an error retrieving connection: %s", err)
+			return fmt.Errorf("received an error retrieving connection: %w", err)
 		}
 		httpIntegration := connection.Data.Attributes.Integration.HTTPIntegration
 		if httpIntegration == nil || httpIntegration.Credentials.HTTPTokenAuth == nil {

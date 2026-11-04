@@ -249,6 +249,8 @@ func TestActionConnectionHTTPUpdateOmitsUnchangedTokens(t *testing.T) {
 	}
 	deletedTokenAuth := *oldAuth
 	deletedTokenAuth.Tokens = oldAuth.Tokens[1:]
+	removedBodyAuth := *oldAuth
+	removedBodyAuth.Body = nil
 
 	tests := []struct {
 		name            string
@@ -258,11 +260,13 @@ func TestActionConnectionHTTPUpdateOmitsUnchangedTokens(t *testing.T) {
 		wantHeaders     bool
 		wantTokens      int
 		wantDeleted     bool
+		wantBody        string
 	}{
 		{name: "base URL", plannedHTTP: &httpConnectionModel{BaseURL: types.StringValue("https://new.example.com"), TokenAuth: oldAuth}, wantBaseURL: true, wantCredentials: true},
 		{name: "header", plannedHTTP: &httpConnectionModel{BaseURL: oldHTTP.BaseURL, TokenAuth: &newHeaderAuth}, wantCredentials: true, wantHeaders: true},
 		{name: "one token changed", plannedHTTP: &httpConnectionModel{BaseURL: oldHTTP.BaseURL, TokenAuth: &newTokenAuth}, wantCredentials: true, wantTokens: 1},
 		{name: "one token deleted", plannedHTTP: &httpConnectionModel{BaseURL: oldHTTP.BaseURL, TokenAuth: &deletedTokenAuth}, wantCredentials: true, wantTokens: 1, wantDeleted: true},
+		{name: "body removed", plannedHTTP: &httpConnectionModel{BaseURL: oldHTTP.BaseURL, TokenAuth: &removedBodyAuth}, wantCredentials: true, wantBody: `{}`},
 	}
 
 	for _, tt := range tests {
@@ -309,8 +313,12 @@ func TestActionConnectionHTTPUpdateOmitsUnchangedTokens(t *testing.T) {
 				t.Fatalf("headers present = %t, want %t", exists, tt.wantHeaders)
 			}
 			// The API clears the stored body when an HTTP credentials update omits it.
-			if got, want := string(credentials["body"]), `{"content":"{\"foo\":\"{{ apiKey }}\"}","content_type":"application/json"}`; got != want {
-				t.Fatalf("body = %s, want %s", got, want)
+			wantBody := tt.wantBody
+			if wantBody == "" {
+				wantBody = `{"content":"{\"foo\":\"{{ apiKey }}\"}","content_type":"application/json"}`
+			}
+			if got := string(credentials["body"]); got != wantBody {
+				t.Fatalf("body = %s, want %s", got, wantBody)
 			}
 			var tokens []json.RawMessage
 			if raw, exists := credentials["tokens"]; exists {
