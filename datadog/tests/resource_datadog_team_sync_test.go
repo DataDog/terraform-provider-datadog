@@ -18,11 +18,11 @@ func TestAccTeamSync(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogTeamSyncDestroy(providers.frameworkProvider),
+		CheckDestroy:             testAccCheckDatadogTeamSyncDestroy(providers.frameworkProvider, datadogV2.TEAMSYNCATTRIBUTESSOURCE_GITHUB),
 		Steps: []resource.TestStep{
 			// Step 1: Create with all fields
 			{
-				PreConfig: pauseExistingTeamSync(t, providers.frameworkProvider),
+				PreConfig: pauseExistingTeamSync(t, providers.frameworkProvider, datadogV2.TEAMSYNCATTRIBUTESSOURCE_GITHUB),
 				Config: `
 resource "datadog_team_sync" "foo" {
 	source          = "github"
@@ -55,14 +55,82 @@ resource "datadog_team_sync" "foo" {
 	})
 }
 
-func pauseExistingTeamSync(t *testing.T, accProvider *fwprovider.FrameworkProvider) func() {
+func TestAccTeamSyncServiceNow(t *testing.T) {
+	ctx := context.WithValue(context.Background(), "http_retry_enable", true)
+	_, providers, accProviders := testAccFrameworkMuxProviders(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogTeamSyncDestroy(providers.frameworkProvider, datadogV2.TEAMSYNCATTRIBUTESSOURCE_SERVICENOW),
+		Steps: []resource.TestStep{
+			// Step 1: Create scoped to a ServiceNow instance
+			{
+				PreConfig: pauseExistingTeamSync(t, providers.frameworkProvider, datadogV2.TEAMSYNCATTRIBUTESSOURCE_SERVICENOW),
+				Config: `
+resource "datadog_team_sync" "foo" {
+	source    = "servicenow"
+	type      = "link"
+	frequency = "once"
+
+	selection_state {
+		external_id {
+			type  = "organization"
+			value = "tf-test-instance"
+		}
+	}
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("datadog_team_sync.foo", "id", "servicenow"),
+					resource.TestCheckResourceAttr("datadog_team_sync.foo", "source", "servicenow"),
+					resource.TestCheckResourceAttr("datadog_team_sync.foo", "type", "link"),
+					resource.TestCheckResourceAttr("datadog_team_sync.foo", "frequency", "once"),
+					resource.TestCheckResourceAttr("datadog_team_sync.foo", "sync_membership", "false"),
+					resource.TestCheckResourceAttr("datadog_team_sync.foo", "selection_state.#", "1"),
+					resource.TestCheckResourceAttr("datadog_team_sync.foo", "selection_state.0.external_id.type", "organization"),
+					resource.TestCheckResourceAttr("datadog_team_sync.foo", "selection_state.0.external_id.value", "tf-test-instance"),
+				),
+			},
+			// Step 2: Update to a single ServiceNow group
+			{
+				Config: `
+resource "datadog_team_sync" "foo" {
+	source    = "servicenow"
+	type      = "link"
+	frequency = "once"
+
+	selection_state {
+		external_id {
+			type  = "team"
+			value = "tf-test-instance/0123456789abcdef0123456789abcdef"
+		}
+	}
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("datadog_team_sync.foo", "selection_state.0.external_id.type", "team"),
+					resource.TestCheckResourceAttr("datadog_team_sync.foo", "selection_state.0.external_id.value", "tf-test-instance/0123456789abcdef0123456789abcdef"),
+				),
+			},
+			// Step 3: Import by source name
+			{
+				ResourceName:      "datadog_team_sync.foo",
+				ImportState:       true,
+				ImportStateId:     "servicenow",
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
+func pauseExistingTeamSync(t *testing.T, accProvider *fwprovider.FrameworkProvider, source datadogV2.TeamSyncAttributesSource) func() {
 	return func() {
 		t.Helper()
 		api := accProvider.DatadogApiInstances.GetTeamsApiV2()
 		auth := accProvider.Auth
 
 		// Check if sync already exists and is paused to avoid unnecessary POST
-		resp, _, err := api.GetTeamSync(auth, datadogV2.TEAMSYNCATTRIBUTESSOURCE_GITHUB)
+		resp, _, err := api.GetTeamSync(auth, source)
 		if err == nil {
 			data := resp.GetData()
 			for _, d := range data {
@@ -73,7 +141,7 @@ func pauseExistingTeamSync(t *testing.T, accProvider *fwprovider.FrameworkProvid
 			}
 		}
 
-		attrs := datadogV2.NewTeamSyncAttributes(datadogV2.TEAMSYNCATTRIBUTESSOURCE_GITHUB, datadogV2.TEAMSYNCATTRIBUTESTYPE_LINK)
+		attrs := datadogV2.NewTeamSyncAttributes(source, datadogV2.TEAMSYNCATTRIBUTESTYPE_LINK)
 		attrs.SetFrequency(datadogV2.TEAMSYNCATTRIBUTESFREQUENCY_PAUSED)
 		syncData := datadogV2.NewTeamSyncData(*attrs, datadogV2.TEAMSYNCBULKTYPE_TEAM_SYNC_BULK)
 		body := datadogV2.NewTeamSyncRequest(*syncData)
@@ -85,9 +153,9 @@ func pauseExistingTeamSync(t *testing.T, accProvider *fwprovider.FrameworkProvid
 	}
 }
 
-func testAccCheckDatadogTeamSyncDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
+func testAccCheckDatadogTeamSyncDestroy(accProvider *fwprovider.FrameworkProvider, source datadogV2.TeamSyncAttributesSource) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		resp, httpResp, err := accProvider.DatadogApiInstances.GetTeamsApiV2().GetTeamSync(accProvider.Auth, datadogV2.TEAMSYNCATTRIBUTESSOURCE_GITHUB)
+		resp, httpResp, err := accProvider.DatadogApiInstances.GetTeamsApiV2().GetTeamSync(accProvider.Auth, source)
 		if err != nil {
 			if httpResp != nil && httpResp.StatusCode == 404 {
 				return nil
