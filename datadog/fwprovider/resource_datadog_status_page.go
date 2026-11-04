@@ -14,7 +14,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.
@@ -30,23 +33,27 @@ type statusPageResource struct {
 }
 
 type statusPageModel struct {
-	ID                        types.String `tfsdk:"id"`
-	Name                      types.String `tfsdk:"name"`
-	Type                      types.String `tfsdk:"type"`
-	Enabled                   types.Bool   `tfsdk:"enabled"`
-	DomainPrefix              types.String `tfsdk:"domain_prefix"`
-	CustomDomain              types.String `tfsdk:"custom_domain"`
-	CustomDomainEnabled       types.Bool   `tfsdk:"custom_domain_enabled"`
-	PageURL                   types.String `tfsdk:"page_url"`
-	VisualizationType         types.String `tfsdk:"visualization_type"`
-	SubscriptionsEnabled      types.Bool   `tfsdk:"subscriptions_enabled"`
-	SlackSubscriptionsEnabled types.Bool   `tfsdk:"slack_subscriptions_enabled"`
-	CompanyLogo               types.String `tfsdk:"company_logo"`
-	Favicon                   types.String `tfsdk:"favicon"`
-	EmailHeaderImage          types.String `tfsdk:"email_header_image"`
-	SlackAppIcon              types.String `tfsdk:"slack_app_icon"`
-	CreatedAt                 types.String `tfsdk:"created_at"`
-	ModifiedAt                types.String `tfsdk:"modified_at"`
+	ID                           types.String `tfsdk:"id"`
+	Name                         types.String `tfsdk:"name"`
+	Type                         types.String `tfsdk:"type"`
+	Enabled                      types.Bool   `tfsdk:"enabled"`
+	DomainPrefix                 types.String `tfsdk:"domain_prefix"`
+	CustomDomain                 types.String `tfsdk:"custom_domain"`
+	CustomDomainEnabled          types.Bool   `tfsdk:"custom_domain_enabled"`
+	PageURL                      types.String `tfsdk:"page_url"`
+	VisualizationType            types.String `tfsdk:"visualization_type"`
+	SubscriptionsEnabled         types.Bool   `tfsdk:"subscriptions_enabled"`
+	SlackSubscriptionsEnabled    types.Bool   `tfsdk:"slack_subscriptions_enabled"`
+	WebhooksSubscriptionsEnabled types.Bool   `tfsdk:"webhooks_subscriptions_enabled"`
+	MsTeamsSubscriptionsEnabled  types.Bool   `tfsdk:"ms_teams_subscriptions_enabled"`
+	RssFeedEnabled               types.Bool   `tfsdk:"rss_feed_enabled"`
+	VisualizationLayout          types.String `tfsdk:"visualization_layout"`
+	CompanyLogo                  types.String `tfsdk:"company_logo"`
+	Favicon                      types.String `tfsdk:"favicon"`
+	EmailHeaderImage             types.String `tfsdk:"email_header_image"`
+	SlackAppIcon                 types.String `tfsdk:"slack_app_icon"`
+	CreatedAt                    types.String `tfsdk:"created_at"`
+	ModifiedAt                   types.String `tfsdk:"modified_at"`
 }
 
 func NewStatusPageResource() resource.Resource {
@@ -134,6 +141,42 @@ func (m statusPageURLPlanModifier) PlanModifyString(ctx context.Context, req pla
 	}
 }
 
+// statusPageLayoutPlanModifier behaves like stringplanmodifier.UseStateForUnknown(),
+// except it lets visualization_layout stay Unknown when it is unset in configuration
+// and visualization_type changes, since the API resets the layout to list when
+// visualization_type is not component_name_only.
+type statusPageLayoutPlanModifier struct{}
+
+func (m statusPageLayoutPlanModifier) Description(_ context.Context) string {
+	return "Recomputes visualization_layout when it is unset and visualization_type changes, instead of reusing the prior state value."
+}
+
+func (m statusPageLayoutPlanModifier) MarkdownDescription(ctx context.Context) string {
+	return m.Description(ctx)
+}
+
+func (m statusPageLayoutPlanModifier) PlanModifyString(ctx context.Context, req planmodifier.StringRequest, resp *planmodifier.StringResponse) {
+	if req.State.Raw.IsNull() || req.Plan.Raw.IsNull() || !req.ConfigValue.IsNull() {
+		return
+	}
+
+	var stateVisualizationType, planVisualizationType types.String
+	resp.Diagnostics.Append(req.State.GetAttribute(ctx, path.Root("visualization_type"), &stateVisualizationType)...)
+	resp.Diagnostics.Append(req.Plan.GetAttribute(ctx, path.Root("visualization_type"), &planVisualizationType)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if !stateVisualizationType.Equal(planVisualizationType) {
+		resp.PlanValue = types.StringUnknown()
+		return
+	}
+
+	if req.PlanValue.IsUnknown() {
+		resp.PlanValue = req.StateValue
+	}
+}
+
 func (r *statusPageResource) Metadata(_ context.Context, _ resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = "status_page"
 }
@@ -209,6 +252,41 @@ func (r *statusPageResource) Schema(_ context.Context, _ resource.SchemaRequest,
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"webhooks_subscriptions_enabled": schema.BoolAttribute{
+				Description: "Whether webhook subscriber notifications are enabled for the status page. Not available for private status pages.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"ms_teams_subscriptions_enabled": schema.BoolAttribute{
+				Description: "Whether Microsoft Teams subscriber notifications are enabled for the status page. Not available for private status pages.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"rss_feed_enabled": schema.BoolAttribute{
+				Description: "Whether the RSS feed is enabled for the status page. Only available for public status pages.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"visualization_layout": schema.StringAttribute{
+				Description: "How components are laid out on the status page. `grid` requires `visualization_type` to be `component_name_only`.",
+				Optional:    true,
+				Computed:    true,
+				Validators: []validator.String{
+					validators.NewEnumValidator[validator.String](datadogV2.NewCreateStatusPageRequestDataAttributesVisualizationLayoutFromValue),
+				},
+				PlanModifiers: []planmodifier.String{
+					statusPageLayoutPlanModifier{},
+				},
+			},
 			"company_logo": schema.StringAttribute{
 				Description: "The company logo displayed on the status page.",
 				Optional:    true,
@@ -277,6 +355,8 @@ func (r *statusPageResource) Configure(_ context.Context, request resource.Confi
 func (r *statusPageResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
 	var plan statusPageModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+	var configVisualizationLayout types.String
+	response.Diagnostics.Append(request.Config.GetAttribute(ctx, path.Root("visualization_layout"), &configVisualizationLayout)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -293,6 +373,19 @@ func (r *statusPageResource) Create(ctx context.Context, request resource.Create
 	}
 	if !plan.SlackSubscriptionsEnabled.IsNull() && !plan.SlackSubscriptionsEnabled.IsUnknown() {
 		attributes.SlackSubscriptionsEnabled = plan.SlackSubscriptionsEnabled.ValueBoolPointer()
+	}
+	if !plan.WebhooksSubscriptionsEnabled.IsNull() && !plan.WebhooksSubscriptionsEnabled.IsUnknown() {
+		attributes.WebhooksSubscriptionsEnabled = plan.WebhooksSubscriptionsEnabled.ValueBoolPointer()
+	}
+	if !plan.MsTeamsSubscriptionsEnabled.IsNull() && !plan.MsTeamsSubscriptionsEnabled.IsUnknown() {
+		attributes.MsTeamsSubscriptionsEnabled = plan.MsTeamsSubscriptionsEnabled.ValueBoolPointer()
+	}
+	if !plan.RssFeedEnabled.IsNull() && !plan.RssFeedEnabled.IsUnknown() {
+		attributes.RssFeedEnabled = plan.RssFeedEnabled.ValueBoolPointer()
+	}
+	if !configVisualizationLayout.IsNull() && !configVisualizationLayout.IsUnknown() {
+		visualizationLayout := datadogV2.CreateStatusPageRequestDataAttributesVisualizationLayout(configVisualizationLayout.ValueString())
+		attributes.VisualizationLayout = &visualizationLayout
 	}
 	if !plan.CompanyLogo.IsNull() && !plan.CompanyLogo.IsUnknown() {
 		attributes.CompanyLogo = plan.CompanyLogo.ValueStringPointer()
@@ -386,6 +479,8 @@ func requireUnpublished(state *statusPageModel, trailingClause string) diag.Diag
 func (r *statusPageResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var plan statusPageModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+	var configVisualizationLayout types.String
+	response.Diagnostics.Append(request.Config.GetAttribute(ctx, path.Root("visualization_layout"), &configVisualizationLayout)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -429,6 +524,19 @@ func (r *statusPageResource) Update(ctx context.Context, request resource.Update
 	}
 	if !plan.SlackSubscriptionsEnabled.IsNull() && !plan.SlackSubscriptionsEnabled.IsUnknown() {
 		attributes.SlackSubscriptionsEnabled = plan.SlackSubscriptionsEnabled.ValueBoolPointer()
+	}
+	if !plan.WebhooksSubscriptionsEnabled.IsNull() && !plan.WebhooksSubscriptionsEnabled.IsUnknown() {
+		attributes.WebhooksSubscriptionsEnabled = plan.WebhooksSubscriptionsEnabled.ValueBoolPointer()
+	}
+	if !plan.MsTeamsSubscriptionsEnabled.IsNull() && !plan.MsTeamsSubscriptionsEnabled.IsUnknown() {
+		attributes.MsTeamsSubscriptionsEnabled = plan.MsTeamsSubscriptionsEnabled.ValueBoolPointer()
+	}
+	if !plan.RssFeedEnabled.IsNull() && !plan.RssFeedEnabled.IsUnknown() {
+		attributes.RssFeedEnabled = plan.RssFeedEnabled.ValueBoolPointer()
+	}
+	if !configVisualizationLayout.IsNull() && !configVisualizationLayout.IsUnknown() {
+		visualizationLayout := datadogV2.CreateStatusPageRequestDataAttributesVisualizationLayout(configVisualizationLayout.ValueString())
+		attributes.VisualizationLayout = &visualizationLayout
 	}
 	if !plan.CompanyLogo.IsNull() && !plan.CompanyLogo.IsUnknown() {
 		attributes.CompanyLogo = plan.CompanyLogo.ValueStringPointer()
@@ -547,6 +655,26 @@ func (r *statusPageResource) updateStateFromResponse(state *statusPageModel, res
 		}
 		if slackSubscriptionsEnabled, ok := attributes.GetSlackSubscriptionsEnabledOk(); ok && slackSubscriptionsEnabled != nil {
 			state.SlackSubscriptionsEnabled = types.BoolValue(*slackSubscriptionsEnabled)
+		}
+		if webhooksSubscriptionsEnabled, ok := attributes.GetWebhooksSubscriptionsEnabledOk(); ok && webhooksSubscriptionsEnabled != nil {
+			state.WebhooksSubscriptionsEnabled = types.BoolValue(*webhooksSubscriptionsEnabled)
+		} else {
+			state.WebhooksSubscriptionsEnabled = types.BoolNull()
+		}
+		if msTeamsSubscriptionsEnabled, ok := attributes.GetMsTeamsSubscriptionsEnabledOk(); ok && msTeamsSubscriptionsEnabled != nil {
+			state.MsTeamsSubscriptionsEnabled = types.BoolValue(*msTeamsSubscriptionsEnabled)
+		} else {
+			state.MsTeamsSubscriptionsEnabled = types.BoolNull()
+		}
+		if rssFeedEnabled, ok := attributes.GetRssFeedEnabledOk(); ok && rssFeedEnabled != nil {
+			state.RssFeedEnabled = types.BoolValue(*rssFeedEnabled)
+		} else {
+			state.RssFeedEnabled = types.BoolNull()
+		}
+		if visualizationLayout, ok := attributes.GetVisualizationLayoutOk(); ok && visualizationLayout != nil {
+			state.VisualizationLayout = types.StringValue(string(*visualizationLayout))
+		} else {
+			state.VisualizationLayout = types.StringNull()
 		}
 		if companyLogo, ok := attributes.GetCompanyLogoOk(); ok && companyLogo != nil {
 			state.CompanyLogo = types.StringValue(*companyLogo)
