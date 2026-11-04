@@ -30,9 +30,9 @@ resource "datadog_rum_application" "rum_application" {
 
 ### Optional
 
-- `product_analytics_retention_state` (String) Controls the retention policy for Product Analytics data derived from RUM events. Valid values are `MAX`, `NONE`.
-- `rum_event_processing_state` (String) Configures which RUM events are processed and stored for the application. Valid values are `ALL`, `ERROR_FOCUSED_MODE`, `NONE`.
-- `type` (String) Type of the RUM application. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`. Defaults to `"browser"`.
+- `product_analytics_retention_state` (String) Controls the retention policy for Product Analytics data derived from RUM events. `MAX` retains Product Analytics data for the maximum period available to the organization, and `NONE` retains none. If not set, Datadog picks the value when the application is created. Valid values are `MAX`, `NONE`.
+- `rum_event_processing_state` (String) Configures which RUM events are processed and stored for the application. `ALL` processes all RUM events, `ERROR_FOCUSED_MODE` processes only error-related events, and `NONE` processes no RUM events. If not set, Datadog uses `ALL` when the application is created. Valid values are `ALL`, `ERROR_FOCUSED_MODE`, `NONE`.
+- `type` (String) Type of the RUM application. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`, `roku`, `electron`, `unity`, `kotlin-multiplatform`. Defaults to `"browser"`.
 
 ### Read-Only
 
