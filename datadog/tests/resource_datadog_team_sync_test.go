@@ -57,8 +57,7 @@ resource "datadog_team_sync" "foo" {
 }
 
 func TestAccTeamSyncServiceNow(t *testing.T) {
-	ctx := context.WithValue(context.Background(), "http_retry_enable", true)
-	_, providers, accProviders := testAccFrameworkMuxProviders(ctx, t)
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
