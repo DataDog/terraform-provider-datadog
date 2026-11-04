@@ -10,6 +10,19 @@ resource "datadog_tag_rule" "env" {
   required           = true
 }
 
+# Require the tag to be present with any value. A bare `*` accepts every
+# value, so it must be paired with `required = true` (or with `negated = true`
+# to require the tag to be absent instead).
+resource "datadog_tag_rule" "team" {
+  name               = "team must be set"
+  source             = "logs"
+  scope              = "org"
+  tag_key            = "team"
+  tag_value_patterns = ["*"]
+  rule_type          = "surfacing"
+  required           = true
+}
+
 # Create a blocking tag rule, which rejects telemetry that violates it.
 # The Datadog API only accepts `surfacing` at creation time, so the provider
 # creates the rule and then immediately updates it to `blocking`. Because that

@@ -539,8 +539,10 @@ type OneOfVariantAssignment struct {
 
 // ResourceView is the render-ready data context for the resource template.
 type ResourceView struct {
-	TypeName string
-	GoName   string
+	// CallerAssignedID separates the create name from computed API identity.
+	CallerAssignedID bool
+	TypeName         string
+	GoName           string
 	// RootModel is the Go struct the resource's state decodes into, named by
 	// modelNamer.root. Templates must not rebuild it from GoName.
 	RootModel   string
@@ -600,12 +602,14 @@ type ResourceView struct {
 }
 
 // CRUDCallView describes one lifecycle SDK call. GoRequestType is empty for
-// Read and Delete, which send no body; GoResponseType is empty for Delete,
-// whose 204 response carries none.
+// Read and Delete, which send no request body. GoResponseType names a response
+// component when available. HasResponseBody is used only by Delete to select
+// the SDK assignment arity, including for unnamed responses.
 type CRUDCallView struct {
-	Method         string
-	GoRequestType  string
-	GoResponseType string
+	Method          string
+	GoRequestType   string
+	GoResponseType  string
+	HasResponseBody bool
 	// Arguments are the positional SDK call arguments in call order (e.g. the
 	// terminal path id, aliased to "id").
 	Arguments []SDKArgumentView

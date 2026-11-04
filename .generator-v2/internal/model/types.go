@@ -863,8 +863,10 @@ type SDKCall struct {
 	GoRequestType string
 	// GoResponseType is the SDK response type, e.g. "OrgGroupResponse".
 	// Rule: last path component of the 2xx response schema $ref. Empty when the
-	// operation returns no body (e.g. 204 No Content).
+	// operation returns no body or its response schema is unnamed.
 	GoResponseType string
+	// HasResponseBody distinguishes unnamed response bodies from bodyless calls.
+	HasResponseBody bool
 	// GoRequestDataType is the SDK type of the request body's JSON:API "data"
 	// member, e.g. "IncidentTypeCreateData": the RefName of RequestSchema's
 	// "data" property, read per role since Create's and Update's routinely
@@ -876,10 +878,15 @@ type SDKCall struct {
 	// all. A body that does not must not call SetId: the SDK generates that
 	// setter only for a declared property, so the call would not compile.
 	RequestDeclaresID bool
+	// RequestIDRequired and RequestIDReadOnly come from this operation's create/update schema.
+	RequestIDRequired bool
+	RequestIDReadOnly bool
+	// RequestIDEnum marks a named string enum; other enum shapes fail closed.
+	RequestIDEnum bool
 	// RequestIDGoType is the Go type the SDK's SetId takes on this body's data
-	// member, derived from the data.id schema via SDKScalarGoType, e.g.
-	// "string" or "uuid.UUID". Empty when the body declares no id, or its
-	// format is one the SDK generator cannot type. Read from the body, not
+	// member, derived from the data.id scalar schema or named string enum, e.g.
+	// "string", "uuid.UUID", or an enum component. Empty for unsupported enums,
+	// absent IDs, or formats the SDK cannot type. Read from the body, not
 	// borrowed from the path parameter: an int64 path id can carry a string id.
 	RequestIDGoType string
 	// RequestDiscriminator describes the request body's JSON:API data.type

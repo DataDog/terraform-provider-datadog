@@ -408,10 +408,11 @@ func SDKPackageForPath(path string) string {
 // renames a trailing path-id argument to "id".
 func sdkCall(op *Operation, aliasTerminalID bool) *SDKCall {
 	call := &SDKCall{
-		GoPackage:      SDKPackageForPath(op.Path),
-		GoApiStruct:    SdkClassName(op.Tag),
-		GoMethod:       op.OperationId,
-		GoResponseType: op.ResponseRefName,
+		GoPackage:       SDKPackageForPath(op.Path),
+		GoApiStruct:     SdkClassName(op.Tag),
+		GoMethod:        op.OperationId,
+		GoResponseType:  op.ResponseRefName,
+		HasResponseBody: op.ResponseSchema != nil,
 	}
 	applySDKBinding(call, op, aliasTerminalID)
 	return call

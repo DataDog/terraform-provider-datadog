@@ -62,6 +62,20 @@ var (
 	_ resource.ResourceWithImportState = &{{ .GoName }}Resource{}
 )
 
+{{- if and .CallerAssignedID (not .UpdateUnsupported) }}
+// {{ .GoName }}NameRequiresReplace allows the first configured name after import.
+// Once adopted, changing the create identity requires a replacement.
+func {{ .GoName }}NameRequiresReplace() planmodifier.String {
+	return stringplanmodifier.RequiresReplaceIf(
+		func(ctx context.Context, request planmodifier.StringRequest, response *stringplanmodifier.RequiresReplaceIfFuncResponse) {
+			response.RequiresReplace = !request.StateValue.IsNull()
+		},
+		"Changing an adopted name replaces the resource.",
+		"Changing an adopted name replaces the resource.",
+	)
+}
+{{- end }}
+
 {{- range .WriteOnlySecrets }}
 var {{ .ConfigVar }} = {{ template "writeOnlySecretConfigValue" . }}
 {{- end }}
@@ -148,6 +162,11 @@ func (r *{{ .GoName }}Resource) Read(ctx context.Context, request resource.ReadR
 		return
 	}
 {{ template "commitState" .Read }}
+{{- if and .CallerAssignedID .UpdateUnsupported }}
+	if !response.Diagnostics.HasError() && state.Name.IsNull() {
+		response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("name"), state.ID)...)
+	}
+{{- end }}
 }
 
 func (r *{{ .GoName }}Resource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
@@ -156,6 +175,12 @@ func (r *{{ .GoName }}Resource) Update(ctx context.Context, request resource.Upd
 {{- else }}
 	var state {{ .RootModel }}
 {{ template "decodePlan" . }}
+{{- if .CallerAssignedID }}
+	response.Diagnostics.Append(request.State.GetAttribute(ctx, path.Root("id"), &state.ID)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+{{- end }}
 
 {{ template "writeOnlySecretResults" .Update.WriteOnlySecrets }}
 {{ template "argPrep" .Update.Arguments }}
@@ -177,7 +202,7 @@ func (r *{{ .GoName }}Resource) Delete(ctx context.Context, request resource.Del
 	}
 
 {{ template "argPrep" .Delete.Arguments }}
-	httpResp, err := r.Api.{{ .Delete.Method }}(r.Auth{{ range .Delete.Arguments }}, {{ .Expression }}{{ end }})
+	{{ if .Delete.HasResponseBody }}_, {{ end }}httpResp, err := r.Api.{{ .Delete.Method }}(r.Auth{{ range .Delete.Arguments }}, {{ .Expression }}{{ end }})
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
@@ -279,7 +304,7 @@ response omitted from reaching final Create state. */}}
       bodyAttributes := pkg.New<Attrs>WithDefaults()   // request fields set here
       bodyData       := pkg.New<Data>WithDefaults()
       bodyData.SetType(pkg.<TypeEnum>("<value>"))     // the JSON:API discriminator
-      bodyData.SetId(...)                             // update only; a create has no id
+      bodyData.SetId(...)                             // update, or create with a required caller-assigned id
       bodyData.SetAttributes(*bodyAttributes)
       body           := pkg.New<Request>WithDefaults()
       body.SetData(*bodyData)

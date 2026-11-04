@@ -20,11 +20,14 @@ func TestGenerateReportsUnconstrainedMapPath(t *testing.T) {
 	}
 	for _, tc := range []struct {
 		name, schema, components string
+		elementSuffix            string
 		want, notWant            []string
 	}{
 		{name: "empty schema", schema: "type: object\n              additionalProperties: {}", want: unconstrained},
 		{name: "boolean schema", schema: "type: object\n              additionalProperties: true", want: unconstrained},
-		{name: "map inside list", schema: "type: array\n              items:\n                type: object\n                additionalProperties: {}", want: unconstrained},
+		{name: "map inside list", elementSuffix: "[]{}", schema: "type: array\n              items:\n                type: object\n                additionalProperties: {}", want: unconstrained},
+		{name: "map inside map", elementSuffix: "{}{}", schema: "type: object\n              additionalProperties:\n                type: object\n                additionalProperties: {}", want: unconstrained},
+		{name: "list inside map", elementSuffix: "{}[]", schema: "type: object\n              additionalProperties:\n                type: array\n                items: {}", want: []string{`collection element kind "unsupported" has no framework element type`}},
 		{name: "free-form object value", schema: "type: object\n              additionalProperties:\n                type: object", want: unconstrained},
 		{
 			name:       "ref to empty component",
@@ -178,6 +181,15 @@ func TestGenerateReportsUnconstrainedMapPath(t *testing.T) {
 				if !strings.Contains(message, want) {
 					t.Errorf("diagnostic missing %q: %s", want, message)
 				}
+			}
+			if tc.elementSuffix != "" {
+				want := `element at "resource.data.attributes.environments[].allocations` + tc.elementSuffix + `"`
+				if !strings.Contains(message, want) {
+					t.Errorf("diagnostic missing %q: %s", want, message)
+				}
+			} else if strings.Contains(message, "element at") {
+				// Single-level failures keep their original wording.
+				t.Errorf("single-level diagnostic unexpectedly names an element path: %s", message)
 			}
 			for _, notWant := range tc.notWant {
 				if strings.Contains(message, notWant) {

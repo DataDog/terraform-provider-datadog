@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"fmt"
 	"slices"
 	"sort"
@@ -41,14 +42,30 @@ func (e *UnsupportedKindError) Error() string {
 // own "model: " prefix is dropped so the message carries the package once.
 type AttributeError struct {
 	Path string
-	Err  error
+	// ElementPath identifies the failing value in a nested collection. Empty for
+	// single-level failures, whose diagnostic format is unchanged.
+	ElementPath string
+	Err         error
 }
 
 func (e *AttributeError) Error() string {
-	return fmt.Sprintf("model: cannot build attribute at %q: %s", e.Path, strings.TrimPrefix(e.Err.Error(), "model: "))
+	reason := strings.TrimPrefix(e.Err.Error(), "model: ")
+	if e.ElementPath != "" {
+		reason = fmt.Sprintf("element at %q: %s", e.ElementPath, reason)
+	}
+	return fmt.Sprintf("model: cannot build attribute at %q: %s", e.Path, reason)
 }
 
 func (e *AttributeError) Unwrap() error { return e.Err }
+
+func collectionAttributeError(path, marker string, err error) *AttributeError {
+	result := &AttributeError{Path: path, Err: err}
+	var nested *elementTypeError
+	if errors.As(err, &nested) {
+		result.ElementPath = path + marker + nested.path
+	}
+	return result
+}
 
 // OneOfProjectionError reports a union that cannot be projected into a Terraform
 // envelope, naming the envelope, the offending alternative and the schema path,
@@ -251,7 +268,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 			var err error
 			attr.ElementType, attr.ElementFormat, attr.ElementIsEnum, err = elementInfo(s.Items)
 			if err != nil {
-				return nil, &AttributeError{Path: path, Err: err}
+				return nil, collectionAttributeError(path, "[]", err)
 			}
 		}
 
@@ -274,7 +291,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, required bool) (*Attribu
 			var err error
 			attr.ElementType, attr.ElementFormat, attr.ElementIsEnum, err = elementInfo(s.Items)
 			if err != nil {
-				return nil, &AttributeError{Path: path, Err: err}
+				return nil, collectionAttributeError(path, "{}", err)
 			}
 		}
 	}

@@ -11,7 +11,7 @@ Use Terraform-issued workload identity tokens (WITs) to authenticate the Datadog
 
 ## Prerequisites
 
-- Use a Datadog provider release that includes Terraform Dynamic Provider Credentials support (version >= 4.25.0).
+- Use a Datadog provider release that includes Terraform Dynamic Provider Credentials support (version >= 4.26.0).
 - Enable the applicable WIF integration for your Datadog organization and register the identity mapping described below. Creating the Terraform audience variable alone is insufficient.
 - Run in HCP Terraform. Local Terraform CLI execution does not generate these workload tokens.
 - For self-hosted HCP Terraform agents, tagged workload tokens require agent v1.12.0 or later; the untagged token requires v1.7.0 or later. Check [HashiCorp's requirements](https://developer.hashicorp.com/terraform/cloud-docs/dynamic-provider-credentials/manual-generation) for your deployment.
