@@ -20,27 +20,25 @@ func NewStatusPageDataSource() datasource.DataSource {
 }
 
 type statusPageDataSourceModel struct {
-	ID                           types.String `tfsdk:"id"`
-	Name                         types.String `tfsdk:"name"`
-	Type                         types.String `tfsdk:"type"`
-	Enabled                      types.Bool   `tfsdk:"enabled"`
-	DomainPrefix                 types.String `tfsdk:"domain_prefix"`
-	CustomDomain                 types.String `tfsdk:"custom_domain"`
-	CustomDomainEnabled          types.Bool   `tfsdk:"custom_domain_enabled"`
-	PageURL                      types.String `tfsdk:"page_url"`
-	VisualizationType            types.String `tfsdk:"visualization_type"`
-	SubscriptionsEnabled         types.Bool   `tfsdk:"subscriptions_enabled"`
-	SlackSubscriptionsEnabled    types.Bool   `tfsdk:"slack_subscriptions_enabled"`
-	WebhooksSubscriptionsEnabled types.Bool   `tfsdk:"webhooks_subscriptions_enabled"`
-	MsTeamsSubscriptionsEnabled  types.Bool   `tfsdk:"ms_teams_subscriptions_enabled"`
-	RssFeedEnabled               types.Bool   `tfsdk:"rss_feed_enabled"`
-	VisualizationLayout          types.String `tfsdk:"visualization_layout"`
-	CompanyLogo                  types.String `tfsdk:"company_logo"`
-	Favicon                      types.String `tfsdk:"favicon"`
-	EmailHeaderImage             types.String `tfsdk:"email_header_image"`
-	SlackAppIcon                 types.String `tfsdk:"slack_app_icon"`
-	CreatedAt                    types.String `tfsdk:"created_at"`
-	ModifiedAt                   types.String `tfsdk:"modified_at"`
+	ID                        types.String `tfsdk:"id"`
+	Name                      types.String `tfsdk:"name"`
+	Type                      types.String `tfsdk:"type"`
+	Enabled                   types.Bool   `tfsdk:"enabled"`
+	DomainPrefix              types.String `tfsdk:"domain_prefix"`
+	CustomDomain              types.String `tfsdk:"custom_domain"`
+	CustomDomainEnabled       types.Bool   `tfsdk:"custom_domain_enabled"`
+	PageURL                   types.String `tfsdk:"page_url"`
+	VisualizationType         types.String `tfsdk:"visualization_type"`
+	SubscriptionsEnabled      types.Bool   `tfsdk:"subscriptions_enabled"`
+	SlackSubscriptionsEnabled types.Bool   `tfsdk:"slack_subscriptions_enabled"`
+	RssFeedEnabled            types.Bool   `tfsdk:"rss_feed_enabled"`
+	VisualizationLayout       types.String `tfsdk:"visualization_layout"`
+	CompanyLogo               types.String `tfsdk:"company_logo"`
+	Favicon                   types.String `tfsdk:"favicon"`
+	EmailHeaderImage          types.String `tfsdk:"email_header_image"`
+	SlackAppIcon              types.String `tfsdk:"slack_app_icon"`
+	CreatedAt                 types.String `tfsdk:"created_at"`
+	ModifiedAt                types.String `tfsdk:"modified_at"`
 }
 
 type statusPageDataSource struct {
@@ -116,14 +114,6 @@ func (d *statusPageDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 			},
 			"slack_subscriptions_enabled": schema.BoolAttribute{
 				Description: "Whether Slack subscriber notifications are enabled for the status page.",
-				Computed:    true,
-			},
-			"webhooks_subscriptions_enabled": schema.BoolAttribute{
-				Description: "Whether webhook subscriber notifications are enabled for the status page.",
-				Computed:    true,
-			},
-			"ms_teams_subscriptions_enabled": schema.BoolAttribute{
-				Description: "Whether Microsoft Teams subscriber notifications are enabled for the status page.",
 				Computed:    true,
 			},
 			"rss_feed_enabled": schema.BoolAttribute{
@@ -223,12 +213,6 @@ func (d *statusPageDataSource) Read(ctx context.Context, request datasource.Read
 		}
 		if slackSubscriptionsEnabled, ok := attributes.GetSlackSubscriptionsEnabledOk(); ok && slackSubscriptionsEnabled != nil {
 			state.SlackSubscriptionsEnabled = types.BoolValue(*slackSubscriptionsEnabled)
-		}
-		if webhooksSubscriptionsEnabled, ok := attributes.GetWebhooksSubscriptionsEnabledOk(); ok && webhooksSubscriptionsEnabled != nil {
-			state.WebhooksSubscriptionsEnabled = types.BoolValue(*webhooksSubscriptionsEnabled)
-		}
-		if msTeamsSubscriptionsEnabled, ok := attributes.GetMsTeamsSubscriptionsEnabledOk(); ok && msTeamsSubscriptionsEnabled != nil {
-			state.MsTeamsSubscriptionsEnabled = types.BoolValue(*msTeamsSubscriptionsEnabled)
 		}
 		if rssFeedEnabled, ok := attributes.GetRssFeedEnabledOk(); ok && rssFeedEnabled != nil {
 			state.RssFeedEnabled = types.BoolValue(*rssFeedEnabled)

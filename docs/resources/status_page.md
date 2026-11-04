@@ -22,17 +22,15 @@ resource "datadog_status_page" "acme_status_page" {
   visualization_type = "bars_and_uptime_percentage"
 }
 
-# Status page with a grid layout, an RSS feed, and Microsoft Teams and webhook subscriptions
+# Status page with a grid layout and an RSS feed
 resource "datadog_status_page" "acme_grid_status_page" {
-  name                           = "Acme Services"
-  type                           = "public"
-  domain_prefix                  = "acme-services"
-  visualization_type             = "component_name_only"
-  visualization_layout           = "grid"
-  subscriptions_enabled          = true
-  rss_feed_enabled               = true
-  ms_teams_subscriptions_enabled = true
-  webhooks_subscriptions_enabled = true
+  name                  = "Acme Services"
+  type                  = "public"
+  domain_prefix         = "acme-services"
+  visualization_type    = "component_name_only"
+  visualization_layout  = "grid"
+  subscriptions_enabled = true
+  rss_feed_enabled      = true
 }
 ```
 
@@ -51,13 +49,11 @@ resource "datadog_status_page" "acme_grid_status_page" {
 - `company_logo` (String) The company logo displayed on the status page.
 - `email_header_image` (String) The header image included in subscriber emails.
 - `favicon` (String) The favicon displayed for the status page.
-- `ms_teams_subscriptions_enabled` (Boolean) Whether Microsoft Teams subscriber notifications are enabled for the status page. Not available for private status pages.
 - `rss_feed_enabled` (Boolean) Whether the RSS feed is enabled for the status page. Only available for public status pages.
 - `slack_app_icon` (String) The icon used for the status page's Slack app integration.
 - `slack_subscriptions_enabled` (Boolean) Whether Slack subscriber notifications are enabled for the status page.
 - `subscriptions_enabled` (Boolean) Whether subscriber notifications are enabled for the status page.
 - `visualization_layout` (String) How components are laid out on the status page. `grid` requires `visualization_type` to be `component_name_only`. Valid values are `list`, `grid`.
-- `webhooks_subscriptions_enabled` (Boolean) Whether webhook subscriber notifications are enabled for the status page. Not available for private status pages.
 
 ### Read-Only
 
