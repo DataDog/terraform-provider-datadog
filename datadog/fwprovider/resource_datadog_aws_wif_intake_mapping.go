@@ -55,11 +55,11 @@ func (r *awsWifIntakeMappingResource) Schema(_ context.Context, _ resource.Schem
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"par_enrollment_enabled": schema.BoolAttribute{
-				Description: "Whether the mapping allows Private Action Runner enrollment. This permission is managed separately from the ARN pattern and cannot be changed with this resource. Defaults to false when omitted by the API.",
+				Description: "Whether the mapping allows Private Action Runner enrollment. This permission is managed separately from the ARN pattern and cannot be changed with this resource. Changing `arn_pattern` replaces the mapping and resets this permission to false; re-enable Private Action Runner enrollment separately after replacement if needed. Defaults to false when omitted by the API.",
 				Computed:    true,
 			},
 			"arn_pattern": schema.StringAttribute{
-				Description: "The AWS caller ARN pattern allowed to authenticate. Currently, only the `aws` partition is supported. For role-based authentication, use the STS assumed-role ARN returned by `aws sts get-caller-identity`, not the IAM role ARN shown in the AWS console. A pattern may contain one wildcard only, as a trailing `/*` after a specific resource; for example, `arn:aws:sts::123456789012:assumed-role/DatadogAgentRole/*`.",
+				Description: "The AWS caller ARN pattern allowed to authenticate. Changing this value replaces the mapping. Currently, only the `aws` partition is supported. For role-based authentication, use the STS assumed-role ARN returned by `aws sts get-caller-identity`, not the IAM role ARN shown in the AWS console. A pattern may contain one wildcard only, as a trailing `/*` after a specific resource; for example, `arn:aws:sts::123456789012:assumed-role/DatadogAgentRole/*`.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),

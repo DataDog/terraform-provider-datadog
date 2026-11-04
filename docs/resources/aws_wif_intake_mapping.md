@@ -13,11 +13,16 @@ Provides an AWS Workload Identity Federation (WIF) intake mapping. The mapping a
 ## Example Usage
 
 ```terraform
-# This AWS account must already be integrated with Datadog.
-data "aws_caller_identity" "current" {}
+variable "agent_aws_account_id" {
+  type        = string
+  description = "The AWS account where the Agent runs. It must be integrated with Datadog and may differ from the account running Terraform."
+}
 
+# If this configuration also manages the AWS integration, replace
+# var.agent_aws_account_id below with datadog_integration_aws_account.agent.aws_account_id
+# (using your integration resource's name) to establish creation order.
 resource "datadog_aws_wif_intake_mapping" "agent" {
-  arn_pattern = "arn:aws:sts::${data.aws_caller_identity.current.account_id}:assumed-role/DatadogAgentRole/*"
+  arn_pattern = "arn:aws:sts::${var.agent_aws_account_id}:assumed-role/DatadogAgentRole/*"
 }
 
 # Configure the Agent separately with:
@@ -30,12 +35,12 @@ resource "datadog_aws_wif_intake_mapping" "agent" {
 
 ### Required
 
-- `arn_pattern` (String) The AWS caller ARN pattern allowed to authenticate. Currently, only the `aws` partition is supported. For role-based authentication, use the STS assumed-role ARN returned by `aws sts get-caller-identity`, not the IAM role ARN shown in the AWS console. A pattern may contain one wildcard only, as a trailing `/*` after a specific resource; for example, `arn:aws:sts::123456789012:assumed-role/DatadogAgentRole/*`. String length must be at least 1.
+- `arn_pattern` (String) The AWS caller ARN pattern allowed to authenticate. Changing this value replaces the mapping. Currently, only the `aws` partition is supported. For role-based authentication, use the STS assumed-role ARN returned by `aws sts get-caller-identity`, not the IAM role ARN shown in the AWS console. A pattern may contain one wildcard only, as a trailing `/*` after a specific resource; for example, `arn:aws:sts::123456789012:assumed-role/DatadogAgentRole/*`. String length must be at least 1.
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `par_enrollment_enabled` (Boolean) Whether the mapping allows Private Action Runner enrollment. This permission is managed separately from the ARN pattern and cannot be changed with this resource. Defaults to false when omitted by the API.
+- `par_enrollment_enabled` (Boolean) Whether the mapping allows Private Action Runner enrollment. This permission is managed separately from the ARN pattern and cannot be changed with this resource. Changing `arn_pattern` replaces the mapping and resets this permission to false; re-enable Private Action Runner enrollment separately after replacement if needed. Defaults to false when omitted by the API.
 
 ## Import
 
