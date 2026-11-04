@@ -107,25 +107,22 @@ func TestAccDatadogRUMApplication_NoDefaultRetentionFilters(t *testing.T) {
 					testAccCheckDatadogRUMApplicationExists(providers.frameworkProvider, "datadog_rum_application.no_default_filters_app"),
 					resource.TestCheckResourceAttr(
 						"datadog_rum_application.no_default_filters_app", "create_default_retention_filters", "false"),
-					testAccCheckDatadogRUMApplicationHasNoDefaultRetentionFilters(providers.frameworkProvider, "datadog_rum_application.no_default_filters_app"),
+					testAccCheckDatadogRUMApplicationHasNoRetentionFilters(providers.frameworkProvider, "datadog_rum_application.no_default_filters_app"),
 				),
 			},
 		},
 	})
 }
 
-func testAccCheckDatadogRUMApplicationHasNoDefaultRetentionFilters(accProvider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {
+func testAccCheckDatadogRUMApplicationHasNoRetentionFilters(accProvider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		id := s.RootModule().Resources[resourceName].Primary.ID
 		resp, httpresp, err := accProvider.DatadogApiInstances.GetRumRetentionFiltersApiV2().ListRetentionFilters(accProvider.Auth, id)
 		if err != nil {
 			return utils.TranslateClientError(err, httpresp, "error listing rum retention filters")
 		}
-		for _, f := range resp.GetData() {
-			attrs := f.GetAttributes()
-			if name := attrs.GetName(); name == "Sessions" || name == "Sessions with errors" {
-				return fmt.Errorf("unexpected default retention filter %q on application %s", name, id)
-			}
+		if n := len(resp.GetData()); n != 0 {
+			return fmt.Errorf("expected no retention filters on application %s, got %d", id, n)
 		}
 		return nil
 	}
