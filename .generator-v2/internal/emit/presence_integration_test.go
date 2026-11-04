@@ -6,12 +6,13 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 
-	testinfra "github.com/terraform-providers/terraform-provider-datadog/generator/internal/testdata"
+	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/providermod"
 )
 
 var _ = ginkgo.Describe("generated nested schemas", func() {
@@ -71,8 +72,16 @@ func TestTfgenPluralPresence(t *testing.T) {
 		source.WriteString("}\n")
 		path := filepath.Join(ginkgo.GinkgoT().TempDir(), "zz_tfgen_presence_test.go")
 		gomega.Expect(os.WriteFile(path, source.Bytes(), 0o644)).To(gomega.Succeed())
-		result, err := testinfra.RunTests([]testinfra.StagedFile{{ProviderPath: "datadog/fwprovider/zz_tfgen_presence_test.go", SourcePath: path}}, "^TestTfgenPluralPresence$")
+		// This probe only imports the framework. Run the generated file alone
+		// instead of overlaying it into fwprovider, which unnecessarily compiles
+		// the entire provider and SDK alongside the other integration packages.
+		// The provider working directory keeps its pinned dependency versions.
+		root, err := providermod.Root("")
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
-		gomega.Expect(result.OK()).To(gomega.BeTrue(), result.Diagnostics)
+		cmd := exec.Command("go", "test", "-count=1", path)
+		cmd.Dir = root
+		cmd.Env = append(os.Environ(), "GOPROXY=off")
+		output, err := cmd.CombinedOutput()
+		gomega.Expect(err).NotTo(gomega.HaveOccurred(), string(output))
 	})
 })
