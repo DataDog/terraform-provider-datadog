@@ -3,12 +3,39 @@ package fwprovider
 import (
 	"context"
 	"encoding/json"
+	"errors"
+	"net/http"
 	"testing"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
+
+func TestDeploymentGateConflictDetection(t *testing.T) {
+	cases := []struct {
+		name   string
+		status int
+		err    error
+		want   bool
+	}{
+		{"400 existing gate", http.StatusBadRequest, datadog.GenericOpenAPIError{ErrorMessage: "400 Bad Request", ErrorBody: []byte(`{"errors":["Gate already exists for this service"]}`)}, true},
+		{"400 unrelated validation", http.StatusBadRequest, datadog.GenericOpenAPIError{ErrorMessage: "400 Bad Request", ErrorBody: []byte(`{"errors":["Missing service"]}`)}, false},
+		{"409 conflict", http.StatusConflict, errors.New("conflict"), true},
+		{"500", http.StatusInternalServerError, errors.New("conflict"), false},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := isDeploymentGateConflict(&http.Response{StatusCode: tc.status}, tc.err); got != tc.want {
+				t.Errorf("isDeploymentGateConflict() = %t, want %t", got, tc.want)
+			}
+		})
+	}
+	if isDeploymentGateConflict(nil, errors.New("conflict")) {
+		t.Fatal("a missing HTTP response cannot indicate a gate conflict")
+	}
+}
 
 func testRuleOptions() *deploymentGateRuleOptionsModel {
 	return &deploymentGateRuleOptionsModel{
