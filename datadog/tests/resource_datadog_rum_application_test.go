@@ -85,6 +85,52 @@ func TestAccDatadogRUMApplication_ProductScales(t *testing.T) {
 	})
 }
 
+func TestAccDatadogRUMApplication_NoDefaultRetentionFilters(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	appName := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogRUMApplicationDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: fmt.Sprintf(`
+  resource "datadog_rum_application" "no_default_filters_app" {
+    name                             = "%s"
+    type                             = "browser"
+    create_default_retention_filters = false
+  }
+    `, appName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogRUMApplicationExists(providers.frameworkProvider, "datadog_rum_application.no_default_filters_app"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_application.no_default_filters_app", "create_default_retention_filters", "false"),
+					testAccCheckDatadogRUMApplicationHasNoDefaultRetentionFilters(providers.frameworkProvider, "datadog_rum_application.no_default_filters_app"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogRUMApplicationHasNoDefaultRetentionFilters(accProvider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		id := s.RootModule().Resources[resourceName].Primary.ID
+		resp, httpresp, err := accProvider.DatadogApiInstances.GetRumRetentionFiltersApiV2().ListRetentionFilters(accProvider.Auth, id)
+		if err != nil {
+			return utils.TranslateClientError(err, httpresp, "error listing rum retention filters")
+		}
+		for _, f := range resp.GetData() {
+			attrs := f.GetAttributes()
+			if name := attrs.GetName(); name == "Sessions" || name == "Sessions with errors" {
+				return fmt.Errorf("unexpected default retention filter %q on application %s", name, id)
+			}
+		}
+		return nil
+	}
+}
+
 func testAccCheckDatadogRUMApplicationConfig(uniq string) string {
 	return fmt.Sprintf(`
   resource "datadog_rum_application" "some_app" {

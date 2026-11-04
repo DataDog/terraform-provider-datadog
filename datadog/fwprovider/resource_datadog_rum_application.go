@@ -36,6 +36,7 @@ type rumApplicationModel struct {
 	RumEventProcessingState        types.String `tfsdk:"rum_event_processing_state"`
 	ProductAnalyticsRetentionState types.String `tfsdk:"product_analytics_retention_state"`
 	ApiKeyID                       types.Int32  `tfsdk:"api_key_id"`
+	CreateDefaultRetentionFilters  types.Bool   `tfsdk:"create_default_retention_filters"`
 }
 
 func NewRumApplicationResource() resource.Resource {
@@ -85,6 +86,10 @@ func (r *rumApplicationResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Validators: []validator.String{
 					stringvalidator.OneOf("MAX", "NONE"),
 				},
+			},
+			"create_default_retention_filters": schema.BoolAttribute{
+				Optional:    true,
+				Description: "Whether to create the default retention filters (`Sessions with errors` and `Sessions`, both at 100%) when the application is created. Defaults to `true` on the API side. Set to `false` to create the application without them, for example when you manage its retention filters in the same configuration. Permanent retention filters are always created. Only used at creation: changing it later doesn't add or remove filters on an existing application.",
 			},
 			"id": utils.ResourceIDAttribute(),
 			"api_key_id": schema.Int32Attribute{
@@ -263,6 +268,10 @@ func (r *rumApplicationResource) buildRumApplicationRequestBody(ctx context.Cont
 
 	if !state.ProductAnalyticsRetentionState.IsNull() && !state.ProductAnalyticsRetentionState.IsUnknown() {
 		attributes.SetProductAnalyticsRetentionState(datadogV2.RUMProductAnalyticsRetentionState(state.ProductAnalyticsRetentionState.ValueString()))
+	}
+
+	if !state.CreateDefaultRetentionFilters.IsNull() && !state.CreateDefaultRetentionFilters.IsUnknown() {
+		attributes.SetCreateDefaultRetentionFilters(state.CreateDefaultRetentionFilters.ValueBool())
 	}
 
 	req := datadogV2.NewRUMApplicationCreateRequestWithDefaults()
