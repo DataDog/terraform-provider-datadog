@@ -64,7 +64,7 @@ func (r *rumApplicationResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Optional:    true,
 				Computed:    true,
 				Default:     stringdefault.StaticString("browser"),
-				Description: "Type of the RUM application. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`.",
+				Description: "Type of the RUM application. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`, `roku`, `electron`, `unity`, `kotlin-multiplatform`.",
 			},
 			"client_token": schema.StringAttribute{
 				Computed:    true,
@@ -73,7 +73,7 @@ func (r *rumApplicationResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"rum_event_processing_state": schema.StringAttribute{
 				Optional:    true,
 				Computed:    true,
-				Description: "Configures which RUM events are processed and stored for the application.",
+				Description: "Configures which RUM events are processed and stored for the application. `ALL` enables RUM, `ERROR_FOCUSED_MODE` uses the application for Error Tracking only, without RUM, and `NONE` disables RUM event processing. If not set, Datadog uses `ALL` when the application is created.",
 				Validators: []validator.String{
 					stringvalidator.OneOf("ALL", "ERROR_FOCUSED_MODE", "NONE"),
 				},
@@ -81,7 +81,7 @@ func (r *rumApplicationResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"product_analytics_retention_state": schema.StringAttribute{
 				Optional:    true,
 				Computed:    true,
-				Description: "Controls the retention policy for Product Analytics data derived from RUM events.",
+				Description: "Controls the retention policy for Product Analytics data derived from RUM events. `MAX` enables Product Analytics for the application, and `NONE` disables it. If not set, Datadog picks the value when the application is created.",
 				Validators: []validator.String{
 					stringvalidator.OneOf("MAX", "NONE"),
 				},
