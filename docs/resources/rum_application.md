@@ -38,9 +38,9 @@ resource "datadog_rum_application" "rum_application_custom_filters" {
 ### Optional
 
 - `create_default_retention_filters` (Boolean) Whether to create the default retention filters (`Sessions with errors` and `Sessions`, both at 100%) when the application is created. Defaults to `true` on the API side. Set to `false` to create the application without them, such as when you manage its retention filters in the same configuration. Permanent retention filters are always created. This setting only applies during application creation. Changing it afterward doesn't add or remove filters.
-- `product_analytics_retention_state` (String) Controls the retention policy for Product Analytics data derived from RUM events. Valid values are `MAX`, `NONE`.
-- `rum_event_processing_state` (String) Configures which RUM events are processed and stored for the application. Valid values are `ALL`, `ERROR_FOCUSED_MODE`, `NONE`.
-- `type` (String) Type of the RUM application. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`. Defaults to `"browser"`.
+- `product_analytics_retention_state` (String) Controls the retention policy for Product Analytics data derived from RUM events. `MAX` enables Product Analytics for the application, and `NONE` disables it. If not set, Datadog picks the value when the application is created. Valid values are `MAX`, `NONE`.
+- `rum_event_processing_state` (String) Configures which RUM events are processed and stored for the application. `ALL` enables RUM, `ERROR_FOCUSED_MODE` uses the application for Error Tracking only, without RUM, and `NONE` disables RUM event processing. If not set, Datadog uses `ALL` when the application is created. Valid values are `ALL`, `ERROR_FOCUSED_MODE`, `NONE`.
+- `type` (String) Type of the RUM application. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`, `roku`, `electron`, `unity`, `kotlin-multiplatform`. Defaults to `"browser"`.
 
 ### Read-Only
 
