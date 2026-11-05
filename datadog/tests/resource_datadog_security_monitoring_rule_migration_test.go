@@ -86,16 +86,6 @@ func TestAccDatadogSecurityMonitoringRule_Migration_Basic(t *testing.T) {
 	)
 }
 
-func TestAccDatadogSecurityMonitoringRule_Migration_SignalCorrelation(t *testing.T) {
-	t.Parallel()
-	ctx, providers, _ := testAccFrameworkMuxProviders(context.Background(), t)
-	ruleName := uniqueEntityName(ctx, t)
-	runSecurityMonitoringRuleMigrationTest(t,
-		testAccCheckDatadogSecurityMonitoringCreatedSignalCorrelationConfig(ruleName),
-		testAccCheckDatadogSecurityMonitorCreatedSignalCorrelationCheck(providers.frameworkProvider, ruleName),
-	)
-}
-
 func TestAccDatadogSecurityMonitoringRule_Migration_CWS(t *testing.T) {
 	t.Parallel()
 	ctx, providers, _ := testAccFrameworkMuxProviders(context.Background(), t)

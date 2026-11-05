@@ -1,0 +1,305 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 205
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"Team for connection test","handle":"tf-testaccteamconnectionservicenow-local-1793811381","name":"tf-testaccteamconnectionservicenow-local-1793811381"},"type":"team"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 787
+        uncompressed: false
+        body: '{"data":{"id":"2da80007-5dd5-4846-9515-a7ef06b69723","type":"team","attributes":{"avatar":null,"banner":8,"created_at":"2026-11-04T16:56:22.902244+00:00","description":"Team for connection test","handle":"tf-testaccteamconnectionservicenow-local-1793811381","hidden_modules":null,"is_managed":false,"link_count":0,"modified_at":"2026-11-04T16:56:22.902244+00:00","name":"tf-testaccteamconnectionservicenow-local-1793811381","provisioned_by":"teams_terraform","summary":"Team for connection test","user_count":0,"visible_modules":null},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/2da80007-5dd5-4846-9515-a7ef06b69723/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/2da80007-5dd5-4846-9515-a7ef06b69723/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 96.776083ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 298
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":[{"attributes":{"source":"servicenow"},"relationships":{"connected_team":{"data":{"id":"tf-test-instance/tf-testaccteamconnectionservicenow-local-1793811381","type":"servicenow_team"}},"team":{"data":{"id":"2da80007-5dd5-4846-9515-a7ef06b69723","type":"team"}}},"type":"team_connection"}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/connections
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 393
+        uncompressed: false
+        body: '{"data":[{"id":"4c3c313d-5a9b-40d3-b109-0b77f3bb7dc2","type":"team_connection","attributes":{"managed_by":"bf08695f-2dcc-4d26-9b77-0eb496a39926","source":"servicenow"},"relationships":{"connected_team":{"data":{"id":"tf-test-instance/tf-testaccteamconnectionservicenow-local-1793811381","type":"servicenow_team"}},"team":{"data":{"id":"2da80007-5dd5-4846-9515-a7ef06b69723","type":"team"}}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 87.285083ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/connections?filter%5Bconnection_ids%5D=4c3c313d-5a9b-40d3-b109-0b77f3bb7dc2
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 537
+        uncompressed: false
+        body: '{"data":[{"id":"4c3c313d-5a9b-40d3-b109-0b77f3bb7dc2","type":"team_connection","attributes":{"managed_by":"bf08695f-2dcc-4d26-9b77-0eb496a39926","source":"servicenow"},"relationships":{"connected_team":{"data":{"id":"tf-test-instance/tf-testaccteamconnectionservicenow-local-1793811381","type":"servicenow_team"}},"team":{"data":{"id":"2da80007-5dd5-4846-9515-a7ef06b69723","type":"team"}}}}],"meta":{"page":{"type":"offset_limit","offset":0,"limit":100,"total":1,"first_offset":0,"prev_offset":null,"next_offset":null,"last_offset":0}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 41.777667ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/2da80007-5dd5-4846-9515-a7ef06b69723
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 717
+        uncompressed: false
+        body: '{"data":{"id":"2da80007-5dd5-4846-9515-a7ef06b69723","type":"team","attributes":{"created_at":"2026-11-04T16:56:22.902244+00:00","description":"Team for connection test","handle":"tf-testaccteamconnectionservicenow-local-1793811381","is_managed":false,"link_count":0,"modified_at":"2026-11-04T16:56:22.902244+00:00","name":"tf-testaccteamconnectionservicenow-local-1793811381","provisioned_by":"teams_terraform","summary":"Team for connection test","user_count":0},"relationships":{"team_links":{"data":[],"links":{"related":"/api/v2/team/2da80007-5dd5-4846-9515-a7ef06b69723/links"}},"user_team_permissions":{"data":null,"links":{"related":"/api/v2/team/2da80007-5dd5-4846-9515-a7ef06b69723/permission-settings"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 132.786417ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/connections?filter%5Bconnection_ids%5D=4c3c313d-5a9b-40d3-b109-0b77f3bb7dc2
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 537
+        uncompressed: false
+        body: '{"data":[{"id":"4c3c313d-5a9b-40d3-b109-0b77f3bb7dc2","type":"team_connection","attributes":{"managed_by":"bf08695f-2dcc-4d26-9b77-0eb496a39926","source":"servicenow"},"relationships":{"connected_team":{"data":{"id":"tf-test-instance/tf-testaccteamconnectionservicenow-local-1793811381","type":"servicenow_team"}},"team":{"data":{"id":"2da80007-5dd5-4846-9515-a7ef06b69723","type":"team"}}}}],"meta":{"page":{"type":"offset_limit","offset":0,"limit":100,"total":1,"first_offset":0,"prev_offset":null,"next_offset":null,"last_offset":0}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 38.371208ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/connections?filter%5Bconnection_ids%5D=4c3c313d-5a9b-40d3-b109-0b77f3bb7dc2
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 537
+        uncompressed: false
+        body: '{"data":[{"id":"4c3c313d-5a9b-40d3-b109-0b77f3bb7dc2","type":"team_connection","attributes":{"managed_by":"bf08695f-2dcc-4d26-9b77-0eb496a39926","source":"servicenow"},"relationships":{"connected_team":{"data":{"id":"tf-test-instance/tf-testaccteamconnectionservicenow-local-1793811381","type":"servicenow_team"}},"team":{"data":{"id":"2da80007-5dd5-4846-9515-a7ef06b69723","type":"team"}}}}],"meta":{"page":{"type":"offset_limit","offset":0,"limit":100,"total":1,"first_offset":0,"prev_offset":null,"next_offset":null,"last_offset":0}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 38.476ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 82
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":[{"id":"4c3c313d-5a9b-40d3-b109-0b77f3bb7dc2","type":"team_connection"}]}
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/connections
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 79.563834ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/team/2da80007-5dd5-4846-9515-a7ef06b69723
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 136.964208ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/team/connections?filter%5Bconnection_ids%5D=4c3c313d-5a9b-40d3-b109-0b77f3bb7dc2
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 155
+        uncompressed: false
+        body: '{"data":[],"meta":{"page":{"type":"offset_limit","offset":0,"limit":100,"total":0,"first_offset":0,"prev_offset":null,"next_offset":null,"last_offset":0}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 37.390333ms

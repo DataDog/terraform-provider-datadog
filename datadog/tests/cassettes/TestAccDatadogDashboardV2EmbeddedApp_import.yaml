@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 522
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2EmbeddedApp_import-local-1789722569","widgets":[{"definition":{"app_id":"7e7745f9-4343-4927-b038-80934a355915","inputs":[{"name":"environment","value":"production"},{"name":"settings","value":{"dry_run":false,"replicas":3}}],"title":"Environment manager","type":"embedded_app"}},{"definition":{"template_id":"ec2_manager","title":"EC2 manager","type":"embedded_app"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"j4w-han-4m8","title":"tf-TestAccDatadogDashboardV2EmbeddedApp_import-local-1789722569","description":null,"author_handle":"jiawen.zhu@datadoghq.com","author_name":"Jiawen Zhu","layout_type":"ordered","url":"/dashboard/j4w-han-4m8/tf-testaccdatadogdashboardv2embeddedappimport-local-1789722569","template_variables":[],"widgets":[{"definition":{"app_id":"7e7745f9-4343-4927-b038-80934a355915","inputs":[{"name":"environment","value":"production"},{"name":"settings","value":{"dry_run":false,"replicas":3}}],"title":"Environment manager","type":"embedded_app"},"id":7037343113883740},{"definition":{"template_id":"ec2_manager","title":"EC2 manager","type":"embedded_app"},"id":5185371191941278}],"notify_list":[],"created_at":"2026-09-18T09:09:32.960284+00:00","modified_at":"2026-09-18T09:09:32.960284+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 834.071958ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/j4w-han-4m8
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"j4w-han-4m8","title":"tf-TestAccDatadogDashboardV2EmbeddedApp_import-local-1789722569","description":null,"author_handle":"jiawen.zhu@datadoghq.com","author_name":"Jiawen Zhu","layout_type":"ordered","url":"/dashboard/j4w-han-4m8/tf-testaccdatadogdashboardv2embeddedappimport-local-1789722569","template_variables":[],"widgets":[{"definition":{"app_id":"7e7745f9-4343-4927-b038-80934a355915","inputs":[{"name":"environment","value":"production"},{"name":"settings","value":{"dry_run":false,"replicas":3}}],"title":"Environment manager","type":"embedded_app"},"id":7037343113883740},{"definition":{"template_id":"ec2_manager","title":"EC2 manager","type":"embedded_app"},"id":5185371191941278}],"notify_list":[],"created_at":"2026-09-18T09:09:32.960284+00:00","modified_at":"2026-09-18T09:09:32.960284+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 219.682417ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/j4w-han-4m8
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"j4w-han-4m8","title":"tf-TestAccDatadogDashboardV2EmbeddedApp_import-local-1789722569","description":null,"author_handle":"jiawen.zhu@datadoghq.com","author_name":"Jiawen Zhu","layout_type":"ordered","url":"/dashboard/j4w-han-4m8/tf-testaccdatadogdashboardv2embeddedappimport-local-1789722569","template_variables":[],"widgets":[{"definition":{"app_id":"7e7745f9-4343-4927-b038-80934a355915","inputs":[{"name":"environment","value":"production"},{"name":"settings","value":{"dry_run":false,"replicas":3}}],"title":"Environment manager","type":"embedded_app"},"id":7037343113883740},{"definition":{"template_id":"ec2_manager","title":"EC2 manager","type":"embedded_app"},"id":5185371191941278}],"notify_list":[],"created_at":"2026-09-18T09:09:32.960284+00:00","modified_at":"2026-09-18T09:09:32.960284+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 209.240125ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/j4w-han-4m8
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"j4w-han-4m8","title":"tf-TestAccDatadogDashboardV2EmbeddedApp_import-local-1789722569","description":null,"author_handle":"jiawen.zhu@datadoghq.com","author_name":"Jiawen Zhu","layout_type":"ordered","url":"/dashboard/j4w-han-4m8/tf-testaccdatadogdashboardv2embeddedappimport-local-1789722569","template_variables":[],"widgets":[{"definition":{"app_id":"7e7745f9-4343-4927-b038-80934a355915","inputs":[{"name":"environment","value":"production"},{"name":"settings","value":{"dry_run":false,"replicas":3}}],"title":"Environment manager","type":"embedded_app"},"id":7037343113883740},{"definition":{"template_id":"ec2_manager","title":"EC2 manager","type":"embedded_app"},"id":5185371191941278}],"notify_list":[],"created_at":"2026-09-18T09:09:32.960284+00:00","modified_at":"2026-09-18T09:09:32.960284+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 238.712667ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/j4w-han-4m8
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"j4w-han-4m8"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 553.807041ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/j4w-han-4m8
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID j4w-han-4m8 not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 129.017875ms

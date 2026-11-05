@@ -6,12 +6,6 @@ paths:
   /empty-object:
     post:
       operationId: CreateEmptyObject
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: empty_object_r
-        group:
-          create: CreateEmptyObject
-          read: CreateEmptyObject
       requestBody:
         content:
           application/json:
@@ -25,12 +19,6 @@ paths:
   /untyped:
     post:
       operationId: CreateUntyped
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: untyped_r
-        group:
-          create: CreateUntyped
-          read: CreateUntyped
       requestBody:
         content:
           application/json:
@@ -43,12 +31,6 @@ paths:
   /array-no-items:
     post:
       operationId: CreateArrayNoItems
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: array_no_items_r
-        group:
-          create: CreateArrayNoItems
-          read: CreateArrayNoItems
       requestBody:
         content:
           application/json:
@@ -61,12 +43,6 @@ paths:
   /free-form-map:
     post:
       operationId: CreateFreeFormMap
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: free_form_map_r
-        group:
-          create: CreateFreeFormMap
-          read: CreateFreeFormMap
       requestBody:
         content:
           application/json:
@@ -79,12 +55,6 @@ paths:
   /bool-map:
     post:
       operationId: CreateBoolMap
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: bool_map_r
-        group:
-          create: CreateBoolMap
-          read: CreateBoolMap
       requestBody:
         content:
           application/json:
@@ -97,12 +67,6 @@ paths:
   /array-of-array:
     post:
       operationId: CreateArrayOfArray
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: array_of_array_r
-        group:
-          create: CreateArrayOfArray
-          read: CreateArrayOfArray
       requestBody:
         content:
           application/json:
@@ -120,12 +84,6 @@ paths:
   /array-of-map:
     post:
       operationId: CreateArrayOfMap
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: array_of_map_r
-        group:
-          create: CreateArrayOfMap
-          read: CreateArrayOfMap
       requestBody:
         content:
           application/json:
@@ -141,12 +99,6 @@ paths:
   /map-of-array:
     post:
       operationId: CreateMapOfArray
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: map_of_array_r
-        group:
-          create: CreateMapOfArray
-          read: CreateMapOfArray
       requestBody:
         content:
           application/json:
@@ -163,12 +115,6 @@ paths:
   /map-of-map:
     post:
       operationId: CreateMapOfMap
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: map_of_map_r
-        group:
-          create: CreateMapOfMap
-          read: CreateMapOfMap
       requestBody:
         content:
           application/json:
@@ -183,12 +129,6 @@ paths:
   /typed-primitive:
     post:
       operationId: CreateTypedPrimitive
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: typed_primitive_r
-        group:
-          create: CreateTypedPrimitive
-          read: CreateTypedPrimitive
       requestBody:
         content:
           application/json:
@@ -198,3 +138,76 @@ paths:
       responses:
         '204':
           description: no content
+tags:
+- name: Terraform
+  x-datadog-tf-generator:
+    empty_object_r:
+      resource:
+        artifact_name: empty_object_r
+        group:
+          create: CreateEmptyObject
+          read: CreateEmptyObject
+          delete: CreateEmptyObject
+    untyped_r:
+      resource:
+        artifact_name: untyped_r
+        group:
+          create: CreateUntyped
+          read: CreateUntyped
+          delete: CreateUntyped
+    array_no_items_r:
+      resource:
+        artifact_name: array_no_items_r
+        group:
+          create: CreateArrayNoItems
+          read: CreateArrayNoItems
+          delete: CreateArrayNoItems
+    free_form_map_r:
+      resource:
+        artifact_name: free_form_map_r
+        group:
+          create: CreateFreeFormMap
+          read: CreateFreeFormMap
+          delete: CreateFreeFormMap
+    bool_map_r:
+      resource:
+        artifact_name: bool_map_r
+        group:
+          create: CreateBoolMap
+          read: CreateBoolMap
+          delete: CreateBoolMap
+    array_of_array_r:
+      resource:
+        artifact_name: array_of_array_r
+        group:
+          create: CreateArrayOfArray
+          read: CreateArrayOfArray
+          delete: CreateArrayOfArray
+    array_of_map_r:
+      resource:
+        artifact_name: array_of_map_r
+        group:
+          create: CreateArrayOfMap
+          read: CreateArrayOfMap
+          delete: CreateArrayOfMap
+    map_of_array_r:
+      resource:
+        artifact_name: map_of_array_r
+        group:
+          create: CreateMapOfArray
+          read: CreateMapOfArray
+          delete: CreateMapOfArray
+    map_of_map_r:
+      resource:
+        artifact_name: map_of_map_r
+        group:
+          create: CreateMapOfMap
+          read: CreateMapOfMap
+          delete: CreateMapOfMap
+    typed_primitive_r:
+      resource:
+        artifact_name: typed_primitive_r
+        group:
+          create: CreateTypedPrimitive
+          read: CreateTypedPrimitive
+          delete: CreateTypedPrimitive

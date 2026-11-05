@@ -44,7 +44,6 @@ servers:
 security:
 - apiKeyAuth: []
   appKeyAuth: []
-tags:
 - name: Teams
   description: View and manage teams within Datadog. See the [Teams page](https://docs.datadoghq.com/account_management/teams/)
     for more information.
@@ -189,13 +188,6 @@ paths:
         limitParam: page[size]
         pageParam: page[number]
         resultsPath: data
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: teams
-        tf_description: Use this data source to retrieve information about existing Datadog teams.
-        group:
-          read: ListTeams
-        cardinality: plural
 components:
   parameters:
     PageNumber:
@@ -878,3 +870,13 @@ components:
       name: DD-APPLICATION-KEY
       in: header
       x-env-name: DD_APP_KEY
+tags:
+- name: Teams
+  description: View and manage teams within Datadog. See the [Teams page](https://docs.datadoghq.com/account_management/teams/) for more information.
+  x-datadog-tf-generator:
+    teams:
+      datasource_list:
+        artifact_name: teams
+        tf_description: Use this data source to retrieve information about existing Datadog teams.
+        group:
+          read: ListTeams

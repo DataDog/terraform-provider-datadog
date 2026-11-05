@@ -199,6 +199,31 @@ var ImageWidgetSpec = WidgetSpec{
 	},
 }
 
+// EmbeddedAppWidgetSpec corresponds to OpenAPI EmbeddedAppWidgetDefinition.
+var EmbeddedAppWidgetSpec = WidgetSpec{
+	HCLKey:      "embedded_app_definition",
+	JSONType:    "embedded_app",
+	Description: "The definition for an App Builder embedded app widget.",
+	ExactlyOneOf: [][]string{
+		{"app_id", "template_id"},
+	},
+	Fields: []FieldSpec{
+		{HCLKey: "app_id", Type: TypeString, OmitEmpty: true,
+			Description: "UUID of the App Builder app to embed. Exactly one of `app_id` or `template_id` must be provided."},
+		{HCLKey: "template_id", Type: TypeString, OmitEmpty: true,
+			Description: "ID of the built-in app template to embed. Exactly one of `app_id` or `template_id` must be provided."},
+		{HCLKey: "input", JSONKey: "inputs", Type: TypeBlockList, OmitEmpty: true,
+			Description: "A nested block describing an input passed to the embedded app. Multiple `input` blocks are allowed.",
+			Children: []FieldSpec{
+				{HCLKey: "name", Type: TypeString, OmitEmpty: false, Required: true,
+					Description: "Name of the app input."},
+				{HCLKey: "value", Type: TypeJSON, OmitEmpty: false, Required: true,
+					Description: "JSON-encoded value of the app input. Use `jsonencode()` for strings, numbers, booleans, objects, and arrays."},
+			}},
+		widgetCustomLinkField,
+	},
+}
+
 // NoteWidgetSpec corresponds to OpenAPI NoteWidgetDefinition.
 var NoteWidgetSpec = WidgetSpec{
 	HCLKey:      "note_definition",
@@ -210,6 +235,7 @@ var NoteWidgetSpec = WidgetSpec{
 			Type:        TypeString,
 			OmitEmpty:   false,
 			Required:    true,
+			NotEmpty:    true,
 			Description: "The content of the note.",
 		},
 		{
@@ -409,6 +435,7 @@ var LogStreamWidgetSpec = WidgetSpec{
 		{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true,
 			Description: "The facet and order to sort the data, for example: `{\"column\": \"time\", \"order\": \"desc\"}`.",
 			Children: []FieldSpec{
+				legacyNoOpDescriptionField,
 				{
 					HCLKey:      "column",
 					Type:        TypeString,
@@ -821,7 +848,7 @@ var distributionWidgetXAxisFields = []FieldSpec{
 		Description: "Specifies minimum value to show on the x-axis. It takes a number, percentile (p90 === 90th percentile), or auto for default behavior."},
 	{HCLKey: "max", Type: TypeString, OmitEmpty: true,
 		Description: "Specifies maximum value to show on the x-axis. It takes a number, percentile (p90 === 90th percentile), or auto for default behavior."},
-	{HCLKey: "include_zero", Type: TypeBool, OmitEmpty: true,
+	{HCLKey: "include_zero", Type: TypeBool, OmitEmpty: false,
 		Description: "True includes zero."},
 	{HCLKey: "num_buckets", Type: TypeInt, OmitEmpty: true,
 		Description: "Number of value buckets to target, also known as the resolution of the value bins."},
@@ -837,7 +864,7 @@ var distributionWidgetYAxisFields = []FieldSpec{
 		Description: "Specifies minimum value to show on the y-axis. It takes a number, or auto for default behavior."},
 	{HCLKey: "max", Type: TypeString, OmitEmpty: true,
 		Description: "Specifies the maximum value to show on the y-axis. It takes a number, or auto for default behavior."},
-	{HCLKey: "include_zero", Type: TypeBool, OmitEmpty: true,
+	{HCLKey: "include_zero", Type: TypeBool, OmitEmpty: false,
 		Description: "True includes zero."},
 	{HCLKey: "label", Type: TypeString, OmitEmpty: true,
 		Description: "The label of the axis to display on the graph."},
@@ -943,6 +970,41 @@ var hostmapRequestInnerFields = []FieldSpec{
 	{HCLKey: "size", Type: TypeBlock, OmitEmpty: true,
 		Description: "The query used to size the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
 		Children:    hostmapRequestFillSizeFields},
+	{HCLKey: "request_type", Type: TypeString, OmitEmpty: true,
+		Description: "Identifies an infrastructure-backed or DDSQL data-projection host map request.",
+		ValidValues: []string{"infrastructure_hostmap", "data_projection"}},
+	{HCLKey: "node_type", Type: TypeString, OmitEmpty: true,
+		Description: "Infrastructure entity type to visualize.",
+		ValidValues: []string{"host", "container", "pod", "cluster"}},
+	{HCLKey: "filter", Type: TypeString, OmitEmpty: true,
+		Description: "Filter string for the entity set in tag format, such as `env:prod`."},
+	{HCLKey: "group_by", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Ordered grouping hierarchy for infrastructure entities.",
+		Children:    hostmapInfrastructureGroupByFields},
+	{HCLKey: "enrichment", JSONKey: "enrichments", Type: TypeBlockList, OmitEmpty: true, SchemaOnly: true,
+		Description: "Metric or event queries joined to the entity set.",
+		Children:    hostmapInfrastructureEnrichmentFields},
+	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
+		Description: "Style configuration for the infrastructure host map.",
+		Children:    hostmapInfrastructureStyleFields},
+	{HCLKey: "conditional_formats", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Conditional formatting rules applied to fill values.",
+		Children:    widgetConditionalFormatFields},
+	{HCLKey: "no_group_hosts", Type: TypeBool, OmitEmpty: true,
+		Description: "Whether to hide entities that have no group assignment."},
+	{HCLKey: "no_metric_hosts", Type: TypeBool, OmitEmpty: true,
+		Description: "Whether to hide entities that have no enrichment data."},
+	{HCLKey: "child", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description: "Optional child request for one level of hierarchical visualization.",
+		Children:    hostmapInfrastructureLeafFields},
+	{HCLKey: "query", Type: TypeBlock, OmitEmpty: true,
+		Description: "Published-dataset query used by the DDSQL data-projection request.",
+		Children:    datasetListQueryFields},
+	{HCLKey: "projection", Type: TypeBlock, OmitEmpty: true,
+		Description: "Mapping from published-dataset columns to host map dimensions.",
+		Children:    hostmapProjectionFields},
+	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true,
+		Description: "Maximum number of rows to return from the DDSQL data-projection request."},
 }
 
 var HostmapWidgetSpec = WidgetSpec{
@@ -952,7 +1014,7 @@ var HostmapWidgetSpec = WidgetSpec{
 	Fields: []FieldSpec{
 		// TypeBlock (not TypeBlockList) — "requests" is a JSON object, not array
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlock, OmitEmpty: true,
-			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below.",
+			Description: "A request using the legacy metric format, the infrastructure-backed format, or the DDSQL data-projection format.",
 			Children:    hostmapRequestInnerFields},
 		{HCLKey: "node_type", Type: TypeString, OmitEmpty: true,
 			Description: "The type of node used.",
@@ -1358,7 +1420,7 @@ var SLOWidgetSpec = WidgetSpec{
 			ValidValues: []string{"7d", "30d", "90d", "week_to_date", "previous_week", "month_to_date", "previous_month", "global_time"},
 		},
 		// Optional fields
-		{HCLKey: "show_error_budget", Type: TypeBool, OmitEmpty: true, Description: "Whether to show the error budget or not."},
+		{HCLKey: "show_error_budget", Type: TypeBool, OmitEmpty: false, Description: "Whether to show the error budget or not."},
 		{HCLKey: "global_time_target", Type: TypeString, OmitEmpty: true, Description: "The global time target of the widget."},
 		{HCLKey: "additional_query_filters", Type: TypeString, OmitEmpty: true, Description: "Additional filters applied to the SLO query."},
 	},
@@ -1451,7 +1513,7 @@ var PowerpackWidgetSpec = WidgetSpec{
 		{HCLKey: "powerpack_id", Type: TypeString, OmitEmpty: false, Required: true, Description: "UUID of the associated powerpack."},
 		{HCLKey: "background_color", Type: TypeString, OmitEmpty: true, Description: "The background color of the powerpack title."},
 		{HCLKey: "banner_img", Type: TypeString, OmitEmpty: true, Description: "URL of image to display as a banner for the powerpack."},
-		{HCLKey: "show_title", Type: TypeBool, OmitEmpty: true, Description: "Whether to show the title of the powerpack."},
+		{HCLKey: "show_title", Type: TypeBool, OmitEmpty: false, Description: "Whether to show the title of the powerpack."},
 		// template_variables: TypeBlock (MaxItems:1) containing two TypeBlockLists
 		{
 			HCLKey:      "template_variables",
@@ -1477,6 +1539,7 @@ var allWidgetSpecs = []WidgetSpec{
 	FreeTextWidgetSpec,
 	IFrameWidgetSpec,
 	ImageWidgetSpec,
+	EmbeddedAppWidgetSpec,
 	NoteWidgetSpec,
 	EventStreamWidgetSpec,
 	EventTimelineWidgetSpec,

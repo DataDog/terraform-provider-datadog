@@ -1,0 +1,357 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 119
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"policy":{"max_duration_ms":3600000},"policy_type":"downtime"},"type":"monitor-config-policy"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/monitor/policy
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"monitor-config-policy","id":"dcbfa814-f88d-43e4-a4c8-257246ff1cc0","attributes":{"policy_type":"downtime","policy":{"max_duration_ms":3600000}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 80.323458ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/monitor/policy/dcbfa814-f88d-43e4-a4c8-257246ff1cc0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"monitor-config-policy","id":"dcbfa814-f88d-43e4-a4c8-257246ff1cc0","attributes":{"policy_type":"downtime","policy":{"max_duration_ms":3600000}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 147.327291ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/monitor/policy/dcbfa814-f88d-43e4-a4c8-257246ff1cc0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"monitor-config-policy","id":"dcbfa814-f88d-43e4-a4c8-257246ff1cc0","attributes":{"policy_type":"downtime","policy":{"max_duration_ms":3600000}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 64.318458ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/monitor/policy/dcbfa814-f88d-43e4-a4c8-257246ff1cc0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"monitor-config-policy","id":"dcbfa814-f88d-43e4-a4c8-257246ff1cc0","attributes":{"policy_type":"downtime","policy":{"max_duration_ms":3600000}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 62.987958ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 163
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"policy":{"max_duration_ms":7200000},"policy_type":"downtime"},"id":"dcbfa814-f88d-43e4-a4c8-257246ff1cc0","type":"monitor-config-policy"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/monitor/policy/dcbfa814-f88d-43e4-a4c8-257246ff1cc0
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"monitor-config-policy","id":"dcbfa814-f88d-43e4-a4c8-257246ff1cc0","attributes":{"policy_type":"downtime","policy":{"max_duration_ms":7200000}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 108.918459ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/monitor/policy/dcbfa814-f88d-43e4-a4c8-257246ff1cc0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"monitor-config-policy","id":"dcbfa814-f88d-43e4-a4c8-257246ff1cc0","attributes":{"policy_type":"downtime","policy":{"max_duration_ms":7200000}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 61.327625ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/monitor/policy/dcbfa814-f88d-43e4-a4c8-257246ff1cc0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"monitor-config-policy","id":"dcbfa814-f88d-43e4-a4c8-257246ff1cc0","attributes":{"policy_type":"downtime","policy":{"max_duration_ms":7200000}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 68.804417ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/monitor/policy/dcbfa814-f88d-43e4-a4c8-257246ff1cc0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"monitor-config-policy","id":"dcbfa814-f88d-43e4-a4c8-257246ff1cc0","attributes":{"policy_type":"downtime","policy":{"max_duration_ms":7200000}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 494.432708ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/monitor/policy/dcbfa814-f88d-43e4-a4c8-257246ff1cc0
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 93.875834ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/monitor/policy
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"monitor-config-policy","id":"f9b83ffe-78b2-4ab9-a559-88e9bdd10117","attributes":{"policy_type":"tag","policy":{"tag_key":"examplecreateamonitorconfigurationpolicyreturnsokresponse1771688322","valid_tag_values":["prod","staging"],"tag_key_required":false}}},{"type":"monitor-config-policy","id":"bdf297e9-258e-485e-a26c-fabb7308fd18","attributes":{"policy_type":"tag","policy":{"tag_key":"exampleeditamonitorconfigurationpolicyreturnsokresponse1772249884","valid_tag_values":["prod","staging"],"tag_key_required":false}}},{"type":"monitor-config-policy","id":"505b03e1-be6a-4122-81e4-9badf547643e","attributes":{"policy_type":"tag","policy":{"tag_key":"exampleeditamonitorconfigurationpolicyreturnsokresponse1774553884","valid_tag_values":["prod","staging"],"tag_key_required":false}}},{"type":"monitor-config-policy","id":"9f0e0286-f6ed-414d-97ce-954ad71ecf1b","attributes":{"policy_type":"tag","policy":{"tag_key":"exampleeditamonitorconfigurationpolicyreturnsokresponse1779392284","valid_tag_values":["prod","staging"],"tag_key_required":false}}},{"type":"monitor-config-policy","id":"67a80fa2-be45-4899-a204-514ace419629","attributes":{"policy_type":"tag","policy":{"tag_key":"examplegetamonitorconfigurationpolicyreturnsokresponse1780429108","valid_tag_values":["prod","staging"],"tag_key_required":false}}},{"type":"monitor-config-policy","id":"45e6027c-505d-4217-9659-f97f22300622","attributes":{"policy_type":"tag","policy":{"tag_key":"exampleeditamonitorconfigurationpolicyreturnsokresponse1782747484","valid_tag_values":["prod","staging"],"tag_key_required":false}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 44.584ms

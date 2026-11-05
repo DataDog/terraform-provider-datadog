@@ -1,0 +1,252 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2412
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: "--77ab9a11ef4a79cfbe59193807f5a4c61891aef47f29cd00f22ac80983de\r\nContent-Disposition: form-data; name=\"idp_file\"; filename=\".\"\r\nContent-Type: application/octet-stream\r\n\r\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<md:EntityDescriptor xmlns:md=\"urn:oasis:names:tc:SAML:2.0:metadata\" entityID=\"https://idp.example.com/tf-testaccsamlidpmetadatabasic-local-1786607738\">\n  <md:IDPSSODescriptor WantAuthnRequestsSigned=\"false\" protocolSupportEnumeration=\"urn:oasis:names:tc:SAML:2.0:protocol\">\n    <md:KeyDescriptor use=\"signing\">\n      <ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\">\n        <ds:X509Data>\n          <ds:X509Certificate>MIIDPTCCAiWgAwIBAgIUfEQrXK0wPqsFvbULPeR1nrmhW1kwDQYJKoZIhvcNAQELBQAwLjEsMCoG\nA1UEAwwjdGVycmFmb3JtLXByb3ZpZGVyLWRhdGFkb2ctdGVzdC1pZHAwHhcNMjYwODEwMDc0OTI1\nWhcNNDYwODA1MDc0OTI1WjAuMSwwKgYDVQQDDCN0ZXJyYWZvcm0tcHJvdmlkZXItZGF0YWRvZy10\nZXN0LWlkcDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJ6LiCfuesYVHXEJfAsW/qiV\nYbeZffE6bg9r3zcSsipuUggQi5B//WpqZM3pQ+AXfMy8uT9mMBXBVqrWTyuHVXGABrN5f8bfmYUf\nRZRXPNxSnkD0VKKCkngh1X+t2/FAayWFWsDAZSsTkCaXeHWGWPJUqr1fuOfUpCM6VYCwtu//smCb\nUoFuucNhr5P1oeCNLTutpFrvnnXlZkVLjZ8Y+46Q/mR8SAO5c3fcqVoEWINvVv6+AjZuGs5e52vZ\nSBWXX9uNxNkx/aQl1m/O7+3KzYXichz14cEOoA6a4GRTWFa8YV3bHQmjCtnNmmw1nILoRHe3v1cB\nUFHzmNZDVq7GXRMCAwEAAaNTMFEwHQYDVR0OBBYEFDqp/IcqIHgOd8Y6VlrhQdSDgeZQMB8GA1Ud\nIwQYMBaAFDqp/IcqIHgOd8Y6VlrhQdSDgeZQMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQEL\nBQADggEBACdo68cb8Trymr8skrZZ2HTLIIsOGIEDh5IlrnYpsfwnry/W+ngquiIYG0xQYdjCrm08\n9US2F/eYy4itd+SGc86LbcQOJDmqxX0oldSkR4UIFZFlKLvvLDRJNRhMtzFsTwfI08WpBVXxnRTz\noXFBib6uvsOTnrC3dsSsrx4ZyBiallCvXDRChhBI6HIElgVJsHV40Tu1Wnm1kesKl0nuSw3CSt1E\ng8LXvsjmbx2BPFT9baM1JerhrkSGRFaANN/awmA+cKkU4/dpYuSVafkl2H2KfJnwb8GUZTR0ScMf\n4+JHOY3PuNycVqOTo9HbQ7biasPmFaUP18l4NaCGG+dc4gc=</ds:X509Certificate>\n        </ds:X509Data>\n      </ds:KeyInfo>\n    </md:KeyDescriptor>\n    <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>\n    <md:SingleSignOnService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"https://idp.example.com/tf-testaccsamlidpmetadatabasic-local-1786607738/sso\"/>\n    <md:SingleSignOnService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\" Location=\"https://idp.example.com/tf-testaccsamlidpmetadatabasic-local-1786607738/sso\"/>\n  </md:IDPSSODescriptor>\n</md:EntityDescriptor>\n\r\n--77ab9a11ef4a79cfbe59193807f5a4c61891aef47f29cd00f22ac80983de--\r\n"
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - multipart/form-data; boundary=77ab9a11ef4a79cfbe59193807f5a4c61891aef47f29cd00f22ac80983de
+        url: https://api.datadoghq.com/api/v2/saml_configurations/idp_metadata
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"saml_configurations","id":"86ce4823-31da-445b-8cb1-3f535c8c3686","attributes":{"entity_id":"https://app.datadoghq.com/account/saml/metadata.xml","assertion_consumer_service":["https://frog.datadoghq.com/account/saml/assertion"],"idp_initiated":false,"jit_domains":[],"sso_url":"https://frog.datadoghq.com/account/login","created_at":"2022-03-21T13:04:08.689835+00:00","modified_at":"2026-08-13T07:55:40.062250+00:00","expires_at":"2046-08-05T07:49:25+00:00"}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 419.070125ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/saml_configurations
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"saml_configurations","id":"86ce4823-31da-445b-8cb1-3f535c8c3686","attributes":{"entity_id":"https://app.datadoghq.com/account/saml/metadata.xml","assertion_consumer_service":["https://frog.datadoghq.com/account/saml/assertion"],"idp_initiated":false,"jit_domains":[],"sso_url":"https://frog.datadoghq.com/account/login","created_at":"2022-03-21T13:04:08.689835+00:00","modified_at":"2026-08-13T07:55:40.062250+00:00","expires_at":"2046-08-05T07:49:25+00:00"}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 207.474875ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/saml_configurations/86ce4823-31da-445b-8cb1-3f535c8c3686
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"saml_configurations","id":"86ce4823-31da-445b-8cb1-3f535c8c3686","attributes":{"entity_id":"https://app.datadoghq.com/account/saml/metadata.xml","assertion_consumer_service":["https://frog.datadoghq.com/account/saml/assertion"],"idp_initiated":false,"jit_domains":[],"sso_url":"https://frog.datadoghq.com/account/login","created_at":"2022-03-21T13:04:08.689835+00:00","modified_at":"2026-08-13T07:55:40.062250+00:00","expires_at":"2046-08-05T07:49:25+00:00"}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 233.897875ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/saml_configurations/86ce4823-31da-445b-8cb1-3f535c8c3686
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"saml_configurations","id":"86ce4823-31da-445b-8cb1-3f535c8c3686","attributes":{"entity_id":"https://app.datadoghq.com/account/saml/metadata.xml","assertion_consumer_service":["https://frog.datadoghq.com/account/saml/assertion"],"idp_initiated":false,"jit_domains":[],"sso_url":"https://frog.datadoghq.com/account/login","created_at":"2022-03-21T13:04:08.689835+00:00","modified_at":"2026-08-13T07:55:40.062250+00:00","expires_at":"2046-08-05T07:49:25+00:00"}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 230.661584ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2414
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: "--e64e5cd35783c6ed26072e0be1e7257f09241c946aac103b4a8df850b189\r\nContent-Disposition: form-data; name=\"idp_file\"; filename=\".\"\r\nContent-Type: application/octet-stream\r\n\r\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<md:EntityDescriptor xmlns:md=\"urn:oasis:names:tc:SAML:2.0:metadata\" entityID=\"https://idp.example.com/tf-testaccsamlidpmetadatabasic-local-1786607738\">\n  <md:IDPSSODescriptor WantAuthnRequestsSigned=\"false\" protocolSupportEnumeration=\"urn:oasis:names:tc:SAML:2.0:protocol\">\n    <md:KeyDescriptor use=\"signing\">\n      <ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\">\n        <ds:X509Data>\n          <ds:X509Certificate>MIIDPTCCAiWgAwIBAgIUfEQrXK0wPqsFvbULPeR1nrmhW1kwDQYJKoZIhvcNAQELBQAwLjEsMCoG\nA1UEAwwjdGVycmFmb3JtLXByb3ZpZGVyLWRhdGFkb2ctdGVzdC1pZHAwHhcNMjYwODEwMDc0OTI1\nWhcNNDYwODA1MDc0OTI1WjAuMSwwKgYDVQQDDCN0ZXJyYWZvcm0tcHJvdmlkZXItZGF0YWRvZy10\nZXN0LWlkcDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJ6LiCfuesYVHXEJfAsW/qiV\nYbeZffE6bg9r3zcSsipuUggQi5B//WpqZM3pQ+AXfMy8uT9mMBXBVqrWTyuHVXGABrN5f8bfmYUf\nRZRXPNxSnkD0VKKCkngh1X+t2/FAayWFWsDAZSsTkCaXeHWGWPJUqr1fuOfUpCM6VYCwtu//smCb\nUoFuucNhr5P1oeCNLTutpFrvnnXlZkVLjZ8Y+46Q/mR8SAO5c3fcqVoEWINvVv6+AjZuGs5e52vZ\nSBWXX9uNxNkx/aQl1m/O7+3KzYXichz14cEOoA6a4GRTWFa8YV3bHQmjCtnNmmw1nILoRHe3v1cB\nUFHzmNZDVq7GXRMCAwEAAaNTMFEwHQYDVR0OBBYEFDqp/IcqIHgOd8Y6VlrhQdSDgeZQMB8GA1Ud\nIwQYMBaAFDqp/IcqIHgOd8Y6VlrhQdSDgeZQMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQEL\nBQADggEBACdo68cb8Trymr8skrZZ2HTLIIsOGIEDh5IlrnYpsfwnry/W+ngquiIYG0xQYdjCrm08\n9US2F/eYy4itd+SGc86LbcQOJDmqxX0oldSkR4UIFZFlKLvvLDRJNRhMtzFsTwfI08WpBVXxnRTz\noXFBib6uvsOTnrC3dsSsrx4ZyBiallCvXDRChhBI6HIElgVJsHV40Tu1Wnm1kesKl0nuSw3CSt1E\ng8LXvsjmbx2BPFT9baM1JerhrkSGRFaANN/awmA+cKkU4/dpYuSVafkl2H2KfJnwb8GUZTR0ScMf\n4+JHOY3PuNycVqOTo9HbQ7biasPmFaUP18l4NaCGG+dc4gc=</ds:X509Certificate>\n        </ds:X509Data>\n      </ds:KeyInfo>\n    </md:KeyDescriptor>\n    <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>\n    <md:SingleSignOnService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"https://idp.example.com/tf-testaccsamlidpmetadatabasic-local-1786607738/sso2\"/>\n    <md:SingleSignOnService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\" Location=\"https://idp.example.com/tf-testaccsamlidpmetadatabasic-local-1786607738/sso2\"/>\n  </md:IDPSSODescriptor>\n</md:EntityDescriptor>\n\r\n--e64e5cd35783c6ed26072e0be1e7257f09241c946aac103b4a8df850b189--\r\n"
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - multipart/form-data; boundary=e64e5cd35783c6ed26072e0be1e7257f09241c946aac103b4a8df850b189
+        url: https://api.datadoghq.com/api/v2/saml_configurations/idp_metadata
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"saml_configurations","id":"86ce4823-31da-445b-8cb1-3f535c8c3686","attributes":{"entity_id":"https://app.datadoghq.com/account/saml/metadata.xml","assertion_consumer_service":["https://frog.datadoghq.com/account/saml/assertion"],"idp_initiated":false,"jit_domains":[],"sso_url":"https://frog.datadoghq.com/account/login","created_at":"2022-03-21T13:04:08.689835+00:00","modified_at":"2026-08-13T07:55:42.377401+00:00","expires_at":"2046-08-05T07:49:25+00:00"}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 403.380916ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/saml_configurations
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"saml_configurations","id":"86ce4823-31da-445b-8cb1-3f535c8c3686","attributes":{"entity_id":"https://app.datadoghq.com/account/saml/metadata.xml","assertion_consumer_service":["https://frog.datadoghq.com/account/saml/assertion"],"idp_initiated":false,"jit_domains":[],"sso_url":"https://frog.datadoghq.com/account/login","created_at":"2022-03-21T13:04:08.689835+00:00","modified_at":"2026-08-13T07:55:42.377401+00:00","expires_at":"2046-08-05T07:49:25+00:00"}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 224.845334ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/saml_configurations/86ce4823-31da-445b-8cb1-3f535c8c3686
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"saml_configurations","id":"86ce4823-31da-445b-8cb1-3f535c8c3686","attributes":{"entity_id":"https://app.datadoghq.com/account/saml/metadata.xml","assertion_consumer_service":["https://frog.datadoghq.com/account/saml/assertion"],"idp_initiated":false,"jit_domains":[],"sso_url":"https://frog.datadoghq.com/account/login","created_at":"2022-03-21T13:04:08.689835+00:00","modified_at":"2026-08-13T07:55:42.377401+00:00","expires_at":"2046-08-05T07:49:25+00:00"}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 234.223583ms

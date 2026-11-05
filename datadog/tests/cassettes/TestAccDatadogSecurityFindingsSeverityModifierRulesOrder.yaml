@@ -1,0 +1,1371 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 258
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"action":{"severity":"high","type":"set"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-b","rule":{"finding_types":["secret"],"query":"env:dev"}},"type":"severity_modifier_rules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"25082968-44e5-4818-9968-03f507524b48","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051571,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051571,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-b","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 305.3565ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 258
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"action":{"severity":"high","type":"set"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-a","rule":{"finding_types":["secret"],"query":"env:dev"}},"type":"severity_modifier_rules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"2cedebfc-d88b-4922-bbce-9c3aff969eda","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051837,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051837,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-a","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 580.703625ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 169
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":[{"id":"2cedebfc-d88b-4922-bbce-9c3aff969eda","type":"severity_modifier_rules"},{"id":"25082968-44e5-4818-9968-03f507524b48","type":"severity_modifier_rules"}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/reorder
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 168
+        uncompressed: false
+        body: '{"data":[{"type":"severity_modifier_rules","id":"2cedebfc-d88b-4922-bbce-9c3aff969eda"},{"type":"severity_modifier_rules","id":"25082968-44e5-4818-9968-03f507524b48"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 266.983334ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/2cedebfc-d88b-4922-bbce-9c3aff969eda
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"2cedebfc-d88b-4922-bbce-9c3aff969eda","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051837,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051837,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-a","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 156.281291ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/25082968-44e5-4818-9968-03f507524b48
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"25082968-44e5-4818-9968-03f507524b48","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051571,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051571,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-b","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 177.87425ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/2cedebfc-d88b-4922-bbce-9c3aff969eda
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"2cedebfc-d88b-4922-bbce-9c3aff969eda","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051837,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051837,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-a","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 170.988375ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/25082968-44e5-4818-9968-03f507524b48
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"25082968-44e5-4818-9968-03f507524b48","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051571,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051571,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-b","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 185.282083ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"2cedebfc-d88b-4922-bbce-9c3aff969eda","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051837,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051837,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-a","rule":{"finding_types":["secret"],"query":"env:dev"}}},{"id":"25082968-44e5-4818-9968-03f507524b48","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051571,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051571,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-b","rule":{"finding_types":["secret"],"query":"env:dev"}}}],"meta":{"page":{"total_filtered_count":2}},"links":{"first":"/api/v2/security/findings/automation/severity_modifier_rules?page[size]=1000\u0026page[number]=0","last":"/api/v2/security/findings/automation/severity_modifier_rules?page[size]=1000\u0026page[number]=0"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 177.415875ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/25082968-44e5-4818-9968-03f507524b48
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"25082968-44e5-4818-9968-03f507524b48","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051571,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051571,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-b","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 205.528167ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/2cedebfc-d88b-4922-bbce-9c3aff969eda
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"2cedebfc-d88b-4922-bbce-9c3aff969eda","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051837,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051837,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-a","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 249.91575ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"2cedebfc-d88b-4922-bbce-9c3aff969eda","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051837,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051837,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-a","rule":{"finding_types":["secret"],"query":"env:dev"}}},{"id":"25082968-44e5-4818-9968-03f507524b48","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051571,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051571,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-b","rule":{"finding_types":["secret"],"query":"env:dev"}}}],"meta":{"page":{"total_filtered_count":2}},"links":{"first":"/api/v2/security/findings/automation/severity_modifier_rules?page[size]=1000\u0026page[number]=0","last":"/api/v2/security/findings/automation/severity_modifier_rules?page[size]=1000\u0026page[number]=0"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 186.315625ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 258
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"action":{"severity":"high","type":"set"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-c","rule":{"finding_types":["secret"],"query":"env:dev"}},"type":"severity_modifier_rules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"97e70a31-32f2-4298-bf93-a3f5f6c64625","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858055535,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858055535,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-c","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 301.700792ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 248
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":[{"id":"2cedebfc-d88b-4922-bbce-9c3aff969eda","type":"severity_modifier_rules"},{"id":"25082968-44e5-4818-9968-03f507524b48","type":"severity_modifier_rules"},{"id":"97e70a31-32f2-4298-bf93-a3f5f6c64625","type":"severity_modifier_rules"}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/reorder
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 247
+        uncompressed: false
+        body: '{"data":[{"type":"severity_modifier_rules","id":"2cedebfc-d88b-4922-bbce-9c3aff969eda"},{"type":"severity_modifier_rules","id":"25082968-44e5-4818-9968-03f507524b48"},{"type":"severity_modifier_rules","id":"97e70a31-32f2-4298-bf93-a3f5f6c64625"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 293.648375ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/97e70a31-32f2-4298-bf93-a3f5f6c64625
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"97e70a31-32f2-4298-bf93-a3f5f6c64625","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858055535,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858055535,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-c","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 196.14775ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/25082968-44e5-4818-9968-03f507524b48
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"25082968-44e5-4818-9968-03f507524b48","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051571,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051571,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-b","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 196.745291ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/97e70a31-32f2-4298-bf93-a3f5f6c64625
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"97e70a31-32f2-4298-bf93-a3f5f6c64625","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858055535,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858055535,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-c","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 210.320375ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/2cedebfc-d88b-4922-bbce-9c3aff969eda
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"2cedebfc-d88b-4922-bbce-9c3aff969eda","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051837,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051837,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-a","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 367.281417ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"2cedebfc-d88b-4922-bbce-9c3aff969eda","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051837,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051837,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-a","rule":{"finding_types":["secret"],"query":"env:dev"}}},{"id":"25082968-44e5-4818-9968-03f507524b48","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051571,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051571,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-b","rule":{"finding_types":["secret"],"query":"env:dev"}}},{"id":"97e70a31-32f2-4298-bf93-a3f5f6c64625","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858055535,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858055535,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-c","rule":{"finding_types":["secret"],"query":"env:dev"}}}],"meta":{"page":{"total_filtered_count":3}},"links":{"first":"/api/v2/security/findings/automation/severity_modifier_rules?page[size]=1000\u0026page[number]=0","last":"/api/v2/security/findings/automation/severity_modifier_rules?page[size]=1000\u0026page[number]=0"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 192.237ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/25082968-44e5-4818-9968-03f507524b48
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"25082968-44e5-4818-9968-03f507524b48","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051571,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051571,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-b","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 282.353583ms
+    - id: 19
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/97e70a31-32f2-4298-bf93-a3f5f6c64625
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"97e70a31-32f2-4298-bf93-a3f5f6c64625","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858055535,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858055535,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-c","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 287.712666ms
+    - id: 20
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/2cedebfc-d88b-4922-bbce-9c3aff969eda
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"2cedebfc-d88b-4922-bbce-9c3aff969eda","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051837,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051837,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-a","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 546.848333ms
+    - id: 21
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"2cedebfc-d88b-4922-bbce-9c3aff969eda","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051837,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051837,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-a","rule":{"finding_types":["secret"],"query":"env:dev"}}},{"id":"25082968-44e5-4818-9968-03f507524b48","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051571,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051571,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-b","rule":{"finding_types":["secret"],"query":"env:dev"}}},{"id":"97e70a31-32f2-4298-bf93-a3f5f6c64625","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858055535,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858055535,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-c","rule":{"finding_types":["secret"],"query":"env:dev"}}}],"meta":{"page":{"total_filtered_count":3}},"links":{"first":"/api/v2/security/findings/automation/severity_modifier_rules?page[size]=1000\u0026page[number]=0","last":"/api/v2/security/findings/automation/severity_modifier_rules?page[size]=1000\u0026page[number]=0"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 230.89475ms
+    - id: 22
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 248
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":[{"id":"97e70a31-32f2-4298-bf93-a3f5f6c64625","type":"severity_modifier_rules"},{"id":"2cedebfc-d88b-4922-bbce-9c3aff969eda","type":"severity_modifier_rules"},{"id":"25082968-44e5-4818-9968-03f507524b48","type":"severity_modifier_rules"}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/reorder
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 247
+        uncompressed: false
+        body: '{"data":[{"type":"severity_modifier_rules","id":"97e70a31-32f2-4298-bf93-a3f5f6c64625"},{"type":"severity_modifier_rules","id":"2cedebfc-d88b-4922-bbce-9c3aff969eda"},{"type":"severity_modifier_rules","id":"25082968-44e5-4818-9968-03f507524b48"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 375.197958ms
+    - id: 23
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/2cedebfc-d88b-4922-bbce-9c3aff969eda
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"2cedebfc-d88b-4922-bbce-9c3aff969eda","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051837,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051837,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-a","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 180.49075ms
+    - id: 24
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/25082968-44e5-4818-9968-03f507524b48
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"25082968-44e5-4818-9968-03f507524b48","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051571,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051571,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-b","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 182.245625ms
+    - id: 25
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/97e70a31-32f2-4298-bf93-a3f5f6c64625
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"97e70a31-32f2-4298-bf93-a3f5f6c64625","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858055535,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858055535,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-c","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 382.439583ms
+    - id: 26
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"97e70a31-32f2-4298-bf93-a3f5f6c64625","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858055535,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858055535,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-c","rule":{"finding_types":["secret"],"query":"env:dev"}}},{"id":"2cedebfc-d88b-4922-bbce-9c3aff969eda","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051837,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051837,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-a","rule":{"finding_types":["secret"],"query":"env:dev"}}},{"id":"25082968-44e5-4818-9968-03f507524b48","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051571,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051571,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-b","rule":{"finding_types":["secret"],"query":"env:dev"}}}],"meta":{"page":{"total_filtered_count":3}},"links":{"first":"/api/v2/security/findings/automation/severity_modifier_rules?page[size]=1000\u0026page[number]=0","last":"/api/v2/security/findings/automation/severity_modifier_rules?page[size]=1000\u0026page[number]=0"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 216.333ms
+    - id: 27
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/25082968-44e5-4818-9968-03f507524b48
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"25082968-44e5-4818-9968-03f507524b48","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051571,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051571,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-b","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 165.2285ms
+    - id: 28
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/97e70a31-32f2-4298-bf93-a3f5f6c64625
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"97e70a31-32f2-4298-bf93-a3f5f6c64625","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858055535,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858055535,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-c","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 174.066666ms
+    - id: 29
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/2cedebfc-d88b-4922-bbce-9c3aff969eda
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"2cedebfc-d88b-4922-bbce-9c3aff969eda","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051837,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051837,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-a","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 328.650458ms
+    - id: 30
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"97e70a31-32f2-4298-bf93-a3f5f6c64625","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858055535,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858055535,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-c","rule":{"finding_types":["secret"],"query":"env:dev"}}},{"id":"2cedebfc-d88b-4922-bbce-9c3aff969eda","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051837,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051837,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-a","rule":{"finding_types":["secret"],"query":"env:dev"}}},{"id":"25082968-44e5-4818-9968-03f507524b48","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051571,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051571,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-b","rule":{"finding_types":["secret"],"query":"env:dev"}}}],"meta":{"page":{"total_filtered_count":3}},"links":{"first":"/api/v2/security/findings/automation/severity_modifier_rules?page[size]=1000\u0026page[number]=0","last":"/api/v2/security/findings/automation/severity_modifier_rules?page[size]=1000\u0026page[number]=0"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 184.864042ms
+    - id: 31
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/97e70a31-32f2-4298-bf93-a3f5f6c64625
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 307.051791ms
+    - id: 32
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 169
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":[{"id":"2cedebfc-d88b-4922-bbce-9c3aff969eda","type":"severity_modifier_rules"},{"id":"25082968-44e5-4818-9968-03f507524b48","type":"severity_modifier_rules"}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/reorder
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 168
+        uncompressed: false
+        body: '{"data":[{"type":"severity_modifier_rules","id":"2cedebfc-d88b-4922-bbce-9c3aff969eda"},{"type":"severity_modifier_rules","id":"25082968-44e5-4818-9968-03f507524b48"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 372.920125ms
+    - id: 33
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/25082968-44e5-4818-9968-03f507524b48
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"25082968-44e5-4818-9968-03f507524b48","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051571,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051571,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-b","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 159.2285ms
+    - id: 34
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/2cedebfc-d88b-4922-bbce-9c3aff969eda
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"2cedebfc-d88b-4922-bbce-9c3aff969eda","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051837,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051837,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-a","rule":{"finding_types":["secret"],"query":"env:dev"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 164.018084ms
+    - id: 35
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"2cedebfc-d88b-4922-bbce-9c3aff969eda","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051837,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051837,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-a","rule":{"finding_types":["secret"],"query":"env:dev"}}},{"id":"25082968-44e5-4818-9968-03f507524b48","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051571,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051571,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-b","rule":{"finding_types":["secret"],"query":"env:dev"}}}],"meta":{"page":{"total_filtered_count":2}},"links":{"first":"/api/v2/security/findings/automation/severity_modifier_rules?page[size]=1000\u0026page[number]=0","last":"/api/v2/security/findings/automation/severity_modifier_rules?page[size]=1000\u0026page[number]=0"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 175.335ms
+    - id: 36
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"2cedebfc-d88b-4922-bbce-9c3aff969eda","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051837,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051837,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-a","rule":{"finding_types":["secret"],"query":"env:dev"}}},{"id":"25082968-44e5-4818-9968-03f507524b48","type":"severity_modifier_rules","attributes":{"action":{"type":"set","severity":"high"},"created_at":1788858051571,"created_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"enabled":true,"modified_at":1788858051571,"modified_by":{"type":"user","id":"00000000-0000-0000-0000-000000000000","name":"Test User"},"name":"tf-TestAccDatadogSecurityFindingsSeverityModifierRulesOrder-local-1788858046-b","rule":{"finding_types":["secret"],"query":"env:dev"}}}],"meta":{"page":{"total_filtered_count":2}},"links":{"first":"/api/v2/security/findings/automation/severity_modifier_rules?page[size]=1000\u0026page[number]=0","last":"/api/v2/security/findings/automation/severity_modifier_rules?page[size]=1000\u0026page[number]=0"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 180.838167ms
+    - id: 37
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/25082968-44e5-4818-9968-03f507524b48
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 277.876875ms
+    - id: 38
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/2cedebfc-d88b-4922-bbce-9c3aff969eda
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 281.742417ms
+    - id: 39
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/2cedebfc-d88b-4922-bbce-9c3aff969eda
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 80
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Not Found","detail":"rule does not exist"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 165.982417ms
+    - id: 40
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/severity_modifier_rules/25082968-44e5-4818-9968-03f507524b48
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 80
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Not Found","detail":"rule does not exist"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 149.608708ms

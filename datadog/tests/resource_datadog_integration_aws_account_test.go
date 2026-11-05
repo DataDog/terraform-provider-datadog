@@ -56,6 +56,8 @@ func TestAccIntegrationAwsAccount_RoleBased(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "metrics_config.enabled", "true"),
 					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "metrics_config.collect_service_quotas", "false"),
+					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "metrics_config.namespace_filters.exclude_only.0", "AWS/SQS"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "metrics_config.namespace_filters.exclude_only.1", "AWS/ElasticMapReduce"),
@@ -108,6 +110,8 @@ func TestAccIntegrationAwsAccount_RoleBased(t *testing.T) {
 						"datadog_integration_aws_account.foo", "metrics_config.collect_custom_metrics", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "metrics_config.enabled", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "metrics_config.collect_service_quotas", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "metrics_config.namespace_filters.include_only.0", "AWS/EC2"),
 					resource.TestCheckResourceAttr(
@@ -170,6 +174,8 @@ func TestAccIntegrationAwsAccount_RoleBased(t *testing.T) {
 						"datadog_integration_aws_account.foo", "metrics_config.collect_custom_metrics", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "metrics_config.enabled", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "metrics_config.collect_service_quotas", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "metrics_config.namespace_filters.exclude_only.0", "AWS/SQS"),
 					resource.TestCheckResourceAttr(
@@ -255,6 +261,7 @@ resource "datadog_integration_aws_account" "foo" {
       collect_cloudwatch_alarms = true
       collect_custom_metrics = true
       enabled = false
+      collect_service_quotas = true
       namespace_filters {
         include_only = ["AWS/EC2"]
       }
@@ -331,7 +338,7 @@ func TestAccIntegrationAwsAccount_ResourceTypeTagFilters(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "metrics_config.resource_type_tag_filters.#", "2"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_aws_account.foo", "metrics_config.resource_type_tag_filters.0.service", "AWS/EC2"),
+						"datadog_integration_aws_account.foo", "metrics_config.resource_type_tag_filters.0.service", "ec2"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "metrics_config.resource_type_tag_filters.0.resource_types.0", "instance"),
 					resource.TestCheckResourceAttr(
@@ -364,7 +371,7 @@ resource "datadog_integration_aws_account" "foo" {
     metrics_config {
         namespace_filters {}
         resource_type_tag_filters {
-            service = "AWS/EC2"
+            service = "ec2"
             resource_types = ["instance"]
             expression = "env:production AND !region:us-east-1"
         }

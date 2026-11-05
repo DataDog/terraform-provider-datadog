@@ -49,6 +49,7 @@ resource "datadog_monitor_notification_rule" "team_payment_notification_rule" {
 
 ### Optional
 
+- `bundle_config` (Block, Optional) Use bundle config to enable alert bundling to reduce monitor signal noises. **Note**: This feature is in preview and is subject to change. If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/). (see [below for nested schema](#nestedblock--bundle_config))
 - `conditional_recipients` (Block, Optional) Use conditional recipients to define different recipients for different situations. Cannot be used with `recipients`. (see [below for nested schema](#nestedblock--conditional_recipients))
 - `filter` (Block, Optional) Specifies the matching criteria for monitor notifications. (see [below for nested schema](#nestedblock--filter))
 - `recipients` (Set of String) List of recipients to notify. Cannot be used with `conditional_recipients`.
@@ -56,6 +57,14 @@ resource "datadog_monitor_notification_rule" "team_payment_notification_rule" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+<a id="nestedblock--bundle_config"></a>
+### Nested Schema for `bundle_config`
+
+Optional:
+
+- `duration` (Number) Duration of the bundling period
+
 
 <a id="nestedblock--conditional_recipients"></a>
 ### Nested Schema for `conditional_recipients`

@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Install Go
-        uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: .generator-v2/go.mod
           cache: true
@@ -41,3 +41,30 @@ jobs:
 
       - name: Test
         run: make -C .. tfgen-test
+
+      # The CLI and contract reference pages under .generator-v2/docs/reference/
+      # are generated from the cobra command tree and the two checked-in JSON
+      # Schemas. If you add a flag or a schema field, run `make tfgen-docs` and
+      # commit the result in the same change. Exits 3 when a page is stale.
+      - name: Reference docs up to date
+        run: make -C .. tfgen-docs-check
+
+  integration-test:
+    name: integration test (compile & schema-validate generated resources)
+    runs-on: ubuntu-latest
+    if: github.event.action != 'closed' && github.event.pull_request.merged != true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: .generator-v2/go.mod
+          cache: true
+          cache-dependency-path: |
+            go.sum
+            .generator-v2/go.sum
+
+      - name: Integration test
+        run: make tfgen-test-integration

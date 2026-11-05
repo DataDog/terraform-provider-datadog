@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 767
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2HostmapDDSQL_import-local-1784746158","widgets":[{"definition":{"requests":{"limit":250,"projection":{"dimensions":[{"column":"entity_id","dimension":"node"},{"column":"service","dimension":"group"},{"alias":"CPU","column":"cpu_usage","dimension":"fill","number_format":{"unit":{"label":"%","type":"custom_unit_label"}}}],"type":"hostmap"},"query":{"data_source":"dataset","dataset_id":"example-dataset","dataset_provider":"ddsql_query","filter":"service:web-store","limit":100,"sort":{"fields":[{"name":"cpu_usage","order":"desc"}]}},"request_type":"data_projection"},"title":"DDSQL host map","type":"hostmap"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"met-6bs-ds4","title":"tf-TestAccDatadogDashboardV2HostmapDDSQL_import-local-1784746158","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/met-6bs-ds4/tf-testaccdatadogdashboardv2hostmapddsqlimport-local-1784746158","template_variables":[],"widgets":[{"definition":{"requests":{"limit":250,"projection":{"dimensions":[{"column":"entity_id","dimension":"node"},{"column":"service","dimension":"group"},{"alias":"CPU","column":"cpu_usage","dimension":"fill","number_format":{"unit":{"label":"%","type":"custom_unit_label"}}}],"type":"hostmap"},"query":{"data_source":"dataset","dataset_id":"example-dataset","dataset_provider":"ddsql_query","filter":"service:web-store","limit":100,"sort":{"fields":[{"name":"cpu_usage","order":"desc"}]}},"request_type":"data_projection"},"title":"DDSQL host map","type":"hostmap"},"id":8873311082686114}],"notify_list":[],"created_at":"2026-07-22T18:49:19.758739+00:00","modified_at":"2026-07-22T18:49:19.758739+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 334.831ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/met-6bs-ds4
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"met-6bs-ds4","title":"tf-TestAccDatadogDashboardV2HostmapDDSQL_import-local-1784746158","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/met-6bs-ds4/tf-testaccdatadogdashboardv2hostmapddsqlimport-local-1784746158","template_variables":[],"widgets":[{"definition":{"requests":{"limit":250,"projection":{"dimensions":[{"column":"entity_id","dimension":"node"},{"column":"service","dimension":"group"},{"alias":"CPU","column":"cpu_usage","dimension":"fill","number_format":{"unit":{"label":"%","type":"custom_unit_label"}}}],"type":"hostmap"},"query":{"data_source":"dataset","dataset_id":"example-dataset","dataset_provider":"ddsql_query","filter":"service:web-store","limit":100,"sort":{"fields":[{"name":"cpu_usage","order":"desc"}]}},"request_type":"data_projection"},"title":"DDSQL host map","type":"hostmap"},"id":8873311082686114}],"notify_list":[],"created_at":"2026-07-22T18:49:19.758739+00:00","modified_at":"2026-07-22T18:49:19.758739+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 167.241417ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/met-6bs-ds4
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"met-6bs-ds4","title":"tf-TestAccDatadogDashboardV2HostmapDDSQL_import-local-1784746158","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/met-6bs-ds4/tf-testaccdatadogdashboardv2hostmapddsqlimport-local-1784746158","template_variables":[],"widgets":[{"definition":{"requests":{"limit":250,"projection":{"dimensions":[{"column":"entity_id","dimension":"node"},{"column":"service","dimension":"group"},{"alias":"CPU","column":"cpu_usage","dimension":"fill","number_format":{"unit":{"label":"%","type":"custom_unit_label"}}}],"type":"hostmap"},"query":{"data_source":"dataset","dataset_id":"example-dataset","dataset_provider":"ddsql_query","filter":"service:web-store","limit":100,"sort":{"fields":[{"name":"cpu_usage","order":"desc"}]}},"request_type":"data_projection"},"title":"DDSQL host map","type":"hostmap"},"id":8873311082686114}],"notify_list":[],"created_at":"2026-07-22T18:49:19.758739+00:00","modified_at":"2026-07-22T18:49:19.758739+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 155.759791ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/met-6bs-ds4
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"met-6bs-ds4","title":"tf-TestAccDatadogDashboardV2HostmapDDSQL_import-local-1784746158","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/met-6bs-ds4/tf-testaccdatadogdashboardv2hostmapddsqlimport-local-1784746158","template_variables":[],"widgets":[{"definition":{"requests":{"limit":250,"projection":{"dimensions":[{"column":"entity_id","dimension":"node"},{"column":"service","dimension":"group"},{"alias":"CPU","column":"cpu_usage","dimension":"fill","number_format":{"unit":{"label":"%","type":"custom_unit_label"}}}],"type":"hostmap"},"query":{"data_source":"dataset","dataset_id":"example-dataset","dataset_provider":"ddsql_query","filter":"service:web-store","limit":100,"sort":{"fields":[{"name":"cpu_usage","order":"desc"}]}},"request_type":"data_projection"},"title":"DDSQL host map","type":"hostmap"},"id":8873311082686114}],"notify_list":[],"created_at":"2026-07-22T18:49:19.758739+00:00","modified_at":"2026-07-22T18:49:19.758739+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 174.302666ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/met-6bs-ds4
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"met-6bs-ds4"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 523.367042ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/met-6bs-ds4
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID met-6bs-ds4 not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 466.776541ms

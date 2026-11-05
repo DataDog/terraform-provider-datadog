@@ -42,7 +42,7 @@ func checkDatasourceDashboardAttrs(accProvider func() (*schema.Provider, error),
 }
 
 func testAccDashboardConfig(uniq string) string {
-	return fmt.Sprintf(`
+	return disableDashboardPlanValidation(fmt.Sprintf(`
 resource "datadog_dashboard" "dash_one" {
   title = "%s one"
   layout_type = "ordered"
@@ -66,7 +66,7 @@ resource "datadog_dashboard" "dash_one" {
 		  live_span = "1h"
 	  }
 	}
-}`, uniq, uniq)
+}`, uniq, uniq))
 }
 
 func testAccDatasourceDashboardNameFilterConfig(uniq string) string {

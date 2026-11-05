@@ -85,6 +85,49 @@ func TestAccDatadogRUMApplication_ProductScales(t *testing.T) {
 	})
 }
 
+func TestAccDatadogRUMApplication_NoDefaultRetentionFilters(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	appName := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogRUMApplicationDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: fmt.Sprintf(`
+  resource "datadog_rum_application" "no_default_filters_app" {
+    name                             = "%s"
+    type                             = "browser"
+    create_default_retention_filters = false
+  }
+    `, appName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogRUMApplicationExists(providers.frameworkProvider, "datadog_rum_application.no_default_filters_app"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_application.no_default_filters_app", "create_default_retention_filters", "false"),
+					testAccCheckDatadogRUMApplicationHasNoRetentionFilters(providers.frameworkProvider, "datadog_rum_application.no_default_filters_app"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogRUMApplicationHasNoRetentionFilters(accProvider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		id := s.RootModule().Resources[resourceName].Primary.ID
+		resp, httpresp, err := accProvider.DatadogApiInstances.GetRumRetentionFiltersApiV2().ListRetentionFilters(accProvider.Auth, id)
+		if err != nil {
+			return utils.TranslateClientError(err, httpresp, "error listing rum retention filters")
+		}
+		if n := len(resp.GetData()); n != 0 {
+			return fmt.Errorf("expected no retention filters on application %s, got %d", id, n)
+		}
+		return nil
+	}
+}
+
 func testAccCheckDatadogRUMApplicationConfig(uniq string) string {
 	return fmt.Sprintf(`
   resource "datadog_rum_application" "some_app" {

@@ -99,3 +99,32 @@ func ValidateOneOfVariantNames(path string, variants []OneOfVariant) error {
 	sort.Strings(duplicates)
 	return &OneOfVariantNameCollisionError{Path: path, Name: duplicates[0]}
 }
+
+// oneOfRoleSuffixes are the CRUD-role markers the Datadog v2 API appends to a
+// component name, in both the spellings a name can arrive in: PascalCase for an
+// OpenAPI component, snake_case for a Terraform variant block.
+var oneOfRoleSuffixes = []string{
+	"Response", "_response",
+	"Request", "_request",
+	"Update", "_update",
+	"Create", "_create",
+}
+
+// StripOneOfRoleSuffix removes the trailing run of CRUD-role markers from a
+// union or alternative name, in either PascalCase or snake_case, returning the
+// casing it was given. The whole run goes because markers compose
+// ("DowntimeScheduleRecurrencesCreateRequest"), and stripping stops at what it
+// cannot remove, so a name that is only "Request" survives. Lossy: an
+// alternative genuinely named "…Update" reduces the same way.
+func StripOneOfRoleSuffix(name string) string {
+stripping:
+	for {
+		for _, suffix := range oneOfRoleSuffixes {
+			if trimmed, ok := strings.CutSuffix(name, suffix); ok && trimmed != "" {
+				name = trimmed
+				continue stripping
+			}
+		}
+		return name
+	}
+}

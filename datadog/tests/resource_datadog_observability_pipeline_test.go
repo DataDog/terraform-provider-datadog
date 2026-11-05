@@ -724,6 +724,76 @@ resource "datadog_observability_pipeline" "quota" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_quotaProcessorOverflowRouting(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.quota_overflow"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "quota_overflow" {
+  name = "quota-overflow-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "quota-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "quota-processor"
+        enabled = true
+        include = "*"
+
+        quota {
+          name            = "overflowQuota"
+          overflow_action = "overflow_routing"
+
+          limit {
+            enforce = "events"
+            limit   = 1000
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "s3-overflow-dest"
+      inputs = ["quota-processor.overflow_events"]
+
+      amazon_s3 {
+        bucket        = "my-overflow-bucket"
+        region        = "us-east-1"
+        key_prefix    = "overflow/"
+        storage_class = "STANDARD"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "quota-overflow-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.quota.0.overflow_action", "overflow_routing"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "s3-overflow-dest"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "quota-processor.overflow_events"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.bucket", "my-overflow-bucket"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_parseJsonProcessor(t *testing.T) {
 
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -1562,10 +1632,15 @@ resource "datadog_observability_pipeline" "splunk_tcp" {
       id = "splunk-tcp-source-1"
       
       splunk_tcp {
+        address_key                  = "SPLUNK_TCP_ADDRESS"
+        max_connection_duration_secs = 3600
+
         tls {
-          crt_file = "/etc/ssl/certs/tcp.crt"
-          ca_file  = "/etc/ssl/certs/tcp.ca"
-          key_file = "/etc/ssl/private/tcp.key"
+          crt_file           = "/etc/ssl/certs/tcp.crt"
+          ca_file            = "/etc/ssl/certs/tcp.ca"
+          key_file           = "/etc/ssl/private/tcp.key"
+          key_pass_key       = "SPLUNK_TCP_TLS_KEY_PASSPHRASE"
+          verify_certificate = true
         }
       }
     }
@@ -1583,9 +1658,44 @@ resource "datadog_observability_pipeline" "splunk_tcp" {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "splunk-tcp-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.address_key", "SPLUNK_TCP_ADDRESS"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.max_connection_duration_secs", "3600"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.tls.0.crt_file", "/etc/ssl/certs/tcp.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.tls.0.ca_file", "/etc/ssl/certs/tcp.ca"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.tls.0.key_file", "/etc/ssl/private/tcp.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.tls.0.key_pass_key", "SPLUNK_TCP_TLS_KEY_PASSPHRASE"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.tls.0.verify_certificate", "true"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "splunk_tcp" {
+  name = "splunk-tcp-pipeline"
+
+  config {
+    source {
+      id = "splunk-tcp-source-1"
+
+      splunk_tcp {
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["splunk-tcp-source-1"]
+
+      datadog_logs {
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "splunk-tcp-source-1"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.address_key"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.max_connection_duration_secs"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.source.0.splunk_tcp.0.tls.#"),
 				),
 			},
 		},
@@ -1773,6 +1883,58 @@ resource "datadog_observability_pipeline" "gcs_dest_minimal" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_cloud_storage.0.bucket", "my-gcs-bucket"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_cloud_storage.0.storage_class", "NEARLINE"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_googleCloudStorageDestinationCompression(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.gcs_dest_compression"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "gcs_dest_compression" {
+  name = "gcs-destination-compression-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id = "gcs-destination-compression-1"
+      inputs = ["source-1"]
+      google_cloud_storage {
+        bucket        = "my-gcs-bucket"
+        key_prefix    = "logs/"
+        storage_class = "NEARLINE"
+
+        compression {
+          algorithm = "zstd"
+          level     = 12
+        }
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "gcs-destination-compression-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_cloud_storage.0.bucket", "my-gcs-bucket"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_cloud_storage.0.key_prefix", "logs/"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_cloud_storage.0.storage_class", "NEARLINE"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_cloud_storage.0.compression.0.algorithm", "zstd"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_cloud_storage.0.compression.0.level", "12"),
 				),
 			},
 		},
@@ -2203,6 +2365,60 @@ resource "datadog_observability_pipeline" "azure_storage_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.container_name", "logs-container"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.blob_prefix", "logs/"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.connection_string_key", "AZURE_STORAGE_CONNECTION_STRING_IDENT"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_azureStorageDestinationCompression(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.azure_storage_dest_compression"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "azure_storage_dest_compression" {
+  name = "azure-storage-dest-compression-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "azure-storage-compression-1"
+      inputs = ["source-1"]
+
+      azure_storage {
+        container_name        = "logs-container"
+        blob_prefix           = "logs/"
+        connection_string_key = "AZURE_STORAGE_CONNECTION_STRING_IDENT"
+
+        compression {
+          algorithm = "zstd"
+          level     = 15
+        }
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "azure-storage-dest-compression-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "azure-storage-compression-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.container_name", "logs-container"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.blob_prefix", "logs/"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.connection_string_key", "AZURE_STORAGE_CONNECTION_STRING_IDENT"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.compression.0.algorithm", "zstd"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.compression.0.level", "15"),
 				),
 			},
 		},
@@ -4212,6 +4428,92 @@ resource "datadog_observability_pipeline" "amazon_opensearch_basic" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_amazonOpenSearchDestination_endpointAndDataStream(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.amazon_opensearch_data_stream"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "amazon_opensearch_data_stream" {
+  name = "amazon opensearch data stream"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+    destination {
+      id     = "destination-1"
+      inputs = ["source-1"]
+      amazon_opensearch {
+        endpoint_url_key = "AMAZON_OPENSEARCH_ENDPOINT_URL"
+
+        auth {
+          strategy     = "basic"
+          username_key = "AMAZON_OPENSEARCH_USERNAME"
+          password_key = "AMAZON_OPENSEARCH_PASSWORD"
+        }
+
+        data_stream {
+          dtype     = "logs"
+          dataset   = "app"
+          namespace = "default"
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.endpoint_url_key", "AMAZON_OPENSEARCH_ENDPOINT_URL"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.auth.0.strategy", "basic"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.auth.0.username_key", "AMAZON_OPENSEARCH_USERNAME"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.auth.0.password_key", "AMAZON_OPENSEARCH_PASSWORD"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.data_stream.0.dtype", "logs"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.data_stream.0.dataset", "app"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.data_stream.0.namespace", "default"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.bulk_index"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "amazon_opensearch_data_stream" {
+  name = "amazon opensearch data stream"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+    destination {
+      id     = "destination-1"
+      inputs = ["source-1"]
+      amazon_opensearch {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.#", "1"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.endpoint_url_key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.auth.#", "0"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_opensearch.0.data_stream.#", "0"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_datadogTagsProcessor(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -5590,6 +5892,62 @@ resource "datadog_observability_pipeline" "amazon_s3_sse_kms" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_amazonS3DestinationCompression(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.amazon_s3_compression"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "amazon_s3_compression" {
+  name = "amazon s3 compression pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id           = "s3-dest-compression-1"
+      inputs       = ["source-1"]
+
+      amazon_s3 {
+        bucket       = "my-logs-bucket"
+        region       = "us-east-1"
+        key_prefix   = "logs/"
+        storage_class = "STANDARD"
+
+        compression {
+          algorithm = "zstd"
+          level     = 9
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "s3-dest-compression-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.bucket", "my-logs-bucket"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.region", "us-east-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.key_prefix", "logs/"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.storage_class", "STANDARD"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.compression.0.algorithm", "zstd"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.compression.0.level", "9"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_amazonS3GenericDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -6709,6 +7067,49 @@ resource "datadog_observability_pipeline" "http_client_dest" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_httpClientDestinationCustomAuth(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.http_client_dest_custom_auth"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "http_client_dest_custom_auth" {
+  name = "http client destination custom auth pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "http-client-dest-custom-auth"
+      inputs = ["source-1"]
+
+      http_client {
+        encoding      = "json"
+        auth_strategy = "custom"
+        custom_key    = "HTTP_AUTH_CUSTOM_HEADER"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.auth_strategy", "custom"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.custom_key", "HTTP_AUTH_CUSTOM_HEADER"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_httpClientDestinationMinimal(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -7399,6 +7800,76 @@ resource "datadog_observability_pipeline" "splunk_hec_token_strategy" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_splunkHecDestinationEndpointTarget(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.splunk_hec_endpoint_target"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "splunk_hec_endpoint_target" {
+  name = "splunk-hec-endpoint-target-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "splunk-hec-1"
+      inputs = ["source-1"]
+      splunk_hec {
+        encoding = "json"
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "splunk-hec-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.encoding", "json"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "splunk_hec_endpoint_target" {
+  name = "splunk-hec-endpoint-target-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "splunk-hec-1"
+      inputs = ["source-1"]
+      splunk_hec {
+        encoding        = "json"
+        endpoint_target = "raw"
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "splunk-hec-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.encoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.endpoint_target", "raw"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_enrichmentTableFieldLookup(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	resourceName := "datadog_observability_pipeline.enrichment_field_lookup"
@@ -7752,6 +8223,300 @@ resource "datadog_observability_pipeline" "databricks_zerobus_basic" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_azureDataExplorerDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.azure_data_explorer"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "azure_data_explorer" {
+  name = "azure data explorer pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "azure-data-explorer-dest-1"
+      inputs = ["source-1"]
+
+      azure_data_explorer {
+        ingestion_endpoint_key = "AZURE_DATA_EXPLORER_INGESTION_ENDPOINT"
+        database               = "logs_db"
+        table                  = "application_logs"
+        mapping_reference      = "application_logs_mapping"
+        token_scope            = "https://kusto.kusto.windows.net/.default"
+
+        auth {
+          client_secret {
+            azure_tenant_id         = "11111111-1111-1111-1111-111111111111"
+            azure_client_id         = "22222222-2222-2222-2222-222222222222"
+            azure_client_secret_key = "AZURE_CLIENT_SECRET"
+          }
+        }
+
+        compression {
+          algorithm = "gzip"
+          level     = 6
+        }
+
+        batch {
+          max_bytes    = 2000000
+          max_events   = 1000
+          timeout_secs = 5
+        }
+
+        buffer {
+          memory {
+            max_events = 500
+          }
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "azure-data-explorer-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.ingestion_endpoint_key", "AZURE_DATA_EXPLORER_INGESTION_ENDPOINT"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.database", "logs_db"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.table", "application_logs"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.mapping_reference", "application_logs_mapping"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.token_scope", "https://kusto.kusto.windows.net/.default"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.auth.0.client_secret.0.azure_tenant_id", "11111111-1111-1111-1111-111111111111"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.auth.0.client_secret.0.azure_client_id", "22222222-2222-2222-2222-222222222222"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.auth.0.client_secret.0.azure_client_secret_key", "AZURE_CLIENT_SECRET"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.compression.0.algorithm", "gzip"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.compression.0.level", "6"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.batch.0.max_bytes", "2000000"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.batch.0.max_events", "1000"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.batch.0.timeout_secs", "5"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.buffer.0.memory.0.max_events", "500"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_azureDataExplorerDestination_basic(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.azure_data_explorer_basic"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "azure_data_explorer_basic" {
+  name = "azure data explorer pipeline (minimal)"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "azure-data-explorer-dest-basic-1"
+      inputs = ["source-1"]
+
+      azure_data_explorer {
+        database = "logs_db"
+        table    = "application_logs"
+
+        auth {
+          managed_identity {}
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "azure-data-explorer-dest-basic-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.database", "logs_db"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.table", "application_logs"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.auth.0.managed_identity.#", "1"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.ingestion_endpoint_key"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.mapping_reference"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.destination.0.azure_data_explorer.0.auth.0.managed_identity.0.user_assigned_managed_identity_id"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_azureDataExplorerDestination_authKinds(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.azure_data_explorer_auth"
+
+	config := func(auth string) string {
+		return fmt.Sprintf(`
+resource "datadog_observability_pipeline" "azure_data_explorer_auth" {
+  name = "azure data explorer pipeline (auth kinds)"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "azure-data-explorer-dest-auth-1"
+      inputs = ["source-1"]
+
+      azure_data_explorer {
+        database = "logs_db"
+        table    = "application_logs"
+
+        auth {
+%s
+        }
+      }
+    }
+  }
+}`, auth)
+	}
+
+	authPrefix := "config.0.destination.0.azure_data_explorer.0.auth.0."
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: config(`
+          azure_cli {}
+`),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"azure_cli.#", "1"),
+				),
+			},
+			{
+				Config: config(`
+          client_certificate {
+            azure_tenant_id          = "11111111-1111-1111-1111-111111111111"
+            azure_client_id          = "22222222-2222-2222-2222-222222222222"
+            certificate_path         = "/etc/certs/client.pfx"
+            certificate_password_key = "AZURE_CERTIFICATE_PASSWORD"
+          }
+`),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"azure_cli.#", "0"),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"client_certificate.0.azure_tenant_id", "11111111-1111-1111-1111-111111111111"),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"client_certificate.0.azure_client_id", "22222222-2222-2222-2222-222222222222"),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"client_certificate.0.certificate_path", "/etc/certs/client.pfx"),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"client_certificate.0.certificate_password_key", "AZURE_CERTIFICATE_PASSWORD"),
+				),
+			},
+			{
+				Config: config(`
+          managed_identity {
+            user_assigned_managed_identity_id      = "00000000-0000-0000-0000-000000000000"
+            user_assigned_managed_identity_id_type = "client_id"
+          }
+`),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"managed_identity.0.user_assigned_managed_identity_id", "00000000-0000-0000-0000-000000000000"),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"managed_identity.0.user_assigned_managed_identity_id_type", "client_id"),
+				),
+			},
+			{
+				Config: config(`
+          managed_identity_client_assertion {
+            client_assertion_client_id             = "22222222-2222-2222-2222-222222222222"
+            client_assertion_tenant_id             = "11111111-1111-1111-1111-111111111111"
+            user_assigned_managed_identity_id      = "00000000-0000-0000-0000-000000000000"
+            user_assigned_managed_identity_id_type = "object_id"
+          }
+`),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"managed_identity_client_assertion.0.client_assertion_client_id", "22222222-2222-2222-2222-222222222222"),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"managed_identity_client_assertion.0.client_assertion_tenant_id", "11111111-1111-1111-1111-111111111111"),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"managed_identity_client_assertion.0.user_assigned_managed_identity_id", "00000000-0000-0000-0000-000000000000"),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"managed_identity_client_assertion.0.user_assigned_managed_identity_id_type", "object_id"),
+				),
+			},
+			{
+				Config: config(`
+          workload_identity {
+            client_id       = "22222222-2222-2222-2222-222222222222"
+            tenant_id       = "11111111-1111-1111-1111-111111111111"
+            token_file_path = "/var/run/secrets/azure/tokens/azure-identity-token"
+          }
+`),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"workload_identity.0.client_id", "22222222-2222-2222-2222-222222222222"),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"workload_identity.0.tenant_id", "11111111-1111-1111-1111-111111111111"),
+					resource.TestCheckResourceAttr(resourceName, authPrefix+"workload_identity.0.token_file_path", "/var/run/secrets/azure/tokens/azure-identity-token"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_azureDataExplorerDestination_authValidation(t *testing.T) {
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				// Two credential kinds specified
+				Config: `
+resource "datadog_observability_pipeline" "azure_data_explorer_validation" {
+  name = "azure data explorer validation pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "azure-data-explorer-dest-validation-1"
+      inputs = ["source-1"]
+
+      azure_data_explorer {
+        database = "logs_db"
+        table    = "application_logs"
+
+        auth {
+          azure_cli {}
+          managed_identity {}
+        }
+      }
+    }
+  }
+}`,
+				ExpectError: regexp.MustCompile(`Invalid Attribute Combination`),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_splunkHecMetricsDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	resourceName := "datadog_observability_pipeline.splunk_hec_metrics_dest"
@@ -7902,6 +8667,138 @@ resource "datadog_observability_pipeline" "splunk_hec_metrics_dest" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_opentelemetryMetricsDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.opentelemetry_metrics_dest"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// Minimal config: only required fields
+				Config: `
+resource "datadog_observability_pipeline" "opentelemetry_metrics_dest" {
+  name = "opentelemetry-metrics-destination-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    destination {
+      id     = "opentelemetry-metrics-1"
+      inputs = ["source-1"]
+
+      opentelemetry {
+        http_client_uri_key = "DESTINATION_OTEL_HTTP_CLIENT_URI"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "opentelemetry-metrics-destination-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "opentelemetry-metrics-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.http_client_uri_key", "DESTINATION_OTEL_HTTP_CLIENT_URI"),
+				),
+			},
+			{
+				// Full config: TLS and disk buffer
+				Config: `
+resource "datadog_observability_pipeline" "opentelemetry_metrics_dest" {
+  name = "opentelemetry-metrics-destination-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    destination {
+      id     = "opentelemetry-metrics-1"
+      inputs = ["source-1"]
+
+      opentelemetry {
+        http_client_uri_key = "DESTINATION_OTEL_HTTP_CLIENT_URI"
+
+        tls {
+          crt_file = "/etc/ssl/certs/otel.crt"
+          ca_file  = "/etc/ssl/certs/ca.crt"
+          key_file = "/etc/ssl/private/otel.key"
+        }
+
+        buffer {
+          disk {
+            max_size  = 1073741824
+            when_full = "drop_newest"
+          }
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "opentelemetry-metrics-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.http_client_uri_key", "DESTINATION_OTEL_HTTP_CLIENT_URI"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.tls.0.crt_file", "/etc/ssl/certs/otel.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.tls.0.key_file", "/etc/ssl/private/otel.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.buffer.0.disk.0.max_size", "1073741824"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.buffer.0.disk.0.when_full", "drop_newest"),
+				),
+			},
+			{
+				// Update: switch to memory buffer
+				Config: `
+resource "datadog_observability_pipeline" "opentelemetry_metrics_dest" {
+  name = "opentelemetry-metrics-destination-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    destination {
+      id     = "opentelemetry-metrics-1"
+      inputs = ["source-1"]
+
+      opentelemetry {
+        http_client_uri_key = "DESTINATION_OTEL_HTTP_CLIENT_URI"
+
+        buffer {
+          memory {
+            max_events = 10000
+            when_full  = "block"
+          }
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.http_client_uri_key", "DESTINATION_OTEL_HTTP_CLIENT_URI"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.buffer.0.memory.0.max_events", "10000"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.buffer.0.memory.0.when_full", "block"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_generateMetricsV2Processor(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -7978,6 +8875,7 @@ resource "datadog_observability_pipeline" "generate_metrics_v2" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.id", "gen-metrics-v2-group"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.id", "gen-metrics-v2-proc"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.enabled_metric_aggregation"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.0.name", "logs.processed"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.0.include", "service:billing"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.0.metric_type", "count"),
@@ -8259,6 +9157,161 @@ resource "datadog_observability_pipeline" "tag_cardinality_limit" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.0.tag_key", "env"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.0.override_type", "limit_override"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.0.value_limit", "50"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_spikeProtectionProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.spike_protection"
+	processorPath := "config.0.processor_group.0.processor.0.spike_protection.0"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "spike_protection" {
+  name = "spike protection processor test"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "spike-protection-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "spike-protection-processor"
+        enabled = true
+        include = "*"
+
+        spike_protection {
+          name         = "minimal rule"
+          spike_action = "drop"
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["spike-protection-group-1"]
+      datadog_logs {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".name", "minimal rule"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".spike_action", "drop"),
+					resource.TestCheckNoResourceAttr(resourceName, processorPath+".spike_threshold"),
+					resource.TestCheckNoResourceAttr(resourceName, processorPath+".minimal_threshold"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".action_when_missing_partitions", "ignore"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.#", "0"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "spike_protection" {
+  name = "spike protection processor test"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "spike-protection-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id           = "spike-protection-processor"
+        enabled      = true
+        include      = "service:my-service"
+        display_name = "Spike protection"
+
+        spike_protection {
+          name                           = "full rule"
+          spike_action                   = "no_action"
+          spike_threshold                = 3.5
+          minimal_threshold              = 1073741824
+          partition_fields               = ["service", "env"]
+          action_when_missing_partitions = "default_bucket"
+
+          minimal_threshold_override {
+            field {
+              name  = "service"
+              value = "checkout"
+            }
+            field {
+              name  = "env"
+              value = "prod"
+            }
+            minimal_threshold {
+              type  = "threshold"
+              bytes = 2147483648
+            }
+          }
+
+          minimal_threshold_override {
+            field {
+              name  = "service"
+              value = "audit"
+            }
+            minimal_threshold {
+              type = "always_keep"
+            }
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["spike-protection-group-1"]
+      datadog_logs {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.display_name", "Spike protection"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".name", "full rule"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".spike_action", "no_action"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".spike_threshold", "3.5"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold", "1073741824"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".partition_fields.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".partition_fields.0", "service"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".partition_fields.1", "env"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".action_when_missing_partitions", "default_bucket"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.0.field.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.0.field.0.name", "service"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.0.field.0.value", "checkout"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.0.field.1.name", "env"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.0.field.1.value", "prod"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.0.minimal_threshold.0.type", "threshold"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.0.minimal_threshold.0.bytes", "2147483648"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.1.field.0.name", "service"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.1.field.0.value", "audit"),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".minimal_threshold_override.1.minimal_threshold.0.type", "always_keep"),
+					resource.TestCheckNoResourceAttr(resourceName, processorPath+".minimal_threshold_override.1.minimal_threshold.0.bytes"),
 				),
 			},
 		},
@@ -8611,6 +9664,716 @@ resource "datadog_observability_pipeline" "websocket" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.username_key", "WEBSOCKET_USERNAME"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.password_key", "WEBSOCKET_PASSWORD"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.tls.0.mode", "enabled"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_prometheusRemoteWriteSource(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.prometheus_remote_write_source"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// Minimal config: only required fields
+				Config: `
+resource "datadog_observability_pipeline" "prometheus_remote_write_source" {
+  name = "prometheus-remote-write-source-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "prometheus-source-1"
+
+      prometheus_remote_write {
+        auth_strategy = "none"
+        path          = "/api/v1/write"
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["prometheus-source-1"]
+
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "prometheus-remote-write-source-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "prometheus-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.auth_strategy", "none"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.path", "/api/v1/write"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "prometheus-source-1"),
+				),
+			},
+			{
+				// Full config: all optional fields, TLS, and valid tokens
+				Config: `
+resource "datadog_observability_pipeline" "prometheus_remote_write_source" {
+  name = "prometheus-remote-write-source-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "prometheus-source-1"
+
+      prometheus_remote_write {
+        auth_strategy = "none"
+        address_key   = "PROMETHEUS_ADDRESS"
+        path          = "/api/v1/write"
+
+        tls {
+          crt_file           = "/etc/ssl/certs/prometheus.crt"
+          ca_file            = "/etc/ssl/certs/ca.crt"
+          key_file           = "/etc/ssl/private/prometheus.key"
+          verify_certificate = true
+        }
+
+        valid_token {
+          token_key = "PROMETHEUS_TOKEN_PRIMARY"
+          enabled   = true
+
+          path_to_token {
+            header = "X-Auth-Token"
+          }
+        }
+
+        valid_token {
+          token_key = "PROMETHEUS_TOKEN_SECONDARY"
+
+          path_to_token {
+            location = "path"
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["prometheus-source-1"]
+
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.auth_strategy", "none"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.address_key", "PROMETHEUS_ADDRESS"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.path", "/api/v1/write"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.crt_file", "/etc/ssl/certs/prometheus.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.key_file", "/etc/ssl/private/prometheus.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.verify_certificate", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.valid_token.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.valid_token.0.token_key", "PROMETHEUS_TOKEN_PRIMARY"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.valid_token.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.valid_token.0.path_to_token.0.header", "X-Auth-Token"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.valid_token.1.token_key", "PROMETHEUS_TOKEN_SECONDARY"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.valid_token.1.path_to_token.0.location", "path"),
+				),
+			},
+			{
+				// Plain auth: valid tokens are not allowed alongside auth_strategy = "plain"
+				Config: `
+resource "datadog_observability_pipeline" "prometheus_remote_write_source" {
+  name = "prometheus-remote-write-source-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "prometheus-source-1"
+
+      prometheus_remote_write {
+        auth_strategy = "plain"
+        address_key   = "PROMETHEUS_ADDRESS"
+        path          = "/api/v1/write"
+        username_key  = "PROMETHEUS_USERNAME"
+        password_key  = "PROMETHEUS_PASSWORD"
+
+        tls {
+          crt_file           = "/etc/ssl/certs/prometheus.crt"
+          ca_file            = "/etc/ssl/certs/ca.crt"
+          key_file           = "/etc/ssl/private/prometheus.key"
+          verify_certificate = true
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["prometheus-source-1"]
+
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.auth_strategy", "plain"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.address_key", "PROMETHEUS_ADDRESS"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.path", "/api/v1/write"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.username_key", "PROMETHEUS_USERNAME"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.password_key", "PROMETHEUS_PASSWORD"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.crt_file", "/etc/ssl/certs/prometheus.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.key_file", "/etc/ssl/private/prometheus.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.tls.0.verify_certificate", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.prometheus_remote_write.0.valid_token.#", "0"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_prometheusRemoteWriteDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.prometheus_remote_write_dest"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// Minimal config: only required fields
+				Config: `
+resource "datadog_observability_pipeline" "prometheus_remote_write_dest" {
+  name = "prometheus-remote-write-destination-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    destination {
+      id     = "prometheus-remote-write-1"
+      inputs = ["source-1"]
+
+      prometheus_remote_write {
+        endpoint_url_key = "PROMETHEUS_ENDPOINT_URL"
+        auth_strategy    = "none"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "prometheus-remote-write-destination-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "prometheus-remote-write-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.endpoint_url_key", "PROMETHEUS_ENDPOINT_URL"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.auth_strategy", "none"),
+				),
+			},
+			{
+				// Full config: all optional fields, TLS, and disk buffer
+				Config: `
+resource "datadog_observability_pipeline" "prometheus_remote_write_dest" {
+  name = "prometheus-remote-write-destination-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    destination {
+      id     = "prometheus-remote-write-1"
+      inputs = ["source-1"]
+
+      prometheus_remote_write {
+        endpoint_url_key  = "PROMETHEUS_ENDPOINT_URL"
+        default_namespace = "custom_namespace"
+        tenant_id          = "tenant-1"
+        auth_strategy      = "bearer"
+        token_key          = "PROMETHEUS_TOKEN"
+
+        tls {
+          crt_file    = "/etc/ssl/certs/prometheus.crt"
+          ca_file     = "/etc/ssl/certs/ca.crt"
+          key_file    = "/etc/ssl/private/prometheus.key"
+          server_name = "prometheus.example.com"
+        }
+
+        buffer {
+          disk {
+            max_size  = 1073741824
+            when_full = "drop_newest"
+          }
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.endpoint_url_key", "PROMETHEUS_ENDPOINT_URL"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.default_namespace", "custom_namespace"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.tenant_id", "tenant-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.auth_strategy", "bearer"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.token_key", "PROMETHEUS_TOKEN"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.tls.0.crt_file", "/etc/ssl/certs/prometheus.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.tls.0.key_file", "/etc/ssl/private/prometheus.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.tls.0.server_name", "prometheus.example.com"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.buffer.0.disk.0.max_size", "1073741824"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.prometheus_remote_write.0.buffer.0.disk.0.when_full", "drop_newest"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_metricEnrichmentTableProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.metric_enrichment_table"
+	processorPath := "config.0.processor_group.0.processor.0"
+	enrichmentPath := processorPath + ".metric_enrichment_table.0"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "metric_enrichment_table" {
+  name = "metric enrichment table processor test"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "metric-enrichment-table-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "metric-enrichment-table-processor"
+        enabled = true
+        include = "*"
+
+        metric_enrichment_table {
+          file {
+            path = "/etc/enrichment/lookup.csv"
+            encoding {
+              type             = "csv"
+              delimiter        = ","
+              includes_headers = true
+            }
+            key {
+              column = "service"
+              source {
+                type = "tag"
+                name = "service"
+              }
+            }
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["metric-enrichment-table-group-1"]
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, processorPath+".id", "metric-enrichment-table-processor"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".file.0.path", "/etc/enrichment/lookup.csv"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".file.0.encoding.0.type", "csv"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".file.0.encoding.0.delimiter", ","),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".file.0.encoding.0.includes_headers", "true"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".file.0.key.0.column", "service"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".file.0.key.0.source.0.type", "tag"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".file.0.key.0.source.0.name", "service"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".reference_table.#", "0"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "metric_enrichment_table" {
+  name = "metric enrichment table processor test"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "metric-enrichment-table-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "metric-enrichment-table-processor"
+        enabled = true
+        include = "*"
+
+        metric_enrichment_table {
+          reference_table {
+            table_id    = "metric-enrichment"
+            app_key_key = "METRIC_ENRICHMENT_APP_KEY"
+            columns     = ["environment", "team"]
+            key {
+              source {
+                type = "metric_name"
+              }
+            }
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["metric-enrichment-table-group-1"]
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".file.#", "0"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".reference_table.0.table_id", "metric-enrichment"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".reference_table.0.app_key_key", "METRIC_ENRICHMENT_APP_KEY"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".reference_table.0.columns.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".reference_table.0.columns.0", "environment"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".reference_table.0.columns.1", "team"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".reference_table.0.key.0.source.0.type", "metric_name"),
+					resource.TestCheckNoResourceAttr(resourceName, enrichmentPath+".reference_table.0.key.0.source.0.name"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "metric_enrichment_table" {
+  name = "metric enrichment table processor test"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "metric-enrichment-table-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "metric-enrichment-table-processor"
+        enabled = true
+        include = "*"
+
+        metric_enrichment_table {
+          reference_table {
+            table_id = "metric-enrichment"
+            key {
+              source {
+                type = "metric_name"
+              }
+            }
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["metric-enrichment-table-group-1"]
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".reference_table.0.table_id", "metric-enrichment"),
+					resource.TestCheckResourceAttr(resourceName, enrichmentPath+".reference_table.0.key.0.source.0.type", "metric_name"),
+					resource.TestCheckNoResourceAttr(resourceName, enrichmentPath+".reference_table.0.app_key_key"),
+					resource.TestCheckNoResourceAttr(resourceName, enrichmentPath+".reference_table.0.columns.#"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_tracesPipeline(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.traces"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// Rich config: every processor traces pipelines support, a buffered
+				// datadog_traces destination, and generated metrics routed to datadog_metrics.
+				Config: `
+resource "datadog_observability_pipeline" "traces" {
+  name = "traces-pipeline"
+
+  config {
+    pipeline_type = "traces"
+
+    source {
+      id = "source-1"
+      datadog_agent {
+        address_key = "DD_AGENT_TRACES_ADDRESS"
+
+        tls {
+          crt_file = "/etc/certs/agent.crt"
+          ca_file  = "/etc/certs/ca.crt"
+          key_file = "/etc/certs/agent.key"
+        }
+      }
+    }
+
+    processor_group {
+      id      = "traces-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "filter-1"
+        enabled = true
+        include = "service:checkout"
+        filter {}
+      }
+
+      processor {
+        id      = "sample-1"
+        enabled = true
+        include = "*"
+        sample {
+          percentage = 25
+          group_by   = ["service", "env"]
+        }
+      }
+
+      processor {
+        id      = "sds-1"
+        enabled = true
+        include = "*"
+        sensitive_data_scanner {
+          rule {
+            name = "Redact secrets"
+            tags = ["secret"]
+
+            pattern {
+              custom {
+                rule = "\\bsecret-[a-z0-9]+\\b"
+              }
+            }
+
+            scope {
+              all = true
+            }
+
+            on_match {
+              redact {
+                replace = "[REDACTED]"
+              }
+            }
+          }
+        }
+      }
+
+      processor {
+        id      = "custom-1"
+        enabled = true
+        include = "*"
+        custom_processor {
+          remap {
+            include       = "*"
+            name          = "Tag spans"
+            enabled       = true
+            source        = ".tags.pipeline = \"traces\""
+            drop_on_error = false
+          }
+        }
+      }
+
+      processor {
+        id      = "gen-metrics-1"
+        enabled = true
+        include = "*"
+        generate_metrics {
+          metric {
+            name        = "traces.spans"
+            include     = "*"
+            metric_type = "count"
+            group_by    = ["service"]
+
+            value {
+              strategy = "increment_by_one"
+            }
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "datadog-traces-1"
+      inputs = ["traces-group-1"]
+
+      datadog_traces {
+        buffer {
+          memory {
+            max_events = 5000
+            when_full  = "drop_newest"
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "datadog-metrics-1"
+      inputs = ["gen-metrics-1.metrics"]
+      datadog_metrics {}
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "traces"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.datadog_agent.0.address_key", "DD_AGENT_TRACES_ADDRESS"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.datadog_agent.0.tls.0.crt_file", "/etc/certs/agent.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.id", "filter-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.filter.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.1.sample.0.percentage", "25"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.1.sample.0.group_by.1", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.2.sensitive_data_scanner.0.rule.0.name", "Redact secrets"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.2.sensitive_data_scanner.0.rule.0.on_match.0.redact.0.replace", "[REDACTED]"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.3.custom_processor.0.remap.0.name", "Tag spans"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.4.generate_metrics.0.metric.0.name", "traces.spans"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "datadog-traces-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "traces-group-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_traces.0.buffer.0.memory.0.max_events", "5000"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_traces.0.buffer.0.memory.0.when_full", "drop_newest"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.1.inputs.0", "gen-metrics-1.metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.1.datadog_metrics.#", "1"),
+				),
+			},
+			{
+				// Minimal config: only required fields, so optional ones must clear.
+				Config: `
+resource "datadog_observability_pipeline" "traces" {
+  name = "traces-pipeline"
+
+  config {
+    pipeline_type = "traces"
+
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    destination {
+      id     = "datadog-traces-1"
+      inputs = ["source-1"]
+      datadog_traces {}
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "traces"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.datadog_agent.0.tls.#", "0"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.#", "0"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_traces.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_traces.0.buffer.#", "0"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_tracesOpentelemetry(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.traces_otel"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// Traces pipelines require an opentelemetry source to use the opentelemetry destination.
+				Config: `
+resource "datadog_observability_pipeline" "traces_otel" {
+  name = "traces-otel-pipeline"
+
+  config {
+    pipeline_type = "traces"
+
+    source {
+      id = "otel-source-1"
+      opentelemetry {
+        grpc_address_key = "OTEL_GRPC_ADDRESS"
+        http_address_key = "OTEL_HTTP_ADDRESS"
+      }
+    }
+
+    destination {
+      id     = "otel-destination-1"
+      inputs = ["otel-source-1"]
+
+      opentelemetry {
+        http_client_uri_key = "DESTINATION_OTEL_HTTP_CLIENT_URI"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "traces"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.opentelemetry.0.grpc_address_key", "OTEL_GRPC_ADDRESS"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opentelemetry.0.http_client_uri_key", "DESTINATION_OTEL_HTTP_CLIENT_URI"),
 				),
 			},
 		},

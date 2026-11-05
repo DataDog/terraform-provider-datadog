@@ -17,7 +17,7 @@ var (
 	_ datasource.DataSourceWithConfigure = &datadogDatastoreDataSource{}
 )
 
-type datadogDatastoreDataSourceModel struct {
+type datadogDatastore_Model struct {
 	// Datasource ID
 	ID types.String `tfsdk:"id"`
 
@@ -92,7 +92,7 @@ func (d *datadogDatastoreDataSource) Schema(_ context.Context, _ datasource.Sche
 }
 
 func (d *datadogDatastoreDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state datadogDatastoreDataSourceModel
+	var state datadogDatastore_Model
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -139,7 +139,7 @@ func (d *datadogDatastoreDataSource) Read(ctx context.Context, request datasourc
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogDatastoreDataSource) updateState(ctx context.Context, state *datadogDatastoreDataSourceModel, data datadogV2.DatastoreData) diag.Diagnostics {
+func (d *datadogDatastoreDataSource) updateState(ctx context.Context, state *datadogDatastore_Model, data datadogV2.DatastoreData) diag.Diagnostics {
 	var diags diag.Diagnostics
 	attributes := data.GetAttributes()
 	if id, ok := data.GetIdOk(); ok && id != nil {

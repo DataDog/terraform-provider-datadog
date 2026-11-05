@@ -1,0 +1,212 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 497
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"auth":{"password_key":"AMAZON_OPENSEARCH_PASSWORD","strategy":"basic","username_key":"AMAZON_OPENSEARCH_USERNAME"},"data_stream":{"dataset":"app","dtype":"logs","namespace":"default"},"endpoint_url_key":"AMAZON_OPENSEARCH_ENDPOINT_URL","id":"destination-1","inputs":["source-1"],"type":"amazon_opensearch"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"amazon opensearch data stream"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 579
+        uncompressed: false
+        body: |
+            {"data":{"id":"a66bf85c-cd50-11f1-a1a5-da7ad0900002","type":"pipelines","attributes":{"name":"amazon opensearch data stream","config":{"destinations":[{"auth":{"password_key":"AMAZON_OPENSEARCH_PASSWORD","strategy":"basic","username_key":"AMAZON_OPENSEARCH_USERNAME"},"data_stream":{"dataset":"app","dtype":"logs","namespace":"default"},"endpoint_url_key":"AMAZON_OPENSEARCH_ENDPOINT_URL","id":"destination-1","inputs":["source-1"],"type":"amazon_opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 455.4425ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/a66bf85c-cd50-11f1-a1a5-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 579
+        uncompressed: false
+        body: |
+            {"data":{"id":"a66bf85c-cd50-11f1-a1a5-da7ad0900002","type":"pipelines","attributes":{"name":"amazon opensearch data stream","config":{"destinations":[{"auth":{"password_key":"AMAZON_OPENSEARCH_PASSWORD","strategy":"basic","username_key":"AMAZON_OPENSEARCH_USERNAME"},"data_stream":{"dataset":"app","dtype":"logs","namespace":"default"},"endpoint_url_key":"AMAZON_OPENSEARCH_ENDPOINT_URL","id":"destination-1","inputs":["source-1"],"type":"amazon_opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 331.453334ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/a66bf85c-cd50-11f1-a1a5-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 579
+        uncompressed: false
+        body: |
+            {"data":{"id":"a66bf85c-cd50-11f1-a1a5-da7ad0900002","type":"pipelines","attributes":{"name":"amazon opensearch data stream","config":{"destinations":[{"auth":{"password_key":"AMAZON_OPENSEARCH_PASSWORD","strategy":"basic","username_key":"AMAZON_OPENSEARCH_USERNAME"},"data_stream":{"dataset":"app","dtype":"logs","namespace":"default"},"endpoint_url_key":"AMAZON_OPENSEARCH_ENDPOINT_URL","id":"destination-1","inputs":["source-1"],"type":"amazon_opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 334.617334ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 268
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["source-1"],"type":"amazon_opensearch"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"amazon opensearch data stream"},"id":"","type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/a66bf85c-cd50-11f1-a1a5-da7ad0900002
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 342
+        uncompressed: false
+        body: |
+            {"data":{"id":"a66bf85c-cd50-11f1-a1a5-da7ad0900002","type":"pipelines","attributes":{"name":"amazon opensearch data stream","config":{"destinations":[{"id":"destination-1","inputs":["source-1"],"type":"amazon_opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 547.642542ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/a66bf85c-cd50-11f1-a1a5-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 342
+        uncompressed: false
+        body: |
+            {"data":{"id":"a66bf85c-cd50-11f1-a1a5-da7ad0900002","type":"pipelines","attributes":{"name":"amazon opensearch data stream","config":{"destinations":[{"id":"destination-1","inputs":["source-1"],"type":"amazon_opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 291.946708ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/a66bf85c-cd50-11f1-a1a5-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 429.273ms

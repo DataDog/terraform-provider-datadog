@@ -45,7 +45,7 @@ resource "datadog_datastore" "auto_uuid" {
 
 - `description` (String) A human-readable description about the datastore.
 - `org_access` (String) The organization access level for the datastore. For example, 'contributor'.
-- `primary_key_generation_strategy` (String) Can be set to `uuid` to automatically generate primary keys when new items are added. Default value is `none`, which requires you to supply a primary key for each new item.
+- `primary_key_generation_strategy` (String) Can be set to `uuid` to automatically generate primary keys when new items are added. Default value is `none`, which requires you to supply a primary key for each new item. Defaults to `"none"`.
 
 ### Read-Only
 

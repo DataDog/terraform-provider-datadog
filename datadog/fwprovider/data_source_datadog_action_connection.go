@@ -7,6 +7,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var _ datasource.DataSource = &actionConnectionDatasource{}
@@ -41,6 +42,11 @@ func (d *actionConnectionDatasource) Schema(_ context.Context, request datasourc
 			"name": schema.StringAttribute{
 				Computed:    true,
 				Description: "Name of the connection",
+			},
+			"tags": schema.SetAttribute{
+				Computed:    true,
+				Description: "Tags associated with the connection.",
+				ElementType: types.StringType,
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -181,14 +187,14 @@ func actionConnectionDataSourceBlock(integrationSpec actionConnectionIntegration
 }
 
 func (d *actionConnectionDatasource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state connectionResourceModel
+	var state connectionDatasourceModel
 	diags := request.Config.Get(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	connModel, httpStatusCode, err := readConnection(d.Auth, d.Api, state.ID.ValueString(), state)
+	connModel, httpStatusCode, err := readConnection(d.Auth, d.Api, state.ID.ValueString(), connectionResourceModel{connectionModel: state.connectionModel})
 	if err != nil {
 		if httpStatusCode == http.StatusNotFound {
 			// If the connection is not found, we log a warning and remove the resource from state. This may be due to changes outside of Terraform.
@@ -200,6 +206,6 @@ func (d *actionConnectionDatasource) Read(ctx context.Context, request datasourc
 		return
 	}
 
-	diags = response.State.Set(ctx, connModel)
+	diags = response.State.Set(ctx, &connectionDatasourceModel{connectionModel: connModel.connectionModel})
 	response.Diagnostics.Append(diags...)
 }

@@ -1,0 +1,746 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1850
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"variables":[]},"message":"","name":"tf-TestAccDatadogSyntheticsMobileTest_StepParams-local-1791902468","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"status":"paused","steps":[{"allowFailure":false,"hasNewStepElement":false,"isCritical":false,"name":"Extract variable","noScreenshot":false,"params":{"element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"variable":{"example":"first","name":"EXTRACTED_VALUE"}},"type":"extractVariable"},{"allowFailure":false,"hasNewStepElement":false,"isCritical":false,"name":"Scroll","noScreenshot":false,"params":{"x":0.2,"y":0.2},"type":"scroll"},{"allowFailure":false,"hasNewStepElement":false,"isCritical":false,"name":"Toggle WiFi","noScreenshot":false,"params":{"enabled":true},"type":"toggleWiFi"},{"allowFailure":false,"hasNewStepElement":false,"isCritical":false,"name":"Wait","noScreenshot":false,"params":{"value":1},"type":"wait"},{"allowFailure":false,"hasNewStepElement":false,"isCritical":false,"name":"Scroll to element","noScreenshot":false,"params":{"direction":"down","element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"maxScrolls":3},"type":"scrollToElement"},{"allowFailure":false,"hasNewStepElement":false,"isCritical":false,"name":"Press back","noScreenshot":false,"params":{},"type":"pressBack"},{"allowFailure":false,"hasNewStepElement":false,"isCritical":false,"name":"Restart application","noScreenshot":false,"params":{},"type":"restartApplication"}],"type":"mobile"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8wp-rw8-69a","name":"tf-TestAccDatadogSyntheticsMobileTest_StepParams-local-1791902468","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T14:41:10.577237+00:00","modified_at":"2026-10-13T14:41:10.577237+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":332070825,"org_id":321813,"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"creation_source":"terraform","steps":[{"name":"Extract variable","params":{"element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"variable":{"example":"first","name":"EXTRACTED_VALUE"}},"type":"extractVariable","public_id":"dbx-sdk-pz7","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Scroll","params":{"x":0.2,"y":0.2},"type":"scroll","public_id":"d7m-p2q-q8f","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Toggle WiFi","params":{"enabled":true},"type":"toggleWiFi","public_id":"373-3ri-cwb","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Wait","params":{"value":1},"type":"wait","public_id":"uxk-vpy-fqr","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Scroll to element","params":{"direction":"down","element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"maxScrolls":3},"type":"scrollToElement","public_id":"aee-8p8-x4i","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Press back","params":{},"type":"pressBack","public_id":"wia-4fd-2j9","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Restart application","params":{},"type":"restartApplication","public_id":"bnu-yje-vic","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}],"stepCount":{"assertions":0,"subtests":0,"total":7,"nested_steps":0}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 568.203458ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/8wp-rw8-69a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8wp-rw8-69a","name":"tf-TestAccDatadogSyntheticsMobileTest_StepParams-local-1791902468","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T14:41:10.577237+00:00","modified_at":"2026-10-13T14:41:10.577237+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332070825,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Extract variable","params":{"element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"variable":{"example":"first","name":"EXTRACTED_VALUE"}},"public_id":"dbx-sdk-pz7","type":"extractVariable","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Scroll","params":{"x":0.2,"y":0.2},"public_id":"d7m-p2q-q8f","type":"scroll","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Toggle WiFi","params":{"enabled":true},"public_id":"373-3ri-cwb","type":"toggleWiFi","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Wait","params":{"value":1},"public_id":"uxk-vpy-fqr","type":"wait","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Scroll to element","params":{"direction":"down","element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"maxScrolls":3},"public_id":"aee-8p8-x4i","type":"scrollToElement","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Press back","params":{},"public_id":"wia-4fd-2j9","type":"pressBack","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Restart application","params":{},"public_id":"bnu-yje-vic","type":"restartApplication","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 241.695541ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8wp-rw8-69a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8wp-rw8-69a","name":"tf-TestAccDatadogSyntheticsMobileTest_StepParams-local-1791902468","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T14:41:10.577237+00:00","modified_at":"2026-10-13T14:41:10.577237+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332070825,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 234.944583ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8wp-rw8-69a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8wp-rw8-69a","name":"tf-TestAccDatadogSyntheticsMobileTest_StepParams-local-1791902468","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T14:41:10.577237+00:00","modified_at":"2026-10-13T14:41:10.577237+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332070825,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 234.4275ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/8wp-rw8-69a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8wp-rw8-69a","name":"tf-TestAccDatadogSyntheticsMobileTest_StepParams-local-1791902468","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T14:41:10.577237+00:00","modified_at":"2026-10-13T14:41:10.577237+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332070825,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Extract variable","params":{"element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"variable":{"example":"first","name":"EXTRACTED_VALUE"}},"public_id":"dbx-sdk-pz7","type":"extractVariable","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Scroll","params":{"x":0.2,"y":0.2},"public_id":"d7m-p2q-q8f","type":"scroll","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Toggle WiFi","params":{"enabled":true},"public_id":"373-3ri-cwb","type":"toggleWiFi","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Wait","params":{"value":1},"public_id":"uxk-vpy-fqr","type":"wait","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Scroll to element","params":{"direction":"down","element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"maxScrolls":3},"public_id":"aee-8p8-x4i","type":"scrollToElement","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Press back","params":{},"public_id":"wia-4fd-2j9","type":"pressBack","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Restart application","params":{},"public_id":"bnu-yje-vic","type":"restartApplication","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 239.415ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8wp-rw8-69a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8wp-rw8-69a","name":"tf-TestAccDatadogSyntheticsMobileTest_StepParams-local-1791902468","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T14:41:10.577237+00:00","modified_at":"2026-10-13T14:41:10.577237+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332070825,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 238.289666ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/8wp-rw8-69a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8wp-rw8-69a","name":"tf-TestAccDatadogSyntheticsMobileTest_StepParams-local-1791902468","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T14:41:10.577237+00:00","modified_at":"2026-10-13T14:41:10.577237+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332070825,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Extract variable","params":{"element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"variable":{"example":"first","name":"EXTRACTED_VALUE"}},"public_id":"dbx-sdk-pz7","type":"extractVariable","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Scroll","params":{"x":0.2,"y":0.2},"public_id":"d7m-p2q-q8f","type":"scroll","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Toggle WiFi","params":{"enabled":true},"public_id":"373-3ri-cwb","type":"toggleWiFi","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Wait","params":{"value":1},"public_id":"uxk-vpy-fqr","type":"wait","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Scroll to element","params":{"direction":"down","element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"maxScrolls":3},"public_id":"aee-8p8-x4i","type":"scrollToElement","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Press back","params":{},"public_id":"wia-4fd-2j9","type":"pressBack","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Restart application","params":{},"public_id":"bnu-yje-vic","type":"restartApplication","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 239.773ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8wp-rw8-69a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8wp-rw8-69a","name":"tf-TestAccDatadogSyntheticsMobileTest_StepParams-local-1791902468","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T14:41:10.577237+00:00","modified_at":"2026-10-13T14:41:10.577237+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332070825,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 217.025292ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/8wp-rw8-69a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8wp-rw8-69a","name":"tf-TestAccDatadogSyntheticsMobileTest_StepParams-local-1791902468","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T14:41:10.577237+00:00","modified_at":"2026-10-13T14:41:10.577237+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332070825,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Extract variable","params":{"element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"variable":{"example":"first","name":"EXTRACTED_VALUE"}},"public_id":"dbx-sdk-pz7","type":"extractVariable","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Scroll","params":{"x":0.2,"y":0.2},"public_id":"d7m-p2q-q8f","type":"scroll","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Toggle WiFi","params":{"enabled":true},"public_id":"373-3ri-cwb","type":"toggleWiFi","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Wait","params":{"value":1},"public_id":"uxk-vpy-fqr","type":"wait","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Scroll to element","params":{"direction":"down","element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"maxScrolls":3},"public_id":"aee-8p8-x4i","type":"scrollToElement","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Press back","params":{},"public_id":"wia-4fd-2j9","type":"pressBack","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Restart application","params":{},"public_id":"bnu-yje-vic","type":"restartApplication","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 240.043042ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8wp-rw8-69a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8wp-rw8-69a","name":"tf-TestAccDatadogSyntheticsMobileTest_StepParams-local-1791902468","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T14:41:10.577237+00:00","modified_at":"2026-10-13T14:41:10.577237+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332070825,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 237.866125ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/8wp-rw8-69a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8wp-rw8-69a","name":"tf-TestAccDatadogSyntheticsMobileTest_StepParams-local-1791902468","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T14:41:10.577237+00:00","modified_at":"2026-10-13T14:41:10.577237+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332070825,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Extract variable","params":{"element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"variable":{"example":"first","name":"EXTRACTED_VALUE"}},"public_id":"dbx-sdk-pz7","type":"extractVariable","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Scroll","params":{"x":0.2,"y":0.2},"public_id":"d7m-p2q-q8f","type":"scroll","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Toggle WiFi","params":{"enabled":true},"public_id":"373-3ri-cwb","type":"toggleWiFi","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Wait","params":{"value":1},"public_id":"uxk-vpy-fqr","type":"wait","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Scroll to element","params":{"direction":"down","element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"maxScrolls":3},"public_id":"aee-8p8-x4i","type":"scrollToElement","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Press back","params":{},"public_id":"wia-4fd-2j9","type":"pressBack","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Restart application","params":{},"public_id":"bnu-yje-vic","type":"restartApplication","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 844.205541ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1852
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"variables":[]},"message":"","name":"tf-TestAccDatadogSyntheticsMobileTest_StepParams-local-1791902468","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"status":"paused","steps":[{"allowFailure":false,"hasNewStepElement":false,"isCritical":false,"name":"Extract variable","noScreenshot":false,"params":{"element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"variable":{"example":"second","name":"EXTRACTED_VALUE"}},"type":"extractVariable"},{"allowFailure":false,"hasNewStepElement":false,"isCritical":false,"name":"Scroll","noScreenshot":false,"params":{"x":0.2,"y":0.3},"type":"scroll"},{"allowFailure":false,"hasNewStepElement":false,"isCritical":false,"name":"Toggle WiFi","noScreenshot":false,"params":{"enabled":false},"type":"toggleWiFi"},{"allowFailure":false,"hasNewStepElement":false,"isCritical":false,"name":"Wait","noScreenshot":false,"params":{"value":2},"type":"wait"},{"allowFailure":false,"hasNewStepElement":false,"isCritical":false,"name":"Scroll to element","noScreenshot":false,"params":{"direction":"down","element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"maxScrolls":5},"type":"scrollToElement"},{"allowFailure":false,"hasNewStepElement":false,"isCritical":false,"name":"Press back","noScreenshot":false,"params":{},"type":"pressBack"},{"allowFailure":false,"hasNewStepElement":false,"isCritical":false,"name":"Restart application","noScreenshot":false,"params":{},"type":"restartApplication"}],"type":"mobile"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/8wp-rw8-69a
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"org_id":321813,"public_id":"8wp-rw8-69a","name":"tf-TestAccDatadogSyntheticsMobileTest_StepParams-local-1791902468","status":"paused","type":"mobile","tags":[],"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"created_at":"2026-10-13T14:41:10.577237+00:00","modified_at":"2026-10-13T14:41:16.792300+00:00","config":{"variables":[]},"overall_state_modified":"1970-01-01T00:00:00+00:00","monitor_id":332070825,"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"overall_state":2,"creation_source":"terraform","steps":[{"name":"Extract variable","params":{"element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"variable":{"example":"second","name":"EXTRACTED_VALUE"}},"type":"extractVariable","public_id":"ky2-rxr-fri","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Scroll","params":{"x":0.2,"y":0.3},"type":"scroll","public_id":"cew-iys-u3d","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Toggle WiFi","params":{"enabled":false},"type":"toggleWiFi","public_id":"j6q-x5t-pa4","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Wait","params":{"value":2},"type":"wait","public_id":"9nw-z97-3i3","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Scroll to element","params":{"direction":"down","element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"maxScrolls":5},"type":"scrollToElement","public_id":"sm9-26z-y23","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Press back","params":{},"type":"pressBack","public_id":"jqw-3zq-vh3","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Restart application","params":{},"type":"restartApplication","public_id":"pc8-76e-sg6","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}],"stepCount":{"assertions":0,"subtests":0,"total":7,"nested_steps":0}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 960.590709ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8wp-rw8-69a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8wp-rw8-69a","name":"tf-TestAccDatadogSyntheticsMobileTest_StepParams-local-1791902468","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T14:41:10.577237+00:00","modified_at":"2026-10-13T14:41:16.792300+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332070825,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 234.938458ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8wp-rw8-69a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8wp-rw8-69a","name":"tf-TestAccDatadogSyntheticsMobileTest_StepParams-local-1791902468","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T14:41:10.577237+00:00","modified_at":"2026-10-13T14:41:16.792300+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332070825,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 229.587875ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/8wp-rw8-69a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8wp-rw8-69a","name":"tf-TestAccDatadogSyntheticsMobileTest_StepParams-local-1791902468","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T14:41:10.577237+00:00","modified_at":"2026-10-13T14:41:16.792300+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332070825,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Extract variable","params":{"element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"variable":{"example":"second","name":"EXTRACTED_VALUE"}},"public_id":"ky2-rxr-fri","type":"extractVariable","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Scroll","params":{"x":0.2,"y":0.3},"public_id":"cew-iys-u3d","type":"scroll","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Toggle WiFi","params":{"enabled":false},"public_id":"j6q-x5t-pa4","type":"toggleWiFi","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Wait","params":{"value":2},"public_id":"9nw-z97-3i3","type":"wait","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Scroll to element","params":{"direction":"down","element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"maxScrolls":5},"public_id":"sm9-26z-y23","type":"scrollToElement","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Press back","params":{},"public_id":"jqw-3zq-vh3","type":"pressBack","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Restart application","params":{},"public_id":"pc8-76e-sg6","type":"restartApplication","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 232.415666ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8wp-rw8-69a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8wp-rw8-69a","name":"tf-TestAccDatadogSyntheticsMobileTest_StepParams-local-1791902468","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T14:41:10.577237+00:00","modified_at":"2026-10-13T14:41:16.792300+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332070825,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 222.889875ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/8wp-rw8-69a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8wp-rw8-69a","name":"tf-TestAccDatadogSyntheticsMobileTest_StepParams-local-1791902468","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T14:41:10.577237+00:00","modified_at":"2026-10-13T14:41:16.792300+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332070825,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Extract variable","params":{"element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"variable":{"example":"second","name":"EXTRACTED_VALUE"}},"public_id":"ky2-rxr-fri","type":"extractVariable","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Scroll","params":{"x":0.2,"y":0.3},"public_id":"cew-iys-u3d","type":"scroll","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Toggle WiFi","params":{"enabled":false},"public_id":"j6q-x5t-pa4","type":"toggleWiFi","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Wait","params":{"value":2},"public_id":"9nw-z97-3i3","type":"wait","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Scroll to element","params":{"direction":"down","element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"maxScrolls":5},"public_id":"sm9-26z-y23","type":"scrollToElement","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Press back","params":{},"public_id":"jqw-3zq-vh3","type":"pressBack","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Restart application","params":{},"public_id":"pc8-76e-sg6","type":"restartApplication","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 242.043792ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8wp-rw8-69a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8wp-rw8-69a","name":"tf-TestAccDatadogSyntheticsMobileTest_StepParams-local-1791902468","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T14:41:10.577237+00:00","modified_at":"2026-10-13T14:41:16.792300+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332070825,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 254.349125ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/8wp-rw8-69a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8wp-rw8-69a","name":"tf-TestAccDatadogSyntheticsMobileTest_StepParams-local-1791902468","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T14:41:10.577237+00:00","modified_at":"2026-10-13T14:41:16.792300+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332070825,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Extract variable","params":{"element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"variable":{"example":"second","name":"EXTRACTED_VALUE"}},"public_id":"ky2-rxr-fri","type":"extractVariable","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Scroll","params":{"x":0.2,"y":0.3},"public_id":"cew-iys-u3d","type":"scroll","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Toggle WiFi","params":{"enabled":false},"public_id":"j6q-x5t-pa4","type":"toggleWiFi","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Wait","params":{"value":2},"public_id":"9nw-z97-3i3","type":"wait","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Scroll to element","params":{"direction":"down","element":{"context":"NATIVE_APP","contextType":"native","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"id","value":"some-input"}]}},"maxScrolls":5},"public_id":"sm9-26z-y23","type":"scrollToElement","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Press back","params":{},"public_id":"jqw-3zq-vh3","type":"pressBack","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false},{"name":"Restart application","params":{},"public_id":"pc8-76e-sg6","type":"restartApplication","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 258.137084ms
+    - id: 19
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 31
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"public_ids":["8wp-rw8-69a"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_tests":[{"public_id":"8wp-rw8-69a","deleted_at":"2026-10-13T14:41:22.325939+00:00"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 849.5885ms
+    - id: 20
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8wp-rw8-69a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics test not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 132.63275ms

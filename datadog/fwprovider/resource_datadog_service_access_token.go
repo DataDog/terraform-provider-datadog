@@ -158,7 +158,7 @@ func (r *serviceAccessTokenResource) Read(ctx context.Context, request resource.
 		return
 	}
 
-	r.updateStatePartialToken(ctx, &state, &resp)
+	r.updateStatePartialToken(ctx, &state, resp.Data)
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -219,7 +219,7 @@ func (r *serviceAccessTokenResource) Update(ctx context.Context, request resourc
 		return
 	}
 
-	r.updateStatePartialToken(ctx, &state, &resp)
+	r.updateStatePartialToken(ctx, &state, &resp.Data)
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -244,11 +244,13 @@ func (r *serviceAccessTokenResource) Delete(ctx context.Context, request resourc
 	}
 }
 
-func (r *serviceAccessTokenResource) updateStatePartialToken(ctx context.Context, state *serviceAccessTokenModel, resp *datadogV2.ServiceAccessTokenResponse) {
-	data, ok := resp.GetDataOk()
-	if !ok || data == nil {
-		return
-	}
+// Both the read and update responses carry the same id and attributes.
+type serviceAccessTokenData interface {
+	GetId() string
+	GetAttributesOk() (*datadogV2.ServiceAccessTokenAttributes, bool)
+}
+
+func (r *serviceAccessTokenResource) updateStatePartialToken(ctx context.Context, state *serviceAccessTokenModel, data serviceAccessTokenData) {
 	state.ID = types.StringValue(data.GetId())
 
 	attributes, ok := data.GetAttributesOk()

@@ -1,0 +1,317 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 349
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["prometheus-source-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","sources":[{"auth_strategy":"none","id":"prometheus-source-1","path":"/api/v1/write","type":"prometheus_remote_write"}]},"name":"prometheus-remote-write-source-pipeline"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 431
+        uncompressed: false
+        body: |
+            {"data":{"id":"3fd8baa4-ad5b-11f1-8af1-da7ad0900002","type":"pipelines","attributes":{"name":"prometheus-remote-write-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["prometheus-source-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[],"processors":[],"sources":[{"auth_strategy":"none","id":"prometheus-source-1","path":"/api/v1/write","type":"prometheus_remote_write"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 726.971542ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/3fd8baa4-ad5b-11f1-8af1-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 431
+        uncompressed: false
+        body: |
+            {"data":{"id":"3fd8baa4-ad5b-11f1-8af1-da7ad0900002","type":"pipelines","attributes":{"name":"prometheus-remote-write-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["prometheus-source-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[],"processors":[],"sources":[{"auth_strategy":"none","id":"prometheus-source-1","path":"/api/v1/write","type":"prometheus_remote_write"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 315.258584ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/3fd8baa4-ad5b-11f1-8af1-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 431
+        uncompressed: false
+        body: |
+            {"data":{"id":"3fd8baa4-ad5b-11f1-8af1-da7ad0900002","type":"pipelines","attributes":{"name":"prometheus-remote-write-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["prometheus-source-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[],"processors":[],"sources":[{"auth_strategy":"none","id":"prometheus-source-1","path":"/api/v1/write","type":"prometheus_remote_write"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 378.432125ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 744
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["prometheus-source-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","sources":[{"address_key":"PROMETHEUS_ADDRESS","auth_strategy":"none","id":"prometheus-source-1","path":"/api/v1/write","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/prometheus.crt","key_file":"/etc/ssl/private/prometheus.key","verify_certificate":true},"type":"prometheus_remote_write","valid_tokens":[{"enabled":true,"path_to_token":{"header":"X-Auth-Token"},"token_key":"PROMETHEUS_TOKEN_PRIMARY"},{"enabled":true,"path_to_token":"path","token_key":"PROMETHEUS_TOKEN_SECONDARY"}]}]},"name":"prometheus-remote-write-source-pipeline"},"id":"","type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/3fd8baa4-ad5b-11f1-8af1-da7ad0900002
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 818
+        uncompressed: false
+        body: |
+            {"data":{"id":"3fd8baa4-ad5b-11f1-8af1-da7ad0900002","type":"pipelines","attributes":{"name":"prometheus-remote-write-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["prometheus-source-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[],"processors":[],"sources":[{"address_key":"PROMETHEUS_ADDRESS","auth_strategy":"none","id":"prometheus-source-1","path":"/api/v1/write","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/prometheus.crt","key_file":"/etc/ssl/private/prometheus.key","verify_certificate":true},"type":"prometheus_remote_write","valid_tokens":[{"enabled":true,"path_to_token":{"header":"X-Auth-Token"},"token_key":"PROMETHEUS_TOKEN_PRIMARY"},{"enabled":true,"path_to_token":"path","token_key":"PROMETHEUS_TOKEN_SECONDARY"}]}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 1.070648625s
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/3fd8baa4-ad5b-11f1-8af1-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 818
+        uncompressed: false
+        body: |
+            {"data":{"id":"3fd8baa4-ad5b-11f1-8af1-da7ad0900002","type":"pipelines","attributes":{"name":"prometheus-remote-write-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["prometheus-source-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[],"processors":[],"sources":[{"address_key":"PROMETHEUS_ADDRESS","auth_strategy":"none","id":"prometheus-source-1","path":"/api/v1/write","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/prometheus.crt","key_file":"/etc/ssl/private/prometheus.key","verify_certificate":true},"type":"prometheus_remote_write","valid_tokens":[{"enabled":true,"path_to_token":{"header":"X-Auth-Token"},"token_key":"PROMETHEUS_TOKEN_PRIMARY"},{"enabled":true,"path_to_token":"path","token_key":"PROMETHEUS_TOKEN_SECONDARY"}]}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 297.418417ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/3fd8baa4-ad5b-11f1-8af1-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 818
+        uncompressed: false
+        body: |
+            {"data":{"id":"3fd8baa4-ad5b-11f1-8af1-da7ad0900002","type":"pipelines","attributes":{"name":"prometheus-remote-write-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["prometheus-source-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[],"processors":[],"sources":[{"address_key":"PROMETHEUS_ADDRESS","auth_strategy":"none","id":"prometheus-source-1","path":"/api/v1/write","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/prometheus.crt","key_file":"/etc/ssl/private/prometheus.key","verify_certificate":true},"type":"prometheus_remote_write","valid_tokens":[{"enabled":true,"path_to_token":{"header":"X-Auth-Token"},"token_key":"PROMETHEUS_TOKEN_PRIMARY"},{"enabled":true,"path_to_token":"path","token_key":"PROMETHEUS_TOKEN_SECONDARY"}]}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 437.881167ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 623
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["prometheus-source-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","sources":[{"address_key":"PROMETHEUS_ADDRESS","auth_strategy":"plain","id":"prometheus-source-1","password_key":"PROMETHEUS_PASSWORD","path":"/api/v1/write","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/prometheus.crt","key_file":"/etc/ssl/private/prometheus.key","verify_certificate":true},"type":"prometheus_remote_write","username_key":"PROMETHEUS_USERNAME"}]},"name":"prometheus-remote-write-source-pipeline"},"id":"","type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/3fd8baa4-ad5b-11f1-8af1-da7ad0900002
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 697
+        uncompressed: false
+        body: |
+            {"data":{"id":"3fd8baa4-ad5b-11f1-8af1-da7ad0900002","type":"pipelines","attributes":{"name":"prometheus-remote-write-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["prometheus-source-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[],"processors":[],"sources":[{"address_key":"PROMETHEUS_ADDRESS","auth_strategy":"plain","id":"prometheus-source-1","password_key":"PROMETHEUS_PASSWORD","path":"/api/v1/write","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/prometheus.crt","key_file":"/etc/ssl/private/prometheus.key","verify_certificate":true},"type":"prometheus_remote_write","username_key":"PROMETHEUS_USERNAME"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 1.329821083s
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/3fd8baa4-ad5b-11f1-8af1-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 697
+        uncompressed: false
+        body: |
+            {"data":{"id":"3fd8baa4-ad5b-11f1-8af1-da7ad0900002","type":"pipelines","attributes":{"name":"prometheus-remote-write-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["prometheus-source-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[],"processors":[],"sources":[{"address_key":"PROMETHEUS_ADDRESS","auth_strategy":"plain","id":"prometheus-source-1","password_key":"PROMETHEUS_PASSWORD","path":"/api/v1/write","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/prometheus.crt","key_file":"/etc/ssl/private/prometheus.key","verify_certificate":true},"type":"prometheus_remote_write","username_key":"PROMETHEUS_USERNAME"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 274.740125ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/3fd8baa4-ad5b-11f1-8af1-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 977.370834ms

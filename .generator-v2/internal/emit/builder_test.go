@@ -168,8 +168,8 @@ var _ = Describe("BuildDataSourceView", func() {
 		Expect(err).NotTo(HaveOccurred())
 		Expect(view.UsesUUID).To(BeTrue())
 		Expect(view.Read.Arguments).To(Equal([]SDKArgumentView{
-			{Expression: "state.AccountId.ValueInt64()", TFName: "account_id"},
-			{Expression: "parsedId", ParsedVar: "parsedId", ParseCall: "uuid.Parse(state.ID.ValueString())", TFName: "id"},
+			{Expression: "state.AccountId.ValueInt64()", TFName: "account_id", GoType: "int64"},
+			{Expression: "parsedId", ParsedVar: "parsedId", ParseCall: "uuid.Parse(state.ID.ValueString())", TFName: "id", GoType: "uuid.UUID"},
 		}))
 
 		rendered, err := RenderDataSource(view)
@@ -192,7 +192,7 @@ var _ = Describe("BuildDataSourceView", func() {
 		Expect(err).NotTo(HaveOccurred())
 		Expect(view.UsesStrconv).To(BeTrue())
 		Expect(view.Read.Arguments).To(Equal([]SDKArgumentView{
-			{Expression: "parsedId", ParsedVar: "parsedId", ParseCall: "strconv.ParseInt(state.ID.ValueString(), 10, 64)", TFName: "id"},
+			{Expression: "parsedId", ParsedVar: "parsedId", ParseCall: "strconv.ParseInt(state.ID.ValueString(), 10, 64)", TFName: "id", GoType: "int64"},
 		}))
 
 		rendered, err := RenderDataSource(view)
@@ -201,6 +201,62 @@ var _ = Describe("BuildDataSourceView", func() {
 		Expect(src).To(ContainSubstring(`"strconv"`))
 		Expect(src).To(ContainSubstring(`parsedId, err := strconv.ParseInt(state.ID.ValueString(), 10, 64)`))
 		Expect(src).To(ContainSubstring(`GetIncidentType(d.Auth, parsedId)`))
+	})
+
+	// A terminal path parameter that is a $ref to an enum component, which the
+	// SDK binds to a named string type of its own. GetSBOM's asset_type and
+	// GetPermanentRetentionFilter's permanent_rf_id are the shapes in the spec.
+	It("recovers an enum-typed id through the SDK's validating constructor", func() {
+		op := incidentTypeOperation()
+		op.Path = "/api/v2/security/sboms/{asset_type}"
+		op.SDKBinding = &model.SDKOperationBinding{Required: []model.SDKArgument{
+			{Name: "asset_type", GoName: "assetType", GoType: "AssetType", Location: "path",
+				Schema: &model.Schema{
+					Kind: model.SchemaKindPrimitive, Type: "string",
+					Enum: []string{"Repository", "Image", "Host"},
+				}},
+		}}
+
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		view, err := BuildDataSourceView(art)
+		Expect(err).NotTo(HaveOccurred())
+
+		By("the constructor returns (*T, error), so the argument dereferences the local")
+		Expect(view.Read.Arguments).To(Equal([]SDKArgumentView{{
+			Expression: "*parsedId", ParsedVar: "parsedId",
+			ParseCall: "datadogV2.NewAssetTypeFromValue(state.ID.ValueString())",
+			TFName:    "id", GoType: "AssetType",
+		}}))
+
+		By("neither uuid nor strconv is pulled in for a conversion that uses neither")
+		Expect(view.UsesUUID).To(BeFalse())
+		Expect(view.UsesStrconv).To(BeFalse())
+
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		src := string(rendered)
+		Expect(src).To(ContainSubstring(`parsedId, err := datadogV2.NewAssetTypeFromValue(state.ID.ValueString())`))
+		Expect(src).To(ContainSubstring(`response.Diagnostics.AddError("Invalid id", err.Error())`))
+		Expect(src).To(ContainSubstring(`GetIncidentType(d.Auth, *parsedId)`))
+	})
+
+	// The enum branch keys off the schema's enum members, not the Go spelling, so
+	// a named non-enum type is rejected rather than handed a constructor the SDK
+	// never generated.
+	It("still rejects an id-aliased argument of a named non-enum type", func() {
+		op := incidentTypeOperation()
+		op.Path = "/api/v2/incident-types/{incident_type_id}"
+		op.SDKBinding = &model.SDKOperationBinding{Required: []model.SDKArgument{
+			{Name: "incident_type_id", GoName: "incidentTypeId", GoType: "SomeStruct", Location: "path",
+				Schema: &model.Schema{Kind: model.SchemaKindPrimitive, Type: "string"}},
+		}}
+
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		_, err = BuildDataSourceView(art)
+		Expect(err).To(MatchError(ContainSubstring(
+			"id-bound SDK argument type SomeStruct is outside scalar-first support")))
 	})
 
 	It("renders a resolved singleton call without inventing an id argument", func() {
@@ -435,7 +491,7 @@ var _ = Describe("RenderDataSource duplicate field guard", func() {
 		view.Models = append(view.Models, ModelStructView{Name: view.Models[0].Name})
 
 		_, err := RenderDataSource(view)
-		Expect(err).To(MatchError(ContainSubstring(`model datadogIncidentTypeDataSourceModel is declared twice`)))
+		Expect(err).To(MatchError(ContainSubstring(`model datadogIncidentType_Model is declared twice`)))
 	})
 })
 
@@ -594,7 +650,7 @@ var _ = Describe("BuildDataSourceView singular search", func() {
 		It("hashes a fixed seed on the search path when the selected record has no id", func() {
 			op := datastoreBothOperation()
 			delete(op.ResponseSchema.Properties["data"].Properties, "id")
-			delete(op.SearchOp.ResponseSchema.Properties["data"].Items.Properties, "id")
+			delete(op.ResolvedGroup.Search.ResponseSchema.Properties["data"].Items.Properties, "id")
 
 			view := mustView(op)
 			Expect(view.Search.HashInputs).To(BeEmpty())
@@ -680,7 +736,7 @@ func powerpackSearchOperation() *model.Operation {
 }
 
 // datastoreBothOperation is an id-optional singular data source: the tracked op is
-// the by-id GET, and SearchOp points at the list GET (no query params, matching the
+// the by-id GET, and the resolved group's search role points at the list GET (no query params, matching the
 // real ListDatastores). Its element mirrors data_source_datadog_datastore.go.
 func datastoreBothOperation() *model.Operation {
 	listOp := &model.Operation{
@@ -699,7 +755,7 @@ func datastoreBothOperation() *model.Operation {
 		Tag:                 "Actions Datastores",
 		ResponseRefName:     "Datastore",
 		ResponseDataRefName: "DatastoreData", // matches the list element → stays "both"
-		SearchOp:            listOp,
+		ResolvedGroup:       &model.ResolvedGroup{Search: listOp},
 		Tracking: &model.TrackingFieldMetadata{
 			ArtifactKind:  model.ArtifactKindDataSource,
 			ArtifactName:  "datastore",
@@ -716,7 +772,7 @@ func datastoreBothOperation() *model.Operation {
 // id field and the search filter coexist.
 func datastoreBothWithFilterOperation() *model.Operation {
 	op := datastoreBothOperation()
-	op.SearchOp.QueryParams = []model.QueryParam{
+	op.ResolvedGroup.Search.QueryParams = []model.QueryParam{
 		{Name: "filter[keyword]", Schema: prim("string", ""), Description: "Filter datastores by keyword."},
 	}
 	return op
@@ -861,7 +917,7 @@ func costBudgetOperation() *model.Operation {
 }
 
 var _ = Describe("BuildDataSourceView singular nested arrays", func() {
-	It("hoists an object array into a ListNestedBlock and recurses into nested object arrays", func() {
+	It("hoists an object array into a ListNestedAttribute and recurses into nested object arrays", func() {
 		view, err := BuildDataSourceView(mustArtifact(costBudgetOperation()))
 		Expect(err).NotTo(HaveOccurred())
 
@@ -888,7 +944,7 @@ var _ = Describe("BuildDataSourceView singular nested arrays", func() {
 		for _, m := range view.Models {
 			names = append(names, m.Name)
 		}
-		Expect(names).To(Equal([]string{"datadogCostBudgetDataSourceModel", "datadogCostBudgetEntriesModel", "datadogCostBudgetEntriesTagFiltersModel"}))
+		Expect(names).To(Equal([]string{"datadogCostBudget_Model", "datadogCostBudget_EntriesModel", "datadogCostBudget_EntriesTagFiltersModel"}))
 	})
 
 	It("maps each element through a guarded loop, recursing for nested arrays", func() {
@@ -902,7 +958,7 @@ var _ = Describe("BuildDataSourceView singular nested arrays", func() {
 		Expect(entries.GetterOk).To(Equal("attributes.GetEntriesOk()"))
 		Expect(entries.LoopVar).To(Equal("entriesItem"))
 		Expect(entries.ElemVar).To(Equal("entriesModel"))
-		Expect(entries.ElemStruct).To(Equal("datadogCostBudgetEntriesModel"))
+		Expect(entries.ElemStruct).To(Equal("datadogCostBudget_EntriesModel"))
 		Expect(entries.Scalars).To(ContainElement(StateAssignment{
 			Var: "amount", GetterOk: "entriesItem.GetAmountOk()",
 			LHS: "entriesModel.Amount", RHS: "types.Float64Value(*amount)",
@@ -914,7 +970,7 @@ var _ = Describe("BuildDataSourceView singular nested arrays", func() {
 		Expect(tagFilters.LHS).To(Equal("entriesModel.TagFilters"))
 		Expect(tagFilters.GetterOk).To(Equal("entriesItem.GetTagFiltersOk()"))
 		Expect(tagFilters.LoopVar).To(Equal("tagFiltersItem"))
-		Expect(tagFilters.ElemStruct).To(Equal("datadogCostBudgetEntriesTagFiltersModel"))
+		Expect(tagFilters.ElemStruct).To(Equal("datadogCostBudget_EntriesTagFiltersModel"))
 	})
 
 	It("produces a deeply-equal view across two runs", func() {
@@ -1360,7 +1416,7 @@ func pluralNestedOperation() *model.Operation {
 }
 
 var _ = Describe("BuildDataSourceView plural nested arrays", func() {
-	It("renders an object array in an item as a ListNestedBlock with a generated element struct", func() {
+	It("renders an object array in an item as a ListNestedAttribute with a generated element struct", func() {
 		view, err := BuildDataSourceView(mustArtifact(pluralNestedOperation()))
 		Expect(err).NotTo(HaveOccurred())
 
@@ -1374,7 +1430,7 @@ var _ = Describe("BuildDataSourceView plural nested arrays", func() {
 		for _, m := range view.Models {
 			names = append(names, m.Name)
 		}
-		Expect(names).To(Equal([]string{"datadogWidgetsDataSourceModel", "datadogWidgetsWidgetModel", "datadogWidgetsWidgetPartsModel"}))
+		Expect(names).To(Equal([]string{"datadogWidgets_Model", "datadogWidgets_WidgetModel", "datadogWidgets_WidgetPartsModel"}))
 	})
 
 	It("maps the object array off item.Attributes into the item accumulator", func() {
@@ -1387,7 +1443,7 @@ var _ = Describe("BuildDataSourceView plural nested arrays", func() {
 		Expect(parts.LHS).To(Equal("r.Parts"))
 		Expect(parts.GetterOk).To(Equal("item.Attributes.GetPartsOk()"))
 		Expect(parts.LoopVar).To(Equal("partsItem"))
-		Expect(parts.ElemStruct).To(Equal("datadogWidgetsWidgetPartsModel"))
+		Expect(parts.ElemStruct).To(Equal("datadogWidgets_WidgetPartsModel"))
 		Expect(parts.Scalars).To(ContainElement(StateAssignment{
 			Var: "label", GetterOk: "partsItem.GetLabelOk()",
 			LHS: "partsModel.Label", RHS: "types.StringValue(*label)",
@@ -1423,8 +1479,8 @@ var _ = Describe("BuildDataSourceView plural nested arrays", func() {
 		roleUsersOperation.Tracking.ArtifactName = "role_users"
 		roleUsers := mustView(roleUsersOperation)
 
-		Expect(teams.State.ItemStruct).To(Equal("datadogTeamsTeamModel"))
-		Expect(roleUsers.State.ItemStruct).To(Equal("datadogRoleUsersTeamModel"))
+		Expect(teams.State.ItemStruct).To(Equal("datadogTeams_TeamModel"))
+		Expect(roleUsers.State.ItemStruct).To(Equal("datadogRoleUsers_TeamModel"))
 	})
 })
 
@@ -1467,7 +1523,7 @@ func retentionFilterOperation() *model.Operation {
 }
 
 var _ = Describe("BuildDataSourceView singular nested objects", func() {
-	It("hoists a bare object under attributes into a SingleNestedBlock", func() {
+	It("hoists a bare object under attributes into a SingleNestedAttribute", func() {
 		view, err := BuildDataSourceView(mustArtifact(retentionFilterOperation()))
 		Expect(err).NotTo(HaveOccurred())
 
@@ -1476,7 +1532,7 @@ var _ = Describe("BuildDataSourceView singular nested objects", func() {
 			blocks[b.TFName] = b
 		}
 		Expect(blocks).To(HaveKey("filter"))
-		Expect(blocks["filter"].ListBlock).To(BeFalse(), "a bare object is a SingleNestedBlock, not a list block")
+		Expect(blocks["filter"].ListBlock).To(BeFalse(), "a bare object is a SingleNestedAttribute, not a list block")
 	})
 
 	It("generates one model struct per object level, parent first", func() {
@@ -1487,7 +1543,7 @@ var _ = Describe("BuildDataSourceView singular nested objects", func() {
 		for _, m := range view.Models {
 			names = append(names, m.Name)
 		}
-		Expect(names).To(Equal([]string{"datadogApmRetentionFilterDataSourceModel", "datadogApmRetentionFilterFilterModel", "datadogApmRetentionFilterFilterMetadataModel"}))
+		Expect(names).To(Equal([]string{"datadogApmRetentionFilter_Model", "datadogApmRetentionFilter_FilterModel", "datadogApmRetentionFilter_FilterMetadataModel"}))
 	})
 
 	It("maps the object through a guarded assignment, recursing into the nested object", func() {
@@ -1504,7 +1560,7 @@ var _ = Describe("BuildDataSourceView singular nested objects", func() {
 		Expect(filter.GetterOk).To(Equal("attributes.GetFilterOk()"))
 		Expect(filter.Var).To(Equal("filter"))
 		Expect(filter.ElemVar).To(Equal("filterModel"))
-		Expect(filter.ElemStruct).To(Equal("datadogApmRetentionFilterFilterModel"))
+		Expect(filter.ElemStruct).To(Equal("datadogApmRetentionFilter_FilterModel"))
 		Expect(filter.Scalars).To(ContainElement(StateAssignment{
 			Var: "query", GetterOk: "filter.GetQueryOk()",
 			LHS: "filterModel.Query", RHS: "types.StringValue(*query)",
@@ -1518,7 +1574,7 @@ var _ = Describe("BuildDataSourceView singular nested objects", func() {
 		}
 		Expect(metadata.LHS).To(Equal("filterModel.Metadata"))
 		Expect(metadata.GetterOk).To(Equal("filter.GetMetadataOk()"))
-		Expect(metadata.ElemStruct).To(Equal("datadogApmRetentionFilterFilterMetadataModel"))
+		Expect(metadata.ElemStruct).To(Equal("datadogApmRetentionFilter_FilterMetadataModel"))
 	})
 
 	It("renders the guarded object block and the recursive assignment in updateState", func() {
@@ -1555,13 +1611,13 @@ var _ = Describe("BuildDataSourceView singular nested objects", func() {
 			names = append(names, modelView.Name)
 		}
 		Expect(names).To(Equal([]string{
-			"datadogApmRetentionFilterDataSourceModel",
-			"datadogApmRetentionFilterFilterModel",
-			"datadogApmRetentionFilterFilterMetadataModel",
-			"datadogApmRetentionFilterPrimaryModel",
-			"datadogApmRetentionFilterPrimaryDataModel",
-			"datadogApmRetentionFilterSecondaryModel",
-			"datadogApmRetentionFilterSecondaryDataModel",
+			"datadogApmRetentionFilter_Model",
+			"datadogApmRetentionFilter_FilterModel",
+			"datadogApmRetentionFilter_FilterMetadataModel",
+			"datadogApmRetentionFilter_PrimaryModel",
+			"datadogApmRetentionFilter_PrimaryDataModel",
+			"datadogApmRetentionFilter_SecondaryModel",
+			"datadogApmRetentionFilter_SecondaryDataModel",
 		}))
 	})
 })
@@ -1606,7 +1662,7 @@ func pluralObjectOperation() *model.Operation {
 }
 
 var _ = Describe("BuildDataSourceView plural nested objects", func() {
-	It("renders a bare object in an item as a SingleNestedBlock with a generated struct", func() {
+	It("renders a bare object in an item as a SingleNestedAttribute with a generated struct", func() {
 		view, err := BuildDataSourceView(mustArtifact(pluralObjectOperation()))
 		Expect(err).NotTo(HaveOccurred())
 
@@ -1625,7 +1681,7 @@ var _ = Describe("BuildDataSourceView plural nested objects", func() {
 		for _, m := range view.Models {
 			names = append(names, m.Name)
 		}
-		Expect(names).To(Equal([]string{"datadogGizmosDataSourceModel", "datadogGizmosGizmoModel", "datadogGizmosGizmoSpecModel"}))
+		Expect(names).To(Equal([]string{"datadogGizmos_Model", "datadogGizmos_GizmoModel", "datadogGizmos_GizmoSpecModel"}))
 	})
 
 	It("maps the object off item.Attributes into the item accumulator", func() {
@@ -1638,7 +1694,7 @@ var _ = Describe("BuildDataSourceView plural nested objects", func() {
 		Expect(spec.LHS).To(Equal("r.Spec"))
 		Expect(spec.GetterOk).To(Equal("item.Attributes.GetSpecOk()"))
 		Expect(spec.Var).To(Equal("spec"))
-		Expect(spec.ElemStruct).To(Equal("datadogGizmosGizmoSpecModel"))
+		Expect(spec.ElemStruct).To(Equal("datadogGizmos_GizmoSpecModel"))
 		Expect(spec.Scalars).To(ContainElement(StateAssignment{
 			Var: "shape", GetterOk: "spec.GetShapeOk()",
 			LHS: "specModel.Shape", RHS: "types.StringValue(*shape)",

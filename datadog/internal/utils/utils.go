@@ -73,6 +73,9 @@ const DDHTTPRetryBackoffBase = "DD_HTTP_CLIENT_RETRY_BACKOFF_BASE"
 // DDHTTPRetryMaxRetries name of env var for max retries
 const DDHTTPRetryMaxRetries = "DD_HTTP_CLIENT_RETRY_MAX_RETRIES"
 
+// DDHTTPRetryJitter name of env var for retry jitter
+const DDHTTPRetryJitter = "DD_HTTP_CLIENT_RETRY_JITTER"
+
 // DDCloudProviderTypeEnvName name of env var for cloud provider type
 const DDCloudProviderTypeEnvName = "DD_CLOUD_PROVIDER_TYPE"
 
@@ -628,10 +631,6 @@ func normalizeAppBuilderAppJSONString(jsonStr string) (string, error) {
 
 func UseMonitorFrameworkProvider() bool {
 	return getEnv("TERRAFORM_MONITOR_FRAMEWORK_PROVIDER", "false") == "true"
-}
-
-func IsDatabricksIntegrationEnabled() bool {
-	return getEnv("DD_TERRAFORM_DATABRICKS_INTEGRATION_ENABLED", "false") == "true"
 }
 
 func getEnv(key, fallback string) string {

@@ -1,0 +1,1 @@
+terraform import datadog_rum_operation.checkout "<operation_id>"

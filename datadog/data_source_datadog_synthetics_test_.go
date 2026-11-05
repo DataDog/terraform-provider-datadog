@@ -144,6 +144,11 @@ func dataSourceSyntheticsTestOptionsList() *schema.Schema {
 					Elem:        &schema.Schema{Type: schema.TypeString},
 					Computed:    true,
 				},
+				"bits_ai_auto_investigate": {
+					Description: "Whether Bits AI automatically investigates alerts from the test monitor.",
+					Type:        schema.TypeBool,
+					Computed:    true,
+				},
 				"no_screenshot": {
 					Description: "Prevents saving screenshots of the steps.",
 					Type:        schema.TypeBool,

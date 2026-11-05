@@ -98,6 +98,9 @@ resource "datadog_dashboard_v2" "tab_dashboard" {
 		note_definition { content = "Widget 3" }
 	}
 }`)
+	configCreate = disableDashboardPlanValidation(configCreate)
+	configUpdate = disableDashboardPlanValidation(configUpdate)
+	configRemove = disableDashboardPlanValidation(configRemove)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },

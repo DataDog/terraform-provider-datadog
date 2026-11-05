@@ -4,6 +4,10 @@ resource "datadog_workflow_automation" "workflow" {
   tags        = ["service:foo", "source:alert", "team:bar"]
   published   = true
 
+  run_as = {
+    type = "owner"
+  }
+
   spec_json = jsonencode(
     {
       "triggers" : [

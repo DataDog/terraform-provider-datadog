@@ -3,6 +3,7 @@ package parser
 import (
 	"errors"
 	"path/filepath"
+	"reflect"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -28,6 +29,31 @@ func opByID(spec *model.Spec, operationId string) *model.Operation {
 	}
 	Fail("operation " + operationId + " not found in spec")
 	return nil
+}
+
+// artifactOpByID selects the registry-created artifact, not its backing endpoint.
+func artifactOpByID(spec *model.Spec, operationId string) *model.Operation {
+	GinkgoHelper()
+	for _, op := range spec.Operations {
+		if op.OperationId == operationId && op.Tracking != nil {
+			return op
+		}
+	}
+	Fail("artifact operation " + operationId + " not found")
+	return nil
+}
+
+// schemaBoolField lets this test-first task describe metadata that T154 has
+// not added to model.Schema yet. Keeping the assertion reflective means the
+// suite compiles in the intended red state and fails specifically by naming
+// the missing field, rather than failing package compilation before Ginkgo can
+// report which contract is absent.
+func schemaBoolField(schema *model.Schema, name string) bool {
+	GinkgoHelper()
+	value := reflect.ValueOf(schema).Elem().FieldByName(name)
+	Expect(value.IsValid()).To(BeTrue(), "model.Schema is missing %s metadata", name)
+	Expect(value.Kind()).To(Equal(reflect.Bool), "model.Schema.%s must be boolean", name)
+	return value.Bool()
 }
 
 // -------------------------------------------------------------------
@@ -187,9 +213,55 @@ var _ = Describe("NormalizeSchemas field carrying", func() {
 		Expect(op.RequestSchema.Description).To(Equal("The creation timestamp of the resource."))
 	})
 
-	It("carries Sensitive=true when the schema node carries x-datadog-tf-generator.sensitive:true", func() {
+	It("ignores legacy schema sensitivity annotations", func() {
 		op := opByID(spec, "CreateSensitive")
-		Expect(op.RequestSchema.Sensitive).To(BeTrue())
+		Expect(op.RequestSchema.Sensitive).To(BeFalse())
+	})
+
+	It("derives sensitivity from x-secret and writeOnly without legacy overrides", func() {
+		properties := opByID(spec, "CreateSensitive").RequestSchema.Properties
+
+		Expect(properties["x_secret"].Sensitive).To(BeTrue())
+		Expect(properties["write_only"].Sensitive).To(BeTrue())
+		Expect(properties["x_secret_false"].Sensitive).To(BeFalse())
+		Expect(properties["x_secret_malformed"].Sensitive).To(BeFalse())
+		Expect(properties["write_only_false"].Sensitive).To(BeFalse())
+		Expect(properties["explicit_false"].Sensitive).To(BeTrue())
+		Expect(properties["plain"].Sensitive).To(BeFalse())
+	})
+
+	DescribeTable("retains OpenAPI writeOnly independently from display-sensitivity selectors",
+		func(property string, wantWriteOnly, wantSensitive bool) {
+			schema := opByID(spec, "CreateSensitive").RequestSchema.Properties[property]
+			Expect(schema).NotTo(BeNil())
+			Expect(schemaBoolField(schema, "WriteOnlySecret")).To(Equal(wantWriteOnly))
+			Expect(schema.Sensitive).To(Equal(wantSensitive))
+		},
+		Entry("writeOnly:true selects write-only handling", "write_only", true, true),
+		Entry("x-secret:true affects redaction only", "x_secret", false, true),
+		Entry("legacy sensitive:true is ignored", "tracking_sensitive", false, false),
+		Entry("tracking sensitive:false cannot disable writeOnly", "explicit_false", true, true),
+		Entry("legacy sensitive:false cannot override x-secret", "x_secret_explicit_false", false, true),
+		Entry("x-secret:false selects neither behavior", "x_secret_false", false, false),
+		Entry("malformed x-secret selects neither behavior", "x_secret_malformed", false, false),
+		Entry("writeOnly:false selects neither behavior", "write_only_false", false, false),
+		Entry("an unmarked field selects neither behavior", "plain", false, false),
+	)
+
+	It("marks the unannotated Elastic Cloud password sensitive from its OpenAPI secret markers", func() {
+		elastic, err := LoadSpec(filepath.Join(
+			"../testdata/mini-oas",
+			"mini-datadog_integration_elastic_cloud_account.yaml",
+		))
+		Expect(err).NotTo(HaveOccurred())
+
+		request := opByID(elastic, "CreateElasticCloudIntegrationAccount").RequestSchema
+		authentication := request.Properties["data"].Properties["attributes"].Properties["authentication"]
+		Expect(authentication.OneOf).NotTo(BeNil())
+		Expect(authentication.OneOf.Variants).To(HaveLen(1))
+		password := authentication.OneOf.Variants[0].Schema.Properties["password"]
+		Expect(password).NotTo(BeNil())
+		Expect(password.Sensitive).To(BeTrue())
 	})
 
 	It("leaves Sensitive=false when no sensitive extension is present on the schema", func() {
@@ -484,7 +556,7 @@ var _ = Describe("NormalizeSchemas oneOf naming failures", func() {
 			Properties: map[string]*model.Schema{"shared": {Kind: model.SchemaKindPrimitive, Type: "string"}},
 		}
 
-		Expect(mergeNormalizedSchemas(unsupported, common)).To(BeIdenticalTo(unsupported))
+		Expect(model.MergeNormalizedSchemas(unsupported, common)).To(BeIdenticalTo(unsupported))
 		Expect(unsupported.UnsupportedReason).To(ContainSubstring("colliding variant name"))
 	})
 })
@@ -501,6 +573,22 @@ var _ = Describe("NormalizeSchemas 2xx response selection", func() {
 		spec = loadSpecMust("schema_normalize_2xx.yaml")
 	})
 
+	DescribeTable("selects a response schema independently of the media type",
+		func(operationID, schemaType string) {
+			op := opByID(spec, operationID)
+			if schemaType == "" {
+				Expect(op.ResponseSchema).To(BeNil())
+				return
+			}
+			Expect(op.ResponseSchema).NotTo(BeNil())
+			Expect(op.ResponseSchema.Type).To(Equal(schemaType))
+		},
+		Entry("first declared non-JSON response wins", "DeletePreferFirstText", "string"),
+		Entry("first declared media type wins over JSON", "DeletePreferFirstMedia", "string"),
+		Entry("media without a schema are skipped", "DeleteSkipEmptyMedia", "boolean"),
+		Entry("default, redirect and error bodies do not imply a success body", "DeleteErrorBodyOnly", ""),
+	)
+
 	It("skips a bodiless 2xx code and picks the first code that has an application/json body", func() {
 		// 201 has no JSON body; 202 does — the 202 schema is selected
 		op := opByID(spec, "CreateSkipBodiless")
@@ -509,15 +597,15 @@ var _ = Describe("NormalizeSchemas 2xx response selection", func() {
 		Expect(op.ResponseSchema.Type).To(Equal("string"))
 	})
 
-	It("prefers the numerically lower 2xx code when multiple have JSON bodies", func() {
-		// 200 (string/uuid) and 201 (integer) both have JSON; 200 is lower so it wins
-		op := opByID(spec, "CreatePreferLower")
+	It("selects the first declared 2xx code even when a lower code also has a body", func() {
+		// 202 (string/uuid) precedes 201 (integer); declaration order wins.
+		op := opByID(spec, "CreatePreferFirst")
 		Expect(op.ResponseSchema).NotTo(BeNil())
 		Expect(op.ResponseSchema.Type).To(Equal("string"))
 		Expect(op.ResponseSchema.Format).To(Equal("uuid"))
 	})
 
-	It("leaves ResponseSchema nil when no 2xx code carries an application/json body", func() {
+	It("leaves ResponseSchema nil when no 2xx code carries a body", func() {
 		op := opByID(spec, "CreateOnly204")
 		Expect(op.ResponseSchema).To(BeNil())
 	})
@@ -591,7 +679,7 @@ var _ = Describe("NormalizeSchemas allOf normalization", func() {
 	BeforeEach(func() {
 		spec := loadSpecMust("schema_normalize_allof.yaml")
 		request = opByID(spec, "CreateAllOfCases").RequestSchema
-		list = opByID(spec, "ListAllOfItems")
+		list = artifactOpByID(spec, "ListAllOfItems")
 		get = opByID(spec, "GetAllOfItem")
 	})
 
@@ -706,7 +794,7 @@ var _ = Describe("NormalizeSchemas allOf normalization", func() {
 	})
 
 	It("loads the whole spec but fails only the artifact containing an unsupported composition", func() {
-		bad := opByID(loadSpecMust("schema_normalize_allof.yaml"), "ListBadAllOfItems")
+		bad := artifactOpByID(loadSpecMust("schema_normalize_allof.yaml"), "ListBadAllOfItems")
 		_, err := model.BuildArtifact(bad)
 		var unsupported *model.UnsupportedKindError
 		Expect(errors.As(err, &unsupported)).To(BeTrue(), "expected *UnsupportedKindError, got %T: %v", err, err)
@@ -1038,7 +1126,37 @@ var _ = Describe("NormalizeSchemas $ref with sibling keywords", func() {
 		Entry("$ref + example + description", "multi", model.SchemaKindPrimitive, "string"),
 		Entry("a bare $ref (control)", "plain", model.SchemaKindPrimitive, "string"),
 		Entry("$ref to an object + example", "nested", model.SchemaKindObject, "object"),
+		Entry("$ref + readOnly", "guarded_object", model.SchemaKindObject, "object"),
+		Entry("$ref + nullable", "nullable_ref", model.SchemaKindPrimitive, "string"),
+		Entry("$ref + an unmodelled keyword", "unmodelled", model.SchemaKindPrimitive, "string"),
+		Entry("$ref + default", "defaulted", model.SchemaKindPrimitive, "string"),
 	)
+
+	// The property under test is "declares no assertion", never "names this
+	// keyword" — the entries above are sampled spec shapes, not the coverage.
+	It("does not lose the referenced schema behind a sibling it does not model", func() {
+		guarded := props["guarded_object"]
+		Expect(guarded.RefName).To(Equal("UrlParam"))
+		Expect(guarded.Properties).To(HaveKey("name"))
+		Expect(guarded.Required).To(ConsistOf("name", "value"))
+	})
+
+	// The one exclusion: an empty branch declares nothing, so it stays an
+	// arbitrary untyped value instead of being skipped as an annotation.
+	It("still rejects an allOf carrying an empty branch", func() {
+		Expect(props["empty_branch"].Kind).To(Equal(model.SchemaKindUnsupported))
+	})
+
+	// A skipped branch asserts nothing, but the metadata it declares is still
+	// recorded, so it has to be lifted rather than dropped with the branch.
+	It("lifts readOnly and default out of the skipped annotation branch", func() {
+		Expect(props["guarded_object"].ReadOnly).To(BeTrue())
+		Expect(props["defaulted"].HasDefault).To(BeTrue())
+
+		By("without inventing either on a node that declares neither")
+		Expect(props["plain"].ReadOnly).To(BeFalse())
+		Expect(props["plain"].HasDefault).To(BeFalse())
+	})
 
 	It("keeps the referenced enum when a sibling is present", func() {
 		Expect(props["kind"].Kind).To(Equal(model.SchemaKindPrimitive))
@@ -1072,3 +1190,69 @@ func schemaProperty(schema *model.Schema, name string) *model.Schema {
 	Expect(property).NotTo(BeNil())
 	return property
 }
+
+var _ = Describe("NormalizeSchemas scalar defaults", func() {
+	var properties map[string]*model.Schema
+	var responseProperties map[string]*model.Schema
+
+	BeforeEach(func() {
+		spec := loadSpecMust("schema_normalize_defaults.yaml")
+		op := opByID(spec, "CreateDefaults")
+		properties = op.RequestSchema.Properties
+		responseProperties = op.ResponseSchema.Properties
+	})
+
+	DescribeTable("preserves typed direct defaults, including falsy values",
+		func(property string, want *model.ScalarDefault) {
+			got := properties[property]
+			Expect(got.HasDefault).To(BeTrue())
+			Expect(got.Default.Problem).To(BeEmpty())
+			Expect(got.Default.Value).ToNot(BeNil())
+			Expect(got.Default.Value.Equal(want)).To(BeTrue())
+		},
+		Entry("empty string", "direct_string", model.NewStringDefault("")),
+		Entry("false", "direct_bool", model.NewBoolDefault(false)),
+		Entry("zero integer", "direct_integer", model.NewInt64Default(0)),
+		Entry("zero number", "direct_number", model.NewFloat64Default(0)),
+	)
+
+	DescribeTable("preserves a valid enum default through indirection",
+		func(property string) {
+			got := properties[property]
+			Expect(got.Default.Problem).To(BeEmpty())
+			Expect(got.Default.Value.Equal(model.NewStringDefault("basic"))).To(BeTrue())
+			Expect(got.Enum).To(ConsistOf("basic", "token"))
+		},
+		Entry("reference", "referenced"),
+		Entry("allOf", "composed"),
+	)
+
+	It("records null and compound declarations without producing a usable value or problem", func() {
+		for _, property := range []string{"null_default", "array_default", "object_default"} {
+			got := properties[property]
+			Expect(got.HasDefault).To(BeTrue(), property)
+			Expect(got.Default.Value).To(BeNil(), property)
+			Expect(got.Default.Problem).To(BeEmpty(), property)
+		}
+	})
+
+	DescribeTable("retains unusable scalar defaults as validation problems",
+		func(property, problem string) {
+			got := properties[property]
+			Expect(got.HasDefault).To(BeTrue())
+			Expect(got.Default.Value).To(BeNil())
+			Expect(got.Default.Problem).To(ContainSubstring(problem))
+		},
+		Entry("wrong scalar type", "invalid_type", "want integer"),
+		Entry("invalid enum member", "invalid_enum", "allowed values"),
+		Entry("integer overflow", "integer_overflow", "cannot be decoded"),
+		Entry("non-finite number", "non_finite", "finite number"),
+	)
+
+	It("retains a response-only validation problem for lifecycle code to ignore", func() {
+		got := responseProperties["response_invalid"]
+		Expect(got.HasDefault).To(BeTrue())
+		Expect(got.Default.Value).To(BeNil())
+		Expect(got.Default.Problem).To(ContainSubstring("want integer"))
+	})
+})

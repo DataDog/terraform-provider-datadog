@@ -2,6 +2,7 @@ package fwutils
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -25,9 +26,30 @@ func MergeAttributes(attributeMaps ...map[string]schema.Attribute) map[string]sc
 	return result
 }
 
-// WriteOnlySecretConfig configures a secret attribute that supports both modes:
-// - Plaintext mode: for Terraform <1.11 or users preferring state storage
-// - Write-only mode: for Terraform 1.11+ with secrets not stored in state
+// WriteOnlySecretMode selects whether a schema keeps the plaintext attribute
+// alongside its write-only companion or exposes only the write-only interface.
+// The zero value preserves all existing callers.
+type WriteOnlySecretMode uint8
+
+const (
+	// WriteOnlySecretModeLegacy is the hand-written three-attribute shape:
+	// plaintext plus write-only companion and version trigger. ExactlyOneOf
+	// always requires one of the plaintext/write-only pair, regardless of Required.
+	WriteOnlySecretModeLegacy WriteOnlySecretMode = iota
+	// WriteOnlySecretModeOnly exposes only the write-only attribute and its
+	// version trigger, which requires Terraform 1.11+ of every consumer.
+	WriteOnlySecretModeOnly
+	// WriteOnlySecretModeDual is ModeLegacy generalized over Required: the
+	// plaintext attribute stays available as the Terraform <1.11 fallback, and
+	// Required decides whether the pair is mandatory (ExactlyOneOf) or merely
+	// mutually exclusive (ConflictsWith).
+	WriteOnlySecretModeDual
+)
+
+// WriteOnlySecretConfig configures a secret attribute. Legacy and Dual mode
+// both expose a stateful plaintext attribute alongside its write-only
+// companion, so pre-1.11 Terraform can still configure the secret. ModeOnly
+// exposes only the write-only attribute and its stateful version trigger.
 type WriteOnlySecretConfig struct {
 	OriginalAttr         string // Plaintext attribute (e.g., "secret_key")
 	WriteOnlyAttr        string // Write-only attribute (e.g., "secret_key_wo")
@@ -35,26 +57,99 @@ type WriteOnlySecretConfig struct {
 	OriginalDescription  string
 	WriteOnlyDescription string
 	TriggerDescription   string
+	// ParentBlocks scopes the three attributes under static nested blocks, e.g.
+	// []string{"authentication", "basic"}. Empty means the resource root.
+	ParentBlocks []string
+	// Mode defaults to WriteOnlySecretModeLegacy for backwards compatibility.
+	Mode WriteOnlySecretMode
+	// Required controls the ModeOnly attributes and, in ModeDual, whether one
+	// of the plaintext/write-only pair must be set. Legacy mode ignores it and
+	// always requires exactly one.
+	Required bool
 }
 
-// CreateWriteOnlySecretAttributes generates three attributes for dual-mode secret support:
+func (secretConfig WriteOnlySecretConfig) attrPath(attributeName string) frameworkPath.Path {
+	if len(secretConfig.ParentBlocks) == 0 {
+		return frameworkPath.Root(attributeName)
+	}
+	attributePath := frameworkPath.Root(secretConfig.ParentBlocks[0])
+	for _, blockName := range secretConfig.ParentBlocks[1:] {
+		attributePath = attributePath.AtName(blockName)
+	}
+	return attributePath.AtName(attributeName)
+}
+
+func (secretConfig WriteOnlySecretConfig) attrExpression(attributeName string) frameworkPath.Expression {
+	if len(secretConfig.ParentBlocks) == 0 {
+		return frameworkPath.MatchRoot(attributeName)
+	}
+	attributeExpression := frameworkPath.MatchRoot(secretConfig.ParentBlocks[0])
+	for _, blockName := range secretConfig.ParentBlocks[1:] {
+		attributeExpression = attributeExpression.AtName(blockName)
+	}
+	return attributeExpression.AtName(attributeName)
+}
+
+// CreateWriteOnlySecretAttributes generates, outside ModeOnly, three attributes
+// for dual-mode secret support:
 // 1. Original attr (plaintext) - for TF <1.11 or backwards compatibility
 // 2. Write-only attr - for TF 1.11+ (not stored in state)
 // 3. Version trigger - when changed, applies the write-only secret
-// Users choose one mode via ExactlyOneOf validator.
+// Legacy mode and required Dual secrets use ExactlyOneOf for the plaintext/write-only
+// pair. Optional Dual secrets use ConflictsWith, allowing both to be omitted.
 func CreateWriteOnlySecretAttributes(config WriteOnlySecretConfig) map[string]schema.Attribute {
+	if config.Mode == WriteOnlySecretModeOnly {
+		writeOnly := schema.StringAttribute{
+			Description: config.WriteOnlyDescription,
+			WriteOnly:   true,
+		}
+		trigger := schema.StringAttribute{
+			Description: config.TriggerDescription,
+			Validators: []validator.String{
+				stringvalidator.LengthAtLeast(1),
+			},
+		}
+		if config.Required {
+			writeOnly.Required = true
+			trigger.Required = true
+		} else {
+			writeOnly.Optional = true
+			trigger.Optional = true
+			writeOnly.Validators = []validator.String{
+				stringvalidator.AlsoRequires(config.attrExpression(config.TriggerAttr)),
+			}
+			trigger.Validators = append(trigger.Validators,
+				stringvalidator.AlsoRequires(config.attrExpression(config.WriteOnlyAttr)),
+			)
+		}
+		return map[string]schema.Attribute{
+			config.WriteOnlyAttr: writeOnly,
+			config.TriggerAttr:   trigger,
+		}
+	}
+
+	// Legacy predates Required and is always mandatory; Dual honours it, so an
+	// optional secret is mutually exclusive rather than forced.
+	exclusive := stringvalidator.ExactlyOneOf(
+		config.attrExpression(config.OriginalAttr),
+		config.attrExpression(config.WriteOnlyAttr),
+	)
+	if config.Mode == WriteOnlySecretModeDual && !config.Required {
+		exclusive = stringvalidator.ConflictsWith(
+			config.attrExpression(config.OriginalAttr),
+			config.attrExpression(config.WriteOnlyAttr),
+		)
+	}
+
 	attrs := map[string]schema.Attribute{
 		config.OriginalAttr: schema.StringAttribute{
 			Optional:    true,
 			Description: config.OriginalDescription,
 			Sensitive:   true,
 			Validators: []validator.String{
-				stringvalidator.ExactlyOneOf(
-					frameworkPath.MatchRoot(config.OriginalAttr),
-					frameworkPath.MatchRoot(config.WriteOnlyAttr),
-				),
+				exclusive,
 				stringvalidator.PreferWriteOnlyAttribute(
-					frameworkPath.MatchRoot(config.WriteOnlyAttr),
+					config.attrExpression(config.WriteOnlyAttr),
 				),
 			},
 		},
@@ -64,12 +159,9 @@ func CreateWriteOnlySecretAttributes(config WriteOnlySecretConfig) map[string]sc
 			Sensitive:   true,
 			WriteOnly:   true,
 			Validators: []validator.String{
-				stringvalidator.ExactlyOneOf(
-					frameworkPath.MatchRoot(config.OriginalAttr),
-					frameworkPath.MatchRoot(config.WriteOnlyAttr),
-				),
+				exclusive,
 				stringvalidator.AlsoRequires(
-					frameworkPath.MatchRoot(config.TriggerAttr),
+					config.attrExpression(config.TriggerAttr),
 				),
 			},
 		},
@@ -79,7 +171,7 @@ func CreateWriteOnlySecretAttributes(config WriteOnlySecretConfig) map[string]sc
 			Validators: []validator.String{
 				stringvalidator.LengthAtLeast(1),
 				stringvalidator.AlsoRequires(frameworkPath.Expressions{
-					frameworkPath.MatchRoot(config.WriteOnlyAttr),
+					config.attrExpression(config.WriteOnlyAttr),
 				}...),
 			},
 		},
@@ -108,6 +200,28 @@ type WriteOnlySecretHandler struct {
 	SecretRequiredOnUpdate bool // If true, API requires secret in every update; if false (default), secret is optional
 }
 
+func (h *WriteOnlySecretHandler) requireUpdateSecret(result SecretResult) SecretResult {
+	if !h.SecretRequiredOnUpdate || result.ShouldSetValue || result.Diagnostics.HasError() {
+		return result
+	}
+	// Outside ModeOnly the plaintext attribute satisfies the requirement too,
+	// so naming only the write-only one would point a pre-1.11 practitioner at
+	// an attribute their Terraform cannot use.
+	detail := fmt.Sprintf(
+		"The API requires the write-only attribute %q for every update, but configuration did not provide a known value.",
+		h.Config.attrPath(h.Config.WriteOnlyAttr).String(),
+	)
+	if h.Config.Mode != WriteOnlySecretModeOnly {
+		detail = fmt.Sprintf(
+			"The API requires the secret for every update, but configuration provided a known value for neither %q nor %q.",
+			h.Config.attrPath(h.Config.WriteOnlyAttr).String(),
+			h.Config.attrPath(h.Config.OriginalAttr).String(),
+		)
+	}
+	result.Diagnostics.AddError("Missing write-only secret required for update", detail)
+	return result
+}
+
 // GetSecretForCreate retrieves secret for resource creation.
 // Checks write-only attribute first, then falls back to plaintext attribute.
 // Returns ShouldSetValue=true if either attribute has a value.
@@ -116,7 +230,7 @@ func (h *WriteOnlySecretHandler) GetSecretForCreate(ctx context.Context, config 
 
 	// Check write-only attribute first (only exists in config, never in plan/state)
 	var writeOnlySecret types.String
-	result.Diagnostics.Append(config.GetAttribute(ctx, frameworkPath.Root(h.Config.WriteOnlyAttr), &writeOnlySecret)...)
+	result.Diagnostics.Append(config.GetAttribute(ctx, h.Config.attrPath(h.Config.WriteOnlyAttr), &writeOnlySecret)...)
 	if result.Diagnostics.HasError() {
 		return result
 	}
@@ -126,10 +240,13 @@ func (h *WriteOnlySecretHandler) GetSecretForCreate(ctx context.Context, config 
 		result.ShouldSetValue = true
 		return result
 	}
+	if h.Config.Mode == WriteOnlySecretModeOnly {
+		return result
+	}
 
 	// Fall back to plaintext attribute
 	var plaintextSecret types.String
-	result.Diagnostics.Append(config.GetAttribute(ctx, frameworkPath.Root(h.Config.OriginalAttr), &plaintextSecret)...)
+	result.Diagnostics.Append(config.GetAttribute(ctx, h.Config.attrPath(h.Config.OriginalAttr), &plaintextSecret)...)
 	if result.Diagnostics.HasError() {
 		return result
 	}
@@ -153,13 +270,14 @@ func (h *WriteOnlySecretHandler) GetSecretForCreate(ctx context.Context, config 
 // When SecretRequiredOnUpdate is true:
 //   - Pattern 2: API requires secret in every update request
 //   - Returns ShouldSetValue=true if write-only or plaintext attr exists in config
+//   - Returns an error diagnostic if configuration has no known secret value
 //   - Version trigger only matters for forcing Terraform to detect a change
 func (h *WriteOnlySecretHandler) GetSecretForUpdate(ctx context.Context, config *tfsdk.Config, req *resource.UpdateRequest) SecretResult {
 	result := SecretResult{}
 
 	// Check if write-only secret is present in config
 	var writeOnlySecret types.String
-	result.Diagnostics.Append(config.GetAttribute(ctx, frameworkPath.Root(h.Config.WriteOnlyAttr), &writeOnlySecret)...)
+	result.Diagnostics.Append(config.GetAttribute(ctx, h.Config.attrPath(h.Config.WriteOnlyAttr), &writeOnlySecret)...)
 	if result.Diagnostics.HasError() {
 		return result
 	}
@@ -176,8 +294,8 @@ func (h *WriteOnlySecretHandler) GetSecretForUpdate(ctx context.Context, config 
 		// Pattern 1: API supports partial updates
 		// Only return secret if version trigger changed
 		var planVersion, priorVersion types.String
-		result.Diagnostics.Append(req.Plan.GetAttribute(ctx, frameworkPath.Root(h.Config.TriggerAttr), &planVersion)...)
-		result.Diagnostics.Append(req.State.GetAttribute(ctx, frameworkPath.Root(h.Config.TriggerAttr), &priorVersion)...)
+		result.Diagnostics.Append(req.Plan.GetAttribute(ctx, h.Config.attrPath(h.Config.TriggerAttr), &planVersion)...)
+		result.Diagnostics.Append(req.State.GetAttribute(ctx, h.Config.attrPath(h.Config.TriggerAttr), &priorVersion)...)
 		if result.Diagnostics.HasError() {
 			return result
 		}
@@ -192,10 +310,13 @@ func (h *WriteOnlySecretHandler) GetSecretForUpdate(ctx context.Context, config 
 		result.ShouldSetValue = true
 		return result
 	}
+	if h.Config.Mode == WriteOnlySecretModeOnly {
+		return h.requireUpdateSecret(result)
+	}
 
 	// Fall back to plaintext attribute
 	var plaintextSecret types.String
-	result.Diagnostics.Append(config.GetAttribute(ctx, frameworkPath.Root(h.Config.OriginalAttr), &plaintextSecret)...)
+	result.Diagnostics.Append(config.GetAttribute(ctx, h.Config.attrPath(h.Config.OriginalAttr), &plaintextSecret)...)
 	if result.Diagnostics.HasError() {
 		return result
 	}
@@ -205,5 +326,5 @@ func (h *WriteOnlySecretHandler) GetSecretForUpdate(ctx context.Context, config 
 		result.ShouldSetValue = true
 	}
 
-	return result
+	return h.requireUpdateSecret(result)
 }

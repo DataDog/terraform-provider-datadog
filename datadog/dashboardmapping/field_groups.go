@@ -29,7 +29,7 @@ package dashboardmapping
 var widgetCustomLinkFields = []FieldSpec{
 	{HCLKey: "label", Type: TypeString, OmitEmpty: true,
 		Description: "The label for the custom link URL. Keep the label short and descriptive. Use metrics and tags as variables."},
-	{HCLKey: "link", Type: TypeString, OmitEmpty: false,
+	{HCLKey: "link", Type: TypeString, OmitEmpty: true,
 		Description: "The URL of the custom link. URL must include `http` or `https`. A relative URL must start with `/`."},
 	{HCLKey: "is_hidden", Type: TypeBool, OmitEmpty: true,
 		Description: "The flag for toggling context menu link visibility."},
@@ -304,7 +304,7 @@ var formulaAndFunctionEventQuerySearchFields = []FieldSpec{
 var formulaAndFunctionEventQueryFields = []FieldSpec{
 	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "The data source for event platform-based queries.",
-		ValidValues: []string{"logs", "spans", "network", "rum", "security_signals", "profiles", "audit", "events", "ci_tests", "ci_pipelines", "incident_analytics", "product_analytics", "on_call_events", "errors", "llm_observability"}},
+		ValidValues: []string{"logs", "spans", "network", "network_device_flows", "rum", "security_signals", "profiles", "audit", "events", "ci_tests", "ci_pipelines", "incident_analytics", "product_analytics", "on_call_events", "errors", "llm_observability"}},
 	{HCLKey: "storage", Type: TypeString, OmitEmpty: true,
 		Description: "Option for storage location. Feature in Private Beta."},
 	{HCLKey: "search", Type: TypeBlock, OmitEmpty: true,
@@ -1055,7 +1055,7 @@ var widgetFormulaLimitFields = []FieldSpec{
 var widgetFormulaStyleFields = []FieldSpec{
 	{HCLKey: "palette", Type: TypeString, OmitEmpty: true,
 		Description: "The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors."},
-	{HCLKey: "palette_index", Type: TypeInt, OmitEmpty: true,
+	{HCLKey: "palette_index", Type: TypeInt, OmitEmpty: true, PreserveZero: true,
 		Description: "Index specifying which color to use within the palette."},
 }
 
@@ -1216,6 +1216,144 @@ var hostmapRequestFillSizeFields = append([]FieldSpec{
 		Description: "The metric query to use for this widget."},
 }, standardQueryFields...)
 
+// hostmapInfrastructureGroupByFields corresponds to OpenAPI HostMapWidgetGroupBy.
+var hostmapInfrastructureGroupByFields = []FieldSpec{
+	{HCLKey: "column", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Column name from the entity table, such as `cloud_provider`, `tags`, or `labels`."},
+	{HCLKey: "key", Type: TypeString, OmitEmpty: true,
+		Description: "Key within the column for nested attribute types, such as `service` within `tags`."},
+}
+
+// hostmapInfrastructureStyleFields corresponds to OpenAPI HostMapWidgetInfrastructureStyle.
+var hostmapInfrastructureStyleFields = []FieldSpec{
+	{HCLKey: "palette", Type: TypeString, OmitEmpty: true,
+		Description: "Color palette name or alias."},
+	{HCLKey: "palette_flip", Type: TypeBool, OmitEmpty: true,
+		Description: "Whether to invert the color palette."},
+	{HCLKey: "fill_min", Type: TypeFloat, OmitEmpty: true, PreserveZero: true,
+		Description: "Minimum value for the fill color scale. Omit to use automatic scaling."},
+	{HCLKey: "fill_max", Type: TypeFloat, OmitEmpty: true, PreserveZero: true,
+		Description: "Maximum value for the fill color scale. Omit to use automatic scaling."},
+}
+
+// hostmapInfrastructureFormulaFields corresponds to OpenAPI HostMapWidgetFormula.
+var hostmapInfrastructureFormulaFields = []FieldSpec{
+	{HCLKey: "formula_expression", JSONKey: "formula", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "String expression built from queries, formulas, and functions."},
+	{HCLKey: "alias", Type: TypeString, OmitEmpty: true,
+		Description: "Expression alias."},
+	{HCLKey: "number_format", Type: TypeBlock, OmitEmpty: true,
+		Description: "Number formatting options for the formula.",
+		Children:    widgetNumberFormatFields},
+	{HCLKey: "dimension", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Visual dimension driven by the formula.",
+		ValidValues: []string{"node", "fill", "size"}},
+}
+
+// hostmapInfrastructureEnrichmentFields corresponds to OpenAPI HostMapWidgetScalarRequest.
+// query and formula are SchemaOnly because their polymorphic JSON is handled by the
+// hostmap infrastructure request post-processing hooks.
+var hostmapInfrastructureEnrichmentFields = []FieldSpec{
+	{HCLKey: "response_format", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Response format for the scalar formula request.",
+		ValidValues: []string{"scalar"}},
+	{HCLKey: "query", JSONKey: "queries", Type: TypeBlockList, OmitEmpty: false, Required: true, SchemaOnly: true,
+		Description: "Queries that can be returned directly or used in formulas.",
+		Children:    formulaAndFunctionQueryFields},
+	{HCLKey: "formula", JSONKey: "formulas", Type: TypeBlockList, OmitEmpty: false, Required: true, SchemaOnly: true,
+		Description: "Formulas that operate on queries and drive visual dimensions.",
+		Children:    hostmapInfrastructureFormulaFields},
+}
+
+// hostmapInfrastructureLeafFields corresponds to OpenAPI
+// HostMapWidgetInfrastructureRequestLeaf.
+var hostmapInfrastructureLeafFields = []FieldSpec{
+	{HCLKey: "request_type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Identifies an infrastructure-backed host map request.",
+		ValidValues: []string{"infrastructure_hostmap"}},
+	{HCLKey: "node_type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Infrastructure entity type to visualize.",
+		ValidValues: []string{"host", "container", "pod", "cluster"}},
+	{HCLKey: "filter", Type: TypeString, OmitEmpty: true,
+		Description: "Filter string for the entity set in tag format, such as `env:prod`."},
+	{HCLKey: "group_by", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Ordered grouping hierarchy for infrastructure entities.",
+		Children:    hostmapInfrastructureGroupByFields},
+	{HCLKey: "enrichment", JSONKey: "enrichments", Type: TypeBlockList, OmitEmpty: false, Required: true, SchemaOnly: true,
+		Description: "Metric or event queries joined to the entity set.",
+		Children:    hostmapInfrastructureEnrichmentFields},
+	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
+		Description: "Style configuration for the infrastructure host map.",
+		Children:    hostmapInfrastructureStyleFields},
+	{HCLKey: "conditional_formats", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Conditional formatting rules applied to fill values.",
+		Children:    widgetConditionalFormatFields},
+	{HCLKey: "no_group_hosts", Type: TypeBool, OmitEmpty: true,
+		Description: "Whether to hide entities that have no group assignment."},
+	{HCLKey: "no_metric_hosts", Type: TypeBool, OmitEmpty: true,
+		Description: "Whether to hide entities that have no enrichment data."},
+}
+
+// datasetListQuerySortFieldFields corresponds to OpenAPI DatasetListQuerySortField.
+var datasetListQuerySortFieldFields = []FieldSpec{
+	{HCLKey: "name", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Name of the field to sort on."},
+	{HCLKey: "order", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Sort direction for the field.",
+		ValidValues: []string{"asc", "desc"}},
+}
+
+// datasetListQuerySortFields corresponds to OpenAPI DatasetListQuerySort.
+var datasetListQuerySortFields = []FieldSpec{
+	{HCLKey: "field", JSONKey: "fields", Type: TypeBlockList, OmitEmpty: false, Required: true,
+		Description: "List of fields to sort the dataset rows by, applied in order.",
+		Children:    datasetListQuerySortFieldFields},
+}
+
+// datasetListQueryFields corresponds to OpenAPI DatasetListQuery.
+var datasetListQueryFields = []FieldSpec{
+	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Identifies this as a published-dataset list query.",
+		ValidValues: []string{"dataset"}},
+	{HCLKey: "dataset_provider", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Product page that published the dataset.",
+		ValidValues: []string{"ddsql_query"}},
+	{HCLKey: "dataset_id", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "ID of the published dataset to query."},
+	{HCLKey: "filter", Type: TypeString, OmitEmpty: true,
+		Description: "Filter applied to the dataset rows using events-style search syntax."},
+	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true,
+		Description: "Maximum number of rows to return from the dataset query."},
+	{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true,
+		Description: "Sort configuration for the dataset query.",
+		Children:    datasetListQuerySortFields},
+}
+
+// hostmapProjectionDimensionMappingFields corresponds to OpenAPI
+// HostMapWidgetProjectionDimensionMapping.
+var hostmapProjectionDimensionMappingFields = []FieldSpec{
+	{HCLKey: "column", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Source column name from the dataset."},
+	{HCLKey: "dimension", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Visual dimension driven by the dataset column.",
+		ValidValues: []string{"node", "fill", "size", "group"}},
+	{HCLKey: "alias", Type: TypeString, OmitEmpty: true,
+		Description: "Alias used to label the column instead of its name."},
+	{HCLKey: "number_format", Type: TypeBlock, OmitEmpty: true,
+		Description: "Number formatting options for the projected column.",
+		Children:    widgetNumberFormatFields},
+}
+
+// hostmapProjectionFields corresponds to OpenAPI HostMapWidgetProjection.
+var hostmapProjectionFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Type of the host map projection.",
+		ValidValues: []string{"hostmap"}},
+	{HCLKey: "dimension", JSONKey: "dimensions", Type: TypeBlockList, OmitEmpty: false, Required: true,
+		Description: "Column-to-dimension mappings for the host map projection.",
+		Children:    hostmapProjectionDimensionMappingFields},
+}
+
 // hostmapStyleFields corresponds to the inline style block on HostMapWidgetDefinition.
 var hostmapStyleFields = []FieldSpec{
 	{HCLKey: "palette", Type: TypeString, OmitEmpty: true,
@@ -1361,9 +1499,18 @@ var toplistWidgetStyleFields = []FieldSpec{
 		Discriminator: &OneOfDiscriminator{JSONKey: "type"},
 		Children: []FieldSpec{
 			{
+				HCLKey:      "type",
+				Type:        TypeString,
+				OmitEmpty:   true,
+				Description: "Legacy display type for the widget.",
+				Deprecated:  "Use the `stacked` or `flat` block instead.",
+				ValidValues: []string{"stacked", "flat"},
+			},
+			{
 				HCLKey:        "stacked",
 				Type:          TypeBlock,
 				OmitEmpty:     true,
+				Computed:      true,
 				Description:   "Stacked display for the top list widget.",
 				Discriminator: &OneOfDiscriminator{Value: "stacked"},
 				Children:      toplistWidgetDisplayStackedFields,
@@ -1372,6 +1519,7 @@ var toplistWidgetStyleFields = []FieldSpec{
 				HCLKey:        "flat",
 				Type:          TypeBlock,
 				OmitEmpty:     true,
+				Computed:      true,
 				Description:   "Flat display for the top list widget.",
 				Discriminator: &OneOfDiscriminator{Value: "flat"},
 				Children:      toplistWidgetDisplayFlatFields,
@@ -1618,8 +1766,22 @@ var listStreamGroupByFields = []FieldSpec{
 	{HCLKey: "facet", Type: TypeString, OmitEmpty: false, Required: true, Description: "Facet name"},
 }
 
+// legacyNoOpDescriptionField keeps configs written for the legacy
+// datadog_dashboard resource valid. That schema exposed a `description` on these
+// sort and request blocks, but never sent it to the API.
+var legacyNoOpDescriptionField = FieldSpec{
+	HCLKey:        "description",
+	Type:          TypeString,
+	OmitEmpty:     true,
+	SchemaOnly:    true,
+	IgnoreChanges: true,
+	Description:   "This field has no effect and is not sent to the Datadog API.",
+	Deprecated:    "This field has no effect and will be removed in a future release.",
+}
+
 // listStreamSortFields corresponds to the sort block inside ListStreamQuery.
 var listStreamSortFields = []FieldSpec{
+	legacyNoOpDescriptionField,
 	{HCLKey: "column", Type: TypeString, OmitEmpty: false, Required: true, Description: "The facet path for the column."},
 	{
 		HCLKey:      "order",
@@ -1645,7 +1807,7 @@ var listStreamQueryFields = []FieldSpec{
 			"rum_issue_stream", "apm_issue_stream", "trace_stream", "logs_issue_stream",
 			"logs_pattern_stream", "logs_transaction_stream", "event_stream", "rum_stream",
 			"llm_observability_stream", "issue_stream", "security_runtime_stream",
-			"security_signals_stream", "incidents_stream",
+			"security_signals_stream", "incidents_stream", "case_stream",
 		},
 	},
 	{HCLKey: "query_string", Type: TypeString, OmitEmpty: false, Description: "Widget query."},
@@ -1681,6 +1843,7 @@ var listStreamQueryFields = []FieldSpec{
 // listStreamRequestFields corresponds to OpenAPI
 // components/schemas/ListStreamWidgetRequest.
 var listStreamRequestFields = []FieldSpec{
+	legacyNoOpDescriptionField,
 	// columns: HCL plural → JSON plural (same key)
 	{
 		HCLKey:      "columns",
@@ -1712,6 +1875,7 @@ var listStreamRequestFields = []FieldSpec{
 
 // sloListSortFields corresponds to the sort block inside SLOListWidgetQuery.
 var sloListSortFields = []FieldSpec{
+	legacyNoOpDescriptionField,
 	{HCLKey: "column", Type: TypeString, OmitEmpty: false, Required: true, Description: "The facet path for the column."},
 	{
 		HCLKey:      "order",
@@ -1727,7 +1891,7 @@ var sloListSortFields = []FieldSpec{
 // components/schemas/SLOListWidgetQuery.
 var sloListQueryFields = []FieldSpec{
 	{HCLKey: "query_string", Type: TypeString, OmitEmpty: false, Required: true, Description: "Widget query."},
-	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true, Description: "Maximum number of results to display in the table."},
+	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true, Default: 100, Description: "Maximum number of results to display in the table."},
 	// sort: TypeBlockList (can be multiple)
 	{
 		HCLKey:      "sort",
@@ -1741,6 +1905,7 @@ var sloListQueryFields = []FieldSpec{
 // sloListRequestFields corresponds to OpenAPI
 // components/schemas/SLOListWidgetRequest.
 var sloListRequestFields = []FieldSpec{
+	legacyNoOpDescriptionField,
 	{
 		HCLKey:      "request_type",
 		Type:        TypeString,

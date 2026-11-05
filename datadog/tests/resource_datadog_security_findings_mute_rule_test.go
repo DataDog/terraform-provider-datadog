@@ -446,9 +446,7 @@ func testAccMuteRuleRenameOutOfBand(accProvider *fwprovider.FrameworkProvider, r
 		updateAttrs.SetRule(attrs.GetRule())
 		updateAttrs.SetAction(attrs.GetAction())
 
-		data := datadogV2.NewMuteRuleDataCreateWithDefaults()
-		data.SetType(datadogV2.MUTERULETYPE_MUTE_RULES)
-		data.SetAttributes(*updateAttrs)
+		data := datadogV2.NewMuteRuleDataUpdate(*updateAttrs, id, datadogV2.MUTERULETYPE_MUTE_RULES)
 
 		body := datadogV2.NewMuteRuleUpdateRequestWithDefaults()
 		body.SetData(*data)

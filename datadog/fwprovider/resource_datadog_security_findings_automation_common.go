@@ -97,6 +97,18 @@ func flattenAutomationRuleScope(ctx context.Context, scope datadogV2.AutomationR
 	return m, diags
 }
 
+// flattenInboxRuleAction converts the API inbox rule action (shared by inbox rules and default
+// inbox rules) into the state model.
+func flattenInboxRuleAction(action datadogV2.InboxRuleAction) *inboxRuleActionModel {
+	actionModel := &inboxRuleActionModel{}
+	if action.HasDescription() {
+		actionModel.Description = types.StringValue(action.GetDescription())
+	} else {
+		actionModel.Description = types.StringNull()
+	}
+	return actionModel
+}
+
 // securityFindingsRulesOrderModel is the shared state model for the order resources.
 type securityFindingsRulesOrderModel struct {
 	ID      types.String `tfsdk:"id"`
@@ -195,13 +207,13 @@ func readRulesOrder[Resp any, Rule any](
 }
 
 // reorderSecurityFindingsAutomationRules submits a reorder request for the given rule IDs.
-func reorderSecurityFindingsAutomationRules[I any, Req any](
+func reorderSecurityFindingsAutomationRules[I any, Req any, Resp any](
 	auth context.Context,
 	ruleIDs []string,
 	makeItem func(uuid.UUID) I,
 	makeRequest func([]I) Req,
-	reorderFn func(context.Context, Req) (Req, *http.Response, error),
-	getRespItems func(Req) []I,
+	reorderFn func(context.Context, Req) (Resp, *http.Response, error),
+	getRespItems func(Resp) []I,
 	getID func(I) string,
 ) ([]string, diag.Diagnostics) {
 	var diags diag.Diagnostics

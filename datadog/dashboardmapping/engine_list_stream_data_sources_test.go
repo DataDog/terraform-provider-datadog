@@ -16,6 +16,7 @@ func TestListStreamDataSourcesValidate(t *testing.T) {
 		"security_runtime_stream",
 		"security_signals_stream",
 		"incidents_stream",
+		"case_stream",
 	} {
 		if diags := schema.ValidateDiagFunc(dataSource, cty.Path{}); diags.HasError() {
 			t.Fatalf("list stream data source %q was rejected: %#v", dataSource, diags)
@@ -32,6 +33,7 @@ func TestListStreamDataSourcesRoundTrip(t *testing.T) {
 		"security_runtime_stream",
 		"security_signals_stream",
 		"incidents_stream",
+		"case_stream",
 	} {
 		t.Run(dataSource, func(t *testing.T) {
 			widget := map[string]interface{}{

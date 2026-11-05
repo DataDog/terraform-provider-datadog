@@ -1,0 +1,2086 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 427
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"variables":[]},"message":"","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-0","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"status":"paused","steps":[],"type":"mobile"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"7an-t9s-wmh","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-0","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.327311+00:00","modified_at":"2026-10-13T15:12:43.327311+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":332086407,"org_id":321813,"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"creation_source":"terraform","stepCount":{"assertions":0,"subtests":0,"total":0,"nested_steps":0}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 452.560583ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 427
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"variables":[]},"message":"","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-1","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"status":"paused","steps":[],"type":"mobile"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"jzd-vuy-jgv","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-1","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.506536+00:00","modified_at":"2026-10-13T15:12:43.506536+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":332086408,"org_id":321813,"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"creation_source":"terraform","stepCount":{"assertions":0,"subtests":0,"total":0,"nested_steps":0}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 592.94325ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/7an-t9s-wmh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"7an-t9s-wmh","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-0","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.327311+00:00","modified_at":"2026-10-13T15:12:43.327311+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086407,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 245.409625ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/jzd-vuy-jgv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"jzd-vuy-jgv","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-1","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.506536+00:00","modified_at":"2026-10-13T15:12:43.506536+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086408,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 240.625167ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 605
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"variables":[]},"message":"","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"status":"paused","steps":[{"allowFailure":false,"hasNewStepElement":false,"isCritical":false,"name":"Run subtest","noScreenshot":false,"params":{"subtestPublicId":"7an-t9s-wmh"},"timeout":30,"type":"playSubTest"}],"type":"mobile"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"2kd-x4t-vyj","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:44.054426+00:00","modified_at":"2026-10-13T15:12:44.054426+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":332086412,"org_id":321813,"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"creation_source":"terraform","steps":[{"name":"Run subtest","params":{"subtestPublicId":"7an-t9s-wmh"},"timeout":30,"type":"playSubTest","public_id":"jxg-58b-gnz","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}],"stepCount":{"assertions":0,"subtests":1,"total":0,"nested_steps":0}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 466.925334ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/2kd-x4t-vyj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"2kd-x4t-vyj","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:44.054426+00:00","modified_at":"2026-10-13T15:12:44.054426+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086412,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Run subtest","params":{"subtestPublicId":"7an-t9s-wmh"},"public_id":"jxg-58b-gnz","timeout":30,"type":"playSubTest","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 240.079541ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/2kd-x4t-vyj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"2kd-x4t-vyj","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:44.054426+00:00","modified_at":"2026-10-13T15:12:44.054426+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086412,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 240.16625ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/7an-t9s-wmh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"7an-t9s-wmh","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-0","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.327311+00:00","modified_at":"2026-10-13T15:12:43.327311+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086407,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 232.795ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/jzd-vuy-jgv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"jzd-vuy-jgv","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-1","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.506536+00:00","modified_at":"2026-10-13T15:12:43.506536+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086408,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 228.5055ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/7an-t9s-wmh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"7an-t9s-wmh","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-0","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.327311+00:00","modified_at":"2026-10-13T15:12:43.327311+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086407,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 233.245667ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/jzd-vuy-jgv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"jzd-vuy-jgv","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-1","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.506536+00:00","modified_at":"2026-10-13T15:12:43.506536+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086408,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 237.249042ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/7an-t9s-wmh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"7an-t9s-wmh","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-0","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.327311+00:00","modified_at":"2026-10-13T15:12:43.327311+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086407,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 235.989166ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/jzd-vuy-jgv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"jzd-vuy-jgv","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-1","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.506536+00:00","modified_at":"2026-10-13T15:12:43.506536+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086408,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 242.07025ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/2kd-x4t-vyj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"2kd-x4t-vyj","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:44.054426+00:00","modified_at":"2026-10-13T15:12:44.054426+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086412,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 232.194291ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/2kd-x4t-vyj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"2kd-x4t-vyj","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:44.054426+00:00","modified_at":"2026-10-13T15:12:44.054426+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086412,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Run subtest","params":{"subtestPublicId":"7an-t9s-wmh"},"public_id":"jxg-58b-gnz","timeout":30,"type":"playSubTest","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 239.40125ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/7an-t9s-wmh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"7an-t9s-wmh","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-0","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.327311+00:00","modified_at":"2026-10-13T15:12:43.327311+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086407,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 225.890792ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/jzd-vuy-jgv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"jzd-vuy-jgv","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-1","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.506536+00:00","modified_at":"2026-10-13T15:12:43.506536+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086408,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 268.171125ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/7an-t9s-wmh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"7an-t9s-wmh","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-0","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.327311+00:00","modified_at":"2026-10-13T15:12:43.327311+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086407,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 229.975666ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/jzd-vuy-jgv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"jzd-vuy-jgv","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-1","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.506536+00:00","modified_at":"2026-10-13T15:12:43.506536+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086408,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 229.969875ms
+    - id: 19
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/2kd-x4t-vyj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"2kd-x4t-vyj","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:44.054426+00:00","modified_at":"2026-10-13T15:12:44.054426+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086412,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 229.684291ms
+    - id: 20
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/2kd-x4t-vyj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"2kd-x4t-vyj","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:44.054426+00:00","modified_at":"2026-10-13T15:12:44.054426+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086412,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Run subtest","params":{"subtestPublicId":"7an-t9s-wmh"},"public_id":"jxg-58b-gnz","timeout":30,"type":"playSubTest","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 234.366209ms
+    - id: 21
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/2kd-x4t-vyj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"2kd-x4t-vyj","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:44.054426+00:00","modified_at":"2026-10-13T15:12:44.054426+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086412,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 228.337ms
+    - id: 22
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/2kd-x4t-vyj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"2kd-x4t-vyj","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:44.054426+00:00","modified_at":"2026-10-13T15:12:44.054426+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086412,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Run subtest","params":{"subtestPublicId":"7an-t9s-wmh"},"public_id":"jxg-58b-gnz","timeout":30,"type":"playSubTest","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 235.717125ms
+    - id: 23
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/jzd-vuy-jgv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"jzd-vuy-jgv","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-1","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.506536+00:00","modified_at":"2026-10-13T15:12:43.506536+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086408,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 223.910208ms
+    - id: 24
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/7an-t9s-wmh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"7an-t9s-wmh","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-0","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.327311+00:00","modified_at":"2026-10-13T15:12:43.327311+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086407,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 238.865959ms
+    - id: 25
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/jzd-vuy-jgv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"jzd-vuy-jgv","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-1","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.506536+00:00","modified_at":"2026-10-13T15:12:43.506536+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086408,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 236.335292ms
+    - id: 26
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/7an-t9s-wmh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"7an-t9s-wmh","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-0","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.327311+00:00","modified_at":"2026-10-13T15:12:43.327311+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086407,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 228.239208ms
+    - id: 27
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/2kd-x4t-vyj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"2kd-x4t-vyj","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:44.054426+00:00","modified_at":"2026-10-13T15:12:44.054426+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086412,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 226.828ms
+    - id: 28
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/2kd-x4t-vyj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"2kd-x4t-vyj","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:44.054426+00:00","modified_at":"2026-10-13T15:12:44.054426+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086412,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Run subtest","params":{"subtestPublicId":"7an-t9s-wmh"},"public_id":"jxg-58b-gnz","timeout":30,"type":"playSubTest","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 226.159708ms
+    - id: 29
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/7an-t9s-wmh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"7an-t9s-wmh","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-0","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.327311+00:00","modified_at":"2026-10-13T15:12:43.327311+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086407,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 226.002666ms
+    - id: 30
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/jzd-vuy-jgv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"jzd-vuy-jgv","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-1","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.506536+00:00","modified_at":"2026-10-13T15:12:43.506536+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086408,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 231.93725ms
+    - id: 31
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/jzd-vuy-jgv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"jzd-vuy-jgv","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-1","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.506536+00:00","modified_at":"2026-10-13T15:12:43.506536+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086408,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 232.104041ms
+    - id: 32
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/7an-t9s-wmh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"7an-t9s-wmh","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-0","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.327311+00:00","modified_at":"2026-10-13T15:12:43.327311+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086407,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 246.297083ms
+    - id: 33
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/2kd-x4t-vyj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"2kd-x4t-vyj","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:44.054426+00:00","modified_at":"2026-10-13T15:12:44.054426+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086412,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 223.902416ms
+    - id: 34
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/2kd-x4t-vyj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"2kd-x4t-vyj","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:44.054426+00:00","modified_at":"2026-10-13T15:12:44.054426+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086412,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Run subtest","params":{"subtestPublicId":"7an-t9s-wmh"},"public_id":"jxg-58b-gnz","timeout":30,"type":"playSubTest","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 229.525833ms
+    - id: 35
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 605
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"variables":[]},"message":"","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"status":"paused","steps":[{"allowFailure":false,"hasNewStepElement":false,"isCritical":false,"name":"Run subtest","noScreenshot":false,"params":{"subtestPublicId":"jzd-vuy-jgv"},"timeout":30,"type":"playSubTest"}],"type":"mobile"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/2kd-x4t-vyj
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"org_id":321813,"public_id":"2kd-x4t-vyj","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","status":"paused","type":"mobile","tags":[],"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"created_at":"2026-10-13T15:12:44.054426+00:00","modified_at":"2026-10-13T15:12:57.465946+00:00","config":{"variables":[]},"overall_state_modified":"1970-01-01T00:00:00+00:00","monitor_id":332086412,"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"overall_state":2,"creation_source":"terraform","steps":[{"name":"Run subtest","params":{"subtestPublicId":"jzd-vuy-jgv"},"timeout":30,"type":"playSubTest","public_id":"unh-js2-q6e","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}],"stepCount":{"assertions":0,"subtests":1,"total":0,"nested_steps":0}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 837.196292ms
+    - id: 36
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/2kd-x4t-vyj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"2kd-x4t-vyj","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:44.054426+00:00","modified_at":"2026-10-13T15:12:57.465946+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086412,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 235.497959ms
+    - id: 37
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/7an-t9s-wmh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"7an-t9s-wmh","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-0","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.327311+00:00","modified_at":"2026-10-13T15:12:43.327311+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086407,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 234.974542ms
+    - id: 38
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/jzd-vuy-jgv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"jzd-vuy-jgv","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-1","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.506536+00:00","modified_at":"2026-10-13T15:12:43.506536+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086408,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 259.16075ms
+    - id: 39
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/jzd-vuy-jgv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"jzd-vuy-jgv","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-1","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.506536+00:00","modified_at":"2026-10-13T15:12:43.506536+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086408,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 241.564875ms
+    - id: 40
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/7an-t9s-wmh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"7an-t9s-wmh","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-0","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.327311+00:00","modified_at":"2026-10-13T15:12:43.327311+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086407,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 245.563334ms
+    - id: 41
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/7an-t9s-wmh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"7an-t9s-wmh","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-0","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.327311+00:00","modified_at":"2026-10-13T15:12:43.327311+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086407,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 234.077209ms
+    - id: 42
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/jzd-vuy-jgv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"jzd-vuy-jgv","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-1","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.506536+00:00","modified_at":"2026-10-13T15:12:43.506536+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086408,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 251.914791ms
+    - id: 43
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/2kd-x4t-vyj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"2kd-x4t-vyj","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:44.054426+00:00","modified_at":"2026-10-13T15:12:57.465946+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086412,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 225.787ms
+    - id: 44
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/2kd-x4t-vyj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"2kd-x4t-vyj","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:44.054426+00:00","modified_at":"2026-10-13T15:12:57.465946+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086412,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Run subtest","params":{"subtestPublicId":"jzd-vuy-jgv"},"public_id":"unh-js2-q6e","timeout":30,"type":"playSubTest","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 234.125209ms
+    - id: 45
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/2kd-x4t-vyj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"2kd-x4t-vyj","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:44.054426+00:00","modified_at":"2026-10-13T15:12:57.465946+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086412,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 226.295417ms
+    - id: 46
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/2kd-x4t-vyj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"2kd-x4t-vyj","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:44.054426+00:00","modified_at":"2026-10-13T15:12:57.465946+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086412,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Run subtest","params":{"subtestPublicId":"jzd-vuy-jgv"},"public_id":"unh-js2-q6e","timeout":30,"type":"playSubTest","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 242.213375ms
+    - id: 47
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/7an-t9s-wmh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"7an-t9s-wmh","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-0","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.327311+00:00","modified_at":"2026-10-13T15:12:43.327311+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086407,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 228.017958ms
+    - id: 48
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/jzd-vuy-jgv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"jzd-vuy-jgv","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-1","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.506536+00:00","modified_at":"2026-10-13T15:12:43.506536+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086408,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 298.366125ms
+    - id: 49
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/jzd-vuy-jgv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"jzd-vuy-jgv","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-1","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.506536+00:00","modified_at":"2026-10-13T15:12:43.506536+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086408,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 238.445ms
+    - id: 50
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/7an-t9s-wmh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"7an-t9s-wmh","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360-child-0","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:43.327311+00:00","modified_at":"2026-10-13T15:12:43.327311+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086407,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 2.746416666s
+    - id: 51
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/2kd-x4t-vyj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"2kd-x4t-vyj","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:44.054426+00:00","modified_at":"2026-10-13T15:12:57.465946+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086412,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 240.713125ms
+    - id: 52
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/2kd-x4t-vyj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"2kd-x4t-vyj","name":"tf-TestAccDatadogSyntheticsMobileTest_PlaySubTest-local-1791904360","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:12:44.054426+00:00","modified_at":"2026-10-13T15:12:57.465946+00:00","config":{"variables":[]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332086412,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Run subtest","params":{"subtestPublicId":"jzd-vuy-jgv"},"public_id":"unh-js2-q6e","timeout":30,"type":"playSubTest","context":{"id":"NATIVE_APP"},"allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 2.448103333s
+    - id: 53
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 31
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"public_ids":["2kd-x4t-vyj"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_tests":[{"public_id":"2kd-x4t-vyj","deleted_at":"2026-10-13T15:13:13.054194+00:00"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 904.735834ms
+    - id: 54
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 31
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"public_ids":["jzd-vuy-jgv"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_tests":[{"public_id":"jzd-vuy-jgv","deleted_at":"2026-10-13T15:13:13.983108+00:00"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 815.2125ms
+    - id: 55
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 31
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"public_ids":["7an-t9s-wmh"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_tests":[{"public_id":"7an-t9s-wmh","deleted_at":"2026-10-13T15:13:13.979196+00:00"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 831.740042ms
+    - id: 56
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/2kd-x4t-vyj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics test not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 137.853625ms
+    - id: 57
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/7an-t9s-wmh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics test not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 130.451708ms
+    - id: 58
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/jzd-vuy-jgv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics test not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 131.718875ms
