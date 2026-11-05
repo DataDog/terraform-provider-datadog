@@ -89,7 +89,7 @@ func (r *rumApplicationResource) Schema(_ context.Context, _ resource.SchemaRequ
 			},
 			"create_default_retention_filters": schema.BoolAttribute{
 				Optional:    true,
-				Description: "Whether to create the default retention filters (`Sessions with errors` and `Sessions`, both at 100%) when the application is created. Defaults to `true` on the API side. Set to `false` to create the application without them, for example when you manage its retention filters in the same configuration. Permanent retention filters are always created. Only used at creation: changing it later doesn't add or remove filters on an existing application.",
+				Description: "Whether to create the default retention filters (`Sessions with errors` and `Sessions`, both at 100%) when the application is created. Defaults to `true` on the API side. Set to `false` to create the application without them, such as when you manage its retention filters in the same configuration. Permanent retention filters are always created. This setting only applies during application creation. Changing it afterward doesn't add or remove filters.",
 			},
 			"id": utils.ResourceIDAttribute(),
 			"api_key_id": schema.Int32Attribute{

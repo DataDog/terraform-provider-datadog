@@ -5,7 +5,7 @@ resource "datadog_rum_application" "rum_application" {
   product_analytics_retention_state = "NONE"
 }
 
-# Create the application without the default retention filters, to manage them yourself.
+# Create the application without the default retention filters to manage them yourself.
 resource "datadog_rum_application" "rum_application_custom_filters" {
   name                             = "my-application-custom-filters"
   type                             = "browser"
