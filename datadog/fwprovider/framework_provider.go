@@ -181,6 +181,7 @@ var Resources = []func() resource.Resource{
 	NewStatusPageComponentResource,
 	NewStatusPageDegradationTemplateResource,
 	NewStatusPageMaintenanceTemplateResource,
+	NewFlakyTestsManagementPoliciesResource,
 }
 
 var Datasources = []func() datasource.DataSource{
