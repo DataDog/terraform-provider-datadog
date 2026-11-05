@@ -128,3 +128,6 @@ tool (
 	golang.org/x/tools/cmd/goimports
 	gotest.tools/gotestsum
 )
+
+// TEMPORARY: unreleased client from DataDog/datadog-api-client-go#4882 (8ce48f27, api/ diff applied on provider pin c695b1b34e40 in local clone). Replace with the released version before merging.
+replace github.com/DataDog/datadog-api-client-go/v2 => /tmp/dd-client-4882

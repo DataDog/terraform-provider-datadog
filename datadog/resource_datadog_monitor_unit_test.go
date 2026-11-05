@@ -232,36 +232,20 @@ func TestBuildTerraformDataQualityMonitorOptionsRoundTrip(t *testing.T) {
 }
 
 func TestMonitorMetricQueryVariableRead(t *testing.T) {
-	// q1 is a metric_query variable (no aggregator, matching the API schema).
 	q1 := map[string]interface{}{"data_source": "metrics", "name": "q1", "query": "avg:system.cpu.user{*}"}
 	q2 := map[string]interface{}{"data_source": "cloud_cost", "name": "q2", "query": "sum:aws.cost{*}", "aggregator": "sum"}
-	vars := []datadogV1.MonitorFormulaAndFunctionQueryDefinition{
-		*buildMonitorFormulaAndFunctionMetricQuery(q1),
-		*buildMonitorFormulaAndFunctionCloudCostQuery(q2),
-	}
-	none := []map[string]interface{}(nil)
-	tests := []struct {
-		name                   string
-		isCost                 bool
-		priorCost, priorMetric map[string]bool
-		wantMetric, wantCost   []map[string]interface{}
-	}{
-		{"metric monitor", false, nil, nil, []map[string]interface{}{q1}, []map[string]interface{}{q2}},
-		{"existing cloud_cost_query kept", false, map[string]bool{"q1": true}, nil, none, []map[string]interface{}{q1, q2}},
-		{"cost monitor", true, nil, nil, none, []map[string]interface{}{q1, q2}},
-		{"cost monitor keeps metric_query", true, nil, map[string]bool{"q1": true}, []map[string]interface{}{q1}, []map[string]interface{}{q2}},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			var out []map[string]interface{}
-			if tt.isCost {
-				out = buildTerraformCostMonitorVariables(vars, tt.priorCost, tt.priorMetric)
-			} else {
-				out = buildTerraformMonitorVariables(vars, tt.priorCost, tt.priorMetric)
-			}
-			got, _ := out[0]["metric_query"].([]map[string]interface{})
-			assert.Equal(t, tt.wantMetric, got)
-			assert.Equal(t, tt.wantCost, out[0]["cloud_cost_query"])
-		})
-	}
+	// Legacy cost-monitor config: cloud_cost_query with a metrics source is sent as the metric type.
+	q3 := map[string]interface{}{"data_source": "metrics", "name": "q3", "query": "sum:system.cpu.user{*}", "aggregator": "sum"}
+	assert.NotNil(t, buildMonitorFormulaAndFunctionCloudCostQuery(q3).MonitorFormulaAndFunctionMetricQueryDefinition)
+
+	out := buildTerraformMonitorVariables([]datadogV1.MonitorFormulaAndFunctionQueryDefinition{
+		*buildMonitorFormulaAndFunctionMetricQuery(q1), *buildMonitorFormulaAndFunctionCloudCostQuery(q2),
+	})
+	assert.Equal(t, []map[string]interface{}{q1}, out[0]["metric_query"])
+	assert.Equal(t, []map[string]interface{}{q2}, out[0]["cloud_cost_query"])
+
+	out = buildTerraformCostMonitorVariables([]datadogV1.MonitorFormulaAndFunctionQueryDefinition{
+		*buildMonitorFormulaAndFunctionCloudCostQuery(q2), *buildMonitorFormulaAndFunctionCloudCostQuery(q3),
+	})
+	assert.Equal(t, []map[string]interface{}{{"cloud_cost_query": []map[string]interface{}{q2, q3}}}, out)
 }

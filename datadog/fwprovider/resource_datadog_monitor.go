@@ -2061,17 +2061,12 @@ func (r *monitorResource) buildEventQueryStruct(ctx context.Context, eventQs []E
 	return variablesReq
 }
 
-// metric_query is sent as the API's cost-type definition, the shape it decodes plain metrics variables into.
 func (r *monitorResource) buildMetricQueryStruct(metricQs []MetricQuery) []datadogV1.MonitorFormulaAndFunctionQueryDefinition {
 	var variablesReq []datadogV1.MonitorFormulaAndFunctionQueryDefinition
 	for _, metricQ := range metricQs {
-		metricQueryReq := datadogV1.MonitorFormulaAndFunctionCostQueryDefinition{}
-		fwutils.SetOptString(metricQ.Query, metricQueryReq.SetQuery)
-		fwutils.SetOptString(metricQ.Name, metricQueryReq.SetName)
-		if !metricQ.DataSource.IsNull() {
-			metricQueryReq.SetDataSource(datadogV1.MonitorFormulaAndFunctionCostDataSource(metricQ.DataSource.ValueString()))
-		}
-		variablesReq = append(variablesReq, datadogV1.MonitorFormulaAndFunctionQueryDefinition{MonitorFormulaAndFunctionCostQueryDefinition: &metricQueryReq})
+		metricQueryReq := datadogV1.NewMonitorFormulaAndFunctionMetricQueryDefinition(
+			datadogV1.MonitorFormulaAndFunctionMetricQueryDataSource(metricQ.DataSource.ValueString()), metricQ.Name.ValueString(), metricQ.Query.ValueString())
+		variablesReq = append(variablesReq, datadogV1.MonitorFormulaAndFunctionMetricQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(metricQueryReq))
 	}
 	return variablesReq
 }
@@ -2082,6 +2077,17 @@ func (r *monitorResource) buildCloudCostQueryStruct(cloudCostQs []CloudCostQuery
 	}
 	variablesReq := []datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
 	for _, cloudCostQ := range cloudCostQs {
+		// The API no longer models `metrics` as a cost data source; keep existing
+		// `cloud_cost_query { data_source = "metrics" }` configs working by sending the metric type.
+		if cloudCostQ.DataSource.ValueString() == string(datadogV1.MONITORFORMULAANDFUNCTIONMETRICQUERYDATASOURCE_METRICS) {
+			metricQueryReq := datadogV1.NewMonitorFormulaAndFunctionMetricQueryDefinition(
+				datadogV1.MONITORFORMULAANDFUNCTIONMETRICQUERYDATASOURCE_METRICS, cloudCostQ.Name.ValueString(), cloudCostQ.Query.ValueString())
+			if !cloudCostQ.Aggregator.IsNull() {
+				metricQueryReq.SetAggregator(datadogV1.MonitorFormulaAndFunctionCostAggregator(cloudCostQ.Aggregator.ValueString()))
+			}
+			variablesReq = append(variablesReq, datadogV1.MonitorFormulaAndFunctionMetricQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(metricQueryReq))
+			continue
+		}
 		variableReq := datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
 		cloudCostQueryReq := datadogV1.MonitorFormulaAndFunctionCostQueryDefinition{}
 		fwutils.SetOptString(cloudCostQ.Query, cloudCostQueryReq.SetQuery)
@@ -2566,15 +2572,6 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 	CloudCostQueryStates := []CloudCostQuery{}
 	metricQueryStates := []MetricQuery{}
 	isCostMonitor := state.Type.ValueString() == string(datadogV1.MONITORTYPE_COST_ALERT)
-	priorCost, priorMetric := map[string]bool{}, map[string]bool{}
-	for _, pv := range state.Variables {
-		for _, q := range pv.CloudCostQuery {
-			priorCost[q.Name.ValueString()] = true
-		}
-		for _, q := range pv.MetricQuery {
-			priorMetric[q.Name.ValueString()] = true
-		}
-	}
 	DataQualityQueryStates := []DataQualityQuery{}
 	aggregateAugmentedStates := []AggregateAugmentedQuery{}
 	aggregateFilteredStates := []AggregateFilteredQuery{}
@@ -2584,10 +2581,16 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 		if eventQState := r.buildEventQueryState(ctx, v.MonitorFormulaAndFunctionEventQueryDefinition); eventQState != nil {
 			eventQueryStates = append(eventQueryStates, *eventQState)
 		}
-		if costQ := v.MonitorFormulaAndFunctionCostQueryDefinition; costQ != nil && isMetricQueryVariable(costQ.GetName(), string(costQ.GetDataSource()), isCostMonitor, priorCost, priorMetric) {
-			metricQueryStates = append(metricQueryStates, r.buildMetricQueryState(costQ))
-		} else if costQState := r.buildCloudCostQueryState(costQ); costQState != nil {
+		if costQState := r.buildCloudCostQueryState(v.MonitorFormulaAndFunctionCostQueryDefinition); costQState != nil {
 			CloudCostQueryStates = append(CloudCostQueryStates, *costQState)
+		}
+		if metricQ := v.MonitorFormulaAndFunctionMetricQueryDefinition; metricQ != nil {
+			if isCostMonitor {
+				// Cost monitors can still return `metrics` variables, which now decode as the metric type.
+				CloudCostQueryStates = append(CloudCostQueryStates, r.buildCloudCostQueryStateFromMetric(metricQ))
+			} else {
+				metricQueryStates = append(metricQueryStates, r.buildMetricQueryState(metricQ))
+			}
 		}
 		if dataQualityQState := r.buildDataQualityQueryState(ctx, v.MonitorFormulaAndFunctionDataQualityQueryDefinition); dataQualityQState != nil {
 			DataQualityQueryStates = append(DataQualityQueryStates, *dataQualityQState)
@@ -2855,21 +2858,24 @@ func (r *monitorResource) buildAggregateFilteredQueryState(ctx context.Context, 
 	return &out
 }
 
-// isMetricQueryVariable decides whether an API cost-type variable reads back as `metric_query`.
-// Names already in prior state keep their block so existing `cloud_cost_query` configs never flip.
-func isMetricQueryVariable(name, dataSource string, isCostMonitor bool, priorCost, priorMetric map[string]bool) bool {
-	if dataSource != string(datadogV1.MONITORFORMULAANDFUNCTIONCOSTDATASOURCE_METRICS) || priorCost[name] {
-		return false
-	}
-	return priorMetric[name] || !isCostMonitor
-}
-
-func (r *monitorResource) buildMetricQueryState(metricQ *datadogV1.MonitorFormulaAndFunctionCostQueryDefinition) MetricQuery {
+func (r *monitorResource) buildMetricQueryState(metricQ *datadogV1.MonitorFormulaAndFunctionMetricQueryDefinition) MetricQuery {
 	return MetricQuery{
 		DataSource: types.StringValue(string(metricQ.GetDataSource())),
 		Query:      fwutils.ToTerraformStr(metricQ.GetQueryOk()),
 		Name:       fwutils.ToTerraformStr(metricQ.GetNameOk()),
 	}
+}
+
+func (r *monitorResource) buildCloudCostQueryStateFromMetric(metricQ *datadogV1.MonitorFormulaAndFunctionMetricQueryDefinition) CloudCostQuery {
+	state := CloudCostQuery{
+		DataSource: types.StringValue(string(metricQ.GetDataSource())),
+		Query:      fwutils.ToTerraformStr(metricQ.GetQueryOk()),
+		Name:       fwutils.ToTerraformStr(metricQ.GetNameOk()),
+	}
+	if aggregator, ok := metricQ.GetAggregatorOk(); ok && aggregator != nil {
+		state.Aggregator = types.StringValue(string(*aggregator))
+	}
+	return state
 }
 
 func (r *monitorResource) buildCloudCostQueryState(cloudCostQ *datadogV1.MonitorFormulaAndFunctionCostQueryDefinition) *CloudCostQuery {
@@ -3088,7 +3094,8 @@ func (r *monitorResource) getAllowEventQueryOrder() []string {
 }
 
 func (r *monitorResource) getAllowCloudCostDataSource() []string {
-	return enumStrings((*datadogV1.MonitorFormulaAndFunctionCostDataSource)(nil).GetAllowedValues())
+	return append(enumStrings((*datadogV1.MonitorFormulaAndFunctionCostDataSource)(nil).GetAllowedValues()),
+		enumStrings((*datadogV1.MonitorFormulaAndFunctionMetricQueryDataSource)(nil).GetAllowedValues())...)
 }
 
 func (r *monitorResource) getAllowCloudCostAggregator() []string {

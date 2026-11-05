@@ -243,34 +243,27 @@ func TestDataQualityMonitorOptionsRoundTrip(t *testing.T) {
 
 func TestUpdateVariablesStateMetricQuery(t *testing.T) {
 	r := &monitorResource{}
-	q := CloudCostQuery{
+	m := MetricQuery{
 		DataSource: types.StringValue("metrics"),
 		Query:      types.StringValue("avg:system.cpu.user{*}"),
 		Name:       types.StringValue("q1"),
 	}
-	m := MetricQuery{DataSource: q.DataSource, Query: q.Query, Name: q.Name}
-	opts := &datadogV1.MonitorOptions{Variables: r.buildMetricQueryStruct([]MetricQuery{m})}
-	tests := []struct {
-		monitorType string
-		prior       []Variable
-		wantMetric  bool
-	}{
-		{"query alert", nil, true},
-		{"query alert", []Variable{{CloudCostQuery: []CloudCostQuery{q}}}, false},
-		{"cost alert", nil, false},
-		{"cost alert", []Variable{{MetricQuery: []MetricQuery{m}}}, true},
+	// Legacy cost-monitor config: cloud_cost_query with a metrics source, sent as the metric type.
+	c := CloudCostQuery{DataSource: m.DataSource, Query: m.Query, Name: m.Name, Aggregator: types.StringValue("sum")}
+	read := func(monitorType string, vars []datadogV1.MonitorFormulaAndFunctionQueryDefinition) Variable {
+		state := &monitorResourceModel{}
+		state.Type.StringValue = types.StringValue(monitorType)
+		r.updateVariablesState(context.Background(), state, &datadogV1.MonitorOptions{Variables: vars})
+		return state.Variables[0]
 	}
-	for _, tt := range tests {
-		state := &monitorResourceModel{Variables: tt.prior}
-		state.Type.StringValue = types.StringValue(tt.monitorType)
-		r.updateVariablesState(context.Background(), state, opts)
-		v := state.Variables[0]
-		if tt.wantMetric {
-			assert.Equal(t, []MetricQuery{m}, v.MetricQuery, tt.monitorType)
-			assert.Empty(t, v.CloudCostQuery, tt.monitorType)
-		} else {
-			assert.Equal(t, []CloudCostQuery{q}, v.CloudCostQuery, tt.monitorType)
-			assert.Empty(t, v.MetricQuery, tt.monitorType)
-		}
-	}
+
+	v := read("query alert", r.buildMetricQueryStruct([]MetricQuery{m}))
+	assert.Equal(t, []MetricQuery{m}, v.MetricQuery)
+	assert.Empty(t, v.CloudCostQuery)
+
+	costVars := r.buildCloudCostQueryStruct([]CloudCostQuery{c})
+	assert.NotNil(t, costVars[0].MonitorFormulaAndFunctionMetricQueryDefinition)
+	v = read("cost alert", costVars)
+	assert.Equal(t, []CloudCostQuery{c}, v.CloudCostQuery)
+	assert.Empty(t, v.MetricQuery)
 }
