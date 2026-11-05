@@ -33,6 +33,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/customtypes"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
 var (
@@ -40,6 +41,7 @@ var (
 	_ resource.ResourceWithImportState      = &monitorResource{}
 	_ resource.ResourceWithModifyPlan       = &monitorResource{}
 	_ resource.ResourceWithConfigValidators = &monitorResource{}
+	_ resource.ResourceWithValidateConfig   = &monitorResource{}
 )
 
 var stringFloatValidator = stringvalidator.RegexMatches(
@@ -352,6 +354,31 @@ type monitorResource struct {
 
 func NewMonitorResource() resource.Resource {
 	return &monitorResource{}
+}
+
+// ValidateConfig checks the variables block against the monitor type. Unknown values are skipped.
+func (r *monitorResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+	var monitorType types.String
+	var variablesList types.List
+	if req.Config.GetAttribute(ctx, frameworkPath.Root("type"), &monitorType).HasError() ||
+		req.Config.GetAttribute(ctx, frameworkPath.Root("variables"), &variablesList).HasError() ||
+		monitorType.IsUnknown() || variablesList.IsUnknown() {
+		return
+	}
+	var variables []Variable
+	if variablesList.ElementsAs(ctx, &variables, false).HasError() || len(variables) == 0 {
+		return
+	}
+	var dataSources []string
+	for _, q := range variables[0].CloudCostQuery {
+		if q.DataSource.IsUnknown() {
+			return
+		}
+		dataSources = append(dataSources, q.DataSource.ValueString())
+	}
+	if err := validators.ValidateMonitorVariablesForType(monitorType.ValueString(), dataSources, len(variables[0].MetricQuery) > 0); err != nil {
+		resp.Diagnostics.AddAttributeError(frameworkPath.Root("variables"), "Invalid variables for monitor type", err.Error())
+	}
 }
 
 func (r *monitorResource) ConfigValidators(ctx context.Context) []resource.ConfigValidator {

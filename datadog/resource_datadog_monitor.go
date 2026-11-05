@@ -2273,6 +2273,20 @@ func buildMonitorFormulaAndFunctionDataJobsQuery(data map[string]interface{}) *d
 
 // Use CustomizeDiff to do monitor validation
 func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+	if diff.NewValueKnown("type") && diff.NewValueKnown("variables") {
+		var dataSources []string
+		cloudCost, _ := diff.Get("variables.0.cloud_cost_query").([]interface{})
+		for _, q := range cloudCost {
+			if m, ok := q.(map[string]interface{}); ok {
+				ds, _ := m["data_source"].(string)
+				dataSources = append(dataSources, ds)
+			}
+		}
+		metricQueries, _ := diff.Get("variables.0.metric_query").([]interface{})
+		if err := validators.ValidateMonitorVariablesForType(diff.Get("type").(string), dataSources, len(metricQueries) > 0); err != nil {
+			return err
+		}
+	}
 	if _, ok := diff.GetOk("query"); !ok {
 		// If "query" depends on other resources, we can't validate as the variables may not be interpolated yet.
 		return nil
