@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
 var (
@@ -55,13 +56,13 @@ func (r *teamConnectionResource) Metadata(_ context.Context, request resource.Me
 
 func (r *teamConnectionResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog Team Connection resource. This can be used to create and manage connections between a Datadog team and an external team (e.g. GitHub).",
+		Description: "Provides a Datadog Team Connection resource. This can be used to create and manage connections between a Datadog team and an external team (e.g. a GitHub team or a ServiceNow group).",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"source": schema.StringAttribute{
 				Optional:    true,
 				Computed:    true,
-				Description: "The source of the connection (e.g. github).",
+				Description: "The name of the external source, such as `github` or `servicenow`.",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -94,14 +95,14 @@ func (r *teamConnectionResource) Schema(_ context.Context, _ resource.SchemaRequ
 				},
 			},
 			"connected_team": schema.SingleNestedBlock{
-				Description: "The external connected team reference (e.g. a GitHub team).",
+				Description: "The external connected team reference (e.g. a GitHub team or a ServiceNow group).",
 				Validators: []validator.Object{
 					objectvalidator.IsRequired(),
 				},
 				Attributes: map[string]schema.Attribute{
 					"id": schema.StringAttribute{
 						Required:    true,
-						Description: "The ID of the external connected team.",
+						Description: "The ID of the external connected team. For GitHub teams, this is `@<organization>/<team-slug>`. For ServiceNow groups, this is `<instance_name>/<sys_id>`.",
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -113,7 +114,7 @@ func (r *teamConnectionResource) Schema(_ context.Context, _ resource.SchemaRequ
 							stringplanmodifier.RequiresReplace(),
 						},
 						Validators: []validator.String{
-							stringvalidator.OneOf("github_team"),
+							validators.NewEnumValidator[validator.String](datadogV2.NewConnectedTeamRefDataTypeFromValue),
 						},
 					},
 				},
