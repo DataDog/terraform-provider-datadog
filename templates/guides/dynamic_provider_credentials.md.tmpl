@@ -112,7 +112,7 @@ The provider selects authentication in this order:
 
 1. Explicit authentication in the provider block: `cloud_provider_type`, then `bearer_token`, then `api_key`/`app_key`. Values supplied through Terraform variables count as explicit configuration.
 2. Terraform workload identity: the exact tag selected by `workload_identity_token_tag`, or, when no tag is selected, `TFC_WORKLOAD_IDENTITY_TOKEN_DATADOG` followed by `TFC_WORKLOAD_IDENTITY_TOKEN`.
-3. Environment-based AWS WIF, then an environment bearer token, then environment API/application keys.
+3. Environment-based cloud WIF (`DD_CLOUD_PROVIDER_TYPE` of `aws` or `github`), then an environment bearer token, then environment API/application keys.
 
 Explicit authentication bypasses WIT discovery, token-tag requirements, and WIT audience checks. This also applies when `workload_identity_token_tag` is set on the same block. Environment values can supply a missing key in an explicitly selected API/application-key pair, but an incomplete pair does not fall back to WIT authentication.
 
@@ -130,11 +130,11 @@ provider "datadog" {
 
 A candidate must be a readable JWT with an unambiguous audience of the form `datadog/<valid-org-uuid>`. The JWT string and array forms of `aud` are supported. Automatic discovery skips missing, unreadable, or unrelated candidates. An explicit token tag instead requires its selected candidate to be eligible. A missing or malformed issuer does not cause credential fallback. Client-side inspection is only a selection check; ETS validates signatures, issuer trust, token expiration, and persona mappings.
 
-Once a WIT is selected, an exchange rejection is an error. The provider does not try the other token or switch to AWS/static credentials. Check the persona mapping, permitted subject/run phase, issuer registration, audience, and Datadog site when troubleshooting.
+Once a WIT is selected, an exchange rejection is an error. The provider does not try the other token or switch to cloud or static credentials. Check the persona mapping, permitted subject/run phase, issuer registration, audience, and Datadog site when troubleshooting.
 
 API calls and access-token refresh use the same delegated-authentication machinery as AWS WIF. Refresh exchanges the selected WIT again; if the WIT has expired or the exchange is rejected, the operation fails rather than switching identities.
 
-The legacy `datadog_integration_pagerduty` resource uses a separate API client that does not support delegated authentication. It has the same limitation with AWS WIF and cannot be managed with WIT credentials alone.
+The legacy `datadog_integration_pagerduty` resource uses a separate API client that does not support delegated authentication. It has the same limitation with AWS and GitHub WIF and cannot be managed with WIT credentials alone.
 
 ## Verify the setup
 
