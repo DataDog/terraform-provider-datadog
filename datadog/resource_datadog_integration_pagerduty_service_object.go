@@ -8,8 +8,10 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 const maskedSecret = "*****"
@@ -24,6 +26,9 @@ func resourceDatadogIntegrationPagerdutySO() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: resourceDatadogIntegrationPagerdutySOImport,
 		},
+		ValidateRawResourceConfigFuncs: []schema.ValidateRawResourceConfigFunc{
+			validation.PreferWriteOnlyAttribute(cty.GetAttrPath("service_key"), cty.GetAttrPath("service_key_wo")),
+		},
 
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
@@ -34,35 +39,65 @@ func resourceDatadogIntegrationPagerdutySO() *schema.Resource {
 					ForceNew:    true,
 				},
 				"service_key": {
-					Description: "Your Service name associated service key in PagerDuty. This key may also be referred to as an Integration Key or Routing Key in the Pagerduty Integration [documentation](https://www.pagerduty.com/docs/guides/datadog-integration-guide/), UI, and within the [Pagerduty Provider for Terraform](https://registry.terraform.io/providers/PagerDuty/pagerduty/latest/docs/resources/service_integration#integration_key) Note: Since the Datadog API never returns service keys, it is impossible to detect [drifts](https://www.hashicorp.com/blog/detecting-and-managing-drift-with-terraform). The best way to solve a drift is to manually mark the Service Object resource with [terraform taint](https://www.terraform.io/docs/commands/taint.html) to have it destroyed and recreated.",
-					Type:        schema.TypeString,
-					Required:    true,
-					Sensitive:   true,
+					Description:  "Your Service name associated service key in PagerDuty. This key may also be referred to as an Integration Key or Routing Key in the Pagerduty Integration [documentation](https://www.pagerduty.com/docs/guides/datadog-integration-guide/), UI, and within the [Pagerduty Provider for Terraform](https://registry.terraform.io/providers/PagerDuty/pagerduty/latest/docs/resources/service_integration#integration_key) Note: Since the Datadog API never returns service keys, it is impossible to detect [drifts](https://www.hashicorp.com/blog/detecting-and-managing-drift-with-terraform). The best way to solve a drift is to manually mark the Service Object resource with [terraform taint](https://www.terraform.io/docs/commands/taint.html) to have it destroyed and recreated. Exactly one of `service_key` or `service_key_wo` must be set.",
+					Type:         schema.TypeString,
+					Optional:     true,
+					Sensitive:    true,
+					ExactlyOneOf: []string{"service_key", "service_key_wo"},
+				},
+				"service_key_wo": {
+					Description:  "Write-only service key for the PagerDuty service. The value is not stored in the Terraform state. Exactly one of `service_key` or `service_key_wo` must be set. Must be used with `service_key_wo_version`.",
+					Type:         schema.TypeString,
+					Optional:     true,
+					Sensitive:    true,
+					WriteOnly:    true,
+					ExactlyOneOf: []string{"service_key", "service_key_wo"},
+					RequiredWith: []string{"service_key_wo_version"},
+				},
+				"service_key_wo_version": {
+					Description:  "Version for `service_key_wo` rotation. Changing this triggers an update.",
+					Type:         schema.TypeString,
+					Optional:     true,
+					ValidateFunc: validation.StringIsNotEmpty,
+					RequiredWith: []string{"service_key_wo"},
 				},
 			}
 		},
 	}
 }
 
-func buildIntegrationPagerdutySO(d *schema.ResourceData) *datadogV1.PagerDutyService {
+// getIntegrationPagerdutyServiceKey returns the service key from the write-only
+// attribute when it is set, and from the plaintext attribute otherwise.
+func getIntegrationPagerdutyServiceKey(d *schema.ResourceData) (string, diag.Diagnostics) {
+	serviceKeyWo, diags := d.GetRawConfigAt(cty.GetAttrPath("service_key_wo"))
+	if diags.HasError() {
+		return "", diags
+	}
+	if serviceKeyWo.IsKnown() && !serviceKeyWo.IsNull() {
+		return serviceKeyWo.AsString(), nil
+	}
+	return d.Get("service_key").(string), nil
+}
+
+func buildIntegrationPagerdutySO(d *schema.ResourceData, serviceKey string) *datadogV1.PagerDutyService {
 	so := &datadogV1.PagerDutyService{}
 	if v, ok := d.GetOk("service_name"); ok {
 		so.SetServiceName(v.(string))
 	}
-	if v, ok := d.GetOk("service_key"); ok {
-		so.SetServiceKey(v.(string))
+	if serviceKey != "" {
+		so.SetServiceKey(serviceKey)
 	}
 
 	return so
 }
 
-func buildIntegrationPagerdutyServiceKey(d *schema.ResourceData) *datadogV1.PagerDutyServiceKey {
-	serviceKey := &datadogV1.PagerDutyServiceKey{}
-	if v, ok := d.GetOk("service_key"); ok {
-		serviceKey.SetServiceKey(v.(string))
+func buildIntegrationPagerdutyServiceKey(serviceKey string) *datadogV1.PagerDutyServiceKey {
+	pdServiceKey := &datadogV1.PagerDutyServiceKey{}
+	if serviceKey != "" {
+		pdServiceKey.SetServiceKey(serviceKey)
 	}
 
-	return serviceKey
+	return pdServiceKey
 }
 
 func resourceDatadogIntegrationPagerdutySOCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -73,7 +108,11 @@ func resourceDatadogIntegrationPagerdutySOCreate(ctx context.Context, d *schema.
 	integrationPdMutex.Lock()
 	defer integrationPdMutex.Unlock()
 
-	so := buildIntegrationPagerdutySO(d)
+	serviceKey, diags := getIntegrationPagerdutyServiceKey(d)
+	if diags.HasError() {
+		return diags
+	}
+	so := buildIntegrationPagerdutySO(d, serviceKey)
 	if _, httpresp, err := apiInstances.GetPagerDutyIntegrationApiV1().CreatePagerDutyIntegrationService(auth, *so); err != nil {
 		// TODO: warn user that PD integration must be enabled to be able to create service objects
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating PagerDuty integration service")
@@ -103,7 +142,10 @@ func resourceDatadogIntegrationPagerdutySORead(ctx context.Context, d *schema.Re
 	d.Set("service_name", so.GetServiceName())
 	// Only update service_key if not set on d - the API endpoints never return
 	// the keys, so this is how we recognize new values.
-	if _, ok := d.GetOk("service_key"); !ok {
+	// When service_key_wo is used, service_key must stay empty to match the configuration.
+	_, usesServiceKey := d.GetOk("service_key")
+	_, usesServiceKeyWo := d.GetOk("service_key_wo_version")
+	if !usesServiceKey && !usesServiceKeyWo {
 		d.Set("service_key", maskedSecret)
 	}
 
@@ -118,8 +160,15 @@ func resourceDatadogIntegrationPagerdutySOUpdate(ctx context.Context, d *schema.
 	integrationPdMutex.Lock()
 	defer integrationPdMutex.Unlock()
 
-	serviceKey := buildIntegrationPagerdutyServiceKey(d)
-	if httpresp, err := apiInstances.GetPagerDutyIntegrationApiV1().UpdatePagerDutyIntegrationService(auth, d.Id(), *serviceKey); err != nil {
+	serviceKey, diags := getIntegrationPagerdutyServiceKey(d)
+	if diags.HasError() {
+		return diags
+	}
+	pdServiceKey := buildIntegrationPagerdutyServiceKey(serviceKey)
+	if httpresp, err := apiInstances.GetPagerDutyIntegrationApiV1().UpdatePagerDutyIntegrationService(auth, d.Id(), *pdServiceKey); err != nil {
+		// Keep the prior state so the next apply retries. Otherwise the new
+		// service_key_wo_version is saved and a failed rotation is never resent.
+		d.Partial(true)
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating PagerDuty integration service")
 	}
 
