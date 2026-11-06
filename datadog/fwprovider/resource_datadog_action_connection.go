@@ -38,6 +38,8 @@ var (
 	actionConnectionTagPattern = regexp.MustCompile(`^[A-Za-z0-9._/-]+:[A-Za-z0-9._/-]+$`)
 )
 
+const actionConnectionGithubIntegrationType = "Github"
+
 type actionConnectionTagValidator struct{}
 
 func (actionConnectionTagValidator) Description(_ context.Context) string {
@@ -95,6 +97,7 @@ type connectionModel struct {
 	Freshservice *freshserviceConnectionModel `tfsdk:"freshservice"`
 	GCP          *gcpConnectionModel          `tfsdk:"gcp"`
 	Gemini       *apiKeyConnectionModel       `tfsdk:"gemini"`
+	Github       *githubConnectionModel       `tfsdk:"github"`
 	Gitlab       *apiTokenConnectionModel     `tfsdk:"gitlab"`
 	GreyNoise    *apiKeyConnectionModel       `tfsdk:"grey_noise"`
 	HTTP         *httpConnectionModel         `tfsdk:"http"`
@@ -238,6 +241,21 @@ type gcpConnectionModel struct {
 type gcpServiceAccountCredentialModel struct {
 	PrivateKey          types.String `tfsdk:"private_key"`
 	ServiceAccountEmail types.String `tfsdk:"service_account_email"`
+}
+
+type githubConnectionModel struct {
+	App                 *githubAppCredentialModel                 `tfsdk:"app"`
+	PersonalAccessToken *githubPersonalAccessTokenCredentialModel `tfsdk:"personal_access_token"`
+}
+
+type githubAppCredentialModel struct {
+	AppID          types.String `tfsdk:"app_id"`
+	InstallationID types.String `tfsdk:"installation_id"`
+	PrivateKey     types.String `tfsdk:"private_key"`
+}
+
+type githubPersonalAccessTokenCredentialModel struct {
+	Token types.String `tfsdk:"token"`
 }
 
 type oktaConnectionModel struct {
@@ -393,6 +411,23 @@ var additionalActionConnectionSpecs = []actionConnectionIntegrationSpec{
 		}},
 	},
 	{
+		Name: "github", Description: "Configuration for a GitHub connection",
+		Credentials: []actionConnectionCredentialSpec{
+			{
+				Name: "app", Description: "Configuration for GitHub App authentication",
+				Fields: []actionConnectionFieldSpec{
+					{Name: "app_id", Description: "GitHub App ID", Required: true},
+					{Name: "installation_id", Description: "GitHub App installation ID", Required: true},
+					{Name: "private_key", Description: "GitHub App private key in PEM format", Sensitive: true, Required: true},
+				},
+			},
+			{
+				Name: "personal_access_token", Description: "Configuration for GitHub personal access token authentication",
+				Fields: []actionConnectionFieldSpec{{Name: "token", Description: "GitHub personal access token", Sensitive: true, Required: true}},
+			},
+		},
+	},
+	{
 		Name: "gitlab", Description: "Configuration for a GitLab connection",
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "api_key", Description: "Configuration for GitLab API key authentication",
@@ -499,6 +534,7 @@ func (r *actionConnectionResource) ConfigValidators(ctx context.Context) []resou
 			path.MatchRoot("freshservice"),
 			path.MatchRoot("gcp"),
 			path.MatchRoot("gemini"),
+			path.MatchRoot("github"),
 			path.MatchRoot("gitlab"),
 			path.MatchRoot("grey_noise"),
 			path.MatchRoot("http"),
@@ -1223,6 +1259,23 @@ func setAdditionalConnectionModelFromAPI(connModel *connectionResourceModel, int
 		connModel.Gemini = &apiKeyConnectionModel{APIKey: &apiKeyCredentialModel{
 			APIKey: actionConnectionCredentialString(credential, "api_key"),
 		}}
+	case actionConnectionGithubIntegrationType:
+		connModel.Github = &githubConnectionModel{}
+		credentialType, _ := credential["type"].(string)
+		switch credentialType {
+		case "GithubApp":
+			connModel.Github.App = &githubAppCredentialModel{
+				AppID:          actionConnectionCredentialString(credential, "app_id"),
+				InstallationID: actionConnectionCredentialString(credential, "installation_id"),
+				PrivateKey:     actionConnectionCredentialString(credential, "private_key"),
+			}
+		case "GithubPersonalAccessToken":
+			connModel.Github.PersonalAccessToken = &githubPersonalAccessTokenCredentialModel{
+				Token: actionConnectionCredentialString(credential, "token"),
+			}
+		default:
+			return fmt.Errorf("unsupported GitHub credential type %q", credentialType)
+		}
 	case "Gitlab":
 		connModel.Gitlab = &apiTokenConnectionModel{APIKey: &apiTokenCredentialModel{
 			APIToken: actionConnectionCredentialString(credential, "api_token"),
@@ -1504,7 +1557,7 @@ func additionalCreateActionConnectionIntegration(connectionModel connectionResou
 	if err := json.Unmarshal(integrationJSON, &integration); err != nil {
 		return nil, fmt.Errorf("could not build connection integration: %w", err)
 	}
-	if integration.UnparsedObject != nil {
+	if integration.UnparsedObject != nil && !actionConnectionIntegrationWithoutClientModel(integrationData) {
 		return nil, fmt.Errorf("could not build connection integration for the configured credential type")
 	}
 	return &integration, nil
@@ -1524,10 +1577,16 @@ func additionalUpdateActionConnectionIntegration(connectionModel connectionResou
 	if err := json.Unmarshal(integrationJSON, &integration); err != nil {
 		return nil, fmt.Errorf("could not build connection integration update: %w", err)
 	}
-	if integration.UnparsedObject != nil {
+	if integration.UnparsedObject != nil && !actionConnectionIntegrationWithoutClientModel(integrationData) {
 		return nil, fmt.Errorf("could not build connection integration update for the configured credential type")
 	}
 	return &integration, nil
+}
+
+// The Datadog API client does not model GitHub connections yet, so their payload is sent as-is
+// through the integration's UnparsedObject.
+func actionConnectionIntegrationWithoutClientModel(integrationData map[string]interface{}) bool {
+	return integrationData["type"] == actionConnectionGithubIntegrationType
 }
 
 func additionalActionConnectionIntegrationData(connectionModel connectionResourceModel) (map[string]interface{}, error) {
@@ -1594,6 +1653,16 @@ func additionalActionConnectionIntegrationData(connectionModel connectionResourc
 	case connectionModel.Gemini != nil && connectionModel.Gemini.APIKey != nil:
 		return actionConnectionIntegrationData("Gemini", "GeminiAPIKey", map[string]types.String{
 			"api_key": connectionModel.Gemini.APIKey.APIKey,
+		}), nil
+	case connectionModel.Github != nil && connectionModel.Github.App != nil:
+		return actionConnectionIntegrationData(actionConnectionGithubIntegrationType, "GithubApp", map[string]types.String{
+			"app_id":          connectionModel.Github.App.AppID,
+			"installation_id": connectionModel.Github.App.InstallationID,
+			"private_key":     connectionModel.Github.App.PrivateKey,
+		}), nil
+	case connectionModel.Github != nil && connectionModel.Github.PersonalAccessToken != nil:
+		return actionConnectionIntegrationData(actionConnectionGithubIntegrationType, "GithubPersonalAccessToken", map[string]types.String{
+			"token": connectionModel.Github.PersonalAccessToken.Token,
 		}), nil
 	case connectionModel.Gitlab != nil && connectionModel.Gitlab.APIKey != nil:
 		return actionConnectionIntegrationData("Gitlab", "GitlabAPIKey", map[string]types.String{
@@ -1827,6 +1896,14 @@ func preserveAdditionalConnectionSecrets(connModel *connectionResourceModel, cur
 	if currentState.Gemini != nil && currentState.Gemini.APIKey != nil &&
 		connModel.Gemini != nil && connModel.Gemini.APIKey != nil {
 		connModel.Gemini.APIKey.APIKey = currentState.Gemini.APIKey.APIKey
+	}
+	if currentState.Github != nil && connModel.Github != nil {
+		if currentState.Github.App != nil && connModel.Github.App != nil {
+			connModel.Github.App.PrivateKey = currentState.Github.App.PrivateKey
+		}
+		if currentState.Github.PersonalAccessToken != nil && connModel.Github.PersonalAccessToken != nil {
+			connModel.Github.PersonalAccessToken.Token = currentState.Github.PersonalAccessToken.Token
+		}
 	}
 	if currentState.Gitlab != nil && currentState.Gitlab.APIKey != nil &&
 		connModel.Gitlab != nil && connModel.Gitlab.APIKey != nil {

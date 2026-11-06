@@ -40,6 +40,7 @@ data "datadog_action_connection" "my_connection" {
 - `freshservice` (Block, Read-only) Configuration for a Freshservice connection (see [below for nested schema](#nestedblock--freshservice))
 - `gcp` (Block, Read-only) Configuration for a Google Cloud connection (see [below for nested schema](#nestedblock--gcp))
 - `gemini` (Block, Read-only) Configuration for a Gemini connection (see [below for nested schema](#nestedblock--gemini))
+- `github` (Block, Read-only) Configuration for a GitHub connection (see [below for nested schema](#nestedblock--github))
 - `gitlab` (Block, Read-only) Configuration for a GitLab connection (see [below for nested schema](#nestedblock--gitlab))
 - `grey_noise` (Block, Read-only) Configuration for a GreyNoise connection (see [below for nested schema](#nestedblock--grey_noise))
 - `http` (Block, Read-only) Configuration for an HTTP connection (see [below for nested schema](#nestedblock--http))
@@ -282,6 +283,33 @@ Read-Only:
 Read-Only:
 
 - `api_key` (String, Sensitive) Gemini API key
+
+
+
+<a id="nestedblock--github"></a>
+### Nested Schema for `github`
+
+Read-Only:
+
+- `app` (Block, Read-only) Configuration for GitHub App authentication (see [below for nested schema](#nestedblock--github--app))
+- `personal_access_token` (Block, Read-only) Configuration for GitHub personal access token authentication (see [below for nested schema](#nestedblock--github--personal_access_token))
+
+<a id="nestedblock--github--app"></a>
+### Nested Schema for `github.app`
+
+Read-Only:
+
+- `app_id` (String) GitHub App ID
+- `installation_id` (String) GitHub App installation ID
+- `private_key` (String, Sensitive) GitHub App private key in PEM format
+
+
+<a id="nestedblock--github--personal_access_token"></a>
+### Nested Schema for `github.personal_access_token`
+
+Read-Only:
+
+- `token` (String, Sensitive) GitHub personal access token
 
 
 

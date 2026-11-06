@@ -108,6 +108,7 @@ resource "datadog_action_connection" "http_connection" {
 - `freshservice` (Block, Optional) Configuration for a Freshservice connection (see [below for nested schema](#nestedblock--freshservice))
 - `gcp` (Block, Optional) Configuration for a Google Cloud connection (see [below for nested schema](#nestedblock--gcp))
 - `gemini` (Block, Optional) Configuration for a Gemini connection (see [below for nested schema](#nestedblock--gemini))
+- `github` (Block, Optional) Configuration for a GitHub connection (see [below for nested schema](#nestedblock--github))
 - `gitlab` (Block, Optional) Configuration for a GitLab connection (see [below for nested schema](#nestedblock--gitlab))
 - `grey_noise` (Block, Optional) Configuration for a GreyNoise connection (see [below for nested schema](#nestedblock--grey_noise))
 - `http` (Block, Optional) Configuration for an HTTP connection (see [below for nested schema](#nestedblock--http))
@@ -357,6 +358,33 @@ Optional:
 Optional:
 
 - `api_key` (String, Sensitive) Gemini API key. String length must be at least 1.
+
+
+
+<a id="nestedblock--github"></a>
+### Nested Schema for `github`
+
+Optional:
+
+- `app` (Block, Optional) Configuration for GitHub App authentication (see [below for nested schema](#nestedblock--github--app))
+- `personal_access_token` (Block, Optional) Configuration for GitHub personal access token authentication (see [below for nested schema](#nestedblock--github--personal_access_token))
+
+<a id="nestedblock--github--app"></a>
+### Nested Schema for `github.app`
+
+Optional:
+
+- `app_id` (String) GitHub App ID. String length must be at least 1.
+- `installation_id` (String) GitHub App installation ID. String length must be at least 1.
+- `private_key` (String, Sensitive) GitHub App private key in PEM format. String length must be at least 1.
+
+
+<a id="nestedblock--github--personal_access_token"></a>
+### Nested Schema for `github.personal_access_token`
+
+Optional:
+
+- `token` (String, Sensitive) GitHub personal access token. String length must be at least 1.
 
 
 
