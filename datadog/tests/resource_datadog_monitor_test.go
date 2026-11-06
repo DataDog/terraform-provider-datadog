@@ -3291,6 +3291,131 @@ resource "datadog_monitor" "data_jobs_custom_type" {
 }`, uniq)
 }
 
+// TestAccDatadogMonitor_DataJobs_Aastra tests a job status monitor using the aastra query dialect
+func TestAccDatadogMonitor_DataJobs_Aastra(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+	resourceName := "datadog_monitor.data_jobs_aastra"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDataJobsMonitorAastra(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "type", "data-jobs alert"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_jobs_query.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_jobs_query.0.jobs_query", "search for databricks_job"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_jobs_query.0.query_dialect", "aastra"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_jobs_query.0.run_filter", "env:prod"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_jobs_query.0.monitor_options.0.alert_on_every_failure", "true"),
+				),
+			},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogDataJobsMonitorAastra(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "data_jobs_aastra" {
+  name    = "%s"
+  type    = "data-jobs alert"
+  message = "Data jobs alert triggered"
+  query   = "formula(\"failed_runs(run_query)\").by(name,workspace_name,entity_id).last(1d) > 0"
+
+  monitor_thresholds {
+    critical = 0
+  }
+
+  variables {
+    data_jobs_query {
+      name          = "run_query"
+      jobs_query    = "search for databricks_job"
+      job_type      = "databricks.job"
+      query_dialect = "aastra"
+      run_filter    = "env:prod"
+
+      monitor_options {
+        alert_on_every_failure = true
+      }
+    }
+  }
+}`, uniq)
+}
+
+// TestAccDatadogMonitor_DataJobs_Duration tests a job duration monitor, whose
+// variable is a data quality query with the duration measure
+func TestAccDatadogMonitor_DataJobs_Duration(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+	resourceName := "datadog_monitor.data_jobs_duration"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDataJobsMonitorDuration(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "type", "data-jobs alert"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_jobs_query.#", "0"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_quality_query.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_quality_query.0.measure", "duration"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_quality_query.0.filter", "search for databricks_job"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_quality_query.0.run_filter", "env:prod"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_quality_query.0.group_by.#", "3"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_quality_query.0.monitor_options.0.detection_type", "anomaly"),
+					resource.TestCheckResourceAttr(resourceName, "variables.0.data_quality_query.0.monitor_options.0.consecutive_runs", "2"),
+				),
+			},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogDataJobsMonitorDuration(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "data_jobs_duration" {
+  name    = "%s"
+  type    = "data-jobs alert"
+  message = "Data jobs duration alert triggered"
+  query   = "formula(\"job_duration(run_query)\").detection(anomaly).by(name,workspace_name,entity_id) > 0"
+
+  variables {
+    data_quality_query {
+      name           = "run_query"
+      data_source    = "data_quality_metrics"
+      schema_version = "0.0.1"
+      measure        = "duration"
+      filter         = "search for databricks_job"
+      run_filter     = "env:prod"
+      group_by       = ["name", "workspace_name", "entity_id"]
+
+      monitor_options {
+        detection_type   = "anomaly"
+        consecutive_runs = 2
+      }
+    }
+  }
+}`, uniq)
+}
+
 func TestAccDatadogMonitor_Import_OnMissingData_Conflict(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
