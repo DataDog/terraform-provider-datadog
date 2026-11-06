@@ -4,8 +4,11 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
     query = "tags.service:test"
     action {
       send_slack_message {
-        workspace = "workspace"
-        channel   = "channel"
+        workspace           = "workspace"
+        channel             = "channel"
+        include_description = true
+        include_source      = true
+        mirror_replies      = true
       }
     }
     time_restrictions {
