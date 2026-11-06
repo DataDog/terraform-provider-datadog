@@ -15,3 +15,9 @@ resource "datadog_application_key" "monitor_management_key" {
     "monitors_write"
   ]
 }
+
+# Create a new Datadog Application Key with Actions API access (Preview)
+resource "datadog_application_key" "actions_enabled" {
+  name                      = "foo-application-with-actions"
+  enable_actions_api_access = true
+}
