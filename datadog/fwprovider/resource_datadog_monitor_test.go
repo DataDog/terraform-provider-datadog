@@ -240,3 +240,37 @@ func TestDataQualityMonitorOptionsRoundTrip(t *testing.T) {
 	assert.Equal(t, original.SourceToTargetConfig, got.SourceToTargetConfig)
 	assert.Equal(t, original.ModelConfiguration, got.ModelConfiguration)
 }
+
+func TestUpdateVariablesStateMetricQuery(t *testing.T) {
+	r := &monitorResource{}
+	q := CloudCostQuery{
+		DataSource: types.StringValue("metrics"),
+		Query:      types.StringValue("avg:system.cpu.user{*}"),
+		Name:       types.StringValue("q1"),
+	}
+	m := MetricQuery{DataSource: q.DataSource, Query: q.Query, Name: q.Name}
+	opts := &datadogV1.MonitorOptions{Variables: r.buildMetricQueryStruct([]MetricQuery{m})}
+	tests := []struct {
+		monitorType string
+		prior       []Variable
+		wantMetric  bool
+	}{
+		{"query alert", nil, true},
+		{"query alert", []Variable{{CloudCostQuery: []CloudCostQuery{q}}}, false},
+		{"cost alert", nil, false},
+		{"cost alert", []Variable{{MetricQuery: []MetricQuery{m}}}, true},
+	}
+	for _, tt := range tests {
+		state := &monitorResourceModel{Variables: tt.prior}
+		state.Type.StringValue = types.StringValue(tt.monitorType)
+		r.updateVariablesState(context.Background(), state, opts)
+		v := state.Variables[0]
+		if tt.wantMetric {
+			assert.Equal(t, []MetricQuery{m}, v.MetricQuery, tt.monitorType)
+			assert.Empty(t, v.CloudCostQuery, tt.monitorType)
+		} else {
+			assert.Equal(t, []CloudCostQuery{q}, v.CloudCostQuery, tt.monitorType)
+			assert.Empty(t, v.MetricQuery, tt.monitorType)
+		}
+	}
+}

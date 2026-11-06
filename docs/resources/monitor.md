@@ -182,6 +182,7 @@ Optional:
 - `data_jobs_query` (Block List, Max: 5) The Data Jobs query using formulas and functions. (see [below for nested schema](#nestedblock--variables--data_jobs_query))
 - `data_quality_query` (Block List, Max: 5) The Data Quality query using formulas and functions. (see [below for nested schema](#nestedblock--variables--data_quality_query))
 - `event_query` (Block List) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--variables--event_query))
+- `metric_query` (Block List) A metrics query for use in formulas in metric monitors; cost monitors should use `cloud_cost_query`, which requires an aggregator. (see [below for nested schema](#nestedblock--variables--metric_query))
 
 <a id="nestedblock--variables--aggregate_augmented_query"></a>
 ### Nested Schema for `variables.aggregate_augmented_query`
@@ -838,6 +839,21 @@ Optional:
 
 - `metric` (String) The metric used for sorting group by results.
 - `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--variables--metric_query"></a>
+### Nested Schema for `variables.metric_query`
+
+Required:
+
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 ## Import
 
