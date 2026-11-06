@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 
@@ -262,69 +263,43 @@ func additionalActionConnectionIntegrationData(model connectionResourceModel) (m
 	return data, nil
 }
 
-func readActionConnectionAWSSecretReferences(model *connectionResourceModel, attributes datadogV2.ActionConnectionAttributes) error {
-	if settings, ok := attributes.GetExternalSecretsManagerOk(); ok && settings != nil {
-		model.ExternalSecretsManager = &actionConnectionExternalSecretsManagerModel{ConnectionID: types.StringValue(settings.ConnectionId), Region: types.StringValue(settings.Region)}
+func actionConnectionAWSSecretReferenceFromAPI(reference *datadogV2.ActionConnectionAWSSecretsManagerReference) *actionConnectionAWSSecretReferenceModel {
+	if reference == nil {
+		return nil
 	}
-	data, err := json.Marshal(attributes.Integration)
-	if err != nil {
-		return err
+	return &actionConnectionAWSSecretReferenceModel{
+		SecretID:     types.StringValue(reference.SecretId),
+		Key:          types.StringPointerValue(reference.Key),
+		VersionID:    types.StringPointerValue(reference.VersionId),
+		VersionStage: types.StringPointerValue(reference.VersionStage),
 	}
-	var integration map[string]interface{}
-	if err := json.Unmarshal(data, &integration); err != nil {
-		return err
-	}
+}
+
+// Non-HTTP credentials are flat objects whose API field names match the model's
+// tfsdk tags. Reuse the credentials decoded by the literal reader; HTTP tokens
+// are read directly from the SDK's typed unions alongside their names and types.
+func readActionConnectionAWSSecretReferences(model *connectionResourceModel, credentials map[string]json.RawMessage) error {
+	var readErr error
 	walkActionConnectionReferences(reflect.ValueOf(&model.connectionModel), path.Empty(), func(field reflect.Value, _ types.String, _ *actionConnectionAWSSecretReferenceModel, p path.Path) {
-		var current interface{} = integration
-		steps := p.Steps()
-		for i, step := range steps {
-			if i == 0 {
-				continue
-			} // integration name
-			switch key := step.(type) {
-			case path.PathStepAttributeName:
-				name := string(key)
-				switch name {
-				case "assume_role", "service_account", "api_key", "access_token", "tenant", "api_token", "global_api_token", "sdk_key", "basic_auth", "token_auth":
-					if i == 1 {
-						name = "credentials"
-					}
-				case "token":
-					name = "tokens"
-				case "header":
-					name = "headers"
-				case "url_parameter":
-					name = "url_parameters"
-				}
-				obj, ok := current.(map[string]interface{})
-				if !ok {
-					return
-				}
-				current = obj[name]
-				if name == "tokens" && current == nil {
-					current = obj["http_tokens"]
-				}
-			case path.PathStepElementKeyInt:
-				list, ok := current.([]interface{})
-				if !ok || int(key) >= len(list) {
-					return
-				}
-				current = list[int(key)]
-			}
-		}
-		object, ok := current.(map[string]interface{})
-		if !ok || object["type"] != "aws_secrets_manager" {
+		if readErr != nil {
 			return
 		}
-		refData, marshalErr := json.Marshal(object)
-		if marshalErr != nil {
+		steps := p.Steps()
+		name := string(steps[len(steps)-1].(path.PathStepAttributeName))
+		value := credentials[name]
+		if len(value) == 0 || value[0] != '{' {
 			return
 		}
 		var reference datadogV2.ActionConnectionAWSSecretsManagerReference
-		if err := json.Unmarshal(refData, &reference); err != nil || reference.UnparsedObject != nil {
+		if err := json.Unmarshal(value, &reference); err != nil {
+			readErr = fmt.Errorf("could not read AWS Secrets Manager reference for %s: %w", p, err)
 			return
 		}
-		field.Set(reflect.ValueOf(&actionConnectionAWSSecretReferenceModel{SecretID: types.StringValue(reference.SecretId), Key: types.StringPointerValue(reference.Key), VersionID: types.StringPointerValue(reference.VersionId), VersionStage: types.StringPointerValue(reference.VersionStage)}))
+		if reference.UnparsedObject != nil {
+			readErr = fmt.Errorf("invalid AWS Secrets Manager reference for %s", p)
+			return
+		}
+		field.Set(reflect.ValueOf(actionConnectionAWSSecretReferenceFromAPI(&reference)))
 	})
-	return nil
+	return readErr
 }

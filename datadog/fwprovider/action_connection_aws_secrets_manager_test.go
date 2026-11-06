@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -323,6 +324,49 @@ func TestActionConnectionAWSSecretsManagerHTTPResponseImport(t *testing.T) {
 	}
 	if credentials.Tokens[0].Value.ActionConnectionAWSSecretsManagerReference.GetVersionStage() != "AWSCURRENT" {
 		t.Fatal("request lost HTTP token version selector")
+	}
+}
+
+func TestActionConnectionAWSSecretsManagerMixedHTTPTokens(t *testing.T) {
+	for _, tc := range []struct{ name, tokens string }{
+		{"request", `"tokens":[{"name":"literal","type":"SECRET","value":""},{"name":"stage","type":"SECRET","value":{"type":"aws_secrets_manager","secret_id":"example/http","key":"token","version_stage":"AWSCURRENT"}},{"name":"version","type":"SECRET","value":{"type":"aws_secrets_manager","secret_id":"example/raw","version_id":"v1"}}]`},
+		{"response", `"http_tokens":[{"name":"literal","value":""},{"name":"stage","value":{"type":"aws_secrets_manager","secret_id":"example/http","key":"token","version_stage":"AWSCURRENT"}},{"name":"version","value":{"type":"aws_secrets_manager","secret_id":"example/raw","version_id":"v1"}}]`},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			payload := `{"data":{"id":"connection","type":"action_connection","attributes":{"name":"Mixed HTTP tokens","external_secrets_manager":{"type":"aws_secrets_manager","connection_id":"aws-connection","region":"us-east-1"},"integration":{"type":"HTTP","base_url":"https://example.com","credentials":{"type":"HTTPTokenAuth",` + tc.tokens + `}}}}}`
+			var response datadogV2.GetActionConnectionResponse
+			if err := json.Unmarshal([]byte(payload), &response); err != nil {
+				t.Fatal(err)
+			}
+			assertActionConnectionFullyParsed(t, reflect.ValueOf(response))
+			model, err := apiResponseToConnectionModel(context.Background(), response)
+			if err != nil {
+				t.Fatal(err)
+			}
+			assertActionConnectionReferenceCount(t, model.connectionModel, 2)
+			read := model.HTTP.TokenAuth.Tokens
+			if len(read) != 3 || read[0].Name.ValueString() != "literal" || read[0].ValueAWSSecretsManager != nil {
+				t.Fatal("literal token was changed into a reference")
+			}
+			if read[1].Name.ValueString() != "stage" || read[1].ValueAWSSecretsManager.Key.ValueString() != "token" || read[1].ValueAWSSecretsManager.VersionStage.ValueString() != "AWSCURRENT" {
+				t.Fatal("staging selector was not associated with its token")
+			}
+			if read[2].Name.ValueString() != "version" || read[2].ValueAWSSecretsManager.SecretID.ValueString() != "example/raw" || !read[2].ValueAWSSecretsManager.Key.IsNull() || read[2].ValueAWSSecretsManager.VersionID.ValueString() != "v1" {
+				t.Fatal("whole-secret version reference was not preserved")
+			}
+		})
+	}
+}
+
+func TestActionConnectionAWSSecretsManagerInvalidReferenceRead(t *testing.T) {
+	payload := `{"data":{"id":"connection","type":"action_connection","attributes":{"name":"Invalid GCP reference","integration":{"type":"GCP","credentials":{"type":"GCPServiceAccount","service_account_email":"sa@example.com","private_key":{"type":"aws_secrets_manager"}}}}}}`
+	var response datadogV2.GetActionConnectionResponse
+	if err := json.Unmarshal([]byte(payload), &response); err != nil {
+		t.Fatal(err)
+	}
+	_, err := apiResponseToConnectionModel(context.Background(), response)
+	if err == nil || !strings.Contains(err.Error(), "gcp.service_account.private_key") {
+		t.Fatalf("invalid reference must fail refresh with its credential path: %v", err)
 	}
 }
 

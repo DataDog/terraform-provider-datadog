@@ -1097,6 +1097,12 @@ func apiResponseToConnectionModel(ctx context.Context, connection datadogV2.GetA
 	connModel.Name = types.StringValue(attributes.Name)
 	connModel.Tags = fwutils.ToTerraformSetString(ctx, attributes.GetTagsOk)
 	connModel.EffectiveTags = connModel.Tags
+	if settings, ok := attributes.GetExternalSecretsManagerOk(); ok && settings != nil {
+		connModel.ExternalSecretsManager = &actionConnectionExternalSecretsManagerModel{
+			ConnectionID: types.StringValue(settings.ConnectionId),
+			Region:       types.StringValue(settings.Region),
+		}
+	}
 
 	if attributes.Integration.AWSIntegration != nil {
 		awsAttr := attributes.Integration.AWSIntegration
@@ -1118,16 +1124,18 @@ func apiResponseToConnectionModel(ctx context.Context, connection datadogV2.GetA
 		tokens := []*httpConnectionTokenModel{}
 		for _, token := range httpAttr.Credentials.HTTPTokenAuth.Tokens {
 			tokens = append(tokens, &httpConnectionTokenModel{
-				Type: types.StringValue(string(token.Type)),
-				Name: types.StringValue(token.Name),
+				Type:                   types.StringValue(string(token.Type)),
+				Name:                   types.StringValue(token.Name),
+				ValueAWSSecretsManager: actionConnectionAWSSecretReferenceFromAPI(token.Value.ActionConnectionAWSSecretsManagerReference),
 			})
 		}
 		if len(httpAttr.Credentials.HTTPTokenAuth.HttpTokens) > 0 {
 			tokens = nil
 			for _, token := range httpAttr.Credentials.HTTPTokenAuth.HttpTokens {
 				tokens = append(tokens, &httpConnectionTokenModel{
-					Type: types.StringValue("SECRET"),
-					Name: types.StringValue(token.Name),
+					Type:                   types.StringValue("SECRET"),
+					Name:                   types.StringValue(token.Name),
+					ValueAWSSecretsManager: actionConnectionAWSSecretReferenceFromAPI(token.Value.ActionConnectionAWSSecretsManagerReference),
 				})
 			}
 		}
@@ -1178,9 +1186,6 @@ func apiResponseToConnectionModel(ctx context.Context, connection datadogV2.GetA
 		return nil, err
 	}
 
-	if err := readActionConnectionAWSSecretReferences(connModel, attributes); err != nil {
-		return nil, err
-	}
 	return connModel, nil
 }
 
@@ -1191,8 +1196,8 @@ func setAdditionalConnectionModelFromAPI(connModel *connectionResourceModel, int
 	}
 
 	var integrationData struct {
-		Type        string                 `json:"type"`
-		Credentials map[string]interface{} `json:"credentials"`
+		Type        string                     `json:"type"`
+		Credentials map[string]json.RawMessage `json:"credentials"`
 	}
 	if err := json.Unmarshal(integrationJSON, &integrationData); err != nil {
 		return fmt.Errorf("could not deserialize connection integration: %w", err)
@@ -1227,7 +1232,7 @@ func setAdditionalConnectionModelFromAPI(connModel *connectionResourceModel, int
 		}}
 	case "Cloudflare":
 		connModel.Cloudflare = &cloudflareConnectionModel{}
-		credentialType, _ := credential["type"].(string)
+		credentialType := actionConnectionCredentialString(credential, "type").ValueString()
 		switch credentialType {
 		case "CloudflareAPIToken":
 			connModel.Cloudflare.APIToken = &cloudflareAPITokenCredentialModel{
@@ -1319,15 +1324,15 @@ func setAdditionalConnectionModelFromAPI(connModel *connectionResourceModel, int
 		return fmt.Errorf("unsupported connection integration type %q", integrationData.Type)
 	}
 
-	return nil
+	return readActionConnectionAWSSecretReferences(connModel, credential)
 }
 
-func actionConnectionCredentialString(credential map[string]interface{}, name string) types.String {
-	value, ok := credential[name].(string)
-	if !ok {
+func actionConnectionCredentialString(credential map[string]json.RawMessage, name string) types.String {
+	var value *string
+	if err := json.Unmarshal(credential[name], &value); err != nil {
 		return types.StringNull()
 	}
-	return types.StringValue(value)
+	return types.StringPointerValue(value)
 }
 
 func connectionModelToCreateApiRequest(ctx context.Context, connectionModel connectionResourceModel) (*datadogV2.CreateActionConnectionRequest, error) {
