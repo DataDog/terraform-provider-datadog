@@ -38,6 +38,7 @@ type datadogUsersDataSourceModel struct {
 	// Query Parameters
 	Filter       types.String `tfsdk:"filter"`
 	FilterStatus types.String `tfsdk:"filter_status"`
+	FilterHandle types.String `tfsdk:"filter_handle"`
 
 	// Results
 	ID    types.String `tfsdk:"id"`
@@ -75,6 +76,10 @@ func (d *datadogUsersDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 			"filter_status": schema.StringAttribute{
 				Optional:    true,
 				Description: "Filter on status attribute. Comma-separated list with possible values of Active, Pending, and Disabled.",
+			},
+			"filter_handle": schema.StringAttribute{
+				Optional:    true,
+				Description: "Filter users by exact handle. Unlike `filter`, this also returns Datadog-managed users.",
 			},
 
 			// computed values
@@ -117,6 +122,9 @@ func (d *datadogUsersDataSource) Read(ctx context.Context, req datasource.ReadRe
 	}
 	if !state.FilterStatus.IsNull() {
 		optionalParams.FilterStatus = state.FilterStatus.ValueStringPointer()
+	}
+	if !state.FilterHandle.IsNull() {
+		optionalParams.FilterHandle = state.FilterHandle.ValueStringPointer()
 	}
 
 	pageSize := 100
@@ -166,7 +174,7 @@ func (d *datadogUsersDataSource) updateState(state *datadogUsersDataSourceModel,
 		users = append(users, &u)
 	}
 
-	hashingData := fmt.Sprintf("%s:%s", state.Filter.ValueString(), state.FilterStatus.ValueString())
+	hashingData := fmt.Sprintf("%s:%s:%s", state.Filter.ValueString(), state.FilterStatus.ValueString(), state.FilterHandle.ValueString())
 
 	state.ID = types.StringValue(utils.ConvertToSha256(hashingData))
 	state.Users = users
