@@ -1,10 +1,17 @@
 package test
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"io"
+	"net/http"
+	"slices"
+	"strings"
+	"sync"
 	"testing"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
@@ -163,6 +170,216 @@ func TestAccDatadogActionConnectionResource_HTTP_TokenAuth(t *testing.T) {
 			},
 		},
 	})
+}
+
+// The API clears the stored body when an HTTP credentials update omits it, so check the body through the API after each update.
+func TestAccDatadogActionConnectionResource_HTTP_TokenAuthUpdateKeepsBody(t *testing.T) {
+	t.Parallel()
+
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	connectionName := uniqueEntityName(ctx, t)
+	resourceName := "datadog_action_connection.http_token_auth_update"
+	body := `{"key":"{{ token1 }}"}`
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogConnectionDestroy(providers.frameworkProvider, resourceName),
+		Steps: []resource.TestStep{
+			{
+				Config: testHTTPTokenAuthUpdateConfig(connectionName, testConnectionBaseURL, "secret value 1"),
+				Check:  testAccCheckDatadogHTTPConnectionBody(providers.frameworkProvider, resourceName, body),
+			},
+			{
+				Config: testHTTPTokenAuthUpdateConfig(connectionName, testConnectionBaseURL, "rotated value 1"),
+				Check:  testAccCheckDatadogHTTPConnectionBody(providers.frameworkProvider, resourceName, body),
+			},
+			{
+				Config: testHTTPTokenAuthUpdateConfig(connectionName, testConnectionBaseURL+"/v2", "rotated value 1"),
+				Check:  testAccCheckDatadogHTTPConnectionBody(providers.frameworkProvider, resourceName, body),
+			},
+		},
+	})
+}
+
+func testHTTPTokenAuthUpdateConfig(name, baseURL, tokenValue string) string {
+	return fmt.Sprintf(`
+	resource "datadog_action_connection" "http_token_auth_update" {
+		name = "%s"
+
+		http {
+			base_url = "%s"
+
+			token_auth {
+				token {
+					type = "SECRET"
+					name = "token1"
+					value = "%s"
+				}
+
+				header {
+					name = "header-name"
+					value = "header-value"
+				}
+
+				body {
+					content_type = "application/json"
+					content = jsonencode({
+						key = "{{ token1 }}"
+					})
+				}
+			}
+		}
+	}`, name, baseURL, tokenValue)
+}
+
+func testAccCheckDatadogHTTPConnectionBody(accProvider *fwprovider.FrameworkProvider, resourceName, wantContent string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		id := s.RootModule().Resources[resourceName].Primary.ID
+		connection, _, err := accProvider.DatadogApiInstances.GetActionConnectionApiV2().GetActionConnection(accProvider.Auth, id)
+		if err != nil {
+			return fmt.Errorf("received an error retrieving connection: %w", err)
+		}
+		httpIntegration := connection.Data.Attributes.Integration.HTTPIntegration
+		if httpIntegration == nil || httpIntegration.Credentials.HTTPTokenAuth == nil {
+			return fmt.Errorf("connection %s is not an HTTP token auth connection", id)
+		}
+		if got := httpIntegration.Credentials.HTTPTokenAuth.Body.GetContent(); got != wantContent {
+			return fmt.Errorf("body content = %q, want %q", got, wantContent)
+		}
+		return nil
+	}
+}
+
+// A tag-only update must not resend placeholder credentials or the body over values set outside Terraform.
+func TestAccDatadogActionConnectionResource_HTTP_TagUpdateKeepsExternalCredentials(t *testing.T) {
+	t.Parallel()
+
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	connectionName := uniqueEntityName(ctx, t)
+	resourceName := "datadog_action_connection.http_external_credentials"
+	externalBody := `{"key":"set outside terraform"}`
+	var connectionID string
+	httpClient := providers.frameworkProvider.DatadogApiInstances.HttpClient.GetConfig().HTTPClient
+	updates := &actionConnectionUpdateRecorder{transport: httpClient.Transport}
+	httpClient.Transport = updates
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogConnectionDestroy(providers.frameworkProvider, resourceName),
+		Steps: []resource.TestStep{
+			{
+				Config: testHTTPExternalCredentialsConfig(connectionName, `["env:test"]`),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogHTTPConnectionBody(providers.frameworkProvider, resourceName, `{"key":"{{ token1 }}"}`),
+					func(s *terraform.State) error {
+						connectionID = s.RootModule().Resources[resourceName].Primary.ID
+						return nil
+					},
+				),
+			},
+			{
+				PreConfig: func() {
+					defer updates.Reset()
+					credentials := datadogV2.NewHTTPTokenAuthUpdate(datadogV2.HTTPTOKENAUTHTYPE_HTTPTOKENAUTH)
+					credentials.Tokens = []datadogV2.HTTPTokenUpdate{*datadogV2.NewHTTPTokenUpdate("token1", datadogV2.TOKENTYPE_SECRET, "secret set outside terraform")}
+					credentials.Body = datadogV2.NewHTTPBody()
+					credentials.Body.SetContentType("application/json")
+					credentials.Body.SetContent(externalBody)
+					integration := datadogV2.NewHTTPIntegrationUpdate(datadogV2.HTTPINTEGRATIONTYPE_HTTP)
+					integration.SetCredentials(datadogV2.HTTPTokenAuthUpdateAsHTTPCredentialsUpdate(credentials))
+					attributes := datadogV2.NewActionConnectionAttributesUpdate()
+					attributes.SetIntegration(datadogV2.HTTPIntegrationUpdateAsActionConnectionIntegrationUpdate(integration))
+					request := datadogV2.NewUpdateActionConnectionRequest(*datadogV2.NewActionConnectionDataUpdate(*attributes, datadogV2.ACTIONCONNECTIONDATATYPE_ACTION_CONNECTION))
+					api := providers.frameworkProvider.DatadogApiInstances.GetActionConnectionApiV2()
+					if _, _, err := api.UpdateActionConnection(providers.frameworkProvider.Auth, connectionID, *request); err != nil {
+						t.Fatalf("updating connection outside Terraform: %v", err)
+					}
+				},
+				Config: testHTTPExternalCredentialsConfig(connectionName, `["env:test", "team:action-platform"]`),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "tags.#", "2"),
+					testAccCheckDatadogHTTPConnectionBody(providers.frameworkProvider, resourceName, externalBody),
+					func(*terraform.State) error {
+						bodies := updates.Bodies()
+						if len(bodies) != 1 {
+							return fmt.Errorf("tag-only update sent %d PATCH requests, want 1", len(bodies))
+						}
+						if strings.Contains(bodies[0], `"integration"`) {
+							return fmt.Errorf("tag-only update resent the integration over credentials set outside Terraform: %s", bodies[0])
+						}
+						return nil
+					},
+				),
+			},
+		},
+	})
+}
+
+type actionConnectionUpdateRecorder struct {
+	transport http.RoundTripper
+	mutex     sync.Mutex
+	bodies    []string
+}
+
+func (r *actionConnectionUpdateRecorder) RoundTrip(request *http.Request) (*http.Response, error) {
+	if request.Method == http.MethodPatch && strings.Contains(request.URL.Path, "/api/v2/actions/connections/") && request.Body != nil {
+		body, err := io.ReadAll(request.Body)
+		if err != nil {
+			return nil, err
+		}
+		request.Body = io.NopCloser(bytes.NewReader(body))
+		r.mutex.Lock()
+		r.bodies = append(r.bodies, string(body))
+		r.mutex.Unlock()
+	}
+	return r.transport.RoundTrip(request)
+}
+
+func (r *actionConnectionUpdateRecorder) Bodies() []string {
+	r.mutex.Lock()
+	defer r.mutex.Unlock()
+	return slices.Clone(r.bodies)
+}
+
+func (r *actionConnectionUpdateRecorder) Reset() {
+	r.mutex.Lock()
+	defer r.mutex.Unlock()
+	r.bodies = nil
+}
+
+func testHTTPExternalCredentialsConfig(name, tags string) string {
+	return fmt.Sprintf(`
+	resource "datadog_action_connection" "http_external_credentials" {
+		name = "%s"
+		tags = %s
+
+		http {
+			base_url = "%s"
+
+			token_auth {
+				token {
+					type = "SECRET"
+					name = "token1"
+					value = "PLACEHOLDER_FILL_IN_UI"
+				}
+
+				body {
+					content_type = "application/json"
+					content = jsonencode({
+						key = "{{ token1 }}"
+					})
+				}
+			}
+		}
+
+		lifecycle {
+			ignore_changes = [http]
+		}
+	}`, name, tags, testConnectionBaseURL)
 }
 
 func testHTTPTokenAuthConnectionResourceConfig(name string) string {

@@ -237,6 +237,7 @@ func TestActionConnectionHTTPUpdateOmitsUnchangedTokens(t *testing.T) {
 			{Type: types.StringValue("SECRET"), Name: types.StringValue("appKey"), Value: types.StringValue("PLACEHOLDER_FILL_IN_UI")},
 		},
 		Headers: []*httpConnectionHeaderModel{{Name: types.StringValue("X-Test"), Value: types.StringValue("old")}},
+		Body:    &httpConnectionBodyModel{ContentType: types.StringValue("application/json"), Content: types.StringValue(`{"foo":"{{ apiKey }}"}`)},
 	}
 	oldHTTP := &httpConnectionModel{BaseURL: types.StringValue("https://example.com"), TokenAuth: oldAuth}
 	newHeaderAuth := *oldAuth
@@ -248,6 +249,8 @@ func TestActionConnectionHTTPUpdateOmitsUnchangedTokens(t *testing.T) {
 	}
 	deletedTokenAuth := *oldAuth
 	deletedTokenAuth.Tokens = oldAuth.Tokens[1:]
+	removedBodyAuth := *oldAuth
+	removedBodyAuth.Body = nil
 
 	tests := []struct {
 		name            string
@@ -257,11 +260,13 @@ func TestActionConnectionHTTPUpdateOmitsUnchangedTokens(t *testing.T) {
 		wantHeaders     bool
 		wantTokens      int
 		wantDeleted     bool
+		wantBody        string
 	}{
 		{name: "base URL", plannedHTTP: &httpConnectionModel{BaseURL: types.StringValue("https://new.example.com"), TokenAuth: oldAuth}, wantBaseURL: true, wantCredentials: true},
 		{name: "header", plannedHTTP: &httpConnectionModel{BaseURL: oldHTTP.BaseURL, TokenAuth: &newHeaderAuth}, wantCredentials: true, wantHeaders: true},
 		{name: "one token changed", plannedHTTP: &httpConnectionModel{BaseURL: oldHTTP.BaseURL, TokenAuth: &newTokenAuth}, wantCredentials: true, wantTokens: 1},
 		{name: "one token deleted", plannedHTTP: &httpConnectionModel{BaseURL: oldHTTP.BaseURL, TokenAuth: &deletedTokenAuth}, wantCredentials: true, wantTokens: 1, wantDeleted: true},
+		{name: "body removed", plannedHTTP: &httpConnectionModel{BaseURL: oldHTTP.BaseURL, TokenAuth: &removedBodyAuth}, wantCredentials: true, wantBody: `{}`},
 	}
 
 	for _, tt := range tests {
@@ -307,6 +312,14 @@ func TestActionConnectionHTTPUpdateOmitsUnchangedTokens(t *testing.T) {
 			if _, exists := credentials["headers"]; exists != tt.wantHeaders {
 				t.Fatalf("headers present = %t, want %t", exists, tt.wantHeaders)
 			}
+			// The API clears the stored body when an HTTP credentials update omits it.
+			wantBody := tt.wantBody
+			if wantBody == "" {
+				wantBody = `{"content":"{\"foo\":\"{{ apiKey }}\"}","content_type":"application/json"}`
+			}
+			if got := string(credentials["body"]); got != wantBody {
+				t.Fatalf("body = %s, want %s", got, wantBody)
+			}
 			var tokens []json.RawMessage
 			if raw, exists := credentials["tokens"]; exists {
 				if err := json.Unmarshal(raw, &tokens); err != nil {
@@ -329,5 +342,55 @@ func TestActionConnectionHTTPUpdateOmitsUnchangedTokens(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestActionConnectionTagUpdateOmitsHTTPIntegrationWithBody(t *testing.T) {
+	t.Parallel()
+
+	ctx := context.Background()
+	tags, diags := types.SetValueFrom(ctx, types.StringType, []string{"team:workflow"})
+	if diags.HasError() {
+		t.Fatalf("building tags: %v", diags.Errors())
+	}
+
+	prior := connectionResourceModel{
+		connectionModel: connectionModel{
+			Name: types.StringValue("HTTP connection"),
+			HTTP: &httpConnectionModel{BaseURL: types.StringValue("https://example.com"), TokenAuth: &httpTokenAuthConnectionModel{
+				Tokens: []*httpConnectionTokenModel{{
+					Type: types.StringValue("SECRET"), Name: types.StringValue("apiKey"), Value: types.StringValue("PLACEHOLDER_FILL_IN_UI"),
+				}},
+				Headers:       []*httpConnectionHeaderModel{{Name: types.StringValue("X-Test"), Value: types.StringValue("value")}},
+				URLParameters: []*httpConnectionUrlParameterModel{{Name: types.StringValue("param"), Value: types.StringValue("value")}},
+				Body:          &httpConnectionBodyModel{ContentType: types.StringValue("application/json"), Content: types.StringValue(`{"foo":"{{ apiKey }}"}`)},
+			}},
+		},
+		EffectiveTags: types.SetNull(types.StringType),
+	}
+	plan := prior
+	plan.EffectiveTags = tags
+
+	request, err := connectionModelToUpdateApiRequest(ctx, plan, prior)
+	if err != nil {
+		t.Fatalf("building update: %v", err)
+	}
+	payload, err := json.Marshal(request)
+	if err != nil {
+		t.Fatalf("marshaling update: %v", err)
+	}
+	var body struct {
+		Data struct {
+			Attributes map[string]json.RawMessage `json:"attributes"`
+		} `json:"data"`
+	}
+	if err := json.Unmarshal(payload, &body); err != nil {
+		t.Fatalf("parsing update: %v", err)
+	}
+	if integration, exists := body.Data.Attributes["integration"]; exists {
+		t.Fatalf("tag-only update sent integration %s, which would overwrite credentials set outside Terraform", integration)
+	}
+	if got := string(body.Data.Attributes["tags"]); got != `["team:workflow"]` {
+		t.Fatalf("tags = %s, want [\"team:workflow\"]", got)
 	}
 }
