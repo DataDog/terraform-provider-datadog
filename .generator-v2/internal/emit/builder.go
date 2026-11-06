@@ -2603,13 +2603,22 @@ func buildPrimitiveCollectionField(a *model.Attribute, tfName, field, childState
 	return rf, ""
 }
 
+// nativeElementFormats maps an element type to the one format whose SDK type is
+// already the native type ElementsAs decodes into, the same no-conversion
+// formats requestValueExpr accepts on a scalar.
+var nativeElementFormats = map[string]string{
+	"types.Int64Type":   "int64",
+	"types.Float64Type": "double",
+}
+
 // primitiveElementGoType maps a primitive collection's element to the native Go
 // type ElementsAs decodes into, rejecting whatever the request side cannot
-// recover a typed SDK value for: a format or enum on the element — ElementType
-// collapses those to plain "types.StringType", hence the separate
-// ElementFormat/ElementIsEnum — or an element outside the four scalar forms.
+// recover a typed SDK value for: a format that needs a conversion or an enum on
+// the element — ElementType collapses those to plain "types.StringType", hence
+// the separate ElementFormat/ElementIsEnum — or an element outside the four
+// scalar forms.
 func primitiveElementGoType(a *model.Attribute) (goType, reason string) {
-	if a.ElementFormat != "" {
+	if a.ElementFormat != "" && nativeElementFormats[a.ElementType] != a.ElementFormat {
 		return "", fmt.Sprintf("collection element format %q is not yet supported on a resource request", a.ElementFormat)
 	}
 	if a.ElementIsEnum {
