@@ -16,7 +16,8 @@ import (
 // Asserts what a textual golden diff cannot see: that a committed golden is
 // valid Go as a member of package fwprovider, against the SDK the provider
 // pins, with no manual edits. Comparing the golden against a fresh generator
-// run is the catalogue walker's job and is not duplicated here.
+// run is TestFixtureGoldensMatchGeneratorOutput's job (internal/cli) and is not
+// duplicated here.
 var _ = Describe("Fixture catalogue goldens", func() {
 	It("compiles the resource_incident_type golden against the provider module", func() {
 		out := filepath.Join("fixtures", "resource_incident_type", "out")

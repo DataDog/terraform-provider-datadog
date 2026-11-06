@@ -24,13 +24,17 @@ resource "datadog_team" "foo" {
 resource "datadog_team_notification_rule" "foo" {
   team_id = datadog_team.foo.id
   email {
-    enabled = true
+    enabled         = true
+    recipient_email = "team-alerts@example.com"
   }
   ms_teams {
     connector_name = "test-teams-handle"
   }
   pagerduty {
     service_name = "my-service"
+  }
+  servicenow {
+    templates = ["incident-template"]
   }
   slack {
     channel   = "test-channel"
@@ -51,6 +55,7 @@ resource "datadog_team_notification_rule" "foo" {
 - `email` (Block, Optional) The email notification settings. (see [below for nested schema](#nestedblock--email))
 - `ms_teams` (Block, Optional) The MS Teams notification settings. (see [below for nested schema](#nestedblock--ms_teams))
 - `pagerduty` (Block, Optional) The PagerDuty notification settings. (see [below for nested schema](#nestedblock--pagerduty))
+- `servicenow` (Block, Optional) The ServiceNow notification settings. (see [below for nested schema](#nestedblock--servicenow))
 - `slack` (Block, Optional) The Slack notification settings. (see [below for nested schema](#nestedblock--slack))
 
 ### Read-Only
@@ -63,6 +68,7 @@ resource "datadog_team_notification_rule" "foo" {
 Optional:
 
 - `enabled` (Boolean) Whether to send email notifications to team members when alerts are triggered.
+- `recipient_email` (String) A single email address to send notifications to instead of all team members. Requires `enabled` to be `true`. When omitted, notifications are sent to all team members.
 
 
 <a id="nestedblock--ms_teams"></a>
@@ -79,6 +85,14 @@ Optional:
 Optional:
 
 - `service_name` (String) PagerDuty service name to send incident notifications to. The service name can be found in your PagerDuty service settings.
+
+
+<a id="nestedblock--servicenow"></a>
+### Nested Schema for `servicenow`
+
+Optional:
+
+- `templates` (List of String) ServiceNow template handle names to use for notifications.
 
 
 <a id="nestedblock--slack"></a>

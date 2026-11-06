@@ -17,19 +17,19 @@ var (
 	_ datasource.DataSourceWithConfigure = &datadogGizmosDataSource{}
 )
 
-type datadogGizmosDataSourceModel struct {
+type datadogGizmos_Model struct {
 	// Results
-	ID     types.String               `tfsdk:"id"`
-	Gizmos []*datadogGizmosGizmoModel `tfsdk:"gizmos"`
+	ID     types.String                `tfsdk:"id"`
+	Gizmos []*datadogGizmos_GizmoModel `tfsdk:"gizmos"`
 }
 
-type datadogGizmosGizmoModel struct {
-	ID   types.String                 `tfsdk:"id"`
-	Name types.String                 `tfsdk:"name"`
-	Spec *datadogGizmosGizmoSpecModel `tfsdk:"spec"`
+type datadogGizmos_GizmoModel struct {
+	ID   types.String                  `tfsdk:"id"`
+	Name types.String                  `tfsdk:"name"`
+	Spec *datadogGizmos_GizmoSpecModel `tfsdk:"spec"`
 }
 
-type datadogGizmosGizmoSpecModel struct {
+type datadogGizmos_GizmoSpecModel struct {
 	Shape types.String `tfsdk:"shape"`
 	Size  types.Int64  `tfsdk:"size"`
 }
@@ -94,7 +94,7 @@ func (d *datadogGizmosDataSource) Schema(_ context.Context, _ datasource.SchemaR
 }
 
 func (d *datadogGizmosDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state datadogGizmosDataSourceModel
+	var state datadogGizmos_Model
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -115,16 +115,16 @@ func (d *datadogGizmosDataSource) Read(ctx context.Context, request datasource.R
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogGizmosDataSource) updateState(ctx context.Context, state *datadogGizmosDataSourceModel, data *[]datadogV2.Gizmo) diag.Diagnostics {
+func (d *datadogGizmosDataSource) updateState(ctx context.Context, state *datadogGizmos_Model, data *[]datadogV2.Gizmo) diag.Diagnostics {
 	var diags diag.Diagnostics
-	results := make([]*datadogGizmosGizmoModel, 0, len(*data))
+	results := make([]*datadogGizmos_GizmoModel, 0, len(*data))
 	for _, item := range *data {
-		r := datadogGizmosGizmoModel{
+		r := datadogGizmos_GizmoModel{
 			ID:   types.StringValue(item.GetId()),
 			Name: types.StringValue(item.Attributes.GetName()),
 		}
 		if spec, ok := item.Attributes.GetSpecOk(); ok && spec != nil {
-			specModel := &datadogGizmosGizmoSpecModel{}
+			specModel := &datadogGizmos_GizmoSpecModel{}
 			if shape, ok := spec.GetShapeOk(); ok && shape != nil {
 				specModel.Shape = types.StringValue(*shape)
 			}

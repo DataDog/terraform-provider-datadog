@@ -42,14 +42,16 @@ Optional:
 Required:
 
 - `private_key_name` (String) Name that distinguishes this private key from other keys in Datadog.
-- `private_key_wo` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) The private key, in PEM format. This write-only value is not stored in Terraform state.
-- `private_key_wo_version` (String) Version trigger for private_key_wo rotation. String length must be at least 1.
 
 Optional:
 
 - `auth_type` (String) The authentication method type. Valid values are `snowflake_private_key`. Defaults to `"snowflake_private_key"`.
-- `private_key_passphrase_wo` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Passphrase that decrypts the private key. Provide it only when the key is encrypted. This write-only value is not stored in Terraform state.
+- `private_key` (String, Sensitive) The private key, in PEM format. Exactly one of `private_key` or `private_key_wo` must be set. Prefer `private_key_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.
+- `private_key_passphrase` (String, Sensitive) Passphrase that decrypts the private key. Provide it only when the key is encrypted. Conflicts with `private_key_passphrase_wo`. Prefer `private_key_passphrase_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.
+- `private_key_passphrase_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Passphrase that decrypts the private key. Provide it only when the key is encrypted. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.
 - `private_key_passphrase_wo_version` (String) Version trigger for private_key_passphrase_wo rotation. String length must be at least 1.
+- `private_key_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) The private key, in PEM format. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.
+- `private_key_wo_version` (String) Version trigger for private_key_wo rotation. String length must be at least 1.
 
 
 

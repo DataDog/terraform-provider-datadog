@@ -123,7 +123,7 @@ func TestAwsWifIdentityMappingCreate(t *testing.T) {
 				requests.Add(1)
 				w.Header().Set("Content-Type", "application/json")
 				switch {
-				case request.Method == http.MethodPost && request.URL.Path == "/api/v2/cloud_auth/aws/persona_mapping":
+				case request.Method == http.MethodPost && request.URL.Path == "/api/v2/wif/aws/persona_mapping":
 					if test.errorBody != "" {
 						w.WriteHeader(http.StatusBadRequest)
 						fmt.Fprint(w, test.errorBody)
@@ -138,7 +138,7 @@ func TestAwsWifIdentityMappingCreate(t *testing.T) {
 					w.WriteHeader(http.StatusCreated)
 					fmt.Fprintf(w, `{"data":{"id":%q,"type":%q,"attributes":{"account_identifier":%q,"account_uuid":%q,"arn_pattern":%q}}}`,
 						mappingID, test.responseType, accountIdentifier, accountUUID, arnPattern)
-				case request.Method == http.MethodGet && request.URL.Path == "/api/v2/cloud_auth/aws/persona_mapping/"+mappingID:
+				case request.Method == http.MethodGet && request.URL.Path == "/api/v2/wif/aws/persona_mapping/"+mappingID:
 					sawGet = true
 					w.WriteHeader(http.StatusForbidden)
 					fmt.Fprint(w, `{"errors":[{"detail":"visibility failed"}]}`)
@@ -293,7 +293,7 @@ func TestAwsWifIdentityMappingRead(t *testing.T) {
 			defer cancel()
 			var requests atomic.Int32
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, request *http.Request) {
-				if request.Method != http.MethodGet || request.URL.Path != "/api/v2/cloud_auth/aws/persona_mapping/mapping-id" {
+				if request.Method != http.MethodGet || request.URL.Path != "/api/v2/wif/aws/persona_mapping/mapping-id" {
 					t.Errorf("unexpected request: %s %s", request.Method, request.URL.Path)
 				}
 				index := min(int(requests.Add(1))-1, len(tc.statuses)-1)

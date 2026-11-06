@@ -53,6 +53,20 @@ var _ = Describe("data-source templates", func() {
 			Expect(first).To(Equal(second), "render of %q is non-deterministic", v.TypeName)
 		}
 	})
+
+	DescribeTable("rejects a RootModel the templates cannot type state with",
+		func(rootModel, wantErr string) {
+			v := caseConstructorView()
+			v.RootModel = rootModel
+			_, err := RenderDataSource(v)
+			Expect(err).To(MatchError(ContainSubstring(wantErr)))
+
+			_, err = RenderResource(ResourceView{TypeName: "case", RootModel: rootModel, Models: v.Models})
+			Expect(err).To(MatchError(ContainSubstring(wantErr)))
+		},
+		Entry("empty", "", "RootModel is empty"),
+		Entry("not a declared model", "datadogCase_OtherModel", "RootModel datadogCase_OtherModel is not among the declared models"),
+	)
 })
 
 var _ = Describe("data-source acceptance-test scaffolds", func() {
@@ -187,6 +201,7 @@ func caseConstructorView() DataSourceView {
 		TypeName:    "case",
 		UsesFmt:     true,
 		GoName:      "datadogCase",
+		RootModel:   "datadogCase_Model",
 		Description: "Use this data source to retrieve a case.",
 		SDKPackage:  "datadogV2",
 		APIStruct:   "CaseManagementApi",
@@ -197,7 +212,7 @@ func caseConstructorView() DataSourceView {
 			ResponseType: "CaseResponse",
 		},
 		Models: []ModelStructView{{
-			Name: "datadogCaseDataSourceModel",
+			Name: "datadogCase_Model",
 			Fields: []ModelFieldView{{
 				GoField: "ID",
 				GoType:  "types.String",
@@ -222,6 +237,7 @@ func pluralFixture() DataSourceView {
 		// every view it produces. This fixture's filter hash reaches fmt.Sprintf.
 		UsesFmt:     true,
 		GoName:      "datadogTeams",
+		RootModel:   "datadogTeams_Model",
 		Description: "Use this data source to retrieve information about existing teams for use in other resources.",
 		SDKPackage:  "datadogV2",
 		APIStruct:   "TeamsApi",
@@ -242,16 +258,16 @@ func pluralFixture() DataSourceView {
 		},
 		Models: []ModelStructView{
 			{
-				Name: "datadogTeamsDataSourceModel",
+				Name: "datadogTeams_Model",
 				Fields: []ModelFieldView{
 					{Comment: "Query Parameters", GoField: "FilterKeyword", GoType: "types.String", TFName: "filter_keyword"},
 					{GoField: "FilterMe", GoType: "types.Bool", TFName: "filter_me"},
 					{Comment: "Results", GoField: "ID", GoType: "types.String", TFName: "id"},
-					{GoField: "Teams", GoType: "[]*datadogTeamsTeamModel", TFName: "teams"},
+					{GoField: "Teams", GoType: "[]*datadogTeams_TeamModel", TFName: "teams"},
 				},
 			},
 			{
-				Name: "datadogTeamsTeamModel",
+				Name: "datadogTeams_TeamModel",
 				Fields: []ModelFieldView{
 					{GoField: "Description", GoType: "types.String", TFName: "description"},
 					{GoField: "Handle", GoType: "types.String", TFName: "handle"},
@@ -291,7 +307,7 @@ func pluralFixture() DataSourceView {
 			},
 		},
 		State: StateView{
-			ItemStruct: "datadogTeamsTeamModel",
+			ItemStruct: "datadogTeams_TeamModel",
 			ItemField:  "Teams",
 			ItemFields: []StateAssignment{
 				{LHS: "Description", RHS: "types.StringValue(item.Attributes.GetDescription())"},

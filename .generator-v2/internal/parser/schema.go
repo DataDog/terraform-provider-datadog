@@ -6,7 +6,6 @@ import (
 	"math"
 	"slices"
 	"sort"
-	"strconv"
 	"strings"
 
 	"github.com/pb33f/libopenapi/datamodel/high/base"
@@ -18,16 +17,17 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
-// jsonMediaType is the only request/response content type normalized; picking
-// exactly one keeps the projected schema deterministic.
+// jsonMediaType is the only request body content type normalized; picking
+// exactly one keeps the projected schema deterministic. Response bodies follow
+// the Go SDK's media type rule instead (see responseBodySchemaProxy).
 const jsonMediaType = "application/json"
 
 // paginationExtension is the OpenAPI vendor extension describing a list
 // endpoint's page/limit query parameters and result-array property.
 const paginationExtension = "x-pagination"
 
-// secretExtension is Datadog's schema-level credential marker. It defaults an
-// attribute to sensitive unless the tracking extension overrides it.
+// secretExtension is Datadog's schema-level credential marker. It marks an
+// attribute sensitive independently of legacy Terraform annotations.
 const secretExtension = "x-secret"
 
 // defaultResultsPath is the JSON:API response property holding a list's
@@ -81,18 +81,18 @@ func backtickedToken(s string) (string, bool) {
 
 // NormalizeSchemas fills RequestSchema and ResponseSchema on every tracked
 // operation and on every operation its resolved group names, reading from
-// rawOps the application/json requestBody and the application/json body of the
-// lowest-numbered 2xx code that has one. A missing body leaves the field nil, a
-// missing $ref target yields *UnresolvableRefError, and a local oneOf naming
-// failure becomes an Unsupported node. Requires ResolveOperationGroups first.
-func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operation, maxDepth int, trackingFieldName string) error {
+// rawOps the application/json requestBody and the first declared 2xx response
+// with a schema, using the first declared media type with a schema to match the
+// Go SDK. A missing body leaves the field nil; a missing $ref target yields
+// *UnresolvableRefError, and a local oneOf naming failure becomes an Unsupported
+// node. Requires ResolveOperationGroups first.
+func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operation, maxDepth int) error {
 	if spec == nil {
 		return nil
 	}
 	n := &schemaNormalizer{
-		components:        spec.Components,
-		maxDepth:          maxDepth,
-		trackingFieldName: trackingFieldName,
+		components: spec.Components,
+		maxDepth:   maxDepth,
 	}
 
 	// Each tracked operation fills its own bodies and its group's, which may
@@ -108,7 +108,7 @@ func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operatio
 		return n.fillOperation(target, rawOps[target])
 	}
 	for _, op := range spec.Operations {
-		if op == nil || op.Tracking == nil {
+		if op == nil || op.Tracking == nil || op.GenerationError != nil {
 			continue
 		}
 		if err := fill(op); err != nil {
@@ -124,11 +124,10 @@ func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operatio
 }
 
 // schemaNormalizer holds the per-pass state: the component set for $ref
-// resolution, the depth bound, and the tracking extension key.
+// resolution and the depth bound.
 type schemaNormalizer struct {
-	components        *v3.Components
-	maxDepth          int
-	trackingFieldName string
+	components *v3.Components
+	maxDepth   int
 	// refStack is the $ref chain currently being expanded, in order. A $ref
 	// re-entering the chain closes a cycle, which becomes a terminal node
 	// instead of recursing forever.
@@ -142,6 +141,20 @@ type schemaContext struct {
 	path     string
 	required bool
 	refName  string
+	// mapValue marks a map's value schema (additionalProperties), which gets
+	// its own diagnostic when it declares no value type. It applies to that
+	// node only: normalizeSchema clears it before descending.
+	mapValue bool
+	// lastRef, when set, receives each $ref followed while normalizing the node,
+	// so it ends holding the component at the end of the chain.
+	lastRef *string
+}
+
+// recordRef stores ref as the latest $ref followed, when the node asks for it.
+func (ctx schemaContext) recordRef(ref string) {
+	if ctx.lastRef != nil {
+		*ctx.lastRef = ref
+	}
 }
 
 // fillOperation normalizes raw's request and 2xx response bodies into op,
@@ -489,36 +502,22 @@ func requestBodySchemaProxy(op *v3.Operation) *base.SchemaProxy {
 	return mt.Schema
 }
 
-// responseBodySchemaProxy returns the application/json schema of the
-// lowest-numbered 2xx response code that has one, or nil. Codes without a JSON
-// body are skipped; numeric ordering makes the choice deterministic.
+// responseBodySchemaProxy matches the Go SDK's first_2xx_schema selection:
+// visit 2xx responses in declaration order and take the first declared media
+// type with a schema, skipping responses and media types without schemas.
 func responseBodySchemaProxy(op *v3.Operation) *base.SchemaProxy {
 	if op.Responses == nil || op.Responses.Codes == nil {
 		return nil
 	}
-	type codedResponse struct {
-		code int
-		resp *v3.Response
-	}
-	var twoXX []codedResponse
 	for code, resp := range op.Responses.Codes.FromOldest() {
-		num, err := strconv.Atoi(code)
-		if err != nil || num < 200 || num > 299 || resp == nil {
+		if !strings.HasPrefix(code, "2") || resp == nil || resp.Content == nil {
 			continue
 		}
-		twoXX = append(twoXX, codedResponse{code: num, resp: resp})
-	}
-	sort.Slice(twoXX, func(i, j int) bool { return twoXX[i].code < twoXX[j].code })
-
-	for _, cr := range twoXX {
-		if cr.resp.Content == nil {
-			continue
+		for _, media := range resp.Content.FromOldest() {
+			if media != nil && media.Schema != nil {
+				return media.Schema
+			}
 		}
-		mt := cr.resp.Content.GetOrZero(jsonMediaType)
-		if mt == nil || mt.Schema == nil {
-			continue
-		}
-		return mt.Schema
 	}
 	return nil
 }
@@ -590,6 +589,7 @@ func (n *schemaNormalizer) normalizeProxyAt(proxy *base.SchemaProxy, depth int, 
 		// Popped by the defer, so the chain unwinds even when a branch errors.
 		n.refStack = append(n.refStack, ref)
 		defer func() { n.refStack = n.refStack[:len(n.refStack)-1] }()
+		ctx.recordRef(ref)
 		return n.normalizeProxyAt(target, depth+1, ctx)
 	}
 	// A $ref with sibling keywords is a synthetic allOf: retain the referenced
@@ -625,6 +625,18 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 	if s == nil {
 		return nil, nil
 	}
+	if ctx.mapValue {
+		ctx.mapValue = false
+		out, err := n.normalizeSchema(s, depth, ctx)
+		if err == nil && out != nil && declaresNoMapValueType(s, out) {
+			ref := ""
+			if ctx.lastRef != nil {
+				ref = *ctx.lastRef
+			}
+			out.UnsupportedReason = unconstrainedMapValueReason(ref)
+		}
+		return out, err
+	}
 	// allOf flattens here only without an adjacent oneOf; when both are
 	// present oneOf wins, and its sibling merge applies the allOf intersection
 	// to every alternative instead.
@@ -639,7 +651,7 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 		HasDefault:      s.Default != nil,
 		ReadOnly:        schemaReadOnly(s),
 		WriteOnlySecret: schemaWriteOnly(s),
-		Sensitive:       n.isSensitive(s),
+		Sensitive:       schemaSensitive(s),
 		Description:     s.Description,
 		// The component name that led here — the go-sdk names its generated
 		// model after it. ctx carries the first $ref of the chain; a node
@@ -687,16 +699,19 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 		// no value schema, so its values are unconstrained — which TF cannot
 		// represent, hence an Unsupported sentinel.
 		if s.AdditionalProperties != nil && s.AdditionalProperties.IsA() {
+			var valueRef string
 			value, err := n.normalizeProxyAt(s.AdditionalProperties.A, depth, schemaContext{
 				path:     model.ChildPath(ctx.path, "{}"),
 				required: true,
+				mapValue: true,
+				lastRef:  &valueRef,
 			})
 			if err != nil {
 				return nil, err
 			}
 			out.Items = collectionElement(value)
 		} else {
-			out.Items = &model.Schema{Kind: model.SchemaKindUnsupported}
+			out.Items = &model.Schema{Kind: model.SchemaKindUnsupported, UnsupportedReason: unconstrainedMapValueReason("")}
 		}
 
 	case model.SchemaKindOneOf:
@@ -1078,7 +1093,7 @@ type allOfAnnotations struct {
 func (n *schemaNormalizer) outerAnnotations(s *base.Schema) allOfAnnotations {
 	a := allOfAnnotations{
 		outerDescription: s.Description,
-		sensitive:        n.isSensitive(s),
+		sensitive:        schemaSensitive(s),
 		readOnly:         schemaReadOnly(s),
 		writeOnlySecret:  schemaWriteOnly(s),
 	}
@@ -1146,6 +1161,10 @@ func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaC
 		schema *model.Schema
 	}
 	branches := make([]structuralBranch, 0, len(s.AllOf))
+	// For a map value, keep checking after an untyped branch so the advice
+	// applies only if every branch lacks a value type. Preserve the first
+	// failure when a later branch supplies a type or a different constraint.
+	var firstUnsupported string
 	for i, proxy := range s.AllOf {
 		branch, err := n.normalizeProxyAt(proxy, depth, ctx)
 		if err != nil {
@@ -1170,13 +1189,25 @@ func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int, ctx schemaC
 			if reason == "" {
 				reason = fmt.Sprintf("allOf branch %d has unsupported schema kind %q", i+1, branch.Kind)
 			}
-			return unsupported(reason), nil
+			if firstUnsupported == "" {
+				firstUnsupported = reason
+			}
+			if ctx.lastRef == nil || !declaresNoMapValueType(raw, branch) {
+				return unsupported(firstUnsupported), nil
+			}
+			continue
 		}
 		branches = append(branches, structuralBranch{index: i + 1, schema: branch})
 	}
 
+	if firstUnsupported != "" {
+		if len(branches) == 0 {
+			return unsupported(allOfNoValueTypeReason), nil
+		}
+		return unsupported(firstUnsupported), nil
+	}
 	if len(branches) == 0 {
-		return unsupported("allOf has no structural branches"), nil
+		return unsupported(allOfNoStructuralBranchesReason), nil
 	}
 
 	outerType := firstType(s)
@@ -1492,6 +1523,69 @@ func nonNullTypes(types []string) []string {
 	return out
 }
 
+// allOfNoStructuralBranchesReason marks an allOf whose every branch only
+// annotates: it declares no value type of its own.
+const allOfNoStructuralBranchesReason = "allOf has no structural branches"
+
+// allOfNoValueTypeReason marks a composition whose structural branches all
+// declare no value type, including free-form objects and nested compositions.
+const allOfNoValueTypeReason = "allOf branches declare no value type"
+
+// unconstrainedMapValueReason explains a map value that declares no value type.
+// A value reached through a $ref names the component at the end of the chain,
+// since that is where the fix belongs. An unconstrained map needs an explicit
+// API value schema before tfgen can choose a Terraform element type; do not
+// guess a string or JSON representation.
+func unconstrainedMapValueReason(ref string) string {
+	what, where := "the value schema has no properties and no scalar type", "with a type or $ref under additionalProperties"
+	if ref != "" {
+		name := lastRefSegment(ref)
+		what, where = fmt.Sprintf("its $ref %q has no properties and no scalar type", name), fmt.Sprintf("in %q", name)
+	}
+	return "additionalProperties declares unconstrained values: " + what +
+		"; tfgen requires a concrete map value schema. Describe the API values " + where +
+		"; if the API returns a list, use type: array with typed items instead"
+}
+
+// declaresNoMapValueType reports whether a normalized map value failed only
+// because its schema s declares no value type, so the unconstrained advice
+// applies. A value that is constrained but still unsupported (anyOf, an
+// itemless array, a cycle) keeps its own, more specific reason.
+func declaresNoMapValueType(s *base.Schema, value *model.Schema) bool {
+	if value.Kind != model.SchemaKindUnsupported {
+		return false
+	}
+	switch value.UnsupportedReason {
+	case "":
+		return declaresNoValueType(s)
+	case allOfNoStructuralBranchesReason, allOfNoValueTypeReason:
+		// Every branch lacks a value type, so the outer schema alone decides.
+		outer := *s
+		outer.AllOf = nil
+		return declaresNoValueType(&outer)
+	default:
+		return false
+	}
+}
+
+// declaresNoValueType reports whether s leaves its values unconstrained: no
+// type, or `type: object`, and nothing describing the value's contents. The
+// object keywords that only count or forbid properties (required,
+// min/maxProperties, `additionalProperties: false`) and format still leave the
+// value type unknown, so they do not count as a description.
+func declaresNoValueType(s *base.Schema) bool {
+	if types := nonNullTypes(s.Type); len(s.Type) > 0 && (len(types) != 1 || types[0] != "object") {
+		return false
+	}
+	bare := *s
+	bare.Type, bare.Format = nil, ""
+	bare.Required, bare.MinProperties, bare.MaxProperties = nil, nil, nil
+	if ap := bare.AdditionalProperties; ap != nil && ap.IsB() && !ap.B {
+		bare.AdditionalProperties = nil
+	}
+	return !hasStructuralOrConstraintKeywords(&bare)
+}
+
 // classifyKind derives the SchemaKind from structure, not type alone. First
 // match wins, since a node can satisfy several at once: anyOf → unsupported;
 // oneOf → one_of; properties → object; type:array with items → array;
@@ -1613,34 +1707,9 @@ func sortedRequired(s *base.Schema) []string {
 	return req
 }
 
-// isSensitive derives Terraform sensitivity from the explicit tracking
-// annotation when present; otherwise writeOnly or x-secret default the field to
-// sensitive, so an omitted annotation cannot expose a credential in a plan.
-func (n *schemaNormalizer) isSensitive(s *base.Schema) bool {
-	if explicit, ok := n.explicitSensitivity(s); ok {
-		return explicit
-	}
+// schemaSensitive derives display sensitivity only from OpenAPI secret markers.
+func schemaSensitive(s *base.Schema) bool {
 	return schemaWriteOnly(s) || boolExtension(s, secretExtension)
-}
-
-// explicitSensitivity distinguishes an omitted annotation from an explicit
-// false, so the derived default can be overridden in either direction. A
-// malformed annotation counts as absent, leaving x-secret/writeOnly in force.
-func (n *schemaNormalizer) explicitSensitivity(s *base.Schema) (bool, bool) {
-	if s.Extensions == nil {
-		return false, false
-	}
-	node := s.Extensions.GetOrZero(n.trackingFieldName)
-	if node == nil {
-		return false, false
-	}
-	var ext struct {
-		Sensitive *bool `yaml:"sensitive"`
-	}
-	if err := node.Decode(&ext); err != nil || ext.Sensitive == nil {
-		return false, false
-	}
-	return *ext.Sensitive, true
 }
 
 func schemaWriteOnly(s *base.Schema) bool {

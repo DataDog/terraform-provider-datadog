@@ -29,68 +29,71 @@ var (
 	_ resource.ResourceWithConfigure   = &datadogIntegrationDatabricksAccountResource{}
 	_ resource.ResourceWithImportState = &datadogIntegrationDatabricksAccountResource{}
 )
-var datadogIntegrationDatabricksAccountAuthenticationDatabricksIntegrationAccountBearerTokenAuthTokenWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "token", WriteOnlyAttr: "token_wo", TriggerAttr: "token_wo_version", WriteOnlyDescription: "Secret token used to authenticate with Databricks. This write-only value is not stored in Terraform state.", TriggerDescription: "Version trigger for token_wo rotation.", ParentBlocks: []string{"authentication", "databricks_integration_account_bearer_token_auth"}, Mode: fwutils.WriteOnlySecretModeOnly, Required: false}
-var datadogIntegrationDatabricksAccountAuthenticationDatabricksIntegrationAccountOAuthAuthClientSecretWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "client_secret", WriteOnlyAttr: "client_secret_wo", TriggerAttr: "client_secret_wo_version", WriteOnlyDescription: "Secret of the Databricks service principal. Generate it under User management > Service principals > Credentials & secrets in Databricks. This write-only value is not stored in Terraform state.", TriggerDescription: "Version trigger for client_secret_wo rotation.", ParentBlocks: []string{"authentication", "databricks_integration_account_o_auth_auth"}, Mode: fwutils.WriteOnlySecretModeOnly, Required: true}
-var datadogIntegrationDatabricksAccountDataflowsDatabricksDataObservabilityJobsMonitoringSettingsDdApiKeySecretWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "dd_api_key_secret", WriteOnlyAttr: "dd_api_key_secret_wo", TriggerAttr: "dd_api_key_secret_wo_version", WriteOnlyDescription: "Secret value of the Datadog API key identified by `dd_api_key_id`. This write-only value is not stored in Terraform state.", TriggerDescription: "Version trigger for dd_api_key_secret_wo rotation.", ParentBlocks: []string{"dataflows", "databricks_data_observability_jobs_monitoring", "settings"}, Mode: fwutils.WriteOnlySecretModeOnly, Required: false}
+var resourceDatadogIntegrationDatabricksAccount_AuthenticationDatabricksIntegrationAccountBearerTokenAuthTokenWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "token", WriteOnlyAttr: "token_wo", TriggerAttr: "token_wo_version", OriginalDescription: "Secret token used to authenticate with Databricks. Conflicts with `token_wo`. Prefer `token_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.", WriteOnlyDescription: "Secret token used to authenticate with Databricks. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.", TriggerDescription: "Version trigger for token_wo rotation.", ParentBlocks: []string{"authentication", "databricks_integration_account_bearer_token_auth"}, Mode: fwutils.WriteOnlySecretModeDual, Required: false}
+var resourceDatadogIntegrationDatabricksAccount_AuthenticationDatabricksIntegrationAccountOAuthAuthClientSecretWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "client_secret", WriteOnlyAttr: "client_secret_wo", TriggerAttr: "client_secret_wo_version", OriginalDescription: "Secret of the Databricks service principal. Generate it under User management > Service principals > Credentials & secrets in Databricks. Exactly one of `client_secret` or `client_secret_wo` must be set. Prefer `client_secret_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.", WriteOnlyDescription: "Secret of the Databricks service principal. Generate it under User management > Service principals > Credentials & secrets in Databricks. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.", TriggerDescription: "Version trigger for client_secret_wo rotation.", ParentBlocks: []string{"authentication", "databricks_integration_account_o_auth_auth"}, Mode: fwutils.WriteOnlySecretModeDual, Required: true}
+var resourceDatadogIntegrationDatabricksAccount_DataflowsDatabricksDataObservabilityJobsMonitoringSettingsDdApiKeySecretWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "dd_api_key_secret", WriteOnlyAttr: "dd_api_key_secret_wo", TriggerAttr: "dd_api_key_secret_wo_version", OriginalDescription: "Secret value of the Datadog API key identified by `dd_api_key_id`. Conflicts with `dd_api_key_secret_wo`. Prefer `dd_api_key_secret_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.", WriteOnlyDescription: "Secret value of the Datadog API key identified by `dd_api_key_id`. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.", TriggerDescription: "Version trigger for dd_api_key_secret_wo rotation.", ParentBlocks: []string{"dataflows", "databricks_data_observability_jobs_monitoring", "settings"}, Mode: fwutils.WriteOnlySecretModeDual, Required: false}
 
-type datadogIntegrationDatabricksAccountResourceModel struct {
-	ID             types.String                                                                          `tfsdk:"id"`
-	Authentication *datadogIntegrationDatabricksAccountDatabricksIntegrationAccountAuthenticationModel   `tfsdk:"authentication"`
-	Dataflows      *datadogIntegrationDatabricksAccountDatabricksIntegrationDataflowsResponseModel       `tfsdk:"dataflows"`
-	Name           types.String                                                                          `tfsdk:"name"`
-	Settings       *datadogIntegrationDatabricksAccountDatabricksIntegrationAccountSettingsResponseModel `tfsdk:"settings"`
+type resourceDatadogIntegrationDatabricksAccount_Model struct {
+	ID             types.String                                                                                   `tfsdk:"id"`
+	Authentication *resourceDatadogIntegrationDatabricksAccount_DatabricksIntegrationAccountAuthenticationModel   `tfsdk:"authentication"`
+	Dataflows      *resourceDatadogIntegrationDatabricksAccount_DatabricksIntegrationDataflowsResponseModel       `tfsdk:"dataflows"`
+	Name           types.String                                                                                   `tfsdk:"name"`
+	Settings       *resourceDatadogIntegrationDatabricksAccount_DatabricksIntegrationAccountSettingsResponseModel `tfsdk:"settings"`
 }
 
-type datadogIntegrationDatabricksAccountDatabricksIntegrationAccountAuthenticationModel struct {
-	DatabricksIntegrationAccountBearerTokenAuth         *datadogIntegrationDatabricksAccountDatabricksIntegrationAccountAuthenticationDatabricksIntegrationAccountBearerTokenAuthModel         `tfsdk:"databricks_integration_account_bearer_token_auth"`
-	DatabricksIntegrationAccountOAuthAuth               *datadogIntegrationDatabricksAccountDatabricksIntegrationAccountAuthenticationDatabricksIntegrationAccountOAuthAuthModel               `tfsdk:"databricks_integration_account_o_auth_auth"`
-	DatabricksIntegrationAccountPrivateActionRunnerAuth *datadogIntegrationDatabricksAccountDatabricksIntegrationAccountAuthenticationDatabricksIntegrationAccountPrivateActionRunnerAuthModel `tfsdk:"databricks_integration_account_private_action_runner_auth"`
+type resourceDatadogIntegrationDatabricksAccount_DatabricksIntegrationAccountAuthenticationModel struct {
+	DatabricksIntegrationAccountBearerTokenAuth         *resourceDatadogIntegrationDatabricksAccount_DatabricksIntegrationAccountAuthenticationDatabricksIntegrationAccountBearerTokenAuthModel         `tfsdk:"databricks_integration_account_bearer_token_auth"`
+	DatabricksIntegrationAccountOAuthAuth               *resourceDatadogIntegrationDatabricksAccount_DatabricksIntegrationAccountAuthenticationDatabricksIntegrationAccountOAuthAuthModel               `tfsdk:"databricks_integration_account_o_auth_auth"`
+	DatabricksIntegrationAccountPrivateActionRunnerAuth *resourceDatadogIntegrationDatabricksAccount_DatabricksIntegrationAccountAuthenticationDatabricksIntegrationAccountPrivateActionRunnerAuthModel `tfsdk:"databricks_integration_account_private_action_runner_auth"`
 }
 
-type datadogIntegrationDatabricksAccountDatabricksIntegrationAccountAuthenticationDatabricksIntegrationAccountBearerTokenAuthModel struct {
+type resourceDatadogIntegrationDatabricksAccount_DatabricksIntegrationAccountAuthenticationDatabricksIntegrationAccountBearerTokenAuthModel struct {
 	AuthType       types.String `tfsdk:"auth_type"`
+	Token          types.String `tfsdk:"token"`
 	TokenWo        types.String `tfsdk:"token_wo"`
 	TokenWoVersion types.String `tfsdk:"token_wo_version"`
 }
 
-type datadogIntegrationDatabricksAccountDatabricksIntegrationAccountAuthenticationDatabricksIntegrationAccountOAuthAuthModel struct {
+type resourceDatadogIntegrationDatabricksAccount_DatabricksIntegrationAccountAuthenticationDatabricksIntegrationAccountOAuthAuthModel struct {
 	AuthType              types.String `tfsdk:"auth_type"`
 	AzureTenantId         types.String `tfsdk:"azure_tenant_id"`
 	ClientId              types.String `tfsdk:"client_id"`
+	ClientSecret          types.String `tfsdk:"client_secret"`
 	ClientSecretWo        types.String `tfsdk:"client_secret_wo"`
 	ClientSecretWoVersion types.String `tfsdk:"client_secret_wo_version"`
 }
 
-type datadogIntegrationDatabricksAccountDatabricksIntegrationAccountAuthenticationDatabricksIntegrationAccountPrivateActionRunnerAuthModel struct {
+type resourceDatadogIntegrationDatabricksAccount_DatabricksIntegrationAccountAuthenticationDatabricksIntegrationAccountPrivateActionRunnerAuthModel struct {
 	AuthType     types.String `tfsdk:"auth_type"`
 	ConnectionId types.String `tfsdk:"connection_id"`
 	SecretPath   types.String `tfsdk:"secret_path"`
 	UserUuid     types.String `tfsdk:"user_uuid"`
 }
 
-type datadogIntegrationDatabricksAccountDatabricksIntegrationDataflowsResponseModel struct {
-	DatabricksCloudCostMetrics                   *datadogIntegrationDatabricksAccountDatabricksCloudCostMetricsIntegrationDataflowResponseModel                   `tfsdk:"databricks_cloud_cost_metrics"`
-	DatabricksDataObservabilityJobsMonitoring    *datadogIntegrationDatabricksAccountDatabricksDataObservabilityJobsMonitoringIntegrationDataflowResponseModel    `tfsdk:"databricks_data_observability_jobs_monitoring"`
-	DatabricksDataObservabilityQualityMonitoring *datadogIntegrationDatabricksAccountDatabricksDataObservabilityQualityMonitoringIntegrationDataflowResponseModel `tfsdk:"databricks_data_observability_quality_monitoring"`
-	DatabricksModelServingMetrics                *datadogIntegrationDatabricksAccountDatabricksModelServingMetricsIntegrationDataflowResponseModel                `tfsdk:"databricks_model_serving_metrics"`
+type resourceDatadogIntegrationDatabricksAccount_DatabricksIntegrationDataflowsResponseModel struct {
+	DatabricksCloudCostMetrics                   *resourceDatadogIntegrationDatabricksAccount_DatabricksCloudCostMetricsIntegrationDataflowResponseModel                   `tfsdk:"databricks_cloud_cost_metrics"`
+	DatabricksDataObservabilityJobsMonitoring    *resourceDatadogIntegrationDatabricksAccount_DatabricksDataObservabilityJobsMonitoringIntegrationDataflowResponseModel    `tfsdk:"databricks_data_observability_jobs_monitoring"`
+	DatabricksDataObservabilityQualityMonitoring *resourceDatadogIntegrationDatabricksAccount_DatabricksDataObservabilityQualityMonitoringIntegrationDataflowResponseModel `tfsdk:"databricks_data_observability_quality_monitoring"`
+	DatabricksModelServingMetrics                *resourceDatadogIntegrationDatabricksAccount_DatabricksModelServingMetricsIntegrationDataflowResponseModel                `tfsdk:"databricks_model_serving_metrics"`
 }
 
-type datadogIntegrationDatabricksAccountDatabricksCloudCostMetricsIntegrationDataflowResponseModel struct {
-	Enabled  types.Bool                                                                                             `tfsdk:"enabled"`
-	Settings *datadogIntegrationDatabricksAccountDatabricksCloudCostMetricsIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
+type resourceDatadogIntegrationDatabricksAccount_DatabricksCloudCostMetricsIntegrationDataflowResponseModel struct {
+	Enabled  types.Bool                                                                                                      `tfsdk:"enabled"`
+	Settings *resourceDatadogIntegrationDatabricksAccount_DatabricksCloudCostMetricsIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
 }
 
-type datadogIntegrationDatabricksAccountDatabricksCloudCostMetricsIntegrationDataflowSettingsResponseModel struct {
+type resourceDatadogIntegrationDatabricksAccount_DatabricksCloudCostMetricsIntegrationDataflowSettingsResponseModel struct {
 	CcmCollectAllWorkspaces types.Bool `tfsdk:"ccm_collect_all_workspaces"`
 }
 
-type datadogIntegrationDatabricksAccountDatabricksDataObservabilityJobsMonitoringIntegrationDataflowResponseModel struct {
-	Enabled  types.Bool                                                                                                            `tfsdk:"enabled"`
-	Settings *datadogIntegrationDatabricksAccountDatabricksDataObservabilityJobsMonitoringIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
+type resourceDatadogIntegrationDatabricksAccount_DatabricksDataObservabilityJobsMonitoringIntegrationDataflowResponseModel struct {
+	Enabled  types.Bool                                                                                                                     `tfsdk:"enabled"`
+	Settings *resourceDatadogIntegrationDatabricksAccount_DatabricksDataObservabilityJobsMonitoringIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
 }
 
-type datadogIntegrationDatabricksAccountDatabricksDataObservabilityJobsMonitoringIntegrationDataflowSettingsResponseModel struct {
+type resourceDatadogIntegrationDatabricksAccount_DatabricksDataObservabilityJobsMonitoringIntegrationDataflowSettingsResponseModel struct {
 	DdApiKeyId                 types.String `tfsdk:"dd_api_key_id"`
+	DdApiKeySecret             types.String `tfsdk:"dd_api_key_secret"`
 	DdApiKeySecretWo           types.String `tfsdk:"dd_api_key_secret_wo"`
 	DdApiKeySecretWoVersion    types.String `tfsdk:"dd_api_key_secret_wo_version"`
 	DjmGlobalInitScriptEnabled types.Bool   `tfsdk:"djm_global_init_script_enabled"`
@@ -99,21 +102,21 @@ type datadogIntegrationDatabricksAccountDatabricksDataObservabilityJobsMonitorin
 	ServerlessJobsEnabled      types.Bool   `tfsdk:"serverless_jobs_enabled"`
 }
 
-type datadogIntegrationDatabricksAccountDatabricksDataObservabilityQualityMonitoringIntegrationDataflowResponseModel struct {
-	Enabled  types.Bool                                                                                                               `tfsdk:"enabled"`
-	Settings *datadogIntegrationDatabricksAccountDatabricksDataObservabilityQualityMonitoringIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
+type resourceDatadogIntegrationDatabricksAccount_DatabricksDataObservabilityQualityMonitoringIntegrationDataflowResponseModel struct {
+	Enabled  types.Bool                                                                                                                        `tfsdk:"enabled"`
+	Settings *resourceDatadogIntegrationDatabricksAccount_DatabricksDataObservabilityQualityMonitoringIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
 }
 
-type datadogIntegrationDatabricksAccountDatabricksDataObservabilityQualityMonitoringIntegrationDataflowSettingsResponseModel struct {
+type resourceDatadogIntegrationDatabricksAccount_DatabricksDataObservabilityQualityMonitoringIntegrationDataflowSettingsResponseModel struct {
 	DoCrawlersCron    types.String `tfsdk:"do_crawlers_cron"`
 	SyncSystemCatalog types.Bool   `tfsdk:"sync_system_catalog"`
 }
 
-type datadogIntegrationDatabricksAccountDatabricksModelServingMetricsIntegrationDataflowResponseModel struct {
+type resourceDatadogIntegrationDatabricksAccount_DatabricksModelServingMetricsIntegrationDataflowResponseModel struct {
 	Enabled types.Bool `tfsdk:"enabled"`
 }
 
-type datadogIntegrationDatabricksAccountDatabricksIntegrationAccountSettingsResponseModel struct {
+type resourceDatadogIntegrationDatabricksAccount_DatabricksIntegrationAccountSettingsResponseModel struct {
 	SystemTablesSqlWarehouseId types.String `tfsdk:"system_tables_sql_warehouse_id"`
 	WorkspaceUrl               types.String `tfsdk:"workspace_url"`
 }
@@ -170,7 +173,7 @@ func (r *datadogIntegrationDatabricksAccountResource) Schema(_ context.Context, 
 									},
 								},
 							},
-							fwutils.CreateWriteOnlySecretAttributes(datadogIntegrationDatabricksAccountAuthenticationDatabricksIntegrationAccountBearerTokenAuthTokenWriteOnlySecretConfig),
+							fwutils.CreateWriteOnlySecretAttributes(resourceDatadogIntegrationDatabricksAccount_AuthenticationDatabricksIntegrationAccountBearerTokenAuthTokenWriteOnlySecretConfig),
 						),
 						Optional: true,
 
@@ -211,7 +214,7 @@ func (r *datadogIntegrationDatabricksAccountResource) Schema(_ context.Context, 
 									Required:    true,
 								},
 							},
-							fwutils.CreateWriteOnlySecretAttributes(datadogIntegrationDatabricksAccountAuthenticationDatabricksIntegrationAccountOAuthAuthClientSecretWriteOnlySecretConfig),
+							fwutils.CreateWriteOnlySecretAttributes(resourceDatadogIntegrationDatabricksAccount_AuthenticationDatabricksIntegrationAccountOAuthAuthClientSecretWriteOnlySecretConfig),
 						),
 						Optional: true,
 
@@ -379,7 +382,7 @@ func (r *datadogIntegrationDatabricksAccountResource) Schema(_ context.Context, 
 											},
 										},
 									},
-									fwutils.CreateWriteOnlySecretAttributes(datadogIntegrationDatabricksAccountDataflowsDatabricksDataObservabilityJobsMonitoringSettingsDdApiKeySecretWriteOnlySecretConfig),
+									fwutils.CreateWriteOnlySecretAttributes(resourceDatadogIntegrationDatabricksAccount_DataflowsDatabricksDataObservabilityJobsMonitoringSettingsDdApiKeySecretWriteOnlySecretConfig),
 								),
 								Optional: true,
 							},
@@ -494,7 +497,7 @@ func (r *datadogIntegrationDatabricksAccountResource) ImportState(ctx context.Co
 }
 
 func (r *datadogIntegrationDatabricksAccountResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state datadogIntegrationDatabricksAccountResourceModel
+	var state resourceDatadogIntegrationDatabricksAccount_Model
 	var plan types.Object
 	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
 	if response.Diagnostics.HasError() {
@@ -506,7 +509,7 @@ func (r *datadogIntegrationDatabricksAccountResource) Create(ctx context.Context
 	}
 
 	authenticationDatabricksIntegrationAccountOAuthAuthClientSecretWriteOnlySecretHandler := fwutils.WriteOnlySecretHandler{
-		Config:                 datadogIntegrationDatabricksAccountAuthenticationDatabricksIntegrationAccountOAuthAuthClientSecretWriteOnlySecretConfig,
+		Config:                 resourceDatadogIntegrationDatabricksAccount_AuthenticationDatabricksIntegrationAccountOAuthAuthClientSecretWriteOnlySecretConfig,
 		SecretRequiredOnUpdate: false,
 	}
 	authenticationDatabricksIntegrationAccountOAuthAuthClientSecretSecretResult := authenticationDatabricksIntegrationAccountOAuthAuthClientSecretWriteOnlySecretHandler.GetSecretForCreate(ctx, &request.Config)
@@ -515,7 +518,7 @@ func (r *datadogIntegrationDatabricksAccountResource) Create(ctx context.Context
 		return
 	}
 	dataflowsDatabricksDataObservabilityJobsMonitoringSettingsDdApiKeySecretWriteOnlySecretHandler := fwutils.WriteOnlySecretHandler{
-		Config:                 datadogIntegrationDatabricksAccountDataflowsDatabricksDataObservabilityJobsMonitoringSettingsDdApiKeySecretWriteOnlySecretConfig,
+		Config:                 resourceDatadogIntegrationDatabricksAccount_DataflowsDatabricksDataObservabilityJobsMonitoringSettingsDdApiKeySecretWriteOnlySecretConfig,
 		SecretRequiredOnUpdate: false,
 	}
 	dataflowsDatabricksDataObservabilityJobsMonitoringSettingsDdApiKeySecretSecretResult := dataflowsDatabricksDataObservabilityJobsMonitoringSettingsDdApiKeySecretWriteOnlySecretHandler.GetSecretForCreate(ctx, &request.Config)
@@ -799,7 +802,7 @@ func (r *datadogIntegrationDatabricksAccountResource) Create(ctx context.Context
 }
 
 func (r *datadogIntegrationDatabricksAccountResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state datadogIntegrationDatabricksAccountResourceModel
+	var state resourceDatadogIntegrationDatabricksAccount_Model
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -823,7 +826,7 @@ func (r *datadogIntegrationDatabricksAccountResource) Read(ctx context.Context, 
 }
 
 func (r *datadogIntegrationDatabricksAccountResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state datadogIntegrationDatabricksAccountResourceModel
+	var state resourceDatadogIntegrationDatabricksAccount_Model
 	var plan types.Object
 	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
 	if response.Diagnostics.HasError() {
@@ -835,7 +838,7 @@ func (r *datadogIntegrationDatabricksAccountResource) Update(ctx context.Context
 	}
 
 	authenticationDatabricksIntegrationAccountBearerTokenAuthTokenWriteOnlySecretHandler := fwutils.WriteOnlySecretHandler{
-		Config:                 datadogIntegrationDatabricksAccountAuthenticationDatabricksIntegrationAccountBearerTokenAuthTokenWriteOnlySecretConfig,
+		Config:                 resourceDatadogIntegrationDatabricksAccount_AuthenticationDatabricksIntegrationAccountBearerTokenAuthTokenWriteOnlySecretConfig,
 		SecretRequiredOnUpdate: false,
 	}
 	authenticationDatabricksIntegrationAccountBearerTokenAuthTokenSecretResult := authenticationDatabricksIntegrationAccountBearerTokenAuthTokenWriteOnlySecretHandler.GetSecretForUpdate(ctx, &request.Config, &request)
@@ -844,7 +847,7 @@ func (r *datadogIntegrationDatabricksAccountResource) Update(ctx context.Context
 		return
 	}
 	authenticationDatabricksIntegrationAccountOAuthAuthClientSecretWriteOnlySecretHandler := fwutils.WriteOnlySecretHandler{
-		Config:                 datadogIntegrationDatabricksAccountAuthenticationDatabricksIntegrationAccountOAuthAuthClientSecretWriteOnlySecretConfig,
+		Config:                 resourceDatadogIntegrationDatabricksAccount_AuthenticationDatabricksIntegrationAccountOAuthAuthClientSecretWriteOnlySecretConfig,
 		SecretRequiredOnUpdate: false,
 	}
 	authenticationDatabricksIntegrationAccountOAuthAuthClientSecretSecretResult := authenticationDatabricksIntegrationAccountOAuthAuthClientSecretWriteOnlySecretHandler.GetSecretForUpdate(ctx, &request.Config, &request)
@@ -853,7 +856,7 @@ func (r *datadogIntegrationDatabricksAccountResource) Update(ctx context.Context
 		return
 	}
 	dataflowsDatabricksDataObservabilityJobsMonitoringSettingsDdApiKeySecretWriteOnlySecretHandler := fwutils.WriteOnlySecretHandler{
-		Config:                 datadogIntegrationDatabricksAccountDataflowsDatabricksDataObservabilityJobsMonitoringSettingsDdApiKeySecretWriteOnlySecretConfig,
+		Config:                 resourceDatadogIntegrationDatabricksAccount_DataflowsDatabricksDataObservabilityJobsMonitoringSettingsDdApiKeySecretWriteOnlySecretConfig,
 		SecretRequiredOnUpdate: false,
 	}
 	dataflowsDatabricksDataObservabilityJobsMonitoringSettingsDdApiKeySecretSecretResult := dataflowsDatabricksDataObservabilityJobsMonitoringSettingsDdApiKeySecretWriteOnlySecretHandler.GetSecretForUpdate(ctx, &request.Config, &request)
@@ -1064,7 +1067,7 @@ func (r *datadogIntegrationDatabricksAccountResource) Update(ctx context.Context
 }
 
 func (r *datadogIntegrationDatabricksAccountResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state datadogIntegrationDatabricksAccountResourceModel
+	var state resourceDatadogIntegrationDatabricksAccount_Model
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -1083,7 +1086,7 @@ func (r *datadogIntegrationDatabricksAccountResource) Delete(ctx context.Context
 // rather than writing them so it stays free of the resource request/response
 // types and can fail at a specific schema path. Shared by Create, Read and
 // Update, which all resolve the same response type.
-func (r *datadogIntegrationDatabricksAccountResource) updateState(ctx context.Context, state *datadogIntegrationDatabricksAccountResourceModel, resp *datadogV2.DatabricksIntegrationAccountResponse) diag.Diagnostics {
+func (r *datadogIntegrationDatabricksAccountResource) updateState(ctx context.Context, state *resourceDatadogIntegrationDatabricksAccount_Model, resp *datadogV2.DatabricksIntegrationAccountResponse) diag.Diagnostics {
 	var diags diag.Diagnostics
 	attributes := resp.Data.GetAttributes()
 	if id, ok := resp.Data.GetIdOk(); ok && id != nil {
@@ -1093,10 +1096,10 @@ func (r *datadogIntegrationDatabricksAccountResource) updateState(ctx context.Co
 		state.Name = types.StringValue(*name)
 	}
 	if authentication, ok := attributes.GetAuthenticationOk(); ok && authentication != nil {
-		authenticationEnvelope := &datadogIntegrationDatabricksAccountDatabricksIntegrationAccountAuthenticationModel{}
+		authenticationEnvelope := &resourceDatadogIntegrationDatabricksAccount_DatabricksIntegrationAccountAuthenticationModel{}
 		authenticationMatches := 0
 		if databricksIntegrationAccountBearerTokenAuthVariant := authentication.DatabricksIntegrationAccountBearerTokenAuthResponse; databricksIntegrationAccountBearerTokenAuthVariant != nil {
-			databricksIntegrationAccountBearerTokenAuthModel := &datadogIntegrationDatabricksAccountDatabricksIntegrationAccountAuthenticationDatabricksIntegrationAccountBearerTokenAuthModel{}
+			databricksIntegrationAccountBearerTokenAuthModel := &resourceDatadogIntegrationDatabricksAccount_DatabricksIntegrationAccountAuthenticationDatabricksIntegrationAccountBearerTokenAuthModel{}
 			if state.Authentication != nil && state.Authentication.DatabricksIntegrationAccountBearerTokenAuth != nil {
 				databricksIntegrationAccountBearerTokenAuthModel = state.Authentication.DatabricksIntegrationAccountBearerTokenAuth
 			}
@@ -1107,7 +1110,7 @@ func (r *datadogIntegrationDatabricksAccountResource) updateState(ctx context.Co
 			authenticationMatches++
 		}
 		if databricksIntegrationAccountOAuthAuthVariant := authentication.DatabricksIntegrationAccountOAuthAuthResponse; databricksIntegrationAccountOAuthAuthVariant != nil {
-			databricksIntegrationAccountOAuthAuthModel := &datadogIntegrationDatabricksAccountDatabricksIntegrationAccountAuthenticationDatabricksIntegrationAccountOAuthAuthModel{}
+			databricksIntegrationAccountOAuthAuthModel := &resourceDatadogIntegrationDatabricksAccount_DatabricksIntegrationAccountAuthenticationDatabricksIntegrationAccountOAuthAuthModel{}
 			if state.Authentication != nil && state.Authentication.DatabricksIntegrationAccountOAuthAuth != nil {
 				databricksIntegrationAccountOAuthAuthModel = state.Authentication.DatabricksIntegrationAccountOAuthAuth
 			}
@@ -1124,7 +1127,7 @@ func (r *datadogIntegrationDatabricksAccountResource) updateState(ctx context.Co
 			authenticationMatches++
 		}
 		if databricksIntegrationAccountPrivateActionRunnerAuthVariant := authentication.DatabricksIntegrationAccountPrivateActionRunnerAuthResponse; databricksIntegrationAccountPrivateActionRunnerAuthVariant != nil {
-			databricksIntegrationAccountPrivateActionRunnerAuthModel := &datadogIntegrationDatabricksAccountDatabricksIntegrationAccountAuthenticationDatabricksIntegrationAccountPrivateActionRunnerAuthModel{}
+			databricksIntegrationAccountPrivateActionRunnerAuthModel := &resourceDatadogIntegrationDatabricksAccount_DatabricksIntegrationAccountAuthenticationDatabricksIntegrationAccountPrivateActionRunnerAuthModel{}
 			if state.Authentication != nil && state.Authentication.DatabricksIntegrationAccountPrivateActionRunnerAuth != nil {
 				databricksIntegrationAccountPrivateActionRunnerAuthModel = state.Authentication.DatabricksIntegrationAccountPrivateActionRunnerAuth
 			}
@@ -1161,12 +1164,12 @@ func (r *datadogIntegrationDatabricksAccountResource) updateState(ctx context.Co
 	if dataflows, ok := attributes.GetDataflowsOk(); ok && dataflows != nil && state.Dataflows != nil {
 		dataflowsModel := state.Dataflows
 		if dataflowsModel == nil {
-			dataflowsModel = &datadogIntegrationDatabricksAccountDatabricksIntegrationDataflowsResponseModel{}
+			dataflowsModel = &resourceDatadogIntegrationDatabricksAccount_DatabricksIntegrationDataflowsResponseModel{}
 		}
 		if databricksCloudCostMetrics, ok := dataflows.GetDatabricksCloudCostMetricsOk(); ok && databricksCloudCostMetrics != nil {
 			databricksCloudCostMetricsModel := dataflowsModel.DatabricksCloudCostMetrics
 			if databricksCloudCostMetricsModel == nil {
-				databricksCloudCostMetricsModel = &datadogIntegrationDatabricksAccountDatabricksCloudCostMetricsIntegrationDataflowResponseModel{}
+				databricksCloudCostMetricsModel = &resourceDatadogIntegrationDatabricksAccount_DatabricksCloudCostMetricsIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := databricksCloudCostMetrics.GetEnabledOk(); ok && enabled != nil {
 				databricksCloudCostMetricsModel.Enabled = types.BoolValue(*enabled)
@@ -1174,7 +1177,7 @@ func (r *datadogIntegrationDatabricksAccountResource) updateState(ctx context.Co
 			if settings, ok := databricksCloudCostMetrics.GetSettingsOk(); ok && settings != nil {
 				settingsModel := databricksCloudCostMetricsModel.Settings
 				if settingsModel == nil {
-					settingsModel = &datadogIntegrationDatabricksAccountDatabricksCloudCostMetricsIntegrationDataflowSettingsResponseModel{}
+					settingsModel = &resourceDatadogIntegrationDatabricksAccount_DatabricksCloudCostMetricsIntegrationDataflowSettingsResponseModel{}
 				}
 				if ccmCollectAllWorkspaces, ok := settings.GetCcmCollectAllWorkspacesOk(); ok && ccmCollectAllWorkspaces != nil {
 					settingsModel.CcmCollectAllWorkspaces = types.BoolValue(*ccmCollectAllWorkspaces)
@@ -1186,7 +1189,7 @@ func (r *datadogIntegrationDatabricksAccountResource) updateState(ctx context.Co
 		if databricksDataObservabilityJobsMonitoring, ok := dataflows.GetDatabricksDataObservabilityJobsMonitoringOk(); ok && databricksDataObservabilityJobsMonitoring != nil && dataflowsModel.DatabricksDataObservabilityJobsMonitoring != nil {
 			databricksDataObservabilityJobsMonitoringModel := dataflowsModel.DatabricksDataObservabilityJobsMonitoring
 			if databricksDataObservabilityJobsMonitoringModel == nil {
-				databricksDataObservabilityJobsMonitoringModel = &datadogIntegrationDatabricksAccountDatabricksDataObservabilityJobsMonitoringIntegrationDataflowResponseModel{}
+				databricksDataObservabilityJobsMonitoringModel = &resourceDatadogIntegrationDatabricksAccount_DatabricksDataObservabilityJobsMonitoringIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := databricksDataObservabilityJobsMonitoring.GetEnabledOk(); ok && enabled != nil {
 				databricksDataObservabilityJobsMonitoringModel.Enabled = types.BoolValue(*enabled)
@@ -1194,7 +1197,7 @@ func (r *datadogIntegrationDatabricksAccountResource) updateState(ctx context.Co
 			if settings, ok := databricksDataObservabilityJobsMonitoring.GetSettingsOk(); ok && settings != nil && databricksDataObservabilityJobsMonitoringModel.Settings != nil {
 				settingsModel := databricksDataObservabilityJobsMonitoringModel.Settings
 				if settingsModel == nil {
-					settingsModel = &datadogIntegrationDatabricksAccountDatabricksDataObservabilityJobsMonitoringIntegrationDataflowSettingsResponseModel{}
+					settingsModel = &resourceDatadogIntegrationDatabricksAccount_DatabricksDataObservabilityJobsMonitoringIntegrationDataflowSettingsResponseModel{}
 				}
 				if ddApiKeyId, ok := settings.GetDdApiKeyIdOk(); ok && ddApiKeyId != nil {
 					settingsModel.DdApiKeyId = types.StringValue(*ddApiKeyId)
@@ -1218,7 +1221,7 @@ func (r *datadogIntegrationDatabricksAccountResource) updateState(ctx context.Co
 		if databricksDataObservabilityQualityMonitoring, ok := dataflows.GetDatabricksDataObservabilityQualityMonitoringOk(); ok && databricksDataObservabilityQualityMonitoring != nil {
 			databricksDataObservabilityQualityMonitoringModel := dataflowsModel.DatabricksDataObservabilityQualityMonitoring
 			if databricksDataObservabilityQualityMonitoringModel == nil {
-				databricksDataObservabilityQualityMonitoringModel = &datadogIntegrationDatabricksAccountDatabricksDataObservabilityQualityMonitoringIntegrationDataflowResponseModel{}
+				databricksDataObservabilityQualityMonitoringModel = &resourceDatadogIntegrationDatabricksAccount_DatabricksDataObservabilityQualityMonitoringIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := databricksDataObservabilityQualityMonitoring.GetEnabledOk(); ok && enabled != nil {
 				databricksDataObservabilityQualityMonitoringModel.Enabled = types.BoolValue(*enabled)
@@ -1226,7 +1229,7 @@ func (r *datadogIntegrationDatabricksAccountResource) updateState(ctx context.Co
 			if settings, ok := databricksDataObservabilityQualityMonitoring.GetSettingsOk(); ok && settings != nil {
 				settingsModel := databricksDataObservabilityQualityMonitoringModel.Settings
 				if settingsModel == nil {
-					settingsModel = &datadogIntegrationDatabricksAccountDatabricksDataObservabilityQualityMonitoringIntegrationDataflowSettingsResponseModel{}
+					settingsModel = &resourceDatadogIntegrationDatabricksAccount_DatabricksDataObservabilityQualityMonitoringIntegrationDataflowSettingsResponseModel{}
 				}
 				if doCrawlersCron, ok := settings.GetDoCrawlersCronOk(); ok && doCrawlersCron != nil {
 					settingsModel.DoCrawlersCron = types.StringValue(*doCrawlersCron)
@@ -1241,7 +1244,7 @@ func (r *datadogIntegrationDatabricksAccountResource) updateState(ctx context.Co
 		if databricksModelServingMetrics, ok := dataflows.GetDatabricksModelServingMetricsOk(); ok && databricksModelServingMetrics != nil {
 			databricksModelServingMetricsModel := dataflowsModel.DatabricksModelServingMetrics
 			if databricksModelServingMetricsModel == nil {
-				databricksModelServingMetricsModel = &datadogIntegrationDatabricksAccountDatabricksModelServingMetricsIntegrationDataflowResponseModel{}
+				databricksModelServingMetricsModel = &resourceDatadogIntegrationDatabricksAccount_DatabricksModelServingMetricsIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := databricksModelServingMetrics.GetEnabledOk(); ok && enabled != nil {
 				databricksModelServingMetricsModel.Enabled = types.BoolValue(*enabled)
@@ -1253,7 +1256,7 @@ func (r *datadogIntegrationDatabricksAccountResource) updateState(ctx context.Co
 	if settings, ok := attributes.GetSettingsOk(); ok && settings != nil {
 		settingsModel := state.Settings
 		if settingsModel == nil {
-			settingsModel = &datadogIntegrationDatabricksAccountDatabricksIntegrationAccountSettingsResponseModel{}
+			settingsModel = &resourceDatadogIntegrationDatabricksAccount_DatabricksIntegrationAccountSettingsResponseModel{}
 		}
 		if systemTablesSqlWarehouseId, ok := settings.GetSystemTablesSqlWarehouseIdOk(); ok && systemTablesSqlWarehouseId != nil {
 			settingsModel.SystemTablesSqlWarehouseId = types.StringValue(*systemTablesSqlWarehouseId)

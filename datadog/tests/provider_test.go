@@ -134,6 +134,9 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_appsec_waf_exclusion_filter_test":                            "application-security",
 	"tests/resource_datadog_authn_mapping_test":                                          "authn_mapping",
 	"tests/resource_datadog_aws_wif_identity_mapping_test":                               "cloud-authentication",
+	"tests/resource_datadog_aws_wif_intake_mapping_test":                                 "cloud-authentication",
+	"tests/resource_datadog_github_oidc_intake_mapping_test":                             "cloud-authentication",
+	"tests/resource_datadog_github_oidc_identity_mapping_test":                           "cloud-authentication",
 	"tests/resource_datadog_child_organization_test":                                     "organization",
 	"tests/resource_datadog_cloud_configuration_rule_test":                               "security-monitoring",
 	"tests/resource_datadog_cloud_inventory_sync_config_test":                            "cloud-inventory",
@@ -188,6 +191,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_secure_embed_dashboard_test":                                 "dashboards",
 	"tests/resource_datadog_dashboard_v2_test":                                           "dashboards",
 	"tests/resource_datadog_dashboard_v2_timeseries_event_query_test":                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_network_device_flows_test":                      "dashboards",
 	"tests/resource_datadog_dashboard_v2_funnel_test":                                    "dashboards",
 	"tests/resource_datadog_dashboard_v2_hostmap_infrastructure_test":                    "dashboards",
 	"tests/resource_datadog_dashboard_v2_hostmap_ddsql_test":                             "dashboards",
@@ -285,6 +289,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_logs_metric_test":                                            "logs-metric",
 	"tests/resource_datadog_logs_restriction_query_test":                                 "logs-restriction-queries",
 	"tests/resource_datadog_metric_metadata_test":                                        "metrics",
+	"tests/resource_datadog_derived_metric_test":                                         "metrics",
 	"tests/resource_datadog_metric_tag_configuration_test":                               "metrics",
 	"tests/resource_datadog_tag_indexing_rule_test":                                      "metrics",
 	"tests/resource_datadog_tag_indexing_rule_exemption_test":                            "metrics",
@@ -314,6 +319,8 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_role_test":                                                   "roles",
 	"tests/resource_datadog_rum_application_test":                                        "rum-application",
 	"tests/resource_datadog_rum_metric_test":                                             "rum-metric",
+	"tests/resource_datadog_rum_operation_journey_link_test":                             "rum-operation",
+	"tests/resource_datadog_rum_operation_test":                                          "rum-operation",
 	"tests/resource_datadog_rum_retention_filter_test":                                   "rum-retention-filter",
 	"tests/resource_datadog_rum_retention_filters_order_test":                            "rum-retention-filters-order",
 	"tests/resource_datadog_saml_idp_metadata_test":                                      "organization",
@@ -646,6 +653,12 @@ func uniqueAWSAccountID(ctx context.Context, t *testing.T) string {
 	return result[:12]
 }
 
+// uniqueGCPProjectID matches the GCP project ID format: lowercase, starts with a letter, 6-30 chars.
+func uniqueGCPProjectID(ctx context.Context, t *testing.T) string {
+	hash := fmt.Sprintf("%x", sha256.Sum256([]byte(uniqueEntityName(ctx, t))))
+	return "tf-" + hash[:17]
+}
+
 // uniqueAgentRuleName takes the current/frozen time and uses it to generate a unique agent
 // rule name that changes in CI, but is stable locally.
 func uniqueAgentRuleName(ctx context.Context) string {
@@ -801,6 +814,7 @@ func matchInteraction(r *http.Request, i cassette.Request) bool {
 // jsonEquivalent compares two JSON strings for semantic equality, ignoring:
 //   - key ordering (Go map vs struct serialization)
 //   - absent vs zero-value fields ("id":"" vs no "id" key)
+//   - widget IDs the cassette did not record (see dropUnrecordedWidgetIDs)
 //
 // This allows v1 (typed struct serialization) and v2 (map serialization) request
 // bodies to match against the same cassette.
@@ -812,7 +826,52 @@ func jsonEquivalent(a, b string) bool {
 	if err := json.Unmarshal([]byte(b), &vb); err != nil {
 		return false
 	}
+	dropUnrecordedWidgetIDs(va, vb)
 	return deepEquivalent(va, vb)
+}
+
+// dropUnrecordedWidgetIDs removes numeric widget "id" fields from the request
+// wherever the matching cassette widget has none. v1 never sent widget IDs on
+// update, while v2 sends back the IDs it read from state, so v1-era cassettes
+// would otherwise never match. Cassettes that do record widget IDs still
+// require an exact match.
+func dropUnrecordedWidgetIDs(req, cas interface{}) {
+	switch rv := req.(type) {
+	case map[string]interface{}:
+		cv, ok := cas.(map[string]interface{})
+		if !ok {
+			return
+		}
+		for k, v := range rv {
+			if k == "widgets" {
+				rw, rok := v.([]interface{})
+				cw, cok := cv[k].([]interface{})
+				if rok && cok && len(rw) == len(cw) {
+					for i := range rw {
+						rWidget, rok := rw[i].(map[string]interface{})
+						cWidget, cok := cw[i].(map[string]interface{})
+						if !rok || !cok {
+							continue
+						}
+						if _, isNum := rWidget["id"].(float64); isNum {
+							if _, recorded := cWidget["id"]; !recorded {
+								delete(rWidget, "id")
+							}
+						}
+					}
+				}
+			}
+			dropUnrecordedWidgetIDs(v, cv[k])
+		}
+	case []interface{}:
+		cv, ok := cas.([]interface{})
+		if !ok || len(rv) != len(cv) {
+			return
+		}
+		for i := range rv {
+			dropUnrecordedWidgetIDs(rv[i], cv[i])
+		}
+	}
 }
 
 // deepEquivalent recursively compares two JSON values, treating absent keys

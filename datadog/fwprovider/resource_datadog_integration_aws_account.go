@@ -105,6 +105,7 @@ type metricsConfigModel struct {
 	AutomuteEnabled         types.Bool                `tfsdk:"automute_enabled"`
 	CollectCloudwatchAlarms types.Bool                `tfsdk:"collect_cloudwatch_alarms"`
 	CollectCustomMetrics    types.Bool                `tfsdk:"collect_custom_metrics"`
+	CollectServiceQuotas    types.Bool                `tfsdk:"collect_service_quotas"`
 	Enabled                 types.Bool                `tfsdk:"enabled"`
 	TagFilters              []*metricsTagFiltersModel `tfsdk:"tag_filters"`
 	MetricNameFilters       []*metricNameFilterModel  `tfsdk:"metric_name_filters"`
@@ -411,6 +412,15 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 						Computed:    true,
 						Description: "Enable custom metrics collection",
 						Default:     booldefault.StaticBool(false),
+					},
+					"collect_service_quotas": schema.BoolAttribute{
+						Optional: true,
+						Computed: true,
+						Description: "Enable Service Quotas collection. Incurs CloudWatch `GetMetricData` " +
+							"charges on your AWS bill. Requires `resources_config.extended_collection` to be set to `true`, " +
+							"and the Datadog AWS integration role must allow `servicequotas:ListServices`, " +
+							"`servicequotas:ListServiceQuotas` and `servicequotas:ListRequestedServiceQuotaChangeHistory`.",
+						Default: booldefault.StaticBool(false),
 					},
 					"enabled": schema.BoolAttribute{
 						Optional:    true,
@@ -763,6 +773,11 @@ func buildStateMetricsConfig(ctx context.Context, attributes datadogV2.AWSAccoun
 	if enabled, ok := metricsConfig.GetEnabledOk(); ok {
 		metricsConfigTf.Enabled = types.BoolValue(*enabled)
 	}
+	if serviceQuotasCollection, ok := metricsConfig.GetCollectServiceQuotasOk(); ok {
+		metricsConfigTf.CollectServiceQuotas = types.BoolValue(*serviceQuotasCollection)
+	} else {
+		metricsConfigTf.CollectServiceQuotas = types.BoolValue(false)
+	}
 
 	if tagFilters, ok := metricsConfig.GetTagFiltersOk(); ok && len(*tagFilters) > 0 {
 		for _, tagFiltersDd := range *tagFilters {
@@ -1008,6 +1023,9 @@ func buildRequestMetricsConfig(ctx context.Context, state *integrationAwsAccount
 	}
 	if !state.MetricsConfig.Enabled.IsNull() {
 		metricsConfig.SetEnabled(state.MetricsConfig.Enabled.ValueBool())
+	}
+	if !state.MetricsConfig.CollectServiceQuotas.IsNull() {
+		metricsConfig.SetCollectServiceQuotas(state.MetricsConfig.CollectServiceQuotas.ValueBool())
 	}
 
 	tagFilters := []datadogV2.AWSNamespaceTagFilter{}

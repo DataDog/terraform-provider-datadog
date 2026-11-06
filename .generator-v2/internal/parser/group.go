@@ -48,12 +48,15 @@ func resolveGroup(decl *model.OperationGroup, byID map[string]*model.Operation) 
 
 // indexOperationsByID indexes operations by operationId, skipping unnamed ones
 // (an operationId is optional, but a group can only name an operation that has
-// one). Duplicate ids are malformed input; the last one wins, made
-// deterministic by the (path, method) sort applied before this runs.
+// one) and synthetic ones. A synthetic operation shares its operationId with
+// the real operation it carries an artifact for, so indexing it would let a
+// group resolve to the clone; the document's own operations are the only ones a
+// group may name. Duplicate ids among those are malformed input; the last one
+// wins, made deterministic by the (path, method) sort applied before this runs.
 func indexOperationsByID(ops []*model.Operation) map[string]*model.Operation {
 	byID := make(map[string]*model.Operation, len(ops))
 	for _, op := range ops {
-		if op == nil || op.OperationId == "" {
+		if op == nil || op.OperationId == "" || op.Synthetic {
 			continue
 		}
 		byID[op.OperationId] = op

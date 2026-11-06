@@ -44,7 +44,6 @@ servers:
 security:
 - apiKeyAuth: []
   appKeyAuth: []
-tags:
 - name: Actions Datastores
   description: 'Leverage the Actions Datastore API to create, modify, and delete
 
@@ -145,13 +144,6 @@ paths:
         - apps_datastore_read
       x-undo:
         type: safe
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: datastores
-        tf_description: Use this data source to retrieve information about existing Datadog datastores.
-        group:
-          read: ListDatastores
-        cardinality: plural
 components:
   responses:
     TooManyRequestsResponse:
@@ -327,3 +319,17 @@ components:
       name: DD-APPLICATION-KEY
       in: header
       x-env-name: DD_APP_KEY
+tags:
+- name: Actions Datastores
+  description: 'Leverage the Actions Datastore API to create, modify, and delete
+
+    items in datastores owned by your organization.'
+  externalDocs:
+    url: https://docs.datadoghq.com/actions/datastore
+  x-datadog-tf-generator:
+    datastores:
+      datasource_list:
+        artifact_name: datastores
+        tf_description: Use this data source to retrieve information about existing Datadog datastores.
+        group:
+          read: ListDatastores

@@ -57,6 +57,14 @@ jobs:
             --jq .id)
           echo "check_run_id=${check_run_id}" >> "$GITHUB_OUTPUT"
 
+  report-api-spec-start:
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/report_api_spec_integration.yml
+    with:
+      conclusion: pending
+
   pr-tests-selection:
     runs-on: ubuntu-latest
     if: github.event.workflow_run.conclusion == 'success'
@@ -115,9 +123,9 @@ jobs:
         with:
           policy: terraform-provider-datadog
       - name: Install Go
-        uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: "1.23"
+          go-version-file: go.mod
           cache: true
       # No GHA cache: the Terraform binary is small (~30MB, a few seconds to
       # download) and a shared cache would let untrusted fork PR code poison a
@@ -167,6 +175,8 @@ jobs:
       contents: read
       checks: write
       actions: read # Required to download the results artifact
+    outputs:
+      conclusion: ${{ steps.complete.outputs.conclusion }}
     steps:
       # No ref: for workflow_run this checks out the default branch, so both the
       # summarizer and the workflow driving it come from base-branch code.
@@ -200,6 +210,7 @@ jobs:
             echo "CHECK_SUMMARY_EOF"
           } >> "$GITHUB_OUTPUT"
       - name: Complete check run
+        id: complete
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
@@ -212,11 +223,6 @@ jobs:
           TESTS_SUMMARY: ${{ steps.summary.outputs.summary }}
           SELECTION_RUN_URL: ${{ github.event.workflow_run.html_url }}
         run: |
-          if [ -z "${CHECK_RUN_ID}" ]; then
-            echo "report-start did not create a check run; nothing to complete." >&2
-            exit 1
-          fi
-
           if [ "${SELECTION_CONCLUSION}" != "success" ] || [ "${SELECTION_RESULT}" != "success" ]; then
             # A cancelled selection run usually means a newer push superseded this
             # one, which will publish its own check against the newer commit.
@@ -241,8 +247,27 @@ jobs:
             summary="${TESTS_SUMMARY:-The integration test job ${TESTS_RESULT} before producing results.}"
           fi
 
+          # Preserve the test result even if updating the provider check fails.
+          echo "conclusion=${conclusion}" >> "$GITHUB_OUTPUT"
+
+          if [ -z "${CHECK_RUN_ID}" ]; then
+            echo "report-start did not create a check run; nothing to complete." >&2
+            exit 1
+          fi
+
           gh api --method PATCH "repos/${GITHUB_REPOSITORY}/check-runs/${CHECK_RUN_ID}" \
             -f status=completed \
             -f conclusion="${conclusion}" \
             -f "output[title]=${title}" \
             -f "output[summary]=${summary}"
+
+  report-api-spec-finish:
+    # Wait for pending reporting so it cannot overwrite the final status.
+    needs: [report-api-spec-start, report-finish]
+    if: always() && needs.report-finish.outputs.conclusion != ''
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/report_api_spec_integration.yml
+    with:
+      conclusion: ${{ needs.report-finish.outputs.conclusion }}

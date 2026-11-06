@@ -28,67 +28,68 @@ var (
 	_ resource.ResourceWithConfigure   = &datadogIntegrationTwilioAccountResource{}
 	_ resource.ResourceWithImportState = &datadogIntegrationTwilioAccountResource{}
 )
-var datadogIntegrationTwilioAccountAuthenticationTwilioIntegrationAccountBasicAuthPasswordWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "password", WriteOnlyAttr: "password_wo", TriggerAttr: "password_wo_version", WriteOnlyDescription: "Secret password or private key. This write-only value is not stored in Terraform state.", TriggerDescription: "Version trigger for password_wo rotation.", ParentBlocks: []string{"authentication", "twilio_integration_account_basic_auth"}, Mode: fwutils.WriteOnlySecretModeOnly, Required: true}
+var resourceDatadogIntegrationTwilioAccount_AuthenticationTwilioIntegrationAccountBasicAuthPasswordWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "password", WriteOnlyAttr: "password_wo", TriggerAttr: "password_wo_version", OriginalDescription: "Secret password or private key. Exactly one of `password` or `password_wo` must be set. Prefer `password_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.", WriteOnlyDescription: "Secret password or private key. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.", TriggerDescription: "Version trigger for password_wo rotation.", ParentBlocks: []string{"authentication", "twilio_integration_account_basic_auth"}, Mode: fwutils.WriteOnlySecretModeDual, Required: true}
 
-type datadogIntegrationTwilioAccountResourceModel struct {
-	ID             types.String                                                                  `tfsdk:"id"`
-	Authentication *datadogIntegrationTwilioAccountTwilioIntegrationAccountAuthenticationModel   `tfsdk:"authentication"`
-	Dataflows      *datadogIntegrationTwilioAccountTwilioIntegrationDataflowsResponseModel       `tfsdk:"dataflows"`
-	Name           types.String                                                                  `tfsdk:"name"`
-	Settings       *datadogIntegrationTwilioAccountTwilioIntegrationAccountSettingsResponseModel `tfsdk:"settings"`
+type resourceDatadogIntegrationTwilioAccount_Model struct {
+	ID             types.String                                                                           `tfsdk:"id"`
+	Authentication *resourceDatadogIntegrationTwilioAccount_TwilioIntegrationAccountAuthenticationModel   `tfsdk:"authentication"`
+	Dataflows      *resourceDatadogIntegrationTwilioAccount_TwilioIntegrationDataflowsResponseModel       `tfsdk:"dataflows"`
+	Name           types.String                                                                           `tfsdk:"name"`
+	Settings       *resourceDatadogIntegrationTwilioAccount_TwilioIntegrationAccountSettingsResponseModel `tfsdk:"settings"`
 }
 
-type datadogIntegrationTwilioAccountTwilioIntegrationAccountAuthenticationModel struct {
-	TwilioIntegrationAccountBasicAuth *datadogIntegrationTwilioAccountTwilioIntegrationAccountAuthenticationTwilioIntegrationAccountBasicAuthModel `tfsdk:"twilio_integration_account_basic_auth"`
+type resourceDatadogIntegrationTwilioAccount_TwilioIntegrationAccountAuthenticationModel struct {
+	TwilioIntegrationAccountBasicAuth *resourceDatadogIntegrationTwilioAccount_TwilioIntegrationAccountAuthenticationTwilioIntegrationAccountBasicAuthModel `tfsdk:"twilio_integration_account_basic_auth"`
 }
 
-type datadogIntegrationTwilioAccountTwilioIntegrationAccountAuthenticationTwilioIntegrationAccountBasicAuthModel struct {
+type resourceDatadogIntegrationTwilioAccount_TwilioIntegrationAccountAuthenticationTwilioIntegrationAccountBasicAuthModel struct {
 	AuthType          types.String `tfsdk:"auth_type"`
+	Password          types.String `tfsdk:"password"`
 	PasswordWo        types.String `tfsdk:"password_wo"`
 	PasswordWoVersion types.String `tfsdk:"password_wo_version"`
 	Username          types.String `tfsdk:"username"`
 }
 
-type datadogIntegrationTwilioAccountTwilioIntegrationDataflowsResponseModel struct {
-	TwilioAlertsLogs        *datadogIntegrationTwilioAccountTwilioAlertsLogsIntegrationDataflowResponseModel        `tfsdk:"twilio_alerts_logs"`
-	TwilioCallSummariesLogs *datadogIntegrationTwilioAccountTwilioCallSummariesLogsIntegrationDataflowResponseModel `tfsdk:"twilio_call_summaries_logs"`
-	TwilioCloudCostMetrics  *datadogIntegrationTwilioAccountTwilioCloudCostMetricsIntegrationDataflowResponseModel  `tfsdk:"twilio_cloud_cost_metrics"`
-	TwilioEventsLogs        *datadogIntegrationTwilioAccountTwilioEventsLogsIntegrationDataflowResponseModel        `tfsdk:"twilio_events_logs"`
-	TwilioMessagesLogs      *datadogIntegrationTwilioAccountTwilioMessagesLogsIntegrationDataflowResponseModel      `tfsdk:"twilio_messages_logs"`
+type resourceDatadogIntegrationTwilioAccount_TwilioIntegrationDataflowsResponseModel struct {
+	TwilioAlertsLogs        *resourceDatadogIntegrationTwilioAccount_TwilioAlertsLogsIntegrationDataflowResponseModel        `tfsdk:"twilio_alerts_logs"`
+	TwilioCallSummariesLogs *resourceDatadogIntegrationTwilioAccount_TwilioCallSummariesLogsIntegrationDataflowResponseModel `tfsdk:"twilio_call_summaries_logs"`
+	TwilioCloudCostMetrics  *resourceDatadogIntegrationTwilioAccount_TwilioCloudCostMetricsIntegrationDataflowResponseModel  `tfsdk:"twilio_cloud_cost_metrics"`
+	TwilioEventsLogs        *resourceDatadogIntegrationTwilioAccount_TwilioEventsLogsIntegrationDataflowResponseModel        `tfsdk:"twilio_events_logs"`
+	TwilioMessagesLogs      *resourceDatadogIntegrationTwilioAccount_TwilioMessagesLogsIntegrationDataflowResponseModel      `tfsdk:"twilio_messages_logs"`
 }
 
-type datadogIntegrationTwilioAccountTwilioAlertsLogsIntegrationDataflowResponseModel struct {
-	Enabled types.Bool                                                            `tfsdk:"enabled"`
-	Status  *datadogIntegrationTwilioAccountIntegrationAccountDataflowStatusModel `tfsdk:"status"`
+type resourceDatadogIntegrationTwilioAccount_TwilioAlertsLogsIntegrationDataflowResponseModel struct {
+	Enabled types.Bool                                                                     `tfsdk:"enabled"`
+	Status  *resourceDatadogIntegrationTwilioAccount_IntegrationAccountDataflowStatusModel `tfsdk:"status"`
 }
 
-type datadogIntegrationTwilioAccountIntegrationAccountDataflowStatusModel struct {
+type resourceDatadogIntegrationTwilioAccount_IntegrationAccountDataflowStatusModel struct {
 	Health    types.String `tfsdk:"health"`
 	Message   types.String `tfsdk:"message"`
 	UpdatedAt types.String `tfsdk:"updated_at"`
 }
 
-type datadogIntegrationTwilioAccountTwilioCallSummariesLogsIntegrationDataflowResponseModel struct {
-	Enabled types.Bool                                                            `tfsdk:"enabled"`
-	Status  *datadogIntegrationTwilioAccountIntegrationAccountDataflowStatusModel `tfsdk:"status"`
+type resourceDatadogIntegrationTwilioAccount_TwilioCallSummariesLogsIntegrationDataflowResponseModel struct {
+	Enabled types.Bool                                                                     `tfsdk:"enabled"`
+	Status  *resourceDatadogIntegrationTwilioAccount_IntegrationAccountDataflowStatusModel `tfsdk:"status"`
 }
 
-type datadogIntegrationTwilioAccountTwilioCloudCostMetricsIntegrationDataflowResponseModel struct {
-	Enabled types.Bool                                                            `tfsdk:"enabled"`
-	Status  *datadogIntegrationTwilioAccountIntegrationAccountDataflowStatusModel `tfsdk:"status"`
+type resourceDatadogIntegrationTwilioAccount_TwilioCloudCostMetricsIntegrationDataflowResponseModel struct {
+	Enabled types.Bool                                                                     `tfsdk:"enabled"`
+	Status  *resourceDatadogIntegrationTwilioAccount_IntegrationAccountDataflowStatusModel `tfsdk:"status"`
 }
 
-type datadogIntegrationTwilioAccountTwilioEventsLogsIntegrationDataflowResponseModel struct {
-	Enabled types.Bool                                                            `tfsdk:"enabled"`
-	Status  *datadogIntegrationTwilioAccountIntegrationAccountDataflowStatusModel `tfsdk:"status"`
+type resourceDatadogIntegrationTwilioAccount_TwilioEventsLogsIntegrationDataflowResponseModel struct {
+	Enabled types.Bool                                                                     `tfsdk:"enabled"`
+	Status  *resourceDatadogIntegrationTwilioAccount_IntegrationAccountDataflowStatusModel `tfsdk:"status"`
 }
 
-type datadogIntegrationTwilioAccountTwilioMessagesLogsIntegrationDataflowResponseModel struct {
-	Enabled types.Bool                                                            `tfsdk:"enabled"`
-	Status  *datadogIntegrationTwilioAccountIntegrationAccountDataflowStatusModel `tfsdk:"status"`
+type resourceDatadogIntegrationTwilioAccount_TwilioMessagesLogsIntegrationDataflowResponseModel struct {
+	Enabled types.Bool                                                                     `tfsdk:"enabled"`
+	Status  *resourceDatadogIntegrationTwilioAccount_IntegrationAccountDataflowStatusModel `tfsdk:"status"`
 }
 
-type datadogIntegrationTwilioAccountTwilioIntegrationAccountSettingsResponseModel struct {
+type resourceDatadogIntegrationTwilioAccount_TwilioIntegrationAccountSettingsResponseModel struct {
 	AccountSid types.String `tfsdk:"account_sid"`
 	CensorLogs types.Bool   `tfsdk:"censor_logs"`
 }
@@ -150,7 +151,7 @@ func (r *datadogIntegrationTwilioAccountResource) Schema(_ context.Context, _ re
 									Required:    true,
 								},
 							},
-							fwutils.CreateWriteOnlySecretAttributes(datadogIntegrationTwilioAccountAuthenticationTwilioIntegrationAccountBasicAuthPasswordWriteOnlySecretConfig),
+							fwutils.CreateWriteOnlySecretAttributes(resourceDatadogIntegrationTwilioAccount_AuthenticationTwilioIntegrationAccountBasicAuthPasswordWriteOnlySecretConfig),
 						),
 						Optional: true,
 
@@ -413,7 +414,7 @@ func (r *datadogIntegrationTwilioAccountResource) ImportState(ctx context.Contex
 }
 
 func (r *datadogIntegrationTwilioAccountResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state datadogIntegrationTwilioAccountResourceModel
+	var state resourceDatadogIntegrationTwilioAccount_Model
 	var plan types.Object
 	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
 	if response.Diagnostics.HasError() {
@@ -425,7 +426,7 @@ func (r *datadogIntegrationTwilioAccountResource) Create(ctx context.Context, re
 	}
 
 	authenticationTwilioIntegrationAccountBasicAuthPasswordWriteOnlySecretHandler := fwutils.WriteOnlySecretHandler{
-		Config:                 datadogIntegrationTwilioAccountAuthenticationTwilioIntegrationAccountBasicAuthPasswordWriteOnlySecretConfig,
+		Config:                 resourceDatadogIntegrationTwilioAccount_AuthenticationTwilioIntegrationAccountBasicAuthPasswordWriteOnlySecretConfig,
 		SecretRequiredOnUpdate: false,
 	}
 	authenticationTwilioIntegrationAccountBasicAuthPasswordSecretResult := authenticationTwilioIntegrationAccountBasicAuthPasswordWriteOnlySecretHandler.GetSecretForCreate(ctx, &request.Config)
@@ -643,7 +644,7 @@ func (r *datadogIntegrationTwilioAccountResource) Create(ctx context.Context, re
 }
 
 func (r *datadogIntegrationTwilioAccountResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state datadogIntegrationTwilioAccountResourceModel
+	var state resourceDatadogIntegrationTwilioAccount_Model
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -667,7 +668,7 @@ func (r *datadogIntegrationTwilioAccountResource) Read(ctx context.Context, requ
 }
 
 func (r *datadogIntegrationTwilioAccountResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state datadogIntegrationTwilioAccountResourceModel
+	var state resourceDatadogIntegrationTwilioAccount_Model
 	var plan types.Object
 	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
 	if response.Diagnostics.HasError() {
@@ -679,7 +680,7 @@ func (r *datadogIntegrationTwilioAccountResource) Update(ctx context.Context, re
 	}
 
 	authenticationTwilioIntegrationAccountBasicAuthPasswordWriteOnlySecretHandler := fwutils.WriteOnlySecretHandler{
-		Config:                 datadogIntegrationTwilioAccountAuthenticationTwilioIntegrationAccountBasicAuthPasswordWriteOnlySecretConfig,
+		Config:                 resourceDatadogIntegrationTwilioAccount_AuthenticationTwilioIntegrationAccountBasicAuthPasswordWriteOnlySecretConfig,
 		SecretRequiredOnUpdate: false,
 	}
 	authenticationTwilioIntegrationAccountBasicAuthPasswordSecretResult := authenticationTwilioIntegrationAccountBasicAuthPasswordWriteOnlySecretHandler.GetSecretForUpdate(ctx, &request.Config, &request)
@@ -804,7 +805,7 @@ func (r *datadogIntegrationTwilioAccountResource) Update(ctx context.Context, re
 }
 
 func (r *datadogIntegrationTwilioAccountResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state datadogIntegrationTwilioAccountResourceModel
+	var state resourceDatadogIntegrationTwilioAccount_Model
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -823,7 +824,7 @@ func (r *datadogIntegrationTwilioAccountResource) Delete(ctx context.Context, re
 // rather than writing them so it stays free of the resource request/response
 // types and can fail at a specific schema path. Shared by Create, Read and
 // Update, which all resolve the same response type.
-func (r *datadogIntegrationTwilioAccountResource) updateState(ctx context.Context, state *datadogIntegrationTwilioAccountResourceModel, resp *datadogV2.TwilioIntegrationAccountResponse) diag.Diagnostics {
+func (r *datadogIntegrationTwilioAccountResource) updateState(ctx context.Context, state *resourceDatadogIntegrationTwilioAccount_Model, resp *datadogV2.TwilioIntegrationAccountResponse) diag.Diagnostics {
 	var diags diag.Diagnostics
 	attributes := resp.Data.GetAttributes()
 	if id, ok := resp.Data.GetIdOk(); ok && id != nil {
@@ -833,10 +834,10 @@ func (r *datadogIntegrationTwilioAccountResource) updateState(ctx context.Contex
 		state.Name = types.StringValue(*name)
 	}
 	if authentication, ok := attributes.GetAuthenticationOk(); ok && authentication != nil {
-		authenticationEnvelope := &datadogIntegrationTwilioAccountTwilioIntegrationAccountAuthenticationModel{}
+		authenticationEnvelope := &resourceDatadogIntegrationTwilioAccount_TwilioIntegrationAccountAuthenticationModel{}
 		authenticationMatches := 0
 		if twilioIntegrationAccountBasicAuthVariant := authentication.TwilioIntegrationAccountBasicAuthResponse; twilioIntegrationAccountBasicAuthVariant != nil {
-			twilioIntegrationAccountBasicAuthModel := &datadogIntegrationTwilioAccountTwilioIntegrationAccountAuthenticationTwilioIntegrationAccountBasicAuthModel{}
+			twilioIntegrationAccountBasicAuthModel := &resourceDatadogIntegrationTwilioAccount_TwilioIntegrationAccountAuthenticationTwilioIntegrationAccountBasicAuthModel{}
 			if state.Authentication != nil && state.Authentication.TwilioIntegrationAccountBasicAuth != nil {
 				twilioIntegrationAccountBasicAuthModel = state.Authentication.TwilioIntegrationAccountBasicAuth
 			}
@@ -867,12 +868,12 @@ func (r *datadogIntegrationTwilioAccountResource) updateState(ctx context.Contex
 	if dataflows, ok := attributes.GetDataflowsOk(); ok && dataflows != nil {
 		dataflowsModel := state.Dataflows
 		if dataflowsModel == nil {
-			dataflowsModel = &datadogIntegrationTwilioAccountTwilioIntegrationDataflowsResponseModel{}
+			dataflowsModel = &resourceDatadogIntegrationTwilioAccount_TwilioIntegrationDataflowsResponseModel{}
 		}
 		if twilioAlertsLogs, ok := dataflows.GetTwilioAlertsLogsOk(); ok && twilioAlertsLogs != nil {
 			twilioAlertsLogsModel := dataflowsModel.TwilioAlertsLogs
 			if twilioAlertsLogsModel == nil {
-				twilioAlertsLogsModel = &datadogIntegrationTwilioAccountTwilioAlertsLogsIntegrationDataflowResponseModel{}
+				twilioAlertsLogsModel = &resourceDatadogIntegrationTwilioAccount_TwilioAlertsLogsIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := twilioAlertsLogs.GetEnabledOk(); ok && enabled != nil {
 				twilioAlertsLogsModel.Enabled = types.BoolValue(*enabled)
@@ -880,7 +881,7 @@ func (r *datadogIntegrationTwilioAccountResource) updateState(ctx context.Contex
 			if status, ok := twilioAlertsLogs.GetStatusOk(); ok && status != nil {
 				statusModel := twilioAlertsLogsModel.Status
 				if statusModel == nil {
-					statusModel = &datadogIntegrationTwilioAccountIntegrationAccountDataflowStatusModel{}
+					statusModel = &resourceDatadogIntegrationTwilioAccount_IntegrationAccountDataflowStatusModel{}
 				}
 				if health, ok := status.GetHealthOk(); ok && health != nil {
 					statusModel.Health = types.StringValue(string(*health))
@@ -898,7 +899,7 @@ func (r *datadogIntegrationTwilioAccountResource) updateState(ctx context.Contex
 		if twilioCallSummariesLogs, ok := dataflows.GetTwilioCallSummariesLogsOk(); ok && twilioCallSummariesLogs != nil {
 			twilioCallSummariesLogsModel := dataflowsModel.TwilioCallSummariesLogs
 			if twilioCallSummariesLogsModel == nil {
-				twilioCallSummariesLogsModel = &datadogIntegrationTwilioAccountTwilioCallSummariesLogsIntegrationDataflowResponseModel{}
+				twilioCallSummariesLogsModel = &resourceDatadogIntegrationTwilioAccount_TwilioCallSummariesLogsIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := twilioCallSummariesLogs.GetEnabledOk(); ok && enabled != nil {
 				twilioCallSummariesLogsModel.Enabled = types.BoolValue(*enabled)
@@ -906,7 +907,7 @@ func (r *datadogIntegrationTwilioAccountResource) updateState(ctx context.Contex
 			if status, ok := twilioCallSummariesLogs.GetStatusOk(); ok && status != nil {
 				statusModel := twilioCallSummariesLogsModel.Status
 				if statusModel == nil {
-					statusModel = &datadogIntegrationTwilioAccountIntegrationAccountDataflowStatusModel{}
+					statusModel = &resourceDatadogIntegrationTwilioAccount_IntegrationAccountDataflowStatusModel{}
 				}
 				if health, ok := status.GetHealthOk(); ok && health != nil {
 					statusModel.Health = types.StringValue(string(*health))
@@ -924,7 +925,7 @@ func (r *datadogIntegrationTwilioAccountResource) updateState(ctx context.Contex
 		if twilioCloudCostMetrics, ok := dataflows.GetTwilioCloudCostMetricsOk(); ok && twilioCloudCostMetrics != nil {
 			twilioCloudCostMetricsModel := dataflowsModel.TwilioCloudCostMetrics
 			if twilioCloudCostMetricsModel == nil {
-				twilioCloudCostMetricsModel = &datadogIntegrationTwilioAccountTwilioCloudCostMetricsIntegrationDataflowResponseModel{}
+				twilioCloudCostMetricsModel = &resourceDatadogIntegrationTwilioAccount_TwilioCloudCostMetricsIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := twilioCloudCostMetrics.GetEnabledOk(); ok && enabled != nil {
 				twilioCloudCostMetricsModel.Enabled = types.BoolValue(*enabled)
@@ -932,7 +933,7 @@ func (r *datadogIntegrationTwilioAccountResource) updateState(ctx context.Contex
 			if status, ok := twilioCloudCostMetrics.GetStatusOk(); ok && status != nil {
 				statusModel := twilioCloudCostMetricsModel.Status
 				if statusModel == nil {
-					statusModel = &datadogIntegrationTwilioAccountIntegrationAccountDataflowStatusModel{}
+					statusModel = &resourceDatadogIntegrationTwilioAccount_IntegrationAccountDataflowStatusModel{}
 				}
 				if health, ok := status.GetHealthOk(); ok && health != nil {
 					statusModel.Health = types.StringValue(string(*health))
@@ -950,7 +951,7 @@ func (r *datadogIntegrationTwilioAccountResource) updateState(ctx context.Contex
 		if twilioEventsLogs, ok := dataflows.GetTwilioEventsLogsOk(); ok && twilioEventsLogs != nil {
 			twilioEventsLogsModel := dataflowsModel.TwilioEventsLogs
 			if twilioEventsLogsModel == nil {
-				twilioEventsLogsModel = &datadogIntegrationTwilioAccountTwilioEventsLogsIntegrationDataflowResponseModel{}
+				twilioEventsLogsModel = &resourceDatadogIntegrationTwilioAccount_TwilioEventsLogsIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := twilioEventsLogs.GetEnabledOk(); ok && enabled != nil {
 				twilioEventsLogsModel.Enabled = types.BoolValue(*enabled)
@@ -958,7 +959,7 @@ func (r *datadogIntegrationTwilioAccountResource) updateState(ctx context.Contex
 			if status, ok := twilioEventsLogs.GetStatusOk(); ok && status != nil {
 				statusModel := twilioEventsLogsModel.Status
 				if statusModel == nil {
-					statusModel = &datadogIntegrationTwilioAccountIntegrationAccountDataflowStatusModel{}
+					statusModel = &resourceDatadogIntegrationTwilioAccount_IntegrationAccountDataflowStatusModel{}
 				}
 				if health, ok := status.GetHealthOk(); ok && health != nil {
 					statusModel.Health = types.StringValue(string(*health))
@@ -976,7 +977,7 @@ func (r *datadogIntegrationTwilioAccountResource) updateState(ctx context.Contex
 		if twilioMessagesLogs, ok := dataflows.GetTwilioMessagesLogsOk(); ok && twilioMessagesLogs != nil {
 			twilioMessagesLogsModel := dataflowsModel.TwilioMessagesLogs
 			if twilioMessagesLogsModel == nil {
-				twilioMessagesLogsModel = &datadogIntegrationTwilioAccountTwilioMessagesLogsIntegrationDataflowResponseModel{}
+				twilioMessagesLogsModel = &resourceDatadogIntegrationTwilioAccount_TwilioMessagesLogsIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := twilioMessagesLogs.GetEnabledOk(); ok && enabled != nil {
 				twilioMessagesLogsModel.Enabled = types.BoolValue(*enabled)
@@ -984,7 +985,7 @@ func (r *datadogIntegrationTwilioAccountResource) updateState(ctx context.Contex
 			if status, ok := twilioMessagesLogs.GetStatusOk(); ok && status != nil {
 				statusModel := twilioMessagesLogsModel.Status
 				if statusModel == nil {
-					statusModel = &datadogIntegrationTwilioAccountIntegrationAccountDataflowStatusModel{}
+					statusModel = &resourceDatadogIntegrationTwilioAccount_IntegrationAccountDataflowStatusModel{}
 				}
 				if health, ok := status.GetHealthOk(); ok && health != nil {
 					statusModel.Health = types.StringValue(string(*health))
@@ -1004,7 +1005,7 @@ func (r *datadogIntegrationTwilioAccountResource) updateState(ctx context.Contex
 	if settings, ok := attributes.GetSettingsOk(); ok && settings != nil {
 		settingsModel := state.Settings
 		if settingsModel == nil {
-			settingsModel = &datadogIntegrationTwilioAccountTwilioIntegrationAccountSettingsResponseModel{}
+			settingsModel = &resourceDatadogIntegrationTwilioAccount_TwilioIntegrationAccountSettingsResponseModel{}
 		}
 		if accountSid, ok := settings.GetAccountSidOk(); ok && accountSid != nil {
 			settingsModel.AccountSid = types.StringValue(*accountSid)

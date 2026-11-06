@@ -184,7 +184,7 @@ var _ = Describe("MergeResourceSchema", func() {
 		},
 		Entry("Create writeOnly:true selects it", true, false, false, false, true, false),
 		Entry("Update writeOnly:true selects it", false, true, false, false, true, false),
-		Entry("request x-secret/tracking-sensitive does not select it", false, false, false, true, false, true),
+		Entry("request display sensitivity alone does not select it", false, false, false, true, false, true),
 		Entry("response writeOnly:true does not select it", false, false, true, false, false, true),
 		Entry("no marker selects neither behavior", false, false, false, false, false, false),
 	)

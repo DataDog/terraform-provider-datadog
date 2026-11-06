@@ -148,11 +148,11 @@ var _ = Describe("LoadSpec", func() {
 			))
 		})
 
-		It("returns a *TrackingError with the correct path for a malformed extension", func() {
+		It("returns a RegistryError for a malformed family declaration", func() {
 			_, err := LoadSpec(filepath.Join("../testdata/parser", "tracking_malformed.yaml"))
-			var te *TrackingError
+			var te *RegistryError
 			Expect(errors.As(err, &te)).To(BeTrue(), "got %T: %v", err, err)
-			Expect(te.Path).To(Equal("/widgets"))
+			Expect(te.Error()).To(ContainSubstring("registry"))
 		})
 
 		It("allows a resource and data source to share an artifact_name", func() {

@@ -29,9 +29,12 @@ type DataSourceView struct {
 	// TypeName is the Terraform type suffix written to response.TypeName
 	TypeName string
 	// GoName is the lowerCamel identifier base, e.g. "incidentType". It builds
-	// the Go type names <GoName>DataSource and <GoName>DataSourceModel and,
-	// title-cased, the New<GoName>DataSource constructor.
+	// the Go type name <GoName>DataSource and, title-cased, the
+	// New<GoName>DataSource constructor.
 	GoName string
+	// RootModel is the Go struct the data source's state decodes into, named by
+	// modelNamer.root. Templates must not rebuild it from GoName.
+	RootModel string
 	// Description is the schema-level data-source description.
 	Description string
 
@@ -235,11 +238,13 @@ type SchemaView struct {
 	IncludeResourceID   bool
 }
 
-// WriteOnlySecretView is one generated write-only-only Terraform pair. The
-// Terraform names and descriptions drive schema expansion, while SDKField
-// deliberately retains the original OpenAPI setter identity for request
-// routing. ParentBlocks contains only statically addressed single nested
-// attributes and is empty for a resource-root secret.
+// WriteOnlySecretView is one generated write-only Terraform group: the
+// write-only attribute, its version trigger, and the stateful plaintext
+// attribute kept as the Terraform <1.11 fallback. The Terraform names and
+// descriptions drive schema expansion, while SDKField deliberately retains the
+// original OpenAPI setter identity for request routing. ParentBlocks contains
+// only statically addressed single nested attributes and is empty for a
+// resource-root secret.
 type WriteOnlySecretView struct {
 	OriginalAttr         string
 	WriteOnlyAttr        string
@@ -248,6 +253,7 @@ type WriteOnlySecretView struct {
 	ParentBlocks         []string
 	RequiredOnCreate     bool
 	RequiredOnUpdate     bool
+	OriginalDescription  string
 	WriteOnlyDescription string
 	TriggerDescription   string
 	// ConfigVar is the package-scoped configuration shared by schema expansion
@@ -326,8 +332,8 @@ type AttrView struct {
 
 // ModelStructView is one Go struct in the generated file's data model.
 type ModelStructView struct {
-	// Name is the Go struct type name, e.g. "incidentTypeDataSourceModel" or
-	// "TeamModel".
+	// Name is the Go struct type name, e.g. "datadogIncidentType_Model" or
+	// "datadogIncidentType_FieldsModel".
 	Name string
 	// Fields are emitted in declaration order; a field's leading Comment groups
 	// it in the output (e.g. "Query Parameters", "Results").
@@ -533,8 +539,13 @@ type OneOfVariantAssignment struct {
 
 // ResourceView is the render-ready data context for the resource template.
 type ResourceView struct {
-	TypeName    string
-	GoName      string
+	// CallerAssignedID separates the create name from computed API identity.
+	CallerAssignedID bool
+	TypeName         string
+	GoName           string
+	// RootModel is the Go struct the resource's state decodes into, named by
+	// modelNamer.root. Templates must not rebuild it from GoName.
+	RootModel   string
 	Description string
 
 	SDKPackage     string
@@ -591,12 +602,14 @@ type ResourceView struct {
 }
 
 // CRUDCallView describes one lifecycle SDK call. GoRequestType is empty for
-// Read and Delete, which send no body; GoResponseType is empty for Delete,
-// whose 204 response carries none.
+// Read and Delete, which send no request body. GoResponseType names a response
+// component when available. HasResponseBody is used only by Delete to select
+// the SDK assignment arity, including for unnamed responses.
 type CRUDCallView struct {
-	Method         string
-	GoRequestType  string
-	GoResponseType string
+	Method          string
+	GoRequestType   string
+	GoResponseType  string
+	HasResponseBody bool
 	// Arguments are the positional SDK call arguments in call order (e.g. the
 	// terminal path id, aliased to "id").
 	Arguments []SDKArgumentView

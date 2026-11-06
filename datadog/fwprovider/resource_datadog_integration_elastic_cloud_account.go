@@ -28,85 +28,86 @@ var (
 	_ resource.ResourceWithConfigure   = &datadogIntegrationElasticCloudAccountResource{}
 	_ resource.ResourceWithImportState = &datadogIntegrationElasticCloudAccountResource{}
 )
-var datadogIntegrationElasticCloudAccountAuthenticationElasticCloudIntegrationAccountBasicAuthPasswordWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "password", WriteOnlyAttr: "password_wo", TriggerAttr: "password_wo_version", WriteOnlyDescription: "Secret password or private key. This write-only value is not stored in Terraform state.", TriggerDescription: "Version trigger for password_wo rotation.", ParentBlocks: []string{"authentication", "elastic_cloud_integration_account_basic_auth"}, Mode: fwutils.WriteOnlySecretModeOnly, Required: true}
+var resourceDatadogIntegrationElasticCloudAccount_AuthenticationElasticCloudIntegrationAccountBasicAuthPasswordWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "password", WriteOnlyAttr: "password_wo", TriggerAttr: "password_wo_version", OriginalDescription: "Secret password or private key. Exactly one of `password` or `password_wo` must be set. Prefer `password_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.", WriteOnlyDescription: "Secret password or private key. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.", TriggerDescription: "Version trigger for password_wo rotation.", ParentBlocks: []string{"authentication", "elastic_cloud_integration_account_basic_auth"}, Mode: fwutils.WriteOnlySecretModeDual, Required: true}
 
-type datadogIntegrationElasticCloudAccountResourceModel struct {
-	ID             types.String                                                                              `tfsdk:"id"`
-	Authentication *datadogIntegrationElasticCloudAccountElasticCloudIntegrationAccountAuthenticationModel   `tfsdk:"authentication"`
-	Dataflows      *datadogIntegrationElasticCloudAccountElasticCloudIntegrationDataflowsResponseModel       `tfsdk:"dataflows"`
-	Name           types.String                                                                              `tfsdk:"name"`
-	Settings       *datadogIntegrationElasticCloudAccountElasticCloudIntegrationAccountSettingsResponseModel `tfsdk:"settings"`
+type resourceDatadogIntegrationElasticCloudAccount_Model struct {
+	ID             types.String                                                                                       `tfsdk:"id"`
+	Authentication *resourceDatadogIntegrationElasticCloudAccount_ElasticCloudIntegrationAccountAuthenticationModel   `tfsdk:"authentication"`
+	Dataflows      *resourceDatadogIntegrationElasticCloudAccount_ElasticCloudIntegrationDataflowsResponseModel       `tfsdk:"dataflows"`
+	Name           types.String                                                                                       `tfsdk:"name"`
+	Settings       *resourceDatadogIntegrationElasticCloudAccount_ElasticCloudIntegrationAccountSettingsResponseModel `tfsdk:"settings"`
 }
 
-type datadogIntegrationElasticCloudAccountElasticCloudIntegrationAccountAuthenticationModel struct {
-	ElasticCloudIntegrationAccountBasicAuth *datadogIntegrationElasticCloudAccountElasticCloudIntegrationAccountAuthenticationElasticCloudIntegrationAccountBasicAuthModel `tfsdk:"elastic_cloud_integration_account_basic_auth"`
+type resourceDatadogIntegrationElasticCloudAccount_ElasticCloudIntegrationAccountAuthenticationModel struct {
+	ElasticCloudIntegrationAccountBasicAuth *resourceDatadogIntegrationElasticCloudAccount_ElasticCloudIntegrationAccountAuthenticationElasticCloudIntegrationAccountBasicAuthModel `tfsdk:"elastic_cloud_integration_account_basic_auth"`
 }
 
-type datadogIntegrationElasticCloudAccountElasticCloudIntegrationAccountAuthenticationElasticCloudIntegrationAccountBasicAuthModel struct {
+type resourceDatadogIntegrationElasticCloudAccount_ElasticCloudIntegrationAccountAuthenticationElasticCloudIntegrationAccountBasicAuthModel struct {
 	AuthType          types.String `tfsdk:"auth_type"`
+	Password          types.String `tfsdk:"password"`
 	PasswordWo        types.String `tfsdk:"password_wo"`
 	PasswordWoVersion types.String `tfsdk:"password_wo_version"`
 	Username          types.String `tfsdk:"username"`
 }
 
-type datadogIntegrationElasticCloudAccountElasticCloudIntegrationDataflowsResponseModel struct {
-	ElasticCloudDetailedIndexStats          *datadogIntegrationElasticCloudAccountElasticCloudDetailedIndexStatsIntegrationDataflowResponseModel          `tfsdk:"elastic_cloud_detailed_index_stats"`
-	ElasticCloudIndexStats                  *datadogIntegrationElasticCloudAccountElasticCloudIndexStatsIntegrationDataflowResponseModel                  `tfsdk:"elastic_cloud_index_stats"`
-	ElasticCloudMetrics                     *datadogIntegrationElasticCloudAccountElasticCloudMetricsIntegrationDataflowResponseModel                     `tfsdk:"elastic_cloud_metrics"`
-	ElasticCloudPendingTaskStats            *datadogIntegrationElasticCloudAccountElasticCloudPendingTaskStatsIntegrationDataflowResponseModel            `tfsdk:"elastic_cloud_pending_task_stats"`
-	ElasticCloudPrimaryShardGracefulTimeout *datadogIntegrationElasticCloudAccountElasticCloudPrimaryShardGracefulTimeoutIntegrationDataflowResponseModel `tfsdk:"elastic_cloud_primary_shard_graceful_timeout"`
-	ElasticCloudPrimaryShardStats           *datadogIntegrationElasticCloudAccountElasticCloudPrimaryShardStatsIntegrationDataflowResponseModel           `tfsdk:"elastic_cloud_primary_shard_stats"`
-	ElasticCloudShardAllocationStats        *datadogIntegrationElasticCloudAccountElasticCloudShardAllocationStatsIntegrationDataflowResponseModel        `tfsdk:"elastic_cloud_shard_allocation_stats"`
-	ElasticCloudSlmStats                    *datadogIntegrationElasticCloudAccountElasticCloudSlmStatsIntegrationDataflowResponseModel                    `tfsdk:"elastic_cloud_slm_stats"`
+type resourceDatadogIntegrationElasticCloudAccount_ElasticCloudIntegrationDataflowsResponseModel struct {
+	ElasticCloudDetailedIndexStats          *resourceDatadogIntegrationElasticCloudAccount_ElasticCloudDetailedIndexStatsIntegrationDataflowResponseModel          `tfsdk:"elastic_cloud_detailed_index_stats"`
+	ElasticCloudIndexStats                  *resourceDatadogIntegrationElasticCloudAccount_ElasticCloudIndexStatsIntegrationDataflowResponseModel                  `tfsdk:"elastic_cloud_index_stats"`
+	ElasticCloudMetrics                     *resourceDatadogIntegrationElasticCloudAccount_ElasticCloudMetricsIntegrationDataflowResponseModel                     `tfsdk:"elastic_cloud_metrics"`
+	ElasticCloudPendingTaskStats            *resourceDatadogIntegrationElasticCloudAccount_ElasticCloudPendingTaskStatsIntegrationDataflowResponseModel            `tfsdk:"elastic_cloud_pending_task_stats"`
+	ElasticCloudPrimaryShardGracefulTimeout *resourceDatadogIntegrationElasticCloudAccount_ElasticCloudPrimaryShardGracefulTimeoutIntegrationDataflowResponseModel `tfsdk:"elastic_cloud_primary_shard_graceful_timeout"`
+	ElasticCloudPrimaryShardStats           *resourceDatadogIntegrationElasticCloudAccount_ElasticCloudPrimaryShardStatsIntegrationDataflowResponseModel           `tfsdk:"elastic_cloud_primary_shard_stats"`
+	ElasticCloudShardAllocationStats        *resourceDatadogIntegrationElasticCloudAccount_ElasticCloudShardAllocationStatsIntegrationDataflowResponseModel        `tfsdk:"elastic_cloud_shard_allocation_stats"`
+	ElasticCloudSlmStats                    *resourceDatadogIntegrationElasticCloudAccount_ElasticCloudSlmStatsIntegrationDataflowResponseModel                    `tfsdk:"elastic_cloud_slm_stats"`
 }
 
-type datadogIntegrationElasticCloudAccountElasticCloudDetailedIndexStatsIntegrationDataflowResponseModel struct {
-	Enabled types.Bool                                                                  `tfsdk:"enabled"`
-	Status  *datadogIntegrationElasticCloudAccountIntegrationAccountDataflowStatusModel `tfsdk:"status"`
+type resourceDatadogIntegrationElasticCloudAccount_ElasticCloudDetailedIndexStatsIntegrationDataflowResponseModel struct {
+	Enabled types.Bool                                                                           `tfsdk:"enabled"`
+	Status  *resourceDatadogIntegrationElasticCloudAccount_IntegrationAccountDataflowStatusModel `tfsdk:"status"`
 }
 
-type datadogIntegrationElasticCloudAccountIntegrationAccountDataflowStatusModel struct {
+type resourceDatadogIntegrationElasticCloudAccount_IntegrationAccountDataflowStatusModel struct {
 	Health    types.String `tfsdk:"health"`
 	Message   types.String `tfsdk:"message"`
 	UpdatedAt types.String `tfsdk:"updated_at"`
 }
 
-type datadogIntegrationElasticCloudAccountElasticCloudIndexStatsIntegrationDataflowResponseModel struct {
-	Enabled types.Bool                                                                  `tfsdk:"enabled"`
-	Status  *datadogIntegrationElasticCloudAccountIntegrationAccountDataflowStatusModel `tfsdk:"status"`
+type resourceDatadogIntegrationElasticCloudAccount_ElasticCloudIndexStatsIntegrationDataflowResponseModel struct {
+	Enabled types.Bool                                                                           `tfsdk:"enabled"`
+	Status  *resourceDatadogIntegrationElasticCloudAccount_IntegrationAccountDataflowStatusModel `tfsdk:"status"`
 }
 
-type datadogIntegrationElasticCloudAccountElasticCloudMetricsIntegrationDataflowResponseModel struct {
-	Enabled types.Bool                                                                  `tfsdk:"enabled"`
-	Status  *datadogIntegrationElasticCloudAccountIntegrationAccountDataflowStatusModel `tfsdk:"status"`
+type resourceDatadogIntegrationElasticCloudAccount_ElasticCloudMetricsIntegrationDataflowResponseModel struct {
+	Enabled types.Bool                                                                           `tfsdk:"enabled"`
+	Status  *resourceDatadogIntegrationElasticCloudAccount_IntegrationAccountDataflowStatusModel `tfsdk:"status"`
 }
 
-type datadogIntegrationElasticCloudAccountElasticCloudPendingTaskStatsIntegrationDataflowResponseModel struct {
-	Enabled types.Bool                                                                  `tfsdk:"enabled"`
-	Status  *datadogIntegrationElasticCloudAccountIntegrationAccountDataflowStatusModel `tfsdk:"status"`
+type resourceDatadogIntegrationElasticCloudAccount_ElasticCloudPendingTaskStatsIntegrationDataflowResponseModel struct {
+	Enabled types.Bool                                                                           `tfsdk:"enabled"`
+	Status  *resourceDatadogIntegrationElasticCloudAccount_IntegrationAccountDataflowStatusModel `tfsdk:"status"`
 }
 
-type datadogIntegrationElasticCloudAccountElasticCloudPrimaryShardGracefulTimeoutIntegrationDataflowResponseModel struct {
-	Enabled types.Bool                                                                  `tfsdk:"enabled"`
-	Status  *datadogIntegrationElasticCloudAccountIntegrationAccountDataflowStatusModel `tfsdk:"status"`
+type resourceDatadogIntegrationElasticCloudAccount_ElasticCloudPrimaryShardGracefulTimeoutIntegrationDataflowResponseModel struct {
+	Enabled types.Bool                                                                           `tfsdk:"enabled"`
+	Status  *resourceDatadogIntegrationElasticCloudAccount_IntegrationAccountDataflowStatusModel `tfsdk:"status"`
 }
 
-type datadogIntegrationElasticCloudAccountElasticCloudPrimaryShardStatsIntegrationDataflowResponseModel struct {
-	Enabled types.Bool                                                                  `tfsdk:"enabled"`
-	Status  *datadogIntegrationElasticCloudAccountIntegrationAccountDataflowStatusModel `tfsdk:"status"`
+type resourceDatadogIntegrationElasticCloudAccount_ElasticCloudPrimaryShardStatsIntegrationDataflowResponseModel struct {
+	Enabled types.Bool                                                                           `tfsdk:"enabled"`
+	Status  *resourceDatadogIntegrationElasticCloudAccount_IntegrationAccountDataflowStatusModel `tfsdk:"status"`
 }
 
-type datadogIntegrationElasticCloudAccountElasticCloudShardAllocationStatsIntegrationDataflowResponseModel struct {
-	Enabled types.Bool                                                                  `tfsdk:"enabled"`
-	Status  *datadogIntegrationElasticCloudAccountIntegrationAccountDataflowStatusModel `tfsdk:"status"`
+type resourceDatadogIntegrationElasticCloudAccount_ElasticCloudShardAllocationStatsIntegrationDataflowResponseModel struct {
+	Enabled types.Bool                                                                           `tfsdk:"enabled"`
+	Status  *resourceDatadogIntegrationElasticCloudAccount_IntegrationAccountDataflowStatusModel `tfsdk:"status"`
 }
 
-type datadogIntegrationElasticCloudAccountElasticCloudSlmStatsIntegrationDataflowResponseModel struct {
-	Enabled types.Bool                                                                  `tfsdk:"enabled"`
-	Status  *datadogIntegrationElasticCloudAccountIntegrationAccountDataflowStatusModel `tfsdk:"status"`
+type resourceDatadogIntegrationElasticCloudAccount_ElasticCloudSlmStatsIntegrationDataflowResponseModel struct {
+	Enabled types.Bool                                                                           `tfsdk:"enabled"`
+	Status  *resourceDatadogIntegrationElasticCloudAccount_IntegrationAccountDataflowStatusModel `tfsdk:"status"`
 }
 
-type datadogIntegrationElasticCloudAccountElasticCloudIntegrationAccountSettingsResponseModel struct {
+type resourceDatadogIntegrationElasticCloudAccount_ElasticCloudIntegrationAccountSettingsResponseModel struct {
 	Tags types.String `tfsdk:"tags"`
 	Url  types.String `tfsdk:"url"`
 }
@@ -168,7 +169,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) Schema(_ context.Context
 									Required:    true,
 								},
 							},
-							fwutils.CreateWriteOnlySecretAttributes(datadogIntegrationElasticCloudAccountAuthenticationElasticCloudIntegrationAccountBasicAuthPasswordWriteOnlySecretConfig),
+							fwutils.CreateWriteOnlySecretAttributes(resourceDatadogIntegrationElasticCloudAccount_AuthenticationElasticCloudIntegrationAccountBasicAuthPasswordWriteOnlySecretConfig),
 						),
 						Optional: true,
 
@@ -547,7 +548,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) ImportState(ctx context.
 }
 
 func (r *datadogIntegrationElasticCloudAccountResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state datadogIntegrationElasticCloudAccountResourceModel
+	var state resourceDatadogIntegrationElasticCloudAccount_Model
 	var plan types.Object
 	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
 	if response.Diagnostics.HasError() {
@@ -559,7 +560,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) Create(ctx context.Conte
 	}
 
 	authenticationElasticCloudIntegrationAccountBasicAuthPasswordWriteOnlySecretHandler := fwutils.WriteOnlySecretHandler{
-		Config:                 datadogIntegrationElasticCloudAccountAuthenticationElasticCloudIntegrationAccountBasicAuthPasswordWriteOnlySecretConfig,
+		Config:                 resourceDatadogIntegrationElasticCloudAccount_AuthenticationElasticCloudIntegrationAccountBasicAuthPasswordWriteOnlySecretConfig,
 		SecretRequiredOnUpdate: false,
 	}
 	authenticationElasticCloudIntegrationAccountBasicAuthPasswordSecretResult := authenticationElasticCloudIntegrationAccountBasicAuthPasswordWriteOnlySecretHandler.GetSecretForCreate(ctx, &request.Config)
@@ -843,7 +844,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) Create(ctx context.Conte
 }
 
 func (r *datadogIntegrationElasticCloudAccountResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state datadogIntegrationElasticCloudAccountResourceModel
+	var state resourceDatadogIntegrationElasticCloudAccount_Model
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -867,7 +868,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) Read(ctx context.Context
 }
 
 func (r *datadogIntegrationElasticCloudAccountResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state datadogIntegrationElasticCloudAccountResourceModel
+	var state resourceDatadogIntegrationElasticCloudAccount_Model
 	var plan types.Object
 	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
 	if response.Diagnostics.HasError() {
@@ -879,7 +880,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) Update(ctx context.Conte
 	}
 
 	authenticationElasticCloudIntegrationAccountBasicAuthPasswordWriteOnlySecretHandler := fwutils.WriteOnlySecretHandler{
-		Config:                 datadogIntegrationElasticCloudAccountAuthenticationElasticCloudIntegrationAccountBasicAuthPasswordWriteOnlySecretConfig,
+		Config:                 resourceDatadogIntegrationElasticCloudAccount_AuthenticationElasticCloudIntegrationAccountBasicAuthPasswordWriteOnlySecretConfig,
 		SecretRequiredOnUpdate: false,
 	}
 	authenticationElasticCloudIntegrationAccountBasicAuthPasswordSecretResult := authenticationElasticCloudIntegrationAccountBasicAuthPasswordWriteOnlySecretHandler.GetSecretForUpdate(ctx, &request.Config, &request)
@@ -1022,7 +1023,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) Update(ctx context.Conte
 }
 
 func (r *datadogIntegrationElasticCloudAccountResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state datadogIntegrationElasticCloudAccountResourceModel
+	var state resourceDatadogIntegrationElasticCloudAccount_Model
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -1041,7 +1042,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) Delete(ctx context.Conte
 // rather than writing them so it stays free of the resource request/response
 // types and can fail at a specific schema path. Shared by Create, Read and
 // Update, which all resolve the same response type.
-func (r *datadogIntegrationElasticCloudAccountResource) updateState(ctx context.Context, state *datadogIntegrationElasticCloudAccountResourceModel, resp *datadogV2.ElasticCloudIntegrationAccountResponse) diag.Diagnostics {
+func (r *datadogIntegrationElasticCloudAccountResource) updateState(ctx context.Context, state *resourceDatadogIntegrationElasticCloudAccount_Model, resp *datadogV2.ElasticCloudIntegrationAccountResponse) diag.Diagnostics {
 	var diags diag.Diagnostics
 	attributes := resp.Data.GetAttributes()
 	if id, ok := resp.Data.GetIdOk(); ok && id != nil {
@@ -1051,10 +1052,10 @@ func (r *datadogIntegrationElasticCloudAccountResource) updateState(ctx context.
 		state.Name = types.StringValue(*name)
 	}
 	if authentication, ok := attributes.GetAuthenticationOk(); ok && authentication != nil {
-		authenticationEnvelope := &datadogIntegrationElasticCloudAccountElasticCloudIntegrationAccountAuthenticationModel{}
+		authenticationEnvelope := &resourceDatadogIntegrationElasticCloudAccount_ElasticCloudIntegrationAccountAuthenticationModel{}
 		authenticationMatches := 0
 		if elasticCloudIntegrationAccountBasicAuthVariant := authentication.ElasticCloudIntegrationAccountBasicAuthResponse; elasticCloudIntegrationAccountBasicAuthVariant != nil {
-			elasticCloudIntegrationAccountBasicAuthModel := &datadogIntegrationElasticCloudAccountElasticCloudIntegrationAccountAuthenticationElasticCloudIntegrationAccountBasicAuthModel{}
+			elasticCloudIntegrationAccountBasicAuthModel := &resourceDatadogIntegrationElasticCloudAccount_ElasticCloudIntegrationAccountAuthenticationElasticCloudIntegrationAccountBasicAuthModel{}
 			if state.Authentication != nil && state.Authentication.ElasticCloudIntegrationAccountBasicAuth != nil {
 				elasticCloudIntegrationAccountBasicAuthModel = state.Authentication.ElasticCloudIntegrationAccountBasicAuth
 			}
@@ -1085,12 +1086,12 @@ func (r *datadogIntegrationElasticCloudAccountResource) updateState(ctx context.
 	if dataflows, ok := attributes.GetDataflowsOk(); ok && dataflows != nil {
 		dataflowsModel := state.Dataflows
 		if dataflowsModel == nil {
-			dataflowsModel = &datadogIntegrationElasticCloudAccountElasticCloudIntegrationDataflowsResponseModel{}
+			dataflowsModel = &resourceDatadogIntegrationElasticCloudAccount_ElasticCloudIntegrationDataflowsResponseModel{}
 		}
 		if elasticCloudDetailedIndexStats, ok := dataflows.GetElasticCloudDetailedIndexStatsOk(); ok && elasticCloudDetailedIndexStats != nil {
 			elasticCloudDetailedIndexStatsModel := dataflowsModel.ElasticCloudDetailedIndexStats
 			if elasticCloudDetailedIndexStatsModel == nil {
-				elasticCloudDetailedIndexStatsModel = &datadogIntegrationElasticCloudAccountElasticCloudDetailedIndexStatsIntegrationDataflowResponseModel{}
+				elasticCloudDetailedIndexStatsModel = &resourceDatadogIntegrationElasticCloudAccount_ElasticCloudDetailedIndexStatsIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := elasticCloudDetailedIndexStats.GetEnabledOk(); ok && enabled != nil {
 				elasticCloudDetailedIndexStatsModel.Enabled = types.BoolValue(*enabled)
@@ -1098,7 +1099,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) updateState(ctx context.
 			if status, ok := elasticCloudDetailedIndexStats.GetStatusOk(); ok && status != nil {
 				statusModel := elasticCloudDetailedIndexStatsModel.Status
 				if statusModel == nil {
-					statusModel = &datadogIntegrationElasticCloudAccountIntegrationAccountDataflowStatusModel{}
+					statusModel = &resourceDatadogIntegrationElasticCloudAccount_IntegrationAccountDataflowStatusModel{}
 				}
 				if health, ok := status.GetHealthOk(); ok && health != nil {
 					statusModel.Health = types.StringValue(string(*health))
@@ -1116,7 +1117,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) updateState(ctx context.
 		if elasticCloudIndexStats, ok := dataflows.GetElasticCloudIndexStatsOk(); ok && elasticCloudIndexStats != nil {
 			elasticCloudIndexStatsModel := dataflowsModel.ElasticCloudIndexStats
 			if elasticCloudIndexStatsModel == nil {
-				elasticCloudIndexStatsModel = &datadogIntegrationElasticCloudAccountElasticCloudIndexStatsIntegrationDataflowResponseModel{}
+				elasticCloudIndexStatsModel = &resourceDatadogIntegrationElasticCloudAccount_ElasticCloudIndexStatsIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := elasticCloudIndexStats.GetEnabledOk(); ok && enabled != nil {
 				elasticCloudIndexStatsModel.Enabled = types.BoolValue(*enabled)
@@ -1124,7 +1125,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) updateState(ctx context.
 			if status, ok := elasticCloudIndexStats.GetStatusOk(); ok && status != nil {
 				statusModel := elasticCloudIndexStatsModel.Status
 				if statusModel == nil {
-					statusModel = &datadogIntegrationElasticCloudAccountIntegrationAccountDataflowStatusModel{}
+					statusModel = &resourceDatadogIntegrationElasticCloudAccount_IntegrationAccountDataflowStatusModel{}
 				}
 				if health, ok := status.GetHealthOk(); ok && health != nil {
 					statusModel.Health = types.StringValue(string(*health))
@@ -1142,7 +1143,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) updateState(ctx context.
 		if elasticCloudMetrics, ok := dataflows.GetElasticCloudMetricsOk(); ok && elasticCloudMetrics != nil {
 			elasticCloudMetricsModel := dataflowsModel.ElasticCloudMetrics
 			if elasticCloudMetricsModel == nil {
-				elasticCloudMetricsModel = &datadogIntegrationElasticCloudAccountElasticCloudMetricsIntegrationDataflowResponseModel{}
+				elasticCloudMetricsModel = &resourceDatadogIntegrationElasticCloudAccount_ElasticCloudMetricsIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := elasticCloudMetrics.GetEnabledOk(); ok && enabled != nil {
 				elasticCloudMetricsModel.Enabled = types.BoolValue(*enabled)
@@ -1150,7 +1151,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) updateState(ctx context.
 			if status, ok := elasticCloudMetrics.GetStatusOk(); ok && status != nil {
 				statusModel := elasticCloudMetricsModel.Status
 				if statusModel == nil {
-					statusModel = &datadogIntegrationElasticCloudAccountIntegrationAccountDataflowStatusModel{}
+					statusModel = &resourceDatadogIntegrationElasticCloudAccount_IntegrationAccountDataflowStatusModel{}
 				}
 				if health, ok := status.GetHealthOk(); ok && health != nil {
 					statusModel.Health = types.StringValue(string(*health))
@@ -1168,7 +1169,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) updateState(ctx context.
 		if elasticCloudPendingTaskStats, ok := dataflows.GetElasticCloudPendingTaskStatsOk(); ok && elasticCloudPendingTaskStats != nil {
 			elasticCloudPendingTaskStatsModel := dataflowsModel.ElasticCloudPendingTaskStats
 			if elasticCloudPendingTaskStatsModel == nil {
-				elasticCloudPendingTaskStatsModel = &datadogIntegrationElasticCloudAccountElasticCloudPendingTaskStatsIntegrationDataflowResponseModel{}
+				elasticCloudPendingTaskStatsModel = &resourceDatadogIntegrationElasticCloudAccount_ElasticCloudPendingTaskStatsIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := elasticCloudPendingTaskStats.GetEnabledOk(); ok && enabled != nil {
 				elasticCloudPendingTaskStatsModel.Enabled = types.BoolValue(*enabled)
@@ -1176,7 +1177,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) updateState(ctx context.
 			if status, ok := elasticCloudPendingTaskStats.GetStatusOk(); ok && status != nil {
 				statusModel := elasticCloudPendingTaskStatsModel.Status
 				if statusModel == nil {
-					statusModel = &datadogIntegrationElasticCloudAccountIntegrationAccountDataflowStatusModel{}
+					statusModel = &resourceDatadogIntegrationElasticCloudAccount_IntegrationAccountDataflowStatusModel{}
 				}
 				if health, ok := status.GetHealthOk(); ok && health != nil {
 					statusModel.Health = types.StringValue(string(*health))
@@ -1194,7 +1195,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) updateState(ctx context.
 		if elasticCloudPrimaryShardGracefulTimeout, ok := dataflows.GetElasticCloudPrimaryShardGracefulTimeoutOk(); ok && elasticCloudPrimaryShardGracefulTimeout != nil {
 			elasticCloudPrimaryShardGracefulTimeoutModel := dataflowsModel.ElasticCloudPrimaryShardGracefulTimeout
 			if elasticCloudPrimaryShardGracefulTimeoutModel == nil {
-				elasticCloudPrimaryShardGracefulTimeoutModel = &datadogIntegrationElasticCloudAccountElasticCloudPrimaryShardGracefulTimeoutIntegrationDataflowResponseModel{}
+				elasticCloudPrimaryShardGracefulTimeoutModel = &resourceDatadogIntegrationElasticCloudAccount_ElasticCloudPrimaryShardGracefulTimeoutIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := elasticCloudPrimaryShardGracefulTimeout.GetEnabledOk(); ok && enabled != nil {
 				elasticCloudPrimaryShardGracefulTimeoutModel.Enabled = types.BoolValue(*enabled)
@@ -1202,7 +1203,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) updateState(ctx context.
 			if status, ok := elasticCloudPrimaryShardGracefulTimeout.GetStatusOk(); ok && status != nil {
 				statusModel := elasticCloudPrimaryShardGracefulTimeoutModel.Status
 				if statusModel == nil {
-					statusModel = &datadogIntegrationElasticCloudAccountIntegrationAccountDataflowStatusModel{}
+					statusModel = &resourceDatadogIntegrationElasticCloudAccount_IntegrationAccountDataflowStatusModel{}
 				}
 				if health, ok := status.GetHealthOk(); ok && health != nil {
 					statusModel.Health = types.StringValue(string(*health))
@@ -1220,7 +1221,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) updateState(ctx context.
 		if elasticCloudPrimaryShardStats, ok := dataflows.GetElasticCloudPrimaryShardStatsOk(); ok && elasticCloudPrimaryShardStats != nil {
 			elasticCloudPrimaryShardStatsModel := dataflowsModel.ElasticCloudPrimaryShardStats
 			if elasticCloudPrimaryShardStatsModel == nil {
-				elasticCloudPrimaryShardStatsModel = &datadogIntegrationElasticCloudAccountElasticCloudPrimaryShardStatsIntegrationDataflowResponseModel{}
+				elasticCloudPrimaryShardStatsModel = &resourceDatadogIntegrationElasticCloudAccount_ElasticCloudPrimaryShardStatsIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := elasticCloudPrimaryShardStats.GetEnabledOk(); ok && enabled != nil {
 				elasticCloudPrimaryShardStatsModel.Enabled = types.BoolValue(*enabled)
@@ -1228,7 +1229,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) updateState(ctx context.
 			if status, ok := elasticCloudPrimaryShardStats.GetStatusOk(); ok && status != nil {
 				statusModel := elasticCloudPrimaryShardStatsModel.Status
 				if statusModel == nil {
-					statusModel = &datadogIntegrationElasticCloudAccountIntegrationAccountDataflowStatusModel{}
+					statusModel = &resourceDatadogIntegrationElasticCloudAccount_IntegrationAccountDataflowStatusModel{}
 				}
 				if health, ok := status.GetHealthOk(); ok && health != nil {
 					statusModel.Health = types.StringValue(string(*health))
@@ -1246,7 +1247,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) updateState(ctx context.
 		if elasticCloudShardAllocationStats, ok := dataflows.GetElasticCloudShardAllocationStatsOk(); ok && elasticCloudShardAllocationStats != nil {
 			elasticCloudShardAllocationStatsModel := dataflowsModel.ElasticCloudShardAllocationStats
 			if elasticCloudShardAllocationStatsModel == nil {
-				elasticCloudShardAllocationStatsModel = &datadogIntegrationElasticCloudAccountElasticCloudShardAllocationStatsIntegrationDataflowResponseModel{}
+				elasticCloudShardAllocationStatsModel = &resourceDatadogIntegrationElasticCloudAccount_ElasticCloudShardAllocationStatsIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := elasticCloudShardAllocationStats.GetEnabledOk(); ok && enabled != nil {
 				elasticCloudShardAllocationStatsModel.Enabled = types.BoolValue(*enabled)
@@ -1254,7 +1255,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) updateState(ctx context.
 			if status, ok := elasticCloudShardAllocationStats.GetStatusOk(); ok && status != nil {
 				statusModel := elasticCloudShardAllocationStatsModel.Status
 				if statusModel == nil {
-					statusModel = &datadogIntegrationElasticCloudAccountIntegrationAccountDataflowStatusModel{}
+					statusModel = &resourceDatadogIntegrationElasticCloudAccount_IntegrationAccountDataflowStatusModel{}
 				}
 				if health, ok := status.GetHealthOk(); ok && health != nil {
 					statusModel.Health = types.StringValue(string(*health))
@@ -1272,7 +1273,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) updateState(ctx context.
 		if elasticCloudSlmStats, ok := dataflows.GetElasticCloudSlmStatsOk(); ok && elasticCloudSlmStats != nil {
 			elasticCloudSlmStatsModel := dataflowsModel.ElasticCloudSlmStats
 			if elasticCloudSlmStatsModel == nil {
-				elasticCloudSlmStatsModel = &datadogIntegrationElasticCloudAccountElasticCloudSlmStatsIntegrationDataflowResponseModel{}
+				elasticCloudSlmStatsModel = &resourceDatadogIntegrationElasticCloudAccount_ElasticCloudSlmStatsIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := elasticCloudSlmStats.GetEnabledOk(); ok && enabled != nil {
 				elasticCloudSlmStatsModel.Enabled = types.BoolValue(*enabled)
@@ -1280,7 +1281,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) updateState(ctx context.
 			if status, ok := elasticCloudSlmStats.GetStatusOk(); ok && status != nil {
 				statusModel := elasticCloudSlmStatsModel.Status
 				if statusModel == nil {
-					statusModel = &datadogIntegrationElasticCloudAccountIntegrationAccountDataflowStatusModel{}
+					statusModel = &resourceDatadogIntegrationElasticCloudAccount_IntegrationAccountDataflowStatusModel{}
 				}
 				if health, ok := status.GetHealthOk(); ok && health != nil {
 					statusModel.Health = types.StringValue(string(*health))
@@ -1300,7 +1301,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) updateState(ctx context.
 	if settings, ok := attributes.GetSettingsOk(); ok && settings != nil {
 		settingsModel := state.Settings
 		if settingsModel == nil {
-			settingsModel = &datadogIntegrationElasticCloudAccountElasticCloudIntegrationAccountSettingsResponseModel{}
+			settingsModel = &resourceDatadogIntegrationElasticCloudAccount_ElasticCloudIntegrationAccountSettingsResponseModel{}
 		}
 		if tags, ok := settings.GetTagsOk(); ok && tags != nil {
 			settingsModel.Tags = types.StringValue(*tags)

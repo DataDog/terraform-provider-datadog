@@ -49,7 +49,7 @@ adding a template. Follow the same route: add the role, populate it in
 The annotation contract in `internal/contracts/` is consumed outside this module, by
 spec authors and by `openapi-transformer`. So:
 
-1. Edit `tracking-field.schema.json`.
+1. Edit `family-registry.schema.json`.
 2. Run `make tfgen-docs` and commit the regenerated reference page in the same
    change. `make tfgen-docs-check` fails otherwise.
 3. Check whether `openapi-transformer` also needs the field. **A field accepted
@@ -65,9 +65,15 @@ get a generated reference page out of it.
 
 ```sh
 make tfgen-test              # unit + goldens
-make tfgen-test-integration  # SDK corroboration + generated-code compile gate
+make tfgen-test-integration  # SDK corroboration, compile gate, offline lifecycle tests
 make tfgen-docs-check        # reference pages still match the contracts
 ```
+
+The caller-assigned identity integration fixture runs Terraform against a local
+HTTP server. Install the Terraform CLI on `PATH` or set
+`TF_ACC_TERRAFORM_PATH` to an existing binary. No Datadog credentials are needed.
+It covers import, initial name adoption, canonical-ID updates, clean subsequent
+plans, and replacement on later name changes.
 
 Then generate into a scratch directory against a real slice and read the output:
 

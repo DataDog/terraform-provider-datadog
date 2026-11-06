@@ -57,6 +57,9 @@ func RenderDataSource(v DataSourceView) ([]byte, error) {
 	if err := checkDuplicateFields(v.Models); err != nil {
 		return nil, fmt.Errorf("emit: data source %q: %w", v.TypeName, err)
 	}
+	if err := checkRootModel(v.RootModel, v.Models); err != nil {
+		return nil, fmt.Errorf("emit: data source %q: %w", v.TypeName, err)
+	}
 
 	name := "data_source_singular"
 	if v.Cardinality == Plural {
@@ -81,6 +84,9 @@ func RenderResource(v ResourceView) ([]byte, error) {
 	if err := checkDuplicateFields(v.Models); err != nil {
 		return nil, fmt.Errorf("emit: resource %q: %w", v.TypeName, err)
 	}
+	if err := checkRootModel(v.RootModel, v.Models); err != nil {
+		return nil, fmt.Errorf("emit: resource %q: %w", v.TypeName, err)
+	}
 
 	var buf bytes.Buffer
 	if err := templates.ExecuteTemplate(&buf, "resource", v); err != nil {
@@ -92,6 +98,21 @@ func RenderResource(v ResourceView) ([]byte, error) {
 		return nil, fmt.Errorf("emit: gofmt of generated resource %q: %w\n--- raw output ---\n%s", v.TypeName, err, buf.String())
 	}
 	return dropBlankLineAfterBrace(formatted), nil
+}
+
+// checkRootModel rejects a view whose RootModel is empty or names no struct in
+// models. Templates decode state into RootModel, so either shape renders
+// `var state ` with no type, which only fails later at gofmt or compile time.
+func checkRootModel(root string, models []ModelStructView) error {
+	if root == "" {
+		return fmt.Errorf("RootModel is empty")
+	}
+	for _, m := range models {
+		if m.Name == root {
+			return nil
+		}
+	}
+	return fmt.Errorf("RootModel %s is not among the declared models", root)
 }
 
 // checkDuplicateFields rejects duplicate Go model names and a model struct that

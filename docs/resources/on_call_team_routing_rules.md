@@ -78,6 +78,23 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
     }
   }
 
+  # Reroute matching pages to another team's routing rules. A reroute can
+  # only be combined with `send_slack_message` or `send_teams_message` actions.
+  rule {
+    query = "tags.service:checkout"
+    action {
+      reroute_to_team {
+        destination_team_id = "00000000-aba2-0000-0000-000000000001"
+      }
+    }
+    action {
+      send_slack_message {
+        workspace = "workspace"
+        channel   = "channel"
+      }
+    }
+  }
+
   # The last rule must be a catch-all: no query and no time restriction.
   rule {
     escalation_policy = "00000000-aba2-0000-0000-000000000000"
@@ -118,6 +135,7 @@ Read-Only:
 Optional:
 
 - `escalation_policy` (Block, Optional) (see [below for nested schema](#nestedblock--rule--action--escalation_policy))
+- `reroute_to_team` (Block, Optional) Reroutes the page to another team's routing rules. Can only be combined with `send_slack_message` or `send_teams_message` actions in the same rule. (see [below for nested schema](#nestedblock--rule--action--reroute_to_team))
 - `send_slack_message` (Block, Optional) (see [below for nested schema](#nestedblock--rule--action--send_slack_message))
 - `send_teams_message` (Block, Optional) (see [below for nested schema](#nestedblock--rule--action--send_teams_message))
 - `trigger_workflow_automation` (Block, Optional) (see [below for nested schema](#nestedblock--rule--action--trigger_workflow_automation))
@@ -151,6 +169,14 @@ Optional:
 - `start_time` (String) The time of day when the restriction begins (hh:mm:ss).
 
 
+
+
+<a id="nestedblock--rule--action--reroute_to_team"></a>
+### Nested Schema for `rule.action.reroute_to_team`
+
+Optional:
+
+- `destination_team_id` (String) ID of the team to reroute the page to.
 
 
 <a id="nestedblock--rule--action--send_slack_message"></a>

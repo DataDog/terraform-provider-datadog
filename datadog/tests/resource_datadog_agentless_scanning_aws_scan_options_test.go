@@ -15,8 +15,8 @@ import (
 
 func TestAccDatadogAgentlessScanningAwsScanOptions_Basic(t *testing.T) {
 	t.Parallel()
-	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	accountID := "123456789012" // Test AWS account ID
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accountID := uniqueAWSAccountID(ctx, t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -59,8 +59,8 @@ func TestAccDatadogAgentlessScanningAwsScanOptions_InvalidAccountID(t *testing.T
 
 func TestAccDatadogAgentlessScanningAwsScanOptions_Update(t *testing.T) {
 	t.Parallel()
-	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	accountID := "123456789012" // Test AWS account ID
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accountID := uniqueAWSAccountID(ctx, t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -93,8 +93,8 @@ func TestAccDatadogAgentlessScanningAwsScanOptions_Update(t *testing.T) {
 
 func TestAccDatadogAgentlessScanningAwsScanOptions_Import(t *testing.T) {
 	t.Parallel()
-	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	accountID := "123456789012" // Test AWS account ID
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accountID := uniqueAWSAccountID(ctx, t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },

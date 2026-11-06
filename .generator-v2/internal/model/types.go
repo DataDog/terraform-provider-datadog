@@ -175,6 +175,8 @@ type Spec struct {
 	Components *v3.Components
 	// Hash is the lowercase hex SHA-256 of the spec source
 	Hash string
+	// Warnings describe ignored legacy annotations without enabling them.
+	Warnings []string
 }
 
 // Operation is a single OpenAPI operation, tagged with whether it is in scope
@@ -190,6 +192,18 @@ type Operation struct {
 	Tag string
 	// Tracking is the decoded tracking-field extension
 	Tracking *TrackingFieldMetadata
+	// Synthetic marks an operation the parser minted to carry one artifact
+	// declared by the tag-scoped family registry, rather than one the
+	// document declares. It shares Path/Method/OperationId with the real
+	// operation it was cloned from — the artifact's primary operation — so it
+	// must be excluded anywhere operations are indexed by identity, notably the
+	// operationId index a group resolves through: two entries under one id would
+	// otherwise let a group resolve to the clone.
+	Synthetic bool
+	// GenerationError retains an artifact-local loading failure. The declaration
+	// remains in the spec so generation reports it and reconciliation cannot
+	// mistake the failed artifact for an orphan.
+	GenerationError error
 	// Unstable records that the operation declares x-unstable. Only presence is
 	// kept; the extension's value is just a human-readable beta notice.
 	Unstable bool
@@ -849,8 +863,10 @@ type SDKCall struct {
 	GoRequestType string
 	// GoResponseType is the SDK response type, e.g. "OrgGroupResponse".
 	// Rule: last path component of the 2xx response schema $ref. Empty when the
-	// operation returns no body (e.g. 204 No Content).
+	// operation returns no body or its response schema is unnamed.
 	GoResponseType string
+	// HasResponseBody distinguishes unnamed response bodies from bodyless calls.
+	HasResponseBody bool
 	// GoRequestDataType is the SDK type of the request body's JSON:API "data"
 	// member, e.g. "IncidentTypeCreateData": the RefName of RequestSchema's
 	// "data" property, read per role since Create's and Update's routinely
@@ -862,10 +878,15 @@ type SDKCall struct {
 	// all. A body that does not must not call SetId: the SDK generates that
 	// setter only for a declared property, so the call would not compile.
 	RequestDeclaresID bool
+	// RequestIDRequired and RequestIDReadOnly come from this operation's create/update schema.
+	RequestIDRequired bool
+	RequestIDReadOnly bool
+	// RequestIDEnum marks a named string enum; other enum shapes fail closed.
+	RequestIDEnum bool
 	// RequestIDGoType is the Go type the SDK's SetId takes on this body's data
-	// member, derived from the data.id schema via SDKScalarGoType, e.g.
-	// "string" or "uuid.UUID". Empty when the body declares no id, or its
-	// format is one the SDK generator cannot type. Read from the body, not
+	// member, derived from the data.id scalar schema or named string enum, e.g.
+	// "string", "uuid.UUID", or an enum component. Empty for unsupported enums,
+	// absent IDs, or formats the SDK cannot type. Read from the body, not
 	// borrowed from the path parameter: an int64 path id can carry a string id.
 	RequestIDGoType string
 	// RequestDiscriminator describes the request body's JSON:API data.type
@@ -948,7 +969,6 @@ type SkipReason string
 
 const (
 	SkipReasonTrackingFieldAbsent SkipReason = "tracking_field_absent"
-	SkipReasonTrackingFieldSkip   SkipReason = "tracking_field_skip_true"
 )
 
 // RunReport is the structured output of a tfgen generate run.
@@ -977,6 +997,9 @@ type RunSummary struct {
 
 // ArtifactReportEntry is the per-artifact section of a RunReport.
 type ArtifactReportEntry struct {
+	// Tag is the owning registry's OpenAPI tag, not the backing endpoint's tag.
+	// It is absent for retired artifacts whose declaration no longer exists.
+	Tag         string         `json:"tag,omitempty"`
 	Name        string         `json:"name"`
 	Kind        ArtifactKind   `json:"kind"`
 	Status      ArtifactStatus `json:"status"`

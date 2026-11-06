@@ -1,0 +1,1347 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 623
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"variables":[{"example":"first-example","name":"FIRST","pattern":"synthetic-first","secure":true,"type":"text"},{"example":"second-example","name":"SECOND","pattern":"synthetic-second","secure":true,"type":"text"}]},"message":"","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"status":"paused","steps":[],"type":"mobile"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:43.229906+00:00","config":{"variables":[{"name":"FIRST","secure":true,"type":"text"},{"name":"SECOND","secure":true,"type":"text"}]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":332085850,"org_id":321813,"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"creation_source":"terraform","stepCount":{"assertions":0,"subtests":0,"total":0,"nested_steps":0}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 468.465833ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:43.229906+00:00","config":{"variables":[{"name":"FIRST","secure":true,"type":"text"},{"name":"SECOND","secure":true,"type":"text"}]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 250.878417ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:43.229906+00:00","config":{"variables":[{"name":"FIRST","secure":true,"type":"text"},{"name":"SECOND","secure":true,"type":"text"}]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 221.650417ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:43.229906+00:00","config":{"variables":[{"name":"FIRST","secure":true,"type":"text"},{"name":"SECOND","secure":true,"type":"text"}]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 235.798042ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:43.229906+00:00","config":{"variables":[{"name":"FIRST","secure":true,"type":"text"},{"name":"SECOND","secure":true,"type":"text"}]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 241.884666ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:43.229906+00:00","config":{"variables":[{"name":"FIRST","secure":true,"type":"text"},{"name":"SECOND","secure":true,"type":"text"}]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 234.646833ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:43.229906+00:00","config":{"variables":[{"name":"FIRST","secure":true,"type":"text"},{"name":"SECOND","secure":true,"type":"text"}]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 228.308166ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:43.229906+00:00","config":{"variables":[{"name":"FIRST","secure":true,"type":"text"},{"name":"SECOND","secure":true,"type":"text"}]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 232.016042ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:43.229906+00:00","config":{"variables":[{"name":"FIRST","secure":true,"type":"text"},{"name":"SECOND","secure":true,"type":"text"}]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 245.597125ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:43.229906+00:00","config":{"variables":[{"name":"FIRST","secure":true,"type":"text"},{"name":"SECOND","secure":true,"type":"text"}]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 240.625042ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:43.229906+00:00","config":{"variables":[{"name":"FIRST","secure":true,"type":"text"},{"name":"SECOND","secure":true,"type":"text"}]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 236.6695ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 627
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"variables":[{"example":"updated-example","name":"FIRST","pattern":"synthetic-updated","secure":true,"type":"text"},{"example":"second-example","name":"SECOND","pattern":"synthetic-second","secure":true,"type":"text"}]},"message":"","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"status":"paused","steps":[],"type":"mobile"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/22g-trd-n7v
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"org_id":321813,"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:50.746865+00:00","config":{"variables":[{"name":"FIRST","secure":true,"type":"text"},{"name":"SECOND","secure":true,"type":"text"}]},"overall_state_modified":"1970-01-01T00:00:00+00:00","monitor_id":332085850,"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"overall_state":2,"creation_source":"terraform","steps":[],"stepCount":{"assertions":0,"subtests":0,"total":0,"nested_steps":0}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 776.76525ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:50.746865+00:00","config":{"variables":[{"name":"FIRST","secure":true,"type":"text"},{"name":"SECOND","secure":true,"type":"text"}]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 220.75325ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:50.746865+00:00","config":{"variables":[{"name":"FIRST","secure":true,"type":"text"},{"name":"SECOND","secure":true,"type":"text"}]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 240.034583ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:50.746865+00:00","config":{"variables":[{"name":"FIRST","secure":true,"type":"text"},{"name":"SECOND","secure":true,"type":"text"}]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 223.674917ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:50.746865+00:00","config":{"variables":[{"name":"FIRST","secure":true,"type":"text"},{"name":"SECOND","secure":true,"type":"text"}]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 236.033125ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:50.746865+00:00","config":{"variables":[{"name":"FIRST","secure":true,"type":"text"},{"name":"SECOND","secure":true,"type":"text"}]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 219.624041ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:50.746865+00:00","config":{"variables":[{"name":"FIRST","secure":true,"type":"text"},{"name":"SECOND","secure":true,"type":"text"}]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 234.038417ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 627
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"variables":[{"example":"second-example","name":"SECOND","pattern":"synthetic-second","secure":true,"type":"text"},{"example":"updated-example","name":"FIRST","pattern":"synthetic-updated","secure":true,"type":"text"}]},"message":"","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"status":"paused","steps":[],"type":"mobile"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/22g-trd-n7v
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"org_id":321813,"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:54.964130+00:00","config":{"variables":[{"name":"SECOND","secure":true,"type":"text"},{"name":"FIRST","secure":true,"type":"text"}]},"overall_state_modified":"1970-01-01T00:00:00+00:00","monitor_id":332085850,"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"overall_state":2,"creation_source":"terraform","steps":[],"stepCount":{"assertions":0,"subtests":0,"total":0,"nested_steps":0}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 807.796083ms
+    - id: 19
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:54.964130+00:00","config":{"variables":[{"name":"SECOND","secure":true,"type":"text"},{"name":"FIRST","secure":true,"type":"text"}]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 220.283292ms
+    - id: 20
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:54.964130+00:00","config":{"variables":[{"name":"SECOND","secure":true,"type":"text"},{"name":"FIRST","secure":true,"type":"text"}]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 241.969ms
+    - id: 21
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:54.964130+00:00","config":{"variables":[{"name":"SECOND","secure":true,"type":"text"},{"name":"FIRST","secure":true,"type":"text"}]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 221.150291ms
+    - id: 22
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:54.964130+00:00","config":{"variables":[{"name":"SECOND","secure":true,"type":"text"},{"name":"FIRST","secure":true,"type":"text"}]},"message":"","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 229.961459ms
+    - id: 23
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 668
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"variables":[{"example":"second-example","name":"SECOND","pattern":"synthetic-second","secure":true,"type":"text"},{"example":"updated-example","name":"FIRST","pattern":"synthetic-updated","secure":true,"type":"text"}]},"message":"Update without changing the secure values","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200},"status":"paused","steps":[],"type":"mobile"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/22g-trd-n7v
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"org_id":321813,"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"message":"Update without changing the secure values","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:58.694706+00:00","config":{"variables":[{"name":"SECOND","secure":true,"type":"text"},{"name":"FIRST","secure":true,"type":"text"}]},"overall_state_modified":"1970-01-01T00:00:00+00:00","monitor_id":332085850,"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"overall_state":2,"creation_source":"terraform","steps":[],"stepCount":{"assertions":0,"subtests":0,"total":0,"nested_steps":0}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 782.813292ms
+    - id: 24
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:58.694706+00:00","config":{"variables":[{"name":"SECOND","secure":true,"type":"text"},{"name":"FIRST","secure":true,"type":"text"}]},"message":"Update without changing the secure values","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 240.870875ms
+    - id: 25
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:58.694706+00:00","config":{"variables":[{"name":"SECOND","secure":true,"type":"text"},{"name":"FIRST","secure":true,"type":"text"}]},"message":"Update without changing the secure values","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 238.032209ms
+    - id: 26
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:58.694706+00:00","config":{"variables":[{"name":"SECOND","secure":true,"type":"text"},{"name":"FIRST","secure":true,"type":"text"}]},"message":"Update without changing the secure values","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 218.87275ms
+    - id: 27
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:58.694706+00:00","config":{"variables":[{"name":"SECOND","secure":true,"type":"text"},{"name":"FIRST","secure":true,"type":"text"}]},"message":"Update without changing the secure values","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 1.094647208s
+    - id: 28
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:58.694706+00:00","config":{"variables":[{"name":"SECOND","secure":true,"type":"text"},{"name":"FIRST","secure":true,"type":"text"}]},"message":"Update without changing the secure values","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 221.709958ms
+    - id: 29
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:58.694706+00:00","config":{"variables":[{"name":"SECOND","secure":true,"type":"text"},{"name":"FIRST","secure":true,"type":"text"}]},"message":"Update without changing the secure values","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 227.957417ms
+    - id: 30
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:58.694706+00:00","config":{"variables":[{"name":"SECOND","secure":true,"type":"text"},{"name":"FIRST","secure":true,"type":"text"}]},"message":"Update without changing the secure values","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 235.647458ms
+    - id: 31
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:58.694706+00:00","config":{"variables":[{"name":"SECOND","secure":true,"type":"text"},{"name":"FIRST","secure":true,"type":"text"}]},"message":"Update without changing the secure values","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 227.375958ms
+    - id: 32
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:58.694706+00:00","config":{"variables":[{"name":"SECOND","secure":true,"type":"text"},{"name":"FIRST","secure":true,"type":"text"}]},"message":"Update without changing the secure values","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 221.565292ms
+    - id: 33
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:58.694706+00:00","config":{"variables":[{"name":"SECOND","secure":true,"type":"text"},{"name":"FIRST","secure":true,"type":"text"}]},"message":"Update without changing the secure values","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 306.546709ms
+    - id: 34
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:58.694706+00:00","config":{"variables":[{"name":"SECOND","secure":true,"type":"text"},{"name":"FIRST","secure":true,"type":"text"}]},"message":"Update without changing the secure values","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 231.70475ms
+    - id: 35
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"22g-trd-n7v","name":"tf-TestAccDatadogSyntheticsMobileTest_SecureVariables-local-1791904299","status":"paused","type":"mobile","tags":[],"created_at":"2026-10-13T15:11:43.229906+00:00","modified_at":"2026-10-13T15:11:58.694706+00:00","config":{"variables":[{"name":"SECOND","secure":true,"type":"text"},{"name":"FIRST","secure":true,"type":"text"}]},"message":"Update without changing the secure values","options":{"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16"],"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"tick_every":43200,"bits_ai_auto_investigate":false},"locations":["aws:us-west-2"],"monitor_id":332085850,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 240.192375ms
+    - id: 36
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 31
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"public_ids":["22g-trd-n7v"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_tests":[{"public_id":"22g-trd-n7v","deleted_at":"2026-10-13T15:12:07.662168+00:00"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 1.022775s
+    - id: 37
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/22g-trd-n7v
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics test not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 132.231084ms

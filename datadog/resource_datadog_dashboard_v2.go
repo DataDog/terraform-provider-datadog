@@ -21,11 +21,20 @@ import (
 // TODO: Replace this raw endpoint path with the generated Datadog API client method once the unstable endpoint is published in the API spec and client.
 const dashboardWidgetValidationPath = "/api/unstable/dashboard/widgets/validate"
 
-// resourceDatadogDashboardV2 returns the SDKv2 resource for datadog_dashboard_v2.
+// resourceDatadogDashboardV2 returns the canonical SDKv2 dashboard resource.
 // It shares all FieldSpec/WidgetSpec declarations via the dashboardmapping package.
 func resourceDatadogDashboardV2() *schema.Resource {
+	return newDashboardV2Resource("Provides a Datadog dashboard resource that follows the current Datadog dashboard API specification.")
+}
+
+// resourceDatadogDashboardV2Alias returns the datadog_dashboard_v2 compatibility alias.
+func resourceDatadogDashboardV2Alias() *schema.Resource {
+	return newDashboardV2Resource("`datadog_dashboard_v2` is an alias for `datadog_dashboard`. Both resource names have identical behavior and schema; prefer `datadog_dashboard` for new configurations.")
+}
+
+func newDashboardV2Resource(description string) *schema.Resource {
 	return &schema.Resource{
-		Description:   "[BETA] Provides an updated version of the Datadog dashboard resource which improves compliance with Datadog's dashboard API spec. This version is currently experimental and prone to changes.",
+		Description:   description,
 		CreateContext: resourceDatadogDashboardV2Create,
 		ReadContext:   resourceDatadogDashboardV2Read,
 		UpdateContext: resourceDatadogDashboardV2Update,
@@ -86,6 +95,21 @@ func buildDashboardV2Schema() map[string]*schema.Schema {
 
 	// Add widget block with all widget types
 	widgetSchema := dashboardmapping.AllWidgetSDKv2Schema(false)
+	// A legacy `type` value and the equivalent canonical variant describe the
+	// same display mode after refresh. Suppress only that normalization diff;
+	// changing the legacy value must still update the dashboard.
+	toplistSchema := widgetSchema["toplist_definition"].Elem.(*schema.Resource)
+	styleSchema := toplistSchema.Schema["style"].Elem.(*schema.Resource)
+	displaySchema := styleSchema.Schema["display"].Elem.(*schema.Resource)
+	displaySchema.Schema["type"].DiffSuppressFunc = func(key, _, new string, data *schema.ResourceData) bool {
+		prefix := strings.TrimSuffix(key, ".type")
+		if prefix == key {
+			return false
+		}
+		variantCount, ok := data.GetOk(prefix + "." + new + ".#")
+		count, isInt := variantCount.(int)
+		return ok && isInt && count > 0
+	}
 	topSchema["widget"] = &schema.Schema{
 		Type:        schema.TypeList,
 		Optional:    true,

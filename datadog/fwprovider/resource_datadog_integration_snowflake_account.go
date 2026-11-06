@@ -29,75 +29,77 @@ var (
 	_ resource.ResourceWithConfigure   = &datadogIntegrationSnowflakeAccountResource{}
 	_ resource.ResourceWithImportState = &datadogIntegrationSnowflakeAccountResource{}
 )
-var datadogIntegrationSnowflakeAccountAuthenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "private_key", WriteOnlyAttr: "private_key_wo", TriggerAttr: "private_key_wo_version", WriteOnlyDescription: "The private key, in PEM format. This write-only value is not stored in Terraform state.", TriggerDescription: "Version trigger for private_key_wo rotation.", ParentBlocks: []string{"authentication", "snowflake_integration_account_private_key_auth"}, Mode: fwutils.WriteOnlySecretModeOnly, Required: true}
-var datadogIntegrationSnowflakeAccountAuthenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyPassphraseWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "private_key_passphrase", WriteOnlyAttr: "private_key_passphrase_wo", TriggerAttr: "private_key_passphrase_wo_version", WriteOnlyDescription: "Passphrase that decrypts the private key. Provide it only when the key is encrypted. This write-only value is not stored in Terraform state.", TriggerDescription: "Version trigger for private_key_passphrase_wo rotation.", ParentBlocks: []string{"authentication", "snowflake_integration_account_private_key_auth"}, Mode: fwutils.WriteOnlySecretModeOnly, Required: false}
+var resourceDatadogIntegrationSnowflakeAccount_AuthenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "private_key", WriteOnlyAttr: "private_key_wo", TriggerAttr: "private_key_wo_version", OriginalDescription: "The private key, in PEM format. Exactly one of `private_key` or `private_key_wo` must be set. Prefer `private_key_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.", WriteOnlyDescription: "The private key, in PEM format. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.", TriggerDescription: "Version trigger for private_key_wo rotation.", ParentBlocks: []string{"authentication", "snowflake_integration_account_private_key_auth"}, Mode: fwutils.WriteOnlySecretModeDual, Required: true}
+var resourceDatadogIntegrationSnowflakeAccount_AuthenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyPassphraseWriteOnlySecretConfig = fwutils.WriteOnlySecretConfig{OriginalAttr: "private_key_passphrase", WriteOnlyAttr: "private_key_passphrase_wo", TriggerAttr: "private_key_passphrase_wo_version", OriginalDescription: "Passphrase that decrypts the private key. Provide it only when the key is encrypted. Conflicts with `private_key_passphrase_wo`. Prefer `private_key_passphrase_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.", WriteOnlyDescription: "Passphrase that decrypts the private key. Provide it only when the key is encrypted. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.", TriggerDescription: "Version trigger for private_key_passphrase_wo rotation.", ParentBlocks: []string{"authentication", "snowflake_integration_account_private_key_auth"}, Mode: fwutils.WriteOnlySecretModeDual, Required: false}
 
-type datadogIntegrationSnowflakeAccountResourceModel struct {
-	ID             types.String                                                                        `tfsdk:"id"`
-	Authentication *datadogIntegrationSnowflakeAccountSnowflakeIntegrationAccountAuthenticationModel   `tfsdk:"authentication"`
-	Dataflows      *datadogIntegrationSnowflakeAccountSnowflakeIntegrationDataflowsResponseModel       `tfsdk:"dataflows"`
-	Name           types.String                                                                        `tfsdk:"name"`
-	Settings       *datadogIntegrationSnowflakeAccountSnowflakeIntegrationAccountSettingsResponseModel `tfsdk:"settings"`
+type resourceDatadogIntegrationSnowflakeAccount_Model struct {
+	ID             types.String                                                                                 `tfsdk:"id"`
+	Authentication *resourceDatadogIntegrationSnowflakeAccount_SnowflakeIntegrationAccountAuthenticationModel   `tfsdk:"authentication"`
+	Dataflows      *resourceDatadogIntegrationSnowflakeAccount_SnowflakeIntegrationDataflowsResponseModel       `tfsdk:"dataflows"`
+	Name           types.String                                                                                 `tfsdk:"name"`
+	Settings       *resourceDatadogIntegrationSnowflakeAccount_SnowflakeIntegrationAccountSettingsResponseModel `tfsdk:"settings"`
 }
 
-type datadogIntegrationSnowflakeAccountSnowflakeIntegrationAccountAuthenticationModel struct {
-	SnowflakeIntegrationAccountPrivateKeyAuth *datadogIntegrationSnowflakeAccountSnowflakeIntegrationAccountAuthenticationSnowflakeIntegrationAccountPrivateKeyAuthModel `tfsdk:"snowflake_integration_account_private_key_auth"`
+type resourceDatadogIntegrationSnowflakeAccount_SnowflakeIntegrationAccountAuthenticationModel struct {
+	SnowflakeIntegrationAccountPrivateKeyAuth *resourceDatadogIntegrationSnowflakeAccount_SnowflakeIntegrationAccountAuthenticationSnowflakeIntegrationAccountPrivateKeyAuthModel `tfsdk:"snowflake_integration_account_private_key_auth"`
 }
 
-type datadogIntegrationSnowflakeAccountSnowflakeIntegrationAccountAuthenticationSnowflakeIntegrationAccountPrivateKeyAuthModel struct {
+type resourceDatadogIntegrationSnowflakeAccount_SnowflakeIntegrationAccountAuthenticationSnowflakeIntegrationAccountPrivateKeyAuthModel struct {
 	AuthType                      types.String `tfsdk:"auth_type"`
+	PrivateKey                    types.String `tfsdk:"private_key"`
 	PrivateKeyWo                  types.String `tfsdk:"private_key_wo"`
 	PrivateKeyWoVersion           types.String `tfsdk:"private_key_wo_version"`
 	PrivateKeyName                types.String `tfsdk:"private_key_name"`
+	PrivateKeyPassphrase          types.String `tfsdk:"private_key_passphrase"`
 	PrivateKeyPassphraseWo        types.String `tfsdk:"private_key_passphrase_wo"`
 	PrivateKeyPassphraseWoVersion types.String `tfsdk:"private_key_passphrase_wo_version"`
 }
 
-type datadogIntegrationSnowflakeAccountSnowflakeIntegrationDataflowsResponseModel struct {
-	SnowflakeAccountUsageMetrics                *datadogIntegrationSnowflakeAccountSnowflakeAccountUsageMetricsIntegrationDataflowResponseModel                `tfsdk:"snowflake_account_usage_metrics"`
-	SnowflakeCloudCostMetrics                   *datadogIntegrationSnowflakeAccountSnowflakeCloudCostMetricsIntegrationDataflowResponseModel                   `tfsdk:"snowflake_cloud_cost_metrics"`
-	SnowflakeDataObservabilityQualityMonitoring *datadogIntegrationSnowflakeAccountSnowflakeDataObservabilityQualityMonitoringIntegrationDataflowResponseModel `tfsdk:"snowflake_data_observability_quality_monitoring"`
-	SnowflakeEventTableLogs                     *datadogIntegrationSnowflakeAccountSnowflakeEventTableLogsIntegrationDataflowResponseModel                     `tfsdk:"snowflake_event_table_logs"`
-	SnowflakeOrganizationUsageMetrics           *datadogIntegrationSnowflakeAccountSnowflakeOrganizationUsageMetricsIntegrationDataflowResponseModel           `tfsdk:"snowflake_organization_usage_metrics"`
-	SnowflakeQueryHistoryLogs                   *datadogIntegrationSnowflakeAccountSnowflakeQueryHistoryLogsIntegrationDataflowResponseModel                   `tfsdk:"snowflake_query_history_logs"`
-	SnowflakeSecurityLogs                       *datadogIntegrationSnowflakeAccountSnowflakeSecurityLogsIntegrationDataflowResponseModel                       `tfsdk:"snowflake_security_logs"`
-	SnowflakeTaskHistoryLogs                    *datadogIntegrationSnowflakeAccountSnowflakeTaskHistoryLogsIntegrationDataflowResponseModel                    `tfsdk:"snowflake_task_history_logs"`
+type resourceDatadogIntegrationSnowflakeAccount_SnowflakeIntegrationDataflowsResponseModel struct {
+	SnowflakeAccountUsageMetrics                *resourceDatadogIntegrationSnowflakeAccount_SnowflakeAccountUsageMetricsIntegrationDataflowResponseModel                `tfsdk:"snowflake_account_usage_metrics"`
+	SnowflakeCloudCostMetrics                   *resourceDatadogIntegrationSnowflakeAccount_SnowflakeCloudCostMetricsIntegrationDataflowResponseModel                   `tfsdk:"snowflake_cloud_cost_metrics"`
+	SnowflakeDataObservabilityQualityMonitoring *resourceDatadogIntegrationSnowflakeAccount_SnowflakeDataObservabilityQualityMonitoringIntegrationDataflowResponseModel `tfsdk:"snowflake_data_observability_quality_monitoring"`
+	SnowflakeEventTableLogs                     *resourceDatadogIntegrationSnowflakeAccount_SnowflakeEventTableLogsIntegrationDataflowResponseModel                     `tfsdk:"snowflake_event_table_logs"`
+	SnowflakeOrganizationUsageMetrics           *resourceDatadogIntegrationSnowflakeAccount_SnowflakeOrganizationUsageMetricsIntegrationDataflowResponseModel           `tfsdk:"snowflake_organization_usage_metrics"`
+	SnowflakeQueryHistoryLogs                   *resourceDatadogIntegrationSnowflakeAccount_SnowflakeQueryHistoryLogsIntegrationDataflowResponseModel                   `tfsdk:"snowflake_query_history_logs"`
+	SnowflakeSecurityLogs                       *resourceDatadogIntegrationSnowflakeAccount_SnowflakeSecurityLogsIntegrationDataflowResponseModel                       `tfsdk:"snowflake_security_logs"`
+	SnowflakeTaskHistoryLogs                    *resourceDatadogIntegrationSnowflakeAccount_SnowflakeTaskHistoryLogsIntegrationDataflowResponseModel                    `tfsdk:"snowflake_task_history_logs"`
 }
 
-type datadogIntegrationSnowflakeAccountSnowflakeAccountUsageMetricsIntegrationDataflowResponseModel struct {
-	Enabled  types.Bool                                                                                              `tfsdk:"enabled"`
-	Settings *datadogIntegrationSnowflakeAccountSnowflakeAccountUsageMetricsIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
+type resourceDatadogIntegrationSnowflakeAccount_SnowflakeAccountUsageMetricsIntegrationDataflowResponseModel struct {
+	Enabled  types.Bool                                                                                                       `tfsdk:"enabled"`
+	Settings *resourceDatadogIntegrationSnowflakeAccount_SnowflakeAccountUsageMetricsIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
 }
 
-type datadogIntegrationSnowflakeAccountSnowflakeAccountUsageMetricsIntegrationDataflowSettingsResponseModel struct {
+type resourceDatadogIntegrationSnowflakeAccount_SnowflakeAccountUsageMetricsIntegrationDataflowSettingsResponseModel struct {
 	AccountUsageMetricsAggregateLast24h types.Bool `tfsdk:"account_usage_metrics_aggregate_last_24h"`
 }
 
-type datadogIntegrationSnowflakeAccountSnowflakeCloudCostMetricsIntegrationDataflowResponseModel struct {
-	Enabled  types.Bool                                                                                           `tfsdk:"enabled"`
-	Settings *datadogIntegrationSnowflakeAccountSnowflakeCloudCostMetricsIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
+type resourceDatadogIntegrationSnowflakeAccount_SnowflakeCloudCostMetricsIntegrationDataflowResponseModel struct {
+	Enabled  types.Bool                                                                                                    `tfsdk:"enabled"`
+	Settings *resourceDatadogIntegrationSnowflakeAccount_SnowflakeCloudCostMetricsIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
 }
 
-type datadogIntegrationSnowflakeAccountSnowflakeCloudCostMetricsIntegrationDataflowSettingsResponseModel struct {
+type resourceDatadogIntegrationSnowflakeAccount_SnowflakeCloudCostMetricsIntegrationDataflowSettingsResponseModel struct {
 	QueryTags types.String `tfsdk:"query_tags"`
 }
 
-type datadogIntegrationSnowflakeAccountSnowflakeDataObservabilityQualityMonitoringIntegrationDataflowResponseModel struct {
-	Enabled  types.Bool                                                                                                             `tfsdk:"enabled"`
-	Settings *datadogIntegrationSnowflakeAccountSnowflakeDataObservabilityQualityMonitoringIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
+type resourceDatadogIntegrationSnowflakeAccount_SnowflakeDataObservabilityQualityMonitoringIntegrationDataflowResponseModel struct {
+	Enabled  types.Bool                                                                                                                      `tfsdk:"enabled"`
+	Settings *resourceDatadogIntegrationSnowflakeAccount_SnowflakeDataObservabilityQualityMonitoringIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
 }
 
-type datadogIntegrationSnowflakeAccountSnowflakeDataObservabilityQualityMonitoringIntegrationDataflowSettingsResponseModel struct {
+type resourceDatadogIntegrationSnowflakeAccount_SnowflakeDataObservabilityQualityMonitoringIntegrationDataflowSettingsResponseModel struct {
 	DoTableCrawlerCron          types.String `tfsdk:"do_table_crawler_cron"`
 	SyncSnowflakeSystemDatabase types.Bool   `tfsdk:"sync_snowflake_system_database"`
 }
 
-type datadogIntegrationSnowflakeAccountSnowflakeEventTableLogsIntegrationDataflowResponseModel struct {
-	Enabled  types.Bool                                                                                         `tfsdk:"enabled"`
-	Settings *datadogIntegrationSnowflakeAccountSnowflakeEventTableLogsIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
+type resourceDatadogIntegrationSnowflakeAccount_SnowflakeEventTableLogsIntegrationDataflowResponseModel struct {
+	Enabled  types.Bool                                                                                                  `tfsdk:"enabled"`
+	Settings *resourceDatadogIntegrationSnowflakeAccount_SnowflakeEventTableLogsIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
 }
 
-type datadogIntegrationSnowflakeAccountSnowflakeEventTableLogsIntegrationDataflowSettingsResponseModel struct {
+type resourceDatadogIntegrationSnowflakeAccount_SnowflakeEventTableLogsIntegrationDataflowSettingsResponseModel struct {
 	EventTableEventsEnabled     types.Bool  `tfsdk:"event_table_events_enabled"`
 	EventTableLogsEnabled       types.Bool  `tfsdk:"event_table_logs_enabled"`
 	EventTableLogsIntervalMin   types.Int64 `tfsdk:"event_table_logs_interval_min"`
@@ -105,44 +107,44 @@ type datadogIntegrationSnowflakeAccountSnowflakeEventTableLogsIntegrationDataflo
 	EventTableSpansEnabled      types.Bool  `tfsdk:"event_table_spans_enabled"`
 }
 
-type datadogIntegrationSnowflakeAccountSnowflakeOrganizationUsageMetricsIntegrationDataflowResponseModel struct {
-	Enabled  types.Bool                                                                                                   `tfsdk:"enabled"`
-	Settings *datadogIntegrationSnowflakeAccountSnowflakeOrganizationUsageMetricsIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
+type resourceDatadogIntegrationSnowflakeAccount_SnowflakeOrganizationUsageMetricsIntegrationDataflowResponseModel struct {
+	Enabled  types.Bool                                                                                                            `tfsdk:"enabled"`
+	Settings *resourceDatadogIntegrationSnowflakeAccount_SnowflakeOrganizationUsageMetricsIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
 }
 
-type datadogIntegrationSnowflakeAccountSnowflakeOrganizationUsageMetricsIntegrationDataflowSettingsResponseModel struct {
+type resourceDatadogIntegrationSnowflakeAccount_SnowflakeOrganizationUsageMetricsIntegrationDataflowSettingsResponseModel struct {
 	OrganizationUsageMetricsAggregateLast24h types.Bool `tfsdk:"organization_usage_metrics_aggregate_last_24h"`
 }
 
-type datadogIntegrationSnowflakeAccountSnowflakeQueryHistoryLogsIntegrationDataflowResponseModel struct {
-	Enabled  types.Bool                                                                                           `tfsdk:"enabled"`
-	Settings *datadogIntegrationSnowflakeAccountSnowflakeQueryHistoryLogsIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
+type resourceDatadogIntegrationSnowflakeAccount_SnowflakeQueryHistoryLogsIntegrationDataflowResponseModel struct {
+	Enabled  types.Bool                                                                                                    `tfsdk:"enabled"`
+	Settings *resourceDatadogIntegrationSnowflakeAccount_SnowflakeQueryHistoryLogsIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
 }
 
-type datadogIntegrationSnowflakeAccountSnowflakeQueryHistoryLogsIntegrationDataflowSettingsResponseModel struct {
+type resourceDatadogIntegrationSnowflakeAccount_SnowflakeQueryHistoryLogsIntegrationDataflowSettingsResponseModel struct {
 	JoinQueryHistoryWithAccessHistoryEnabled types.Bool  `tfsdk:"join_query_history_with_access_history_enabled"`
 	QueryHistoryLogsIntervalMin              types.Int64 `tfsdk:"query_history_logs_interval_min"`
 }
 
-type datadogIntegrationSnowflakeAccountSnowflakeSecurityLogsIntegrationDataflowResponseModel struct {
-	Enabled  types.Bool                                                                                       `tfsdk:"enabled"`
-	Settings *datadogIntegrationSnowflakeAccountSnowflakeSecurityLogsIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
+type resourceDatadogIntegrationSnowflakeAccount_SnowflakeSecurityLogsIntegrationDataflowResponseModel struct {
+	Enabled  types.Bool                                                                                                `tfsdk:"enabled"`
+	Settings *resourceDatadogIntegrationSnowflakeAccount_SnowflakeSecurityLogsIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
 }
 
-type datadogIntegrationSnowflakeAccountSnowflakeSecurityLogsIntegrationDataflowSettingsResponseModel struct {
+type resourceDatadogIntegrationSnowflakeAccount_SnowflakeSecurityLogsIntegrationDataflowSettingsResponseModel struct {
 	SecurityLogsIntervalMin types.Int64 `tfsdk:"security_logs_interval_min"`
 }
 
-type datadogIntegrationSnowflakeAccountSnowflakeTaskHistoryLogsIntegrationDataflowResponseModel struct {
-	Enabled  types.Bool                                                                                          `tfsdk:"enabled"`
-	Settings *datadogIntegrationSnowflakeAccountSnowflakeTaskHistoryLogsIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
+type resourceDatadogIntegrationSnowflakeAccount_SnowflakeTaskHistoryLogsIntegrationDataflowResponseModel struct {
+	Enabled  types.Bool                                                                                                   `tfsdk:"enabled"`
+	Settings *resourceDatadogIntegrationSnowflakeAccount_SnowflakeTaskHistoryLogsIntegrationDataflowSettingsResponseModel `tfsdk:"settings"`
 }
 
-type datadogIntegrationSnowflakeAccountSnowflakeTaskHistoryLogsIntegrationDataflowSettingsResponseModel struct {
+type resourceDatadogIntegrationSnowflakeAccount_SnowflakeTaskHistoryLogsIntegrationDataflowSettingsResponseModel struct {
 	TaskHistoryLogsIntervalMin types.Int64 `tfsdk:"task_history_logs_interval_min"`
 }
 
-type datadogIntegrationSnowflakeAccountSnowflakeIntegrationAccountSettingsResponseModel struct {
+type resourceDatadogIntegrationSnowflakeAccount_SnowflakeIntegrationAccountSettingsResponseModel struct {
 	SnowflakeAccountIdentifier types.String `tfsdk:"snowflake_account_identifier"`
 	Username                   types.String `tfsdk:"username"`
 }
@@ -204,8 +206,8 @@ func (r *datadogIntegrationSnowflakeAccountResource) Schema(_ context.Context, _
 									Required:    true,
 								},
 							},
-							fwutils.CreateWriteOnlySecretAttributes(datadogIntegrationSnowflakeAccountAuthenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyWriteOnlySecretConfig),
-							fwutils.CreateWriteOnlySecretAttributes(datadogIntegrationSnowflakeAccountAuthenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyPassphraseWriteOnlySecretConfig),
+							fwutils.CreateWriteOnlySecretAttributes(resourceDatadogIntegrationSnowflakeAccount_AuthenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyWriteOnlySecretConfig),
+							fwutils.CreateWriteOnlySecretAttributes(resourceDatadogIntegrationSnowflakeAccount_AuthenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyPassphraseWriteOnlySecretConfig),
 						),
 						Optional: true,
 
@@ -659,7 +661,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) ImportState(ctx context.Con
 }
 
 func (r *datadogIntegrationSnowflakeAccountResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state datadogIntegrationSnowflakeAccountResourceModel
+	var state resourceDatadogIntegrationSnowflakeAccount_Model
 	var plan types.Object
 	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
 	if response.Diagnostics.HasError() {
@@ -671,7 +673,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) Create(ctx context.Context,
 	}
 
 	authenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyWriteOnlySecretHandler := fwutils.WriteOnlySecretHandler{
-		Config:                 datadogIntegrationSnowflakeAccountAuthenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyWriteOnlySecretConfig,
+		Config:                 resourceDatadogIntegrationSnowflakeAccount_AuthenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyWriteOnlySecretConfig,
 		SecretRequiredOnUpdate: false,
 	}
 	authenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeySecretResult := authenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyWriteOnlySecretHandler.GetSecretForCreate(ctx, &request.Config)
@@ -680,7 +682,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) Create(ctx context.Context,
 		return
 	}
 	authenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyPassphraseWriteOnlySecretHandler := fwutils.WriteOnlySecretHandler{
-		Config:                 datadogIntegrationSnowflakeAccountAuthenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyPassphraseWriteOnlySecretConfig,
+		Config:                 resourceDatadogIntegrationSnowflakeAccount_AuthenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyPassphraseWriteOnlySecretConfig,
 		SecretRequiredOnUpdate: false,
 	}
 	authenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyPassphraseSecretResult := authenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyPassphraseWriteOnlySecretHandler.GetSecretForCreate(ctx, &request.Config)
@@ -1036,7 +1038,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) Create(ctx context.Context,
 }
 
 func (r *datadogIntegrationSnowflakeAccountResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state datadogIntegrationSnowflakeAccountResourceModel
+	var state resourceDatadogIntegrationSnowflakeAccount_Model
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -1060,7 +1062,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) Read(ctx context.Context, r
 }
 
 func (r *datadogIntegrationSnowflakeAccountResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state datadogIntegrationSnowflakeAccountResourceModel
+	var state resourceDatadogIntegrationSnowflakeAccount_Model
 	var plan types.Object
 	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
 	if response.Diagnostics.HasError() {
@@ -1072,7 +1074,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) Update(ctx context.Context,
 	}
 
 	authenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyWriteOnlySecretHandler := fwutils.WriteOnlySecretHandler{
-		Config:                 datadogIntegrationSnowflakeAccountAuthenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyWriteOnlySecretConfig,
+		Config:                 resourceDatadogIntegrationSnowflakeAccount_AuthenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyWriteOnlySecretConfig,
 		SecretRequiredOnUpdate: false,
 	}
 	authenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeySecretResult := authenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyWriteOnlySecretHandler.GetSecretForUpdate(ctx, &request.Config, &request)
@@ -1081,7 +1083,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) Update(ctx context.Context,
 		return
 	}
 	authenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyPassphraseWriteOnlySecretHandler := fwutils.WriteOnlySecretHandler{
-		Config:                 datadogIntegrationSnowflakeAccountAuthenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyPassphraseWriteOnlySecretConfig,
+		Config:                 resourceDatadogIntegrationSnowflakeAccount_AuthenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyPassphraseWriteOnlySecretConfig,
 		SecretRequiredOnUpdate: false,
 	}
 	authenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyPassphraseSecretResult := authenticationSnowflakeIntegrationAccountPrivateKeyAuthPrivateKeyPassphraseWriteOnlySecretHandler.GetSecretForUpdate(ctx, &request.Config, &request)
@@ -1331,7 +1333,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) Update(ctx context.Context,
 }
 
 func (r *datadogIntegrationSnowflakeAccountResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state datadogIntegrationSnowflakeAccountResourceModel
+	var state resourceDatadogIntegrationSnowflakeAccount_Model
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -1350,7 +1352,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) Delete(ctx context.Context,
 // rather than writing them so it stays free of the resource request/response
 // types and can fail at a specific schema path. Shared by Create, Read and
 // Update, which all resolve the same response type.
-func (r *datadogIntegrationSnowflakeAccountResource) updateState(ctx context.Context, state *datadogIntegrationSnowflakeAccountResourceModel, resp *datadogV2.SnowflakeIntegrationAccountResponse) diag.Diagnostics {
+func (r *datadogIntegrationSnowflakeAccountResource) updateState(ctx context.Context, state *resourceDatadogIntegrationSnowflakeAccount_Model, resp *datadogV2.SnowflakeIntegrationAccountResponse) diag.Diagnostics {
 	var diags diag.Diagnostics
 	attributes := resp.Data.GetAttributes()
 	if id, ok := resp.Data.GetIdOk(); ok && id != nil {
@@ -1360,10 +1362,10 @@ func (r *datadogIntegrationSnowflakeAccountResource) updateState(ctx context.Con
 		state.Name = types.StringValue(*name)
 	}
 	if authentication, ok := attributes.GetAuthenticationOk(); ok && authentication != nil {
-		authenticationEnvelope := &datadogIntegrationSnowflakeAccountSnowflakeIntegrationAccountAuthenticationModel{}
+		authenticationEnvelope := &resourceDatadogIntegrationSnowflakeAccount_SnowflakeIntegrationAccountAuthenticationModel{}
 		authenticationMatches := 0
 		if snowflakeIntegrationAccountPrivateKeyAuthVariant := authentication.SnowflakeIntegrationAccountPrivateKeyAuthResponse; snowflakeIntegrationAccountPrivateKeyAuthVariant != nil {
-			snowflakeIntegrationAccountPrivateKeyAuthModel := &datadogIntegrationSnowflakeAccountSnowflakeIntegrationAccountAuthenticationSnowflakeIntegrationAccountPrivateKeyAuthModel{}
+			snowflakeIntegrationAccountPrivateKeyAuthModel := &resourceDatadogIntegrationSnowflakeAccount_SnowflakeIntegrationAccountAuthenticationSnowflakeIntegrationAccountPrivateKeyAuthModel{}
 			if state.Authentication != nil && state.Authentication.SnowflakeIntegrationAccountPrivateKeyAuth != nil {
 				snowflakeIntegrationAccountPrivateKeyAuthModel = state.Authentication.SnowflakeIntegrationAccountPrivateKeyAuth
 			}
@@ -1394,12 +1396,12 @@ func (r *datadogIntegrationSnowflakeAccountResource) updateState(ctx context.Con
 	if dataflows, ok := attributes.GetDataflowsOk(); ok && dataflows != nil {
 		dataflowsModel := state.Dataflows
 		if dataflowsModel == nil {
-			dataflowsModel = &datadogIntegrationSnowflakeAccountSnowflakeIntegrationDataflowsResponseModel{}
+			dataflowsModel = &resourceDatadogIntegrationSnowflakeAccount_SnowflakeIntegrationDataflowsResponseModel{}
 		}
 		if snowflakeAccountUsageMetrics, ok := dataflows.GetSnowflakeAccountUsageMetricsOk(); ok && snowflakeAccountUsageMetrics != nil {
 			snowflakeAccountUsageMetricsModel := dataflowsModel.SnowflakeAccountUsageMetrics
 			if snowflakeAccountUsageMetricsModel == nil {
-				snowflakeAccountUsageMetricsModel = &datadogIntegrationSnowflakeAccountSnowflakeAccountUsageMetricsIntegrationDataflowResponseModel{}
+				snowflakeAccountUsageMetricsModel = &resourceDatadogIntegrationSnowflakeAccount_SnowflakeAccountUsageMetricsIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := snowflakeAccountUsageMetrics.GetEnabledOk(); ok && enabled != nil {
 				snowflakeAccountUsageMetricsModel.Enabled = types.BoolValue(*enabled)
@@ -1407,7 +1409,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) updateState(ctx context.Con
 			if settings, ok := snowflakeAccountUsageMetrics.GetSettingsOk(); ok && settings != nil {
 				settingsModel := snowflakeAccountUsageMetricsModel.Settings
 				if settingsModel == nil {
-					settingsModel = &datadogIntegrationSnowflakeAccountSnowflakeAccountUsageMetricsIntegrationDataflowSettingsResponseModel{}
+					settingsModel = &resourceDatadogIntegrationSnowflakeAccount_SnowflakeAccountUsageMetricsIntegrationDataflowSettingsResponseModel{}
 				}
 				if accountUsageMetricsAggregateLast24h, ok := settings.GetAccountUsageMetricsAggregateLast24hOk(); ok && accountUsageMetricsAggregateLast24h != nil {
 					settingsModel.AccountUsageMetricsAggregateLast24h = types.BoolValue(*accountUsageMetricsAggregateLast24h)
@@ -1419,7 +1421,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) updateState(ctx context.Con
 		if snowflakeCloudCostMetrics, ok := dataflows.GetSnowflakeCloudCostMetricsOk(); ok && snowflakeCloudCostMetrics != nil {
 			snowflakeCloudCostMetricsModel := dataflowsModel.SnowflakeCloudCostMetrics
 			if snowflakeCloudCostMetricsModel == nil {
-				snowflakeCloudCostMetricsModel = &datadogIntegrationSnowflakeAccountSnowflakeCloudCostMetricsIntegrationDataflowResponseModel{}
+				snowflakeCloudCostMetricsModel = &resourceDatadogIntegrationSnowflakeAccount_SnowflakeCloudCostMetricsIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := snowflakeCloudCostMetrics.GetEnabledOk(); ok && enabled != nil {
 				snowflakeCloudCostMetricsModel.Enabled = types.BoolValue(*enabled)
@@ -1427,7 +1429,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) updateState(ctx context.Con
 			if settings, ok := snowflakeCloudCostMetrics.GetSettingsOk(); ok && settings != nil {
 				settingsModel := snowflakeCloudCostMetricsModel.Settings
 				if settingsModel == nil {
-					settingsModel = &datadogIntegrationSnowflakeAccountSnowflakeCloudCostMetricsIntegrationDataflowSettingsResponseModel{}
+					settingsModel = &resourceDatadogIntegrationSnowflakeAccount_SnowflakeCloudCostMetricsIntegrationDataflowSettingsResponseModel{}
 				}
 				if queryTags, ok := settings.GetQueryTagsOk(); ok && queryTags != nil {
 					settingsModel.QueryTags = types.StringValue(*queryTags)
@@ -1439,7 +1441,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) updateState(ctx context.Con
 		if snowflakeDataObservabilityQualityMonitoring, ok := dataflows.GetSnowflakeDataObservabilityQualityMonitoringOk(); ok && snowflakeDataObservabilityQualityMonitoring != nil {
 			snowflakeDataObservabilityQualityMonitoringModel := dataflowsModel.SnowflakeDataObservabilityQualityMonitoring
 			if snowflakeDataObservabilityQualityMonitoringModel == nil {
-				snowflakeDataObservabilityQualityMonitoringModel = &datadogIntegrationSnowflakeAccountSnowflakeDataObservabilityQualityMonitoringIntegrationDataflowResponseModel{}
+				snowflakeDataObservabilityQualityMonitoringModel = &resourceDatadogIntegrationSnowflakeAccount_SnowflakeDataObservabilityQualityMonitoringIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := snowflakeDataObservabilityQualityMonitoring.GetEnabledOk(); ok && enabled != nil {
 				snowflakeDataObservabilityQualityMonitoringModel.Enabled = types.BoolValue(*enabled)
@@ -1447,7 +1449,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) updateState(ctx context.Con
 			if settings, ok := snowflakeDataObservabilityQualityMonitoring.GetSettingsOk(); ok && settings != nil {
 				settingsModel := snowflakeDataObservabilityQualityMonitoringModel.Settings
 				if settingsModel == nil {
-					settingsModel = &datadogIntegrationSnowflakeAccountSnowflakeDataObservabilityQualityMonitoringIntegrationDataflowSettingsResponseModel{}
+					settingsModel = &resourceDatadogIntegrationSnowflakeAccount_SnowflakeDataObservabilityQualityMonitoringIntegrationDataflowSettingsResponseModel{}
 				}
 				if doTableCrawlerCron, ok := settings.GetDoTableCrawlerCronOk(); ok && doTableCrawlerCron != nil {
 					settingsModel.DoTableCrawlerCron = types.StringValue(*doTableCrawlerCron)
@@ -1462,7 +1464,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) updateState(ctx context.Con
 		if snowflakeEventTableLogs, ok := dataflows.GetSnowflakeEventTableLogsOk(); ok && snowflakeEventTableLogs != nil {
 			snowflakeEventTableLogsModel := dataflowsModel.SnowflakeEventTableLogs
 			if snowflakeEventTableLogsModel == nil {
-				snowflakeEventTableLogsModel = &datadogIntegrationSnowflakeAccountSnowflakeEventTableLogsIntegrationDataflowResponseModel{}
+				snowflakeEventTableLogsModel = &resourceDatadogIntegrationSnowflakeAccount_SnowflakeEventTableLogsIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := snowflakeEventTableLogs.GetEnabledOk(); ok && enabled != nil {
 				snowflakeEventTableLogsModel.Enabled = types.BoolValue(*enabled)
@@ -1470,7 +1472,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) updateState(ctx context.Con
 			if settings, ok := snowflakeEventTableLogs.GetSettingsOk(); ok && settings != nil {
 				settingsModel := snowflakeEventTableLogsModel.Settings
 				if settingsModel == nil {
-					settingsModel = &datadogIntegrationSnowflakeAccountSnowflakeEventTableLogsIntegrationDataflowSettingsResponseModel{}
+					settingsModel = &resourceDatadogIntegrationSnowflakeAccount_SnowflakeEventTableLogsIntegrationDataflowSettingsResponseModel{}
 				}
 				if eventTableEventsEnabled, ok := settings.GetEventTableEventsEnabledOk(); ok && eventTableEventsEnabled != nil {
 					settingsModel.EventTableEventsEnabled = types.BoolValue(*eventTableEventsEnabled)
@@ -1494,7 +1496,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) updateState(ctx context.Con
 		if snowflakeOrganizationUsageMetrics, ok := dataflows.GetSnowflakeOrganizationUsageMetricsOk(); ok && snowflakeOrganizationUsageMetrics != nil {
 			snowflakeOrganizationUsageMetricsModel := dataflowsModel.SnowflakeOrganizationUsageMetrics
 			if snowflakeOrganizationUsageMetricsModel == nil {
-				snowflakeOrganizationUsageMetricsModel = &datadogIntegrationSnowflakeAccountSnowflakeOrganizationUsageMetricsIntegrationDataflowResponseModel{}
+				snowflakeOrganizationUsageMetricsModel = &resourceDatadogIntegrationSnowflakeAccount_SnowflakeOrganizationUsageMetricsIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := snowflakeOrganizationUsageMetrics.GetEnabledOk(); ok && enabled != nil {
 				snowflakeOrganizationUsageMetricsModel.Enabled = types.BoolValue(*enabled)
@@ -1502,7 +1504,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) updateState(ctx context.Con
 			if settings, ok := snowflakeOrganizationUsageMetrics.GetSettingsOk(); ok && settings != nil {
 				settingsModel := snowflakeOrganizationUsageMetricsModel.Settings
 				if settingsModel == nil {
-					settingsModel = &datadogIntegrationSnowflakeAccountSnowflakeOrganizationUsageMetricsIntegrationDataflowSettingsResponseModel{}
+					settingsModel = &resourceDatadogIntegrationSnowflakeAccount_SnowflakeOrganizationUsageMetricsIntegrationDataflowSettingsResponseModel{}
 				}
 				if organizationUsageMetricsAggregateLast24h, ok := settings.GetOrganizationUsageMetricsAggregateLast24hOk(); ok && organizationUsageMetricsAggregateLast24h != nil {
 					settingsModel.OrganizationUsageMetricsAggregateLast24h = types.BoolValue(*organizationUsageMetricsAggregateLast24h)
@@ -1514,7 +1516,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) updateState(ctx context.Con
 		if snowflakeQueryHistoryLogs, ok := dataflows.GetSnowflakeQueryHistoryLogsOk(); ok && snowflakeQueryHistoryLogs != nil {
 			snowflakeQueryHistoryLogsModel := dataflowsModel.SnowflakeQueryHistoryLogs
 			if snowflakeQueryHistoryLogsModel == nil {
-				snowflakeQueryHistoryLogsModel = &datadogIntegrationSnowflakeAccountSnowflakeQueryHistoryLogsIntegrationDataflowResponseModel{}
+				snowflakeQueryHistoryLogsModel = &resourceDatadogIntegrationSnowflakeAccount_SnowflakeQueryHistoryLogsIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := snowflakeQueryHistoryLogs.GetEnabledOk(); ok && enabled != nil {
 				snowflakeQueryHistoryLogsModel.Enabled = types.BoolValue(*enabled)
@@ -1522,7 +1524,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) updateState(ctx context.Con
 			if settings, ok := snowflakeQueryHistoryLogs.GetSettingsOk(); ok && settings != nil {
 				settingsModel := snowflakeQueryHistoryLogsModel.Settings
 				if settingsModel == nil {
-					settingsModel = &datadogIntegrationSnowflakeAccountSnowflakeQueryHistoryLogsIntegrationDataflowSettingsResponseModel{}
+					settingsModel = &resourceDatadogIntegrationSnowflakeAccount_SnowflakeQueryHistoryLogsIntegrationDataflowSettingsResponseModel{}
 				}
 				if joinQueryHistoryWithAccessHistoryEnabled, ok := settings.GetJoinQueryHistoryWithAccessHistoryEnabledOk(); ok && joinQueryHistoryWithAccessHistoryEnabled != nil {
 					settingsModel.JoinQueryHistoryWithAccessHistoryEnabled = types.BoolValue(*joinQueryHistoryWithAccessHistoryEnabled)
@@ -1537,7 +1539,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) updateState(ctx context.Con
 		if snowflakeSecurityLogs, ok := dataflows.GetSnowflakeSecurityLogsOk(); ok && snowflakeSecurityLogs != nil {
 			snowflakeSecurityLogsModel := dataflowsModel.SnowflakeSecurityLogs
 			if snowflakeSecurityLogsModel == nil {
-				snowflakeSecurityLogsModel = &datadogIntegrationSnowflakeAccountSnowflakeSecurityLogsIntegrationDataflowResponseModel{}
+				snowflakeSecurityLogsModel = &resourceDatadogIntegrationSnowflakeAccount_SnowflakeSecurityLogsIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := snowflakeSecurityLogs.GetEnabledOk(); ok && enabled != nil {
 				snowflakeSecurityLogsModel.Enabled = types.BoolValue(*enabled)
@@ -1545,7 +1547,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) updateState(ctx context.Con
 			if settings, ok := snowflakeSecurityLogs.GetSettingsOk(); ok && settings != nil {
 				settingsModel := snowflakeSecurityLogsModel.Settings
 				if settingsModel == nil {
-					settingsModel = &datadogIntegrationSnowflakeAccountSnowflakeSecurityLogsIntegrationDataflowSettingsResponseModel{}
+					settingsModel = &resourceDatadogIntegrationSnowflakeAccount_SnowflakeSecurityLogsIntegrationDataflowSettingsResponseModel{}
 				}
 				if securityLogsIntervalMin, ok := settings.GetSecurityLogsIntervalMinOk(); ok && securityLogsIntervalMin != nil {
 					settingsModel.SecurityLogsIntervalMin = types.Int64Value(int64(*securityLogsIntervalMin))
@@ -1557,7 +1559,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) updateState(ctx context.Con
 		if snowflakeTaskHistoryLogs, ok := dataflows.GetSnowflakeTaskHistoryLogsOk(); ok && snowflakeTaskHistoryLogs != nil {
 			snowflakeTaskHistoryLogsModel := dataflowsModel.SnowflakeTaskHistoryLogs
 			if snowflakeTaskHistoryLogsModel == nil {
-				snowflakeTaskHistoryLogsModel = &datadogIntegrationSnowflakeAccountSnowflakeTaskHistoryLogsIntegrationDataflowResponseModel{}
+				snowflakeTaskHistoryLogsModel = &resourceDatadogIntegrationSnowflakeAccount_SnowflakeTaskHistoryLogsIntegrationDataflowResponseModel{}
 			}
 			if enabled, ok := snowflakeTaskHistoryLogs.GetEnabledOk(); ok && enabled != nil {
 				snowflakeTaskHistoryLogsModel.Enabled = types.BoolValue(*enabled)
@@ -1565,7 +1567,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) updateState(ctx context.Con
 			if settings, ok := snowflakeTaskHistoryLogs.GetSettingsOk(); ok && settings != nil {
 				settingsModel := snowflakeTaskHistoryLogsModel.Settings
 				if settingsModel == nil {
-					settingsModel = &datadogIntegrationSnowflakeAccountSnowflakeTaskHistoryLogsIntegrationDataflowSettingsResponseModel{}
+					settingsModel = &resourceDatadogIntegrationSnowflakeAccount_SnowflakeTaskHistoryLogsIntegrationDataflowSettingsResponseModel{}
 				}
 				if taskHistoryLogsIntervalMin, ok := settings.GetTaskHistoryLogsIntervalMinOk(); ok && taskHistoryLogsIntervalMin != nil {
 					settingsModel.TaskHistoryLogsIntervalMin = types.Int64Value(int64(*taskHistoryLogsIntervalMin))
@@ -1579,7 +1581,7 @@ func (r *datadogIntegrationSnowflakeAccountResource) updateState(ctx context.Con
 	if settings, ok := attributes.GetSettingsOk(); ok && settings != nil {
 		settingsModel := state.Settings
 		if settingsModel == nil {
-			settingsModel = &datadogIntegrationSnowflakeAccountSnowflakeIntegrationAccountSettingsResponseModel{}
+			settingsModel = &resourceDatadogIntegrationSnowflakeAccount_SnowflakeIntegrationAccountSettingsResponseModel{}
 		}
 		if snowflakeAccountIdentifier, ok := settings.GetSnowflakeAccountIdentifierOk(); ok && snowflakeAccountIdentifier != nil {
 			settingsModel.SnowflakeAccountIdentifier = types.StringValue(*snowflakeAccountIdentifier)

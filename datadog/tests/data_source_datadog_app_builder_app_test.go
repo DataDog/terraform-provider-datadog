@@ -70,11 +70,11 @@ func testAppBuilderAppInlineWithOptionalFieldsResourceConfig(name string) string
 		app_json = jsonencode(
 			%s
 		)
-	}`, name, testAppBuilderAppInlineWithOptionalFieldsAppJSON())
+	}`, name, testAppBuilderAppInlineWithOptionalFieldsAppJSON(testAppBuilderAppID(name)))
 }
 
-func testAppBuilderAppInlineWithOptionalFieldsAppJSON() string {
-	return `
+func testAppBuilderAppInlineWithOptionalFieldsAppJSON(appID string) string {
+	return fmt.Sprintf(`
     {
 		"queries" : [
 			{
@@ -91,7 +91,7 @@ func testAppBuilderAppInlineWithOptionalFieldsAppJSON() string {
 				}
 			}
 		],
-		"id" : "11111111-2222-3333-4444-555555555555",
+		"id" : "%s",
 		"components" : [
 			{
 				"events" : [],
@@ -119,7 +119,7 @@ func testAppBuilderAppInlineWithOptionalFieldsAppJSON() string {
 			"app_version_id" : "00000000-0000-0000-0000-000000000000"
 		}
 	}
-	`
+	`, appID)
 }
 
 func testAccCheckDatadogAppBuilderAppDestroy(accProvider *fwprovider.FrameworkProvider, resourceName string) func(*terraform.State) error {

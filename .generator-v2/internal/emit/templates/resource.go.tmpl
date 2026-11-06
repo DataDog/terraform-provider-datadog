@@ -62,6 +62,20 @@ var (
 	_ resource.ResourceWithImportState = &{{ .GoName }}Resource{}
 )
 
+{{- if and .CallerAssignedID (not .UpdateUnsupported) }}
+// {{ .GoName }}NameRequiresReplace allows the first configured name after import.
+// Once adopted, changing the create identity requires a replacement.
+func {{ .GoName }}NameRequiresReplace() planmodifier.String {
+	return stringplanmodifier.RequiresReplaceIf(
+		func(ctx context.Context, request planmodifier.StringRequest, response *stringplanmodifier.RequiresReplaceIfFuncResponse) {
+			response.RequiresReplace = !request.StateValue.IsNull()
+		},
+		"Changing an adopted name replaces the resource.",
+		"Changing an adopted name replaces the resource.",
+	)
+}
+{{- end }}
+
 {{- range .WriteOnlySecrets }}
 var {{ .ConfigVar }} = {{ template "writeOnlySecretConfigValue" . }}
 {{- end }}
@@ -116,7 +130,7 @@ func (r *{{ .GoName }}Resource) ImportState(ctx context.Context, request resourc
 }
 
 func (r *{{ .GoName }}Resource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state {{ .GoName }}ResourceModel
+	var state {{ .RootModel }}
 {{ template "decodePlan" . }}
 
 {{ template "writeOnlySecretResults" .Create.WriteOnlySecrets }}
@@ -131,7 +145,7 @@ func (r *{{ .GoName }}Resource) Create(ctx context.Context, request resource.Cre
 }
 
 func (r *{{ .GoName }}Resource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state {{ .GoName }}ResourceModel
+	var state {{ .RootModel }}
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -148,14 +162,25 @@ func (r *{{ .GoName }}Resource) Read(ctx context.Context, request resource.ReadR
 		return
 	}
 {{ template "commitState" .Read }}
+{{- if and .CallerAssignedID .UpdateUnsupported }}
+	if !response.Diagnostics.HasError() && state.Name.IsNull() {
+		response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("name"), state.ID)...)
+	}
+{{- end }}
 }
 
 func (r *{{ .GoName }}Resource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 {{- if .UpdateUnsupported }}
 	response.Diagnostics.AddError("Update should not be called", "Updating this resource should replace it.")
 {{- else }}
-	var state {{ .GoName }}ResourceModel
+	var state {{ .RootModel }}
 {{ template "decodePlan" . }}
+{{- if .CallerAssignedID }}
+	response.Diagnostics.Append(request.State.GetAttribute(ctx, path.Root("id"), &state.ID)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+{{- end }}
 
 {{ template "writeOnlySecretResults" .Update.WriteOnlySecrets }}
 {{ template "argPrep" .Update.Arguments }}
@@ -170,14 +195,14 @@ func (r *{{ .GoName }}Resource) Update(ctx context.Context, request resource.Upd
 }
 
 func (r *{{ .GoName }}Resource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state {{ .GoName }}ResourceModel
+	var state {{ .RootModel }}
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
 {{ template "argPrep" .Delete.Arguments }}
-	httpResp, err := r.Api.{{ .Delete.Method }}(r.Auth{{ range .Delete.Arguments }}, {{ .Expression }}{{ end }})
+	{{ if .Delete.HasResponseBody }}_, {{ end }}httpResp, err := r.Api.{{ .Delete.Method }}(r.Auth{{ range .Delete.Arguments }}, {{ .Expression }}{{ end }})
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
@@ -190,7 +215,7 @@ func (r *{{ .GoName }}Resource) Delete(ctx context.Context, request resource.Del
 // rather than writing them so it stays free of the resource request/response
 // types and can fail at a specific schema path. Shared by Create, Read and
 // Update, which all resolve the same response type.
-func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .GoName }}ResourceModel, {{ .State.ParamName }} {{ .State.ParamType }}) diag.Diagnostics {
+func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .RootModel }}, {{ .State.ParamName }} {{ .State.ParamType }}) diag.Diagnostics {
 {{- template "updateStateBody" . }}
 }
 {{- end -}}
@@ -279,7 +304,7 @@ response omitted from reaching final Create state. */}}
       bodyAttributes := pkg.New<Attrs>WithDefaults()   // request fields set here
       bodyData       := pkg.New<Data>WithDefaults()
       bodyData.SetType(pkg.<TypeEnum>("<value>"))     // the JSON:API discriminator
-      bodyData.SetId(...)                             // update only; a create has no id
+      bodyData.SetId(...)                             // update, or create with a required caller-assigned id
       bodyData.SetAttributes(*bodyAttributes)
       body           := pkg.New<Request>WithDefaults()
       body.SetData(*bodyData)

@@ -165,6 +165,7 @@ Read-Only:
 
 - `accept_self_signed` (Boolean)
 - `allow_insecure` (Boolean)
+- `bits_ai_auto_investigate` (Boolean)
 - `blocked_request_patterns` (List of String)
 - `capture_network_payloads` (Boolean)
 - `check_certificate_revocation` (Boolean)

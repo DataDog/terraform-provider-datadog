@@ -13,6 +13,7 @@ API_CLIENT_VERSION?=master
 LOCAL_PACKAGE="github.com/terraform-providers/terraform-provider-datadog"
 GO?=go
 
+
 default: build
 
 build: fmtcheck
@@ -56,13 +57,13 @@ test:
 # scripts/summarize_testacc.py turns it into the PR integration check summary. Unset
 # by default, so local runs behave exactly as before.
 testacc:
-	RECORD=$(RECORD) TF_ACC=1 $(GO) tool gotestsum --format testname --debug --rerun-fails $(if $(TESTACC_JSONFILE),--jsonfile $(TESTACC_JSONFILE)) --packages ./datadog/tests/... -- -v $(TESTARGS) -timeout 120m
+	RECORD=$(RECORD) TF_ACC=1 $(GO) tool gotestsum --format testname --debug --rerun-fails $(if $(TESTACC_JSONFILE),--jsonfile $(TESTACC_JSONFILE)) --packages ./datadog/tests/... -- -v $(TESTARGS) -timeout 180m
 
 # Run both unit and acceptance tests
 testall: test testacc
 
 cassettes: fmtcheck
-	RECORD=true TF_ACC=1 $(GO) tool gotestsum --format testname --packages ./... -- -v $(TESTARGS) -timeout 120m
+	RECORD=true TF_ACC=1 $(GO) tool gotestsum --format testname --packages ./... -- -v $(TESTARGS) -timeout 180m
 
 vet:
 	@echo "go vet ."
@@ -107,7 +108,7 @@ tfgen-build:
 
 # Run the tfgen module's unit tests
 tfgen-test:
-	cd .generator-v2 && $(GO) test ./internal/... ./cmd/tfgen/... -race -cover
+	cd .generator-v2 && $(GO) test ./internal/... ./cmd/tfgen/... ./cmd/tfgen-docs/... -race -cover
 	@echo "tfgen tests passed"
 
 # Render the generated half of .generator-v2/docs/: the CLI reference (from the
@@ -124,9 +125,11 @@ tfgen-docs-check:
 	cd .generator-v2 && $(GO) run ./cmd/tfgen-docs --out docs --check
 	@echo "tfgen reference docs up to date"
 
-# Refresh tfgen's checked-in Go snapshots after an intentional emitter change.
+# Refresh tfgen's checked-in Go snapshots and fixture goldens after an
+# intentional emitter change.
 tfgen-update-goldens:
 	cd .generator-v2 && $(GO) test ./internal/emit -update
+	cd .generator-v2 && $(GO) test ./internal/cli -run TestFixtureGoldensMatchGeneratorOutput -update
 	@echo "tfgen goldens refreshed"
 
 # Run the tfgen module's integration-tagged tests: the SDK-binding corroboration

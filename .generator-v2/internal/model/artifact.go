@@ -17,6 +17,9 @@ func BuildArtifact(op *Operation) (*Artifact, error) {
 	if op == nil || op.Tracking == nil {
 		return nil, fmt.Errorf("model: BuildArtifact requires a tracked operation")
 	}
+	if op.GenerationError != nil {
+		return nil, op.GenerationError
+	}
 	artifact, err := buildArtifact(op)
 	if err != nil {
 		return nil, err
@@ -405,10 +408,11 @@ func SDKPackageForPath(path string) string {
 // renames a trailing path-id argument to "id".
 func sdkCall(op *Operation, aliasTerminalID bool) *SDKCall {
 	call := &SDKCall{
-		GoPackage:      SDKPackageForPath(op.Path),
-		GoApiStruct:    SdkClassName(op.Tag),
-		GoMethod:       op.OperationId,
-		GoResponseType: op.ResponseRefName,
+		GoPackage:       SDKPackageForPath(op.Path),
+		GoApiStruct:     SdkClassName(op.Tag),
+		GoMethod:        op.OperationId,
+		GoResponseType:  op.ResponseRefName,
+		HasResponseBody: op.ResponseSchema != nil,
 	}
 	applySDKBinding(call, op, aliasTerminalID)
 	return call

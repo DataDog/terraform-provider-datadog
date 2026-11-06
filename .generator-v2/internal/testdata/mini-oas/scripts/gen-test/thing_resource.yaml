@@ -7,15 +7,6 @@ paths:
     post:
       operationId: CreateThing
       tags: [Things]
-      x-datadog-tf-generator:
-        artifact_kind: resource
-        artifact_name: thing
-        tf_description: A test-only flat-scalar resource.
-        group:
-          create: CreateThing
-          read: GetThing
-          update: UpdateThing
-          delete: DeleteThing
       requestBody:
         content:
           application/json:
@@ -140,3 +131,15 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/ThingResponseData'
+tags:
+- name: Things
+  x-datadog-tf-generator:
+    thing:
+      resource:
+        artifact_name: thing
+        tf_description: A test-only flat-scalar resource.
+        group:
+          create: CreateThing
+          read: GetThing
+          update: UpdateThing
+          delete: DeleteThing

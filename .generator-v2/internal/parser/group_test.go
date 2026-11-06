@@ -162,7 +162,7 @@ var _ = Describe("ResolveOperationGroups", func() {
 	Context("through LoadSpec", func() {
 		It("resolves a full CRUD group from an annotated spec", func() {
 			spec := loadSpecMust("schema_normalize_crud.yaml")
-			g := opByID(spec, "CreateThing").ResolvedGroup
+			g := artifactOpByID(spec, "CreateThing").ResolvedGroup
 
 			Expect(g).NotTo(BeNil())
 			Expect(g.Create).To(BeIdenticalTo(opByID(spec, "CreateThing")))
@@ -174,7 +174,7 @@ var _ = Describe("ResolveOperationGroups", func() {
 
 		It("leaves Update nil when the annotation omits it", func() {
 			spec := loadSpecMust("schema_normalize_missing_update.yaml")
-			g := opByID(spec, "CreateThing").ResolvedGroup
+			g := artifactOpByID(spec, "CreateThing").ResolvedGroup
 
 			Expect(g.Update).To(BeNil())
 			Expect(g.Delete).To(BeIdenticalTo(opByID(spec, "DeleteThing")))
@@ -184,7 +184,7 @@ var _ = Describe("ResolveOperationGroups", func() {
 
 		It("records dangling references without failing the load", func() {
 			spec := loadSpecMust("group_unresolved.yaml")
-			g := opByID(spec, "CreateThing").ResolvedGroup
+			g := artifactOpByID(spec, "CreateThing").ResolvedGroup
 
 			Expect(g.Read).To(BeIdenticalTo(opByID(spec, "GetThing")))
 			Expect(g.Update).To(BeNil())

@@ -44,7 +44,6 @@ servers:
 security:
 - apiKeyAuth: []
   appKeyAuth: []
-tags:
 - name: Cloud Cost Management
   description: The Cloud Cost Management API allows you to set up, edit, and delete Cloud Cost Management
     accounts for AWS, Azure, and Google Cloud. You can query your cost data by using the [Metrics endpoint](https://docs.datadoghq.com/api/latest/metrics/#query-timeseries-data-across-multiple-products)
@@ -105,13 +104,6 @@ paths:
       x-menu-order: 5
       x-undo:
         type: safe
-      x-datadog-tf-generator:
-        artifact_kind: "data_source"
-        artifact_name: "aws_cur_config"
-        tf_description: "Get a specific AWS CUR config"
-        group:
-          read: "GetCostAWSCURConfig"
-
 components:
   responses:
     TooManyRequestsResponse:
@@ -271,3 +263,13 @@ components:
       name: DD-APPLICATION-KEY
       in: header
       x-env-name: DD_APP_KEY
+tags:
+- name: Cloud Cost Management
+  description: The Cloud Cost Management API allows you to set up, edit, and delete Cloud Cost Management accounts for AWS, Azure, and Google Cloud. You can query your cost data by using the [Metrics endpoint](https://docs.datadoghq.com/api/latest/metrics/#query-timeseries-data-across-multiple-products) and the `cloud_cost` data source. For more information, see the [Cloud Cost Management documentation](https://docs.datadoghq.com/cloud_cost_management/).
+  x-datadog-tf-generator:
+    "aws_cur_config":
+      datasource_singular:
+        artifact_name: "aws_cur_config"
+        tf_description: "Get a specific AWS CUR config"
+        group:
+          read: "GetCostAWSCURConfig"

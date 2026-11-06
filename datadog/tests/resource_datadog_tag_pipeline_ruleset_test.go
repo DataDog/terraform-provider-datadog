@@ -7,7 +7,10 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -94,6 +97,9 @@ func TestAccDatadogTagPipelineRuleset_QueryRule(t *testing.T) {
 }
 
 func TestAccDatadogTagPipelineRuleset_ReferenceTableRule(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("requires pre-existing reference tables synced with Cloud Cost Management")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -125,6 +131,9 @@ func TestAccDatadogTagPipelineRuleset_ReferenceTableRule(t *testing.T) {
 }
 
 func TestAccDatadogTagPipelineRuleset_MultipleRules(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("requires pre-existing reference tables synced with Cloud Cost Management")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -175,6 +184,19 @@ func TestAccDatadogTagPipelineRuleset_Update(t *testing.T) {
 			},
 			{
 				Config: testAccCheckDatadogTagPipelineRulesetConfigUpdated(uniq),
+				// Fields that don't change, or that can be derived from the configuration,
+				// should be known at plan time rather than "(known after apply)".
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction("datadog_tag_pipeline_ruleset.foo", plancheck.ResourceActionUpdate),
+						plancheck.ExpectKnownValue("datadog_tag_pipeline_ruleset.foo",
+							tfjsonpath.New("id"), knownvalue.NotNull()),
+						plancheck.ExpectKnownValue("datadog_tag_pipeline_ruleset.foo",
+							tfjsonpath.New("rules").AtSliceIndex(1).AtMapKey("query").AtMapKey("case_insensitivity"), knownvalue.Bool(false)),
+						plancheck.ExpectKnownValue("datadog_tag_pipeline_ruleset.foo",
+							tfjsonpath.New("rules").AtSliceIndex(1).AtMapKey("metadata"), knownvalue.Null()),
+					},
+				},
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogTagPipelineRulesetExists("datadog_tag_pipeline_ruleset.foo"),
 					resource.TestCheckResourceAttr("datadog_tag_pipeline_ruleset.foo", "name", fmt.Sprintf("tf-test-updated-ruleset-%s", uniq)),
@@ -268,12 +290,25 @@ func TestAccDatadogTagPipelineRuleset_QueryRuleIfTagExists(t *testing.T) {
 			},
 			{
 				Config: testAccCheckDatadogTagPipelineRulesetConfigQueryIfTagExists(uniq, "replace"),
+				// The deprecated if_not_exists is derived from if_tag_exists at plan time.
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectKnownValue("datadog_tag_pipeline_ruleset.foo",
+							tfjsonpath.New("rules").AtSliceIndex(0).AtMapKey("query").AtMapKey("if_not_exists"), knownvalue.Bool(false)),
+					},
+				},
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("datadog_tag_pipeline_ruleset.foo", "rules.0.query.if_tag_exists", "replace"),
 				),
 			},
 			{
 				Config: testAccCheckDatadogTagPipelineRulesetConfigQueryIfTagExists(uniq, "do_not_apply"),
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectKnownValue("datadog_tag_pipeline_ruleset.foo",
+							tfjsonpath.New("rules").AtSliceIndex(0).AtMapKey("query").AtMapKey("if_not_exists"), knownvalue.Bool(true)),
+					},
+				},
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("datadog_tag_pipeline_ruleset.foo", "rules.0.query.if_tag_exists", "do_not_apply"),
 				),
@@ -283,6 +318,9 @@ func TestAccDatadogTagPipelineRuleset_QueryRuleIfTagExists(t *testing.T) {
 }
 
 func TestAccDatadogTagPipelineRuleset_ReferenceTableRuleIfTagExists(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("requires pre-existing reference tables synced with Cloud Cost Management")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
