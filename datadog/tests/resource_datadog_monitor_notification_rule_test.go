@@ -205,6 +205,50 @@ func TestAccMonitorNotificationRule_Update(t *testing.T) {
 	})
 }
 
+func TestAccMonitorNotificationRuleWithRuleOptions_Update(t *testing.T) {
+	skipIfNoCassette(t)
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogMonitorNotificationRuleDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorNotificationRule_ruleOptions(uniq, "is_threaded = false"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorNotificationRuleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor_notification_rule.r", "rule_options.is_threaded", "false"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogMonitorNotificationRule_ruleOptions(uniq, "is_threaded = true"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorNotificationRuleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor_notification_rule.r", "rule_options.is_threaded", "true"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogMonitorNotificationRule_ruleOptions(uniq, ""),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor_notification_rule.r", "rule_options.is_threaded", "true"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogMonitorNotificationRule(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor_notification_rule.r", "rule_options.is_threaded", "true"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogMonitorNotificationRule(uniq string) string {
 	// Update me to make use of the unique value
 	return fmt.Sprintf(`resource "datadog_monitor_notification_rule" "r" {
@@ -270,6 +314,19 @@ func testAccCheckDatadogMonitorNotificationRule_bundleConfig(uniq string) string
 	  duration = 3600
 	}
 }`, uniq)
+}
+
+func testAccCheckDatadogMonitorNotificationRule_ruleOptions(uniq string, ruleOptions string) string {
+	return fmt.Sprintf(`resource "datadog_monitor_notification_rule" "r" {
+    name = "A notification rule name"
+    recipients = ["slack-foo", "jira-bar"]
+	filter {
+	  tags = ["env:%s", "host:abc"]
+	}
+	rule_options = {
+	  %s
+	}
+}`, uniq, ruleOptions)
 }
 
 func testAccCheckDatadogMonitorNotificationRuleDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
