@@ -258,7 +258,11 @@ func (r *datastoreResource) updateState(ctx context.Context, state *datastoreMod
 	}
 
 	if description, ok := attributes.GetDescriptionOk(); ok && description != nil {
-		state.Description = types.StringValue(*description)
+		if *description == "" && state.Description.IsNull() {
+			state.Description = types.StringNull()
+		} else {
+			state.Description = types.StringValue(*description)
+		}
 	}
 
 	if modifiedAt, ok := attributes.GetModifiedAtOk(); ok && modifiedAt != nil {
