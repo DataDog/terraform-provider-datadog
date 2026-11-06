@@ -185,3 +185,39 @@ func TestUpdateExecutionPolicyStateFromResponseDropsEmptyScope(t *testing.T) {
 		t.Fatalf("scope = %#v, want nil for an empty API scope", state.Scope)
 	}
 }
+
+func TestExecutionPolicySlackScopeRoundTrip(t *testing.T) {
+	t.Parallel()
+	ctx := context.Background()
+
+	selectors, diags := types.ListValueFrom(ctx, types.StringType, []string{"incident-*", "ops"})
+	if diags.HasError() {
+		t.Fatalf("building selectors: %v", diags.Errors())
+	}
+	var diagnostics diag.Diagnostics
+	apiScope := expandExecutionPolicyScope(ctx, &executionPolicyScopeModel{
+		Slack: &executionPolicySlackScopeModel{
+			Rule: []*executionPolicySlackScopeRuleModel{{ChannelNameSelectors: selectors}},
+		},
+	}, &diagnostics)
+	if diagnostics.HasError() {
+		t.Fatalf("unexpected expand diagnostics: %v", diagnostics.Errors())
+	}
+	if apiScope == nil || apiScope.Slack == nil || len(apiScope.Slack.Rules) != 1 {
+		t.Fatalf("expanded scope = %#v, want one Slack rule", apiScope)
+	}
+	if got := apiScope.Slack.Rules[0].ChannelNameSelectors; !slices.Equal(got, []string{"incident-*", "ops"}) {
+		t.Fatalf("expanded selectors = %v, want [incident-* ops]", got)
+	}
+
+	model := flattenExecutionPolicyScope(ctx, apiScope, &diagnostics)
+	if diagnostics.HasError() {
+		t.Fatalf("unexpected flatten diagnostics: %v", diagnostics.Errors())
+	}
+	if model == nil || model.Slack == nil || len(model.Slack.Rule) != 1 {
+		t.Fatalf("flattened scope = %#v, want one Slack rule", model)
+	}
+	if !model.Slack.Rule[0].ChannelNameSelectors.Equal(selectors) {
+		t.Fatalf("flattened selectors = %v, want %v", model.Slack.Rule[0].ChannelNameSelectors, selectors)
+	}
+}
