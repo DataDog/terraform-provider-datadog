@@ -49,6 +49,37 @@ jobs:
       - name: Reference docs up to date
         run: make -C .. tfgen-docs-check
 
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    if: github.event.action != 'closed' && github.event.pull_request.merged != true
+    steps:
+      # --new-from-rev needs the history behind origin/master, which the
+      # default shallow clone does not have.
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      # The generator is its own module and its go.mod asks for a newer Go than
+      # the provider's, so the version comes from that file rather than a pin.
+      - name: Install Go
+        uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe
+        with:
+          go-version-file: .generator-v2/go.mod
+          cache: true
+          cache-dependency-path: .generator-v2/go.sum
+
+      # Config lives in .generator-v2/.golangci.yml. Scoped to changed lines,
+      # like the provider's own linter-checks job: the module carries a backlog
+      # of pre-existing findings that this job deliberately does not gate on.
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@1e7e51e771db61008b38414a730f564565cf7c20 # v9
+        with:
+          version: v2.11.4
+          working-directory: .generator-v2
+          args: --new-from-rev=origin/master --timeout=10m
+
   integration-test:
     name: integration test (compile & schema-validate generated resources)
     runs-on: ubuntu-latest
