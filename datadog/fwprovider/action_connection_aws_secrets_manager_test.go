@@ -25,6 +25,112 @@ func actionConnectionTestAWSSettings() *actionConnectionExternalSecretsManagerMo
 	return &actionConnectionExternalSecretsManagerModel{ConnectionID: types.StringValue("00000000-0000-0000-0000-000000000001"), Region: types.StringValue("us-east-1")}
 }
 
+func TestActionConnectionAWSSecretsManagerCanonicalSettings(t *testing.T) {
+	ctx := context.Background()
+	for _, connectionID := range []string{"00000000-0000-0000-0000-000000000001", "connection-id-as-string"} {
+		t.Run(connectionID, func(t *testing.T) {
+			settings := actionConnectionTestAWSSettings()
+			settings.ConnectionID = types.StringValue(connectionID)
+			model := connectionResourceModel{connectionModel: connectionModel{
+				Name:                   types.StringValue("Example connection"),
+				ExternalSecretsManager: settings,
+				Anthropic: &apiTokenConnectionModel{APIKey: &apiTokenCredentialModel{
+					APITokenAWSSecretsManager: actionConnectionTestAWSReference("token"),
+				}},
+			}}
+			var validation resource.ValidateConfigResponse
+			validateActionConnectionSecretReferences(model, &validation)
+			if validation.Diagnostics.HasError() {
+				t.Fatal(validation.Diagnostics)
+			}
+			create, err := connectionModelToCreateApiRequest(ctx, model)
+			if err != nil {
+				t.Fatal(err)
+			}
+			previous := connectionResourceModel{connectionModel: connectionModel{
+				Anthropic: &apiTokenConnectionModel{APIKey: &apiTokenCredentialModel{APIToken: types.StringValue("literal-token")}},
+			}}
+			update, err := connectionModelToUpdateApiRequest(ctx, model, previous)
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, request := range []interface{}{create, update} {
+				encoded, err := json.Marshal(request)
+				if err != nil {
+					t.Fatal(err)
+				}
+				var payload struct {
+					Data struct {
+						Attributes struct {
+							Settings map[string]interface{} `json:"external_secrets_manager"`
+						} `json:"attributes"`
+					} `json:"data"`
+				}
+				if err := json.Unmarshal(encoded, &payload); err != nil {
+					t.Fatal(err)
+				}
+				got := payload.Data.Attributes.Settings
+				if got["connection_id"] != connectionID || got["type"] != "aws_secrets_manager" || got["region"] != "us-east-1" || len(got) != 3 {
+					t.Fatalf("unexpected settings on the wire: %s", encoded)
+				}
+			}
+			read, err := apiResponseToConnectionModel(ctx, datadogV2.GetActionConnectionResponse{Data: &create.Data})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if read.ExternalSecretsManager == nil || read.ExternalSecretsManager.ConnectionID.ValueString() != connectionID {
+				t.Fatalf("refresh lost the connection ID: %#v", read.ExternalSecretsManager)
+			}
+		})
+	}
+}
+
+func TestActionConnectionAWSSecretsManagerHTTPLiteralWithoutSettings(t *testing.T) {
+	ctx := context.Background()
+	model := connectionResourceModel{connectionModel: connectionModel{
+		Name: types.StringValue("Literal HTTP connection"),
+		HTTP: &httpConnectionModel{BaseURL: types.StringValue("https://example.com"), TokenAuth: &httpTokenAuthConnectionModel{
+			Tokens: []*httpConnectionTokenModel{{Name: types.StringValue("token"), Type: types.StringValue("SECRET"), Value: types.StringValue("literal-token")}},
+		}},
+	}}
+	create, err := connectionModelToCreateApiRequest(ctx, model)
+	if err != nil {
+		t.Fatal(err)
+	}
+	update, err := connectionModelToUpdateApiRequest(ctx, model, connectionResourceModel{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, request := range []interface{}{create, update} {
+		assertActionConnectionFullyParsed(t, reflect.ValueOf(request))
+		encoded, err := json.Marshal(request)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var payload struct {
+			Data struct {
+				Attributes struct {
+					Settings    interface{} `json:"external_secrets_manager"`
+					Integration struct {
+						Credentials struct {
+							Tokens []struct {
+								Value interface{} `json:"value"`
+							} `json:"tokens"`
+						} `json:"credentials"`
+					} `json:"integration"`
+				} `json:"attributes"`
+			} `json:"data"`
+		}
+		if err := json.Unmarshal(encoded, &payload); err != nil {
+			t.Fatal(err)
+		}
+		attrs := payload.Data.Attributes
+		if attrs.Settings != nil || len(attrs.Integration.Credentials.Tokens) != 1 || attrs.Integration.Credentials.Tokens[0].Value != "literal-token" {
+			t.Fatalf("literal credentials changed their JSON representation: %s", encoded)
+		}
+	}
+}
+
 func TestActionConnectionAWSSecretsManagerSupportedIntegrations(t *testing.T) {
 	ctx := context.Background()
 	for _, integration := range additionalActionConnectionSpecs {
@@ -41,6 +147,14 @@ func TestActionConnectionAWSSecretsManagerSupportedIntegrations(t *testing.T) {
 				for _, spec := range credential.Fields {
 					value, _ := lookupTFSDKField(credentialField, spec.Name)
 					value.Set(reflect.ValueOf(types.StringValue("literal")))
+				}
+				literalRequest, err := connectionModelToCreateApiRequest(ctx, literal)
+				if err != nil {
+					t.Fatal(err)
+				}
+				assertActionConnectionFullyParsed(t, reflect.ValueOf(literalRequest))
+				if literalRequest.Data.Attributes.HasExternalSecretsManager() {
+					t.Fatal("literal-only credentials must not require AWS settings")
 				}
 				referenced := literal
 				referenced.ExternalSecretsManager = actionConnectionTestAWSSettings()
@@ -184,7 +298,7 @@ func TestActionConnectionAWSSecretsManagerSupportedFieldSchema(t *testing.T) {
 
 func TestActionConnectionAWSSecretsManagerHTTPResponseImport(t *testing.T) {
 	ctx := context.Background()
-	payload := `{"data":{"id":"00000000-0000-0000-0000-000000000002","type":"action_connection","attributes":{"name":"Example HTTP connection","external_secrets_manager":{"type":"aws_secrets_manager","connectionId":"00000000-0000-0000-0000-000000000001","region":"us-east-1"},"integration":{"type":"HTTP","base_url":"https://example.com","credentials":{"type":"HTTPTokenAuth","http_tokens":[{"name":"token","value":{"type":"aws_secrets_manager","secret_id":"example/http","key":"token","version_stage":"AWSCURRENT"}}]}}}}}`
+	payload := `{"data":{"id":"00000000-0000-0000-0000-000000000002","type":"action_connection","attributes":{"name":"Example HTTP connection","external_secrets_manager":{"type":"aws_secrets_manager","connection_id":"00000000-0000-0000-0000-000000000001","region":"us-east-1"},"integration":{"type":"HTTP","base_url":"https://example.com","credentials":{"type":"HTTPTokenAuth","http_tokens":[{"name":"token","value":{"type":"aws_secrets_manager","secret_id":"example/http","key":"token","version_stage":"AWSCURRENT"}}]}}}}}`
 	var response datadogV2.GetActionConnectionResponse
 	if err := json.Unmarshal([]byte(payload), &response); err != nil {
 		t.Fatal(err)
@@ -222,7 +336,7 @@ func TestActionConnectionAWSSecretsManagerValidation(t *testing.T) {
 	}{
 		{name: "reference only", settings: actionConnectionTestAWSSettings(), reference: actionConnectionTestAWSReference("token")},
 		{name: "literal only", literal: types.StringValue("literal")},
-		{name: "settings without a reference", settings: actionConnectionTestAWSSettings(), literal: types.StringValue("literal"), wantError: true},
+		{name: "settings without a reference", settings: actionConnectionTestAWSSettings(), literal: types.StringValue("literal")},
 		{name: "missing settings", reference: actionConnectionTestAWSReference("token"), wantError: true},
 		{name: "literal and reference", literal: types.StringValue("literal"), settings: actionConnectionTestAWSSettings(), reference: actionConnectionTestAWSReference("token"), wantError: true},
 		{name: "conflicting versions", settings: actionConnectionTestAWSSettings(), reference: &actionConnectionAWSSecretReferenceModel{SecretID: types.StringValue("example"), VersionID: types.StringValue("version"), VersionStage: types.StringValue("AWSCURRENT")}, wantError: true},

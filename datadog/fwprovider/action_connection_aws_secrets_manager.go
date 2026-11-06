@@ -3,12 +3,10 @@ package fwprovider
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"reflect"
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
-	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	dsschema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -67,15 +65,11 @@ func actionConnectionValue(literal types.String, reference *actionConnectionAWSS
 		return datadogV2.ActionConnectionAWSSecretsManagerReferenceAsHTTPTokenValue(reference.apiValue())
 	}
 	value := literal.ValueString()
-	return datadogV2.HTTPTokenValue{String: &value}
+	return datadogV2.ActionConnectionLiteralValueAsHTTPTokenValue(&value)
 }
 
-func actionConnectionExternalSettings(model *actionConnectionExternalSecretsManagerModel) (datadogV2.ActionConnectionAWSSecretsManager, error) {
-	id, err := uuid.Parse(model.ConnectionID.ValueString())
-	if err != nil {
-		return datadogV2.ActionConnectionAWSSecretsManager{}, fmt.Errorf("external_secrets_manager.connection_id must be a UUID: %w", err)
-	}
-	return *datadogV2.NewActionConnectionAWSSecretsManager(id, model.Region.ValueString(), datadogV2.ACTIONCONNECTIONAWSSECRETSMANAGERTYPE_AWS_SECRETS_MANAGER), nil
+func actionConnectionExternalSettings(model *actionConnectionExternalSecretsManagerModel) datadogV2.ActionConnectionAWSSecretsManager {
+	return *datadogV2.NewActionConnectionAWSSecretsManager(model.ConnectionID.ValueString(), model.Region.ValueString(), datadogV2.ACTIONCONNECTIONAWSSECRETSMANAGERTYPE_AWS_SECRETS_MANAGER)
 }
 
 func actionConnectionReferenceResourceAttribute() schema.SingleNestedAttribute {
@@ -96,7 +90,7 @@ func actionConnectionReferenceResourceAttribute() schema.SingleNestedAttribute {
 // source, and nested HTTP schemas expose the same supported reference fields.
 func addActionConnectionAWSSecretSchema(s *schema.Schema) {
 	s.Attributes["external_secrets_manager"] = schema.SingleNestedAttribute{
-		Description: "AWS Secrets Manager settings shared by credential references. Available on DATACENTER connections.", Optional: true,
+		Description: "AWS Secrets Manager settings shared by credential references. Required when a credential uses an AWS Secrets Manager reference; optional for literal credentials. Available on DATACENTER connections.", Optional: true,
 		PlanModifiers: []planmodifier.Object{objectplanmodifier.RequiresReplaceIf(func(_ context.Context, request planmodifier.ObjectRequest, response *objectplanmodifier.RequiresReplaceIfFuncResponse) {
 			response.RequiresReplace = !request.StateValue.IsNull() && request.PlanValue.IsNull()
 		}, "Removing external secrets manager settings requires replacing the connection.", "Removing external secrets manager settings requires replacing the connection.")},
@@ -237,17 +231,10 @@ func walkActionConnectionReferences(value reflect.Value, p path.Path, visit func
 }
 
 func validateActionConnectionSecretReferences(conn connectionResourceModel, response *resource.ValidateConfigResponse) {
-	if conn.ExternalSecretsManager != nil && !conn.ExternalSecretsManager.ConnectionID.IsUnknown() {
-		if _, err := uuid.Parse(conn.ExternalSecretsManager.ConnectionID.ValueString()); err != nil {
-			response.Diagnostics.AddAttributeError(path.Root("external_secrets_manager").AtName("connection_id"), "Invalid AWS connection ID", "The AWS connection ID must be a UUID.")
-		}
-	}
-	hasReference := false
 	walkActionConnectionReferences(reflect.ValueOf(conn.connectionModel), path.Empty(), func(_ reflect.Value, literal types.String, ref *actionConnectionAWSSecretReferenceModel, p path.Path) {
 		if ref == nil {
 			return
 		}
-		hasReference = true
 		if !literal.IsNull() && !literal.IsUnknown() {
 			response.Diagnostics.AddAttributeError(p, "Conflicting credential values", "Specify either the literal field or its AWS Secrets Manager reference.")
 		}
@@ -258,9 +245,6 @@ func validateActionConnectionSecretReferences(conn connectionResourceModel, resp
 			response.Diagnostics.AddAttributeError(p, "Conflicting secret version selectors", "Specify either version_id or version_stage.")
 		}
 	})
-	if conn.ExternalSecretsManager != nil && !hasReference {
-		response.Diagnostics.AddAttributeError(path.Root("external_secrets_manager"), "Missing AWS Secrets Manager reference", "Configure at least one supported credential field with an AWS Secrets Manager reference when external_secrets_manager is set.")
-	}
 }
 
 func additionalActionConnectionIntegrationData(model connectionResourceModel) (map[string]interface{}, error) {
@@ -280,7 +264,7 @@ func additionalActionConnectionIntegrationData(model connectionResourceModel) (m
 
 func readActionConnectionAWSSecretReferences(model *connectionResourceModel, attributes datadogV2.ActionConnectionAttributes) error {
 	if settings, ok := attributes.GetExternalSecretsManagerOk(); ok && settings != nil {
-		model.ExternalSecretsManager = &actionConnectionExternalSecretsManagerModel{ConnectionID: types.StringValue(settings.ConnectionId.String()), Region: types.StringValue(settings.Region)}
+		model.ExternalSecretsManager = &actionConnectionExternalSecretsManagerModel{ConnectionID: types.StringValue(settings.ConnectionId), Region: types.StringValue(settings.Region)}
 	}
 	data, err := json.Marshal(attributes.Integration)
 	if err != nil {

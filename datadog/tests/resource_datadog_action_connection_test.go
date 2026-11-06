@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
@@ -16,6 +17,136 @@ import (
 var (
 	testConnectionBaseURL = "https://catfact.ninja"
 )
+
+func TestAccDatadogActionConnectionResource_AWSSecretsManager_Clickup(t *testing.T) {
+	testAccActionConnectionAWSSecretsManager(t, "Clickup")
+}
+
+func TestAccDatadogActionConnectionResource_AWSSecretsManager_GCP(t *testing.T) {
+	testAccActionConnectionAWSSecretsManager(t, "GCP")
+}
+
+func TestAccDatadogActionConnectionResource_AWSSecretsManager_HTTP(t *testing.T) {
+	testAccActionConnectionAWSSecretsManager(t, "HTTP")
+}
+
+func testAccActionConnectionAWSSecretsManager(t *testing.T, integration string) {
+	t.Helper()
+	cases := []struct {
+		name     string
+		template string
+		fields   []actionConnectionAWSSecretTestField
+	}{
+		{
+			name:     "Clickup",
+			template: "clickup {\napi_key {\n%s\n}\n}",
+			fields:   []actionConnectionAWSSecretTestField{{"api_token", "clickup.api_key.api_token", "synthetic-token"}},
+		},
+		{
+			name:     "GCP",
+			template: "gcp {\nservice_account {\n%s\n}\n}",
+			fields: []actionConnectionAWSSecretTestField{
+				{"private_key", "gcp.service_account.private_key", "synthetic-private-key"},
+				{"service_account_email", "gcp.service_account.service_account_email", "sa@example.iam.gserviceaccount.com"},
+			},
+		},
+		{
+			name: "HTTP",
+			template: `http {
+  base_url = "https://example.com"
+  token_auth {
+    token {
+      name = "token"
+      type = "SECRET"
+      %s
+    }
+  }
+}`,
+			fields: []actionConnectionAWSSecretTestField{{"value", "http.token_auth.token.0.value", "synthetic-token"}},
+		},
+	}
+	for _, tc := range cases {
+		if tc.name != integration {
+			continue
+		}
+		ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+		name := uniqueEntityName(ctx, t)
+		resourceName := "datadog_action_connection.secret_reference"
+		var connectionID string
+		config := func(reference bool, stage string) string {
+			fields := make([]string, 0, len(tc.fields))
+			for _, field := range tc.fields {
+				if reference {
+					fields = append(fields, fmt.Sprintf(`%s_aws_secrets_manager = {
+  secret_id = "terraform-provider/synthetic/action-connection"
+  key = %q
+  version_stage = %q
+}`, field.name, field.name, stage))
+				} else {
+					fields = append(fields, fmt.Sprintf("%s = %q", field.name, field.literal))
+				}
+			}
+			return fmt.Sprintf(`
+%s
+resource "datadog_action_connection" "secret_reference" {
+  name = %q
+  external_secrets_manager = {
+    connection_id = datadog_action_connection.aws_assume_role_conn.id
+    region = "us-east-1"
+  }
+  %s
+}`, testAWSAssumeRoleConnectionResourceConfig(name+"-reader"), name, fmt.Sprintf(tc.template, strings.Join(fields, "\n")))
+		}
+		check := func(reference bool, stage string) resource.TestCheckFunc {
+			checks := []resource.TestCheckFunc{
+				resource.TestCheckResourceAttrWith(resourceName, "id", func(id string) error {
+					if connectionID == "" {
+						connectionID = id
+					} else if connectionID != id {
+						return fmt.Errorf("credential migration replaced connection %s with %s", connectionID, id)
+					}
+					return nil
+				}),
+				resource.TestCheckResourceAttrPair(resourceName, "external_secrets_manager.connection_id", "datadog_action_connection.aws_assume_role_conn", "id"),
+				resource.TestCheckResourceAttr(resourceName, "external_secrets_manager.region", "us-east-1"),
+			}
+			for _, field := range tc.fields {
+				if reference {
+					checks = append(checks,
+						resource.TestCheckNoResourceAttr(resourceName, field.path),
+						resource.TestCheckResourceAttr(resourceName, field.path+"_aws_secrets_manager.secret_id", "terraform-provider/synthetic/action-connection"),
+						resource.TestCheckResourceAttr(resourceName, field.path+"_aws_secrets_manager.key", field.name),
+						resource.TestCheckResourceAttr(resourceName, field.path+"_aws_secrets_manager.version_stage", stage),
+					)
+				} else {
+					checks = append(checks,
+						resource.TestCheckResourceAttr(resourceName, field.path, field.literal),
+						resource.TestCheckNoResourceAttr(resourceName, field.path+"_aws_secrets_manager.secret_id"),
+					)
+				}
+			}
+			return resource.ComposeTestCheckFunc(checks...)
+		}
+		resource.Test(t, resource.TestCase{
+			PreCheck:                 func() { testAccPreCheck(t) },
+			ProtoV6ProviderFactories: accProviders,
+			CheckDestroy:             testAccCheckDatadogConnectionDestroy(providers.frameworkProvider, resourceName),
+			Steps: []resource.TestStep{
+				{Config: config(true, "AWSCURRENT"), Check: check(true, "AWSCURRENT")},
+				{ResourceName: resourceName, ImportState: true, ImportStateVerify: true},
+				{Config: config(true, "AWSPREVIOUS"), Check: check(true, "AWSPREVIOUS")},
+				{Config: config(false, ""), Check: check(false, "")},
+				{Config: config(true, "AWSCURRENT"), Check: check(true, "AWSCURRENT")},
+			},
+		})
+	}
+}
+
+type actionConnectionAWSSecretTestField struct {
+	name    string
+	path    string
+	literal string
+}
 
 func TestAccDatadogActionConnectionResource_AWS_AssumeRole(t *testing.T) {
 	t.Parallel()

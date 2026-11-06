@@ -128,7 +128,7 @@ resource "datadog_action_connection" "gcp_connection" {
 - `cloudflare` (Block, Optional) Configuration for a Cloudflare connection (see [below for nested schema](#nestedblock--cloudflare))
 - `config_cat` (Block, Optional) Configuration for a ConfigCat connection (see [below for nested schema](#nestedblock--config_cat))
 - `datadog` (Block, Optional) Configuration for a Datadog connection (see [below for nested schema](#nestedblock--datadog))
-- `external_secrets_manager` (Attributes) AWS Secrets Manager settings shared by credential references. Available on DATACENTER connections. (see [below for nested schema](#nestedatt--external_secrets_manager))
+- `external_secrets_manager` (Attributes) AWS Secrets Manager settings shared by credential references. Required when a credential uses an AWS Secrets Manager reference; optional for literal credentials. Available on DATACENTER connections. (see [below for nested schema](#nestedatt--external_secrets_manager))
 - `fastly` (Block, Optional) Configuration for a Fastly connection (see [below for nested schema](#nestedblock--fastly))
 - `freshservice` (Block, Optional) Configuration for a Freshservice connection (see [below for nested schema](#nestedblock--freshservice))
 - `gcp` (Block, Optional) Configuration for a Google Cloud connection (see [below for nested schema](#nestedblock--gcp))

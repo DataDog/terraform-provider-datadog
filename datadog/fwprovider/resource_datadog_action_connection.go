@@ -1335,11 +1335,7 @@ func connectionModelToCreateApiRequest(ctx context.Context, connectionModel conn
 	attributes.SetName(connectionModel.Name.ValueString())
 	setActionConnectionTags(ctx, connectionModel.EffectiveTags, attributes.SetTags)
 	if connectionModel.ExternalSecretsManager != nil {
-		settings, err := actionConnectionExternalSettings(connectionModel.ExternalSecretsManager)
-		if err != nil {
-			return nil, err
-		}
-		attributes.SetExternalSecretsManager(settings)
+		attributes.SetExternalSecretsManager(actionConnectionExternalSettings(connectionModel.ExternalSecretsManager))
 	}
 
 	if connectionModel.AWS != nil {
@@ -1436,11 +1432,7 @@ func connectionModelToUpdateApiRequest(ctx context.Context, plan, oldState conne
 	attributes := datadogV2.NewActionConnectionAttributesUpdate()
 	attributes.SetName(plan.Name.ValueString())
 	if plan.ExternalSecretsManager != nil {
-		settings, err := actionConnectionExternalSettings(plan.ExternalSecretsManager)
-		if err != nil {
-			return nil, err
-		}
-		attributes.SetExternalSecretsManager(settings)
+		attributes.SetExternalSecretsManager(actionConnectionExternalSettings(plan.ExternalSecretsManager))
 	}
 	if !plan.EffectiveTags.Equal(oldState.EffectiveTags) {
 		setActionConnectionTags(ctx, plan.EffectiveTags, attributes.SetTags)
