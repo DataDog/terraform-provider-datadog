@@ -240,3 +240,100 @@ func TestDataQualityMonitorOptionsRoundTrip(t *testing.T) {
 	assert.Equal(t, original.SourceToTargetConfig, got.SourceToTargetConfig)
 	assert.Equal(t, original.ModelConfiguration, got.ModelConfiguration)
 }
+
+func TestDataJobsQueryRoundTrip(t *testing.T) {
+	r := &monitorResource{}
+
+	tests := []struct {
+		name  string
+		query DataJobsQuery
+	}{
+		{
+			name: "aastra with run_filter and alert_on_every_failure",
+			query: DataJobsQuery{
+				Name:           types.StringValue("run_query"),
+				JobsQuery:      types.StringValue("search for databricks_job"),
+				JobType:        types.StringValue("databricks.job"),
+				QueryDialect:   types.StringValue("aastra"),
+				RunFilter:      types.StringValue("env:prod"),
+				MonitorOptions: []DataJobsMonitorOptions{{AlertOnEveryFailure: types.BoolValue(true)}},
+			},
+		},
+		{
+			// An explicit false must be sent and read back, not dropped as unset.
+			name: "explicit false alert_on_every_failure",
+			query: DataJobsQuery{
+				Name:           types.StringValue("run_query"),
+				JobsQuery:      types.StringValue("search for databricks_job"),
+				JobType:        types.StringValue("databricks.job"),
+				QueryDialect:   types.StringValue("aastra"),
+				RunFilter:      types.StringNull(),
+				MonitorOptions: []DataJobsMonitorOptions{{AlertOnEveryFailure: types.BoolValue(false)}},
+			},
+		},
+		{
+			name: "metric dialect without optional fields",
+			query: DataJobsQuery{
+				Name:         types.StringValue("run_query"),
+				JobsQuery:    types.StringValue("job_name:*"),
+				JobType:      types.StringValue("databricks.job"),
+				QueryDialect: types.StringValue("metric"),
+				RunFilter:    types.StringNull(),
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			defs := r.buildDataJobsQueryStruct([]DataJobsQuery{tt.query})
+			if !assert.Len(t, defs, 1) {
+				return
+			}
+			state := r.buildDataJobsQueryState(defs[0].MonitorFormulaAndFunctionDataJobsQueryDefinition)
+			assert.Equal(t, tt.query, *state)
+		})
+	}
+}
+
+func TestDataQualityQueryJobDurationRoundTrip(t *testing.T) {
+	ctx := context.Background()
+	r := &monitorResource{}
+
+	original := DataQualityQuery{
+		Name:          types.StringValue("run_query"),
+		DataSource:    types.StringValue("data_quality_metrics"),
+		SchemaVersion: types.StringValue("0.0.1"),
+		Measure:       types.StringValue("duration"),
+		Filter:        types.StringValue("search for databricks_job"),
+		Scope:         types.StringNull(),
+		RunFilter:     types.StringValue("env:prod"),
+		GroupBy:       stringList(ctx, "name", "workspace_name", "entity_id"),
+		MonitorOptions: []DataQualityMonitorOptions{{
+			CustomSql:         types.StringNull(),
+			CustomWhere:       types.StringNull(),
+			GroupByColumns:    types.ListNull(types.StringType),
+			CrontabOverride:   types.StringNull(),
+			ModelTypeOverride: types.StringNull(),
+			Sensitivity:       types.Float64Null(),
+			DetectionType:     types.StringValue("anomaly"),
+			ConsecutiveRuns:   types.Int64Value(2),
+		}},
+	}
+
+	defs := r.buildDataQualityQueryStruct(ctx, []DataQualityQuery{original})
+	if !assert.Len(t, defs, 1) {
+		return
+	}
+	def := defs[0].MonitorFormulaAndFunctionDataQualityQueryDefinition
+	assert.Equal(t, "env:prod", def.GetRunFilter())
+	opts := def.GetMonitorOptions()
+	assert.Equal(t, datadogV1.MONITORFORMULAANDFUNCTIONDATAQUALITYDETECTIONTYPE_ANOMALY, opts.GetDetectionType())
+	assert.Equal(t, int64(2), opts.GetConsecutiveRuns())
+
+	state := r.buildDataQualityQueryState(ctx, def)
+	assert.Equal(t, original.RunFilter, state.RunFilter)
+	if assert.Len(t, state.MonitorOptions, 1) {
+		assert.Equal(t, types.StringValue("anomaly"), state.MonitorOptions[0].DetectionType)
+		assert.Equal(t, types.Int64Value(2), state.MonitorOptions[0].ConsecutiveRuns)
+	}
+}
