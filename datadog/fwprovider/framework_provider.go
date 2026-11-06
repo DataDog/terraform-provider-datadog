@@ -351,12 +351,12 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			"api_key": schema.StringAttribute{
 				Optional:    true,
 				Sensitive:   true,
-				Description: "Datadog API key. Required when `validate` is true unless authentication uses AWS WIF, a bearer token, or Terraform Dynamic Provider Credentials. This can also be set via the `DD_API_KEY` environment variable.",
+				Description: "Datadog API key. Required when `validate` is true unless authentication uses AWS or GitHub WIF, a bearer token, or Terraform Dynamic Provider Credentials. This can also be set via the `DD_API_KEY` environment variable.",
 			},
 			"app_key": schema.StringAttribute{
 				Optional:    true,
 				Sensitive:   true,
-				Description: "Datadog application key. Required when `validate` is true unless authentication uses AWS WIF, a bearer token, or Terraform Dynamic Provider Credentials. This can also be set via the `DD_APP_KEY` environment variable.",
+				Description: "Datadog application key. Required when `validate` is true unless authentication uses AWS or GitHub WIF, a bearer token, or Terraform Dynamic Provider Credentials. This can also be set via the `DD_APP_KEY` environment variable.",
 			},
 			"bearer_token": schema.StringAttribute{
 				Optional:    true,
@@ -377,7 +377,7 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			},
 			"cloud_provider_type": schema.StringAttribute{
 				Optional:    true,
-				Description: "Specifies the cloud provider used for cloud-provider-based authentication, enabling keyless access without API or app keys. Only [`aws`] is supported. This can also be set using the `DD_CLOUD_PROVIDER_TYPE` environment variable. This feature is in Preview. If you'd like to enable it for your organization, contact [support](https://docs.datadoghq.com/help/).",
+				Description: "Specifies the cloud provider used for cloud-provider-based authentication, enabling keyless access without API or app keys. Supported values are [`aws`, `github`]. `github` exchanges a GitHub Actions OIDC token (`id-token: write`) for a Datadog access token. This can also be set using the `DD_CLOUD_PROVIDER_TYPE` environment variable. This feature is in Preview. If you'd like to enable it for your organization, contact [support](https://docs.datadoghq.com/help/).",
 			},
 			"cloud_provider_region": schema.StringAttribute{
 				Optional:    true,
@@ -385,7 +385,7 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			},
 			"org_uuid": schema.StringAttribute{
 				Optional:    true,
-				Description: "The organization UUID; required for AWS WIF. Optional for Terraform Dynamic Provider Credentials, but when configured it must match the organization UUID in the token audience. This can also be set using the `DD_ORG_UUID` environment variable. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
+				Description: "The organization UUID; required for AWS and GitHub WIF. Optional for Terraform Dynamic Provider Credentials, but when configured it must match the organization UUID in the token audience. This can also be set using the `DD_ORG_UUID` environment variable. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
 			},
 			"aws_access_key_id": schema.StringAttribute{
 				Optional:    true,
@@ -696,7 +696,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 
 	if validate && workloadIdentityConfig == nil {
 		if cloudProviderType == "" && bearerToken == "" && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
-			diags.AddError("credentials are required unless validate = false: configure api_key and app_key, bearer_token, AWS WIF, or Terraform Dynamic Provider Credentials", "")
+			diags.AddError("credentials are required unless validate = false: configure api_key and app_key, bearer_token, AWS or GitHub WIF, or Terraform Dynamic Provider Credentials", "")
 			return diags
 		} else if cloudProviderType != "" && orgUUID == "" {
 			diags.AddError("orgUUID must be set when using cloud provider auth unless validate = false", "")
@@ -748,6 +748,9 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 					datadog.AWSSessionTokenName:    awsSessionToken,
 				},
 			)
+		case cloudauth.GitHubProvider:
+			// GitHub Actions supplies the OIDC request URL and token when a
+			// delegated token is needed. No additional provider context is required.
 		default:
 			diags.AddError("cloud_provider_type must be set to a valid value unless validate = false", "")
 			return diags
@@ -1062,6 +1065,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 				OrgUUID:      orgUUID,
 				ProviderAuth: provider,
 				Provider:     datadog.ProviderAWS,
+			}
+		case cloudauth.GitHubProvider:
+			ddClientConfig.DelegatedTokenConfig = &datadog.DelegatedTokenConfig{
+				OrgUUID:      orgUUID,
+				ProviderAuth: cloudauth.NewGitHubProvider(cloudauth.GitHubConfig{HTTPClient: datadogHTTPClient}),
+				Provider:     cloudauth.GitHubProvider,
 			}
 		}
 	}
