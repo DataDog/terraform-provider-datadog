@@ -7,8 +7,10 @@ import (
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 
@@ -77,7 +79,7 @@ func (d *datadogReferenceTableRowsDataSource) Schema(_ context.Context, _ dataso
 						},
 						"values": schema.MapAttribute{
 							Computed:    true,
-							Description: "Map of field names to values for this row. All values are returned as strings.",
+							Description: "Map of field names to values for this row. Non-null values are returned as strings. API null values are represented as Terraform null, while empty strings remain empty strings.",
 							ElementType: types.StringType,
 						},
 					},
@@ -171,13 +173,12 @@ func (d *datadogReferenceTableRowsDataSource) Read(ctx context.Context, request 
 		if attrs, ok := row.GetAttributesOk(); ok && attrs.Values != nil {
 			// Type assert Values to map[string]interface{}
 			if valuesMap, ok := attrs.Values.(map[string]interface{}); ok {
-				// Convert all values to strings for the map
-				stringValues := make(map[string]string)
-				for k, v := range valuesMap {
-					// Convert value to string representation
-					stringValues[k] = fmt.Sprintf("%v", v)
+				values, diags := referenceTableValuesToMap(valuesMap)
+				response.Diagnostics.Append(diags...)
+				if response.Diagnostics.HasError() {
+					return
 				}
-				rowTf.Values, _ = types.MapValueFrom(ctx, types.StringType, stringValues)
+				rowTf.Values = values
 			}
 		}
 
@@ -186,4 +187,17 @@ func (d *datadogReferenceTableRowsDataSource) Read(ctx context.Context, request 
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+}
+
+func referenceTableValuesToMap(values map[string]interface{}) (types.Map, diag.Diagnostics) {
+	elements := make(map[string]attr.Value, len(values))
+	for key, value := range values {
+		if value == nil {
+			elements[key] = types.StringNull()
+			continue
+		}
+		elements[key] = types.StringValue(fmt.Sprintf("%v", value))
+	}
+
+	return types.MapValue(types.StringType, elements)
 }

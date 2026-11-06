@@ -30,4 +30,4 @@ Use this data source to retrieve specific rows from a Datadog reference table by
 Read-Only:
 
 - `id` (String) The primary key value of the row.
-- `values` (Map of String) Map of field names to values for this row. All values are returned as strings.
+- `values` (Map of String) Map of field names to values for this row. Non-null values are returned as strings. API null values are represented as Terraform null, while empty strings remain empty strings.
