@@ -2,7 +2,6 @@ package fwprovider
 
 import (
 	"context"
-	"sort"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -20,8 +19,9 @@ var (
 )
 
 type tagIndexingRuleOrderResource struct {
-	Api  *datadogV2.MetricsApi
-	Auth context.Context
+	Api          *datadogV2.MetricsApi
+	Auth         context.Context
+	apiInstances *utils.ApiInstances
 }
 
 type tagIndexingRuleOrderModel struct {
@@ -36,6 +36,7 @@ func NewTagIndexingRuleOrderResource() resource.Resource {
 
 func (r *tagIndexingRuleOrderResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
+	r.apiInstances = providerData.DatadogApiInstances
 	r.Api = providerData.DatadogApiInstances.GetMetricsApiV2()
 	r.Auth = providerData.Auth
 }
@@ -98,21 +99,11 @@ func (r *tagIndexingRuleOrderResource) Read(ctx context.Context, request resourc
 	}
 
 	// Read current order by listing all rules and sorting by rule_order.
-	resp, _, err := r.Api.ListTagIndexingRules(r.Auth)
+	rules, err := r.apiInstances.ListTagIndexingRulesSnapshot(r.Auth)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing tag indexing rules for order read"))
 		return
 	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
-		return
-	}
-
-	rules := resp.GetData()
-	sort.Slice(rules, func(i, j int) bool {
-		ai, aj := rules[i].GetAttributes(), rules[j].GetAttributes()
-		return ai.GetRuleOrder() < aj.GetRuleOrder()
-	})
 
 	ids := make([]types.String, 0, len(rules))
 	for _, rule := range rules {
@@ -161,6 +152,7 @@ func (r *tagIndexingRuleOrderResource) applyOrder(ctx context.Context, state *ta
 	body := datadogV2.NewTagIndexingRuleOrderRequestWithDefaults()
 	body.SetData(*data)
 
+	defer r.apiInstances.InvalidateMetricTagReadCaches()
 	httpResp, err := r.Api.ReorderTagIndexingRules(r.Auth, *body)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 400 {

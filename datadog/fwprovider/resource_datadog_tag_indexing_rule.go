@@ -24,8 +24,9 @@ var (
 )
 
 type tagIndexingRuleResource struct {
-	Api  *datadogV2.MetricsApi
-	Auth context.Context
+	Api          *datadogV2.MetricsApi
+	Auth         context.Context
+	apiInstances *utils.ApiInstances
 }
 
 type tagIndexingRuleModel struct {
@@ -65,6 +66,7 @@ func NewTagIndexingRuleResource() resource.Resource {
 
 func (r *tagIndexingRuleResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
+	r.apiInstances = providerData.DatadogApiInstances
 	r.Api = providerData.DatadogApiInstances.GetMetricsApiV2()
 	r.Auth = providerData.Auth
 }
@@ -226,7 +228,7 @@ func (r *tagIndexingRuleResource) Read(ctx context.Context, request resource.Rea
 	}
 
 	id := state.ID.ValueString()
-	resp, httpResp, err := r.Api.GetTagIndexingRule(r.Auth, id)
+	resp, httpResp, err := r.apiInstances.ReadTagIndexingRule(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
@@ -253,6 +255,7 @@ func (r *tagIndexingRuleResource) Create(ctx context.Context, request resource.C
 
 	body := r.buildCreateRequest(ctx, &state)
 
+	defer r.apiInstances.InvalidateMetricTagReadCaches()
 	resp, _, err := r.Api.CreateTagIndexingRule(r.Auth, body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating tag indexing rule"))
@@ -277,6 +280,7 @@ func (r *tagIndexingRuleResource) Update(ctx context.Context, request resource.U
 	id := state.ID.ValueString()
 	body := r.buildUpdateRequest(ctx, &state)
 
+	defer r.apiInstances.InvalidateMetricTagReadCaches()
 	resp, _, err := r.Api.UpdateTagIndexingRule(r.Auth, id, body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating tag indexing rule"))
@@ -299,6 +303,7 @@ func (r *tagIndexingRuleResource) Delete(ctx context.Context, request resource.D
 	}
 
 	id := state.ID.ValueString()
+	defer r.apiInstances.InvalidateMetricTagReadCaches()
 	httpResp, err := r.Api.DeleteTagIndexingRule(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
