@@ -1589,7 +1589,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 	for _, lf := range scalarLeaves {
 		tfName := tfNameOf(lf.attr.Path)
 		itemAttrs = append(itemAttrs, AttrView{
-			TFName: tfName, TFType: lf.attr.TfType, Description: lf.attr.Description, Computed: true,
+			TFName: tfName, TFType: lf.attr.TfType, Description: lf.attr.Description, Computed: true, Sensitive: lf.attr.Sensitive,
 		})
 		itemFields = append(itemFields, ModelFieldView{
 			GoField: goFieldName(tfName), GoType: lf.attr.GoType, TFName: tfName,
@@ -1624,6 +1624,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 				TFName:      tfName,
 				Description: n.Description,
 				Computed:    true,
+				Sensitive:   n.Sensitive,
 				IsBlock:     true,
 				ListBlock:   collection,
 				Blocks:      render.blocks,
@@ -1640,7 +1641,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 				containerKind = "map"
 			}
 			itemAttrs = append(itemAttrs, AttrView{
-				TFName: tfName, TFType: n.TfType, ElementType: n.ElementType, Description: n.Description, Computed: true,
+				TFName: tfName, TFType: n.TfType, ElementType: n.ElementType, Description: n.Description, Computed: true, Sensitive: n.Sensitive,
 			})
 			itemFields = append(itemFields, ModelFieldView{GoField: field, GoType: n.GoType, TFName: tfName})
 			itemLists = append(itemLists, ListAssignment{
@@ -1654,7 +1655,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 			loopVar, elemVar := base+"Item", base+"Model"
 			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, childStem, loopVar, elemVar, n.Children)
 			itemBlocks = append(itemBlocks, AttrView{
-				TFName: tfName, Description: n.Description, Computed: true,
+				TFName: tfName, Description: n.Description, Computed: true, Sensitive: n.Sensitive,
 				IsBlock: true, ListBlock: true, Attributes: childAttrs, Blocks: childBlocks,
 			})
 			itemFields = append(itemFields, ModelFieldView{GoField: field, GoType: "[]*" + elemStruct, TFName: tfName})
@@ -1669,7 +1670,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 			elemVar := lowerFirst(model.SdkName(tfName)) + "Model"
 			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, childStem, objVar, elemVar, n.Children)
 			itemBlocks = append(itemBlocks, AttrView{
-				TFName: tfName, Description: n.Description, Computed: true,
+				TFName: tfName, Description: n.Description, Computed: true, Sensitive: n.Sensitive,
 				IsBlock: true, ListBlock: false, Attributes: childAttrs, Blocks: childBlocks,
 			})
 			itemFields = append(itemFields, ModelFieldView{GoField: field, GoType: "*" + elemStruct, TFName: tfName})
@@ -1739,6 +1740,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 				TFName:      a.Name,
 				Description: itemsBlock.Description,
 				Computed:    true,
+				Sensitive:   itemsBlock.Sensitive,
 				IsBlock:     true,
 				ListBlock:   true,
 				Attributes:  itemAttrs,
