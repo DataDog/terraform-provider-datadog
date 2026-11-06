@@ -145,12 +145,12 @@ func addActionConnectionReferenceResourceBlocks(blocks map[string]schema.Block, 
 	}
 }
 
-func actionConnectionReferenceDataSourceAttribute() dsschema.SingleNestedAttribute {
+func actionConnectionReferenceDataSourceBlock() dsschema.SingleNestedBlock {
 	attributes := make(map[string]dsschema.Attribute)
 	for name, attribute := range actionConnectionReferenceResourceAttribute().Attributes {
 		attributes[name] = dsschema.StringAttribute{Computed: true, Description: attribute.GetDescription()}
 	}
-	return dsschema.SingleNestedAttribute{Computed: true, Description: "AWS Secrets Manager reference for this field.", Attributes: attributes}
+	return dsschema.SingleNestedBlock{Description: "AWS Secrets Manager reference for this field.", Attributes: attributes}
 }
 
 func addActionConnectionAWSSecretDataSourceSchema(s *dsschema.Schema) {
@@ -161,10 +161,12 @@ func addActionConnectionAWSSecretDataSourceSchema(s *dsschema.Schema) {
 	addActionConnectionReferenceDataSourceBlocks(s.Blocks, reflect.TypeOf(connectionModel{}))
 }
 
-func addActionConnectionReferenceDataSourceAttributes(attributes map[string]dsschema.Attribute, model reflect.Type) {
+func addActionConnectionReferenceDataSourceFields(attributes map[string]dsschema.Attribute, blocks map[string]dsschema.Block, model reflect.Type) {
 	for name := range attributes {
 		if actionConnectionModelFieldType(model, name+actionConnectionAWSSecretSuffix) != nil {
-			attributes[name+actionConnectionAWSSecretSuffix] = actionConnectionReferenceDataSourceAttribute()
+			// Keep outputs within legacy blocks as blocks too: Terraform 1.1.5
+			// crashes rendering computed nested attributes in a deferred data source.
+			blocks[name+actionConnectionAWSSecretSuffix] = actionConnectionReferenceDataSourceBlock()
 		}
 	}
 }
@@ -177,11 +179,19 @@ func addActionConnectionReferenceDataSourceBlocks(blocks map[string]dsschema.Blo
 		}
 		switch b := block.(type) {
 		case dsschema.SingleNestedBlock:
-			addActionConnectionReferenceDataSourceAttributes(b.Attributes, fieldType)
+			if b.Blocks == nil {
+				b.Blocks = make(map[string]dsschema.Block)
+			}
+			addActionConnectionReferenceDataSourceFields(b.Attributes, b.Blocks, fieldType)
 			addActionConnectionReferenceDataSourceBlocks(b.Blocks, fieldType)
+			blocks[name] = b
 		case dsschema.ListNestedBlock:
-			addActionConnectionReferenceDataSourceAttributes(b.NestedObject.Attributes, fieldType)
+			if b.NestedObject.Blocks == nil {
+				b.NestedObject.Blocks = make(map[string]dsschema.Block)
+			}
+			addActionConnectionReferenceDataSourceFields(b.NestedObject.Attributes, b.NestedObject.Blocks, fieldType)
 			addActionConnectionReferenceDataSourceBlocks(b.NestedObject.Blocks, fieldType)
+			blocks[name] = b
 		}
 	}
 }

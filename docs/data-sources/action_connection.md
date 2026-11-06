@@ -68,9 +68,9 @@ Read-Only:
 Read-Only:
 
 - `api_token` (String, Sensitive) Anthropic API token
-- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--anthropic--api_key--api_token_aws_secrets_manager))
+- `api_token_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--anthropic--api_key--api_token_aws_secrets_manager))
 
-<a id="nestedatt--anthropic--api_key--api_token_aws_secrets_manager"></a>
+<a id="nestedblock--anthropic--api_key--api_token_aws_secrets_manager"></a>
 ### Nested Schema for `anthropic.api_key.api_token_aws_secrets_manager`
 
 Read-Only:
@@ -96,9 +96,9 @@ Read-Only:
 Read-Only:
 
 - `access_token` (String, Sensitive) Asana access token
-- `access_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--asana--access_token--access_token_aws_secrets_manager))
+- `access_token_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--asana--access_token--access_token_aws_secrets_manager))
 
-<a id="nestedatt--asana--access_token--access_token_aws_secrets_manager"></a>
+<a id="nestedblock--asana--access_token--access_token_aws_secrets_manager"></a>
 ### Nested Schema for `asana.access_token.access_token_aws_secrets_manager`
 
 Read-Only:
@@ -162,9 +162,9 @@ Read-Only:
 Read-Only:
 
 - `api_token` (String, Sensitive) CircleCI API token
-- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--circle_ci--api_key--api_token_aws_secrets_manager))
+- `api_token_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--circle_ci--api_key--api_token_aws_secrets_manager))
 
-<a id="nestedatt--circle_ci--api_key--api_token_aws_secrets_manager"></a>
+<a id="nestedblock--circle_ci--api_key--api_token_aws_secrets_manager"></a>
 ### Nested Schema for `circle_ci.api_key.api_token_aws_secrets_manager`
 
 Read-Only:
@@ -190,9 +190,9 @@ Read-Only:
 Read-Only:
 
 - `api_token` (String, Sensitive) ClickUp API token
-- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--clickup--api_key--api_token_aws_secrets_manager))
+- `api_token_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--clickup--api_key--api_token_aws_secrets_manager))
 
-<a id="nestedatt--clickup--api_key--api_token_aws_secrets_manager"></a>
+<a id="nestedblock--clickup--api_key--api_token_aws_secrets_manager"></a>
 ### Nested Schema for `clickup.api_key.api_token_aws_secrets_manager`
 
 Read-Only:
@@ -219,9 +219,9 @@ Read-Only:
 Read-Only:
 
 - `api_token` (String, Sensitive) Cloudflare API token
-- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--cloudflare--api_token--api_token_aws_secrets_manager))
+- `api_token_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--cloudflare--api_token--api_token_aws_secrets_manager))
 
-<a id="nestedatt--cloudflare--api_token--api_token_aws_secrets_manager"></a>
+<a id="nestedblock--cloudflare--api_token--api_token_aws_secrets_manager"></a>
 ### Nested Schema for `cloudflare.api_token.api_token_aws_secrets_manager`
 
 Read-Only:
@@ -239,11 +239,11 @@ Read-Only:
 Read-Only:
 
 - `auth_email` (String) Email address associated with the Cloudflare account
-- `auth_email_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--cloudflare--global_api_token--auth_email_aws_secrets_manager))
+- `auth_email_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--cloudflare--global_api_token--auth_email_aws_secrets_manager))
 - `global_api_key` (String, Sensitive) Cloudflare global API key
-- `global_api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--cloudflare--global_api_token--global_api_key_aws_secrets_manager))
+- `global_api_key_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--cloudflare--global_api_token--global_api_key_aws_secrets_manager))
 
-<a id="nestedatt--cloudflare--global_api_token--auth_email_aws_secrets_manager"></a>
+<a id="nestedblock--cloudflare--global_api_token--auth_email_aws_secrets_manager"></a>
 ### Nested Schema for `cloudflare.global_api_token.auth_email_aws_secrets_manager`
 
 Read-Only:
@@ -254,7 +254,7 @@ Read-Only:
 - `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
 
 
-<a id="nestedatt--cloudflare--global_api_token--global_api_key_aws_secrets_manager"></a>
+<a id="nestedblock--cloudflare--global_api_token--global_api_key_aws_secrets_manager"></a>
 ### Nested Schema for `cloudflare.global_api_token.global_api_key_aws_secrets_manager`
 
 Read-Only:
@@ -280,13 +280,13 @@ Read-Only:
 Read-Only:
 
 - `api_password` (String, Sensitive) ConfigCat Public Management API password
-- `api_password_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--config_cat--sdk_key--api_password_aws_secrets_manager))
+- `api_password_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--config_cat--sdk_key--api_password_aws_secrets_manager))
 - `api_username` (String) ConfigCat Public Management API username
-- `api_username_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--config_cat--sdk_key--api_username_aws_secrets_manager))
+- `api_username_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--config_cat--sdk_key--api_username_aws_secrets_manager))
 - `sdk_key` (String, Sensitive) ConfigCat SDK key
-- `sdk_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--config_cat--sdk_key--sdk_key_aws_secrets_manager))
+- `sdk_key_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--config_cat--sdk_key--sdk_key_aws_secrets_manager))
 
-<a id="nestedatt--config_cat--sdk_key--api_password_aws_secrets_manager"></a>
+<a id="nestedblock--config_cat--sdk_key--api_password_aws_secrets_manager"></a>
 ### Nested Schema for `config_cat.sdk_key.api_password_aws_secrets_manager`
 
 Read-Only:
@@ -297,7 +297,7 @@ Read-Only:
 - `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
 
 
-<a id="nestedatt--config_cat--sdk_key--api_username_aws_secrets_manager"></a>
+<a id="nestedblock--config_cat--sdk_key--api_username_aws_secrets_manager"></a>
 ### Nested Schema for `config_cat.sdk_key.api_username_aws_secrets_manager`
 
 Read-Only:
@@ -308,7 +308,7 @@ Read-Only:
 - `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
 
 
-<a id="nestedatt--config_cat--sdk_key--sdk_key_aws_secrets_manager"></a>
+<a id="nestedblock--config_cat--sdk_key--sdk_key_aws_secrets_manager"></a>
 ### Nested Schema for `config_cat.sdk_key.sdk_key_aws_secrets_manager`
 
 Read-Only:
@@ -334,15 +334,15 @@ Read-Only:
 Read-Only:
 
 - `api_key` (String, Sensitive) Datadog API key
-- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--datadog--api_key--api_key_aws_secrets_manager))
+- `api_key_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--datadog--api_key--api_key_aws_secrets_manager))
 - `app_key` (String, Sensitive) Datadog application key
-- `app_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--datadog--api_key--app_key_aws_secrets_manager))
+- `app_key_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--datadog--api_key--app_key_aws_secrets_manager))
 - `datacenter` (String) Datadog site data center
-- `datacenter_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--datadog--api_key--datacenter_aws_secrets_manager))
+- `datacenter_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--datadog--api_key--datacenter_aws_secrets_manager))
 - `subdomain` (String) Custom subdomain used for URLs generated with this connection
-- `subdomain_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--datadog--api_key--subdomain_aws_secrets_manager))
+- `subdomain_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--datadog--api_key--subdomain_aws_secrets_manager))
 
-<a id="nestedatt--datadog--api_key--api_key_aws_secrets_manager"></a>
+<a id="nestedblock--datadog--api_key--api_key_aws_secrets_manager"></a>
 ### Nested Schema for `datadog.api_key.api_key_aws_secrets_manager`
 
 Read-Only:
@@ -353,7 +353,7 @@ Read-Only:
 - `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
 
 
-<a id="nestedatt--datadog--api_key--app_key_aws_secrets_manager"></a>
+<a id="nestedblock--datadog--api_key--app_key_aws_secrets_manager"></a>
 ### Nested Schema for `datadog.api_key.app_key_aws_secrets_manager`
 
 Read-Only:
@@ -364,7 +364,7 @@ Read-Only:
 - `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
 
 
-<a id="nestedatt--datadog--api_key--datacenter_aws_secrets_manager"></a>
+<a id="nestedblock--datadog--api_key--datacenter_aws_secrets_manager"></a>
 ### Nested Schema for `datadog.api_key.datacenter_aws_secrets_manager`
 
 Read-Only:
@@ -375,7 +375,7 @@ Read-Only:
 - `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
 
 
-<a id="nestedatt--datadog--api_key--subdomain_aws_secrets_manager"></a>
+<a id="nestedblock--datadog--api_key--subdomain_aws_secrets_manager"></a>
 ### Nested Schema for `datadog.api_key.subdomain_aws_secrets_manager`
 
 Read-Only:
@@ -410,9 +410,9 @@ Read-Only:
 Read-Only:
 
 - `api_key` (String, Sensitive) Fastly API key
-- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--fastly--api_key--api_key_aws_secrets_manager))
+- `api_key_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--fastly--api_key--api_key_aws_secrets_manager))
 
-<a id="nestedatt--fastly--api_key--api_key_aws_secrets_manager"></a>
+<a id="nestedblock--fastly--api_key--api_key_aws_secrets_manager"></a>
 ### Nested Schema for `fastly.api_key.api_key_aws_secrets_manager`
 
 Read-Only:
@@ -438,11 +438,11 @@ Read-Only:
 Read-Only:
 
 - `api_key` (String, Sensitive) Freshservice API key
-- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--freshservice--api_key--api_key_aws_secrets_manager))
+- `api_key_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--freshservice--api_key--api_key_aws_secrets_manager))
 - `domain` (String) Freshservice domain
-- `domain_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--freshservice--api_key--domain_aws_secrets_manager))
+- `domain_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--freshservice--api_key--domain_aws_secrets_manager))
 
-<a id="nestedatt--freshservice--api_key--api_key_aws_secrets_manager"></a>
+<a id="nestedblock--freshservice--api_key--api_key_aws_secrets_manager"></a>
 ### Nested Schema for `freshservice.api_key.api_key_aws_secrets_manager`
 
 Read-Only:
@@ -453,7 +453,7 @@ Read-Only:
 - `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
 
 
-<a id="nestedatt--freshservice--api_key--domain_aws_secrets_manager"></a>
+<a id="nestedblock--freshservice--api_key--domain_aws_secrets_manager"></a>
 ### Nested Schema for `freshservice.api_key.domain_aws_secrets_manager`
 
 Read-Only:
@@ -479,11 +479,11 @@ Read-Only:
 Read-Only:
 
 - `private_key` (String, Sensitive) Google Cloud service account private key
-- `private_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--gcp--service_account--private_key_aws_secrets_manager))
+- `private_key_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--gcp--service_account--private_key_aws_secrets_manager))
 - `service_account_email` (String) Google Cloud service account email
-- `service_account_email_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--gcp--service_account--service_account_email_aws_secrets_manager))
+- `service_account_email_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--gcp--service_account--service_account_email_aws_secrets_manager))
 
-<a id="nestedatt--gcp--service_account--private_key_aws_secrets_manager"></a>
+<a id="nestedblock--gcp--service_account--private_key_aws_secrets_manager"></a>
 ### Nested Schema for `gcp.service_account.private_key_aws_secrets_manager`
 
 Read-Only:
@@ -494,7 +494,7 @@ Read-Only:
 - `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
 
 
-<a id="nestedatt--gcp--service_account--service_account_email_aws_secrets_manager"></a>
+<a id="nestedblock--gcp--service_account--service_account_email_aws_secrets_manager"></a>
 ### Nested Schema for `gcp.service_account.service_account_email_aws_secrets_manager`
 
 Read-Only:
@@ -520,9 +520,9 @@ Read-Only:
 Read-Only:
 
 - `api_key` (String, Sensitive) Gemini API key
-- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--gemini--api_key--api_key_aws_secrets_manager))
+- `api_key_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--gemini--api_key--api_key_aws_secrets_manager))
 
-<a id="nestedatt--gemini--api_key--api_key_aws_secrets_manager"></a>
+<a id="nestedblock--gemini--api_key--api_key_aws_secrets_manager"></a>
 ### Nested Schema for `gemini.api_key.api_key_aws_secrets_manager`
 
 Read-Only:
@@ -548,9 +548,9 @@ Read-Only:
 Read-Only:
 
 - `api_token` (String, Sensitive) GitLab API token
-- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--gitlab--api_key--api_token_aws_secrets_manager))
+- `api_token_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--gitlab--api_key--api_token_aws_secrets_manager))
 
-<a id="nestedatt--gitlab--api_key--api_token_aws_secrets_manager"></a>
+<a id="nestedblock--gitlab--api_key--api_token_aws_secrets_manager"></a>
 ### Nested Schema for `gitlab.api_key.api_token_aws_secrets_manager`
 
 Read-Only:
@@ -576,9 +576,9 @@ Read-Only:
 Read-Only:
 
 - `api_key` (String, Sensitive) GreyNoise API key
-- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--grey_noise--api_key--api_key_aws_secrets_manager))
+- `api_key_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--grey_noise--api_key--api_key_aws_secrets_manager))
 
-<a id="nestedatt--grey_noise--api_key--api_key_aws_secrets_manager"></a>
+<a id="nestedblock--grey_noise--api_key--api_key_aws_secrets_manager"></a>
 ### Nested Schema for `grey_noise.api_key.api_key_aws_secrets_manager`
 
 Read-Only:
@@ -635,9 +635,9 @@ Read-Only:
 - `name` (String) Token name
 - `type` (String) Token type
 - `value` (String, Sensitive) Token value
-- `value_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--http--token_auth--token--value_aws_secrets_manager))
+- `value_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--http--token_auth--token--value_aws_secrets_manager))
 
-<a id="nestedatt--http--token_auth--token--value_aws_secrets_manager"></a>
+<a id="nestedblock--http--token_auth--token--value_aws_secrets_manager"></a>
 ### Nested Schema for `http.token_auth.token.value_aws_secrets_manager`
 
 Read-Only:
@@ -673,9 +673,9 @@ Read-Only:
 Read-Only:
 
 - `api_token` (String, Sensitive) LaunchDarkly API token
-- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--launch_darkly--api_key--api_token_aws_secrets_manager))
+- `api_token_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--launch_darkly--api_key--api_token_aws_secrets_manager))
 
-<a id="nestedatt--launch_darkly--api_key--api_token_aws_secrets_manager"></a>
+<a id="nestedblock--launch_darkly--api_key--api_token_aws_secrets_manager"></a>
 ### Nested Schema for `launch_darkly.api_key.api_token_aws_secrets_manager`
 
 Read-Only:
@@ -701,9 +701,9 @@ Read-Only:
 Read-Only:
 
 - `api_token` (String, Sensitive) Notion API token
-- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--notion--api_key--api_token_aws_secrets_manager))
+- `api_token_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--notion--api_key--api_token_aws_secrets_manager))
 
-<a id="nestedatt--notion--api_key--api_token_aws_secrets_manager"></a>
+<a id="nestedblock--notion--api_key--api_token_aws_secrets_manager"></a>
 ### Nested Schema for `notion.api_key.api_token_aws_secrets_manager`
 
 Read-Only:
@@ -729,11 +729,11 @@ Read-Only:
 Read-Only:
 
 - `api_token` (String, Sensitive) Okta API token
-- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--okta--api_token--api_token_aws_secrets_manager))
+- `api_token_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--okta--api_token--api_token_aws_secrets_manager))
 - `domain` (String) Okta domain
-- `domain_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--okta--api_token--domain_aws_secrets_manager))
+- `domain_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--okta--api_token--domain_aws_secrets_manager))
 
-<a id="nestedatt--okta--api_token--api_token_aws_secrets_manager"></a>
+<a id="nestedblock--okta--api_token--api_token_aws_secrets_manager"></a>
 ### Nested Schema for `okta.api_token.api_token_aws_secrets_manager`
 
 Read-Only:
@@ -744,7 +744,7 @@ Read-Only:
 - `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
 
 
-<a id="nestedatt--okta--api_token--domain_aws_secrets_manager"></a>
+<a id="nestedblock--okta--api_token--domain_aws_secrets_manager"></a>
 ### Nested Schema for `okta.api_token.domain_aws_secrets_manager`
 
 Read-Only:
@@ -770,9 +770,9 @@ Read-Only:
 Read-Only:
 
 - `api_token` (String, Sensitive) OpenAI API token
-- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--openai--api_key--api_token_aws_secrets_manager))
+- `api_token_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--openai--api_key--api_token_aws_secrets_manager))
 
-<a id="nestedatt--openai--api_key--api_token_aws_secrets_manager"></a>
+<a id="nestedblock--openai--api_key--api_token_aws_secrets_manager"></a>
 ### Nested Schema for `openai.api_key.api_token_aws_secrets_manager`
 
 Read-Only:
@@ -798,13 +798,13 @@ Read-Only:
 Read-Only:
 
 - `instance` (String) ServiceNow instance
-- `instance_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--service_now--basic_auth--instance_aws_secrets_manager))
+- `instance_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--service_now--basic_auth--instance_aws_secrets_manager))
 - `password` (String, Sensitive) ServiceNow password
-- `password_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--service_now--basic_auth--password_aws_secrets_manager))
+- `password_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--service_now--basic_auth--password_aws_secrets_manager))
 - `username` (String) ServiceNow username
-- `username_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--service_now--basic_auth--username_aws_secrets_manager))
+- `username_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--service_now--basic_auth--username_aws_secrets_manager))
 
-<a id="nestedatt--service_now--basic_auth--instance_aws_secrets_manager"></a>
+<a id="nestedblock--service_now--basic_auth--instance_aws_secrets_manager"></a>
 ### Nested Schema for `service_now.basic_auth.instance_aws_secrets_manager`
 
 Read-Only:
@@ -815,7 +815,7 @@ Read-Only:
 - `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
 
 
-<a id="nestedatt--service_now--basic_auth--password_aws_secrets_manager"></a>
+<a id="nestedblock--service_now--basic_auth--password_aws_secrets_manager"></a>
 ### Nested Schema for `service_now.basic_auth.password_aws_secrets_manager`
 
 Read-Only:
@@ -826,7 +826,7 @@ Read-Only:
 - `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
 
 
-<a id="nestedatt--service_now--basic_auth--username_aws_secrets_manager"></a>
+<a id="nestedblock--service_now--basic_auth--username_aws_secrets_manager"></a>
 ### Nested Schema for `service_now.basic_auth.username_aws_secrets_manager`
 
 Read-Only:
@@ -852,9 +852,9 @@ Read-Only:
 Read-Only:
 
 - `api_key` (String, Sensitive) Split API key
-- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--split--api_key--api_key_aws_secrets_manager))
+- `api_key_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--split--api_key--api_key_aws_secrets_manager))
 
-<a id="nestedatt--split--api_key--api_key_aws_secrets_manager"></a>
+<a id="nestedblock--split--api_key--api_key_aws_secrets_manager"></a>
 ### Nested Schema for `split.api_key.api_key_aws_secrets_manager`
 
 Read-Only:
@@ -880,9 +880,9 @@ Read-Only:
 Read-Only:
 
 - `api_key` (String, Sensitive) Statsig API key
-- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--statsig--api_key--api_key_aws_secrets_manager))
+- `api_key_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--statsig--api_key--api_key_aws_secrets_manager))
 
-<a id="nestedatt--statsig--api_key--api_key_aws_secrets_manager"></a>
+<a id="nestedblock--statsig--api_key--api_key_aws_secrets_manager"></a>
 ### Nested Schema for `statsig.api_key.api_key_aws_secrets_manager`
 
 Read-Only:
@@ -908,9 +908,9 @@ Read-Only:
 Read-Only:
 
 - `api_key` (String, Sensitive) VirusTotal API key
-- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedatt--virus_total--api_key--api_key_aws_secrets_manager))
+- `api_key_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--virus_total--api_key--api_key_aws_secrets_manager))
 
-<a id="nestedatt--virus_total--api_key--api_key_aws_secrets_manager"></a>
+<a id="nestedblock--virus_total--api_key--api_key_aws_secrets_manager"></a>
 ### Nested Schema for `virus_total.api_key.api_key_aws_secrets_manager`
 
 Read-Only:

@@ -19,18 +19,18 @@ var (
 )
 
 func TestAccDatadogActionConnectionResource_AWSSecretsManager_Clickup(t *testing.T) {
-	testAccActionConnectionAWSSecretsManager(t, "Clickup")
+	testAccActionConnectionAWSSecretsManager(t, "Clickup", false)
 }
 
 func TestAccDatadogActionConnectionResource_AWSSecretsManager_GCP(t *testing.T) {
-	testAccActionConnectionAWSSecretsManager(t, "GCP")
+	testAccActionConnectionAWSSecretsManager(t, "GCP", false)
 }
 
 func TestAccDatadogActionConnectionResource_AWSSecretsManager_HTTP(t *testing.T) {
-	testAccActionConnectionAWSSecretsManager(t, "HTTP")
+	testAccActionConnectionAWSSecretsManager(t, "HTTP", false)
 }
 
-func testAccActionConnectionAWSSecretsManager(t *testing.T, integration string) {
+func testAccActionConnectionAWSSecretsManager(t *testing.T, integration string, testDataSource bool) {
 	t.Helper()
 	cases := []struct {
 		name     string
@@ -127,17 +127,38 @@ resource "datadog_action_connection" "secret_reference" {
 			}
 			return resource.ComposeTestCheckFunc(checks...)
 		}
+		steps := []resource.TestStep{
+			{Config: config(true, "AWSCURRENT"), Check: check(true, "AWSCURRENT")},
+			{ResourceName: resourceName, ImportState: true, ImportStateVerify: true},
+			{Config: config(true, "AWSPREVIOUS"), Check: check(true, "AWSPREVIOUS")},
+			{Config: config(false, ""), Check: check(false, "")},
+			{Config: config(true, "AWSCURRENT"), Check: check(true, "AWSCURRENT")},
+		}
+		if testDataSource {
+			dataSourceName := "data.datadog_action_connection.secret_reference"
+			checks := []resource.TestCheckFunc{
+				check(true, "AWSCURRENT"),
+				resource.TestCheckResourceAttrPair(dataSourceName, "external_secrets_manager.connection_id", resourceName, "external_secrets_manager.connection_id"),
+				resource.TestCheckResourceAttr(dataSourceName, "external_secrets_manager.region", "us-east-1"),
+			}
+			for _, field := range tc.fields {
+				for _, attribute := range []string{"secret_id", "key", "version_stage"} {
+					attributePath := field.path + "_aws_secrets_manager." + attribute
+					checks = append(checks, resource.TestCheckResourceAttrPair(dataSourceName, attributePath, resourceName, attributePath))
+				}
+			}
+			steps = steps[:1]
+			steps[0].Config += `
+data "datadog_action_connection" "secret_reference" {
+  id = datadog_action_connection.secret_reference.id
+}`
+			steps[0].Check = resource.ComposeTestCheckFunc(checks...)
+		}
 		resource.Test(t, resource.TestCase{
 			PreCheck:                 func() { testAccPreCheck(t) },
 			ProtoV6ProviderFactories: accProviders,
 			CheckDestroy:             testAccCheckDatadogConnectionDestroy(providers.frameworkProvider, resourceName),
-			Steps: []resource.TestStep{
-				{Config: config(true, "AWSCURRENT"), Check: check(true, "AWSCURRENT")},
-				{ResourceName: resourceName, ImportState: true, ImportStateVerify: true},
-				{Config: config(true, "AWSPREVIOUS"), Check: check(true, "AWSPREVIOUS")},
-				{Config: config(false, ""), Check: check(false, "")},
-				{Config: config(true, "AWSCURRENT"), Check: check(true, "AWSCURRENT")},
-			},
+			Steps:                    steps,
 		})
 	}
 }

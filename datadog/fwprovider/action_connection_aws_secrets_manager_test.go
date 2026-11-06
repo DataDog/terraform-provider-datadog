@@ -288,10 +288,10 @@ func TestActionConnectionAWSSecretsManagerSupportedFieldSchema(t *testing.T) {
 		path.Root("datadog").AtName("api_key").AtName("datacenter_aws_secrets_manager"),
 		path.Root("http").AtName("token_auth").AtName("token").AtListIndex(0).AtName("value_aws_secrets_manager"),
 	} {
-		if _, diags := resourceSchema.Schema.AttributeAtPath(ctx, fieldPath); diags.HasError() {
+		if _, diags := resourceSchema.Schema.AttributeAtPath(ctx, fieldPath.AtName("secret_id")); diags.HasError() {
 			t.Errorf("missing supported resource reference: %s: %v", fieldPath, diags)
 		}
-		if _, diags := dataSourceSchema.Schema.AttributeAtPath(ctx, fieldPath); diags.HasError() {
+		if _, diags := dataSourceSchema.Schema.AttributeAtPath(ctx, fieldPath.AtName("secret_id")); diags.HasError() {
 			t.Errorf("missing supported datasource reference: %s: %v", fieldPath, diags)
 		}
 	}
