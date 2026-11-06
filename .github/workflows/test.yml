@@ -59,6 +59,8 @@ jobs:
       - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236
         with:
           python-version: '3.11'
+      - name: Test CI scripts
+        run: python3 -m unittest discover -s scripts -p 'test_*.py'
       - name: Install pre-commit
         run: python -m pip install pre-commit
       - name: set PY
@@ -229,3 +231,30 @@ jobs:
             fi
           done
           echo "All jobs passed or were skipped!"
+
+  report:
+    runs-on: ubuntu-latest
+    if: >-
+      always() && github.event_name == 'pull_request' &&
+      github.base_ref == 'master' &&
+      contains(github.event.pull_request.head.ref, 'datadog-api-spec/generated/')
+    needs:
+      - all-checks
+      - pre-commit
+    permissions:
+      id-token: write
+    steps:
+      - name: Get api-spec reporting token
+        id: octo-sts
+        uses: DataDog/dd-octo-sts-action@96a25462dbcb10ebf0bfd6e2ccc917d2ab235b9a # v1.0.4
+        with:
+          scope: ddoghq/datadog-api-spec
+          policy: terraform-provider-datadog.github.post-status-check.pr
+      - name: Post status check
+        uses: DataDog/github-actions/post-status-check@65b4875f33ad773d7ba4b005a2cb5f35020295f3 # v2.3.0
+        with:
+          github-token: ${{ steps.octo-sts.outputs.token }}
+          owner: ddoghq
+          repo: datadog-api-spec
+          status: ${{ (needs.all-checks.result == 'cancelled' || needs.pre-commit.result == 'cancelled') && 'pending' || (needs.all-checks.result == 'success' && needs.pre-commit.result == 'success') && 'success' || 'failure' }}
+          context: master/unit

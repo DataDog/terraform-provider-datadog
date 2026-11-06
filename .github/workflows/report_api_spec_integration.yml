@@ -1,0 +1,42 @@
+name: Report integration status to api-spec
+
+on: # yamllint disable-line rule:truthy
+  workflow_call:
+    inputs:
+      conclusion:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    # Enforce the event guards here, at the token's trust boundary.
+    if: >-
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      startsWith(github.event.workflow_run.head_branch, 'datadog-api-spec/generated/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      # workflow_run checks out trusted default-branch code, never the PR head.
+      - name: Checkout base branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Get api-spec reporting token
+        id: api-spec-token
+        uses: DataDog/dd-octo-sts-action@96a25462dbcb10ebf0bfd6e2ccc917d2ab235b9a # v1.0.4
+        with:
+          scope: ddoghq/datadog-api-spec
+          policy: terraform-provider-datadog.test_pr_integration.post-status
+      - name: Report integration status to api-spec
+        env:
+          GH_TOKEN: ${{ steps.api-spec-token.outputs.token }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          INTEGRATION_CONCLUSION: ${{ inputs.conclusion }}
+        run: bash scripts/report_api_spec_integration.sh
