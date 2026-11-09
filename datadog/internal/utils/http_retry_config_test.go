@@ -31,7 +31,15 @@ func TestApplyHTTPRetryConfig(t *testing.T) {
 				t.Error("retry disabled")
 			}
 		}},
-		{name: "false", env: map[string]string{DDHTTPRetryEnabled: "false", DDHTTPRetryMaxRetries: "9"}, check: func(t *testing.T, rc datadog.RetryConfiguration) {
+		{name: "false with invalid max retries", env: map[string]string{DDHTTPRetryEnabled: "false", DDHTTPRetryMaxRetries: "9"}, wantErr: true},
+		{name: "false with non-integer base", env: map[string]string{DDHTTPRetryEnabled: "false", DDHTTPRetryBackoffBase: "x"}, wantErr: true},
+		{name: "negative timeout accepted", env: map[string]string{DDHTTPRetryTimeout: "-5"}, check: func(t *testing.T, rc datadog.RetryConfiguration) {
+			if rc.HTTPRetryTimeout != -5*time.Second {
+				t.Errorf("unexpected timeout %v", rc.HTTPRetryTimeout)
+			}
+		}},
+		{name: "non-integer jitter", env: map[string]string{DDHTTPRetryJitter: "2s"}, wantErr: true},
+		{name: "false", env: map[string]string{DDHTTPRetryEnabled: "false", DDHTTPRetryMaxRetries: "5"}, check: func(t *testing.T, rc datadog.RetryConfiguration) {
 			if rc.EnableRetry {
 				t.Error("retry enabled")
 			}
