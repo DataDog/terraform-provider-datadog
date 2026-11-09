@@ -67,6 +67,7 @@ datadog/**/*datadog_org_connection*               @DataDog/api-reliability @Data
 datadog/**/*datadog_org_group*                    @DataDog/api-reliability @DataDog/org-management
 datadog/**/*datadog_reference_table*              @DataDog/api-reliability @DataDog/redapl-experiences
 datadog/**/*datadog_action_connection*            @DataDog/api-reliability @DataDog/action-platform
+datadog/**/action_connection_*                   @DataDog/api-reliability @DataDog/action-platform
 datadog/**/*datadog_action_execution_policy*      @DataDog/api-reliability @DataDog/action-platform
 datadog/**/*datadog_agentless*                    @DataDog/api-reliability @DataDog/k9-agentless
 datadog/**/*datadog_app_key_registration*         @DataDog/api-reliability @DataDog/action-platform @DataDog/workflow-automation-backend
@@ -121,7 +122,10 @@ datadog/**/*datadog_governance_control*           @DataDog/api-reliability @Data
 datadog/**/*datadog_tag_rule*                     @DataDog/api-reliability @DataDog/aaa-governance-console @DataDog/odp-governance
 datadog/**/*datadog_status_page*                  @DataDog/api-reliability @DataDog/incident-app
 datadog/**/*fleet_schedule*                       @DataDog/api-reliability @DataDog/fleet-automation
-datadog/**/*github_oidc*                          @DataDog/api-reliability @DataDog/aaa-authn
+datadog/**/*github_oidc*                          @DataDog/api-reliability @DataDog/delegated-auth-login @DataDog/credential-management
+datadog/**/*aws_wif*                              @DataDog/api-reliability @DataDog/delegated-auth-login @DataDog/credential-management
+
+datadog/fwprovider/cloud_auth_mapping*           @DataDog/api-reliability @DataDog/delegated-auth-login @DataDog/credential-management
 
 # Team-specific
 docs/resources/observability_pipeline.md                  @DataDog/observability-pipelines
@@ -149,7 +153,11 @@ examples/**/datadog_team*/**                              @DataDog/teams-and-own
 scripts/*cloud-cost-import-existing-resources*            @DataDog/cloud-cost-management
 templates/**/org_group*.md.tmpl                           @DataDog/org-management
 docs/resources/governance_control.md                      @DataDog/aaa-governance-console
-docs/resources/github_oidc_identity_mapping.md            @DataDog/aaa-authn
-docs/resources/github_oidc_intake_mapping.md              @DataDog/aaa-authn
-examples/resources/datadog_github_oidc_identity_mapping/  @DataDog/aaa-authn
-examples/resources/datadog_github_oidc_intake_mapping/    @DataDog/aaa-authn
+docs/resources/github_oidc_identity_mapping.md            @DataDog/delegated-auth-login @DataDog/credential-management
+docs/resources/github_oidc_intake_mapping.md              @DataDog/delegated-auth-login @DataDog/credential-management
+examples/resources/datadog_github_oidc_identity_mapping/  @DataDog/delegated-auth-login @DataDog/credential-management
+examples/resources/datadog_github_oidc_intake_mapping/    @DataDog/delegated-auth-login @DataDog/credential-management
+docs/resources/aws_wif_identity_mapping.md              @DataDog/delegated-auth-login @DataDog/credential-management
+docs/resources/aws_wif_intake_mapping.md                @DataDog/delegated-auth-login @DataDog/credential-management
+examples/resources/datadog_aws_wif_identity_mapping/    @DataDog/delegated-auth-login @DataDog/credential-management
+examples/resources/datadog_aws_wif_intake_mapping/      @DataDog/delegated-auth-login @DataDog/credential-management

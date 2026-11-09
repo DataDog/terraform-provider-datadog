@@ -69,3 +69,27 @@ resource "datadog_action_connection" "http_connection" {
     }
   }
 }
+
+# Datadog resolves these references at runtime. Terraform stores only the
+# references and does not retrieve the GCP credential values.
+resource "datadog_action_connection" "gcp_connection" {
+  name = "My GCP connection with AWS Secrets Manager"
+
+  external_secrets_manager = {
+    connection_id = datadog_action_connection.aws_connection.id
+    region        = "us-east-1"
+  }
+
+  gcp {
+    service_account {
+      private_key_aws_secrets_manager = {
+        secret_id = "example/gcp/service-account"
+        key       = "private_key"
+      }
+      service_account_email_aws_secrets_manager = {
+        secret_id = "example/gcp/service-account"
+        key       = "client_email"
+      }
+    }
+  }
+}

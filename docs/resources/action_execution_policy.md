@@ -3,12 +3,12 @@
 page_title: "datadog_action_execution_policy Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Execution Policy resource. Execution policies control which Action Platform actions may run against your infrastructure, and where. Each policy pairs an effect (allow or deny) with a pattern of actions, optionally narrowed to specific Kubernetes namespaces, scripts or remote shell paths, and optionally scoped to agents matching a set of Fleet Automation tags.
+  Provides a Datadog Execution Policy resource. Execution policies control which Action Platform actions may run, and where. Each policy pairs an effect (allow or deny) with a pattern of actions, optionally narrowed to specific Kubernetes namespaces, scripts, remote shell paths or Slack channel names, and optionally scoped to targets matching a set of tags, such as agents matching Fleet Automation tags or a Slack workspace.
 ---
 
 # datadog_action_execution_policy (Resource)
 
-Provides a Datadog Execution Policy resource. Execution policies control which Action Platform actions may run against your infrastructure, and where. Each policy pairs an effect (`allow` or `deny`) with a pattern of actions, optionally narrowed to specific Kubernetes namespaces, scripts or remote shell paths, and optionally scoped to agents matching a set of Fleet Automation tags.
+Provides a Datadog Execution Policy resource. Execution policies control which Action Platform actions may run, and where. Each policy pairs an effect (`allow` or `deny`) with a pattern of actions, optionally narrowed to specific Kubernetes namespaces, scripts, remote shell paths or Slack channel names, and optionally scoped to targets matching a set of tags, such as agents matching Fleet Automation tags or a Slack workspace.
 
 ## Example Usage
 
@@ -88,6 +88,30 @@ resource "datadog_action_execution_policy" "deny_dangerous_script" {
   }
 }
 
+# Slack: allow posting messages to incident channels in one Slack workspace.
+resource "datadog_action_execution_policy" "slack_incident_channels" {
+  name   = "slack-incident-channels"
+  effect = "allow"
+
+  action_pattern {
+    integration = "INTEGRATION_SLACK"
+    action_fqns = ["com.datadoghq.slack.send_simple_message"]
+  }
+
+  scope {
+    slack {
+      rule {
+        channel_name_selectors = ["incident-*"]
+      }
+    }
+  }
+
+  target {
+    name       = "main-workspace"
+    agent_tags = ["slack_workspace_id:T0123456789"]
+  }
+}
+
 # Access to a policy is managed separately via datadog_restriction_policy,
 # keyed by "execution-policy:<id>".
 resource "datadog_restriction_policy" "kubernetes_prod_perms" {
@@ -111,8 +135,8 @@ resource "datadog_restriction_policy" "kubernetes_prod_perms" {
 ### Optional
 
 - `action_pattern` (Block, Optional) The set of actions this policy applies to. Required. (see [below for nested schema](#nestedblock--action_pattern))
-- `scope` (Block, Optional) Restricts where the policy applies, beyond `action_pattern`. When configured, exactly one of `kubernetes`, `scripts` or `remote_action_rshell` must be set, and it must match `action_pattern.integration`. Omitting this block means the policy has no scope restriction. (see [below for nested schema](#nestedblock--scope))
-- `target` (Block Set) A target this policy is scoped to, expressed as a set of Agent tags. Each target is matched independently; omitting all `target` blocks applies the policy fleet-wide. (see [below for nested schema](#nestedblock--target))
+- `scope` (Block, Optional) Restricts where the policy applies, beyond `action_pattern`. When configured, exactly one of `kubernetes`, `scripts`, `remote_action_rshell` or `slack` must be set, and it must match `action_pattern.integration`. Omitting this block means the policy has no scope restriction. (see [below for nested schema](#nestedblock--scope))
+- `target` (Block Set) A target this policy is scoped to, expressed as a set of tags. Each target is matched independently; omitting all `target` blocks applies the policy fleet-wide. (see [below for nested schema](#nestedblock--target))
 
 ### Read-Only
 
@@ -129,7 +153,7 @@ resource "datadog_restriction_policy" "kubernetes_prod_perms" {
 Required:
 
 - `action_fqns` (List of String) The fully qualified action names this policy matches. Use `*` to match all actions of the integration, or a fully qualified name prefixed with the integration's action namespace (for example `com.datadoghq.script.*` for the Script integration).
-- `integration` (String) The integration the actions belong to. Valid values are `INTEGRATION_KUBERNETES`, `INTEGRATION_SCRIPT`, `INTEGRATION_REMOTE_ACTION`.
+- `integration` (String) The integration the actions belong to. Valid values are `INTEGRATION_KUBERNETES`, `INTEGRATION_SCRIPT`, `INTEGRATION_REMOTE_ACTION`, `INTEGRATION_SLACK`.
 
 
 <a id="nestedblock--scope"></a>
@@ -140,6 +164,7 @@ Optional:
 - `kubernetes` (Block, Optional) Restricts the policy to specific Kubernetes namespaces. Requires `action_pattern.integration` to be `INTEGRATION_KUBERNETES`. (see [below for nested schema](#nestedblock--scope--kubernetes))
 - `remote_action_rshell` (Block, Optional) Restricts the policy to specific remote shell paths. Requires `action_pattern.integration` to be `INTEGRATION_REMOTE_ACTION`. (see [below for nested schema](#nestedblock--scope--remote_action_rshell))
 - `scripts` (Block, Optional) Restricts the policy to specific scripts. Requires `action_pattern.integration` to be `INTEGRATION_SCRIPT`. (see [below for nested schema](#nestedblock--scope--scripts))
+- `slack` (Block, Optional) Restricts the policy to specific Slack channel names. Requires `action_pattern.integration` to be `INTEGRATION_SLACK`. (see [below for nested schema](#nestedblock--scope--slack))
 
 <a id="nestedblock--scope--kubernetes"></a>
 ### Nested Schema for `scope.kubernetes`
@@ -190,13 +215,29 @@ Required:
 
 
 
+<a id="nestedblock--scope--slack"></a>
+### Nested Schema for `scope.slack`
+
+Optional:
+
+- `rule` (Block List) A rule restricting the Slack scope to specific channel names. (see [below for nested schema](#nestedblock--scope--slack--rule))
+
+<a id="nestedblock--scope--slack--rule"></a>
+### Nested Schema for `scope.slack.rule`
+
+Required:
+
+- `channel_name_selectors` (List of String) The channel name selectors this rule applies to, for example `incident-*`. Use `*` to match any channel name.
+
+
+
 
 <a id="nestedblock--target"></a>
 ### Nested Schema for `target`
 
 Required:
 
-- `agent_tags` (Set of String) The Agent tags identifying the target, for example `env:prod`.
+- `agent_tags` (Set of String) The tags identifying the target, for example `env:prod` for Agents or `slack_workspace_id:T0123456789` for a Slack workspace.
 
 Optional:
 

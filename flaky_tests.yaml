@@ -28,26 +28,6 @@ skipped_tests:
     reason: "Initial sync of tests failing on master branch"
     added: "2026-03-02"
     author: fpighi
-  - test: TestAccDatadogAgentlessScanningAwsScanOptions_Basic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogAgentlessScanningAwsScanOptions_Import
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogAgentlessScanningAwsScanOptions_Update
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogAgentlessScanningGcpScanOptions_Update
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogAgentlessScanningGcpScanOptions_Basic
-    reason: "404 Not Found reading/deleting GCP scan options — GCP not configured in org"
-    added: "2026-03-04"
-    author: LiuVII
 
   # User/Team datasource — Eventual consistency (9 tests)
   - test: TestAccDatadogUserDatasourceExactMatch
@@ -204,10 +184,6 @@ skipped_tests:
     author: fpighi
 
   # Provider bugs (3 tests)
-  - test: TestAccDatadogApmRetentionFilterOrder
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
   - test: TestAccServiceAccountApplicationKeyBasic_import
     reason: "Initial sync of tests failing on master branch"
     added: "2026-03-02"
@@ -248,32 +224,8 @@ skipped_tests:
     author: fpighi
 
   # Intermittent — Transient API timeouts and rate limits (5 tests, APIR-2793)
-  - test: TestAccDatadogMonitor_DataQuality_EmptyMonitorOptions
-    reason: "Intermittent 512 Timeout from /api/v1/monitor/validate"
-    added: "2026-04-10"
-    author: fpighi
-  - test: TestAccDatadogMonitor_WithTagConfig
-    reason: "Intermittent 512 Timeout from /api/v1/monitor/validate"
-    added: "2026-04-10"
-    author: fpighi
-  - test: TestAccDatadogDashboardQueryValueFormula_import
-    reason: "Intermittent 503 Service Unavailable — upstream connect error"
-    added: "2026-04-10"
-    author: fpighi
-  - test: TestAccDatadogSecurityMonitoringRule_AppSecSpansDeprecated
-    reason: "Intermittent non-empty plan — deprecated app_sec_spans data_source normalization"
-    added: "2026-04-10"
-    author: fpighi
-  - test: TestAccDatadogCustomAllocationRules_OverrideFalseUnmanagedAtEnd
-    reason: "Intermittent 429 Too Many Requests — rate limiting on CustomAllocationRules API"
-    added: "2026-04-10"
-    author: fpighi
   - test: TestAccMonitor_Fwprovider_FormulaFunction_Cost
     reason: "Intermittent 503 Service Unavailable from /api/v1/monitor/validate"
-    added: "2026-04-24"
-    author: fpighi
-  - test: TestAccDatadogTagPipelineRulesets_OverrideFalseUnmanagedAtEnd
-    reason: "Intermittent 429 Too Many Requests — rate limiting on ccm_list_tag_enrichment_rulesets"
     added: "2026-04-24"
     author: fpighi
 
@@ -304,3 +256,21 @@ skipped_tests:
     reason: "400 Bad Request — backend now requires tracking_mode/override_type, but datadog-api-client-go still models mode. Needs api-spec update + client regen before this can pass live."
     added: "2026-07-09"
     author: andrei.patru
+
+  # CSM Threats policy — write lock held by a deployment that does not finish (4 tests)
+  - test: TestAccCSMThreatsAgentRule_CreateAndUpdate
+    reason: "423 Locked on update / 409 Conflict on delete — new policies stay in 'ongoing deployment' for more than 27 min in the test org"
+    added: "2026-10-22"
+    author: fpighi
+  - test: TestAccCSMThreatsAgentRulesDataSource
+    reason: "423 Locked on update / 409 Conflict on delete — new policies stay in 'ongoing deployment' for more than 27 min in the test org"
+    added: "2026-10-22"
+    author: fpighi
+  - test: TestAccCSMThreatsPolicy_CreateAndUpdate
+    reason: "423 Locked on update / 409 Conflict on delete — new policies stay in 'ongoing deployment' for more than 27 min in the test org"
+    added: "2026-10-22"
+    author: fpighi
+  - test: TestAccCSMThreatsPolicy_CreateAndUpdateWithHostTagsLists
+    reason: "423 Locked on update / 409 Conflict on delete — new policies stay in 'ongoing deployment' for more than 27 min in the test org"
+    added: "2026-10-22"
+    author: fpighi

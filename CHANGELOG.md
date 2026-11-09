@@ -1,3 +1,44 @@
+## 4.29.0 (November 4, 2026)
+
+### BUGFIXES
+* [datadog_rum_retention_filter] Retry failed mutations due to concurrency errors by @katieed in https://github.com/DataDog/terraform-provider-datadog/pull/4459
+* [datadog_tag_indexing_rule] Accept server-renumbered rule_order and sweep leaked BDD rules by @fpighi in https://github.com/DataDog/terraform-provider-datadog/pull/4423
+* [datadog_tag_rule] Allow tag_value_patterns = ["*"] with required or negated by @ivanovart in https://github.com/DataDog/terraform-provider-datadog/pull/4462
+### IMPROVEMENTS
+* [datadog_observability_pipeline] Add missing fields to Amazon OpenSearch destination by @tessneau in https://github.com/DataDog/terraform-provider-datadog/pull/4397
+### FEATURES
+* [datadog_provider] Support the AWS credential chain for WIF by @devand123 in https://github.com/DataDog/terraform-provider-datadog/pull/4199
+* [datadog_sensitive_data_scanner_rule] Add recommended suppressions toggle by @GeoffreyRdn in https://github.com/DataDog/terraform-provider-datadog/pull/4439
+* [datadog_observability_pipeline] Add traces pipeline type and datadog_traces destination by @tessneau in https://github.com/DataDog/terraform-provider-datadog/pull/4434
+* [datadog_derived_metric] Add Terraform support for Derived Metrics by @dd-octo-sts[bot] in https://github.com/DataDog/terraform-provider-datadog/pull/4469
+### DOCUMENTATION
+* [datadog_provider] Document v4.26.0 as the minimum for Terraform dynamic credentials by @tyjet in https://github.com/DataDog/terraform-provider-datadog/pull/4442
+
+## New Contributors
+* @GeoffreyRdn made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4439
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.28.0...v4.29.0
+
+## 4.28.0 (October 29, 2026)
+
+### BUGFIXES
+* [datadog_dashboard_v2] Read missing bool fields as their true default  by @bonnierhee in https://github.com/DataDog/terraform-provider-datadog/pull/4402
+* [datadog_observability_pipeline] Preserve omitted metric aggregation by @20agbekodo in https://github.com/DataDog/terraform-provider-datadog/pull/4438
+### FEATURES
+* [datadog_github_oidc_persona_mapping] Add datadog_github_oidc_persona_mapping and datadog_github_oidc_intake_mapping resources by @juliendoutre in https://github.com/DataDog/terraform-provider-datadog/pull/4391
+* [datadog_observability_pipeline] Add generated metric aggregation option by @20agbekodo in https://github.com/DataDog/terraform-provider-datadog/pull/4379
+* [datadog_integration_aws_account] Add service quotas collection by @josueriosv in https://github.com/DataDog/terraform-provider-datadog/pull/4409
+
+## New Contributors
+* @gie2910 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4411
+* @bonnierhee made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4402
+* @josueriosv made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4408
+* @ChrisHansenDatadog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4349
+* @guillaumerob-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4428
+* @skedida made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4114
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.27.0...v4.28.0
+
 ## 4.27.0 (October 21, 2026)
 
 ### BUGFIXES

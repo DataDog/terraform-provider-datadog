@@ -142,17 +142,59 @@ with `additionalProperties: {}`, `additionalProperties: true`, or a value of
 value is a `$ref`, the diagnostic names the component at the end of the `$ref`
 chain instead, since that is where the type is missing.
 
-For a map attribute, the path names the map itself, not its value. If the map
-is directly a list's item schema, the error is instead reported at the list's
-path with `collection element kind "unsupported" has no framework element type`
-followed by the unconstrained-value explanation. Nested collection failures
-currently report the enclosing collection's path; pointing to the failing
-level is tracked in [TF-413](https://datadoghq.atlassian.net/browse/TF-413).
-`[]` and `{}` can still appear for enclosing collections traversed before the
-failure, as in `environments[]` above, where the map is a named property of the
-list's object items.
+For a single-level collection, the diagnostic names the collection attribute
+itself, preserving the existing message format. A nested collection failure also
+names the failing element, appending `[]` for each list item and `{}` for each map
+value. For an attribute `labels`:
+
+| Schema | Failing element path |
+| --- | --- |
+| `map<map<{}>>` | `labels{}{}` |
+| `list<map<{}>>` | `labels[]{}` |
+| `map<list<{}>>` | `labels{}[]` |
+
+For example, a list of maps with unconstrained values reports
+`model: cannot build attribute at "resource.labels": element at "resource.labels[]{}": collection element kind "unsupported" has no framework element type`
+followed by the unconstrained-value explanation. The attribute path stays
+unchanged; the additional element path identifies which `items` or
+`additionalProperties` declaration needs fixing. Enclosing object collections
+remain part of both paths, as in `environments[].labels{}{}`.
 
 Describe the actual API values with a concrete schema or `$ref` under
 `additionalProperties`. If the API returns an array, correct the declaration to
 `type: array` with typed `items` instead. Do not choose a type merely to make
 generation pass: the generated SDK and Terraform mapping must match the response.
+
+## Optional create identity
+
+`optional create data.id is unsupported` means a writable ID is present but
+not required by the create schema. tfgen cannot infer caller/server assignment
+semantics and refuses to emit an incomplete resource. Omit that artifact until
+optional identity semantics are supported; preserve the authoritative API schema.
+See [identity support and limitations](scope.md#caller-assigned-resource-identity).
+
+## Caller-assigned identity conflicts
+
+`caller-assigned identity reserves name` means a payload attribute or parent
+path parameter already uses the generated create input's name. The generator
+cannot safely alias those fields. Omit the artifact until an explicit mapping
+is available; do not remove a real API property to bypass the collision.
+
+`caller-assigned identity requires a response data.id` means the read schema
+cannot supply API identity. Check the authoritative read schema and correct it
+only if the API actually returns that field.
+
+`data.id has an unsupported type or enum` means no safe SDK conversion was
+found. Check the request schema's component reference, scalar type, and format.
+See [identity support and limitations](scope.md#caller-assigned-resource-identity)
+for supported conversions; do not change an accurate API contract to force emission.
+
+## Non-string response identity
+
+`non-string response IDs are unsupported` means response `data.id` would produce
+a value incompatible with the string Terraform identity field. Generation stops
+instead of emitting an invalid Go assignment. This applies to resource and
+singular data-source identity, not ordinary payload attributes or plural result
+items. Preserve the authoritative response schema; a generator conversion needs
+to be implemented before adopting an API with such an ID. See
+[Terraform identity](scope.md#terraform-identity).

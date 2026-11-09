@@ -36,6 +36,7 @@ type rumApplicationModel struct {
 	RumEventProcessingState        types.String `tfsdk:"rum_event_processing_state"`
 	ProductAnalyticsRetentionState types.String `tfsdk:"product_analytics_retention_state"`
 	ApiKeyID                       types.Int32  `tfsdk:"api_key_id"`
+	CreateDefaultRetentionFilters  types.Bool   `tfsdk:"create_default_retention_filters"`
 }
 
 func NewRumApplicationResource() resource.Resource {
@@ -64,7 +65,7 @@ func (r *rumApplicationResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Optional:    true,
 				Computed:    true,
 				Default:     stringdefault.StaticString("browser"),
-				Description: "Type of the RUM application. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`.",
+				Description: "Type of the RUM application. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`, `roku`, `electron`, `unity`, `kotlin-multiplatform`.",
 			},
 			"client_token": schema.StringAttribute{
 				Computed:    true,
@@ -73,7 +74,7 @@ func (r *rumApplicationResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"rum_event_processing_state": schema.StringAttribute{
 				Optional:    true,
 				Computed:    true,
-				Description: "Configures which RUM events are processed and stored for the application.",
+				Description: "Configures which RUM events are processed and stored for the application. `ALL` enables RUM, `ERROR_FOCUSED_MODE` uses the application for Error Tracking only, without RUM, and `NONE` disables RUM event processing. If not set, Datadog uses `ALL` when the application is created.",
 				Validators: []validator.String{
 					stringvalidator.OneOf("ALL", "ERROR_FOCUSED_MODE", "NONE"),
 				},
@@ -81,10 +82,14 @@ func (r *rumApplicationResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"product_analytics_retention_state": schema.StringAttribute{
 				Optional:    true,
 				Computed:    true,
-				Description: "Controls the retention policy for Product Analytics data derived from RUM events.",
+				Description: "Controls the retention policy for Product Analytics data derived from RUM events. `MAX` enables Product Analytics for the application, and `NONE` disables it. If not set, Datadog picks the value when the application is created.",
 				Validators: []validator.String{
 					stringvalidator.OneOf("MAX", "NONE"),
 				},
+			},
+			"create_default_retention_filters": schema.BoolAttribute{
+				Optional:    true,
+				Description: "Whether to create the default retention filters (`Sessions with errors` and `Sessions`, both at 100%) when the application is created. Defaults to `true` on the API side. Set to `false` to create the application without them, such as when you manage its retention filters in the same configuration. Permanent retention filters are always created. This setting only applies during application creation. Changing it afterward doesn't add or remove filters.",
 			},
 			"id": utils.ResourceIDAttribute(),
 			"api_key_id": schema.Int32Attribute{
@@ -247,6 +252,9 @@ func (r *rumApplicationResource) updateState(ctx context.Context, state *rumAppl
 func (r *rumApplicationResource) buildRumApplicationRequestBody(ctx context.Context, state *rumApplicationModel) (*datadogV2.RUMApplicationCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewRUMApplicationCreateAttributesWithDefaults()
+	// The generated client defaults this optional field to true. Clear it so the
+	// request matches what this resource sent before it existed.
+	attributes.CreateDefaultRetentionFilters = nil
 
 	attributes.SetName(state.Name.ValueString())
 	if !state.Type.IsNull() {
@@ -260,6 +268,10 @@ func (r *rumApplicationResource) buildRumApplicationRequestBody(ctx context.Cont
 
 	if !state.ProductAnalyticsRetentionState.IsNull() && !state.ProductAnalyticsRetentionState.IsUnknown() {
 		attributes.SetProductAnalyticsRetentionState(datadogV2.RUMProductAnalyticsRetentionState(state.ProductAnalyticsRetentionState.ValueString()))
+	}
+
+	if !state.CreateDefaultRetentionFilters.IsNull() && !state.CreateDefaultRetentionFilters.IsUnknown() {
+		attributes.SetCreateDefaultRetentionFilters(state.CreateDefaultRetentionFilters.ValueBool())
 	}
 
 	req := datadogV2.NewRUMApplicationCreateRequestWithDefaults()

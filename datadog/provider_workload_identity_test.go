@@ -16,6 +16,7 @@ import (
 
 	api "github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	awsauth "github.com/DataDog/datadog-api-client-go/v2/auth/aws"
 	"github.com/hashicorp/go-cty/cty"
 	framework "github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -374,7 +375,7 @@ func TestTerraformWorkloadIdentityExplicitAuthentication(t *testing.T) {
 				if mode == "aws" {
 					require.Equal(t, "aws", client.GetConfig().DelegatedTokenConfig.Provider)
 					require.Equal(t, otherOrg, client.GetConfig().DelegatedTokenConfig.OrgUUID)
-					require.IsType(t, &api.AWSAuth{}, client.GetConfig().DelegatedTokenConfig.ProviderAuth)
+					require.IsType(t, &awsauth.Provider{}, client.GetConfig().DelegatedTokenConfig.ProviderAuth)
 					require.Zero(t, requests)
 					return
 				}

@@ -134,6 +134,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_appsec_waf_exclusion_filter_test":                            "application-security",
 	"tests/resource_datadog_authn_mapping_test":                                          "authn_mapping",
 	"tests/resource_datadog_aws_wif_identity_mapping_test":                               "cloud-authentication",
+	"tests/resource_datadog_aws_wif_intake_mapping_test":                                 "cloud-authentication",
 	"tests/resource_datadog_github_oidc_intake_mapping_test":                             "cloud-authentication",
 	"tests/resource_datadog_github_oidc_identity_mapping_test":                           "cloud-authentication",
 	"tests/resource_datadog_child_organization_test":                                     "organization",
@@ -288,6 +289,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_logs_metric_test":                                            "logs-metric",
 	"tests/resource_datadog_logs_restriction_query_test":                                 "logs-restriction-queries",
 	"tests/resource_datadog_metric_metadata_test":                                        "metrics",
+	"tests/resource_datadog_derived_metric_test":                                         "metrics",
 	"tests/resource_datadog_metric_tag_configuration_test":                               "metrics",
 	"tests/resource_datadog_tag_indexing_rule_test":                                      "metrics",
 	"tests/resource_datadog_tag_indexing_rule_exemption_test":                            "metrics",
@@ -649,6 +651,12 @@ func uniqueAWSAccountID(ctx context.Context, t *testing.T) string {
 		result = fmt.Sprintf("%s%s", result, strconv.Itoa(int(r)))
 	}
 	return result[:12]
+}
+
+// uniqueGCPProjectID matches the GCP project ID format: lowercase, starts with a letter, 6-30 chars.
+func uniqueGCPProjectID(ctx context.Context, t *testing.T) string {
+	hash := fmt.Sprintf("%x", sha256.Sum256([]byte(uniqueEntityName(ctx, t))))
+	return "tf-" + hash[:17]
 }
 
 // uniqueAgentRuleName takes the current/frozen time and uses it to generate a unique agent

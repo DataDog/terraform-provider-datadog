@@ -107,7 +107,10 @@ func generateWriteOnlyFixture(t *testing.T, tempRoot string, fixture writeOnlyRe
 	tempProvider := filepath.Join(tempRoot, strings.ReplaceAll(fixture.name, " ", "_"), run, "provider")
 	outputRoot := filepath.Join(tempProvider, "datadog", "fwprovider")
 	reportPath := filepath.Join(tempProvider, "tfgen-report.json")
-	specPath := filepath.Join("..", "testdata", "mini-oas", fixture.spec)
+	specPath := fixture.spec
+	if !filepath.IsAbs(specPath) {
+		specPath = filepath.Join("..", "testdata", "mini-oas", specPath)
+	}
 
 	if err := runTfgen(
 		"generate",
