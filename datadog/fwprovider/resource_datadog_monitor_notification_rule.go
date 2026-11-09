@@ -1,17 +1,23 @@
 package fwprovider
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -38,6 +44,11 @@ type MonitorNotificationRuleModel struct {
 	MonitorNotificationRuleFilter                *MonitorNotificationRuleFilter                `tfsdk:"filter"`
 	MonitorNotificationRuleConditionalRecipients *MonitorNotificationRuleConditionalRecipients `tfsdk:"conditional_recipients"`
 	MonitorNotificationRuleBundleConfig          *MonitorNotificationRuleBundleConfig          `tfsdk:"bundle_config"`
+	RuleOptions                                  types.Object                                  `tfsdk:"rule_options"`
+}
+
+var ruleOptionsAttrTypes = map[string]attr.Type{
+	"is_threaded": types.BoolType,
 }
 
 type MonitorNotificationRuleFilter struct {
@@ -105,6 +116,24 @@ func (r *MonitorNotificationRuleResource) Schema(_ context.Context, _ resource.S
 				Optional:    true,
 				Validators: []validator.Set{
 					setvalidator.SizeAtLeast(1),
+				},
+			},
+			"rule_options": schema.SingleNestedAttribute{
+				Description: "Additional options for the notification rule. When omitted, the options currently set on the rule, for example through the Datadog UI, are kept.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.UseStateForUnknown(),
+				},
+				Attributes: map[string]schema.Attribute{
+					"is_threaded": schema.BoolAttribute{
+						Description: "Whether Slack notifications for the same monitor are posted as replies in a single thread (`true`) or as separate messages (`false`). When omitted, the value currently set on the rule is kept.",
+						Optional:    true,
+						Computed:    true,
+						PlanModifiers: []planmodifier.Bool{
+							boolplanmodifier.UseStateForUnknown(),
+						},
+					},
 				},
 			},
 		},
@@ -293,6 +322,22 @@ func (r *MonitorNotificationRuleResource) updateState(ctx context.Context, state
 	}
 	r.updateConditionalRecipientsState(ctx, state, attributes)
 	r.updateBundleConfigState(state, attributes)
+	r.updateRuleOptionsState(state, attributes)
+}
+
+func (r *MonitorNotificationRuleResource) updateRuleOptionsState(state *MonitorNotificationRuleModel, attributes datadogV2.MonitorNotificationRuleResponseAttributes) {
+	state.RuleOptions = types.ObjectNull(ruleOptionsAttrTypes)
+	ruleOptions, ok := attributes.AdditionalProperties["rule_options"].(map[string]interface{})
+	if !ok {
+		return
+	}
+	isThreaded, ok := ruleOptions["is_threaded"].(bool)
+	if !ok {
+		return
+	}
+	state.RuleOptions = types.ObjectValueMust(ruleOptionsAttrTypes, map[string]attr.Value{
+		"is_threaded": types.BoolValue(isThreaded),
+	})
 }
 
 func (r *MonitorNotificationRuleResource) updateConditionalRecipientsState(ctx context.Context, state *MonitorNotificationRuleModel, attributes datadogV2.MonitorNotificationRuleResponseAttributes) {
@@ -362,7 +407,35 @@ func (r *MonitorNotificationRuleResource) buildRequestAttributes(ctx context.Con
 		attributes.SetBundleConfig(*bundleConfig)
 	}
 
+	if !state.RuleOptions.IsNull() && !state.RuleOptions.IsUnknown() {
+		isThreaded, ok := state.RuleOptions.Attributes()["is_threaded"].(types.Bool)
+		if ok && !isThreaded.IsNull() && !isThreaded.IsUnknown() {
+			if err := setRuleOptions(attributes, isThreaded.ValueBool()); err != nil {
+				diags.AddError("error building rule_options", err.Error())
+			}
+		}
+	}
+
 	return attributes, diags
+}
+
+// The generated client does not model rule_options yet. A non-nil UnparsedObject
+// makes the client marshal that map verbatim, so the typed request is re-encoded
+// with rule_options added.
+func setRuleOptions(attributes *datadogV2.MonitorNotificationRuleAttributes, isThreaded bool) error {
+	raw, err := attributes.MarshalJSON()
+	if err != nil {
+		return err
+	}
+	var body map[string]interface{}
+	decoder := json.NewDecoder(bytes.NewReader(raw))
+	decoder.UseNumber()
+	if err := decoder.Decode(&body); err != nil {
+		return err
+	}
+	body["rule_options"] = map[string]interface{}{"is_threaded": isThreaded}
+	attributes.UnparsedObject = body
+	return nil
 }
 
 func (r *MonitorNotificationRuleResource) buildMonitorNotificationRuleCreateRequest(ctx context.Context, state *MonitorNotificationRuleModel) (*datadogV2.MonitorNotificationRuleCreateRequest, diag.Diagnostics) {
