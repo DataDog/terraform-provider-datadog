@@ -214,7 +214,7 @@ func (r *{{ .GoName }}Resource) Delete(ctx context.Context, request resource.Del
 // updateState maps {{ .State.ParamType }} into state, returning diagnostics
 // rather than writing them so it stays free of the resource request/response
 // types and can fail at a specific schema path. Shared by Create, Read and
-// Update, which all resolve the same response type.
+// Update, which all resolve the same {{ if eq .State.ParamName "data" }}response data{{ else }}response{{ end }} type.
 func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .RootModel }}, {{ .State.ParamName }} {{ .State.ParamType }}) diag.Diagnostics {
 {{- template "updateStateBody" . }}
 }
@@ -227,7 +227,7 @@ func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .Root
   point it includes this.
 */}}
 {{- define "commitState" -}}
-	response.Diagnostics.Append(r.updateState(ctx, &state, &resp)...)
+	response.Diagnostics.Append(r.updateState(ctx, &state, {{ if .StateResponseExpr }}{{ .StateResponseExpr }}{{ else }}&resp{{ end }})...)
 	if response.Diagnostics.HasError() {
 		return
 	}

@@ -492,7 +492,66 @@ var _ = Describe("BuildResourceView", func() {
 		Expect(unsupported.Nodes).To(ContainElement(HaveField("Path", ContainSubstring("settings"))))
 	})
 
-	It("fails when Create and Read resolve different response types", func() {
+	DescribeTable("maps a shared data object when lifecycle response wrappers differ",
+		func(createType, updateType string, withUpdate bool) {
+			op := incidentTypeResourceOperation(withUpdate)
+			readSchema := op.ResolvedGroup.Read.ResponseSchema
+			op.ResolvedGroup.Create.ResponseRefName = createType
+			op.ResolvedGroup.Create.ResponseSchema = &model.Schema{
+				Kind: model.SchemaKindObject, Required: []string{"data"}, Properties: readSchema.Properties,
+			}
+			if withUpdate {
+				op.ResolvedGroup.Update.ResponseRefName = updateType
+				op.ResolvedGroup.Update.ResponseSchema = readSchema
+			}
+
+			art, err := model.BuildArtifact(op)
+			Expect(err).NotTo(HaveOccurred())
+			view, err := BuildResourceView(art)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(view.State.ParamName).To(Equal("data"))
+			Expect(view.State.ParamType).To(Equal("datadogV2.IncidentTypeData"))
+			Expect(view.Create.StateResponseExpr).To(Equal("resp.GetData()"))
+			Expect(view.Read.StateResponseExpr).To(Equal("resp.GetData()"))
+			calls := 2
+			if withUpdate {
+				Expect(view.Update.StateResponseExpr).To(Equal("resp.GetData()"))
+				calls++
+			}
+			source := string(mustRenderResource(view))
+			Expect(strings.Count(source, "r.updateState(ctx, &state, resp.GetData())")).To(Equal(calls))
+			Expect(source).To(ContainSubstring("data datadogV2.IncidentTypeData) diag.Diagnostics"))
+			Expect(source).To(ContainSubstring("data.GetIdOk()"))
+			Expect(source).To(ContainSubstring("attributes := data.GetAttributes()"))
+			Expect(source).NotTo(ContainSubstring("resp.Data"))
+		},
+		Entry("Create wrapper differs", "CreateIncidentTypeResponse", "IncidentTypeResponse", true),
+		Entry("Update wrapper differs", "IncidentTypeResponse", "UpdateIncidentTypeResponse", true),
+		Entry("all wrappers differ", "CreateIncidentTypeResponse", "UpdateIncidentTypeResponse", true),
+		Entry("resource has no Update", "CreateIncidentTypeResponse", "", false),
+	)
+
+	DescribeTable("rejects response wrappers without the same named data object",
+		func(change func(*model.Schema)) {
+			op := incidentTypeResourceOperation(true)
+			data := *op.ResolvedGroup.Read.ResponseSchema.Properties["data"]
+			change(&data)
+			op.ResolvedGroup.Create.ResponseRefName = "CreateIncidentTypeResponse"
+			op.ResolvedGroup.Create.ResponseSchema = &model.Schema{
+				Kind: model.SchemaKindObject, Properties: map[string]*model.Schema{"data": &data},
+			}
+			op.ResolvedGroup.Update.ResponseSchema = op.ResolvedGroup.Read.ResponseSchema
+			art, err := model.BuildArtifact(op)
+			Expect(err).NotTo(HaveOccurred())
+			_, err = BuildResourceView(art)
+			Expect(err).To(MatchError(ContainSubstring("does not share its named data object")))
+		},
+		Entry("another data component", func(s *model.Schema) { s.RefName = "OtherData" }),
+		Entry("inline data", func(s *model.Schema) { s.RefName = "" }),
+		Entry("array data", func(s *model.Schema) { s.Kind = model.SchemaKindArray }),
+	)
+
+	It("rejects different response wrappers without a shared data type", func() {
 		op := incidentTypeResourceOperation(true)
 		op.ResolvedGroup.Create.ResponseRefName = "SomethingElseResponse"
 

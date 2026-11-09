@@ -37,6 +37,10 @@ one who discovers the rough edges, and budget time for the acceptance test.
   provider**. OpenAPI-derived binding is authoritative and generation can succeed
   before the SDK catches up, but the provider will not compile. SDK update and
   provider build are separate gates.
+- Resource Create, Read, and Update may return different response wrappers when
+  their JSON:API `data` members reference the same named object component. The
+  generated state mapper accepts that shared SDK data type. Different, inline,
+  or non-object data shapes across distinct wrappers remain unsupported.
 
 ## Terraform identity
 

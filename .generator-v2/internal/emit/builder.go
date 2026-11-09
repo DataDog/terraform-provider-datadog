@@ -1879,16 +1879,37 @@ func dsGoName(name string) string {
 	return lowerFirst("Datadog" + model.SdkName(name))
 }
 
-// checkResponseTypeMatches fails a resource whose role response type disagrees
-// with Read's: Create, Read and Update share one generated updateState method,
-// which cannot map two different SDK response types.
-func checkResponseTypeMatches(artifact, role, roleType, readType string) error {
-	if roleType == readType {
-		return nil
+// resourceUsesSharedResponseData allows distinct response envelopes only when
+// every body-returning lifecycle role shares the same named data object. Mapping
+// that value avoids depending on wrapper fields or their pointer requiredness.
+func resourceUsesSharedResponseData(artifact string, lifecycle *model.LifecycleBindings) (bool, error) {
+	read := lifecycle.Read
+	roles := []struct {
+		name string
+		call *model.SDKCall
+	}{{"Create", lifecycle.Create}, {"Update", lifecycle.Update}}
+	sharedData := false
+	for _, role := range roles {
+		if role.call != nil && role.call.GoResponseType != read.GoResponseType {
+			sharedData = true
+		}
 	}
-	return fmt.Errorf(
-		"emit: resource %q: %s response type %q differs from Read's %q — a single updateState cannot map both",
-		artifact, role, roleType, readType)
+	if !sharedData {
+		return false, nil
+	}
+	for _, role := range roles {
+		call := role.call
+		if call == nil {
+			continue
+		}
+		if call.GoResponseType == "" || read.GoResponseDataType == "" ||
+			call.GoResponseDataType != read.GoResponseDataType || call.GoPackage != read.GoPackage {
+			return false, fmt.Errorf(
+				"emit: resource %q: %s response type %q differs from Read's %q and does not share its named data object %q",
+				artifact, role.name, call.GoResponseType, read.GoResponseType, read.GoResponseDataType)
+		}
+	}
+	return true, nil
 }
 
 // BuildResourceView assembles the render-ready view for a resource artifact.
@@ -1914,13 +1935,9 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		return ResourceView{}, fmt.Errorf(
 			"emit: resource %q: Read has no named response type — updateState needs one", a.Name)
 	}
-	if err := checkResponseTypeMatches(a.Name, "Create", lc.Create.GoResponseType, lc.Read.GoResponseType); err != nil {
+	sharedResponseData, err := resourceUsesSharedResponseData(a.Name, lc)
+	if err != nil {
 		return ResourceView{}, err
-	}
-	if lc.Update != nil {
-		if err := checkResponseTypeMatches(a.Name, "Update", lc.Update.GoResponseType, lc.Read.GoResponseType); err != nil {
-			return ResourceView{}, err
-		}
 	}
 	if unsupported := validateWriteOnlySecrets(a.Schema.Attributes); len(unsupported) > 0 {
 		return ResourceView{}, &UnsupportedEmitError{Nodes: unsupported}
@@ -1942,7 +1959,14 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		topLevel = append(topLevel, attr)
 	}
 
-	env := b.flattenEnvelope(topLevel, lc.IdStrategy, "resp.Data", pathInputs...)
+	responseRoot, responseParam, responseType := "resp.Data", "resp", "*"+primary.GoPackage+"."+primary.GoResponseType
+	stateResponseExpr := ""
+	if sharedResponseData {
+		responseRoot, responseParam = "data", "data"
+		responseType = primary.GoPackage + "." + primary.GoResponseDataType
+		stateResponseExpr = "resp.GetData()"
+	}
+	env := b.flattenEnvelope(topLevel, lc.IdStrategy, responseRoot, pathInputs...)
 	if len(b.unsupported) > 0 {
 		return ResourceView{}, &UnsupportedEmitError{Nodes: b.unsupported}
 	}
@@ -2005,7 +2029,8 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		updateView = CRUDCallView{
 			Method: lc.Update.GoMethod, GoRequestType: lc.Update.GoRequestType,
 			GoResponseType: lc.Update.GoResponseType, Arguments: updateArgs,
-			Envelope: buildRequestEnvelope(a.Name, "Update", primary.GoPackage, lc.Update, updateFields, &b.unsupported),
+			StateResponseExpr: stateResponseExpr,
+			Envelope:          buildRequestEnvelope(a.Name, "Update", primary.GoPackage, lc.Update, updateFields, &b.unsupported),
 			WriteOnlySecrets: writeOnlySecretsForFields(
 				b.writeOnlySecrets, updateFields, "GetSecretForUpdate(ctx, &request.Config, &request)"),
 		}
@@ -2101,11 +2126,13 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		Create: CRUDCallView{
 			Method: lc.Create.GoMethod, GoRequestType: lc.Create.GoRequestType,
 			GoResponseType: lc.Create.GoResponseType, Arguments: createArgs,
-			Envelope: createEnvelope, WriteOnlySecrets: createWriteOnlySecrets,
+			StateResponseExpr: stateResponseExpr,
+			Envelope:          createEnvelope, WriteOnlySecrets: createWriteOnlySecrets,
 			NormalizeUnknowns: buildUnknownNormalizations(env.leaves, "state"),
 		},
 		Read: CRUDCallView{
 			Method: lc.Read.GoMethod, GoResponseType: lc.Read.GoResponseType, Arguments: readArgs,
+			StateResponseExpr: stateResponseExpr,
 		},
 		Update:            updateView,
 		UpdateUnsupported: lc.UpdateUnsupported,
@@ -2120,8 +2147,8 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 			IncludeResourceID:   true,
 		},
 		State: StateView{
-			ParamName:   "resp",
-			ParamType:   "*" + primary.GoPackage + "." + primary.GoResponseType,
+			ParamName:   responseParam,
+			ParamType:   responseType,
 			Preamble:    env.preamble,
 			Assignments: assignments,
 			Lists:       recordLists,

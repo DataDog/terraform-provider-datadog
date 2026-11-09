@@ -610,6 +610,9 @@ type CRUDCallView struct {
 	GoRequestType   string
 	GoResponseType  string
 	HasResponseBody bool
+	// StateResponseExpr overrides the default &resp passed to updateState when
+	// CRUD wrappers differ but their GetData methods return the same SDK object.
+	StateResponseExpr string
 	// Arguments are the positional SDK call arguments in call order (e.g. the
 	// terminal path id, aliased to "id").
 	Arguments []SDKArgumentView
