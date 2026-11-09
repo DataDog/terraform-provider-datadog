@@ -827,6 +827,40 @@ class TestDetectAffectedResources(unittest.TestCase):
         item = pr("[datadog_monitor_new_feature] Add resource", author_association="MEMBER")
         self.assertEqual(self.labels(item, self.NEW_RESOURCE_FILES), ["resource/datadog_monitor_new_feature"])
 
+    NEW_DOWNTIME_DATA_SOURCE = [
+        "datadog/fwprovider/data_source_datadog_downtime.go",
+        "datadog/tests/data_source_datadog_downtime_test.go",
+        "docs/data-sources/downtime.md",
+        "examples/data-sources/datadog_downtime/data-source.tf",
+    ]
+
+    def test_pr_new_data_source_for_documented_resource(self):
+        # datadog_downtime is documented only as a resource.
+        for title in ("[datadog_downtime] Add data source", "[datadog_downtime] Add lookup", "Add lookup"):
+            for author in ("NONE", "MEMBER"):
+                for files in (self.NEW_DOWNTIME_DATA_SOURCE, self.NEW_DOWNTIME_DATA_SOURCE[:2]):
+                    with self.subTest(title=title, author=author, files=files):
+                        self.assertEqual(
+                            self.labels(pr(title, author_association=author), files),
+                            ["datasource/datadog_downtime"],
+                        )
+
+    def test_pr_new_data_source_test_file_alone(self):
+        files = ["datadog/tests/data_source_datadog_monitor_json_test.go"]
+        self.assertEqual(self.labels(pr("Fix"), files), ["datasource/datadog_monitor_json"])
+
+    def test_pr_existing_file_needs_its_documented_kind(self):
+        # Existing files can define a differently named data source, e.g.
+        # data_source_datadog_csm_threats_policy.go is datadog_csm_threats_policies.
+        files = [
+            "datadog/fwprovider/data_source_datadog_downtime.go",
+            "datadog/tests/data_source_datadog_downtime_test.go",
+        ]
+        for f in files:
+            os.makedirs(os.path.join(self.root, os.path.dirname(f)), exist_ok=True)
+            open(os.path.join(self.root, f), "w").close()
+        self.assertEqual(self.labels(pr("Fix"), files), [])
+
     def test_pr_ci_only(self):
         files = [".github/workflows/test.yml", "scripts/select_pr_tests.py", "go.mod"]
         self.assertEqual(self.labels(pr("[CI] Bump actions"), files), [])

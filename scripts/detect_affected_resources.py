@@ -280,7 +280,12 @@ def _longest_prefix(suffix: str, candidates: Set[str]) -> Optional[str]:
     return None
 
 
-def names_from_files(files: Iterable[str], known: Known) -> Set[Name]:
+def names_from_files(files: Iterable[str], known: Known, repo_root: Optional[str] = None) -> Set[Name]:
+    """Return the names the changed files are about.
+
+    repo_root is the base branch checkout, used to tell files the PR adds
+    from existing ones.
+    """
     files = [f.strip() for f in files]
     found: Set[Name] = set()
     # Docs, examples and non-test source files are named exactly after their
@@ -289,14 +294,16 @@ def names_from_files(files: Iterable[str], known: Known) -> Set[Name]:
     # shorter, unrelated name (..._monitor_new_feature_test.go is not
     # datadog_monitor), whether or not the docs exist yet.
     unknown: Known = {kind: set() for kind in known}
-    tests: List[Tuple[str, str]] = []
+    any_known = known[RESOURCE] | known[DATASOURCE]
+    tests: List[Tuple[str, str, bool]] = []
     for f in files:
         for prefix, names in _DIR_NAMES.items():
             if f.startswith(prefix):
                 found.update(n for n in names if n[1] in known[n[0]])
+        added = repo_root is not None and not os.path.exists(os.path.join(repo_root, f))
         m = _SOURCE_FILE_RE.match(f)
         if m and m.group(3):
-            tests.append((_FILE_KIND[m.group(1)], m.group(2)))
+            tests.append((_FILE_KIND[m.group(1)], m.group(2), added))
             continue
         m = m or _DOCS_FILE_RE.match(f) or _EXAMPLES_FILE_RE.match(f)
         if not m:
@@ -304,16 +311,22 @@ def names_from_files(files: Iterable[str], known: Known) -> Set[Name]:
         # resource_datadog_synthetics_test_.go ends in "_" so Go doesn't
         # treat it as a test file.
         kind, name = _FILE_KIND[m.group(1)], "datadog_" + m.group(2).rstrip("_")
-        if name in known[kind]:
+        # A file the PR adds states its kind, so a new data source for a
+        # resource that is documented only as a resource keeps that kind.
+        # Existing files must match a documented name exactly: some define a
+        # differently named data source (data_source_datadog_csm_threats_policy.go
+        # is datadog_csm_threats_policies).
+        if name in known[kind] or (added and name in any_known):
             found.add((kind, name))
         else:
             unknown[kind].add(name)
 
     # Test files may add a suffix to the resource name, e.g.
     # resource_datadog_dashboard_heatmap_test.go.
-    for kind, suffix in tests:
-        name = _longest_prefix(suffix, known[kind] | unknown[kind])
-        if name in known[kind]:
+    for kind, suffix, added in tests:
+        documented = any_known if added else known[kind]
+        name = _longest_prefix(suffix, documented | unknown[kind])
+        if name in documented:
             found.add((kind, name))
     return found
 
@@ -439,7 +452,7 @@ def detect_labels(item: dict, files: List[str], repo_root: str) -> List[Tuple[st
     from_title = names_from_text(title, known)
     if "pull_request" in item:
         # File paths always state the kind.
-        from_files = dict.fromkeys(names_from_files(files, known), True)
+        from_files = dict.fromkeys(names_from_files(files, known, repo_root), True)
         names = _prefer_explicit(from_title, from_files)
     else:
         section = affected_section(body)
