@@ -5,7 +5,10 @@ import (
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-go/tftypes"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -266,4 +269,48 @@ func TestUpdateVariablesStateMetricQuery(t *testing.T) {
 	v = read("cost alert", costVars)
 	assert.Equal(t, []CloudCostQuery{c}, v.CloudCostQuery)
 	assert.Empty(t, v.MetricQuery)
+}
+
+func TestMonitorValidateConfigVariables(t *testing.T) {
+	ctx := context.Background()
+	r := &monitorResource{}
+	schemaResp := &resource.SchemaResponse{}
+	r.Schema(ctx, resource.SchemaRequest{}, schemaResp)
+	objType := schemaResp.Schema.Type().TerraformType(ctx).(tftypes.Object)
+	varType := objType.AttributeTypes["variables"].(tftypes.List).ElementType.(tftypes.Object)
+
+	nulls := func(o tftypes.Object) map[string]tftypes.Value {
+		m := map[string]tftypes.Value{}
+		for k, t := range o.AttributeTypes {
+			m[k] = tftypes.NewValue(t, nil)
+		}
+		return m
+	}
+	query := func(block, dataSource string) tftypes.Value {
+		lt := varType.AttributeTypes[block].(tftypes.List)
+		q := nulls(lt.ElementType.(tftypes.Object))
+		q["name"] = tftypes.NewValue(tftypes.String, "q1")
+		q["query"] = tftypes.NewValue(tftypes.String, "avg:system.cpu.user{*}")
+		q["data_source"] = tftypes.NewValue(tftypes.String, dataSource)
+		return tftypes.NewValue(lt, []tftypes.Value{tftypes.NewValue(lt.ElementType, q)})
+	}
+
+	tests := []struct {
+		monitorType, block, dataSource string
+		wantErr                        bool
+	}{
+		{"cost alert", "metric_query", "metrics", true},
+		{"query alert", "metric_query", "metrics", false},
+		{"query alert", "cloud_cost_query", "metrics", true},
+	}
+	for _, tt := range tests {
+		v := nulls(varType)
+		v[tt.block] = query(tt.block, tt.dataSource)
+		root := nulls(objType)
+		root["type"] = tftypes.NewValue(tftypes.String, tt.monitorType)
+		root["variables"] = tftypes.NewValue(objType.AttributeTypes["variables"], []tftypes.Value{tftypes.NewValue(varType, v)})
+		resp := &resource.ValidateConfigResponse{}
+		r.ValidateConfig(ctx, resource.ValidateConfigRequest{Config: tfsdk.Config{Schema: schemaResp.Schema, Raw: tftypes.NewValue(objType, root)}}, resp)
+		assert.Equal(t, tt.wantErr, resp.Diagnostics.HasError(), "%s %s: %v", tt.monitorType, tt.block, resp.Diagnostics)
+	}
 }

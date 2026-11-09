@@ -358,22 +358,24 @@ func NewMonitorResource() resource.Resource {
 
 // ValidateConfig checks the variables block against the monitor type. Unknown values are skipped.
 func (r *monitorResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
-	var monitorType types.String
+	var monitorType customtypes.MonitorTypeValue
 	var variablesList types.List
-	if req.Config.GetAttribute(ctx, frameworkPath.Root("type"), &monitorType).HasError() ||
-		req.Config.GetAttribute(ctx, frameworkPath.Root("variables"), &variablesList).HasError() ||
-		monitorType.IsUnknown() || variablesList.IsUnknown() {
+	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, frameworkPath.Root("type"), &monitorType)...)
+	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, frameworkPath.Root("variables"), &variablesList)...)
+	if resp.Diagnostics.HasError() || monitorType.IsUnknown() || monitorType.IsNull() || variablesList.IsNull() {
+		return
+	}
+	// Skip (silently) only when some part of the variables block is not known yet.
+	if raw, err := variablesList.ToTerraformValue(ctx); err != nil || !raw.IsFullyKnown() {
 		return
 	}
 	var variables []Variable
-	if variablesList.ElementsAs(ctx, &variables, false).HasError() || len(variables) == 0 {
+	resp.Diagnostics.Append(variablesList.ElementsAs(ctx, &variables, false)...)
+	if resp.Diagnostics.HasError() || len(variables) == 0 {
 		return
 	}
 	var dataSources []string
 	for _, q := range variables[0].CloudCostQuery {
-		if q.DataSource.IsUnknown() {
-			return
-		}
 		dataSources = append(dataSources, q.DataSource.ValueString())
 	}
 	if err := validators.ValidateMonitorVariablesForType(monitorType.ValueString(), dataSources, len(variables[0].MetricQuery) > 0); err != nil {
