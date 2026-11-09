@@ -97,6 +97,7 @@ func (d *datadogDatastoresDataSource) Schema(_ context.Context, _ datasource.Sch
 						},
 					},
 				},
+				Computed: true,
 			},
 		},
 	}

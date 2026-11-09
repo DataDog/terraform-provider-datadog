@@ -290,6 +290,7 @@ func pluralFixture() DataSourceView {
 				{
 					TFName:      "teams",
 					Description: "List of teams",
+					Computed:    true,
 					IsBlock:     true,
 					ListBlock:   true,
 					Attributes: []AttrView{

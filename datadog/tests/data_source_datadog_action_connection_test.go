@@ -16,6 +16,18 @@ var (
 	testAWSRole      = "role"
 )
 
+func TestAccDatadogActionConnectionDatasource_AWSSecretsManager_Clickup(t *testing.T) {
+	testAccActionConnectionAWSSecretsManager(t, "Clickup", true)
+}
+
+func TestAccDatadogActionConnectionDatasource_AWSSecretsManager_GCP(t *testing.T) {
+	testAccActionConnectionAWSSecretsManager(t, "GCP", true)
+}
+
+func TestAccDatadogActionConnectionDatasource_AWSSecretsManager_HTTP(t *testing.T) {
+	testAccActionConnectionAWSSecretsManager(t, "HTTP", true)
+}
+
 func TestAccDatadogActionConnectionDatasource_AWS_AssumeRole(t *testing.T) {
 	t.Parallel()
 
