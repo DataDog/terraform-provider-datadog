@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """
 Detects which resources and data sources an issue or pull request is about and
-prints the label changes to make, one per line as "add\t<label>\t<description>"
-or "remove\t<label>".
+prints the label changes to make, one per line as
+"add\t<label>\t<description>\t<fallback>" or "remove\t<label>". fallback is
+the hashed label to use instead when <label> is a 50-character label that
+turns out to belong to another name (see label_for); it's empty otherwise.
 
 Usage:
     R=repos/DataDog/terraform-provider-datadog
@@ -538,6 +540,14 @@ def _hashed_label(label: str) -> str:
     return f"{label[: MAX_LABEL_LEN - _HASH_LEN - 1]}-{digest}"
 
 
+def _fallback_label(label: str, description: str) -> str:
+    """Return the hashed label for a MAX_LABEL_LEN-character label, else ""."""
+    if len(label) != MAX_LABEL_LEN or label[-_HASH_LEN - 1] == "-":
+        return ""
+    kind = DATASOURCE if description.startswith("Data source ") else RESOURCE
+    return _hashed_label(_LABEL_PREFIX[kind] + description.split(" ")[-1])
+
+
 def _label_names(description: str, documented: Set[str]) -> Set[str]:
     """Return every name, lowercased, that label_for may give the label with this description."""
     kind = DATASOURCE if description.startswith("Data source ") else RESOURCE
@@ -740,7 +750,7 @@ def main() -> None:
         item, files, events, repo_root, changed_files, same_repo, repo_labels, previous_files
     )
     for label, description in to_add:
-        print(f"add\t{label}\t{description}")
+        print(f"add\t{label}\t{description}\t{_fallback_label(label, description)}")
     for label in to_remove:
         print(f"remove\t{label}")
 

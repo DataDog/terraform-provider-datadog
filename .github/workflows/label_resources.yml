@@ -78,13 +78,25 @@ jobs:
             exit 0
           fi
 
-          while IFS=$'\t' read -r action label description; do
+          while IFS=$'\t' read -r action label description fallback; do
             case "${action}" in
               add)
                 echo "Adding ${label}"
                 # Creating an existing label fails with 422; that's expected.
-                gh api "repos/${GITHUB_REPOSITORY}/labels" -f name="${label}" -f color=5319e7 \
-                  -f description="${description}" > /dev/null 2>&1 || true
+                if ! gh api "repos/${GITHUB_REPOSITORY}/labels" -f name="${label}" -f color=5319e7 \
+                  -f description="${description}" > /dev/null 2>&1 && [ "${#label}" -eq 50 ]; then
+                  # A cut label may have just been created by a concurrent run for
+                  # another name that cuts the same way; only use it if it's ours
+                  # or made by hand, else use the hashed label.
+                  encoded=$(jq -rn --arg label "${label}" '$label | @uri')
+                  owner=$(gh api "repos/${GITHUB_REPOSITORY}/labels/${encoded}" --jq '.description // ""')
+                  if [ -n "${owner}" ] && [ "${owner}" != "${description}" ]; then
+                    echo "${label} belongs to ${owner}; adding ${fallback} instead"
+                    label="${fallback}"
+                    gh api "repos/${GITHUB_REPOSITORY}/labels" -f name="${label}" -f color=5319e7 \
+                      -f description="${description}" > /dev/null 2>&1 || true
+                  fi
+                fi
                 gh api "repos/${GITHUB_REPOSITORY}/issues/${NUMBER}/labels" -f "labels[]=${label}" > /dev/null
                 ;;
               remove)

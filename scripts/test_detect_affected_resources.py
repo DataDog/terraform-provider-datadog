@@ -851,19 +851,33 @@ class TestDetectAffectedResources(unittest.TestCase):
         short = self.run_cli(pr("Fix"), files, self.pull_json(2))
         self.assertEqual((short.returncode, short.stdout), (0, ""))
         full = self.run_cli(pr("Fix"), files, self.pull_json(1))
-        self.assertEqual((full.returncode, full.stdout), (0, "add\tresource/datadog_monitor\tResource datadog_monitor\n"))
+        self.assertEqual((full.returncode, full.stdout), (0, "add\tresource/datadog_monitor\tResource datadog_monitor\t\n"))
 
     def test_cli_reads_previous_filenames(self):
         files = [("datadog/fwprovider/resource_datadog_monitor_renamed.go", "datadog/fwprovider/resource_datadog_monitor.go")]
         out = self.run_cli(pr("Rename"), files, self.pull_json(1))
-        self.assertEqual((out.returncode, out.stdout), (0, "add\tresource/datadog_monitor\tResource datadog_monitor\n"))
+        self.assertEqual((out.returncode, out.stdout), (0, "add\tresource/datadog_monitor\tResource datadog_monitor\t\n"))
+
+    def test_cli_prints_hashed_fallback_for_50_character_labels(self):
+        # Runs against the real repo's docs.
+        name = "datadog_metric_active_tags_and_aggregations"
+        cut = ("datasource/" + name)[:MAX_LABEL_LEN]
+        out = self.run_cli(issue(f"[data.{name}] Bug"), [])
+        action, label, description, fallback = out.stdout.rstrip("\n").split("\t")
+        self.assertEqual((action, label, description), ("add", cut, "Data source " + name))
+        self.assertRegex(fallback, r"^datasource/datadog_metric_active_tags_and_a-[0-9a-f]{6}$")
+        # A label that is already hashed has no fallback.
+        out = self.run_cli(issue(f"[data.{name}] Bug"), [], repo_labels=[(cut, "Data source datadog_other")])
+        _, label, _, fallback = out.stdout.rstrip("\n").split("\t")
+        self.assertRegex(label, r"-[0-9a-f]{6}$")
+        self.assertEqual(fallback, "")
 
     def test_cli_trusts_branches_in_this_repo(self):
         # Generation bots open PRs from branches here but show as CONTRIBUTOR.
         files = ["datadog/fwprovider/resource_datadog_zz_brand_new.go", "docs/resources/zz_brand_new.md"]
         item = pr("[datadog_zz_brand_new] Add resource", author_association="CONTRIBUTOR")
         for head_repo, expected in (
-            ("DataDog/terraform-provider-datadog", "add\tresource/datadog_zz_brand_new\tResource datadog_zz_brand_new\n"),
+            ("DataDog/terraform-provider-datadog", "add\tresource/datadog_zz_brand_new\tResource datadog_zz_brand_new\t\n"),
             ("someone/terraform-provider-datadog", ""),
             ("datadog/terraform-provider-datadog", ""),  # not the same full_name
             (None, ""),  # deleted fork
@@ -897,7 +911,7 @@ class TestDetectAffectedResources(unittest.TestCase):
         ).stdout
         self.assertEqual(
             out.splitlines(),
-            ["add\tresource/datadog_monitor\tResource datadog_monitor", "remove\tresource/datadog_downtime"],
+            ["add\tresource/datadog_monitor\tResource datadog_monitor\t", "remove\tresource/datadog_downtime"],
         )
 
     # -- label names --
