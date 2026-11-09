@@ -220,6 +220,33 @@ class TestDetectAffectedResources(unittest.TestCase):
             self.labels(issue("Bug", form_body(affected))), ["datasource/datadog_team", "resource/datadog_monitor"]
         )
 
+    def test_issue_longer_identifiers_are_not_documented_names(self):
+        for affected in (
+            "datadog_monitor-alerts",
+            "my-datadog_monitor",
+            "terraform-provider-datadog_monitor",
+            "datadog_monitor_${var.suffix}",
+            "datadog_monitor${var.suffix}",
+            "datadog_monitor_*",
+            "datadog_monitor_",
+            "datadog_monitor\u00e9",
+            "\u00e9datadog_monitor",
+        ):
+            with self.subTest(affected=affected):
+                self.assertEqual(self.labels(issue("Bug", form_body(affected))), [])
+
+    def test_issue_name_boundaries_that_still_count(self):
+        for affected in (
+            "datadog_monitor's thresholds",
+            "**datadog_monitor**, `datadog_monitor`, (datadog_monitor)",
+            "datadog_monitor.cpu.id",
+            "datadog_monitor: fails",
+            "datadog_monitor - fails on apply",
+            "[datadog_monitor](https://registry.terraform.io)",
+        ):
+            with self.subTest(affected=affected):
+                self.assertEqual(self.labels(issue("Bug", form_body(affected))), ["resource/datadog_monitor"])
+
     def test_issue_module_addresses(self):
         for affected, expected in (
             ("module.alerts.datadog_monitor.example", ["resource/datadog_monitor"]),

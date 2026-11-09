@@ -113,8 +113,11 @@ _TITLE_TAG_RE = re.compile(r"^\s*(?:\[[^\]]*\]\s*)*?\[(?:data\.)?datadog_[a-z0-9
 # A preceding dot is allowed for module addresses such as
 # "module.x.datadog_monitor.y" and "module.x.data.datadog_monitor.y", but not
 # right after "module." (module names like "module.datadog_alerts").
+# Hyphens, "$" and any letter or digit (not only ASCII) continue an
+# identifier, so "datadog_monitor-alerts", "datadog_monitor_${var.x}" and
+# "terraform-provider-datadog_v3" are not documented names.
 _TEXT_NAME_RE = re.compile(
-    r"(?<![A-Za-z0-9_])(?<!module\.)(data\.|data_source_|resource_)?(datadog_[a-z0-9_]+)(?![A-Za-z0-9])"
+    r"(?<![\w-])(?<!module\.)(data\.|data_source_|resource_)?(datadog_[a-z0-9_]+)(?![\w$-])"
 )
 _HCL_DATA_RE = re.compile(r'\bdata\s+"$')
 # Kind words right before a name, possibly both: "data source datadog_x",
@@ -238,7 +241,7 @@ def names_from_text(text: str, known: Known) -> Dict[Name, bool]:
             else:
                 stated = [heading] if heading else [None]
             for m in group:
-                prefix, name = m.group(1), m.group(2).rstrip("_")
+                prefix, name = m.group(1), m.group(2)
                 if prefix in ("data.", "data_source_"):
                     add(name, DATASOURCE)
                 elif prefix == "resource_":
