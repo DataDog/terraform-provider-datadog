@@ -630,14 +630,21 @@ def plan_label_changes(
     last: Dict[str, dict] = {}
     for event in events:
         if event.get("event") in ("labeled", "unlabeled"):
-            last[event.get("label") or ""] = event
+            last[(event.get("label") or "").lower()] = event
     added_by_bot = {lbl for lbl, e in last.items() if e["event"] == "labeled" and e.get("actor") == BOT_LOGIN}
     removed_by_person = {lbl for lbl, e in last.items() if e["event"] == "unlabeled" and e.get("actor") != BOT_LOGIN}
 
-    wanted = dict(detect_labels(item, files, repo_root, same_repo, repo_labels))
-    current = {lbl.get("name") for lbl in item.get("labels") or []}
-    to_add = sorted((lbl, desc) for lbl, desc in wanted.items() if lbl not in current | removed_by_person)
-    to_remove = sorted(lbl for lbl in current if _is_ours(lbl) and lbl in added_by_bot and lbl not in wanted)
+    wanted = {
+        lbl.lower(): (lbl, desc)
+        for lbl, desc in detect_labels(item, files, repo_root, same_repo, repo_labels)
+    }
+    current_names = {lbl.get("name") or "" for lbl in item.get("labels") or []}
+    current = {lbl.lower() for lbl in current_names}
+    to_add = sorted(pair for lbl, pair in wanted.items() if lbl not in current | removed_by_person)
+    to_remove = sorted(
+        lbl for lbl in current_names
+        if _is_ours(lbl.lower()) and lbl.lower() in added_by_bot and lbl.lower() not in wanted
+    )
     for lbl in sorted(set(wanted) & removed_by_person - current):
         print(f"Not re-adding {lbl}: removed by a person", file=sys.stderr)
     if not to_add and not to_remove:
