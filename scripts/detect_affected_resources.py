@@ -664,7 +664,10 @@ def plan_label_changes(
     for lbl, (label, desc) in sorted(wanted.items()):
         if lbl in current:
             continue
-        names = _label_names(desc)
+        names = {
+            n for n in _label_names(desc)
+            if n == lbl or not (repo_labels or {}).get(n) or (repo_labels or {}).get(n) == desc
+        }
         if names & removed_by_person:
             print(f"Not re-adding {label}: removed by a person", file=sys.stderr)
         elif any(n in current and n not in added_by_bot for n in names):
