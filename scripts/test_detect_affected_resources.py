@@ -13,6 +13,7 @@ import unittest
 from detect_affected_resources import (
     BOT_LOGIN as BOT,
     MAX_LABEL_LEN,
+    affected_section,
     detect_labels,
     label_for,
     load_known_names,
@@ -60,24 +61,29 @@ def ev(event, actor, label):
     return {"event": event, "actor": actor, "label": label}
 
 
+# Dedented before the answers are substituted, so multiline answers can't keep
+# the headings indented.
+_FORM_TEMPLATE = textwrap.dedent(
+    """\
+    ### Datadog Terraform Provider Version
+
+    v4.29.0
+
+    ### What resources or data sources are affected?
+
+    {affected}
+
+    ### Terraform Configuration Files
+
+    ```hcl
+    {config}
+    ```
+    """
+)
+
+
 def form_body(affected, config=""):
-    return textwrap.dedent(
-        f"""\
-        ### Datadog Terraform Provider Version
-
-        v4.29.0
-
-        ### What resources or data sources are affected?
-
-        {affected}
-
-        ### Terraform Configuration Files
-
-        ```hcl
-        {config}
-        ```
-        """
-    )
+    return _FORM_TEMPLATE.format(affected=affected, config=config)
 
 
 class TestDetectAffectedResources(unittest.TestCase):
@@ -103,6 +109,25 @@ class TestDetectAffectedResources(unittest.TestCase):
             self.labels(issue("Plan diff on every run", body)),
             ["resource/datadog_downtime", "resource/datadog_monitor"],
         )
+
+    def test_form_body_fixture_has_form_section(self):
+        section = affected_section(form_body("- datadog_monitor\n- datadog_team", "line 1\nline 2"))
+        self.assertEqual(section.strip(), "- datadog_monitor\n- datadog_team")
+
+    def test_issue_form_section_keeps_level_three_kind_headings(self):
+        for affected in (
+            "### Data sources\n- datadog_monitor",
+            "### Data sources:\r\n- datadog_monitor",
+            "### Resources\n- datadog_team\n\n### Data sources\n- datadog_monitor",
+        ):
+            with self.subTest(affected=affected):
+                labels = self.labels(issue("Bug", form_body(affected)))
+                self.assertIn("datasource/datadog_monitor", labels)
+                self.assertNotIn("resource/datadog_monitor", labels)
+
+    def test_issue_form_section_still_ends_at_next_field(self):
+        body = form_body("### Data sources\n- datadog_monitor") + "\n### Expected Behavior\n\ndatadog_team works\n"
+        self.assertEqual(self.labels(issue("Bug", body)), ["datasource/datadog_monitor"])
 
     def test_issue_title_tag(self):
         self.assertEqual(
@@ -337,6 +362,29 @@ class TestDetectAffectedResources(unittest.TestCase):
             with self.subTest(affected=affected):
                 self.assertEqual(self.labels(issue("Bug", form_body(affected))), [])
 
+    def test_issue_negated_provider_wide_wording_keeps_labels(self):
+        for affected in (
+            "Only datadog_monitor; this is not provider-wide",
+            "datadog_monitor. It doesn't affect all resources",
+            "datadog_monitor — isn’t a provider-wide issue",
+            "datadog_monitor, not every resource",
+            "datadog_monitor; this cannot be provider-wide",
+        ):
+            with self.subTest(affected=affected):
+                self.assertEqual(
+                    self.labels(issue("Bug", form_body(affected))), ["resource/datadog_monitor"]
+                )
+
+    def test_issue_provider_wide_wording_not_negated_by_distant_words(self):
+        for affected in (
+            "Not just datadog_monitor but all resources",
+            "Not sure, maybe all resources; seen on datadog_monitor",
+            "No idea. All resources, e.g. datadog_monitor",
+            "Not provider-wide for reads, but all resources fail on apply: datadog_monitor",
+        ):
+            with self.subTest(affected=affected):
+                self.assertEqual(self.labels(issue("Bug", form_body(affected))), [])
+
     def test_issue_provider_wide_title(self):
         for title in ("Provider crashes for all resources", "[provider] Retries ignore the timeout"):
             with self.subTest(title=title):
@@ -430,6 +478,16 @@ class TestDetectAffectedResources(unittest.TestCase):
         item = issue("[datadog_team] Bug", labels=["resource/datadog_monitor", "resource/datadog_team"])
         events = [ev("labeled", BOT, "resource/datadog_monitor"), ev("labeled", BOT, "resource/datadog_team")]
         self.assertEqual(self.plan(item, events=events), ([], ["resource/datadog_monitor"]))
+
+    def test_bot_label_kept_for_negated_scope_and_kind_subheading(self):
+        events = [ev("labeled", BOT, "resource/datadog_monitor"), ev("labeled", BOT, "datasource/datadog_monitor")]
+        for affected, label in (
+            ("Only datadog_monitor; this is not provider-wide", "resource/datadog_monitor"),
+            ("### Data sources\n- datadog_monitor", "datasource/datadog_monitor"),
+        ):
+            with self.subTest(affected=affected):
+                item = issue("Bug", form_body(affected), labels=[label])
+                self.assertEqual(self.plan(item, events=events), ([], []))
 
     def test_bot_labels_removed_when_item_becomes_unclear(self):
         events = [ev("labeled", BOT, "resource/datadog_monitor")]

@@ -95,6 +95,10 @@ _PROVIDER_WIDE_RE = re.compile(
     r"|^\s*\[provider\]",
     re.IGNORECASE,
 )
+# Negation just before provider-wide wording: "not provider-wide",
+# "doesn't affect all resources". At most one word in between, so "not just
+# datadog_x but all resources" still counts.
+_NEGATION_BEFORE_RE = re.compile(r"(?:\b(?:not|no|never|cannot)|n['’]t)\s+(?:[\w'’-]+\s+)?$", re.IGNORECASE)
 # A title like "[datadog_monitor] ..." or "[ACTP][datadog_x] ..." already
 # names its scope, so wording later in it ("every resource is recreated")
 # is about instances, not about the provider.
@@ -296,14 +300,25 @@ def names_from_files(files: Iterable[str], known: Known) -> Set[Name]:
     return found
 
 
+def _is_provider_wide(text: str) -> bool:
+    return any(
+        not _NEGATION_BEFORE_RE.search(text, max(0, m.start() - 40), m.start())
+        for m in _PROVIDER_WIDE_RE.finditer(text)
+    )
+
+
 def affected_section(body: str) -> Optional[str]:
     """Return the issue form's "affected resources" answer, if present."""
     m = _AFFECTED_HEADING_RE.search(body)
     if not m:
         return None
     rest = body[m.end() :]
-    nxt = _NEXT_HEADING_RE.search(rest)
-    return rest[: nxt.start()] if nxt else rest
+    for nxt in _NEXT_HEADING_RE.finditer(rest):
+        # "### Data sources" inside the answer is part of it, not the next field.
+        line = rest[nxt.start() :].split("\n", 1)[0]
+        if not _KIND_HEADING_RE.match(line):
+            return rest[: nxt.start()]
+    return rest
 
 
 def _codeowners_rules(text: str) -> List[Tuple["re.Pattern[str]", Set[str]]]:
@@ -415,7 +430,7 @@ def detect_labels(item: dict, files: List[str], repo_root: str) -> List[Tuple[st
         scope.append(_CODE_BLOCK_RE.sub("", section))
         names = _prefer_explicit(from_title, names_from_text(section, known))
 
-    if any(_PROVIDER_WIDE_RE.search(text[:MAX_TEXT_LEN]) for text in scope):
+    if any(_is_provider_wide(text[:MAX_TEXT_LEN]) for text in scope):
         print("Provider-wide, leaving unlabeled", file=sys.stderr)
         return []
 
