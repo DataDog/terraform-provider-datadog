@@ -85,9 +85,11 @@ func (d *datadogGizmosDataSource) Schema(_ context.Context, _ datasource.SchemaR
 									Computed:    true,
 								},
 							},
+							Computed: true,
 						},
 					},
 				},
+				Computed: true,
 			},
 		},
 	}

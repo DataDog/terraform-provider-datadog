@@ -117,6 +117,7 @@ func (d *datadogTeamsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 						},
 					},
 				},
+				Computed: true,
 			},
 		},
 	}

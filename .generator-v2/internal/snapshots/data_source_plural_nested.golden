@@ -86,9 +86,11 @@ func (d *datadogWidgetsDataSource) Schema(_ context.Context, _ datasource.Schema
 									},
 								},
 							},
+							Computed: true,
 						},
 					},
 				},
+				Computed: true,
 			},
 		},
 	}
