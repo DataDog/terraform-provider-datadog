@@ -127,14 +127,18 @@ jobs:
         with:
           go-version-file: go.mod
           cache: true
-      # No GHA cache: the Terraform binary is small (~30MB, a few seconds to
-      # download) and a shared cache would let untrusted fork PR code poison a
-      # binary that a later trusted, credentialed run could restore and execute.
+      # No GHA cache: under pull_request_target a shared cache lets PR code replace the binary that later trusted runs restore; the download costs seconds.
       - name: Install terraform
         run: |
+          set -euo pipefail
+          VERSION="${{ env.TERRAFORM_VERSION }}"
+          ZIP="terraform_${VERSION}_linux_amd64.zip"
           mkdir -p ~/.cache/terraform
-          wget https://releases.hashicorp.com/terraform/${{ env.TERRAFORM_VERSION }}/terraform_${{ env.TERRAFORM_VERSION }}_linux_amd64.zip -O ~/.cache/terraform/terraform-${{ env.TERRAFORM_VERSION }}
-          unzip -o -d ~/.cache/terraform ~/.cache/terraform/terraform-${{ env.TERRAFORM_VERSION }}
+          cd ~/.cache/terraform
+          wget -q "https://releases.hashicorp.com/terraform/${VERSION}/${ZIP}" -O "${ZIP}"
+          wget -q "https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_SHA256SUMS" -O SHA256SUMS
+          grep "  ${ZIP}\$" SHA256SUMS | sha256sum -c -
+          unzip -o "${ZIP}"
       - name: Sweep stale test resources
         run: make sweep
         env:
