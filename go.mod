@@ -1,7 +1,7 @@
 module github.com/terraform-providers/terraform-provider-datadog
 
 require (
-	github.com/DataDog/datadog-api-client-go/v2 v2.67.1-0.20261105183154-5b855c15cfbd
+	github.com/DataDog/datadog-api-client-go/v2 v2.67.1-0.20261106220358-3a37eb656823
 	github.com/DataDog/dd-sdk-go-testing v0.0.0-20211116174033-1cd082e322ad
 	github.com/Masterminds/semver/v3 v3.3.1
 	github.com/google/go-cmp v0.7.0
@@ -141,6 +141,3 @@ tool (
 	golang.org/x/tools/cmd/goimports
 	gotest.tools/gotestsum
 )
-
-// TEMPORARY: unreleased client from DataDog/datadog-api-client-go#4882 (8ce48f27, api/ diff applied on provider pin c695b1b34e40 in local clone). Replace with the released version before merging.
-replace github.com/DataDog/datadog-api-client-go/v2 => /tmp/dd-client-4882
