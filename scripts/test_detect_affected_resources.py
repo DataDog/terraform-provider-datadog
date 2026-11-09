@@ -48,7 +48,15 @@ RESOURCES = [
     "security_findings_ticket_creation_rule",
     "security_findings_ticket_creation_rules_order",
 ]
-DATASOURCES = ["monitor", "monitors", "team", "user"]
+DATASOURCES = [
+    "monitor",
+    "monitors",
+    "team",
+    "user",
+    # "datasource/datadog_" + this is exactly MAX_LABEL_LEN characters, and the next one cuts to it.
+    "integration_aws_iam_permissions",
+    "integration_aws_iam_permissions_standard",
+]
 
 
 def issue(title, body="", labels=()):
@@ -1012,6 +1020,49 @@ class TestDetectAffectedResources(unittest.TestCase):
             ev("labeled", "octocat", "datasource/datadog_monitor"),
         ]
         self.assertEqual(self.plan(item, events=events), ([], []))
+
+    EXACT = "datadog_integration_aws_iam_permissions"
+    STANDARD = "datadog_integration_aws_iam_permissions_standard"
+
+    def exact_plan(self, name, labels, events, repo_labels):
+        to_add, to_remove = plan_label_changes(
+            issue(f"[data.{name}] Bug", labels=labels), [], events, self.root, repo_labels=repo_labels
+        )
+        return [lbl for lbl, _ in to_add], to_remove
+
+    def test_exact_length_label_belongs_to_its_name(self):
+        exact = "datasource/" + self.EXACT
+        self.assertEqual(len(exact), MAX_LABEL_LEN)
+        for repo_labels in ({}, {exact: ""}, {exact: "Data source " + self.EXACT}):
+            with self.subTest(repo_labels=repo_labels):
+                self.assertEqual(self.name_of("datasource", self.EXACT, repo_labels=repo_labels), exact)
+                self.assertRegex(self.name_of("datasource", self.STANDARD, repo_labels=repo_labels), r"-[0-9a-f]{6}$")
+
+    def test_exact_length_label_is_not_an_alias_of_a_longer_name(self):
+        # As on GitHub today: the exact-length label exists without a description.
+        exact, today = "datasource/" + self.EXACT, {"datasource/" + self.EXACT: ""}
+        standard = self.name_of("datasource", self.STANDARD, repo_labels=today)
+        for labels, events in (
+            ([exact], [ev("labeled", "octocat", exact)]),
+            ([], [ev("labeled", BOT, exact), ev("unlabeled", "octocat", exact)]),
+        ):
+            with self.subTest(events=events):
+                self.assertEqual(self.exact_plan(self.STANDARD, labels, events, today), ([standard], []))
+        removed = [ev("labeled", BOT, standard), ev("unlabeled", "octocat", standard)]
+        self.assertEqual(self.exact_plan(self.STANDARD, [], removed, today), ([], []))
+        removed = [ev("labeled", BOT, exact), ev("unlabeled", "octocat", exact)]
+        self.assertEqual(self.exact_plan(self.EXACT, [], removed, today), ([], []))
+
+    def test_exact_length_name_documented_after_a_longer_name_took_its_text(self):
+        exact = "datasource/" + self.EXACT
+        taken = {exact: "Data source " + self.STANDARD}
+        hashed = self.name_of("datasource", self.EXACT, repo_labels=taken)
+        self.assertRegex(hashed, r"^datasource/datadog_integration_aws_iam_perm-[0-9a-f]{6}$")
+        self.assertEqual(self.name_of("datasource", self.STANDARD, repo_labels=taken), exact)
+        removed = [ev("labeled", BOT, exact), ev("unlabeled", "octocat", exact)]
+        self.assertEqual(self.exact_plan(self.STANDARD, [], removed, taken), ([], []))
+        self.assertEqual(self.exact_plan(self.EXACT, [], removed, taken), ([hashed], []))
+        self.assertEqual(self.exact_plan(self.EXACT, [exact], [ev("labeled", "octocat", exact)], taken), ([hashed], []))
 
     def test_real_repo_labels_are_unique(self):
         repo_root = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")

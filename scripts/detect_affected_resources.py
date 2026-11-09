@@ -511,14 +511,20 @@ def label_for(kind: str, name: str, documented: Set[str], repo_labels: Dict[str,
     ends in a hash. A label never changes once it exists: when a name that cuts
     the same way is added later, only the new name gets a hash.
 
+    A name whose label is exactly MAX_LABEL_LEN characters uses it as is,
+    unless a longer name's cut label already took that text.
+
     repo_labels maps the repository's label names, lowercased as GitHub
     compares them, to their descriptions.
     """
     label = _LABEL_PREFIX[kind] + name
-    if len(label) <= MAX_LABEL_LEN:
+    if len(label) < MAX_LABEL_LEN:
         return label
     cut = label[:MAX_LABEL_LEN]
     owner = repo_labels.get(cut.lower())
+    if len(label) == MAX_LABEL_LEN:
+        # A label without a description was made by hand for this name.
+        return label if owner in (None, "", label_description(kind, name)) else _hashed_label(label)
     if owner is not None:
         unique = owner == label_description(kind, name)
     else:
@@ -532,13 +538,18 @@ def _hashed_label(label: str) -> str:
     return f"{label[: MAX_LABEL_LEN - _HASH_LEN - 1]}-{digest}"
 
 
-def _label_names(description: str) -> Set[str]:
+def _label_names(description: str, documented: Set[str]) -> Set[str]:
     """Return every name, lowercased, that label_for may give the label with this description."""
     kind = DATASOURCE if description.startswith("Data source ") else RESOURCE
-    label = _LABEL_PREFIX[kind] + description.split(" ")[-1]
-    if len(label) <= MAX_LABEL_LEN:
+    prefix = _LABEL_PREFIX[kind]
+    label = prefix + description.split(" ")[-1]
+    if len(label) < MAX_LABEL_LEN:
         return {label.lower()}
-    return {label[:MAX_LABEL_LEN].lower(), _hashed_label(label).lower()}
+    cut = label[:MAX_LABEL_LEN]
+    if len(label) > MAX_LABEL_LEN and cut[len(prefix) :] in documented:
+        # The cut text is an exact-length name's own label, not this one's.
+        return {_hashed_label(label).lower()}
+    return {cut.lower(), _hashed_label(label).lower()}
 
 
 def detect_labels(
@@ -630,9 +641,11 @@ def plan_label_changes(
     number of entries, nothing changes. previous_files are the old paths of
     renamed files: a PR renaming a resource's files is still about it.
     """
-    if not any(load_known_names(repo_root).values()):
+    known = load_known_names(repo_root)
+    if not any(known.values()):
         # Without the docs every label would look stale; never act on that.
         raise SystemExit("No docs/resources or docs/data-sources found")
+    documented = known[RESOURCE] | known[DATASOURCE]
     if changed_files is not None and len(files) != changed_files:
         # GET /pulls/{n}/files returns at most 3,000 files. Labels for the
         # missing files would look stale, so don't act on a partial list.
@@ -665,7 +678,7 @@ def plan_label_changes(
         if lbl in current:
             continue
         names = {
-            n for n in _label_names(desc)
+            n for n in _label_names(desc, documented) | {lbl}
             if n == lbl or not (repo_labels or {}).get(n) or (repo_labels or {}).get(n) == desc
         }
         if names & removed_by_person:
