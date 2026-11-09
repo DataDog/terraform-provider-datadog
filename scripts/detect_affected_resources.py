@@ -78,7 +78,7 @@ _AFFECTED_HEADING_RE = re.compile(
     r"^###\s+What resources or data sources are affected\?\s*$", re.MULTILINE
 )
 _NEXT_HEADING_RE = re.compile(r"^###\s", re.MULTILINE)
-_CODE_BLOCK_RE = re.compile(r"```.*?(?:```|\Z)", re.DOTALL)
+_CODE_BLOCK_RE = re.compile(r"(`{3,}|~{3,}).*?(?:\1|\Z)", re.DOTALL)
 
 # Wording that says the item is about the provider as a whole. Names given as
 # examples next to it ("All resources, e.g. datadog_monitor") don't count.
@@ -117,10 +117,11 @@ _AFTER_KINDS_RE = re.compile(
 )
 # What may separate names that share the words around them.
 _NAME_JOIN_RE = re.compile(r"[\s`'\"*,]*(?:(?:and|or|&|/)[\s`'\"*,]*)?", re.IGNORECASE)
-# A line that is only a kind heading, like "Data sources:", "**Resources**" or
-# "- Data source: datadog_x, datadog_y". Group 2 is the rest of the line.
+# A line that is only a kind heading, like "Data sources:", "## Resources",
+# "**Resources**" or "- Data source: datadog_x, datadog_y". Group 2 is the rest
+# of the line.
 _KIND_HEADING_RE = re.compile(
-    r"^\s*(?:[-*>]\s*)?[*_]*(data[ _-]?sources?|resources?)[*_]*\s*(?::[*_]*\s*(.*))?$", re.IGNORECASE
+    r"^\s*(?:#{1,6}\s+|[-*>]\s*)?[*_]*(data[ _-]?sources?|resources?)[*_]*\s*(?::[*_]*\s*(.*))?$", re.IGNORECASE
 )
 _MARKDOWN_HEADING_RE = re.compile(r"^\s*#{1,6}\s")
 

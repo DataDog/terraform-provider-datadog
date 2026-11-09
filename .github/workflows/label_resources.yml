@@ -1,8 +1,7 @@
 name: Label affected resources
 
 # Keeps resource/<name> and datasource/<name> labels on issues and pull
-# requests up to date, so teams can find everything about the resources they
-# own. Labels this workflow added are removed once they no longer apply;
+# requests up to date. Labels this workflow added are removed once they no longer apply;
 # labels people add or remove are left alone. See
 # scripts/detect_affected_resources.py for how names are detected and when an
 # item is left unlabeled.
@@ -29,8 +28,8 @@ concurrency:
 jobs:
   label:
     runs-on: ubuntu-latest
-    # Edits only matter when the title or body changed
-    if: github.event.action != 'edited' || github.event.changes.title || github.event.changes.body
+    # Title/body edits and PR base changes can affect detected resources
+    if: github.event.action != 'edited' || github.event.changes.title || github.event.changes.body || github.event.changes.base
     permissions:
       contents: read
       issues: write

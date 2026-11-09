@@ -119,6 +119,32 @@ class TestDetectAffectedResources(unittest.TestCase):
         body = 'The datadog_user resource fails.\n\n```hcl\nresource "datadog_team" "x" {}\n```'
         self.assertEqual(self.labels(issue("Bug", body)), ["resource/datadog_user"])
 
+    def test_issue_without_form_skips_code_block_variants(self):
+        config = 'resource "datadog_team" "x" {}'
+        for body in (
+            f"datadog_user fails\n\n~~~hcl\n{config}\n~~~\n",
+            f"datadog_user fails\n\n~~~~\n```\n{config}\n~~~~\n",
+            f"datadog_user fails\r\n```hcl\r\n{config}\r\n```\r\n",
+            f"1. Apply:\n\n    ```hcl\n    {config}\n    ```\n2. datadog_user fails\n",
+            f"Config: ```{config}``` and datadog_user fails\n",
+        ):
+            with self.subTest(body=body):
+                self.assertEqual(self.labels(issue("Bug", body)), ["resource/datadog_user"])
+
+    def test_issue_without_form_keeps_names_after_code_block(self):
+        for fence in ("```", "~~~"):
+            with self.subTest(fence=fence):
+                body = f"{fence}\r\nresource \"datadog_team\" \"x\" {{}}\r\n{fence}\r\nThe datadog_user resource fails\r\n"
+                self.assertEqual(self.labels(issue("Bug", body)), ["resource/datadog_user"])
+
+    def test_issue_without_form_ignores_provider_wide_wording_in_code(self):
+        body = "datadog_user fails\n\n~~~\n# applies to all resources\n~~~\n"
+        self.assertEqual(self.labels(issue("Bug", body)), ["resource/datadog_user"])
+
+    def test_issue_strikethrough_is_not_a_code_block(self):
+        body = "~~datadog_team~~ datadog_user fails"
+        self.assertEqual(self.labels(issue("Bug", body)), ["resource/datadog_team", "resource/datadog_user"])
+
     def test_issue_data_source_prefixes(self):
         for affected in ("data.datadog_monitor", 'data "datadog_monitor" "x"', "data source datadog_monitor",
                          "data_source_datadog_monitor"):
@@ -218,6 +244,9 @@ class TestDetectAffectedResources(unittest.TestCase):
             "**Data sources**\n\n* datadog_monitor\n* datadog_team",
             "Data sources: datadog_monitor, datadog_team",
             "- Datasource: datadog_monitor\n- datadog_team",
+            "## Data sources\n- datadog_monitor\n- datadog_team",
+            "#### **Data sources:**\n\n- datadog_monitor\n- datadog_team",
+            "## Data sources: datadog_monitor, datadog_team",
         ):
             with self.subTest(affected=affected):
                 self.assertEqual(
@@ -231,6 +260,24 @@ class TestDetectAffectedResources(unittest.TestCase):
             self.labels(issue("Bug", form_body(affected))),
             ["datasource/datadog_monitor", "resource/datadog_team"],
         )
+
+    def test_issue_markdown_kind_headings_switch(self):
+        affected = "## Resources\n- datadog_team\n\n## Data sources\n- datadog_monitor"
+        self.assertEqual(
+            self.labels(issue("Bug", form_body(affected))),
+            ["datasource/datadog_monitor", "resource/datadog_team"],
+        )
+
+    def test_issue_unrelated_markdown_heading_ends_markdown_kind_heading(self):
+        affected = "## Data sources\n- datadog_monitor\n\n## Notes\n- datadog_team"
+        self.assertEqual(
+            self.labels(issue("Bug", form_body(affected))),
+            ["datasource/datadog_monitor", "resource/datadog_team"],
+        )
+
+    def test_issue_markdown_heading_with_more_words_is_not_a_kind_heading(self):
+        affected = "## Data sources look fine\n- datadog_monitor"
+        self.assertEqual(self.labels(issue("Bug", form_body(affected))), ["resource/datadog_monitor"])
 
     def test_issue_kind_heading_overrides_title_guess(self):
         item = issue("[datadog_monitor] Bug", form_body("Data sources:\n- datadog_monitor"))
