@@ -16,9 +16,9 @@ Usage:
 
     # Pull requests also need the pull request and its changed files
     gh api $R/pulls/123 > pull.json
-    gh api --paginate $R/pulls/123/files --jq '.[].filename' > files.txt
+    gh api --paginate $R/pulls/123/files --jq '.[] | {filename, previous_filename} | tojson' > files.jsonl
     python3 scripts/detect_affected_resources.py --item item.json --events events.jsonl \
-        --labels labels.jsonl --pull pull.json --files files.txt
+        --labels labels.jsonl --pull pull.json --files files.jsonl
 
 Labels are only removed when github-actions[bot] added them and they no longer
 apply. Labels people add are never removed, and labels people remove are never
@@ -524,10 +524,21 @@ def label_for(kind: str, name: str, documented: Set[str], repo_labels: Dict[str,
     else:
         prefix = _LABEL_PREFIX[kind]
         unique = all((prefix + n)[:MAX_LABEL_LEN] != cut for n in documented if n != name)
-    if unique:
-        return cut
+    return cut if unique else _hashed_label(label)
+
+
+def _hashed_label(label: str) -> str:
     digest = hashlib.sha256(label.encode()).hexdigest()[:_HASH_LEN]
     return f"{label[: MAX_LABEL_LEN - _HASH_LEN - 1]}-{digest}"
+
+
+def _label_names(description: str) -> Set[str]:
+    """Return every name, lowercased, that label_for may give the label with this description."""
+    kind = DATASOURCE if description.startswith("Data source ") else RESOURCE
+    label = _LABEL_PREFIX[kind] + description.split(" ")[-1]
+    if len(label) <= MAX_LABEL_LEN:
+        return {label.lower()}
+    return {label[:MAX_LABEL_LEN].lower(), _hashed_label(label).lower()}
 
 
 def detect_labels(
@@ -604,16 +615,20 @@ def plan_label_changes(
     changed_files: Optional[int] = None,
     same_repo: bool = False,
     repo_labels: Optional[Dict[str, str]] = None,
+    previous_files: Iterable[str] = (),
 ) -> Tuple[List[Tuple[str, str]], List[str]]:
     """Return (labels to add as (label, description), labels to remove).
 
     events are the item's "labeled"/"unlabeled" events, oldest first, as
     {"event", "actor", "label"}. The latest event for a label says who owns it:
     only labels BOT_LOGIN added are ever removed, and labels a person removed
-    are never added back.
+    are never added back. A long name's label can be cut or hashed (see
+    label_for); both count as the same label, so neither is added when a
+    person removed or added the other.
 
     changed_files is the PR's changed_files count. When files has a different
-    number of entries, nothing changes.
+    number of entries, nothing changes. previous_files are the old paths of
+    renamed files: a PR renaming a resource's files is still about it.
     """
     if not any(load_known_names(repo_root).values()):
         # Without the docs every label would look stale; never act on that.
@@ -638,19 +653,28 @@ def plan_label_changes(
     added_by_bot = {lbl for lbl, e in last.items() if e["event"] == "labeled" and e.get("actor") == BOT_LOGIN}
     removed_by_person = {lbl for lbl, e in last.items() if e["event"] == "unlabeled" and e.get("actor") != BOT_LOGIN}
 
+    all_files = list(files) + [f for f in previous_files if f]
     wanted = {
         lbl.lower(): (lbl, desc)
-        for lbl, desc in detect_labels(item, files, repo_root, same_repo, repo_labels)
+        for lbl, desc in detect_labels(item, all_files, repo_root, same_repo, repo_labels)
     }
     current_names = {lbl.get("name") or "" for lbl in item.get("labels") or []}
     current = {lbl.lower() for lbl in current_names}
-    to_add = sorted(pair for lbl, pair in wanted.items() if lbl not in current | removed_by_person)
+    to_add = []
+    for lbl, (label, desc) in sorted(wanted.items()):
+        if lbl in current:
+            continue
+        names = _label_names(desc)
+        if names & removed_by_person:
+            print(f"Not re-adding {label}: removed by a person", file=sys.stderr)
+        elif any(n in current and n not in added_by_bot for n in names):
+            print(f"Not adding {label}: a person added it under another name", file=sys.stderr)
+        else:
+            to_add.append((label, desc))
     to_remove = sorted(
         lbl for lbl in current_names
         if _is_ours(lbl.lower()) and lbl.lower() in added_by_bot and lbl.lower() not in wanted
     )
-    for lbl in sorted(set(wanted) & removed_by_person - current):
-        print(f"Not re-adding {lbl}: removed by a person", file=sys.stderr)
     if not to_add and not to_remove:
         print("Labels already up to date", file=sys.stderr)
     return to_add, to_remove
@@ -665,7 +689,7 @@ def _read_json_lines(path: str) -> List[dict]:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[1])
     parser.add_argument("--item", required=True, help="issue or PR JSON from GET /repos/{repo}/issues/{n}")
-    parser.add_argument("--files", help="changed file paths, one per line (PRs only)")
+    parser.add_argument("--files", help="changed files as JSON lines of {filename, previous_filename} (PRs only)")
     parser.add_argument("--events", help="label events as JSON lines of {event, actor, label}, oldest first")
     parser.add_argument("--pull", help="PR JSON from GET /repos/{repo}/pulls/{n} (required for PRs)")
     parser.add_argument(
@@ -687,14 +711,18 @@ def main() -> None:
         head_repo = ((pull.get("head") or {}).get("repo") or {}).get("full_name")
         same_repo = head_repo is not None and head_repo == ((pull.get("base") or {}).get("repo") or {}).get("full_name")
     files: List[str] = []
+    previous_files: List[str] = []
     if args.files:
-        with open(args.files) as fh:
-            files = [line for line in fh.read().splitlines() if line.strip()]
+        changed = _read_json_lines(args.files)
+        files = [f.get("filename") or "" for f in changed]
+        previous_files = [f.get("previous_filename") or "" for f in changed]
     events = _read_json_lines(args.events) if args.events else []
     repo_labels = {(lbl.get("name") or "").lower(): lbl.get("description") or "" for lbl in _read_json_lines(args.labels)}
 
     repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    to_add, to_remove = plan_label_changes(item, files, events, repo_root, changed_files, same_repo, repo_labels)
+    to_add, to_remove = plan_label_changes(
+        item, files, events, repo_root, changed_files, same_repo, repo_labels, previous_files
+    )
     for label, description in to_add:
         print(f"add\t{label}\t{description}")
     for label in to_remove:

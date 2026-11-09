@@ -49,13 +49,15 @@ jobs:
           # Fetch the current title/body/labels rather than trusting the event
           # payload, so reruns and workflow_dispatch see the same data.
           gh api "repos/${GITHUB_REPOSITORY}/issues/${NUMBER}" > /tmp/item.json
-          : > /tmp/files.txt
+          : > /tmp/files.jsonl
           pr_args=()
           if jq -e '.pull_request' /tmp/item.json > /dev/null; then
             # The files endpoint lists at most 3,000 files; the script changes
             # nothing when the list doesn't match the PR's changed_files.
             gh api "repos/${GITHUB_REPOSITORY}/pulls/${NUMBER}" > /tmp/pull.json
-            gh api --paginate "repos/${GITHUB_REPOSITORY}/pulls/${NUMBER}/files" --jq '.[].filename' > /tmp/files.txt
+            # Renamed files also list their old path: the PR is about both.
+            gh api --paginate "repos/${GITHUB_REPOSITORY}/pulls/${NUMBER}/files" \
+              --jq '.[] | {filename, previous_filename} | tojson' > /tmp/files.jsonl
             pr_args=(--pull /tmp/pull.json)
           fi
 
@@ -69,7 +71,7 @@ jobs:
           gh api --paginate "repos/${GITHUB_REPOSITORY}/labels" \
             --jq '.[] | {name, description} | tojson' > /tmp/labels.jsonl
 
-          python3 scripts/detect_affected_resources.py --item /tmp/item.json --files /tmp/files.txt \
+          python3 scripts/detect_affected_resources.py --item /tmp/item.json --files /tmp/files.jsonl \
             --events /tmp/events.jsonl --labels /tmp/labels.jsonl "${pr_args[@]}" > /tmp/changes.tsv
           if [ ! -s /tmp/changes.tsv ]; then
             echo "Nothing to change"

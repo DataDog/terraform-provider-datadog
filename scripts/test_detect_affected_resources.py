@@ -746,6 +746,33 @@ class TestDetectAffectedResources(unittest.TestCase):
         files = ["datadog/fwprovider/resource_datadog_team.go"]
         self.assertEqual(self.plan(item, files, events), (["resource/datadog_team"], ["resource/datadog_monitor"]))
 
+    def test_pr_rename_keeps_the_old_resource(self):
+        files = ["datadog/fwprovider/resource_datadog_monitor_renamed.go"]
+        previous = ["datadog/fwprovider/resource_datadog_monitor.go"]
+        events = [ev("labeled", BOT, "resource/datadog_monitor")]
+        kept = pr("Rename", labels=["resource/datadog_monitor"])
+        self.assertEqual(
+            plan_label_changes(kept, files, events, self.root, changed_files=1, previous_files=previous), ([], [])
+        )
+        to_add, _ = plan_label_changes(pr("Rename"), files, [], self.root, changed_files=1, previous_files=previous)
+        self.assertEqual([lbl for lbl, _ in to_add], ["resource/datadog_monitor"])
+        # Without the old path the label would look stale.
+        self.assertEqual(
+            plan_label_changes(kept, files, events, self.root, changed_files=1), ([], ["resource/datadog_monitor"])
+        )
+
+    def test_pr_rename_count_and_duplicates_use_new_paths_only(self):
+        files = ["docs/resources/team.md", "docs/resources/user.md"]
+        swapped = ["docs/resources/user.md", "docs/resources/team.md"]
+        to_add, _ = plan_label_changes(pr("Swap"), files, [], self.root, changed_files=2, previous_files=swapped)
+        self.assertEqual([lbl for lbl, _ in to_add], ["resource/datadog_team", "resource/datadog_user"])
+
+    def test_pr_rename_from_fork_labels_only_documented_old_names(self):
+        files = ["docs/resources/anything_i_want.md"]
+        previous = ["docs/resources/monitor.md"]
+        to_add, _ = plan_label_changes(pr("Rename"), files, [], self.root, changed_files=1, previous_files=previous)
+        self.assertEqual([lbl for lbl, _ in to_add], ["resource/datadog_monitor"])
+
     def test_pr_incomplete_file_list_changes_nothing(self):
         # The files endpoint stops at 3,000 files; the team file is past the cutoff.
         labels = ["resource/datadog_monitor", "resource/datadog_team"]
@@ -783,15 +810,17 @@ class TestDetectAffectedResources(unittest.TestCase):
     def run_cli(self, item, files, pull=None, repo_labels=()):
         tmp = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, tmp)
-        paths = {name: os.path.join(tmp, name) for name in ("item.json", "files.txt", "pull.json", "labels.jsonl")}
+        paths = {name: os.path.join(tmp, name) for name in ("item.json", "files.jsonl", "pull.json", "labels.jsonl")}
         with open(paths["labels.jsonl"], "w") as fh:
             fh.write("".join(json.dumps({"name": n, "description": d}) + "\n" for n, d in repo_labels))
         with open(paths["item.json"], "w") as fh:
             json.dump(item, fh)
-        with open(paths["files.txt"], "w") as fh:
-            fh.write("".join(f + "\n" for f in files))
+        with open(paths["files.jsonl"], "w") as fh:
+            for f in files:
+                filename, previous = (f, None) if isinstance(f, str) else f
+                fh.write(json.dumps({"filename": filename, "previous_filename": previous}) + "\n")
         script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "detect_affected_resources.py")
-        cmd = [sys.executable, script, "--item", paths["item.json"], "--files", paths["files.txt"]]
+        cmd = [sys.executable, script, "--item", paths["item.json"], "--files", paths["files.jsonl"]]
         cmd += ["--labels", paths["labels.jsonl"]]
         if pull is not None:
             with open(paths["pull.json"], "w") as fh:
@@ -815,6 +844,11 @@ class TestDetectAffectedResources(unittest.TestCase):
         self.assertEqual((short.returncode, short.stdout), (0, ""))
         full = self.run_cli(pr("Fix"), files, self.pull_json(1))
         self.assertEqual((full.returncode, full.stdout), (0, "add\tresource/datadog_monitor\tResource datadog_monitor\n"))
+
+    def test_cli_reads_previous_filenames(self):
+        files = [("datadog/fwprovider/resource_datadog_monitor_renamed.go", "datadog/fwprovider/resource_datadog_monitor.go")]
+        out = self.run_cli(pr("Rename"), files, self.pull_json(1))
+        self.assertEqual((out.returncode, out.stdout), (0, "add\tresource/datadog_monitor\tResource datadog_monitor\n"))
 
     def test_cli_trusts_branches_in_this_repo(self):
         # Generation bots open PRs from branches here but show as CONTRIBUTOR.
@@ -938,6 +972,46 @@ class TestDetectAffectedResources(unittest.TestCase):
             item, [], [ev("labeled", BOT, hashed)], self.root, repo_labels={cut: "Resource " + self.LONG}
         )
         self.assertEqual(([lbl for lbl, _ in to_add], to_remove), ([cut], [hashed]))
+
+    def long_label_names(self):
+        cut = ("resource/" + self.LONG)[:MAX_LABEL_LEN]
+        return cut, self.name_of("resource", self.LONG, repo_labels={cut: ""}), {cut: "Resource " + self.LONG}
+
+    def test_person_removing_one_name_of_a_long_label_blocks_the_other(self):
+        cut, hashed, owned = self.long_label_names()
+        item = issue(f"[{self.LONG}] Bug")
+        for removed, repo_labels in ((hashed, owned), (cut, {cut: ""}), (hashed.upper(), owned)):
+            with self.subTest(removed=removed):
+                events = [ev("labeled", BOT, removed), ev("unlabeled", "octocat", removed)]
+                self.assertEqual(
+                    plan_label_changes(item, [], events, self.root, repo_labels=repo_labels), ([], [])
+                )
+
+    def test_person_added_name_of_a_long_label_is_not_duplicated(self):
+        # E.g. the hand-made cut labels before they have a description.
+        cut, hashed, _ = self.long_label_names()
+        item = issue(f"[{self.LONG}] Bug", labels=[cut])
+        for events in ([], [ev("labeled", "octocat", cut)]):
+            with self.subTest(events=events):
+                self.assertEqual(
+                    plan_label_changes(item, [], events, self.root, repo_labels={cut: ""}), ([], [])
+                )
+
+    def test_person_label_for_another_name_does_not_block(self):
+        cut, _, owned = self.long_label_names()
+        other = "resource/datadog_security_findings_severity_other_rule"
+        item = issue(f"[{self.LONG}] Bug", labels=[other])
+        to_add, _ = plan_label_changes(item, [], [ev("unlabeled", "octocat", other)], self.root, repo_labels=owned)
+        self.assertEqual([lbl for lbl, _ in to_add], [cut])
+
+    def test_person_switching_kinds_is_kept(self):
+        item = issue("[datadog_monitor] Bug", labels=["datasource/datadog_monitor"])
+        events = [
+            ev("labeled", BOT, "resource/datadog_monitor"),
+            ev("unlabeled", "octocat", "resource/datadog_monitor"),
+            ev("labeled", "octocat", "datasource/datadog_monitor"),
+        ]
+        self.assertEqual(self.plan(item, events=events), ([], []))
 
     def test_real_repo_labels_are_unique(self):
         repo_root = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
