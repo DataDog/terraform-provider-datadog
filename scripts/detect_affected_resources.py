@@ -82,6 +82,14 @@ _CODE_BLOCK_RE = re.compile(r"(`{3,}|~{3,}).*?(?:\1|\Z)", re.DOTALL)
 
 # Wording that says the item is about the provider as a whole. Names given as
 # examples next to it ("All resources, e.g. datadog_monitor") don't count.
+# Explicit markers count everywhere, including tagged titles.
+_PROVIDER_MARKER_RE = re.compile(
+    r"\bprovider[ -](?:wide|level)\b"
+    r"|\bthe\s+provider\s+itself\b"
+    r"|\bterraform(?:'s)?\s+core\b"
+    r"|^\s*(?:\[[^\]]*\]\s*)*\[provider\]",
+    re.IGNORECASE,
+)
 _PROVIDER_WIDE_RE = re.compile(
     # Plural after "all", singular after "every"/"any", so phrases like
     # "all resource metric types" don't count. "Multiple"/"several"/"many"
@@ -89,10 +97,7 @@ _PROVIDER_WIDE_RE = re.compile(
     # several distinct names are handled by is_clear instead.
     r"\ball\s+(?:of\s+the\s+)?(?:datadog\s+)?(?:resources|data[ _-]?sources)\b"
     r"|\b(?:every|any)\s+(?:datadog\s+)?(?:resource|data[ _-]?source)\b"
-    r"|\bprovider[ -](?:wide|level)\b"
-    r"|\bthe\s+provider\s+itself\b"
-    r"|\bterraform(?:'s)?\s+core\b"
-    r"|^\s*\[provider\]",
+    r"|" + _PROVIDER_MARKER_RE.pattern,
     re.IGNORECASE,
 )
 # Negation just before provider-wide wording: "not provider-wide",
@@ -100,18 +105,27 @@ _PROVIDER_WIDE_RE = re.compile(
 # datadog_x but all resources" still counts.
 _NEGATION_BEFORE_RE = re.compile(r"(?:\b(?:not|no|never|cannot)|n['’]t)\s+(?:[\w'’-]+\s+)?$", re.IGNORECASE)
 # A title like "[datadog_monitor] ..." or "[ACTP][datadog_x] ..." already
-# names its scope, so wording later in it ("every resource is recreated")
-# is about instances, not about the provider.
+# names its scope, so "all"/"every resource" later in it ("every resource is
+# recreated") is about instances. Only _PROVIDER_MARKER_RE applies to it.
 _TITLE_TAG_RE = re.compile(r"^\s*(?:\[[^\]]*\]\s*)*?\[(?:data\.)?datadog_[a-z0-9_]+\]")
 
 # Lowercase only, so env vars such as DATADOG_API_KEY are not read as names.
+# A preceding dot is allowed for module addresses such as
+# "module.x.datadog_monitor.y" and "module.x.data.datadog_monitor.y", but not
+# right after "module." (module names like "module.datadog_alerts").
 _TEXT_NAME_RE = re.compile(
-    r"(?<![A-Za-z0-9_.])(data\.|data_source_|resource_)?(datadog_[a-z0-9_]+)(?![A-Za-z0-9])"
+    r"(?<![A-Za-z0-9_])(?<!module\.)(data\.|data_source_|resource_)?(datadog_[a-z0-9_]+)(?![A-Za-z0-9])"
 )
-_DATASOURCE_CONTEXT_RE = re.compile(r'(?:\bdata\s+"|\bdata[ _-]?sources?\W{0,3})$', re.IGNORECASE)
-# Singular only: "Resources:" headings are handled by _KIND_HEADING_RE, and
-# "Affected resources: datadog_x" says nothing about the kind.
-_RESOURCE_CONTEXT_RE = re.compile(r"\bresource\W{0,3}$", re.IGNORECASE)
+_HCL_DATA_RE = re.compile(r'\bdata\s+"$')
+# Kind words right before a name, possibly both: "data source datadog_x",
+# "resource and data source datadog_x". The word next to the name must be
+# singular for resources: "Resources:" headings are handled by
+# _KIND_HEADING_RE, and "Affected resources: datadog_x" says nothing about the
+# kind.
+_BEFORE_KINDS_RE = re.compile(
+    r"\b((?:(?:data[ _-]?sources?|resources?)\s*(?:and|or|&|/|,)\s*)*(?:data[ _-]?sources?|resource))\W{0,3}$",
+    re.IGNORECASE,
+)
 # Kind words right after a name, possibly both: "datadog_x data source",
 # "datadog_x (data source and resource)".
 _KIND_WORD_RE = re.compile(r"data[ _-]?sources?|resources?", re.IGNORECASE)
@@ -212,12 +226,13 @@ def names_from_text(text: str, known: Known) -> Dict[Name, bool]:
                 groups.append([m])
 
         for group in groups:
-            before = line[max(0, group[0].start() - 20) : group[0].start()]
+            start = group[0].start()
+            before = _BEFORE_KINDS_RE.search(line, max(0, start - 40), start)
             after = _AFTER_KINDS_RE.match(line[group[-1].end() : group[-1].end() + 40])
-            if _DATASOURCE_CONTEXT_RE.search(before):
+            if _HCL_DATA_RE.search(line, max(0, start - 20), start):
                 stated = [DATASOURCE]
-            elif _RESOURCE_CONTEXT_RE.search(before):
-                stated = [RESOURCE]
+            elif before:
+                stated = sorted({_kind_of_word(w) for w in _KIND_WORD_RE.findall(before.group(1))})
             elif after:
                 stated = sorted({_kind_of_word(w) for w in _KIND_WORD_RE.findall(after.group(1))})
             else:
@@ -300,10 +315,10 @@ def names_from_files(files: Iterable[str], known: Known) -> Set[Name]:
     return found
 
 
-def _is_provider_wide(text: str) -> bool:
+def _is_provider_wide(text: str, pattern: "re.Pattern[str]" = _PROVIDER_WIDE_RE) -> bool:
     return any(
         not _NEGATION_BEFORE_RE.search(text, max(0, m.start() - 40), m.start())
-        for m in _PROVIDER_WIDE_RE.finditer(text)
+        for m in pattern.finditer(text)
     )
 
 
@@ -416,7 +431,8 @@ def detect_labels(item: dict, files: List[str], repo_root: str) -> List[Tuple[st
             if m:
                 known[_FILE_KIND[m.group(1)]].add("datadog_" + m.group(2))
 
-    scope = [] if _TITLE_TAG_RE.match(title) else [title]
+    title_pattern = _PROVIDER_MARKER_RE if _TITLE_TAG_RE.match(title) else _PROVIDER_WIDE_RE
+    scope = [(title, title_pattern)]
     from_title = names_from_text(title, known)
     if "pull_request" in item:
         # File paths always state the kind.
@@ -427,10 +443,10 @@ def detect_labels(item: dict, files: List[str], repo_root: str) -> List[Tuple[st
         if section is None:
             section = _CODE_BLOCK_RE.sub("", body)
         # Pasted configs can't make an issue provider-wide.
-        scope.append(_CODE_BLOCK_RE.sub("", section))
+        scope.append((_CODE_BLOCK_RE.sub("", section), _PROVIDER_WIDE_RE))
         names = _prefer_explicit(from_title, names_from_text(section, known))
 
-    if any(_is_provider_wide(text[:MAX_TEXT_LEN]) for text in scope):
+    if any(_is_provider_wide(text[:MAX_TEXT_LEN], pattern) for text, pattern in scope):
         print("Provider-wide, leaving unlabeled", file=sys.stderr)
         return []
 

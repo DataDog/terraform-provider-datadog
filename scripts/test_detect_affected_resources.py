@@ -201,6 +201,39 @@ class TestDetectAffectedResources(unittest.TestCase):
                     ["datasource/datadog_monitor", "resource/datadog_monitor"],
                 )
 
+    def test_issue_both_kinds_before_name(self):
+        for affected in (
+            "resource and data source datadog_monitor",
+            "Data source or resource: `datadog_monitor`",
+            "data sources and resource datadog_monitor",
+        ):
+            with self.subTest(affected=affected):
+                self.assertEqual(
+                    self.labels(issue("Bug", form_body(affected))),
+                    ["datasource/datadog_monitor", "resource/datadog_monitor"],
+                )
+
+    def test_issue_joined_kinds_before_name_need_singular_resource(self):
+        # Plural "resources" next to the name stays a guess, even after a stated kind.
+        affected = "data source datadog_team; affected resources: datadog_monitor"
+        self.assertEqual(
+            self.labels(issue("Bug", form_body(affected))), ["datasource/datadog_team", "resource/datadog_monitor"]
+        )
+
+    def test_issue_module_addresses(self):
+        for affected, expected in (
+            ("module.alerts.datadog_monitor.example", ["resource/datadog_monitor"]),
+            ("module.alerts.data.datadog_monitor.example", ["datasource/datadog_monitor"]),
+            ('module.a.module.b.datadog_team.this["x"]', ["resource/datadog_team"]),
+            ("# module.alerts.datadog_monitor.cpu will be updated in-place", ["resource/datadog_monitor"]),
+        ):
+            with self.subTest(affected=affected):
+                self.assertEqual(self.labels(issue("Bug", form_body(affected))), expected)
+
+    def test_issue_module_names_are_not_resources(self):
+        affected = "module.datadog_monitor.datadog_team.example"
+        self.assertEqual(self.labels(issue("Bug", form_body(affected))), ["resource/datadog_team"])
+
     def test_issue_both_kinds_after_name(self):
         for affected in (
             "`datadog_monitor` (data source and resource)",
@@ -411,6 +444,24 @@ class TestDetectAffectedResources(unittest.TestCase):
                 self.assertEqual(
                     self.labels(issue(title, form_body("datadog_monitor"))), ["resource/datadog_monitor"]
                 )
+
+    def test_tagged_title_explicit_provider_markers_still_count(self):
+        files = ["datadog/fwprovider/resource_datadog_monitor.go"]
+        for title in (
+            "[datadog_monitor] Provider-wide crash on init",
+            "[datadog_monitor] Terraform core crash on init",
+            "[datadog_monitor] Crash in the provider itself",
+            "[datadog_monitor][provider] Retries ignore the timeout",
+        ):
+            with self.subTest(title=title):
+                self.assertEqual(self.labels(issue(title, form_body("datadog_monitor"))), [])
+                self.assertEqual(self.labels(pr(title), files), [])
+
+    def test_tagged_title_negated_provider_marker_keeps_labels(self):
+        title = "[datadog_monitor] Crash on init, not provider-wide"
+        self.assertEqual(self.labels(issue(title, form_body("datadog_monitor"))), ["resource/datadog_monitor"])
+        files = ["datadog/fwprovider/resource_datadog_monitor.go"]
+        self.assertEqual(self.labels(pr(title), files), ["resource/datadog_monitor"])
 
     def test_issue_affected_section_still_wins_over_tagged_title(self):
         item = issue("[datadog_monitor] Crash", form_body("All resources, for example datadog_monitor"))
