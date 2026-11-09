@@ -7,6 +7,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -14,14 +15,16 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.
 var (
-	_ resource.ResourceWithConfigure   = &statusPageResource{}
-	_ resource.ResourceWithImportState = &statusPageResource{}
-	_ resource.ResourceWithModifyPlan  = &statusPageResource{}
+	_ resource.ResourceWithConfigure      = &statusPageResource{}
+	_ resource.ResourceWithImportState    = &statusPageResource{}
+	_ resource.ResourceWithModifyPlan     = &statusPageResource{}
+	_ resource.ResourceWithValidateConfig = &statusPageResource{}
 )
 
 type statusPageResource struct {
@@ -39,6 +42,8 @@ type statusPageModel struct {
 	CustomDomainEnabled       types.Bool   `tfsdk:"custom_domain_enabled"`
 	PageURL                   types.String `tfsdk:"page_url"`
 	VisualizationType         types.String `tfsdk:"visualization_type"`
+	VisualizationLayout       types.String `tfsdk:"visualization_layout"`
+	RssFeedEnabled            types.Bool   `tfsdk:"rss_feed_enabled"`
 	SubscriptionsEnabled      types.Bool   `tfsdk:"subscriptions_enabled"`
 	SlackSubscriptionsEnabled types.Bool   `tfsdk:"slack_subscriptions_enabled"`
 	CompanyLogo               types.String `tfsdk:"company_logo"`
@@ -165,6 +170,22 @@ func (r *statusPageResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Description: "How component statuses are visualized on the page. Valid values are: bars_and_uptime_percentage, bars_only, component_name_only.",
 				Required:    true,
 			},
+			"visualization_layout": schema.StringAttribute{
+				Description: "The layout of components on the status page. Defaults to `list`. `grid` requires `visualization_type` to be `component_name_only`; changing `visualization_type` to any other value resets the layout to `list`.",
+				Optional:    true,
+				Computed:    true,
+				Validators:  []validator.String{stringvalidator.OneOf("list", "grid")},
+				// The API may reset the layout when visualization_type changes, so
+				// do not preserve the prior layout with UseStateForUnknown.
+			},
+			"rss_feed_enabled": schema.BoolAttribute{
+				Description: "Whether the RSS feed is enabled for the status page.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"enabled": schema.BoolAttribute{
 				Description: "Whether the status page is published. Managed by the publish/unpublish API operations, not by this resource; always reflects the page's current state.",
 				Computed:    true,
@@ -256,6 +277,19 @@ func (r *statusPageResource) Schema(_ context.Context, _ resource.SchemaRequest,
 	}
 }
 
+func (r *statusPageResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
+	var layout, visualizationType types.String
+	response.Diagnostics.Append(request.Config.GetAttribute(ctx, path.Root("visualization_layout"), &layout)...)
+	response.Diagnostics.Append(request.Config.GetAttribute(ctx, path.Root("visualization_type"), &visualizationType)...)
+	if response.Diagnostics.HasError() || visualizationType.IsNull() || visualizationType.IsUnknown() {
+		return
+	}
+	if layout.ValueString() == "grid" && visualizationType.ValueString() != "component_name_only" {
+		response.Diagnostics.AddAttributeError(path.Root("visualization_layout"), "Invalid visualization layout",
+			"The grid layout requires visualization_type to be component_name_only.")
+	}
+}
+
 func (r *statusPageResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	if request.ProviderData == nil {
 		return
@@ -288,6 +322,13 @@ func (r *statusPageResource) Create(ctx context.Context, request resource.Create
 		VisualizationType: datadogV2.CreateStatusPageRequestDataAttributesVisualizationType(plan.VisualizationType.ValueString()),
 	}
 
+	if !plan.VisualizationLayout.IsNull() && !plan.VisualizationLayout.IsUnknown() {
+		layout := datadogV2.CreateStatusPageRequestDataAttributesVisualizationLayout(plan.VisualizationLayout.ValueString())
+		attributes.VisualizationLayout = &layout
+	}
+	if !plan.RssFeedEnabled.IsNull() && !plan.RssFeedEnabled.IsUnknown() {
+		attributes.RssFeedEnabled = plan.RssFeedEnabled.ValueBoolPointer()
+	}
 	if !plan.SubscriptionsEnabled.IsNull() && !plan.SubscriptionsEnabled.IsUnknown() {
 		attributes.SubscriptionsEnabled = plan.SubscriptionsEnabled.ValueBoolPointer()
 	}
@@ -424,6 +465,13 @@ func (r *statusPageResource) Update(ctx context.Context, request resource.Update
 		VisualizationType: &visualizationType,
 	}
 
+	if !plan.VisualizationLayout.IsNull() && !plan.VisualizationLayout.IsUnknown() {
+		layout := datadogV2.CreateStatusPageRequestDataAttributesVisualizationLayout(plan.VisualizationLayout.ValueString())
+		attributes.VisualizationLayout = &layout
+	}
+	if !plan.RssFeedEnabled.IsNull() && !plan.RssFeedEnabled.IsUnknown() {
+		attributes.RssFeedEnabled = plan.RssFeedEnabled.ValueBoolPointer()
+	}
 	if !plan.SubscriptionsEnabled.IsNull() && !plan.SubscriptionsEnabled.IsUnknown() {
 		attributes.SubscriptionsEnabled = plan.SubscriptionsEnabled.ValueBoolPointer()
 	}
@@ -541,6 +589,16 @@ func (r *statusPageResource) updateStateFromResponse(state *statusPageModel, res
 		}
 		if visualizationType, ok := attributes.GetVisualizationTypeOk(); ok && visualizationType != nil {
 			state.VisualizationType = types.StringValue(string(*visualizationType))
+		}
+		if layout, ok := attributes.GetVisualizationLayoutOk(); ok && layout != nil {
+			state.VisualizationLayout = types.StringValue(string(*layout))
+		} else {
+			state.VisualizationLayout = types.StringNull()
+		}
+		if rssFeedEnabled, ok := attributes.GetRssFeedEnabledOk(); ok && rssFeedEnabled != nil {
+			state.RssFeedEnabled = types.BoolValue(*rssFeedEnabled)
+		} else {
+			state.RssFeedEnabled = types.BoolNull()
 		}
 		if subscriptionsEnabled, ok := attributes.GetSubscriptionsEnabledOk(); ok && subscriptionsEnabled != nil {
 			state.SubscriptionsEnabled = types.BoolValue(*subscriptionsEnabled)

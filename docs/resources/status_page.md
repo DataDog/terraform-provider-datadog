@@ -16,10 +16,12 @@ Provides a Datadog status page resource. This can be used to create and manage D
 # Create new datadog_status_page resource
 
 resource "datadog_status_page" "acme_status_page" {
-  name               = "Acme Status"
-  type               = "public"
-  domain_prefix      = "acme-status"
-  visualization_type = "bars_and_uptime_percentage"
+  name                 = "Acme Status"
+  type                 = "public"
+  domain_prefix        = "acme-status"
+  visualization_type   = "bars_and_uptime_percentage"
+  visualization_layout = "list"
+  rss_feed_enabled     = true
 }
 ```
 
@@ -38,9 +40,11 @@ resource "datadog_status_page" "acme_status_page" {
 - `company_logo` (String) The company logo displayed on the status page.
 - `email_header_image` (String) The header image included in subscriber emails.
 - `favicon` (String) The favicon displayed for the status page.
+- `rss_feed_enabled` (Boolean) Whether the RSS feed is enabled for the status page.
 - `slack_app_icon` (String) The icon used for the status page's Slack app integration.
 - `slack_subscriptions_enabled` (Boolean) Whether Slack subscriber notifications are enabled for the status page.
 - `subscriptions_enabled` (Boolean) Whether subscriber notifications are enabled for the status page.
+- `visualization_layout` (String) The layout of components on the status page. Defaults to `list`. `grid` requires `visualization_type` to be `component_name_only`; changing `visualization_type` to any other value resets the layout to `list`. Valid values are `list`, `grid`.
 
 ### Read-Only
 

@@ -28,17 +28,19 @@ data "datadog_status_pages" "acme_status_pages" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `status_pages` (List of Object) The list of matching status pages. (see [below for nested schema](#nestedatt--status_pages))
+- `status_pages` (Attributes List) The list of matching status pages. (see [below for nested schema](#nestedatt--status_pages))
 
 <a id="nestedatt--status_pages"></a>
 ### Nested Schema for `status_pages`
 
 Read-Only:
 
-- `domain_prefix` (String)
-- `enabled` (Boolean)
-- `id` (String)
-- `name` (String)
-- `page_url` (String)
-- `type` (String)
-- `visualization_type` (String)
+- `domain_prefix` (String) The subdomain prefix used to build the status page's URL.
+- `enabled` (Boolean) Whether the status page is published.
+- `id` (String) The ID of the status page.
+- `name` (String) The name of the status page.
+- `page_url` (String) The URL of the status page.
+- `rss_feed_enabled` (Boolean) Whether the RSS feed is enabled for the status page.
+- `type` (String) The type of the status page.
+- `visualization_layout` (String) The layout of components on the status page. Possible values are: list, grid.
+- `visualization_type` (String) How component statuses are visualized on the page.
