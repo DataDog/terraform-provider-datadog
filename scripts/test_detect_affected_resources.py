@@ -292,6 +292,31 @@ class TestDetectAffectedResources(unittest.TestCase):
             self.labels(issue("Bug", form_body('resource "datadog_monitor" "x" {}'))), ["resource/datadog_monitor"]
         )
 
+    def test_issue_hcl_instance_names_and_index_keys_are_not_types(self):
+        for affected, expected in (
+            ('resource "datadog_monitor_json" "datadog_team" {}', ["resource/datadog_monitor_json"]),
+            ('resource  "datadog_monitor_json"   "datadog_team" {', ["resource/datadog_monitor_json"]),
+            ('data "datadog_monitor" "datadog_team" {}', ["datasource/datadog_monitor"]),
+            ('datadog_monitor.this["datadog_team"]', ["resource/datadog_monitor"]),
+            ("datadog_monitor.this['datadog_team']", ["resource/datadog_monitor"]),
+            ('x[ "datadog_team" ]', []),
+            ('module.alerts["datadog_team"].datadog_monitor.cpu', ["resource/datadog_monitor"]),
+            ('module.alerts["a]b"].datadog_monitor.cpu', ["resource/datadog_monitor"]),
+            ("module.alerts[each.key].datadog_monitor.cpu", ["resource/datadog_monitor"]),
+            # Still names: types, list literals, links, later mentions.
+            ('resource "datadog_monitor" {}', ["resource/datadog_monitor"]),
+            ('ignore_changes = ["datadog_monitor"]', ["resource/datadog_monitor"]),
+            ('types: ["datadog_monitor", "datadog_team"]', ["resource/datadog_monitor", "resource/datadog_team"]),
+            ('foo([ "datadog_monitor" ])', ["resource/datadog_monitor"]),
+            ("[datadog_monitor](https://registry.terraform.io)", ["resource/datadog_monitor"]),
+            (
+                'resource "datadog_monitor_json" "datadog_team" {} breaks the datadog_team resource',
+                ["resource/datadog_monitor_json", "resource/datadog_team"],
+            ),
+        ):
+            with self.subTest(affected=affected):
+                self.assertEqual(self.labels(issue("Bug", form_body(affected))), expected)
+
     def test_issue_module_names_are_not_resources(self):
         affected = "module.datadog_monitor.datadog_team.example"
         self.assertEqual(self.labels(issue("Bug", form_body(affected))), ["resource/datadog_team"])

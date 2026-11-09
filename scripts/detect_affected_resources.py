@@ -140,9 +140,13 @@ _TEXT_NAME_RE = re.compile(r"(?<![\w-])(data\.|data_source_|resource_)?(datadog_
 # "module.x.datadog_monitor.y", "module.x["a"].data.datadog_monitor.y". Not
 # "var.datadog_api_key", "local.x", instance names ("datadog_x.datadog_y") or
 # module names ("module.datadog_alerts").
-_MODULE_ADDRESS_BEFORE_RE = re.compile(r"\bmodule\.[\w-]+(?:\[[^\]]*\])?\.$")
-# Terraform names that aren't resource types: 'variable "datadog_api_key"'.
-_NOT_A_TYPE_BEFORE_RE = re.compile(r'\b(?:variable|output|module|provider)\s+"$')
+_MODULE_ADDRESS_BEFORE_RE = re.compile(r'\bmodule\.[\w-]+(?:\[(?:"[^"]*"|[^\]"]*)\])?\.$')
+# Terraform names that aren't resource types: 'variable "datadog_api_key"',
+# instance names ('resource "datadog_x" "datadog_y"') and index keys
+# ('datadog_x.this["datadog_y"]', but not list literals like '= ["datadog_y"]').
+_NOT_A_TYPE_BEFORE_RE = re.compile(
+    r'(?:\b(?:variable|output|module|provider)\s+"|\b(?:resource|data)\s+"[^"\n]*"\s+"|[\w\]]\[\s*["\'])$'
+)
 _HCL_DATA_RE = re.compile(r'\bdata\s+"$')
 # Kind words right before a name, possibly both: "data source datadog_x",
 # "resource and data source datadog_x". The word next to the name must be
@@ -277,7 +281,7 @@ def names_from_text(text: str, known: Known) -> Dict[Name, bool]:
             m
             for m in _TEXT_NAME_RE.finditer(line)
             if not (m.start() and line[m.start() - 1] == "." and not _MODULE_ADDRESS_BEFORE_RE.search(line, 0, m.start()))
-            and not _NOT_A_TYPE_BEFORE_RE.search(line, max(0, m.start() - 20), m.start())
+            and not _NOT_A_TYPE_BEFORE_RE.search(line, max(0, m.start() - 100), m.start())
         ]
         groups: List[List["re.Match[str]"]] = []
         for i, m in enumerate(matches):
