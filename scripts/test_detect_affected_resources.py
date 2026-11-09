@@ -39,6 +39,8 @@ RESOURCES = [
     "team",
     "user",
     "api_key",
+    "dashboard",
+    "dashboard_list",
     "dashboard_v2",
     "powerpack_v2",
     "synthetics_test",
@@ -257,6 +259,39 @@ class TestDetectAffectedResources(unittest.TestCase):
             with self.subTest(affected=affected):
                 self.assertEqual(self.labels(issue("Bug", form_body(affected))), expected)
 
+    def test_issue_names_after_a_dot_need_a_module_address(self):
+        for affected, expected in (
+            ('module.a["x"].datadog_team.this', ["resource/datadog_team"]),
+            ("module.a[0].module.b.datadog_team.this", ["resource/datadog_team"]),
+            ("module.my-alerts.datadog_team.this", ["resource/datadog_team"]),
+            ("data.datadog_monitor.x.id", ["datasource/datadog_monitor"]),
+            ("datadog_monitor.cpu.id", ["resource/datadog_monitor"]),
+            ("It fails on datadog_monitor. Retrying helps.", ["resource/datadog_monitor"]),
+            ("api_key = var.datadog_api_key", []),
+            ("ids = local.datadog_team", []),
+            ("each.datadog_team, count.datadog_team, self.datadog_team", []),
+            ("datadog_team.datadog_monitor", ["resource/datadog_team"]),
+            ("module.datadog_monitor", []),
+            ("resource.datadog_monitor", []),
+            ("foo.module.datadog_team", []),
+            ("notmodule.x.datadog_team.y", []),
+        ):
+            with self.subTest(affected=affected):
+                self.assertEqual(self.labels(issue("Bug", form_body(affected))), expected)
+
+    def test_issue_terraform_names_that_are_not_types(self):
+        for affected in (
+            'variable "datadog_api_key" {}',
+            'output "datadog_monitor" {}',
+            'module "datadog_monitor" {',
+            'provider "datadog_team" {',
+        ):
+            with self.subTest(affected=affected):
+                self.assertEqual(self.labels(issue("Bug", form_body(affected))), [])
+        self.assertEqual(
+            self.labels(issue("Bug", form_body('resource "datadog_monitor" "x" {}'))), ["resource/datadog_monitor"]
+        )
+
     def test_issue_module_names_are_not_resources(self):
         affected = "module.datadog_monitor.datadog_team.example"
         self.assertEqual(self.labels(issue("Bug", form_body(affected))), ["resource/datadog_team"])
@@ -328,7 +363,7 @@ class TestDetectAffectedResources(unittest.TestCase):
             "Data sources:\n- datadog_monitor\n- datadog_team",
             "**Data sources**\n\n* datadog_monitor\n* datadog_team",
             "Data sources: datadog_monitor, datadog_team",
-            "- Datasource: datadog_monitor\n- datadog_team",
+            "- Datasource: datadog_monitor, datadog_team",
             "## Data sources\n- datadog_monitor\n- datadog_team",
             "#### **Data sources:**\n\n- datadog_monitor\n- datadog_team",
             "## Data sources: datadog_monitor, datadog_team",
@@ -375,12 +410,61 @@ class TestDetectAffectedResources(unittest.TestCase):
             ["datasource/datadog_team", "resource/datadog_monitor"],
         )
 
-    def test_issue_kind_heading_for_missing_kind_is_honored(self):
-        # datadog_downtime has no data source yet; the heading asks for one.
-        self.assertEqual(
-            self.labels(issue("Feature request", form_body("Data sources:\n- datadog_downtime"))),
-            ["datasource/datadog_downtime"],
-        )
+    def test_issue_kind_heading_never_makes_up_a_kind(self):
+        # datadog_downtime has no data source and datadog_monitors no resource.
+        for affected in ("Data sources:\n- datadog_downtime", "Resources:\n- datadog_monitors"):
+            with self.subTest(affected=affected):
+                self.assertEqual(self.labels(issue("Feature request", form_body(affected))), [])
+
+    def test_issue_inline_request_for_missing_kind_is_honored(self):
+        for affected in ("Data source: datadog_downtime", "Add data source datadog_downtime"):
+            with self.subTest(affected=affected):
+                self.assertEqual(
+                    self.labels(issue("Feature request", form_body(affected))), ["datasource/datadog_downtime"]
+                )
+
+    def test_issue_kind_heading_scope(self):
+        for affected, expected in (
+            # A kind label covers only its own line.
+            ("- Resource: datadog_team\n- datadog_monitors", ["datasource/datadog_monitors", "resource/datadog_team"]),
+            ("- Data source: datadog_monitor\n- datadog_downtime", ["datasource/datadog_monitor", "resource/datadog_downtime"]),
+            # A heading covers its block, including loose and numbered lists.
+            ("## Data sources\n\n- datadog_monitor\n\n- datadog_team", ["datasource/datadog_monitor", "datasource/datadog_team"]),
+            ("Data sources:\n1. datadog_monitor\n2. datadog_team", ["datasource/datadog_monitor", "datasource/datadog_team"]),
+            ("Data sources:\n\n\n- datadog_monitor", ["datasource/datadog_monitor"]),
+            # ...but not the text after it.
+            ("**Data sources**\n- datadog_user\n\nThis breaks my datadog_team", ["datasource/datadog_user", "resource/datadog_team"]),
+            ("Data sources:\r\n- datadog_user\r\n\r\nLater datadog_team broke", ["datasource/datadog_user", "resource/datadog_team"]),
+            ("Data sources:\nThe datadog_user one.\n\n- datadog_team", ["datasource/datadog_user", "resource/datadog_team"]),
+        ):
+            with self.subTest(affected=affected):
+                self.assertEqual(self.labels(issue("Bug", form_body(affected))), expected)
+
+    def test_issue_kind_words_belong_to_one_name(self):
+        for affected, expected in (
+            ("datadog_team resource, datadog_user data source", ["datasource/datadog_user", "resource/datadog_team"]),
+            ("datadog_team (resource), datadog_user (data source)", ["datasource/datadog_user", "resource/datadog_team"]),
+            ("datadog_team resource / datadog_user data source", ["datasource/datadog_user", "resource/datadog_team"]),
+            ("datadog_team data source; resource datadog_user", ["datasource/datadog_team", "resource/datadog_user"]),
+            ("data source datadog_team, resource datadog_user", ["datasource/datadog_team", "resource/datadog_user"]),
+            # Joined names still share them.
+            ("datadog_team and datadog_user data sources", ["datasource/datadog_team", "datasource/datadog_user"]),
+        ):
+            with self.subTest(affected=affected):
+                self.assertEqual(self.labels(issue("Bug", form_body(affected))), expected)
+
+    def test_issue_markdown_emphasis_and_escapes(self):
+        for affected, expected in (
+            ("_datadog_monitor_", ["resource/datadog_monitor"]),
+            ("__datadog_monitor__", ["resource/datadog_monitor"]),
+            ("datadog\\_monitor", ["resource/datadog_monitor"]),
+            ("data source \\_datadog\\_monitor\\_", ["datasource/datadog_monitor"]),
+            ("my_datadog_monitor_", []),
+            ("_datadog_monitor", []),
+            ("datadog_monitor_", []),
+        ):
+            with self.subTest(affected=affected):
+                self.assertEqual(self.labels(issue("Bug", form_body(affected))), expected)
 
     def test_issue_kind_words_in_a_sentence_are_not_a_heading(self):
         affected = "The data sources are fine.\nBut datadog_monitor fails."
@@ -441,6 +525,29 @@ class TestDetectAffectedResources(unittest.TestCase):
             "Not sure, maybe all resources; seen on datadog_monitor",
             "No idea. All resources, e.g. datadog_monitor",
             "Not provider-wide for reads, but all resources fail on apply: datadog_monitor",
+        ):
+            with self.subTest(affected=affected):
+                self.assertEqual(self.labels(issue("Bug", form_body(affected))), [])
+
+    def test_issue_instance_wording_is_not_provider_wide(self):
+        for affected in (
+            "datadog_monitor (all resources of this type are recreated after upgrade)",
+            "datadog_monitor - any resource with a browser step",
+            "datadog_monitor: all resources that are currently managed drift",
+            "datadog_monitor; all resources in my state are recreated",
+            "datadog_monitor, every resource of the same kind",
+            "datadog_monitor: all resources managed by this module",
+        ):
+            with self.subTest(affected=affected):
+                self.assertEqual(self.labels(issue("Bug", form_body(affected))), ["resource/datadog_monitor"])
+
+    def test_issue_unqualified_scope_wording_is_still_provider_wide(self):
+        for affected in (
+            "All resources\nwith Terraform 1.5, e.g. datadog_monitor",
+            "all resources without tags, e.g. datadog_monitor",
+            "all resources withheld from state, e.g. datadog_monitor",
+            "All data sources fail with 500, e.g. data.datadog_monitor",
+            "ALL RESOURCES. With datadog_monitor it is obvious",
         ):
             with self.subTest(affected=affected):
                 self.assertEqual(self.labels(issue("Bug", form_body(affected))), [])
@@ -648,24 +755,55 @@ class TestDetectAffectedResources(unittest.TestCase):
         files = ["datadog/resource_datadog_monitor.go"] * 2
         self.assertEqual(self.plan(item, files, events, changed_files=2), ([], []))
 
-    def test_cli_requires_changed_files_for_prs(self):
+    def run_cli(self, item, files, pull=None, repo_labels=()):
         tmp = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, tmp)
-        item_path, files_path = os.path.join(tmp, "item.json"), os.path.join(tmp, "files.txt")
-        with open(item_path, "w") as fh:
-            json.dump(pr("Fix"), fh)
-        with open(files_path, "w") as fh:
-            fh.write("datadog/resource_datadog_monitor.go\n")
+        paths = {name: os.path.join(tmp, name) for name in ("item.json", "files.txt", "pull.json", "labels.jsonl")}
+        with open(paths["labels.jsonl"], "w") as fh:
+            fh.write("".join(json.dumps({"name": n, "description": d}) + "\n" for n, d in repo_labels))
+        with open(paths["item.json"], "w") as fh:
+            json.dump(item, fh)
+        with open(paths["files.txt"], "w") as fh:
+            fh.write("".join(f + "\n" for f in files))
         script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "detect_affected_resources.py")
-        cmd = [sys.executable, script, "--item", item_path, "--files", files_path]
-        missing = subprocess.run(cmd, capture_output=True, text=True)
+        cmd = [sys.executable, script, "--item", paths["item.json"], "--files", paths["files.txt"]]
+        cmd += ["--labels", paths["labels.jsonl"]]
+        if pull is not None:
+            with open(paths["pull.json"], "w") as fh:
+                json.dump(pull, fh)
+            cmd += ["--pull", paths["pull.json"]]
+        return subprocess.run(cmd, capture_output=True, text=True)
+
+    @staticmethod
+    def pull_json(changed_files, head_repo="DataDog/terraform-provider-datadog"):
+        base = {"repo": {"full_name": "DataDog/terraform-provider-datadog"}}
+        head = {"repo": {"full_name": head_repo} if head_repo else None}
+        return {"changed_files": changed_files, "head": head, "base": base}
+
+    def test_cli_requires_pull_for_prs(self):
+        files = ["datadog/resource_datadog_monitor.go"]
+        missing = self.run_cli(pr("Fix"), files)
         self.assertNotEqual(missing.returncode, 0)
         self.assertEqual(missing.stdout, "")
-        self.assertIn("--changed-files", missing.stderr)
-        short = subprocess.run(cmd + ["--changed-files", "2"], check=True, capture_output=True, text=True)
-        self.assertEqual(short.stdout, "")
-        full = subprocess.run(cmd + ["--changed-files", "1"], check=True, capture_output=True, text=True)
-        self.assertEqual(full.stdout, "add\tresource/datadog_monitor\tResource datadog_monitor\n")
+        self.assertIn("--pull", missing.stderr)
+        short = self.run_cli(pr("Fix"), files, self.pull_json(2))
+        self.assertEqual((short.returncode, short.stdout), (0, ""))
+        full = self.run_cli(pr("Fix"), files, self.pull_json(1))
+        self.assertEqual((full.returncode, full.stdout), (0, "add\tresource/datadog_monitor\tResource datadog_monitor\n"))
+
+    def test_cli_trusts_branches_in_this_repo(self):
+        # Generation bots open PRs from branches here but show as CONTRIBUTOR.
+        files = ["datadog/fwprovider/resource_datadog_zz_brand_new.go", "docs/resources/zz_brand_new.md"]
+        item = pr("[datadog_zz_brand_new] Add resource", author_association="CONTRIBUTOR")
+        for head_repo, expected in (
+            ("DataDog/terraform-provider-datadog", "add\tresource/datadog_zz_brand_new\tResource datadog_zz_brand_new\n"),
+            ("someone/terraform-provider-datadog", ""),
+            ("datadog/terraform-provider-datadog", ""),  # not the same full_name
+            (None, ""),  # deleted fork
+        ):
+            with self.subTest(head_repo=head_repo):
+                out = self.run_cli(item, files, self.pull_json(len(files), head_repo))
+                self.assertEqual((out.returncode, out.stdout), (0, expected))
 
     def test_missing_docs_changes_nothing(self):
         shutil.rmtree(os.path.join(self.root, "docs"))
@@ -678,13 +816,16 @@ class TestDetectAffectedResources(unittest.TestCase):
         tmp = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, tmp)
         item_path, events_path = os.path.join(tmp, "item.json"), os.path.join(tmp, "events.jsonl")
+        labels_path = os.path.join(tmp, "labels.jsonl")
         with open(item_path, "w") as fh:
             json.dump(issue("[datadog_monitor] Bug", labels=["resource/datadog_downtime"]), fh)
         with open(events_path, "w") as fh:
             fh.write(json.dumps(ev("labeled", BOT, "resource/datadog_downtime")) + "\n")
+        with open(labels_path, "w") as fh:
+            fh.write(json.dumps({"name": "bug", "description": None}) + "\n")
         script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "detect_affected_resources.py")
         out = subprocess.run(
-            [sys.executable, script, "--item", item_path, "--events", events_path],
+            [sys.executable, script, "--item", item_path, "--events", events_path, "--labels", labels_path],
             check=True, capture_output=True, text=True,
         ).stdout
         self.assertEqual(
@@ -692,30 +833,86 @@ class TestDetectAffectedResources(unittest.TestCase):
             ["add\tresource/datadog_monitor\tResource datadog_monitor", "remove\tresource/datadog_downtime"],
         )
 
+    # -- label names --
+
+    LONG = "datadog_security_findings_severity_modification_rule"  # cut: resource/datadog_security_findings_severity_modifi
+    RULE = "datadog_security_findings_ticket_creation_rule"
+    ORDER = "datadog_security_findings_ticket_creation_rules_order"
+
+    def name_of(self, kind, name, documented=None, repo_labels=None):
+        documented = documented if documented is not None else set().union(*load_known_names(self.root).values())
+        return label_for(kind, name, documented, repo_labels or {})
+
     def test_short_label_is_unchanged(self):
-        self.assertEqual(label_for("resource", "datadog_monitor"), "resource/datadog_monitor")
+        self.assertEqual(self.name_of("resource", "datadog_monitor"), "resource/datadog_monitor")
         name = "datadog_" + "a" * (MAX_LABEL_LEN - len("datasource/datadog_"))
-        self.assertEqual(label_for("datasource", name), "datasource/" + name)
-        self.assertEqual(len("datasource/" + name), MAX_LABEL_LEN)
+        self.assertEqual(self.name_of("datasource", name, {name}), "datasource/" + name)
 
-    def test_long_label_is_shortened_with_hash(self):
-        result = detect_labels(
-            issue("[datadog_security_findings_severity_modification_rule] Bug"), [], self.root
-        )
-        self.assertEqual(len(result), 1)
-        label, description = result[0]
+    def test_long_unique_label_is_cut(self):
+        label = self.name_of("resource", self.LONG)
+        self.assertEqual(label, ("resource/" + self.LONG)[:MAX_LABEL_LEN])
         self.assertEqual(len(label), MAX_LABEL_LEN)
-        self.assertRegex(label, r"^resource/datadog_security_findings_severity-[0-9a-f]{6}$")
-        self.assertEqual(description, "Resource datadog_security_findings_severity_modification_rule")
 
-    def test_long_labels_sharing_a_prefix_stay_distinct(self):
-        body = form_body(
-            "- datadog_security_findings_ticket_creation_rule\n"
-            "- datadog_security_findings_ticket_creation_rules_order"
+    def test_long_label_reuses_cut_label_it_owns(self):
+        cut = ("resource/" + self.LONG)[:MAX_LABEL_LEN]
+        for name_case in (cut, cut.upper()):
+            with self.subTest(name_case=name_case):
+                repo_labels = {name_case.lower(): "Resource " + self.LONG}
+                self.assertEqual(self.name_of("resource", self.LONG, repo_labels=repo_labels), cut)
+
+    def test_long_label_never_takes_a_cut_label_it_does_not_own(self):
+        cut = ("resource/" + self.LONG)[:MAX_LABEL_LEN]
+        for description in ("", "Resource datadog_something_else", "resource " + self.LONG, "Data source " + self.LONG):
+            with self.subTest(description=description):
+                label = self.name_of("resource", self.LONG, repo_labels={cut.lower(): description})
+                self.assertNotEqual(label, cut)
+                self.assertRegex(label, r"^resource/datadog_security_findings_severity-[0-9a-f]{6}$")
+
+    def test_names_that_cut_the_same_get_distinct_hashed_labels(self):
+        rule, order = self.name_of("resource", self.RULE), self.name_of("resource", self.ORDER)
+        self.assertNotEqual(rule, order)
+        for label in (rule, order):
+            self.assertRegex(label, r"-[0-9a-f]{6}$")
+            self.assertEqual(len(label), MAX_LABEL_LEN)
+
+    def test_names_that_cut_the_same_across_kinds_get_hashed(self):
+        # Both are resources only, but a stated kind can ask for either as a data source.
+        self.assertNotEqual(self.name_of("datasource", self.RULE), self.name_of("datasource", self.ORDER))
+
+    def test_exact_length_name_keeps_its_label_and_longer_names_get_hashed(self):
+        exact = "datadog_" + "a" * (MAX_LABEL_LEN - len("datasource/datadog_"))
+        longer = exact + "_standard"
+        documented = {exact, longer}
+        self.assertEqual(self.name_of("datasource", exact, documented), "datasource/" + exact)
+        self.assertRegex(self.name_of("datasource", longer, documented), r"-[0-9a-f]{6}$")
+        # Even when the exact-length label already exists without a description.
+        repo_labels = {"datasource/" + exact: ""}
+        self.assertRegex(self.name_of("datasource", longer, documented, repo_labels), r"-[0-9a-f]{6}$")
+
+    def test_owner_keeps_cut_label_when_a_clashing_name_is_added_later(self):
+        cut = ("resource/" + self.RULE)[:MAX_LABEL_LEN]
+        documented = {self.RULE, self.ORDER}
+        repo_labels = {cut: "Resource " + self.RULE}
+        self.assertEqual(self.name_of("resource", self.RULE, documented, repo_labels), cut)
+        self.assertRegex(self.name_of("resource", self.ORDER, documented, repo_labels), r"-[0-9a-f]{6}$")
+
+    def test_detect_labels_uses_repo_labels(self):
+        item = issue(f"[{self.LONG}] Bug")
+        cut = ("resource/" + self.LONG)[:MAX_LABEL_LEN]
+        self.assertEqual(detect_labels(item, [], self.root), [(cut, "Resource " + self.LONG)])
+        owned_elsewhere = {cut: "Resource datadog_other"}
+        (label, description), = detect_labels(item, [], self.root, repo_labels=owned_elsewhere)
+        self.assertRegex(label, r"-[0-9a-f]{6}$")
+        self.assertEqual(description, "Resource " + self.LONG)
+
+    def test_bot_hashed_label_moves_to_owned_cut_label(self):
+        cut = ("resource/" + self.LONG)[:MAX_LABEL_LEN]
+        hashed = self.name_of("resource", self.LONG, repo_labels={cut: ""})
+        item = issue(f"[{self.LONG}] Bug", labels=[hashed])
+        to_add, to_remove = plan_label_changes(
+            item, [], [ev("labeled", BOT, hashed)], self.root, repo_labels={cut: "Resource " + self.LONG}
         )
-        result = detect_labels(issue("Bug", body), [], self.root)
-        self.assertEqual(len(result), 2)
-        self.assertNotEqual(result[0][0], result[1][0])
+        self.assertEqual(([lbl for lbl, _ in to_add], to_remove), ([cut], [hashed]))
 
     def test_real_repo_labels_are_unique(self):
         repo_root = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
@@ -724,9 +921,9 @@ class TestDetectAffectedResources(unittest.TestCase):
         names = set().union(*known.values())
         for kind in known:
             with self.subTest(kind=kind):
-                labels = [label_for(kind, name) for name in names]
+                labels = [label_for(kind, name, names, {}) for name in names]
                 self.assertTrue(all(len(lbl) <= MAX_LABEL_LEN for lbl in labels))
-                self.assertEqual(len(labels), len(set(labels)))
+                self.assertEqual(len({lbl.lower() for lbl in labels}), len(labels))
 
     # -- pull requests --
 
@@ -755,6 +952,22 @@ class TestDetectAffectedResources(unittest.TestCase):
                   "datadog/tests/resource_datadog_monitor_json_heatmap_test.go"):
             with self.subTest(file=f):
                 self.assertEqual(self.labels(pr("Fix"), [f]), ["resource/datadog_monitor_json"])
+
+    def test_pr_list_stream_widget_tests_are_dashboard(self):
+        for f in (
+            "datadog/tests/resource_datadog_dashboard_list_stream_test.go",
+            "datadog/tests/resource_datadog_dashboard_list_stream_storage_test.go",
+            "datadog/resource_datadog_dashboard_list_stream_unit_test.go",
+        ):
+            with self.subTest(f=f):
+                self.assertEqual(self.labels(pr("Fix"), [f]), ["resource/datadog_dashboard"])
+        # Only whole name segments: dashboard_list tests are still dashboard_list.
+        for f in (
+            "datadog/tests/resource_datadog_dashboard_list_test.go",
+            "datadog/tests/resource_datadog_dashboard_list_streamer_test.go",
+        ):
+            with self.subTest(f=f):
+                self.assertEqual(self.labels(pr("Fix"), [f]), ["resource/datadog_dashboard_list"])
 
     def test_pr_non_test_source_needs_exact_name(self):
         files = ["datadog/resource_datadog_monitor_json_helpers.go"]
@@ -795,6 +1008,16 @@ class TestDetectAffectedResources(unittest.TestCase):
         ]
         item = pr("[datadog_flaky_tests] Add resource", author_association="MEMBER")
         self.assertEqual(self.labels(item, files), ["resource/datadog_flaky_tests"])
+
+    def test_pr_new_resource_from_same_repo_branch(self):
+        files = ["datadog/fwprovider/resource_datadog_flaky_tests.go", "docs/resources/flaky_tests.md"]
+        for association in ("CONTRIBUTOR", "NONE"):
+            with self.subTest(association=association):
+                item = pr("[datadog_flaky_tests] Add resource", author_association=association)
+                self.assertEqual(
+                    [l for l, _ in detect_labels(item, files, self.root, same_repo=True)], ["resource/datadog_flaky_tests"]
+                )
+                self.assertEqual(self.labels(item, files), [])
 
     def test_pr_new_resource_from_fork_ignored(self):
         files = ["docs/resources/anything_i_want.md"]

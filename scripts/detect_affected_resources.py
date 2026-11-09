@@ -10,12 +10,15 @@ Usage:
     gh api --paginate $R/issues/123/events \
         --jq '.[] | select(.event == "labeled" or .event == "unlabeled")
               | {event, actor: .actor.login, label: .label.name} | tojson' > events.jsonl
-    python3 scripts/detect_affected_resources.py --item item.json --events events.jsonl
+    gh api --paginate $R/labels --jq '.[] | {name, description} | tojson' > labels.jsonl
+    python3 scripts/detect_affected_resources.py --item item.json --events events.jsonl \
+        --labels labels.jsonl
 
-    # Pull requests also need their changed files and how many there are
+    # Pull requests also need the pull request and its changed files
+    gh api $R/pulls/123 > pull.json
     gh api --paginate $R/pulls/123/files --jq '.[].filename' > files.txt
     python3 scripts/detect_affected_resources.py --item item.json --events events.jsonl \
-        --files files.txt --changed-files "$(gh api $R/pulls/123 --jq .changed_files)"
+        --labels labels.jsonl --pull pull.json --files files.txt
 
 Labels are only removed when github-actions[bot] added them and they no longer
 apply. Labels people add are never removed, and labels people remove are never
@@ -30,6 +33,16 @@ Signals:
 Only names documented under docs/resources and docs/data-sources are labeled.
 Nothing is labeled when the item looks provider-wide: more than MAX_UNRELATED
 names that no single CODEOWNERS team owns, or more than MAX_LABELS names.
+
+Known limits:
+    - A kind stated for a documented name is honored even if that kind isn't
+      documented yet ("add data source datadog_x" is a request), so anyone can
+      get e.g. datasource/<any documented resource>. Nothing outside the
+      documented names can be labeled.
+    - Names mentioned only in passing or for comparison are labeled, as long
+      as there are at most MAX_UNRELATED of them.
+    - New names in PRs are only labeled for trusted authors or branches in
+      this repository, so fork PRs adding resources stay unlabeled.
 
 This script only reads text and file names. It is run by a pull_request_target
 workflow, so it must never execute anything taken from the pull request.
@@ -55,10 +68,11 @@ DATASOURCE = "datasource"
 _LABEL_PREFIX = {RESOURCE: "resource/", DATASOURCE: "datasource/"}
 _DOCS_DIR = {RESOURCE: "resources", DATASOURCE: "data-sources"}
 
-# GitHub rejects longer label names.
+# GitHub rejects longer label names. Longer labels are cut to this length,
+# unless that is ambiguous; see label_for.
 MAX_LABEL_LEN = 50
-# Longer labels end in "-" plus this many hex digits of a hash of the full
-# label. Names never contain "-", so these can't clash with unshortened labels.
+# Ambiguous labels end in "-" plus this many hex digits of a hash of the full
+# label. Names never contain "-", so these can't clash with other labels.
 _HASH_LEN = 6
 # Above this many names, only label when one team owns all of them.
 MAX_UNRELATED = 3
@@ -90,14 +104,22 @@ _PROVIDER_MARKER_RE = re.compile(
     r"|^\s*(?:\[[^\]]*\]\s*)*\[provider\]",
     re.IGNORECASE,
 )
+# Wording right after "all resources" that narrows it to instances: "all
+# resources of this type", "any resource with a browser step", "all resources
+# that are currently managed".
+_INSTANCE_QUALIFIER = (
+    r"(?![ \t]+(?:of\s+(?:this|that|the\s+same|a\s+given)\s+(?:type|kind)"
+    r"|with|that|which|where|using|(?:currently\s+)?managed|created|defined|declared"
+    r"|in\s+(?:my|our|the|this|that|a)\s+(?:state|module|workspace|stack|config(?:uration)?|plan|project|account))\b)"
+)
 _PROVIDER_WIDE_RE = re.compile(
     # Plural after "all", singular after "every"/"any", so phrases like
     # "all resource metric types" don't count. "Multiple"/"several"/"many"
     # usually count instances ("multiple resources with for_each"), and
     # several distinct names are handled by is_clear instead.
-    r"\ball\s+(?:of\s+the\s+)?(?:datadog\s+)?(?:resources|data[ _-]?sources)\b"
-    r"|\b(?:every|any)\s+(?:datadog\s+)?(?:resource|data[ _-]?source)\b"
-    r"|" + _PROVIDER_MARKER_RE.pattern,
+    r"\ball\s+(?:of\s+the\s+)?(?:datadog\s+)?(?:resources|data[ _-]?sources)\b" + _INSTANCE_QUALIFIER
+    + r"|\b(?:every|any)\s+(?:datadog\s+)?(?:resource|data[ _-]?source)\b" + _INSTANCE_QUALIFIER
+    + r"|" + _PROVIDER_MARKER_RE.pattern,
     re.IGNORECASE,
 )
 # Negation just before provider-wide wording: "not provider-wide",
@@ -110,15 +132,17 @@ _NEGATION_BEFORE_RE = re.compile(r"(?:\b(?:not|no|never|cannot)|n['’]t)\s+(?:[
 _TITLE_TAG_RE = re.compile(r"^\s*(?:\[[^\]]*\]\s*)*?\[(?:data\.)?datadog_[a-z0-9_]+\]")
 
 # Lowercase only, so env vars such as DATADOG_API_KEY are not read as names.
-# A preceding dot is allowed for module addresses such as
-# "module.x.datadog_monitor.y" and "module.x.data.datadog_monitor.y", but not
-# right after "module." (module names like "module.datadog_alerts").
 # Hyphens, "$" and any letter or digit (not only ASCII) continue an
 # identifier, so "datadog_monitor-alerts", "datadog_monitor_${var.x}" and
 # "terraform-provider-datadog_v3" are not documented names.
-_TEXT_NAME_RE = re.compile(
-    r"(?<![\w-])(?<!module\.)(data\.|data_source_|resource_)?(datadog_[a-z0-9_]+)(?![\w$-])"
-)
+_TEXT_NAME_RE = re.compile(r"(?<![\w-])(data\.|data_source_|resource_)?(datadog_[a-z0-9_]+)(?![\w$-])")
+# A name after a dot is only a resource type in a module address, such as
+# "module.x.datadog_monitor.y", "module.x["a"].data.datadog_monitor.y". Not
+# "var.datadog_api_key", "local.x", instance names ("datadog_x.datadog_y") or
+# module names ("module.datadog_alerts").
+_MODULE_ADDRESS_BEFORE_RE = re.compile(r"\bmodule\.[\w-]+(?:\[[^\]]*\])?\.$")
+# Terraform names that aren't resource types: 'variable "datadog_api_key"'.
+_NOT_A_TYPE_BEFORE_RE = re.compile(r'\b(?:variable|output|module|provider)\s+"$')
 _HCL_DATA_RE = re.compile(r'\bdata\s+"$')
 # Kind words right before a name, possibly both: "data source datadog_x",
 # "resource and data source datadog_x". The word next to the name must be
@@ -145,6 +169,10 @@ _KIND_HEADING_RE = re.compile(
     r"^\s*(?:#{1,6}\s+|[-*>]\s*)?[*_]*(data[ _-]?sources?|resources?)[*_]*\s*(?::[*_]*\s*(.*))?$", re.IGNORECASE
 )
 _MARKDOWN_HEADING_RE = re.compile(r"^\s*#{1,6}\s")
+_LIST_ITEM_RE = re.compile(r"^\s*(?:[-*+]|\d+[.)])\s")
+# Markdown emphasis with underscores around a name: "_datadog_x_", "__datadog_x__".
+# Escaped underscores ("datadog\\_x") are unescaped first.
+_EMPHASIS_RE = re.compile(r"(?<![\w\\])(_{1,2})(datadog_[a-z0-9_]*[a-z0-9])\1(?![\w])")
 
 _SOURCE_FILE_RE = re.compile(
     r"^datadog/(?:fwprovider/|tests/)?(resource|data_source)_(?:datadog_)?(\w+?)(_test)?\.go$"
@@ -164,6 +192,11 @@ _DIR_NAMES = {
     "datadog/dashboardmapping/": [(RESOURCE, "datadog_dashboard_v2"), (RESOURCE, "datadog_powerpack_v2")],
     "datadog/fwprovider/observability_pipeline/": [(RESOURCE, "datadog_observability_pipeline")],
 }
+
+# Test files whose longest documented prefix is a different resource:
+# resource_datadog_dashboard_list_stream_test.go tests the list_stream widget of
+# datadog_dashboard, not datadog_dashboard_list.
+_TEST_NAMES = {"dashboard_list_stream": "datadog_dashboard"}
 
 Known = Dict[str, Set[str]]
 Name = Tuple[str, str]  # (kind, "datadog_xxx")
@@ -200,12 +233,19 @@ def names_from_text(text: str, known: Known) -> Dict[Name, bool]:
         "resource datadog_x";
       - the words right after it, possibly both kinds: "datadog_x data
         source", "datadog_x (data source and resource)";
-      - the latest heading, such as "Data sources:" or "Resources".
+      - a kind label on its line: "- Data source: datadog_x, datadog_y";
+      - a kind heading on its own line ("Data sources:", "## Resources") for
+        the block below it. A heading never makes up a kind: names it lists
+        that aren't documented as that kind are left out.
     Names joined only by "and", "or", commas or slashes share the words around
     them, so "datadog_a and datadog_b data sources" are both data sources.
+    Words already used by one name don't count for the next one.
     """
     found: Dict[Name, bool] = {}
     heading: Optional[str] = None
+    # A heading lasts until a blank line follows its content, unless a list
+    # simply continues after the blank line.
+    heading_has_content = blank_after_content = last_was_item = False
 
     def add(name: str, preferred: Optional[str]) -> None:
         kind = _pick_kind(name, preferred, known)
@@ -213,14 +253,32 @@ def names_from_text(text: str, known: Known) -> Dict[Name, bool]:
             found[(kind, name)] = found.get((kind, name), False) or kind == preferred
 
     for line in text[:MAX_TEXT_LEN].splitlines():
+        line = _EMPHASIS_RE.sub(r"\2", line.replace("\\_", "_"))
+        if not line.strip():
+            blank_after_content = blank_after_content or (heading is not None and heading_has_content)
+            continue
+        is_item = bool(_LIST_ITEM_RE.match(line))
+        if blank_after_content and not (is_item and last_was_item):
+            heading = None
+        blank_after_content = False
         if _MARKDOWN_HEADING_RE.match(line):
             heading = None
+        line_kind: Optional[str] = None
         h = _KIND_HEADING_RE.match(line)
         if h:
-            heading = DATASOURCE if h.group(1).lower().startswith("data") else RESOURCE
-            line = h.group(2) or ""
+            kind = DATASOURCE if h.group(1).lower().startswith("data") else RESOURCE
+            if not (h.group(2) or "").strip():
+                heading, heading_has_content, last_was_item = kind, False, False
+                continue
+            line_kind, line = kind, h.group(2)
+        heading_has_content, last_was_item = True, is_item
 
-        matches = list(_TEXT_NAME_RE.finditer(line))
+        matches = [
+            m
+            for m in _TEXT_NAME_RE.finditer(line)
+            if not (m.start() and line[m.start() - 1] == "." and not _MODULE_ADDRESS_BEFORE_RE.search(line, 0, m.start()))
+            and not _NOT_A_TYPE_BEFORE_RE.search(line, max(0, m.start() - 20), m.start())
+        ]
         groups: List[List["re.Match[str]"]] = []
         for i, m in enumerate(matches):
             if i and _NAME_JOIN_RE.fullmatch(line[matches[i - 1].end() : m.start()]):
@@ -228,18 +286,26 @@ def names_from_text(text: str, known: Known) -> Dict[Name, bool]:
             else:
                 groups.append([m])
 
+        used = 0  # end of the words the previous group used
         for group in groups:
-            start = group[0].start()
-            before = _BEFORE_KINDS_RE.search(line, max(0, start - 40), start)
-            after = _AFTER_KINDS_RE.match(line[group[-1].end() : group[-1].end() + 40])
-            if _HCL_DATA_RE.search(line, max(0, start - 20), start):
+            start, end = group[0].start(), group[-1].end()
+            window = max(used, start - 40)
+            before = _BEFORE_KINDS_RE.search(line, window, start)
+            after = _AFTER_KINDS_RE.match(line[end : end + 40])
+            used = end + (after.end() if after else 0)
+            from_heading = False
+            if _HCL_DATA_RE.search(line, max(window, start - 20), start):
                 stated = [DATASOURCE]
             elif before:
                 stated = sorted({_kind_of_word(w) for w in _KIND_WORD_RE.findall(before.group(1))})
             elif after:
                 stated = sorted({_kind_of_word(w) for w in _KIND_WORD_RE.findall(after.group(1))})
+            elif line_kind:
+                stated = [line_kind]
+            elif heading:
+                stated, from_heading = [heading], True
             else:
-                stated = [heading] if heading else [None]
+                stated = [None]
             for m in group:
                 prefix, name = m.group(1), m.group(2)
                 if prefix in ("data.", "data_source_"):
@@ -248,7 +314,8 @@ def names_from_text(text: str, known: Known) -> Dict[Name, bool]:
                     add(name, RESOURCE)
                 else:
                     for preferred in stated:
-                        add(name, preferred)
+                        if not from_heading or name in known[preferred]:
+                            add(name, preferred)
     return found
 
 
@@ -325,7 +392,9 @@ def names_from_files(files: Iterable[str], known: Known, repo_root: Optional[str
     # resource_datadog_dashboard_heatmap_test.go.
     for kind, suffix, added in tests:
         documented = any_known if added else known[kind]
-        name = _longest_prefix(suffix, documented | unknown[kind])
+        name = next(
+            (n for prefix, n in _TEST_NAMES.items() if suffix == prefix or suffix.startswith(prefix + "_")), None
+        ) or _longest_prefix(suffix, documented | unknown[kind])
         if name in documented:
             found.add((kind, name))
     return found
@@ -423,23 +492,58 @@ def is_clear(names: Set[Name], owners_of) -> bool:
     return bool(common)
 
 
-def label_for(kind: str, name: str) -> str:
+def label_description(kind: str, name: str) -> str:
+    return f"{'Data source' if kind == DATASOURCE else 'Resource'} {name}"
+
+
+def label_for(kind: str, name: str, documented: Set[str], repo_labels: Dict[str, str]) -> str:
+    """Return the label for a name, cut to MAX_LABEL_LEN characters if needed.
+
+    A label's description records which name it belongs to. A cut label is
+    used when it already belongs to this name, or when it doesn't exist and no
+    other documented name (of either kind, since a stated kind may pair any
+    name with either) cuts to the same text. Otherwise, e.g. for
+    ..._ticket_creation_rule and ..._ticket_creation_rules_order, the cut label
+    ends in a hash. A label never changes once it exists: when a name that cuts
+    the same way is added later, only the new name gets a hash.
+
+    repo_labels maps the repository's label names, lowercased as GitHub
+    compares them, to their descriptions.
+    """
     label = _LABEL_PREFIX[kind] + name
     if len(label) <= MAX_LABEL_LEN:
         return label
-    # Plain truncation would merge names sharing their first 50 characters,
-    # e.g. ..._ticket_creation_rule and ..._ticket_creation_rules_order.
+    cut = label[:MAX_LABEL_LEN]
+    owner = repo_labels.get(cut.lower())
+    if owner is not None:
+        unique = owner == label_description(kind, name)
+    else:
+        prefix = _LABEL_PREFIX[kind]
+        unique = all((prefix + n)[:MAX_LABEL_LEN] != cut for n in documented if n != name)
+    if unique:
+        return cut
     digest = hashlib.sha256(label.encode()).hexdigest()[:_HASH_LEN]
     return f"{label[: MAX_LABEL_LEN - _HASH_LEN - 1]}-{digest}"
 
 
-def detect_labels(item: dict, files: List[str], repo_root: str) -> List[Tuple[str, str]]:
-    """Return sorted (label, description) pairs to add to the issue or PR."""
+def detect_labels(
+    item: dict,
+    files: List[str],
+    repo_root: str,
+    same_repo: bool = False,
+    repo_labels: Optional[Dict[str, str]] = None,
+) -> List[Tuple[str, str]]:
+    """Return sorted (label, description) pairs to add to the issue or PR.
+
+    same_repo says the PR's branch is in this repository, so its author can
+    push here (generation bots show up as CONTRIBUTOR). repo_labels is as for
+    label_for.
+    """
     known = load_known_names(repo_root)
     title = item.get("title") or ""
     body = item.get("body") or ""
 
-    if "pull_request" in item and item.get("author_association") in _TRUSTED_AUTHORS:
+    if "pull_request" in item and (same_repo or item.get("author_association") in _TRUSTED_AUTHORS):
         # A PR adding a new resource documents it in the same PR. Only trusted
         # authors may introduce names, so fork PRs can't create arbitrary labels.
         for f in files:
@@ -477,9 +581,9 @@ def detect_labels(item: dict, files: List[str], repo_root: str) -> List[Tuple[st
         )
         return []
 
+    documented = known[RESOURCE] | known[DATASOURCE]
     labels = {
-        label_for(kind, name): f"{'Data source' if kind == DATASOURCE else 'Resource'} {name}"
-        for kind, name in names
+        label_for(kind, name, documented, repo_labels or {}): label_description(kind, name) for kind, name in names
     }
     return sorted(labels.items())
 
@@ -494,6 +598,8 @@ def plan_label_changes(
     events: List[dict],
     repo_root: str,
     changed_files: Optional[int] = None,
+    same_repo: bool = False,
+    repo_labels: Optional[Dict[str, str]] = None,
 ) -> Tuple[List[Tuple[str, str]], List[str]]:
     """Return (labels to add as (label, description), labels to remove).
 
@@ -528,7 +634,7 @@ def plan_label_changes(
     added_by_bot = {lbl for lbl, e in last.items() if e["event"] == "labeled" and e.get("actor") == BOT_LOGIN}
     removed_by_person = {lbl for lbl, e in last.items() if e["event"] == "unlabeled" and e.get("actor") != BOT_LOGIN}
 
-    wanted = dict(detect_labels(item, files, repo_root))
+    wanted = dict(detect_labels(item, files, repo_root, same_repo, repo_labels))
     current = {lbl.get("name") for lbl in item.get("labels") or []}
     to_add = sorted((lbl, desc) for lbl, desc in wanted.items() if lbl not in current | removed_by_person)
     to_remove = sorted(lbl for lbl in current if _is_ours(lbl) and lbl in added_by_bot and lbl not in wanted)
@@ -539,8 +645,8 @@ def plan_label_changes(
     return to_add, to_remove
 
 
-def _read_events(path: str) -> List[dict]:
-    """Read events as JSON lines, as gh api --paginate --jq '.[]' prints them."""
+def _read_json_lines(path: str) -> List[dict]:
+    """Read JSON lines, as gh api --paginate --jq '.[] | tojson' prints them."""
     with open(path) as fh:
         return [json.loads(line) for line in fh if line.strip()]
 
@@ -550,23 +656,34 @@ def main() -> None:
     parser.add_argument("--item", required=True, help="issue or PR JSON from GET /repos/{repo}/issues/{n}")
     parser.add_argument("--files", help="changed file paths, one per line (PRs only)")
     parser.add_argument("--events", help="label events as JSON lines of {event, actor, label}, oldest first")
+    parser.add_argument("--pull", help="PR JSON from GET /repos/{repo}/pulls/{n} (required for PRs)")
     parser.add_argument(
-        "--changed-files", type=int, help="changed_files from GET /repos/{repo}/pulls/{n} (required for PRs)"
+        "--labels", required=True, help="the repository's labels as JSON lines of {name, description}"
     )
     args = parser.parse_args()
 
     with open(args.item) as fh:
         item = json.load(fh)
-    if item.get("pull_request") and args.changed_files is None:
-        parser.error("--changed-files is required for pull requests")
+    changed_files: Optional[int] = None
+    same_repo = False
+    if item.get("pull_request"):
+        if not args.pull:
+            parser.error("--pull is required for pull requests")
+        with open(args.pull) as fh:
+            pull = json.load(fh)
+        changed_files = pull["changed_files"]
+        # head.repo is null when the fork was deleted.
+        head_repo = ((pull.get("head") or {}).get("repo") or {}).get("full_name")
+        same_repo = head_repo is not None and head_repo == ((pull.get("base") or {}).get("repo") or {}).get("full_name")
     files: List[str] = []
     if args.files:
         with open(args.files) as fh:
             files = [line for line in fh.read().splitlines() if line.strip()]
-    events = _read_events(args.events) if args.events else []
+    events = _read_json_lines(args.events) if args.events else []
+    repo_labels = {(lbl.get("name") or "").lower(): lbl.get("description") or "" for lbl in _read_json_lines(args.labels)}
 
     repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    to_add, to_remove = plan_label_changes(item, files, events, repo_root, args.changed_files)
+    to_add, to_remove = plan_label_changes(item, files, events, repo_root, changed_files, same_repo, repo_labels)
     for label, description in to_add:
         print(f"add\t{label}\t{description}")
     for label in to_remove:
