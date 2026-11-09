@@ -1,0 +1,472 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 807
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"hello alerting talks","name":"tf-TestAccDatadogMonitor_MetricQueryVariable-local-1793292945","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical_query":"formula(\"2 * query1 + query2\").rollup(\"avg\").last(\"1w\").multiplier(1.25)"},"variables":[{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"},{"data_source":"metrics","name":"query2","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"}]},"priority":null,"query":"formula(\"query1 + query2\").rollup(\"avg\").last(\"10m\") \u003e threshold","restricted_roles":null,"tags":[],"type":"query alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 167.348666ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 807
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"hello alerting talks","name":"tf-TestAccDatadogMonitor_MetricQueryVariable-local-1793292945","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical_query":"formula(\"2 * query1 + query2\").rollup(\"avg\").last(\"1w\").multiplier(1.25)"},"variables":[{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"},{"data_source":"metrics","name":"query2","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"}]},"priority":null,"query":"formula(\"query1 + query2\").rollup(\"avg\").last(\"10m\") \u003e threshold","restricted_roles":null,"tags":[],"type":"query alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 173.656125ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 784
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"hello alerting talks","name":"tf-TestAccDatadogMonitor_MetricQueryVariable-local-1793292945","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical_query":"formula(\"2 * query1 + query2\").rollup(\"avg\").last(\"1w\").multiplier(1.25)"},"variables":[{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"},{"data_source":"metrics","name":"query2","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"}]},"priority":null,"query":"formula(\"query1 + query2\").rollup(\"avg\").last(\"10m\") \u003e threshold","restricted_roles":null,"tags":[],"type":"query alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":338480605,"org_id":321813,"type":"metric alert","name":"tf-TestAccDatadogMonitor_MetricQueryVariable-local-1793292945","message":"hello alerting talks","tags":[],"query":"formula(\"query1 + query2\").rollup(\"avg\").last(\"10m\") > threshold","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical_query":"formula(\"2 * query1 + query2\").rollup(\"avg\").last(\"1w\").multiplier(1.25)"},"variables":[{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"},{"data_source":"metrics","name":"query2","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"}],"notify_audit":false,"silenced":{}},"multi":false,"created_at":1793292947000,"created":"2026-10-29T16:55:47.585258+00:00","modified":"2026-10-29T16:55:47.585258+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Jasmine Zhang","handle":"jasmine.zhang@datadoghq.com","email":"jasmine.zhang@datadoghq.com","id":72175821}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 371.186291ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/338480605
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":338480605,"org_id":321813,"type":"metric alert","name":"tf-TestAccDatadogMonitor_MetricQueryVariable-local-1793292945","message":"hello alerting talks","tags":[],"query":"formula(\"query1 + query2\").rollup(\"avg\").last(\"10m\") > threshold","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical_query":"formula(\"2 * query1 + query2\").rollup(\"avg\").last(\"1w\").multiplier(1.25)"},"variables":[{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"},{"data_source":"metrics","name":"query2","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"}],"notify_audit":false,"silenced":{}},"multi":false,"created_at":1793292947000,"created":"2026-10-29T16:55:47.585258+00:00","modified":"2026-10-29T16:55:47.585258+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Jasmine Zhang","email":"jasmine.zhang@datadoghq.com","handle":"jasmine.zhang@datadoghq.com","id":72175821}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 76.627417ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 807
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"hello alerting talks","name":"tf-TestAccDatadogMonitor_MetricQueryVariable-local-1793292945","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical_query":"formula(\"2 * query1 + query2\").rollup(\"avg\").last(\"1w\").multiplier(1.25)"},"variables":[{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"},{"data_source":"metrics","name":"query2","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"}]},"priority":null,"query":"formula(\"query1 + query2\").rollup(\"avg\").last(\"10m\") \u003e threshold","restricted_roles":null,"tags":[],"type":"query alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/338480605/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 179.652791ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/338480605?with_assets=true
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":338480605,"org_id":321813,"type":"metric alert","name":"tf-TestAccDatadogMonitor_MetricQueryVariable-local-1793292945","message":"hello alerting talks","tags":[],"query":"formula(\"query1 + query2\").rollup(\"avg\").last(\"10m\") > threshold","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical_query":"formula(\"2 * query1 + query2\").rollup(\"avg\").last(\"1w\").multiplier(1.25)"},"variables":[{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"},{"data_source":"metrics","name":"query2","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"}],"notify_audit":false,"silenced":{}},"multi":false,"created_at":1793292947000,"created":"2026-10-29T16:55:47.585258+00:00","modified":"2026-10-29T16:55:47.585258+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Jasmine Zhang","email":"jasmine.zhang@datadoghq.com","handle":"jasmine.zhang@datadoghq.com","id":72175821}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 90.1435ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 807
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"hello alerting talks","name":"tf-TestAccDatadogMonitor_MetricQueryVariable-local-1793292945","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical_query":"formula(\"2 * query1 + query2\").rollup(\"avg\").last(\"1w\").multiplier(1.25)"},"variables":[{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"},{"data_source":"metrics","name":"query2","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"}]},"priority":null,"query":"formula(\"query1 + query2\").rollup(\"avg\").last(\"10m\") \u003e threshold","restricted_roles":null,"tags":[],"type":"query alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/338480605/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 186.944209ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 807
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"hello alerting talks","name":"tf-TestAccDatadogMonitor_MetricQueryVariable-local-1793292945","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical_query":"formula(\"2 * query1 + query2\").rollup(\"avg\").last(\"1w\").multiplier(1.25)"},"variables":[{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"},{"data_source":"metrics","name":"query2","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"}]},"priority":null,"query":"formula(\"query1 + query2\").rollup(\"avg\").last(\"10m\") \u003e threshold","restricted_roles":null,"tags":[],"type":"query alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/338480605/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 524.199041ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/338480605?with_assets=true
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":338480605,"org_id":321813,"type":"metric alert","name":"tf-TestAccDatadogMonitor_MetricQueryVariable-local-1793292945","message":"hello alerting talks","tags":[],"query":"formula(\"query1 + query2\").rollup(\"avg\").last(\"10m\") > threshold","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical_query":"formula(\"2 * query1 + query2\").rollup(\"avg\").last(\"1w\").multiplier(1.25)"},"variables":[{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"},{"data_source":"metrics","name":"query2","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"}],"notify_audit":false,"silenced":{}},"multi":false,"created_at":1793292947000,"created":"2026-10-29T16:55:47.585258+00:00","modified":"2026-10-29T16:55:47.585258+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":"2026-10-29T16:55:49+00:00","overall_state":"No Data","creator":{"name":"Jasmine Zhang","email":"jasmine.zhang@datadoghq.com","handle":"jasmine.zhang@datadoghq.com","id":72175821}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 84.118041ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 807
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"draft_status":"published","message":"hello alerting talks","name":"tf-TestAccDatadogMonitor_MetricQueryVariable-local-1793292945","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical_query":"formula(\"2 * query1 + query2\").rollup(\"avg\").last(\"1w\").multiplier(1.25)"},"variables":[{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"},{"data_source":"metrics","name":"query2","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"}]},"priority":null,"query":"formula(\"query1 + query2\").rollup(\"avg\").last(\"10m\") \u003e threshold","restricted_roles":null,"tags":[],"type":"query alert"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/338480605/validate
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 214.982084ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/338480605?with_assets=true
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":338480605,"org_id":321813,"type":"metric alert","name":"tf-TestAccDatadogMonitor_MetricQueryVariable-local-1793292945","message":"hello alerting talks","tags":[],"query":"formula(\"query1 + query2\").rollup(\"avg\").last(\"10m\") > threshold","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical_query":"formula(\"2 * query1 + query2\").rollup(\"avg\").last(\"1w\").multiplier(1.25)"},"variables":[{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"},{"data_source":"metrics","name":"query2","query":"avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"}],"notify_audit":false,"silenced":{}},"multi":false,"created_at":1793292947000,"created":"2026-10-29T16:55:47.585258+00:00","modified":"2026-10-29T16:55:47.585258+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":"2026-10-29T16:55:49+00:00","overall_state":"No Data","creator":{"name":"Jasmine Zhang","email":"jasmine.zhang@datadoghq.com","handle":"jasmine.zhang@datadoghq.com","id":72175821}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 1.02210375s
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/338480605
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_monitor_id":338480605}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 323.461042ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/338480605
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Monitor not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 65.909958ms
