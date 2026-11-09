@@ -3,12 +3,12 @@
 page_title: "datadog_action_connection Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  A connection that can be used in Actions, including in the Workflow Automation and App Builder products. AWS Secrets Manager references are available for supported token-based credentials and HTTP authentication token values. AWS AssumeRole, Azure credentials, and HTTP request metadata use literal values. This resource requires a registered application key https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration.
+  A connection that can be used in Actions, including in the Workflow Automation and App Builder products. This resource creates connections that run in Datadog's cloud. AWS Secrets Manager references are available for supported token-based credentials and HTTP authentication token values. AWS AssumeRole credentials, Azure credentials, and HTTP request metadata don't support AWS Secrets Manager references and must use literal values. This resource requires a registered application key https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration.
 ---
 
 # datadog_action_connection (Resource)
 
-A connection that can be used in Actions, including in the Workflow Automation and App Builder products. AWS Secrets Manager references are available for supported token-based credentials and HTTP authentication token values. AWS AssumeRole, Azure credentials, and HTTP request metadata use literal values. This resource requires a [registered application key](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration).
+A connection that can be used in Actions, including in the Workflow Automation and App Builder products. This resource creates connections that run in Datadog's cloud. AWS Secrets Manager references are available for supported token-based credentials and HTTP authentication token values. AWS AssumeRole credentials, Azure credentials, and HTTP request metadata don't support AWS Secrets Manager references and must use literal values. This resource requires a [registered application key](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration).
 
 ## Example Usage
 
@@ -128,7 +128,7 @@ resource "datadog_action_connection" "gcp_connection" {
 - `cloudflare` (Block, Optional) Configuration for a Cloudflare connection (see [below for nested schema](#nestedblock--cloudflare))
 - `config_cat` (Block, Optional) Configuration for a ConfigCat connection (see [below for nested schema](#nestedblock--config_cat))
 - `datadog` (Block, Optional) Configuration for a Datadog connection (see [below for nested schema](#nestedblock--datadog))
-- `external_secrets_manager` (Attributes) AWS Secrets Manager settings shared by credential references. Required when a credential uses an AWS Secrets Manager reference; optional for literal credentials. Available on DATACENTER connections. (see [below for nested schema](#nestedatt--external_secrets_manager))
+- `external_secrets_manager` (Attributes) AWS Secrets Manager settings shared by credential references. Required when a credential uses an AWS Secrets Manager reference. Optional for literal credentials. Available only on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--external_secrets_manager))
 - `fastly` (Block, Optional) Configuration for a Fastly connection (see [below for nested schema](#nestedblock--fastly))
 - `freshservice` (Block, Optional) Configuration for a Freshservice connection (see [below for nested schema](#nestedblock--freshservice))
 - `gcp` (Block, Optional) Configuration for a Google Cloud connection (see [below for nested schema](#nestedblock--gcp))
@@ -164,7 +164,7 @@ Optional:
 Optional:
 
 - `api_token` (String, Sensitive) Anthropic API token. String length must be at least 1.
-- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--anthropic--api_key--api_token_aws_secrets_manager))
+- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--anthropic--api_key--api_token_aws_secrets_manager))
 
 <a id="nestedatt--anthropic--api_key--api_token_aws_secrets_manager"></a>
 ### Nested Schema for `anthropic.api_key.api_token_aws_secrets_manager`
@@ -176,8 +176,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -195,7 +195,7 @@ Optional:
 Optional:
 
 - `access_token` (String, Sensitive) Asana access token. String length must be at least 1.
-- `access_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--asana--access_token--access_token_aws_secrets_manager))
+- `access_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--asana--access_token--access_token_aws_secrets_manager))
 
 <a id="nestedatt--asana--access_token--access_token_aws_secrets_manager"></a>
 ### Nested Schema for `asana.access_token.access_token_aws_secrets_manager`
@@ -207,8 +207,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -267,7 +267,7 @@ Optional:
 Optional:
 
 - `api_token` (String, Sensitive) CircleCI API token. String length must be at least 1.
-- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--circle_ci--api_key--api_token_aws_secrets_manager))
+- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--circle_ci--api_key--api_token_aws_secrets_manager))
 
 <a id="nestedatt--circle_ci--api_key--api_token_aws_secrets_manager"></a>
 ### Nested Schema for `circle_ci.api_key.api_token_aws_secrets_manager`
@@ -279,8 +279,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -298,7 +298,7 @@ Optional:
 Optional:
 
 - `api_token` (String, Sensitive) ClickUp API token. String length must be at least 1.
-- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--clickup--api_key--api_token_aws_secrets_manager))
+- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--clickup--api_key--api_token_aws_secrets_manager))
 
 <a id="nestedatt--clickup--api_key--api_token_aws_secrets_manager"></a>
 ### Nested Schema for `clickup.api_key.api_token_aws_secrets_manager`
@@ -310,8 +310,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -330,7 +330,7 @@ Optional:
 Optional:
 
 - `api_token` (String, Sensitive) Cloudflare API token. String length must be at least 1.
-- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--cloudflare--api_token--api_token_aws_secrets_manager))
+- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--cloudflare--api_token--api_token_aws_secrets_manager))
 
 <a id="nestedatt--cloudflare--api_token--api_token_aws_secrets_manager"></a>
 ### Nested Schema for `cloudflare.api_token.api_token_aws_secrets_manager`
@@ -342,8 +342,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -353,9 +353,9 @@ Optional:
 Optional:
 
 - `auth_email` (String) Email address associated with the Cloudflare account. String length must be at least 1.
-- `auth_email_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--cloudflare--global_api_token--auth_email_aws_secrets_manager))
+- `auth_email_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--cloudflare--global_api_token--auth_email_aws_secrets_manager))
 - `global_api_key` (String, Sensitive) Cloudflare global API key. String length must be at least 1.
-- `global_api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--cloudflare--global_api_token--global_api_key_aws_secrets_manager))
+- `global_api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--cloudflare--global_api_token--global_api_key_aws_secrets_manager))
 
 <a id="nestedatt--cloudflare--global_api_token--auth_email_aws_secrets_manager"></a>
 ### Nested Schema for `cloudflare.global_api_token.auth_email_aws_secrets_manager`
@@ -367,8 +367,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedatt--cloudflare--global_api_token--global_api_key_aws_secrets_manager"></a>
@@ -381,8 +381,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -400,11 +400,11 @@ Optional:
 Optional:
 
 - `api_password` (String, Sensitive) ConfigCat Public Management API password. String length must be at least 1.
-- `api_password_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--config_cat--sdk_key--api_password_aws_secrets_manager))
+- `api_password_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--config_cat--sdk_key--api_password_aws_secrets_manager))
 - `api_username` (String) ConfigCat Public Management API username. String length must be at least 1.
-- `api_username_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--config_cat--sdk_key--api_username_aws_secrets_manager))
+- `api_username_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--config_cat--sdk_key--api_username_aws_secrets_manager))
 - `sdk_key` (String, Sensitive) ConfigCat SDK key. String length must be at least 1.
-- `sdk_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--config_cat--sdk_key--sdk_key_aws_secrets_manager))
+- `sdk_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--config_cat--sdk_key--sdk_key_aws_secrets_manager))
 
 <a id="nestedatt--config_cat--sdk_key--api_password_aws_secrets_manager"></a>
 ### Nested Schema for `config_cat.sdk_key.api_password_aws_secrets_manager`
@@ -416,8 +416,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedatt--config_cat--sdk_key--api_username_aws_secrets_manager"></a>
@@ -430,8 +430,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedatt--config_cat--sdk_key--sdk_key_aws_secrets_manager"></a>
@@ -444,8 +444,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -463,13 +463,13 @@ Optional:
 Optional:
 
 - `api_key` (String, Sensitive) Datadog API key. String length must be at least 1.
-- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--datadog--api_key--api_key_aws_secrets_manager))
+- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--datadog--api_key--api_key_aws_secrets_manager))
 - `app_key` (String, Sensitive) Datadog application key. String length must be at least 1.
-- `app_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--datadog--api_key--app_key_aws_secrets_manager))
+- `app_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--datadog--api_key--app_key_aws_secrets_manager))
 - `datacenter` (String) Datadog site data center. String length must be at least 1.
-- `datacenter_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--datadog--api_key--datacenter_aws_secrets_manager))
+- `datacenter_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--datadog--api_key--datacenter_aws_secrets_manager))
 - `subdomain` (String) Custom subdomain used for URLs generated with this connection. String length must be at least 1.
-- `subdomain_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--datadog--api_key--subdomain_aws_secrets_manager))
+- `subdomain_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--datadog--api_key--subdomain_aws_secrets_manager))
 
 <a id="nestedatt--datadog--api_key--api_key_aws_secrets_manager"></a>
 ### Nested Schema for `datadog.api_key.api_key_aws_secrets_manager`
@@ -481,8 +481,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedatt--datadog--api_key--app_key_aws_secrets_manager"></a>
@@ -495,8 +495,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedatt--datadog--api_key--datacenter_aws_secrets_manager"></a>
@@ -509,8 +509,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedatt--datadog--api_key--subdomain_aws_secrets_manager"></a>
@@ -523,8 +523,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -551,7 +551,7 @@ Optional:
 Optional:
 
 - `api_key` (String, Sensitive) Fastly API key. String length must be at least 1.
-- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--fastly--api_key--api_key_aws_secrets_manager))
+- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--fastly--api_key--api_key_aws_secrets_manager))
 
 <a id="nestedatt--fastly--api_key--api_key_aws_secrets_manager"></a>
 ### Nested Schema for `fastly.api_key.api_key_aws_secrets_manager`
@@ -563,8 +563,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -582,9 +582,9 @@ Optional:
 Optional:
 
 - `api_key` (String, Sensitive) Freshservice API key. String length must be at least 1.
-- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--freshservice--api_key--api_key_aws_secrets_manager))
+- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--freshservice--api_key--api_key_aws_secrets_manager))
 - `domain` (String) Freshservice domain. String length must be at least 1.
-- `domain_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--freshservice--api_key--domain_aws_secrets_manager))
+- `domain_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--freshservice--api_key--domain_aws_secrets_manager))
 
 <a id="nestedatt--freshservice--api_key--api_key_aws_secrets_manager"></a>
 ### Nested Schema for `freshservice.api_key.api_key_aws_secrets_manager`
@@ -596,8 +596,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedatt--freshservice--api_key--domain_aws_secrets_manager"></a>
@@ -610,8 +610,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -629,9 +629,9 @@ Optional:
 Optional:
 
 - `private_key` (String, Sensitive) Google Cloud service account private key. String length must be at least 1.
-- `private_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--gcp--service_account--private_key_aws_secrets_manager))
+- `private_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--gcp--service_account--private_key_aws_secrets_manager))
 - `service_account_email` (String) Google Cloud service account email. String length must be at least 1.
-- `service_account_email_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--gcp--service_account--service_account_email_aws_secrets_manager))
+- `service_account_email_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--gcp--service_account--service_account_email_aws_secrets_manager))
 
 <a id="nestedatt--gcp--service_account--private_key_aws_secrets_manager"></a>
 ### Nested Schema for `gcp.service_account.private_key_aws_secrets_manager`
@@ -643,8 +643,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedatt--gcp--service_account--service_account_email_aws_secrets_manager"></a>
@@ -657,8 +657,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -676,7 +676,7 @@ Optional:
 Optional:
 
 - `api_key` (String, Sensitive) Gemini API key. String length must be at least 1.
-- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--gemini--api_key--api_key_aws_secrets_manager))
+- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--gemini--api_key--api_key_aws_secrets_manager))
 
 <a id="nestedatt--gemini--api_key--api_key_aws_secrets_manager"></a>
 ### Nested Schema for `gemini.api_key.api_key_aws_secrets_manager`
@@ -688,8 +688,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -707,7 +707,7 @@ Optional:
 Optional:
 
 - `api_token` (String, Sensitive) GitLab API token. String length must be at least 1.
-- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--gitlab--api_key--api_token_aws_secrets_manager))
+- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--gitlab--api_key--api_token_aws_secrets_manager))
 
 <a id="nestedatt--gitlab--api_key--api_token_aws_secrets_manager"></a>
 ### Nested Schema for `gitlab.api_key.api_token_aws_secrets_manager`
@@ -719,8 +719,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -738,7 +738,7 @@ Optional:
 Optional:
 
 - `api_key` (String, Sensitive) GreyNoise API key. String length must be at least 1.
-- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--grey_noise--api_key--api_key_aws_secrets_manager))
+- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--grey_noise--api_key--api_key_aws_secrets_manager))
 
 <a id="nestedatt--grey_noise--api_key--api_key_aws_secrets_manager"></a>
 ### Nested Schema for `grey_noise.api_key.api_key_aws_secrets_manager`
@@ -750,8 +750,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -800,7 +800,7 @@ Optional:
 - `name` (String) Token name. String length must be at least 1.
 - `type` (String) Token type Valid values are `SECRET`.
 - `value` (String, Sensitive) Token value. String length must be at least 1.
-- `value_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--http--token_auth--token--value_aws_secrets_manager))
+- `value_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--http--token_auth--token--value_aws_secrets_manager))
 
 <a id="nestedatt--http--token_auth--token--value_aws_secrets_manager"></a>
 ### Nested Schema for `http.token_auth.token.value_aws_secrets_manager`
@@ -812,8 +812,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -841,7 +841,7 @@ Optional:
 Optional:
 
 - `api_token` (String, Sensitive) LaunchDarkly API token. String length must be at least 1.
-- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--launch_darkly--api_key--api_token_aws_secrets_manager))
+- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--launch_darkly--api_key--api_token_aws_secrets_manager))
 
 <a id="nestedatt--launch_darkly--api_key--api_token_aws_secrets_manager"></a>
 ### Nested Schema for `launch_darkly.api_key.api_token_aws_secrets_manager`
@@ -853,8 +853,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -872,7 +872,7 @@ Optional:
 Optional:
 
 - `api_token` (String, Sensitive) Notion API token. String length must be at least 1.
-- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--notion--api_key--api_token_aws_secrets_manager))
+- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--notion--api_key--api_token_aws_secrets_manager))
 
 <a id="nestedatt--notion--api_key--api_token_aws_secrets_manager"></a>
 ### Nested Schema for `notion.api_key.api_token_aws_secrets_manager`
@@ -884,8 +884,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -903,9 +903,9 @@ Optional:
 Optional:
 
 - `api_token` (String, Sensitive) Okta API token. String length must be at least 1.
-- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--okta--api_token--api_token_aws_secrets_manager))
+- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--okta--api_token--api_token_aws_secrets_manager))
 - `domain` (String) Okta domain. String length must be at least 1.
-- `domain_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--okta--api_token--domain_aws_secrets_manager))
+- `domain_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--okta--api_token--domain_aws_secrets_manager))
 
 <a id="nestedatt--okta--api_token--api_token_aws_secrets_manager"></a>
 ### Nested Schema for `okta.api_token.api_token_aws_secrets_manager`
@@ -917,8 +917,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedatt--okta--api_token--domain_aws_secrets_manager"></a>
@@ -931,8 +931,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -950,7 +950,7 @@ Optional:
 Optional:
 
 - `api_token` (String, Sensitive) OpenAI API token. String length must be at least 1.
-- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--openai--api_key--api_token_aws_secrets_manager))
+- `api_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--openai--api_key--api_token_aws_secrets_manager))
 
 <a id="nestedatt--openai--api_key--api_token_aws_secrets_manager"></a>
 ### Nested Schema for `openai.api_key.api_token_aws_secrets_manager`
@@ -962,8 +962,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -981,11 +981,11 @@ Optional:
 Optional:
 
 - `instance` (String) ServiceNow instance. String length must be at least 1.
-- `instance_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--service_now--basic_auth--instance_aws_secrets_manager))
+- `instance_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--service_now--basic_auth--instance_aws_secrets_manager))
 - `password` (String, Sensitive) ServiceNow password. String length must be at least 1.
-- `password_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--service_now--basic_auth--password_aws_secrets_manager))
+- `password_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--service_now--basic_auth--password_aws_secrets_manager))
 - `username` (String) ServiceNow username. String length must be at least 1.
-- `username_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--service_now--basic_auth--username_aws_secrets_manager))
+- `username_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--service_now--basic_auth--username_aws_secrets_manager))
 
 <a id="nestedatt--service_now--basic_auth--instance_aws_secrets_manager"></a>
 ### Nested Schema for `service_now.basic_auth.instance_aws_secrets_manager`
@@ -997,8 +997,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedatt--service_now--basic_auth--password_aws_secrets_manager"></a>
@@ -1011,8 +1011,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedatt--service_now--basic_auth--username_aws_secrets_manager"></a>
@@ -1025,8 +1025,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -1044,7 +1044,7 @@ Optional:
 Optional:
 
 - `api_key` (String, Sensitive) Split API key. String length must be at least 1.
-- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--split--api_key--api_key_aws_secrets_manager))
+- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--split--api_key--api_key_aws_secrets_manager))
 
 <a id="nestedatt--split--api_key--api_key_aws_secrets_manager"></a>
 ### Nested Schema for `split.api_key.api_key_aws_secrets_manager`
@@ -1056,8 +1056,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -1075,7 +1075,7 @@ Optional:
 Optional:
 
 - `api_key` (String, Sensitive) Statsig API key. String length must be at least 1.
-- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--statsig--api_key--api_key_aws_secrets_manager))
+- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--statsig--api_key--api_key_aws_secrets_manager))
 
 <a id="nestedatt--statsig--api_key--api_key_aws_secrets_manager"></a>
 ### Nested Schema for `statsig.api_key.api_key_aws_secrets_manager`
@@ -1087,8 +1087,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -1106,7 +1106,7 @@ Optional:
 Optional:
 
 - `api_key` (String, Sensitive) VirusTotal API key. String length must be at least 1.
-- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections. (see [below for nested schema](#nestedatt--virus_total--api_key--api_key_aws_secrets_manager))
+- `api_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--virus_total--api_key--api_key_aws_secrets_manager))
 
 <a id="nestedatt--virus_total--api_key--api_key_aws_secrets_manager"></a>
 ### Nested Schema for `virus_total.api_key.api_key_aws_secrets_manager`
@@ -1118,8 +1118,8 @@ Required:
 Optional:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 ## Import
 

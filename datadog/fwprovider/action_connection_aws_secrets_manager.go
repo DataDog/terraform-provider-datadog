@@ -75,14 +75,14 @@ func actionConnectionExternalSettings(model *actionConnectionExternalSecretsMana
 
 func actionConnectionReferenceResourceAttribute() schema.SingleNestedAttribute {
 	return schema.SingleNestedAttribute{
-		Description:   "AWS Secrets Manager reference for this field. Configure external_secrets_manager on the connection and omit the literal field. Available for supported credential tokens on DATACENTER connections.",
+		Description:   "AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud.",
 		Optional:      true,
 		PlanModifiers: []planmodifier.Object{objectplanmodifier.RequiresReplaceIf(replaceActionConnectionIfReferenceRemoved, "Removing a reference without a literal replacement requires replacing the connection.", "Removing a reference without a literal replacement requires replacing the connection.")},
 		Attributes: map[string]schema.Attribute{
 			"secret_id":     schema.StringAttribute{Description: "Name or ARN of the secret.", Required: true, Validators: []validator.String{stringvalidator.LengthAtLeast(1)}},
 			"key":           schema.StringAttribute{Description: "Top-level JSON key to extract. Omit to use the entire secret string.", Optional: true},
-			"version_id":    schema.StringAttribute{Description: "Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.", Optional: true, Validators: []validator.String{stringvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("version_stage"))}},
-			"version_stage": schema.StringAttribute{Description: "Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.", Optional: true},
+			"version_id":    schema.StringAttribute{Description: "Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.", Optional: true, Validators: []validator.String{stringvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("version_stage"))}},
+			"version_stage": schema.StringAttribute{Description: "Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.", Optional: true},
 		},
 	}
 }
@@ -91,7 +91,7 @@ func actionConnectionReferenceResourceAttribute() schema.SingleNestedAttribute {
 // source, and nested HTTP schemas expose the same supported reference fields.
 func addActionConnectionAWSSecretSchema(s *schema.Schema) {
 	s.Attributes["external_secrets_manager"] = schema.SingleNestedAttribute{
-		Description: "AWS Secrets Manager settings shared by credential references. Required when a credential uses an AWS Secrets Manager reference; optional for literal credentials. Available on DATACENTER connections.", Optional: true,
+		Description: "AWS Secrets Manager settings shared by credential references. Required when a credential uses an AWS Secrets Manager reference. Optional for literal credentials. Available only on connections that run in Datadog's cloud.", Optional: true,
 		PlanModifiers: []planmodifier.Object{objectplanmodifier.RequiresReplaceIf(func(_ context.Context, request planmodifier.ObjectRequest, response *objectplanmodifier.RequiresReplaceIfFuncResponse) {
 			response.RequiresReplace = !request.StateValue.IsNull() && request.PlanValue.IsNull()
 		}, "Removing external secrets manager settings requires replacing the connection.", "Removing external secrets manager settings requires replacing the connection.")},

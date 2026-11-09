@@ -77,8 +77,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -105,8 +105,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -171,8 +171,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -199,8 +199,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -228,8 +228,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -250,8 +250,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedblock--cloudflare--global_api_token--global_api_key_aws_secrets_manager"></a>
@@ -261,8 +261,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -293,8 +293,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedblock--config_cat--sdk_key--api_username_aws_secrets_manager"></a>
@@ -304,8 +304,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedblock--config_cat--sdk_key--sdk_key_aws_secrets_manager"></a>
@@ -315,8 +315,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -349,8 +349,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedblock--datadog--api_key--app_key_aws_secrets_manager"></a>
@@ -360,8 +360,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedblock--datadog--api_key--datacenter_aws_secrets_manager"></a>
@@ -371,8 +371,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedblock--datadog--api_key--subdomain_aws_secrets_manager"></a>
@@ -382,8 +382,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -419,8 +419,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -449,8 +449,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedblock--freshservice--api_key--domain_aws_secrets_manager"></a>
@@ -460,8 +460,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -490,8 +490,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedblock--gcp--service_account--service_account_email_aws_secrets_manager"></a>
@@ -501,8 +501,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -529,8 +529,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -557,8 +557,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -585,8 +585,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -644,8 +644,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -682,8 +682,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -710,8 +710,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -740,8 +740,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedblock--okta--api_token--domain_aws_secrets_manager"></a>
@@ -751,8 +751,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -779,8 +779,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -811,8 +811,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedblock--service_now--basic_auth--password_aws_secrets_manager"></a>
@@ -822,8 +822,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 <a id="nestedblock--service_now--basic_auth--username_aws_secrets_manager"></a>
@@ -833,8 +833,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -861,8 +861,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -889,8 +889,8 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
 
 
 
@@ -917,5 +917,5 @@ Read-Only:
 
 - `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
 - `secret_id` (String) Name or ARN of the secret.
-- `version_id` (String) Secret version ID. Mutually exclusive with version_stage. Defaults to the current version when neither is specified.
-- `version_stage` (String) Secret version staging label. Mutually exclusive with version_id. Defaults to the current version when neither is specified.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
