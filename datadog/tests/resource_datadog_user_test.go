@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	dd "github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
@@ -273,14 +275,18 @@ func testAccCheckUserIsDisabled(accProvider func() (*schema.Provider, error), us
 		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
 
-		resp, _, err := apiInstances.GetUsersApiV2().ListUsers(auth, datadogV2.ListUsersOptionalParameters{Filter: &username, FilterStatus: dd.PtrString("Disabled")})
-		if err != nil {
-			return fmt.Errorf("received an error listing users %s", err)
-		}
-		if len(resp.GetData()) == 0 {
-			return fmt.Errorf("user is not disabled")
-		}
-		return nil
+		// The users search index is eventually consistent: the disabled status
+		// can appear after the delete call returns.
+		return retry.RetryContext(auth, 2*time.Minute, func() *retry.RetryError {
+			resp, _, err := apiInstances.GetUsersApiV2().ListUsers(auth, datadogV2.ListUsersOptionalParameters{Filter: &username, FilterStatus: dd.PtrString("Disabled")})
+			if err != nil {
+				return retry.NonRetryableError(fmt.Errorf("received an error listing users %s", err))
+			}
+			if len(resp.GetData()) == 0 {
+				return retry.RetryableError(fmt.Errorf("user is not disabled"))
+			}
+			return nil
+		})
 	}
 }
 
