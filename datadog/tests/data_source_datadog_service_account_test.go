@@ -17,21 +17,31 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
-// testAccCheckServiceAccountSearchable polls the users list API until the
-// filter returns a result. The users search index is eventually consistent,
-// so a data source read in the same apply as the create can return no results.
+// retryUntilUsersListed calls list until it returns at least one user or the
+// timeout expires. The users search index is eventually consistent, so a list
+// call made right after a create or disable can return no results.
+func retryUntilUsersListed(ctx context.Context, timeout time.Duration, list func() (int, error), emptyErr error) error {
+	return retry.RetryContext(ctx, timeout, func() *retry.RetryError {
+		count, err := list()
+		if err != nil {
+			return retry.NonRetryableError(err)
+		}
+		if count == 0 {
+			return retry.RetryableError(emptyErr)
+		}
+		return nil
+	})
+}
+
 func testAccCheckServiceAccountSearchable(provider *fwprovider.FrameworkProvider, filter string) resource.TestCheckFunc {
 	return func(_ *terraform.State) error {
-		return retry.RetryContext(provider.Auth, 2*time.Minute, func() *retry.RetryError {
+		return retryUntilUsersListed(provider.Auth, 2*time.Minute, func() (int, error) {
 			resp, _, err := provider.DatadogApiInstances.GetUsersApiV2().ListUsers(provider.Auth, datadogV2.ListUsersOptionalParameters{Filter: &filter})
 			if err != nil {
-				return retry.NonRetryableError(fmt.Errorf("error listing users: %w", err))
+				return 0, fmt.Errorf("error listing users: %w", err)
 			}
-			if len(resp.GetData()) == 0 {
-				return retry.RetryableError(fmt.Errorf("filter %q returned no results", filter))
-			}
-			return nil
-		})
+			return len(resp.GetData()), nil
+		}, fmt.Errorf("filter %q returned no results", filter))
 	}
 }
 
