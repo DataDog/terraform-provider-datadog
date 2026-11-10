@@ -141,6 +141,7 @@ func (r *{{ .GoName }}Resource) Create(ctx context.Context, request resource.Cre
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating {{ .TypeName }}"))
 		return
 	}
+{{ template "mapResponseState" . }}
 {{ template "commitState" .Create }}
 }
 
@@ -161,6 +162,7 @@ func (r *{{ .GoName }}Resource) Read(ctx context.Context, request resource.ReadR
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error reading {{ .TypeName }}"))
 		return
 	}
+{{ template "mapResponseState" . }}
 {{ template "commitState" .Read }}
 {{- if and .CallerAssignedID .UpdateUnsupported }}
 	if !response.Diagnostics.HasError() && state.Name.IsNull() {
@@ -190,6 +192,7 @@ func (r *{{ .GoName }}Resource) Update(ctx context.Context, request resource.Upd
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating {{ .TypeName }}"))
 		return
 	}
+{{ template "mapResponseState" . }}
 {{ template "commitState" .Update }}
 {{- end }}
 }
@@ -213,24 +216,26 @@ func (r *{{ .GoName }}Resource) Delete(ctx context.Context, request resource.Del
 
 // updateState maps {{ .State.ParamType }} into state, returning diagnostics
 // rather than writing them so it stays free of the resource request/response
-// types and can fail at a specific schema path. Shared by Create, Read and
-// Update, which all resolve the same response type.
+// types and can fail at a specific schema path. Shared by Create, Read and Update.
 func (r *{{ .GoName }}Resource) updateState(ctx context.Context, state *{{ .RootModel }}, {{ .State.ParamName }} {{ .State.ParamType }}) diag.Diagnostics {
 {{- template "updateStateBody" . }}
 }
 {{- end -}}
 
 {{/*
-  commitState maps resp into state via updateState and, absent a diagnostic
-  error, writes state back. Shared by Create, Read and Update, each
-  of which has already declared "resp", "state", "ctx" and "response" by the
-  point it includes this.
+  mapResponseState takes the resource view so every lifecycle call uses the
+  same argument to updateState. Each caller has already declared "resp",
+  "state", "ctx" and "response" by the point it includes this.
 */}}
-{{- define "commitState" -}}
-	response.Diagnostics.Append(r.updateState(ctx, &state, &resp)...)
+{{- define "mapResponseState" -}}
+	response.Diagnostics.Append(r.updateState(ctx, &state, {{ .StateResponseExpr }})...)
 	if response.Diagnostics.HasError() {
 		return
 	}
+{{- end -}}
+
+{{/* commitState applies the call's normalizations after mapping, then saves state. */}}
+{{- define "commitState" -}}
 {{ template "normalizeUnknowns" .NormalizeUnknowns }}
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 {{- end -}}

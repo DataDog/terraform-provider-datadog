@@ -414,6 +414,9 @@ func sdkCall(op *Operation, aliasTerminalID bool) *SDKCall {
 		GoResponseType:  op.ResponseRefName,
 		HasResponseBody: op.ResponseSchema != nil,
 	}
+	if data := envelopeData(op.ResponseSchema); data != nil && data.Kind == SchemaKindObject {
+		call.GoResponseDataType = data.RefName
+	}
 	applySDKBinding(call, op, aliasTerminalID)
 	return call
 }
