@@ -3,12 +3,12 @@
 page_title: "datadog_usage_quota Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Manages one usage quota in the authenticated organization's account. Existing quotas must be imported, and each quota must be managed by only one Terraform resource. The usage quotas API must be enabled for the organization. Pending limits and descendant organizations are not managed. Disabling enforcement clears any pending limit; other updates preserve it.
+  Manages one usage quota in the authenticated organization's account. Existing quotas must be imported, and each quota must be managed by only one Terraform resource. The usage quotas API must be enabled for the organization. This resource doesn't manage pending limits or descendant organizations. Disabling enforcement clears any pending limit; other updates preserve it.
 ---
 
 # datadog_usage_quota (Resource)
 
-Manages one usage quota in the authenticated organization's account. Existing quotas must be imported, and each quota must be managed by only one Terraform resource. The usage quotas API must be enabled for the organization. Pending limits and descendant organizations are not managed. Disabling enforcement clears any pending limit; other updates preserve it.
+Manages one usage quota in the authenticated organization's account. Existing quotas must be imported, and each quota must be managed by only one Terraform resource. The usage quotas API must be enabled for the organization. This resource doesn't manage pending limits or descendant organizations. Disabling enforcement clears any pending limit; other updates preserve it.
 
 ## Example Usage
 
@@ -34,17 +34,17 @@ resource "datadog_usage_quota" "example" {
 
 - `enforced` (Boolean) Whether the quota blocks usage. Setting false clears pending limits.
 - `quota_namespace` (String) Product-specific namespace, such as ai_credits. Changing this value replaces the quota. Must be nonempty and contain no whitespace or slash.
-- `usage_limit` (Number) Non-negative whole usage units. For ai_credits, units are credits per UTC calendar month. Imported legacy fractional values are preserved in state but require a whole value in configuration.
+- `usage_limit` (Number) Usage limit, as a non-negative whole number of usage units. For `ai_credits`, the unit is credits per UTC calendar month. Imported legacy fractional values are preserved in state, but configuration requires a whole number.
 
 ### Optional
 
-- `scope` (Map of String) Namespace-specific scope. Omit for an organization-wide quota. The API currently accepts one key, such as user_handle, role_uuid, or team_uuid; use * for a default scope. Changing scope replaces the quota. Prefer stable scope values to avoid replacements caused by unknown planned values.
+- `scope` (Map of String) Namespace-specific scope. Omit for an organization-wide quota. The API accepts one key, such as `user_handle`, `role_uuid`, or `team_uuid`. For a default scope, use `*` as the value, for example `{ user_handle = "*" }`. Changing the scope deletes and recreates the quota. If the scope becomes unknown during a later plan, Terraform may also plan to delete and recreate the quota.
 
 ### Read-Only
 
 - `id` (String) Terraform identifier in <quota_namespace>/<quota_id> format.
 - `org_public_id` (String) Public ID of the organization owning the quota.
-- `quota_id` (String) Opaque API quota identifier. IDs may contain encoded scope values, including user handles; they are not encrypted.
+- `quota_id` (String) Opaque API quota identifier. Quota IDs can contain encoded scope values, such as user handles. These values are encoded, not encrypted.
 
 ## Import
 
