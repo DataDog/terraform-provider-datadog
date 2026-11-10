@@ -69,7 +69,7 @@ resource "datadog_deployment_gate" "foo" {
 Required:
 
 - `name` (String) The rule name. Must be unique within the deployment gate.
-- `type` (String) The rule type (e.g., 'faulty_deployment_detection', 'monitor').
+- `type` (String) The rule type: 'faulty_deployment_detection', 'monitor', or 'bits_deployment_analysis'.
 
 Optional:
 

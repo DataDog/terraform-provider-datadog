@@ -56,6 +56,15 @@ func TestDeploymentGateRuleOptionsRoundTrip(t *testing.T) {
 			}(),
 			want: map[string]interface{}{"monitor_ids": []interface{}{map[string]interface{}{"id": "123", "groups": []interface{}{}}}, "fail_on_no_data": true},
 		},
+		{
+			name: "bits deployment analysis duration", ruleType: "bits_deployment_analysis",
+			options: func() *deploymentGateRuleOptionsModel {
+				o := testRuleOptions()
+				o.Duration = types.Int64Value(900)
+				return o
+			}(),
+			want: map[string]interface{}{"duration": float64(900)},
+		},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -223,6 +232,16 @@ func TestDeploymentGateRuleOptionsValidation(t *testing.T) {
 	rule := deploymentGateRuleModel{Name: types.StringValue("rule"), Type: types.StringValue("monitor"), Options: options}
 	if diags := (&deploymentGateResource{}).validateRules(ctx, &deploymentGateModel{Rules: []deploymentGateRuleModel{rule}}); !diags.HasError() {
 		t.Fatal("expected mutually exclusive options to fail validation")
+	}
+}
+
+func TestDeploymentGateBitsDeploymentAnalysisRejectsOtherOptions(t *testing.T) {
+	ctx := context.Background()
+	options := testRuleOptions()
+	options.Query = types.StringValue("service:web")
+	rule := deploymentGateRuleModel{Name: types.StringValue("rule"), Type: types.StringValue("bits_deployment_analysis"), Options: options}
+	if diags := (&deploymentGateResource{}).validateRules(ctx, &deploymentGateModel{Rules: []deploymentGateRuleModel{rule}}); !diags.HasError() {
+		t.Fatal("expected monitor options on a bits_deployment_analysis rule to fail validation")
 	}
 }
 
