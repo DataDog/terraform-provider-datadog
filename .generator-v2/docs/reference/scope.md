@@ -41,6 +41,8 @@ one who discovers the rough edges, and budget time for the acceptance test.
   their JSON:API `data` members reference the same named object component. The
   generated state mapper accepts that shared SDK data type. Different, inline,
   or non-object data shapes across distinct wrappers remain unsupported.
+- Create, Read, and any supported Update require named response bodies to
+  populate resource state. Bodyless responses are supported only for Delete.
 
 ## Terraform identity
 

@@ -1879,9 +1879,10 @@ func dsGoName(name string) string {
 	return lowerFirst("Datadog" + model.SdkName(name))
 }
 
-// resourceUsesSharedResponseData allows distinct response envelopes only when
-// every body-returning lifecycle role shares the same named data object. Mapping
-// that value avoids depending on wrapper fields or their pointer requiredness.
+// resourceUsesSharedResponseData requires named response bodies for Create and
+// any supported Update. Distinct response envelopes must share Read's named data
+// object; mapping that value avoids depending on wrapper fields or their pointer
+// requiredness.
 func resourceUsesSharedResponseData(artifact string, lifecycle *model.LifecycleBindings) (bool, error) {
 	read := lifecycle.Read
 	roles := []struct {
@@ -1890,23 +1891,39 @@ func resourceUsesSharedResponseData(artifact string, lifecycle *model.LifecycleB
 	}{{"Create", lifecycle.Create}, {"Update", lifecycle.Update}}
 	sharedData := false
 	for _, role := range roles {
-		if role.call != nil && role.call.GoResponseType != read.GoResponseType {
+		call := role.call
+		if call == nil {
+			continue
+		}
+		if !call.HasResponseBody {
+			return false, fmt.Errorf(
+				"emit: resource %q: %s returns no response body — updateState requires one", artifact, role.name)
+		}
+		if call.GoResponseType == "" {
+			return false, fmt.Errorf(
+				"emit: resource %q: %s has no named response type — updateState needs one", artifact, role.name)
+		}
+		if call.GoResponseType != read.GoResponseType {
 			sharedData = true
 		}
 	}
 	if !sharedData {
 		return false, nil
 	}
+	if read.GoResponseDataType == "" {
+		return false, fmt.Errorf(
+			"emit: resource %q: Read response type %q has no named data object — distinct response wrappers require one",
+			artifact, read.GoResponseType)
+	}
 	for _, role := range roles {
 		call := role.call
 		if call == nil {
 			continue
 		}
-		if call.GoResponseType == "" || read.GoResponseDataType == "" ||
-			call.GoResponseDataType != read.GoResponseDataType || call.GoPackage != read.GoPackage {
+		if call.GoResponseDataType != read.GoResponseDataType || call.GoPackage != read.GoPackage {
 			return false, fmt.Errorf(
-				"emit: resource %q: %s response type %q differs from Read's %q and does not share its named data object %q",
-				artifact, role.name, call.GoResponseType, read.GoResponseType, read.GoResponseDataType)
+				"emit: resource %q: %s response type %q does not share Read's named data object %q",
+				artifact, role.name, call.GoResponseType, read.GoResponseDataType)
 		}
 	}
 	return true, nil
@@ -1960,7 +1977,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	}
 
 	responseRoot, responseParam, responseType := "resp.Data", "resp", "*"+primary.GoPackage+"."+primary.GoResponseType
-	stateResponseExpr := ""
+	stateResponseExpr := "&resp"
 	if sharedResponseData {
 		responseRoot, responseParam = "data", "data"
 		responseType = primary.GoPackage + "." + primary.GoResponseDataType
@@ -2029,8 +2046,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		updateView = CRUDCallView{
 			Method: lc.Update.GoMethod, GoRequestType: lc.Update.GoRequestType,
 			GoResponseType: lc.Update.GoResponseType, Arguments: updateArgs,
-			StateResponseExpr: stateResponseExpr,
-			Envelope:          buildRequestEnvelope(a.Name, "Update", primary.GoPackage, lc.Update, updateFields, &b.unsupported),
+			Envelope: buildRequestEnvelope(a.Name, "Update", primary.GoPackage, lc.Update, updateFields, &b.unsupported),
 			WriteOnlySecrets: writeOnlySecretsForFields(
 				b.writeOnlySecrets, updateFields, "GetSecretForUpdate(ctx, &request.Config, &request)"),
 		}
@@ -2115,24 +2131,23 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	defaultPkgs := sortedKeys(b.defaultPkgs)
 
 	return ResourceView{
-		CallerAssignedID: callerAssignedID,
-		TypeName:         a.Name,
-		GoName:           goName,
-		RootModel:        rootStruct,
-		Description:      a.Description,
-		SDKPackage:       primary.GoPackage,
-		APIStruct:        primary.GoApiStruct,
-		APIAccessor:      defaultAPIAccessor(primary),
+		CallerAssignedID:  callerAssignedID,
+		TypeName:          a.Name,
+		GoName:            goName,
+		RootModel:         rootStruct,
+		Description:       a.Description,
+		SDKPackage:        primary.GoPackage,
+		APIStruct:         primary.GoApiStruct,
+		APIAccessor:       defaultAPIAccessor(primary),
+		StateResponseExpr: stateResponseExpr,
 		Create: CRUDCallView{
 			Method: lc.Create.GoMethod, GoRequestType: lc.Create.GoRequestType,
 			GoResponseType: lc.Create.GoResponseType, Arguments: createArgs,
-			StateResponseExpr: stateResponseExpr,
-			Envelope:          createEnvelope, WriteOnlySecrets: createWriteOnlySecrets,
+			Envelope: createEnvelope, WriteOnlySecrets: createWriteOnlySecrets,
 			NormalizeUnknowns: buildUnknownNormalizations(env.leaves, "state"),
 		},
 		Read: CRUDCallView{
 			Method: lc.Read.GoMethod, GoResponseType: lc.Read.GoResponseType, Arguments: readArgs,
-			StateResponseExpr: stateResponseExpr,
 		},
 		Update:            updateView,
 		UpdateUnsupported: lc.UpdateUnsupported,

@@ -572,6 +572,9 @@ type ResourceView struct {
 	Models []ModelStructView
 	Schema SchemaView
 	State  StateView
+	// StateResponseExpr is the argument passed to updateState by Create, Read
+	// and Update: either &resp or the shared data object resp.GetData().
+	StateResponseExpr string
 
 	UsesFmt              bool
 	UsesValidators       bool
@@ -610,9 +613,6 @@ type CRUDCallView struct {
 	GoRequestType   string
 	GoResponseType  string
 	HasResponseBody bool
-	// StateResponseExpr overrides the default &resp passed to updateState when
-	// CRUD wrappers differ but their GetData methods return the same SDK object.
-	StateResponseExpr string
 	// Arguments are the positional SDK call arguments in call order (e.g. the
 	// terminal path id, aliased to "id").
 	Arguments []SDKArgumentView
