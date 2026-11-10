@@ -960,6 +960,38 @@ Optional:
 <a id="nestedblock--config--destination--datadog_metrics"></a>
 ### Nested Schema for `config.destination.datadog_metrics`
 
+Optional:
+
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--datadog_metrics--buffer))
+
+<a id="nestedblock--config--destination--datadog_metrics--buffer"></a>
+### Nested Schema for `config.destination.datadog_metrics.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--datadog_metrics--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--datadog_metrics--buffer--memory))
+
+<a id="nestedblock--config--destination--datadog_metrics--buffer--disk"></a>
+### Nested Schema for `config.destination.datadog_metrics.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--datadog_metrics--buffer--memory"></a>
+### Nested Schema for `config.destination.datadog_metrics.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+
 
 <a id="nestedblock--config--destination--datadog_traces"></a>
 ### Nested Schema for `config.destination.datadog_traces`
