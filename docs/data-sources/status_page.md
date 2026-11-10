@@ -40,8 +40,10 @@ data "datadog_status_page" "acme_status_page" {
 - `ms_teams_subscriptions_enabled` (Boolean) Whether Microsoft Teams subscriber notifications are enabled for the status page.
 - `name` (String) The name of the status page.
 - `page_url` (String) The URL of the status page.
+- `rss_feed_enabled` (Boolean) Whether the RSS feed is enabled for the status page.
 - `slack_app_icon` (String) The icon used for the status page's Slack app integration.
 - `slack_subscriptions_enabled` (Boolean) Whether Slack subscriber notifications are enabled for the status page.
 - `subscriptions_enabled` (Boolean) Whether subscriber notifications are enabled for the status page.
 - `type` (String) The type of the status page.
+- `visualization_layout` (String) The layout of components on the status page. Possible values are: list, grid.
 - `visualization_type` (String) How component statuses are visualized on the page.

@@ -174,6 +174,7 @@ var _ = Describe("BuildResourceView", func() {
 		Expect(view.Dropped).NotTo(ContainElement(HaveField("Message", ContainSubstring("internal_note"))))
 
 		Expect(view.State.ParamType).To(Equal("*datadogV2.IncidentTypeResponse"))
+		Expect(view.StateResponseExpr).To(Equal("&resp"))
 		By("the write-only field never gets a response assignment — its accessor does not exist on the response type")
 		for _, a := range view.State.Assignments {
 			Expect(a.LHS).NotTo(Equal("state.InternalNote"))
@@ -464,6 +465,8 @@ var _ = Describe("BuildResourceView", func() {
 
 		Expect(view.UpdateUnsupported).To(BeTrue())
 		Expect(view.Update).To(Equal(CRUDCallView{}))
+		Expect(view.StateResponseExpr).To(Equal("&resp"))
+		Expect(strings.Count(string(mustRenderResource(view)), "r.updateState(ctx, &state, &resp)")).To(Equal(2))
 
 		By("every request-settable attribute now also carries RequiresReplace()")
 		Expect(attrByPath(schemaTree(view), "internal_note").PlanModifiers).To(Equal(
@@ -492,17 +495,144 @@ var _ = Describe("BuildResourceView", func() {
 		Expect(unsupported.Nodes).To(ContainElement(HaveField("Path", ContainSubstring("settings"))))
 	})
 
-	It("fails when Create and Read resolve different response types", func() {
+	DescribeTable("maps a shared data object when lifecycle response wrappers differ",
+		func(createType, updateType string, withUpdate bool) {
+			op := incidentTypeResourceOperation(withUpdate)
+			readSchema := op.ResolvedGroup.Read.ResponseSchema
+			op.ResolvedGroup.Create.ResponseRefName = createType
+			op.ResolvedGroup.Create.ResponseSchema = &model.Schema{
+				Kind: model.SchemaKindObject, Required: []string{"data"}, Properties: readSchema.Properties,
+			}
+			if withUpdate {
+				op.ResolvedGroup.Update.ResponseRefName = updateType
+				op.ResolvedGroup.Update.ResponseSchema = readSchema
+			}
+
+			art, err := model.BuildArtifact(op)
+			Expect(err).NotTo(HaveOccurred())
+			view, err := BuildResourceView(art)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(view.State.ParamName).To(Equal("data"))
+			Expect(view.State.ParamType).To(Equal("datadogV2.IncidentTypeData"))
+			Expect(view.StateResponseExpr).To(Equal("resp.GetData()"))
+			calls := 2
+			if withUpdate {
+				calls++
+			}
+			source := string(mustRenderResource(view))
+			Expect(strings.Count(source, "r.updateState(ctx, &state, resp.GetData())")).To(Equal(calls))
+			Expect(source).To(ContainSubstring("data datadogV2.IncidentTypeData) diag.Diagnostics"))
+			Expect(source).To(ContainSubstring("data.GetIdOk()"))
+			Expect(source).To(ContainSubstring("attributes := data.GetAttributes()"))
+			Expect(source).NotTo(ContainSubstring("resp.Data"))
+		},
+		Entry("Create wrapper differs", "CreateIncidentTypeResponse", "IncidentTypeResponse", true),
+		Entry("Update wrapper differs", "IncidentTypeResponse", "UpdateIncidentTypeResponse", true),
+		Entry("all wrappers differ", "CreateIncidentTypeResponse", "UpdateIncidentTypeResponse", true),
+		Entry("resource has no Update", "CreateIncidentTypeResponse", "", false),
+	)
+
+	DescribeTable("rejects response wrappers without the same named data object",
+		func(change func(*model.Schema)) {
+			op := incidentTypeResourceOperation(true)
+			data := *op.ResolvedGroup.Read.ResponseSchema.Properties["data"]
+			change(&data)
+			op.ResolvedGroup.Create.ResponseRefName = "CreateIncidentTypeResponse"
+			op.ResolvedGroup.Create.ResponseSchema = &model.Schema{
+				Kind: model.SchemaKindObject, Properties: map[string]*model.Schema{"data": &data},
+			}
+			op.ResolvedGroup.Update.ResponseSchema = op.ResolvedGroup.Read.ResponseSchema
+			art, err := model.BuildArtifact(op)
+			Expect(err).NotTo(HaveOccurred())
+			_, err = BuildResourceView(art)
+			Expect(err).To(MatchError(`emit: resource "incident_type": Create response type "CreateIncidentTypeResponse" does not share Read's named data object "IncidentTypeData"`))
+		},
+		Entry("another data component", func(s *model.Schema) { s.RefName = "OtherData" }),
+		Entry("inline data", func(s *model.Schema) { s.RefName = "" }),
+		Entry("array data", func(s *model.Schema) { s.Kind = model.SchemaKindArray }),
+	)
+
+	It("identifies Read's inline data when only Update has a different response wrapper", func() {
 		op := incidentTypeResourceOperation(true)
-		op.ResolvedGroup.Create.ResponseRefName = "SomethingElseResponse"
+		op.ResolvedGroup.Read.ResponseSchema.Properties["data"].RefName = ""
+		op.ResolvedGroup.Update.ResponseRefName = "UpdateIncidentTypeResponse"
 
 		art, err := model.BuildArtifact(op)
 		Expect(err).NotTo(HaveOccurred())
 
 		_, err = BuildResourceView(art)
-		Expect(err).To(HaveOccurred())
-		Expect(err.Error()).To(ContainSubstring("differs from Read's"))
+		Expect(err).To(MatchError(`emit: resource "incident_type": Read response type "IncidentTypeResponse" has no named data object — distinct response wrappers require one`))
 	})
+
+	DescribeTable("validates every write role's data object once wrappers differ",
+		func(roleName string, matchingWrapper bool) {
+			op := incidentTypeResourceOperation(true)
+			role, other := op.ResolvedGroup.Create, op.ResolvedGroup.Update
+			if roleName == "Update" {
+				role, other = other, role
+			}
+			if matchingWrapper {
+				other.ResponseRefName = "OtherIncidentTypeResponse"
+			} else {
+				role.ResponseRefName = roleName + "IncidentTypeResponse"
+			}
+			data := *role.ResponseSchema.Properties["data"]
+			data.RefName = "OtherData"
+			role.ResponseSchema = &model.Schema{
+				Kind: model.SchemaKindObject, Properties: map[string]*model.Schema{"data": &data},
+			}
+
+			art, err := model.BuildArtifact(op)
+			Expect(err).NotTo(HaveOccurred())
+			_, err = BuildResourceView(art)
+			Expect(err).To(MatchError(`emit: resource "incident_type": ` + roleName + ` response type "` + role.ResponseRefName + `" does not share Read's named data object "IncidentTypeData"`))
+		},
+		Entry("Update has a distinct wrapper", "Update", false),
+		Entry("Create matches Read's wrapper", "Create", true),
+		Entry("Update matches Read's wrapper", "Update", true),
+	)
+
+	DescribeTable("rejects bodyless write responses before selecting a mapper",
+		func(roleName string, otherWrapperDiffers bool) {
+			op := incidentTypeResourceOperation(true)
+			role, other := op.ResolvedGroup.Create, op.ResolvedGroup.Update
+			if roleName == "Update" {
+				role, other = other, role
+			}
+			role.ResponseRefName = ""
+			role.ResponseSchema = nil
+			if otherWrapperDiffers {
+				other.ResponseRefName = "OtherIncidentTypeResponse"
+			}
+
+			art, err := model.BuildArtifact(op)
+			Expect(err).NotTo(HaveOccurred())
+			_, err = BuildResourceView(art)
+			Expect(err).To(MatchError(`emit: resource "incident_type": ` + roleName + ` returns no response body — updateState requires one`))
+		},
+		Entry("bodyless Create, matching Read and Update wrappers", "Create", false),
+		Entry("bodyless Create, distinct Read and Update wrappers", "Create", true),
+		Entry("bodyless Update, matching Read and Create wrappers", "Update", false),
+		Entry("bodyless Update, distinct Read and Create wrappers", "Update", true),
+	)
+
+	DescribeTable("rejects unnamed write response bodies",
+		func(roleName string) {
+			op := incidentTypeResourceOperation(true)
+			role := op.ResolvedGroup.Create
+			if roleName == "Update" {
+				role = op.ResolvedGroup.Update
+			}
+			role.ResponseRefName = ""
+
+			art, err := model.BuildArtifact(op)
+			Expect(err).NotTo(HaveOccurred())
+			_, err = BuildResourceView(art)
+			Expect(err).To(MatchError(`emit: resource "incident_type": ` + roleName + ` has no named response type — updateState needs one`))
+		},
+		Entry("inline Create", "Create"),
+		Entry("inline Update", "Update"),
+	)
 
 	DescribeTable("rejects an unnamed Read response before rendering state or CRUD calls",
 		func(bodylessRole string) {
@@ -689,6 +819,7 @@ var _ = Describe("RenderResource", func() {
 
 		Expect(out).To(ContainSubstring(`resource.ImportStatePassthroughID(ctx, path.Root("id"), request, response)`))
 		Expect(out).To(ContainSubstring(`"id": utils.ResourceIDAttribute(),`))
+		Expect(strings.Count(out, "r.updateState(ctx, &state, &resp)")).To(Equal(3))
 	})
 
 	It("seeds Update from the planned model and reserves configuration reads for write-only handlers", func() {
@@ -837,6 +968,7 @@ func incidentTypeResourceOperation(withUpdate bool) *model.Operation {
 		ResponseSchema:  body(attrs(nil, true, false, true, "IncidentTypeAttributes"), "IncidentTypeData", true),
 		SDKBinding:      idBinding(),
 	}
+	create.ResponseSchema = read.ResponseSchema
 	del := &model.Operation{
 		Path: "/api/v2/incidents/config/types/{incident_type_id}", Method: "DELETE",
 		OperationId: "DeleteIncidentType", Tag: "Incidents",
@@ -854,8 +986,9 @@ func incidentTypeResourceOperation(withUpdate bool) *model.Operation {
 			Path: "/api/v2/incidents/config/types/{incident_type_id}", Method: "PATCH",
 			OperationId: "UpdateIncidentType", Tag: "Incidents",
 			RequestRefName: "IncidentTypeUpdateRequest", ResponseRefName: "IncidentTypeResponse",
-			RequestSchema: body(attrs(nil, true, false, false, "IncidentTypeUpdateAttributes"), "IncidentTypeUpdateData", true),
-			SDKBinding:    idBinding(),
+			RequestSchema:  body(attrs(nil, true, false, false, "IncidentTypeUpdateAttributes"), "IncidentTypeUpdateData", true),
+			ResponseSchema: read.ResponseSchema,
+			SDKBinding:     idBinding(),
 		}
 		create.ResolvedGroup.Update = update
 	}

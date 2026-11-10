@@ -417,6 +417,7 @@ func widgetResourceOperation() *model.Operation {
 		ResponseSchema:  body(attrs(nil, "WidgetResponseAttributes", "WidgetSettingsResponse", "WidgetLimitsResponse"), "WidgetResponseData"),
 		SDKBinding:      idBinding(),
 	}
+	create.ResponseSchema = read.ResponseSchema
 	del := &model.Operation{
 		Path: "/api/v2/widgets/{widget_id}", Method: "DELETE",
 		OperationId: "DeleteWidget", Tag: "Widgets",
@@ -426,8 +427,9 @@ func widgetResourceOperation() *model.Operation {
 		Path: "/api/v2/widgets/{widget_id}", Method: "PATCH",
 		OperationId: "UpdateWidget", Tag: "Widgets",
 		RequestRefName: "WidgetUpdateRequest", ResponseRefName: "WidgetResponse",
-		RequestSchema: body(attrs(nil, "WidgetUpdateAttributes", "WidgetSettingsUpdateRequest", "WidgetLimitsRequest"), "WidgetUpdateData"),
-		SDKBinding:    idBinding(),
+		RequestSchema:  body(attrs(nil, "WidgetUpdateAttributes", "WidgetSettingsUpdateRequest", "WidgetLimitsRequest"), "WidgetUpdateData"),
+		ResponseSchema: read.ResponseSchema,
+		SDKBinding:     idBinding(),
 	}
 
 	create.Tracking = &model.TrackingFieldMetadata{

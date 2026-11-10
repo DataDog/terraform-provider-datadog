@@ -1,3 +1,27 @@
+## 4.30.0 (November 10, 2026)
+
+### BUGFIXES
+* [datadog_tag_pipeline_ruleset] Keep unchanged fields known in plans by @gstroz in https://github.com/DataDog/terraform-provider-datadog/pull/4448
+### FEATURES
+* [datadog_aws_wif_intake_mapping] Add AWS WIF intake mappings by @devand123 in https://github.com/DataDog/terraform-provider-datadog/pull/4337
+* [datadog_observability_pipeline] Add spike protection processor by @dd-sebastien-lb in https://github.com/DataDog/terraform-provider-datadog/pull/4473
+* [datadog_rum_application] Add create_default_retention_filters by @carlosdelest in https://github.com/DataDog/terraform-provider-datadog/pull/4484
+* [datadog_team_sync] Add ServiceNow support to datadog_team_sync and datadog_team_connection by @botz-syd in https://github.com/DataDog/terraform-provider-datadog/pull/4487
+* [datadog_action_execution_policy] Add Slack scope support by @shimupan in https://github.com/DataDog/terraform-provider-datadog/pull/4435
+* [datadog_integration_aws_account] Add metrics_config resource_type_tag_filters and deprecate tag_filters by @dhan0779 in https://github.com/DataDog/terraform-provider-datadog/pull/4463
+* [datadog_action_connection] Add AWS Secrets Manager references by @martin-prevost1 in https://github.com/DataDog/terraform-provider-datadog/pull/4453
+* [datadog_monitor_notification_rule] Add `rule_options` to Monitor Notification Rule by @shaneyuandd in https://github.com/DataDog/terraform-provider-datadog/pull/4490
+* [datadog_observability_pipeline] Add buffer options to datadog_metrics destination by @dd-sebastien-lb in https://github.com/DataDog/terraform-provider-datadog/pull/4501
+### DOCUMENTATION
+* [datadog_rum_application] Expand attribute descriptions by @carlosdelest in https://github.com/DataDog/terraform-provider-datadog/pull/4486
+
+## New Contributors
+* @gstroz made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4448
+* @carlosdelest made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4486
+* @botz-syd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4487
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.29.0...v4.30.0
+
 ## 4.29.0 (November 4, 2026)
 
 ### BUGFIXES
