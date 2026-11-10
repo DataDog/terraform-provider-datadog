@@ -30,23 +30,25 @@ type statusPageResource struct {
 }
 
 type statusPageModel struct {
-	ID                        types.String `tfsdk:"id"`
-	Name                      types.String `tfsdk:"name"`
-	Type                      types.String `tfsdk:"type"`
-	Enabled                   types.Bool   `tfsdk:"enabled"`
-	DomainPrefix              types.String `tfsdk:"domain_prefix"`
-	CustomDomain              types.String `tfsdk:"custom_domain"`
-	CustomDomainEnabled       types.Bool   `tfsdk:"custom_domain_enabled"`
-	PageURL                   types.String `tfsdk:"page_url"`
-	VisualizationType         types.String `tfsdk:"visualization_type"`
-	SubscriptionsEnabled      types.Bool   `tfsdk:"subscriptions_enabled"`
-	SlackSubscriptionsEnabled types.Bool   `tfsdk:"slack_subscriptions_enabled"`
-	CompanyLogo               types.String `tfsdk:"company_logo"`
-	Favicon                   types.String `tfsdk:"favicon"`
-	EmailHeaderImage          types.String `tfsdk:"email_header_image"`
-	SlackAppIcon              types.String `tfsdk:"slack_app_icon"`
-	CreatedAt                 types.String `tfsdk:"created_at"`
-	ModifiedAt                types.String `tfsdk:"modified_at"`
+	ID                          types.String `tfsdk:"id"`
+	Name                        types.String `tfsdk:"name"`
+	Type                        types.String `tfsdk:"type"`
+	Enabled                     types.Bool   `tfsdk:"enabled"`
+	DomainPrefix                types.String `tfsdk:"domain_prefix"`
+	CustomDomain                types.String `tfsdk:"custom_domain"`
+	CustomDomainEnabled         types.Bool   `tfsdk:"custom_domain_enabled"`
+	PageURL                     types.String `tfsdk:"page_url"`
+	VisualizationType           types.String `tfsdk:"visualization_type"`
+	SubscriptionsEnabled        types.Bool   `tfsdk:"subscriptions_enabled"`
+	SlackSubscriptionsEnabled   types.Bool   `tfsdk:"slack_subscriptions_enabled"`
+	EmailNotificationsEnabled   types.Bool   `tfsdk:"email_notifications_enabled"`
+	MsTeamsSubscriptionsEnabled types.Bool   `tfsdk:"ms_teams_subscriptions_enabled"`
+	CompanyLogo                 types.String `tfsdk:"company_logo"`
+	Favicon                     types.String `tfsdk:"favicon"`
+	EmailHeaderImage            types.String `tfsdk:"email_header_image"`
+	SlackAppIcon                types.String `tfsdk:"slack_app_icon"`
+	CreatedAt                   types.String `tfsdk:"created_at"`
+	ModifiedAt                  types.String `tfsdk:"modified_at"`
 }
 
 func NewStatusPageResource() resource.Resource {
@@ -154,7 +156,7 @@ func (r *statusPageResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Required:    true,
 			},
 			"type": schema.StringAttribute{
-				Description: "The type of the status page. Valid values are: public, internal.",
+				Description: "The type of the status page. Valid values are: public, internal, private. Private pages are only accessible to users allowed by the page's email access policies, managed with `datadog_status_page_email_access_policy`.",
 				Required:    true,
 			},
 			"domain_prefix": schema.StringAttribute{
@@ -203,6 +205,22 @@ func (r *statusPageResource) Schema(_ context.Context, _ resource.SchemaRequest,
 			},
 			"slack_subscriptions_enabled": schema.BoolAttribute{
 				Description: "Whether Slack subscriber notifications are enabled for the status page.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"email_notifications_enabled": schema.BoolAttribute{
+				Description: "Whether email notifications are enabled for the status page. Must be enabled when `subscriptions_enabled` is `true`.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"ms_teams_subscriptions_enabled": schema.BoolAttribute{
+				Description: "Whether Microsoft Teams subscriber notifications are enabled for the status page.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -293,6 +311,12 @@ func (r *statusPageResource) Create(ctx context.Context, request resource.Create
 	}
 	if !plan.SlackSubscriptionsEnabled.IsNull() && !plan.SlackSubscriptionsEnabled.IsUnknown() {
 		attributes.SlackSubscriptionsEnabled = plan.SlackSubscriptionsEnabled.ValueBoolPointer()
+	}
+	if !plan.EmailNotificationsEnabled.IsNull() && !plan.EmailNotificationsEnabled.IsUnknown() {
+		attributes.EmailNotificationsEnabled = plan.EmailNotificationsEnabled.ValueBoolPointer()
+	}
+	if !plan.MsTeamsSubscriptionsEnabled.IsNull() && !plan.MsTeamsSubscriptionsEnabled.IsUnknown() {
+		attributes.MsTeamsSubscriptionsEnabled = plan.MsTeamsSubscriptionsEnabled.ValueBoolPointer()
 	}
 	if !plan.CompanyLogo.IsNull() && !plan.CompanyLogo.IsUnknown() {
 		attributes.CompanyLogo = plan.CompanyLogo.ValueStringPointer()
@@ -430,6 +454,12 @@ func (r *statusPageResource) Update(ctx context.Context, request resource.Update
 	if !plan.SlackSubscriptionsEnabled.IsNull() && !plan.SlackSubscriptionsEnabled.IsUnknown() {
 		attributes.SlackSubscriptionsEnabled = plan.SlackSubscriptionsEnabled.ValueBoolPointer()
 	}
+	if !plan.EmailNotificationsEnabled.IsNull() && !plan.EmailNotificationsEnabled.IsUnknown() {
+		attributes.EmailNotificationsEnabled = plan.EmailNotificationsEnabled.ValueBoolPointer()
+	}
+	if !plan.MsTeamsSubscriptionsEnabled.IsNull() && !plan.MsTeamsSubscriptionsEnabled.IsUnknown() {
+		attributes.MsTeamsSubscriptionsEnabled = plan.MsTeamsSubscriptionsEnabled.ValueBoolPointer()
+	}
 	if !plan.CompanyLogo.IsNull() && !plan.CompanyLogo.IsUnknown() {
 		attributes.CompanyLogo = plan.CompanyLogo.ValueStringPointer()
 	}
@@ -547,6 +577,16 @@ func (r *statusPageResource) updateStateFromResponse(state *statusPageModel, res
 		}
 		if slackSubscriptionsEnabled, ok := attributes.GetSlackSubscriptionsEnabledOk(); ok && slackSubscriptionsEnabled != nil {
 			state.SlackSubscriptionsEnabled = types.BoolValue(*slackSubscriptionsEnabled)
+		}
+		if emailNotificationsEnabled, ok := attributes.GetEmailNotificationsEnabledOk(); ok && emailNotificationsEnabled != nil {
+			state.EmailNotificationsEnabled = types.BoolValue(*emailNotificationsEnabled)
+		} else {
+			state.EmailNotificationsEnabled = types.BoolNull()
+		}
+		if msTeamsSubscriptionsEnabled, ok := attributes.GetMsTeamsSubscriptionsEnabledOk(); ok && msTeamsSubscriptionsEnabled != nil {
+			state.MsTeamsSubscriptionsEnabled = types.BoolValue(*msTeamsSubscriptionsEnabled)
+		} else {
+			state.MsTeamsSubscriptionsEnabled = types.BoolNull()
 		}
 		if companyLogo, ok := attributes.GetCompanyLogoOk(); ok && companyLogo != nil {
 			state.CompanyLogo = types.StringValue(*companyLogo)
