@@ -22,7 +22,8 @@ func TestAccDatadogSecurityMonitoringRuleDatasource(t *testing.T) {
 	ruleName := uniqueEntityName(ctx, t)
 	accProvider := providers.frameworkProvider
 
-	securityMonitoringCreatedConfig := testAccCheckDatadogSecurityMonitoringCreatedConfig(ruleName)
+	securityMonitoringCreatedConfig := testAccCheckDatadogSecurityMonitoringCreatedConfig(ruleName) +
+		testAccSecurityMonitoringRuleUntaggedConfig(ruleName)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: accProviders,
@@ -32,30 +33,37 @@ func TestAccDatadogSecurityMonitoringRuleDatasource(t *testing.T) {
 				Config: securityMonitoringCreatedConfig,
 			},
 			{
-				Config: testAccDataSourceSecurityMonitoringRuleNameFilter(securityMonitoringCreatedConfig, ruleName),
-				Check:  securityMonitoringCheckOnlyCreatedRule(ruleName),
+				Config: testAccDataSourceSecurityMonitoringRuleFilter(securityMonitoringCreatedConfig, ruleName, ""),
+				Check:  securityMonitoringCheckRules(ruleName, ruleName+untaggedRuleSuffix),
 			},
 			{
-				Config: testAccDataSourceSecurityMonitoringRuleTagsFilter(securityMonitoringCreatedConfig, ruleName),
-				Check:  securityMonitoringCheckOnlyCreatedRule(ruleName),
+				Config: testAccDataSourceSecurityMonitoringRuleFilter(securityMonitoringCreatedConfig, ruleName, `tags_filter = ["i:tomato"]`),
+				Check:  securityMonitoringCheckRules(ruleName),
 			},
 			{
-				Config: testAccDataSourceSecurityMonitoringRuleUserFilter(securityMonitoringCreatedConfig, ruleName),
-				Check:  securityMonitoringCheckOnlyCreatedRule(ruleName),
+				Config: testAccDataSourceSecurityMonitoringRuleFilter(securityMonitoringCreatedConfig, ruleName, "user_only_filter = true"),
+				Check:  securityMonitoringCheckRules(ruleName, ruleName+untaggedRuleSuffix),
+			},
+			{
+				Config: testAccDataSourceSecurityMonitoringRuleFilter(securityMonitoringCreatedConfig, ruleName, "default_only_filter = true"),
+				Check:  securityMonitoringCheckRules(),
 			},
 		},
 	})
 }
 
 // The rule list is org-wide and other tests create and delete rules in parallel.
-// Each step adds name_filter on the unique rule name (filters combine with AND),
-// so the only expected match is the rule this test creates.
-func securityMonitoringCheckOnlyCreatedRule(ruleName string) resource.TestCheckFunc {
-	return resource.ComposeTestCheckFunc(
-		func(state *terraform.State) error { return securityMonitoringCheckRuleCount(state, 1) },
-		resource.TestCheckResourceAttr(tfSecurityRulesSource, "rules.0.name", ruleName),
-		resource.TestCheckResourceAttrPair(tfSecurityRulesSource, "rule_ids.0", "datadog_security_monitoring_rule.acceptance_test", "id"),
-	)
+// Each step adds name_filter on the unique rule name (filters combine with AND), so
+// only the two rules of this test can match. The untagged rule makes the tags filter
+// observable. Both rules are user rules, so default_only_filter must return none.
+func securityMonitoringCheckRules(names ...string) resource.TestCheckFunc {
+	checks := []resource.TestCheckFunc{
+		func(state *terraform.State) error { return securityMonitoringCheckRuleCount(state, len(names)) },
+	}
+	for _, name := range names {
+		checks = append(checks, resource.TestCheckTypeSetElemNestedAttrs(tfSecurityRulesSource, "rules.*", map[string]string{"name": name}))
+	}
+	return resource.ComposeTestCheckFunc(checks...)
 }
 
 func securityMonitoringCheckRuleCount(state *terraform.State, responseRuleCount int) error {
@@ -70,28 +78,45 @@ func securityMonitoringCheckRuleCount(state *terraform.State, responseRuleCount 
 	return nil
 }
 
-func testAccDataSourceSecurityMonitoringRuleNameFilter(existingRuleConfig, ruleName string) string {
+const untaggedRuleSuffix = "-untagged"
+
+func testAccSecurityMonitoringRuleUntaggedConfig(ruleName string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test_untagged" {
+    name    = "%s%s"
+    message = "acceptance rule triggered"
+    enabled = false
+
+    query {
+        name            = "first"
+        query           = "does not really match much"
+        aggregation     = "count"
+        data_source     = "logs"
+        group_by_fields = ["host"]
+    }
+
+    case {
+        name      = "high case"
+        status    = "high"
+        condition = "first > 3"
+    }
+
+    options {
+        evaluation_window   = 300
+        keep_alive          = 600
+        max_signal_duration = 900
+    }
+
+    tags = ["u:tomato"]
+}
+`, ruleName, untaggedRuleSuffix)
+}
+
+func testAccDataSourceSecurityMonitoringRuleFilter(existingRuleConfig, ruleName, extraFilter string) string {
 	return existingRuleConfig + fmt.Sprintf(`
 data "datadog_security_monitoring_rules" "acceptance_test" {
     name_filter = "%s"
+    %s
 }
-`, ruleName)
-}
-
-func testAccDataSourceSecurityMonitoringRuleTagsFilter(existingRuleConfig, ruleName string) string {
-	return existingRuleConfig + fmt.Sprintf(`
-data "datadog_security_monitoring_rules" "acceptance_test" {
-    name_filter = "%s"
-    tags_filter = ["i:tomato"]
-}
-`, ruleName)
-}
-
-func testAccDataSourceSecurityMonitoringRuleUserFilter(existingRuleConfig, ruleName string) string {
-	return existingRuleConfig + fmt.Sprintf(`
-data "datadog_security_monitoring_rules" "acceptance_test" {
-    name_filter      = "%s"
-    user_only_filter = true
-}
-`, ruleName)
+`, ruleName, extraFilter)
 }
