@@ -13,6 +13,7 @@ var generatedResources = []func() resource.Resource{
 	NewDatadogDerivedMetricResource,
 	NewDatadogIntegrationDatabricksAccountResource,
 	NewDatadogIntegrationElasticCloudAccountResource,
+	NewDatadogIntegrationNebiusCloudAccountResource,
 	NewDatadogIntegrationSnowflakeAccountResource,
 	NewDatadogIntegrationTwilioAccountResource,
 }
