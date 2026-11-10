@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
@@ -32,11 +33,21 @@ func TestAccOnCallScheduleCreateAndUpdate(t *testing.T) {
 	namePrefix := "team-" + uniq
 	handlePrefix := "team-" + uniq
 
+	// The API rejects a schedule with no layer active at the current time, so dates are relative to the test clock.
+	now := clockFromContext(ctx).Now().UTC().Truncate(24 * time.Hour)
+	firstEffectiveDate := now.AddDate(0, -1, 0).Format("2006-01-02") + "T00:00:00-08:00"
+	secondEffectiveDate := now.Format(time.RFC3339)
+	endDate := now.AddDate(1, 0, 0).Add(-5 * time.Hour).Format(time.RFC3339)
+	rotationStart := now.AddDate(-1, 0, 0).Format("2006-01-02") + "T00:00:00-09:00"
+	addedLayerDate := now.AddDate(1, 0, 0).Format(time.RFC3339)
+
 	createConfig := func(effectiveDate string) string {
 		return strings.NewReplacer(
 			"USER_EMAIL", userEmail,
 			"SCHEDULE_NAME", uniq,
 			"EFFECTIVE_DATE", effectiveDate,
+			"END_DATE", endDate,
+			"ROTATION_START", rotationStart,
 			"TEAM_HANDLE", handlePrefix,
 			"TEAM_NAME", namePrefix,
 		).Replace(OnCallScheduleTest)
@@ -53,7 +64,7 @@ func TestAccOnCallScheduleCreateAndUpdate(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogOnCallScheduleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: createConfig("2025-01-01T00:00:00-08:00"),
+				Config: createConfig(firstEffectiveDate),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOnCallScheduleExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
@@ -61,12 +72,12 @@ func TestAccOnCallScheduleCreateAndUpdate(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_on_call_schedule.single_layer", "time_zone", "America/New_York"),
 					resource.TestCheckResourceAttr(
-						"datadog_on_call_schedule.single_layer", "layer.0.effective_date", "2025-01-01T00:00:00-08:00"),
+						"datadog_on_call_schedule.single_layer", "layer.0.effective_date", firstEffectiveDate),
 				),
 			},
 			// Update the effective date but the layer id must remain known (not "known after apply")
 			{
-				Config: createConfig("2025-02-01T00:00:00Z"),
+				Config: createConfig(secondEffectiveDate),
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
 						plancheck.ExpectKnownValue(
@@ -79,23 +90,23 @@ func TestAccOnCallScheduleCreateAndUpdate(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOnCallScheduleExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_on_call_schedule.single_layer", "layer.0.effective_date", "2025-02-01T00:00:00Z"),
+						"datadog_on_call_schedule.single_layer", "layer.0.effective_date", secondEffectiveDate),
 				),
 			},
 			// Add a layer on first position
 			{
-				Config: addLayer(createConfig("2025-02-01T00:00:00Z"), `
+				Config: addLayer(createConfig(secondEffectiveDate), fmt.Sprintf(`
 					layer {
-						effective_date = "2026-01-01T00:00:00Z"
+						effective_date = "%[1]s"
     					interval {
       						days = 2
     					}
-    					rotation_start = "2026-01-01T00:00:00Z"
+    					rotation_start = "%[1]s"
     					users = [null]
     					name = "Added Layer"
 						time_zone = "Asia/Tokyo"
 					}
-				`),
+				`, addedLayerDate)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOnCallScheduleExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
@@ -106,7 +117,7 @@ func TestAccOnCallScheduleCreateAndUpdate(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_on_call_schedule.single_layer", "layer.1.name", "Primary On-Call Layer"),
 					resource.TestCheckResourceAttr(
-						"datadog_on_call_schedule.single_layer", "layer.1.effective_date", "2025-02-01T00:00:00Z"),
+						"datadog_on_call_schedule.single_layer", "layer.1.effective_date", secondEffectiveDate),
 				),
 			},
 		},
