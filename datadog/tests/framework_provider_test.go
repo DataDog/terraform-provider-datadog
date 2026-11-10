@@ -234,8 +234,9 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
 	fwprovider.EnableGeneratedUnstableOperations(config)
 
-	if ctx.Value("http_retry_enable") == true {
-		config.RetryConfiguration.EnableRetry = true
+	// Invalid retry env vars fail test setup instead of silently changing retry behavior.
+	if err := utils.ApplyHTTPRetryConfigFromEnv(ctx.Value("http_retry_enable") == true, config); err != nil {
+		panic(err)
 	}
 	config.Debug = isDebug()
 	config.HTTPClient = httpClient

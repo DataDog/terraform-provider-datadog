@@ -67,6 +67,7 @@ datadog/**/*datadog_org_connection*               @DataDog/api-reliability @Data
 datadog/**/*datadog_org_group*                    @DataDog/api-reliability @DataDog/org-management
 datadog/**/*datadog_reference_table*              @DataDog/api-reliability @DataDog/redapl-experiences
 datadog/**/*datadog_action_connection*            @DataDog/api-reliability @DataDog/action-platform
+datadog/**/action_connection_*                   @DataDog/api-reliability @DataDog/action-platform
 datadog/**/*datadog_action_execution_policy*      @DataDog/api-reliability @DataDog/action-platform
 datadog/**/*datadog_agentless*                    @DataDog/api-reliability @DataDog/k9-agentless
 datadog/**/*datadog_app_key_registration*         @DataDog/api-reliability @DataDog/action-platform @DataDog/workflow-automation-backend

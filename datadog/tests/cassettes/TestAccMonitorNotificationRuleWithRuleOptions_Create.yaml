@@ -1,0 +1,109 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 268
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"filter":{"tags":["env:tf-TestAccMonitorNotificationRuleWithRuleOptions_Create-local-1793903115","host:abc"]},"name":"A notification rule name","recipients":["slack-foo"],"rule_options":{"is_threaded":true}},"type":"monitor-notification-rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/monitor/notification_rule
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"monitor-notification-rule","id":"382c73e5-3218-444e-bab7-29f89ba65dd9","attributes":{"name":"A notification rule name","created_at":"2026-11-05T18:25:17.616926+00:00","modified_at":"2026-11-05T18:25:17.641015+00:00","filter":{"tags":["env:tf-TestAccMonitorNotificationRuleWithRuleOptions_Create-local-1793903115","host:abc"]},"recipients":["slack-foo"],"rule_options":{"is_threaded":true}},"relationships":{"created_by":{"data":{"type":"users","id":"8c875225-6d15-408c-9dcc-dd539cd02fa5"}}}},"included":[{"type":"users","id":"8c875225-6d15-408c-9dcc-dd539cd02fa5","attributes":{"uuid":"8c875225-6d15-408c-9dcc-dd539cd02fa5","name":"Shane Yuan","handle":"shane.yuan@datadoghq.com","created_at":"2026-10-30T20:27:13.026594+00:00","modified_at":"2026-10-30T20:27:25.236531+00:00","email":"shane.yuan@datadoghq.com","icon":"https://secure.gravatar.com/avatar/188fa6df65bb6c77c82677908094fbdb?s=48&d=retro","title":null,"verified":true,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Active","last_login_time":null}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 189.305791ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/monitor/notification_rule/382c73e5-3218-444e-bab7-29f89ba65dd9
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"monitor-notification-rule","id":"382c73e5-3218-444e-bab7-29f89ba65dd9","attributes":{"name":"A notification rule name","created_at":"2026-11-05T18:25:17.616926+00:00","modified_at":"2026-11-05T18:25:17.641015+00:00","filter":{"tags":["env:tf-TestAccMonitorNotificationRuleWithRuleOptions_Create-local-1793903115","host:abc"]},"recipients":["slack-foo"],"rule_options":{"is_threaded":true}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 69.197417ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/monitor/notification_rule/382c73e5-3218-444e-bab7-29f89ba65dd9
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 169.726834ms

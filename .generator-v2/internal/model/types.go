@@ -865,6 +865,10 @@ type SDKCall struct {
 	// Rule: last path component of the 2xx response schema $ref. Empty when the
 	// operation returns no body or its response schema is unnamed.
 	GoResponseType string
+	// GoResponseDataType names the object returned by the response envelope's
+	// GetData method. Distinct CRUD response wrappers can share this SDK type.
+	// Empty for absent, unnamed, or non-object data members.
+	GoResponseDataType string
 	// HasResponseBody distinguishes unnamed response bodies from bodyless calls.
 	HasResponseBody bool
 	// GoRequestDataType is the SDK type of the request body's JSON:API "data"

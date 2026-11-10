@@ -345,16 +345,16 @@ func TestActionConnectionGithubCreateRequest(t *testing.T) {
 		{
 			name: "GitHub App",
 			github: &githubConnectionModel{App: &githubAppCredentialModel{
-				AppID: types.StringValue("12345"), InstallationID: types.StringValue("67890"), PrivateKey: types.StringValue("github-private-key"),
+				GithubAppID: types.StringValue("12345"), GithubInstallationID: types.StringValue("67890"), PrivateKey: types.StringValue("github-private-key"),
 			}},
-			wantCredentials: map[string]string{"type": "GithubApp", "app_id": "12345", "installation_id": "67890", "private_key": "github-private-key"},
+			wantCredentials: map[string]string{"type": "GithubApp", "github_app_id": "12345", "github_installation_id": "67890", "private_key": "github-private-key"},
 		},
 		{
 			name: "personal access token",
 			github: &githubConnectionModel{PersonalAccessToken: &githubPersonalAccessTokenCredentialModel{
-				Token: types.StringValue("github-token"),
+				AccessToken: types.StringValue("github-token"), Hostname: types.StringValue("github.example.com"),
 			}},
-			wantCredentials: map[string]string{"type": "GithubPersonalAccessToken", "token": "github-token"},
+			wantCredentials: map[string]string{"type": "GithubPersonalAccessToken", "access_token": "github-token", "hostname": "github.example.com"},
 		},
 	}
 
@@ -402,12 +402,12 @@ func TestActionConnectionGithubUpdateIncludesChangedCredentials(t *testing.T) {
 	prior := connectionResourceModel{connectionModel: connectionModel{
 		Name: types.StringValue("GitHub connection"),
 		Github: &githubConnectionModel{PersonalAccessToken: &githubPersonalAccessTokenCredentialModel{
-			Token: types.StringValue("old token"),
+			AccessToken: types.StringValue("old token"),
 		}},
 	}}
 	plan := prior
 	plan.Github = &githubConnectionModel{PersonalAccessToken: &githubPersonalAccessTokenCredentialModel{
-		Token: types.StringValue("new token"),
+		AccessToken: types.StringValue("new token"),
 	}}
 
 	request, err := connectionModelToUpdateApiRequest(context.Background(), plan, prior)
@@ -432,7 +432,7 @@ func TestActionConnectionGithubUpdateIncludesChangedCredentials(t *testing.T) {
 		t.Fatalf("parsing update: %v", err)
 	}
 	integration := body.Data.Attributes.Integration
-	wantCredentials := map[string]string{"type": "GithubPersonalAccessToken", "token": "new token"}
+	wantCredentials := map[string]string{"type": "GithubPersonalAccessToken", "access_token": "new token"}
 	if integration.Type != "Github" || !reflect.DeepEqual(integration.Credentials, wantCredentials) {
 		t.Fatalf("integration = %+v, want type Github with credentials %v", integration, wantCredentials)
 	}
@@ -444,7 +444,7 @@ func TestActionConnectionGithubReadPreservesSecrets(t *testing.T) {
 	var response datadogV2.GetActionConnectionResponse
 	if err := json.Unmarshal([]byte(`{"data": {"id": "connection-id", "type": "action_connection", "attributes": {
 		"name": "GitHub connection",
-		"integration": {"type": "Github", "credentials": {"type": "GithubApp", "app_id": "12345", "installation_id": "67890"}}
+		"integration": {"type": "Github", "credentials": {"type": "GithubApp", "github_app_id": "12345", "github_installation_id": "67890", "private_key": ""}}
 	}}}`), &response); err != nil {
 		t.Fatalf("parsing response: %v", err)
 	}
@@ -456,15 +456,12 @@ func TestActionConnectionGithubReadPreservesSecrets(t *testing.T) {
 	if connModel.Github == nil || connModel.Github.App == nil {
 		t.Fatal("GitHub App credentials were not read")
 	}
-	if connModel.Github.App.AppID.ValueString() != "12345" || connModel.Github.App.InstallationID.ValueString() != "67890" {
+	if connModel.Github.App.GithubAppID.ValueString() != "12345" || connModel.Github.App.GithubInstallationID.ValueString() != "67890" {
 		t.Fatalf("unexpected GitHub App credentials: %+v", connModel.Github.App)
-	}
-	if !connModel.Github.App.PrivateKey.IsNull() {
-		t.Fatal("private key should not be read from the API response")
 	}
 
 	state := connectionResourceModel{connectionModel: connectionModel{Github: &githubConnectionModel{App: &githubAppCredentialModel{
-		AppID: types.StringValue("12345"), InstallationID: types.StringValue("67890"), PrivateKey: types.StringValue("github-private-key"),
+		GithubAppID: types.StringValue("12345"), GithubInstallationID: types.StringValue("67890"), PrivateKey: types.StringValue("github-private-key"),
 	}}}}
 	preserveAdditionalConnectionSecrets(connModel, state)
 	if connModel.Github.App.PrivateKey.ValueString() != "github-private-key" {

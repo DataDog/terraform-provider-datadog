@@ -90,7 +90,7 @@ type destinationModel struct {
 }
 
 type datadogMetricsDestinationModel struct {
-	// No additional fields needed - only id and inputs (defined in destinationModel)
+	Buffer []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type httpClientDestinationModel struct {
@@ -2310,8 +2310,12 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 									},
 									"datadog_metrics": schema.ListNestedBlock{
-										Description:  "The `datadog_metrics` destination forwards metrics to Datadog.",
-										NestedObject: schema.NestedBlockObject{},
+										Description: "The `datadog_metrics` destination forwards metrics to Datadog.",
+										NestedObject: schema.NestedBlockObject{
+											Blocks: map[string]schema.Block{
+												"buffer": observability_pipeline.BufferOptionsSchema(),
+											},
+										},
 									},
 									"http_client": schema.ListNestedBlock{
 										Description: "The `http_client` destination sends data to an HTTP endpoint.",
@@ -5565,7 +5569,16 @@ func flattenDatadogMetricsDestination(ctx context.Context, src *datadogV2.Observ
 	if src == nil {
 		return nil
 	}
-	return &datadogMetricsDestinationModel{}
+	out := &datadogMetricsDestinationModel{}
+
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := observability_pipeline.FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			out.Buffer = []observability_pipeline.BufferOptionsModel{*outBuffer}
+		}
+	}
+
+	return out
 }
 
 func expandDatadogMetricsDestination(ctx context.Context, dest *destinationModel, src *datadogMetricsDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
@@ -5574,6 +5587,14 @@ func expandDatadogMetricsDestination(ctx context.Context, dest *destinationModel
 	var inputs []string
 	dest.Inputs.ElementsAs(ctx, &inputs, false)
 	d.SetInputs(inputs)
+
+	if len(src.Buffer) > 0 {
+		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			d.SetBuffer(*buffer)
+		}
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineDatadogMetricsDestination: d,
 	}

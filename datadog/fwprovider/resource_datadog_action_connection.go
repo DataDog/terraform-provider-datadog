@@ -38,8 +38,6 @@ var (
 	actionConnectionTagPattern = regexp.MustCompile(`^[A-Za-z0-9._/-]+:[A-Za-z0-9._/-]+$`)
 )
 
-const actionConnectionGithubIntegrationType = "Github"
-
 type actionConnectionTagValidator struct{}
 
 func (actionConnectionTagValidator) Description(_ context.Context) string {
@@ -81,34 +79,35 @@ type connectionDatasourceModel struct {
 }
 
 type connectionModel struct {
-	ID           types.String                 `tfsdk:"id"`
-	Name         types.String                 `tfsdk:"name"`
-	Tags         types.Set                    `tfsdk:"tags"`
-	AWS          *awsConnectionModel          `tfsdk:"aws"`
-	Anthropic    *apiTokenConnectionModel     `tfsdk:"anthropic"`
-	Asana        *asanaConnectionModel        `tfsdk:"asana"`
-	Azure        *azureConnectionModel        `tfsdk:"azure"`
-	CircleCI     *apiTokenConnectionModel     `tfsdk:"circle_ci"`
-	Clickup      *apiTokenConnectionModel     `tfsdk:"clickup"`
-	Cloudflare   *cloudflareConnectionModel   `tfsdk:"cloudflare"`
-	ConfigCat    *configCatConnectionModel    `tfsdk:"config_cat"`
-	Datadog      *datadogConnectionModel      `tfsdk:"datadog"`
-	Fastly       *apiKeyConnectionModel       `tfsdk:"fastly"`
-	Freshservice *freshserviceConnectionModel `tfsdk:"freshservice"`
-	GCP          *gcpConnectionModel          `tfsdk:"gcp"`
-	Gemini       *apiKeyConnectionModel       `tfsdk:"gemini"`
-	Github       *githubConnectionModel       `tfsdk:"github"`
-	Gitlab       *apiTokenConnectionModel     `tfsdk:"gitlab"`
-	GreyNoise    *apiKeyConnectionModel       `tfsdk:"grey_noise"`
-	HTTP         *httpConnectionModel         `tfsdk:"http"`
-	LaunchDarkly *apiTokenConnectionModel     `tfsdk:"launch_darkly"`
-	Notion       *apiTokenConnectionModel     `tfsdk:"notion"`
-	Okta         *oktaConnectionModel         `tfsdk:"okta"`
-	OpenAI       *apiTokenConnectionModel     `tfsdk:"openai"`
-	ServiceNow   *serviceNowConnectionModel   `tfsdk:"service_now"`
-	Split        *apiKeyConnectionModel       `tfsdk:"split"`
-	Statsig      *apiKeyConnectionModel       `tfsdk:"statsig"`
-	VirusTotal   *apiKeyConnectionModel       `tfsdk:"virus_total"`
+	ExternalSecretsManager *actionConnectionExternalSecretsManagerModel `tfsdk:"external_secrets_manager"`
+	ID                     types.String                                 `tfsdk:"id"`
+	Name                   types.String                                 `tfsdk:"name"`
+	Tags                   types.Set                                    `tfsdk:"tags"`
+	AWS                    *awsConnectionModel                          `tfsdk:"aws"`
+	Anthropic              *apiTokenConnectionModel                     `tfsdk:"anthropic"`
+	Asana                  *asanaConnectionModel                        `tfsdk:"asana"`
+	Azure                  *azureConnectionModel                        `tfsdk:"azure"`
+	CircleCI               *apiTokenConnectionModel                     `tfsdk:"circle_ci"`
+	Clickup                *apiTokenConnectionModel                     `tfsdk:"clickup"`
+	Cloudflare             *cloudflareConnectionModel                   `tfsdk:"cloudflare"`
+	ConfigCat              *configCatConnectionModel                    `tfsdk:"config_cat"`
+	Datadog                *datadogConnectionModel                      `tfsdk:"datadog"`
+	Fastly                 *apiKeyConnectionModel                       `tfsdk:"fastly"`
+	Freshservice           *freshserviceConnectionModel                 `tfsdk:"freshservice"`
+	GCP                    *gcpConnectionModel                          `tfsdk:"gcp"`
+	Gemini                 *apiKeyConnectionModel                       `tfsdk:"gemini"`
+	Github                 *githubConnectionModel                       `tfsdk:"github"`
+	Gitlab                 *apiTokenConnectionModel                     `tfsdk:"gitlab"`
+	GreyNoise              *apiKeyConnectionModel                       `tfsdk:"grey_noise"`
+	HTTP                   *httpConnectionModel                         `tfsdk:"http"`
+	LaunchDarkly           *apiTokenConnectionModel                     `tfsdk:"launch_darkly"`
+	Notion                 *apiTokenConnectionModel                     `tfsdk:"notion"`
+	Okta                   *oktaConnectionModel                         `tfsdk:"okta"`
+	OpenAI                 *apiTokenConnectionModel                     `tfsdk:"openai"`
+	ServiceNow             *serviceNowConnectionModel                   `tfsdk:"service_now"`
+	Split                  *apiKeyConnectionModel                       `tfsdk:"split"`
+	Statsig                *apiKeyConnectionModel                       `tfsdk:"statsig"`
+	VirusTotal             *apiKeyConnectionModel                       `tfsdk:"virus_total"`
 }
 
 type awsConnectionModel struct {
@@ -135,9 +134,10 @@ type httpTokenAuthConnectionModel struct {
 }
 
 type httpConnectionTokenModel struct {
-	Type  types.String `tfsdk:"type"`
-	Name  types.String `tfsdk:"name"`
-	Value types.String `tfsdk:"value"`
+	Type                   types.String                             `tfsdk:"type"`
+	Name                   types.String                             `tfsdk:"name"`
+	Value                  types.String                             `tfsdk:"value"`
+	ValueAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"value_aws_secrets_manager"`
 }
 
 type httpConnectionHeaderModel struct {
@@ -160,7 +160,8 @@ type apiTokenConnectionModel struct {
 }
 
 type apiTokenCredentialModel struct {
-	APIToken types.String `tfsdk:"api_token"`
+	APIToken                  types.String                             `tfsdk:"api_token"`
+	APITokenAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"api_token_aws_secrets_manager"`
 }
 
 type apiKeyConnectionModel struct {
@@ -168,7 +169,8 @@ type apiKeyConnectionModel struct {
 }
 
 type apiKeyCredentialModel struct {
-	APIKey types.String `tfsdk:"api_key"`
+	APIKey                  types.String                             `tfsdk:"api_key"`
+	APIKeyAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"api_key_aws_secrets_manager"`
 }
 
 type asanaConnectionModel struct {
@@ -176,7 +178,8 @@ type asanaConnectionModel struct {
 }
 
 type asanaAccessTokenCredentialModel struct {
-	AccessToken types.String `tfsdk:"access_token"`
+	AccessToken                  types.String                             `tfsdk:"access_token"`
+	AccessTokenAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"access_token_aws_secrets_manager"`
 }
 
 type azureConnectionModel struct {
@@ -196,12 +199,15 @@ type cloudflareConnectionModel struct {
 }
 
 type cloudflareAPITokenCredentialModel struct {
-	APIToken types.String `tfsdk:"api_token"`
+	APIToken                  types.String                             `tfsdk:"api_token"`
+	APITokenAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"api_token_aws_secrets_manager"`
 }
 
 type cloudflareGlobalAPITokenCredentialModel struct {
-	AuthEmail    types.String `tfsdk:"auth_email"`
-	GlobalAPIKey types.String `tfsdk:"global_api_key"`
+	AuthEmail                     types.String                             `tfsdk:"auth_email"`
+	AuthEmailAWSSecretsManager    *actionConnectionAWSSecretReferenceModel `tfsdk:"auth_email_aws_secrets_manager"`
+	GlobalAPIKey                  types.String                             `tfsdk:"global_api_key"`
+	GlobalAPIKeyAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"global_api_key_aws_secrets_manager"`
 }
 
 type configCatConnectionModel struct {
@@ -209,9 +215,12 @@ type configCatConnectionModel struct {
 }
 
 type configCatSDKKeyCredentialModel struct {
-	APIPassword types.String `tfsdk:"api_password"`
-	APIUsername types.String `tfsdk:"api_username"`
-	SDKKey      types.String `tfsdk:"sdk_key"`
+	APIPassword                  types.String                             `tfsdk:"api_password"`
+	APIPasswordAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"api_password_aws_secrets_manager"`
+	APIUsername                  types.String                             `tfsdk:"api_username"`
+	APIUsernameAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"api_username_aws_secrets_manager"`
+	SDKKey                       types.String                             `tfsdk:"sdk_key"`
+	SDKKeyAWSSecretsManager      *actionConnectionAWSSecretReferenceModel `tfsdk:"sdk_key_aws_secrets_manager"`
 }
 
 type datadogConnectionModel struct {
@@ -219,10 +228,14 @@ type datadogConnectionModel struct {
 }
 
 type datadogAPIKeyCredentialModel struct {
-	APIKey     types.String `tfsdk:"api_key"`
-	AppKey     types.String `tfsdk:"app_key"`
-	Datacenter types.String `tfsdk:"datacenter"`
-	Subdomain  types.String `tfsdk:"subdomain"`
+	APIKey                      types.String                             `tfsdk:"api_key"`
+	APIKeyAWSSecretsManager     *actionConnectionAWSSecretReferenceModel `tfsdk:"api_key_aws_secrets_manager"`
+	AppKey                      types.String                             `tfsdk:"app_key"`
+	AppKeyAWSSecretsManager     *actionConnectionAWSSecretReferenceModel `tfsdk:"app_key_aws_secrets_manager"`
+	Datacenter                  types.String                             `tfsdk:"datacenter"`
+	DatacenterAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"datacenter_aws_secrets_manager"`
+	Subdomain                   types.String                             `tfsdk:"subdomain"`
+	SubdomainAWSSecretsManager  *actionConnectionAWSSecretReferenceModel `tfsdk:"subdomain_aws_secrets_manager"`
 }
 
 type freshserviceConnectionModel struct {
@@ -230,8 +243,10 @@ type freshserviceConnectionModel struct {
 }
 
 type freshserviceAPIKeyCredentialModel struct {
-	APIKey types.String `tfsdk:"api_key"`
-	Domain types.String `tfsdk:"domain"`
+	APIKey                  types.String                             `tfsdk:"api_key"`
+	APIKeyAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"api_key_aws_secrets_manager"`
+	Domain                  types.String                             `tfsdk:"domain"`
+	DomainAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"domain_aws_secrets_manager"`
 }
 
 type gcpConnectionModel struct {
@@ -239,8 +254,10 @@ type gcpConnectionModel struct {
 }
 
 type gcpServiceAccountCredentialModel struct {
-	PrivateKey          types.String `tfsdk:"private_key"`
-	ServiceAccountEmail types.String `tfsdk:"service_account_email"`
+	PrivateKey                           types.String                             `tfsdk:"private_key"`
+	PrivateKeyAWSSecretsManager          *actionConnectionAWSSecretReferenceModel `tfsdk:"private_key_aws_secrets_manager"`
+	ServiceAccountEmail                  types.String                             `tfsdk:"service_account_email"`
+	ServiceAccountEmailAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"service_account_email_aws_secrets_manager"`
 }
 
 type githubConnectionModel struct {
@@ -249,13 +266,21 @@ type githubConnectionModel struct {
 }
 
 type githubAppCredentialModel struct {
-	AppID          types.String `tfsdk:"app_id"`
-	InstallationID types.String `tfsdk:"installation_id"`
-	PrivateKey     types.String `tfsdk:"private_key"`
+	GithubAppID                           types.String                             `tfsdk:"github_app_id"`
+	GithubAppIDAWSSecretsManager          *actionConnectionAWSSecretReferenceModel `tfsdk:"github_app_id_aws_secrets_manager"`
+	GithubInstallationID                  types.String                             `tfsdk:"github_installation_id"`
+	GithubInstallationIDAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"github_installation_id_aws_secrets_manager"`
+	Hostname                              types.String                             `tfsdk:"hostname"`
+	HostnameAWSSecretsManager             *actionConnectionAWSSecretReferenceModel `tfsdk:"hostname_aws_secrets_manager"`
+	PrivateKey                            types.String                             `tfsdk:"private_key"`
+	PrivateKeyAWSSecretsManager           *actionConnectionAWSSecretReferenceModel `tfsdk:"private_key_aws_secrets_manager"`
 }
 
 type githubPersonalAccessTokenCredentialModel struct {
-	Token types.String `tfsdk:"token"`
+	AccessToken                  types.String                             `tfsdk:"access_token"`
+	AccessTokenAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"access_token_aws_secrets_manager"`
+	Hostname                     types.String                             `tfsdk:"hostname"`
+	HostnameAWSSecretsManager    *actionConnectionAWSSecretReferenceModel `tfsdk:"hostname_aws_secrets_manager"`
 }
 
 type oktaConnectionModel struct {
@@ -263,8 +288,10 @@ type oktaConnectionModel struct {
 }
 
 type oktaAPITokenCredentialModel struct {
-	APIToken types.String `tfsdk:"api_token"`
-	Domain   types.String `tfsdk:"domain"`
+	APIToken                  types.String                             `tfsdk:"api_token"`
+	APITokenAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"api_token_aws_secrets_manager"`
+	Domain                    types.String                             `tfsdk:"domain"`
+	DomainAWSSecretsManager   *actionConnectionAWSSecretReferenceModel `tfsdk:"domain_aws_secrets_manager"`
 }
 
 type serviceNowConnectionModel struct {
@@ -272,9 +299,12 @@ type serviceNowConnectionModel struct {
 }
 
 type serviceNowBasicAuthCredentialModel struct {
-	Instance types.String `tfsdk:"instance"`
-	Password types.String `tfsdk:"password"`
-	Username types.String `tfsdk:"username"`
+	Instance                  types.String                             `tfsdk:"instance"`
+	InstanceAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"instance_aws_secrets_manager"`
+	Password                  types.String                             `tfsdk:"password"`
+	PasswordAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"password_aws_secrets_manager"`
+	Username                  types.String                             `tfsdk:"username"`
+	UsernameAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"username_aws_secrets_manager"`
 }
 
 type actionConnectionFieldSpec struct {
@@ -416,14 +446,18 @@ var additionalActionConnectionSpecs = []actionConnectionIntegrationSpec{
 			{
 				Name: "app", Description: "Configuration for GitHub App authentication",
 				Fields: []actionConnectionFieldSpec{
-					{Name: "app_id", Description: "GitHub App ID", Required: true},
-					{Name: "installation_id", Description: "GitHub App installation ID", Required: true},
-					{Name: "private_key", Description: "GitHub App private key in PEM format", Sensitive: true, Required: true},
+					{Name: "github_app_id", Description: "Numeric ID of the GitHub App", Required: true},
+					{Name: "github_installation_id", Description: "Installation ID of the GitHub App", Required: true},
+					{Name: "hostname", Description: "Hostname of the GitHub Enterprise Server. Omit for github.com"},
+					{Name: "private_key", Description: "PEM-encoded RSA private key for the GitHub App", Sensitive: true, Required: true},
 				},
 			},
 			{
 				Name: "personal_access_token", Description: "Configuration for GitHub personal access token authentication",
-				Fields: []actionConnectionFieldSpec{{Name: "token", Description: "GitHub personal access token", Sensitive: true, Required: true}},
+				Fields: []actionConnectionFieldSpec{
+					{Name: "access_token", Description: "GitHub personal access token", Sensitive: true, Required: true},
+					{Name: "hostname", Description: "Hostname of the GitHub Enterprise Server. Omit for github.com"},
+				},
 			},
 		},
 	},
@@ -578,10 +612,11 @@ func (r *actionConnectionResource) ValidateConfig(ctx context.Context, request r
 	}
 
 	validateAdditionalConnectionCredentials(conn, response)
+	validateActionConnectionSecretReferences(conn, response)
 }
 
 func validateAdditionalConnectionCredentials(conn connectionResourceModel, response *resource.ValidateConfigResponse) {
-	connValue := reflect.ValueOf(conn)
+	connValue := reflect.ValueOf(conn.connectionModel)
 	for _, integrationSpec := range additionalActionConnectionSpecs {
 		integrationField, ok := lookupTFSDKField(connValue, integrationSpec.Name)
 		if !ok || integrationField.IsNil() {
@@ -620,7 +655,7 @@ func validateAdditionalConnectionCredentials(conn connectionResourceModel, respo
 			}
 			// A null value means the field was omitted. Unknown values (e.g. references
 			// resolved at apply time) can't be validated here, so we let them through.
-			if value, ok := fieldValue.Interface().(types.String); ok && value.IsNull() {
+			if value, ok := fieldValue.Interface().(types.String); ok && value.IsNull() && !actionConnectionHasReference(credentialValues[credentialSpec.Name], fieldSpec.Name) {
 				missingFields = append(missingFields, fieldSpec.Name)
 			}
 		}
@@ -673,7 +708,7 @@ func (r *actionConnectionResource) Metadata(_ context.Context, request resource.
 
 func (r *actionConnectionResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "A connection that can be used in Actions, including in the Workflow Automation and App Builder products. This resource requires a [registered application key](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration).",
+		Description: "A connection that can be used in Actions, including in the Workflow Automation and App Builder products. This resource creates connections that run in Datadog's cloud. AWS Secrets Manager references are available for supported token-based credentials and HTTP authentication token values. AWS AssumeRole credentials, Azure credentials, and HTTP request metadata don't support AWS Secrets Manager references and must use literal values. This resource requires a [registered application key](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/app_key_registration).",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"name": schema.StringAttribute{
@@ -842,6 +877,7 @@ func (r *actionConnectionResource) Schema(_ context.Context, _ resource.SchemaRe
 	for _, integrationSpec := range additionalActionConnectionSpecs {
 		response.Schema.Blocks[integrationSpec.Name] = actionConnectionResourceBlock(integrationSpec)
 	}
+	addActionConnectionAWSSecretSchema(&response.Schema)
 }
 
 func actionConnectionResourceBlock(integrationSpec actionConnectionIntegrationSpec) schema.Block {
@@ -880,11 +916,22 @@ func actionConnectionResourceBlock(integrationSpec actionConnectionIntegrationSp
 	}
 }
 
-func replaceActionConnectionIfFieldRemoved(_ context.Context, request planmodifier.StringRequest, response *stringplanmodifier.RequiresReplaceIfFuncResponse) {
+func replaceActionConnectionIfFieldRemoved(ctx context.Context, request planmodifier.StringRequest, response *stringplanmodifier.RequiresReplaceIfFuncResponse) {
 	if request.StateValue.IsNull() || request.StateValue.IsUnknown() {
 		return
 	}
 	response.RequiresReplace = request.PlanValue.IsNull()
+	if response.RequiresReplace {
+		steps := request.Path.Steps()
+		name := string(steps[len(steps)-1].(path.PathStepAttributeName))
+		referencePath := request.Path.ParentPath().AtName(name + actionConnectionAWSSecretSuffix)
+		if _, diags := request.Plan.Schema.AttributeAtPath(ctx, referencePath); diags.HasError() {
+			return
+		}
+		var reference types.Object
+		response.Diagnostics.Append(request.Plan.GetAttribute(ctx, referencePath, &reference)...)
+		response.RequiresReplace = reference.IsNull()
+	}
 }
 
 func (r *actionConnectionResource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
@@ -1096,6 +1143,12 @@ func apiResponseToConnectionModel(ctx context.Context, connection datadogV2.GetA
 	connModel.Name = types.StringValue(attributes.Name)
 	connModel.Tags = fwutils.ToTerraformSetString(ctx, attributes.GetTagsOk)
 	connModel.EffectiveTags = connModel.Tags
+	if settings, ok := attributes.GetExternalSecretsManagerOk(); ok && settings != nil {
+		connModel.ExternalSecretsManager = &actionConnectionExternalSecretsManagerModel{
+			ConnectionID: types.StringValue(settings.ConnectionId),
+			Region:       types.StringValue(settings.Region),
+		}
+	}
 
 	if attributes.Integration.AWSIntegration != nil {
 		awsAttr := attributes.Integration.AWSIntegration
@@ -1117,9 +1170,20 @@ func apiResponseToConnectionModel(ctx context.Context, connection datadogV2.GetA
 		tokens := []*httpConnectionTokenModel{}
 		for _, token := range httpAttr.Credentials.HTTPTokenAuth.Tokens {
 			tokens = append(tokens, &httpConnectionTokenModel{
-				Type: types.StringValue(string(token.Type)),
-				Name: types.StringValue(token.Name),
+				Type:                   types.StringValue(string(token.Type)),
+				Name:                   types.StringValue(token.Name),
+				ValueAWSSecretsManager: actionConnectionAWSSecretReferenceFromAPI(token.Value.ActionConnectionAWSSecretsManagerReference),
 			})
+		}
+		if len(httpAttr.Credentials.HTTPTokenAuth.HttpTokens) > 0 {
+			tokens = nil
+			for _, token := range httpAttr.Credentials.HTTPTokenAuth.HttpTokens {
+				tokens = append(tokens, &httpConnectionTokenModel{
+					Type:                   types.StringValue("SECRET"),
+					Name:                   types.StringValue(token.Name),
+					ValueAWSSecretsManager: actionConnectionAWSSecretReferenceFromAPI(token.Value.ActionConnectionAWSSecretsManagerReference),
+				})
+			}
 		}
 		if len(tokens) > 0 {
 			tokenAuth.Tokens = tokens
@@ -1178,8 +1242,8 @@ func setAdditionalConnectionModelFromAPI(connModel *connectionResourceModel, int
 	}
 
 	var integrationData struct {
-		Type        string                 `json:"type"`
-		Credentials map[string]interface{} `json:"credentials"`
+		Type        string                     `json:"type"`
+		Credentials map[string]json.RawMessage `json:"credentials"`
 	}
 	if err := json.Unmarshal(integrationJSON, &integrationData); err != nil {
 		return fmt.Errorf("could not deserialize connection integration: %w", err)
@@ -1214,7 +1278,7 @@ func setAdditionalConnectionModelFromAPI(connModel *connectionResourceModel, int
 		}}
 	case "Cloudflare":
 		connModel.Cloudflare = &cloudflareConnectionModel{}
-		credentialType, _ := credential["type"].(string)
+		credentialType := actionConnectionCredentialString(credential, "type").ValueString()
 		switch credentialType {
 		case "CloudflareAPIToken":
 			connModel.Cloudflare.APIToken = &cloudflareAPITokenCredentialModel{
@@ -1259,19 +1323,21 @@ func setAdditionalConnectionModelFromAPI(connModel *connectionResourceModel, int
 		connModel.Gemini = &apiKeyConnectionModel{APIKey: &apiKeyCredentialModel{
 			APIKey: actionConnectionCredentialString(credential, "api_key"),
 		}}
-	case actionConnectionGithubIntegrationType:
+	case "Github":
 		connModel.Github = &githubConnectionModel{}
-		credentialType, _ := credential["type"].(string)
+		credentialType := actionConnectionCredentialString(credential, "type").ValueString()
 		switch credentialType {
 		case "GithubApp":
 			connModel.Github.App = &githubAppCredentialModel{
-				AppID:          actionConnectionCredentialString(credential, "app_id"),
-				InstallationID: actionConnectionCredentialString(credential, "installation_id"),
-				PrivateKey:     actionConnectionCredentialString(credential, "private_key"),
+				GithubAppID:          actionConnectionCredentialString(credential, "github_app_id"),
+				GithubInstallationID: actionConnectionCredentialString(credential, "github_installation_id"),
+				Hostname:             actionConnectionCredentialString(credential, "hostname"),
+				PrivateKey:           actionConnectionCredentialString(credential, "private_key"),
 			}
 		case "GithubPersonalAccessToken":
 			connModel.Github.PersonalAccessToken = &githubPersonalAccessTokenCredentialModel{
-				Token: actionConnectionCredentialString(credential, "token"),
+				AccessToken: actionConnectionCredentialString(credential, "access_token"),
+				Hostname:    actionConnectionCredentialString(credential, "hostname"),
 			}
 		default:
 			return fmt.Errorf("unsupported GitHub credential type %q", credentialType)
@@ -1323,21 +1389,24 @@ func setAdditionalConnectionModelFromAPI(connModel *connectionResourceModel, int
 		return fmt.Errorf("unsupported connection integration type %q", integrationData.Type)
 	}
 
-	return nil
+	return readActionConnectionAWSSecretReferences(connModel, credential)
 }
 
-func actionConnectionCredentialString(credential map[string]interface{}, name string) types.String {
-	value, ok := credential[name].(string)
-	if !ok {
+func actionConnectionCredentialString(credential map[string]json.RawMessage, name string) types.String {
+	var value *string
+	if err := json.Unmarshal(credential[name], &value); err != nil {
 		return types.StringNull()
 	}
-	return types.StringValue(value)
+	return types.StringPointerValue(value)
 }
 
 func connectionModelToCreateApiRequest(ctx context.Context, connectionModel connectionResourceModel) (*datadogV2.CreateActionConnectionRequest, error) {
 	attributes := datadogV2.NewActionConnectionAttributesWithDefaults()
 	attributes.SetName(connectionModel.Name.ValueString())
 	setActionConnectionTags(ctx, connectionModel.EffectiveTags, attributes.SetTags)
+	if connectionModel.ExternalSecretsManager != nil {
+		attributes.SetExternalSecretsManager(actionConnectionExternalSettings(connectionModel.ExternalSecretsManager))
+	}
 
 	if connectionModel.AWS != nil {
 		assumeRoleParams := datadogV2.NewAWSAssumeRole(
@@ -1364,7 +1433,7 @@ func connectionModelToCreateApiRequest(ctx context.Context, connectionModel conn
 				return nil, err
 			}
 
-			tokenModel := datadogV2.NewHTTPToken(token.Name.ValueString(), *tokenType, token.Value.ValueString())
+			tokenModel := datadogV2.NewHTTPToken(token.Name.ValueString(), *tokenType, actionConnectionValue(token.Value, token.ValueAWSSecretsManager))
 			httpTokenAuth.Tokens = append(httpTokenAuth.Tokens, *tokenModel)
 		}
 
@@ -1432,6 +1501,9 @@ func setActionConnectionTags(ctx context.Context, tags types.Set, set func([]str
 func connectionModelToUpdateApiRequest(ctx context.Context, plan, oldState connectionResourceModel) (*datadogV2.UpdateActionConnectionRequest, error) {
 	attributes := datadogV2.NewActionConnectionAttributesUpdate()
 	attributes.SetName(plan.Name.ValueString())
+	if plan.ExternalSecretsManager != nil {
+		attributes.SetExternalSecretsManager(actionConnectionExternalSettings(plan.ExternalSecretsManager))
+	}
 	if !plan.EffectiveTags.Equal(oldState.EffectiveTags) {
 		setActionConnectionTags(ctx, plan.EffectiveTags, attributes.SetTags)
 	}
@@ -1473,7 +1545,7 @@ func connectionModelToUpdateApiRequest(ctx context.Context, plan, oldState conne
 				if err != nil {
 					return nil, err
 				}
-				tokenModel := datadogV2.NewHTTPTokenUpdate(token.Name.ValueString(), *tokenType, token.Value.ValueString())
+				tokenModel := datadogV2.NewHTTPTokenUpdate(token.Name.ValueString(), *tokenType, actionConnectionValue(token.Value, token.ValueAWSSecretsManager))
 				httpTokenAuth.Tokens = append(httpTokenAuth.Tokens, *tokenModel)
 			}
 
@@ -1557,7 +1629,7 @@ func additionalCreateActionConnectionIntegration(connectionModel connectionResou
 	if err := json.Unmarshal(integrationJSON, &integration); err != nil {
 		return nil, fmt.Errorf("could not build connection integration: %w", err)
 	}
-	if integration.UnparsedObject != nil && !actionConnectionIntegrationWithoutClientModel(integrationData) {
+	if integration.UnparsedObject != nil {
 		return nil, fmt.Errorf("could not build connection integration for the configured credential type")
 	}
 	return &integration, nil
@@ -1577,19 +1649,13 @@ func additionalUpdateActionConnectionIntegration(connectionModel connectionResou
 	if err := json.Unmarshal(integrationJSON, &integration); err != nil {
 		return nil, fmt.Errorf("could not build connection integration update: %w", err)
 	}
-	if integration.UnparsedObject != nil && !actionConnectionIntegrationWithoutClientModel(integrationData) {
+	if integration.UnparsedObject != nil {
 		return nil, fmt.Errorf("could not build connection integration update for the configured credential type")
 	}
 	return &integration, nil
 }
 
-// The Datadog API client does not model GitHub connections yet, so their payload is sent as-is
-// through the integration's UnparsedObject.
-func actionConnectionIntegrationWithoutClientModel(integrationData map[string]interface{}) bool {
-	return integrationData["type"] == actionConnectionGithubIntegrationType
-}
-
-func additionalActionConnectionIntegrationData(connectionModel connectionResourceModel) (map[string]interface{}, error) {
+func additionalActionConnectionLiteralIntegrationData(connectionModel connectionResourceModel) (map[string]interface{}, error) {
 	switch {
 	case connectionModel.Anthropic != nil && connectionModel.Anthropic.APIKey != nil:
 		return actionConnectionIntegrationData("Anthropic", "AnthropicAPIKey", map[string]types.String{
@@ -1655,14 +1721,16 @@ func additionalActionConnectionIntegrationData(connectionModel connectionResourc
 			"api_key": connectionModel.Gemini.APIKey.APIKey,
 		}), nil
 	case connectionModel.Github != nil && connectionModel.Github.App != nil:
-		return actionConnectionIntegrationData(actionConnectionGithubIntegrationType, "GithubApp", map[string]types.String{
-			"app_id":          connectionModel.Github.App.AppID,
-			"installation_id": connectionModel.Github.App.InstallationID,
-			"private_key":     connectionModel.Github.App.PrivateKey,
+		return actionConnectionIntegrationData("Github", "GithubApp", map[string]types.String{
+			"github_app_id":          connectionModel.Github.App.GithubAppID,
+			"github_installation_id": connectionModel.Github.App.GithubInstallationID,
+			"hostname":               connectionModel.Github.App.Hostname,
+			"private_key":            connectionModel.Github.App.PrivateKey,
 		}), nil
 	case connectionModel.Github != nil && connectionModel.Github.PersonalAccessToken != nil:
-		return actionConnectionIntegrationData(actionConnectionGithubIntegrationType, "GithubPersonalAccessToken", map[string]types.String{
-			"token": connectionModel.Github.PersonalAccessToken.Token,
+		return actionConnectionIntegrationData("Github", "GithubPersonalAccessToken", map[string]types.String{
+			"access_token": connectionModel.Github.PersonalAccessToken.AccessToken,
+			"hostname":     connectionModel.Github.PersonalAccessToken.Hostname,
 		}), nil
 	case connectionModel.Gitlab != nil && connectionModel.Gitlab.APIKey != nil:
 		return actionConnectionIntegrationData("Gitlab", "GitlabAPIKey", map[string]types.String{
@@ -1745,8 +1813,8 @@ func buildHttpDeletions(plan, oldState connectionResourceModel, updateModel *dat
 	}
 
 	for _, deletedToken := range deletedTokens {
-		tokenUpdate := datadogV2.NewHTTPTokenUpdate(deletedToken.Name.ValueString(), datadogV2.TOKENTYPE_SECRET, deletedToken.Value.ValueString())
-		tokenUpdate.SetValue("")
+		tokenUpdate := datadogV2.NewHTTPTokenUpdate(deletedToken.Name.ValueString(), datadogV2.TOKENTYPE_SECRET, actionConnectionValue(types.StringValue(""), nil))
+		tokenUpdate.SetValue(actionConnectionValue(types.StringValue(""), nil))
 		tokenUpdate.SetDeleted(true)
 		updateModel.Tokens = append(updateModel.Tokens, *tokenUpdate)
 	}
@@ -1826,7 +1894,7 @@ func readConnection(authCtx context.Context, api *datadogV2.ActionConnectionApi,
 			// API returned tokens — copy values from state for matching tokens
 			for _, stateToken := range currentState.HTTP.TokenAuth.Tokens {
 				for _, responseToken := range connModel.HTTP.TokenAuth.Tokens {
-					if stateToken.Name.Equal(responseToken.Name) {
+					if stateToken.Name.Equal(responseToken.Name) && stateToken.ValueAWSSecretsManager == nil && responseToken.ValueAWSSecretsManager == nil {
 						responseToken.Value = stateToken.Value
 					}
 				}
@@ -1845,11 +1913,15 @@ func readConnection(authCtx context.Context, api *datadogV2.ActionConnectionApi,
 func preserveAdditionalConnectionSecrets(connModel *connectionResourceModel, currentState connectionResourceModel) {
 	if currentState.Anthropic != nil && currentState.Anthropic.APIKey != nil &&
 		connModel.Anthropic != nil && connModel.Anthropic.APIKey != nil {
-		connModel.Anthropic.APIKey.APIToken = currentState.Anthropic.APIKey.APIToken
+		if connModel.Anthropic.APIKey.APITokenAWSSecretsManager == nil && currentState.Anthropic.APIKey.APITokenAWSSecretsManager == nil {
+			connModel.Anthropic.APIKey.APIToken = currentState.Anthropic.APIKey.APIToken
+		}
 	}
 	if currentState.Asana != nil && currentState.Asana.AccessToken != nil &&
 		connModel.Asana != nil && connModel.Asana.AccessToken != nil {
-		connModel.Asana.AccessToken.AccessToken = currentState.Asana.AccessToken.AccessToken
+		if connModel.Asana.AccessToken.AccessTokenAWSSecretsManager == nil && currentState.Asana.AccessToken.AccessTokenAWSSecretsManager == nil {
+			connModel.Asana.AccessToken.AccessToken = currentState.Asana.AccessToken.AccessToken
+		}
 	}
 	if currentState.Azure != nil && currentState.Azure.Tenant != nil &&
 		connModel.Azure != nil && connModel.Azure.Tenant != nil {
@@ -1857,92 +1929,140 @@ func preserveAdditionalConnectionSecrets(connModel *connectionResourceModel, cur
 	}
 	if currentState.CircleCI != nil && currentState.CircleCI.APIKey != nil &&
 		connModel.CircleCI != nil && connModel.CircleCI.APIKey != nil {
-		connModel.CircleCI.APIKey.APIToken = currentState.CircleCI.APIKey.APIToken
+		if connModel.CircleCI.APIKey.APITokenAWSSecretsManager == nil && currentState.CircleCI.APIKey.APITokenAWSSecretsManager == nil {
+			connModel.CircleCI.APIKey.APIToken = currentState.CircleCI.APIKey.APIToken
+		}
 	}
 	if currentState.Clickup != nil && currentState.Clickup.APIKey != nil &&
 		connModel.Clickup != nil && connModel.Clickup.APIKey != nil {
-		connModel.Clickup.APIKey.APIToken = currentState.Clickup.APIKey.APIToken
+		if connModel.Clickup.APIKey.APITokenAWSSecretsManager == nil && currentState.Clickup.APIKey.APITokenAWSSecretsManager == nil {
+			connModel.Clickup.APIKey.APIToken = currentState.Clickup.APIKey.APIToken
+		}
 	}
 	if currentState.Cloudflare != nil && connModel.Cloudflare != nil {
 		if currentState.Cloudflare.APIToken != nil && connModel.Cloudflare.APIToken != nil {
-			connModel.Cloudflare.APIToken.APIToken = currentState.Cloudflare.APIToken.APIToken
+			if connModel.Cloudflare.APIToken.APITokenAWSSecretsManager == nil && currentState.Cloudflare.APIToken.APITokenAWSSecretsManager == nil {
+				connModel.Cloudflare.APIToken.APIToken = currentState.Cloudflare.APIToken.APIToken
+			}
 		}
 		if currentState.Cloudflare.GlobalAPIToken != nil && connModel.Cloudflare.GlobalAPIToken != nil {
-			connModel.Cloudflare.GlobalAPIToken.GlobalAPIKey = currentState.Cloudflare.GlobalAPIToken.GlobalAPIKey
+			if connModel.Cloudflare.GlobalAPIToken.GlobalAPIKeyAWSSecretsManager == nil && currentState.Cloudflare.GlobalAPIToken.GlobalAPIKeyAWSSecretsManager == nil {
+				connModel.Cloudflare.GlobalAPIToken.GlobalAPIKey = currentState.Cloudflare.GlobalAPIToken.GlobalAPIKey
+			}
 		}
 	}
 	if currentState.ConfigCat != nil && currentState.ConfigCat.SDKKey != nil &&
 		connModel.ConfigCat != nil && connModel.ConfigCat.SDKKey != nil {
-		connModel.ConfigCat.SDKKey.APIPassword = currentState.ConfigCat.SDKKey.APIPassword
-		connModel.ConfigCat.SDKKey.SDKKey = currentState.ConfigCat.SDKKey.SDKKey
+		if connModel.ConfigCat.SDKKey.APIPasswordAWSSecretsManager == nil && currentState.ConfigCat.SDKKey.APIPasswordAWSSecretsManager == nil {
+			connModel.ConfigCat.SDKKey.APIPassword = currentState.ConfigCat.SDKKey.APIPassword
+		}
+		if connModel.ConfigCat.SDKKey.SDKKeyAWSSecretsManager == nil && currentState.ConfigCat.SDKKey.SDKKeyAWSSecretsManager == nil {
+			connModel.ConfigCat.SDKKey.SDKKey = currentState.ConfigCat.SDKKey.SDKKey
+		}
 	}
 	if currentState.Datadog != nil && currentState.Datadog.APIKey != nil &&
 		connModel.Datadog != nil && connModel.Datadog.APIKey != nil {
-		connModel.Datadog.APIKey.APIKey = currentState.Datadog.APIKey.APIKey
-		connModel.Datadog.APIKey.AppKey = currentState.Datadog.APIKey.AppKey
+		if connModel.Datadog.APIKey.APIKeyAWSSecretsManager == nil && currentState.Datadog.APIKey.APIKeyAWSSecretsManager == nil {
+			connModel.Datadog.APIKey.APIKey = currentState.Datadog.APIKey.APIKey
+		}
+		if connModel.Datadog.APIKey.AppKeyAWSSecretsManager == nil && currentState.Datadog.APIKey.AppKeyAWSSecretsManager == nil {
+			connModel.Datadog.APIKey.AppKey = currentState.Datadog.APIKey.AppKey
+		}
 	}
 	if currentState.Fastly != nil && currentState.Fastly.APIKey != nil &&
 		connModel.Fastly != nil && connModel.Fastly.APIKey != nil {
-		connModel.Fastly.APIKey.APIKey = currentState.Fastly.APIKey.APIKey
+		if connModel.Fastly.APIKey.APIKeyAWSSecretsManager == nil && currentState.Fastly.APIKey.APIKeyAWSSecretsManager == nil {
+			connModel.Fastly.APIKey.APIKey = currentState.Fastly.APIKey.APIKey
+		}
 	}
 	if currentState.Freshservice != nil && currentState.Freshservice.APIKey != nil &&
 		connModel.Freshservice != nil && connModel.Freshservice.APIKey != nil {
-		connModel.Freshservice.APIKey.APIKey = currentState.Freshservice.APIKey.APIKey
+		if connModel.Freshservice.APIKey.APIKeyAWSSecretsManager == nil && currentState.Freshservice.APIKey.APIKeyAWSSecretsManager == nil {
+			connModel.Freshservice.APIKey.APIKey = currentState.Freshservice.APIKey.APIKey
+		}
 	}
 	if currentState.GCP != nil && currentState.GCP.ServiceAccount != nil &&
 		connModel.GCP != nil && connModel.GCP.ServiceAccount != nil {
-		connModel.GCP.ServiceAccount.PrivateKey = currentState.GCP.ServiceAccount.PrivateKey
+		if connModel.GCP.ServiceAccount.PrivateKeyAWSSecretsManager == nil && currentState.GCP.ServiceAccount.PrivateKeyAWSSecretsManager == nil {
+			connModel.GCP.ServiceAccount.PrivateKey = currentState.GCP.ServiceAccount.PrivateKey
+		}
 	}
 	if currentState.Gemini != nil && currentState.Gemini.APIKey != nil &&
 		connModel.Gemini != nil && connModel.Gemini.APIKey != nil {
-		connModel.Gemini.APIKey.APIKey = currentState.Gemini.APIKey.APIKey
+		if connModel.Gemini.APIKey.APIKeyAWSSecretsManager == nil && currentState.Gemini.APIKey.APIKeyAWSSecretsManager == nil {
+			connModel.Gemini.APIKey.APIKey = currentState.Gemini.APIKey.APIKey
+		}
 	}
 	if currentState.Github != nil && connModel.Github != nil {
 		if currentState.Github.App != nil && connModel.Github.App != nil {
-			connModel.Github.App.PrivateKey = currentState.Github.App.PrivateKey
+			if connModel.Github.App.PrivateKeyAWSSecretsManager == nil && currentState.Github.App.PrivateKeyAWSSecretsManager == nil {
+				connModel.Github.App.PrivateKey = currentState.Github.App.PrivateKey
+			}
 		}
 		if currentState.Github.PersonalAccessToken != nil && connModel.Github.PersonalAccessToken != nil {
-			connModel.Github.PersonalAccessToken.Token = currentState.Github.PersonalAccessToken.Token
+			if connModel.Github.PersonalAccessToken.AccessTokenAWSSecretsManager == nil && currentState.Github.PersonalAccessToken.AccessTokenAWSSecretsManager == nil {
+				connModel.Github.PersonalAccessToken.AccessToken = currentState.Github.PersonalAccessToken.AccessToken
+			}
 		}
 	}
 	if currentState.Gitlab != nil && currentState.Gitlab.APIKey != nil &&
 		connModel.Gitlab != nil && connModel.Gitlab.APIKey != nil {
-		connModel.Gitlab.APIKey.APIToken = currentState.Gitlab.APIKey.APIToken
+		if connModel.Gitlab.APIKey.APITokenAWSSecretsManager == nil && currentState.Gitlab.APIKey.APITokenAWSSecretsManager == nil {
+			connModel.Gitlab.APIKey.APIToken = currentState.Gitlab.APIKey.APIToken
+		}
 	}
 	if currentState.GreyNoise != nil && currentState.GreyNoise.APIKey != nil &&
 		connModel.GreyNoise != nil && connModel.GreyNoise.APIKey != nil {
-		connModel.GreyNoise.APIKey.APIKey = currentState.GreyNoise.APIKey.APIKey
+		if connModel.GreyNoise.APIKey.APIKeyAWSSecretsManager == nil && currentState.GreyNoise.APIKey.APIKeyAWSSecretsManager == nil {
+			connModel.GreyNoise.APIKey.APIKey = currentState.GreyNoise.APIKey.APIKey
+		}
 	}
 	if currentState.LaunchDarkly != nil && currentState.LaunchDarkly.APIKey != nil &&
 		connModel.LaunchDarkly != nil && connModel.LaunchDarkly.APIKey != nil {
-		connModel.LaunchDarkly.APIKey.APIToken = currentState.LaunchDarkly.APIKey.APIToken
+		if connModel.LaunchDarkly.APIKey.APITokenAWSSecretsManager == nil && currentState.LaunchDarkly.APIKey.APITokenAWSSecretsManager == nil {
+			connModel.LaunchDarkly.APIKey.APIToken = currentState.LaunchDarkly.APIKey.APIToken
+		}
 	}
 	if currentState.Notion != nil && currentState.Notion.APIKey != nil &&
 		connModel.Notion != nil && connModel.Notion.APIKey != nil {
-		connModel.Notion.APIKey.APIToken = currentState.Notion.APIKey.APIToken
+		if connModel.Notion.APIKey.APITokenAWSSecretsManager == nil && currentState.Notion.APIKey.APITokenAWSSecretsManager == nil {
+			connModel.Notion.APIKey.APIToken = currentState.Notion.APIKey.APIToken
+		}
 	}
 	if currentState.Okta != nil && currentState.Okta.APIToken != nil &&
 		connModel.Okta != nil && connModel.Okta.APIToken != nil {
-		connModel.Okta.APIToken.APIToken = currentState.Okta.APIToken.APIToken
+		if connModel.Okta.APIToken.APITokenAWSSecretsManager == nil && currentState.Okta.APIToken.APITokenAWSSecretsManager == nil {
+			connModel.Okta.APIToken.APIToken = currentState.Okta.APIToken.APIToken
+		}
 	}
 	if currentState.OpenAI != nil && currentState.OpenAI.APIKey != nil &&
 		connModel.OpenAI != nil && connModel.OpenAI.APIKey != nil {
-		connModel.OpenAI.APIKey.APIToken = currentState.OpenAI.APIKey.APIToken
+		if connModel.OpenAI.APIKey.APITokenAWSSecretsManager == nil && currentState.OpenAI.APIKey.APITokenAWSSecretsManager == nil {
+			connModel.OpenAI.APIKey.APIToken = currentState.OpenAI.APIKey.APIToken
+		}
 	}
 	if currentState.ServiceNow != nil && currentState.ServiceNow.BasicAuth != nil &&
 		connModel.ServiceNow != nil && connModel.ServiceNow.BasicAuth != nil {
-		connModel.ServiceNow.BasicAuth.Password = currentState.ServiceNow.BasicAuth.Password
+		if connModel.ServiceNow.BasicAuth.PasswordAWSSecretsManager == nil && currentState.ServiceNow.BasicAuth.PasswordAWSSecretsManager == nil {
+			connModel.ServiceNow.BasicAuth.Password = currentState.ServiceNow.BasicAuth.Password
+		}
 	}
 	if currentState.Split != nil && currentState.Split.APIKey != nil &&
 		connModel.Split != nil && connModel.Split.APIKey != nil {
-		connModel.Split.APIKey.APIKey = currentState.Split.APIKey.APIKey
+		if connModel.Split.APIKey.APIKeyAWSSecretsManager == nil && currentState.Split.APIKey.APIKeyAWSSecretsManager == nil {
+			connModel.Split.APIKey.APIKey = currentState.Split.APIKey.APIKey
+		}
 	}
 	if currentState.Statsig != nil && currentState.Statsig.APIKey != nil &&
 		connModel.Statsig != nil && connModel.Statsig.APIKey != nil {
-		connModel.Statsig.APIKey.APIKey = currentState.Statsig.APIKey.APIKey
+		if connModel.Statsig.APIKey.APIKeyAWSSecretsManager == nil && currentState.Statsig.APIKey.APIKeyAWSSecretsManager == nil {
+			connModel.Statsig.APIKey.APIKey = currentState.Statsig.APIKey.APIKey
+		}
 	}
 	if currentState.VirusTotal != nil && currentState.VirusTotal.APIKey != nil &&
 		connModel.VirusTotal != nil && connModel.VirusTotal.APIKey != nil {
-		connModel.VirusTotal.APIKey.APIKey = currentState.VirusTotal.APIKey.APIKey
+		if connModel.VirusTotal.APIKey.APIKeyAWSSecretsManager == nil && currentState.VirusTotal.APIKey.APIKeyAWSSecretsManager == nil {
+			connModel.VirusTotal.APIKey.APIKey = currentState.VirusTotal.APIKey.APIKey
+		}
 	}
 }
