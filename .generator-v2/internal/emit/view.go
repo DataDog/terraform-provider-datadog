@@ -572,6 +572,9 @@ type ResourceView struct {
 	Models []ModelStructView
 	Schema SchemaView
 	State  StateView
+	// StateResponseExpr is the argument passed to updateState by Create, Read
+	// and Update: either &resp or the shared data object resp.GetData().
+	StateResponseExpr string
 
 	UsesFmt              bool
 	UsesValidators       bool
