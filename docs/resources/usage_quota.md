@@ -38,7 +38,7 @@ resource "datadog_usage_quota" "example" {
 
 ### Optional
 
-- `scope` (Map of String) Namespace-specific scope. Omit for an organization-wide quota. The API accepts one key, such as `user_handle`, `role_uuid`, or `team_uuid`. For a default scope, use `*` as the value, for example `{ user_handle = "*" }`. Changing the scope deletes and recreates the quota. If the scope becomes unknown during a later plan, Terraform may also plan to delete and recreate the quota.
+- `scope` (Map of String) Namespace-specific scope. Omit for an organization-wide quota. The API accepts one key, such as `user_handle`, `role_uuid`, or `team_uuid`. Use `*` as the value for a default scope. Changing the scope replaces the quota. To avoid unplanned replacements, use scope values that consistently identify the same user, role, or team across runs.
 
 ### Read-Only
 
