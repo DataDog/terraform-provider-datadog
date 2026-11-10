@@ -405,6 +405,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_status_page_test":                                            "status-page",
 	"tests/resource_datadog_status_page_component_test":                                  "status-page",
 	"tests/resource_datadog_status_page_degradation_template_test":                       "status-page",
+	"tests/resource_datadog_status_page_email_access_policy_test":                        "status-page",
 	"tests/resource_datadog_status_page_maintenance_template_test":                       "status-page",
 }
 
