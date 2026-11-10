@@ -30,8 +30,6 @@ resource "datadog_usage_quota" "test" {
 		ProtoV6ProviderFactories: factories,
 		CheckDestroy: func(state *terraform.State) error {
 			p := providers.frameworkProvider
-			cfg := p.DatadogApiInstances.HttpClient.GetConfig()
-			cfg.SetUnstableOperationEnabled("v2.GetQuota", true)
 			api := p.DatadogApiInstances.GetUsageMeteringApiV2()
 			for _, rs := range state.RootModule().Resources {
 				if rs.Type != "datadog_usage_quota" {

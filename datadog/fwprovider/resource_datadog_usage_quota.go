@@ -19,8 +19,9 @@ var _ resource.ResourceWithConfigure = &usageQuotaResource{}
 var _ resource.ResourceWithImportState = &usageQuotaResource{}
 
 type usageQuotaResource struct {
-	api  *datadogV2.UsageMeteringApi
-	auth context.Context
+	api       *datadogV2.UsageMeteringApi
+	createAPI *datadogV2.UsageMeteringApi
+	auth      context.Context
 }
 
 func NewUsageQuotaResource() resource.Resource { return &usageQuotaResource{} }
@@ -40,23 +41,14 @@ func (r *usageQuotaResource) Configure(_ context.Context, req resource.Configure
 		resp.Diagnostics.AddError("Unexpected provider configuration", "Expected FrameworkProvider.")
 		return
 	}
-	// Use a private configuration so enabling preview endpoints and disabling
-	// automatic retries cannot change the behavior of other resources.
-	source := p.DatadogApiInstances.HttpClient.GetConfig()
-	cfg := datadog.NewConfiguration()
-	cfg.Host, cfg.Scheme = source.Host, source.Scheme
-	cfg.DefaultHeader, cfg.UserAgent = source.DefaultHeader, source.UserAgent
-	cfg.Debug, cfg.Compress = source.Debug, source.Compress
-	cfg.Servers, cfg.OperationServers = source.Servers, source.OperationServers
-	cfg.HTTPClient, cfg.DelegatedTokenConfig = source.HTTPClient, source.DelegatedTokenConfig
-	cfg.RetryConfiguration = source.RetryConfiguration
-	// A response can be lost after the server commits a create. Never retry it
-	// implicitly or adopt a conflicting quota: require explicit import instead.
+	r.api = p.DatadogApiInstances.GetUsageMeteringApiV2()
+	// Copy the configuration by value, preserving provider settings and future SDK
+	// fields. Shared maps remain read-only; preview operations are enabled centrally.
+	cfg := *p.DatadogApiInstances.HttpClient.GetConfig()
+	// A create can commit before returning a 5xx. Retrying would report a conflict
+	// for the quota just created. Require explicit import after ambiguous failures.
 	cfg.RetryConfiguration.EnableRetry = false
-	for _, op := range []string{"v2.CreateQuotas", "v2.GetQuota", "v2.UpdateQuota", "v2.DeleteQuota"} {
-		cfg.SetUnstableOperationEnabled(op, true)
-	}
-	r.api = datadogV2.NewUsageMeteringApi(datadog.NewAPIClient(cfg))
+	r.createAPI = datadogV2.NewUsageMeteringApi(datadog.NewAPIClient(&cfg))
 	r.auth = p.Auth
 }
 
@@ -71,7 +63,7 @@ func (r *usageQuotaResource) Create(ctx context.Context, req resource.CreateRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	result, httpResp, err := r.api.CreateQuotas(r.auth, state.QuotaNamespace.ValueString(), body, *datadogV2.NewCreateQuotasOptionalParameters().WithCreateOnly(true).WithIncludeDescendants(false))
+	result, httpResp, err := r.createAPI.CreateQuotas(r.auth, state.QuotaNamespace.ValueString(), body, *datadogV2.NewCreateQuotasOptionalParameters().WithCreateOnly(true).WithIncludeDescendants(false))
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == http.StatusConflict {
 			resp.Diagnostics.AddError("Usage quota already exists", "Import the existing quota using <quota_namespace>/<quota_id> before managing it. Terraform has not adopted or changed the existing quota.")

@@ -24,6 +24,12 @@ func quotaTestResource(t *testing.T, handler http.HandlerFunc) *usageQuotaResour
 	cfg := datadog.NewConfiguration()
 	cfg.Servers = datadog.ServerConfigurations{{URL: server.URL}}
 	cfg.RetryConfiguration.EnableRetry = true
+	cfg.RetryConfiguration.MaxRetries = 1
+	cfg.RetryConfiguration.BackOffBase = 0
+	cfg.RetryConfiguration.RetryJitter = 0
+	for _, op := range []string{"v2.CreateQuotas", "v2.GetQuota", "v2.UpdateQuota", "v2.DeleteQuota"} {
+		cfg.SetUnstableOperationEnabled(op, true)
+	}
 	r := &usageQuotaResource{}
 	var response resource.ConfigureResponse
 	r.Configure(context.Background(), resource.ConfigureRequest{ProviderData: &FrameworkProvider{Auth: context.Background(), DatadogApiInstances: &utils.ApiInstances{HttpClient: datadog.NewAPIClient(cfg)}}}, &response)
@@ -181,4 +187,48 @@ func TestUsageQuotaCreateItemError(t *testing.T) {
 	r.Create(context.Background(), resource.CreateRequest{Plan: tfsdk.Plan{Schema: usageQuotaSchema(), Raw: p.Raw}}, &resp)
 	require.True(t, resp.Diagnostics.HasError())
 	require.True(t, resp.State.Raw.IsNull())
+}
+
+func TestUsageQuotaExistingOperationsRetry(t *testing.T) {
+	for _, status := range []int{429, 500} {
+		for _, method := range []string{"GET", "PATCH", "DELETE"} {
+			t.Run(fmt.Sprintf("%s/%d", method, status), func(t *testing.T) {
+				calls := 0
+				r := quotaTestResource(t, func(w http.ResponseWriter, req *http.Request) {
+					calls++
+					require.Equal(t, method, req.Method)
+					require.Equal(t, "false", req.URL.Query().Get("include_descendants"))
+					if calls == 1 {
+						w.WriteHeader(status)
+						fmt.Fprint(w, `{"errors":["transient"]}`)
+						return
+					}
+					if method == "DELETE" {
+						w.WriteHeader(404)
+						return
+					}
+					quotaTestReply(w, false, false)
+				})
+				state := quotaTestState(t, quotaTestModel())
+				switch method {
+				case "GET":
+					resp := resource.ReadResponse{State: state}
+					r.Read(context.Background(), resource.ReadRequest{State: state}, &resp)
+					require.False(t, resp.Diagnostics.HasError(), "%v", resp.Diagnostics)
+				case "PATCH":
+					model := quotaTestModel()
+					model.Enforced = types.BoolValue(false)
+					plan := quotaTestState(t, model)
+					resp := resource.UpdateResponse{State: state}
+					r.Update(context.Background(), resource.UpdateRequest{State: state, Plan: tfsdk.Plan{Schema: usageQuotaSchema(), Raw: plan.Raw}}, &resp)
+					require.False(t, resp.Diagnostics.HasError(), "%v", resp.Diagnostics)
+				case "DELETE":
+					resp := resource.DeleteResponse{State: state}
+					r.Delete(context.Background(), resource.DeleteRequest{State: state}, &resp)
+					require.False(t, resp.Diagnostics.HasError(), "%v", resp.Diagnostics)
+				}
+				require.Equal(t, 2, calls)
+			})
+		}
+	}
 }

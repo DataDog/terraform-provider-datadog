@@ -982,6 +982,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
 
+	// Enable usage quota operations.
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateQuotas", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetQuota", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateQuota", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteQuota", true)
+
 	EnableGeneratedUnstableOperations(ddClientConfig)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
