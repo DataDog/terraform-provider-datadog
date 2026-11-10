@@ -1,8 +1,10 @@
 package test
 
 import (
-	"strings"
+	"regexp"
+	"strconv"
 	"testing"
+	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 )
@@ -27,11 +29,32 @@ func cleanupLogsArchives(t *testing.T) {
 
 // TestSweepLogsArchives is a standalone sweep test for CI / manual invocation.
 func TestSweepLogsArchives(t *testing.T) {
+	if isReplaying() {
+		t.Skip("sweep uses a live client; skipped during replay")
+	}
 	doSweepLogsArchives(t, isLogsArchiveTestName)
 }
 
+// logsArchiveMinAge keeps archives of concurrent live runs. The logs archive
+// API returns no creation time, so the age comes from the Unix timestamp that
+// uniqueEntityName appends.
+const logsArchiveMinAge = time.Hour
+
+var logsArchiveTestName = regexp.MustCompile(`^tf-TestAccDatadogLogsArchive.+-(local|\d+)-(\d{10})$`)
+
 func isLogsArchiveTestName(name string) bool {
-	return legacyLogsArchiveTestNames[name] || strings.HasPrefix(name, "tf-TestAccDatadogLogsArchive")
+	if legacyLogsArchiveTestNames[name] {
+		return true
+	}
+	m := logsArchiveTestName.FindStringSubmatch(name)
+	if m == nil {
+		return false
+	}
+	ts, err := strconv.ParseInt(m[2], 10, 64)
+	if err != nil {
+		return false
+	}
+	return time.Unix(ts, 0).Before(time.Now().Add(-logsArchiveMinAge))
 }
 
 func doSweepLogsArchives(t *testing.T, match func(string) bool) {
