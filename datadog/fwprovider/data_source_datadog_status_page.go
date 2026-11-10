@@ -29,6 +29,8 @@ type statusPageDataSourceModel struct {
 	CustomDomainEnabled       types.Bool   `tfsdk:"custom_domain_enabled"`
 	PageURL                   types.String `tfsdk:"page_url"`
 	VisualizationType         types.String `tfsdk:"visualization_type"`
+	VisualizationLayout       types.String `tfsdk:"visualization_layout"`
+	RssFeedEnabled            types.Bool   `tfsdk:"rss_feed_enabled"`
 	SubscriptionsEnabled      types.Bool   `tfsdk:"subscriptions_enabled"`
 	SlackSubscriptionsEnabled types.Bool   `tfsdk:"slack_subscriptions_enabled"`
 	CompanyLogo               types.String `tfsdk:"company_logo"`
@@ -108,6 +110,14 @@ func (d *statusPageDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 			},
 			"subscriptions_enabled": schema.BoolAttribute{
 				Description: "Whether subscriber notifications are enabled for the status page.",
+				Computed:    true,
+			},
+			"visualization_layout": schema.StringAttribute{
+				Description: "The layout of components on the status page. Possible values are: list, grid.",
+				Computed:    true,
+			},
+			"rss_feed_enabled": schema.BoolAttribute{
+				Description: "Whether the RSS feed is enabled for the status page.",
 				Computed:    true,
 			},
 			"slack_subscriptions_enabled": schema.BoolAttribute{
@@ -197,6 +207,12 @@ func (d *statusPageDataSource) Read(ctx context.Context, request datasource.Read
 		}
 		if visualizationType, ok := attributes.GetVisualizationTypeOk(); ok && visualizationType != nil {
 			state.VisualizationType = types.StringValue(string(*visualizationType))
+		}
+		if layout, ok := attributes.GetVisualizationLayoutOk(); ok && layout != nil {
+			state.VisualizationLayout = types.StringValue(string(*layout))
+		}
+		if rssFeedEnabled, ok := attributes.GetRssFeedEnabledOk(); ok && rssFeedEnabled != nil {
+			state.RssFeedEnabled = types.BoolValue(*rssFeedEnabled)
 		}
 		if subscriptionsEnabled, ok := attributes.GetSubscriptionsEnabledOk(); ok && subscriptionsEnabled != nil {
 			state.SubscriptionsEnabled = types.BoolValue(*subscriptionsEnabled)
