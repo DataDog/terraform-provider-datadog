@@ -79,7 +79,7 @@ func (d *datadogReferenceTableRowsDataSource) Schema(_ context.Context, _ dataso
 						},
 						"values": schema.MapAttribute{
 							Computed:    true,
-							Description: "Map of field names to values for this row. Non-null values are returned as strings. API null values are represented as Terraform null, while empty strings remain empty strings.",
+							Description: "Map of field names to row values. Non-null values are returned as strings. Null values remain null, and empty strings (`\"\"`) are preserved.",
 							ElementType: types.StringType,
 						},
 					},
