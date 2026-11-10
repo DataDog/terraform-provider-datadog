@@ -373,6 +373,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_team_notification_rules_test":                             "team",
 	"tests/resource_datadog_timeboard_test":                                              "dashboards",
 	"tests/resource_datadog_user_test":                                                   "users",
+	"tests/resource_datadog_usage_quota_test":                                            "usage-quotas",
 	"tests/resource_datadog_user_role_test":                                              "roles",
 	"tests/resource_datadog_webhook_custom_variable_test":                                "webhook_custom_variable",
 	"tests/resource_datadog_webhook_oauth2_client_credentials_test":                      "webhook_oauth2_client_credentials",
