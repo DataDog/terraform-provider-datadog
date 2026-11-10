@@ -1027,8 +1027,9 @@ func buildContext(ctx context.Context, apiKey string, appKey string, apiURL stri
 func buildDatadogClient(ctx context.Context, httpClient *http.Client) *common.APIClient {
 	// Datadog API config.HTTPClient
 	config := common.NewConfiguration()
-	if ctx.Value("http_retry_enable") == true {
-		config.RetryConfiguration.EnableRetry = true
+	// Invalid retry env vars fail test setup instead of silently changing retry behavior.
+	if err := utils.ApplyHTTPRetryConfigFromEnv(ctx.Value("http_retry_enable") == true, config); err != nil {
+		panic(err)
 	}
 	config.Debug = isDebug()
 	config.HTTPClient = httpClient
