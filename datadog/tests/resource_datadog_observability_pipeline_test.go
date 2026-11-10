@@ -7005,6 +7005,54 @@ resource "datadog_observability_pipeline" "datadog_metrics" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_datadogMetricsDestinationBuffer(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.datadog_metrics_buffer"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "datadog_metrics_buffer" {
+  name = "datadog-metrics-destination-buffer-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "datadog-metrics-dest-buffer-1"
+      inputs = ["source-1"]
+
+      datadog_metrics {
+        buffer {
+          disk {
+            max_size  = 2147483648
+            when_full = "drop_newest"
+          }
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_metrics.0.buffer.0.disk.0.max_size", "2147483648"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_metrics.0.buffer.0.disk.0.when_full", "drop_newest"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_httpClientDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
