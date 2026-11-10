@@ -104,6 +104,52 @@ func TestAccDatadogStatusPage_Import(t *testing.T) {
 	})
 }
 
+func TestAccDatadogStatusPage_LayoutAndRssFeed(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	pageName := fmt.Sprintf("test-status-page-layout-%d", clockFromContext(ctx).Now().Unix())
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogStatusPageDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogStatusPageConfigLayoutAndRssFeed(pageName, "component_name_only", `visualization_layout = "grid"`, true),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogStatusPageExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_status_page.foo", "visualization_layout", "grid"),
+					resource.TestCheckResourceAttr("datadog_status_page.foo", "rss_feed_enabled", "true"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogStatusPageConfigLayoutAndRssFeed(pageName, "component_name_only", `visualization_layout = "list"`, false),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogStatusPageExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_status_page.foo", "visualization_layout", "list"),
+					resource.TestCheckResourceAttr("datadog_status_page.foo", "rss_feed_enabled", "false"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogStatusPageConfigLayoutAndRssFeed(pageName, "component_name_only", `visualization_layout = "grid"`, false),
+				Check:  resource.TestCheckResourceAttr("datadog_status_page.foo", "visualization_layout", "grid"),
+			},
+			{
+				Config: testAccCheckDatadogStatusPageConfigLayoutAndRssFeed(pageName, "bars_only", "", false),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("datadog_status_page.foo", "visualization_type", "bars_only"),
+					resource.TestCheckResourceAttr("datadog_status_page.foo", "visualization_layout", "list"),
+				),
+			},
+			{
+				ResourceName:      "datadog_status_page.foo",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogStatusPageConfig(pageName string) string {
 	return fmt.Sprintf(`
 resource "datadog_status_page" "foo" {
@@ -122,6 +168,19 @@ resource "datadog_status_page" "foo" {
   domain_prefix      = "%[1]s"
   visualization_type = "bars_only"
 }`, pageName)
+}
+
+func testAccCheckDatadogStatusPageConfigLayoutAndRssFeed(pageName string, visualizationType string, layoutLine string, rssFeedEnabled bool) string {
+	return fmt.Sprintf(`
+resource "datadog_status_page" "foo" {
+  name                           = "%[1]s"
+  type                           = "public"
+  domain_prefix                  = "%[1]s"
+  visualization_type             = "%[2]s"
+  %[3]s
+  subscriptions_enabled          = true
+  rss_feed_enabled               = %[4]t
+}`, pageName, visualizationType, layoutLine, rssFeedEnabled)
 }
 
 func testAccCheckDatadogStatusPageExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
