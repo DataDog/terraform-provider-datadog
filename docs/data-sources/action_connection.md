@@ -549,9 +549,58 @@ Read-Only:
 
 Read-Only:
 
-- `app_id` (String) GitHub App ID
-- `installation_id` (String) GitHub App installation ID
-- `private_key` (String, Sensitive) GitHub App private key in PEM format
+- `github_app_id` (String) Numeric ID of the GitHub App
+- `github_app_id_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--github--app--github_app_id_aws_secrets_manager))
+- `github_installation_id` (String) Installation ID of the GitHub App
+- `github_installation_id_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--github--app--github_installation_id_aws_secrets_manager))
+- `hostname` (String) Hostname of the GitHub Enterprise Server. Omit for github.com
+- `hostname_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--github--app--hostname_aws_secrets_manager))
+- `private_key` (String, Sensitive) PEM-encoded RSA private key for the GitHub App
+- `private_key_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--github--app--private_key_aws_secrets_manager))
+
+<a id="nestedblock--github--app--github_app_id_aws_secrets_manager"></a>
+### Nested Schema for `github.app.github_app_id_aws_secrets_manager`
+
+Read-Only:
+
+- `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
+- `secret_id` (String) Name or ARN of the secret.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
+
+
+<a id="nestedblock--github--app--github_installation_id_aws_secrets_manager"></a>
+### Nested Schema for `github.app.github_installation_id_aws_secrets_manager`
+
+Read-Only:
+
+- `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
+- `secret_id` (String) Name or ARN of the secret.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
+
+
+<a id="nestedblock--github--app--hostname_aws_secrets_manager"></a>
+### Nested Schema for `github.app.hostname_aws_secrets_manager`
+
+Read-Only:
+
+- `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
+- `secret_id` (String) Name or ARN of the secret.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
+
+
+<a id="nestedblock--github--app--private_key_aws_secrets_manager"></a>
+### Nested Schema for `github.app.private_key_aws_secrets_manager`
+
+Read-Only:
+
+- `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
+- `secret_id` (String) Name or ARN of the secret.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
+
 
 
 <a id="nestedblock--github--personal_access_token"></a>
@@ -559,7 +608,32 @@ Read-Only:
 
 Read-Only:
 
-- `token` (String, Sensitive) GitHub personal access token
+- `access_token` (String, Sensitive) GitHub personal access token
+- `access_token_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--github--personal_access_token--access_token_aws_secrets_manager))
+- `hostname` (String) Hostname of the GitHub Enterprise Server. Omit for github.com
+- `hostname_aws_secrets_manager` (Block, Read-only) AWS Secrets Manager reference for this field. (see [below for nested schema](#nestedblock--github--personal_access_token--hostname_aws_secrets_manager))
+
+<a id="nestedblock--github--personal_access_token--access_token_aws_secrets_manager"></a>
+### Nested Schema for `github.personal_access_token.access_token_aws_secrets_manager`
+
+Read-Only:
+
+- `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
+- `secret_id` (String) Name or ARN of the secret.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
+
+
+<a id="nestedblock--github--personal_access_token--hostname_aws_secrets_manager"></a>
+### Nested Schema for `github.personal_access_token.hostname_aws_secrets_manager`
+
+Read-Only:
+
+- `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
+- `secret_id` (String) Name or ARN of the secret.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
+
 
 
 

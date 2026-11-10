@@ -708,9 +708,70 @@ Optional:
 
 Optional:
 
-- `app_id` (String) GitHub App ID. String length must be at least 1.
-- `installation_id` (String) GitHub App installation ID. String length must be at least 1.
-- `private_key` (String, Sensitive) GitHub App private key in PEM format. String length must be at least 1.
+- `github_app_id` (String) Numeric ID of the GitHub App. String length must be at least 1.
+- `github_app_id_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--github--app--github_app_id_aws_secrets_manager))
+- `github_installation_id` (String) Installation ID of the GitHub App. String length must be at least 1.
+- `github_installation_id_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--github--app--github_installation_id_aws_secrets_manager))
+- `hostname` (String) Hostname of the GitHub Enterprise Server. Omit for github.com. String length must be at least 1.
+- `hostname_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--github--app--hostname_aws_secrets_manager))
+- `private_key` (String, Sensitive) PEM-encoded RSA private key for the GitHub App. String length must be at least 1.
+- `private_key_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--github--app--private_key_aws_secrets_manager))
+
+<a id="nestedatt--github--app--github_app_id_aws_secrets_manager"></a>
+### Nested Schema for `github.app.github_app_id_aws_secrets_manager`
+
+Required:
+
+- `secret_id` (String) Name or ARN of the secret. String length must be at least 1.
+
+Optional:
+
+- `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
+
+
+<a id="nestedatt--github--app--github_installation_id_aws_secrets_manager"></a>
+### Nested Schema for `github.app.github_installation_id_aws_secrets_manager`
+
+Required:
+
+- `secret_id` (String) Name or ARN of the secret. String length must be at least 1.
+
+Optional:
+
+- `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
+
+
+<a id="nestedatt--github--app--hostname_aws_secrets_manager"></a>
+### Nested Schema for `github.app.hostname_aws_secrets_manager`
+
+Required:
+
+- `secret_id` (String) Name or ARN of the secret. String length must be at least 1.
+
+Optional:
+
+- `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
+
+
+<a id="nestedatt--github--app--private_key_aws_secrets_manager"></a>
+### Nested Schema for `github.app.private_key_aws_secrets_manager`
+
+Required:
+
+- `secret_id` (String) Name or ARN of the secret. String length must be at least 1.
+
+Optional:
+
+- `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
+
 
 
 <a id="nestedblock--github--personal_access_token"></a>
@@ -718,7 +779,38 @@ Optional:
 
 Optional:
 
-- `token` (String, Sensitive) GitHub personal access token. String length must be at least 1.
+- `access_token` (String, Sensitive) GitHub personal access token. String length must be at least 1.
+- `access_token_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--github--personal_access_token--access_token_aws_secrets_manager))
+- `hostname` (String) Hostname of the GitHub Enterprise Server. Omit for github.com. String length must be at least 1.
+- `hostname_aws_secrets_manager` (Attributes) AWS Secrets Manager reference for this field. To use it, set `external_secrets_manager` on the connection and omit the literal field. Available only for supported credential tokens on connections that run in Datadog's cloud. (see [below for nested schema](#nestedatt--github--personal_access_token--hostname_aws_secrets_manager))
+
+<a id="nestedatt--github--personal_access_token--access_token_aws_secrets_manager"></a>
+### Nested Schema for `github.personal_access_token.access_token_aws_secrets_manager`
+
+Required:
+
+- `secret_id` (String) Name or ARN of the secret. String length must be at least 1.
+
+Optional:
+
+- `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
+
+
+<a id="nestedatt--github--personal_access_token--hostname_aws_secrets_manager"></a>
+### Nested Schema for `github.personal_access_token.hostname_aws_secrets_manager`
+
+Required:
+
+- `secret_id` (String) Name or ARN of the secret. String length must be at least 1.
+
+Optional:
+
+- `key` (String) Top-level JSON key to extract. Omit to use the entire secret string.
+- `version_id` (String) Secret version ID. Can't be used with `version_stage`. If neither is set, the current version is used.
+- `version_stage` (String) Secret version staging label. Can't be used with `version_id`. If neither is set, the current version is used.
+
 
 
 
