@@ -232,6 +232,12 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateExecutionPolicy", true)
 	config.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
 	config.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
+
+	// Enable AI Gateway providers
+	config.SetUnstableOperationEnabled("v2.CreateAiGatewayProvider", true)
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayProvider", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayProvider", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayProvider", true)
 	fwprovider.EnableGeneratedUnstableOperations(config)
 
 	// Invalid retry env vars fail test setup instead of silently changing retry behavior.

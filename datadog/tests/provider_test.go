@@ -146,6 +146,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_agentless_scanning_aws_scan_options_test":                    "agentless-scanning",
 	"tests/resource_datadog_agentless_scanning_azure_scan_options_test":                  "agentless-scanning",
 	"tests/resource_datadog_agentless_scanning_gcp_scan_options_test":                    "agentless-scanning",
+	"tests/resource_datadog_ai_gateway_provider_test":                                    "ai-gateway",
 	"tests/resource_datadog_csm_threats_agent_rule_test":                                 "cloud-workload-security",
 	"tests/resource_datadog_csm_threats_policy_test":                                     "cloud-workload-security",
 	"tests/resource_datadog_dashboard_alert_graph_test":                                  "dashboards",
