@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"strconv"
-	"strings"
 	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -232,16 +231,9 @@ func (r *ApmRetentionFilterResource) updateState(ctx context.Context, state *Apm
 	state.ID = types.StringValue(dataId)
 	state.Name = types.StringValue(name)
 
-	// Make sure we maintain the same precision as config
-	// Otherwise we will run into inconsistent state errors
-	configVal := state.Rate.ValueString()
-	precision := -1
-	if i := strings.IndexByte(configVal, '.'); i > -1 {
-		precision = len(configVal) - i - 1
-	}
-	state.Rate = types.StringValue(strconv.FormatFloat(rate, 'f', precision, 64))
+	state.Rate = retentionFilterRateState(state.Rate, rate)
 	if hasTraceRate && traceRate > 0 {
-		state.TraceRate = types.StringValue(strconv.FormatFloat(traceRate, 'f', precision, 64))
+		state.TraceRate = retentionFilterRateState(state.TraceRate, traceRate)
 	} else {
 		state.TraceRate = types.StringNull()
 	}
@@ -253,6 +245,13 @@ func (r *ApmRetentionFilterResource) updateState(ctx context.Context, state *Apm
 	state.Filter.Query = types.StringValue(query)
 	state.Enabled = types.BoolValue(enabled)
 	state.FilterType = types.StringValue(filterType)
+}
+
+func retentionFilterRateState(previous types.String, value float64) types.String {
+	if parsed, err := strconv.ParseFloat(previous.ValueString(), 64); err == nil && parsed == value {
+		return previous
+	}
+	return types.StringValue(strconv.FormatFloat(value, 'f', -1, 64))
 }
 
 func (r *ApmRetentionFilterResource) buildRetentionFilterCreateRequestBody(_ context.Context, state *ApmRetentionFilterModel) (*datadogV2.RetentionFilterCreateRequest, diag.Diagnostics) {
