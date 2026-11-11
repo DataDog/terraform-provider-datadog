@@ -5,6 +5,10 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/google/uuid"
+
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -106,5 +110,27 @@ func TestBuildAiGatewayRateLimitUpdateAttributesRejectsInvalidTeamID(t *testing.
 	}
 	if _, diags := buildAiGatewayRateLimitUpdateAttributes(context.Background(), &state); !diags.HasError() {
 		t.Fatal("expected an error for a team_id that is not a UUID")
+	}
+}
+
+func TestUpdateAiGatewayRateLimitStateKeepsUUIDSpelling(t *testing.T) {
+	const upper = "BBBBBBBB-BBBB-4BBB-8BBB-BBBBBBBBBBBB"
+	teamID := uuid.MustParse(upper)
+	attributes := datadogV2.NewAiGatewayRateLimitAttributesWithDefaults()
+	attributes.TeamId = *datadog.NewNullableUUID(&teamID)
+	data := *datadogV2.NewAiGatewayRateLimitResource(*attributes, uuid.New(), datadogV2.AIGATEWAYRATELIMITTYPE_RATE_LIMITS)
+
+	state := aiGatewayRateLimitModel{TeamID: types.StringValue(upper), UserID: types.StringNull(), Tags: types.MapNull(types.StringType)}
+	if diags := updateAiGatewayRateLimitState(context.Background(), &state, data); diags.HasError() {
+		t.Fatalf("unexpected diagnostics: %v", diags)
+	}
+	if got := state.TeamID.ValueString(); got != upper {
+		t.Errorf("team_id = %q, want the configured spelling %q", got, upper)
+	}
+
+	imported := aiGatewayRateLimitModel{TeamID: types.StringNull(), UserID: types.StringNull(), Tags: types.MapNull(types.StringType)}
+	updateAiGatewayRateLimitState(context.Background(), &imported, data)
+	if got := imported.TeamID.ValueString(); got != teamID.String() {
+		t.Errorf("imported team_id = %q, want the API's %q", got, teamID.String())
 	}
 }

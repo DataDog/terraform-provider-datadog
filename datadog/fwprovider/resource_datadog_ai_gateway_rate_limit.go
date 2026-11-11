@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -275,8 +276,8 @@ func updateAiGatewayRateLimitState(ctx context.Context, state *aiGatewayRateLimi
 	state.RequestsPerMinute = positiveInt64Value(attributes.RequestsPerMinute)
 	state.InputTokensPerMinute = positiveInt64Value(attributes.InputTokensPerMinute)
 	state.OutputTokensPerMinute = positiveInt64Value(attributes.OutputTokensPerMinute)
-	state.TeamID = nullableUUIDValue(attributes.TeamId)
-	state.UserID = nullableUUIDValue(attributes.UserId)
+	state.TeamID = nullableUUIDValue(state.TeamID, attributes.TeamId)
+	state.UserID = nullableUUIDValue(state.UserID, attributes.UserId)
 
 	// The API returns cleared tags as an empty object.
 	if tags := attributes.GetTags(); len(tags) > 0 {
@@ -383,9 +384,15 @@ func positiveInt64Value(value datadog.NullableInt64) types.Int64 {
 	return types.Int64Null()
 }
 
-func nullableUUIDValue(value datadog.NullableUUID) types.String {
-	if v := value.Get(); v != nil {
-		return types.StringValue(v.String())
+// nullableUUIDValue keeps the prior spelling of the same UUID, since the API returns UUIDs in lowercase and a
+// configured uppercase UUID would otherwise differ from the plan.
+func nullableUUIDValue(prior types.String, value datadog.NullableUUID) types.String {
+	v := value.Get()
+	if v == nil {
+		return types.StringNull()
 	}
-	return types.StringNull()
+	if !prior.IsNull() && !prior.IsUnknown() && strings.EqualFold(prior.ValueString(), v.String()) {
+		return prior
+	}
+	return types.StringValue(v.String())
 }
