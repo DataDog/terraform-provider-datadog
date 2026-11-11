@@ -1087,11 +1087,10 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"data_source": {
-								Type:         schema.TypeString,
-								Optional:     true,
-								Default:      "metrics",
-								ValidateFunc: validation.StringInSlice([]string{"metrics"}, false),
-								Description:  "The data source for metrics queries.",
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionMetricQueryDataSourceFromValue),
+								Description:      "The data source for metrics queries.",
 							},
 							"name": {
 								Type:        schema.TypeString,

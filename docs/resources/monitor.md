@@ -848,12 +848,9 @@ Optional:
 
 Required:
 
+- `data_source` (String) The data source for metrics queries. Valid values are `metrics`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The metrics query definition.
-
-Optional:
-
-- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 ## Import
 

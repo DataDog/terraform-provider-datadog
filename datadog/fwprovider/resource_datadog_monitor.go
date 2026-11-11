@@ -1186,11 +1186,9 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 							NestedObject: schema.NestedBlockObject{
 								Attributes: map[string]schema.Attribute{
 									"data_source": schema.StringAttribute{
-										Optional:    true,
-										Computed:    true,
-										Default:     stringdefault.StaticString("metrics"),
+										Required:    true,
 										Description: "The data source for metrics queries.",
-										Validators:  []validator.String{stringvalidator.OneOf("metrics")},
+										Validators:  []validator.String{stringvalidator.OneOf(r.getAllowMetricQueryDataSource()...)},
 									},
 									"name": schema.StringAttribute{
 										Required:    true,
@@ -3120,6 +3118,10 @@ func (r *monitorResource) getAllowEventQueryAggregation() []string {
 
 func (r *monitorResource) getAllowEventQueryOrder() []string {
 	return enumStrings((*datadogV1.QuerySortOrder)(nil).GetAllowedValues())
+}
+
+func (r *monitorResource) getAllowMetricQueryDataSource() []string {
+	return enumStrings((*datadogV1.MonitorFormulaAndFunctionMetricQueryDataSource)(nil).GetAllowedValues())
 }
 
 func (r *monitorResource) getAllowCloudCostDataSource() []string {

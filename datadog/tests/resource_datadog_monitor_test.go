@@ -3391,8 +3391,9 @@ resource "datadog_monitor" "foo" {
 
   variables {
     metric_query {
-      name  = "query1"
-      query = "avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"
+      data_source = "metrics"
+      name        = "query1"
+      query       = "avg:container.cpu.usage.dist{service:alerting-scheduler} by {kube_cluster_name}"
     }
     metric_query {
       data_source = "metrics"
