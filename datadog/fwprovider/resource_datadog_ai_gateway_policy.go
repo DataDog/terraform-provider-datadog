@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"math"
 	"sort"
 	"strings"
 
@@ -309,13 +310,19 @@ func buildAiGatewayPolicyRequestAttributes(state *aiGatewayPolicyModel) *datadog
 	return attributes
 }
 
-// updateAiGatewayPolicyState sets state from the API response. The response doesn't include tier numbers, and its tier
-// order isn't guaranteed, so when the tiers hold the same targets as the prior state, the prior order is kept.
+// updateAiGatewayPolicyState sets state from the API response. The response doesn't include tier numbers, so tiers are
+// ordered by their oldest saved target: every write re-inserts a policy's targets tier by tier, so target IDs grow with
+// the tier number. A tier reordered outside Terraform therefore shows as a diff instead of being hidden.
 func updateAiGatewayPolicyState(state *aiGatewayPolicyModel, data datadogV2.AiGatewayPolicyResource) {
 	attributes := data.GetAttributes()
 
-	tiers := make([]aiGatewayPolicyTier, 0, len(attributes.GetTiers()))
-	for _, tier := range attributes.GetTiers() {
+	apiTiers := append([]datadogV2.AiGatewayPolicyTier(nil), attributes.GetTiers()...)
+	sort.SliceStable(apiTiers, func(i, j int) bool {
+		return minAiGatewayPolicyTargetID(apiTiers[i]) < minAiGatewayPolicyTargetID(apiTiers[j])
+	})
+
+	tiers := make([]aiGatewayPolicyTier, 0, len(apiTiers))
+	for _, tier := range apiTiers {
 		tierModel := aiGatewayPolicyTier{Targets: make([]aiGatewayPolicyTarget, 0, len(tier.GetTargets()))}
 		for _, target := range tier.GetTargets() {
 			targetModel := aiGatewayPolicyTarget{Provider: types.StringNull(), Model: types.StringNull()}
@@ -329,40 +336,21 @@ func updateAiGatewayPolicyState(state *aiGatewayPolicyModel, data datadogV2.AiGa
 		}
 		tiers = append(tiers, tierModel)
 	}
-	if !sameAiGatewayPolicyTiers(state.Tiers, tiers) {
-		state.Tiers = tiers
-	}
+	state.Tiers = tiers
 
 	state.Inbound = types.StringValue(data.GetId())
 	state.Priority = types.Int64Value(attributes.GetPriority())
 	state.ID = types.StringValue(formatAiGatewayPolicyID(state.UserID, data.GetId()))
 }
 
-// sameAiGatewayPolicyTiers reports whether a and b hold the same tiers, in any order, each with the same set of targets.
-func sameAiGatewayPolicyTiers(a, b []aiGatewayPolicyTier) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	keys := func(tiers []aiGatewayPolicyTier) []string {
-		out := make([]string, 0, len(tiers))
-		for _, tier := range tiers {
-			targets := make([]string, 0, len(tier.Targets))
-			for _, target := range tier.Targets {
-				targets = append(targets, target.Provider.String()+"\x00"+target.Model.String())
-			}
-			sort.Strings(targets)
-			out = append(out, strings.Join(targets, "\x01"))
-		}
-		sort.Strings(out)
-		return out
-	}
-	ka, kb := keys(a), keys(b)
-	for i := range ka {
-		if ka[i] != kb[i] {
-			return false
+func minAiGatewayPolicyTargetID(tier datadogV2.AiGatewayPolicyTier) int64 {
+	min := int64(math.MaxInt64)
+	for _, target := range tier.GetTargets() {
+		if target.GetId() < min {
+			min = target.GetId()
 		}
 	}
-	return true
+	return min
 }
 
 func aiGatewayPolicyUserID(value types.String) (*uuid.UUID, diag.Diagnostics) {
