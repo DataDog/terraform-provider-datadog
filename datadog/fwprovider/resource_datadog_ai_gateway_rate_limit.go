@@ -7,6 +7,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/mapvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -123,6 +124,8 @@ func (r *aiGatewayRateLimitResource) Schema(_ context.Context, _ resource.Schema
 				Description: "Scope tags, such as `provider`, `model` or `ml_app`. A request counts toward the limit when it has all of these tags.",
 				Optional:    true,
 				ElementType: types.StringType,
+				// The API returns cleared tags as {}, which maps to null, so an empty map would never match state.
+				Validators: []validator.Map{mapvalidator.SizeAtLeast(1)},
 			},
 		},
 	}
