@@ -852,6 +852,34 @@ func TestAccDatadogMonitor_FormulaFunction_Cost(t *testing.T) {
 	})
 }
 
+// Cost alerts still accept cloud_cost_query with a metrics data source; it must read back as cloud_cost_query.
+func TestAccDatadogMonitor_FormulaFunction_CostMetricsSource(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+	config := testAccCheckDatadogCostMonitorMetricsSource(monitorName)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: config,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.cloud_cost_query.#", "2"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.cloud_cost_query.1.data_source", "metrics"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.cloud_cost_query.1.aggregator", "sum"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.#", "0"),
+				),
+			},
+			{Config: config, PlanOnly: true},
+		},
+	})
+}
+
 // TestAccDatadogMonitor_DynamicEmptyVariables exercises the wrapper-module pattern
 // from https://github.com/DataDog/terraform-provider-datadog/issues/3149 where a
 // `dynamic "variables"` block produces a single empty `variables {}` block (no
@@ -1795,6 +1823,36 @@ resource "datadog_monitor" "foo" {
 
   monitor_thresholds {
       critical = 6
+  }
+}
+`, uniq)
+}
+
+func testAccCheckDatadogCostMonitorMetricsSource(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name    = "%s"
+  type    = "cost alert"
+  message = "test"
+  query   = "formula(\"query1 + query2\").last(\"30d\").anomaly(direction=\"both\") > 6"
+
+  variables {
+    cloud_cost_query {
+      data_source = "cloud_cost"
+      name        = "query1"
+      query       = "sum:aws.cost.amortized{servicename: ec2} by {account}"
+      aggregator  = "sum"
+    }
+    cloud_cost_query {
+      data_source = "metrics"
+      name        = "query2"
+      query       = "sum:system.cpu.user{*} by {account}"
+      aggregator  = "sum"
+    }
+  }
+
+  monitor_thresholds {
+    critical = 6
   }
 }
 `, uniq)
