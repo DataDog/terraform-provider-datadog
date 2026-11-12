@@ -133,7 +133,7 @@ func testAccCheckDatadogAiGatewayModelGroupCleared(accProvider *fwprovider.Frame
 			}
 			resp, _, err := getAiGatewayModelGroup(accProvider, r.Primary.ID)
 			if err != nil {
-				return fmt.Errorf("error retrieving AI Gateway model group: %s", err)
+				return fmt.Errorf("error retrieving AI Gateway model group: %w", err)
 			}
 			attributes := resp.GetData().Attributes
 			if level := attributes.MaxReasoningLevel.Get(); level != nil {
