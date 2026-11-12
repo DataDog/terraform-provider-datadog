@@ -33,12 +33,12 @@ resource "datadog_usage_quota" "example" {
 ### Required
 
 - `enforced` (Boolean) Whether the quota blocks usage. Setting false clears pending limits.
-- `quota_namespace` (String) Product-specific namespace, such as ai_credits. Changing this value replaces the quota. Must be nonempty and contain no whitespace or slash.
+- `quota_namespace` (String) Product-specific namespace. See the [Usage Quotas API documentation](https://docs.datadoghq.com/api/latest/usage-metering/create-or-update-usage-quotas/) for supported namespaces. Changing this value replaces the quota. Must be nonempty and contain no whitespace or slash.
 - `usage_limit` (Number) Usage limit, as a non-negative whole number of usage units. For `ai_credits`, the unit is credits per UTC calendar month. Imported legacy fractional values are preserved in state, but configuration requires a whole number.
 
 ### Optional
 
-- `scope` (Map of String) Namespace-specific scope. Omit for an organization-wide quota. The API accepts one key, such as `user_handle`, `role_uuid`, or `team_uuid`. Use `*` as the value for a default scope. Changing the scope replaces the quota. To avoid unplanned replacements, use scope values that consistently identify the same user, role, or team across runs.
+- `scope` (Map of String) Namespace-specific scope. See the [Usage Quotas API documentation](https://docs.datadoghq.com/api/latest/usage-metering/create-or-update-usage-quotas/) for supported scopes. Omit for an organization-wide quota. Use `*` as the value for a default scope. Changing the scope replaces the quota. To avoid unplanned replacements, use scope values that consistently identify the same user, role, or team across runs.
 
 ### Read-Only
 
