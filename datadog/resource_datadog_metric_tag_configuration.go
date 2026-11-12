@@ -25,7 +25,12 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 		UpdateContext: resourceDatadogMetricTagConfigurationUpdate,
 		DeleteContext: resourceDatadogMetricTagConfigurationDelete,
 		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
-			_, includePercentilesOk := diff.GetOkExists("include_percentiles")
+			// Use the raw config because GetOkExists also reports a value that exists only in the prior state.
+			includePercentilesOk := false
+			if config := diff.GetRawConfig(); config.IsKnown() && !config.IsNull() {
+				percentiles := config.GetAttr("include_percentiles")
+				includePercentilesOk = percentiles.IsKnown() && !percentiles.IsNull()
+			}
 			oldAggrs, newAggrs := diff.GetChange("aggregations")
 			metricType, metricTypeOk := diff.GetOkExists("metric_type")
 			tags, _ := diff.GetOkExists("tags")
@@ -43,11 +48,11 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 			if err != nil {
 				return fmt.Errorf("error validating diff: %w", err)
 			}
-			if includePercentilesOk && *metricTypeValidated != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
-				return fmt.Errorf("cannot use include_percentiles with a metric_type of %s, must use metric_type of 'distribution'", metricType)
+			if includePercentilesOk && !isDistributionMetricType(*metricTypeValidated) {
+				return fmt.Errorf("cannot use include_percentiles with a metric_type of %s, metric must be a distribution or a native histogram", metricType)
 			}
 
-			if *metricTypeValidated == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+			if isDistributionMetricType(*metricTypeValidated) {
 				if !oldAggrs.(*schema.Set).Equal(newAggrs.(*schema.Set)) {
 					return fmt.Errorf("cannot use aggregations with a metric_type of %s, must use metric_type of 'count','rate', or 'gauge'", metricType)
 				}
@@ -81,6 +86,9 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 					ForceNew:         true,
 					Required:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewMetricTagConfigurationMetricTypesFromValue),
+					DiffSuppressFunc: func(_ string, old, new string, _ *schema.ResourceData) bool {
+						return nativeHistogramMatchesDistribution(datadogV2.MetricTagConfigurationMetricTypes(old), new)
+					},
 				},
 				"tags": {
 					Description: "A list of tag keys that will be queryable for your metric.",
@@ -92,7 +100,7 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 					Required: true,
 				},
 				"include_percentiles": {
-					Description: "Toggle to include/exclude percentiles for a distribution metric. Defaults to false. Can only be applied to metrics that have a `metric_type` of distribution.",
+					Description: "Toggle to include/exclude percentiles for a distribution or native histogram metric. Defaults to false. Can only be applied to metrics that have a `metric_type` of `distribution`, `explicit_histogram`, or `exponential_histogram`.",
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
@@ -128,6 +136,19 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 			}
 		},
 	}
+}
+
+func isNativeHistogram(metricType datadogV2.MetricTagConfigurationMetricTypes) bool {
+	return metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_EXPLICIT_HISTOGRAM ||
+		metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_EXPONENTIAL_HISTOGRAM
+}
+
+func nativeHistogramMatchesDistribution(remoteType datadogV2.MetricTagConfigurationMetricTypes, configuredType string) bool {
+	return isNativeHistogram(remoteType) && configuredType == string(datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION)
+}
+
+func isDistributionMetricType(metricType datadogV2.MetricTagConfigurationMetricTypes) bool {
+	return metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION || isNativeHistogram(metricType)
 }
 
 func buildAggregations(resourceAggregations []interface{}) ([]datadogV2.MetricCustomAggregation, error) {
@@ -169,11 +190,11 @@ func buildDatadogMetricTagConfiguration(d *schema.ResourceData) (*datadogV2.Metr
 
 	includePercentiles := d.Get("include_percentiles")
 
-	if includePercentiles.(bool) && *metricType != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
-		return nil, fmt.Errorf("include_percentiles field not allowed with metric_type: %s, only with metric_type distribution", *metricType)
+	if includePercentiles.(bool) && !isDistributionMetricType(*metricType) {
+		return nil, fmt.Errorf("include_percentiles field not allowed with metric_type: %s, only with distributions and native histograms", *metricType)
 	}
 
-	if *metricType != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+	if !isDistributionMetricType(*metricType) {
 		attributes.IncludePercentiles = nil
 	} else {
 		attributes.SetIncludePercentiles(includePercentiles.(bool))
@@ -189,7 +210,7 @@ func buildDatadogMetricTagConfiguration(d *schema.ResourceData) (*datadogV2.Metr
 
 	aggregationsArray, aggregationsFieldSet := d.GetOk("aggregations")
 	if aggregationsFieldSet {
-		if *metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+		if isDistributionMetricType(*metricType) {
 			return nil, fmt.Errorf("aggregations field not allowed with metric_type: %s, only with metric_type of count, rate, or gauge", *metricType)
 		}
 		aggregations, err := buildAggregations(aggregationsArray.(*schema.Set).List())
@@ -219,11 +240,11 @@ func buildDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, existingMe
 
 	includePercentiles := d.Get("include_percentiles")
 
-	if includePercentiles.(bool) && *existingMetricType != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
-		return nil, fmt.Errorf("include_percentiles field not allowed with metric_type: %s, only with metric_type distribution", *existingMetricType)
+	if includePercentiles.(bool) && !isDistributionMetricType(*existingMetricType) {
+		return nil, fmt.Errorf("include_percentiles field not allowed with metric_type: %s, only with distributions and native histograms", *existingMetricType)
 	}
 
-	if *existingMetricType != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+	if !isDistributionMetricType(*existingMetricType) {
 		attributes.IncludePercentiles = nil
 	} else {
 		attributes.SetIncludePercentiles(includePercentiles.(bool))
@@ -239,7 +260,7 @@ func buildDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, existingMe
 
 	aggregationsArray, aggregationsFieldSet := d.GetOk("aggregations")
 	if aggregationsFieldSet {
-		if *existingMetricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+		if isDistributionMetricType(*existingMetricType) {
 			return nil, fmt.Errorf("aggregations field not allowed with metric_type: %s, only with metric_type of count, rate, or gauge", *existingMetricType)
 		}
 		aggregations, err := buildAggregations(aggregationsArray.(*schema.Set).List())
@@ -317,11 +338,21 @@ func resourceDatadogMetricTagConfigurationCreate(ctx context.Context, d *schema.
 func updateMetricTagConfigurationState(d *schema.ResourceData, metricTagConfiguration *datadogV2.MetricTagConfiguration) diag.Diagnostics {
 	if attributes, ok := metricTagConfiguration.GetAttributesOk(); ok {
 		if metricType, ok := attributes.GetMetricTypeOk(); ok {
-			if err := d.Set("metric_type", metricType); err != nil {
+			stateMetricType := *metricType
+			// Keep a managed distribution stable for resources that reference metric_type.
+			// On import, the empty prior type lets us record the API's native subtype.
+			if nativeHistogramMatchesDistribution(*metricType, d.Get("metric_type").(string)) {
+				stateMetricType = datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION
+			}
+			if err := d.Set("metric_type", stateMetricType); err != nil {
 				return diag.FromErr(err)
 			}
-			if *metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+			if isDistributionMetricType(*metricType) {
 				if err := d.Set("include_percentiles", attributes.GetIncludePercentiles()); err != nil {
+					return diag.FromErr(err)
+				}
+				// Aggregations left in state from a previous count, rate, or gauge type would block in-place updates.
+				if err := d.Set("aggregations", nil); err != nil {
 					return diag.FromErr(err)
 				}
 			} else {
