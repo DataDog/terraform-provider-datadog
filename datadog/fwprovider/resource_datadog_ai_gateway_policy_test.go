@@ -33,8 +33,8 @@ func TestBuildAiGatewayPolicyRequestAttributes(t *testing.T) {
 		t.Fatalf("marshal: %v", err)
 	}
 	want := `{"inbound":"coding-agent","priority":3,"tiers":[` +
-		`{"priority":0,"targets":[{"model":"gpt-5.2-codex","provider":"prod-us"}]},` +
-		`{"priority":1,"targets":[{"model":"claude-sonnet-5*"},{"model":"gpt-5*","provider":"*"}]}]}`
+		`{"priority":1,"targets":[{"model":"gpt-5.2-codex","provider":"prod-us"}]},` +
+		`{"priority":2,"targets":[{"model":"claude-sonnet-5*"},{"model":"gpt-5*","provider":"*"}]}]}`
 	if string(body) != want {
 		t.Errorf("request body\n got: %s\nwant: %s", body, want)
 	}

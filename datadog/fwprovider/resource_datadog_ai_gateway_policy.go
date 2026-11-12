@@ -286,8 +286,8 @@ func (r *aiGatewayPolicyResource) findPolicy(userID *uuid.UUID, inbound string) 
 	return nil, nil
 }
 
-// buildAiGatewayPolicyRequestAttributes numbers the tiers by position. The API merges tiers that share a number, so
-// sending them unnumbered would collapse every tier into one.
+// buildAiGatewayPolicyRequestAttributes numbers the tiers by position, from 1: the API merges tiers that share a
+// number, so sending them unnumbered would collapse every tier into one, and the database rejects tier 0.
 func buildAiGatewayPolicyRequestAttributes(state *aiGatewayPolicyModel) *datadogV2.AiGatewayPolicyRequestAttributes {
 	tiers := make([]datadogV2.AiGatewayPolicyTierRequest, 0, len(state.Tiers))
 	for i, tier := range state.Tiers {
@@ -301,7 +301,7 @@ func buildAiGatewayPolicyRequestAttributes(state *aiGatewayPolicyModel) *datadog
 			targets = append(targets, *request)
 		}
 		tierRequest := datadogV2.NewAiGatewayPolicyTierRequest(targets)
-		tierRequest.SetPriority(int64(i))
+		tierRequest.SetPriority(int64(i + 1))
 		tiers = append(tiers, *tierRequest)
 	}
 
