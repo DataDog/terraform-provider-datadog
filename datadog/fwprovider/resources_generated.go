@@ -10,6 +10,8 @@ import "github.com/hashicorp/terraform-plugin-framework/resource"
 // FrameworkProvider.Resources registers this slice alongside the hand-written
 // Resources.
 var generatedResources = []func() resource.Resource{
+	NewDatadogActionConnectionV2Resource,
+	NewDatadogActionExecutionPolicyV2Resource,
 	NewDatadogDerivedMetricResource,
 	NewDatadogIntegrationDatabricksAccountResource,
 	NewDatadogIntegrationElasticCloudAccountResource,
