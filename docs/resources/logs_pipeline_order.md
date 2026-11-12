@@ -3,12 +3,12 @@
 page_title: "datadog_logs_pipeline_order Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Logs Pipeline API resource, which is used to manage Datadog log pipelines order.
+  Manages the order in which Datadog processes log pipelines. Use at most one pipeline order resource per organization. The API replaces the entire order, so a concurrent reorder can be overwritten even when ignore_unlisted_pipelines is enabled.
 ---
 
 # datadog_logs_pipeline_order (Resource)
 
-Provides a Datadog Logs Pipeline API resource, which is used to manage Datadog log pipelines order.
+Manages the order in which Datadog processes log pipelines. Use at most one pipeline order resource per organization. The API replaces the entire order, so a concurrent reorder can be overwritten even when `ignore_unlisted_pipelines` is enabled.
 
 ## Example Usage
 
@@ -29,7 +29,11 @@ resource "datadog_logs_pipeline_order" "sample_pipeline_order" {
 ### Required
 
 - `name` (String) The name attribute in the resource `datadog_logs_pipeline_order` needs to be unique. It's recommended to use the same value as the resource name. No related field is available in [Logs Pipeline API](https://docs.datadoghq.com/api/v1/logs-pipelines/#get-pipeline-order).
-- `pipelines` (List of String) The pipeline IDs list. The order of pipeline IDs in this attribute defines the overall pipeline order for logs.
+- `pipelines` (List of String) The pipeline IDs in execution order. Include every pipeline unless `ignore_unlisted_pipelines` is enabled.
+
+### Optional
+
+- `ignore_unlisted_pipelines` (Boolean) Manage only the relative order of the listed pipelines. Each listed ID must be distinct and already exist. Unlisted pipelines keep their current positions. For example, if the current order is `[A, X, B]` and you configure `[B, A]`, the result is `[B, X, A]`. Pipeline `X` stays second but now runs before `A`. Defaults to `false`.
 
 ### Read-Only
 
