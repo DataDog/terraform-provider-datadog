@@ -205,7 +205,8 @@ func (r *aiGatewayProviderResource) Read(ctx context.Context, request resource.R
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving AI Gateway provider"))
 		return
 	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
+	// The models in resp.Included can carry operations newer than the client; the resource doesn't read them.
+	if err := utils.CheckForUnparsed(resp.Data); err != nil {
 		response.Diagnostics.AddError("response contains unparsed object", err.Error())
 		return
 	}
@@ -233,7 +234,7 @@ func (r *aiGatewayProviderResource) Create(ctx context.Context, request resource
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating AI Gateway provider"))
 		return
 	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
+	if err := utils.CheckForUnparsed(resp.Data); err != nil {
 		response.Diagnostics.AddError("response contains unparsed object", err.Error())
 		return
 	}
@@ -261,7 +262,7 @@ func (r *aiGatewayProviderResource) Update(ctx context.Context, request resource
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating AI Gateway provider"))
 		return
 	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
+	if err := utils.CheckForUnparsed(resp.Data); err != nil {
 		response.Diagnostics.AddError("response contains unparsed object", err.Error())
 		return
 	}

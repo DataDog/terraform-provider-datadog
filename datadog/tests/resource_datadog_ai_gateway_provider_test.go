@@ -19,13 +19,13 @@ const aiGatewayProviderResourceName = "datadog_ai_gateway_provider.foo"
 
 // aiGatewayProviderTestIntegrationAccountID returns the integration account that holds the vendor key. It is created
 // in the Datadog console, so recording the cassette requires DD_TEST_AI_GATEWAY_INTEGRATION_ACCOUNT_ID to name a
-// real OpenAI integration account in the test org. The placeholder is only good for replaying a cassette recorded
-// with it.
+// real OpenAI integration account in the test org. The default is the account the cassette was recorded with, so
+// replays send the same request body.
 func aiGatewayProviderTestIntegrationAccountID() string {
 	if id := os.Getenv("DD_TEST_AI_GATEWAY_INTEGRATION_ACCOUNT_ID"); id != "" {
 		return id
 	}
-	return "00000000-0000-0000-0000-000000000000"
+	return "4872ea56-b03e-4863-9151-ef3891930c51"
 }
 
 func TestAccAiGatewayProvider(t *testing.T) {
