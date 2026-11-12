@@ -107,7 +107,7 @@ func testAccCheckDatadogAiGatewayPolicyExists(accProvider *fwprovider.FrameworkP
 	return func(*terraform.State) error {
 		exists, err := aiGatewayPolicyExists(accProvider, inbound)
 		if err != nil {
-			return fmt.Errorf("received an error listing AI Gateway policies: %s", err)
+			return fmt.Errorf("received an error listing AI Gateway policies: %w", err)
 		}
 		if exists != want {
 			return fmt.Errorf("AI Gateway policy %q exists = %t, want %t", inbound, exists, want)
