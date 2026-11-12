@@ -9,8 +9,6 @@ datadog/tests/cassettes/
 
 /.generator                               @DataDog/api-reliability
 
-/docs/                                    @DataDog/api-reliability @DataDog/documentation
-
 # Dashboard mapping engine (shared by dashboard_v2 and powerpack_v2)
 datadog/dashboardmapping/                 @DataDog/dashboards-backend
 
