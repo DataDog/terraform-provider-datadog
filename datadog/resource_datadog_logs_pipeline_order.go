@@ -14,7 +14,7 @@ import (
 
 func resourceDatadogLogsPipelineOrder() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Manages the order in which Datadog processes log pipelines. Use at most one pipeline order resource per organization. The API replaces the entire order, so a concurrent reorder can be overwritten even when `ignore_unlisted_pipelines` is enabled.",
+		Description:   "Manages the order in which Datadog processes log pipelines. Use at most one pipeline order resource per organization. Each update replaces the entire order, so this resource can overwrite changes made at the same time in the Datadog UI, by automation, or by another Terraform run, even when `ignore_unlisted_pipelines` is `true`.",
 		CreateContext: resourceDatadogLogsPipelineOrderCreate,
 		UpdateContext: resourceDatadogLogsPipelineOrderUpdate,
 		ReadContext:   resourceDatadogLogsPipelineOrderRead,
@@ -30,13 +30,13 @@ func resourceDatadogLogsPipelineOrder() *schema.Resource {
 					Required:    true,
 				},
 				"pipelines": {
-					Description: "The pipeline IDs in execution order. Include every pipeline unless `ignore_unlisted_pipelines` is enabled.",
+					Description: "The pipeline IDs in execution order. Include every pipeline in the organization unless `ignore_unlisted_pipelines` is `true`.",
 					Type:        schema.TypeList,
 					Required:    true,
 					Elem:        &schema.Schema{Type: schema.TypeString},
 				},
 				"ignore_unlisted_pipelines": {
-					Description: "Manage only the relative order of the listed pipelines. Each listed ID must be distinct and already exist. Unlisted pipelines keep their current positions. For example, if the current order is `[A, X, B]` and you configure `[B, A]`, the result is `[B, X, A]`. Pipeline `X` stays second but now runs before `A`.",
+					Description: "When `true`, the resource manages only the relative order of the pipelines listed in `pipelines`. Each listed ID must be unique and match an existing pipeline. Unlisted pipelines keep their current positions, and pipelines added outside Terraform do not cause drift. For example, if the current order is `[A, X, B]` and you configure `[B, A]`, the result is `[B, X, A]`: pipeline `X` stays second but runs before `A` instead of after it. Leave this setting `false` to manage the full order, including which pipelines run first and last.",
 					Type:        schema.TypeBool,
 					Optional:    true,
 					Default:     false,
@@ -123,7 +123,7 @@ func applyLogsPipelineOrder(ctx context.Context, providerConf *ProviderConfigura
 		}
 		slots := listedPipelineSlots(pipelineIDs, current.PipelineIds)
 		if len(slots) != len(pipelineIDs) {
-			return nil, diag.Errorf("each ID in pipelines must name a distinct existing pipeline: found %d of %d configured IDs", len(slots), len(pipelineIDs))
+			return nil, diag.Errorf("each ID in pipelines must be unique and match an existing pipeline: matched %d of %d configured IDs", len(slots), len(pipelineIDs))
 		}
 		merged := slices.Clone(current.PipelineIds)
 		for i, slot := range slots {
