@@ -367,7 +367,7 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			},
 			"use_pup": schema.BoolAttribute{
 				Optional:    true,
-				Description: "Get a Bearer token from the pup CLI (`pup auth token`) after `pup auth login`, so no API, application or access token needs to be stored. Used only as a last resort: when api_key, app_key, bearer_token, cloud provider authentication and Terraform Dynamic Provider Credentials are all absent. The provider gets a fresh token when the current one expires, and stops if pup is then logged in as a different user. When `org_uuid` is set, every token must belong to that organization. This can also be set via the `DD_USE_PUP` environment variable.",
+				Description: "Get a bearer token from the pup CLI (pup auth token) after you run pup auth login, so you don't need to store an API key, application key, or access token. Used only when api_key, app_key, bearer_token, cloud provider authentication, and HCP Terraform dynamic provider credentials are all absent. The provider requests a new token when the current one expires, and fails if pup is then logged in as a different user. When org_uuid is set, every token must belong to that organization. You can also set this with the `DD_USE_PUP` environment variable.",
 			},
 			"workload_identity_token_tag": schema.StringAttribute{
 				Optional:    true,
