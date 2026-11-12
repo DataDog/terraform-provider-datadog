@@ -125,7 +125,7 @@ func testAccCheckDatadogAiGatewayRateLimitExists(accProvider *fwprovider.Framewo
 				continue
 			}
 			if _, _, err := getAiGatewayRateLimit(accProvider, r.Primary.ID); err != nil {
-				return fmt.Errorf("received an error retrieving AI Gateway rate limit: %s", err)
+				return fmt.Errorf("received an error retrieving AI Gateway rate limit: %w", err)
 			}
 		}
 		return nil
@@ -142,7 +142,7 @@ func testAccCheckDatadogAiGatewayRateLimitCleared(accProvider *fwprovider.Framew
 		}
 		resp, _, err := getAiGatewayRateLimit(accProvider, r.Primary.ID)
 		if err != nil {
-			return fmt.Errorf("received an error retrieving AI Gateway rate limit: %s", err)
+			return fmt.Errorf("received an error retrieving AI Gateway rate limit: %w", err)
 		}
 		attributes := resp.Data.Attributes
 		if v := attributes.InputTokensPerMinute.Get(); v != nil && *v > 0 {
