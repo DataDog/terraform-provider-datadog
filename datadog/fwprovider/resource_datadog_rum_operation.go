@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
@@ -368,7 +369,7 @@ func buildRumOperationRequestAttributes(ctx context.Context, state *rumOperation
 		steps = append(steps, *step)
 	}
 
-	attributes := datadogV2.NewRUMOperationRequestAttributes(*datadogV2.NewRUMOperationJourneyRum(steps), state.Name.ValueString(), tags)
+	attributes := datadogV2.NewRUMOperationRequestAttributes(*datadogV2.NewRUMOperationJourneyRum(*datadog.NewNullableList(&steps)), state.Name.ValueString(), tags)
 
 	applicationID, err := uuid.Parse(state.ApplicationID.ValueString())
 	if err != nil {
