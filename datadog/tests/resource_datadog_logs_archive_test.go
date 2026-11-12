@@ -16,7 +16,7 @@ import (
 
 // Test
 // create: OK azure
-func archiveAzureConfigForCreation(uniq string) string {
+func archiveAzureConfigForCreation(uniq, name string) string {
 	return fmt.Sprintf(`
 resource "datadog_integration_azure" "an_azure_integration" {
   tenant_name   = "%s"
@@ -26,7 +26,7 @@ resource "datadog_integration_azure" "an_azure_integration" {
 
 resource "datadog_logs_archive" "my_azure_archive" {
   depends_on = ["datadog_integration_azure.an_azure_integration"]
-  name       = "my first azure archive"
+  name       = "%s"
   query      = "service:toto"
   azure_archive {
     container 		= "my-container"
@@ -36,13 +36,15 @@ resource "datadog_logs_archive" "my_azure_archive" {
     path            = "/path/blou"
   }
   compression_method = "GZIP"
-}`, uniq, uniq)
+}`, uniq, name, uniq)
 }
 
 func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	unique_hash := fmt.Sprintf("%x", sha256.Sum256([]byte(uniqueEntityName(ctx, t))))
+	cleanupLogsArchives(t)
+	archiveName := uniqueEntityName(ctx, t)
+	unique_hash := fmt.Sprintf("%x", sha256.Sum256([]byte(archiveName)))
 	tenantName := fmt.Sprintf("%s-%s-%s-%s-%s", unique_hash[:8], unique_hash[8:12], unique_hash[12:16], unique_hash[16:20], unique_hash[20:32])
 
 	resource.Test(t, resource.TestCase{
@@ -51,11 +53,11 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 		CheckDestroy:             testAccCheckArchiveAndIntegrationAzureDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: archiveAzureConfigForCreation(tenantName),
+				Config: archiveAzureConfigForCreation(tenantName, archiveName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckArchiveExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_archive.my_azure_archive", "name", "my first azure archive"),
+						"datadog_logs_archive.my_azure_archive", "name", archiveName),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_azure_archive", "query", "service:toto"),
 					resource.TestCheckResourceAttr(
