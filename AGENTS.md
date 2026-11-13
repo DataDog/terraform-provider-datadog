@@ -2,6 +2,17 @@
 
 For setup, building, and contribution guidelines, read [DEVELOPMENT.md](./DEVELOPMENT.md) first.
 
+## Contributor skills
+
+Shared, agent-agnostic skills live in `.agents/skills/<skill-name>/SKILL.md`.
+Read the relevant skill before starting its workflow.
+
+When adding a resource or data source, use
+[add-datadog-resource](.agents/skills/add-datadog-resource/SKILL.md) first. It
+directs Datadog organization members to the generator skills in
+`ddoghq/datadog-api-spec` and external contributors to manual implementation
+using current Terraform Plugin Framework guidance.
+
 ## Critical Rules
 
 ### NEVER Use Raw Go Commands for Testing

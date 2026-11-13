@@ -13,7 +13,11 @@ website/.vagrant
 website/.bundle
 website/build
 website/node_modules
-.agents/
+# Keep local agent configuration ignored except for shared contributor skills.
+.agents/*
+!.agents/skills/
+.agents/skills/*
+!.agents/skills/add-datadog-resource/
 .claude/
 .specify/
 .vagrant/
