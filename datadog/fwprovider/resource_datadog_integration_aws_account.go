@@ -21,6 +21,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/customtypes"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
@@ -119,10 +120,10 @@ type metricsTagFiltersModel struct {
 }
 
 type resourceTypeTagFiltersModel struct {
-	Service       types.String `tfsdk:"service"`
-	ResourceTypes types.List   `tfsdk:"resource_types"`
-	Custom        types.Bool   `tfsdk:"custom"`
-	Expression    types.String `tfsdk:"expression"`
+	Service       types.String                               `tfsdk:"service"`
+	ResourceTypes types.List                                 `tfsdk:"resource_types"`
+	Custom        types.Bool                                 `tfsdk:"custom"`
+	Expression    customtypes.TagFilterExpressionStringValue `tfsdk:"expression"`
 }
 
 type namespaceFiltersModel struct {
@@ -484,6 +485,7 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 									Description: "Whether this filter applies to custom resources.",
 								},
 								"expression": schema.StringAttribute{
+									CustomType:  customtypes.TagFilterExpressionStringType{},
 									Required:    true,
 									Description: "The tag filter expression used when collecting metrics for the specified resource types.",
 								},
@@ -849,7 +851,7 @@ func buildStateMetricsConfig(ctx context.Context, attributes datadogV2.AWSAccoun
 				resourceTypeTagFiltersTfItem.Custom = types.BoolValue(*custom)
 			}
 			if expression, ok := resourceTypeTagFiltersDd.GetExpressionOk(); ok {
-				resourceTypeTagFiltersTfItem.Expression = types.StringValue(*expression)
+				resourceTypeTagFiltersTfItem.Expression = customtypes.TagFilterExpressionStringValue{StringValue: types.StringValue(*expression)}
 			}
 			metricsConfigTf.ResourceTypeTagFilters = append(metricsConfigTf.ResourceTypeTagFilters, &resourceTypeTagFiltersTfItem)
 		}
@@ -1127,7 +1129,14 @@ func buildRequestMetricsConfig(ctx context.Context, state *integrationAwsAccount
 			}
 			tagFilters = append(tagFilters, *tagFiltersDDItem)
 		}
-		metricsConfig.SetTagFilters(tagFilters)
+		if len(tagFilters) > 0 {
+			metricsConfig.SetTagFilters(tagFilters)
+		} else {
+			// The API rejects a request that has both fields, also when both are empty, and
+			// keeps an omitted field. An empty resource_type_tag_filters removes filters
+			// of both kinds that a previous apply set.
+			metricsConfig.SetResourceTypeTagFilters([]datadogV2.AWSResourceTypeTagFilter{})
+		}
 	}
 
 	metricNameFilters := []datadogV2.AWSMetricNameFilters{}
