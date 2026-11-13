@@ -30,7 +30,7 @@ func TestAccAiGatewayRateLimit(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				// The API lowercases tag keys, so an uppercase key would show as a change on every plan.
-				Config: strings.Replace(testAccAiGatewayRateLimitConfig(name), "provider =", "Provider =", 1),
+				Config:      strings.Replace(testAccAiGatewayRateLimitConfig(name), "provider =", "Provider =", 1),
 				PlanOnly:    true,
 				ExpectError: regexp.MustCompile(`must be lowercase`),
 			},
