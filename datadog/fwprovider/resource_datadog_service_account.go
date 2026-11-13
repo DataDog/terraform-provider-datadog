@@ -97,7 +97,7 @@ func (r *serviceAccountResource) Read(ctx context.Context, request resource.Read
 			state.ID = types.String{}
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting user"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting service account"))
 		return
 	}
 	if diags := updateServiceAccountStateV2(ctx, &state, &userResponse); diags.HasError() {
