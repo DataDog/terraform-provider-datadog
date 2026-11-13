@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"service:unmanaged-first"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"service:unmanaged-first"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: 134
         uncompressed: false
-        body: '{"data":{"id":"d85729d4-4b5d-4000-adf3-3dce9bfb48f5","type":"validate_response","attributes":{"Canonical":"service:unmanaged-first"}}}'
+        body: '{"data":{"id":"61cad1eb-737d-4eee-989e-41cfe9be7717","type":"validate_response","attributes":{"Canonical":"service:unmanaged-first"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 48.564792ms
+        duration: 25.607792ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -49,7 +49,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"service:unmanaged-second"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"service:unmanaged-second"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
@@ -66,50 +66,14 @@ interactions:
         trailer: {}
         content_length: 135
         uncompressed: false
-        body: '{"data":{"id":"ff1acdfd-5b30-458b-8cc9-d2761b03967e","type":"validate_response","attributes":{"Canonical":"service:unmanaged-second"}}}'
+        body: '{"data":{"id":"2941724e-f993-4b81-9108-517340cff1da","type":"validate_response","attributes":{"Canonical":"service:unmanaged-second"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 95.484292ms
+        duration: 25.642125ms
     - id: 2
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 85
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":{"attributes":{"Query":"service:unmanaged-second"},"type":"validate_query"}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/validate-query
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 135
-        uncompressed: false
-        body: '{"data":{"id":"671cd4ba-0806-46ea-aaba-f0c2827e88ea","type":"validate_response","attributes":{"Canonical":"service:unmanaged-second"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 44.692583ms
-    - id: 3
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -121,7 +85,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"service:unmanaged-first"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"service:unmanaged-first"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
@@ -138,13 +102,49 @@ interactions:
         trailer: {}
         content_length: 134
         uncompressed: false
-        body: '{"data":{"id":"2b2f77f9-b520-45a9-9bda-ed311f12047b","type":"validate_response","attributes":{"Canonical":"service:unmanaged-first"}}}'
+        body: '{"data":{"id":"d5c237d8-fd25-436d-b4cd-3c4e8a0b232f","type":"validate_response","attributes":{"Canonical":"service:unmanaged-first"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 51.710834ms
+        duration: 26.996ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 85
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"query":"service:unmanaged-second"},"type":"validate_query"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/validate-query
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 135
+        uncompressed: false
+        body: '{"data":{"id":"4f3483b2-70f7-4ea0-a268-56db2e5e03dc","type":"validate_response","attributes":{"Canonical":"service:unmanaged-second"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 31.226541ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -157,7 +157,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":null,"name":"unmanaged-second-rule","query":{"addition":{"key":"env","value":"unmanaged-test"},"case_insensitivity":false,"if_tag_exists":"replace","query":"service:unmanaged-second"},"reference_table":null}]},"id":"tf-test-unmanaged-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","type":"create_ruleset"}}
+            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":null,"name":"unmanaged-second-rule","query":{"addition":{"key":"env","value":"unmanaged-test"},"case_insensitivity":false,"if_tag_exists":"replace","query":"service:unmanaged-second"},"reference_table":null}]},"id":"tf-test-unmanaged-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","type":"create_ruleset"}}
         form: {}
         headers:
             Accept:
@@ -172,15 +172,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 697
+        content_length: 699
         uncompressed: false
-        body: '{"data":{"id":"c6fe59de-fa2b-4669-afdc-94daf9f05bbb","type":"ruleset","attributes":{"created":{"seconds":1782916712,"nanos":73360000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916712,"nanos":73360000},"name":"tf-test-unmanaged-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":1,"rules":[{"name":"unmanaged-second-rule","enabled":true,"query":{"query":"service:unmanaged-second","addition":{"key":"env","value":"unmanaged-test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718549}}}'
+        body: '{"data":{"id":"296dd4ee-ccc3-4367-83fd-950a6da56195","type":"ruleset","attributes":{"created":{"seconds":1794531630,"nanos":922300000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531630,"nanos":922300000},"name":"tf-test-unmanaged-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":1,"rules":[{"name":"unmanaged-second-rule","enabled":true,"query":{"query":"service:unmanaged-second","addition":{"key":"env","value":"unmanaged-test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776044}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 96.718291ms
+        duration: 81.959459ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -193,7 +193,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":null,"name":"unmanaged-first-rule","query":{"addition":{"key":"env","value":"unmanaged-test"},"case_insensitivity":false,"if_tag_exists":"replace","query":"service:unmanaged-first"},"reference_table":null}]},"id":"tf-test-unmanaged-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","type":"create_ruleset"}}
+            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":null,"name":"unmanaged-first-rule","query":{"addition":{"key":"env","value":"unmanaged-test"},"case_insensitivity":false,"if_tag_exists":"replace","query":"service:unmanaged-first"},"reference_table":null}]},"id":"tf-test-unmanaged-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","type":"create_ruleset"}}
         form: {}
         headers:
             Accept:
@@ -208,15 +208,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 694
+        content_length: 696
         uncompressed: false
-        body: '{"data":{"id":"d99bf3e2-d867-44d8-92bf-a1b1b7085b7f","type":"ruleset","attributes":{"created":{"seconds":1782916712,"nanos":75575000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916712,"nanos":75575000},"name":"tf-test-unmanaged-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":2,"rules":[{"name":"unmanaged-first-rule","enabled":true,"query":{"query":"service:unmanaged-first","addition":{"key":"env","value":"unmanaged-test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718550}}}'
+        body: '{"data":{"id":"6895fb04-9ae8-44e6-a5bd-8402fdf3f122","type":"ruleset","attributes":{"created":{"seconds":1794531630,"nanos":926178000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531630,"nanos":926178000},"name":"tf-test-unmanaged-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":2,"rules":[{"name":"unmanaged-first-rule","enabled":true,"query":{"query":"service:unmanaged-first","addition":{"key":"env","value":"unmanaged-test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776045}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 116.256459ms
+        duration: 113.700291ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -229,7 +229,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"service:unmanaged-second"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"service:unmanaged-second"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
@@ -246,13 +246,13 @@ interactions:
         trailer: {}
         content_length: 135
         uncompressed: false
-        body: '{"data":{"id":"1e316d7e-e6bc-44fa-ae82-5eb93a3faac5","type":"validate_response","attributes":{"Canonical":"service:unmanaged-second"}}}'
+        body: '{"data":{"id":"c6fab23b-f909-408d-8f7b-f4414fd0316c","type":"validate_response","attributes":{"Canonical":"service:unmanaged-second"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 39.403ms
+        duration: 25.948458ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -265,7 +265,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"service:unmanaged-first"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"service:unmanaged-first"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
@@ -282,13 +282,13 @@ interactions:
         trailer: {}
         content_length: 134
         uncompressed: false
-        body: '{"data":{"id":"a5b2276f-5988-429a-aef5-54e63e5d5988","type":"validate_response","attributes":{"Canonical":"service:unmanaged-first"}}}'
+        body: '{"data":{"id":"82451cfb-bce8-4816-b9bf-31b3c5948b2c","type":"validate_response","attributes":{"Canonical":"service:unmanaged-first"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 43.799375ms
+        duration: 28.971042ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -305,7 +305,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/c6fe59de-fa2b-4669-afdc-94daf9f05bbb
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/296dd4ee-ccc3-4367-83fd-950a6da56195
         method: GET
       response:
         proto: HTTP/1.1
@@ -313,15 +313,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 697
+        content_length: 699
         uncompressed: false
-        body: '{"data":{"id":"c6fe59de-fa2b-4669-afdc-94daf9f05bbb","type":"ruleset","attributes":{"created":{"seconds":1782916712,"nanos":73360000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916712,"nanos":73360000},"name":"tf-test-unmanaged-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":1,"rules":[{"name":"unmanaged-second-rule","enabled":true,"query":{"query":"service:unmanaged-second","addition":{"key":"env","value":"unmanaged-test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718549}}}'
+        body: '{"data":{"id":"296dd4ee-ccc3-4367-83fd-950a6da56195","type":"ruleset","attributes":{"created":{"seconds":1794531630,"nanos":922300000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531630,"nanos":922300000},"name":"tf-test-unmanaged-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":1,"rules":[{"name":"unmanaged-second-rule","enabled":true,"query":{"query":"service:unmanaged-second","addition":{"key":"env","value":"unmanaged-test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776044}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 124.328458ms
+        duration: 32.306875ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -338,7 +338,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/d99bf3e2-d867-44d8-92bf-a1b1b7085b7f
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/6895fb04-9ae8-44e6-a5bd-8402fdf3f122
         method: GET
       response:
         proto: HTTP/1.1
@@ -346,52 +346,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 694
+        content_length: 696
         uncompressed: false
-        body: '{"data":{"id":"d99bf3e2-d867-44d8-92bf-a1b1b7085b7f","type":"ruleset","attributes":{"created":{"seconds":1782916712,"nanos":75575000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916712,"nanos":75575000},"name":"tf-test-unmanaged-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":2,"rules":[{"name":"unmanaged-first-rule","enabled":true,"query":{"query":"service:unmanaged-first","addition":{"key":"env","value":"unmanaged-test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718550}}}'
+        body: '{"data":{"id":"6895fb04-9ae8-44e6-a5bd-8402fdf3f122","type":"ruleset","attributes":{"created":{"seconds":1794531630,"nanos":926178000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531630,"nanos":926178000},"name":"tf-test-unmanaged-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":2,"rules":[{"name":"unmanaged-first-rule","enabled":true,"query":{"query":"service:unmanaged-first","addition":{"key":"env","value":"unmanaged-test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776045}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 124.36825ms
+        duration: 37.3615ms
     - id: 10
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 85
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":{"attributes":{"Query":"service:unmanaged-second"},"type":"validate_query"}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/validate-query
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 135
-        uncompressed: false
-        body: '{"data":{"id":"033a6cc1-c16b-4f18-a085-410762099ceb","type":"validate_response","attributes":{"Canonical":"service:unmanaged-second"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 41.108083ms
-    - id: 11
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -403,7 +367,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"service:unmanaged-first"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"service:unmanaged-first"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
@@ -420,13 +384,49 @@ interactions:
         trailer: {}
         content_length: 134
         uncompressed: false
-        body: '{"data":{"id":"69959269-1a58-4e35-9faf-e4b518ec1ba2","type":"validate_response","attributes":{"Canonical":"service:unmanaged-first"}}}'
+        body: '{"data":{"id":"4f0658b3-9134-40f8-a901-14f8424c24c1","type":"validate_response","attributes":{"Canonical":"service:unmanaged-first"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 42.86675ms
+        duration: 99.318625ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 85
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"query":"service:unmanaged-second"},"type":"validate_query"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/validate-query
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 135
+        uncompressed: false
+        body: '{"data":{"id":"cf174419-4b1d-4d37-9cfb-19a2530856aa","type":"validate_response","attributes":{"Canonical":"service:unmanaged-second"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 103.96875ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -443,7 +443,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/c6fe59de-fa2b-4669-afdc-94daf9f05bbb
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/6895fb04-9ae8-44e6-a5bd-8402fdf3f122
         method: GET
       response:
         proto: HTTP/1.1
@@ -451,15 +451,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 697
+        content_length: 696
         uncompressed: false
-        body: '{"data":{"id":"c6fe59de-fa2b-4669-afdc-94daf9f05bbb","type":"ruleset","attributes":{"created":{"seconds":1782916712,"nanos":73360000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916712,"nanos":73360000},"name":"tf-test-unmanaged-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":1,"rules":[{"name":"unmanaged-second-rule","enabled":true,"query":{"query":"service:unmanaged-second","addition":{"key":"env","value":"unmanaged-test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718549}}}'
+        body: '{"data":{"id":"6895fb04-9ae8-44e6-a5bd-8402fdf3f122","type":"ruleset","attributes":{"created":{"seconds":1794531630,"nanos":926178000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531630,"nanos":926178000},"name":"tf-test-unmanaged-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":2,"rules":[{"name":"unmanaged-first-rule","enabled":true,"query":{"query":"service:unmanaged-first","addition":{"key":"env","value":"unmanaged-test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776045}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 145.388ms
+        duration: 34.52525ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -476,7 +476,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/d99bf3e2-d867-44d8-92bf-a1b1b7085b7f
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/296dd4ee-ccc3-4367-83fd-950a6da56195
         method: GET
       response:
         proto: HTTP/1.1
@@ -484,15 +484,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 694
+        content_length: 699
         uncompressed: false
-        body: '{"data":{"id":"d99bf3e2-d867-44d8-92bf-a1b1b7085b7f","type":"ruleset","attributes":{"created":{"seconds":1782916712,"nanos":75575000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916712,"nanos":75575000},"name":"tf-test-unmanaged-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":2,"rules":[{"name":"unmanaged-first-rule","enabled":true,"query":{"query":"service:unmanaged-first","addition":{"key":"env","value":"unmanaged-test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718550}}}'
+        body: '{"data":{"id":"296dd4ee-ccc3-4367-83fd-950a6da56195","type":"ruleset","attributes":{"created":{"seconds":1794531630,"nanos":922300000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531630,"nanos":922300000},"name":"tf-test-unmanaged-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":1,"rules":[{"name":"unmanaged-second-rule","enabled":true,"query":{"query":"service:unmanaged-second","addition":{"key":"env","value":"unmanaged-test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776044}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 145.408167ms
+        duration: 34.518375ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -505,7 +505,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"service:third"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"service:first"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
@@ -522,13 +522,13 @@ interactions:
         trailer: {}
         content_length: 124
         uncompressed: false
-        body: '{"data":{"id":"4767dca5-7575-4f0f-97ed-7d040177b558","type":"validate_response","attributes":{"Canonical":"service:third"}}}'
+        body: '{"data":{"id":"f5302cce-95d0-45f2-b9ac-a07f6fe67326","type":"validate_response","attributes":{"Canonical":"service:first"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 184.761542ms
+        duration: 61.372584ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -541,7 +541,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"service:first"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"service:third"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
@@ -558,13 +558,13 @@ interactions:
         trailer: {}
         content_length: 124
         uncompressed: false
-        body: '{"data":{"id":"855c1b08-8f96-41a1-a601-f95ae334c2a9","type":"validate_response","attributes":{"Canonical":"service:first"}}}'
+        body: '{"data":{"id":"0bad645c-0c2b-421b-97a6-960e720c8db3","type":"validate_response","attributes":{"Canonical":"service:third"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 201.960667ms
+        duration: 61.457ms
     - id: 16
       request:
         proto: HTTP/1.1
@@ -577,7 +577,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"service:second"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"service:second"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
@@ -594,13 +594,13 @@ interactions:
         trailer: {}
         content_length: 125
         uncompressed: false
-        body: '{"data":{"id":"d1db8787-173f-4d34-aaa1-56712efa790d","type":"validate_response","attributes":{"Canonical":"service:second"}}}'
+        body: '{"data":{"id":"474ed6ea-d615-46c7-93f6-e2436507e983","type":"validate_response","attributes":{"Canonical":"service:second"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 216.5495ms
+        duration: 61.530916ms
     - id: 17
       request:
         proto: HTTP/1.1
@@ -617,7 +617,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/d99bf3e2-d867-44d8-92bf-a1b1b7085b7f
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/6895fb04-9ae8-44e6-a5bd-8402fdf3f122
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -631,7 +631,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 105.721917ms
+        duration: 48.560042ms
     - id: 18
       request:
         proto: HTTP/1.1
@@ -648,7 +648,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/c6fe59de-fa2b-4669-afdc-94daf9f05bbb
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/296dd4ee-ccc3-4367-83fd-950a6da56195
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -662,44 +662,8 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 105.762625ms
+        duration: 60.474083ms
     - id: 19
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 74
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":{"attributes":{"Query":"service:first"},"type":"validate_query"}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/validate-query
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 124
-        uncompressed: false
-        body: '{"data":{"id":"d07e4ff9-93ba-4153-ae31-9ba3ff99e419","type":"validate_response","attributes":{"Canonical":"service:first"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 150.84675ms
-    - id: 20
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -711,7 +675,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"service:second"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"service:second"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
@@ -728,14 +692,14 @@ interactions:
         trailer: {}
         content_length: 125
         uncompressed: false
-        body: '{"data":{"id":"f93a222a-21c2-45e6-a39d-810c75f1c517","type":"validate_response","attributes":{"Canonical":"service:second"}}}'
+        body: '{"data":{"id":"a204d785-6c53-4e59-9523-68e50e72815e","type":"validate_response","attributes":{"Canonical":"service:second"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 169.070042ms
-    - id: 21
+        duration: 68.337625ms
+    - id: 20
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -747,7 +711,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"service:third"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"service:third"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
@@ -764,13 +728,49 @@ interactions:
         trailer: {}
         content_length: 124
         uncompressed: false
-        body: '{"data":{"id":"e18ebbb5-9792-46a0-86db-78d456662a9c","type":"validate_response","attributes":{"Canonical":"service:third"}}}'
+        body: '{"data":{"id":"2162d8dd-e042-465d-bc20-d03648a74cab","type":"validate_response","attributes":{"Canonical":"service:third"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 199.739458ms
+        duration: 69.817209ms
+    - id: 21
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 74
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"query":"service:first"},"type":"validate_query"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/validate-query
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 124
+        uncompressed: false
+        body: '{"data":{"id":"22eedfd4-f718-4acd-b58f-899abf0f90eb","type":"validate_response","attributes":{"Canonical":"service:first"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 71.526709ms
     - id: 22
       request:
         proto: HTTP/1.1
@@ -783,7 +783,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":null,"name":"first-rule","query":{"addition":{"key":"env","value":"test"},"case_insensitivity":false,"if_tag_exists":"replace","query":"service:first"},"reference_table":null}]},"id":"tf-test-override-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","type":"create_ruleset"}}
+            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":null,"name":"first-rule","query":{"addition":{"key":"env","value":"test"},"case_insensitivity":false,"if_tag_exists":"replace","query":"service:first"},"reference_table":null}]},"id":"tf-test-override-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","type":"create_ruleset"}}
         form: {}
         headers:
             Accept:
@@ -800,50 +800,14 @@ interactions:
         trailer: {}
         content_length: 665
         uncompressed: false
-        body: '{"data":{"id":"bbdc4104-a763-4e39-a113-1f8d5eba475e","type":"ruleset","attributes":{"created":{"seconds":1782916714,"nanos":158280000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916714,"nanos":158280000},"name":"tf-test-override-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":1,"rules":[{"name":"first-rule","enabled":true,"query":{"query":"service:first","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718551}}}'
+        body: '{"data":{"id":"10182d9e-63af-470b-aed8-e5acd1df67b3","type":"ruleset","attributes":{"created":{"seconds":1794531633,"nanos":544959000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531633,"nanos":544959000},"name":"tf-test-override-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":1,"rules":[{"name":"first-rule","enabled":true,"query":{"query":"service:first","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776046}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 125.214791ms
+        duration: 78.121292ms
     - id: 23
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 390
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":null,"name":"third-rule","query":{"addition":{"key":"env","value":"test"},"case_insensitivity":false,"if_tag_exists":"replace","query":"service:third"},"reference_table":null}]},"id":"tf-test-override-third-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","type":"create_ruleset"}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 665
-        uncompressed: false
-        body: '{"data":{"id":"3144a014-655c-4f53-94bc-18ed7499525d","type":"ruleset","attributes":{"created":{"seconds":1782916714,"nanos":175943000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916714,"nanos":175943000},"name":"tf-test-override-third-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":2,"rules":[{"name":"third-rule","enabled":true,"query":{"query":"service:third","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718552}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 87.206333ms
-    - id: 24
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -855,7 +819,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":null,"name":"second-rule","query":{"addition":{"key":"env","value":"test"},"case_insensitivity":false,"if_tag_exists":"replace","query":"service:second"},"reference_table":null}]},"id":"tf-test-override-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","type":"create_ruleset"}}
+            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":null,"name":"second-rule","query":{"addition":{"key":"env","value":"test"},"case_insensitivity":false,"if_tag_exists":"replace","query":"service:second"},"reference_table":null}]},"id":"tf-test-override-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","type":"create_ruleset"}}
         form: {}
         headers:
             Accept:
@@ -872,13 +836,49 @@ interactions:
         trailer: {}
         content_length: 668
         uncompressed: false
-        body: '{"data":{"id":"9a83d16a-7cdd-4920-93d5-60fd0da36568","type":"ruleset","attributes":{"created":{"seconds":1782916714,"nanos":176515000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916714,"nanos":176515000},"name":"tf-test-override-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":3,"rules":[{"name":"second-rule","enabled":true,"query":{"query":"service:second","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718553}}}'
+        body: '{"data":{"id":"398a80b7-3396-4bde-96b6-0fc9c1f43015","type":"ruleset","attributes":{"created":{"seconds":1794531633,"nanos":549982000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531633,"nanos":549982000},"name":"tf-test-override-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":2,"rules":[{"name":"second-rule","enabled":true,"query":{"query":"service:second","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776047}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 131.944166ms
+        duration: 97.0155ms
+    - id: 24
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 390
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":null,"name":"third-rule","query":{"addition":{"key":"env","value":"test"},"case_insensitivity":false,"if_tag_exists":"replace","query":"service:third"},"reference_table":null}]},"id":"tf-test-override-third-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","type":"create_ruleset"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 665
+        uncompressed: false
+        body: '{"data":{"id":"4719342e-9c9b-4060-8e59-1322f8e00628","type":"ruleset","attributes":{"created":{"seconds":1794531633,"nanos":550419000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531633,"nanos":550419000},"name":"tf-test-override-third-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":3,"rules":[{"name":"third-rule","enabled":true,"query":{"query":"service:third","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776048}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 131.520625ms
     - id: 25
       request:
         proto: HTTP/1.1
@@ -905,13 +905,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":[{"id":"bbdc4104-a763-4e39-a113-1f8d5eba475e","type":"ruleset","attributes":{"created":{"seconds":1782916714,"nanos":158280000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916714,"nanos":158280000},"name":"tf-test-override-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":1,"rules":[{"name":"first-rule","enabled":true,"query":{"query":"service:first","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718551}},{"id":"3144a014-655c-4f53-94bc-18ed7499525d","type":"ruleset","attributes":{"created":{"seconds":1782916714,"nanos":175943000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916714,"nanos":175943000},"name":"tf-test-override-third-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":2,"rules":[{"name":"third-rule","enabled":true,"query":{"query":"service:third","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718552}},{"id":"9a83d16a-7cdd-4920-93d5-60fd0da36568","type":"ruleset","attributes":{"created":{"seconds":1782916714,"nanos":176515000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916714,"nanos":176515000},"name":"tf-test-override-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":3,"rules":[{"name":"second-rule","enabled":true,"query":{"query":"service:second","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718553}}]}'
+        body: '{"data":[{"id":"10182d9e-63af-470b-aed8-e5acd1df67b3","type":"ruleset","attributes":{"created":{"seconds":1794531633,"nanos":544959000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531633,"nanos":544959000},"name":"tf-test-override-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":1,"rules":[{"name":"first-rule","enabled":true,"query":{"query":"service:first","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776046}},{"id":"398a80b7-3396-4bde-96b6-0fc9c1f43015","type":"ruleset","attributes":{"created":{"seconds":1794531633,"nanos":549982000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531633,"nanos":549982000},"name":"tf-test-override-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":2,"rules":[{"name":"second-rule","enabled":true,"query":{"query":"service:second","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776047}},{"id":"4719342e-9c9b-4060-8e59-1322f8e00628","type":"ruleset","attributes":{"created":{"seconds":1794531633,"nanos":550419000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531633,"nanos":550419000},"name":"tf-test-override-third-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":3,"rules":[{"name":"third-rule","enabled":true,"query":{"query":"service:third","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776048}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 67.566625ms
+        duration: 36.40825ms
     - id: 26
       request:
         proto: HTTP/1.1
@@ -924,7 +924,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":[{"id":"bbdc4104-a763-4e39-a113-1f8d5eba475e","type":"ruleset"},{"id":"9a83d16a-7cdd-4920-93d5-60fd0da36568","type":"ruleset"},{"id":"3144a014-655c-4f53-94bc-18ed7499525d","type":"ruleset"}]}
+            {"data":[{"id":"10182d9e-63af-470b-aed8-e5acd1df67b3","type":"ruleset"},{"id":"398a80b7-3396-4bde-96b6-0fc9c1f43015","type":"ruleset"},{"id":"4719342e-9c9b-4060-8e59-1322f8e00628","type":"ruleset"}]}
         form: {}
         headers:
             Accept:
@@ -945,7 +945,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 82.106ms
+        duration: 37.399083ms
     - id: 27
       request:
         proto: HTTP/1.1
@@ -972,13 +972,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":[{"id":"bbdc4104-a763-4e39-a113-1f8d5eba475e","type":"ruleset","attributes":{"created":{"seconds":1782916714,"nanos":158280000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916714,"nanos":158280000},"name":"tf-test-override-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":1,"rules":[{"name":"first-rule","enabled":true,"query":{"query":"service:first","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718551}},{"id":"9a83d16a-7cdd-4920-93d5-60fd0da36568","type":"ruleset","attributes":{"created":{"seconds":1782916714,"nanos":176515000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916714,"nanos":176515000},"name":"tf-test-override-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":2,"rules":[{"name":"second-rule","enabled":true,"query":{"query":"service:second","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718553}},{"id":"3144a014-655c-4f53-94bc-18ed7499525d","type":"ruleset","attributes":{"created":{"seconds":1782916714,"nanos":175943000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916714,"nanos":175943000},"name":"tf-test-override-third-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":3,"rules":[{"name":"third-rule","enabled":true,"query":{"query":"service:third","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718552}}]}'
+        body: '{"data":[{"id":"10182d9e-63af-470b-aed8-e5acd1df67b3","type":"ruleset","attributes":{"created":{"seconds":1794531633,"nanos":544959000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531633,"nanos":544959000},"name":"tf-test-override-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":1,"rules":[{"name":"first-rule","enabled":true,"query":{"query":"service:first","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776046}},{"id":"398a80b7-3396-4bde-96b6-0fc9c1f43015","type":"ruleset","attributes":{"created":{"seconds":1794531633,"nanos":549982000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531633,"nanos":549982000},"name":"tf-test-override-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":2,"rules":[{"name":"second-rule","enabled":true,"query":{"query":"service:second","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776047}},{"id":"4719342e-9c9b-4060-8e59-1322f8e00628","type":"ruleset","attributes":{"created":{"seconds":1794531633,"nanos":550419000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531633,"nanos":550419000},"name":"tf-test-override-third-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":3,"rules":[{"name":"third-rule","enabled":true,"query":{"query":"service:third","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776048}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 62.16375ms
+        duration: 39.53725ms
     - id: 28
       request:
         proto: HTTP/1.1
@@ -991,7 +991,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"service:first"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"service:third"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
@@ -1008,14 +1008,50 @@ interactions:
         trailer: {}
         content_length: 124
         uncompressed: false
-        body: '{"data":{"id":"5c7249a0-9a39-4ee6-85bd-fa8f0d114440","type":"validate_response","attributes":{"Canonical":"service:first"}}}'
+        body: '{"data":{"id":"34a36f4e-7605-49c5-9f46-3aa11ebf43e5","type":"validate_response","attributes":{"Canonical":"service:third"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 46.291833ms
+        duration: 84.991791ms
     - id: 29
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 74
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"query":"service:first"},"type":"validate_query"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/validate-query
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 124
+        uncompressed: false
+        body: '{"data":{"id":"6d505510-5292-4904-a685-82e8c201f5df","type":"validate_response","attributes":{"Canonical":"service:first"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 84.989125ms
+    - id: 30
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -1027,7 +1063,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"service:second"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"service:second"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
@@ -1044,49 +1080,13 @@ interactions:
         trailer: {}
         content_length: 125
         uncompressed: false
-        body: '{"data":{"id":"b62bc3d1-51ac-4199-9aba-7551be10d998","type":"validate_response","attributes":{"Canonical":"service:second"}}}'
+        body: '{"data":{"id":"0da37fba-40a5-4024-8e94-ddbebe12c977","type":"validate_response","attributes":{"Canonical":"service:second"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 52.625708ms
-    - id: 30
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 74
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":{"attributes":{"Query":"service:third"},"type":"validate_query"}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/validate-query
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 124
-        uncompressed: false
-        body: '{"data":{"id":"955bc729-3081-4053-9ff8-7dbd55ac6ea0","type":"validate_response","attributes":{"Canonical":"service:third"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 100.157ms
+        duration: 114.079ms
     - id: 31
       request:
         proto: HTTP/1.1
@@ -1113,13 +1113,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":[{"id":"bbdc4104-a763-4e39-a113-1f8d5eba475e","type":"ruleset","attributes":{"created":{"seconds":1782916714,"nanos":158280000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916714,"nanos":158280000},"name":"tf-test-override-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":1,"rules":[{"name":"first-rule","enabled":true,"query":{"query":"service:first","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718551}},{"id":"9a83d16a-7cdd-4920-93d5-60fd0da36568","type":"ruleset","attributes":{"created":{"seconds":1782916714,"nanos":176515000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916714,"nanos":176515000},"name":"tf-test-override-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":2,"rules":[{"name":"second-rule","enabled":true,"query":{"query":"service:second","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718553}},{"id":"3144a014-655c-4f53-94bc-18ed7499525d","type":"ruleset","attributes":{"created":{"seconds":1782916714,"nanos":175943000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916714,"nanos":175943000},"name":"tf-test-override-third-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":3,"rules":[{"name":"third-rule","enabled":true,"query":{"query":"service:third","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718552}}]}'
+        body: '{"data":[{"id":"10182d9e-63af-470b-aed8-e5acd1df67b3","type":"ruleset","attributes":{"created":{"seconds":1794531633,"nanos":544959000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531633,"nanos":544959000},"name":"tf-test-override-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":1,"rules":[{"name":"first-rule","enabled":true,"query":{"query":"service:first","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776046}},{"id":"398a80b7-3396-4bde-96b6-0fc9c1f43015","type":"ruleset","attributes":{"created":{"seconds":1794531633,"nanos":549982000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531633,"nanos":549982000},"name":"tf-test-override-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":2,"rules":[{"name":"second-rule","enabled":true,"query":{"query":"service:second","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776047}},{"id":"4719342e-9c9b-4060-8e59-1322f8e00628","type":"ruleset","attributes":{"created":{"seconds":1794531633,"nanos":550419000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531633,"nanos":550419000},"name":"tf-test-override-third-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":3,"rules":[{"name":"third-rule","enabled":true,"query":{"query":"service:third","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776048}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 65.504ms
+        duration: 30.674584ms
     - id: 32
       request:
         proto: HTTP/1.1
@@ -1136,7 +1136,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/9a83d16a-7cdd-4920-93d5-60fd0da36568
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/4719342e-9c9b-4060-8e59-1322f8e00628
         method: GET
       response:
         proto: HTTP/1.1
@@ -1144,15 +1144,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 668
+        content_length: 665
         uncompressed: false
-        body: '{"data":{"id":"9a83d16a-7cdd-4920-93d5-60fd0da36568","type":"ruleset","attributes":{"created":{"seconds":1782916714,"nanos":176515000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916714,"nanos":176515000},"name":"tf-test-override-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":2,"rules":[{"name":"second-rule","enabled":true,"query":{"query":"service:second","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718553}}}'
+        body: '{"data":{"id":"4719342e-9c9b-4060-8e59-1322f8e00628","type":"ruleset","attributes":{"created":{"seconds":1794531633,"nanos":550419000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531633,"nanos":550419000},"name":"tf-test-override-third-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":3,"rules":[{"name":"third-rule","enabled":true,"query":{"query":"service:third","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776048}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 61.700458ms
+        duration: 33.698833ms
     - id: 33
       request:
         proto: HTTP/1.1
@@ -1169,7 +1169,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/bbdc4104-a763-4e39-a113-1f8d5eba475e
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/10182d9e-63af-470b-aed8-e5acd1df67b3
         method: GET
       response:
         proto: HTTP/1.1
@@ -1179,14 +1179,50 @@ interactions:
         trailer: {}
         content_length: 665
         uncompressed: false
-        body: '{"data":{"id":"bbdc4104-a763-4e39-a113-1f8d5eba475e","type":"ruleset","attributes":{"created":{"seconds":1782916714,"nanos":158280000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916714,"nanos":158280000},"name":"tf-test-override-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":1,"rules":[{"name":"first-rule","enabled":true,"query":{"query":"service:first","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718551}}}'
+        body: '{"data":{"id":"10182d9e-63af-470b-aed8-e5acd1df67b3","type":"ruleset","attributes":{"created":{"seconds":1794531633,"nanos":544959000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531633,"nanos":544959000},"name":"tf-test-override-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":1,"rules":[{"name":"first-rule","enabled":true,"query":{"query":"service:first","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776046}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 74.056625ms
+        duration: 36.72925ms
     - id: 34
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 74
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"query":"service:third"},"type":"validate_query"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/validate-query
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 124
+        uncompressed: false
+        body: '{"data":{"id":"27f4cb5d-654a-47bf-8ef0-7e837a8b8330","type":"validate_response","attributes":{"Canonical":"service:third"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 25.814875ms
+    - id: 35
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -1202,7 +1238,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/3144a014-655c-4f53-94bc-18ed7499525d
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/398a80b7-3396-4bde-96b6-0fc9c1f43015
         method: GET
       response:
         proto: HTTP/1.1
@@ -1210,16 +1246,52 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 665
+        content_length: 668
         uncompressed: false
-        body: '{"data":{"id":"3144a014-655c-4f53-94bc-18ed7499525d","type":"ruleset","attributes":{"created":{"seconds":1782916714,"nanos":175943000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916714,"nanos":175943000},"name":"tf-test-override-third-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":3,"rules":[{"name":"third-rule","enabled":true,"query":{"query":"service:third","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718552}}}'
+        body: '{"data":{"id":"398a80b7-3396-4bde-96b6-0fc9c1f43015","type":"ruleset","attributes":{"created":{"seconds":1794531633,"nanos":549982000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531633,"nanos":549982000},"name":"tf-test-override-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":2,"rules":[{"name":"second-rule","enabled":true,"query":{"query":"service:second","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776047}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 120.619584ms
-    - id: 35
+        duration: 68.282083ms
+    - id: 36
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 74
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"query":"service:first"},"type":"validate_query"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/validate-query
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 124
+        uncompressed: false
+        body: '{"data":{"id":"e9b13e6f-db7e-4d41-859e-e27e2fc78c8d","type":"validate_response","attributes":{"Canonical":"service:first"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 50.719584ms
+    - id: 37
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -1231,7 +1303,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"service:second"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"service:second"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
@@ -1248,85 +1320,13 @@ interactions:
         trailer: {}
         content_length: 125
         uncompressed: false
-        body: '{"data":{"id":"8c0e12ac-c4b0-4f48-97fe-f865f4171809","type":"validate_response","attributes":{"Canonical":"service:second"}}}'
+        body: '{"data":{"id":"2ce1e389-450c-4bcf-8db8-13ccf9aedff3","type":"validate_response","attributes":{"Canonical":"service:second"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 70.671167ms
-    - id: 36
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 74
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":{"attributes":{"Query":"service:first"},"type":"validate_query"}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/validate-query
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 124
-        uncompressed: false
-        body: '{"data":{"id":"28992bb8-250a-455c-b53a-dd33dcc124dc","type":"validate_response","attributes":{"Canonical":"service:first"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 64.022958ms
-    - id: 37
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 74
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":{"attributes":{"Query":"service:third"},"type":"validate_query"}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/validate-query
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 124
-        uncompressed: false
-        body: '{"data":{"id":"2a98db4d-078b-49c5-b0b0-525abf4aefbc","type":"validate_response","attributes":{"Canonical":"service:third"}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 40.439834ms
+        duration: 25.347083ms
     - id: 38
       request:
         proto: HTTP/1.1
@@ -1353,13 +1353,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":[{"id":"bbdc4104-a763-4e39-a113-1f8d5eba475e","type":"ruleset","attributes":{"created":{"seconds":1782916714,"nanos":158280000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916714,"nanos":158280000},"name":"tf-test-override-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":1,"rules":[{"name":"first-rule","enabled":true,"query":{"query":"service:first","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718551}},{"id":"9a83d16a-7cdd-4920-93d5-60fd0da36568","type":"ruleset","attributes":{"created":{"seconds":1782916714,"nanos":176515000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916714,"nanos":176515000},"name":"tf-test-override-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":2,"rules":[{"name":"second-rule","enabled":true,"query":{"query":"service:second","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718553}},{"id":"3144a014-655c-4f53-94bc-18ed7499525d","type":"ruleset","attributes":{"created":{"seconds":1782916714,"nanos":175943000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916714,"nanos":175943000},"name":"tf-test-override-third-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":3,"rules":[{"name":"third-rule","enabled":true,"query":{"query":"service:third","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718552}}]}'
+        body: '{"data":[{"id":"10182d9e-63af-470b-aed8-e5acd1df67b3","type":"ruleset","attributes":{"created":{"seconds":1794531633,"nanos":544959000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531633,"nanos":544959000},"name":"tf-test-override-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":1,"rules":[{"name":"first-rule","enabled":true,"query":{"query":"service:first","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776046}},{"id":"398a80b7-3396-4bde-96b6-0fc9c1f43015","type":"ruleset","attributes":{"created":{"seconds":1794531633,"nanos":549982000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531633,"nanos":549982000},"name":"tf-test-override-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":2,"rules":[{"name":"second-rule","enabled":true,"query":{"query":"service:second","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776047}},{"id":"4719342e-9c9b-4060-8e59-1322f8e00628","type":"ruleset","attributes":{"created":{"seconds":1794531633,"nanos":550419000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531633,"nanos":550419000},"name":"tf-test-override-third-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":3,"rules":[{"name":"third-rule","enabled":true,"query":{"query":"service:third","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776048}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 129.234083ms
+        duration: 44.641709ms
     - id: 39
       request:
         proto: HTTP/1.1
@@ -1386,13 +1386,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":[{"id":"bbdc4104-a763-4e39-a113-1f8d5eba475e","type":"ruleset","attributes":{"created":{"seconds":1782916714,"nanos":158280000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916714,"nanos":158280000},"name":"tf-test-override-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":1,"rules":[{"name":"first-rule","enabled":true,"query":{"query":"service:first","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718551}},{"id":"9a83d16a-7cdd-4920-93d5-60fd0da36568","type":"ruleset","attributes":{"created":{"seconds":1782916714,"nanos":176515000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916714,"nanos":176515000},"name":"tf-test-override-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":2,"rules":[{"name":"second-rule","enabled":true,"query":{"query":"service:second","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718553}},{"id":"3144a014-655c-4f53-94bc-18ed7499525d","type":"ruleset","attributes":{"created":{"seconds":1782916714,"nanos":175943000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916714,"nanos":175943000},"name":"tf-test-override-third-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1782916710","position":3,"rules":[{"name":"third-rule","enabled":true,"query":{"query":"service:third","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718552}}]}'
+        body: '{"data":[{"id":"10182d9e-63af-470b-aed8-e5acd1df67b3","type":"ruleset","attributes":{"created":{"seconds":1794531633,"nanos":544959000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531633,"nanos":544959000},"name":"tf-test-override-first-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":1,"rules":[{"name":"first-rule","enabled":true,"query":{"query":"service:first","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776046}},{"id":"398a80b7-3396-4bde-96b6-0fc9c1f43015","type":"ruleset","attributes":{"created":{"seconds":1794531633,"nanos":549982000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531633,"nanos":549982000},"name":"tf-test-override-second-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":2,"rules":[{"name":"second-rule","enabled":true,"query":{"query":"service:second","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776047}},{"id":"4719342e-9c9b-4060-8e59-1322f8e00628","type":"ruleset","attributes":{"created":{"seconds":1794531633,"nanos":550419000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794531633,"nanos":550419000},"name":"tf-test-override-third-tf-TestAccDatadogTagPipelineRulesets_OverrideTrueDeletesUnmanaged-local-1794531629","position":3,"rules":[{"name":"third-rule","enabled":true,"query":{"query":"service:third","addition":{"key":"env","value":"test"},"if_not_exists":false,"case_insensitivity":false,"if_tag_exists":"replace"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776048}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 61.038083ms
+        duration: 33.233208ms
     - id: 40
       request:
         proto: HTTP/1.1
@@ -1409,7 +1409,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/bbdc4104-a763-4e39-a113-1f8d5eba475e
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/10182d9e-63af-470b-aed8-e5acd1df67b3
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -1423,7 +1423,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 73.642291ms
+        duration: 49.862667ms
     - id: 41
       request:
         proto: HTTP/1.1
@@ -1440,7 +1440,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/9a83d16a-7cdd-4920-93d5-60fd0da36568
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/4719342e-9c9b-4060-8e59-1322f8e00628
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -1454,7 +1454,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 93.388417ms
+        duration: 67.69175ms
     - id: 42
       request:
         proto: HTTP/1.1
@@ -1471,7 +1471,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/3144a014-655c-4f53-94bc-18ed7499525d
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/398a80b7-3396-4bde-96b6-0fc9c1f43015
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -1485,7 +1485,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 144.741459ms
+        duration: 161.818667ms
     - id: 43
       request:
         proto: HTTP/1.1
@@ -1518,4 +1518,4 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 52.537209ms
+        duration: 35.814541ms
