@@ -91,7 +91,7 @@ func waitForMetricIndexed(t *testing.T, apiKey, appKey, apiURL, metricName strin
 // submitDistributionMetric submits a distribution metric using the V1 distribution_points API.
 func submitDistributionMetric(t *testing.T, apiKey, apiURL, metricName string) {
 	timestamp := float64(time.Now().Unix())
-	body := fmt.Sprintf(`{"series":[{"metric":"%s","points":[[%f,[1.0,2.0,3.0,4.0,5.0]]],"tags":["sport:soccer","datacenter:us-east"]}]}`,
+	body := fmt.Sprintf(`{"series":[{"metric":%q,"points":[[%f,[1.0,2.0,3.0,4.0,5.0]]],"tags":["sport:soccer","datacenter:us-east"]}]}`,
 		metricName, timestamp)
 	req, err := http.NewRequest("POST", apiURL+"/api/v1/distribution_points", strings.NewReader(body))
 	if err != nil {
