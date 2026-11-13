@@ -2514,9 +2514,9 @@ func buildQueryTableTextFormatsJSONFromMap(reqMap map[string]interface{}, req ma
 				if v := getStringFromMap(replaceMap, "type"); v != "" {
 					replace["type"] = v
 				}
-				if v := getStringFromMap(replaceMap, "with"); v != "" {
-					replace["with"] = v
-				}
+				// `with` is required by both replace variants and may be
+				// empty (e.g. to strip a substring), so always send it.
+				replace["with"] = getStringFromMap(replaceMap, "with")
 				if v := getStringFromMap(replaceMap, "substring"); v != "" {
 					replace["substring"] = v
 				}

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -273,14 +274,13 @@ func testAccCheckUserIsDisabled(accProvider func() (*schema.Provider, error), us
 		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
 
-		resp, _, err := apiInstances.GetUsersApiV2().ListUsers(auth, datadogV2.ListUsersOptionalParameters{Filter: &username, FilterStatus: dd.PtrString("Disabled")})
-		if err != nil {
-			return fmt.Errorf("received an error listing users %s", err)
-		}
-		if len(resp.GetData()) == 0 {
-			return fmt.Errorf("user is not disabled")
-		}
-		return nil
+		return retryUntilUsersListed(auth, 2*time.Minute, func() (int, error) {
+			resp, _, err := apiInstances.GetUsersApiV2().ListUsers(auth, datadogV2.ListUsersOptionalParameters{Filter: &username, FilterStatus: dd.PtrString("Disabled")})
+			if err != nil {
+				return 0, fmt.Errorf("received an error listing users: %w", err)
+			}
+			return len(resp.GetData()), nil
+		}, fmt.Errorf("user is not disabled"))
 	}
 }
 
