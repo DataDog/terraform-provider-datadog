@@ -246,9 +246,8 @@ func (e *SchemaMergeError) Error() string {
 	return fmt.Sprintf("model: resource schema merge conflict at %q: %s %q vs %q", e.Path, e.Aspect, e.Left, e.Right)
 }
 
-// WriteOnlyLifecycleError reports a write-only field that cannot be routed
-// through both request-writing lifecycle roles. Exposing its Terraform pair
-// would otherwise accept a secret that one of Create or Update never sends.
+// WriteOnlyLifecycleError reports an Update-only secret that Create cannot
+// configure. Create-only secrets instead force replacement on change.
 type WriteOnlyLifecycleError struct {
 	Path        string
 	MissingRole string
@@ -275,7 +274,7 @@ func (e *SchemaDefaultError) Error() string {
 
 func (e *WriteOnlyLifecycleError) Error() string {
 	return fmt.Sprintf(
-		"model: write-only field %q is missing from the %s request; write-only fields must be present in both Create and Update",
+		"model: write-only field %q is missing from the %s request; write-only fields must be accepted by Create",
 		e.Path,
 		e.MissingRole,
 	)
@@ -312,11 +311,10 @@ type resourceMerger struct {
 	artifact        string
 	diagnostics     []Diagnostic
 	warnedWriteOnly map[string]struct{}
-	// createAbsentDepth and updateAbsentDepth count the enclosing oneOf
-	// alternatives that role's union does not list. Beneath one, that role's
-	// schema is nil at every position because the whole alternative is
-	// unavailable on it, not because a write-only field was left out.
-	createAbsentDepth, updateAbsentDepth int
+	// createAbsentDepth counts enclosing oneOf alternatives Create does not
+	// list. Beneath one, Create's schema is nil because the whole alternative
+	// is unavailable, not because it omitted a write-only field.
+	createAbsentDepth int
 }
 
 func resourceArtifactName(group *ResolvedGroup) string {
@@ -377,8 +375,17 @@ func (m *resourceMerger) warnWriteOnlyResponseConflict(path string) {
 // caller from each enclosing request object's Required list (a node cannot
 // answer either fact about itself).
 func (m *resourceMerger) mergeNode(create, update, read *Schema, createRequired, updateRequired bool, path string) (*Schema, error) {
-	if create != nil && create.WriteOnlySecret && update == nil && m.updateAbsentDepth == 0 {
-		return nil, &WriteOnlyLifecycleError{Path: path, MissingRole: "Update"}
+	// readOnly properties may be reused in request components, but are not
+	// accepted inputs. Remove those roles before deriving presence, defaults,
+	// and replacement behavior, including every descendant of a read-only node.
+	if create != nil && create.ReadOnly {
+		create = nil
+	}
+	if update != nil && update.ReadOnly {
+		update = nil
+	}
+	if create == nil && update == nil && read == nil {
+		return nil, nil
 	}
 	if update != nil && update.WriteOnlySecret && create == nil && m.createAbsentDepth == 0 {
 		return nil, &WriteOnlyLifecycleError{Path: path, MissingRole: "Create"}
@@ -464,7 +471,9 @@ func (m *resourceMerger) mergeObject(create, update, read *Schema, createRequire
 		if err != nil {
 			return nil, err
 		}
-		properties[key] = child
+		if child != nil {
+			properties[key] = child
+		}
 	}
 	return m.stampCommon(&Schema{
 		Kind:       SchemaKindObject,
@@ -594,6 +603,7 @@ func (m *resourceMerger) cosmeticFields(create, update, read *Schema, path strin
 func stampProvenance(create, update, read *Schema, createRequired, writeOnly bool) *SchemaProvenance {
 	return &SchemaProvenance{
 		InRequest:       create != nil || update != nil,
+		CreateOnly:      create != nil && update == nil,
 		RequestRequired: createRequired,
 		InResponse:      read != nil && !writeOnly,
 	}
@@ -825,7 +835,7 @@ func (m *resourceMerger) mergeOneOf(create, update, read *Schema, createRequired
 		_, onUpdate := sides.update[name]
 		absentOnCreate := sides.create != nil && !onCreate
 		absentOnUpdate := sides.update != nil && !onUpdate
-		merged, err := m.mergeAlternative(altCreate, altUpdate, altRead, absentOnCreate, absentOnUpdate, ChildPath(path, name))
+		merged, err := m.mergeAlternative(altCreate, altUpdate, altRead, absentOnCreate, ChildPath(path, name))
 		if err != nil {
 			return nil, err
 		}
@@ -868,17 +878,13 @@ func (m *resourceMerger) mergeOneOf(create, update, read *Schema, createRequired
 }
 
 // mergeAlternative merges one correlated alternative, recording for the walk
-// beneath it which request roles do not list it at all. An alternative is a
+// beneath it whether Create omits it entirely. An alternative is a
 // choice, never an entry in an enclosing object's required list, so it is
 // never itself request-required.
-func (m *resourceMerger) mergeAlternative(create, update, read *Schema, absentOnCreate, absentOnUpdate bool, path string) (*Schema, error) {
+func (m *resourceMerger) mergeAlternative(create, update, read *Schema, absentOnCreate bool, path string) (*Schema, error) {
 	if absentOnCreate {
 		m.createAbsentDepth++
 		defer func() { m.createAbsentDepth-- }()
-	}
-	if absentOnUpdate {
-		m.updateAbsentDepth++
-		defer func() { m.updateAbsentDepth-- }()
 	}
 	return m.mergeNode(create, update, read, false, false, path)
 }

@@ -126,6 +126,34 @@ func renderWriteOnlyResource(op *model.Operation) (*model.Artifact, ResourceView
 }
 
 var _ = Describe("generated resource write-only contract", func() {
+	It("routes a create-only secret exclusively through Create and replaces on rotation", func() {
+		op := rootWriteOnlyOperation(true, false)
+		delete(operationAttributes(op.ResolvedGroup.Update.RequestSchema).Properties, "apiToken")
+		_, view, source := renderWriteOnlyResource(op)
+		Expect(view.WriteOnlySecrets).To(HaveLen(1))
+		Expect(view.WriteOnlySecrets[0].RequiresReplace).To(BeTrue())
+		Expect(view.Create.WriteOnlySecrets).To(HaveLen(1))
+		Expect(view.Update.WriteOnlySecrets).To(BeEmpty())
+		Expect(source).To(ContainSubstring("RequiresReplace: true"))
+		Expect(strings.Count(source, "SetApiToken(")).To(Equal(1))
+		Expect(source).NotTo(ContainSubstring("GetSecretForUpdate(ctx, &request.Config, &request)"))
+	})
+
+	It("does not populate explicit empty Update schemas or read-only request properties", func() {
+		op := rootWriteOnlyOperation(true, false)
+		operationAttributes(op.ResolvedGroup.Update.RequestSchema).Properties = map[string]*model.Schema{}
+		_, view, source := renderWriteOnlyResource(op)
+		Expect(view.Update.WriteOnlySecrets).To(BeEmpty())
+		Expect(strings.Count(source, "SetApiToken(")).To(Equal(1))
+
+		op = rootWriteOnlyOperation(true, false)
+		operationAttributes(op.ResolvedGroup.Update.RequestSchema).Properties["apiToken"].ReadOnly = true
+		_, view, source = renderWriteOnlyResource(op)
+		Expect(view.Update.WriteOnlySecrets).To(BeEmpty())
+		Expect(view.WriteOnlySecrets[0].RequiresReplace).To(BeTrue())
+		Expect(strings.Count(source, "SetApiToken(")).To(Equal(1))
+	})
+
 	DescribeTable("emits the write-only pair and its plaintext fallback at every supported static depth",
 		func(build func() *model.Operation, original, goName, parentBlocks, description string) {
 			_, _, source := renderWriteOnlyResource(build())

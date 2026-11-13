@@ -14,7 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -94,12 +93,7 @@ func (r *datadogIncidentTypeResource) Schema(_ context.Context, _ resource.Schem
 			},
 			"last_modified_by": schema.StringAttribute{
 				Description: "A unique identifier that represents the user that last modified the incident type.",
-				Optional:    true,
 				Computed:    true,
-
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"name": schema.StringAttribute{
 				Description: "The name of the incident type.",
@@ -107,12 +101,7 @@ func (r *datadogIncidentTypeResource) Schema(_ context.Context, _ resource.Schem
 			},
 			"prefix": schema.StringAttribute{
 				Description: "The string that will be prepended to the incident title across the Datadog app.",
-				Optional:    true,
 				Computed:    true,
-
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
 			},
 
 			"configuration": schema.SingleNestedAttribute{
@@ -121,7 +110,6 @@ func (r *datadogIncidentTypeResource) Schema(_ context.Context, _ resource.Schem
 				Attributes: map[string]schema.Attribute{
 					"allow_incident_deletion": schema.BoolAttribute{
 						Description: "Whether incidents of this type can be deleted.",
-						Default:     booldefault.StaticBool(false),
 						Optional:    true,
 						Computed:    true,
 
@@ -131,7 +119,6 @@ func (r *datadogIncidentTypeResource) Schema(_ context.Context, _ resource.Schem
 					},
 					"allow_workflows": schema.BoolAttribute{
 						Description: "Whether automation workflows can be triggered for incidents of this type.",
-						Default:     booldefault.StaticBool(true),
 						Optional:    true,
 						Computed:    true,
 
@@ -150,7 +137,6 @@ func (r *datadogIncidentTypeResource) Schema(_ context.Context, _ resource.Schem
 					},
 					"editable_timestamps": schema.BoolAttribute{
 						Description: "Whether responders can edit incident timestamps for incidents of this type.",
-						Default:     booldefault.StaticBool(false),
 						Optional:    true,
 						Computed:    true,
 
@@ -160,7 +146,6 @@ func (r *datadogIncidentTypeResource) Schema(_ context.Context, _ resource.Schem
 					},
 					"private_incidents": schema.BoolAttribute{
 						Description: "Whether responders can create private incidents of this type. This is an opt-in setting, distinct from `private_incidents_by_default`, which controls whether incidents are created private automatically.",
-						Default:     booldefault.StaticBool(false),
 						Optional:    true,
 						Computed:    true,
 
@@ -170,7 +155,6 @@ func (r *datadogIncidentTypeResource) Schema(_ context.Context, _ resource.Schem
 					},
 					"private_incidents_by_default": schema.BoolAttribute{
 						Description: "Whether incidents of this type are created as private by default.",
-						Default:     booldefault.StaticBool(false),
 						Optional:    true,
 						Computed:    true,
 
@@ -180,7 +164,6 @@ func (r *datadogIncidentTypeResource) Schema(_ context.Context, _ resource.Schem
 					},
 					"slug_source": schema.StringAttribute{
 						Description: "When set to `servicenow`, incidents will display the ServiceNow record ID instead of the public ID. If no ServiceNow integration exists, the public ID will be displayed.",
-						Default:     stringdefault.StaticString("default"),
 						Optional:    true,
 						Computed:    true,
 						Validators: []validator.String{
@@ -193,7 +176,6 @@ func (r *datadogIncidentTypeResource) Schema(_ context.Context, _ resource.Schem
 					},
 					"test_incidents": schema.BoolAttribute{
 						Description: "Whether incidents of this type are treated as test incidents.",
-						Default:     booldefault.StaticBool(true),
 						Optional:    true,
 						Computed:    true,
 
@@ -231,43 +213,6 @@ func (r *datadogIncidentTypeResource) Create(ctx context.Context, request resour
 
 	bodyAttributes := datadogV2.NewIncidentTypeAttributesWithDefaults()
 
-	if state.Configuration != nil {
-		configurationValue := datadogV2.NewIncidentTypeConfigurationWithDefaults()
-
-		if !state.Configuration.AllowIncidentDeletion.IsNull() && !state.Configuration.AllowIncidentDeletion.IsUnknown() {
-			configurationValue.SetAllowIncidentDeletion(state.Configuration.AllowIncidentDeletion.ValueBool())
-		}
-
-		if !state.Configuration.AllowWorkflows.IsNull() && !state.Configuration.AllowWorkflows.IsUnknown() {
-			configurationValue.SetAllowWorkflows(state.Configuration.AllowWorkflows.ValueBool())
-		}
-
-		if !state.Configuration.CreateMessage.IsNull() && !state.Configuration.CreateMessage.IsUnknown() {
-			configurationValue.SetCreateMessage(state.Configuration.CreateMessage.ValueString())
-		}
-
-		if !state.Configuration.EditableTimestamps.IsNull() && !state.Configuration.EditableTimestamps.IsUnknown() {
-			configurationValue.SetEditableTimestamps(state.Configuration.EditableTimestamps.ValueBool())
-		}
-
-		if !state.Configuration.PrivateIncidents.IsNull() && !state.Configuration.PrivateIncidents.IsUnknown() {
-			configurationValue.SetPrivateIncidents(state.Configuration.PrivateIncidents.ValueBool())
-		}
-
-		if !state.Configuration.PrivateIncidentsByDefault.IsNull() && !state.Configuration.PrivateIncidentsByDefault.IsUnknown() {
-			configurationValue.SetPrivateIncidentsByDefault(state.Configuration.PrivateIncidentsByDefault.ValueBool())
-		}
-
-		if !state.Configuration.SlugSource.IsNull() && !state.Configuration.SlugSource.IsUnknown() {
-			configurationValue.SetSlugSource(datadogV2.IncidentTypeSlugSource(state.Configuration.SlugSource.ValueString()))
-		}
-
-		if !state.Configuration.TestIncidents.IsNull() && !state.Configuration.TestIncidents.IsUnknown() {
-			configurationValue.SetTestIncidents(state.Configuration.TestIncidents.ValueBool())
-		}
-		bodyAttributes.SetConfiguration(*configurationValue)
-	}
-
 	if !state.Description.IsNull() && !state.Description.IsUnknown() {
 		bodyAttributes.SetDescription(state.Description.ValueString())
 	}
@@ -276,15 +221,7 @@ func (r *datadogIncidentTypeResource) Create(ctx context.Context, request resour
 		bodyAttributes.SetIsDefault(state.IsDefault.ValueBool())
 	}
 
-	if !state.LastModifiedBy.IsNull() && !state.LastModifiedBy.IsUnknown() {
-		bodyAttributes.SetLastModifiedBy(state.LastModifiedBy.ValueString())
-	}
-
 	bodyAttributes.SetName(state.Name.ValueString())
-
-	if !state.Prefix.IsNull() && !state.Prefix.IsUnknown() {
-		bodyAttributes.SetPrefix(state.Prefix.ValueString())
-	}
 	bodyData := datadogV2.NewIncidentTypeCreateDataWithDefaults()
 	bodyData.SetType(datadogV2.IncidentTypeType("incident_types"))
 	bodyData.SetAttributes(*bodyAttributes)
@@ -339,6 +276,126 @@ func (r *datadogIncidentTypeResource) Create(ctx context.Context, request resour
 		state.Prefix = types.StringNull()
 	}
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	// Preserve the created identity before applying settings accepted only by Update.
+	var configured resourceDatadogIncidentType_Model
+	response.Diagnostics.Append(plan.As(ctx, &configured, basetypes.ObjectAsOptions{UnhandledUnknownAsEmpty: true})...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+	initialize := false
+	if configured.Configuration != nil {
+		state.Configuration = configured.Configuration
+		initialize = true
+	}
+	if initialize {
+		bodyAttributes := datadogV2.NewIncidentTypeUpdateAttributesWithDefaults()
+
+		if state.Configuration != nil {
+			configurationValue := datadogV2.NewIncidentTypeConfigurationWithDefaults()
+
+			if !state.Configuration.AllowIncidentDeletion.IsNull() && !state.Configuration.AllowIncidentDeletion.IsUnknown() {
+				configurationValue.SetAllowIncidentDeletion(state.Configuration.AllowIncidentDeletion.ValueBool())
+			}
+
+			if !state.Configuration.AllowWorkflows.IsNull() && !state.Configuration.AllowWorkflows.IsUnknown() {
+				configurationValue.SetAllowWorkflows(state.Configuration.AllowWorkflows.ValueBool())
+			}
+
+			if !state.Configuration.CreateMessage.IsNull() && !state.Configuration.CreateMessage.IsUnknown() {
+				configurationValue.SetCreateMessage(state.Configuration.CreateMessage.ValueString())
+			}
+
+			if !state.Configuration.EditableTimestamps.IsNull() && !state.Configuration.EditableTimestamps.IsUnknown() {
+				configurationValue.SetEditableTimestamps(state.Configuration.EditableTimestamps.ValueBool())
+			}
+
+			if !state.Configuration.PrivateIncidents.IsNull() && !state.Configuration.PrivateIncidents.IsUnknown() {
+				configurationValue.SetPrivateIncidents(state.Configuration.PrivateIncidents.ValueBool())
+			}
+
+			if !state.Configuration.PrivateIncidentsByDefault.IsNull() && !state.Configuration.PrivateIncidentsByDefault.IsUnknown() {
+				configurationValue.SetPrivateIncidentsByDefault(state.Configuration.PrivateIncidentsByDefault.ValueBool())
+			}
+
+			if !state.Configuration.SlugSource.IsNull() && !state.Configuration.SlugSource.IsUnknown() {
+				configurationValue.SetSlugSource(datadogV2.IncidentTypeSlugSource(state.Configuration.SlugSource.ValueString()))
+			}
+
+			if !state.Configuration.TestIncidents.IsNull() && !state.Configuration.TestIncidents.IsUnknown() {
+				configurationValue.SetTestIncidents(state.Configuration.TestIncidents.ValueBool())
+			}
+			bodyAttributes.SetConfiguration(*configurationValue)
+		}
+
+		if !state.Description.IsNull() && !state.Description.IsUnknown() {
+			bodyAttributes.SetDescription(state.Description.ValueString())
+		}
+
+		if !state.IsDefault.IsNull() && !state.IsDefault.IsUnknown() {
+			bodyAttributes.SetIsDefault(state.IsDefault.ValueBool())
+		}
+
+		bodyAttributes.SetName(state.Name.ValueString())
+		bodyData := datadogV2.NewIncidentTypePatchDataWithDefaults()
+		bodyData.SetType(datadogV2.IncidentTypeType("incident_types"))
+		bodyData.SetId(state.ID.ValueString())
+		bodyData.SetAttributes(*bodyAttributes)
+		body := datadogV2.NewIncidentTypePatchRequestWithDefaults()
+		body.SetData(*bodyData)
+		resp, _, err := r.Api.UpdateIncidentType(r.Auth, state.ID.ValueString(), *body)
+		if err != nil {
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error initializing incident_type"))
+			return
+		}
+		response.Diagnostics.Append(r.updateState(ctx, &state, &resp)...)
+		if response.Diagnostics.HasError() {
+			return
+		}
+
+		if state.Configuration != nil {
+			if state.Configuration.AllowIncidentDeletion.IsUnknown() {
+				state.Configuration.AllowIncidentDeletion = types.BoolNull()
+			}
+			if state.Configuration.AllowWorkflows.IsUnknown() {
+				state.Configuration.AllowWorkflows = types.BoolNull()
+			}
+			if state.Configuration.CreateMessage.IsUnknown() {
+				state.Configuration.CreateMessage = types.StringNull()
+			}
+			if state.Configuration.EditableTimestamps.IsUnknown() {
+				state.Configuration.EditableTimestamps = types.BoolNull()
+			}
+			if state.Configuration.PrivateIncidents.IsUnknown() {
+				state.Configuration.PrivateIncidents = types.BoolNull()
+			}
+			if state.Configuration.PrivateIncidentsByDefault.IsUnknown() {
+				state.Configuration.PrivateIncidentsByDefault = types.BoolNull()
+			}
+			if state.Configuration.SlugSource.IsUnknown() {
+				state.Configuration.SlugSource = types.StringNull()
+			}
+			if state.Configuration.TestIncidents.IsUnknown() {
+				state.Configuration.TestIncidents = types.BoolNull()
+			}
+		}
+		if state.Description.IsUnknown() {
+			state.Description = types.StringNull()
+		}
+		if state.IsDefault.IsUnknown() {
+			state.IsDefault = types.BoolNull()
+		}
+		if state.LastModifiedBy.IsUnknown() {
+			state.LastModifiedBy = types.StringNull()
+		}
+		if state.Prefix.IsUnknown() {
+			state.Prefix = types.StringNull()
+		}
+		response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	}
 }
 
 func (r *datadogIncidentTypeResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
@@ -424,15 +481,7 @@ func (r *datadogIncidentTypeResource) Update(ctx context.Context, request resour
 		bodyAttributes.SetIsDefault(state.IsDefault.ValueBool())
 	}
 
-	if !state.LastModifiedBy.IsNull() && !state.LastModifiedBy.IsUnknown() {
-		bodyAttributes.SetLastModifiedBy(state.LastModifiedBy.ValueString())
-	}
-
 	bodyAttributes.SetName(state.Name.ValueString())
-
-	if !state.Prefix.IsNull() && !state.Prefix.IsUnknown() {
-		bodyAttributes.SetPrefix(state.Prefix.ValueString())
-	}
 	bodyData := datadogV2.NewIncidentTypePatchDataWithDefaults()
 	bodyData.SetType(datadogV2.IncidentTypeType("incident_types"))
 	bodyData.SetId(state.ID.ValueString())
