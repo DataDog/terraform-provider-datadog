@@ -21,7 +21,8 @@ const aiGatewayRoutingRuleResourceName = "datadog_ai_gateway_routing_rule.foo"
 // aiGatewayRoutingRuleTestProvider returns the provider and two models the test routes to. Model targets must name a model
 // enabled on a provider in the test org, and a provider needs an integration account created in the Datadog console, so
 // recording the cassette requires DD_TEST_AI_GATEWAY_PROVIDER, DD_TEST_AI_GATEWAY_MODEL and DD_TEST_AI_GATEWAY_MODEL_2 to
-// name them. The defaults are the provider and models the cassette was recorded with.
+// name them. The defaults are the provider and models the cassette was recorded with. CI's live runs use the same
+// openai-test provider in the test org, so it must not be deleted.
 func aiGatewayRoutingRuleTestProvider() (provider, model, model2 string) {
 	provider, model, model2 = "openai-test", "gpt-4o-mini", "gpt-4o"
 	if v := os.Getenv("DD_TEST_AI_GATEWAY_PROVIDER"); v != "" {
