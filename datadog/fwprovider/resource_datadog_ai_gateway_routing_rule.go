@@ -115,7 +115,7 @@ func (r *aiGatewayRoutingRuleResource) Schema(_ context.Context, _ resource.Sche
 					Attributes: map[string]schema.Attribute{
 						"ordering": schema.StringAttribute{
 							Description: "How the tier orders its targets. `configured` tries them in the order listed. `weighted_affinity` spreads requests by " +
-								"each target's `weight`. `classified` lets a decision model pick one target by its `rubric`, and is allowed only on the first tier.",
+								"each target's `weight`. `classified`, which lets a decision model pick one target by its `rubric`, is allowed only on the first tier.",
 							Optional: true,
 							Computed: true,
 							Default:  stringdefault.StaticString(string(datadogV2.AIGATEWAYROUTINGRULETIERORDERING_CONFIGURED)),
@@ -132,7 +132,7 @@ func (r *aiGatewayRoutingRuleResource) Schema(_ context.Context, _ resource.Sche
 							Optional:    true,
 							Attributes: map[string]schema.Attribute{
 								"provider": schema.StringAttribute{
-									Description: "Slug of the provider that serves the decision model. It must be an OpenAI, Baseten or TypeSafe provider.",
+									Description: "Slug of the provider that serves the decision model. It must be an OpenAI, Baseten, or TypeSafe provider.",
 									Required:    true,
 								},
 								"model": schema.StringAttribute{
@@ -145,7 +145,7 @@ func (r *aiGatewayRoutingRuleResource) Schema(_ context.Context, _ resource.Sche
 									Validators:  []validator.String{stringvalidator.LengthBetween(1, 2000)},
 								},
 								"confidence_threshold": schema.Float64Attribute{
-									Description: "Probability from 0 to 1 that the picked target must reach. Below it, the request goes to the default target.",
+									Description: "Minimum confidence, from 0 to 1, that the picked target must reach. If the confidence is lower, the request goes to the default target.",
 									Optional:    true,
 									Computed:    true,
 									Default:     float64default.StaticFloat64(aiGatewayRoutingRuleDefaultConfidenceThreshold),
@@ -161,7 +161,7 @@ func (r *aiGatewayRoutingRuleResource) Schema(_ context.Context, _ resource.Sche
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"provider": schema.StringAttribute{
-										Description: "Slug of the provider to route to, or `*` for every provider that serves the model. Required for a model target.",
+										Description: "Slug of the provider to route to, or `*` to route to any provider that serves the model. Required for a model target.",
 										Optional:    true,
 										Validators: []validator.String{
 											stringvalidator.LengthBetween(1, 256),
@@ -185,7 +185,7 @@ func (r *aiGatewayRoutingRuleResource) Schema(_ context.Context, _ resource.Sche
 										},
 									},
 									"weight": schema.Int64Attribute{
-										Description: "Relative weight of the target in a `weighted_affinity` tier, from 1 to 10000. The API uses 1 when it's unset. " +
+										Description: "Relative weight of the target in a `weighted_affinity` tier. The API uses 1 when it's unset. " +
 											"Not allowed in other tiers.",
 										Optional:   true,
 										Validators: []validator.Int64{int64validator.Between(1, 10000)},
@@ -198,13 +198,13 @@ func (r *aiGatewayRoutingRuleResource) Schema(_ context.Context, _ resource.Sche
 										},
 									},
 									"rubric": schema.StringAttribute{
-										Description: "When the decision model picks this target, up to 300 characters. Required on every target of a `classified` tier " +
+										Description: "Description of when the decision model should pick this target, up to 300 characters. Required on every target of a `classified` tier " +
 											"except the default one, and not allowed in other tiers.",
 										Optional:   true,
 										Validators: []validator.String{stringvalidator.LengthBetween(1, 300)},
 									},
 									"default": schema.BoolAttribute{
-										Description: "Marks the default target of a `classified` tier, which takes requests no rubric fits. Exactly one per `classified` tier.",
+										Description: "Marks the default target of a `classified` tier, which receives requests that don't match any rubric. Each `classified` tier must have exactly one default target.",
 										Optional:    true,
 									},
 								},

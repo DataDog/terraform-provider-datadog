@@ -55,20 +55,20 @@ Required:
 Optional:
 
 - `classifier` (Attributes) Decision model of a `classified` tier. Required on a `classified` tier and not allowed on others. (see [below for nested schema](#nestedatt--tiers--classifier))
-- `ordering` (String) How the tier orders its targets. `configured` tries them in the order listed. `weighted_affinity` spreads requests by each target's `weight`. `classified` lets a decision model pick one target by its `rubric`, and is allowed only on the first tier. Valid values are `configured`, `weighted_affinity`, `classified`. Defaults to `"configured"`.
+- `ordering` (String) How the tier orders its targets. `configured` tries them in the order listed. `weighted_affinity` spreads requests by each target's `weight`. `classified`, which lets a decision model pick one target by its `rubric`, is allowed only on the first tier. Valid values are `configured`, `weighted_affinity`, `classified`. Defaults to `"configured"`.
 
 <a id="nestedatt--tiers--targets"></a>
 ### Nested Schema for `tiers.targets`
 
 Optional:
 
-- `default` (Boolean) Marks the default target of a `classified` tier, which takes requests no rubric fits. Exactly one per `classified` tier.
+- `default` (Boolean) Marks the default target of a `classified` tier, which receives requests that don't match any rubric. Each `classified` tier must have exactly one default target.
 - `model` (String) Model to route to. Required for a model target.
-- `provider` (String) Slug of the provider to route to, or `*` for every provider that serves the model. Required for a model target.
+- `provider` (String) Slug of the provider to route to, or `*` to route to any provider that serves the model. Required for a model target.
 - `reasoning_level` (String) Reasoning effort override for a model target. When unset, the caller's and provider's defaults apply. Valid values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, `max`.
 - `routing_rule` (String) Slug of another routing rule to route to.
-- `rubric` (String) When the decision model picks this target, up to 300 characters. Required on every target of a `classified` tier except the default one, and not allowed in other tiers.
-- `weight` (Number) Relative weight of the target in a `weighted_affinity` tier, from 1 to 10000. The API uses 1 when it's unset. Not allowed in other tiers. Value must be between 1 and 10000.
+- `rubric` (String) Description of when the decision model should pick this target, up to 300 characters. Required on every target of a `classified` tier except the default one, and not allowed in other tiers.
+- `weight` (Number) Relative weight of the target in a `weighted_affinity` tier. The API uses 1 when it's unset. Not allowed in other tiers. Value must be between 1 and 10000.
 
 
 <a id="nestedatt--tiers--classifier"></a>
@@ -77,11 +77,11 @@ Optional:
 Required:
 
 - `model` (String) Canonical name of the decision model on that provider.
-- `provider` (String) Slug of the provider that serves the decision model. It must be an OpenAI, Baseten or TypeSafe provider.
+- `provider` (String) Slug of the provider that serves the decision model. It must be an OpenAI, Baseten, or TypeSafe provider.
 
 Optional:
 
-- `confidence_threshold` (Number) Probability from 0 to 1 that the picked target must reach. Below it, the request goes to the default target. Value must be between 0.000000 and 1.000000. Defaults to `0.5`.
+- `confidence_threshold` (Number) Minimum confidence, from 0 to 1, that the picked target must reach. If the confidence is lower, the request goes to the default target. Value must be between 0.000000 and 1.000000. Defaults to `0.5`.
 - `context` (String) Prompt that tells the decision model about the rule's traffic, up to 2000 characters.
 
 ## Import
