@@ -47,6 +47,7 @@ datadog/*datadog_role*                          @DataDog/team-aaa
 datadog/*datadog_slo_correction*                @DataDog/slo-app
 
 # Plugin Framework resources/data-sources + tests
+datadog/**/*datadog_ai_gateway*                   @DataDog/api-reliability @DataDog/frontier-prd-gateway
 datadog/**/*datadog_dashboard*                    @DataDog/api-reliability @DataDog/dashboards-backend
 datadog/**/*datadog_downtime*                     @DataDog/api-reliability @DataDog/monitor-app
 datadog/**/*datadog_domain_allowlist*             @DataDog/api-reliability @DataDog/team-aaa
