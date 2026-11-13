@@ -145,7 +145,7 @@ func (r *aiGatewayRoutingRuleResource) Schema(_ context.Context, _ resource.Sche
 									Validators:  []validator.String{stringvalidator.LengthBetween(1, 2000)},
 								},
 								"confidence_threshold": schema.Float64Attribute{
-									Description: "Minimum confidence, from 0 to 1, that the picked target must reach. If the confidence is lower, the request goes to the default target.",
+									Description: "Minimum confidence that the picked target must reach. If the confidence is lower, the request goes to the default target.",
 									Optional:    true,
 									Computed:    true,
 									Default:     float64default.StaticFloat64(aiGatewayRoutingRuleDefaultConfidenceThreshold),
