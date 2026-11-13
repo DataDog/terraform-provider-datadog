@@ -34,6 +34,10 @@ report together.
 - [ ] Descriptions came through. Empty descriptions mean the OpenAPI properties lack
       them; fix the spec rather than the generated file.
 - [ ] Enums are validated, and the member list matches the spec.
+- [ ] Create-only inputs have typed replacement modifiers; mutable siblings and
+      computed-only fields do not. Check the
+      [lifecycle rules](../reference/scope.md#schema-shapes), including secret
+      plaintext/version triggers.
 - [ ] Secrets: anything credential-shaped is write-only or sensitive, and you know
       which of those keeps the value out of state. See
       [reference/scope.md](../reference/scope.md).
@@ -43,6 +47,8 @@ report together.
 - [ ] The SDK method called is the one the annotation named.
 - [ ] Path and query parameters are bound to the right schema fields.
 - [ ] For a resource, the update body sources `data.id` from state.
+- [ ] Create-only and read-only fields are absent from the Update request.
+      Configured update-only fields follow the documented initialization rules.
 - [ ] For caller-assigned identity, create input, canonical API ID routing,
       configured-name preservation, and import refresh follow the
       [identity contract](../reference/scope.md#caller-assigned-resource-identity).
@@ -65,6 +71,9 @@ report together.
       does not meet that bar.
 - [ ] For a resource: create, update, and destroy are all exercised; assertions
       inspect the update body for the actual HTTP method, including PUT.
+- [ ] Create-only changes replace the resource while mutable changes update in
+      place. Cover update-only initialization, omitted inputs, and retention of
+      the created API ID when initialization fails, where applicable.
 - [ ] For caller-assigned identity: cover name replacement, canonical-ID routing,
       import, first-apply name adoption when updates are supported, and a no-change
       plan after refresh. Without an update API, verify import uses the canonical
