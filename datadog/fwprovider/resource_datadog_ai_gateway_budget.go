@@ -94,7 +94,7 @@ func (r *aiGatewayBudgetResource) Metadata(_ context.Context, request resource.M
 
 func (r *aiGatewayBudgetResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog AI Gateway budget resource. A budget caps spend over a daily, weekly or monthly UTC period for the requests that match its scope. " +
+		Description: "Provides a Datadog AI Gateway budget resource. A budget caps spend over a daily, weekly, or monthly UTC period for the requests that match its scope. " +
 			"This resource is in Preview.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
@@ -127,7 +127,7 @@ func (r *aiGatewayBudgetResource) Schema(_ context.Context, _ resource.SchemaReq
 				},
 			},
 			"warning_threshold": schema.Float64Attribute{
-				Description: "Fraction of capacity at which the budget's monitor warns, greater than 0 and at most 1.",
+				Description: "Fraction of capacity that triggers a warning from the budget's monitor. Must be greater than 0 and at most 1.",
 				Optional:    true,
 				Computed:    true,
 				Default:     float64default.StaticFloat64(0.9),
@@ -164,7 +164,7 @@ func (r *aiGatewayBudgetResource) Schema(_ context.Context, _ resource.SchemaReq
 				},
 			},
 			"tags": schema.MapAttribute{
-				Description: "Scope tags, such as `provider`, `model` or `ml_app`. A request counts toward the budget when it has all of these tags. Keys must be lowercase. Changing them replaces the budget.",
+				Description: "Scope tags, such as `provider`, `model`, or `ml_app`. A request counts toward the budget when it has all of these tags. Keys must be lowercase. Changing them replaces the budget.",
 				Optional:    true,
 				ElementType: types.StringType,
 				Validators: []validator.Map{
@@ -174,7 +174,7 @@ func (r *aiGatewayBudgetResource) Schema(_ context.Context, _ resource.SchemaReq
 				PlanModifiers: []planmodifier.Map{mapplanmodifier.RequiresReplace()},
 			},
 			"selector": schema.SetNestedAttribute{
-				Description: "Dimension rules that make this a template budget: each request is counted against its own instance of the budget, separated by the dimensions with `per_value = true`. Changing it replaces the budget.",
+				Description: "Dimension rules that make this budget a template budget. Each combination of values for the dimensions with `per_value = true` gets its own budget instance, and each request counts toward the instance that matches its values. Changing it replaces the budget.",
 				Optional:    true,
 				Validators:  []validator.Set{setvalidator.SizeAtLeast(1)},
 				PlanModifiers: []planmodifier.Set{
@@ -187,13 +187,13 @@ func (r *aiGatewayBudgetResource) Schema(_ context.Context, _ resource.SchemaReq
 							Required:    true,
 						},
 						"per_value": schema.BoolAttribute{
-							Description: "Whether each matched value gets its own budget instance. Otherwise spend is pooled across values.",
+							Description: "Whether each matched value gets its own budget instance. When `false`, spend is pooled across all matched values.",
 							Optional:    true,
 							Computed:    true,
 							Default:     booldefault.StaticBool(false),
 						},
 						"values": schema.SetAttribute{
-							Description: "Values the dimension must have. Omit to match any value, including a missing dimension.",
+							Description: "Values the dimension must have. Omit to match any value, including requests that don't have the dimension.",
 							Optional:    true,
 							ElementType: types.StringType,
 							Validators:  []validator.Set{setvalidator.SizeAtLeast(1)},

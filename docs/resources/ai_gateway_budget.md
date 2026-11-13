@@ -3,12 +3,12 @@
 page_title: "datadog_ai_gateway_budget Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog AI Gateway budget resource. A budget caps spend over a daily, weekly or monthly UTC period for the requests that match its scope. This resource is in Preview.
+  Provides a Datadog AI Gateway budget resource. A budget caps spend over a daily, weekly, or monthly UTC period for the requests that match its scope. This resource is in Preview.
 ---
 
 # datadog_ai_gateway_budget (Resource)
 
-Provides a Datadog AI Gateway budget resource. A budget caps spend over a daily, weekly or monthly UTC period for the requests that match its scope. This resource is in Preview.
+Provides a Datadog AI Gateway budget resource. A budget caps spend over a daily, weekly, or monthly UTC period for the requests that match its scope. This resource is in Preview.
 
 ## Example Usage
 
@@ -52,11 +52,11 @@ resource "datadog_ai_gateway_budget" "per_user" {
 
 - `apply_to_current_period` (Boolean) Whether a change to `capacity_microcents` also applies to the current period. When `false`, the current period keeps its capacity. Not supported for budgets with a `selector`. Defaults to `false`.
 - `enabled` (Boolean) Whether the budget is active. Defaults to `true`.
-- `selector` (Attributes Set) Dimension rules that make this a template budget: each request is counted against its own instance of the budget, separated by the dimensions with `per_value = true`. Changing it replaces the budget. (see [below for nested schema](#nestedatt--selector))
-- `tags` (Map of String) Scope tags, such as `provider`, `model` or `ml_app`. A request counts toward the budget when it has all of these tags. Keys must be lowercase. Changing them replaces the budget.
+- `selector` (Attributes Set) Dimension rules that make this budget a template budget. Each combination of values for the dimensions with `per_value = true` gets its own budget instance, and each request counts toward the instance that matches its values. Changing it replaces the budget. (see [below for nested schema](#nestedatt--selector))
+- `tags` (Map of String) Scope tags, such as `provider`, `model`, or `ml_app`. A request counts toward the budget when it has all of these tags. Keys must be lowercase. Changing them replaces the budget.
 - `team_id` (String) UUID of a Datadog Team. When set, only requests attributed to this team count toward the budget. Changing it replaces the budget.
 - `user_id` (String) UUID of a Datadog user. When set, only this user's requests count toward the budget. Changing it replaces the budget.
-- `warning_threshold` (Number) Fraction of capacity at which the budget's monitor warns, greater than 0 and at most 1. Value must be at least 0.000000. Defaults to `0.9`.
+- `warning_threshold` (Number) Fraction of capacity that triggers a warning from the budget's monitor. Must be greater than 0 and at most 1. Value must be at least 0.000000. Defaults to `0.9`.
 
 ### Read-Only
 
@@ -72,8 +72,8 @@ Required:
 
 Optional:
 
-- `per_value` (Boolean) Whether each matched value gets its own budget instance. Otherwise spend is pooled across values. Defaults to `false`.
-- `values` (Set of String) Values the dimension must have. Omit to match any value, including a missing dimension.
+- `per_value` (Boolean) Whether each matched value gets its own budget instance. When `false`, spend is pooled across all matched values. Defaults to `false`.
+- `values` (Set of String) Values the dimension must have. Omit to match any value, including requests that don't have the dimension.
 
 ## Import
 
