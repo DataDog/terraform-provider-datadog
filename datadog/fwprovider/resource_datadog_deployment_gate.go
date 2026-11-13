@@ -3,8 +3,12 @@ package fwprovider
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"net/http"
+	"strings"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -88,7 +92,7 @@ func (r *deploymentGateResource) Schema(_ context.Context, _ resource.SchemaRequ
 			},
 			"env": schema.StringAttribute{
 				Required:    true,
-				Description: "The target environment (example: dev).",
+				Description: "The target environment (example: dev). Use `*` to apply this gate to all environments. A gate for all environments cannot coexist with environment-specific gates for the same service and identifier. Changing env replaces the gate.",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -235,8 +239,12 @@ func (r *deploymentGateResource) Create(ctx context.Context, request resource.Cr
 		return
 	}
 
-	resp, _, err := r.Api.CreateDeploymentGate(r.Auth, *body)
+	resp, httpResp, err := r.Api.CreateDeploymentGate(r.Auth, *body)
 	if err != nil {
+		if isDeploymentGateConflict(httpResp, err) {
+			response.Diagnostics.AddError("Conflicting deployment gate", fmt.Sprintf("Cannot create the deployment gate for service %q, identifier %q, and env %q. Remove conflicting gates first or choose a new identifier, then apply again. API error: %v", state.Service.ValueString(), state.Identifier.ValueString(), state.Env.ValueString(), utils.TranslateClientError(err, httpResp, "creation failed")))
+			return
+		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating DeploymentGate"))
 		return
 	}
@@ -267,6 +275,25 @@ func (r *deploymentGateResource) Create(ctx context.Context, request resource.Cr
 	}
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+}
+
+func isDeploymentGateConflict(httpResp *http.Response, err error) bool {
+	if httpResp == nil {
+		return false
+	}
+	if httpResp.StatusCode == http.StatusConflict {
+		return true
+	}
+	if httpResp.StatusCode != http.StatusBadRequest {
+		return false
+	}
+	message := err.Error()
+	var apiErr datadog.GenericOpenAPIError
+	if errors.As(err, &apiErr) {
+		message += " " + string(apiErr.Body())
+	}
+	message = strings.ToLower(message)
+	return strings.Contains(message, "conflict") || strings.Contains(message, "already exist")
 }
 
 func (r *deploymentGateResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
