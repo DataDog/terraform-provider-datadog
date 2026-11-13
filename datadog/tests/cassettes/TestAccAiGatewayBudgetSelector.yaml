@@ -1,0 +1,202 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 446
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"capacity_microcents":50000000,"enforcement":"BLOCK","name":"tf-TestAccAiGatewayBudgetSelector-local-1794537337","selector":[{"dim":"model","per_value":true},{"dim":"provider","per_value":true,"values":["anthropic","openai"]},{"dim":"tag:ml_app","per_value":false,"values":["tf-TestAccAiGatewayBudgetSelector-local-1794537337"]}],"track_existing":false,"warning_threshold":0.9,"window_policy":"MONTHLY"},"type":"budgets"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/budgets
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 663
+        uncompressed: false
+        body: '{"data":{"id":"5d0b9e7a-da1f-4b56-9eec-9e3cb49114f8","type":"budgets","attributes":{"capacity_microcents":50000000,"created_at":"2026-11-13T02:35:40.32607Z","created_by":"chris.shen@datadoghq.com","enabled":true,"enforcement":"BLOCK","monitor_id":344321712,"name":"tf-TestAccAiGatewayBudgetSelector-local-1794537337","scope_restricted":false,"selector":[{"dim":"model","per_value":true},{"dim":"provider","values":["anthropic","openai"],"per_value":true},{"dim":"tag:ml_app","values":["tf-TestAccAiGatewayBudgetSelector-local-1794537337"],"per_value":false}],"tags":{},"updated_at":"2026-11-13T02:35:40.32607Z","warning_threshold":0.9,"window_policy":"MONTHLY"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 302.37325ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/budgets/5d0b9e7a-da1f-4b56-9eec-9e3cb49114f8
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 663
+        uncompressed: false
+        body: '{"data":{"id":"5d0b9e7a-da1f-4b56-9eec-9e3cb49114f8","type":"budgets","attributes":{"capacity_microcents":50000000,"created_at":"2026-11-13T02:35:40.32607Z","created_by":"chris.shen@datadoghq.com","enabled":true,"enforcement":"BLOCK","monitor_id":344321712,"name":"tf-TestAccAiGatewayBudgetSelector-local-1794537337","scope_restricted":false,"selector":[{"dim":"model","per_value":true},{"dim":"provider","values":["anthropic","openai"],"per_value":true},{"dim":"tag:ml_app","values":["tf-TestAccAiGatewayBudgetSelector-local-1794537337"],"per_value":false}],"tags":{},"updated_at":"2026-11-13T02:35:40.32607Z","warning_threshold":0.9,"window_policy":"MONTHLY"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 638.998583ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/budgets/5d0b9e7a-da1f-4b56-9eec-9e3cb49114f8
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 663
+        uncompressed: false
+        body: '{"data":{"id":"5d0b9e7a-da1f-4b56-9eec-9e3cb49114f8","type":"budgets","attributes":{"capacity_microcents":50000000,"created_at":"2026-11-13T02:35:40.32607Z","created_by":"chris.shen@datadoghq.com","enabled":true,"enforcement":"BLOCK","monitor_id":344321712,"name":"tf-TestAccAiGatewayBudgetSelector-local-1794537337","scope_restricted":false,"selector":[{"dim":"model","per_value":true},{"dim":"provider","values":["anthropic","openai"],"per_value":true},{"dim":"tag:ml_app","values":["tf-TestAccAiGatewayBudgetSelector-local-1794537337"],"per_value":false}],"tags":{},"updated_at":"2026-11-13T02:35:40.32607Z","warning_threshold":0.9,"window_policy":"MONTHLY"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 31.642625ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/budgets/5d0b9e7a-da1f-4b56-9eec-9e3cb49114f8
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 663
+        uncompressed: false
+        body: '{"data":{"id":"5d0b9e7a-da1f-4b56-9eec-9e3cb49114f8","type":"budgets","attributes":{"capacity_microcents":50000000,"created_at":"2026-11-13T02:35:40.32607Z","created_by":"chris.shen@datadoghq.com","enabled":true,"enforcement":"BLOCK","monitor_id":344321712,"name":"tf-TestAccAiGatewayBudgetSelector-local-1794537337","scope_restricted":false,"selector":[{"dim":"model","per_value":true},{"dim":"provider","values":["anthropic","openai"],"per_value":true},{"dim":"tag:ml_app","values":["tf-TestAccAiGatewayBudgetSelector-local-1794537337"],"per_value":false}],"tags":{},"updated_at":"2026-11-13T02:35:40.32607Z","warning_threshold":0.9,"window_policy":"MONTHLY"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 31.265625ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/budgets/5d0b9e7a-da1f-4b56-9eec-9e3cb49114f8
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 58.190666ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/budgets/5d0b9e7a-da1f-4b56-9eec-9e3cb49114f8
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 49
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Not Found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 34.053208ms
