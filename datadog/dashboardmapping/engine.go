@@ -160,6 +160,8 @@ type FieldSpec struct {
 
 	// Discriminator configures polymorphic oneOf behavior for TypeOneOf fields.
 	// Set on the TypeOneOf parent (JSONKey) and on each child variant (Value/Values/DefaultVariant).
+	// On a TypeBlock, JSONKey and Value inject a constant discriminator on build, for
+	// objects whose required "type" has a single valid value and no HCL attribute.
 	Discriminator *OneOfDiscriminator
 }
 
@@ -1919,6 +1921,9 @@ func buildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec, ctx
 			nested := buildEngineJSONFromMap(child, f.Children, ctx.block(f.HCLKey, 0))
 			if len(nested) == 0 && f.OmitEmpty {
 				continue
+			}
+			if f.Discriminator != nil && f.Discriminator.Value != "" {
+				nested[f.Discriminator.JSONKey] = f.Discriminator.Value
 			}
 			setAtJSONPath(result, f.effectiveJSONPath(), nested)
 
