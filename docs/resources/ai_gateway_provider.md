@@ -40,7 +40,7 @@ resource "datadog_ai_gateway_provider" "bedrock" {
 
 - `known_provider` (String) Provider implementation. Use `custom` for an OpenAI-compatible endpoint. Changing it forces a new provider. Valid values are `custom`, `anthropic`, `openai`, `azure_openai`, `bedrock`, `gemini`, `baseten`, `fireworks`, `together`, `typesafe`, `azure_foundry`.
 - `name` (String) Human-readable name of the provider.
-- `slug` (String) Routing identifier of the provider. Changing it forces a new provider. Must contain only letters, digits, hyphens and underscores.
+- `slug` (String) Routing identifier of the provider. Changing it forces a new provider. Must contain only letters, digits, hyphens, and underscores.
 
 ### Optional
 
@@ -62,7 +62,7 @@ Optional:
 - `foundry_resource_id` (String) ARM resource ID of the Azure AI Foundry resource, for `azure_foundry` providers.
 - `location` (String) GCP location, for `gemini` providers.
 - `project_id` (String) GCP project ID, for `gemini` providers.
-- `supported_operations` (List of String) Operations that discovered and new manual models of a `custom` provider support. The API defaults to `OPENAI_CHAT_COMPLETIONS`.
+- `supported_operations` (List of String) Operations that a `custom` provider discovered and manually added models support. The API defaults to `OPENAI_CHAT_COMPLETIONS`.
 
 ## Import
 

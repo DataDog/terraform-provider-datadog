@@ -111,7 +111,7 @@ func (r *aiGatewayProviderResource) Schema(_ context.Context, _ resource.SchemaR
 				Required:    true,
 				Validators: []validator.String{
 					stringvalidator.LengthBetween(1, 256),
-					stringvalidator.RegexMatches(regexp.MustCompile(`^[A-Za-z0-9_-]+$`), "must contain only letters, digits, hyphens and underscores"),
+					stringvalidator.RegexMatches(regexp.MustCompile(`^[A-Za-z0-9_-]+$`), "must contain only letters, digits, hyphens, and underscores"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -149,7 +149,7 @@ func (r *aiGatewayProviderResource) Schema(_ context.Context, _ resource.SchemaR
 					"foundry_resource_id": immutableString("ARM resource ID of the Azure AI Foundry resource, for `azure_foundry` providers.", 512),
 					"foundry_project":     immutableString("Azure AI Foundry project name, for `azure_foundry` providers.", 256),
 					"supported_operations": schema.ListAttribute{
-						Description: "Operations that discovered and new manual models of a `custom` provider support. The API defaults to `OPENAI_CHAT_COMPLETIONS`.",
+						Description: "Operations that a `custom` provider discovered and manually added models support. The API defaults to `OPENAI_CHAT_COMPLETIONS`.",
 						Optional:    true,
 						Computed:    true,
 						ElementType: types.StringType,
