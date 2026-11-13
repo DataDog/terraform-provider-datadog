@@ -189,3 +189,16 @@ func TestUsePupChecksOrgUUID(t *testing.T) {
 		})
 	}
 }
+
+func TestUsePupRequiresOrgUUID(t *testing.T) {
+	for _, implementation := range []string{"sdkv2", "framework"} {
+		t.Run(implementation, func(t *testing.T) {
+			runs := fakePupOnPath(t)
+			_, _, err := configureWorkloadIdentityTestProvider(t, implementation, map[string]interface{}{
+				"use_pup": true, "validate": "false",
+			})
+			require.ErrorContains(t, err, "org_uuid is required when the provider authenticates with pup")
+			require.Equal(t, 0, runs())
+		})
+	}
+}

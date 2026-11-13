@@ -66,7 +66,7 @@ For local development, the provider can use the OAuth session from the [pup](htt
 
 **Prerequisites**: Install pup, make sure it's on your `PATH`, and run `pup auth login`.
 
-To turn it on, set `use_pup = true` in the provider block, or set the `DD_USE_PUP` environment variable to `true`. Optionally, set `org_uuid` to restrict tokens to one organization:
+To turn it on, set `use_pup = true` in the provider block, or set the `DD_USE_PUP` environment variable to `true`. Also set `org_uuid`, which is required with pup, so every token must belong to that organization:
 
 ```terraform
 provider "datadog" {
@@ -79,7 +79,7 @@ The provider gets a token by running `pup auth token`, and requests a new one wh
 
 The provider uses pup only when no other credentials are configured. API and application keys, `bearer_token`, cloud provider authentication, and HCP Terraform dynamic provider credentials all take precedence, whether they're set in the provider block or in environment variables.
 
-- **Changing pup accounts during a run**: If pup is logged in as a different user partway through a run, the provider fails at the next token request instead of continuing as that user. Set `org_uuid` to require every token to belong to the intended organization.
+- **Changing pup accounts during a run**: If pup is logged in as a different user partway through a run, the provider fails at the next token request instead of continuing as that user. Because `org_uuid` is required, a token for a different organization also stops the run.
 - **Site matching**: Set `api_url` to the same Datadog site that pup is logged in to.
 - **Parallel runs**: Each Terraform run calls `pup auth token` on its own. If several runs try to refresh an expired session at the same time, the provider retries a failed `pup auth token` call up to three times before returning an error.
 
@@ -105,8 +105,8 @@ The provider uses pup only when no other credentials are configured. API and app
 - `http_client_retry_max_retries` (Number) The HTTP request maximum retry number. Defaults to 3.
 - `http_client_retry_timeout` (Number) The HTTP request retry timeout period. Defaults to 60 seconds.
 - `ignore_tag_keys` (Set of String) [Experimental - Monitors and Service Level Objectives only] Tag keys whose drift Terraform should ignore across all resources that support `ignore_tag_keys`. A resource's own `ignore_tag_keys` is merged with this list for that resource. Any `:value` suffix is ignored.
-- `org_uuid` (String) The organization UUID; required for AWS WIF. Optional for Terraform Dynamic Provider Credentials, but when configured it must match the organization UUID in the token audience. This can also be set using the `DD_ORG_UUID` environment variable. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.
-- `use_pup` (Boolean) Get a bearer token from the pup CLI (pup auth token) after you run pup auth login, so you don't need to store an API key, application key, or access token. Used only when api_key, app_key, bearer_token, cloud provider authentication, and HCP Terraform dynamic provider credentials are all absent. The provider requests a new token when the current one expires, and fails if pup is then logged in as a different user. When org_uuid is set, every token must belong to that organization. You can also set this with the `DD_USE_PUP` environment variable.
+- `org_uuid` (String) The organization UUID; required for AWS WIF and for `use_pup`. Optional for Terraform Dynamic Provider Credentials, but when configured it must match the organization UUID in the token audience. This can also be set using the `DD_ORG_UUID` environment variable. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.
+- `use_pup` (Boolean) Get a bearer token from the pup CLI (pup auth token) after you run pup auth login, so you don't need to store an API key, application key, or access token. Used only when api_key, app_key, bearer_token, cloud provider authentication, and HCP Terraform dynamic provider credentials are all absent. The provider requests a new token when the current one expires, and fails if pup is then logged in as a different user. Requires org_uuid, and every token must belong to that organization. You can also set this with the `DD_USE_PUP` environment variable.
 - `validate` (String) Enables credential validation during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, initial credential validation is skipped.
 - `workload_identity_token_tag` (String) Selects the HCP Terraform workload identity token tag for this provider configuration, for example DATADOG_ORG_A selects TFC_WORKLOAD_IDENTITY_TOKEN_DATADOG_ORG_A. When set, that token must be present and have a valid Datadog audience; no other token or environment authentication is used as fallback. Explicit API/application keys, bearer_token, or cloud_provider_type take precedence. When unset or empty, automatically tries the DATADOG tag and then the untagged token. Tags may contain only letters, numbers, and underscores; TYPE is reserved.
 

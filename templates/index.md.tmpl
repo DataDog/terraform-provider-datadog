@@ -51,7 +51,7 @@ For local development, the provider can use the OAuth session from the [pup](htt
 
 **Prerequisites**: Install pup, make sure it's on your `PATH`, and run `pup auth login`.
 
-To turn it on, set `use_pup = true` in the provider block, or set the `DD_USE_PUP` environment variable to `true`. Optionally, set `org_uuid` to restrict tokens to one organization:
+To turn it on, set `use_pup = true` in the provider block, or set the `DD_USE_PUP` environment variable to `true`. Also set `org_uuid`, which is required with pup, so every token must belong to that organization:
 
 ```terraform
 provider "datadog" {
@@ -64,7 +64,7 @@ The provider gets a token by running `pup auth token`, and requests a new one wh
 
 The provider uses pup only when no other credentials are configured. API and application keys, `bearer_token`, cloud provider authentication, and HCP Terraform dynamic provider credentials all take precedence, whether they're set in the provider block or in environment variables.
 
-- **Changing pup accounts during a run**: If pup is logged in as a different user partway through a run, the provider fails at the next token request instead of continuing as that user. Set `org_uuid` to require every token to belong to the intended organization.
+- **Changing pup accounts during a run**: If pup is logged in as a different user partway through a run, the provider fails at the next token request instead of continuing as that user. Because `org_uuid` is required, a token for a different organization also stops the run.
 - **Site matching**: Set `api_url` to the same Datadog site that pup is logged in to.
 - **Parallel runs**: Each Terraform run calls `pup auth token` on its own. If several runs try to refresh an expired session at the same time, the provider retries a failed `pup auth token` call up to three times before returning an error.
 
