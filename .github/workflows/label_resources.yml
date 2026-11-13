@@ -1,0 +1,116 @@
+name: Label affected resources
+
+# Keeps resource/<name> and datasource/<name> labels on issues and pull
+# requests up to date. Labels this workflow added are removed once they no longer apply;
+# labels people add or remove are left alone. See
+# scripts/detect_affected_resources.py for how names are detected and when an
+# item is left unlabeled. Labels longer than GitHub's 50 characters are cut, and
+# their description ("Resource datadog_x") records which name they belong to,
+# so don't edit those descriptions.
+
+permissions:
+  contents: read
+
+on: # yamllint disable-line rule:truthy
+  issues:
+    types: [opened, edited, reopened]
+  pull_request_target:
+    types: [opened, edited, reopened, ready_for_review, synchronize]
+  workflow_dispatch:
+    inputs:
+      number:
+        description: Issue or pull request number to label
+        required: true
+        type: number
+
+concurrency:
+  group: label-resources-${{ github.event.issue.number || github.event.pull_request.number || inputs.number }}
+  cancel-in-progress: true
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    # Title/body edits and PR base changes can affect detected resources
+    if: github.event.action != 'edited' || github.event.changes.title || github.event.changes.body || github.event.changes.base
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Checkout base
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Detect and apply labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.issue.number || github.event.pull_request.number || inputs.number }}
+        run: |
+          # Fetch the current title/body/labels rather than trusting the event
+          # payload, so reruns and workflow_dispatch see the same data.
+          gh api "repos/${GITHUB_REPOSITORY}/issues/${NUMBER}" > /tmp/item.json
+          : > /tmp/files.jsonl
+          pr_args=()
+          if jq -e '.pull_request' /tmp/item.json > /dev/null; then
+            # The files endpoint lists at most 3,000 files; the script changes
+            # nothing when the list doesn't match the PR's changed_files.
+            gh api "repos/${GITHUB_REPOSITORY}/pulls/${NUMBER}" > /tmp/pull.json
+            # Renamed files also list their old path: the PR is about both.
+            gh api --paginate "repos/${GITHUB_REPOSITORY}/pulls/${NUMBER}/files" \
+              --jq '.[] | {filename, previous_filename} | tojson' > /tmp/files.jsonl
+            pr_args=(--pull /tmp/pull.json)
+          fi
+
+          # Who last added or removed each label, so only the bot's own labels
+          # are ever removed.
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${NUMBER}/events" \
+            --jq '.[] | select(.event == "labeled" or .event == "unlabeled")
+                  | {event, actor: .actor.login, label: .label.name} | tojson' > /tmp/events.jsonl
+
+          # Label descriptions record which name a shortened label belongs to.
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/labels" \
+            --jq '.[] | {name, description} | tojson' > /tmp/labels.jsonl
+
+          python3 scripts/detect_affected_resources.py --item /tmp/item.json --files /tmp/files.jsonl \
+            --events /tmp/events.jsonl --labels /tmp/labels.jsonl "${pr_args[@]}" > /tmp/changes.tsv
+          if [ ! -s /tmp/changes.tsv ]; then
+            echo "Nothing to change"
+            exit 0
+          fi
+
+          while IFS=$'\t' read -r action label description fallback; do
+            case "${action}" in
+              add)
+                echo "Adding ${label}"
+                # Creating an existing label fails with 422; that's expected.
+                if ! gh api "repos/${GITHUB_REPOSITORY}/labels" -f name="${label}" -f color=5319e7 \
+                  -f description="${description}" > /dev/null 2>&1 && [ "${#label}" -eq 50 ]; then
+                  # A cut label may have just been created by a concurrent run for
+                  # another name that cuts the same way; only use it if it's ours
+                  # or made by hand, else use the hashed label.
+                  encoded=$(jq -rn --arg label "${label}" '$label | @uri')
+                  owner=$(gh api "repos/${GITHUB_REPOSITORY}/labels/${encoded}" --jq '.description // ""')
+                  if [ -n "${owner}" ] && [ "${owner}" != "${description}" ]; then
+                    echo "${label} belongs to ${owner}; adding ${fallback} instead"
+                    label="${fallback}"
+                    gh api "repos/${GITHUB_REPOSITORY}/labels" -f name="${label}" -f color=5319e7 \
+                      -f description="${description}" > /dev/null 2>&1 || true
+                  fi
+                fi
+                gh api "repos/${GITHUB_REPOSITORY}/issues/${NUMBER}/labels" -f "labels[]=${label}" > /dev/null
+                ;;
+              remove)
+                echo "Removing ${label}"
+                encoded=$(jq -rn --arg label "${label}" '$label | @uri')
+                # A person may have removed it meanwhile; keep applying the rest.
+                if ! out=$(gh api -X DELETE "repos/${GITHUB_REPOSITORY}/issues/${NUMBER}/labels/${encoded}" 2>&1); then
+                  if [[ "${out}" == *"(HTTP 404)"* ]]; then
+                    echo "${label} was already removed"
+                  else
+                    echo "${out}" >&2
+                    exit 1
+                  fi
+                fi
+                ;;
+            esac
+          done < /tmp/changes.tsv
