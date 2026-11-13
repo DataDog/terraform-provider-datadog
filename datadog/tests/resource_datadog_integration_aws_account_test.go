@@ -507,7 +507,7 @@ func testAccCheckDatadogIntegrationAwsAccountDestroy(accProvider *fwprovider.Fra
 func IntegrationAwsAccountDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	err := utils.Retry(2, 10, func() error {
 		for _, r := range s.RootModule().Resources {
-			if r.Type != "resource_datadog_integration_aws_account" {
+			if r.Type != "datadog_integration_aws_account" {
 				continue
 			}
 			id := r.Primary.ID
@@ -515,7 +515,7 @@ func IntegrationAwsAccountDestroyHelper(auth context.Context, s *terraform.State
 			_, httpResp, err := apiInstances.GetAWSIntegrationApiV2().GetAWSAccount(auth, id)
 			if err != nil {
 				if httpResp != nil && httpResp.StatusCode == 404 {
-					return nil
+					continue
 				}
 				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving IntegrationAwsAccount %s", err)}
 			}
