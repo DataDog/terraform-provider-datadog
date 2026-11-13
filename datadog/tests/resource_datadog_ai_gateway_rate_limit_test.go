@@ -3,6 +3,8 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -26,6 +28,12 @@ func TestAccAiGatewayRateLimit(t *testing.T) {
 		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAiGatewayRateLimitDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
+			{
+				// The API lowercases tag keys, so an uppercase key would show as a change on every plan.
+				Config: strings.Replace(testAccAiGatewayRateLimitConfig(name), "provider =", "Provider =", 1),
+				PlanOnly:    true,
+				ExpectError: regexp.MustCompile(`must be lowercase`),
+			},
 			{
 				Config: testAccAiGatewayRateLimitConfig(name),
 				Check: resource.ComposeTestCheckFunc(

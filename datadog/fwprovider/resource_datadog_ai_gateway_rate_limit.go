@@ -2,6 +2,8 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -24,9 +26,16 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &aiGatewayRateLimitResource{}
-	_ resource.ResourceWithImportState = &aiGatewayRateLimitResource{}
+	_ resource.ResourceWithConfigure      = &aiGatewayRateLimitResource{}
+	_ resource.ResourceWithImportState    = &aiGatewayRateLimitResource{}
+	_ resource.ResourceWithValidateConfig = &aiGatewayRateLimitResource{}
 )
+
+// aiGatewayRateLimitTagKeyPattern matches the form the API stores a tag key in: lowercase and trimmed. The API
+// rewrites any other key into this form, which would show as a change on every plan.
+var aiGatewayRateLimitTagKeyPattern = regexp.MustCompile(`^[^A-Z\s]([^A-Z]*[^A-Z\s])?$`)
+
+const aiGatewayRateLimitTagHeaderPrefix = "x-dd-tag-"
 
 type aiGatewayRateLimitResource struct {
 	Api  *datadogV2.AIGatewayApi
@@ -122,7 +131,7 @@ func (r *aiGatewayRateLimitResource) Schema(_ context.Context, _ resource.Schema
 				Optional:    true,
 			},
 			"tags": schema.MapAttribute{
-				Description: "Scope tags, such as `provider`, `model` or `ml_app`. A request counts toward the limit when it has all of these tags.",
+				Description: "Scope tags, such as `provider`, `model` or `ml_app`. A request counts toward the limit when it has all of these tags. Keys must be lowercase.",
 				Optional:    true,
 				ElementType: types.StringType,
 				// The API returns cleared tags as {}, which maps to null, so an empty map would never match state.
@@ -130,6 +139,27 @@ func (r *aiGatewayRateLimitResource) Schema(_ context.Context, _ resource.Schema
 			},
 		},
 	}
+}
+
+// ValidateConfig rejects tag keys the API would rewrite, since the rewritten key would differ from the configuration.
+func (r *aiGatewayRateLimitResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
+	var tags types.Map
+	response.Diagnostics.Append(request.Config.GetAttribute(ctx, path.Root("tags"), &tags)...)
+	if response.Diagnostics.HasError() || tags.IsNull() || tags.IsUnknown() {
+		return
+	}
+	for key := range tags.Elements() {
+		if err := validateAiGatewayRateLimitTagKey(key); err != nil {
+			response.Diagnostics.AddAttributeError(path.Root("tags"), "invalid tag key", err.Error())
+		}
+	}
+}
+
+func validateAiGatewayRateLimitTagKey(key string) error {
+	if !aiGatewayRateLimitTagKeyPattern.MatchString(key) || strings.HasPrefix(key, aiGatewayRateLimitTagHeaderPrefix) {
+		return fmt.Errorf("tag key %q must be lowercase, with no surrounding whitespace and no %s prefix", key, aiGatewayRateLimitTagHeaderPrefix)
+	}
+	return nil
 }
 
 func (r *aiGatewayRateLimitResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {

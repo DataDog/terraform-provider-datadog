@@ -134,3 +134,20 @@ func TestUpdateAiGatewayRateLimitStateKeepsUUIDSpelling(t *testing.T) {
 		t.Errorf("imported team_id = %q, want the API's %q", got, teamID.String())
 	}
 }
+
+func TestValidateAiGatewayRateLimitTagKey(t *testing.T) {
+	for key, valid := range map[string]bool{
+		"provider":        true,
+		"ml_app":          true,
+		"team-name":       true,
+		"Provider":        false,
+		" provider":       false,
+		"provider ":       false,
+		"x-dd-tag-ml_app": false,
+		"":                false,
+	} {
+		if err := validateAiGatewayRateLimitTagKey(key); (err == nil) != valid {
+			t.Errorf("%q: err = %v, want valid = %t", key, err, valid)
+		}
+	}
+}
