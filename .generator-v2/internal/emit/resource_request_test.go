@@ -310,6 +310,69 @@ var _ = Describe("BuildResourceView request mapping", func() {
 			Expect(out).To(ContainSubstring(want), "generated resource missing %q:\n%s", want, out)
 		}
 	})
+
+	It("builds collections whose element format needs no conversion, and renders valid Go", func() {
+		op := widgetResourceOperation()
+		attributes := op.RequestSchema.Properties["data"].Properties["attributes"]
+		attributes.Properties["weights"] = &model.Schema{
+			Kind:  model.SchemaKindMap,
+			Items: &model.Schema{Kind: model.SchemaKindPrimitive, Type: "number", Format: "double"},
+		}
+		attributes.Properties["counts"] = arrSchema(&model.Schema{Kind: model.SchemaKindPrimitive, Type: "integer", Format: "int64"})
+
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+
+		view, err := BuildResourceView(art)
+		Expect(err).NotTo(HaveOccurred())
+
+		weights := requestFieldByGoField(view.Create.Envelope.Fields, "Weights")
+		Expect(weights.Collection.Kind).To(Equal("primitive"))
+		Expect(weights.Collection.ConvertType).To(Equal("map[string]float64"))
+		counts := requestFieldByGoField(view.Create.Envelope.Fields, "Counts")
+		Expect(counts.Collection.ConvertType).To(Equal("[]int64"))
+
+		src, err := RenderResource(view)
+		Expect(err).NotTo(HaveOccurred())
+		_, err = format.Source(src)
+		Expect(err).NotTo(HaveOccurred(), "rendered output must already be gofmt-canonical Go:\n%s", src)
+
+		out := string(src)
+		for _, want := range []string{
+			`var weightsElements map[string]float64`,
+			`bodyAttributes.SetWeights(weightsElements)`,
+			`var countsElements []int64`,
+			`bodyAttributes.SetCounts(countsElements)`,
+		} {
+			Expect(out).To(ContainSubstring(want), "generated resource missing %q:\n%s", want, out)
+		}
+	})
+
+	It("still fails a collection whose element format needs a conversion", func() {
+		for _, item := range []*model.Schema{
+			{Kind: model.SchemaKindPrimitive, Type: "number", Format: "float"},
+			{Kind: model.SchemaKindPrimitive, Type: "integer", Format: "int32"},
+		} {
+			op := widgetResourceOperation()
+			attributes := op.RequestSchema.Properties["data"].Properties["attributes"]
+			attributes.Properties["weights"] = &model.Schema{Kind: model.SchemaKindMap, Items: item}
+
+			art, err := model.BuildArtifact(op)
+			Expect(err).NotTo(HaveOccurred())
+
+			_, err = BuildResourceView(art)
+			var unsupported *UnsupportedEmitError
+			Expect(errors.As(err, &unsupported)).To(BeTrue(), "format %q should be unsupported", item.Format)
+			found := false
+			for _, n := range unsupported.Nodes {
+				if strings.Contains(n.Path, "weights{}") {
+					Expect(n.Reason).To(ContainSubstring(item.Format))
+					found = true
+				}
+			}
+			Expect(found).To(BeTrue(), "no unsupported node for format %q", item.Format)
+		}
+	})
 })
 
 // requestFieldByGoField finds the field named goField in fields, failing the
