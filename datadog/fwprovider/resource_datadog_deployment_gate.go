@@ -133,7 +133,7 @@ func (r *deploymentGateResource) Schema(_ context.Context, _ resource.SchemaRequ
 						},
 						"type": schema.StringAttribute{
 							Required:    true,
-							Description: "The rule type (e.g., 'faulty_deployment_detection', 'monitor').",
+							Description: "The rule type: 'faulty_deployment_detection', 'monitor', or 'bits_deployment_analysis'.",
 						},
 						"dry_run": schema.BoolAttribute{
 							Optional:    true,
@@ -524,6 +524,11 @@ func (r *deploymentGateResource) validateRules(ctx context.Context, state *deplo
 				fmt.Sprintf("Rule %d: type 'monitor' cannot use faulty deployment detection options. "+
 					"Use monitor options instead: duration, query, monitor_ids, fail_on_no_data, fail_on_no_groups_found, warmup.", i),
 			)
+		} else if ruleType == "bits_deployment_analysis" && (hasFddOptions || hasMonitorOptions) {
+			diags.AddError(
+				"Invalid options for deployment rule type",
+				fmt.Sprintf("Rule %d: type 'bits_deployment_analysis' only supports the duration option.", i),
+			)
 		}
 	}
 
@@ -843,7 +848,8 @@ func (r *deploymentGateResource) buildRuleRequestBody(ctx context.Context, rule 
 	return req, diags
 }
 
-// buildRuleOptions maps both monitor selection modes and faulty deployment detection.
+// buildRuleOptions maps both monitor selection modes, faulty deployment detection and
+// Bits Deployment Analysis, whose duration-only options use the faulty deployment detection shape.
 func buildRuleOptions(ctx context.Context, rule *deploymentGateRuleModel) (datadogV2.DeploymentRulesOptions, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	opts := rule.Options
@@ -864,6 +870,12 @@ func buildRuleOptions(ctx context.Context, rule *deploymentGateRuleModel) (datad
 			fdd.SetExcludedResources(excluded)
 		}
 		options.DeploymentRuleOptionsFaultyDeploymentDetection = fdd
+	} else if rule.Type.ValueString() == "bits_deployment_analysis" {
+		bda := &datadogV2.DeploymentRuleOptionsFaultyDeploymentDetection{}
+		if !opts.Duration.IsNull() {
+			bda.SetDuration(opts.Duration.ValueInt64())
+		}
+		options.DeploymentRuleOptionsFaultyDeploymentDetection = bda
 	} else if rule.Type.ValueString() == "monitor" {
 		if opts.MonitorIDs != nil {
 			mon := &datadogV2.DeploymentRuleOptionsMonitorIds{}
@@ -976,6 +988,12 @@ func (r *deploymentGateResource) updateRuleStateFromAttributes(ctx context.Conte
 					}
 				}
 			}
+		} else if rule.Type.ValueString() == "bits_deployment_analysis" {
+			if bdaOptions := options.DeploymentRuleOptionsFaultyDeploymentDetection; bdaOptions != nil {
+				if duration, ok := bdaOptions.GetDurationOk(); ok {
+					rule.Options.Duration = types.Int64PointerValue(duration)
+				}
+			}
 		} else if rule.Type.ValueString() == "monitor" {
 			if monitorOptions := options.DeploymentRuleOptionsMonitor; monitorOptions != nil {
 				if duration, ok := monitorOptions.GetDurationOk(); ok {
@@ -1009,6 +1027,10 @@ func (r *deploymentGateResource) updateRuleStateFromAttributes(ctx context.Conte
 							}
 						}
 						rule.Options.ExcludedResources, _ = types.ListValue(types.StringType, elements)
+					}
+				} else if rule.Type.ValueString() == "bits_deployment_analysis" {
+					if duration, ok := unparsedMap["duration"].(float64); ok {
+						rule.Options.Duration = types.Int64Value(int64(duration))
 					}
 				} else if rule.Type.ValueString() == "monitor" {
 					if duration, ok := unparsedMap["duration"].(float64); ok {
