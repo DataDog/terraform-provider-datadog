@@ -131,7 +131,7 @@ func (r *aiGatewayRateLimitResource) Schema(_ context.Context, _ resource.Schema
 				Optional:    true,
 			},
 			"tags": schema.MapAttribute{
-				Description: "Scope tags, such as `provider`, `model` or `ml_app`. A request counts toward the limit when it has all of these tags. Keys must be lowercase.",
+				Description: "Scope tags, such as `provider`, `model`, or `ml_app`. A request counts toward the limit when it has all of these tags. Keys must be lowercase.",
 				Optional:    true,
 				ElementType: types.StringType,
 				// The API returns cleared tags as {}, which maps to null, so an empty map would never match state.
