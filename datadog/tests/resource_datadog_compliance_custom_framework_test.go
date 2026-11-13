@@ -514,7 +514,9 @@ func TestCustomFramework_DuplicateHandle(t *testing.T) {
 				),
 			},
 			{
-				Config:      testAccCheckDatadogCreateSecondFramework("different-version", handle),
+				// The first framework stays in the config. Without it, Terraform deletes it
+				// concurrently with the second create, and the duplicate check sees no conflict.
+				Config:      testAccCheckDatadogCreateFramework(version, handle) + testAccCheckDatadogCreateSecondFramework("different-version", handle),
 				ExpectError: regexp.MustCompile("Framework with same handle already exists"),
 			},
 		},
