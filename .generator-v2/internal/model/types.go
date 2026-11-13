@@ -507,6 +507,9 @@ type SchemaProvenance struct {
 	// InRequest is true when the node is present in the Create or Update
 	// request body.
 	InRequest bool
+	// CreateOnly is true when Create accepts this field and Update does not.
+	// Changes require replacement even when the resource has an Update role.
+	CreateOnly bool
 	// RequestRequired is true when the node is named in the Create body's
 	// Required list. The Update body is never consulted for requiredness — a
 	// PATCH body marks everything optional.
@@ -698,7 +701,7 @@ type Attribute struct {
 	Validators []ValidatorSpec
 	// PlanModifiers holds this attribute's plan modifiers: UseStateForUnknown()
 	// on an Optional+Computed attribute, and RequiresReplace() on a
-	// request-settable one when no Update role exists or unconditionally on a
+	// create-only or request-settable one when no Update role exists, and on a
 	// path parameter. Never set on a Computed-only attribute, where the server
 	// may change the value during apply and either modifier would misfire.
 	PlanModifiers []PlanModifierSpec

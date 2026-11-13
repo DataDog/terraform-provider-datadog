@@ -623,20 +623,19 @@ func (b *treeBuilder) applyPresence(a *Attribute, s *Schema, required bool) erro
 			a.Computed = true
 		}
 		a.InResponse = p.InResponse
-		a.PlanModifiers = b.resourcePlanModifiers(a, p.InRequest)
+		a.PlanModifiers = b.resourcePlanModifiers(a, p)
 	}
 	return nil
 }
 
 // resourcePlanModifiers derives a's plan modifiers, typed from a.GoType:
 // UseStateForUnknown() when a is both Optional and Computed, RequiresReplace()
-// when requestSettable and updateUnsupported. A Computed-only attribute gets
+// for a create-only input or when updates are unsupported. A Computed-only attribute gets
 // neither, since the server may change such a value during apply.
-// requestSettable is the caller's Provenance.InRequest — the fact itself rather
-// than a re-derivation from a.Required/a.Optional.
-func (b *treeBuilder) resourcePlanModifiers(a *Attribute, requestSettable bool) []PlanModifierSpec {
+// Role provenance distinguishes a create-only input from a mutable field.
+func (b *treeBuilder) resourcePlanModifiers(a *Attribute, provenance *SchemaProvenance) []PlanModifierSpec {
 	useStateForUnknown := a.Optional && a.Computed
-	requiresReplace := b.updateUnsupported && requestSettable
+	requiresReplace := provenance.InRequest && (b.updateUnsupported || provenance.CreateOnly)
 	if !useStateForUnknown && !requiresReplace {
 		return nil
 	}

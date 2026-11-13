@@ -1287,6 +1287,7 @@ func buildWriteOnlySecretView(attribute *model.Attribute, namer modelNamer) Writ
 		ParentBlocks:     names.parentBlocks,
 		RequiredOnCreate: attribute.SecretRequiredOnCreate,
 		RequiredOnUpdate: attribute.SecretRequiredOnUpdate,
+		RequiresReplace:  slices.Contains(attribute.PlanModifiers, model.RequiresReplaceSpec(attribute.GoType)),
 		OriginalDescription: description + exclusivity +
 			" Prefer `" + writeOnlyAttr + "`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.",
 		WriteOnlyDescription: description + "This write-only value is not stored in Terraform state. Requires Terraform 1.11+.",
@@ -2130,6 +2131,14 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 	planModifierPkgs := sortedKeys(b.planModifierPkgs)
 	defaultPkgs := sortedKeys(b.defaultPkgs)
 
+	var initialize *CreateInitializationView
+	if lc.Update != nil {
+		initialize = buildCreateInitialization(env.leaves, lc.Create.RequestAttributesSchema, lc.Update.RequestAttributesSchema, updateView, b.writeOnlySecrets, &b.unsupported)
+		if len(b.unsupported) > 0 {
+			return ResourceView{}, &UnsupportedEmitError{Nodes: b.unsupported}
+		}
+	}
+
 	return ResourceView{
 		CallerAssignedID:  callerAssignedID,
 		TypeName:          a.Name,
@@ -2150,6 +2159,7 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 			Method: lc.Read.GoMethod, GoResponseType: lc.Read.GoResponseType, Arguments: readArgs,
 		},
 		Update:            updateView,
+		Initialize:        initialize,
 		UpdateUnsupported: lc.UpdateUnsupported,
 		Delete: CRUDCallView{
 			Method: lc.Delete.GoMethod, HasResponseBody: lc.Delete.HasResponseBody, Arguments: deleteArgs,
@@ -2561,15 +2571,17 @@ func computedNullExpr(attribute *model.Attribute) string {
 // level, and reports whether that body declares it at all. The lookup is by
 // a.OpenAPIName, since SnakeCase cannot be inverted from the Terraform path;
 // the node returned is the level whose properties line up with a.Children, so a
-// collection is reached through Items. declared is false only when the role
-// demonstrably describes an object here and omits a. Every other shape — a nil
-// role, a level unreadable as an object, an attribute with no OpenAPI name —
-// means "unknown" and keeps the attribute rather than dropping it silently.
+// collection is reached through Items. A present role must declare a writable
+// property: an explicit empty object accepts no fields. A nil role or an
+// attribute with no OpenAPI name means "unknown" and retains the attribute.
 func roleChild(role *model.Schema, a *model.Attribute) (child *model.Schema, declared bool) {
-	if role == nil || len(role.Properties) == 0 || a.OpenAPIName == "" {
+	if role == nil || a.OpenAPIName == "" {
 		return nil, true
 	}
 	child, declared = role.Properties[a.OpenAPIName]
+	if child != nil && child.ReadOnly {
+		return nil, false
+	}
 	if child != nil && child.Items != nil {
 		child = child.Items
 	}

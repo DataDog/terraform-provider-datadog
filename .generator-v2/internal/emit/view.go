@@ -253,6 +253,7 @@ type WriteOnlySecretView struct {
 	ParentBlocks         []string
 	RequiredOnCreate     bool
 	RequiredOnUpdate     bool
+	RequiresReplace      bool
 	OriginalDescription  string
 	WriteOnlyDescription string
 	TriggerDescription   string
@@ -559,6 +560,10 @@ type ResourceView struct {
 	Read   CRUDCallView
 	Update CRUDCallView
 	Delete CRUDCallView
+	// Initialize applies configured update-only fields after Create has saved
+	// the server-assigned identity. Nil when both request shapes accept the
+	// same configurable fields.
+	Initialize *CreateInitializationView
 
 	// Import describes how ImportState recovers the resource's identity: the
 	// part count, the expected format string and the id's own position are
