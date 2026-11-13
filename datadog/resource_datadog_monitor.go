@@ -1080,6 +1080,31 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 						Schema: eventQueryVariableSchema(),
 					},
 				},
+				"metric_query": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					Description: "A metrics query for use in formulas in metric monitors. For cost monitors, use `cloud_cost_query` instead, which requires an aggregator.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"data_source": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionMetricQueryDataSourceFromValue),
+								Description:      "The data source for metrics queries.",
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The name of the query for use in formulas.",
+							},
+							"query": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The metrics query definition.",
+							},
+						},
+					},
+				},
 				"cloud_cost_query": {
 					Type:        schema.TypeList,
 					Optional:    true,
@@ -1090,7 +1115,7 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 							"data_source": {
 								Type:             schema.TypeString,
 								Required:         true,
-								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionCostDataSourceFromValue),
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionCostDataSourceFromValue, datadogV1.NewMonitorFormulaAndFunctionMetricQueryDataSourceFromValue),
 								Description:      "The data source for cloud cost queries.",
 							},
 							"query": {
@@ -1524,6 +1549,14 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionEventQuery(queryMap))
 					}
 				}
+				if query, ok := m["metric_query"]; ok {
+					queries, _ := query.([]interface{})
+					for _, q := range queries {
+						if queryMap, ok := q.(map[string]interface{}); ok {
+							monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionMetricQuery(queryMap))
+						}
+					}
+				}
 				if query, ok := m["cloud_cost_query"]; ok {
 					queries, _ := query.([]interface{})
 					for _, q := range queries {
@@ -1948,17 +1981,32 @@ func buildMonitorFormulaAndFunctionEventQuery(data map[string]interface{}) *data
 	return &definition
 }
 
+func buildMonitorFormulaAndFunctionMetricQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	metricQuery := datadogV1.NewMonitorFormulaAndFunctionMetricQueryDefinition(
+		datadogV1.MonitorFormulaAndFunctionMetricQueryDataSource(data["data_source"].(string)), data["name"].(string), data["query"].(string))
+	definition := datadogV1.MonitorFormulaAndFunctionMetricQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(metricQuery)
+	return &definition
+}
+
 func buildMonitorFormulaAndFunctionCloudCostQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
-	dataSource := datadogV1.MonitorFormulaAndFunctionCostDataSource(data["data_source"].(string))
+	name, query := data["name"].(string), data["query"].(string)
+	aggregator, _ := data["aggregator"].(string)
 
-	cloudCostQuery := datadogV1.NewMonitorFormulaAndFunctionCostQueryDefinition(dataSource, data["name"].(string), data["query"].(string))
-
-	if v, ok := data["aggregator"].(string); ok && len(v) != 0 {
-		cloudCostQuery.SetAggregator(datadogV1.MonitorFormulaAndFunctionCostAggregator(v))
+	// The API no longer models `metrics` as a cost data source; keep existing
+	// `cloud_cost_query { data_source = "metrics" }` configs working by sending the metric type.
+	if data["data_source"].(string) == string(datadogV1.MONITORFORMULAANDFUNCTIONMETRICQUERYDATASOURCE_METRICS) {
+		metricQuery := datadogV1.NewMonitorFormulaAndFunctionMetricQueryDefinition(datadogV1.MONITORFORMULAANDFUNCTIONMETRICQUERYDATASOURCE_METRICS, name, query)
+		if aggregator != "" {
+			metricQuery.SetAggregator(datadogV1.MonitorFormulaAndFunctionCostAggregator(aggregator))
+		}
+		definition := datadogV1.MonitorFormulaAndFunctionMetricQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(metricQuery)
+		return &definition
 	}
 
-	datadogV1.MonitorFormulaAndFunctionCostQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(cloudCostQuery)
-
+	cloudCostQuery := datadogV1.NewMonitorFormulaAndFunctionCostQueryDefinition(datadogV1.MonitorFormulaAndFunctionCostDataSource(data["data_source"].(string)), name, query)
+	if aggregator != "" {
+		cloudCostQuery.SetAggregator(datadogV1.MonitorFormulaAndFunctionCostAggregator(aggregator))
+	}
 	definition := datadogV1.MonitorFormulaAndFunctionCostQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(cloudCostQuery)
 	return &definition
 }
@@ -2224,6 +2272,20 @@ func buildMonitorFormulaAndFunctionDataJobsQuery(data map[string]interface{}) *d
 
 // Use CustomizeDiff to do monitor validation
 func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+	if diff.NewValueKnown("type") && diff.NewValueKnown("variables") {
+		var dataSources []string
+		cloudCost, _ := diff.Get("variables.0.cloud_cost_query").([]interface{})
+		for _, q := range cloudCost {
+			if m, ok := q.(map[string]interface{}); ok {
+				ds, _ := m["data_source"].(string)
+				dataSources = append(dataSources, ds)
+			}
+		}
+		metricQueries, _ := diff.Get("variables.0.metric_query").([]interface{})
+		if err := validators.ValidateMonitorVariablesForType(diff.Get("type").(string), dataSources, len(metricQueries) > 0); err != nil {
+			return err
+		}
+	}
 	if _, ok := diff.GetOk("query"); !ok {
 		// If "query" depends on other resources, we can't validate as the variables may not be interpolated yet.
 		return nil
@@ -2834,8 +2896,16 @@ func buildTerraformCompositeMonitorVariables(datadogVariables []datadogV1.Monito
 	var eventQueries []map[string]interface{}
 	var aggAug []map[string]interface{}
 	var aggFiltered []map[string]interface{}
+	var metricQueries []map[string]interface{}
+	var costQueries []map[string]interface{}
 	for _, query := range datadogVariables {
 		switch {
+		case query.MonitorFormulaAndFunctionMetricQueryDefinition != nil:
+			q := query.MonitorFormulaAndFunctionMetricQueryDefinition
+			metricQueries = append(metricQueries, map[string]interface{}{"data_source": string(q.GetDataSource()), "name": q.GetName(), "query": q.GetQuery()})
+		case query.MonitorFormulaAndFunctionCostQueryDefinition != nil:
+			q := query.MonitorFormulaAndFunctionCostQueryDefinition
+			costQueries = append(costQueries, terraformCostQueryToMap(string(q.GetDataSource()), q.GetName(), q.GetQuery(), q.Aggregator))
 		case query.MonitorFormulaAndFunctionEventQueryDefinition != nil:
 			eventQueries = append(eventQueries, terraformEventQueryDefinitionToMap(query.MonitorFormulaAndFunctionEventQueryDefinition))
 		case query.MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition != nil:
@@ -2853,6 +2923,12 @@ func buildTerraformCompositeMonitorVariables(datadogVariables []datadogV1.Monito
 	if len(aggFiltered) > 0 {
 		root["aggregate_filtered_query"] = aggFiltered
 	}
+	if len(metricQueries) > 0 {
+		root["metric_query"] = metricQueries
+	}
+	if len(costQueries) > 0 {
+		root["cloud_cost_query"] = costQueries
+	}
 	if len(root) == 0 {
 		return nil
 	}
@@ -2866,31 +2942,25 @@ func buildTerraformMonitorVariables(datadogVariables []datadogV1.MonitorFormulaA
 }
 
 func buildTerraformCostMonitorVariables(datadogVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition) []map[string]interface{} {
-	queries := make([]map[string]interface{}, len(datadogVariables))
-	for i, query := range datadogVariables {
-		terraformQuery := map[string]interface{}{}
-		terraformCostQueryDefinition := query.MonitorFormulaAndFunctionCostQueryDefinition
-		if terraformCostQueryDefinition != nil {
-			if dataSource, ok := terraformCostQueryDefinition.GetDataSourceOk(); ok {
-				terraformQuery["data_source"] = dataSource
-			}
-			if name, ok := terraformCostQueryDefinition.GetNameOk(); ok {
-				terraformQuery["name"] = name
-			}
-			if queryStr, ok := terraformCostQueryDefinition.GetQueryOk(); ok {
-				terraformQuery["query"] = queryStr
-			}
-			if aggregator, ok := terraformCostQueryDefinition.GetAggregatorOk(); ok {
-				terraformQuery["aggregator"] = aggregator
-			}
-			queries[i] = terraformQuery
+	queries := []map[string]interface{}{}
+	for _, query := range datadogVariables {
+		if q := query.MonitorFormulaAndFunctionCostQueryDefinition; q != nil {
+			queries = append(queries, terraformCostQueryToMap(string(q.GetDataSource()), q.GetName(), q.GetQuery(), q.Aggregator))
+		}
+		// Cost monitors can still return `metrics` variables, which now decode as the metric type.
+		if q := query.MonitorFormulaAndFunctionMetricQueryDefinition; q != nil {
+			queries = append(queries, terraformCostQueryToMap(string(q.GetDataSource()), q.GetName(), q.GetQuery(), q.Aggregator))
 		}
 	}
-	terraformVariables := make([]map[string]interface{}, 1)
-	terraformVariables[0] = map[string]interface{}{"cloud_cost_query": queries}
+	return []map[string]interface{}{{"cloud_cost_query": queries}}
+}
 
-	log.Printf("[INFO] queries: %+v", terraformVariables)
-	return terraformVariables
+func terraformCostQueryToMap(dataSource, name, query string, aggregator *datadogV1.MonitorFormulaAndFunctionCostAggregator) map[string]interface{} {
+	m := map[string]interface{}{"data_source": dataSource, "name": name, "query": query}
+	if aggregator != nil {
+		m["aggregator"] = string(*aggregator)
+	}
+	return m
 }
 
 func buildTerraformDataQualityMonitorVariables(datadogVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition) []map[string]interface{} {
