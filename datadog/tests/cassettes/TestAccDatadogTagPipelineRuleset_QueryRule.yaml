@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"source:app AND env:prod"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"source:app AND env:prod"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: 134
         uncompressed: false
-        body: '{"data":{"id":"736eb107-315f-4ef8-a8bb-0e1db4d392e7","type":"validate_response","attributes":{"Canonical":"source:app AND env:prod"}}}'
+        body: '{"data":{"id":"719285a1-7ce4-4a07-9487-c285f3d389f0","type":"validate_response","attributes":{"Canonical":"source:app AND env:prod"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 107.177458ms
+        duration: 40.740584ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -49,7 +49,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"source:app AND env:prod"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"source:app AND env:prod"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
@@ -66,13 +66,13 @@ interactions:
         trailer: {}
         content_length: 134
         uncompressed: false
-        body: '{"data":{"id":"bf67f3c8-fe1e-4bc8-a223-e41864d84a61","type":"validate_response","attributes":{"Canonical":"source:app AND env:prod"}}}'
+        body: '{"data":{"id":"54903af5-8782-436d-8833-8c0707c601cf","type":"validate_response","attributes":{"Canonical":"source:app AND env:prod"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 48.655417ms
+        duration: 39.433959ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -85,7 +85,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":null,"name":"query-rule","query":{"addition":{"key":"team","value":"backend"},"case_insensitivity":true,"if_not_exists":false,"query":"source:app AND env:prod"},"reference_table":null}]},"id":"tf-test-query-ruleset-tf-TestAccDatadogTagPipelineRuleset_QueryRule-local-1782916319","type":"create_ruleset"}}
+            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":null,"name":"query-rule","query":{"addition":{"key":"team","value":"backend"},"case_insensitivity":true,"if_not_exists":false,"query":"source:app AND env:prod"},"reference_table":null}]},"id":"tf-test-query-ruleset-tf-TestAccDatadogTagPipelineRuleset_QueryRule-local-1794533325","type":"create_ruleset"}}
         form: {}
         headers:
             Accept:
@@ -102,13 +102,13 @@ interactions:
         trailer: {}
         content_length: 656
         uncompressed: false
-        body: '{"data":{"id":"10cbbf25-61fb-4bf3-8e2f-efb14bcb6a40","type":"ruleset","attributes":{"created":{"seconds":1782916320,"nanos":711053000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916320,"nanos":711053000},"name":"tf-test-query-ruleset-tf-TestAccDatadogTagPipelineRuleset_QueryRule-local-1782916319","position":1,"rules":[{"name":"query-rule","enabled":true,"query":{"query":"source:app AND env:prod","addition":{"key":"team","value":"backend"},"if_not_exists":false,"case_insensitivity":true,"if_tag_exists":"append"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718511}}}'
+        body: '{"data":{"id":"bc7be7a7-0927-4e88-8c7c-7e50edd195db","type":"ruleset","attributes":{"created":{"seconds":1794533328,"nanos":334855000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794533328,"nanos":334855000},"name":"tf-test-query-ruleset-tf-TestAccDatadogTagPipelineRuleset_QueryRule-local-1794533325","position":5,"rules":[{"name":"query-rule","enabled":true,"query":{"query":"source:app AND env:prod","addition":{"key":"team","value":"backend"},"if_not_exists":false,"case_insensitivity":true,"if_tag_exists":"append"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776122}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 159.716875ms
+        duration: 174.193125ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -121,7 +121,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"source:app AND env:prod"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"source:app AND env:prod"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
@@ -138,13 +138,13 @@ interactions:
         trailer: {}
         content_length: 134
         uncompressed: false
-        body: '{"data":{"id":"aa44e592-a5d2-44eb-833e-9b35357848b0","type":"validate_response","attributes":{"Canonical":"source:app AND env:prod"}}}'
+        body: '{"data":{"id":"5c50791d-be75-446e-891f-e7da672e4b97","type":"validate_response","attributes":{"Canonical":"source:app AND env:prod"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 47.89075ms
+        duration: 24.548708ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -161,7 +161,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/10cbbf25-61fb-4bf3-8e2f-efb14bcb6a40
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/bc7be7a7-0927-4e88-8c7c-7e50edd195db
         method: GET
       response:
         proto: HTTP/1.1
@@ -171,13 +171,13 @@ interactions:
         trailer: {}
         content_length: 656
         uncompressed: false
-        body: '{"data":{"id":"10cbbf25-61fb-4bf3-8e2f-efb14bcb6a40","type":"ruleset","attributes":{"created":{"seconds":1782916320,"nanos":711053000},"enabled":true,"last_modified_user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","modified":{"seconds":1782916320,"nanos":711053000},"name":"tf-test-query-ruleset-tf-TestAccDatadogTagPipelineRuleset_QueryRule-local-1782916319","position":1,"rules":[{"name":"query-rule","enabled":true,"query":{"query":"source:app AND env:prod","addition":{"key":"team","value":"backend"},"if_not_exists":false,"case_insensitivity":true,"if_tag_exists":"append"},"mapping":null,"reference_table":null,"metadata":null}],"version":3718511}}}'
+        body: '{"data":{"id":"bc7be7a7-0927-4e88-8c7c-7e50edd195db","type":"ruleset","attributes":{"created":{"seconds":1794533328,"nanos":334855000},"enabled":true,"last_modified_user_uuid":"23ebac68-9443-4a40-8ada-dd10776cd57f","modified":{"seconds":1794533328,"nanos":334855000},"name":"tf-test-query-ruleset-tf-TestAccDatadogTagPipelineRuleset_QueryRule-local-1794533325","position":5,"rules":[{"name":"query-rule","enabled":true,"query":{"query":"source:app AND env:prod","addition":{"key":"team","value":"backend"},"if_not_exists":false,"case_insensitivity":true,"if_tag_exists":"append"},"mapping":null,"reference_table":null,"metadata":null}],"version":3776122}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 67.658167ms
+        duration: 73.736083ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -190,7 +190,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"source:app AND env:prod"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"source:app AND env:prod"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
@@ -207,13 +207,13 @@ interactions:
         trailer: {}
         content_length: 134
         uncompressed: false
-        body: '{"data":{"id":"1331065d-e438-405e-9bfa-43e25593fa16","type":"validate_response","attributes":{"Canonical":"source:app AND env:prod"}}}'
+        body: '{"data":{"id":"ee0d8f31-acab-451b-9b65-651c59aba927","type":"validate_response","attributes":{"Canonical":"source:app AND env:prod"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 50.266167ms
+        duration: 25.722458ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -230,7 +230,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/10cbbf25-61fb-4bf3-8e2f-efb14bcb6a40
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/bc7be7a7-0927-4e88-8c7c-7e50edd195db
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -244,7 +244,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 72.479083ms
+        duration: 53.192375ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -261,7 +261,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/tags/enrichment/10cbbf25-61fb-4bf3-8e2f-efb14bcb6a40
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/bc7be7a7-0927-4e88-8c7c-7e50edd195db
         method: GET
       response:
         proto: HTTP/1.1
@@ -271,10 +271,10 @@ interactions:
         trailer: {}
         content_length: 115
         uncompressed: false
-        body: '{"errors":[{"status":"404","title":"Not Found","detail":"ruleset 10cbbf25-61fb-4bf3-8e2f-efb14bcb6a40 not found"}]}'
+        body: '{"errors":[{"status":"404","title":"Not Found","detail":"ruleset bc7be7a7-0927-4e88-8c7c-7e50edd195db not found"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 68.545458ms
+        duration: 65.928542ms
