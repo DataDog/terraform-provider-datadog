@@ -1,0 +1,503 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 283
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"capacity_microcents":100000000,"enforcement":"BLOCK","name":"tf-TestAccAiGatewayBudget-local-1794537337","tags":{"ml_app":"tf-TestAccAiGatewayBudget-local-1794537337"},"track_existing":false,"warning_threshold":0.8,"window_policy":"DAILY"},"type":"budgets"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/budgets
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 490
+        uncompressed: false
+        body: '{"data":{"id":"14407634-c0bd-45e0-92b2-46bc3ce6bfe6","type":"budgets","attributes":{"capacity_microcents":100000000,"created_at":"2026-11-13T02:35:40.32906Z","created_by":"chris.shen@datadoghq.com","enabled":true,"enforcement":"BLOCK","monitor_id":344321710,"name":"tf-TestAccAiGatewayBudget-local-1794537337","scope_restricted":false,"tags":{"ml_app":"tf-TestAccAiGatewayBudget-local-1794537337"},"updated_at":"2026-11-13T02:35:40.32906Z","warning_threshold":0.8,"window_policy":"DAILY"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 298.276083ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/budgets/14407634-c0bd-45e0-92b2-46bc3ce6bfe6
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 490
+        uncompressed: false
+        body: '{"data":{"id":"14407634-c0bd-45e0-92b2-46bc3ce6bfe6","type":"budgets","attributes":{"capacity_microcents":100000000,"created_at":"2026-11-13T02:35:40.32906Z","created_by":"chris.shen@datadoghq.com","enabled":true,"enforcement":"BLOCK","monitor_id":344321710,"name":"tf-TestAccAiGatewayBudget-local-1794537337","scope_restricted":false,"tags":{"ml_app":"tf-TestAccAiGatewayBudget-local-1794537337"},"updated_at":"2026-11-13T02:35:40.32906Z","warning_threshold":0.8,"window_policy":"DAILY"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 512.356292ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/budgets/14407634-c0bd-45e0-92b2-46bc3ce6bfe6
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 490
+        uncompressed: false
+        body: '{"data":{"id":"14407634-c0bd-45e0-92b2-46bc3ce6bfe6","type":"budgets","attributes":{"capacity_microcents":100000000,"created_at":"2026-11-13T02:35:40.32906Z","created_by":"chris.shen@datadoghq.com","enabled":true,"enforcement":"BLOCK","monitor_id":344321710,"name":"tf-TestAccAiGatewayBudget-local-1794537337","scope_restricted":false,"tags":{"ml_app":"tf-TestAccAiGatewayBudget-local-1794537337"},"updated_at":"2026-11-13T02:35:40.32906Z","warning_threshold":0.8,"window_policy":"DAILY"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 31.801375ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/budgets/14407634-c0bd-45e0-92b2-46bc3ce6bfe6
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 490
+        uncompressed: false
+        body: '{"data":{"id":"14407634-c0bd-45e0-92b2-46bc3ce6bfe6","type":"budgets","attributes":{"capacity_microcents":100000000,"created_at":"2026-11-13T02:35:40.32906Z","created_by":"chris.shen@datadoghq.com","enabled":true,"enforcement":"BLOCK","monitor_id":344321710,"name":"tf-TestAccAiGatewayBudget-local-1794537337","scope_restricted":false,"tags":{"ml_app":"tf-TestAccAiGatewayBudget-local-1794537337"},"updated_at":"2026-11-13T02:35:40.32906Z","warning_threshold":0.8,"window_policy":"DAILY"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 33.37ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 296
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"apply_to_current_period":true,"capacity_microcents":250000000,"enabled":false,"enforcement":"NOTIFY","name":"tf-TestAccAiGatewayBudget-local-1794537337-renamed","track_existing":false,"warning_threshold":0.9},"id":"14407634-c0bd-45e0-92b2-46bc3ce6bfe6","type":"budgets"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/budgets/14407634-c0bd-45e0-92b2-46bc3ce6bfe6
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 501
+        uncompressed: false
+        body: '{"data":{"id":"14407634-c0bd-45e0-92b2-46bc3ce6bfe6","type":"budgets","attributes":{"capacity_microcents":250000000,"created_at":"2026-11-13T02:35:40.32906Z","created_by":"chris.shen@datadoghq.com","enabled":false,"enforcement":"NOTIFY","monitor_id":344321710,"name":"tf-TestAccAiGatewayBudget-local-1794537337-renamed","scope_restricted":false,"tags":{"ml_app":"tf-TestAccAiGatewayBudget-local-1794537337"},"updated_at":"2026-11-13T02:35:43.704225Z","warning_threshold":0.9,"window_policy":"DAILY"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 227.495ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/budgets/14407634-c0bd-45e0-92b2-46bc3ce6bfe6
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 501
+        uncompressed: false
+        body: '{"data":{"id":"14407634-c0bd-45e0-92b2-46bc3ce6bfe6","type":"budgets","attributes":{"capacity_microcents":250000000,"created_at":"2026-11-13T02:35:40.32906Z","created_by":"chris.shen@datadoghq.com","enabled":false,"enforcement":"NOTIFY","monitor_id":344321710,"name":"tf-TestAccAiGatewayBudget-local-1794537337-renamed","scope_restricted":false,"tags":{"ml_app":"tf-TestAccAiGatewayBudget-local-1794537337"},"updated_at":"2026-11-13T02:35:43.704225Z","warning_threshold":0.9,"window_policy":"DAILY"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 29.039333ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/budgets/14407634-c0bd-45e0-92b2-46bc3ce6bfe6
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 501
+        uncompressed: false
+        body: '{"data":{"id":"14407634-c0bd-45e0-92b2-46bc3ce6bfe6","type":"budgets","attributes":{"capacity_microcents":250000000,"created_at":"2026-11-13T02:35:40.32906Z","created_by":"chris.shen@datadoghq.com","enabled":false,"enforcement":"NOTIFY","monitor_id":344321710,"name":"tf-TestAccAiGatewayBudget-local-1794537337-renamed","scope_restricted":false,"tags":{"ml_app":"tf-TestAccAiGatewayBudget-local-1794537337"},"updated_at":"2026-11-13T02:35:43.704225Z","warning_threshold":0.9,"window_policy":"DAILY"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 108.451709ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/budgets/14407634-c0bd-45e0-92b2-46bc3ce6bfe6
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 501
+        uncompressed: false
+        body: '{"data":{"id":"14407634-c0bd-45e0-92b2-46bc3ce6bfe6","type":"budgets","attributes":{"capacity_microcents":250000000,"created_at":"2026-11-13T02:35:40.32906Z","created_by":"chris.shen@datadoghq.com","enabled":false,"enforcement":"NOTIFY","monitor_id":344321710,"name":"tf-TestAccAiGatewayBudget-local-1794537337-renamed","scope_restricted":false,"tags":{"ml_app":"tf-TestAccAiGatewayBudget-local-1794537337"},"updated_at":"2026-11-13T02:35:43.704225Z","warning_threshold":0.9,"window_policy":"DAILY"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 33.602583ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/budgets/14407634-c0bd-45e0-92b2-46bc3ce6bfe6
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 133.25775ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 284
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"capacity_microcents":100000000,"enforcement":"BLOCK","name":"tf-TestAccAiGatewayBudget-local-1794537337","tags":{"ml_app":"tf-TestAccAiGatewayBudget-local-1794537337"},"track_existing":false,"warning_threshold":0.8,"window_policy":"WEEKLY"},"type":"budgets"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/budgets
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 491
+        uncompressed: false
+        body: '{"data":{"id":"061b4b04-c339-40fc-8e7b-091f22b88278","type":"budgets","attributes":{"capacity_microcents":100000000,"created_at":"2026-11-13T02:35:46.97188Z","created_by":"chris.shen@datadoghq.com","enabled":true,"enforcement":"BLOCK","monitor_id":344321750,"name":"tf-TestAccAiGatewayBudget-local-1794537337","scope_restricted":false,"tags":{"ml_app":"tf-TestAccAiGatewayBudget-local-1794537337"},"updated_at":"2026-11-13T02:35:46.97188Z","warning_threshold":0.8,"window_policy":"WEEKLY"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 141.305625ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/budgets/14407634-c0bd-45e0-92b2-46bc3ce6bfe6
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 49
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Not Found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 44.70725ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/budgets/061b4b04-c339-40fc-8e7b-091f22b88278
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 491
+        uncompressed: false
+        body: '{"data":{"id":"061b4b04-c339-40fc-8e7b-091f22b88278","type":"budgets","attributes":{"capacity_microcents":100000000,"created_at":"2026-11-13T02:35:46.97188Z","created_by":"chris.shen@datadoghq.com","enabled":true,"enforcement":"BLOCK","monitor_id":344321750,"name":"tf-TestAccAiGatewayBudget-local-1794537337","scope_restricted":false,"tags":{"ml_app":"tf-TestAccAiGatewayBudget-local-1794537337"},"updated_at":"2026-11-13T02:35:46.97188Z","warning_threshold":0.8,"window_policy":"WEEKLY"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 31.648167ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/budgets/061b4b04-c339-40fc-8e7b-091f22b88278
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 491
+        uncompressed: false
+        body: '{"data":{"id":"061b4b04-c339-40fc-8e7b-091f22b88278","type":"budgets","attributes":{"capacity_microcents":100000000,"created_at":"2026-11-13T02:35:46.97188Z","created_by":"chris.shen@datadoghq.com","enabled":true,"enforcement":"BLOCK","monitor_id":344321750,"name":"tf-TestAccAiGatewayBudget-local-1794537337","scope_restricted":false,"tags":{"ml_app":"tf-TestAccAiGatewayBudget-local-1794537337"},"updated_at":"2026-11-13T02:35:46.97188Z","warning_threshold":0.8,"window_policy":"WEEKLY"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 106.166917ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/budgets/061b4b04-c339-40fc-8e7b-091f22b88278
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 61.623ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/budgets/061b4b04-c339-40fc-8e7b-091f22b88278
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 49
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Not Found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 98.20525ms
