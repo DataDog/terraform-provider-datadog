@@ -138,9 +138,9 @@ func run(ctx context.Context) (string, error) {
 			msg = msg[:maxStderr] + "..."
 		}
 		if msg != "" {
-			return "", fmt.Errorf("`pup auth token` failed: %v: %s", err, msg)
+			return "", fmt.Errorf("`pup auth token` failed: %w: %s", err, msg)
 		}
-		return "", fmt.Errorf("`pup auth token` failed: %v", err)
+		return "", fmt.Errorf("`pup auth token` failed: %w", err)
 	}
 	token := strings.TrimSpace(stdout.String())
 	if token == "" {
