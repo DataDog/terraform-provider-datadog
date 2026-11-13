@@ -641,6 +641,38 @@ func TestDashboardV2MatchesLegacyPayloadForHiddenCustomLink(t *testing.T) {
 	}
 }
 
+func TestDashboardV2MatchesLegacyPayloadForNumberFormatUnitScale(t *testing.T) {
+	raw := map[string]interface{}{
+		"title":       "parity",
+		"layout_type": "ordered",
+		"widget": []interface{}{map[string]interface{}{"query_table_definition": []interface{}{map[string]interface{}{
+			"request": []interface{}{map[string]interface{}{
+				"query": []interface{}{map[string]interface{}{"metric_query": []interface{}{map[string]interface{}{
+					"name": "query1", "query": "avg:trace.http.request.duration{*} by {service}", "aggregator": "avg",
+				}}}},
+				"formula": []interface{}{map[string]interface{}{
+					"formula_expression": "query1",
+					"number_format": []interface{}{map[string]interface{}{
+						"unit": []interface{}{map[string]interface{}{
+							"canonical": []interface{}{map[string]interface{}{"unit_name": "millisecond"}},
+						}},
+						"unit_scale": []interface{}{map[string]interface{}{"unit_name": "millisecond"}},
+					}},
+				}},
+			}},
+		}}}},
+	}
+	path := []string{"requests", "0", "formulas", "0", "number_format", "unit_scale"}
+	legacyValue, ok := lookupJSONPath(legacyDashboardWidgetDefinition(t, raw), path)
+	if !ok {
+		t.Fatalf("legacy payload has no %v", path)
+	}
+	canonicalValue, _ := lookupJSONPath(canonicalDashboardWidgetDefinition(t, raw), path)
+	if !reflect.DeepEqual(legacyValue, canonicalValue) {
+		t.Errorf("unit_scale: legacy sends %#v, v2 sends %#v", legacyValue, canonicalValue)
+	}
+}
+
 func legacyDashboardWidgetDefinition(t *testing.T, raw map[string]interface{}) map[string]interface{} {
 	t.Helper()
 	d := schema.TestResourceDataRaw(t, resourceDatadogDashboard().SchemaMap(), raw)

@@ -1126,9 +1126,11 @@ var widgetNumberFormatFields = []FieldSpec{
 			},
 		},
 	},
+	// The API requires unit_scale.type, and canonical_unit is its only valid value.
 	{HCLKey: "unit_scale", Type: TypeBlock, OmitEmpty: true,
-		Description: "The definition of `NumberFormatUnitScale` object.",
-		Children:    numberFormatUnitScaleFields},
+		Description:   "The definition of `NumberFormatUnitScale` object.",
+		Discriminator: &OneOfDiscriminator{JSONKey: "type", Value: "canonical_unit"},
+		Children:      numberFormatUnitScaleFields},
 }
 
 // widgetFormulaFields corresponds to OpenAPI components/schemas/WidgetFormula.
