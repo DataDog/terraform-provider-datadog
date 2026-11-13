@@ -32,8 +32,7 @@ do not require external contributors to authenticate or obtain internal access.
 
 Explain that Datadog contributors should declare Terraform artifacts in the source
 OpenAPI specification and use tfgen rather than start with hand-written provider
-code. The source repository is
-[`ddoghq/datadog-api-spec`](https://github.com/ddoghq/datadog-api-spec).
+code. The source repository is `datadog-api-spec`.
 
 Locate an available API-spec checkout and read its agent instructions. Load the
 relevant skill there, including only the references needed for the task. These
@@ -41,15 +40,17 @@ paths are relative to the **API-spec checkout**, not the provider checkout:
 
 | Task | Skill |
 | --- | --- |
-| Declare a new resource or data source | [terraform-generator-annotate](https://github.com/ddoghq/datadog-api-spec/blob/master/.agents/skills/terraform-generator-annotate/SKILL.md) |
-| Try generation and assess support or replacement compatibility | [terraform-generator-assess](https://github.com/ddoghq/datadog-api-spec/blob/master/.agents/skills/terraform-generator-assess/SKILL.md) |
-| Investigate failed or unexpected generation | [terraform-generator-diagnose](https://github.com/ddoghq/datadog-api-spec/blob/master/.agents/skills/terraform-generator-diagnose/SKILL.md) |
-| Test generated artifacts and finish acceptance coverage | [terraform-generator-test](https://github.com/ddoghq/datadog-api-spec/blob/master/.agents/skills/terraform-generator-test/SKILL.md) |
+| Declare a new resource or data source | `terraform-generator-annotate` |
+| Try generation and assess support or replacement compatibility | `terraform-generator-assess` |
+| Investigate failed or unexpected generation | `terraform-generator-diagnose` |
+| Test generated artifacts and finish acceptance coverage | `terraform-generator-test` |
 
-Each skill lives at `.agents/skills/<skill-name>/SKILL.md`. If no checkout is
-available, read the linked skill through authenticated GitHub access. If neither
-is available, provide the links and identify the access blocker; do not silently
-switch a Datadog contributor to manual implementation.
+Each skill lives at `.agents/skills/<skill-name>/SKILL.md`. Refer to internal
+skills by name and checkout-relative path without publishing internal repository
+or documentation URLs. If no checkout is available, ask the contributor to locate
+one or make the relevant skill instructions available through an authorized source.
+If the instructions remain unavailable, identify the missing input or access
+blocker; do not silently switch a Datadog contributor to manual implementation.
 
 Keep annotation, CLI, and pipeline instructions in their maintained sources.
 Provider-side references are `.generator-v2/docs/README.md` and
