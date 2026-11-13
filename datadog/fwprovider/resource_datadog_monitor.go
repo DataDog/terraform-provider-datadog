@@ -12,6 +12,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int32validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
@@ -259,6 +260,7 @@ type DataQualityQuery struct {
 	Measure        types.String                `tfsdk:"measure"`
 	Filter         types.String                `tfsdk:"filter"`
 	Scope          types.String                `tfsdk:"scope"`
+	RunFilter      types.String                `tfsdk:"run_filter"`
 	GroupBy        types.List                  `tfsdk:"group_by"`
 	MonitorOptions []DataQualityMonitorOptions `tfsdk:"monitor_options"`
 }
@@ -270,6 +272,8 @@ type DataQualityMonitorOptions struct {
 	CrontabOverride   types.String  `tfsdk:"crontab_override"`
 	ModelTypeOverride types.String  `tfsdk:"model_type_override"`
 	Sensitivity       types.Float64 `tfsdk:"sensitivity"`
+	DetectionType     types.String  `tfsdk:"detection_type"`
+	ConsecutiveRuns   types.Int64   `tfsdk:"consecutive_runs"`
 
 	SourceToTargetConfig []DataQualitySourceToTargetConfig `tfsdk:"source_to_target_config"`
 	ModelConfiguration   []DataQualityModelConfiguration   `tfsdk:"model_configuration"`
@@ -334,6 +338,13 @@ type DataJobsQuery struct {
 	JobsQuery    types.String `tfsdk:"jobs_query"`
 	JobType      types.String `tfsdk:"job_type"`
 	QueryDialect types.String `tfsdk:"query_dialect"`
+	RunFilter    types.String `tfsdk:"run_filter"`
+
+	MonitorOptions []DataJobsMonitorOptions `tfsdk:"monitor_options"`
+}
+
+type DataJobsMonitorOptions struct {
+	AlertOnEveryFailure types.Bool `tfsdk:"alert_on_every_failure"`
 }
 
 type monitorResource struct {
@@ -1201,15 +1212,19 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 									},
 									"measure": schema.StringAttribute{
 										Required:    true,
-										Description: "The measure to query. Common values include `bytes`, `cardinality`, `custom`, `freshness`, `max`, `mean`, `min`, `nullness`, `percent_negative`, `percent_zero`, `row_count`, `stddev`, `sum`, `uniqueness`. Additional values may be supported.",
+										Description: "The measure to query. Common values include `bytes`, `cardinality`, `custom`, `freshness`, `max`, `mean`, `min`, `nullness`, `percent_negative`, `percent_zero`, `row_count`, `stddev`, `sum`, `uniqueness`. `data-jobs alert` job duration monitors use `duration`. Additional values may be supported.",
 									},
 									"filter": schema.StringAttribute{
 										Required:    true,
-										Description: "Filter expression used to match on data entities. Uses AAstra query syntax.",
+										Description: "Filter expression used to match on data entities. Uses Aastra query syntax.",
 									},
 									"scope": schema.StringAttribute{
 										Optional:    true,
 										Description: "Optional scoping expression to further filter metrics.",
+									},
+									"run_filter": schema.StringAttribute{
+										Optional:    true,
+										Description: "Filter on individual runs, using metrics filter syntax, for example `env:prod`. Only supported by `data-jobs alert` job duration monitors.",
 									},
 									"group_by": schema.ListAttribute{
 										Optional:    true,
@@ -1249,6 +1264,15 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 												"sensitivity": schema.Float64Attribute{
 													Optional:    true,
 													Description: "Sensitivity of the anomaly detection model, expressed as a multiplier on the width of the predicted bounds. Higher values widen the bounds and produce fewer alerts; lower values tighten them and produce more alerts. Defaults to `3.0`.",
+												},
+												"detection_type": schema.StringAttribute{
+													Optional:    true,
+													Description: "How a `data-jobs alert` job duration monitor detects a breach. Must match the `.detection()` call in the monitor query. Valid values are `static`, `anomaly`. Required for job duration monitors.",
+												},
+												"consecutive_runs": schema.Int64Attribute{
+													Optional:    true,
+													Validators:  []validator.Int64{int64validator.AtLeast(1)},
+													Description: "Number of consecutive runs that must breach before a `data-jobs alert` job duration monitor alerts. Defaults to `1`.",
 												},
 											},
 											Blocks: map[string]schema.Block{
@@ -1560,15 +1584,35 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 									},
 									"jobs_query": schema.StringAttribute{
 										Required:    true,
-										Description: "Filter expression used to select the jobs to monitor.",
+										Description: "Filter expression used to select the jobs to monitor. A metric tag filter such as `job_name:smoke*` with the `metric` dialect, or an Aastra entity search such as ``search for databricks_job where `@team:data-eng` `` with the `aastra` dialect.",
 									},
 									"job_type": schema.StringAttribute{
 										Required:    true,
-										Description: "The type of job being monitored. Valid values include `databricks.job`, `spark.application`, `airflow.dag`, `dbt.job`, `glue.job`. Custom job types are supported with the `custom.ol.` prefix.",
+										Description: "The type of job being monitored. Valid values include `databricks.job`, `spark.application`, `airflow.dag`, `dbt.job`, `glue.job`, `adf.pipeline`. The `aastra` dialect also accepts `airflow.job`, `dbt.model`, `dbt.test`. Custom job types are supported with the `custom.ol.` prefix.",
 									},
 									"query_dialect": schema.StringAttribute{
 										Required:    true,
-										Description: "Query dialect for data jobs queries. Currently only `metric` is supported.",
+										Description: "Query dialect for data jobs queries. Valid values are `metric` and `aastra`.",
+									},
+									"run_filter": schema.StringAttribute{
+										Optional:    true,
+										Description: "Filter on individual runs, using metrics filter syntax, for example `env:prod`. Only supported with the `aastra` query dialect.",
+									},
+								},
+								Blocks: map[string]schema.Block{
+									"monitor_options": schema.ListNestedBlock{
+										Description: "Monitor configuration options for data jobs queries.",
+										Validators: []validator.List{
+											listvalidator.SizeAtMost(1),
+										},
+										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"alert_on_every_failure": schema.BoolAttribute{
+													Optional:    true,
+													Description: "Alert separately for each failed run instead of on the count of trailing failures. Only supported for `failed_runs` monitors with the `aastra` query dialect, a `> 0` threshold with no warning threshold, an evaluation window of at most two days, and renotification disabled.",
+												},
+											},
+										},
 									},
 								},
 							},
@@ -2063,6 +2107,7 @@ func (r *monitorResource) buildDataQualityQueryStruct(ctx context.Context, dataQ
 		fwutils.SetOptString(dataQualityQ.Filter, dataQualityQueryReq.SetFilter)
 		fwutils.SetOptString(dataQualityQ.SchemaVersion, dataQualityQueryReq.SetSchemaVersion)
 		fwutils.SetOptString(dataQualityQ.Scope, dataQualityQueryReq.SetScope)
+		fwutils.SetOptString(dataQualityQ.RunFilter, dataQualityQueryReq.SetRunFilter)
 		if !dataQualityQ.DataSource.IsNull() {
 			dataQualityQueryReq.SetDataSource(datadogV1.MonitorFormulaAndFunctionDataQualityDataSource(dataQualityQ.DataSource.ValueString()))
 		}
@@ -2083,6 +2128,10 @@ func (r *monitorResource) buildDataQualityQueryStruct(ctx context.Context, dataQ
 				monitorOptsReq.SetModelTypeOverride(datadogV1.MonitorFormulaAndFunctionDataQualityModelTypeOverride(opt.ModelTypeOverride.ValueString()))
 			}
 			fwutils.SetOptFloat64(opt.Sensitivity, monitorOptsReq.SetSensitivity)
+			if !opt.DetectionType.IsNull() {
+				monitorOptsReq.SetDetectionType(datadogV1.MonitorFormulaAndFunctionDataQualityDetectionType(opt.DetectionType.ValueString()))
+			}
+			fwutils.SetOptInt64(opt.ConsecutiveRuns, monitorOptsReq.SetConsecutiveRuns)
 			if len(opt.SourceToTargetConfig) > 0 {
 				monitorOptsReq.SetSourceToTargetConfig(*r.buildDataQualitySourceToTargetConfig(ctx, opt.SourceToTargetConfig[0]))
 			}
@@ -2337,6 +2386,12 @@ func (r *monitorResource) buildDataJobsQueryStruct(dataJobsQs []DataJobsQuery) [
 		fwutils.SetOptString(dataJobsQ.JobsQuery, dataJobsQueryReq.SetJobsQuery)
 		fwutils.SetOptString(dataJobsQ.JobType, dataJobsQueryReq.SetJobType)
 		fwutils.SetOptString(dataJobsQ.QueryDialect, dataJobsQueryReq.SetQueryDialect)
+		fwutils.SetOptString(dataJobsQ.RunFilter, dataJobsQueryReq.SetRunFilter)
+		if len(dataJobsQ.MonitorOptions) > 0 {
+			opts := datadogV1.MonitorFormulaAndFunctionDataJobsMonitorOptions{}
+			fwutils.SetOptBool(dataJobsQ.MonitorOptions[0].AlertOnEveryFailure, opts.SetAlertOnEveryFailure)
+			dataJobsQueryReq.SetMonitorOptions(opts)
+		}
 		variableReq.MonitorFormulaAndFunctionDataJobsQueryDefinition = &dataJobsQueryReq
 		variablesReq = append(variablesReq, variableReq)
 	}
@@ -2818,6 +2873,7 @@ func (r *monitorResource) buildDataQualityQueryState(ctx context.Context, dataQu
 		Filter:        fwutils.ToTerraformStr(dataQualityQ.GetFilterOk()),
 		SchemaVersion: fwutils.ToTerraformStr(dataQualityQ.GetSchemaVersionOk()),
 		Scope:         fwutils.ToTerraformStr(dataQualityQ.GetScopeOk()),
+		RunFilter:     fwutils.ToTerraformStr(dataQualityQ.GetRunFilterOk()),
 	}
 	if dataSource, ok := dataQualityQ.GetDataSourceOk(); ok && dataSource != nil {
 		dataQualityQueryState.DataSource = types.StringValue(string(*dataSource))
@@ -2835,6 +2891,10 @@ func (r *monitorResource) buildDataQualityQueryState(ctx context.Context, dataQu
 			CustomWhere:     fwutils.ToTerraformStr(monitorOpts.GetCustomWhereOk()),
 			CrontabOverride: fwutils.ToTerraformStr(monitorOpts.GetCrontabOverrideOk()),
 			Sensitivity:     fwutils.ToTerraformFloat64(monitorOpts.GetSensitivityOk()),
+			ConsecutiveRuns: fwutils.ToTerraformInt64(monitorOpts.GetConsecutiveRunsOk()),
+		}
+		if detectionType, ok := monitorOpts.GetDetectionTypeOk(); ok && detectionType != nil {
+			monitorOptsState.DetectionType = types.StringValue(string(*detectionType))
 		}
 		if sourceToTarget, ok := monitorOpts.GetSourceToTargetConfigOk(); ok && sourceToTarget != nil {
 			monitorOptsState.SourceToTargetConfig = []DataQualitySourceToTargetConfig{
@@ -2958,12 +3018,19 @@ func (r *monitorResource) buildDataJobsQueryState(dataJobsQ *datadogV1.MonitorFo
 	if dataJobsQ == nil {
 		return nil
 	}
-	return &DataJobsQuery{
+	state := &DataJobsQuery{
 		Name:         fwutils.ToTerraformStr(dataJobsQ.GetNameOk()),
 		JobsQuery:    fwutils.ToTerraformStr(dataJobsQ.GetJobsQueryOk()),
 		JobType:      fwutils.ToTerraformStr(dataJobsQ.GetJobTypeOk()),
 		QueryDialect: fwutils.ToTerraformStr(dataJobsQ.GetQueryDialectOk()),
+		RunFilter:    fwutils.ToTerraformStr(dataJobsQ.GetRunFilterOk()),
 	}
+	if opts, ok := dataJobsQ.GetMonitorOptionsOk(); ok && opts != nil {
+		state.MonitorOptions = []DataJobsMonitorOptions{{
+			AlertOnEveryFailure: fwutils.ToTerraformBool(opts.GetAlertOnEveryFailureOk()),
+		}}
+	}
+	return state
 }
 
 func (r *monitorResource) getMonitorId(state *monitorResourceModel) (*int64, diag.Diagnostics) {
