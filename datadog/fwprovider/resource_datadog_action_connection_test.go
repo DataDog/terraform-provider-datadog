@@ -3,9 +3,11 @@ package fwprovider
 import (
 	"context"
 	"encoding/json"
+	"reflect"
 	"slices"
 	"testing"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -329,5 +331,140 @@ func TestActionConnectionHTTPUpdateOmitsUnchangedTokens(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestActionConnectionGithubCreateRequest(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name            string
+		github          *githubConnectionModel
+		wantCredentials map[string]string
+	}{
+		{
+			name: "GitHub App",
+			github: &githubConnectionModel{App: &githubAppCredentialModel{
+				GithubAppID: types.StringValue("12345"), GithubInstallationID: types.StringValue("67890"), PrivateKey: types.StringValue("github-private-key"),
+			}},
+			wantCredentials: map[string]string{"type": "GithubApp", "github_app_id": "12345", "github_installation_id": "67890", "private_key": "github-private-key"},
+		},
+		{
+			name: "personal access token",
+			github: &githubConnectionModel{PersonalAccessToken: &githubPersonalAccessTokenCredentialModel{
+				AccessToken: types.StringValue("github-token"), Hostname: types.StringValue("github.example.com"),
+			}},
+			wantCredentials: map[string]string{"type": "GithubPersonalAccessToken", "access_token": "github-token", "hostname": "github.example.com"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			plan := connectionResourceModel{
+				connectionModel: connectionModel{Name: types.StringValue("GitHub connection"), Github: tt.github},
+				EffectiveTags:   types.SetNull(types.StringType),
+			}
+			request, err := connectionModelToCreateApiRequest(context.Background(), plan)
+			if err != nil {
+				t.Fatalf("building create: %v", err)
+			}
+			payload, err := json.Marshal(request)
+			if err != nil {
+				t.Fatalf("marshaling create: %v", err)
+			}
+			var body struct {
+				Data struct {
+					Attributes struct {
+						Integration struct {
+							Type        string            `json:"type"`
+							Credentials map[string]string `json:"credentials"`
+						} `json:"integration"`
+					} `json:"attributes"`
+				} `json:"data"`
+			}
+			if err := json.Unmarshal(payload, &body); err != nil {
+				t.Fatalf("parsing create: %v", err)
+			}
+			integration := body.Data.Attributes.Integration
+			if integration.Type != "Github" {
+				t.Fatalf("integration type = %q, want %q", integration.Type, "Github")
+			}
+			if !reflect.DeepEqual(integration.Credentials, tt.wantCredentials) {
+				t.Fatalf("credentials = %v, want %v", integration.Credentials, tt.wantCredentials)
+			}
+		})
+	}
+}
+
+func TestActionConnectionGithubUpdateIncludesChangedCredentials(t *testing.T) {
+	t.Parallel()
+
+	prior := connectionResourceModel{connectionModel: connectionModel{
+		Name: types.StringValue("GitHub connection"),
+		Github: &githubConnectionModel{PersonalAccessToken: &githubPersonalAccessTokenCredentialModel{
+			AccessToken: types.StringValue("old token"),
+		}},
+	}}
+	plan := prior
+	plan.Github = &githubConnectionModel{PersonalAccessToken: &githubPersonalAccessTokenCredentialModel{
+		AccessToken: types.StringValue("new token"),
+	}}
+
+	request, err := connectionModelToUpdateApiRequest(context.Background(), plan, prior)
+	if err != nil {
+		t.Fatalf("building update: %v", err)
+	}
+	payload, err := json.Marshal(request)
+	if err != nil {
+		t.Fatalf("marshaling update: %v", err)
+	}
+	var body struct {
+		Data struct {
+			Attributes struct {
+				Integration struct {
+					Type        string            `json:"type"`
+					Credentials map[string]string `json:"credentials"`
+				} `json:"integration"`
+			} `json:"attributes"`
+		} `json:"data"`
+	}
+	if err := json.Unmarshal(payload, &body); err != nil {
+		t.Fatalf("parsing update: %v", err)
+	}
+	integration := body.Data.Attributes.Integration
+	wantCredentials := map[string]string{"type": "GithubPersonalAccessToken", "access_token": "new token"}
+	if integration.Type != "Github" || !reflect.DeepEqual(integration.Credentials, wantCredentials) {
+		t.Fatalf("integration = %+v, want type Github with credentials %v", integration, wantCredentials)
+	}
+}
+
+func TestActionConnectionGithubReadPreservesSecrets(t *testing.T) {
+	t.Parallel()
+
+	var response datadogV2.GetActionConnectionResponse
+	if err := json.Unmarshal([]byte(`{"data": {"id": "connection-id", "type": "action_connection", "attributes": {
+		"name": "GitHub connection",
+		"integration": {"type": "Github", "credentials": {"type": "GithubApp", "github_app_id": "12345", "github_installation_id": "67890", "private_key": ""}}
+	}}}`), &response); err != nil {
+		t.Fatalf("parsing response: %v", err)
+	}
+
+	connModel, err := apiResponseToConnectionModel(context.Background(), response)
+	if err != nil {
+		t.Fatalf("mapping response: %v", err)
+	}
+	if connModel.Github == nil || connModel.Github.App == nil {
+		t.Fatal("GitHub App credentials were not read")
+	}
+	if connModel.Github.App.GithubAppID.ValueString() != "12345" || connModel.Github.App.GithubInstallationID.ValueString() != "67890" {
+		t.Fatalf("unexpected GitHub App credentials: %+v", connModel.Github.App)
+	}
+
+	state := connectionResourceModel{connectionModel: connectionModel{Github: &githubConnectionModel{App: &githubAppCredentialModel{
+		GithubAppID: types.StringValue("12345"), GithubInstallationID: types.StringValue("67890"), PrivateKey: types.StringValue("github-private-key"),
+	}}}}
+	preserveAdditionalConnectionSecrets(connModel, state)
+	if connModel.Github.App.PrivateKey.ValueString() != "github-private-key" {
+		t.Fatal("private key was not preserved from state")
 	}
 }

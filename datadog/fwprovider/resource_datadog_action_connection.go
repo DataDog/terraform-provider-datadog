@@ -96,6 +96,7 @@ type connectionModel struct {
 	Freshservice           *freshserviceConnectionModel                 `tfsdk:"freshservice"`
 	GCP                    *gcpConnectionModel                          `tfsdk:"gcp"`
 	Gemini                 *apiKeyConnectionModel                       `tfsdk:"gemini"`
+	Github                 *githubConnectionModel                       `tfsdk:"github"`
 	Gitlab                 *apiTokenConnectionModel                     `tfsdk:"gitlab"`
 	GreyNoise              *apiKeyConnectionModel                       `tfsdk:"grey_noise"`
 	HTTP                   *httpConnectionModel                         `tfsdk:"http"`
@@ -259,6 +260,29 @@ type gcpServiceAccountCredentialModel struct {
 	ServiceAccountEmailAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"service_account_email_aws_secrets_manager"`
 }
 
+type githubConnectionModel struct {
+	App                 *githubAppCredentialModel                 `tfsdk:"app"`
+	PersonalAccessToken *githubPersonalAccessTokenCredentialModel `tfsdk:"personal_access_token"`
+}
+
+type githubAppCredentialModel struct {
+	GithubAppID                           types.String                             `tfsdk:"github_app_id"`
+	GithubAppIDAWSSecretsManager          *actionConnectionAWSSecretReferenceModel `tfsdk:"github_app_id_aws_secrets_manager"`
+	GithubInstallationID                  types.String                             `tfsdk:"github_installation_id"`
+	GithubInstallationIDAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"github_installation_id_aws_secrets_manager"`
+	Hostname                              types.String                             `tfsdk:"hostname"`
+	HostnameAWSSecretsManager             *actionConnectionAWSSecretReferenceModel `tfsdk:"hostname_aws_secrets_manager"`
+	PrivateKey                            types.String                             `tfsdk:"private_key"`
+	PrivateKeyAWSSecretsManager           *actionConnectionAWSSecretReferenceModel `tfsdk:"private_key_aws_secrets_manager"`
+}
+
+type githubPersonalAccessTokenCredentialModel struct {
+	AccessToken                  types.String                             `tfsdk:"access_token"`
+	AccessTokenAWSSecretsManager *actionConnectionAWSSecretReferenceModel `tfsdk:"access_token_aws_secrets_manager"`
+	Hostname                     types.String                             `tfsdk:"hostname"`
+	HostnameAWSSecretsManager    *actionConnectionAWSSecretReferenceModel `tfsdk:"hostname_aws_secrets_manager"`
+}
+
 type oktaConnectionModel struct {
 	APIToken *oktaAPITokenCredentialModel `tfsdk:"api_token"`
 }
@@ -417,6 +441,27 @@ var additionalActionConnectionSpecs = []actionConnectionIntegrationSpec{
 		}},
 	},
 	{
+		Name: "github", Description: "Configuration for a GitHub connection",
+		Credentials: []actionConnectionCredentialSpec{
+			{
+				Name: "app", Description: "Configuration for GitHub App authentication",
+				Fields: []actionConnectionFieldSpec{
+					{Name: "github_app_id", Description: "Numeric ID of the GitHub App", Required: true},
+					{Name: "github_installation_id", Description: "Installation ID of the GitHub App", Required: true},
+					{Name: "hostname", Description: "Hostname of the GitHub Enterprise Server. Omit for github.com"},
+					{Name: "private_key", Description: "PEM-encoded RSA private key for the GitHub App", Sensitive: true, Required: true},
+				},
+			},
+			{
+				Name: "personal_access_token", Description: "Configuration for GitHub personal access token authentication",
+				Fields: []actionConnectionFieldSpec{
+					{Name: "access_token", Description: "GitHub personal access token", Sensitive: true, Required: true},
+					{Name: "hostname", Description: "Hostname of the GitHub Enterprise Server. Omit for github.com"},
+				},
+			},
+		},
+	},
+	{
 		Name: "gitlab", Description: "Configuration for a GitLab connection",
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "api_key", Description: "Configuration for GitLab API key authentication",
@@ -523,6 +568,7 @@ func (r *actionConnectionResource) ConfigValidators(ctx context.Context) []resou
 			path.MatchRoot("freshservice"),
 			path.MatchRoot("gcp"),
 			path.MatchRoot("gemini"),
+			path.MatchRoot("github"),
 			path.MatchRoot("gitlab"),
 			path.MatchRoot("grey_noise"),
 			path.MatchRoot("http"),
@@ -1277,6 +1323,25 @@ func setAdditionalConnectionModelFromAPI(connModel *connectionResourceModel, int
 		connModel.Gemini = &apiKeyConnectionModel{APIKey: &apiKeyCredentialModel{
 			APIKey: actionConnectionCredentialString(credential, "api_key"),
 		}}
+	case "Github":
+		connModel.Github = &githubConnectionModel{}
+		credentialType := actionConnectionCredentialString(credential, "type").ValueString()
+		switch credentialType {
+		case "GithubApp":
+			connModel.Github.App = &githubAppCredentialModel{
+				GithubAppID:          actionConnectionCredentialString(credential, "github_app_id"),
+				GithubInstallationID: actionConnectionCredentialString(credential, "github_installation_id"),
+				Hostname:             actionConnectionCredentialString(credential, "hostname"),
+				PrivateKey:           actionConnectionCredentialString(credential, "private_key"),
+			}
+		case "GithubPersonalAccessToken":
+			connModel.Github.PersonalAccessToken = &githubPersonalAccessTokenCredentialModel{
+				AccessToken: actionConnectionCredentialString(credential, "access_token"),
+				Hostname:    actionConnectionCredentialString(credential, "hostname"),
+			}
+		default:
+			return fmt.Errorf("unsupported GitHub credential type %q", credentialType)
+		}
 	case "Gitlab":
 		connModel.Gitlab = &apiTokenConnectionModel{APIKey: &apiTokenCredentialModel{
 			APIToken: actionConnectionCredentialString(credential, "api_token"),
@@ -1655,6 +1720,18 @@ func additionalActionConnectionLiteralIntegrationData(connectionModel connection
 		return actionConnectionIntegrationData("Gemini", "GeminiAPIKey", map[string]types.String{
 			"api_key": connectionModel.Gemini.APIKey.APIKey,
 		}), nil
+	case connectionModel.Github != nil && connectionModel.Github.App != nil:
+		return actionConnectionIntegrationData("Github", "GithubApp", map[string]types.String{
+			"github_app_id":          connectionModel.Github.App.GithubAppID,
+			"github_installation_id": connectionModel.Github.App.GithubInstallationID,
+			"hostname":               connectionModel.Github.App.Hostname,
+			"private_key":            connectionModel.Github.App.PrivateKey,
+		}), nil
+	case connectionModel.Github != nil && connectionModel.Github.PersonalAccessToken != nil:
+		return actionConnectionIntegrationData("Github", "GithubPersonalAccessToken", map[string]types.String{
+			"access_token": connectionModel.Github.PersonalAccessToken.AccessToken,
+			"hostname":     connectionModel.Github.PersonalAccessToken.Hostname,
+		}), nil
 	case connectionModel.Gitlab != nil && connectionModel.Gitlab.APIKey != nil:
 		return actionConnectionIntegrationData("Gitlab", "GitlabAPIKey", map[string]types.String{
 			"api_token": connectionModel.Gitlab.APIKey.APIToken,
@@ -1914,6 +1991,18 @@ func preserveAdditionalConnectionSecrets(connModel *connectionResourceModel, cur
 		connModel.Gemini != nil && connModel.Gemini.APIKey != nil {
 		if connModel.Gemini.APIKey.APIKeyAWSSecretsManager == nil && currentState.Gemini.APIKey.APIKeyAWSSecretsManager == nil {
 			connModel.Gemini.APIKey.APIKey = currentState.Gemini.APIKey.APIKey
+		}
+	}
+	if currentState.Github != nil && connModel.Github != nil {
+		if currentState.Github.App != nil && connModel.Github.App != nil {
+			if connModel.Github.App.PrivateKeyAWSSecretsManager == nil && currentState.Github.App.PrivateKeyAWSSecretsManager == nil {
+				connModel.Github.App.PrivateKey = currentState.Github.App.PrivateKey
+			}
+		}
+		if currentState.Github.PersonalAccessToken != nil && connModel.Github.PersonalAccessToken != nil {
+			if connModel.Github.PersonalAccessToken.AccessTokenAWSSecretsManager == nil && currentState.Github.PersonalAccessToken.AccessTokenAWSSecretsManager == nil {
+				connModel.Github.PersonalAccessToken.AccessToken = currentState.Github.PersonalAccessToken.AccessToken
+			}
 		}
 	}
 	if currentState.Gitlab != nil && currentState.Gitlab.APIKey != nil &&
