@@ -129,19 +129,21 @@ func TestAccIntegrationAwsAccount_RoleBased(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "metrics_config.metric_name_filters.1.exclude_only.0", "aws.rds.aurora*"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_aws_account.foo", "metrics_config.tag_filters.0.namespace", "AWS/EC2"),
+						"datadog_integration_aws_account.foo", "metrics_config.tag_filters.#", "0"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_aws_account.foo", "metrics_config.tag_filters.#", "2"),
+						"datadog_integration_aws_account.foo", "metrics_config.resource_type_tag_filters.#", "2"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_aws_account.foo", "metrics_config.tag_filters.0.tags.0", "tag1"),
+						"datadog_integration_aws_account.foo", "metrics_config.resource_type_tag_filters.0.service", "ec2"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_aws_account.foo", "metrics_config.tag_filters.0.tags.1", "tag2"),
+						"datadog_integration_aws_account.foo", "metrics_config.resource_type_tag_filters.0.resource_types.0", "instance"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_aws_account.foo", "metrics_config.tag_filters.1.namespace", "AWS/Lambda"),
+						"datadog_integration_aws_account.foo", "metrics_config.resource_type_tag_filters.0.expression", "tag1:value1"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_aws_account.foo", "metrics_config.tag_filters.1.tags.0", "tag3"),
+						"datadog_integration_aws_account.foo", "metrics_config.resource_type_tag_filters.1.service", "lambda"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_aws_account.foo", "metrics_config.tag_filters.1.tags.1", "tag4"),
+						"datadog_integration_aws_account.foo", "metrics_config.resource_type_tag_filters.1.resource_types.0", "function"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "metrics_config.resource_type_tag_filters.1.expression", "tag3:value3"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "resources_config.cloud_security_posture_management_collection", "true"),
 					resource.TestCheckResourceAttr(
@@ -273,13 +275,15 @@ resource "datadog_integration_aws_account" "foo" {
 		namespace = "AWS/RDS"
 		exclude_only = ["aws.rds.aurora*"]
 	  }
-	  tag_filters {
-	  	namespace = "AWS/EC2"
-	  	tags = ["tag1", "tag2"]
+	  resource_type_tag_filters {
+	  	service = "ec2"
+	  	resource_types = ["instance"]
+	  	expression = "tag1:value1"
 	  }
-	  tag_filters {
-	  	namespace = "AWS/Lambda"
-	  	tags = ["tag3", "tag4"]
+	  resource_type_tag_filters {
+	  	service = "lambda"
+	  	resource_types = ["function"]
+	  	expression = "tag3:value3"
 	  }
     }
     resources_config {
@@ -503,7 +507,7 @@ func testAccCheckDatadogIntegrationAwsAccountDestroy(accProvider *fwprovider.Fra
 func IntegrationAwsAccountDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	err := utils.Retry(2, 10, func() error {
 		for _, r := range s.RootModule().Resources {
-			if r.Type != "resource_datadog_integration_aws_account" {
+			if r.Type != "datadog_integration_aws_account" {
 				continue
 			}
 			id := r.Primary.ID
@@ -511,7 +515,7 @@ func IntegrationAwsAccountDestroyHelper(auth context.Context, s *terraform.State
 			_, httpResp, err := apiInstances.GetAWSIntegrationApiV2().GetAWSAccount(auth, id)
 			if err != nil {
 				if httpResp != nil && httpResp.StatusCode == 404 {
-					return nil
+					continue
 				}
 				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving IntegrationAwsAccount %s", err)}
 			}
