@@ -60,7 +60,7 @@ func (r *aiGatewayModelGroupResource) Metadata(_ context.Context, request resour
 
 func (r *aiGatewayModelGroupResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog AI Gateway model group resource. A model group selects the models, providers and routing rules that its members can use, " +
+		Description: "Provides a Datadog AI Gateway model group resource. A model group selects the models, providers, and routing rules that its members can use, " +
 			"and the request options that apply to them. This resource manages named model groups only, not the organization-wide default model group. " +
 			"This resource is in Preview.",
 		Attributes: map[string]schema.Attribute{

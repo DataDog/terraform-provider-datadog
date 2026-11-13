@@ -3,12 +3,12 @@
 page_title: "datadog_ai_gateway_model_group Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog AI Gateway model group resource. A model group selects the models, providers and routing rules that its members can use, and the request options that apply to them. This resource manages named model groups only, not the organization-wide default model group. This resource is in Preview.
+  Provides a Datadog AI Gateway model group resource. A model group selects the models, providers, and routing rules that its members can use, and the request options that apply to them. This resource manages named model groups only, not the organization-wide default model group. This resource is in Preview.
 ---
 
 # datadog_ai_gateway_model_group (Resource)
 
-Provides a Datadog AI Gateway model group resource. A model group selects the models, providers and routing rules that its members can use, and the request options that apply to them. This resource manages named model groups only, not the organization-wide default model group. This resource is in Preview.
+Provides a Datadog AI Gateway model group resource. A model group selects the models, providers, and routing rules that its members can use, and the request options that apply to them. This resource manages named model groups only, not the organization-wide default model group. This resource is in Preview.
 
 ## Example Usage
 
