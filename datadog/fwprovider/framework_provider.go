@@ -49,6 +49,7 @@ var Resources = []func() resource.Resource{
 	NewAgentlessScanningGcpScanOptionsResource,
 	NewOpenapiApiResource,
 	NewAPIKeyResource,
+	NewUsageQuotaResource,
 	NewApplicationKeyResource,
 	NewApmRetentionFilterResource,
 	NewApmRetentionFiltersOrderResource,
@@ -980,6 +981,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateExecutionPolicy", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
+
+	// Enable usage quota operations.
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateQuotas", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetQuota", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateQuota", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteQuota", true)
 
 	EnableGeneratedUnstableOperations(ddClientConfig)
 

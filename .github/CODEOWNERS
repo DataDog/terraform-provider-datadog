@@ -161,3 +161,6 @@ docs/resources/aws_wif_identity_mapping.md              @DataDog/delegated-auth-
 docs/resources/aws_wif_intake_mapping.md                @DataDog/delegated-auth-login @DataDog/credential-management
 examples/resources/datadog_aws_wif_identity_mapping/    @DataDog/delegated-auth-login @DataDog/credential-management
 examples/resources/datadog_aws_wif_intake_mapping/      @DataDog/delegated-auth-login @DataDog/credential-management
+
+# Usage quota resources, tests, documentation, and examples
+**/*usage_quota*                                         @DataDog/billing-hub
