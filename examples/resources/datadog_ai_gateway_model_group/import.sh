@@ -1,0 +1,1 @@
+terraform import datadog_ai_gateway_model_group.coding "<model_group_id>"
