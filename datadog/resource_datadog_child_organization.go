@@ -144,6 +144,7 @@ func resourceDatadogChildOrganization() *schema.Resource {
 				"api_key": {
 					Type:        schema.TypeList,
 					Computed:    true,
+					Sensitive:   true,
 					Description: "Datadog API key.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
@@ -165,6 +166,7 @@ func resourceDatadogChildOrganization() *schema.Resource {
 				"application_key": {
 					Type:        schema.TypeList,
 					Computed:    true,
+					Sensitive:   true,
 					Description: "An application key with its associated metadata.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
