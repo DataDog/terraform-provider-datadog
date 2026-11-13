@@ -37,8 +37,8 @@ Nothing degrades to a dynamic value.
 | `Search` | Singular data sources only: a list endpoint resolving exactly one record. |
 | `Create` / `Update` / `Delete` | Resources. |
 
-`lifecycle.go` builds these. A resource with no `update` marks all attributes
-ForceNew, the missing-CRUD edge case.
+`lifecycle.go` builds these. When a resource has no `update`, configurable inputs
+require replacement on change; computed-only response fields do not.
 
 ## The resource schema merge
 
@@ -51,10 +51,20 @@ Rules that are easy to break:
 - **Validation widens, cosmetics follow the read.** The validator must accept
   everything the response can return, so enum members are unioned. Name,
   description, and `RefName` favour the read response.
-- **`Sensitive` and `WriteOnlySecret` OR across roles.** If any role considers a
-  field secret, the merged field is secret. Never AND these.
+- **Sensitivity and write-only handling are distinct.** `Sensitive` ORs across
+  roles. `WriteOnlySecret` comes from writable request roles; a response-only
+  marker must not enable write-only handling. See
+  [secret handling](../reference/scope.md#secrets-and-sensitivity).
 - **`RequestRequired` reads Create's list only.** Update-only required entries are
   deliberately ignored.
+- **Provenance retains create-only inputs.** `SchemaProvenance.CreateOnly` records
+  writable Create presence without writable Update presence. Read-only request
+  properties are excluded before merging. `schema.go` uses this bit for typed
+  `RequiresReplace` modifiers while preserving mutable siblings and computed-only
+  fields. See the [lifecycle rules](../reference/scope.md#schema-shapes).
+- Immutable objects and object lists use structural replacement modifiers on
+  their parents and value replacement modifiers on their writable descendants.
+  This avoids comparing computed descendants before their plan modifiers run.
 - **Per-role components are expected.** Create and update may reference different
   components and still merge into one field list; that is the normal case, not a
   conflict.
