@@ -17,7 +17,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/metrics/%22foo.bar%22/active-configurations
+        url: https://api.datadoghq.com/api/v2/metrics/foo.bar/active-configurations
         method: GET
       response:
         proto: HTTP/1.1
@@ -29,7 +29,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"actively_queried_configurations","id":"\"foo.bar\"","attributes":{"active_tags":["environment","version"],"active_aggregations":[{"space":"avg","time":"sum"}]}}}
+            {"data":{"type":"actively_queried_configurations","id":"foo.bar","attributes":{"active_tags":["environment","version"],"active_aggregations":[{"space":"avg","time":"sum"}]}}}
         headers:
             Content-Type:
                 - application/json
@@ -52,7 +52,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/metrics/%22foo.bar%22/active-configurations
+        url: https://api.datadoghq.com/api/v2/metrics/foo.bar/active-configurations
         method: GET
       response:
         proto: HTTP/1.1
@@ -64,7 +64,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"actively_queried_configurations","id":"\"foo.bar\"","attributes":{"active_tags":["environment","version"],"active_aggregations":[{"space":"avg","time":"sum"}]}}}
+            {"data":{"type":"actively_queried_configurations","id":"foo.bar","attributes":{"active_tags":["environment","version"],"active_aggregations":[{"space":"avg","time":"sum"}]}}}
         headers:
             Content-Type:
                 - application/json
@@ -87,7 +87,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/metrics/%22foo.bar%22/active-configurations
+        url: https://api.datadoghq.com/api/v2/metrics/foo.bar/active-configurations
         method: GET
       response:
         proto: HTTP/1.1
@@ -99,7 +99,7 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"actively_queried_configurations","id":"\"foo.bar\"","attributes":{"active_tags":["environment","version"],"active_aggregations":[{"space":"avg","time":"sum"}]}}}
+            {"data":{"type":"actively_queried_configurations","id":"foo.bar","attributes":{"active_tags":["environment","version"],"active_aggregations":[{"space":"avg","time":"sum"}]}}}
         headers:
             Content-Type:
                 - application/json
