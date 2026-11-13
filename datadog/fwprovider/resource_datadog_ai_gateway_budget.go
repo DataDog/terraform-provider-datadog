@@ -133,8 +133,7 @@ func (r *aiGatewayBudgetResource) Schema(_ context.Context, _ resource.SchemaReq
 				Default:     float64default.StaticFloat64(0.9),
 				Validators: []validator.Float64{
 					float64validator.AtMost(1),
-					float64validator.NoneOf(0),
-					float64validator.AtLeast(0),
+					aiGatewayPositiveFloat64Validator{},
 				},
 			},
 			"enabled": schema.BoolAttribute{
@@ -271,7 +270,7 @@ func validateAiGatewayBudgetSelectorDim(dim string) error {
 	}
 	key, isTag := strings.CutPrefix(dim, "tag:")
 	if !isTag || key == "" {
-		return fmt.Errorf("dim %q must be user_id, team_id, model, provider or tag:<key>", dim)
+		return fmt.Errorf("dim %q must be user_id, team_id, model, provider, or tag:<key>", dim)
 	}
 	if err := validateAiGatewayBudgetTagKey(key); err != nil {
 		return fmt.Errorf("dim %q: %w", dim, err)
