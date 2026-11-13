@@ -58,6 +58,13 @@ import. Without an update API, refresh initializes an absent name from the API I
 [identity contract](../reference/scope.md#caller-assigned-resource-identity) and
 [decision record](../decisions/0005-separate-create-name-from-api-id.md).
 
+Request construction filters the merged attributes against each role's writable
+schema. An explicit empty request object contributes no setters. `postcreate.go`
+builds `ResourceView.Initialize` for top-level update-only inputs. The Create
+template saves the created state before applying these inputs through Update,
+using the canonical API ID and Create's configuration for secret lookups. See
+[scope](../reference/scope.md#schema-shapes) for initialization guards and limits.
+
 ## State mapping
 
 Generated mapping uses the SDK's presence-aware getters. Resource mapping starts
