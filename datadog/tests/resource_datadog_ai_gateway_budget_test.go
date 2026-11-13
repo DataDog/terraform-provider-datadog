@@ -3,6 +3,8 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -29,6 +31,12 @@ func TestAccAiGatewayBudget(t *testing.T) {
 		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAiGatewayBudgetDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
+			{
+				// The API lowercases tag keys, and tags replace the budget, so an uppercase key would replace it on every run.
+				Config:      strings.Replace(testAccAiGatewayBudgetConfig(name, mlApp, "DAILY"), "ml_app =", "ML_APP =", 1),
+				PlanOnly:    true,
+				ExpectError: regexp.MustCompile(`must be lowercase`),
+			},
 			{
 				Config: testAccAiGatewayBudgetConfig(name, mlApp, "DAILY"),
 				Check: resource.ComposeTestCheckFunc(
