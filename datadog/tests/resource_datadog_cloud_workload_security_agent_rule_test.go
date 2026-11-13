@@ -16,6 +16,9 @@ import (
 const tfAgentRuleName = "datadog_cloud_workload_security_agent_rule.acceptance_test"
 
 func TestAccDatadogCloudWorkloadSecurityAgentRule(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("The legacy agent rule write API is being removed. Use datadog_csm_threats_agent_rule. This test only replays its cassette.")
+	}
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	agentRuleName := strings.Replace(uniqueEntityName(ctx, t), "-", "_", -1)
