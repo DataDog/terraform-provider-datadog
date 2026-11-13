@@ -41,6 +41,59 @@ func TestAccDatastoreBasic(t *testing.T) {
 	})
 }
 
+// TestAccDatastore_NoDescription tests that omitting `description` keeps it null in
+// state rather than being read back as "", which previously failed with
+// "Provider produced inconsistent result after apply".
+func TestAccDatastore_NoDescription(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogDatastoreDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDatastoreNoDescription(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDatastoreExists(providers.frameworkProvider),
+					resource.TestCheckNoResourceAttr(
+						"datadog_datastore.no_description", "description"),
+					resource.TestCheckResourceAttr(
+						"datadog_datastore.no_description", "primary_column_name", "id"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogDatastoreWithDescription(uniq, "Now described"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDatastoreExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_datastore.no_description", "description", "Now described"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogDatastoreNoDescription(uniq string) string {
+	return fmt.Sprintf(`resource "datadog_datastore" "no_description" {
+    name = "tf-test-datastore-%s"
+    org_access = "manager"
+    primary_column_name = "id"
+    primary_key_generation_strategy = "none"
+}`, uniq)
+}
+
+func testAccCheckDatadogDatastoreWithDescription(uniq string, description string) string {
+	return fmt.Sprintf(`resource "datadog_datastore" "no_description" {
+    description = "%s"
+    name = "tf-test-datastore-%s"
+    org_access = "manager"
+    primary_column_name = "id"
+    primary_key_generation_strategy = "none"
+}`, description, uniq)
+}
+
 func testAccCheckDatadogDatastore(uniq string) string {
 	return fmt.Sprintf(`resource "datadog_datastore" "foo" {
     description = "Test datastore for acceptance testing"
