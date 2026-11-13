@@ -88,7 +88,7 @@ func TestAccAiGatewayBudget(t *testing.T) {
 						}
 						_, status, err := getAiGatewayBudget(providers.frameworkProvider, firstID)
 						if status != 404 {
-							return fmt.Errorf("replaced budget %s: status %d, err %v, want 404", firstID, status, err)
+							return fmt.Errorf("replaced budget %s: status %d, err %w, want 404", firstID, status, err)
 						}
 						return nil
 					},
