@@ -176,6 +176,72 @@ func TestStatusPageLayoutRecomputedWhenVisualizationChanges(t *testing.T) {
 	require.Equal(t, prior.RssFeedEnabled, got.RssFeedEnabled)
 }
 
+func TestStatusPageURLPlanModifier(t *testing.T) {
+	t.Parallel()
+	for _, test := range []struct {
+		name        string
+		priorType   string
+		plannedType string
+		prefix      string
+		wantUnknown bool
+	}{
+		{"public to private", "public", "private", "example-status", true},
+		{"private to public", "private", "public", "example-status", true},
+		{"internal to public", "internal", "public", "example-status", true},
+		{"public to internal", "public", "internal", "example-status", true},
+		{"internal to private", "internal", "private", "example-status", true},
+		{"private to internal", "private", "internal", "example-status", true},
+		{"prefix changed", "public", "public", "updated-status", true},
+		{"public unchanged", "public", "public", "example-status", false},
+		{"private unchanged", "private", "private", "example-status", false},
+		{"internal unchanged", "internal", "internal", "example-status", false},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			ctx := context.Background()
+			prior := statusPageTestModel()
+			prior.ID = types.StringValue(statusPageTestID)
+			prior.Type = types.StringValue(test.priorType)
+			switch test.priorType {
+			case "private":
+				prior.PageURL = types.StringValue("https://example-status.private.statuspage.datadoghq.com")
+			case "internal":
+				prior.PageURL = types.StringValue("https://app.datadoghq.com/status-pages/" + statusPageTestID + "/view")
+			default:
+				prior.PageURL = types.StringValue("https://example-status.statuspage.datadoghq.com")
+			}
+			config := statusPageTestModel()
+			config.Type = types.StringValue(test.plannedType)
+			config.DomainPrefix = types.StringValue(test.prefix)
+			proposed := config
+			proposed.ID = prior.ID
+			proposed.PageURL = prior.PageURL
+			server := providerserver.NewProtocol6(New())()
+			response, err := server.PlanResourceChange(ctx, &tfprotov6.PlanResourceChangeRequest{
+				TypeName:         "datadog_status_page",
+				PriorState:       statusPageTestDynamicValue(t, prior),
+				Config:           statusPageTestDynamicValue(t, config),
+				ProposedNewState: statusPageTestDynamicValue(t, proposed),
+			})
+			require.NoError(t, err)
+			for _, diagnostic := range response.Diagnostics {
+				require.NotEqual(t, tfprotov6.DiagnosticSeverityError, diagnostic.Severity, "%s", diagnostic.Detail)
+			}
+			var schemaResponse resource.SchemaResponse
+			NewStatusPageResource().Schema(ctx, resource.SchemaRequest{}, &schemaResponse)
+			planned := tfsdk.Plan{Schema: schemaResponse.Schema}
+			planned.Raw, err = response.PlannedState.Unmarshal(schemaResponse.Schema.Type().TerraformType(ctx))
+			require.NoError(t, err)
+			var got statusPageModel
+			require.False(t, planned.Get(ctx, &got).HasError())
+			if test.wantUnknown {
+				require.True(t, got.PageURL.IsUnknown())
+			} else {
+				require.Equal(t, prior.PageURL, got.PageURL)
+			}
+		})
+	}
+}
+
 func TestStatusPageSettingsDataSources(t *testing.T) {
 	t.Parallel()
 	for _, rss := range []bool{true, false} {
