@@ -6,6 +6,37 @@ import (
 )
 
 var _ = Describe("create-only resource inputs", func() {
+	DescribeTable("checks nested structure separately from immutable leaf values",
+		func(withUpdate bool) {
+			create := objSchema(map[string]*Schema{
+				"scope":     objSchema(map[string]*Schema{"name": primSchema("string")}),
+				"selectors": arrSchema(objSchema(map[string]*Schema{"name": primSchema("string")})),
+				"capacity":  primSchema("integer"),
+			})
+			read := CloneSchema(create)
+			read.Properties["scope"].Properties["output"] = primSchema("string")
+			read.Properties["selectors"].Items.Properties["output"] = primSchema("string")
+			group := &ResolvedGroup{Create: &Operation{RequestSchema: create}, Read: &Operation{ResponseSchema: read}}
+			if withUpdate {
+				group.Update = &Operation{RequestSchema: objSchema(map[string]*Schema{"capacity": primSchema("integer")})}
+			}
+			merged, _, err := MergeResourceSchema(group)
+			Expect(err).NotTo(HaveOccurred())
+			tree, _, err := BuildResourceTree(merged, !withUpdate)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(attrByPath(tree, "resource.scope").PlanModifiers).To(ContainElement(PlanModifierSpec{Name: "planmodifiers.RequiresReplaceObjectStructure"}))
+			Expect(attrByPath(tree, "resource.selectors").PlanModifiers).To(ContainElement(PlanModifierSpec{Name: "planmodifiers.RequiresReplaceListStructure"}))
+			for _, path := range []string{"resource.scope.name", "resource.selectors[].name"} {
+				Expect(attrByPath(tree, path).PlanModifiers).To(ContainElement(RequiresReplaceSpec("types.String")))
+			}
+			for _, path := range []string{"resource.scope.output", "resource.selectors[].output"} {
+				Expect(attrByPath(tree, path).PlanModifiers).To(BeEmpty())
+			}
+		},
+		Entry("with mutable sibling inputs", true),
+		Entry("without an Update operation", false),
+	)
+
 	It("replaces immutable inputs while retaining mutable siblings and server outputs", func() {
 		create := objSchema(map[string]*Schema{
 			"window": primSchema("string"),
@@ -40,7 +71,7 @@ var _ = Describe("create-only resource inputs", func() {
 			"resource.window":     "stringplanmodifier.RequiresReplace",
 			"resource.scope.team": "stringplanmodifier.RequiresReplace",
 			"resource.tags":       "mapplanmodifier.RequiresReplace",
-			"resource.selectors":  "listplanmodifier.RequiresReplace",
+			"resource.selectors":  "planmodifiers.RequiresReplaceListStructure",
 		} {
 			Expect(attrByPath(tree, path).PlanModifiers).To(ContainElement(PlanModifierSpec{Name: modifier}), path)
 		}

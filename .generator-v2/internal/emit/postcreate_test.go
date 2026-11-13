@@ -24,14 +24,17 @@ var _ = Describe("post-create initialization", func() {
 		Expect(err).NotTo(HaveOccurred())
 		Expect(view.Initialize).NotTo(BeNil())
 		Expect(view.Initialize.Fields).To(Equal([]CreateInitializationField{{
-			GoField:   "Enabled",
-			Condition: "!configured.Enabled.IsNull() && !configured.Enabled.IsUnknown() && !configured.Enabled.Equal(state.Enabled)",
+			GoField:          "Enabled",
+			Condition:        "!configured.Enabled.IsNull() && !configured.Enabled.IsUnknown() && !configured.Enabled.Equal(state.Enabled)",
+			ResponseNullExpr: "types.BoolNull()",
 		}}))
 
 		source := string(mustRenderResource(view))
 		create := source[strings.Index(source, "Resource) Create("):strings.Index(source, "Resource) Read(")]
 		Expect(create).To(ContainSubstring("if initialize {"))
 		Expect(create).To(ContainSubstring("state.Enabled = configured.Enabled"))
+		Expect(create).To(ContainSubstring("state.Enabled = types.BoolNull()"))
+		Expect(strings.Index(create, "state.Enabled = types.BoolNull()")).To(BeNumerically("<", strings.Index(create, "r.updateState(ctx, &state, &resp)")), "only an actual Create response value may suppress initialization")
 		Expect(strings.Count(create, "r.Api.UpdateIncidentType(")).To(Equal(1))
 		Expect(strings.Count(create, "SetInternalNote(")).To(Equal(1), "create-only setters must not enter the initialization PATCH")
 		Expect(strings.Index(create, "response.State.Set(ctx, &state)")).To(BeNumerically("<", strings.Index(create, "r.Api.UpdateIncidentType(")), "retain the created API ID even if initialization fails")

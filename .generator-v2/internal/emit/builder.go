@@ -791,6 +791,8 @@ type dataSourceBuilder struct {
 	// planModifierPkgs collects the distinct planmodifier subpackages
 	// (e.g. "stringplanmodifier") any attribute's PlanModifiers reference.
 	planModifierPkgs map[string]struct{}
+	// usesCustomPlanModifiers selects the provider's shared modifiers.
+	usesCustomPlanModifiers bool
 	// defaultPkgs collects resource/schema default subpackages referenced by
 	// leaf defaults. Data-source walks leave it empty.
 	defaultPkgs map[string]struct{}
@@ -836,13 +838,18 @@ func (b *dataSourceBuilder) planModifierViews(a *model.Attribute) (names []strin
 		return nil, ""
 	}
 	names = make([]string, len(a.PlanModifiers))
-	for i, pm := range a.PlanModifiers {
-		names[i] = pm.Name
-	}
 	if b.planModifierPkgs == nil {
 		b.planModifierPkgs = make(map[string]struct{})
 	}
-	b.planModifierPkgs[model.PlanModifierPackage(a.GoType)] = struct{}{}
+	for i, pm := range a.PlanModifiers {
+		names[i] = pm.Name
+		pkg, _, _ := strings.Cut(pm.Name, ".")
+		if pkg == "planmodifiers" {
+			b.usesCustomPlanModifiers = true
+		} else {
+			b.planModifierPkgs[pkg] = struct{}{}
+		}
+	}
 	return names, model.FrameworkTypeName(a.GoType)
 }
 
@@ -2182,20 +2189,21 @@ func BuildResourceView(a *model.Artifact) (ResourceView, error) {
 		// side and its exactly-one selection check on the request side. A
 		// request-only union never reaches oneOfRenders, since the state walk
 		// filters by response, hence the second term.
-		UsesFmt:              len(b.oneOfRenders) > 0 || requestImps.fmt,
-		UsesValidators:       b.usesStringValidators || b.usesObjectValidators,
-		UsesStringValidators: b.usesStringValidators,
-		UsesObjectValidators: b.usesObjectValidators,
-		UsesPlanModifiers:    len(planModifierPkgs) > 0,
-		PlanModifierPackages: planModifierPkgs,
-		DefaultPackages:      defaultPkgs,
-		Import:               buildImportView(pathAttrs),
-		UsesUUID:             createUUID || readUUID || updateUUID || deleteUUID || requestImps.uuid,
-		UsesStrconv:          createStrconv || readStrconv || updateStrconv || deleteStrconv,
-		UsesTime:             requestImps.time,
-		WriteOnlySecrets:     b.writeOnlySecrets,
-		UsesWriteOnly:        len(b.writeOnlySecrets) > 0,
-		Dropped:              b.dropped,
+		UsesFmt:                 len(b.oneOfRenders) > 0 || requestImps.fmt,
+		UsesValidators:          b.usesStringValidators || b.usesObjectValidators,
+		UsesStringValidators:    b.usesStringValidators,
+		UsesObjectValidators:    b.usesObjectValidators,
+		UsesPlanModifiers:       len(planModifierPkgs) > 0 || b.usesCustomPlanModifiers,
+		UsesCustomPlanModifiers: b.usesCustomPlanModifiers,
+		PlanModifierPackages:    planModifierPkgs,
+		DefaultPackages:         defaultPkgs,
+		Import:                  buildImportView(pathAttrs),
+		UsesUUID:                createUUID || readUUID || updateUUID || deleteUUID || requestImps.uuid,
+		UsesStrconv:             createStrconv || readStrconv || updateStrconv || deleteStrconv,
+		UsesTime:                requestImps.time,
+		WriteOnlySecrets:        b.writeOnlySecrets,
+		UsesWriteOnly:           len(b.writeOnlySecrets) > 0,
+		Dropped:                 b.dropped,
 	}, nil
 }
 

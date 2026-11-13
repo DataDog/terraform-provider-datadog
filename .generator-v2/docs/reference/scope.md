@@ -66,14 +66,20 @@ and response-only fields remain computed. The rule also applies to nested
 objects and collections. Without an Update operation, all configurable inputs
 require replacement.
 
+For immutable nested objects and object lists, parent modifiers check presence
+and list structure while writable descendants check their own values. Computed
+descendants becoming unknown during planning do not force replacement when a
+mutable sibling changes.
+
 For a create-only write-only secret, replacement is triggered by changing the
 plaintext fallback or the write-only version attribute. The write-only value
 itself is never stored or compared. Update-only write-only secrets remain
 unsupported because Create cannot configure them.
 
 Known, non-null configured top-level fields accepted only by Update are initialized
-through an Update call after Create. Response-backed fields already matching the
-configured value skip initialization; request-only controls are sent when configured.
+through an Update call after Create. Response-backed fields skip initialization
+only when the Create response returns the configured value. An omitted response
+field still requires initialization; request-only controls are sent when configured.
 If initialization fails, the created resource ID is
 retained in state so it can be refreshed or destroyed.
 Update-only descendants inside a shared Create/Update object or collection

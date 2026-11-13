@@ -62,6 +62,9 @@ Rules that are easy to break:
   properties are excluded before merging. `schema.go` uses this bit for typed
   `RequiresReplace` modifiers while preserving mutable siblings and computed-only
   fields. See the [lifecycle rules](../reference/scope.md#schema-shapes).
+- Immutable objects and object lists use structural replacement modifiers on
+  their parents and value replacement modifiers on their writable descendants.
+  This avoids comparing computed descendants before their plan modifiers run.
 - **Per-role components are expected.** Create and update may reference different
   components and still merge into one field list; that is the normal case, not a
   conflict.

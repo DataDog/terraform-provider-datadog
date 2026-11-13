@@ -623,7 +623,7 @@ func (b *treeBuilder) applyPresence(a *Attribute, s *Schema, required bool) erro
 			a.Computed = true
 		}
 		a.InResponse = p.InResponse
-		a.PlanModifiers = b.resourcePlanModifiers(a, p)
+		a.PlanModifiers = b.resourcePlanModifiers(a, s, p)
 	}
 	return nil
 }
@@ -633,7 +633,7 @@ func (b *treeBuilder) applyPresence(a *Attribute, s *Schema, required bool) erro
 // for a create-only input or when updates are unsupported. A Computed-only attribute gets
 // neither, since the server may change such a value during apply.
 // Role provenance distinguishes a create-only input from a mutable field.
-func (b *treeBuilder) resourcePlanModifiers(a *Attribute, provenance *SchemaProvenance) []PlanModifierSpec {
+func (b *treeBuilder) resourcePlanModifiers(a *Attribute, s *Schema, provenance *SchemaProvenance) []PlanModifierSpec {
 	useStateForUnknown := a.Optional && a.Computed
 	requiresReplace := provenance.InRequest && (b.updateUnsupported || provenance.CreateOnly)
 	if !useStateForUnknown && !requiresReplace {
@@ -644,7 +644,17 @@ func (b *treeBuilder) resourcePlanModifiers(a *Attribute, provenance *SchemaProv
 		modifiers = append(modifiers, PlanModifierSpec{Name: PlanModifierPackage(a.GoType) + ".UseStateForUnknown"})
 	}
 	if requiresReplace {
-		modifiers = append(modifiers, RequiresReplaceSpec(a.GoType))
+		modifier := RequiresReplaceSpec(a.GoType)
+		// Descendants get their own replacement modifiers. Compare only the
+		// parent's structure so computed children becoming unknown do not make
+		// an unchanged immutable object replace a resource on a mutable update.
+		switch {
+		case s.Kind == SchemaKindObject || s.Kind == SchemaKindOneOf:
+			modifier.Name = "planmodifiers.RequiresReplaceObjectStructure"
+		case s.Kind == SchemaKindArray && s.Items != nil && (s.Items.Kind == SchemaKindObject || s.Items.Kind == SchemaKindOneOf):
+			modifier.Name = "planmodifiers.RequiresReplaceListStructure"
+		}
+		modifiers = append(modifiers, modifier)
 	}
 	return modifiers
 }

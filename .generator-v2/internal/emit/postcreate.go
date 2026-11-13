@@ -14,8 +14,9 @@ type CreateInitializationView struct {
 }
 
 type CreateInitializationField struct {
-	GoField   string
-	Condition string
+	GoField          string
+	Condition        string
+	ResponseNullExpr string
 }
 
 func buildCreateInitialization(attrs []*model.Attribute, create, update *model.Schema, call CRUDCallView, secrets []WriteOnlySecretView, unsupported *[]UnsupportedNode) *CreateInitializationView {
@@ -46,14 +47,19 @@ func buildCreateInitialization(attrs []*model.Attribute, create, update *model.S
 		field := model.SdkName(tfNameOf(attr.Path))
 		configured := "configured." + field
 		condition := configured + " != nil"
+		responseNullExpr := ""
 		switch attr.TfType {
 		case "schema.StringAttribute", "schema.BoolAttribute", "schema.Int64Attribute", "schema.Float64Attribute", "schema.ListAttribute", "schema.SetAttribute", "schema.MapAttribute":
 			condition = notNullOrUnknown(configured)
 			if attr.InResponse {
+				// State starts from the plan. Clear its planned value before the
+				// Create response is mapped, so equality only means the server
+				// actually returned this value rather than omitted the field.
+				responseNullExpr = computedNullExpr(attr)
 				condition = fmt.Sprintf("%s && !%s.Equal(state.%s)", condition, configured, field)
 			}
 		}
-		fields = append(fields, CreateInitializationField{GoField: field, Condition: condition})
+		fields = append(fields, CreateInitializationField{GoField: field, Condition: condition, ResponseNullExpr: responseNullExpr})
 	}
 	if len(fields) == 0 {
 		return nil

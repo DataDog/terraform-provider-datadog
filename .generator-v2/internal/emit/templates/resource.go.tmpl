@@ -54,6 +54,9 @@ import (
 {{- if .UsesWriteOnly }}
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
 {{- end }}
+{{- if .UsesCustomPlanModifiers }}
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/planmodifiers"
+{{- end }}
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -141,6 +144,13 @@ func (r *{{ .GoName }}Resource) Create(ctx context.Context, request resource.Cre
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating {{ .TypeName }}"))
 		return
 	}
+{{- if .Initialize }}
+{{- range .Initialize.Fields }}
+{{- if .ResponseNullExpr }}
+	state.{{ .GoField }} = {{ .ResponseNullExpr }}
+{{- end }}
+{{- end }}
+{{- end }}
 {{ template "mapResponseState" . }}
 {{ template "commitState" .Create }}
 {{- if .Initialize }}
