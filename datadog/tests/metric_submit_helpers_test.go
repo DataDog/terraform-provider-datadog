@@ -1,15 +1,17 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
 	"os"
 	"strings"
 	"testing"
 	"time"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 )
 
@@ -58,29 +60,29 @@ func submitTestMetricPreConfig(t *testing.T, metricName string, metricType strin
 }
 
 // waitForMetricIndexed polls the metric tags endpoint, which uses the same existence check
-// as the tag configuration create endpoint.
+// as the tag configuration create endpoint. The client is separate from the provider client so
+// that polls are not recorded in cassettes.
 func waitForMetricIndexed(t *testing.T, apiKey, appKey, apiURL, metricName string) {
-	client := &http.Client{Timeout: 30 * time.Second}
-	endpoint := fmt.Sprintf("%s/api/v2/metrics/%s/all-tags", apiURL, url.PathEscape(metricName))
+	cfg := datadog.NewConfiguration()
+	cfg.HTTPClient = &http.Client{Timeout: 30 * time.Second}
+	cfg.Servers = datadog.ServerConfigurations{{URL: apiURL}}
+	api := datadogV2.NewMetricsApi(datadog.NewAPIClient(cfg))
+	ctx := context.WithValue(context.Background(), datadog.ContextAPIKeys, map[string]datadog.APIKey{
+		"apiKeyAuth": {Key: apiKey},
+		"appKeyAuth": {Key: appKey},
+	})
 	deadline := time.Now().Add(metricIndexPollTimeout)
-	var lastStatus int
 	for {
-		req, err := http.NewRequest("GET", endpoint, nil)
-		if err != nil {
-			t.Fatalf("error creating request for metric %s: %v", metricName, err)
-		}
-		req.Header.Set("DD-API-KEY", apiKey)
-		req.Header.Set("DD-APPLICATION-KEY", appKey)
-		resp, err := client.Do(req)
+		_, httpResp, err := api.ListTagsByMetricName(ctx, metricName)
 		if err == nil {
-			lastStatus = resp.StatusCode
-			resp.Body.Close()
-			if lastStatus == http.StatusOK {
-				return
-			}
+			return
+		}
+		status := 0
+		if httpResp != nil {
+			status = httpResp.StatusCode
 		}
 		if time.Now().After(deadline) {
-			t.Fatalf("metric %s not indexed after %s (last status %d, last error %v)", metricName, metricIndexPollTimeout, lastStatus, err)
+			t.Fatalf("metric %s not indexed after %s (last status %d, last error %v)", metricName, metricIndexPollTimeout, status, err)
 		}
 		time.Sleep(metricIndexPollInterval)
 	}
