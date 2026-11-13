@@ -36,7 +36,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 368.886833ms
+        duration: 366.455209ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -69,7 +69,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 171.795125ms
+        duration: 263.049667ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -102,7 +102,7 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 169.562916ms
+        duration: 144.454917ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -130,16 +130,49 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 127
+        content_length: 120
         uncompressed: false
-        body: '{"errors":[{"status":"409","title":"Status Conflict","detail":"already_exists(Framework ''terraform-handle'' already existed)"}]}'
+        body: '{"errors":[{"status":"409","title":"Conflict","detail":"already_exists(Framework ''terraform-handle'' already existed)"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 409 Conflict
         code: 409
-        duration: 69.033792ms
+        duration: 131.386875ms
     - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/terraform-handle/different-version
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 149
+        uncompressed: false
+        body: '{"errors":[{"status":"400","title":"Bad Request","detail":"invalid_argument(Cannot find framework ''terraform-handle'' version ''different-version'')"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 400 Bad Request
+        code: 400
+        duration: 154.135167ms
+    - id: 5
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -171,8 +204,8 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 372.856ms
-    - id: 5
+        duration: 352.380416ms
+    - id: 6
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -188,7 +221,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/terraform-handle/different-version
+        url: https://api.datadoghq.com/api/v2/cloud_security_management/custom_frameworks/terraform-handle/1.0
         method: GET
       response:
         proto: HTTP/1.1
@@ -196,12 +229,12 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 51
+        content_length: 135
         uncompressed: false
-        body: '{"errors":[{"status":"400","title":"Bad Request"}]}'
+        body: '{"errors":[{"status":"400","title":"Bad Request","detail":"invalid_argument(Cannot find framework ''terraform-handle'' version ''1.0'')"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 306.9705ms
+        duration: 97.417083ms
