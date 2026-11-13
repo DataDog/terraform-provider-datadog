@@ -89,25 +89,14 @@ func (r *statusPageResource) ModifyPlan(ctx context.Context, req resource.Modify
 	resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, path.Root("modified_at"), priorModifiedAt)...)
 }
 
-// statusPageURLShape buckets a status page type by the page_url format the
-// API derives from it. "internal" pages URL to a Datadog-domain viewer path;
-// every other type (public, and the upcoming private) URLs to a
-// domain_prefix-based subdomain, so they share a shape.
-func statusPageURLShape(pageType types.String) string {
-	if pageType.ValueString() == "internal" {
-		return "internal"
-	}
-	return "domain_prefix"
-}
-
 // statusPageURLPlanModifier behaves like stringplanmodifier.UseStateForUnknown(),
 // except it lets page_url stay Unknown (instead of reusing the prior state
-// value) when domain_prefix changes, or when type changes across a URL-shape
-// boundary, since the API derives page_url from those fields server-side.
+// value) when domain_prefix or type changes, since the API derives page_url
+// from those fields server-side.
 type statusPageURLPlanModifier struct{}
 
 func (m statusPageURLPlanModifier) Description(_ context.Context) string {
-	return "Recomputes page_url when domain_prefix changes, or type changes across a URL-shape boundary, instead of reusing the prior state value."
+	return "Recomputes page_url when domain_prefix or type changes, instead of reusing the prior state value."
 }
 
 func (m statusPageURLPlanModifier) MarkdownDescription(ctx context.Context) string {
@@ -128,7 +117,7 @@ func (m statusPageURLPlanModifier) PlanModifyString(ctx context.Context, req pla
 		return
 	}
 
-	if statusPageURLShape(stateType) != statusPageURLShape(planType) || !stateDomainPrefix.Equal(planDomainPrefix) {
+	if !stateType.Equal(planType) || !stateDomainPrefix.Equal(planDomainPrefix) {
 		// page_url is derived server-side from type/domain_prefix; force a
 		// recompute instead of letting Terraform's default proposal carry
 		// forward the now-stale prior value.
