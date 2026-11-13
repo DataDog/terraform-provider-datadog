@@ -368,7 +368,9 @@ func buildRumOperationRequestAttributes(ctx context.Context, state *rumOperation
 		steps = append(steps, *step)
 	}
 
-	attributes := datadogV2.NewRUMOperationRequestAttributes(*datadogV2.NewRUMOperationJourneyRum(steps), state.Name.ValueString(), tags)
+	journey := datadogV2.NewRUMOperationJourneyRumWithDefaults()
+	journey.SetRumSteps(steps)
+	attributes := datadogV2.NewRUMOperationRequestAttributes(*journey, state.Name.ValueString(), tags)
 
 	applicationID, err := uuid.Parse(state.ApplicationID.ValueString())
 	if err != nil {
