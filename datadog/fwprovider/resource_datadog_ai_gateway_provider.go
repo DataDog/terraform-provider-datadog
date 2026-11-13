@@ -169,8 +169,8 @@ func (r *aiGatewayProviderResource) Schema(_ context.Context, _ resource.SchemaR
 				Optional:    true,
 				Computed:    true,
 				Validators: []validator.Float64{
-					float64validator.Between(0, 1000000),
-					float64validator.NoneOf(0),
+					float64validator.AtMost(1000000),
+					aiGatewayPositiveFloat64Validator{},
 				},
 				PlanModifiers: []planmodifier.Float64{
 					float64planmodifier.UseStateForUnknown(),
