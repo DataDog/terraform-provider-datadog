@@ -83,6 +83,7 @@ var Resources = []func() resource.Resource{
 	NewRumApplicationResource,
 	NewRumExclusionFilterResource,
 	NewRumMetricResource,
+	NewAiGatewayRoutingRuleResource,
 	NewRumOperationResource,
 	NewRumOperationJourneyLinkResource,
 	NewRumRetentionFilterResource,
@@ -804,6 +805,13 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateGitHubCloudAuthPersonaMapping", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetGitHubCloudAuthPersonaMapping", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteGitHubCloudAuthPersonaMapping", true)
+
+	// Enable AI Gateway routing rules
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAiGatewayRoutingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayRoutingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAiGatewayRoutingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAiGatewayRoutingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListAiGatewayRoutingRules", true)
 
 	// Fleet Automation schedule reads are stable. Only mutations use Preview endpoints.
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateFleetSchedule", true)
