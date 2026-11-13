@@ -32,8 +32,11 @@ func GetApmFilterIds(apmRetentionFiltersOrder datadogV2.RetentionFiltersResponse
 	return filterIds
 }
 
+// Not parallel: the reorder API rejects (400) a filter list that does not match
+// the org's current filters, so filters created or deleted by parallel APM
+// retention filter tests between the read and the reorder break this test.
+// Sequential tests finish before parallel tests in the package start.
 func TestAccDatadogApmRetentionFilterOrder(t *testing.T) {
-	t.Parallel()
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
