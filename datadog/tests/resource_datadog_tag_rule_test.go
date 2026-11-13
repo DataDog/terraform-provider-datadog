@@ -407,25 +407,40 @@ func tagRuleDestroyHelper(ctx context.Context, s *terraform.State, apiInstances 
 	return nil
 }
 
-// testAccCheckDatadogTagRuleSoftDeleted asserts the opposite of tagRuleDestroyHelper: with
-// hard_delete = false, the rule must still exist after destroy, with deleted_at set.
+// testAccCheckDatadogTagRuleSoftDeleted checks that destroy with hard_delete = false keeps the
+// rule with deleted_at set. Since 2026-11-11, GetTagRule returns 404 for a soft-deleted rule.
+// Soft delete also sets enabled = false, so ListTagRules returns the rule only when
+// include_deleted and include_disabled are both true.
 func testAccCheckDatadogTagRuleSoftDeleted(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		apiInstances := accProvider.DatadogApiInstances
 		auth := accProvider.Auth
 		api := apiInstances.GetTagRulesApiV2()
+		// The provider does not use ListTagRules, so it does not enable this unstable operation.
+		api.Client.Cfg.SetUnstableOperationEnabled("v2.ListTagRules", true)
+
+		optionalParams := datadogV2.NewListTagRulesOptionalParameters().
+			WithIncludeDeleted(true).
+			WithIncludeDisabled(true)
+		resp, httpResp, err := api.ListTagRules(auth, *optionalParams)
+		if err != nil {
+			return utils.TranslateClientError(err, httpResp, "error listing tag rules")
+		}
+		rules := make(map[string]datadogV2.TagRuleData, len(resp.Data))
+		for _, rule := range resp.Data {
+			rules[rule.Id] = rule
+		}
 
 		for _, r := range s.RootModule().Resources {
 			if r.Type != "datadog_tag_rule" {
 				continue
 			}
-
-			resp, httpResp, err := api.GetTagRule(auth, r.Primary.ID)
-			if err != nil {
-				return utils.TranslateClientError(err, httpResp, "error retrieving soft-deleted tag rule")
-			}
-			if !resp.Data.Attributes.DeletedAt.IsSet() || resp.Data.Attributes.DeletedAt.Get() == nil {
+			rule, ok := rules[r.Primary.ID]
+			if !ok {
 				return fmt.Errorf("tag rule %s was hard-deleted despite hard_delete = false", r.Primary.ID)
+			}
+			if !rule.Attributes.DeletedAt.IsSet() || rule.Attributes.DeletedAt.Get() == nil {
+				return fmt.Errorf("tag rule %s still exists after destroy with hard_delete = false", r.Primary.ID)
 			}
 		}
 		return nil
