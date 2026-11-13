@@ -2,7 +2,7 @@ package test
 
 import (
 	"context"
-	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -10,15 +10,16 @@ import (
 
 func TestAccDatadogMetricMetadataDatasource(t *testing.T) {
 	t.Parallel()
-	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	metric := "foo"
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	metric := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDatasourceMetricMetadataConfig(metric),
+				PreConfig: submitTestMetricPreConfig(t, metric, "gauge"),
+				Config:    testAccDatasourceMetricMetadataConfig(metric),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("data.datadog_metric_metadata.foo", "metric_name", metric),
 					resource.TestCheckResourceAttr("data.datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
@@ -35,9 +36,9 @@ func TestAccDatadogMetricMetadataDatasource(t *testing.T) {
 }
 
 func testAccDatasourceMetricMetadataConfig(metric string) string {
-	return fmt.Sprintf(`
+	return testAccCheckDatadogMetricMetadataConfig(metric, "some description") + `
 data "datadog_metric_metadata" "foo" {
-	metric_name = "%s"
+	metric_name = datadog_metric_metadata.foo.metric
 }
-`, metric)
+`
 }

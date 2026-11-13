@@ -2,6 +2,8 @@ package test
 
 import (
 	"context"
+	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
@@ -10,23 +12,24 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
-	"github.com/jonboulle/clockwork"
-	communityClient "github.com/zorkian/go-datadog-api"
 )
 
 func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
+	// A per-test metric: parallel tests and runs that share one metric overwrite each
+	// other's metadata and cause drift on refresh.
+	metric := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMetricMetadataConfig,
+				PreConfig: submitTestMetricPreConfig(t, metric, "gauge"),
+				Config:    testAccCheckDatadogMetricMetadataConfig(metric, "some description"),
 				Check: resource.ComposeTestCheckFunc(
-					checkPostEvent(accProvider, clockFromContext(ctx)),
 					checkMetricMetadataExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
@@ -50,15 +53,18 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
+	// A per-test metric: parallel tests and runs that share one metric overwrite each
+	// other's metadata and cause drift on refresh.
+	metric := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMetricMetadataConfig,
+				PreConfig: submitTestMetricPreConfig(t, metric, "gauge"),
+				Config:    testAccCheckDatadogMetricMetadataConfig(metric, "some description"),
 				Check: resource.ComposeTestCheckFunc(
-					checkPostEvent(accProvider, clockFromContext(ctx)),
 					checkMetricMetadataExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
@@ -75,7 +81,7 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMetricMetadataConfigUpdated,
+				Config: testAccCheckDatadogMetricMetadataConfig(metric, "a different description"),
 				Check: resource.ComposeTestCheckFunc(
 					checkMetricMetadataExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -125,44 +131,16 @@ func checkMetricMetadataExists(accProvider func() (*schema.Provider, error)) res
 	}
 }
 
-func checkPostEvent(accProvider func() (*schema.Provider, error), clock clockwork.FakeClock) resource.TestCheckFunc {
-	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		client := providerConf.CommunityClient
-		datapointUnixTime := float64(clock.Now().Unix())
-		datapointValue := float64(1)
-		metric := communityClient.Metric{
-			Metric: communityClient.String("foo"),
-			Points: []communityClient.DataPoint{{&datapointUnixTime, &datapointValue}},
-		}
-		if err := client.PostMetrics([]communityClient.Metric{metric}); err != nil {
-			return err
-		}
-		return nil
-	}
-}
-
-const testAccCheckDatadogMetricMetadataConfig = `
+func testAccCheckDatadogMetricMetadataConfig(metric, description string) string {
+	return fmt.Sprintf(`
 resource "datadog_metric_metadata" "foo" {
-  metric = "foo"
+  metric = "%s"
   short_name = "short name for metric_metadata foo"
   type = "gauge"
-  description = "some description"
+  description = "%s"
   unit = "byte"
   per_unit = "second"
   statsd_interval = "1"
 }
-`
-
-const testAccCheckDatadogMetricMetadataConfigUpdated = `
-resource "datadog_metric_metadata" "foo" {
-  metric = "foo"
-  short_name = "short name for metric_metadata foo"
-  type = "gauge"
-  description = "a different description"
-  unit = "byte"
-  per_unit = "second"
-  statsd_interval = "1"
+`, metric, description)
 }
-`

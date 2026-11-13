@@ -13,32 +13,30 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"exclude_tags_mode":false,"metric_type":"count","tags":["env"]},"id":"tf_TestAccDatadogMetricTagConfiguration_CountBasic_local_1768598212","type":"manage_tags"}}
+            {"data":{"attributes":{"exclude_tags_mode":false,"metric_type":"count","tags":["env"]},"id":"tf_TestAccDatadogMetricTagConfiguration_CountBasic_local_1794583306","type":"manage_tags"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_CountBasic_local_1768598212/tags
+        url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_CountBasic_local_1794583306/tags
         method: POST
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"manage_tags","id":"tf_TestAccDatadogMetricTagConfiguration_CountBasic_local_1768598212","attributes":{"tags":["env"],"created_at":"2026-01-16T21:16:58.388469+00:00","modified_at":"2026-01-16T21:16:58.388469+00:00","metric_type":"count","aggregations":[{"time":"sum","space":"sum"}],"exclude_tags_mode":false}}}
+        content_length: 327
+        uncompressed: false
+        body: '{"data":{"id":"tf_TestAccDatadogMetricTagConfiguration_CountBasic_local_1794583306","type":"manage_tags","attributes":{"aggregations":[{"time":"sum","space":"sum"}],"created_at":"2026-11-13T15:21:59.589987+00:00","exclude_tags_mode":false,"metric_type":"count","modified_at":"2026-11-13T15:21:59.589031+00:00","tags":["env"]}}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 442.778041ms
+        duration: 329.974375ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,25 +53,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_CountBasic_local_1768598212/tags
+        url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_CountBasic_local_1794583306/tags
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"manage_tags","id":"tf_TestAccDatadogMetricTagConfiguration_CountBasic_local_1768598212","attributes":{"tags":["env"],"created_at":"2026-01-16T21:16:58.388469+00:00","modified_at":"2026-01-16T21:16:58.388469+00:00","metric_type":"count","aggregations":[{"time":"sum","space":"sum"}],"exclude_tags_mode":false}}}
+        content_length: 327
+        uncompressed: false
+        body: '{"data":{"id":"tf_TestAccDatadogMetricTagConfiguration_CountBasic_local_1794583306","type":"manage_tags","attributes":{"aggregations":[{"time":"sum","space":"sum"}],"created_at":"2026-11-13T15:21:59.589987+00:00","exclude_tags_mode":false,"metric_type":"count","modified_at":"2026-11-13T15:21:59.589987+00:00","tags":["env"]}}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 95.813542ms
+        duration: 125.121916ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,25 +86,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_CountBasic_local_1768598212/tags
+        url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_CountBasic_local_1794583306/tags
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"manage_tags","id":"tf_TestAccDatadogMetricTagConfiguration_CountBasic_local_1768598212","attributes":{"tags":["env"],"created_at":"2026-01-16T21:16:58.388469+00:00","modified_at":"2026-01-16T21:16:58.388469+00:00","metric_type":"count","aggregations":[{"time":"sum","space":"sum"}],"exclude_tags_mode":false}}}
+        content_length: 327
+        uncompressed: false
+        body: '{"data":{"id":"tf_TestAccDatadogMetricTagConfiguration_CountBasic_local_1794583306","type":"manage_tags","attributes":{"aggregations":[{"time":"sum","space":"sum"}],"created_at":"2026-11-13T15:21:59.589987+00:00","exclude_tags_mode":false,"metric_type":"count","modified_at":"2026-11-13T15:21:59.589987+00:00","tags":["env"]}}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 116.630917ms
+        duration: 173.347125ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_CountBasic_local_1768598212/tags
+        url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_CountBasic_local_1794583306/tags
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -136,12 +130,10 @@ interactions:
         content_length: 0
         uncompressed: false
         body: ""
-        headers:
-            Content-Type:
-                - text/html; charset=utf-8
+        headers: {}
         status: 204 No Content
         code: 204
-        duration: 175.993ms
+        duration: 233.354208ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -158,22 +150,20 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_CountBasic_local_1768598212/tags
+        url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_CountBasic_local_1794583306/tags
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"errors":["tf_TestAccDatadogMetricTagConfiguration_CountBasic_local_1768598212 not found"]}
+        content_length: 107
+        uncompressed: false
+        body: '{"errors":["No tag configuration for tf_TestAccDatadogMetricTagConfiguration_CountBasic_local_1794583306"]}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 188.293416ms
+        duration: 148.667916ms
