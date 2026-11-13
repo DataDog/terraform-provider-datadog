@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"slices"
 	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -13,7 +14,7 @@ import (
 
 func resourceDatadogLogsPipelineOrder() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog Logs Pipeline API resource, which is used to manage Datadog log pipelines order.",
+		Description:   "Manages the order in which Datadog processes log pipelines. Use at most one pipeline order resource per organization. Each update replaces the entire order, so this resource can overwrite changes made at the same time in the Datadog UI, by automation, or by another Terraform run, even when `ignore_unlisted_pipelines` is `true`.",
 		CreateContext: resourceDatadogLogsPipelineOrderCreate,
 		UpdateContext: resourceDatadogLogsPipelineOrderUpdate,
 		ReadContext:   resourceDatadogLogsPipelineOrderRead,
@@ -29,10 +30,16 @@ func resourceDatadogLogsPipelineOrder() *schema.Resource {
 					Required:    true,
 				},
 				"pipelines": {
-					Description: "The pipeline IDs list. The order of pipeline IDs in this attribute defines the overall pipeline order for logs.",
+					Description: "The pipeline IDs in execution order. Include every pipeline in the organization unless `ignore_unlisted_pipelines` is `true`.",
 					Type:        schema.TypeList,
 					Required:    true,
 					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
+				"ignore_unlisted_pipelines": {
+					Description: "When `true`, the resource manages only the relative order of the pipelines listed in `pipelines`. Each listed ID must be unique and match an existing pipeline. Unlisted pipelines keep their current positions, and pipelines added outside Terraform do not cause drift. For example, if the current order is `[A, X, B]` and you configure `[B, A]`, the result is `[B, X, A]`: pipeline `X` stays second but runs before `A` instead of after it. Leave this setting `false` to manage the full order, including which pipelines run first and last.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+					Default:     false,
 				},
 			}
 		},
@@ -43,65 +50,114 @@ func resourceDatadogLogsPipelineOrderCreate(ctx context.Context, d *schema.Resou
 	return resourceDatadogLogsPipelineOrderUpdate(ctx, d, meta)
 }
 
+func listedPipelineSlots(listed, current []string) []int {
+	ids := make(map[string]bool, len(listed))
+	for _, id := range listed {
+		ids[id] = true
+	}
+	var slots []int
+	for i, id := range current {
+		if ids[id] {
+			slots = append(slots, i)
+			delete(ids, id)
+		}
+	}
+	return slots
+}
+
 func updateLogsPipelineOrderState(d *schema.ResourceData, order *datadogV1.LogsPipelinesOrder) diag.Diagnostics {
-	if err := d.Set("pipelines", order.PipelineIds); err != nil {
+	ids := order.PipelineIds
+	if d.Get("ignore_unlisted_pipelines").(bool) {
+		slots := listedPipelineSlots(utils.GetStringSlice(d, "pipelines"), ids)
+		listed := make([]string, len(slots))
+		for i, slot := range slots {
+			listed[i] = ids[slot]
+		}
+		ids = listed
+	}
+	if err := d.Set("pipelines", ids); err != nil {
 		return diag.FromErr(err)
 	}
 	return nil
 }
 
-func resourceDatadogLogsPipelineOrderRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	providerConf := meta.(*ProviderConfiguration)
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
-	order, httpResponse, err := apiInstances.GetLogsPipelinesApiV1().
-		GetLogsPipelineOrder(auth)
+func getLogsPipelineOrder(conf *ProviderConfiguration) (*datadogV1.LogsPipelinesOrder, diag.Diagnostics) {
+	order, httpResponse, err := conf.DatadogApiInstances.GetLogsPipelinesApiV1().GetLogsPipelineOrder(conf.Auth)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting logs pipeline order")
+		return nil, utils.TranslateClientErrorDiag(err, httpResponse, "error getting logs pipeline order")
 	}
 	if err := utils.CheckForUnparsed(order); err != nil {
-		return diag.FromErr(err)
+		return nil, diag.FromErr(err)
 	}
+	return &order, nil
+}
 
-	return updateLogsPipelineOrderState(d, &order)
+func resourceDatadogLogsPipelineOrderRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	order, diags := getLogsPipelineOrder(meta.(*ProviderConfiguration))
+	if diags.HasError() {
+		return diags
+	}
+	return updateLogsPipelineOrderState(d, order)
 }
 
 func resourceDatadogLogsPipelineOrderUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	var ddPipelineList datadogV1.LogsPipelinesOrder
-	tfList := d.Get("pipelines").([]interface{})
-	ddList := make([]string, len(tfList))
-	for i, id := range tfList {
-		ddList[i] = id.(string)
+	relative := d.Get("ignore_unlisted_pipelines").(bool)
+	order, diags := applyLogsPipelineOrder(ctx, meta.(*ProviderConfiguration), utils.GetStringSlice(d, "pipelines"), relative)
+	if diags.HasError() {
+		if relative {
+			d.Partial(true)
+		}
+		return diags
 	}
-	ddPipelineList.PipelineIds = ddList
-	var tfID string
-	if name, exists := d.GetOk("name"); exists {
-		tfID = name.(string)
+	d.SetId(d.Get("name").(string))
+	return updateLogsPipelineOrderState(d, order)
+}
+
+func applyLogsPipelineOrder(ctx context.Context, providerConf *ProviderConfiguration, pipelineIDs []string, relative bool) (*datadogV1.LogsPipelinesOrder, diag.Diagnostics) {
+	if relative {
+		logCustomPipelineMutex.Lock()
+		defer logCustomPipelineMutex.Unlock()
+		current, diags := getLogsPipelineOrder(providerConf)
+		if diags.HasError() {
+			return nil, diags
+		}
+		slots := listedPipelineSlots(pipelineIDs, current.PipelineIds)
+		if len(slots) != len(pipelineIDs) {
+			return nil, diag.Errorf("each ID in pipelines must be unique and match an existing pipeline: matched %d of %d configured IDs", len(slots), len(pipelineIDs))
+		}
+		merged := slices.Clone(current.PipelineIds)
+		for i, slot := range slots {
+			merged[slot] = pipelineIDs[i]
+		}
+		if slices.Equal(merged, current.PipelineIds) {
+			return current, nil
+		}
+		if err := ctx.Err(); err != nil {
+			return nil, diag.FromErr(err)
+		}
+		pipelineIDs = merged
 	}
-	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 	updatedOrder, httpResponse, err := apiInstances.GetLogsPipelinesApiV1().
-		UpdateLogsPipelineOrder(auth, ddPipelineList)
+		UpdateLogsPipelineOrder(auth, datadogV1.LogsPipelinesOrder{PipelineIds: pipelineIDs})
 	if err != nil {
 		// Cannot map pipelines to existing ones
 		if strings.Contains(err.Error(), "422 Unprocessable Entity") {
-			ddPipelineOrder, httpResponse, getErr := apiInstances.GetLogsPipelinesApiV1().
-				GetLogsPipelineOrder(auth)
-			if getErr != nil {
-				return utils.TranslateClientErrorDiag(err, httpResponse, "error getting logs pipeline order")
+			ddPipelineOrder, diags := getLogsPipelineOrder(providerConf)
+			if diags.HasError() {
+				return nil, diags
 			}
-			return diag.Errorf("cannot map pipelines to existing ones\n existing pipelines: %s\n pipeline to be updated: %s",
+			return nil, diag.Errorf("cannot map pipelines to existing ones\n existing pipelines: %s\n pipeline to be updated: %s",
 				ddPipelineOrder.PipelineIds,
-				ddList)
+				pipelineIDs)
 		}
-		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating logs pipeline order")
+		return nil, utils.TranslateClientErrorDiag(err, httpResponse, "error updating logs pipeline order")
 	}
 	if err := utils.CheckForUnparsed(updatedOrder); err != nil {
-		return diag.FromErr(err)
+		return nil, diag.FromErr(err)
 	}
-	d.SetId(tfID)
-	return updateLogsPipelineOrderState(d, &updatedOrder)
+	return &updatedOrder, nil
 }
 
 // The deletion of pipeline order is not supported from config API.
