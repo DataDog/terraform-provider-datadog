@@ -13,32 +13,30 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"exclude_tags_mode":false,"metric_type":"gauge","tags":["sport","datacenter"]},"id":"tf_TestAccDatadogMetricTagConfiguration_Import_local_1768598376","type":"manage_tags"}}
+            {"data":{"attributes":{"exclude_tags_mode":false,"metric_type":"gauge","tags":["sport","datacenter"]},"id":"tf_TestAccDatadogMetricTagConfiguration_Import_local_1794583306","type":"manage_tags"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_Import_local_1768598376/tags
+        url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_Import_local_1794583306/tags
         method: POST
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"manage_tags","id":"tf_TestAccDatadogMetricTagConfiguration_Import_local_1768598376","attributes":{"tags":["sport","datacenter"],"created_at":"2026-01-16T21:19:43.128077+00:00","modified_at":"2026-01-16T21:19:43.128077+00:00","metric_type":"gauge","aggregations":[{"time":"sum","space":"sum"}],"exclude_tags_mode":false}}}
+        content_length: 338
+        uncompressed: false
+        body: '{"data":{"id":"tf_TestAccDatadogMetricTagConfiguration_Import_local_1794583306","type":"manage_tags","attributes":{"aggregations":[{"time":"sum","space":"sum"}],"created_at":"2026-11-13T15:21:59.508735+00:00","exclude_tags_mode":false,"metric_type":"gauge","modified_at":"2026-11-13T15:21:59.507709+00:00","tags":["datacenter","sport"]}}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 683.782292ms
+        duration: 375.067708ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,25 +53,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_Import_local_1768598376/tags
+        url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_Import_local_1794583306/tags
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"manage_tags","id":"tf_TestAccDatadogMetricTagConfiguration_Import_local_1768598376","attributes":{"tags":["datacenter","sport"],"created_at":"2026-01-16T21:19:43.128077+00:00","modified_at":"2026-01-16T21:19:43.128077+00:00","metric_type":"gauge","aggregations":[{"time":"sum","space":"sum"}],"exclude_tags_mode":false}}}
+        content_length: 338
+        uncompressed: false
+        body: '{"data":{"id":"tf_TestAccDatadogMetricTagConfiguration_Import_local_1794583306","type":"manage_tags","attributes":{"aggregations":[{"time":"sum","space":"sum"}],"created_at":"2026-11-13T15:21:59.508735+00:00","exclude_tags_mode":false,"metric_type":"gauge","modified_at":"2026-11-13T15:21:59.508735+00:00","tags":["datacenter","sport"]}}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 80.287666ms
+        duration: 116.4565ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,25 +86,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_Import_local_1768598376/tags
+        url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_Import_local_1794583306/tags
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"type":"manage_tags","id":"tf_TestAccDatadogMetricTagConfiguration_Import_local_1768598376","attributes":{"tags":["sport","datacenter"],"created_at":"2026-01-16T21:19:43.128077+00:00","modified_at":"2026-01-16T21:19:43.128077+00:00","metric_type":"gauge","aggregations":[{"time":"sum","space":"sum"}],"exclude_tags_mode":false}}}
+        content_length: 338
+        uncompressed: false
+        body: '{"data":{"id":"tf_TestAccDatadogMetricTagConfiguration_Import_local_1794583306","type":"manage_tags","attributes":{"aggregations":[{"time":"sum","space":"sum"}],"created_at":"2026-11-13T15:21:59.508735+00:00","exclude_tags_mode":false,"metric_type":"gauge","modified_at":"2026-11-13T15:21:59.508735+00:00","tags":["datacenter","sport"]}}}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 364.430292ms
+        duration: 115.649542ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_Import_local_1768598376/tags
+        url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_Import_local_1794583306/tags
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -136,12 +130,10 @@ interactions:
         content_length: 0
         uncompressed: false
         body: ""
-        headers:
-            Content-Type:
-                - text/html; charset=utf-8
+        headers: {}
         status: 204 No Content
         code: 204
-        duration: 172.826542ms
+        duration: 192.866833ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -158,22 +150,20 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_Import_local_1768598376/tags
+        url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_Import_local_1794583306/tags
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
+        transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"errors":["tf_TestAccDatadogMetricTagConfiguration_Import_local_1768598376 not found"]}
+        content_length: 103
+        uncompressed: false
+        body: '{"errors":["No tag configuration for tf_TestAccDatadogMetricTagConfiguration_Import_local_1794583306"]}'
         headers:
             Content-Type:
-                - application/json
+                - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 106.20375ms
+        duration: 144.743958ms
