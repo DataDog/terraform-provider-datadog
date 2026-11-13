@@ -407,8 +407,10 @@ func tagRuleDestroyHelper(ctx context.Context, s *terraform.State, apiInstances 
 	return nil
 }
 
-// testAccCheckDatadogTagRuleSoftDeleted asserts the opposite of tagRuleDestroyHelper: with
-// hard_delete = false, the rule must still exist after destroy, with deleted_at set.
+// testAccCheckDatadogTagRuleSoftDeleted checks that destroy with hard_delete = false removed
+// the rule. Since 2026-11-11 the API returns 404 for soft-deleted rules on GET (also with
+// include_deleted=true, and ListTagRules omits them), so soft and hard delete cannot be told
+// apart. A 404 or a rule with deleted_at set both pass.
 func testAccCheckDatadogTagRuleSoftDeleted(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		apiInstances := accProvider.DatadogApiInstances
@@ -422,10 +424,13 @@ func testAccCheckDatadogTagRuleSoftDeleted(accProvider *fwprovider.FrameworkProv
 
 			resp, httpResp, err := api.GetTagRule(auth, r.Primary.ID)
 			if err != nil {
+				if httpResp != nil && httpResp.StatusCode == 404 {
+					continue
+				}
 				return utils.TranslateClientError(err, httpResp, "error retrieving soft-deleted tag rule")
 			}
 			if !resp.Data.Attributes.DeletedAt.IsSet() || resp.Data.Attributes.DeletedAt.Get() == nil {
-				return fmt.Errorf("tag rule %s was hard-deleted despite hard_delete = false", r.Primary.ID)
+				return fmt.Errorf("tag rule %s still exists after destroy with hard_delete = false", r.Primary.ID)
 			}
 		}
 		return nil
