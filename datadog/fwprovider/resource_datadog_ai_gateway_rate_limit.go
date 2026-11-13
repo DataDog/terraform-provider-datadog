@@ -108,7 +108,7 @@ func (r *aiGatewayRateLimitResource) Schema(_ context.Context, _ resource.Schema
 				Default:     booldefault.StaticBool(true),
 			},
 			"requests_per_minute": schema.Int64Attribute{
-				Description: "Maximum requests per rolling minute. At least one of `requests_per_minute`, `input_tokens_per_minute` and `output_tokens_per_minute` is required.",
+				Description: "Maximum requests per rolling minute. At least one of `requests_per_minute`, `input_tokens_per_minute`, and `output_tokens_per_minute` is required.",
 				Optional:    true,
 				Validators:  limitValidators("input_tokens_per_minute", "output_tokens_per_minute"),
 			},
@@ -127,7 +127,7 @@ func (r *aiGatewayRateLimitResource) Schema(_ context.Context, _ resource.Schema
 				Optional:    true,
 			},
 			"user_id": schema.StringAttribute{
-				Description: "UUID of a Datadog user. When set, only this user's requests count toward the limit.",
+				Description: "UUID of a Datadog user. When set, only requests attributed to this user count toward the limit.",
 				Optional:    true,
 			},
 			"tags": schema.MapAttribute{

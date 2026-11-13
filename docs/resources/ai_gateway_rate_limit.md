@@ -43,10 +43,10 @@ resource "datadog_ai_gateway_rate_limit" "ml_platform_openai" {
 - `input_tokens_per_minute` (Number) Maximum input tokens per rolling minute. Value must be at least 1.
 - `mode` (String) Whether the rate limit rejects requests over the limit (`ENFORCE`) or only alerts (`ALERT`). Defaults to the server's default when unset. Valid values are `ALERT`, `ENFORCE`.
 - `output_tokens_per_minute` (Number) Maximum output tokens per rolling minute. Value must be at least 1.
-- `requests_per_minute` (Number) Maximum requests per rolling minute. At least one of `requests_per_minute`, `input_tokens_per_minute` and `output_tokens_per_minute` is required. Value must be at least 1.
+- `requests_per_minute` (Number) Maximum requests per rolling minute. At least one of `requests_per_minute`, `input_tokens_per_minute`, and `output_tokens_per_minute` is required. Value must be at least 1.
 - `tags` (Map of String) Scope tags, such as `provider`, `model` or `ml_app`. A request counts toward the limit when it has all of these tags. Keys must be lowercase.
 - `team_id` (String) UUID of a Datadog Team. When set, only requests attributed to this team count toward the limit.
-- `user_id` (String) UUID of a Datadog user. When set, only this user's requests count toward the limit.
+- `user_id` (String) UUID of a Datadog user. When set, only requests attributed to this user count toward the limit.
 
 ### Read-Only
 
