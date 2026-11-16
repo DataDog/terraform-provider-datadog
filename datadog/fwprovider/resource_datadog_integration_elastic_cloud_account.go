@@ -1040,8 +1040,7 @@ func (r *datadogIntegrationElasticCloudAccountResource) Delete(ctx context.Conte
 
 // updateState maps *datadogV2.ElasticCloudIntegrationAccountResponse into state, returning diagnostics
 // rather than writing them so it stays free of the resource request/response
-// types and can fail at a specific schema path. Shared by Create, Read and
-// Update, which all resolve the same response type.
+// types and can fail at a specific schema path. Shared by Create, Read and Update.
 func (r *datadogIntegrationElasticCloudAccountResource) updateState(ctx context.Context, state *resourceDatadogIntegrationElasticCloudAccount_Model, resp *datadogV2.ElasticCloudIntegrationAccountResponse) diag.Diagnostics {
 	var diags diag.Diagnostics
 	attributes := resp.Data.GetAttributes()
