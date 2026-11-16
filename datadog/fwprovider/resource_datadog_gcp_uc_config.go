@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"strconv"
+	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -219,7 +220,7 @@ func (r *gcpUcConfigResource) updateStateFromResponseData(ctx context.Context, s
 	state.ID = types.StringValue(responseData.GetId())
 
 	if attributes, ok := responseData.GetAttributesOk(); ok {
-		state.BillingAccountId = types.StringValue(attributes.GetAccountId())
+		state.BillingAccountId = billingAccountIDFromAPI(state.BillingAccountId, attributes.GetAccountId())
 		state.BucketName = types.StringValue(attributes.GetBucketName())
 		state.ExportDatasetName = types.StringValue(attributes.GetDataset())
 		state.ExportPrefix = types.StringValue(attributes.GetExportPrefix())
@@ -245,7 +246,7 @@ func (r *gcpUcConfigResource) updateStateFromGcpUcConfigResponseData(ctx context
 	state.ID = types.StringValue(responseData.GetId())
 
 	if attributes, ok := responseData.GetAttributesOk(); ok {
-		state.BillingAccountId = types.StringValue(attributes.GetAccountId())
+		state.BillingAccountId = billingAccountIDFromAPI(state.BillingAccountId, attributes.GetAccountId())
 		state.BucketName = types.StringValue(attributes.GetBucketName())
 		state.ExportDatasetName = types.StringValue(attributes.GetDataset())
 		state.ExportPrefix = types.StringValue(attributes.GetExportPrefix())
@@ -304,4 +305,18 @@ func (r *gcpUcConfigResource) buildGcpUcConfigRequestBody(ctx context.Context, s
 	}
 
 	return req, diags
+}
+
+// billingAccountIDFromAPI returns the billing account ID to store in state. The
+// API returns the ID with underscores in place of hyphens, so a configured
+// value like "03B59F-8AA142-1DBB1A" comes back as "03B59F_8AA142_1DBB1A".
+// When the two only differ by that normalization the existing value is kept,
+// otherwise Terraform reports an inconsistent result after apply.
+func billingAccountIDFromAPI(current types.String, fromAPI string) types.String {
+	if !current.IsNull() && !current.IsUnknown() {
+		if strings.ReplaceAll(current.ValueString(), "-", "_") == fromAPI {
+			return current
+		}
+	}
+	return types.StringValue(fromAPI)
 }
