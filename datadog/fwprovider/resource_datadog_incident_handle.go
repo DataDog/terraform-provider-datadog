@@ -58,8 +58,11 @@ func (r *incidentHandleResource) Schema(_ context.Context, _ resource.SchemaRequ
 				},
 			},
 			"name": schema.StringAttribute{
-				Description: "The handle name, including the leading `@`, for example `@incident-sev-1`.",
+				Description: "The handle name, including the leading `@`, for example `@incident-sev-1`. Changing it forces a new resource, since the API does not allow renaming a handle.",
 				Required:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"incident_type_id": schema.StringAttribute{
 				Description: "The ID of the incident type for incidents declared through this handle.",

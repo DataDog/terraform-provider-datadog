@@ -34,10 +34,10 @@ func TestAccDatadogIncidentHandle_Basic(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogIncidentHandleConfig(uniq, handleName+"-updated", "SEV-2"),
+				Config: testAccCheckDatadogIncidentHandleConfig(uniq, handleName, "SEV-2"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogIncidentHandleExists(providers.frameworkProvider, "datadog_incident_handle.foo"),
-					resource.TestCheckResourceAttr("datadog_incident_handle.foo", "name", handleName+"-updated"),
+					resource.TestCheckResourceAttr("datadog_incident_handle.foo", "name", handleName),
 					resource.TestCheckResourceAttr("datadog_incident_handle.foo", "severity.0", "SEV-2"),
 				),
 			},

@@ -32,7 +32,7 @@ resource "datadog_incident_handle" "p1" {
 ### Required
 
 - `incident_type_id` (String) The ID of the incident type for incidents declared through this handle.
-- `name` (String) The handle name, including the leading `@`, for example `@incident-sev-1`.
+- `name` (String) The handle name, including the leading `@`, for example `@incident-sev-1`. Changing it forces a new resource, since the API does not allow renaming a handle.
 
 ### Optional
 
