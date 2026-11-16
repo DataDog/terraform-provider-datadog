@@ -182,6 +182,7 @@ var Resources = []func() resource.Resource{
 	NewStatusPageResource,
 	NewStatusPageComponentResource,
 	NewStatusPageDegradationTemplateResource,
+	NewStatusPageEmailAccessPolicyResource,
 	NewStatusPageMaintenanceTemplateResource,
 }
 
