@@ -3,7 +3,9 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
@@ -29,7 +31,7 @@ func TestAccDatadogMonitor_Basic(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfig(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfig(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -94,7 +96,7 @@ func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorServiceCheckConfig(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorServiceCheckConfig(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -157,7 +159,7 @@ func TestAccDatadogMonitor_BasicNoTresholdOrPriority(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigNoThresholdsOrPriority(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigNoThresholdsOrPriority(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -209,7 +211,7 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfig(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfig(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -269,7 +271,7 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMonitorConfigUpdated(monitorNameUpdated),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigUpdated(monitorNameUpdated)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -327,7 +329,7 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMonitorConfigMetricAlertNotUpdated(monitorNameUpdated),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigMetricAlertNotUpdated(monitorNameUpdated)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -335,7 +337,7 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMonitorConfigQueryAlertNotUpdated(monitorNameUpdated),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigQueryAlertNotUpdated(monitorNameUpdated)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -359,7 +361,7 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfig(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfig(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -417,7 +419,7 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMonitorConfigUpdatedWithPriorityRemoved(monitorNameUpdated),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigUpdatedWithPriorityRemoved(monitorNameUpdated)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -467,7 +469,7 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMonitorConfigMetricAlertNotUpdated(monitorNameUpdated),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigMetricAlertNotUpdated(monitorNameUpdated)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -475,7 +477,7 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMonitorConfigQueryAlertNotUpdated(monitorNameUpdated),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigQueryAlertNotUpdated(monitorNameUpdated)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -498,7 +500,7 @@ func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigWhitespace(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigWhitespace(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -547,7 +549,7 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigInts(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigInts(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -562,7 +564,7 @@ func TestAccDatadogMonitor_Basic_float_int(t *testing.T) {
 			},
 
 			{
-				Config: testAccCheckDatadogMonitorConfigIntsMixed(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigIntsMixed(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -591,7 +593,7 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigLogAlert(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigLogAlert(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -644,7 +646,7 @@ func TestAccDatadogMonitor_LogMultiAlert(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigLogMultiAlert(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigLogMultiAlert(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -701,7 +703,7 @@ func TestAccDatadogMonitor_NoThresholdWindows(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigNoThresholdWindows(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigNoThresholdWindows(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "name", monitorName),
@@ -725,7 +727,7 @@ func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigThresholdWindows(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigThresholdWindows(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -786,7 +788,7 @@ func TestAccDatadogMonitor_ComposeWithSyntheticsTest(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorComposeWithSyntheticsTest(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorComposeWithSyntheticsTest(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", monitorName),
@@ -812,7 +814,7 @@ func TestAccDatadogMonitor_FormulaFunction(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorFormulaFunction(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorFormulaFunction(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", monitorName),
@@ -838,7 +840,7 @@ func TestAccDatadogMonitor_FormulaFunction_Cost(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogCostMonitorFormulaFunction(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogCostMonitorFormulaFunction(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", monitorName),
@@ -866,7 +868,7 @@ func TestAccDatadogMonitor_FormulaFunction_CostMetricsSource(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: config,
+				Config: pinRequireFullWindow(config),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.cloud_cost_query.#", "2"),
@@ -875,7 +877,7 @@ func TestAccDatadogMonitor_FormulaFunction_CostMetricsSource(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.#", "0"),
 				),
 			},
-			{Config: config, PlanOnly: true},
+			{Config: pinRequireFullWindow(config), PlanOnly: true},
 		},
 	})
 }
@@ -900,7 +902,7 @@ func TestAccDatadogMonitor_DynamicEmptyVariables(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorDynamicEmptyVariables(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorDynamicEmptyVariables(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -1013,7 +1015,7 @@ func TestAccDatadogMonitor_ZeroDelay(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigZeroDelay(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigZeroDelay(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -1044,7 +1046,7 @@ func TestAccDatadogMonitor_RestrictedRoles(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigRestrictedRoles(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigRestrictedRoles(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", monitorName),
@@ -1053,7 +1055,7 @@ func TestAccDatadogMonitor_RestrictedRoles(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMonitorConfigRestrictedRolesRemoved(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigRestrictedRolesRemoved(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", monitorName),
@@ -1077,7 +1079,7 @@ func TestAccDatadogMonitor_SchedulingOptions(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorWithSchedulingOptions(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorWithSchedulingOptions(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -1145,7 +1147,7 @@ func TestAccDatadogMonitor_EmptySchedulingOptions(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorWithEmptySchedulingOptions(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorWithEmptySchedulingOptions(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -1168,7 +1170,7 @@ func TestAccDatadogMonitor_SchedulingOptionsHourStart(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorWithSchedulingOptionsHourStart(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorWithSchedulingOptionsHourStart(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -1218,7 +1220,7 @@ func TestAccDatadogMonitor_SchedulingOptionsCustomSchedule(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorWithSchedulingOptionsCustomSchedule(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorWithSchedulingOptionsCustomSchedule(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -1275,7 +1277,7 @@ func TestAccDatadogMonitor_SchedulingOptionsCustomScheduleNoStart(t *testing.T) 
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorWithSchedulingOptionsCustomSchedule(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorWithSchedulingOptionsCustomSchedule(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -2025,7 +2027,7 @@ func TestAccDatadogMonitor_DefaultTags(t *testing.T) {
 		PreCheck: func() { testAccPreCheck(t) },
 		Steps: []resource.TestStep{
 			{ // New tags are correctly added and duplicates are kept
-				Config: testAccCheckDatadogMonitorConfigDuplicateTags(uniqueEntityName(ctx, t)),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigDuplicateTags(uniqueEntityName(ctx, t))),
 				ProviderFactories: map[string]func() (*schema.Provider, error){
 					"datadog": withDefaultTags(accProvider, map[string]interface{}{
 						"default_key": "default_value",
@@ -2045,7 +2047,7 @@ func TestAccDatadogMonitor_DefaultTags(t *testing.T) {
 				),
 			},
 			{ // Resource tags take precedence over default tags and duplicates stay
-				Config: testAccCheckDatadogMonitorConfigDuplicateTags(uniqueEntityName(ctx, t)),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigDuplicateTags(uniqueEntityName(ctx, t))),
 				ProviderFactories: map[string]func() (*schema.Provider, error){
 					"datadog": withDefaultTags(accProvider, map[string]interface{}{
 						"foo": "not_bar",
@@ -2063,7 +2065,7 @@ func TestAccDatadogMonitor_DefaultTags(t *testing.T) {
 				),
 			},
 			{ // Resource tags take precedence over default tags, but new tags are added
-				Config: testAccCheckDatadogMonitorConfig(uniqueEntityName(ctx, t)),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfig(uniqueEntityName(ctx, t))),
 				ProviderFactories: map[string]func() (*schema.Provider, error){
 					"datadog": withDefaultTags(accProvider, map[string]interface{}{
 						"foo":     "not_bar",
@@ -2082,7 +2084,7 @@ func TestAccDatadogMonitor_DefaultTags(t *testing.T) {
 				),
 			},
 			{ // Tags without any value work correctly
-				Config: testAccCheckDatadogMonitorConfig(uniqueEntityName(ctx, t)),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfig(uniqueEntityName(ctx, t))),
 				ProviderFactories: map[string]func() (*schema.Provider, error){
 					"datadog": withDefaultTags(accProvider, map[string]interface{}{
 						"no_value": "",
@@ -2100,7 +2102,7 @@ func TestAccDatadogMonitor_DefaultTags(t *testing.T) {
 				),
 			},
 			{ // Tags with colons in the value work correctly
-				Config: testAccCheckDatadogMonitorConfig(uniqueEntityName(ctx, t)),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfig(uniqueEntityName(ctx, t))),
 				ProviderFactories: map[string]func() (*schema.Provider, error){
 					"datadog": withDefaultTags(accProvider, map[string]interface{}{
 						"repo_url": "https://github.com/repo/path",
@@ -2118,7 +2120,7 @@ func TestAccDatadogMonitor_DefaultTags(t *testing.T) {
 				),
 			},
 			{ // Works with monitors without a tag attribute
-				Config: testAccCheckDatadogMonitorConfigNoTag(uniqueEntityName(ctx, t)),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigNoTag(uniqueEntityName(ctx, t))),
 				ProviderFactories: map[string]func() (*schema.Provider, error){
 					"datadog": withDefaultTags(accProvider, map[string]interface{}{
 						"default_key": "default_value",
@@ -2214,7 +2216,7 @@ func TestAccDatadogMonitor_IgnoreTagKeys(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{ // Create: no prior state, so StripIgnoredTags returns the plan tags unchanged and both are written.
-				Config: testAccCheckDatadogMonitorConfigIgnoreTagKeys(monitorName, "prod", "original"),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigIgnoreTagKeys(monitorName, "prod", "original")),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -2231,7 +2233,7 @@ func TestAccDatadogMonitor_IgnoreTagKeys(t *testing.T) {
 			},
 			{ // Change ONLY the ignored "team" tag. tagDiff -> StripIgnoredTags pins it back to the
 				// state value, so the plan is empty (no API write) and the tag stays "original".
-				Config: testAccCheckDatadogMonitorConfigIgnoreTagKeys(monitorName, "prod", "changed"),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigIgnoreTagKeys(monitorName, "prod", "changed")),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -2244,7 +2246,7 @@ func TestAccDatadogMonitor_IgnoreTagKeys(t *testing.T) {
 			},
 			{ // Control: change a NON-ignored tag ("env") alongside the ignored one. env:dev flows
 				// through normally; team stays pinned to "original", proving only ignored keys are held.
-				Config: testAccCheckDatadogMonitorConfigIgnoreTagKeys(monitorName, "dev", "changed"),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigIgnoreTagKeys(monitorName, "dev", "changed")),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -2317,7 +2319,7 @@ func TestAccDatadogMonitor_ProviderIgnoreTagKeys(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(ignoreProvider),
 		Steps: []resource.TestStep{
 			{ // create: no prior state, both tags written; resource declares no ignore_tag_keys
-				Config: testAccCheckDatadogMonitorConfigTagsOnlyNoValidate(monitorName, "prod", "original"),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigTagsOnlyNoValidate(monitorName, "prod", "original")),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(ignoreProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),
@@ -2327,7 +2329,7 @@ func TestAccDatadogMonitor_ProviderIgnoreTagKeys(t *testing.T) {
 				),
 			},
 			{ // change the provider-ignored "team" tag: pinned back to state, plan is empty
-				Config: testAccCheckDatadogMonitorConfigTagsOnlyNoValidate(monitorName, "prod", "changed"),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigTagsOnlyNoValidate(monitorName, "prod", "changed")),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(ignoreProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),
@@ -2336,7 +2338,7 @@ func TestAccDatadogMonitor_ProviderIgnoreTagKeys(t *testing.T) {
 				),
 			},
 			{ // control: a NON-ignored tag ("env") flows through while "team" stays pinned
-				Config: testAccCheckDatadogMonitorConfigTagsOnlyNoValidate(monitorName, "dev", "changed"),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigTagsOnlyNoValidate(monitorName, "dev", "changed")),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(ignoreProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),
@@ -2365,7 +2367,7 @@ func TestAccDatadogMonitor_ProviderIgnoreTagKeysOverride(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(ignoreProvider),
 		Steps: []resource.TestStep{
 			{ // create: both tags written; resource overrides provider with ignore_tag_keys = ["env"]
-				Config: testAccCheckDatadogMonitorConfigIgnoreEnvTagKeysNoValidate(monitorName, "prod", "original"),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigIgnoreEnvTagKeysNoValidate(monitorName, "prod", "original")),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(ignoreProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),
@@ -2375,7 +2377,7 @@ func TestAccDatadogMonitor_ProviderIgnoreTagKeysOverride(t *testing.T) {
 				),
 			},
 			{ // change BOTH keys: both are pinned — "env" (resource list) and "team" (provider list, unioned)
-				Config: testAccCheckDatadogMonitorConfigIgnoreEnvTagKeysNoValidate(monitorName, "staging", "changed"),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorConfigIgnoreEnvTagKeysNoValidate(monitorName, "staging", "changed")),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(ignoreProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),
@@ -2397,7 +2399,7 @@ func TestAccDatadogMonitor_WithRestrictionPolicy(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogMonitorWithRestrictionRoleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorWithRestrictionPolicy(uniqueEntityName(ctx, t)),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorWithRestrictionPolicy(uniqueEntityName(ctx, t))),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.bar", "name", uniqueName),
@@ -2417,7 +2419,7 @@ func TestAccDatadogMonitor_WithRestrictionPolicy(t *testing.T) {
 			},
 			// A monitor resource update should not clear restricted_roles when the field is not defined
 			{
-				Config: testAccCheckDatadogMonitorWithRestrictionPolicyUpdated(uniqueEntityName(ctx, t)),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorWithRestrictionPolicyUpdated(uniqueEntityName(ctx, t))),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.bar", "name", uniqueName),
@@ -2431,7 +2433,7 @@ func TestAccDatadogMonitor_WithRestrictionPolicy(t *testing.T) {
 			},
 			// Removing restriction policy resource should wipe out restricted_roles
 			{
-				Config: testAccCheckDatadogMonitorWithRestrictionPolicyDestroyed(uniqueEntityName(ctx, t)),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorWithRestrictionPolicyDestroyed(uniqueEntityName(ctx, t))),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.bar", "name", uniqueName),
@@ -2550,7 +2552,7 @@ func TestAccDatadogMonitor_WithTagConfig(t *testing.T) {
 		},
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorWithTagConfig(uniqueName, uniqueTagKey),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorWithTagConfig(uniqueName, uniqueTagKey)),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.bar", "tags.#", "1"),
@@ -2574,7 +2576,7 @@ func TestAccDatadogMonitor_Assets(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorAssetsConfigClassic(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorAssetsConfigClassic(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "name", monitorName),
@@ -2591,7 +2593,7 @@ func TestAccDatadogMonitor_Assets(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMonitorAssetsConfigUpdated(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorAssetsConfigUpdated(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "name", monitorName),
@@ -2693,7 +2695,7 @@ func TestAccDatadogMonitor_DataQuality_Basic(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDataQualityMonitorBasic(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogDataQualityMonitorBasic(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.data_quality_basic", "name", monitorName),
@@ -2755,7 +2757,7 @@ func TestAccDatadogMonitor_DataQuality_WithoutMonitorOptions(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDataQualityMonitorWithoutOptions(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogDataQualityMonitorWithoutOptions(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -2865,7 +2867,7 @@ func TestAccDatadogMonitor_DataQuality_EmptyMonitorOptions(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDataQualityMonitorEmptyOptions(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogDataQualityMonitorEmptyOptions(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -2939,7 +2941,7 @@ func TestAccDatadogMonitor_DataQuality_WithMonitorOptions(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDataQualityMonitorWithOptions(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogDataQualityMonitorWithOptions(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -3019,7 +3021,7 @@ func TestAccDatadogMonitor_DataQuality_EmptyGroupBy(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDataQualityMonitorEmptyGroupBy(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogDataQualityMonitorEmptyGroupBy(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -3083,7 +3085,7 @@ func TestAccDatadogMonitor_AggregateAugmentedQuery(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorAggregateAugmentedConfig(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorAggregateAugmentedConfig(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.aggregate_augmented", "name", monitorName),
@@ -3173,7 +3175,7 @@ func TestAccDatadogMonitor_AggregateFilteredQuery(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorAggregateFilteredConfig(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogMonitorAggregateFilteredConfig(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.aggregate_filtered", "name", monitorName),
@@ -3248,7 +3250,7 @@ func TestAccDatadogMonitor_DataJobs_Basic(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDataJobsMonitorBasic(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogDataJobsMonitorBasic(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.data_jobs_basic", "name", monitorName),
@@ -3310,7 +3312,7 @@ func TestAccDatadogMonitor_DataJobs_CustomJobType(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDataJobsMonitorCustomJobType(monitorName),
+				Config: pinRequireFullWindow(testAccCheckDatadogDataJobsMonitorCustomJobType(monitorName)),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.data_jobs_custom_type", "name", monitorName),
@@ -3370,7 +3372,7 @@ func TestAccDatadogMonitor_Import_OnMissingData_Conflict(t *testing.T) {
 					}
 					monitorID = id
 				},
-				Config:          `provider "datadog" {}`,
+				Config:          pinRequireFullWindow(`provider "datadog" {}`),
 				ResourceName:    "datadog_monitor.foo",
 				ImportState:     true,
 				ImportStateKind: resource.ImportBlockWithID,
@@ -3420,7 +3422,7 @@ func TestAccDatadogMonitor_MetricQueryVariable(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: config,
+				Config: pinRequireFullWindow(config),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.metric_query.#", "2"),
@@ -3428,7 +3430,7 @@ func TestAccDatadogMonitor_MetricQueryVariable(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "variables.0.cloud_cost_query.#", "0"),
 				),
 			},
-			{Config: config, PlanOnly: true},
+			{Config: pinRequireFullWindow(config), PlanOnly: true},
 			{ResourceName: "datadog_monitor.foo", ImportState: true, ImportStateVerify: true, ImportStateVerifyIgnore: []string{"validate"}},
 		},
 	})
@@ -3460,4 +3462,29 @@ resource "datadog_monitor" "foo" {
     }
   }
 }`, uniq)
+}
+
+var monitorBlockStart = regexp.MustCompile(`^\s*resource "datadog_monitor" "[^"]*"\s*\{\s*$`)
+
+// pinRequireFullWindow sets require_full_window = true on every datadog_monitor
+// block that omits it, so SDKv2 cassettes recorded under the former provider
+// default keep matching. Framework tests reuse the same configs unpinned.
+func pinRequireFullWindow(config string) string {
+	lines := strings.Split(config, "\n")
+	out := make([]string, 0, len(lines))
+	for i, line := range lines {
+		out = append(out, line)
+		if !monitorBlockStart.MatchString(line) {
+			continue
+		}
+		depth, has := 1, false
+		for j := i + 1; j < len(lines) && depth > 0; j++ {
+			depth += strings.Count(lines[j], "{") - strings.Count(lines[j], "}")
+			has = has || strings.Contains(lines[j], "require_full_window")
+		}
+		if !has {
+			out = append(out, "  require_full_window = true")
+		}
+	}
+	return strings.Join(out, "\n")
 }

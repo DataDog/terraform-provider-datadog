@@ -227,6 +227,7 @@ func getCheckNowDate(attributeName string, dateFormat string, currentTime time.T
 func testAccCheckDowntimeOneTimeScheduleConfigWithMonitor(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "downtime_monitor" {
+  require_full_window = true
   name = "%s"
   type = "metric alert"
   message = "some message Notify: @hipchat-channel"

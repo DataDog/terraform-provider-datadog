@@ -270,10 +270,10 @@ func resourceDatadogMonitor() *schema.Resource {
 					Optional:    true,
 				},
 				"require_full_window": {
-					Description: "A boolean indicating whether this monitor needs a full window of data before it's evaluated. Datadog strongly recommends you set this to `false` for sparse metrics, otherwise some evaluations may be skipped. If there's a custom_schedule set, `require_full_window` must be false and will be ignored.",
+					Description: "A boolean indicating whether this monitor needs a full window of data before it's evaluated. Datadog strongly recommends you set this to `false` for sparse metrics, otherwise some evaluations may be skipped. If there's a custom_schedule set, `require_full_window` must be false and will be ignored. When omitted, new monitors are created with `false` (matching the Datadog API and UI); existing monitors keep their current value. Removing this attribute from configuration does not reset it; set it explicitly. Previously the provider defaulted to `true`.",
 					Type:        schema.TypeBool,
 					Optional:    true,
-					Default:     true,
+					Computed:    true,
 					DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
 						if attr, ok := d.GetOk("scheduling_options"); ok {
 							scheduling_options_list := attr.([]interface{})

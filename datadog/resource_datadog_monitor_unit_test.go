@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -248,4 +249,36 @@ func TestMonitorMetricQueryVariableRead(t *testing.T) {
 		*buildMonitorFormulaAndFunctionCloudCostQuery(q2), *buildMonitorFormulaAndFunctionCloudCostQuery(q3),
 	})
 	assert.Equal(t, []map[string]interface{}{{"cloud_cost_query": []map[string]interface{}{q2, q3}}}, out)
+}
+
+func TestMonitorRequireFullWindowDefault(t *testing.T) {
+	s := resourceDatadogMonitor().SchemaMap()["require_full_window"]
+	assert.Nil(t, s.Default)
+	assert.True(t, s.Computed)
+
+	base := map[string]interface{}{"name": "n", "type": "metric alert", "query": "avg(last_5m):avg:system.cpu.user{*} > 1", "message": "m"}
+	build := func(extra map[string]interface{}) bool {
+		raw := map[string]interface{}{}
+		for k, v := range base {
+			raw[k] = v
+		}
+		for k, v := range extra {
+			raw[k] = v
+		}
+		d := schema.TestResourceDataRaw(t, resourceDatadogMonitor().SchemaMap(), raw)
+		m, _ := buildMonitorStruct(d)
+		v, ok := m.Options.GetRequireFullWindowOk()
+		assert.True(t, ok)
+		return *v
+	}
+	assert.False(t, build(nil), "omitted")
+	assert.True(t, build(map[string]interface{}{"require_full_window": true}), "explicit true")
+	assert.False(t, build(map[string]interface{}{
+		"require_full_window": true,
+		"scheduling_options": []interface{}{map[string]interface{}{
+			"custom_schedule": []interface{}{map[string]interface{}{
+				"recurrence": []interface{}{map[string]interface{}{"rrule": "FREQ=DAILY;INTERVAL=1", "timezone": "UTC", "start": "2023-11-10T12:31:00"}},
+			}},
+		}},
+	}), "custom_schedule")
 }

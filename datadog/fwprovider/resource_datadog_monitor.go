@@ -22,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
@@ -929,8 +930,12 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				},
 			},
 			"require_full_window": schema.BoolAttribute{
-				Description: "A boolean indicating whether this monitor needs a full window of data before it's evaluated. Datadog strongly recommends you set this to `false` for sparse metrics, otherwise some evaluations may be skipped. If there's a custom_schedule set, `require_full_window` must be false and will be ignored.",
+				Description: "A boolean indicating whether this monitor needs a full window of data before it's evaluated. Datadog strongly recommends you set this to `false` for sparse metrics, otherwise some evaluations may be skipped. If there's a custom_schedule set, `require_full_window` must be false and will be ignored. When omitted, new monitors are created with `false` (matching the Datadog API and UI); existing monitors keep their current value. Removing this attribute from configuration does not reset it; set it explicitly. Previously the provider defaulted to `true`.",
 				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"restricted_roles": schema.SetAttribute{
 				Description:        "A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field.\n",
@@ -2495,7 +2500,7 @@ func (r *monitorResource) updateState(ctx context.Context, state *monitorResourc
 		state.NotificationPresetName = types.StringValue(string(*notificationPresetName))
 	}
 
-	state.RequireFullWindow = fwutils.ToTerraformBool(m.Options.GetRequireFullWindowOk())
+	state.RequireFullWindow = types.BoolValue(m.Options.GetRequireFullWindow())
 	state.NoDataTimeframe = fwutils.ToTerraformInt64(m.Options.GetNoDataTimeframeOk())
 	state.NotifyNoData = fwutils.ToTerraformBool(m.Options.GetNotifyNoDataOk())
 	state.GroupRetentionDuration = fwutils.ToTerraformStr(m.Options.GetGroupRetentionDurationOk())

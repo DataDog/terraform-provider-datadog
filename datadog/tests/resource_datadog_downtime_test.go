@@ -623,6 +623,7 @@ resource "datadog_downtime" "foo" {
 func testAccCheckDatadogDowntimeConfigWithMonitor(uniq string, start int64, end int64) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "downtime_monitor" {
+  require_full_window = true
   name = "%s"
   type = "metric alert"
   message = "some message Notify: @hipchat-channel"
@@ -650,6 +651,7 @@ resource "datadog_downtime" "foo" {
 func testAccCheckDatadogDowntimeConfigWithMonitorTags(uniq string, start int64, end int64) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "downtime_monitor" {
+  require_full_window = true
   name = "%s"
   type = "metric alert"
   message = "some message Notify: @hipchat-channel"
