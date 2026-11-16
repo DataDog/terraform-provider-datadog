@@ -253,8 +253,8 @@ func TestMonitorMetricQueryVariableRead(t *testing.T) {
 
 func TestMonitorRequireFullWindowDefault(t *testing.T) {
 	s := resourceDatadogMonitor().SchemaMap()["require_full_window"]
-	assert.Nil(t, s.Default)
-	assert.True(t, s.Computed)
+	assert.Equal(t, false, s.Default)
+	assert.False(t, s.Computed)
 
 	base := map[string]interface{}{"name": "n", "type": "metric alert", "query": "avg(last_5m):avg:system.cpu.user{*} > 1", "message": "m"}
 	build := func(extra map[string]interface{}) bool {
