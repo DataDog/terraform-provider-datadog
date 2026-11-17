@@ -46,6 +46,7 @@ func EnableGeneratedUnstableOperations(config *datadog.Configuration) {
 
 var Resources = []func() resource.Resource{
 	NewAgentlessScanningAwsScanOptionsResource,
+	NewAiGatewayDataCaptureOverrideResource,
 	NewAgentlessScanningAzureScanOptionsResource,
 	NewAgentlessScanningGcpScanOptionsResource,
 	NewOpenapiApiResource,
@@ -862,6 +863,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetTagRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateTagRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteTagRule", true)
+
+	// Enable AI Gateway data capture overrides
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayDataCaptureConfiguration", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAiGatewayDataCaptureOverride", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAiGatewayDataCaptureOverride", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAiGatewayDataCaptureOverride", true)
 
 	// Enable Logs Restriction Queries
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateRestrictionQuery", true)

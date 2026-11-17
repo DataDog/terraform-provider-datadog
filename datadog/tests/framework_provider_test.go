@@ -72,6 +72,12 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.GetGitHubCloudAuthPersonaMapping", true)
 	config.SetUnstableOperationEnabled("v2.DeleteGitHubCloudAuthPersonaMapping", true)
 
+	// Enable AI Gateway data capture overrides
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayDataCaptureConfiguration", true)
+	config.SetUnstableOperationEnabled("v2.CreateAiGatewayDataCaptureOverride", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayDataCaptureOverride", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayDataCaptureOverride", true)
+
 	// Enable Logs Restriction Queries
 	config.SetUnstableOperationEnabled("v2.CreateRestrictionQuery", true)
 	config.SetUnstableOperationEnabled("v2.GetRestrictionQuery", true)

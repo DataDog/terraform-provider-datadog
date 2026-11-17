@@ -1,0 +1,1 @@
+terraform import datadog_ai_gateway_data_capture_override.coding_assistant "<override_id>"
