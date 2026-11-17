@@ -6,6 +6,9 @@
 *                                         @DataDog/api-reliability
 # Except cassettes
 datadog/tests/cassettes/
+# Except Go module files
+/go.mod
+/go.sum
 
 /.generator                               @DataDog/api-reliability
 
