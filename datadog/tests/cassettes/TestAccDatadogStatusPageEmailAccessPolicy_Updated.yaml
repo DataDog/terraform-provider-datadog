@@ -1,0 +1,501 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 204
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"domain_prefix":"test-sp-eap-updated-1794334606","name":"test-sp-eap-updated-1794334606","type":"private","visualization_type":"bars_and_uptime_percentage"},"type":"status_pages"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 978
+        uncompressed: false
+        body: '{"data":{"id":"e5e262b0-32da-421f-a4c0-dfa2568366fe","type":"status_pages","attributes":{"company_logo":null,"components":[],"created_at":"2026-11-10T18:16:50.31576Z","custom_domain":null,"custom_domain_enabled":false,"domain_prefix":"test-sp-eap-updated-1794334606","email_header_image":null,"email_notifications_enabled":true,"enabled":false,"favicon":null,"modified_at":"2026-11-10T18:16:50.31576Z","ms_teams_subscriptions_enabled":false,"name":"test-sp-eap-updated-1794334606","page_url":"https://test-sp-eap-updated-1794334606.private.statuspage.datadoghq.com","rss_feed_enabled":false,"slack_app_icon":null,"slack_subscriptions_enabled":false,"subscriptions_enabled":false,"type":"private","visualization_layout":"list","visualization_type":"bars_and_uptime_percentage"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 1.046374208s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 99
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"effect":"allow","pattern":"@example.com"},"type":"email_access_policies"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/e5e262b0-32da-421f-a4c0-dfa2568366fe/access_policies/email
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 382
+        uncompressed: false
+        body: '{"data":{"id":"ac75058e-1e5a-490e-8a43-ed1cef656b25","type":"email_access_policies","attributes":{"created_at":"2026-11-10T18:16:51.392627Z","effect":"allow","pattern":"@example.com"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"status_page":{"data":{"id":"e5e262b0-32da-421f-a4c0-dfa2568366fe","type":"status_pages"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 98.893875ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/e5e262b0-32da-421f-a4c0-dfa2568366fe/access_policies/email
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 384
+        uncompressed: false
+        body: '{"data":[{"id":"ac75058e-1e5a-490e-8a43-ed1cef656b25","type":"email_access_policies","attributes":{"created_at":"2026-11-10T18:16:51.392627Z","effect":"allow","pattern":"@example.com"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"status_page":{"data":{"id":"e5e262b0-32da-421f-a4c0-dfa2568366fe","type":"status_pages"}}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 118.684833ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/e5e262b0-32da-421f-a4c0-dfa2568366fe
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 978
+        uncompressed: false
+        body: '{"data":{"id":"e5e262b0-32da-421f-a4c0-dfa2568366fe","type":"status_pages","attributes":{"company_logo":null,"components":[],"created_at":"2026-11-10T18:16:50.31576Z","custom_domain":null,"custom_domain_enabled":false,"domain_prefix":"test-sp-eap-updated-1794334606","email_header_image":null,"email_notifications_enabled":true,"enabled":false,"favicon":null,"modified_at":"2026-11-10T18:16:50.31576Z","ms_teams_subscriptions_enabled":false,"name":"test-sp-eap-updated-1794334606","page_url":"https://test-sp-eap-updated-1794334606.private.statuspage.datadoghq.com","rss_feed_enabled":false,"slack_app_icon":null,"slack_subscriptions_enabled":false,"subscriptions_enabled":false,"type":"private","visualization_layout":"list","visualization_type":"bars_and_uptime_percentage"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 39.185375ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/e5e262b0-32da-421f-a4c0-dfa2568366fe/access_policies/email
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 384
+        uncompressed: false
+        body: '{"data":[{"id":"ac75058e-1e5a-490e-8a43-ed1cef656b25","type":"email_access_policies","attributes":{"created_at":"2026-11-10T18:16:51.392627Z","effect":"allow","pattern":"@example.com"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"status_page":{"data":{"id":"e5e262b0-32da-421f-a4c0-dfa2568366fe","type":"status_pages"}}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 40.7205ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/e5e262b0-32da-421f-a4c0-dfa2568366fe
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 978
+        uncompressed: false
+        body: '{"data":{"id":"e5e262b0-32da-421f-a4c0-dfa2568366fe","type":"status_pages","attributes":{"company_logo":null,"components":[],"created_at":"2026-11-10T18:16:50.31576Z","custom_domain":null,"custom_domain_enabled":false,"domain_prefix":"test-sp-eap-updated-1794334606","email_header_image":null,"email_notifications_enabled":true,"enabled":false,"favicon":null,"modified_at":"2026-11-10T18:16:50.31576Z","ms_teams_subscriptions_enabled":false,"name":"test-sp-eap-updated-1794334606","page_url":"https://test-sp-eap-updated-1794334606.private.statuspage.datadoghq.com","rss_feed_enabled":false,"slack_app_icon":null,"slack_subscriptions_enabled":false,"subscriptions_enabled":false,"type":"private","visualization_layout":"list","visualization_type":"bars_and_uptime_percentage"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 85.523792ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/e5e262b0-32da-421f-a4c0-dfa2568366fe/access_policies/email
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 384
+        uncompressed: false
+        body: '{"data":[{"id":"ac75058e-1e5a-490e-8a43-ed1cef656b25","type":"email_access_policies","attributes":{"created_at":"2026-11-10T18:16:51.392627Z","effect":"allow","pattern":"@example.com"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"status_page":{"data":{"id":"e5e262b0-32da-421f-a4c0-dfa2568366fe","type":"status_pages"}}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 49.186917ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/statuspages/e5e262b0-32da-421f-a4c0-dfa2568366fe/access_policies/email/ac75058e-1e5a-490e-8a43-ed1cef656b25
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 99.241417ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 100
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"effect":"deny","pattern":"@*.example.com"},"type":"email_access_policies"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/e5e262b0-32da-421f-a4c0-dfa2568366fe/access_policies/email
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 383
+        uncompressed: false
+        body: '{"data":{"id":"a96da789-bafc-4d10-a25a-964fe3570e22","type":"email_access_policies","attributes":{"created_at":"2026-11-10T18:16:56.176912Z","effect":"deny","pattern":"@*.example.com"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"status_page":{"data":{"id":"e5e262b0-32da-421f-a4c0-dfa2568366fe","type":"status_pages"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 83.662792ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/e5e262b0-32da-421f-a4c0-dfa2568366fe/access_policies/email
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 385
+        uncompressed: false
+        body: '{"data":[{"id":"a96da789-bafc-4d10-a25a-964fe3570e22","type":"email_access_policies","attributes":{"created_at":"2026-11-10T18:16:56.176912Z","effect":"deny","pattern":"@*.example.com"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"status_page":{"data":{"id":"e5e262b0-32da-421f-a4c0-dfa2568366fe","type":"status_pages"}}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 100.302083ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/e5e262b0-32da-421f-a4c0-dfa2568366fe
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 978
+        uncompressed: false
+        body: '{"data":{"id":"e5e262b0-32da-421f-a4c0-dfa2568366fe","type":"status_pages","attributes":{"company_logo":null,"components":[],"created_at":"2026-11-10T18:16:50.31576Z","custom_domain":null,"custom_domain_enabled":false,"domain_prefix":"test-sp-eap-updated-1794334606","email_header_image":null,"email_notifications_enabled":true,"enabled":false,"favicon":null,"modified_at":"2026-11-10T18:16:50.31576Z","ms_teams_subscriptions_enabled":false,"name":"test-sp-eap-updated-1794334606","page_url":"https://test-sp-eap-updated-1794334606.private.statuspage.datadoghq.com","rss_feed_enabled":false,"slack_app_icon":null,"slack_subscriptions_enabled":false,"subscriptions_enabled":false,"type":"private","visualization_layout":"list","visualization_type":"bars_and_uptime_percentage"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 38.078291ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/e5e262b0-32da-421f-a4c0-dfa2568366fe/access_policies/email
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 385
+        uncompressed: false
+        body: '{"data":[{"id":"a96da789-bafc-4d10-a25a-964fe3570e22","type":"email_access_policies","attributes":{"created_at":"2026-11-10T18:16:56.176912Z","effect":"deny","pattern":"@*.example.com"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"status_page":{"data":{"id":"e5e262b0-32da-421f-a4c0-dfa2568366fe","type":"status_pages"}}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 36.93525ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/statuspages/e5e262b0-32da-421f-a4c0-dfa2568366fe/access_policies/email/a96da789-bafc-4d10-a25a-964fe3570e22
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 65.915584ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/statuspages/e5e262b0-32da-421f-a4c0-dfa2568366fe
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 554.221958ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/statuspages/e5e262b0-32da-421f-a4c0-dfa2568366fe/access_policies/email
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 67
+        uncompressed: false
+        body: '{"errors":[{"title":"Not Found","detail":"Status page not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 94.533458ms

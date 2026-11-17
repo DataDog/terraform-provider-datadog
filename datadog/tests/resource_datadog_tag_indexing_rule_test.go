@@ -35,7 +35,6 @@ func skipIfNoCassette(t *testing.T) {
 }
 
 func TestAccDatadogTagIndexingRule_Basic(t *testing.T) {
-	skipIfNoCassette(t)
 	cleanupTagIndexingRules(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -83,7 +82,6 @@ func TestAccDatadogTagIndexingRule_Basic(t *testing.T) {
 }
 
 func TestAccDatadogTagIndexingRule_WithOptions(t *testing.T) {
-	skipIfNoCassette(t)
 	cleanupTagIndexingRules(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -119,7 +117,6 @@ func TestAccDatadogTagIndexingRule_WithOptions(t *testing.T) {
 }
 
 func TestAccDatadogTagIndexingRule_Update(t *testing.T) {
-	skipIfNoCassette(t)
 	cleanupTagIndexingRules(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -152,7 +149,6 @@ func TestAccDatadogTagIndexingRule_Update(t *testing.T) {
 }
 
 func TestAccDatadogTagIndexingRule_ExcludeMode(t *testing.T) {
-	skipIfNoCassette(t)
 	cleanupTagIndexingRules(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -188,7 +184,6 @@ func TestAccDatadogTagIndexingRule_ExcludeMode(t *testing.T) {
 // automatic post-apply plan check fails the test if the null-preserving flatten in updateState were
 // to normalize the unset window to a zero value ("inconsistent result after apply").
 func TestAccDatadogTagIndexingRule_ExcludeMode_UsageFieldIndividuallySet(t *testing.T) {
-	skipIfNoCassette(t)
 	cleanupTagIndexingRules(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -216,7 +211,6 @@ func TestAccDatadogTagIndexingRule_ExcludeMode_UsageFieldIndividuallySet(t *test
 // unless exclude_tags_mode is explicit in the request body, so this step failing would signal a
 // regression to a conditional SetExcludeTagsMode call.
 func TestAccDatadogTagIndexingRule_ExcludeMode_Update(t *testing.T) {
-	skipIfNoCassette(t)
 	cleanupTagIndexingRules(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -244,7 +238,6 @@ func TestAccDatadogTagIndexingRule_ExcludeMode_Update(t *testing.T) {
 // block fires (with no API call) when an exclude_not_* usage field is set but exclude_tags_mode
 // is left at its false default.
 func TestAccDatadogTagIndexingRule_ExcludeMode_ValidateConfig(t *testing.T) {
-	skipIfNoCassette(t)
 	t.Parallel()
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)

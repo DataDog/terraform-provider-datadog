@@ -36,6 +36,10 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	//Datadog API config.HTTPClient
 	config := common.NewConfiguration()
 
+	config.SetUnstableOperationEnabled("v2.CreateQuotas", true)
+	config.SetUnstableOperationEnabled("v2.GetQuota", true)
+	config.SetUnstableOperationEnabled("v2.UpdateQuota", true)
+	config.SetUnstableOperationEnabled("v2.DeleteQuota", true)
 	config.SetUnstableOperationEnabled("v2.CreateRUMOperation", true)
 	config.SetUnstableOperationEnabled("v2.GetRUMOperation", true)
 	config.SetUnstableOperationEnabled("v2.UpdateRUMOperation", true)
@@ -232,6 +236,12 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateExecutionPolicy", true)
 	config.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
 	config.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
+
+	// Enable AI Gateway rate limits
+	config.SetUnstableOperationEnabled("v2.CreateAiGatewayRateLimit", true)
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayRateLimit", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayRateLimit", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayRateLimit", true)
 
 	// Enable AI Gateway model groups
 	config.SetUnstableOperationEnabled("v2.CreateAiGatewayModelGroup", true)

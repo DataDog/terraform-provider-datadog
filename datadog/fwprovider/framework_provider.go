@@ -27,6 +27,7 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/cloudauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/pupauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/terraformauth"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
@@ -49,6 +50,7 @@ var Resources = []func() resource.Resource{
 	NewAgentlessScanningGcpScanOptionsResource,
 	NewOpenapiApiResource,
 	NewAPIKeyResource,
+	NewUsageQuotaResource,
 	NewApplicationKeyResource,
 	NewApmRetentionFilterResource,
 	NewApmRetentionFiltersOrderResource,
@@ -83,6 +85,7 @@ var Resources = []func() resource.Resource{
 	NewRumApplicationResource,
 	NewRumExclusionFilterResource,
 	NewRumMetricResource,
+	NewAiGatewayRateLimitResource,
 	NewAiGatewayModelGroupResource,
 	NewRumOperationResource,
 	NewRumOperationJourneyLinkResource,
@@ -181,6 +184,7 @@ var Resources = []func() resource.Resource{
 	NewStatusPageResource,
 	NewStatusPageComponentResource,
 	NewStatusPageDegradationTemplateResource,
+	NewStatusPageEmailAccessPolicyResource,
 	NewStatusPageMaintenanceTemplateResource,
 }
 
@@ -280,6 +284,7 @@ type ProviderSchema struct {
 	ApiKey                           types.String `tfsdk:"api_key"`
 	AppKey                           types.String `tfsdk:"app_key"`
 	BearerToken                      types.String `tfsdk:"bearer_token"`
+	UsePup                           types.Bool   `tfsdk:"use_pup"`
 	WorkloadIdentityTokenTag         types.String `tfsdk:"workload_identity_token_tag"`
 	ApiUrl                           types.String `tfsdk:"api_url"`
 	Validate                         types.String `tfsdk:"validate"`
@@ -364,6 +369,10 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Sensitive:   true,
 				Description: "Datadog credential sent in the `Authorization: Bearer <token>` header. Accepts personal access tokens (`ddpat_*`) and service-account access tokens (`ddsat_*`). When set, the provider authenticates with `Authorization: Bearer <token>` instead of the `DD-API-KEY` / `DD-APPLICATION-KEY` headers. This can also be set via the `DD_BEARER_TOKEN` or `DATADOG_BEARER_TOKEN` environment variable.",
 			},
+			"use_pup": schema.BoolAttribute{
+				Optional:    true,
+				Description: "Get a bearer token from the pup CLI (pup auth token) after you run pup auth login, so you don't need to store an API key, application key, or access token. Used only when api_key, app_key, bearer_token, cloud provider authentication, and HCP Terraform dynamic provider credentials are all absent. The provider requests a new token when the current one expires, and fails if pup is then logged in as a different user. Requires org_uuid, and every token must belong to that organization. You can also set this with the `DD_USE_PUP` environment variable.",
+			},
 			"workload_identity_token_tag": schema.StringAttribute{
 				Optional:    true,
 				Description: "Selects the HCP Terraform workload identity token tag for this provider configuration, for example DATADOG_ORG_A selects TFC_WORKLOAD_IDENTITY_TOKEN_DATADOG_ORG_A. When set, that token must be present and have a valid Datadog audience; no other token or environment authentication is used as fallback. Explicit API/application keys, bearer_token, or cloud_provider_type take precedence. When unset or empty, automatically tries the DATADOG tag and then the untagged token. Tags may contain only letters, numbers, and underscores; TYPE is reserved.",
@@ -386,7 +395,7 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			},
 			"org_uuid": schema.StringAttribute{
 				Optional:    true,
-				Description: "The organization UUID; required for AWS WIF. Optional for Terraform Dynamic Provider Credentials, but when configured it must match the organization UUID in the token audience. This can also be set using the `DD_ORG_UUID` environment variable. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
+				Description: "The organization UUID; required for AWS WIF and for `use_pup`. Optional for Terraform Dynamic Provider Credentials, but when configured it must match the organization UUID in the token audience. This can also be set using the `DD_ORG_UUID` environment variable. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
 			},
 			"aws_access_key_id": schema.StringAttribute{
 				Optional:    true,
@@ -517,6 +526,13 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 		bearerToken, err := utils.GetMultiEnvVar(utils.BearerTokenEnvVars...)
 		if err == nil {
 			config.BearerToken = types.StringValue(bearerToken)
+		}
+	}
+
+	if config.UsePup.IsNull() {
+		if v, err := utils.GetMultiEnvVar(utils.UsePupEnvVars...); err == nil {
+			usePup, _ := strconv.ParseBool(v)
+			config.UsePup = types.BoolValue(usePup)
 		}
 	}
 
@@ -694,10 +710,21 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	awsSecretAccessKey := config.AWSSecretAccessKey.ValueString()
 	awsSessionToken := config.AWSSessionToken.ValueString()
 	bearerToken := config.BearerToken.ValueString()
+	// pup is the credential of last resort, used only when nothing else is configured.
+	var pupConfig *datadog.DelegatedTokenConfig
+	if config.UsePup.ValueBool() && workloadIdentityConfig == nil && cloudProviderType == "" && bearerToken == "" &&
+		config.ApiKey.ValueString() == "" && config.AppKey.ValueString() == "" {
+		// Required, so a pup session switched to another organization stops the run.
+		if orgUUID == "" {
+			diags.AddError("org_uuid is required when the provider authenticates with pup, so every token is checked against the intended organization", "")
+			return diags
+		}
+		pupConfig = pupauth.GetDelegatedTokenConfig(orgUUID)
+	}
 
-	if validate && workloadIdentityConfig == nil {
+	if validate && workloadIdentityConfig == nil && pupConfig == nil {
 		if cloudProviderType == "" && bearerToken == "" && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
-			diags.AddError("credentials are required unless validate = false: configure api_key and app_key, bearer_token, AWS WIF, or Terraform Dynamic Provider Credentials", "")
+			diags.AddError("credentials are required unless validate = false: configure api_key and app_key, bearer_token, use_pup, AWS WIF, or Terraform Dynamic Provider Credentials", "")
 			return diags
 		} else if cloudProviderType != "" && orgUUID == "" {
 			diags.AddError("orgUUID must be set when using cloud provider auth unless validate = false", "")
@@ -770,12 +797,14 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 				},
 			},
 		)
+	case pupConfig != nil:
+		auth = context.WithValue(auth, datadog.ContextDelegatedToken, &datadog.DelegatedTokenCredentials{})
 	}
 	ddClientConfig := datadog.NewConfiguration()
 	ddClientConfig.UserAgent = utils.GetUserAgentFramework(ddClientConfig.UserAgent, request.TerraformVersion)
 	// The SDK debug logger does not redact ContextDelegatedToken credentials.
-	// Suppress raw HTTP dumps for WIT authentication until SDK redaction supports it.
-	ddClientConfig.Debug = logging.IsDebugOrHigher() && workloadIdentityConfig == nil
+	// Suppress raw HTTP dumps for WIT and pup authentication until SDK redaction supports it.
+	ddClientConfig.Debug = logging.IsDebugOrHigher() && workloadIdentityConfig == nil && pupConfig == nil
 
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateRUMOperation", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetRUMOperation", true)
@@ -805,6 +834,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateGitHubCloudAuthPersonaMapping", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetGitHubCloudAuthPersonaMapping", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteGitHubCloudAuthPersonaMapping", true)
+
+	// Enable AI Gateway rate limits
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAiGatewayRateLimit", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayRateLimit", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAiGatewayRateLimit", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAiGatewayRateLimit", true)
 
 	// Enable AI Gateway model groups
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAiGatewayModelGroup", true)
@@ -988,6 +1023,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
 
+	// Enable usage quota operations.
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateQuotas", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetQuota", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateQuota", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteQuota", true)
+
 	EnableGeneratedUnstableOperations(ddClientConfig)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
@@ -1054,6 +1095,8 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.HTTPClient = datadogHTTPClient
 	if workloadIdentityConfig != nil {
 		ddClientConfig.DelegatedTokenConfig = workloadIdentityConfig
+	} else if pupConfig != nil {
+		ddClientConfig.DelegatedTokenConfig = pupConfig
 	} else if cloudProviderType != "" {
 		switch cloudProviderType {
 		case "aws":
