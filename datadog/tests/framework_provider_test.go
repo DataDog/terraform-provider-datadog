@@ -85,6 +85,10 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateAWSAccountCCMConfig", true)
 	config.SetUnstableOperationEnabled("v2.DeleteAWSAccountCCMConfig", true)
 
+	// Enable AI Gateway governance
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayGovernance", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayGovernance", true)
+
 	// Enable Custom Forecast
 	config.SetUnstableOperationEnabled("v2.UpsertCustomForecast", true)
 	config.SetUnstableOperationEnabled("v2.GetCustomForecast", true)
@@ -243,9 +247,11 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayRateLimit", true)
 	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayRateLimit", true)
 
-	// Enable AI Gateway governance
-	config.SetUnstableOperationEnabled("v2.GetAiGatewayGovernance", true)
-	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayGovernance", true)
+	// Enable AI Gateway model groups
+	config.SetUnstableOperationEnabled("v2.CreateAiGatewayModelGroup", true)
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayModelGroup", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayModelGroup", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayModelGroup", true)
 	fwprovider.EnableGeneratedUnstableOperations(config)
 
 	// Invalid retry env vars fail test setup instead of silently changing retry behavior.
