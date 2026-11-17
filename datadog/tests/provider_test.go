@@ -125,6 +125,8 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/import_datadog_monitor_test":                                                  "monitors",
 	"tests/import_datadog_user_test":                                                     "users",
 	"tests/provider_test":                                                                "terraform",
+	"tests/resource_datadog_ai_gateway_rate_limit_test":                                  "ai-gateway",
+	"tests/resource_datadog_ai_gateway_model_group_test":                                 "ai-gateway",
 	"tests/resource_datadog_api_key_test":                                                "api_keys",
 	"tests/resource_datadog_apm_retention_filter_test":                                   "apm_retention_filter",
 	"tests/resource_datadog_apm_retention_filter_order_test":                             "apm_retention_filter_order",
@@ -182,6 +184,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_style_test":                                        "dashboards",
 	"tests/resource_datadog_dashboard_sunburst_test":                                     "dashboards",
 	"tests/resource_datadog_dashboard_tab_test":                                          "dashboards",
+	"tests/resource_datadog_dashboard_default_timeframe_test":                            "dashboards",
 	"tests/resource_datadog_dashboard_test":                                              "dashboards",
 	"tests/resource_datadog_dashboard_time_spans_test":                                   "dashboards",
 	"tests/resource_datadog_dashboard_timeseries_test":                                   "dashboards",
@@ -374,6 +377,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_team_notification_rules_test":                             "team",
 	"tests/resource_datadog_timeboard_test":                                              "dashboards",
 	"tests/resource_datadog_user_test":                                                   "users",
+	"tests/resource_datadog_usage_quota_test":                                            "usage-quotas",
 	"tests/resource_datadog_user_role_test":                                              "roles",
 	"tests/resource_datadog_webhook_custom_variable_test":                                "webhook_custom_variable",
 	"tests/resource_datadog_webhook_oauth2_client_credentials_test":                      "webhook_oauth2_client_credentials",
@@ -406,6 +410,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_status_page_test":                                            "status-page",
 	"tests/resource_datadog_status_page_component_test":                                  "status-page",
 	"tests/resource_datadog_status_page_degradation_template_test":                       "status-page",
+	"tests/resource_datadog_status_page_email_access_policy_test":                        "status-page",
 	"tests/resource_datadog_status_page_maintenance_template_test":                       "status-page",
 }
 
