@@ -54,6 +54,9 @@ import (
 {{- if .UsesWriteOnly }}
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
 {{- end }}
+{{- if .UsesCustomPlanModifiers }}
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/planmodifiers"
+{{- end }}
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -141,8 +144,46 @@ func (r *{{ .GoName }}Resource) Create(ctx context.Context, request resource.Cre
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating {{ .TypeName }}"))
 		return
 	}
+{{- if .Initialize }}
+{{- range .Initialize.Fields }}
+{{- if .ResponseNullExpr }}
+	state.{{ .GoField }} = {{ .ResponseNullExpr }}
+{{- end }}
+{{- end }}
+{{- end }}
 {{ template "mapResponseState" . }}
 {{ template "commitState" .Create }}
+{{- if .Initialize }}
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	// Preserve the created identity before applying settings accepted only by Update.
+	var configured {{ .RootModel }}
+	response.Diagnostics.Append(plan.As(ctx, &configured, basetypes.ObjectAsOptions{UnhandledUnknownAsEmpty: true})...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+	initialize := false
+{{- range .Initialize.Fields }}
+	if {{ .Condition }} {
+		state.{{ .GoField }} = configured.{{ .GoField }}
+		initialize = true
+	}
+{{- end }}
+	if initialize {
+{{ template "writeOnlySecretResults" .Initialize.Call.WriteOnlySecrets }}
+{{ template "argPrep" .Initialize.Call.Arguments }}
+{{ template "requestBody" .Initialize.Call }}
+		resp, _, err := r.Api.{{ .Initialize.Call.Method }}(r.Auth{{ range .Initialize.Call.Arguments }}, {{ .Expression }}{{ end }}, *body)
+		if err != nil {
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error initializing {{ .TypeName }}"))
+			return
+		}
+{{ template "mapResponseState" . }}
+{{ template "commitState" .Create }}
+	}
+{{- end }}
 }
 
 func (r *{{ .GoName }}Resource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {

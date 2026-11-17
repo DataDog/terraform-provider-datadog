@@ -222,7 +222,7 @@ var _ = Describe("MergeResourceSchema", func() {
 		Entry("required by both roles", true, true),
 	)
 
-	DescribeTable("rejects write-only fields absent from one request lifecycle role",
+	DescribeTable("rejects write-only fields absent from Create",
 		func(createHasSecret, updateHasSecret bool, missingRole string) {
 			createAttributes := map[string]*Schema{}
 			updateAttributes := map[string]*Schema{}
@@ -248,22 +248,27 @@ var _ = Describe("MergeResourceSchema", func() {
 			Expect(err.Error()).To(ContainSubstring("data.attributes.password"))
 			Expect(err.Error()).To(ContainSubstring(missingRole))
 		},
-		Entry("Create-only secret", true, false, "Update"),
 		Entry("Update-only secret", false, true, "Create"),
 	)
 
-	It("rejects a write-only field when the resource has no Update role", func() {
-		_, _, err := MergeResourceSchema(&ResolvedGroup{
-			Create: &Operation{OperationId: "CreateAccount", RequestSchema: jsonAPIBody(
-				"AccountCreateRequest", map[string]*Schema{"password": secretSchema(true, false)}, nil)},
-			Read: &Operation{OperationId: "GetAccount", ResponseSchema: jsonAPIBody(
-				"AccountResponse", map[string]*Schema{}, nil)},
-		})
-
-		var lifecycleErr *WriteOnlyLifecycleError
-		Expect(errors.As(err, &lifecycleErr)).To(BeTrue())
-		Expect(lifecycleErr.MissingRole).To(Equal("Update"))
-	})
+	DescribeTable("accepts create-only secrets and records replacement provenance",
+		func(hasUpdate bool) {
+			group := &ResolvedGroup{
+				Create: &Operation{OperationId: "CreateAccount", RequestSchema: jsonAPIBody(
+					"AccountCreateRequest", map[string]*Schema{"password": secretSchema(true, false)}, nil)},
+				Read: &Operation{OperationId: "GetAccount", ResponseSchema: jsonAPIBody(
+					"AccountResponse", map[string]*Schema{}, nil)},
+			}
+			if hasUpdate {
+				group.Update = &Operation{OperationId: "UpdateAccount", RequestSchema: jsonAPIBody(
+					"AccountUpdateRequest", map[string]*Schema{}, nil)}
+			}
+			merged, _, err := MergeResourceSchema(group)
+			Expect(err).NotTo(HaveOccurred())
+			password := attributesOf(merged)["password"]
+			Expect(password.WriteOnlySecret).To(BeTrue())
+			Expect(password.Provenance.CreateOnly).To(BeTrue())
+		}, Entry("with Update", true), Entry("without Update", false))
 
 	Describe("inside a oneOf alternative one request role does not list", func() {
 		// tokenAuth is one role's spelling of an alternative carrying a write-only
@@ -426,10 +431,10 @@ var _ = Describe("MergeResourceSchema", func() {
 		Expect(attrs["is_default"].Provenance).To(Equal(&SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: true}))
 
 		By("Create-only, absent from Update and the response -> write-only Optional")
-		Expect(attrs["internal_note"].Provenance).To(Equal(&SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: false}))
+		Expect(attrs["internal_note"].Provenance).To(Equal(&SchemaProvenance{InRequest: true, CreateOnly: true, RequestRequired: false, InResponse: false}))
 
 		By("required in Create, absent from Update and the response -> write-only Required")
-		Expect(attrs["secret_token"].Provenance).To(Equal(&SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: false}))
+		Expect(attrs["secret_token"].Provenance).To(Equal(&SchemaProvenance{InRequest: true, CreateOnly: true, RequestRequired: true, InResponse: false}))
 
 		By("absent from Create, present in Update only -> InRequest true via the Create∪Update union, not required")
 		Expect(attrs["extra_on_update"].Provenance).To(Equal(&SchemaProvenance{InRequest: true, RequestRequired: false, InResponse: false}))
@@ -475,7 +480,7 @@ var _ = Describe("MergeResourceSchema", func() {
 
 		merged, _, err := MergeResourceSchema(group)
 		Expect(err).NotTo(HaveOccurred())
-		Expect(attributesOf(merged)["name"].Provenance).To(Equal(&SchemaProvenance{InRequest: true, RequestRequired: true, InResponse: true}))
+		Expect(attributesOf(merged)["name"].Provenance).To(Equal(&SchemaProvenance{InRequest: true, CreateOnly: true, RequestRequired: true, InResponse: true}))
 	})
 
 	It("falls RequestRefName back to Update's component name when Create doesn't reach the node, and leaves it empty when neither does", func() {

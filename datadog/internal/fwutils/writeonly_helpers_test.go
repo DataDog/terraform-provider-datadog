@@ -12,6 +12,7 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -116,6 +117,49 @@ func TestCreateWriteOnlySecretAttributes(t *testing.T) {
 	}
 	if len(version.Validators) != 2 {
 		t.Errorf("api_key_wo_version should have 2 validators, got %d", len(version.Validators))
+	}
+}
+
+func TestCreateOnlySecretReplacement(t *testing.T) {
+	ctx := context.Background()
+	for _, mode := range []WriteOnlySecretMode{WriteOnlySecretModeLegacy, WriteOnlySecretModeDual, WriteOnlySecretModeOnly} {
+		for _, immutable := range []bool{false, true} {
+			config := WriteOnlySecretConfig{
+				Mode: mode, OriginalAttr: "api_key", WriteOnlyAttr: "api_key_wo", TriggerAttr: "api_key_wo_version", RequiresReplace: immutable,
+			}
+			attrs := CreateWriteOnlySecretAttributes(config)
+			if modifiers := attrs["api_key_wo"].(schema.StringAttribute).PlanModifiers; len(modifiers) != 0 {
+				t.Fatal("a write-only value must not have a state comparison modifier")
+			}
+			for _, name := range []string{"api_key", "api_key_wo_version"} {
+				attribute, ok := attrs[name]
+				if !ok {
+					continue
+				}
+				for _, changed := range []bool{false, true} {
+					value := "1"
+					if changed {
+						value = "2"
+					}
+					raw := makeVersionValue(ptr("1"))
+					requiresReplace := false
+					for _, modifier := range attribute.(schema.StringAttribute).PlanModifiers {
+						response := planmodifier.StringResponse{}
+						modifier.PlanModifyString(ctx, planmodifier.StringRequest{
+							Plan: tfsdk.Plan{Raw: raw}, State: tfsdk.State{Raw: raw},
+							StateValue: types.StringValue("1"), PlanValue: types.StringValue(value), ConfigValue: types.StringValue(value),
+						}, &response)
+						if response.Diagnostics.HasError() {
+							t.Fatal(response.Diagnostics)
+						}
+						requiresReplace = requiresReplace || response.RequiresReplace
+					}
+					if requiresReplace != (immutable && changed) {
+						t.Fatalf("mode=%v immutable=%v field=%s changed=%v: replacement=%v", mode, immutable, name, changed, requiresReplace)
+					}
+				}
+			}
+		}
 	}
 }
 

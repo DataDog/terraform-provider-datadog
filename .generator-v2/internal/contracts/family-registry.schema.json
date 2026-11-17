@@ -57,7 +57,7 @@
             "properties": {
               "create": { "type": "string", "minLength": 1, "description": "operationId of the Create endpoint." },
               "read":   { "type": "string", "minLength": 1, "description": "operationId of the Read (by-id) endpoint." },
-              "update": { "type": "string", "minLength": 1, "description": "operationId of the Update endpoint. May be omitted; the generator then marks all attributes ForceNew." },
+              "update": { "type": "string", "minLength": 1, "description": "operationId of the Update endpoint. May be omitted; all configurable inputs then require replacement on change. When present, create-only inputs still require replacement, inferred from writable request schemas; see the scope reference for field lifecycle rules." },
               "delete": { "type": "string", "minLength": 1, "description": "operationId of the Delete endpoint." }
             }
           }

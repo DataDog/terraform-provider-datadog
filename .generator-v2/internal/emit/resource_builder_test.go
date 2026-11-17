@@ -130,9 +130,10 @@ var _ = Describe("BuildResourceView", func() {
 			PlanModifiers: []string{"stringplanmodifier.UseStateForUnknown"}, PlanModifierType: "String",
 		}))
 
-		By("Create-only, absent from the response -> write-only Optional, no plan modifiers with Update present")
+		By("Create-only, absent from the response -> Optional with replacement on change")
 		Expect(attrByPath(schemaTree(view), "internal_note")).To(Equal(AttrView{
 			TFName: "internal_note", TFType: "schema.StringAttribute", Description: "Internal note.", Optional: true,
+			PlanModifiers: []string{"stringplanmodifier.RequiresReplace"}, PlanModifierType: "String",
 		}))
 
 		By("response-only -> Computed only, not request-settable")

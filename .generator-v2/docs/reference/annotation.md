@@ -179,7 +179,7 @@ The CRUD lifecycle backing this resource, by operationId. Create and read are lo
 | `create` | `string` | **yes** | none | operationId of the Create endpoint. Min length 1. |
 | `delete` | `string` | **yes** | none | operationId of the Delete endpoint. Min length 1. |
 | `read` | `string` | **yes** | none | operationId of the Read (by-id) endpoint. Min length 1. |
-| `update` | `string` | no | none | operationId of the Update endpoint. May be omitted; the generator then marks all attributes ForceNew. Min length 1. |
+| `update` | `string` | no | none | operationId of the Update endpoint. May be omitted; all configurable inputs then require replacement on change. When present, create-only inputs still require replacement, inferred from writable request schemas; see the scope reference for field lifecycle rules. Min length 1. |
 
 Unknown fields are rejected. A field absent from this table is not supported: passing one fails the run at parse time.
 

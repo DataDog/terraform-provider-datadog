@@ -1,0 +1,117 @@
+package fwprovider
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"sync/atomic"
+	"testing"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+)
+
+func TestTFGenUpdateOnlyInitialization(t *testing.T) {
+	for _, tc := range []struct {
+		name, returned string
+		configured     types.String
+		patches        int
+		fail           bool
+	}{
+		{name: "omitted", configured: types.StringValue("requested"), patches: 1},
+		{name: "different", configured: types.StringValue("requested"), returned: ",\"description\":\"server default\"", patches: 1},
+		{name: "matching", configured: types.StringValue("requested"), returned: ",\"description\":\"requested\""},
+		{name: "unconfigured", configured: types.StringNull()},
+		{name: "unknown", configured: types.StringUnknown()},
+		{name: "initialization error retains ID", configured: types.StringValue("requested"), patches: 1, fail: true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			ctx := context.Background()
+			var patches atomic.Int32
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				description := tc.returned
+				if req.Method == http.MethodPatch {
+					patches.Add(1)
+					if req.URL.Path != "/api/v2/incidents/config/types/created-id" {
+						t.Errorf("initialization path = %s", req.URL.Path)
+					}
+					var body struct {
+						Data struct {
+							ID         string         `json:"id"`
+							Attributes map[string]any `json:"attributes"`
+						} `json:"data"`
+					}
+					if err := json.NewDecoder(req.Body).Decode(&body); err != nil {
+						t.Error(err)
+					}
+					if body.Data.ID != "created-id" || body.Data.Attributes["description"] != "requested" {
+						t.Errorf("initialization body = %+v", body)
+					}
+					if tc.fail {
+						w.WriteHeader(http.StatusBadRequest)
+						fmt.Fprint(w, `{"errors":["initialization rejected"]}`)
+						return
+					}
+					description = ",\"description\":\"requested\""
+				} else if req.Method == http.MethodPost {
+					var body struct {
+						Data struct {
+							Attributes map[string]any `json:"attributes"`
+						} `json:"data"`
+					}
+					if err := json.NewDecoder(req.Body).Decode(&body); err != nil {
+						t.Error(err)
+					}
+					if _, present := body.Data.Attributes["description"]; present {
+						t.Error("Create sent the update-only description")
+					}
+					w.WriteHeader(http.StatusCreated)
+				} else {
+					t.Errorf("unexpected method %s", req.Method)
+				}
+				fmt.Fprintf(w, `{"data":{"id":"created-id","type":"incident_types","attributes":{"name":"fixture","is_default":false%s}}}`, description)
+			}))
+			defer server.Close()
+			cfg := datadog.NewConfiguration()
+			cfg.Servers = datadog.ServerConfigurations{{URL: server.URL}}
+			cfg.OperationServers = nil
+			cfg.HTTPClient = server.Client()
+			cfg.SetUnstableOperationEnabled("v2.CreateIncidentType", true)
+			cfg.SetUnstableOperationEnabled("v2.UpdateIncidentType", true)
+			r := &datadogTfgenInitializationFixtureResource{Api: datadogV2.NewIncidentsApi(datadog.NewAPIClient(cfg)), Auth: ctx}
+			var schemaResponse resource.SchemaResponse
+			r.Schema(ctx, resource.SchemaRequest{}, &schemaResponse)
+			model := resourceDatadogTfgenInitializationFixture_Model{
+				ID: types.StringUnknown(), Name: types.StringValue("fixture"), Description: tc.configured, IsDefault: types.BoolValue(false),
+			}
+			plan := tfsdk.Plan{Schema: schemaResponse.Schema}
+			if diags := plan.Set(ctx, &model); diags.HasError() {
+				t.Fatal(diags)
+			}
+			response := resource.CreateResponse{State: tfsdk.State{Schema: schemaResponse.Schema}}
+			r.Create(ctx, resource.CreateRequest{Plan: plan}, &response)
+			if calls := patches.Load(); calls != int32(tc.patches) {
+				t.Errorf("initialization PATCH calls = %d, want %d", calls, tc.patches)
+			}
+			if response.Diagnostics.HasError() != tc.fail {
+				t.Fatalf("Create diagnostics: %v", response.Diagnostics)
+			}
+			var state resourceDatadogTfgenInitializationFixture_Model
+			if diags := response.State.Get(ctx, &state); diags.HasError() {
+				t.Fatal(diags)
+			}
+			if state.ID.ValueString() != "created-id" {
+				t.Fatalf("created identity lost: %v", state.ID)
+			}
+			if !tc.fail && !tc.configured.IsNull() && !tc.configured.IsUnknown() && !state.Description.Equal(tc.configured) {
+				t.Errorf("description = %v, want %v", state.Description, tc.configured)
+			}
+		})
+	}
+}

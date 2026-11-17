@@ -253,6 +253,7 @@ type WriteOnlySecretView struct {
 	ParentBlocks         []string
 	RequiredOnCreate     bool
 	RequiredOnUpdate     bool
+	RequiresReplace      bool
 	OriginalDescription  string
 	WriteOnlyDescription string
 	TriggerDescription   string
@@ -559,6 +560,10 @@ type ResourceView struct {
 	Read   CRUDCallView
 	Update CRUDCallView
 	Delete CRUDCallView
+	// Initialize applies configured update-only fields after Create has saved
+	// the server-assigned identity. Nil when both request shapes accept the
+	// same configurable fields.
+	Initialize *CreateInitializationView
 
 	// Import describes how ImportState recovers the resource's identity: the
 	// part count, the expected format string and the id's own position are
@@ -576,13 +581,14 @@ type ResourceView struct {
 	// and Update: either &resp or the shared data object resp.GetData().
 	StateResponseExpr string
 
-	UsesFmt              bool
-	UsesValidators       bool
-	UsesStringValidators bool
-	UsesObjectValidators bool
-	UsesPlanModifiers    bool
-	PlanModifierPackages []string
-	DefaultPackages      []string
+	UsesFmt                 bool
+	UsesValidators          bool
+	UsesStringValidators    bool
+	UsesObjectValidators    bool
+	UsesPlanModifiers       bool
+	UsesCustomPlanModifiers bool
+	PlanModifierPackages    []string
+	DefaultPackages         []string
 	// UsesUUID and UsesStrconv add the google/uuid and strconv imports for a
 	// path argument that must be recovered by parsing (see SDKArgumentView).
 	// UsesUUID is also true when a request field needs a uuid.Parse (see

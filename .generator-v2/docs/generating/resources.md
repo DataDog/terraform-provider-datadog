@@ -38,12 +38,18 @@ Declare the resource on the API tag; the block kind supplies its artifact kind.
 |---|---|---|
 | `create` | Terraform `Create` calls it | Generation fails, the artifact should be a data source, not a resource |
 | `read` | `Read` refreshes state from it; required | Generation fails; resources require `read` |
-| `update` | Terraform `Update` calls it | **Every attribute becomes ForceNew**: any change destroys and recreates |
+| `update` | Terraform `Update` calls it | Every configurable input requires replacement on change; computed-only fields do not |
 | `delete` | Terraform `Destroy` calls it | Generation fails; delete is required |
 
 Omitting `update` is a design decision. If your API has no update operation
 (such as PUT or PATCH), practitioners get replace-on-change semantics, and they
 should learn that from your `tf_description`.
+
+When `update` is present, a field that is writable in Create but absent or read-only
+in Update still requires replacement on change. This is inferred per field from
+the request schemas, including nested inputs, so an immutable scope can coexist
+with a capacity that updates in place. Read-only request properties do not
+count as writable inputs. See [scope](../reference/scope.md#schema-shapes).
 
 ## How the schema is built
 
@@ -92,6 +98,10 @@ see [the identity contract](../reference/scope.md#caller-assigned-resource-ident
 Nested request objects are expanded and mapped back in `updateState`. Ordinary
 enum attributes get a
 `stringvalidator.OneOf` and are converted through their generated SDK type.
+
+Each request uses its own writable fields, so create-only inputs are not sent
+on Update. For initial configuration of update-only fields, including failure
+recovery and nesting limits, see [scope](../reference/scope.md#schema-shapes).
 
 ## Taking over a hand-written resource
 
