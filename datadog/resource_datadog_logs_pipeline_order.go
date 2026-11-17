@@ -2,8 +2,8 @@ package datadog
 
 import (
 	"context"
+	"net/http"
 	"slices"
-	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -81,8 +81,8 @@ func updateLogsPipelineOrderState(d *schema.ResourceData, order *datadogV1.LogsP
 	return nil
 }
 
-func getLogsPipelineOrder(conf *ProviderConfiguration) (*datadogV1.LogsPipelinesOrder, diag.Diagnostics) {
-	order, httpResponse, err := conf.DatadogApiInstances.GetLogsPipelinesApiV1().GetLogsPipelineOrder(conf.Auth)
+func getLogsPipelineOrder(auth context.Context, api *datadogV1.LogsPipelinesApi) (*datadogV1.LogsPipelinesOrder, diag.Diagnostics) {
+	order, httpResponse, err := api.GetLogsPipelineOrder(auth)
 	if err != nil {
 		return nil, utils.TranslateClientErrorDiag(err, httpResponse, "error getting logs pipeline order")
 	}
@@ -93,7 +93,8 @@ func getLogsPipelineOrder(conf *ProviderConfiguration) (*datadogV1.LogsPipelines
 }
 
 func resourceDatadogLogsPipelineOrderRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	order, diags := getLogsPipelineOrder(meta.(*ProviderConfiguration))
+	conf := meta.(*ProviderConfiguration)
+	order, diags := getLogsPipelineOrder(conf.Auth, conf.DatadogApiInstances.GetLogsPipelinesApiV1())
 	if diags.HasError() {
 		return diags
 	}
@@ -104,9 +105,8 @@ func resourceDatadogLogsPipelineOrderUpdate(ctx context.Context, d *schema.Resou
 	relative := d.Get("ignore_unlisted_pipelines").(bool)
 	order, diags := applyLogsPipelineOrder(ctx, meta.(*ProviderConfiguration), utils.GetStringSlice(d, "pipelines"), relative)
 	if diags.HasError() {
-		if relative {
-			d.Partial(true)
-		}
+		// SDKv2 otherwise records the proposed mode and order even when the API rejects them.
+		d.Partial(true)
 		return diags
 	}
 	d.SetId(d.Get("name").(string))
@@ -114,10 +114,18 @@ func resourceDatadogLogsPipelineOrderUpdate(ctx context.Context, d *schema.Resou
 }
 
 func applyLogsPipelineOrder(ctx context.Context, providerConf *ProviderConfiguration, pipelineIDs []string, relative bool) (*datadogV1.LogsPipelinesOrder, diag.Diagnostics) {
+	api := providerConf.DatadogApiInstances.GetLogsPipelinesApiV1()
+	auth, cancel := context.WithCancel(providerConf.Auth)
+	defer cancel()
+	stop := context.AfterFunc(ctx, cancel)
+	defer stop()
 	if relative {
 		logCustomPipelineMutex.Lock()
 		defer logCustomPipelineMutex.Unlock()
-		current, diags := getLogsPipelineOrder(providerConf)
+		if err := ctx.Err(); err != nil {
+			return nil, diag.FromErr(err)
+		}
+		current, diags := getLogsPipelineOrder(auth, api)
 		if diags.HasError() {
 			return nil, diags
 		}
@@ -132,19 +140,15 @@ func applyLogsPipelineOrder(ctx context.Context, providerConf *ProviderConfigura
 		if slices.Equal(merged, current.PipelineIds) {
 			return current, nil
 		}
-		if err := ctx.Err(); err != nil {
-			return nil, diag.FromErr(err)
-		}
 		pipelineIDs = merged
 	}
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
-	updatedOrder, httpResponse, err := apiInstances.GetLogsPipelinesApiV1().
-		UpdateLogsPipelineOrder(auth, datadogV1.LogsPipelinesOrder{PipelineIds: pipelineIDs})
+	if err := ctx.Err(); err != nil {
+		return nil, diag.FromErr(err)
+	}
+	updatedOrder, httpResponse, err := api.UpdateLogsPipelineOrder(auth, datadogV1.LogsPipelinesOrder{PipelineIds: pipelineIDs})
 	if err != nil {
-		// Cannot map pipelines to existing ones
-		if strings.Contains(err.Error(), "422 Unprocessable Entity") {
-			ddPipelineOrder, diags := getLogsPipelineOrder(providerConf)
+		if httpResponse != nil && httpResponse.StatusCode == http.StatusUnprocessableEntity {
+			ddPipelineOrder, diags := getLogsPipelineOrder(auth, api)
 			if diags.HasError() {
 				return nil, diags
 			}

@@ -3,6 +3,7 @@ package datadog
 import (
 	"context"
 	"encoding/json"
+	"maps"
 	"net/http"
 	"net/http/httptest"
 	"slices"
@@ -31,11 +32,14 @@ func TestLogsPipelineOrderHandlesUnlistedPipelines(t *testing.T) {
 		{"refresh after reorder and deletion", "read", true, []string{"b", "gone", "a"}, []string{"a", "b"}, nil, false},
 		{"missing", "update", true, []string{"b", "missing"}, nil, nil, true},
 		{"duplicate", "update", true, []string{"b", "b"}, nil, nil, true},
-		{"default rejects partial order", "update", false, []string{"b", "a"}, nil, []string{"b", "a"}, true},
+		{"cancellation after a rate-limited write", "cancel", true, []string{"b", "a"}, nil, []string{"b", "outside", "a"}, true},
+		{"disabling relative order rejects an incomplete list", "disable", false, []string{"b", "a"}, nil, []string{"b", "a"}, true},
 		{"default refresh", "read", false, []string{"a", "b"}, []string{"a", "outside", "b"}, nil, false},
 		{"default update", "update", false, []string{"b", "a", "outside"}, []string{"b", "a", "outside"}, []string{"b", "a", "outside"}, false},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(t.Context())
+			defer cancel()
 			remote := []string{"a", "outside", "b"}
 			var put []string
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -52,6 +56,11 @@ func TestLogsPipelineOrderHandlesUnlistedPipelines(t *testing.T) {
 						return
 					}
 					put = order.IDs
+					if tc.operation == "cancel" && ctx.Err() == nil {
+						cancel()
+						w.WriteHeader(http.StatusTooManyRequests)
+						return
+					}
 					for _, id := range remote {
 						if !slices.Contains(put, id) {
 							w.WriteHeader(http.StatusUnprocessableEntity)
@@ -72,8 +81,8 @@ func TestLogsPipelineOrderHandlesUnlistedPipelines(t *testing.T) {
 			config.Servers = dd.ServerConfigurations{{URL: server.URL}}
 			config.OperationServers = nil
 			config.HTTPClient = server.Client()
-			ctx := context.Background()
-			meta := &ProviderConfiguration{Auth: ctx, DatadogApiInstances: &utils.ApiInstances{HttpClient: dd.NewAPIClient(config)}}
+			config.RetryConfiguration.EnableRetry = tc.operation == "cancel"
+			meta := &ProviderConfiguration{Auth: t.Context(), DatadogApiInstances: &utils.ApiInstances{HttpClient: dd.NewAPIClient(config)}}
 			resource := resourceDatadogLogsPipelineOrder()
 			pipelines := make([]interface{}, len(tc.desired))
 			for i, id := range tc.desired {
@@ -85,10 +94,14 @@ func TestLogsPipelineOrderHandlesUnlistedPipelines(t *testing.T) {
 			}
 			var prior, state *terraform.InstanceState
 			if tc.operation != "create" {
-				if tc.operation == "update" {
-					values["pipelines"] = []interface{}{"a", "b"}
+				priorValues := maps.Clone(values)
+				if tc.operation != "read" {
+					priorValues["pipelines"] = []interface{}{"a", "b"}
 				}
-				data := schema.TestResourceDataRaw(t, resource.SchemaMap(), values)
+				if tc.operation == "disable" {
+					priorValues["ignore_unlisted_pipelines"] = true
+				}
+				data := schema.TestResourceDataRaw(t, resource.SchemaMap(), priorValues)
 				data.SetId("order")
 				prior = data.State()
 			}
@@ -96,7 +109,6 @@ func TestLogsPipelineOrderHandlesUnlistedPipelines(t *testing.T) {
 			if tc.operation == "read" {
 				state, diags = resource.RefreshWithoutUpgrade(ctx, prior, meta)
 			} else {
-				values["pipelines"] = pipelines
 				diff, err := resource.Diff(ctx, prior, terraform.NewResourceConfigRaw(values), meta)
 				require.NoError(t, err)
 				state, diags = resource.Apply(ctx, prior, diff, meta)
@@ -105,9 +117,7 @@ func TestLogsPipelineOrderHandlesUnlistedPipelines(t *testing.T) {
 			require.Equal(t, tc.wantError, diags.HasError(), "%v", diags)
 			require.Equal(t, tc.put, put)
 			if tc.wantError {
-				if tc.relative {
-					require.Equal(t, prior.Attributes, state.Attributes)
-				}
+				require.Equal(t, prior.Attributes, state.Attributes)
 				return
 			}
 			require.Equal(t, "order", state.ID)
