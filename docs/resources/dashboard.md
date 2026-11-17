@@ -149,7 +149,7 @@ resource "datadog_dashboard" "free_dashboard" {
 
 - `dashboard_lists` (Set of Number) A list of dashboard lists this dashboard belongs to. This attribute should not be set if managing the corresponding dashboard lists using Terraform as it causes inconsistent behavior.
 - `dashboard_lists_removed` (Set of Number) A list of dashboard lists this dashboard should be removed from. Internal only.
-- `default_timeframe` (Block List, Max: 1) The default timeframe applied when opening the dashboard. Set to `null` to disable after it has been configured. (see [below for nested schema](#nestedblock--default_timeframe)))
+- `default_timeframe` (Block List, Max: 1) The default timeframe applied when opening the dashboard. Set to `null` to disable after it has been configured. (see [below for nested schema](#nestedblock--default_timeframe))
 - `description` (String) The description of the dashboard.
 - `is_read_only` (Boolean, Deprecated) Whether this dashboard is read-only. **Deprecated.** This field is deprecated and non-functional. Use `restricted_roles` instead to define which roles are required to edit the dashboard. Defaults to `false`.
 - `notify_list` (Set of String) The list of handles for the users to notify when changes are made to this dashboard.
