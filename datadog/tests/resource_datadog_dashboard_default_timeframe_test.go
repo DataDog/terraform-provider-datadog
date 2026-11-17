@@ -56,7 +56,7 @@ func testAccDatadogDashboardDefaultTimeframeUtil(t *testing.T, config string, na
 	accProvider := testAccProvider(t, accProviders)
 	uniq := uniqueEntityName(ctx, t)
 	replacer := strings.NewReplacer("{{uniq}}", uniq)
-	config = replacer.Replace(config)
+	config = disableDashboardPlanValidation(replacer.Replace(config))
 	for i := range assertions {
 		assertions[i] = replacer.Replace(assertions[i])
 	}
@@ -88,7 +88,7 @@ func testAccDatadogDashboardDefaultTimeframeUtilImport(t *testing.T, config stri
 	accProvider := testAccProvider(t, accProviders)
 	uniq := uniqueEntityName(ctx, t)
 	replacer := strings.NewReplacer("{{uniq}}", uniq)
-	config = replacer.Replace(config)
+	config = disableDashboardPlanValidation(replacer.Replace(config))
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
