@@ -822,8 +822,7 @@ func (r *datadogIntegrationTwilioAccountResource) Delete(ctx context.Context, re
 
 // updateState maps *datadogV2.TwilioIntegrationAccountResponse into state, returning diagnostics
 // rather than writing them so it stays free of the resource request/response
-// types and can fail at a specific schema path. Shared by Create, Read and
-// Update, which all resolve the same response type.
+// types and can fail at a specific schema path. Shared by Create, Read and Update.
 func (r *datadogIntegrationTwilioAccountResource) updateState(ctx context.Context, state *resourceDatadogIntegrationTwilioAccount_Model, resp *datadogV2.TwilioIntegrationAccountResponse) diag.Diagnostics {
 	var diags diag.Diagnostics
 	attributes := resp.Data.GetAttributes()
