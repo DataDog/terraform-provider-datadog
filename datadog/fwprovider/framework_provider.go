@@ -87,6 +87,7 @@ var Resources = []func() resource.Resource{
 	NewRumExclusionFilterResource,
 	NewRumMetricResource,
 	NewAiGatewayRateLimitResource,
+	NewAiGatewayModelGroupResource,
 	NewRumOperationResource,
 	NewRumOperationJourneyLinkResource,
 	NewRumRetentionFilterResource,
@@ -840,6 +841,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayRateLimit", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAiGatewayRateLimit", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAiGatewayRateLimit", true)
+
+	// Enable AI Gateway model groups
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAiGatewayModelGroup", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayModelGroup", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAiGatewayModelGroup", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAiGatewayModelGroup", true)
 
 	// Fleet Automation schedule reads are stable. Only mutations use Preview endpoints.
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateFleetSchedule", true)
