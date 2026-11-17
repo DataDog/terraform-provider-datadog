@@ -11,6 +11,7 @@ import "github.com/hashicorp/terraform-plugin-framework/resource"
 // Resources.
 var generatedResources = []func() resource.Resource{
 	NewDatadogDerivedMetricResource,
+	NewDatadogIntegrationChatgptEnterpriseAccountResource,
 	NewDatadogIntegrationDatabricksAccountResource,
 	NewDatadogIntegrationElasticCloudAccountResource,
 	NewDatadogIntegrationSnowflakeAccountResource,
