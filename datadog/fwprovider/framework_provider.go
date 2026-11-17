@@ -86,6 +86,7 @@ var Resources = []func() resource.Resource{
 	NewRumApplicationResource,
 	NewRumExclusionFilterResource,
 	NewRumMetricResource,
+	NewAiGatewayRateLimitResource,
 	NewRumOperationResource,
 	NewRumOperationJourneyLinkResource,
 	NewRumRetentionFilterResource,
@@ -833,6 +834,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateGitHubCloudAuthPersonaMapping", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetGitHubCloudAuthPersonaMapping", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteGitHubCloudAuthPersonaMapping", true)
+
+	// Enable AI Gateway rate limits
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAiGatewayRateLimit", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayRateLimit", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAiGatewayRateLimit", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAiGatewayRateLimit", true)
 
 	// Enable AI Gateway governance
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayGovernance", true)

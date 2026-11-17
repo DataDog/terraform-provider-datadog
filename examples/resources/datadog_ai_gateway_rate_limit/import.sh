@@ -1,0 +1,1 @@
+terraform import datadog_ai_gateway_rate_limit.ml_platform_openai "<rate_limit_id>"

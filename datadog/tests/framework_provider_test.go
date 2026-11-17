@@ -237,6 +237,12 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
 	config.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
 
+	// Enable AI Gateway rate limits
+	config.SetUnstableOperationEnabled("v2.CreateAiGatewayRateLimit", true)
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayRateLimit", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayRateLimit", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayRateLimit", true)
+
 	// Enable AI Gateway governance
 	config.SetUnstableOperationEnabled("v2.GetAiGatewayGovernance", true)
 	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayGovernance", true)
