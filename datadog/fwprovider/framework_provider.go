@@ -48,6 +48,7 @@ var Resources = []func() resource.Resource{
 	NewAgentlessScanningAwsScanOptionsResource,
 	NewAgentlessScanningAzureScanOptionsResource,
 	NewAgentlessScanningGcpScanOptionsResource,
+	NewAiGatewayGovernanceResource,
 	NewOpenapiApiResource,
 	NewAPIKeyResource,
 	NewUsageQuotaResource,
@@ -832,6 +833,10 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateGitHubCloudAuthPersonaMapping", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetGitHubCloudAuthPersonaMapping", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteGitHubCloudAuthPersonaMapping", true)
+
+	// Enable AI Gateway governance
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayGovernance", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAiGatewayGovernance", true)
 
 	// Fleet Automation schedule reads are stable. Only mutations use Preview endpoints.
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateFleetSchedule", true)
