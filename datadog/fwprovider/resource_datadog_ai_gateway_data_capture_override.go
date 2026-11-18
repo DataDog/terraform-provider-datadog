@@ -81,7 +81,7 @@ func (r *aiGatewayDataCaptureOverrideResource) Schema(_ context.Context, _ resou
 
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog AI Gateway data capture override resource. An override sets the data capture mode for the requests that match its scope, instead of the organization default set by `datadog_ai_gateway_governance`. " +
-			"When several overrides match a request, `metadata_only` wins over `full_capture`. This resource is in Preview.",
+			"When several overrides match a request, `metadata_only` takes precedence over `full_capture`. This resource is in Preview.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "UUID of the override.",
@@ -104,7 +104,7 @@ func (r *aiGatewayDataCaptureOverrideResource) Schema(_ context.Context, _ resou
 			},
 			"metadata_capture": schema.SetAttribute{
 				Description: "Items that Metadata-only capture adds to matching spans. Some items require others: `tool_output_size`, `tool_names`, and `conversation_shape` require `tool_usage`, and `input_size_by_role` requires `tool_output_size`. " +
-					"When unset, Terraform leaves the current items unchanged. Set an empty set to record no items.",
+					"When unset, Terraform leaves the current items unchanged. To record no items, use an empty set.",
 				Optional:    true,
 				Computed:    true,
 				ElementType: types.StringType,
