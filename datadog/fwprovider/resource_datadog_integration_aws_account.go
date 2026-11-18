@@ -21,7 +21,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/customtypes"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
@@ -120,10 +119,10 @@ type metricsTagFiltersModel struct {
 }
 
 type resourceTypeTagFiltersModel struct {
-	Service       types.String                               `tfsdk:"service"`
-	ResourceTypes types.List                                 `tfsdk:"resource_types"`
-	Custom        types.Bool                                 `tfsdk:"custom"`
-	Expression    customtypes.TagFilterExpressionStringValue `tfsdk:"expression"`
+	Service       types.String `tfsdk:"service"`
+	ResourceTypes types.List   `tfsdk:"resource_types"`
+	Custom        types.Bool   `tfsdk:"custom"`
+	Expression    types.String `tfsdk:"expression"`
 }
 
 type namespaceFiltersModel struct {
@@ -485,7 +484,6 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 									Description: "Whether this filter applies to custom resources.",
 								},
 								"expression": schema.StringAttribute{
-									CustomType:  customtypes.TagFilterExpressionStringType{},
 									Required:    true,
 									Description: "The tag filter expression used when collecting metrics for the specified resource types.",
 								},
@@ -851,7 +849,7 @@ func buildStateMetricsConfig(ctx context.Context, attributes datadogV2.AWSAccoun
 				resourceTypeTagFiltersTfItem.Custom = types.BoolValue(*custom)
 			}
 			if expression, ok := resourceTypeTagFiltersDd.GetExpressionOk(); ok {
-				resourceTypeTagFiltersTfItem.Expression = customtypes.TagFilterExpressionStringValue{StringValue: types.StringValue(*expression)}
+				resourceTypeTagFiltersTfItem.Expression = types.StringValue(*expression)
 			}
 			metricsConfigTf.ResourceTypeTagFilters = append(metricsConfigTf.ResourceTypeTagFilters, &resourceTypeTagFiltersTfItem)
 		}

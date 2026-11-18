@@ -324,6 +324,7 @@ resource "datadog_integration_aws_account" "foo" {
 }
 
 func TestAccIntegrationAwsAccount_ResourceTypeTagFilters(t *testing.T) {
+	t.Skip("TF-440: the API normalizes the expression (`!` to `NOT`, AND operand order), which causes an inconsistent result after apply. The AWS integration API owners (aws-integrations) must fix this.")
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
