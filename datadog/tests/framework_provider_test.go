@@ -36,6 +36,10 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	//Datadog API config.HTTPClient
 	config := common.NewConfiguration()
 
+	config.SetUnstableOperationEnabled("v2.CreateQuotas", true)
+	config.SetUnstableOperationEnabled("v2.GetQuota", true)
+	config.SetUnstableOperationEnabled("v2.UpdateQuota", true)
+	config.SetUnstableOperationEnabled("v2.DeleteQuota", true)
 	config.SetUnstableOperationEnabled("v2.CreateRUMOperation", true)
 	config.SetUnstableOperationEnabled("v2.GetRUMOperation", true)
 	config.SetUnstableOperationEnabled("v2.UpdateRUMOperation", true)
@@ -232,6 +236,37 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateExecutionPolicy", true)
 	config.SetUnstableOperationEnabled("v2.DeleteExecutionPolicy", true)
 	config.SetUnstableOperationEnabled("v2.ListExecutionPolicies", true)
+
+	// Enable AI Gateway rate limits
+	config.SetUnstableOperationEnabled("v2.CreateAiGatewayRateLimit", true)
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayRateLimit", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayRateLimit", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayRateLimit", true)
+
+	// Enable AI Gateway model groups
+	config.SetUnstableOperationEnabled("v2.CreateAiGatewayModelGroup", true)
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayModelGroup", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayModelGroup", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayModelGroup", true)
+
+	// Enable AI Gateway providers
+	config.SetUnstableOperationEnabled("v2.CreateAiGatewayProvider", true)
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayProvider", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayProvider", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayProvider", true)
+
+	// Enable AI Gateway policies
+	config.SetUnstableOperationEnabled("v2.UpsertAiGatewayPolicy", true)
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayPolicy", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayPolicy", true)
+	config.SetUnstableOperationEnabled("v2.ListAiGatewayPolicies", true)
+
+	// Enable AI Gateway routing rules
+	config.SetUnstableOperationEnabled("v2.CreateAiGatewayRoutingRule", true)
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayRoutingRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayRoutingRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayRoutingRule", true)
+	config.SetUnstableOperationEnabled("v2.ListAiGatewayRoutingRules", true)
 
 	// Enable AI Gateway budgets
 	config.SetUnstableOperationEnabled("v2.CreateAiGatewayBudget", true)
