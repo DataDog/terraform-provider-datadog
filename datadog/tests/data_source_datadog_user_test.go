@@ -11,7 +11,7 @@ import (
 )
 
 func TestAccDatadogUserDatasourceExactMatch(t *testing.T) {
-	t.Parallel()
+	// Do not run in parallel - concurrent provider setup races on shared API client state and breaks cassette replay
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	username := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
 	accProvider := testAccProvider(t, accProviders)
@@ -50,7 +50,7 @@ func TestAccDatadogUserDatasourceError(t *testing.T) {
 }
 
 func TestAccDatadogUserDatasourceWithExactMatch(t *testing.T) {
-	t.Parallel()
+	// Do not run in parallel - concurrent provider setup races on shared API client state and breaks cassette replay
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	email := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
 	accProvider := testAccProvider(t, accProviders)
@@ -73,7 +73,7 @@ func TestAccDatadogUserDatasourceWithExactMatch(t *testing.T) {
 }
 
 func TestAccDatadogUserDatasourceWithExactMatchError(t *testing.T) {
-	t.Parallel()
+	// Do not run in parallel - concurrent provider setup races on shared API client state and breaks cassette replay
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	email := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
 	accProvider := testAccProvider(t, accProviders)
@@ -96,7 +96,7 @@ func TestAccDatadogUserDatasourceWithExactMatchError(t *testing.T) {
 }
 
 func TestAccDatadogUserDatasourceWithExcludeServiceAccounts(t *testing.T) {
-	t.Parallel()
+	// Do not run in parallel - concurrent provider setup races on shared API client state and breaks cassette replay
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	serviceAccountName := ("tf-service-account-" + strings.ToLower(uniqueEntityName(ctx, t)))[:50]
 	email := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
@@ -118,7 +118,7 @@ func TestAccDatadogUserDatasourceWithExcludeServiceAccounts(t *testing.T) {
 }
 
 func TestAccDatadogUserDatasourceWithExcludeServiceAccountsWithError(t *testing.T) {
-	t.Parallel()
+	// Do not run in parallel - concurrent provider setup races on shared API client state and breaks cassette replay
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	serviceAccountName := ("tf-service-account-" + strings.ToLower(uniqueEntityName(ctx, t)))[:50]
 	email := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
@@ -140,7 +140,7 @@ func TestAccDatadogUserDatasourceWithExcludeServiceAccountsWithError(t *testing.
 }
 
 func TestAccDatadogUserDatasourceWithExcludeServiceAccountsMultipleUsersWithError(t *testing.T) {
-	t.Parallel()
+	// Do not run in parallel - concurrent provider setup races on shared API client state and breaks cassette replay
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	serviceAccountName := ("tf-service-account-" + strings.ToLower(uniqueEntityName(ctx, t)))[:50]
 	email := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
