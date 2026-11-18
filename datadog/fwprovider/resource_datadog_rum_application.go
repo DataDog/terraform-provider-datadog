@@ -258,7 +258,7 @@ func (r *rumApplicationResource) buildRumApplicationRequestBody(ctx context.Cont
 
 	attributes.SetName(state.Name.ValueString())
 	if !state.Type.IsNull() {
-		attributes.SetType(state.Type.ValueString())
+		attributes.SetType(datadogV2.RUMApplicationPlatformType(state.Type.ValueString()))
 	}
 
 	// Add Product Scales fields if they are set
@@ -267,7 +267,7 @@ func (r *rumApplicationResource) buildRumApplicationRequestBody(ctx context.Cont
 	}
 
 	if !state.ProductAnalyticsRetentionState.IsNull() && !state.ProductAnalyticsRetentionState.IsUnknown() {
-		attributes.SetProductAnalyticsRetentionState(datadogV2.RUMProductAnalyticsRetentionState(state.ProductAnalyticsRetentionState.ValueString()))
+		attributes.SetProductAnalyticsRetentionState(datadogV2.RUMProductAnalyticsRetentionStateRequest(state.ProductAnalyticsRetentionState.ValueString()))
 	}
 
 	if !state.CreateDefaultRetentionFilters.IsNull() && !state.CreateDefaultRetentionFilters.IsUnknown() {
@@ -287,7 +287,7 @@ func (r *rumApplicationResource) buildRumApplicationUpdateRequestBody(ctx contex
 
 	attributes.SetName(state.Name.ValueString())
 	if !state.Type.IsNull() {
-		attributes.SetType(state.Type.ValueString())
+		attributes.SetType(datadogV2.RUMApplicationPlatformType(state.Type.ValueString()))
 	}
 
 	// Add Product Scales fields if they are set
@@ -296,7 +296,7 @@ func (r *rumApplicationResource) buildRumApplicationUpdateRequestBody(ctx contex
 	}
 
 	if !state.ProductAnalyticsRetentionState.IsNull() && !state.ProductAnalyticsRetentionState.IsUnknown() {
-		attributes.SetProductAnalyticsRetentionState(datadogV2.RUMProductAnalyticsRetentionState(state.ProductAnalyticsRetentionState.ValueString()))
+		attributes.SetProductAnalyticsRetentionState(datadogV2.RUMProductAnalyticsRetentionStateRequest(state.ProductAnalyticsRetentionState.ValueString()))
 	}
 
 	req := datadogV2.NewRUMApplicationUpdateRequestWithDefaults()
