@@ -9,10 +9,10 @@ datadog/tests/cassettes/
 # Except Go module files
 /go.mod
 /go.sum
+# Except docs (assumed generated unless explicitly marked otherwise)
+/docs/
 
 /.generator                               @DataDog/api-reliability
-
-/docs/                                    @DataDog/api-reliability @DataDog/documentation
 
 # Dashboard mapping engine (shared by dashboard_v2 and powerpack_v2)
 datadog/dashboardmapping/                 @DataDog/dashboards-backend
@@ -131,8 +131,18 @@ datadog/**/*aws_wif*                              @DataDog/api-reliability @Data
 datadog/fwprovider/cloud_auth_mapping*           @DataDog/api-reliability @DataDog/delegated-auth-login @DataDog/credential-management
 
 # Team-specific
+docs/dashboard_widget_field_rules.md                      @DataDog/dashboards-backend
+docs/guides/dashboard_resource_names.md                   @DataDog/dashboards-backend
+docs/guides/powerpack_v2_migration.md                     @DataDog/dashboards-backend
+docs/guides/v4-upgrade-guide.md                           @DataDog/api-reliability
+docs/resources/compliance_custom_framework.md             @DataDog/k9-cloud-misconfigs
+docs/resources/integration_aws_account.md                 @DataDog/aws-integrations
 docs/resources/observability_pipeline.md                  @DataDog/observability-pipelines
+docs/resources/on_call_schedule.md                        @DataDog/on-call
 docs/resources/on_call_team_routing_rules.md              @DataDog/on-call
+docs/resources/on_call_team_routing_rules.md              @DataDog/on-call
+docs/resources/on_call_user_notification_channel.md       @DataDog/on-call
+docs/resources/on_call_user_notification_rule.md          @DataDog/on-call
 docs/resources/secure_embed_dashboard.md                  @DataDog/reporting-and-sharing
 docs/resources/security_findings_*.md                     @DataDog/k9-shared-capabilities
 docs/resources/service_access_token.md                    @DataDog/credential-management
