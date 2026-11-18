@@ -10,7 +10,7 @@ import (
 )
 
 func TestAccDatadogUsersDatasourceFilter(t *testing.T) {
-	// Do not run in parallel - concurrent provider setup races on shared API client state and breaks cassette replay
+	parallelIfLive(t)
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
 	email := uniq + "0@example.com"
@@ -40,7 +40,7 @@ func TestAccDatadogUsersDatasourceFilter(t *testing.T) {
 }
 
 func TestAccDatadogUsersDatasourceFilterStatus(t *testing.T) {
-	// Do not run in parallel - concurrent provider setup races on shared API client state and breaks cassette replay
+	parallelIfLive(t)
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
 	email := uniq + "0@example.com"

@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"testing"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -18,6 +19,16 @@ import (
 // usersListedTimeout bounds the wait for the eventually consistent users and
 // team members search indexes after a create.
 const usersListedTimeout = 2 * time.Minute
+
+// parallelIfLive runs t in parallel only with RECORD=none. Concurrent provider
+// construction writes a global provider pointer and races on the lazy API client
+// cache. Parallel replay of these tests fails intermittently with "requested
+// interaction not found"; serial replay does not.
+func parallelIfLive(t *testing.T) {
+	if !isRecording() && !isReplaying() {
+		t.Parallel()
+	}
+}
 
 type apiClientFunc func() (context.Context, *utils.ApiInstances)
 
