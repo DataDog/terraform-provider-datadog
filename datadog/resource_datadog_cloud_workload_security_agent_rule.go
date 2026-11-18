@@ -12,8 +12,8 @@ import (
 
 func resourceDatadogCloudWorkloadSecurityAgentRule() *schema.Resource {
 	return &schema.Resource{
-		Description:        "Provides a Datadog Cloud Workload Security Agent Rule API resource for agent rules. Deprecated, use datadog_csm_threats_agent_rules resource instead: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/csm_threats_agent_rule",
-		DeprecationMessage: "This resource is deprecated — use the datadog_csm_threats_agent_rules resource instead: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/csm_threats_agent_rule",
+		Description:        "Provides a Datadog Cloud Workload Security Agent Rule API resource for agent rules. Deprecated, use datadog_csm_threats_agent_rule resource instead: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/csm_threats_agent_rule. The API no longer creates, updates or deletes these agent rules, so this resource can only read and import existing ones.",
+		DeprecationMessage: "This resource is deprecated and can no longer create, update or delete agent rules. Use the datadog_csm_threats_agent_rule resource instead: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/csm_threats_agent_rule",
 		CreateContext:      resourceDatadogCloudWorkloadSecurityAgentRuleCreate,
 		ReadContext:        resourceDatadogCloudWorkloadSecurityAgentRuleRead,
 		UpdateContext:      resourceDatadogCloudWorkloadSecurityAgentRuleUpdate,
@@ -56,22 +56,12 @@ func cloudWorkloadSecurityAgentRuleSchema() map[string]*schema.Schema {
 	}
 }
 
+// legacyAgentRuleWritesRemoved explains why the API no longer takes this
+// resource's writes, and where agent rules are managed now.
+const legacyAgentRuleWritesRemoved = "The legacy Workload Protection agent rule API no longer creates, updates or deletes agent rules. Manage agent rules with the datadog_csm_threats_agent_rule resource instead: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/csm_threats_agent_rule"
+
 func resourceDatadogCloudWorkloadSecurityAgentRuleCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	providerConf := meta.(*ProviderConfiguration)
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
-
-	agentRuleCreate := buildCwsAgentRuleCreatePayload(d)
-
-	response, httpResponse, err := apiInstances.GetCSMThreatsApiV2().CreateCloudWorkloadSecurityAgentRule(auth, *agentRuleCreate)
-	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating cloud workload security agent rule")
-	}
-	if err := utils.CheckForUnparsed(response); err != nil {
-		return diag.FromErr(err)
-	}
-
-	return updateCloudWorkloadSecurityAgentRuleState(d, &response)
+	return diag.Diagnostics{{Severity: diag.Error, Summary: "cannot create a datadog_cloud_workload_security_agent_rule", Detail: legacyAgentRuleWritesRemoved}}
 }
 
 func resourceDatadogCloudWorkloadSecurityAgentRuleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -96,35 +86,18 @@ func resourceDatadogCloudWorkloadSecurityAgentRuleRead(ctx context.Context, d *s
 }
 
 func resourceDatadogCloudWorkloadSecurityAgentRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	providerConf := meta.(*ProviderConfiguration)
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
-
-	agentRuleId := d.Id()
-
-	agentRuleUpdate := buildCwsAgentRuleUpdatePayload(d)
-
-	agentRuleResponse, httpResponse, err := apiInstances.GetCSMThreatsApiV2().UpdateCloudWorkloadSecurityAgentRule(auth, agentRuleId, *agentRuleUpdate)
-
-	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating cloud workload security agent rule")
-	}
-
-	return updateCloudWorkloadSecurityAgentRuleState(d, &agentRuleResponse)
+	return diag.Diagnostics{{Severity: diag.Error, Summary: "cannot update a datadog_cloud_workload_security_agent_rule", Detail: legacyAgentRuleWritesRemoved}}
 }
 
+// resourceDatadogCloudWorkloadSecurityAgentRuleDelete only removes the rule from
+// state, so the resource can still be dropped from a configuration.
 func resourceDatadogCloudWorkloadSecurityAgentRuleDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	providerConf := meta.(*ProviderConfiguration)
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
-
-	agentRuleId := d.Id()
-
-	if httpResponse, err := apiInstances.GetCSMThreatsApiV2().DeleteCloudWorkloadSecurityAgentRule(auth, agentRuleId); err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting cloud workload security agent rule")
-	}
-
-	return nil
+	d.SetId("")
+	return diag.Diagnostics{{
+		Severity: diag.Warning,
+		Summary:  "the agent rule was removed from Terraform state but not deleted in Datadog",
+		Detail:   legacyAgentRuleWritesRemoved,
+	}}
 }
 
 func updateCloudWorkloadSecurityAgentRuleState(d *schema.ResourceData, agentRuleResponse *datadogV2.CloudWorkloadSecurityAgentRuleResponse) diag.Diagnostics {
@@ -139,39 +112,4 @@ func updateCloudWorkloadSecurityAgentRuleState(d *schema.ResourceData, agentRule
 	d.Set("name", attributes.GetName())
 
 	return nil
-}
-
-func buildCwsAgentRuleUpdatePayload(d *schema.ResourceData) *datadogV2.CloudWorkloadSecurityAgentRuleUpdateRequest {
-	payload := datadogV2.CloudWorkloadSecurityAgentRuleUpdateRequest{}
-	payload.Data.Type = datadogV2.CLOUDWORKLOADSECURITYAGENTRULETYPE_AGENT_RULE
-
-	if attr, ok := d.GetOk("description"); ok {
-		payload.Data.Attributes.SetDescription(attr.(string))
-	}
-
-	if attr, ok := d.GetOk("expression"); ok {
-		payload.Data.Attributes.SetExpression(attr.(string))
-	}
-
-	payload.Data.Attributes.SetEnabled(d.Get("enabled").(bool))
-
-	return &payload
-}
-
-func buildCwsAgentRuleCreatePayload(d *schema.ResourceData) *datadogV2.CloudWorkloadSecurityAgentRuleCreateRequest {
-	payload := datadogV2.CloudWorkloadSecurityAgentRuleCreateRequest{}
-	payload.Data.Type = datadogV2.CLOUDWORKLOADSECURITYAGENTRULETYPE_AGENT_RULE
-
-	payload.Data.Attributes.SetExpression(d.Get("expression").(string))
-	payload.Data.Attributes.SetName(d.Get("name").(string))
-
-	if attr, ok := d.GetOk("description"); ok {
-		payload.Data.Attributes.SetDescription(attr.(string))
-	}
-
-	if attr, ok := d.GetOk("enabled"); ok {
-		payload.Data.Attributes.SetEnabled(attr.(bool))
-	}
-
-	return &payload
 }

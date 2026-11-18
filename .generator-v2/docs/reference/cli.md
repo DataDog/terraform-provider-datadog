@@ -55,6 +55,7 @@ Generate Terraform artifacts from the OpenAPI spec.
 | `--hooks-root` | `string` | `datadog/fwprovider/hooks` | **Inert.** Accepted; hook discovery is not yet implemented. |
 | `--include` | `string` | _empty_ | Comma-separated artifact names to generate (empty = all) |
 | `--max-depth` | `int` | `20` | Hard limit on recursive $ref expansion |
+| `--only-tags` | `string` | _empty_ | Comma-separated x-datadog-tf-generator tags to generate and reconcile; all other artifacts are skipped and left untouched (empty = all) |
 | `--output-root` | `string` | `datadog/fwprovider` | Root directory for generated artifacts |
 | `--reconcile` | `bool` | `false` | Retire generated data sources no longer annotated (requires the full spec; incompatible with --include) |
 | `--report` | `string` | `-` | Where to write the run report ("-" = stdout) |

@@ -254,6 +254,31 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.GetAiGatewayModelGroup", true)
 	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayModelGroup", true)
 	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayModelGroup", true)
+
+	// Enable AI Gateway providers
+	config.SetUnstableOperationEnabled("v2.CreateAiGatewayProvider", true)
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayProvider", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayProvider", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayProvider", true)
+
+	// Enable AI Gateway policies
+	config.SetUnstableOperationEnabled("v2.UpsertAiGatewayPolicy", true)
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayPolicy", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayPolicy", true)
+	config.SetUnstableOperationEnabled("v2.ListAiGatewayPolicies", true)
+
+	// Enable AI Gateway routing rules
+	config.SetUnstableOperationEnabled("v2.CreateAiGatewayRoutingRule", true)
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayRoutingRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayRoutingRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayRoutingRule", true)
+	config.SetUnstableOperationEnabled("v2.ListAiGatewayRoutingRules", true)
+
+	// Enable AI Gateway budgets
+	config.SetUnstableOperationEnabled("v2.CreateAiGatewayBudget", true)
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayBudget", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayBudget", true)
+	config.SetUnstableOperationEnabled("v2.DeleteAiGatewayBudget", true)
 	fwprovider.EnableGeneratedUnstableOperations(config)
 
 	// Invalid retry env vars fail test setup instead of silently changing retry behavior.

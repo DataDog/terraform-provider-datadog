@@ -1,0 +1,1 @@
+terraform import datadog_ai_gateway_provider.openai "<provider_id>"
