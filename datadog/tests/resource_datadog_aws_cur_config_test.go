@@ -14,6 +14,7 @@ import (
 )
 
 func TestAccAwsCurConfigBasic(t *testing.T) {
+	skipUnlessReplaying(t, "needs an AWS CUR bucket that Datadog can read; the test org returns BUCKET_ACCESS")
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -63,6 +64,7 @@ func TestAccAwsCurConfigBasic(t *testing.T) {
 }
 
 func TestAccAwsCurConfigWithAccountFilters(t *testing.T) {
+	skipUnlessReplaying(t, "needs an AWS CUR bucket that Datadog can read; the test org returns BUCKET_ACCESS")
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -102,6 +104,7 @@ func TestAccAwsCurConfigWithAccountFilters(t *testing.T) {
 }
 
 func TestAccAwsCurConfigImport(t *testing.T) {
+	skipUnlessReplaying(t, "needs an AWS CUR bucket that Datadog can read; the test org returns BUCKET_ACCESS")
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
