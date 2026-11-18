@@ -12,7 +12,7 @@ import (
 func TestAccDatadogIntegrationSlackChannelsDatasource(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	reg, _ := regexp.Compile("[^a-zA-Z0-9]+")
+	reg := regexp.MustCompile("[^a-zA-Z0-9]+")
 	uniq := reg.ReplaceAllString(uniqueEntityName(ctx, t), "")
 
 	resource.Test(t, resource.TestCase{
