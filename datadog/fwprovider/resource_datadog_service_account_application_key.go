@@ -166,6 +166,19 @@ func (r *serviceAccountApplicationKeyResource) Create(ctx context.Context, reque
 	}
 	r.updateStateFullKey(ctx, &state, &resp)
 
+	// The create response types created_at as time.Time, which loses the API string format.
+	// Read stores the raw string, so take created_at from a GET to keep state stable on import and refresh.
+	getResp, _, err := r.Api.GetServiceAccountApplicationKey(r.Auth, serviceAccountId, state.ID.ValueString())
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving ServiceAccountApplicationKey after create"))
+		return
+	}
+	getData := getResp.GetData()
+	getAttributes := getData.GetAttributes()
+	if createdAt, ok := getAttributes.GetCreatedAtOk(); ok {
+		state.CreatedAt = types.StringValue(*createdAt)
+	}
+
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
