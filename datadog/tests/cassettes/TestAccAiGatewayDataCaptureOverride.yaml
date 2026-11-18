@@ -1,0 +1,541 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/data-capture/configuration
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 250
+        uncompressed: false
+        body: '{"data":{"id":"organization","type":"data-capture-configurations","attributes":{"configuration_revision":"c8523d9c7e30cc4b565d7b17eae577bb8f1db072a3d1cce10bfbf391d769aaab","default_metadata_capture":[],"default_mode":"metadata_only","overrides":[]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 44.773791ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 431
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"configuration_revision":"c8523d9c7e30cc4b565d7b17eae577bb8f1db072a3d1cce10bfbf391d769aaab","confirm_full_capture":false,"metadata_capture":["tool_usage"],"mode":"metadata_only","name":"tf-TestAccAiGatewayDataCaptureOverride-local-1794950137","scope":{"tags":{"ml_app":"tf-testaccaigatewaydatacaptureoverride-local-1794950137"}}},"id":"4552c94d-d798-58e8-8096-c83b0f321ade","type":"data-capture-overrides"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/data-capture/overrides
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 347
+        uncompressed: false
+        body: '{"data":{"id":"4552c94d-d798-58e8-8096-c83b0f321ade","type":"data-capture-overrides","attributes":{"metadata_capture":["tool_usage"],"mode":"metadata_only","name":"tf-TestAccAiGatewayDataCaptureOverride-local-1794950137","revision":1,"scope":{"tags":{"ml_app":"tf-testaccaigatewaydatacaptureoverride-local-1794950137"}},"scope_restricted":false}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 150.538041ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/data-capture/configuration
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 627
+        uncompressed: false
+        body: '{"data":{"id":"organization","type":"data-capture-configurations","attributes":{"configuration_revision":"c7f52f758d09d247e47b31b2727c79dbfe7ad9d392983a0ba6ee50d97c8e15b4","default_metadata_capture":[],"default_mode":"metadata_only","overrides":[{"scope_restricted":false,"id":"4552c94d-d798-58e8-8096-c83b0f321ade","name":"tf-TestAccAiGatewayDataCaptureOverride-local-1794950137","mode":"metadata_only","metadata_capture":["tool_usage"],"scope":{"tags":{"ml_app":"tf-testaccaigatewaydatacaptureoverride-local-1794950137"}},"revision":1,"created_at":"2026-11-17T21:15:40.236868Z","updated_at":"2026-11-17T21:15:40.236868Z"}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 42.18125ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/data-capture/configuration
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 627
+        uncompressed: false
+        body: '{"data":{"id":"organization","type":"data-capture-configurations","attributes":{"configuration_revision":"c7f52f758d09d247e47b31b2727c79dbfe7ad9d392983a0ba6ee50d97c8e15b4","default_metadata_capture":[],"default_mode":"metadata_only","overrides":[{"scope_restricted":false,"id":"4552c94d-d798-58e8-8096-c83b0f321ade","name":"tf-TestAccAiGatewayDataCaptureOverride-local-1794950137","mode":"metadata_only","metadata_capture":["tool_usage"],"scope":{"tags":{"ml_app":"tf-testaccaigatewaydatacaptureoverride-local-1794950137"}},"revision":1,"created_at":"2026-11-17T21:15:40.236868Z","updated_at":"2026-11-17T21:15:40.236868Z"}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 40.011584ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/data-capture/configuration
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 627
+        uncompressed: false
+        body: '{"data":{"id":"organization","type":"data-capture-configurations","attributes":{"configuration_revision":"c7f52f758d09d247e47b31b2727c79dbfe7ad9d392983a0ba6ee50d97c8e15b4","default_metadata_capture":[],"default_mode":"metadata_only","overrides":[{"scope_restricted":false,"id":"4552c94d-d798-58e8-8096-c83b0f321ade","name":"tf-TestAccAiGatewayDataCaptureOverride-local-1794950137","mode":"metadata_only","metadata_capture":["tool_usage"],"scope":{"tags":{"ml_app":"tf-testaccaigatewaydatacaptureoverride-local-1794950137"}},"revision":1,"created_at":"2026-11-17T21:15:40.236868Z","updated_at":"2026-11-17T21:15:40.236868Z"}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 41.727875ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/data-capture/configuration
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 627
+        uncompressed: false
+        body: '{"data":{"id":"organization","type":"data-capture-configurations","attributes":{"configuration_revision":"c7f52f758d09d247e47b31b2727c79dbfe7ad9d392983a0ba6ee50d97c8e15b4","default_metadata_capture":[],"default_mode":"metadata_only","overrides":[{"scope_restricted":false,"id":"4552c94d-d798-58e8-8096-c83b0f321ade","name":"tf-TestAccAiGatewayDataCaptureOverride-local-1794950137","mode":"metadata_only","metadata_capture":["tool_usage"],"scope":{"tags":{"ml_app":"tf-testaccaigatewaydatacaptureoverride-local-1794950137"}},"revision":1,"created_at":"2026-11-17T21:15:40.236868Z","updated_at":"2026-11-17T21:15:40.236868Z"}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 45.000792ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 439
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"configuration_revision":"c7f52f758d09d247e47b31b2727c79dbfe7ad9d392983a0ba6ee50d97c8e15b4","confirm_full_capture":false,"mode":"full_capture","name":"tf-TestAccAiGatewayDataCaptureOverride-local-1794950137-full","revision":1,"scope":{"tags":{"ml_app":"tf-testaccaigatewaydatacaptureoverride-local-1794950137","provider":"openai-test"}}},"id":"4552c94d-d798-58e8-8096-c83b0f321ade","type":"data-capture-overrides"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/data-capture/overrides/4552c94d-d798-58e8-8096-c83b0f321ade
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 167
+        uncompressed: false
+        body: '{"errors":[{"status":"400","title":"Bad Request","detail":"attribute \"confirm_full_capture\" confirm that this change may enable Full capture for affected traffic"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 400 Bad Request
+        code: 400
+        duration: 69.083833ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/data-capture/configuration
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 627
+        uncompressed: false
+        body: '{"data":{"id":"organization","type":"data-capture-configurations","attributes":{"configuration_revision":"c7f52f758d09d247e47b31b2727c79dbfe7ad9d392983a0ba6ee50d97c8e15b4","default_metadata_capture":[],"default_mode":"metadata_only","overrides":[{"scope_restricted":false,"id":"4552c94d-d798-58e8-8096-c83b0f321ade","name":"tf-TestAccAiGatewayDataCaptureOverride-local-1794950137","mode":"metadata_only","metadata_capture":["tool_usage"],"scope":{"tags":{"ml_app":"tf-testaccaigatewaydatacaptureoverride-local-1794950137"}},"revision":1,"created_at":"2026-11-17T21:15:40.236868Z","updated_at":"2026-11-17T21:15:40.236868Z"}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 43.595959ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/data-capture/configuration
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 627
+        uncompressed: false
+        body: '{"data":{"id":"organization","type":"data-capture-configurations","attributes":{"configuration_revision":"c7f52f758d09d247e47b31b2727c79dbfe7ad9d392983a0ba6ee50d97c8e15b4","default_metadata_capture":[],"default_mode":"metadata_only","overrides":[{"scope_restricted":false,"id":"4552c94d-d798-58e8-8096-c83b0f321ade","name":"tf-TestAccAiGatewayDataCaptureOverride-local-1794950137","mode":"metadata_only","metadata_capture":["tool_usage"],"scope":{"tags":{"ml_app":"tf-testaccaigatewaydatacaptureoverride-local-1794950137"}},"revision":1,"created_at":"2026-11-17T21:15:40.236868Z","updated_at":"2026-11-17T21:15:40.236868Z"}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 49.023334ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 438
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"configuration_revision":"c7f52f758d09d247e47b31b2727c79dbfe7ad9d392983a0ba6ee50d97c8e15b4","confirm_full_capture":true,"mode":"full_capture","name":"tf-TestAccAiGatewayDataCaptureOverride-local-1794950137-full","revision":1,"scope":{"tags":{"ml_app":"tf-testaccaigatewaydatacaptureoverride-local-1794950137","provider":"openai-test"}}},"id":"4552c94d-d798-58e8-8096-c83b0f321ade","type":"data-capture-overrides"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/data-capture/overrides/4552c94d-d798-58e8-8096-c83b0f321ade
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 376
+        uncompressed: false
+        body: '{"data":{"id":"4552c94d-d798-58e8-8096-c83b0f321ade","type":"data-capture-overrides","attributes":{"metadata_capture":["tool_usage"],"mode":"full_capture","name":"tf-TestAccAiGatewayDataCaptureOverride-local-1794950137-full","revision":2,"scope":{"tags":{"ml_app":"tf-testaccaigatewaydatacaptureoverride-local-1794950137","provider":"openai-test"}},"scope_restricted":false}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 76.831208ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/data-capture/configuration
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 656
+        uncompressed: false
+        body: '{"data":{"id":"organization","type":"data-capture-configurations","attributes":{"configuration_revision":"8e159877a110cff2c0bca5581c78ca124f9949bb62dd2d32cf9f7779734e8550","default_metadata_capture":[],"default_mode":"metadata_only","overrides":[{"scope_restricted":false,"id":"4552c94d-d798-58e8-8096-c83b0f321ade","name":"tf-TestAccAiGatewayDataCaptureOverride-local-1794950137-full","mode":"full_capture","metadata_capture":["tool_usage"],"scope":{"tags":{"ml_app":"tf-testaccaigatewaydatacaptureoverride-local-1794950137","provider":"openai-test"}},"revision":2,"created_at":"2026-11-17T21:15:40.236868Z","updated_at":"2026-11-17T21:15:43.891714Z"}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 43.763958ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/data-capture/configuration
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 656
+        uncompressed: false
+        body: '{"data":{"id":"organization","type":"data-capture-configurations","attributes":{"configuration_revision":"8e159877a110cff2c0bca5581c78ca124f9949bb62dd2d32cf9f7779734e8550","default_metadata_capture":[],"default_mode":"metadata_only","overrides":[{"scope_restricted":false,"id":"4552c94d-d798-58e8-8096-c83b0f321ade","name":"tf-TestAccAiGatewayDataCaptureOverride-local-1794950137-full","mode":"full_capture","metadata_capture":["tool_usage"],"scope":{"tags":{"ml_app":"tf-testaccaigatewaydatacaptureoverride-local-1794950137","provider":"openai-test"}},"revision":2,"created_at":"2026-11-17T21:15:40.236868Z","updated_at":"2026-11-17T21:15:43.891714Z"}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 41.618541ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/data-capture/configuration
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 656
+        uncompressed: false
+        body: '{"data":{"id":"organization","type":"data-capture-configurations","attributes":{"configuration_revision":"8e159877a110cff2c0bca5581c78ca124f9949bb62dd2d32cf9f7779734e8550","default_metadata_capture":[],"default_mode":"metadata_only","overrides":[{"scope_restricted":false,"id":"4552c94d-d798-58e8-8096-c83b0f321ade","name":"tf-TestAccAiGatewayDataCaptureOverride-local-1794950137-full","mode":"full_capture","metadata_capture":["tool_usage"],"scope":{"tags":{"ml_app":"tf-testaccaigatewaydatacaptureoverride-local-1794950137","provider":"openai-test"}},"revision":2,"created_at":"2026-11-17T21:15:40.236868Z","updated_at":"2026-11-17T21:15:43.891714Z"}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 41.737041ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/data-capture/configuration
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 656
+        uncompressed: false
+        body: '{"data":{"id":"organization","type":"data-capture-configurations","attributes":{"configuration_revision":"8e159877a110cff2c0bca5581c78ca124f9949bb62dd2d32cf9f7779734e8550","default_metadata_capture":[],"default_mode":"metadata_only","overrides":[{"scope_restricted":false,"id":"4552c94d-d798-58e8-8096-c83b0f321ade","name":"tf-TestAccAiGatewayDataCaptureOverride-local-1794950137-full","mode":"full_capture","metadata_capture":["tool_usage"],"scope":{"tags":{"ml_app":"tf-testaccaigatewaydatacaptureoverride-local-1794950137","provider":"openai-test"}},"revision":2,"created_at":"2026-11-17T21:15:40.236868Z","updated_at":"2026-11-17T21:15:43.891714Z"}]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 43.134667ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 235
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"configuration_revision":"8e159877a110cff2c0bca5581c78ca124f9949bb62dd2d32cf9f7779734e8550","confirm_full_capture":true,"revision":2},"id":"4552c94d-d798-58e8-8096-c83b0f321ade","type":"data-capture-overrides"}}
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/data-capture/overrides/4552c94d-d798-58e8-8096-c83b0f321ade
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 100.494666ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/data-capture/configuration
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 250
+        uncompressed: false
+        body: '{"data":{"id":"organization","type":"data-capture-configurations","attributes":{"configuration_revision":"c8523d9c7e30cc4b565d7b17eae577bb8f1db072a3d1cce10bfbf391d769aaab","default_metadata_capture":[],"default_mode":"metadata_only","overrides":[]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 43.250291ms
