@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
@@ -191,25 +192,26 @@ func (r *tagIndexingRuleResource) ImportState(ctx context.Context, request resou
 // fields on dynamic_tags only take effect (and are only accepted by the API) when exclude_tags_mode
 // is true.
 func (r *tagIndexingRuleResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
-	var config tagIndexingRuleModel
-	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
+	// Read only the attributes this check needs: options can be unknown as a whole (for example when it
+	// comes from a module variable), and the pointer structs in tagIndexingRuleModel cannot hold that.
+	var excludeTagsMode types.Bool
+	response.Diagnostics.Append(request.Config.GetAttribute(ctx, frameworkPath.Root("exclude_tags_mode"), &excludeTagsMode)...)
+	var dynamicTags types.Object
+	response.Diagnostics.Append(request.Config.GetAttribute(ctx, frameworkPath.Root("options").AtName("data").AtName("dynamic_tags"), &dynamicTags)...)
+	if response.Diagnostics.HasError() || excludeTagsMode.IsUnknown() || dynamicTags.IsNull() || dynamicTags.IsUnknown() {
+		return
+	}
+
+	var dt tagIndexingRuleDynamicTagsModel
+	response.Diagnostics.Append(dynamicTags.As(ctx, &dt, basetypes.ObjectAsOptions{})...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	if config.Options == nil || config.Options.Data == nil || config.Options.Data.DynamicTags == nil {
-		return
-	}
-
-	if config.ExcludeTagsMode.IsUnknown() {
-		return
-	}
-
-	dt := config.Options.Data.DynamicTags
 	usageFieldSet := (!dt.ExcludeNotQueriedWindowSeconds.IsNull() && !dt.ExcludeNotQueriedWindowSeconds.IsUnknown()) ||
 		(!dt.ExcludeNotUsedInAssets.IsNull() && !dt.ExcludeNotUsedInAssets.IsUnknown())
 
-	if usageFieldSet && !config.ExcludeTagsMode.ValueBool() {
+	if usageFieldSet && !excludeTagsMode.ValueBool() {
 		response.Diagnostics.AddAttributeError(
 			frameworkPath.Root("exclude_tags_mode"),
 			"Invalid dynamic_tags usage configuration",
