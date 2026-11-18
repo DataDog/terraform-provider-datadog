@@ -48,6 +48,7 @@ var Resources = []func() resource.Resource{
 	NewAgentlessScanningAwsScanOptionsResource,
 	NewAgentlessScanningAzureScanOptionsResource,
 	NewAgentlessScanningGcpScanOptionsResource,
+	NewAiGatewayBudgetResource,
 	NewOpenapiApiResource,
 	NewAPIKeyResource,
 	NewUsageQuotaResource,
@@ -1050,6 +1051,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetQuota", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateQuota", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteQuota", true)
+
+	// Enable AI Gateway budgets
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAiGatewayBudget", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayBudget", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAiGatewayBudget", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAiGatewayBudget", true)
 
 	EnableGeneratedUnstableOperations(ddClientConfig)
 
