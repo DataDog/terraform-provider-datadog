@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -98,7 +99,13 @@ func (r *csmThreatsPolicyResource) Create(ctx context.Context, request resource.
 		response.Diagnostics.AddError("error while parsing resource", err.Error())
 	}
 
-	res, _, err := r.api.CreateCSMThreatsAgentPolicy(r.auth, *policyPayload)
+	var res datadogV2.CloudWorkloadSecurityAgentPolicyResponse
+	err = retryOnCSMThreatsLocked(ctx, csmThreatsLockedRetryTimeout, func() (*http.Response, error) {
+		var httpResp *http.Response
+		var callErr error
+		res, httpResp, callErr = r.api.CreateCSMThreatsAgentPolicy(r.auth, *policyPayload)
+		return httpResp, callErr
+	})
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating policy"))
 		return
@@ -153,7 +160,13 @@ func (r *csmThreatsPolicyResource) Update(ctx context.Context, request resource.
 		response.Diagnostics.AddError("error while parsing resource", err.Error())
 	}
 
-	res, _, err := r.api.UpdateCSMThreatsAgentPolicy(r.auth, state.Id.ValueString(), *policyPayload)
+	var res datadogV2.CloudWorkloadSecurityAgentPolicyResponse
+	err = retryOnCSMThreatsLocked(ctx, csmThreatsLockedRetryTimeout, func() (*http.Response, error) {
+		var httpResp *http.Response
+		var callErr error
+		res, httpResp, callErr = r.api.UpdateCSMThreatsAgentPolicy(r.auth, state.Id.ValueString(), *policyPayload)
+		return httpResp, callErr
+	})
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating agent rule"))
 		return
@@ -179,7 +192,12 @@ func (r *csmThreatsPolicyResource) Delete(ctx context.Context, request resource.
 
 	id := state.Id.ValueString()
 
-	httpResp, err := r.api.DeleteCSMThreatsAgentPolicy(r.auth, id)
+	var httpResp *http.Response
+	err := retryOnCSMThreatsLocked(ctx, csmThreatsLockedRetryTimeout, func() (*http.Response, error) {
+		var callErr error
+		httpResp, callErr = r.api.DeleteCSMThreatsAgentPolicy(r.auth, id)
+		return httpResp, callErr
+	})
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
