@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"sort"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -113,29 +114,33 @@ func (d *datadogIntegrationSlackChannelsDataSource) Read(ctx context.Context, re
 
 	accountName := state.AccountName.ValueString()
 
-	ddResp, _, err := d.Api.GetSlackIntegrationChannels(d.Auth, accountName)
+	ddResp, httpResp, err := d.Api.GetSlackIntegrationChannels(d.Auth, accountName)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing Slack integration channels"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, "error listing Slack integration channels"), ""))
 		return
 	}
 
+	sort.Slice(ddResp, func(i, j int) bool { return ddResp[i].GetName() < ddResp[j].GetName() })
 	state.Channels = make([]integrationSlackChannelModel, 0, len(ddResp))
 	for _, channel := range ddResp {
 		if err := utils.CheckForUnparsed(channel); err != nil {
 			response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 			return
 		}
-		display := channel.GetDisplay()
-		state.Channels = append(state.Channels, integrationSlackChannelModel{
+		channelModel := integrationSlackChannelModel{
 			Name: types.StringValue(channel.GetName()),
-			Display: &integrationSlackChannelDisplayModel{
-				Message:     types.BoolValue(display.GetMessage()),
-				Notified:    types.BoolValue(display.GetNotified()),
-				Snapshot:    types.BoolValue(display.GetSnapshot()),
-				Tags:        types.BoolValue(display.GetTags()),
-				MuteButtons: types.BoolValue(display.GetMuteButtons()),
-			},
-		})
+		}
+		// The API defaults every display flag to true, so a missing value must stay null rather than read as false.
+		if display, ok := channel.GetDisplayOk(); ok {
+			channelModel.Display = &integrationSlackChannelDisplayModel{
+				Message:     types.BoolPointerValue(display.Message),
+				Notified:    types.BoolPointerValue(display.Notified),
+				Snapshot:    types.BoolPointerValue(display.Snapshot),
+				Tags:        types.BoolPointerValue(display.Tags),
+				MuteButtons: types.BoolPointerValue(display.MuteButtons),
+			}
+		}
+		state.Channels = append(state.Channels, channelModel)
 	}
 	state.ID = types.StringValue(accountName)
 

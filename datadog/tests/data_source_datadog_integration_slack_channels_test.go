@@ -62,7 +62,6 @@ func testAccDatasourceIntegrationSlackChannelsConfig(uniq string) string {
 
 		data "datadog_integration_slack_channels" "foo" {
 			account_name = datadog_integration_slack_channel.foo.account_name
-			depends_on   = [datadog_integration_slack_channel.foo]
 		}
 	`, uniq)
 }
