@@ -1,30 +1,4 @@
 skipped_tests:
-  # Reference Tables — Cloud storage not configured (6 tests)
-  - test: TestAccReferenceTable_Import
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccReferenceTable_SchemaOnCreate
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccReferenceTable_UpdateSyncEnabled
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccReferenceTableS3_Basic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogReferenceTableDataSource
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogReferenceTableRowsDataSource
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-
   # Metric datasources — Metrics don't exist in org (3 tests)
   - test: TestAccDatadogMetricsDatasource
     reason: "Initial sync of tests failing on master branch"
