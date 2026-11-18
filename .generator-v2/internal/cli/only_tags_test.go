@@ -117,9 +117,6 @@ func TestGenerateOnlyTagsReconcileRetiresByOwnerTag(t *testing.T) {
 	if strings.Contains(mustRead(t, filepath.Join(out, "datasources_generated.go")), emit.DatasourceConstructor("owned_teams")) {
 		t.Error("registry kept retired owned_teams")
 	}
-	if strings.Contains(mustRead(t, ownersPath(out)), "owned_teams") {
-		t.Error("owners file kept retired owned_teams")
-	}
 	assertKept(t, out, "teams", "other_teams", "unowned")
 }
 

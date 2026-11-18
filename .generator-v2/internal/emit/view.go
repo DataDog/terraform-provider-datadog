@@ -23,6 +23,11 @@ const (
 // Every field is derived from a *model.Artifact, which is what lets one set of
 // recursive partials serve both the singular and plural shapes.
 type DataSourceView struct {
+	// OwnerTag is the x-datadog-tf-generator tag that declared the artifact,
+	// recorded in the source so a scoped --reconcile can attribute the file
+	// once its annotation is gone. Empty omits the marker.
+	OwnerTag string
+
 	// Cardinality picks the singular or plural template.
 	Cardinality Cardinality
 

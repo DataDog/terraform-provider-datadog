@@ -84,9 +84,6 @@ func retireArtifact(name, outputRoot, testsOutputRoot, docsRoot, examplesOutputR
 	if _, err := emit.RemoveEndpointTag(providerTestPath, emit.EndpointTagTestKey(name), check); err != nil {
 		return failEntry(entry, err)
 	}
-	if err := removeOwner(outputRoot, name, check); err != nil {
-		return failEntry(entry, err)
-	}
 	entry.Status = model.ArtifactStatusRetired
 	return entry
 }
@@ -155,7 +152,7 @@ func hasRecordedCassette(testPath, cassettesDir string) (bool, string) {
 //
 // A non-empty onlyTags restricts retirement to orphans attributable to a
 // selected tag. An orphan's annotation is gone, so its owner tag is read from
-// the owners file; an orphan with no recorded owner, or under an unselected
+// the tfgen:owner-tag marker in its generated source; an orphan with no recorded owner, or under an unselected
 // tag, is reported skipped and left untouched.
 func reconcileOrphans(outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot string, desired, onlyTags map[string]bool, check bool) ([]model.ArtifactReportEntry, error) {
 	genPath := filepath.Join(outputRoot, "datasources_generated.go")
@@ -170,7 +167,7 @@ func reconcileOrphans(outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot 
 
 	var owners map[string]string
 	if len(onlyTags) > 0 {
-		owners, err = readOwners(outputRoot)
+		owners, err = generatedOwnerTags(outputRoot)
 		if err != nil {
 			return nil, err
 		}
@@ -215,6 +212,29 @@ func reconcileOrphans(outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot 
 		entries = append(entries, retireArtifact(name, outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot, check))
 	}
 	return entries, nil
+}
+
+// generatedOwnerTags maps artifact name to the owner tag recorded in its
+// generated source, skipping files with no marker.
+func generatedOwnerTags(outputRoot string) (map[string]string, error) {
+	matches, err := filepath.Glob(filepath.Join(outputRoot, "data_source_datadog_*.go"))
+	if err != nil {
+		return nil, err
+	}
+	out := map[string]string{}
+	for _, path := range matches {
+		if strings.HasSuffix(path, "_test.go") {
+			continue
+		}
+		data, err := os.ReadFile(path)
+		if err != nil {
+			return nil, err
+		}
+		if tag, ok := emit.GeneratedOwnerTag(data); ok && emit.IsGeneratedSource(data) {
+			out[strings.TrimSuffix(strings.TrimPrefix(filepath.Base(path), "data_source_datadog_"), ".go")] = tag
+		}
+	}
+	return out, nil
 }
 
 // generatedArtifactNames maps constructor to artifact name by scanning

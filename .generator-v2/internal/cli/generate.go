@@ -105,7 +105,6 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 				// --only-tags, an unselected artifact is not generated but is still
 				// desired, so reconcile never retires it.
 				annotated := map[string]bool{}
-				owners := map[string]string{} // generated data source → owner tag
 
 				// Resolve the provider's helper accessors first: they take precedence
 				// over derived names, keeping cached clients and aliased spellings
@@ -186,7 +185,6 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 					}
 					if reg != nil {
 						registrations = append(registrations, *reg)
-						owners[op.Tracking.ArtifactName] = op.Tracking.Tag
 					}
 				}
 
@@ -197,11 +195,6 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 					var resourceWiringChanged bool
 					resourceWiringChanged, deferredErr = wireGeneratedResources(outputRoot, resourceRegistrations, check)
 					wiringChanged = wiringChanged || resourceWiringChanged
-				}
-				if deferredErr == nil {
-					var ownersChanged bool
-					ownersChanged, deferredErr = syncOwners(outputRoot, owners, check)
-					wiringChanged = wiringChanged || ownersChanged
 				}
 				// One registry for both kinds: the SDK gates a beta endpoint per
 				// operation, so an x-unstable GET behind a data source is enabled
@@ -337,6 +330,7 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examples
 	if err := emit.ApplyAPIAccessor(&view, accessors); err != nil {
 		return failEntry(entry, err), nil, nil, nil
 	}
+	view.OwnerTag = op.Tracking.Tag
 	// Members the emit flattener dropped (e.g. relationships) ride along at the
 	// severity the drop warrants.
 	for _, d := range view.Dropped {
