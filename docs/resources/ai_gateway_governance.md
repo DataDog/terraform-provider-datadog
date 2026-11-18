@@ -2,12 +2,12 @@
 page_title: "datadog_ai_gateway_governance Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Manages the organization-wide AI Gateway governance controls: the default data capture mode, the metadata that Metadata-only capture records, and the zero data retention requirement. An organization has one set of these controls, so declare this resource at most once per organization. Deleting the resource removes it from the Terraform state and leaves the controls unchanged. This resource is in Preview.
+  Manages the organization-wide AI Gateway governance controls: the default data capture mode, the metadata that Metadata-only capture records, and the zero data retention (ZDR) requirement. This resource is in Preview. An organization has one set of these controls, so declare this resource at most once per organization. Deleting the resource removes it from the Terraform state and leaves the controls unchanged.
 ---
 
 # datadog_ai_gateway_governance (Resource)
 
-Manages the organization-wide AI Gateway governance controls: the default data capture mode, the metadata that Metadata-only capture records, and the zero data retention requirement. An organization has one set of these controls, so declare this resource at most once per organization. Deleting the resource removes it from the Terraform state and leaves the controls unchanged. This resource is in Preview.
+Manages the organization-wide AI Gateway governance controls: the default data capture mode, the metadata that Metadata-only capture records, and the zero data retention (ZDR) requirement. This resource is in Preview. An organization has one set of these controls, so declare this resource at most once per organization. Deleting the resource removes it from the Terraform state and leaves the controls unchanged.
 
 ## Example Usage
 
@@ -24,11 +24,11 @@ resource "datadog_ai_gateway_governance" "this" {
 
 ### Required
 
-- `data_capture_mode` (String) Data capture mode for requests that no data capture override matches. `metadata_only` records request metadata without prompt or completion content; `full_capture` also records content. Valid values are `metadata_only`, `full_capture`.
+- `data_capture_mode` (String) Default data capture mode, used for requests that don't match a data capture override. `metadata_only` records request metadata without prompt or completion content. `full_capture` also records prompt and completion content. Valid values are `metadata_only`, `full_capture`.
 
 ### Optional
 
-- `metadata_capture` (Set of String) Items that Metadata-only capture adds to spans. Some items require others: `tool_output_size`, `tool_names`, and `conversation_shape` require `tool_usage`, and `input_size_by_role` requires `tool_output_size`. When unset, Terraform leaves the current items unchanged. Set an empty set to record no items.
+- `metadata_capture` (Set of String) Items that Metadata-only capture adds to spans. Some items require others: `tool_output_size`, `tool_names`, and `conversation_shape` require `tool_usage`, and `input_size_by_role` requires `tool_output_size`. When unset, Terraform leaves the current items unchanged. To record no items, set this attribute to an empty set (`[]`).
 - `zdr_mode` (String) Whether every request must reach a provider covered by a zero data retention agreement (`required`) or not (`off`). When unset, Terraform leaves the current requirement unchanged. Valid values are `off`, `required`.
 
 ### Read-Only

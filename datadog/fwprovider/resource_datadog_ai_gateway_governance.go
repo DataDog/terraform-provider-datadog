@@ -55,9 +55,9 @@ func (r *aiGatewayGovernanceResource) Metadata(_ context.Context, request resour
 
 func (r *aiGatewayGovernanceResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Manages the organization-wide AI Gateway governance controls: the default data capture mode, the metadata that Metadata-only capture records, and the zero data retention requirement. " +
-			"An organization has one set of these controls, so declare this resource at most once per organization. Deleting the resource removes it from the Terraform state and leaves the controls unchanged. " +
-			"This resource is in Preview.",
+		Description: "Manages the organization-wide AI Gateway governance controls: the default data capture mode, the metadata that Metadata-only capture records, and the zero data retention (ZDR) requirement. " +
+			"This resource is in Preview. An organization has one set of these controls, so declare this resource at most once per organization. " +
+			"Deleting the resource removes it from the Terraform state and leaves the controls unchanged.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "Always `organization`.",
@@ -67,7 +67,7 @@ func (r *aiGatewayGovernanceResource) Schema(_ context.Context, _ resource.Schem
 				},
 			},
 			"data_capture_mode": schema.StringAttribute{
-				Description: "Data capture mode for requests that no data capture override matches. `metadata_only` records request metadata without prompt or completion content; `full_capture` also records content.",
+				Description: "Default data capture mode, used for requests that don't match a data capture override. `metadata_only` records request metadata without prompt or completion content. `full_capture` also records prompt and completion content.",
 				Required:    true,
 				Validators: []validator.String{
 					validators.NewEnumValidator[validator.String](datadogV2.NewAiGatewayDataCaptureModeFromValue),
@@ -75,7 +75,7 @@ func (r *aiGatewayGovernanceResource) Schema(_ context.Context, _ resource.Schem
 			},
 			"metadata_capture": schema.SetAttribute{
 				Description: "Items that Metadata-only capture adds to spans. Some items require others: `tool_output_size`, `tool_names`, and `conversation_shape` require `tool_usage`, and `input_size_by_role` requires `tool_output_size`. " +
-					"When unset, Terraform leaves the current items unchanged. Set an empty set to record no items.",
+					"When unset, Terraform leaves the current items unchanged. To record no items, set this attribute to an empty set (`[]`).",
 				Optional:    true,
 				Computed:    true,
 				ElementType: types.StringType,
