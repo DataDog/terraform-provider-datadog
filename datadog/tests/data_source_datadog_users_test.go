@@ -43,7 +43,7 @@ func TestAccDatadogUsersDatasourceFilterStatus(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
-	expectedUserName := "user 0"
+	email := uniq + "0@example.com"
 	status := "Pending"
 
 	resource.Test(t, resource.TestCase{
@@ -52,12 +52,15 @@ func TestAccDatadogUsersDatasourceFilterStatus(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceUsersResourcesConfig(uniq),
-				Check:  testAccCheckUsersListed(frameworkAPIClient(providers.frameworkProvider), uniq+"0@example.com", status, 1),
+				Check:  testAccCheckUsersListed(frameworkAPIClient(providers.frameworkProvider), email, status, 1),
 			},
 			{
-				Config: testAccDatasourceUsersFilterStatusConfig(uniq, expectedUserName, status),
+				Config: testAccDatasourceUsersFilterStatusConfig(uniq, email, status),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("data.datadog_users.all_users", "users.0.name", expectedUserName),
+					resource.TestCheckResourceAttr("data.datadog_users.all_users", "users.#", "1"),
+					resource.TestCheckResourceAttr("data.datadog_users.all_users", "users.0.email", email),
+					resource.TestCheckResourceAttr("data.datadog_users.all_users", "users.0.name", "user 0"),
+					resource.TestCheckResourceAttr("data.datadog_users.all_users", "users.0.status", status),
 					checkRessourceAttributeRegex("data.datadog_users.all_users", "users.0.icon", "https://secure.gravatar.com/avatar/.*"),
 				),
 			},
