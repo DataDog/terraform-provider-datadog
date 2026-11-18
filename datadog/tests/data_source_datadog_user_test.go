@@ -22,6 +22,10 @@ func TestAccDatadogUserDatasourceExactMatch(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
 		Steps: []resource.TestStep{
 			{
+				Config: testAccDatasourceUserResourceConfig(username),
+				Check:  testAccCheckUsersListed(sdkAPIClient(accProvider), username, "", 1),
+			},
+			{
 				Config: testAccDatasourceUserConfig(username),
 				Check:  resource.TestCheckResourceAttr("data.datadog_user.test", "email", username),
 			},
@@ -57,6 +61,10 @@ func TestAccDatadogUserDatasourceWithExactMatch(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
 		Steps: []resource.TestStep{
 			{
+				Config: testAccDatasourceUserWithExactMatchResourcesConfig(email),
+				Check:  testAccCheckUsersListed(sdkAPIClient(accProvider), email, "", 2),
+			},
+			{
 				Config: testAccDatasourceUserWithExactMatchConfig(email, "true"),
 				Check:  resource.TestCheckResourceAttr("data.datadog_user.test", "email", email),
 			},
@@ -76,6 +84,10 @@ func TestAccDatadogUserDatasourceWithExactMatchError(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
 		Steps: []resource.TestStep{
 			{
+				Config: testAccDatasourceUserWithExactMatchResourcesConfig(email),
+				Check:  testAccCheckUsersListed(sdkAPIClient(accProvider), email, "", 2),
+			},
+			{
 				Config:      testAccDatasourceUserWithExactMatchConfig(email, "false"),
 				ExpectError: regexp.MustCompile("your query returned more than one result for filter"),
 			},
@@ -85,7 +97,7 @@ func TestAccDatadogUserDatasourceWithExactMatchError(t *testing.T) {
 
 func TestAccDatadogUserDatasourceWithExcludeServiceAccounts(t *testing.T) {
 	t.Parallel()
-	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	serviceAccountName := ("tf-service-account-" + strings.ToLower(uniqueEntityName(ctx, t)))[:50]
 	email := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
 
@@ -93,6 +105,10 @@ func TestAccDatadogUserDatasourceWithExcludeServiceAccounts(t *testing.T) {
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
+			{
+				Config: testAccDatasourceUserWithExcludeServiceAccountsResourcesConfig(email, serviceAccountName),
+				Check:  testAccCheckUsersListed(frameworkAPIClient(providers.frameworkProvider), email, "", 2),
+			},
 			{
 				Config: testAccDatasourceUserWithExcludeServiceAccountsConfig(email, serviceAccountName, "true"),
 				Check:  resource.TestCheckResourceAttr("data.datadog_user.test", "email", email),
@@ -103,7 +119,7 @@ func TestAccDatadogUserDatasourceWithExcludeServiceAccounts(t *testing.T) {
 
 func TestAccDatadogUserDatasourceWithExcludeServiceAccountsWithError(t *testing.T) {
 	t.Parallel()
-	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	serviceAccountName := ("tf-service-account-" + strings.ToLower(uniqueEntityName(ctx, t)))[:50]
 	email := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
 
@@ -111,6 +127,10 @@ func TestAccDatadogUserDatasourceWithExcludeServiceAccountsWithError(t *testing.
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
+			{
+				Config: testAccDatasourceUserWithExcludeServiceAccountsResourcesConfig(email, serviceAccountName),
+				Check:  testAccCheckUsersListed(frameworkAPIClient(providers.frameworkProvider), email, "", 2),
+			},
 			{
 				Config:      testAccDatasourceUserWithExcludeServiceAccountsConfig(email, serviceAccountName, "false"),
 				ExpectError: regexp.MustCompile("your query returned more than one result for filter"),
@@ -121,7 +141,7 @@ func TestAccDatadogUserDatasourceWithExcludeServiceAccountsWithError(t *testing.
 
 func TestAccDatadogUserDatasourceWithExcludeServiceAccountsMultipleUsersWithError(t *testing.T) {
 	t.Parallel()
-	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	serviceAccountName := ("tf-service-account-" + strings.ToLower(uniqueEntityName(ctx, t)))[:50]
 	email := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
 
@@ -130,6 +150,10 @@ func TestAccDatadogUserDatasourceWithExcludeServiceAccountsMultipleUsersWithErro
 		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
+				Config: testAccDatasourceUserWithExcludeServiceAccountsMultipleUsersResourcesConfig(email, serviceAccountName),
+				Check:  testAccCheckUsersListed(frameworkAPIClient(providers.frameworkProvider), email, "", 3),
+			},
+			{
 				Config:      testAccDatasourceUserWithExcludeServiceAccountsMultipleUsersConfig(email, serviceAccountName, "true"),
 				ExpectError: regexp.MustCompile("after excluding service accounts, your query returned more than one result for filter"),
 			},
@@ -137,70 +161,81 @@ func TestAccDatadogUserDatasourceWithExcludeServiceAccountsMultipleUsersWithErro
 	})
 }
 
-func testAccDatasourceUserWithExactMatchConfig(uniq, exactMatch string) string {
+func testAccDatasourceUserWithExactMatchResourcesConfig(uniq string) string {
 	return fmt.Sprintf(`
+resource "datadog_user" "foo" {
+	email = "%[1]s"
+	send_user_invitation = false
+}
+resource "datadog_user" "bar" {
+	email = "other%[1]s"
+	send_user_invitation = false
+}`, uniq)
+}
+
+func testAccDatasourceUserWithExactMatchConfig(uniq, exactMatch string) string {
+	return testAccDatasourceUserWithExactMatchResourcesConfig(uniq) + fmt.Sprintf(`
 data "datadog_user" "test" {
 	filter = "%[1]s"
 	exact_match = %[2]s
 	depends_on = [ datadog_user.foo, datadog_user.bar ]
-}
-
-resource "datadog_user" "foo" {
-	email = "%[1]s"
-}
-resource "datadog_user" "bar" {
-	email = "other%[1]s"
 }`, uniq, exactMatch)
 }
 
-func testAccDatasourceUserWithExcludeServiceAccountsConfig(uniq, serviceAccountName, excludeServiceAccounts string) string {
+func testAccDatasourceUserWithExcludeServiceAccountsResourcesConfig(uniq, serviceAccountName string) string {
 	return fmt.Sprintf(`
-data "datadog_user" "test" {
-	filter = "%[1]s"
-	exclude_service_accounts = %[3]s
-	depends_on = [ datadog_user.foo, datadog_service_account.bar ]
-}
-
 resource "datadog_user" "foo" {
 	email = "%[1]s"
+	send_user_invitation = false
 }
 resource "datadog_service_account" "bar" {
 	email = "%[1]s"
 	name = "%[2]s"
-}`, uniq, serviceAccountName, excludeServiceAccounts)
+}`, uniq, serviceAccountName)
+}
+
+func testAccDatasourceUserWithExcludeServiceAccountsConfig(uniq, serviceAccountName, excludeServiceAccounts string) string {
+	return testAccDatasourceUserWithExcludeServiceAccountsResourcesConfig(uniq, serviceAccountName) + fmt.Sprintf(`
+data "datadog_user" "test" {
+	filter = "%[1]s"
+	exclude_service_accounts = %[2]s
+	depends_on = [ datadog_user.foo, datadog_service_account.bar ]
+}`, uniq, excludeServiceAccounts)
+}
+
+func testAccDatasourceUserWithExcludeServiceAccountsMultipleUsersResourcesConfig(uniq, serviceAccountName string) string {
+	return testAccDatasourceUserWithExcludeServiceAccountsResourcesConfig(uniq, serviceAccountName) + fmt.Sprintf(`
+resource "datadog_user" "otherfoo" {
+	email = "other%[1]s"
+	send_user_invitation = false
+}`, uniq)
 }
 
 func testAccDatasourceUserWithExcludeServiceAccountsMultipleUsersConfig(uniq, serviceAccountName, excludeServiceAccounts string) string {
-	return fmt.Sprintf(`
+	return testAccDatasourceUserWithExcludeServiceAccountsMultipleUsersResourcesConfig(uniq, serviceAccountName) + fmt.Sprintf(`
 data "datadog_user" "test" {
 	filter = "%[1]s"
-	exclude_service_accounts = %[3]s
-	depends_on = [ datadog_user.foo, datadog_service_account.bar ]
+	exclude_service_accounts = %[2]s
+	depends_on = [ datadog_user.foo, datadog_user.otherfoo, datadog_service_account.bar ]
+}`, uniq, excludeServiceAccounts)
 }
 
+func testAccDatasourceUserResourceConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_user" "foo" {
-	email = "%[1]s"
-}
-resource "datadog_user" "otherfoo" {
-	email = "other%[1]s"
-}
-resource "datadog_service_account" "bar" {
-	email = "%[1]s"
-	name = "%[2]s"
-}`, uniq, serviceAccountName, excludeServiceAccounts)
+	email = "%s"
+	send_user_invitation = false
+}`, uniq)
 }
 
 func testAccDatasourceUserConfig(uniq string) string {
-	return fmt.Sprintf(`
+	return testAccDatasourceUserResourceConfig(uniq) + fmt.Sprintf(`
 data "datadog_user" "test" {
 	filter = "%s"
 	depends_on = [
 		datadog_user.foo
 	]
-}
-resource "datadog_user" "foo" {
-    email = "%s"
-}`, uniq, uniq)
+}`, uniq)
 }
 
 func testAccDatasourceUserError() string {

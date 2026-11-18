@@ -11,7 +11,7 @@ import (
 
 func TestAccDatadogUsersDatasourceFilter(t *testing.T) {
 	t.Parallel()
-	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
 	email := uniq + "0@example.com"
 
@@ -19,6 +19,10 @@ func TestAccDatadogUsersDatasourceFilter(t *testing.T) {
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
+			{
+				Config: testAccDatasourceUsersResourcesConfig(uniq),
+				Check:  testAccCheckUsersListed(frameworkAPIClient(providers.frameworkProvider), email, "", 1),
+			},
 			{
 				Config: testAccDatasourceUsersFilterConfig(uniq, email),
 				Check: resource.ComposeTestCheckFunc(
@@ -37,7 +41,7 @@ func TestAccDatadogUsersDatasourceFilter(t *testing.T) {
 
 func TestAccDatadogUsersDatasourceFilterStatus(t *testing.T) {
 	t.Parallel()
-	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
 	expectedUserName := "user 0"
 	status := "Pending"
@@ -46,6 +50,10 @@ func TestAccDatadogUsersDatasourceFilterStatus(t *testing.T) {
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
+			{
+				Config: testAccDatasourceUsersResourcesConfig(uniq),
+				Check:  testAccCheckUsersListed(frameworkAPIClient(providers.frameworkProvider), uniq+"0@example.com", status, 1),
+			},
 			{
 				Config: testAccDatasourceUsersFilterStatusConfig(uniq, expectedUserName, status),
 				Check: resource.ComposeTestCheckFunc(
@@ -57,55 +65,49 @@ func TestAccDatadogUsersDatasourceFilterStatus(t *testing.T) {
 	})
 }
 
-func testAccDatasourceUsersFilterConfig(uniq, filter string) string {
+func testAccDatasourceUsersResourcesConfig(uniq string) string {
 	return fmt.Sprintf(`
+resource "datadog_user" "user_0" {
+	name = "user 0"
+	email = "%[1]s0@example.com"
+	send_user_invitation = false
+}
+resource "datadog_user" "user_1" {
+	name = "user 1"
+	email = "%[1]s1@example.com"
+	send_user_invitation = false
+}
+resource "datadog_user" "user_2" {
+	name = "user 2"
+	email = "%[1]s2@example.com"
+	send_user_invitation = false
+}
+`, uniq)
+}
+
+func testAccDatasourceUsersFilterConfig(uniq, filter string) string {
+	return testAccDatasourceUsersResourcesConfig(uniq) + fmt.Sprintf(`
 data "datadog_users" "all_users" {
-	filter = "%[2]s"
+	filter = "%[1]s"
 	depends_on = [
 		datadog_user.user_0,
 		datadog_user.user_1,
 		datadog_user.user_2
 	]
 }
-
-resource "datadog_user" "user_0" {
-	name = "user 0"
-	email = "%[1]s0@example.com"
-}
-resource "datadog_user" "user_1" {
-	name = "user 1"
-	email = "%[1]s1@example.com"
-}
-resource "datadog_user" "user_2" {
-	name = "user 2"
-	email = "%[1]s2@example.com"
-}
-`, uniq, filter)
+`, filter)
 }
 
 func testAccDatasourceUsersFilterStatusConfig(uniq, filter, filterStatus string) string {
-	return fmt.Sprintf(`
+	return testAccDatasourceUsersResourcesConfig(uniq) + fmt.Sprintf(`
 data "datadog_users" "all_users" {
-	filter_status = "%[3]s"
-	filter = "%[2]s"
+	filter_status = "%[2]s"
+	filter = "%[1]s"
 	depends_on = [
 		datadog_user.user_0,
 		datadog_user.user_1,
 		datadog_user.user_2
 	]
 }
-
-resource "datadog_user" "user_0" {
-	name = "user 0"
-	email = "%[1]s0@example.com"
-}
-resource "datadog_user" "user_1" {
-	name = "user 1"
-	email = "%[1]s1@example.com"
-}
-resource "datadog_user" "user_2" {
-	name = "user 2"
-	email = "%[1]s2@example.com"
-}
-`, uniq, filter, filterStatus)
+`, filter, filterStatus)
 }
