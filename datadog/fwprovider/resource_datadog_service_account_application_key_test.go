@@ -9,9 +9,14 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/provider"
+	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
+	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
 const testAppKeyRawCreatedAt = "2026-11-18T13:37:52.051772Z"
@@ -137,4 +142,111 @@ func TestServiceAccountApplicationKeyReadOldFormatState(t *testing.T) {
 		!got.ID.Equal(want.ID) || !got.Scopes.Equal(want.Scopes) || !got.CreatedAt.Equal(want.CreatedAt) {
 		t.Fatalf("state after Read = %+v, want %+v", got, want)
 	}
+}
+
+type planTestProvider struct {
+	r *serviceAccountApplicationKeyResource
+}
+
+func (p *planTestProvider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
+	resp.TypeName = "datadog"
+}
+func (p *planTestProvider) Schema(context.Context, provider.SchemaRequest, *provider.SchemaResponse) {
+}
+func (p *planTestProvider) Configure(context.Context, provider.ConfigureRequest, *provider.ConfigureResponse) {
+}
+func (p *planTestProvider) DataSources(context.Context) []func() datasource.DataSource { return nil }
+func (p *planTestProvider) Resources(context.Context) []func() resource.Resource {
+	return []func() resource.Resource{func() resource.Resource { return &planTestResource{p.r} }}
+}
+
+// planTestResource keeps the real CRUD and plan logic and replaces Configure, which needs a FrameworkProvider.
+type planTestResource struct {
+	*serviceAccountApplicationKeyResource
+}
+
+func (r *planTestResource) Metadata(_ context.Context, _ resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = "datadog_service_account_application_key"
+}
+func (r *planTestResource) Configure(context.Context, resource.ConfigureRequest, *resource.ConfigureResponse) {
+}
+
+// Runs refresh then PlanResourceChange through the protocol 6 server, as Terraform core does for
+// "terraform plan" with unchanged configuration and state written by earlier provider versions.
+func TestServiceAccountApplicationKeyPlanOldFormatStateIsNoOp(t *testing.T) {
+	ctx := context.Background()
+	r, _ := newTestServiceAccountAppKeyResource(t, http.StatusOK)
+	server, err := providerserver.NewProtocol6WithError(&planTestProvider{r})()
+	if err != nil {
+		t.Fatal(err)
+	}
+	const typeName = "datadog_service_account_application_key"
+	schemaResp, err := server.GetProviderSchema(ctx, &tfprotov6.GetProviderSchemaRequest{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	objType := schemaResp.ResourceSchemas[typeName].ValueType()
+	if _, err := server.ConfigureProvider(ctx, &tfprotov6.ConfigureProviderRequest{
+		Config: mustDynamicValue(t, schemaResp.Provider.ValueType(), tftypes.NewValue(schemaResp.Provider.ValueType(), map[string]tftypes.Value{})),
+	}); err != nil {
+		t.Fatal(err)
+	}
+
+	str := func(s string) tftypes.Value { return tftypes.NewValue(tftypes.String, s) }
+	nullStr := tftypes.NewValue(tftypes.String, nil)
+	scopesType := tftypes.Set{ElementType: tftypes.String}
+	build := func(created, key, last4, id tftypes.Value) tftypes.Value {
+		return tftypes.NewValue(objType, map[string]tftypes.Value{
+			"id": id, "service_account_id": str("sa-id"), "name": str("k"), "key": key,
+			"created_at": created, "last4": last4, "scopes": tftypes.NewValue(scopesType, nil),
+		})
+	}
+	oldState := build(str("2026-11-18T13:37:52Z"), str("secret-value"), str("alue"), str("key-id"))
+	config := build(nullStr, nullStr, nullStr, nullStr)
+
+	readResp, err := server.ReadResource(ctx, &tfprotov6.ReadResourceRequest{TypeName: typeName, CurrentState: mustDynamicValue(t, objType, oldState)})
+	if err != nil || len(readResp.Diagnostics) != 0 {
+		t.Fatalf("ReadResource: %v %v", err, readResp.Diagnostics)
+	}
+	refreshed, err := readResp.NewState.Unmarshal(objType)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Terraform core builds the proposed state from config, with computed attributes taken from prior state.
+	planResp, err := server.PlanResourceChange(ctx, &tfprotov6.PlanResourceChangeRequest{
+		TypeName:         typeName,
+		PriorState:       readResp.NewState,
+		ProposedNewState: readResp.NewState,
+		Config:           mustDynamicValue(t, objType, config),
+	})
+	if err != nil || len(planResp.Diagnostics) != 0 {
+		t.Fatalf("PlanResourceChange: %v %v", err, planResp.Diagnostics)
+	}
+	if len(planResp.RequiresReplace) != 0 {
+		t.Fatalf("RequiresReplace = %v, want none", planResp.RequiresReplace)
+	}
+	planned, err := planResp.PlannedState.Unmarshal(objType)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !planned.Equal(refreshed) {
+		t.Fatalf("planned state differs from refreshed state (resource action expected NoOp)\nplanned: %v\nprior:   %v", planned, refreshed)
+	}
+	var attrs map[string]tftypes.Value
+	if err := planned.As(&attrs); err != nil {
+		t.Fatal(err)
+	}
+	if !attrs["key"].Equal(str("secret-value")) {
+		t.Fatalf("key = %v, want unchanged", attrs["key"])
+	}
+}
+
+func mustDynamicValue(t *testing.T, typ tftypes.Type, v tftypes.Value) *tfprotov6.DynamicValue {
+	t.Helper()
+	dv, err := tfprotov6.NewDynamicValue(typ, v)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return &dv
 }
