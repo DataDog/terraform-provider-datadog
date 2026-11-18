@@ -1,0 +1,169 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 273
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"exclude_tags_mode":false,"metric_name_matches":["tf.test.tf.TestAccDatadogTagIndexingRule_Basic.local.1794848564.*"],"name":"tf-test-tag-indexing-rule-tf-TestAccDatadogTagIndexingRule_Basic-local-1794848564","tags":[]},"type":"tag_indexing_rules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/metrics/tag-indexing-rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 633
+        uncompressed: false
+        body: '{"data":{"id":"66df42f9-e048-4a95-8a49-64f6dc166f6e","type":"tag_indexing_rules","attributes":{"created_at":"2026-11-16T17:02:47.030768Z","created_by_handle":"frog@datadoghq.com","exclude_tags_mode":false,"ignored_metric_name_matches":[],"metric_name_matches":["tf.test.tf.TestAccDatadogTagIndexingRule_Basic.local.1794848564.*"],"modified_at":"2026-11-16T17:02:47.030768Z","modified_by_handle":"frog@datadoghq.com","name":"tf-test-tag-indexing-rule-tf-TestAccDatadogTagIndexingRule_Basic-local-1794848564","options":{"version":1,"data":{"override_previous_rules":false,"manage_preexisting_metrics":true}},"rule_order":5,"tags":[]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 128.458461ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/metrics/tag-indexing-rules/66df42f9-e048-4a95-8a49-64f6dc166f6e
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 633
+        uncompressed: false
+        body: '{"data":{"id":"66df42f9-e048-4a95-8a49-64f6dc166f6e","type":"tag_indexing_rules","attributes":{"created_at":"2026-11-16T17:02:47.030768Z","created_by_handle":"frog@datadoghq.com","exclude_tags_mode":false,"ignored_metric_name_matches":[],"metric_name_matches":["tf.test.tf.TestAccDatadogTagIndexingRule_Basic.local.1794848564.*"],"modified_at":"2026-11-16T17:02:47.030768Z","modified_by_handle":"frog@datadoghq.com","name":"tf-test-tag-indexing-rule-tf-TestAccDatadogTagIndexingRule_Basic-local-1794848564","options":{"version":1,"data":{"override_previous_rules":false,"manage_preexisting_metrics":true}},"rule_order":5,"tags":[]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 109.645163ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/metrics/tag-indexing-rules/66df42f9-e048-4a95-8a49-64f6dc166f6e
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 633
+        uncompressed: false
+        body: '{"data":{"id":"66df42f9-e048-4a95-8a49-64f6dc166f6e","type":"tag_indexing_rules","attributes":{"created_at":"2026-11-16T17:02:47.030768Z","created_by_handle":"frog@datadoghq.com","exclude_tags_mode":false,"ignored_metric_name_matches":[],"metric_name_matches":["tf.test.tf.TestAccDatadogTagIndexingRule_Basic.local.1794848564.*"],"modified_at":"2026-11-16T17:02:51.087372Z","modified_by_handle":"frog@datadoghq.com","name":"tf-test-tag-indexing-rule-tf-TestAccDatadogTagIndexingRule_Basic-local-1794848564","options":{"version":1,"data":{"override_previous_rules":false,"manage_preexisting_metrics":true}},"rule_order":3,"tags":[]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 106.886359ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/metrics/tag-indexing-rules/66df42f9-e048-4a95-8a49-64f6dc166f6e
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 167.356409ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/metrics/tag-indexing-rules/66df42f9-e048-4a95-8a49-64f6dc166f6e
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 42
+        uncompressed: false
+        body: '{"errors":["Tag indexing rule not found"]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 127.825145ms

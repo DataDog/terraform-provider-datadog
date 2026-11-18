@@ -32,14 +32,16 @@ resource "datadog_status_page" "acme_status_page" {
 
 - `domain_prefix` (String) The subdomain prefix used to build the status page's URL.
 - `name` (String) The name of the status page.
-- `type` (String) The type of the status page. Valid values are: public, internal.
+- `type` (String) The type of the status page. Valid values are: public, internal, private. Private pages are only accessible to users allowed by the page's email access policies, managed with `datadog_status_page_email_access_policy`.
 - `visualization_type` (String) How component statuses are visualized on the page. Valid values are: bars_and_uptime_percentage, bars_only, component_name_only.
 
 ### Optional
 
 - `company_logo` (String) The company logo displayed on the status page.
 - `email_header_image` (String) The header image included in subscriber emails.
+- `email_notifications_enabled` (Boolean) Whether email notifications are enabled for the status page. Must be enabled when `subscriptions_enabled` is `true`.
 - `favicon` (String) The favicon displayed for the status page.
+- `ms_teams_subscriptions_enabled` (Boolean) Whether Microsoft Teams subscriber notifications are enabled for the status page.
 - `rss_feed_enabled` (Boolean) Whether the RSS feed is enabled for the status page.
 - `slack_app_icon` (String) The icon used for the status page's Slack app integration.
 - `slack_subscriptions_enabled` (Boolean) Whether Slack subscriber notifications are enabled for the status page.
