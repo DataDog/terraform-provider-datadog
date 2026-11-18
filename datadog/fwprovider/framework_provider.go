@@ -223,6 +223,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogOrgGroupPoliciesDataSource,
 	NewDatadogOrgGroupPolicyOverridesDataSource,
 	NewHostsDataSource,
+	NewDatadogIntegrationSlackChannelsDataSource,
 	NewIPRangesDataSource,
 	NewRumApplicationDataSource,
 	NewRumRetentionFiltersDataSource,

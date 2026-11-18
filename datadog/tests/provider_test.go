@@ -74,6 +74,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_integration_aws_iam_permissions_test":                     "integration-aws",
 	"tests/data_source_datadog_integration_aws_iam_permissions_standard_test":            "integration-aws",
 	"tests/data_source_datadog_integration_aws_iam_permissions_resource_collection_test": "integration-aws",
+	"tests/data_source_datadog_integration_slack_channels_test":                          "integration-slack-channel",
 	"tests/data_source_datadog_ip_ranges_test":                                           "ip-ranges",
 	"tests/data_source_datadog_logs_archives_order_test":                                 "logs-archive",
 	"tests/data_source_datadog_logs_indexes_order_test":                                  "logs-index",
