@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 169
+        content_length: 180
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"policy":{"tag_key":"tagkey95009325","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"type":"monitor-config-policy"}}
+            {"data":{"attributes":{"policy":{"tag_key":"tagkey1795019521099084000","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"type":"monitor-config-policy"}}
         form: {}
         headers:
             Accept:
@@ -31,13 +31,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"type":"monitor-config-policy","id":"7925fd45-f87e-481f-9822-264d2c910859","attributes":{"policy_type":"tag","policy":{"tag_key":"tagkey95009325","valid_tag_values":["value"],"tag_key_required":false}}}}'
+        body: '{"data":{"type":"monitor-config-policy","id":"6bfdfc93-eaac-451c-afc7-a99e17cfda04","attributes":{"policy_type":"tag","policy":{"tag_key":"tagkey1795019521099084000","valid_tag_values":["value"],"tag_key_required":false}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 353.444542ms
+        duration: 365.058666ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/monitor/policy/7925fd45-f87e-481f-9822-264d2c910859
+        url: https://api.datadoghq.com/api/v2/monitor/policy/6bfdfc93-eaac-451c-afc7-a99e17cfda04
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"type":"monitor-config-policy","id":"7925fd45-f87e-481f-9822-264d2c910859","attributes":{"policy_type":"tag","policy":{"tag_key":"tagkey95009325","valid_tag_values":["value"],"tag_key_required":false}}}}'
+        body: '{"data":{"type":"monitor-config-policy","id":"6bfdfc93-eaac-451c-afc7-a99e17cfda04","attributes":{"policy_type":"tag","policy":{"tag_key":"tagkey1795019521099084000","valid_tag_values":["value"],"tag_key_required":false}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 147.833459ms
+        duration: 3.029765583s
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/monitor/policy/7925fd45-f87e-481f-9822-264d2c910859
+        url: https://api.datadoghq.com/api/v2/monitor/policy/6bfdfc93-eaac-451c-afc7-a99e17cfda04
         method: GET
       response:
         proto: HTTP/1.1
@@ -99,13 +99,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"type":"monitor-config-policy","id":"7925fd45-f87e-481f-9822-264d2c910859","attributes":{"policy_type":"tag","policy":{"tag_key":"tagkey95009325","valid_tag_values":["value"],"tag_key_required":false}}}}'
+        body: '{"data":{"type":"monitor-config-policy","id":"6bfdfc93-eaac-451c-afc7-a99e17cfda04","attributes":{"policy_type":"tag","policy":{"tag_key":"tagkey1795019521099084000","valid_tag_values":["value"],"tag_key_required":false}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 141.895708ms
+        duration: 126.221875ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -122,7 +122,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/monitor/policy/7925fd45-f87e-481f-9822-264d2c910859
+        url: https://api.datadoghq.com/api/v2/monitor/policy/6bfdfc93-eaac-451c-afc7-a99e17cfda04
         method: GET
       response:
         proto: HTTP/1.1
@@ -133,33 +133,33 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"type":"monitor-config-policy","id":"7925fd45-f87e-481f-9822-264d2c910859","attributes":{"policy_type":"tag","policy":{"tag_key":"tagkey95009325","valid_tag_values":["value"],"tag_key_required":false}}}}'
+        body: '{"data":{"type":"monitor-config-policy","id":"6bfdfc93-eaac-451c-afc7-a99e17cfda04","attributes":{"policy_type":"tag","policy":{"tag_key":"tagkey1795019521099084000","valid_tag_values":["value"],"tag_key_required":false}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 148.4265ms
+        duration: 130.948458ms
     - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 216
+        content_length: 227
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"policy":{"tag_key":"tagkeyupd95009325","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"id":"7925fd45-f87e-481f-9822-264d2c910859","type":"monitor-config-policy"}}
+            {"data":{"attributes":{"policy":{"tag_key":"tagkeyupd1795019521099084000","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"id":"6bfdfc93-eaac-451c-afc7-a99e17cfda04","type":"monitor-config-policy"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/monitor/policy/7925fd45-f87e-481f-9822-264d2c910859
+        url: https://api.datadoghq.com/api/v2/monitor/policy/6bfdfc93-eaac-451c-afc7-a99e17cfda04
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -170,13 +170,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"type":"monitor-config-policy","id":"7925fd45-f87e-481f-9822-264d2c910859","attributes":{"policy_type":"tag","policy":{"tag_key":"tagkeyupd95009325","valid_tag_values":["value"],"tag_key_required":false}}}}'
+        body: '{"data":{"type":"monitor-config-policy","id":"6bfdfc93-eaac-451c-afc7-a99e17cfda04","attributes":{"policy_type":"tag","policy":{"tag_key":"tagkeyupd1795019521099084000","valid_tag_values":["value"],"tag_key_required":false}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 166.718208ms
+        duration: 161.296583ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -193,7 +193,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/monitor/policy/7925fd45-f87e-481f-9822-264d2c910859
+        url: https://api.datadoghq.com/api/v2/monitor/policy/6bfdfc93-eaac-451c-afc7-a99e17cfda04
         method: GET
       response:
         proto: HTTP/1.1
@@ -204,13 +204,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"type":"monitor-config-policy","id":"7925fd45-f87e-481f-9822-264d2c910859","attributes":{"policy_type":"tag","policy":{"tag_key":"tagkeyupd95009325","valid_tag_values":["value"],"tag_key_required":false}}}}'
+        body: '{"data":{"type":"monitor-config-policy","id":"6bfdfc93-eaac-451c-afc7-a99e17cfda04","attributes":{"policy_type":"tag","policy":{"tag_key":"tagkeyupd1795019521099084000","valid_tag_values":["value"],"tag_key_required":false}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 156.933208ms
+        duration: 130.675333ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -227,7 +227,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/monitor/policy/7925fd45-f87e-481f-9822-264d2c910859
+        url: https://api.datadoghq.com/api/v2/monitor/policy/6bfdfc93-eaac-451c-afc7-a99e17cfda04
         method: GET
       response:
         proto: HTTP/1.1
@@ -238,13 +238,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"type":"monitor-config-policy","id":"7925fd45-f87e-481f-9822-264d2c910859","attributes":{"policy_type":"tag","policy":{"tag_key":"tagkeyupd95009325","valid_tag_values":["value"],"tag_key_required":false}}}}'
+        body: '{"data":{"type":"monitor-config-policy","id":"6bfdfc93-eaac-451c-afc7-a99e17cfda04","attributes":{"policy_type":"tag","policy":{"tag_key":"tagkeyupd1795019521099084000","valid_tag_values":["value"],"tag_key_required":false}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 137.76625ms
+        duration: 197.94575ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -261,7 +261,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/monitor/policy/7925fd45-f87e-481f-9822-264d2c910859
+        url: https://api.datadoghq.com/api/v2/monitor/policy/6bfdfc93-eaac-451c-afc7-a99e17cfda04
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -275,7 +275,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 147.101667ms
+        duration: 152.4215ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -309,4 +309,4 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 128.608834ms
+        duration: 297.913667ms

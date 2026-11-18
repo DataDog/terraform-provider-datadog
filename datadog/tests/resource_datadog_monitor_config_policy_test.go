@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"regexp"
+	"strconv"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
@@ -17,10 +18,12 @@ import (
 func TestAccDatadogMonitorConfigPolicy_Basic(t *testing.T) {
 	// Tag policies are org-wide and a tag key accepts one policy only. A unique
 	// key per run prevents conflicts with policies left by interrupted runs.
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	// testAccProviders creates a second clock that rewrites the .freeze file,
+	// which makes sub-second clock values differ in replay. This helper uses one
+	// clock, so a nanosecond suffix is unique per process and stable in replay.
+	ctx, accProviders := testAccProvidersWithCassette(context.Background(), t, t.Name())
 	accProvider := testAccProvider(t, accProviders)
-	suffix := uniqueEntityName(ctx, t)
-	suffix = suffix[len(suffix)-8:]
+	suffix := strconv.FormatInt(clockFromContext(ctx).Now().UnixNano(), 10)
 	tagKey := "tagkey" + suffix
 	tagKeyUpdated := "tagkeyupd" + suffix
 
