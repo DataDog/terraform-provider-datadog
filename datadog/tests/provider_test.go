@@ -125,6 +125,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/import_datadog_monitor_test":                                                  "monitors",
 	"tests/import_datadog_user_test":                                                     "users",
 	"tests/provider_test":                                                                "terraform",
+	"tests/resource_datadog_ai_gateway_governance_test":                                  "ai-gateway",
 	"tests/resource_datadog_ai_gateway_rate_limit_test":                                  "ai-gateway",
 	"tests/resource_datadog_ai_gateway_model_group_test":                                 "ai-gateway",
 	"tests/resource_datadog_ai_gateway_policy_test":                                      "ai-gateway",

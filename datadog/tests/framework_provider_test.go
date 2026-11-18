@@ -85,6 +85,10 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateAWSAccountCCMConfig", true)
 	config.SetUnstableOperationEnabled("v2.DeleteAWSAccountCCMConfig", true)
 
+	// Enable AI Gateway governance
+	config.SetUnstableOperationEnabled("v2.GetAiGatewayGovernance", true)
+	config.SetUnstableOperationEnabled("v2.UpdateAiGatewayGovernance", true)
+
 	// Enable Custom Forecast
 	config.SetUnstableOperationEnabled("v2.UpsertCustomForecast", true)
 	config.SetUnstableOperationEnabled("v2.GetCustomForecast", true)

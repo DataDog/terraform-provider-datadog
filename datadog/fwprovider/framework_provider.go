@@ -49,6 +49,7 @@ var Resources = []func() resource.Resource{
 	NewAgentlessScanningAzureScanOptionsResource,
 	NewAgentlessScanningGcpScanOptionsResource,
 	NewAiGatewayBudgetResource,
+	NewAiGatewayGovernanceResource,
 	NewOpenapiApiResource,
 	NewAPIKeyResource,
 	NewUsageQuotaResource,
@@ -905,6 +906,10 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSAccountCCMConfig", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAWSAccountCCMConfig", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSAccountCCMConfig", true)
+
+	// Enable AI Gateway governance
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayGovernance", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAiGatewayGovernance", true)
 
 	// Enable Custom Forecast
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpsertCustomForecast", true)
