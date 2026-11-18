@@ -808,6 +808,9 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	}
 	ddClientConfig := datadog.NewConfiguration()
 	ddClientConfig.UserAgent = utils.GetUserAgentFramework(ddClientConfig.UserAgent, request.TerraformVersion)
+	// Used to identify Workflow Automation requests made from Terraform.
+	// Set once here: resource Configure runs concurrently and DefaultHeader is an unsynchronized map.
+	ddClientConfig.AddDefaultHeader("X-Datadog-Workflow-Automation-Source", "terraform")
 	// The SDK debug logger does not redact ContextDelegatedToken credentials.
 	// Suppress raw HTTP dumps for WIT and pup authentication until SDK redaction supports it.
 	ddClientConfig.Debug = logging.IsDebugOrHigher() && workloadIdentityConfig == nil && pupConfig == nil
