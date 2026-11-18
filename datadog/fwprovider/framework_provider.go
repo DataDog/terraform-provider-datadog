@@ -48,6 +48,7 @@ var Resources = []func() resource.Resource{
 	NewAgentlessScanningAwsScanOptionsResource,
 	NewAgentlessScanningAzureScanOptionsResource,
 	NewAgentlessScanningGcpScanOptionsResource,
+	NewAiGatewayBudgetResource,
 	NewAiGatewayGovernanceResource,
 	NewOpenapiApiResource,
 	NewAPIKeyResource,
@@ -88,6 +89,9 @@ var Resources = []func() resource.Resource{
 	NewRumMetricResource,
 	NewAiGatewayRateLimitResource,
 	NewAiGatewayModelGroupResource,
+	NewAiGatewayProviderResource,
+	NewAiGatewayPolicyResource,
+	NewAiGatewayRoutingRuleResource,
 	NewRumOperationResource,
 	NewRumOperationJourneyLinkResource,
 	NewRumRetentionFilterResource,
@@ -848,6 +852,25 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAiGatewayModelGroup", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAiGatewayModelGroup", true)
 
+	// Enable AI Gateway providers
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAiGatewayProvider", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayProvider", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAiGatewayProvider", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAiGatewayProvider", true)
+
+	// Enable AI Gateway policies
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpsertAiGatewayPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAiGatewayPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListAiGatewayPolicies", true)
+
+	// Enable AI Gateway routing rules
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAiGatewayRoutingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayRoutingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAiGatewayRoutingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAiGatewayRoutingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListAiGatewayRoutingRules", true)
+
 	// Fleet Automation schedule reads are stable. Only mutations use Preview endpoints.
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateFleetSchedule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateFleetSchedule", true)
@@ -1033,6 +1056,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetQuota", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateQuota", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteQuota", true)
+
+	// Enable AI Gateway budgets
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAiGatewayBudget", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayBudget", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAiGatewayBudget", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAiGatewayBudget", true)
 
 	EnableGeneratedUnstableOperations(ddClientConfig)
 

@@ -1,0 +1,22 @@
+---
+page_title: "{{.Name}} {{.Type}} - {{.RenderedProviderName}}"
+subcategory: ""
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# {{.Name}} ({{.Type}})
+
+{{ .Description | trimspace }}
+
+## Example Usage
+
+{{ tffile "examples/resources/datadog_ai_gateway_provider/resource.tf" }}
+
+{{ .SchemaMarkdown | trimspace }}
+
+## Import
+
+Use the [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import). For example:
+
+{{ codefile "shell" "examples/resources/datadog_ai_gateway_provider/import.sh" }}

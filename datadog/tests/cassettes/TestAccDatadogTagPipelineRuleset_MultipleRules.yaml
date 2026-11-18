@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"service:web"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"service:web"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
@@ -49,7 +49,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"service:web"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"service:web"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
@@ -121,7 +121,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"service:web"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"service:web"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:
@@ -190,7 +190,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"Query":"service:web"},"type":"validate_query"}}
+            {"data":{"attributes":{"query":"service:web"},"type":"validate_query"}}
         form: {}
         headers:
             Accept:

@@ -149,7 +149,12 @@ func hasRecordedCassette(testPath, cassettesDir string) (bool, string) {
 // registered), returning one report entry each. An orphan constructor is mapped
 // back to its artifact name through the files on disk, since the
 // name→constructor transform is not reversible.
-func reconcileOrphans(outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot string, desired map[string]bool, check bool) ([]model.ArtifactReportEntry, error) {
+//
+// A non-empty onlyTags restricts retirement to orphans attributable to a
+// selected tag. An orphan's annotation is gone, so its owner tag is read from
+// the tfgen:owner-tag marker in its generated source; an orphan with no recorded owner, or under an unselected
+// tag, is reported skipped and left untouched.
+func reconcileOrphans(outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot string, desired, onlyTags map[string]bool, check bool) ([]model.ArtifactReportEntry, error) {
 	genPath := filepath.Join(outputRoot, "datasources_generated.go")
 	registered, err := emit.RegisteredGeneratedDatasources(genPath)
 	if err != nil {
@@ -160,12 +165,36 @@ func reconcileOrphans(outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot 
 		return nil, err
 	}
 
+	var owners map[string]string
+	if len(onlyTags) > 0 {
+		owners, err = generatedOwnerTags(outputRoot)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	var entries []model.ArtifactReportEntry
 	for _, ctor := range registered {
 		if desired[ctor] {
 			continue
 		}
 		name, ok := ctorToName[ctor]
+		if len(onlyTags) > 0 {
+			tag, known := owners[name]
+			if !ok || !known || !onlyTags[tag] {
+				skipName := name
+				if !ok {
+					skipName = emit.RegistrationRetirementName(ctor)
+				}
+				entries = append(entries, model.ArtifactReportEntry{
+					Name: skipName, Kind: model.ArtifactKindDataSource,
+					Status: model.ArtifactStatusSkipped, Constructor: ctor,
+					Diagnostics: []model.Diagnostic{{Severity: model.SeverityInfo,
+						Message: fmt.Sprintf("orphan %q not retired: its tag is not among --only-tags", ctor)}},
+				})
+				continue
+			}
+		}
 		if !ok {
 			// Registered with no marker'd file to name it: drop the stale
 			// registration only, since there are no files to delete.
@@ -183,6 +212,29 @@ func reconcileOrphans(outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot 
 		entries = append(entries, retireArtifact(name, outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot, check))
 	}
 	return entries, nil
+}
+
+// generatedOwnerTags maps artifact name to the owner tag recorded in its
+// generated source, skipping files with no marker.
+func generatedOwnerTags(outputRoot string) (map[string]string, error) {
+	matches, err := filepath.Glob(filepath.Join(outputRoot, "data_source_datadog_*.go"))
+	if err != nil {
+		return nil, err
+	}
+	out := map[string]string{}
+	for _, path := range matches {
+		if strings.HasSuffix(path, "_test.go") {
+			continue
+		}
+		data, err := os.ReadFile(path)
+		if err != nil {
+			return nil, err
+		}
+		if tag, ok := emit.GeneratedOwnerTag(data); ok && emit.IsGeneratedSource(data) {
+			out[strings.TrimSuffix(strings.TrimPrefix(filepath.Base(path), "data_source_datadog_"), ".go")] = tag
+		}
+	}
+	return out, nil
 }
 
 // generatedArtifactNames maps constructor to artifact name by scanning
