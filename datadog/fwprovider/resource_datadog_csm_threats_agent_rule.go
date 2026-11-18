@@ -24,8 +24,7 @@ import (
 )
 
 // The API locks a policy (423) while a managed deployment of it is in progress.
-// The timeout covers the longest default rollout bake time.
-const csmThreatsLockedRetryTimeout = 15 * time.Minute
+const csmThreatsLockedRetryTimeout = 1 * time.Minute
 
 var (
 	csmThreatsMutex sync.Mutex
