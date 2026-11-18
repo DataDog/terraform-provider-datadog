@@ -10,6 +10,9 @@ import (
 )
 
 func TestAccDatadogReferenceTableRowsDataSource(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("replay only: requires cloud storage (S3/Azure/GCP) accounts not configured in the test org")
+	}
 	t.Parallel()
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
