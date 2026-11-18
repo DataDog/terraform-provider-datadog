@@ -165,12 +165,18 @@ func (r *serviceAccountApplicationKeyResource) Create(ctx context.Context, reque
 		return
 	}
 	r.updateStateFullKey(ctx, &state, &resp)
+	// The key value is only returned by POST. Save state before the GET so a GET failure cannot lose it.
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 
 	// The create response types created_at as time.Time, which loses the API string format.
 	// Read stores the raw string, so take created_at from a GET to keep state stable on import and refresh.
 	getResp, _, err := r.Api.GetServiceAccountApplicationKey(r.Auth, serviceAccountId, state.ID.ValueString())
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving ServiceAccountApplicationKey after create"))
+		response.Diagnostics.AddWarning("error retrieving ServiceAccountApplicationKey after create",
+			"created_at uses the create response format until the next refresh: "+err.Error())
 		return
 	}
 	getData := getResp.GetData()
