@@ -84,6 +84,9 @@ func retireArtifact(name, outputRoot, testsOutputRoot, docsRoot, examplesOutputR
 	if _, err := emit.RemoveEndpointTag(providerTestPath, emit.EndpointTagTestKey(name), check); err != nil {
 		return failEntry(entry, err)
 	}
+	if err := removeOwner(outputRoot, name, check); err != nil {
+		return failEntry(entry, err)
+	}
 	entry.Status = model.ArtifactStatusRetired
 	return entry
 }
@@ -151,9 +154,9 @@ func hasRecordedCassette(testPath, cassettesDir string) (bool, string) {
 // name→constructor transform is not reversible.
 //
 // A non-empty onlyTags restricts retirement to orphans attributable to a
-// selected tag. An orphan's annotation is gone, so its tag is read from its
-// test's testFiles2EndpointTags entry; an orphan without one, or under an
-// unselected tag, is reported skipped and left untouched.
+// selected tag. An orphan's annotation is gone, so its owner tag is read from
+// the owners file; an orphan with no recorded owner, or under an unselected
+// tag, is reported skipped and left untouched.
 func reconcileOrphans(outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot string, desired, onlyTags map[string]bool, check bool) ([]model.ArtifactReportEntry, error) {
 	genPath := filepath.Join(outputRoot, "datasources_generated.go")
 	registered, err := emit.RegisteredGeneratedDatasources(genPath)
@@ -165,14 +168,9 @@ func reconcileOrphans(outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot 
 		return nil, err
 	}
 
-	var selected map[string]bool // normalized endpoint tags of onlyTags
-	var endpointTags map[string]string
+	var owners map[string]string
 	if len(onlyTags) > 0 {
-		selected = make(map[string]bool, len(onlyTags))
-		for tag := range onlyTags {
-			selected[emit.NormalizeEndpointTag(tag)] = true
-		}
-		endpointTags, err = emit.RegisteredEndpointTags(filepath.Join(testsOutputRoot, "provider_test.go"))
+		owners, err = readOwners(outputRoot)
 		if err != nil {
 			return nil, err
 		}
@@ -184,12 +182,9 @@ func reconcileOrphans(outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot 
 			continue
 		}
 		name, ok := ctorToName[ctor]
-		if selected != nil {
-			tag := ""
-			if ok {
-				tag = endpointTags[emit.EndpointTagTestKey(name)]
-			}
-			if !selected[tag] {
+		if len(onlyTags) > 0 {
+			tag, known := owners[name]
+			if !ok || !known || !onlyTags[tag] {
 				skipName := name
 				if !ok {
 					skipName = emit.RegistrationRetirementName(ctor)
