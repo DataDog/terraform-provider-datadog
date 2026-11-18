@@ -149,7 +149,12 @@ func hasRecordedCassette(testPath, cassettesDir string) (bool, string) {
 // registered), returning one report entry each. An orphan constructor is mapped
 // back to its artifact name through the files on disk, since the
 // name→constructor transform is not reversible.
-func reconcileOrphans(outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot string, desired map[string]bool, check bool) ([]model.ArtifactReportEntry, error) {
+//
+// A non-empty onlyTags restricts retirement to orphans attributable to a
+// selected tag. An orphan's annotation is gone, so its tag is read from its
+// test's testFiles2EndpointTags entry; an orphan without one, or under an
+// unselected tag, is reported skipped and left untouched.
+func reconcileOrphans(outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot string, desired, onlyTags map[string]bool, check bool) ([]model.ArtifactReportEntry, error) {
 	genPath := filepath.Join(outputRoot, "datasources_generated.go")
 	registered, err := emit.RegisteredGeneratedDatasources(genPath)
 	if err != nil {
@@ -160,12 +165,44 @@ func reconcileOrphans(outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot 
 		return nil, err
 	}
 
+	var selected map[string]bool // normalized endpoint tags of onlyTags
+	var endpointTags map[string]string
+	if len(onlyTags) > 0 {
+		selected = make(map[string]bool, len(onlyTags))
+		for tag := range onlyTags {
+			selected[emit.NormalizeEndpointTag(tag)] = true
+		}
+		endpointTags, err = emit.RegisteredEndpointTags(filepath.Join(testsOutputRoot, "provider_test.go"))
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	var entries []model.ArtifactReportEntry
 	for _, ctor := range registered {
 		if desired[ctor] {
 			continue
 		}
 		name, ok := ctorToName[ctor]
+		if selected != nil {
+			tag := ""
+			if ok {
+				tag = endpointTags[emit.EndpointTagTestKey(name)]
+			}
+			if !selected[tag] {
+				skipName := name
+				if !ok {
+					skipName = emit.RegistrationRetirementName(ctor)
+				}
+				entries = append(entries, model.ArtifactReportEntry{
+					Name: skipName, Kind: model.ArtifactKindDataSource,
+					Status: model.ArtifactStatusSkipped, Constructor: ctor,
+					Diagnostics: []model.Diagnostic{{Severity: model.SeverityInfo,
+						Message: fmt.Sprintf("orphan %q not retired: its tag is not among --only-tags", ctor)}},
+				})
+				continue
+			}
+		}
 		if !ok {
 			// Registered with no marker'd file to name it: drop the stale
 			// registration only, since there are no files to delete.

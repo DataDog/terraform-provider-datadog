@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -44,6 +45,7 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 	var docsRoot string
 	var reconcile bool
 	var retire string
+	var onlyTags string
 
 	cmd := &cobra.Command{
 		Use:               "generate",
@@ -55,6 +57,12 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 			// cannot be narrowed by --include.
 			if reconcile && include != "" {
 				return fmt.Errorf("generate: --reconcile cannot be combined with --include (orphan detection needs the complete annotation set)")
+			}
+			if onlyTags != "" && include != "" {
+				return fmt.Errorf("generate: --only-tags cannot be combined with --include")
+			}
+			if onlyTags != "" && retire != "" {
+				return fmt.Errorf("generate: --only-tags cannot be combined with --retire")
 			}
 
 			runReport := model.RunReport{
@@ -89,6 +97,14 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 				runReport.SpecHash = spec.Hash
 
 				filter := parseInclude(include)
+				tagFilter := parseInclude(onlyTags)
+				if len(tagFilter) > 0 {
+					warnUnknownTags(cmd, spec.Operations, tagFilter)
+				}
+				// Constructors of every annotated data source, selected or not: with
+				// --only-tags, an unselected artifact is not generated but is still
+				// desired, so reconcile never retires it.
+				annotated := map[string]bool{}
 
 				// Resolve the provider's helper accessors first: they take precedence
 				// over derived names, keeping cached clients and aliased spellings
@@ -126,7 +142,11 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 						})
 						continue
 					}
-					if len(filter) > 0 && !filter[op.Tracking.ArtifactName] {
+					if op.Tracking.ArtifactKind != model.ArtifactKindResource {
+						annotated[emit.DatasourceConstructor(op.Tracking.ArtifactName)] = true
+					}
+					if (len(filter) > 0 && !filter[op.Tracking.ArtifactName]) ||
+						(len(tagFilter) > 0 && !tagFilter[op.Tracking.Tag]) {
 						runReport.Artifacts = append(runReport.Artifacts, model.ArtifactReportEntry{
 							Tag:    op.Tracking.Tag,
 							Name:   op.Tracking.ArtifactName,
@@ -208,7 +228,12 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 						for _, reg := range registrations {
 							desired[reg.Constructor] = true
 						}
-						orphanEntries, recErr := reconcileOrphans(outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot, desired, check)
+						if len(tagFilter) > 0 {
+							for ctor := range annotated {
+								desired[ctor] = true
+							}
+						}
+						orphanEntries, recErr := reconcileOrphans(outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot, desired, tagFilter, check)
 						runReport.Artifacts = append(runReport.Artifacts, orphanEntries...)
 						deferredErr = recErr
 					}
@@ -257,6 +282,7 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 	cmd.PersistentFlags().StringVar(&examplesOutputRoot, "examples-output-root", "examples/data-sources", "Root directory for generated data-source examples")
 	cmd.PersistentFlags().StringVar(&docsRoot, "docs-root", "docs/data-sources", "Root directory for data-source docs pages (used when retiring)")
 	cmd.PersistentFlags().BoolVar(&reconcile, "reconcile", false, "Retire generated data sources no longer annotated (requires the full spec; incompatible with --include)")
+	cmd.PersistentFlags().StringVar(&onlyTags, "only-tags", "", "Comma-separated x-datadog-tf-generator tags to generate and reconcile; all other artifacts are skipped and left untouched (empty = all)")
 	cmd.PersistentFlags().StringVar(&retire, "retire", "", "Comma-separated artifact names to retire without generating (deletes files + registration)")
 
 	return cmd
@@ -644,6 +670,28 @@ func failEntry(e model.ArtifactReportEntry, err error) model.ArtifactReportEntry
 	e.Status = model.ArtifactStatusFailed
 	e.Diagnostics = []model.Diagnostic{{Severity: model.SeverityError, Message: err.Error()}}
 	return e
+}
+
+// warnUnknownTags warns about each --only-tags value no annotated operation
+// carries. It is not an error: a tag whose last annotation was just removed is
+// a valid selection for --reconcile.
+func warnUnknownTags(cmd *cobra.Command, ops []*model.Operation, tags map[string]bool) {
+	known := map[string]bool{}
+	for _, op := range ops {
+		if op.Tracking != nil {
+			known[op.Tracking.Tag] = true
+		}
+	}
+	unknown := []string{}
+	for tag := range tags {
+		if !known[tag] {
+			unknown = append(unknown, tag)
+		}
+	}
+	slices.Sort(unknown)
+	for _, tag := range unknown {
+		cmd.PrintErrln("tfgen: warning: --only-tags value", strconv.Quote(tag), "matches no annotated operation")
+	}
 }
 
 // parseInclude converts the --include value into a name set. A nil map means
