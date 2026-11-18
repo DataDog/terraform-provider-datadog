@@ -29,9 +29,7 @@ func cleanupLogsArchives(t *testing.T) {
 
 // TestSweepLogsArchives is a standalone sweep test for CI / manual invocation.
 func TestSweepLogsArchives(t *testing.T) {
-	if isReplaying() {
-		t.Skip("sweep uses a live client; skipped during replay")
-	}
+	skipUnlessSweepRequested(t)
 	doSweepLogsArchives(t, isLogsArchiveTestName)
 }
 
