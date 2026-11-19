@@ -1,3 +1,39 @@
+## 4.31.0 (November 19, 2026)
+
+### BUGFIXES
+* [datadog_dashboard] Send an empty `with` in query_table text_format replace by @nabeleon94 in https://github.com/DataDog/terraform-provider-datadog/pull/4478
+* [datadog_reference_table_rows] [REDEXP-3645] Preserve API null values by @v-ding in https://github.com/DataDog/terraform-provider-datadog/pull/4493
+* [datadog_tag_indexing_rule] Fix ValidateConfig error when options is unknown by @lbarrosby in https://github.com/DataDog/terraform-provider-datadog/pull/4517
+### IMPROVEMENTS
+* [datadog_status_page] Add RSS and layout settings by @sundaylaundry in https://github.com/DataDog/terraform-provider-datadog/pull/4499
+* [datadog_cloud_workload_security_agent_rule] Point writes to datadog_csm_threats_agent_rule by @pkalmakis in https://github.com/DataDog/terraform-provider-datadog/pull/4554
+### FEATURES
+* [datadog_monitor] Add variables.metric_query block by @jasminezh1 in https://github.com/DataDog/terraform-provider-datadog/pull/4498
+* [datadog_provider] Add use_pup to authenticate with a pup login by @jbunting in https://github.com/DataDog/terraform-provider-datadog/pull/4531
+* [datadog_usage_quota] Add usage quota management by @easydeze in https://github.com/DataDog/terraform-provider-datadog/pull/4514
+* [datadog_status_page] Add private page access policies and notification settings by @sundaylaundry in https://github.com/DataDog/terraform-provider-datadog/pull/4512
+* [datadog_ai_gateway_rate_limit] Add AI Gateway rate limit resource by @dd-cshen1230 in https://github.com/DataDog/terraform-provider-datadog/pull/4525
+* [datadog_dashboard] Add default_timeframe support by @Gurik-M in https://github.com/DataDog/terraform-provider-datadog/pull/3834
+* [datadog_ai_gateway_model_group] Add AI Gateway model group resource by @dd-cshen1230 in https://github.com/DataDog/terraform-provider-datadog/pull/4526
+* [datadog_ai_gateway_provider] Add AI Gateway provider resource by @dd-cshen1230 in https://github.com/DataDog/terraform-provider-datadog/pull/4527
+* [datadog_ai_gateway_policy] Add AI Gateway routing policy resource by @dd-cshen1230 in https://github.com/DataDog/terraform-provider-datadog/pull/4528
+* [datadog_ai_gateway_routing_rule] Add AI Gateway routing rule resource by @dd-cshen1230 in https://github.com/DataDog/terraform-provider-datadog/pull/4534
+* [datadog_ai_gateway_budget] Add AI Gateway budget resource by @dd-cshen1230 in https://github.com/DataDog/terraform-provider-datadog/pull/4535
+* [datadog_ai_gateway_governance] Add AI Gateway governance resource by @dd-cshen1230 in https://github.com/DataDog/terraform-provider-datadog/pull/4557
+* [datadog_ai_gateway_data_capture_override] Add AI Gateway data capture override resource by @dd-cshen1230 in https://github.com/DataDog/terraform-provider-datadog/pull/4558
+
+## New Contributors
+* @eugene-filimonov-ddog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4494
+* @nabeleon94 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4478
+* @jbunting made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4531
+* @v-ding made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4493
+* @easydeze made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4514
+* @lbarrosby made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4517
+* @dd-cshen1230 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4525
+* @Gurik-M made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3834
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.30.0...v4.31.0
+
 ## 4.30.0 (November 10, 2026)
 
 ### BUGFIXES
