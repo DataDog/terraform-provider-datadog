@@ -130,6 +130,7 @@ var Resources = []func() resource.Resource{
 	NewTeamHierarchyLinksResource,
 	NewTeamConnectionResource,
 	NewTeamSyncResource,
+	NewUnrestrictedUserGroupResource,
 	NewUserRoleResource,
 	NewSecurityMonitoringSuppressionResource,
 	NewSecurityMonitoringCriticalAssetResource,
@@ -913,6 +914,11 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSAccountCCMConfig", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAWSAccountCCMConfig", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSAccountCCMConfig", true)
+
+	// Enable unrestricted user groups
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListUnrestrictedUserGroups", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateOrUpdateUnrestrictedUserGroup", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteUnrestrictedUserGroup", true)
 
 	// Enable AI Gateway governance
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAiGatewayGovernance", true)
