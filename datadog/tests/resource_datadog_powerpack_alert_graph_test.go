@@ -6,6 +6,7 @@ import (
 
 const datadogPowerpackAlertGraphTest = `
  resource "datadog_monitor" "downtime_monitor" { 
+   require_full_window = true
    name = "monitor"
    type = "metric alert" 
    message = "some message Notify: @hipchat-channel" 
