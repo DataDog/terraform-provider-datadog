@@ -11,7 +11,7 @@ import (
 
 func TestAccDatadogReferenceTableRowsDataSource(t *testing.T) {
 	if !isReplaying() {
-		t.Skip("replay only: requires cloud storage (S3/Azure/GCP) accounts not configured in the test org")
+		t.Skip("replay only: reference table rows endpoint returns 500 in live runs, see TF-140")
 	}
 	t.Parallel()
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
