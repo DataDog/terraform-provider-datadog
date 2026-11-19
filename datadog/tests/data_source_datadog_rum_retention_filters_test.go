@@ -23,9 +23,10 @@ func TestAccRumRetentionFiltersDatasource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: dataDatadogRumRetentionFilters(),
-				// Default filters differ between orgs and API versions (the replay filter
-				// was renamed and is absent in some orgs), and their order is not
-				// guaranteed. Only assert filters that are stable across orgs.
+				// The cassette has default_replays ("Sessions with replays"). Frog has no
+				// default_replays. TF-123 CI got "Sessions with forced replays". Assert
+				// only default_errors and default_sessions, in any order. Extra filters
+				// are accepted.
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestMatchResourceAttr("data.datadog_rum_retention_filters.testing_rum_retention_filters", "retention_filters.#", regexp.MustCompile(`^[1-9][0-9]*$`)),
 					resource.TestCheckTypeSetElemNestedAttrs("data.datadog_rum_retention_filters.testing_rum_retention_filters", "retention_filters.*", map[string]string{
