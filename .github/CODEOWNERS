@@ -59,7 +59,7 @@ datadog/**/*datadog_metric_tag_configuration*     @DataDog/api-reliability @Data
 datadog/**/*datadog_monitor*                      @DataDog/api-reliability @DataDog/monitor-app
 datadog/**/*datadog_appsec*                       @DataDog/api-reliability @DataDog/asm-backend
 datadog/**/*datadog_azure_integration*            @DataDog/api-reliability @DataDog/azure-integrations
-datadog/**/*datadog_compliance*                   @DataDog/api-reliability @DataDog/k9-misconfigs
+datadog/**/*datadog_compliance*                   @DataDog/api-reliability @DataDog/k9-cloud-misconfigs
 datadog/**/*datadog_current_user*                 @DataDog/api-reliability @DataDog/team-aaa
 datadog/**/*datadog_dataset*                      @DataDog/api-reliability @DataDog/aaa-granular-access
 datadog/**/*datadog_datastore*                    @DataDog/api-reliability @DataDog/action-platform @DataDog/workflow-automation-backend
