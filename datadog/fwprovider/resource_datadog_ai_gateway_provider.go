@@ -354,8 +354,9 @@ func updateAiGatewayProviderState(ctx context.Context, state *aiGatewayProviderM
 func buildAiGatewayProviderCreateAttributes(ctx context.Context, state *aiGatewayProviderModel) (*datadogV2.AiGatewayProviderCreateAttributes, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	attributes := datadogV2.NewAiGatewayProviderCreateAttributes(state.Name.ValueString(), state.Slug.ValueString())
-	// The constructor fills in the spec default of 1. Leave an unset cost_multiplier to the server instead.
+	// The constructor fills in the spec defaults. Leave cost_multiplier and credential_source to the server instead.
 	attributes.CostMultiplier = nil
+	attributes.CredentialSource = nil
 
 	attributes.SetKnownProvider(datadogV2.AiGatewayKnownProvider(state.KnownProvider.ValueString()))
 	if !state.IntegrationAccountID.IsNull() && !state.IntegrationAccountID.IsUnknown() {
