@@ -1,0 +1,212 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 706
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["crowdstrike-fdr-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","sources":[{"access_key_id_key":"CROWDSTRIKE_FDR_AWS_ACCESS_KEY_ID","client_concurrency":4,"id":"crowdstrike-fdr-source-1","max_number_of_messages":5,"region":"us-west-1","secret_access_key_key":"CROWDSTRIKE_FDR_AWS_SECRET_ACCESS_KEY","tls":{"ca_file":"/etc/ssl/certs/fdr.ca","crt_file":"/etc/ssl/certs/fdr.crt","key_file":"/etc/ssl/private/fdr.key","key_pass_key":"CROWDSTRIKE_FDR_KEY_PASS"},"type":"crowdstrike_fdr","url_key":"CROWDSTRIKE_FDR_SQS_URL","visibility_timeout_secs":900}]},"name":"crowdstrike-fdr-source-pipeline"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 788
+        uncompressed: false
+        body: |
+            {"data":{"id":"38c08b8a-e51d-11f1-95ea-da7ad0900002","type":"pipelines","attributes":{"name":"crowdstrike-fdr-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["crowdstrike-fdr-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"access_key_id_key":"CROWDSTRIKE_FDR_AWS_ACCESS_KEY_ID","client_concurrency":4,"id":"crowdstrike-fdr-source-1","max_number_of_messages":5,"region":"us-west-1","secret_access_key_key":"CROWDSTRIKE_FDR_AWS_SECRET_ACCESS_KEY","tls":{"ca_file":"/etc/ssl/certs/fdr.ca","crt_file":"/etc/ssl/certs/fdr.crt","key_file":"/etc/ssl/private/fdr.key","key_pass_key":"CROWDSTRIKE_FDR_KEY_PASS"},"type":"crowdstrike_fdr","url_key":"CROWDSTRIKE_FDR_SQS_URL","visibility_timeout_secs":900}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 369.350584ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/38c08b8a-e51d-11f1-95ea-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 788
+        uncompressed: false
+        body: |
+            {"data":{"id":"38c08b8a-e51d-11f1-95ea-da7ad0900002","type":"pipelines","attributes":{"name":"crowdstrike-fdr-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["crowdstrike-fdr-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"access_key_id_key":"CROWDSTRIKE_FDR_AWS_ACCESS_KEY_ID","client_concurrency":4,"id":"crowdstrike-fdr-source-1","max_number_of_messages":5,"region":"us-west-1","secret_access_key_key":"CROWDSTRIKE_FDR_AWS_SECRET_ACCESS_KEY","tls":{"ca_file":"/etc/ssl/certs/fdr.ca","crt_file":"/etc/ssl/certs/fdr.crt","key_file":"/etc/ssl/private/fdr.key","key_pass_key":"CROWDSTRIKE_FDR_KEY_PASS"},"type":"crowdstrike_fdr","url_key":"CROWDSTRIKE_FDR_SQS_URL","visibility_timeout_secs":900}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 256.519625ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/38c08b8a-e51d-11f1-95ea-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 788
+        uncompressed: false
+        body: |
+            {"data":{"id":"38c08b8a-e51d-11f1-95ea-da7ad0900002","type":"pipelines","attributes":{"name":"crowdstrike-fdr-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["crowdstrike-fdr-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"access_key_id_key":"CROWDSTRIKE_FDR_AWS_ACCESS_KEY_ID","client_concurrency":4,"id":"crowdstrike-fdr-source-1","max_number_of_messages":5,"region":"us-west-1","secret_access_key_key":"CROWDSTRIKE_FDR_AWS_SECRET_ACCESS_KEY","tls":{"ca_file":"/etc/ssl/certs/fdr.ca","crt_file":"/etc/ssl/certs/fdr.crt","key_file":"/etc/ssl/private/fdr.key","key_pass_key":"CROWDSTRIKE_FDR_KEY_PASS"},"type":"crowdstrike_fdr","url_key":"CROWDSTRIKE_FDR_SQS_URL","visibility_timeout_secs":900}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 179.477458ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 320
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["crowdstrike-fdr-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","sources":[{"id":"crowdstrike-fdr-source-1","region":"us-west-1","type":"crowdstrike_fdr"}]},"name":"crowdstrike-fdr-source-pipeline"},"id":"","type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/38c08b8a-e51d-11f1-95ea-da7ad0900002
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 394
+        uncompressed: false
+        body: |
+            {"data":{"id":"38c08b8a-e51d-11f1-95ea-da7ad0900002","type":"pipelines","attributes":{"name":"crowdstrike-fdr-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["crowdstrike-fdr-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"crowdstrike-fdr-source-1","region":"us-west-1","type":"crowdstrike_fdr"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 565.232584ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/38c08b8a-e51d-11f1-95ea-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 394
+        uncompressed: false
+        body: |
+            {"data":{"id":"38c08b8a-e51d-11f1-95ea-da7ad0900002","type":"pipelines","attributes":{"name":"crowdstrike-fdr-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["crowdstrike-fdr-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"crowdstrike-fdr-source-1","region":"us-west-1","type":"crowdstrike_fdr"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 137.299792ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/38c08b8a-e51d-11f1-95ea-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 305.367583ms

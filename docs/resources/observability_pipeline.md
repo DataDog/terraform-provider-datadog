@@ -3139,6 +3139,7 @@ Optional:
 
 - `amazon_data_firehose` (Block List) The `amazon_data_firehose` source ingests logs from AWS Data Firehose. (see [below for nested schema](#nestedblock--config--source--amazon_data_firehose))
 - `amazon_s3` (Block List) The `amazon_s3` source ingests logs from an Amazon S3 bucket. It supports AWS authentication, TLS encryption, and configurable compression. (see [below for nested schema](#nestedblock--config--source--amazon_s3))
+- `crowdstrike_fdr` (Block List) The `crowdstrike_fdr` source ingests CrowdStrike Falcon Data Replicator (FDR) data. It reads file notifications from the CrowdStrike-managed SQS queue for your FDR feed and downloads the referenced objects from the CrowdStrike-managed S3 bucket. (see [below for nested schema](#nestedblock--config--source--crowdstrike_fdr))
 - `datadog_agent` (Block List) The `datadog_agent` source collects logs from the Datadog Agent. (see [below for nested schema](#nestedblock--config--source--datadog_agent))
 - `fluent_bit` (Block List) The `fluent_bit` source ingests logs from Fluent Bit. (see [below for nested schema](#nestedblock--config--source--fluent_bit))
 - `fluentd` (Block List) The `fluentd` source ingests logs from a Fluentd-compatible service. (see [below for nested schema](#nestedblock--config--source--fluentd))
@@ -3217,6 +3218,38 @@ Optional:
 
 <a id="nestedblock--config--source--amazon_s3--tls"></a>
 ### Nested Schema for `config.source.amazon_s3.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+
+
+
+<a id="nestedblock--config--source--crowdstrike_fdr"></a>
+### Nested Schema for `config.source.crowdstrike_fdr`
+
+Required:
+
+- `region` (String) AWS region of the FDR feed's SQS queue and S3 bucket.
+
+Optional:
+
+- `access_key_id_key` (String) Name of the environment variable or secret that holds the AWS access key ID that CrowdStrike generated for the FDR feed.
+- `client_concurrency` (Number) Number of concurrent tasks polling the SQS queue. Defaults to the number of Worker threads.
+- `max_number_of_messages` (Number) Maximum number of SQS messages to receive per poll. Each message can reference multiple files. Defaults to 1.
+- `secret_access_key_key` (String) Name of the environment variable or secret that holds the AWS secret access key that CrowdStrike generated for the FDR feed.
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--crowdstrike_fdr--tls))
+- `url_key` (String) Name of the environment variable or secret that holds the URL of the FDR feed's SQS queue.
+- `visibility_timeout_secs` (Number) Number of seconds a received SQS message is hidden from other consumers. Set it higher than the time needed to download and process the largest FDR file. Defaults to 300.
+
+<a id="nestedblock--config--source--crowdstrike_fdr--tls"></a>
+### Nested Schema for `config.source.crowdstrike_fdr.tls`
 
 Required:
 
