@@ -131,7 +131,7 @@ func updateMetricMetadataState(d *schema.ResourceData, metadata *datadogV1.Metri
 	if err := d.Set("per_unit", metadata.GetPerUnit()); err != nil {
 		return diag.FromErr(err)
 	}
-	if v, ok := metadata.GetStatsdIntervalOk(); ok {
+	if v, ok := metadata.GetStatsdIntervalOk(); ok && v != nil {
 		if err := d.Set("statsd_interval", *v); err != nil {
 			return diag.FromErr(err)
 		}
