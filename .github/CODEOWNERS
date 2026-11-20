@@ -120,7 +120,7 @@ datadog/**/*datadog_cost_budget*                  @DataDog/api-reliability @Data
 datadog/**/*datadog_tag_pipeline_ruleset*         @DataDog/api-reliability @DataDog/cloud-cost-management
 datadog/**/*datadog_deployment_gate*              @DataDog/api-reliability @DataDog/ci-app-backend
 datadog/**/*observability_pipeline*               @DataDog/api-reliability @DataDog/observability-pipelines
-datadog/**/*datadog_secure_embed_dashboard*       @DataDog/api-reliability @DataDog/reporting-and-sharing
+datadog/**/*datadog_secure_embed_dashboard*       @DataDog/api-reliability @DataDog/dashboards-backend
 datadog/**/*datadog_tag_indexing_rule*            @DataDog/api-reliability @DataDog/metrics-experience
 datadog/**/*datadog_governance_control*           @DataDog/api-reliability @DataDog/aaa-governance-console
 datadog/**/*datadog_tag_rule*                     @DataDog/api-reliability @DataDog/aaa-governance-console @DataDog/odp-governance
@@ -144,7 +144,7 @@ docs/resources/on_call_team_routing_rules.md              @DataDog/on-call
 docs/resources/on_call_team_routing_rules.md              @DataDog/on-call
 docs/resources/on_call_user_notification_channel.md       @DataDog/on-call
 docs/resources/on_call_user_notification_rule.md          @DataDog/on-call
-docs/resources/secure_embed_dashboard.md                  @DataDog/reporting-and-sharing
+docs/resources/secure_embed_dashboard.md                  @DataDog/dashboards-backend
 docs/resources/security_findings_*.md                     @DataDog/k9-shared-capabilities
 docs/resources/service_access_token.md                    @DataDog/credential-management
 docs/resources/status_page*.md                            @DataDog/incident-app
