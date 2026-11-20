@@ -33,6 +33,7 @@ func cleanupSyntheticsTests(t *testing.T) {
 // TestSweepSyntheticsTests is a standalone sweep test for CI / manual
 // invocation via `go test -run TestSweep` or `make sweep`.
 func TestSweepSyntheticsTests(t *testing.T) {
+	skipUnlessSweepRequested(t)
 	doSweepSyntheticsTests(t)
 }
 
@@ -129,6 +130,7 @@ func cleanupSyntheticsGlobalVariables(t *testing.T) {
 
 // TestSweepSyntheticsGlobalVariables is a standalone sweep test for CI / manual invocation.
 func TestSweepSyntheticsGlobalVariables(t *testing.T) {
+	skipUnlessSweepRequested(t)
 	doSweepSyntheticsGlobalVariables(t)
 }
 

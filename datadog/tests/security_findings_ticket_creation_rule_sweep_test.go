@@ -39,9 +39,7 @@ func cleanupTicketCreationRules(t *testing.T) {
 // TestSweepTicketCreationRules is a standalone sweep test for CI / manual
 // invocation via `make sweep`.
 func TestSweepTicketCreationRules(t *testing.T) {
-	if isReplaying() {
-		t.Skip("sweep deletes real rules; not run on cassette replay")
-	}
+	skipUnlessSweepRequested(t)
 	doSweepTicketCreationRules(t)
 }
 
