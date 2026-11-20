@@ -127,7 +127,7 @@ func (r *teamResource) Create(ctx context.Context, request resource.CreateReques
 
 	resp, _, err := r.Api.CreateTeam(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving Team"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating Team"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -157,7 +157,7 @@ func (r *teamResource) Update(ctx context.Context, request resource.UpdateReques
 
 	resp, _, err := r.Api.UpdateTeam(r.Auth, id, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving Team"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating Team"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -184,7 +184,7 @@ func (r *teamResource) Delete(ctx context.Context, request resource.DeleteReques
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting team"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting Team"))
 		return
 	}
 }
