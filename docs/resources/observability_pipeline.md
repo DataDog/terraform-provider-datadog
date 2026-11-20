@@ -2672,6 +2672,7 @@ Required:
 Optional:
 
 - `match_rule` (Block List) A list of Grok parsing rules that define how to extract fields. Each rule must contain a name and a valid Grok pattern. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--include_rule--match_rule))
+- `name` (String) Optional name identifying this Grok rule in worker diagnostics. Names must be unique within the processor.
 - `support_rule` (Block List) A list of helper Grok rules that can be referenced by the parsing rules. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--include_rule--support_rule))
 
 <a id="nestedblock--config--processor_group--processor--parse_grok--include_rule--match_rule"></a>
