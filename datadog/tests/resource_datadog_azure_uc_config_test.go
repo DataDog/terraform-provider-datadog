@@ -14,6 +14,7 @@ import (
 )
 
 func TestAccAzureUcConfigBasic(t *testing.T) {
+	skipUnlessReplaying(t, "needs an Azure integration; the test org returns MISSING_AZURE_INTEGRATION")
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -87,6 +88,7 @@ func TestAccAzureUcConfigBasic(t *testing.T) {
 }
 
 func TestAccAzureUcConfigImport(t *testing.T) {
+	skipUnlessReplaying(t, "needs an Azure integration; the test org returns MISSING_AZURE_INTEGRATION")
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)

@@ -462,6 +462,14 @@ func isReplaying() bool {
 	return os.Getenv("RECORD") == "false"
 }
 
+// skipUnlessReplaying skips tests whose live API calls need org state that the test org does not have.
+func skipUnlessReplaying(t *testing.T, reason string) {
+	t.Helper()
+	if !isReplaying() {
+		t.Skipf("replay-only test (RECORD=false): %s", reason)
+	}
+}
+
 func isDebug() bool {
 	return os.Getenv("DEBUG") == "true"
 }

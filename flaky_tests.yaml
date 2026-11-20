@@ -1,34 +1,4 @@
 skipped_tests:
-  # Missing cloud integrations — AWS/Azure/GCP not configured (12 tests)
-  - test: TestAccAwsCurConfigBasic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccAwsCurConfigImport
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccAwsCurConfigWithAccountFilters
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccAzureUcConfigBasic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccAzureUcConfigImport
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccGcpUcConfigBasic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccGcpUcConfigImport
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-
   # User/Team datasource — Eventual consistency (9 tests)
   - test: TestAccDatadogUserDatasourceExactMatch
     reason: "Eventual consistency — user not found immediately after creation"

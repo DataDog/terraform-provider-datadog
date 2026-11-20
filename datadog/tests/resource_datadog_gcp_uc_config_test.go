@@ -14,6 +14,7 @@ import (
 )
 
 func TestAccGcpUcConfigBasic(t *testing.T) {
+	skipUnlessReplaying(t, "needs a GCP integration that the test org does not have")
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -63,6 +64,7 @@ func TestAccGcpUcConfigBasic(t *testing.T) {
 }
 
 func TestAccGcpUcConfigImport(t *testing.T) {
+	skipUnlessReplaying(t, "needs a GCP integration that the test org does not have")
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
