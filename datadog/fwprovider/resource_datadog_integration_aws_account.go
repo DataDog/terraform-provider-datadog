@@ -1127,7 +1127,14 @@ func buildRequestMetricsConfig(ctx context.Context, state *integrationAwsAccount
 			}
 			tagFilters = append(tagFilters, *tagFiltersDDItem)
 		}
-		metricsConfig.SetTagFilters(tagFilters)
+		if len(tagFilters) > 0 {
+			metricsConfig.SetTagFilters(tagFilters)
+		} else {
+			// The API rejects a request that has both fields, also when both are empty.
+			// PATCH keeps an omitted field, so an empty resource_type_tag_filters is sent
+			// to remove resource_type_tag_filters that a previous apply set.
+			metricsConfig.SetResourceTypeTagFilters([]datadogV2.AWSResourceTypeTagFilter{})
+		}
 	}
 
 	metricNameFilters := []datadogV2.AWSMetricNameFilters{}

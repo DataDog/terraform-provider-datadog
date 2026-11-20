@@ -14,40 +14,63 @@ import (
 )
 
 func TestAccDatadogIntegrationAWSExternalIDDatasource(t *testing.T) {
-	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accountID := uniqueAWSAccountID(ctx, t)
+	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
 		PreCheck:                 func() { testAccPreCheck(t) },
+		CheckDestroy:             testAccCheckDatadogIntegrationAwsAccountDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDatasourceIntegrationAWSExternalIDConfig(),
+				Config: testAccDatasourceIntegrationAWSExternalIDConfig(accountID, uniq),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet("data.datadog_integration_aws_external_id.foo", "external_id"),
-					checkDatadogIntegrationAWSExternalIDDataSource(providers.frameworkProvider),
+					checkDatadogIntegrationAWSExternalIDDataSource(providers.frameworkProvider, accountID),
 				),
 			},
 		},
 	})
 }
 
-func testAccDatasourceIntegrationAWSExternalIDConfig() string {
-	return `
+func testAccDatasourceIntegrationAWSExternalIDConfig(accountID, uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_integration_aws_account" "foo" {
+  aws_account_id = %s
+  account_tags   = ["tag:%s"]
+  aws_partition  = "aws"
+  aws_regions {}
+  auth_config {
+    aws_auth_config_role {
+      role_name = "test"
+    }
+  }
+  logs_config {
+    lambda_forwarder {}
+  }
+  metrics_config {
+    namespace_filters {}
+  }
+  resources_config {}
+  traces_config {
+    xray_services {}
+  }
+}
 
 data "datadog_integration_aws_external_id" "foo" {
-  aws_account_id = "123456789012"
+  aws_account_id = datadog_integration_aws_account.foo.aws_account_id
 }
-`
+`, accountID, uniq)
 }
 
-func checkDatadogIntegrationAWSExternalIDDataSource(accProvider *fwprovider.FrameworkProvider) func(state *terraform.State) error {
+func checkDatadogIntegrationAWSExternalIDDataSource(accProvider *fwprovider.FrameworkProvider, accountID string) func(state *terraform.State) error {
 	return func(state *terraform.State) error {
 		// Verify the external_id matches the value returned by the API for the target account
 		api := accProvider.DatadogApiInstances.GetAWSIntegrationApiV2()
 		auth := accProvider.Auth
 
-		// List accounts and find the one for 123456789012
-		optionalParams := datadogV2.NewListAWSAccountsOptionalParameters().WithAwsAccountId("123456789012")
+		optionalParams := datadogV2.NewListAWSAccountsOptionalParameters().WithAwsAccountId(accountID)
 		accountsResp, _, err := api.ListAWSAccounts(auth, *optionalParams)
 		if err != nil {
 			return err
@@ -63,7 +86,7 @@ func checkDatadogIntegrationAWSExternalIDDataSource(accProvider *fwprovider.Fram
 		}
 
 		if expectedExternalID == "" {
-			return fmt.Errorf("could not find role-based auth config with external ID for account 123456789012")
+			return fmt.Errorf("could not find role-based auth config with external ID for account %s", accountID)
 		}
 
 		resourceAttributes := state.RootModule().Resources["data.datadog_integration_aws_external_id.foo"].Primary.Attributes
