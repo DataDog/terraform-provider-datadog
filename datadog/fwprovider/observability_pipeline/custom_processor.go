@@ -19,6 +19,7 @@ type CustomProcessorRemapModel struct {
 	Name        types.String `tfsdk:"name"`
 	Enabled     types.Bool   `tfsdk:"enabled"`
 	Source      types.String `tfsdk:"source"`
+	Sample      types.String `tfsdk:"sample"`
 	DropOnError types.Bool   `tfsdk:"drop_on_error"`
 }
 
@@ -29,13 +30,19 @@ func ExpandCustomProcessor(common BaseProcessorFields, src *CustomProcessorModel
 
 	var remaps []datadogV2.ObservabilityPipelineCustomProcessorRemap
 	for _, remap := range src.Remaps {
-		remaps = append(remaps, datadogV2.ObservabilityPipelineCustomProcessorRemap{
+		apiRemap := datadogV2.ObservabilityPipelineCustomProcessorRemap{
 			Include:     remap.Include.ValueString(),
 			Name:        remap.Name.ValueString(),
 			Source:      remap.Source.ValueString(),
 			Enabled:     remap.Enabled.ValueBoolPointer(),
 			DropOnError: remap.DropOnError.ValueBool(),
-		})
+		}
+		if !remap.Sample.IsNull() && !remap.Sample.IsUnknown() {
+			apiRemap.AdditionalProperties = map[string]interface{}{
+				"sample": remap.Sample.ValueString(),
+			}
+		}
+		remaps = append(remaps, apiRemap)
 	}
 	proc.SetRemaps(remaps)
 
@@ -50,10 +57,15 @@ func FlattenCustomProcessor(src *datadogV2.ObservabilityPipelineCustomProcessor)
 
 	var remaps []CustomProcessorRemapModel
 	for _, remap := range src.GetRemaps() {
+		sample := types.StringNull()
+		if value, ok := remap.AdditionalProperties["sample"].(string); ok {
+			sample = types.StringValue(value)
+		}
 		remaps = append(remaps, CustomProcessorRemapModel{
 			Include:     types.StringValue(remap.GetInclude()),
 			Name:        types.StringValue(remap.GetName()),
 			Source:      types.StringValue(remap.GetSource()),
+			Sample:      sample,
 			Enabled:     types.BoolValue(remap.GetEnabled()),
 			DropOnError: types.BoolValue(remap.GetDropOnError()),
 		})
@@ -96,6 +108,10 @@ func CustomProcessorSchema() schema.ListNestedBlock {
 							"source": schema.StringAttribute{
 								Required:    true,
 								Description: "The VRL script source code that defines the transformation logic.",
+							},
+							"sample": schema.StringAttribute{
+								Optional:    true,
+								Description: "A sample event used to test the VRL script in the pipeline editor.",
 							},
 							"drop_on_error": schema.BoolAttribute{
 								Required:    true,
