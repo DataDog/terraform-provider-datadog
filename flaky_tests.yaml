@@ -93,7 +93,7 @@ skipped_tests:
     added: "2026-03-02"
     author: fpighi
 
-  # Metric datasource/TagConfig — Metrics don't exist in org (4 tests)
+  # Metric datasources — Metrics don't exist in org (3 tests)
   - test: TestAccDatadogMetricsDatasource
     reason: "Initial sync of tests failing on master branch"
     added: "2026-03-02"
@@ -103,10 +103,6 @@ skipped_tests:
     added: "2026-03-02"
     author: fpighi
   - test: TestAccDatadogMetricActiveTagsAndAggregationsDatasource
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogMetricTagConfiguration_Import
     reason: "Initial sync of tests failing on master branch"
     added: "2026-03-02"
     author: fpighi
