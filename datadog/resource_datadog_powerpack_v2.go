@@ -260,8 +260,8 @@ func buildPowerpackPayload(d *schema.ResourceData) (*datadogV2.Powerpack, error)
 	definition.SetLayoutType("ordered")
 	definition.SetType("group")
 
-	if v, ok := d.GetOk("show_title"); ok {
-		definition.SetShowTitle(v.(bool))
+	if v, ok := powerpackShowTitleFromConfig(d); ok {
+		definition.SetShowTitle(v)
 	}
 	if v, ok := d.GetOk("name"); ok {
 		definition.SetTitle(v.(string))
