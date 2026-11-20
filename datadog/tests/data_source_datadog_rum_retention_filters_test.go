@@ -23,14 +23,20 @@ func TestAccRumRetentionFiltersDatasource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: dataDatadogRumRetentionFilters(),
+				// The cassette has default_replays ("Sessions with replays"). Frog has no
+				// default_replays. TF-123 CI got "Sessions with forced replays". Assert
+				// only default_errors and default_sessions, in any order. Extra filters
+				// are accepted.
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestMatchResourceAttr("data.datadog_rum_retention_filters.testing_rum_retention_filters", "retention_filters.#", regexp.MustCompile(`3`)),
-					resource.TestMatchResourceAttr("data.datadog_rum_retention_filters.testing_rum_retention_filters", "retention_filters.0.id", regexp.MustCompile(`default_replays`)),
-					resource.TestMatchResourceAttr("data.datadog_rum_retention_filters.testing_rum_retention_filters", "retention_filters.0.name", regexp.MustCompile(`Sessions with replays`)),
-					resource.TestMatchResourceAttr("data.datadog_rum_retention_filters.testing_rum_retention_filters", "retention_filters.1.id", regexp.MustCompile(`default_errors`)),
-					resource.TestMatchResourceAttr("data.datadog_rum_retention_filters.testing_rum_retention_filters", "retention_filters.1.name", regexp.MustCompile(`Sessions with errors`)),
-					resource.TestMatchResourceAttr("data.datadog_rum_retention_filters.testing_rum_retention_filters", "retention_filters.2.id", regexp.MustCompile(`default_sessions`)),
-					resource.TestMatchResourceAttr("data.datadog_rum_retention_filters.testing_rum_retention_filters", "retention_filters.2.name", regexp.MustCompile(`Sessions`)),
+					resource.TestMatchResourceAttr("data.datadog_rum_retention_filters.testing_rum_retention_filters", "retention_filters.#", regexp.MustCompile(`^[1-9][0-9]*$`)),
+					resource.TestCheckTypeSetElemNestedAttrs("data.datadog_rum_retention_filters.testing_rum_retention_filters", "retention_filters.*", map[string]string{
+						"id":   "default_errors",
+						"name": "Sessions with errors",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs("data.datadog_rum_retention_filters.testing_rum_retention_filters", "retention_filters.*", map[string]string{
+						"id":   "default_sessions",
+						"name": "Sessions",
+					}),
 				),
 			},
 		},
