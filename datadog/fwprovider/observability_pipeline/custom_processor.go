@@ -38,9 +38,7 @@ func ExpandCustomProcessor(common BaseProcessorFields, src *CustomProcessorModel
 			DropOnError: remap.DropOnError.ValueBool(),
 		}
 		if !remap.Sample.IsNull() && !remap.Sample.IsUnknown() {
-			apiRemap.AdditionalProperties = map[string]interface{}{
-				"sample": remap.Sample.ValueString(),
-			}
+			apiRemap.SetSample(remap.Sample.ValueString())
 		}
 		remaps = append(remaps, apiRemap)
 	}
@@ -58,8 +56,8 @@ func FlattenCustomProcessor(src *datadogV2.ObservabilityPipelineCustomProcessor)
 	var remaps []CustomProcessorRemapModel
 	for _, remap := range src.GetRemaps() {
 		sample := types.StringNull()
-		if value, ok := remap.AdditionalProperties["sample"].(string); ok {
-			sample = types.StringValue(value)
+		if value, ok := remap.GetSampleOk(); ok {
+			sample = types.StringValue(*value)
 		}
 		remaps = append(remaps, CustomProcessorRemapModel{
 			Include:     types.StringValue(remap.GetInclude()),

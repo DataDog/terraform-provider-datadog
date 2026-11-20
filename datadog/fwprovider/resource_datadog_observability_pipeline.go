@@ -5521,8 +5521,8 @@ func flattenDatadogLogsDestination(ctx context.Context, src *datadogV2.Observabi
 
 			routeModel.RouteId = types.StringValue(route.GetRouteId())
 			routeModel.Name = types.StringNull()
-			if value, ok := route.AdditionalProperties["name"].(string); ok {
-				routeModel.Name = types.StringValue(value)
+			if value, ok := route.GetNameOk(); ok {
+				routeModel.Name = types.StringValue(*value)
 			}
 			routeModel.Include = types.StringValue(route.GetInclude())
 			routeModel.Site = types.StringValue(route.GetSite())
@@ -5554,9 +5554,7 @@ func expandDatadogLogsDestination(ctx context.Context, dest *destinationModel, s
 			apiRoute := datadogV2.ObservabilityPipelineDatadogLogsDestinationRoute{}
 			apiRoute.SetRouteId(route.RouteId.ValueString())
 			if !route.Name.IsNull() && !route.Name.IsUnknown() {
-				apiRoute.AdditionalProperties = map[string]interface{}{
-					"name": route.Name.ValueString(),
-				}
+				apiRoute.SetName(route.Name.ValueString())
 			}
 			apiRoute.SetInclude(route.Include.ValueString())
 			apiRoute.SetSite(route.Site.ValueString())
