@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
@@ -286,17 +287,17 @@ func rumRetentionFilterExistsHelper(auth context.Context, s *terraform.State, ap
 		}
 
 		// Check source is terraform for retention filter created through terraform
-		meta, ok := res.Data.AdditionalProperties["meta"].(map[string]interface{})
+		meta, ok := res.Data.GetMetaOk()
 		if !ok {
 			return errors.New("'meta' must exist in `data`")
 		}
 
-		source, ok := meta["source"].(string)
+		source, ok := meta.GetSourceOk()
 		if !ok {
-			return errors.New("'source' must be a string in 'meta'")
+			return errors.New("'source' must exist in 'meta'")
 		}
 
-		if source != "terraform" {
+		if *source != datadogV2.RUMRETENTIONFILTERMETASOURCE_TERRAFORM {
 			return errors.New("'source' must be 'terraform'")
 		}
 	}
