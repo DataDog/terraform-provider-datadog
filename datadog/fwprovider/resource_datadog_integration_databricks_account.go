@@ -1084,8 +1084,7 @@ func (r *datadogIntegrationDatabricksAccountResource) Delete(ctx context.Context
 
 // updateState maps *datadogV2.DatabricksIntegrationAccountResponse into state, returning diagnostics
 // rather than writing them so it stays free of the resource request/response
-// types and can fail at a specific schema path. Shared by Create, Read and
-// Update, which all resolve the same response type.
+// types and can fail at a specific schema path. Shared by Create, Read and Update.
 func (r *datadogIntegrationDatabricksAccountResource) updateState(ctx context.Context, state *resourceDatadogIntegrationDatabricksAccount_Model, resp *datadogV2.DatabricksIntegrationAccountResponse) diag.Diagnostics {
 	var diags diag.Diagnostics
 	attributes := resp.Data.GetAttributes()
