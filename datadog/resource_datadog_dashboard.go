@@ -8293,8 +8293,11 @@ func buildDatadogFormula(data map[string]interface{}) *datadogV1.WidgetFormula {
 		formula.SetStyle(*datadogFormulaStyle)
 	}
 	if number, ok := data["number_format"].([]interface{}); ok && len(number) != 0 {
-		datadogNumberFormat := buildDatadogNumberFormatFormulaSchema(number[0].(map[string]interface{}))
-		formula.SetNumberFormat(*datadogNumberFormat)
+		if numberFormat, ok := number[0].(map[string]interface{}); ok {
+			if datadogNumberFormat := buildDatadogNumberFormatFormulaSchema(numberFormat); datadogNumberFormat != nil {
+				formula.SetNumberFormat(*datadogNumberFormat)
+			}
+		}
 	}
 
 	return &formula
@@ -12000,38 +12003,49 @@ func buildDatadogNumberFormatFormulaSchema(terraformStyle map[string]interface{}
 		return nil
 	}
 	var datadogNumber datadogV1.WidgetNumberFormat
+	// A nested block whose attributes are all zero values (for example
+	// `canonical { unit_name = "" }`) is read back by the SDK as a nil list
+	// element, so the element type assertions below must be checked.
 	if v, ok := terraformStyle["unit"].([]interface{}); ok && len(v) > 0 {
-		unit := v[0].(map[string]interface{})
-		datadogNumber.Unit = &datadogV1.NumberFormatUnit{}
-		if v, ok := unit["canonical"].([]interface{}); ok && len(v) > 0 {
-			canonical := v[0].(map[string]interface{})
-			datadogNumber.Unit.NumberFormatUnitCanonical = &datadogV1.NumberFormatUnitCanonical{
-				Type: Ptr(datadogV1.NUMBERFORMATUNITSCALETYPE_CANONICAL_UNIT),
+		if unit, ok := v[0].(map[string]interface{}); ok {
+			datadogUnit := datadogV1.NumberFormatUnit{}
+			if v, ok := unit["canonical"].([]interface{}); ok && len(v) > 0 {
+				if canonical, ok := v[0].(map[string]interface{}); ok {
+					datadogUnit.NumberFormatUnitCanonical = &datadogV1.NumberFormatUnitCanonical{
+						Type: Ptr(datadogV1.NUMBERFORMATUNITSCALETYPE_CANONICAL_UNIT),
+					}
+					if v, ok := canonical["per_unit_name"].(string); ok && len(v) > 0 {
+						datadogUnit.NumberFormatUnitCanonical.PerUnitName = Ptr(v)
+					}
+					if v, ok := canonical["unit_name"].(string); ok && len(v) > 0 {
+						datadogUnit.NumberFormatUnitCanonical.UnitName = Ptr(v)
+					}
+				}
 			}
-			if v, ok := canonical["per_unit_name"].(string); ok && len(v) > 0 {
-				datadogNumber.Unit.NumberFormatUnitCanonical.PerUnitName = Ptr(v)
+			if v, ok := unit["custom"].([]interface{}); ok && len(v) > 0 {
+				if custom, ok := v[0].(map[string]interface{}); ok {
+					datadogUnit.NumberFormatUnitCustom = &datadogV1.NumberFormatUnitCustom{
+						Type: Ptr(datadogV1.NUMBERFORMATUNITCUSTOMTYPE_CUSTOM_UNIT_LABEL),
+					}
+					if v, ok := custom["label"].(string); ok && len(v) > 0 {
+						datadogUnit.NumberFormatUnitCustom.Label = Ptr(v)
+					}
+				}
 			}
-			if v, ok := canonical["unit_name"].(string); ok && len(v) > 0 {
-				datadogNumber.Unit.NumberFormatUnitCanonical.UnitName = Ptr(v)
-			}
-		}
-		if v, ok := unit["custom"].([]interface{}); ok && len(v) > 0 {
-			custom := v[0].(map[string]interface{})
-			datadogNumber.Unit.NumberFormatUnitCustom = &datadogV1.NumberFormatUnitCustom{
-				Type: Ptr(datadogV1.NUMBERFORMATUNITCUSTOMTYPE_CUSTOM_UNIT_LABEL),
-			}
-			if v, ok := custom["label"].(string); ok && len(v) > 0 {
-				datadogNumber.Unit.NumberFormatUnitCustom.Label = Ptr(v)
+			// An empty oneOf cannot be marshaled, so only send a unit that has a variant.
+			if datadogUnit.NumberFormatUnitCanonical != nil || datadogUnit.NumberFormatUnitCustom != nil {
+				datadogNumber.Unit = &datadogUnit
 			}
 		}
 	}
 	if v, ok := terraformStyle["unit_scale"].([]interface{}); ok && len(v) > 0 {
-		unitScale := v[0].(map[string]interface{})
-		if unitName, ok := unitScale["unit_name"].(string); ok && len(unitName) > 0 {
-			datadogNumber.UnitScale = *datadogV1.NewNullableNumberFormatUnitScale(&datadogV1.NumberFormatUnitScale{
-				Type:     datadogV1.NUMBERFORMATUNITSCALETYPE_CANONICAL_UNIT.Ptr(),
-				UnitName: datadog.PtrString(unitName),
-			})
+		if unitScale, ok := v[0].(map[string]interface{}); ok {
+			if unitName, ok := unitScale["unit_name"].(string); ok && len(unitName) > 0 {
+				datadogNumber.UnitScale = *datadogV1.NewNullableNumberFormatUnitScale(&datadogV1.NumberFormatUnitScale{
+					Type:     datadogV1.NUMBERFORMATUNITSCALETYPE_CANONICAL_UNIT.Ptr(),
+					UnitName: datadog.PtrString(unitName),
+				})
+			}
 		}
 	}
 	return &datadogNumber
