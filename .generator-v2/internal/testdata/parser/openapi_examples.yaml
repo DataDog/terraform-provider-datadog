@@ -1,0 +1,584 @@
+openapi: 3.0.0
+info:
+  title: openapi example-form matrix fixture
+  version: 1.0.0
+  description: |
+    The cassette pipeline's parser fixture. Mostly one path per example form it
+    must recognize, plus a few paths covering what the pipeline reads alongside
+    an example: parameter serialization (`/parameters`), path-item vs operation
+    parameter precedence (`/parameter-merge`), and bodyless success responses
+    (`/bodyless`). Each case is independently addressable, by the artifact_name
+    in its x-datadog-tf-generator block, so a test can assert one case without
+    depending on the others. Cases prefixed "bad-" are deliberately ineligible.
+paths:
+
+  # --- media-type level: singular `example` ---
+  /media-singular:
+    post:
+      operationId: CreateMediaSingular
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: media_singular
+        group:
+          create: CreateMediaSingular
+          read: CreateMediaSingular
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WidgetRequest'
+            example:
+              data:
+                type: widget
+                attributes:
+                  name: singular-request
+      responses:
+        '201':
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetResponse'
+              example:
+                data:
+                  id: 11111111-1111-1111-1111-111111111111
+                  type: widget
+                  attributes:
+                    name: singular-request
+
+  # --- media-type level: named `examples` map, more than one name ---
+  /media-named:
+    post:
+      operationId: CreateMediaNamed
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: media_named
+        group:
+          create: CreateMediaNamed
+          read: CreateMediaNamed
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WidgetRequest'
+            examples:
+              default:
+                summary: the conventional choice
+                value:
+                  data:
+                    type: widget
+                    attributes:
+                      name: named-default
+              alternate:
+                summary: a second name, lexically before "default"
+                value:
+                  data:
+                    type: widget
+                    attributes:
+                      name: named-alternate
+      responses:
+        '201':
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                      id: 22222222-2222-2222-2222-222222222222
+                      type: widget
+                      attributes:
+                        name: named-default
+                alternate:
+                  value:
+                    data:
+                      id: 22222222-2222-2222-2222-222222222222
+                      type: widget
+                      attributes:
+                        name: named-alternate
+
+  # --- ineligible: one location declares BOTH `example` and `examples` ---
+  /bad-both-forms:
+    post:
+      operationId: CreateBadBothForms
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: bad_both_forms
+        group:
+          create: CreateBadBothForms
+          read: CreateBadBothForms
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WidgetRequest'
+            example:
+              data:
+                type: widget
+                attributes:
+                  name: singular-form
+            examples:
+              default:
+                value:
+                  data:
+                    type: widget
+                    attributes:
+                      name: named-form
+      responses:
+        '201':
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetResponse'
+              example:
+                data:
+                  id: 33333333-3333-3333-3333-333333333333
+                  type: widget
+                  attributes:
+                    name: singular-form
+
+  # --- schema-level `example` (whole-body fallback; no media example) ---
+  /schema-example:
+    post:
+      operationId: CreateSchemaExample
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: schema_example
+        group:
+          create: CreateSchemaExample
+          read: CreateSchemaExample
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WidgetRequestWithSchemaExample'
+      responses:
+        '201':
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetResponse'
+
+  # --- schema-property `example` only (per-property fallback) ---
+  /schema-property-example:
+    post:
+      operationId: CreateSchemaPropertyExample
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: schema_property_example
+        group:
+          create: CreateSchemaPropertyExample
+          read: CreateSchemaPropertyExample
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WidgetRequestPropertyExamples'
+      responses:
+        '201':
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetResponse'
+
+  # --- local reusable example reference ---
+  /local-reference:
+    post:
+      operationId: CreateLocalReference
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: local_reference
+        group:
+          create: CreateLocalReference
+          read: CreateLocalReference
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WidgetRequest'
+            examples:
+              default:
+                $ref: '#/components/examples/ReusableWidgetRequest'
+      responses:
+        '201':
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetResponse'
+              examples:
+                default:
+                  $ref: '#/components/examples/ReusableWidgetResponse'
+
+  # --- ineligible: external value is never fetched ---
+  /bad-external:
+    post:
+      operationId: CreateBadExternal
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: bad_external
+        group:
+          create: CreateBadExternal
+          read: CreateBadExternal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WidgetRequest'
+            examples:
+              remote:
+                externalValue: https://example.invalid/widget-request.json
+      responses:
+        '201':
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetResponse'
+              examples:
+                remote:
+                  externalValue: https://example.invalid/widget-response.json
+
+  # --- declared bodyless responses are valid without an example ---
+  /bodyless/{widget_id}:
+    parameters:
+    - $ref: '#/components/parameters/WidgetIdParameter'
+    get:
+      operationId: GetBodyless
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: bodyless
+        group:
+          create: GetBodyless
+          read: GetBodyless
+          delete: DeleteBodyless
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetResponse'
+              example:
+                data:
+                  id: 44444444-4444-4444-4444-444444444444
+                  type: widget
+                  attributes:
+                    name: bodyless-read
+    delete:
+      operationId: DeleteBodyless
+      responses:
+        '204':
+          description: no content — legitimately bodyless
+        '205':
+          description: reset content — also legitimately bodyless
+
+  # --- parameter examples, including array style/explode ---
+  /parameters/{widget_id}:
+    parameters:
+    - $ref: '#/components/parameters/WidgetIdParameter'
+    get:
+      operationId: GetWithParameters
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: parameters_case
+        group:
+          create: GetWithParameters
+          read: GetWithParameters
+      parameters:
+      - name: tags
+        in: query
+        description: form-style, non-exploded array
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+        example:
+        - alpha
+        - beta
+      - name: include_archived
+        in: query
+        required: false
+        schema:
+          type: boolean
+        example: true
+      - name: reserved_filter
+        in: query
+        description: value carries characters that must survive escaping
+        required: false
+        schema:
+          type: string
+        example: 'env:prod AND name:a/b c'
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetResponse'
+              example:
+                data:
+                  id: 55555555-5555-5555-5555-555555555555
+                  type: widget
+                  attributes:
+                    name: parameters-read
+
+  # --- path-item vs operation parameter merge by (name, location) ---
+  /parameter-merge/{widget_id}:
+    parameters:
+    - $ref: '#/components/parameters/WidgetIdParameter'
+    - name: shared
+      in: query
+      required: false
+      schema:
+        type: string
+      example: from-path-item
+    - name: only_path_item
+      in: query
+      required: false
+      schema:
+        type: string
+      example: path-item-only
+    get:
+      operationId: GetParameterMerge
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: parameter_merge
+        group:
+          create: GetParameterMerge
+          read: GetParameterMerge
+      parameters:
+      - name: shared
+        in: query
+        description: same (name, location) as the path-item declaration; this wins
+        required: false
+        schema:
+          type: string
+        example: from-operation
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetResponse'
+              example:
+                data:
+                  id: 66666666-6666-6666-6666-666666666666
+                  type: widget
+                  attributes:
+                    name: parameter-merge-read
+  /sensitive:
+    post:
+      operationId: CreateSensitive
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: sensitive_case
+        group:
+          create: CreateSensitive
+          read: CreateSensitive
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SensitiveRequest'
+            example:
+              data:
+                type: widget
+                attributes:
+                  name: sensitive-request
+                  api_token: plaintext-token-value
+      responses:
+        '201':
+          description: created — the write-only token is absent by design
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetResponse'
+              example:
+                data:
+                  id: 88888888-8888-8888-8888-888888888888
+                  type: widget
+                  attributes:
+                    name: sensitive-request
+
+components:
+
+  parameters:
+    WidgetIdParameter:
+      name: widget_id
+      in: path
+      required: true
+      description: Unique identifier of the widget.
+      schema:
+        type: string
+      example: 99999999-9999-9999-9999-999999999999
+
+  examples:
+    ReusableWidgetRequest:
+      summary: reusable request body
+      value:
+        data:
+          type: widget
+          attributes:
+            name: reusable-request
+    ReusableWidgetResponse:
+      summary: reusable response body
+      value:
+        data:
+          id: aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+          type: widget
+          attributes:
+            name: reusable-request
+
+  schemas:
+
+    WidgetType:
+      type: string
+      enum:
+      - widget
+      default: widget
+      example: widget
+
+    WidgetRequest:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - attributes
+          properties:
+            type:
+              $ref: '#/components/schemas/WidgetType'
+            attributes:
+              type: object
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+
+    WidgetResponse:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - id
+          - type
+          - attributes
+          properties:
+            id:
+              type: string
+            type:
+              $ref: '#/components/schemas/WidgetType'
+            attributes:
+              type: object
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+
+    WidgetRequestWithSchemaExample:
+      type: object
+      required:
+      - data
+      example:
+        data:
+          type: widget
+          attributes:
+            name: schema-level-request
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - attributes
+          properties:
+            type:
+              $ref: '#/components/schemas/WidgetType'
+            attributes:
+              type: object
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+
+    WidgetRequestPropertyExamples:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - attributes
+          properties:
+            type:
+              $ref: '#/components/schemas/WidgetType'
+            attributes:
+              type: object
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+                  example: property-level-name
+                replicas:
+                  type: integer
+                  example: 3
+                enabled:
+                  type: boolean
+                  example: true
+
+    SensitiveRequest:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - type
+          - attributes
+          properties:
+            type:
+              $ref: '#/components/schemas/WidgetType'
+            attributes:
+              type: object
+              required:
+              - name
+              - api_token
+              properties:
+                name:
+                  type: string
+                api_token:
+                  type: string
+                  description: Secret token; request-only.
+                  writeOnly: true
+                  x-secret: true
+                  example: plaintext-token-value
