@@ -10,7 +10,9 @@ type ApiInstances struct {
 	// HttpClient
 	HttpClient *datadog.APIClient
 
-	sensitiveDataScannerConfigCache sensitiveDataScannerConfigCache
+	sensitiveDataScannerConfigCache  sensitiveDataScannerConfigCache
+	tagIndexingRulesReadCache        tagIndexingRulesReadCache
+	metricTagConfigurationsReadCache metricTagConfigurationsReadCache
 
 	// V1 APIs
 	authenticationApiV1                   *datadogV1.AuthenticationApi
