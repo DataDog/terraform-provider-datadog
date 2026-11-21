@@ -1,6 +1,6 @@
 # Example Security Monitoring Rule JSON
 resource "datadog_security_monitoring_rule_json" "security_rule_json" {
-  rule = <<EOF
+  json = <<EOF
 {
   "name": "High error rate security monitoring",
   "isEnabled": true,
@@ -39,4 +39,4 @@ resource "datadog_security_monitoring_rule_json" "security_rule_json" {
   }
 }
 EOF
-} 
+}
