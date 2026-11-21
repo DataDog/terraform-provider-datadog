@@ -27,7 +27,7 @@ resource "datadog_integration_confluent_account" "foo" {
 
 ### Required
 
-- `api_key` (String) The API key associated with your Confluent account.
+- `api_key` (String, Sensitive) The API key associated with your Confluent account.
 - `api_secret` (String, Sensitive) The API secret associated with your Confluent account.
 
 ### Optional

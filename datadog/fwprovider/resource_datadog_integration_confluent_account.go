@@ -53,6 +53,7 @@ func (r *integrationConfluentAccountResource) Schema(_ context.Context, _ resour
 			"api_key": schema.StringAttribute{
 				Required:    true,
 				Description: "The API key associated with your Confluent account.",
+				Sensitive:   true,
 			},
 			"api_secret": schema.StringAttribute{
 				Required:    true,
