@@ -1071,6 +1071,132 @@ resource "datadog_observability_pipeline" "parse_grok" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_parseGrokProcessorIncludeRuleName(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.parse_grok_include_rule_name"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "parse_grok_include_rule_name" {
+  name = "parse-grok-include-rule-name-test"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    processor_group {
+      id      = "parse-grok-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "parse-grok-1"
+        enabled = true
+        include = "*"
+
+        parse_grok {
+          field = "content"
+
+          include_rule {
+            include = "service:payments"
+            name    = "payments"
+
+            match_rule {
+              name = "match_user"
+              rule = "%%{word:user.name}"
+            }
+          }
+
+          include_rule {
+            include = "service:checkout"
+            name    = "checkout"
+
+            match_rule {
+              name = "match_action"
+              rule = "%%{word:action}"
+            }
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["parse-grok-group-1"]
+      datadog_logs {}
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.include_rule.0.include", "service:payments"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.include_rule.0.name", "payments"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.include_rule.1.include", "service:checkout"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.include_rule.1.name", "checkout"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "parse_grok_include_rule_name" {
+  name = "parse-grok-include-rule-name-test"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    processor_group {
+      id      = "parse-grok-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "parse-grok-1"
+        enabled = true
+        include = "*"
+
+        parse_grok {
+          field = "content"
+
+          include_rule {
+            include = "service:payments"
+
+            match_rule {
+              name = "match_user"
+              rule = "%%{word:user.name}"
+            }
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["parse-grok-group-1"]
+      datadog_logs {}
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.include_rule.0.include", "service:payments"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.include_rule.0.name"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_sampleProcessor(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
