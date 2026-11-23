@@ -79,3 +79,45 @@ func TestAmazonOpenSearchDestinationFlattenWithoutAuth(t *testing.T) {
 	require.Equal(t, types.StringValue("AMAZON_OPENSEARCH_ENDPOINT_URL"), flattened.EndpointUrlKey)
 	require.Equal(t, types.StringValue("logs"), flattened.BulkIndex)
 }
+
+func TestDatadogLogsDestinationRouteNameRoundTrip(t *testing.T) {
+	ctx := context.Background()
+	inputs, diags := types.ListValueFrom(ctx, types.StringType, []string{"source-1"})
+	require.False(t, diags.HasError())
+	dest := &destinationModel{
+		Id:     types.StringValue("datadog-logs-destination"),
+		Inputs: inputs,
+	}
+	src := &datadogLogsDestinationModel{
+		Routes: []datadogLogsDestinationRouteModel{{
+			RouteId:   types.StringValue("route-us1"),
+			Name:      types.StringValue("Production logs"),
+			Include:   types.StringValue("service:api"),
+			Site:      types.StringValue("us1"),
+			ApiKeyKey: types.StringValue("API_KEY_IDENT"),
+		}},
+	}
+
+	item := expandDatadogLogsDestination(ctx, dest, src)
+	apiDestination := item.ObservabilityPipelineDatadogLogsDestination
+	require.NotNil(t, apiDestination)
+	payload, err := json.Marshal(apiDestination)
+	require.NoError(t, err)
+	require.JSONEq(t, `{
+		"id": "datadog-logs-destination",
+		"type": "datadog_logs",
+		"inputs": ["source-1"],
+		"routes": [{
+			"route_id": "route-us1",
+			"name": "Production logs",
+			"include": "service:api",
+			"site": "us1",
+			"api_key_key": "API_KEY_IDENT"
+		}]
+	}`, string(payload))
+
+	var destination datadogV2.ObservabilityPipelineDatadogLogsDestination
+	require.NoError(t, json.Unmarshal(payload, &destination))
+	flattened := flattenDatadogLogsDestination(ctx, &destination)
+	require.Equal(t, src, flattened)
+}

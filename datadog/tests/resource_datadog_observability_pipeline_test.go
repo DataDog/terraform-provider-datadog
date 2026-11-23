@@ -21,7 +21,7 @@ func TestAccDatadogObservabilityPipelineImport(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogRumMetricDestroy(providers.frameworkProvider),
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccObservabilityPipelineBasicConfig(),
@@ -5808,6 +5808,7 @@ resource "datadog_observability_pipeline" "custom_processor" {
             name          = "Parse JSON from message"
             enabled       = true
             source        = ". = parse_json!(string!(.message))"
+            sample        = "{\"message\":\"hello\"}"
             drop_on_error = false
           }
 
@@ -5844,6 +5845,7 @@ resource "datadog_observability_pipeline" "custom_processor" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.custom_processor.0.remap.0.name", "Parse JSON from message"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.custom_processor.0.remap.0.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.custom_processor.0.remap.0.source", ". = parse_json!(string!(.message))"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.custom_processor.0.remap.0.sample", `{"message":"hello"}`),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.custom_processor.0.remap.0.drop_on_error", "false"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.custom_processor.0.remap.1.include", "env:prod"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.custom_processor.0.remap.1.name", "Add timestamp"),
@@ -7653,6 +7655,7 @@ func TestAccDatadogObservabilityPipeline_datadogLogsDestination(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.#", "1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.0.routes.#", "1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.0.routes.0.route_id", "route-us1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.0.routes.0.name", "Production logs"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.0.routes.0.include", "service:api"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.0.routes.0.site", "us1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.0.routes.0.api_key_key", "API_KEY_IDENT"),
@@ -7736,6 +7739,7 @@ resource "datadog_observability_pipeline" "datadog_logs_routes_test" {
       datadog_logs {
         routes {
           route_id   = "route-us1"
+          name       = "Production logs"
           include    = "service:api"
           site       = "us1"
           api_key_key = "API_KEY_IDENT"

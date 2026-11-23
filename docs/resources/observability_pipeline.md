@@ -926,6 +926,7 @@ Required:
 Optional:
 
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--datadog_logs--routes--buffer))
+- `name` (String) A human-readable name for this route.
 
 <a id="nestedblock--config--destination--datadog_logs--routes--buffer"></a>
 ### Nested Schema for `config.destination.datadog_logs.routes.buffer`
@@ -2278,6 +2279,10 @@ Required:
 - `include` (String) A Datadog search query used to filter events for this specific remap rule.
 - `name` (String) A descriptive name for this remap rule.
 - `source` (String) The VRL script source code that defines the transformation logic.
+
+Optional:
+
+- `sample` (String) A sample event used to test the VRL script in the pipeline editor.
 
 
 
