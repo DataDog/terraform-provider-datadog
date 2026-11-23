@@ -113,58 +113,57 @@ func TestAccDeploymentGateForceNew(t *testing.T) {
 	})
 }
 
-func TestAccDeploymentGateCrossEnvironmentReplacement(t *testing.T) {
-	for _, tc := range []struct {
-		name, from, to string
-	}{
-		{name: "specific to all", from: "production", to: "*"},
-		{name: "all to specific", from: "*", to: "production"},
-	} {
-		t.Run(tc.name, func(t *testing.T) {
-			skipIfNoCassette(t)
-			ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-			uniq := uniqueEntityName(ctx, t)
-			const gate = "datadog_deployment_gate.foo"
-			var originalID string
+func TestAccDeploymentGateCrossEnvironmentReplacementSpecificToAll(t *testing.T) {
+	testAccDeploymentGateCrossEnvironmentReplacement(t, "production", "*")
+}
 
-			resource.Test(t, resource.TestCase{
-				ProtoV6ProviderFactories: accProviders,
-				CheckDestroy:             testAccCheckDatadogDeploymentGateDestroy(providers.frameworkProvider),
-				Steps: []resource.TestStep{
-					{
-						Config: testAccDeploymentGateReplacementConfig(uniq, tc.from),
-						Check: resource.ComposeTestCheckFunc(
-							resource.TestCheckResourceAttr(gate, "env", tc.from),
-							resource.TestCheckResourceAttr(gate, "rule.#", "1"),
-							resource.TestCheckResourceAttr(gate, "rule.0.name", "monitor-rule"),
-							resource.TestCheckResourceAttrSet(gate, "rule.0.id"),
-							func(s *terraform.State) error {
-								originalID = s.RootModule().Resources[gate].Primary.ID
-								return nil
-							},
-						),
+func TestAccDeploymentGateCrossEnvironmentReplacementAllToSpecific(t *testing.T) {
+	testAccDeploymentGateCrossEnvironmentReplacement(t, "*", "production")
+}
+
+func testAccDeploymentGateCrossEnvironmentReplacement(t *testing.T, from, to string) {
+	skipIfNoCassette(t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+	const gate = "datadog_deployment_gate.foo"
+	var originalID string
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogDeploymentGateDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccDeploymentGateReplacementConfig(uniq, from),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(gate, "env", from),
+					resource.TestCheckResourceAttr(gate, "rule.#", "1"),
+					resource.TestCheckResourceAttr(gate, "rule.0.name", "monitor-rule"),
+					resource.TestCheckResourceAttrSet(gate, "rule.0.id"),
+					func(s *terraform.State) error {
+						originalID = s.RootModule().Resources[gate].Primary.ID
+						return nil
 					},
-					{
-						Config: testAccDeploymentGateReplacementConfig(uniq, tc.to),
-						Check: resource.ComposeTestCheckFunc(
-							resource.TestCheckResourceAttr(gate, "env", tc.to),
-							resource.TestCheckResourceAttr(gate, "rule.#", "1"),
-							resource.TestCheckResourceAttr(gate, "rule.0.name", "monitor-rule"),
-							resource.TestCheckResourceAttr(gate, "rule.0.type", "monitor"),
-							resource.TestCheckResourceAttr(gate, "rule.0.options.query", "service:test"),
-							resource.TestCheckResourceAttrSet(gate, "rule.0.id"),
-							func(s *terraform.State) error {
-								if id := s.RootModule().Resources[gate].Primary.ID; id == originalID {
-									return fmt.Errorf("gate ID %q did not change after env replacement", id)
-								}
-								return nil
-							},
-						),
+				),
+			},
+			{
+				Config: testAccDeploymentGateReplacementConfig(uniq, to),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(gate, "env", to),
+					resource.TestCheckResourceAttr(gate, "rule.#", "1"),
+					resource.TestCheckResourceAttr(gate, "rule.0.name", "monitor-rule"),
+					resource.TestCheckResourceAttr(gate, "rule.0.type", "monitor"),
+					resource.TestCheckResourceAttr(gate, "rule.0.options.query", "service:test"),
+					resource.TestCheckResourceAttrSet(gate, "rule.0.id"),
+					func(s *terraform.State) error {
+						if id := s.RootModule().Resources[gate].Primary.ID; id == originalID {
+							return fmt.Errorf("gate ID %q did not change after env replacement", id)
+						}
+						return nil
 					},
-				},
-			})
-		})
-	}
+				),
+			},
+		},
+	})
 }
 
 func testAccDeploymentGateReplacementConfig(identifier, env string) string {
