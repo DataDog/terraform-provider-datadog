@@ -20,7 +20,7 @@ description: |-
 
 ## Changing the environment
 
-`env` is required. Set it to a concrete environment for an environment-specific gate or to `"*"` for a gate that applies to all environments. A gate with `env = "*"` cannot coexist with environment-specific gates for the same service and identifier. Evaluations still use a concrete environment. Monitor queries are not automatically changed to match the evaluation environment.
+`env` is required. Set it to a concrete environment for an environment-specific gate or to `"*"` for a gate that applies to all environments. A gate with `env = "*"` cannot coexist with environment-specific gates for the same service and identifier. Evaluations still use a concrete environment.
 
 Changing `env` replaces this resource. With Terraform's default destroy-before-create lifecycle, replacing one gate deletes it and its rules before creating the replacement and its rules. Evaluations can have no matching gate during this interval. `create_before_destroy`, including when inherited from another resource, instead attempts to create the new gate first and fails if it conflicts with the old gate. Remove conflicting gates or choose a new identifier before applying.
 
