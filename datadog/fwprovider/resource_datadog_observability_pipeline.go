@@ -478,6 +478,7 @@ type datadogLogsDestinationModel struct {
 
 type datadogLogsDestinationRouteModel struct {
 	RouteId   types.String                                `tfsdk:"route_id"`
+	Name      types.String                                `tfsdk:"name"`
 	Include   types.String                                `tfsdk:"include"`
 	Site      types.String                                `tfsdk:"site"`
 	ApiKeyKey types.String                                `tfsdk:"api_key_key"`
@@ -2284,6 +2285,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 															"route_id": schema.StringAttribute{
 																Required:    true,
 																Description: "Unique identifier for this route within the destination.",
+															},
+															"name": schema.StringAttribute{
+																Optional:    true,
+																Description: "A human-readable name for this route.",
 															},
 															"include": schema.StringAttribute{
 																Required:    true,
@@ -5515,6 +5520,10 @@ func flattenDatadogLogsDestination(ctx context.Context, src *datadogV2.Observabi
 			routeModel := datadogLogsDestinationRouteModel{}
 
 			routeModel.RouteId = types.StringValue(route.GetRouteId())
+			routeModel.Name = types.StringNull()
+			if value, ok := route.GetNameOk(); ok {
+				routeModel.Name = types.StringValue(*value)
+			}
 			routeModel.Include = types.StringValue(route.GetInclude())
 			routeModel.Site = types.StringValue(route.GetSite())
 			routeModel.ApiKeyKey = types.StringValue(route.GetApiKeyKey())
@@ -5544,6 +5553,9 @@ func expandDatadogLogsDestination(ctx context.Context, dest *destinationModel, s
 		for _, route := range src.Routes {
 			apiRoute := datadogV2.ObservabilityPipelineDatadogLogsDestinationRoute{}
 			apiRoute.SetRouteId(route.RouteId.ValueString())
+			if !route.Name.IsNull() && !route.Name.IsUnknown() {
+				apiRoute.SetName(route.Name.ValueString())
+			}
 			apiRoute.SetInclude(route.Include.ValueString())
 			apiRoute.SetSite(route.Site.ValueString())
 			apiRoute.SetApiKeyKey(route.ApiKeyKey.ValueString())
