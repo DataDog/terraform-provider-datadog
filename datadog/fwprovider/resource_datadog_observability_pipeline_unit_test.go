@@ -79,3 +79,36 @@ func TestAmazonOpenSearchDestinationFlattenWithoutAuth(t *testing.T) {
 	require.Equal(t, types.StringValue("AMAZON_OPENSEARCH_ENDPOINT_URL"), flattened.EndpointUrlKey)
 	require.Equal(t, types.StringValue("logs"), flattened.BulkIndex)
 }
+
+func TestObservabilityPipelineUIMetadataRoundTrip(t *testing.T) {
+	ctx := context.Background()
+	for _, metadata := range []types.String{types.StringNull(), types.StringUnknown(), types.StringValue("eyJzaGFyZWRHcm91cCI6Imdyb3VwLTEifQ==")} {
+		t.Run(metadata.String(), func(t *testing.T) {
+			inputs, inputDiags := types.ListValueFrom(ctx, types.StringType, []string{"source-1"})
+			require.False(t, inputDiags.HasError())
+			state := &observabilityPipelineModel{Name: types.StringValue("pipeline"), Config: []configModel{{
+				UIMetadata:   metadata,
+				Sources:      []*sourceModel{{Id: types.StringValue("source-1"), DatadogAgentSource: []*datadogAgentSourceModel{{}}}},
+				Destinations: []*destinationModel{{Id: types.StringValue("destination-1"), Inputs: inputs, DatadogLogsDestination: []*datadogLogsDestinationModel{{}}}},
+			}}}
+			payload, diags := expandPipeline(ctx, state)
+			require.False(t, diags.HasError(), "%v", diags)
+			data, err := json.Marshal(payload)
+			require.NoError(t, err)
+			var response datadogV2.ObservabilityPipeline
+			require.NoError(t, json.Unmarshal(data, &response))
+			flattened := &observabilityPipelineModel{}
+			flattenPipeline(ctx, flattened, &response)
+			expected := metadata
+			if metadata.IsUnknown() {
+				expected = types.StringNull()
+			}
+			require.Equal(t, expected, flattened.Config[0].UIMetadata)
+			if metadata.IsNull() || metadata.IsUnknown() {
+				require.NotContains(t, string(data), "ui_metadata")
+			} else {
+				require.Contains(t, string(data), metadata.ValueString())
+			}
+		})
+	}
+}

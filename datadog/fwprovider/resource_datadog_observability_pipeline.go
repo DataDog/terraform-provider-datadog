@@ -15,6 +15,8 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider/observability_pipeline"
@@ -45,6 +47,7 @@ type observabilityPipelineModel struct {
 }
 
 type configModel struct {
+	UIMetadata            types.String           `tfsdk:"ui_metadata"`
 	PipelineType          types.String           `tfsdk:"pipeline_type"`
 	UseLegacySearchSyntax types.Bool             `tfsdk:"use_legacy_search_syntax"`
 	Sources               []*sourceModel         `tfsdk:"source"`
@@ -828,6 +831,12 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 				Description: "Configuration for the pipeline.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
+						"ui_metadata": schema.StringAttribute{
+							Optional:      true,
+							Computed:      true,
+							Description:   "Base64-encoded metadata used for UI rendering. This field should not be updated manually.",
+							PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+						},
 						"pipeline_type": schema.StringAttribute{
 							Optional:    true,
 							Computed:    true,
@@ -3121,6 +3130,14 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 
 	config := datadogV2.NewObservabilityPipelineConfigWithDefaults()
 
+	if len(state.Config) > 0 && !state.Config[0].UIMetadata.IsNull() && !state.Config[0].UIMetadata.IsUnknown() {
+		// Preserve the opaque field through the API client's additional properties
+		// until its generated model includes a typed ui_metadata accessor.
+		config.AdditionalProperties = map[string]interface{}{
+			"ui_metadata": state.Config[0].UIMetadata.ValueString(),
+		}
+	}
+
 	// Always set pipeline_type, defaulting to "logs" if not specified
 	pipelineType := "logs"
 	if len(state.Config) > 0 && !state.Config[0].PipelineType.IsNull() && !state.Config[0].PipelineType.IsUnknown() {
@@ -3325,7 +3342,10 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 	state.Name = types.StringValue(attrs.GetName())
 
 	cfg := attrs.GetConfig()
-	outCfg := configModel{}
+	outCfg := configModel{UIMetadata: types.StringNull()}
+	if metadata, ok := cfg.AdditionalProperties["ui_metadata"].(string); ok {
+		outCfg.UIMetadata = types.StringValue(metadata)
+	}
 
 	if pt, ok := cfg.GetPipelineTypeOk(); ok {
 		outCfg.PipelineType = types.StringValue(string(*pt))
