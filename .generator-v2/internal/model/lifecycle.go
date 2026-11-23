@@ -137,7 +137,7 @@ func bindResourceIDParameter(op *Operation, bindings *LifecycleBindings) error {
 		failure := func(reason string) error {
 			return &IDParameterError{
 				Artifact: op.Tracking.ArtifactName, Role: entry.role,
-				OperationId: entry.call.GoMethod, Parameter: parameter, Reason: reason,
+				OperationId: op.ResolvedGroup.Op(entry.role).OperationId, Parameter: parameter, Reason: reason,
 			}
 		}
 		selected := -1

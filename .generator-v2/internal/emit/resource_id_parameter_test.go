@@ -34,10 +34,10 @@ var _ = Describe("explicit resource ID parameter output", func() {
 			Expect(view.Import.Parts).To(Equal([]string{"id"}))
 			Expect(source).NotTo(ContainSubstring(`tfsdk:"incident_type_id"`))
 		},
-		Entry("int", "int", "integer", "strconv.ParseInt(state.ID.ValueString(), 10, 64)", "int(parsedId)"),
-		Entry("int32", "int32", "integer", "strconv.ParseInt(state.ID.ValueString(), 10, 64)", "int32(parsedId)"),
+		Entry("int", "int", "integer", "strconv.ParseInt(state.ID.ValueString(), 10, 0)", "int(parsedId)"),
+		Entry("int32", "int32", "integer", "strconv.ParseInt(state.ID.ValueString(), 10, 32)", "int32(parsedId)"),
 		Entry("int64", "int64", "integer", "strconv.ParseInt(state.ID.ValueString(), 10, 64)", "parsedId"),
-		Entry("float32", "float32", "number", "strconv.ParseFloat(state.ID.ValueString(), 64)", "float32(parsedId)"),
+		Entry("float32", "float32", "number", "strconv.ParseFloat(state.ID.ValueString(), 32)", "float32(parsedId)"),
 		Entry("float64", "float64", "number", "strconv.ParseFloat(state.ID.ValueString(), 64)", "parsedId"),
 		Entry("boolean", "bool", "boolean", "strconv.ParseBool(state.ID.ValueString())", "parsedId"),
 		Entry("named string enum", "IncidentTypeType", "string", "datadogV2.NewIncidentTypeTypeFromValue(state.ID.ValueString())", "*parsedId"),
