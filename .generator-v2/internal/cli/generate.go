@@ -2,6 +2,7 @@ package cli
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -396,7 +397,7 @@ func generateResourceArtifact(op *model.Operation, outputRoot string, check bool
 	}
 	bindingDiagnostics, err := bindOperations(roleOps, sdkBindings)
 	if err != nil {
-		return failEntry(entry, err), nil
+		return failEntry(entry, explicitIDBindingError(op, err)), nil
 	}
 	entry.Diagnostics = append(entry.Diagnostics, bindingDiagnostics...)
 
@@ -437,6 +438,28 @@ func generateResourceArtifact(op *model.Operation, outputRoot string, check bool
 	}
 	entry.Diagnostics = append(entry.Diagnostics, unstableOperationDiagnostics(artifact)...)
 	return entry, reg
+}
+
+// explicitIDBindingError supplies lifecycle context when the selected path
+// parameter fails SDK derivation before the model can validate its ID binding.
+// Errors on other parameters retain their original, independent meaning.
+func explicitIDBindingError(op *model.Operation, err error) error {
+	var parameterErr *sdkbinding.ParameterError
+	if op.Tracking.IdParameter == "" || !errors.As(err, &parameterErr) ||
+		parameterErr.Location != "path" || parameterErr.Parameter != op.Tracking.IdParameter {
+		return err
+	}
+	for _, role := range []model.GroupRole{model.GroupRoleCreate, model.GroupRoleRead, model.GroupRoleUpdate, model.GroupRoleDelete} {
+		endpoint := op.ResolvedGroup.Op(role)
+		if endpoint != nil && endpoint.OperationId == parameterErr.OperationId {
+			return &model.IDParameterError{
+				Artifact: op.Tracking.ArtifactName, Role: role,
+				OperationId: endpoint.OperationId, Parameter: parameterErr.Parameter,
+				Reason: "cannot derive SDK binding for the selected path parameter: " + parameterErr.Cause.Error(),
+			}
+		}
+	}
+	return err
 }
 
 // bindOperations resolves the SDK bindings for each operation in ops and

@@ -1,0 +1,145 @@
+package fwprovider
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"reflect"
+	"sync"
+	"testing"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+)
+
+// This is a local mock-API regression; it makes no live Datadog API claims.
+func TestTFGenFeatureFlagIDParameter(t *testing.T) {
+	ctx := context.Background()
+	const id = "550e8400-e29b-41d4-a716-446655440000"
+	const collection = "/api/v2/feature-flags"
+	var mu sync.Mutex
+	var calls []string
+	name := "initial"
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		mu.Lock()
+		defer mu.Unlock()
+		calls = append(calls, req.Method+" "+req.URL.Path)
+		wantPath := collection + "/" + id
+		if req.Method == http.MethodPost {
+			if len(calls) == 1 {
+				wantPath = collection
+			} else {
+				wantPath += "/archive"
+			}
+		}
+		if req.URL.Path != wantPath {
+			t.Errorf("request path = %q, want %q from Create response data.id", req.URL.Path, wantPath)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		if req.Method == http.MethodPost && wantPath == collection || req.Method == http.MethodPut {
+			var body struct {
+				Data struct {
+					Attributes struct {
+						Name string `json:"name"`
+					} `json:"attributes"`
+				} `json:"data"`
+			}
+			if err := json.NewDecoder(req.Body).Decode(&body); err != nil {
+				t.Error(err)
+			}
+			name = body.Data.Attributes.Name
+		}
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintf(w, `{"data":{"id":%q,"type":"feature-flags","attributes":{"key":"tfgen-id-probe","name":%q,"description":"probe","value_type":"BOOLEAN","variants":[{"id":"550e8400-e29b-41d4-a716-446655440001","key":"on","name":"On","value":"true"}]}}}`, id, name)
+	}))
+	defer server.Close()
+	cfg := datadog.NewConfiguration()
+	cfg.Servers = datadog.ServerConfigurations{{URL: server.URL}}
+	cfg.OperationServers = nil
+	cfg.HTTPClient = server.Client()
+	r := &datadogTfgenFeatureFlagFixtureResource{Api: datadogV2.NewFeatureFlagsApi(datadog.NewAPIClient(cfg)), Auth: ctx}
+	var schemaResponse resource.SchemaResponse
+	r.Schema(ctx, resource.SchemaRequest{}, &schemaResponse)
+	schema := schemaResponse.Schema
+	if diags := schema.ValidateImplementation(ctx); diags.HasError() {
+		t.Fatal(diags)
+	}
+	if _, exists := schema.Attributes["feature_flag_id"]; exists {
+		t.Fatal("selected path ID must not be an extra Terraform input")
+	}
+	if attr := schema.Attributes["id"]; !attr.IsComputed() || attr.IsRequired() || attr.IsOptional() {
+		t.Fatal("response-derived id must be computed only")
+	}
+	model := resourceDatadogTfgenFeatureFlagFixture_Model{
+		ID: types.StringUnknown(), Key: types.StringValue("tfgen-id-probe"), Name: types.StringValue("initial"),
+		Description: types.StringValue("probe"), ValueType: types.StringValue("BOOLEAN"),
+		Variants: []*resourceDatadogTfgenFeatureFlagFixture_VariantModel{{Key: types.StringValue("on"), Name: types.StringValue("On"), Value: types.StringValue("true")}},
+	}
+	plan := tfsdk.Plan{Schema: schema}
+	if diags := plan.Set(ctx, &model); diags.HasError() {
+		t.Fatal(diags)
+	}
+	created := resource.CreateResponse{State: tfsdk.State{Schema: schema}}
+	r.Create(ctx, resource.CreateRequest{Plan: plan}, &created)
+	if created.Diagnostics.HasError() {
+		t.Fatal(created.Diagnostics)
+	}
+	var state resourceDatadogTfgenFeatureFlagFixture_Model
+	if diags := created.State.Get(ctx, &state); diags.HasError() {
+		t.Fatal(diags)
+	}
+	if state.ID.ValueString() != id {
+		t.Fatalf("Create state ID = %v, want API UUID %s", state.ID, id)
+	}
+	read := resource.ReadResponse{State: created.State}
+	r.Read(ctx, resource.ReadRequest{State: created.State}, &read)
+	if read.Diagnostics.HasError() {
+		t.Fatal(read.Diagnostics)
+	}
+	state.Name = types.StringValue("changed")
+	if diags := plan.Set(ctx, &state); diags.HasError() {
+		t.Fatal(diags)
+	}
+	updated := resource.UpdateResponse{State: read.State}
+	r.Update(ctx, resource.UpdateRequest{Plan: plan, State: read.State}, &updated)
+	if updated.Diagnostics.HasError() {
+		t.Fatal(updated.Diagnostics)
+	}
+	if diags := updated.State.Get(ctx, &state); diags.HasError() {
+		t.Fatal(diags)
+	}
+	if state.ID.ValueString() != id || state.Name.ValueString() != "changed" {
+		t.Fatalf("Update state ID=%v name=%v", state.ID, state.Name)
+	}
+	imported := resource.ImportStateResponse{State: tfsdk.State{Schema: schema}}
+	if diags := imported.State.Set(ctx, &resourceDatadogTfgenFeatureFlagFixture_Model{}); diags.HasError() {
+		t.Fatal(diags)
+	}
+	r.ImportState(ctx, resource.ImportStateRequest{ID: id}, &imported)
+	if imported.Diagnostics.HasError() {
+		t.Fatal(imported.Diagnostics)
+	}
+	if diags := imported.State.Get(ctx, &state); diags.HasError() {
+		t.Fatal(diags)
+	}
+	if state.ID.ValueString() != id {
+		t.Fatalf("single UUID import ID = %v", state.ID)
+	}
+	deleted := resource.DeleteResponse{State: updated.State}
+	r.Delete(ctx, resource.DeleteRequest{State: updated.State}, &deleted)
+	if deleted.Diagnostics.HasError() {
+		t.Fatal(deleted.Diagnostics)
+	}
+	mu.Lock()
+	defer mu.Unlock()
+	want := []string{"POST " + collection, "GET " + collection + "/" + id, "PUT " + collection + "/" + id, "POST " + collection + "/" + id + "/archive"}
+	if !reflect.DeepEqual(calls, want) {
+		t.Fatalf("lifecycle calls = %v, want %v", calls, want)
+	}
+}

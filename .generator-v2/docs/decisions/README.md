@@ -21,6 +21,7 @@ place someone discovers that a feature was only ever planned.
 | [0003](0003-write-only-keeps-a-plaintext-fallback.md) | Generated write-only secrets keep a plaintext fallback, so a resource does not require Terraform 1.11. |
 | [0004](0004-tag-scoped-family-registries.md) | Terraform artifacts are declared as tag-owned families, with an annotation-free migration interval. |
 | [0005](0005-separate-create-name-from-api-id.md) | Caller-assigned create names are separate from computed API identity. |
+| [0006](0006-explicit-resource-id-parameter.md) | Explicit resource ID path binding is independent of extraction; generator and transformer releases precede source-spec adoption. |
 
 Add a record when a choice would otherwise only be legible from a commit message, or
 when something documented as the plan stops being it. Unmerged work gets a record, not

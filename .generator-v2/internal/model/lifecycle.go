@@ -61,19 +61,23 @@ func requireResolvedRoles(op *Operation, roles ...GroupRole) error {
 // every subsequent change destructive.
 func buildResourceLifecycle(op *Operation) (*LifecycleBindings, []Diagnostic, error) {
 	g := op.ResolvedGroup
+	// Explicit selection replaces positional inference on these artifact-local
+	// calls. Shared operation bindings remain unchanged, including for siblings
+	// that use the same endpoints without an explicit mapping.
+	aliasTerminalID := op.Tracking.IdParameter == ""
 	bindings := &LifecycleBindings{
 		Create: bodyCall(g.Create, false),
-		Read:   sdkCall(g.Read, true),
-		// Delete takes the terminal path id and sends no request body. Its
-		// response may have a body, including an unnamed one.
-		Delete:     sdkCall(g.Delete, true),
+		Read:   sdkCall(g.Read, aliasTerminalID),
+		// Delete sends no request body. Its response may have a body, including
+		// an unnamed one.
+		Delete:     sdkCall(g.Delete, aliasTerminalID),
 		IdStrategy: op.Tracking.IdStrategy,
 	}
 
 	var diags []Diagnostic
 	switch dangling := g.UnresolvedId(GroupRoleUpdate); {
 	case g.Update != nil:
-		bindings.Update = bodyCall(g.Update, true)
+		bindings.Update = bodyCall(g.Update, aliasTerminalID)
 	case dangling != "":
 		return nil, nil, &MissingRoleError{
 			Artifact:    op.Tracking.ArtifactName,
@@ -90,13 +94,108 @@ func buildResourceLifecycle(op *Operation) (*LifecycleBindings, []Diagnostic, er
 				op.Tracking.ArtifactName),
 		})
 	}
+	if op.Tracking.IdParameter != "" {
+		if err := bindResourceIDParameter(op, bindings); err != nil {
+			return nil, nil, err
+		}
+	}
 
 	return bindings, diags, nil
 }
 
+// IDParameterError reports an invalid explicit resource-ID binding. Selection
+// failures never fall back to terminal-path inference.
+type IDParameterError struct {
+	Artifact    string
+	Role        GroupRole
+	OperationId string
+	Parameter   string
+	Reason      string
+}
+
+func (e *IDParameterError) Error() string {
+	return fmt.Sprintf("model: resource %q: group.%s operation %q: id_parameter %q: %s",
+		e.Artifact, e.Role, e.OperationId, e.Parameter, e.Reason)
+}
+
+// bindResourceIDParameter runs before schema construction, so the selected
+// argument contributes neither a required input nor an extra import component.
+func bindResourceIDParameter(op *Operation, bindings *LifecycleBindings) error {
+	parameter := op.Tracking.IdParameter
+	for _, entry := range []struct {
+		role GroupRole
+		call *SDKCall
+	}{
+		{GroupRoleCreate, bindings.Create},
+		{GroupRoleRead, bindings.Read},
+		{GroupRoleUpdate, bindings.Update},
+		{GroupRoleDelete, bindings.Delete},
+	} {
+		if entry.call == nil {
+			continue // An undeclared Update is supported through replacement.
+		}
+		failure := func(reason string) error {
+			return &IDParameterError{
+				Artifact: op.Tracking.ArtifactName, Role: entry.role,
+				OperationId: entry.call.GoMethod, Parameter: parameter, Reason: reason,
+			}
+		}
+		selected := -1
+		for i, argument := range entry.call.Arguments {
+			if argument.Name != parameter || argument.Location != "path" {
+				continue
+			}
+			if entry.role == GroupRoleCreate {
+				return failure("Create requires this path parameter before response data.id exists; choose a resource identity that is not required during Create")
+			}
+			if selected >= 0 {
+				return failure("the operation has multiple matching path arguments; the binding must be unambiguous")
+			}
+			selected = i
+			if !supportedIDParameter(argument) {
+				return failure(fmt.Sprintf("path argument type %q has no supported conversion from Terraform's string id; use a supported scalar or UUID path parameter", argument.GoType))
+			}
+		}
+		if entry.role != GroupRoleCreate && selected < 0 {
+			return failure("the operation has no required SDK path argument with this exact OpenAPI name; check id_parameter and the lifecycle operation")
+		}
+		for i, argument := range entry.call.Arguments {
+			if i != selected && argument.TFName == "id" {
+				return failure(fmt.Sprintf("another argument %q (%s) also claims Terraform's id; rename or remove the conflicting input", argument.Name, argument.Location))
+			}
+		}
+		for _, argument := range entry.call.OptionalArguments {
+			if argument.TFName == "id" {
+				return failure(fmt.Sprintf("another optional argument %q (%s) also claims Terraform's id; rename or remove the conflicting input", argument.Name, argument.Location))
+			}
+		}
+		if selected >= 0 {
+			entry.call.Arguments[selected].TFName = "id"
+		}
+	}
+	return nil
+}
+
+// supportedIDParameter matches the conversions the emitter can perform from a
+// computed types.String ID. Named enums additionally need a string schema:
+// their SDK validating constructor receives that string unchanged.
+func supportedIDParameter(argument SDKArgument) bool {
+	if argument.Schema == nil || argument.Schema.Kind != SchemaKindPrimitive {
+		return false
+	}
+	switch argument.GoType {
+	case "string", "uuid.UUID", "int", "int32", "int64", "float32", "float64", "bool":
+		return true
+	default:
+		underlying, supported := SDKScalarGoType(argument.Schema)
+		return supported && underlying == "string" && len(argument.Schema.Enum) > 0 && IsBareSDKTypeName(argument.GoType)
+	}
+}
+
 // bodyCall resolves the SDK binding for an operation that sends a request body,
 // which a read or a delete never does. aliasTerminalID is false for a create,
-// whose path does not name the new record, and true for an update. The
+// whose path does not name the new record; updates enable it only without an
+// explicit ID parameter. The
 // envelope facts it reads come off this operation's own RequestSchema, never the
 // merged tree: a resource's Create and Update components are routinely distinct
 // types declaring different fields, so per-role is the only correct source.

@@ -104,6 +104,7 @@ type artifactBlock struct {
 	ArtifactName  string                `json:"artifact_name,omitempty"`
 	TfDescription string                `json:"tf_description,omitempty"`
 	IdStrategy    model.IdStrategy      `json:"id_strategy,omitempty"`
+	IdParameter   string                `json:"id_parameter,omitempty"`
 	Overwrites    string                `json:"overwrites,omitempty"`
 	Skip          bool                  `json:"skip,omitempty"`
 	Group         *model.OperationGroup `json:"group,omitempty"`
@@ -192,6 +193,7 @@ func desugarBlock(family, blockName string, block *artifactBlock) (*model.Tracki
 		TfDescription: block.TfDescription,
 		Group:         block.Group,
 		IdStrategy:    block.IdStrategy,
+		IdParameter:   block.IdParameter,
 		Overwrites:    block.Overwrites,
 	}
 	switch blockName {

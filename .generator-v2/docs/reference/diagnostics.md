@@ -96,6 +96,21 @@ spec; do not work around it in generated code.
 
 **`id_strategy "<s>" is not yet supported (only data.id)`**: exactly what it says.
 
+**`resource "<artifact>": group.<role> operation "<operation>": id_parameter "<parameter>": <reason>`**:
+an explicit resource ID mapping cannot be honored. The artifact fails without
+positional inference; unrelated artifacts can still generate. Check the exact,
+case-sensitive OpenAPI path parameter name in every declared Read, Update, and
+Delete. A query parameter with the same name does not satisfy the mapping.
+The reason distinguishes a missing path argument, unsupported conversion,
+multiple matching arguments, another argument claiming Terraform's `id`, or
+Create requiring the selected parameter before response `data.id` exists.
+Correct the mapping or lifecycle declaration; preserve an accurate API schema.
+See [supported conversions and boundaries](scope.md#explicit-resource-id-path-binding).
+
+Empty or non-string `id_parameter` values, or placement on a data source,
+family, or group, fail registry validation before generation. Only resource
+blocks accept the field.
+
 **SDK binding failure**: the generated call cannot be resolved against the Go SDK.
 Generation can still succeed, because OpenAPI-derived binding is authoritative and
 the pinned SDK is only corroboration; the failure then surfaces at `make build`

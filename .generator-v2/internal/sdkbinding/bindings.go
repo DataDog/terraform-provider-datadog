@@ -107,6 +107,26 @@ type orderedParameter struct {
 	location  string
 }
 
+// ParameterError retains the identity of a parameter whose SDK type cannot be
+// derived, allowing artifact builders to add their own lifecycle context.
+type ParameterError struct {
+	OperationId string
+	Parameter   string
+	Location    string
+	Optional    bool
+	Cause       error
+}
+
+func (e *ParameterError) Error() string {
+	optional := ""
+	if e.Optional {
+		optional = " optional"
+	}
+	return fmt.Sprintf("sdk binding: derive %s%s argument %s: %v", e.OperationId, optional, e.Parameter, e.Cause)
+}
+
+func (e *ParameterError) Unwrap() error { return e.Cause }
+
 // Bind derives op.SDKBinding from OpenAPI using the Datadog Go client
 // generator's parameter, naming and type rules. With an inventory holding the
 // same endpoint, a disagreement comes back as a warning diagnostic while the
@@ -156,7 +176,7 @@ func derive(op *model.Operation) (*model.SDKOperationBinding, error) {
 		}
 		argument, err := deriveArgument(parameter, ordered.location)
 		if err != nil {
-			return nil, fmt.Errorf("sdk binding: derive %s argument %s: %w", op.OperationId, parameter.Name, err)
+			return nil, &ParameterError{OperationId: op.OperationId, Parameter: parameter.Name, Location: ordered.location, Cause: err}
 		}
 		binding.Required = append(binding.Required, argument)
 	}
@@ -168,7 +188,7 @@ func derive(op *model.Operation) (*model.SDKOperationBinding, error) {
 		}
 		argument, err := deriveArgument(parameter, ordered.location)
 		if err != nil {
-			return nil, fmt.Errorf("sdk binding: derive %s optional argument %s: %w", op.OperationId, parameter.Name, err)
+			return nil, &ParameterError{OperationId: op.OperationId, Parameter: parameter.Name, Location: ordered.location, Optional: true, Cause: err}
 		}
 		argument.Setter = "With" + model.SdkName(parameter.Name)
 		binding.Optional = append(binding.Optional, argument)
