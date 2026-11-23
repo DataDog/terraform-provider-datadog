@@ -39,9 +39,7 @@ func cleanupSeverityModifierRules(t *testing.T) {
 // TestSweepSeverityModifierRules is a standalone sweep test for CI / manual
 // invocation via `make sweep`.
 func TestSweepSeverityModifierRules(t *testing.T) {
-	if isReplaying() {
-		t.Skip("sweep deletes real rules; not run on cassette replay")
-	}
+	skipUnlessSweepRequested(t)
 	doSweepSeverityModifierRules(t)
 }
 

@@ -22,6 +22,7 @@ func cleanupPowerpacks(t *testing.T) {
 
 // TestSweepPowerpacks is a standalone sweep test for CI / manual invocation.
 func TestSweepPowerpacks(t *testing.T) {
+	skipUnlessSweepRequested(t)
 	doSweepPowerpacks(t)
 }
 

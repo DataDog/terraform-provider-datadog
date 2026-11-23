@@ -31,6 +31,7 @@ func cleanupTagIndexingRules(t *testing.T) {
 // TestSweepTagIndexingRules is a standalone sweep test for CI / manual invocation
 // via `go test -run TestSweep` or `make sweep`.
 func TestSweepTagIndexingRules(t *testing.T) {
+	skipUnlessSweepRequested(t)
 	doSweepTagIndexingRules(t)
 }
 

@@ -27,14 +27,18 @@ func TestAccDatadogTeamMembershipsDatasourceBasic(t *testing.T) {
 }
 
 func TestAccDatadogTeamMembershipsDatasourceExactMatch(t *testing.T) {
-	t.Parallel()
-	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	parallelIfLive(t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
+			{
+				Config: testAccDatasourceTeamMembershipsExactMatchResourcesConfig(uniq),
+				Check:  testAccCheckTeamMembershipsListed(frameworkAPIClient(providers.frameworkProvider), "datadog_team.foo", "Foo Bar", 2),
+			},
 			{
 				Config: testAccDatasourceTeamMembershipsExactMatchConfig(uniq, "false"),
 				Check:  resource.TestCheckResourceAttr("data.datadog_team_memberships.foo", "team_memberships.#", "2"),
@@ -73,22 +77,28 @@ resource "datadog_team_membership" "foo" {
 }
 
 func testAccDatasourceTeamMembershipsExactMatchConfig(uniq, exactMatch string) string {
-	return fmt.Sprintf(`
+	return testAccDatasourceTeamMembershipsExactMatchResourcesConfig(uniq) + fmt.Sprintf(`
 data "datadog_team_memberships" "foo" {
 	team_id        = datadog_team.foo.id
-	exact_match    = %[2]s
+	exact_match    = %s
 	filter_keyword = "Foo Bar"
 	depends_on     = [ datadog_team_membership.foo, datadog_team_membership.bar ]
 }
+`, exactMatch)
+}
 
+func testAccDatasourceTeamMembershipsExactMatchResourcesConfig(uniq string) string {
+	return fmt.Sprintf(`
 resource "datadog_user" "foo" {
 	email = "%[1]s@example.com"
 	name  = "Foo BarBar"
+	send_user_invitation = false
 }
 
 resource "datadog_user" "bar" {
 	email = "%[1]s1@example.com"
 	name  = "Foo Bar"
+	send_user_invitation = false
 }
 
 resource "datadog_team" "foo" {
@@ -108,5 +118,5 @@ resource "datadog_team_membership" "bar" {
 	user_id = datadog_user.bar.id
 	role    = "admin"
 }
-`, uniq, exactMatch)
+`, uniq)
 }

@@ -46,6 +46,7 @@ func cleanupSensitiveDataScannerGroups(t *testing.T) {
 // invocation via `go test -run TestSweep` or `make sweep`.
 // In CI it also runs as a dedicated step before integration tests (see test_integration.yml).
 func TestSweepSensitiveDataScannerGroups(t *testing.T) {
+	skipUnlessSweepRequested(t)
 	doSweepSensitiveDataScannerGroups(t)
 }
 

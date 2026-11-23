@@ -150,7 +150,7 @@ update-go-client:
 	go mod tidy
 
 sweep:
-	TF_ACC=1 go test ./datadog/tests/ -run TestSweep -v -timeout 10m
+	DD_TEST_SWEEP=true TF_ACC=1 go test ./datadog/tests/ -run TestSweep -v -timeout 10m
 
 license-check:
 	@sh -c "'$(CURDIR)/scripts/license-check.sh'"

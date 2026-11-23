@@ -46,8 +46,9 @@ func cleanupApiKeys(t *testing.T) {
 }
 
 // TestSweepApiKeys is a standalone sweep test for CI / manual invocation via
-// `go test -run TestSweep` or `make sweep`.
+// `make sweep`.
 func TestSweepApiKeys(t *testing.T) {
+	skipUnlessSweepRequested(t)
 	if !sweepingIsSafe() {
 		t.Skip("sweeping deletes real API keys; not supported under RECORD=true or RECORD=false")
 	}
