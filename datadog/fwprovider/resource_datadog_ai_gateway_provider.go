@@ -353,7 +353,9 @@ func updateAiGatewayProviderState(ctx context.Context, state *aiGatewayProviderM
 // empty, or models, which this resource does not manage.
 func buildAiGatewayProviderCreateAttributes(ctx context.Context, state *aiGatewayProviderModel) (*datadogV2.AiGatewayProviderCreateAttributes, diag.Diagnostics) {
 	var diags diag.Diagnostics
-	attributes := datadogV2.NewAiGatewayProviderCreateAttributes(state.Name.ValueString(), state.Slug.ValueString())
+	attributes := datadogV2.NewAiGatewayProviderCreateAttributesWithDefaults()
+	attributes.SetName(state.Name.ValueString())
+	attributes.SetSlug(state.Slug.ValueString())
 	// The constructor fills in the spec defaults. Leave cost_multiplier and credential_source to the server instead.
 	attributes.CostMultiplier = nil
 	attributes.CredentialSource = nil
