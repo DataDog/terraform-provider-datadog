@@ -40,6 +40,17 @@ func TestAccDatadogDashboardV2Note_import(t *testing.T) {
 	testAccDatadogDashboardV2WidgetUtilImport(t, "TestAccDatadogDashboardNote_import", config, name)
 }
 
+// ManageStatus — monitor summary with show_sub_groups
+func TestAccDatadogDashboardV2ManageStatus(t *testing.T) {
+	config, name := dashboardV2Config(datadogDashboardManageStatusConfig, "datadog_dashboard.manage_status_dashboard")
+	testAccDatadogDashboardV2WidgetUtil(t, "TestAccDatadogDashboardManageStatus", config, name, datadogDashboardManageStatusAsserts)
+}
+
+func TestAccDatadogDashboardV2ManageStatus_import(t *testing.T) {
+	config, name := dashboardV2Config(datadogDashboardManageStatusConfig, "datadog_dashboard.manage_status_dashboard")
+	testAccDatadogDashboardV2WidgetUtilImport(t, "TestAccDatadogDashboardManageStatus_import", config, name)
+}
+
 // QueryValue — formula queries, conditional formats
 func TestAccDatadogDashboardV2QueryValue(t *testing.T) {
 	config, name := dashboardV2Config(datadogDashboardQueryValueConfig, "datadog_dashboard.query_value_dashboard")

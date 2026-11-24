@@ -4101,6 +4101,11 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
+		"show_sub_groups": {
+			Description: "Whether to count and list each monitor's subgroups instead of its notification groups. Only changes monitors that use `notify_by`, and only for the `groups` and `combined` summary types.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
 		"title": {
 			Description: "The title of the widget.",
 			Type:        schema.TypeString,
@@ -4146,6 +4151,9 @@ func buildDatadogManageStatusDefinition(terraformDefinition map[string]interface
 	if v, ok := terraformDefinition["show_priority"].(bool); ok {
 		datadogDefinition.SetShowPriority(v)
 	}
+	if v, ok := terraformDefinition["show_sub_groups"].(bool); ok {
+		datadogDefinition.SetShowSubGroups(v)
+	}
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
 	}
@@ -4186,6 +4194,9 @@ func buildTerraformManageStatusDefinition(datadogDefinition *datadogV1.MonitorSu
 	}
 	if v, ok := datadogDefinition.GetShowPriorityOk(); ok {
 		terraformDefinition["show_priority"] = *v
+	}
+	if v, ok := datadogDefinition.GetShowSubGroupsOk(); ok {
+		terraformDefinition["show_sub_groups"] = *v
 	}
 	if v, ok := datadogDefinition.GetTitleOk(); ok {
 		terraformDefinition["title"] = *v

@@ -22,6 +22,7 @@ resource "datadog_dashboard" "manage_status_dashboard" {
 			query = "env:prod group_status:alert"
 			show_last_triggered = true
 			display_format = "countsAndList"
+			show_sub_groups = true
 		}
 		widget_layout {
 			height = 43
@@ -50,6 +51,7 @@ var datadogDashboardManageStatusAsserts = []string{
 	"widget.0.manage_status_definition.0.sort = triggered,desc",
 	"widget.0.manage_status_definition.0.title_align = center",
 	"widget.0.manage_status_definition.0.show_priority = false",
+	"widget.0.manage_status_definition.0.show_sub_groups = true",
 	"title = {{uniq}}",
 	"widget.0.manage_status_definition.0.query = env:prod group_status:alert",
 }

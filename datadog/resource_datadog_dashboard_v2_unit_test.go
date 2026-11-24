@@ -589,6 +589,13 @@ func TestDashboardV2MatchesLegacyPayloadForZeroValues(t *testing.T) {
 			paths: [][]string{{"requests", "0", "formulas", "0", "style", "palette_index"}},
 		},
 		{
+			name: "manage_status show_sub_groups unset is sent as false",
+			widget: map[string]interface{}{"manage_status_definition": []interface{}{map[string]interface{}{
+				"query": "env:prod", "summary_type": "groups",
+			}}},
+			paths: [][]string{{"show_sub_groups"}},
+		},
+		{
 			name: "slo list limit defaults to 100",
 			widget: map[string]interface{}{"slo_list_definition": []interface{}{map[string]interface{}{
 				"request": []interface{}{map[string]interface{}{
