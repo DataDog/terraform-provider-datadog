@@ -42,8 +42,8 @@ Optional:
 Optional:
 
 - `auth_type` (String) The authentication method type. Valid values are `bearer_token`. Defaults to `"bearer_token"`.
-- `token` (String, Sensitive) Secret token used to authenticate with OpenAI Codex. Exactly one of `token` or `token_wo` must be set. Prefer `token_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.
-- `token_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Secret token used to authenticate with OpenAI Codex. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.
+- `token` (String, Sensitive) Workspace-scoped OpenAI Admin key with the `codex.enterprise.analytics.read` scope. To collect turn metrics, also grant `chatgpt.enterprise.compliance_logs_platform.workspace_analytics.read` to the same key. Exactly one of `token` or `token_wo` must be set. Prefer `token_wo`, which Terraform 1.11+ keeps out of state; this attribute is stored in Terraform state.
+- `token_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Workspace-scoped OpenAI Admin key with the `codex.enterprise.analytics.read` scope. To collect turn metrics, also grant `chatgpt.enterprise.compliance_logs_platform.workspace_analytics.read` to the same key. This write-only value is not stored in Terraform state. Requires Terraform 1.11+.
 - `token_wo_version` (String) Version trigger for token_wo rotation. String length must be at least 1.
 
 
