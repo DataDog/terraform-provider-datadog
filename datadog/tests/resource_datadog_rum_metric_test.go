@@ -409,7 +409,7 @@ func RumMetricDestroyHelper(auth context.Context, s *terraform.State, apiInstanc
 			}
 			id := r.Primary.ID
 
-			_, httpResp, err := apiInstances.GetRumMetricsApiV2().GetRumMetric(auth, id)
+			_, httpResp, err := apiInstances.GetRumMetricsApiV2().GetRUMMetric(auth, id)
 			if err != nil {
 				if httpResp != nil && httpResp.StatusCode == 404 {
 					return nil
@@ -442,7 +442,7 @@ func rumMetricExistsHelper(auth context.Context, s *terraform.State, apiInstance
 		}
 		id := r.Primary.ID
 
-		_, httpResp, err := apiInstances.GetRumMetricsApiV2().GetRumMetric(auth, id)
+		_, httpResp, err := apiInstances.GetRumMetricsApiV2().GetRUMMetric(auth, id)
 		if err != nil {
 			return utils.TranslateClientError(err, httpResp, "error retrieving RumMetric")
 		}

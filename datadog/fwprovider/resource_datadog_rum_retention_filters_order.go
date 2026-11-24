@@ -22,7 +22,7 @@ var (
 )
 
 type rumRetentionFiltersOrderResource struct {
-	Api  *datadogV2.RumRetentionFiltersApi
+	Api  *datadogV2.RUMRetentionFiltersApi
 	Auth context.Context
 }
 
@@ -138,7 +138,7 @@ func (r *rumRetentionFiltersOrderResource) orderRetentionFiltersAndUpdateState(c
 	}
 	state.ID = state.ApplicationID
 
-	var resp datadogV2.RumRetentionFiltersOrderResponse
+	var resp datadogV2.RUMRetentionFiltersOrderResponse
 	err := retryRumRetentionFilterOperation(ctx, func() (*http.Response, error) {
 		var httpResp *http.Response
 		var err error
@@ -167,13 +167,13 @@ func (r *rumRetentionFiltersOrderResource) updateState(state *rumRetentionFilter
 	state.RetentionFilterID = retentionFilterIds
 }
 
-func (r *rumRetentionFiltersOrderResource) buildRetentionFiltersOrderRequestBody(state *rumRetentionFiltersOrderResourceModel) (*datadogV2.RumRetentionFiltersOrderRequest, diag.Diagnostics) {
+func (r *rumRetentionFiltersOrderResource) buildRetentionFiltersOrderRequestBody(state *rumRetentionFiltersOrderResourceModel) (*datadogV2.RUMRetentionFiltersOrderRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	orderReq := datadogV2.NewRumRetentionFiltersOrderRequestWithDefaults()
+	orderReq := datadogV2.NewRUMRetentionFiltersOrderRequestWithDefaults()
 
-	dataList := make([]datadogV2.RumRetentionFiltersOrderData, len(state.RetentionFilterID))
+	dataList := make([]datadogV2.RUMRetentionFiltersOrderData, len(state.RetentionFilterID))
 	for i, id := range state.RetentionFilterID {
-		dataList[i] = datadogV2.RumRetentionFiltersOrderData{
+		dataList[i] = datadogV2.RUMRetentionFiltersOrderData{
 			Id:   id.ValueString(),
 			Type: "retention_filters",
 		}
