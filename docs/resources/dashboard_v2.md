@@ -402,7 +402,7 @@ Optional:
 - `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
-- `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request))
+- `request` (Block List, Max: 1) The Formula, legacy, or inline DDSQL request used to display the Bar Chart. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request))
 - `style` (Block List, Max: 1) Style customization for the bar chart widget. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--style))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--time))
 - `title` (String) The title of the widget.
@@ -427,11 +427,16 @@ Optional:
 
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--apm_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--conditional_formats))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--log_query))
 - `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--process_query))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--projection))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `tabular`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--security_query))
 - `sort` (Block List, Max: 1) The controls for sorting the widget. Only applicable for formula-style requests. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--sort))
@@ -518,6 +523,25 @@ Optional:
 - `image_url` (String) Displays an image as the background.
 - `metric` (String) The metric from the request to correlate with this conditional format.
 - `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--bar_chart_definition--request--dataset"></a>
+### Nested Schema for `widget.bar_chart_definition.request.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--dataset--query))
+
+<a id="nestedblock--widget--bar_chart_definition--request--dataset--query"></a>
+### Nested Schema for `widget.bar_chart_definition.request.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
+
 
 
 <a id="nestedblock--widget--bar_chart_definition--request--formula"></a>
@@ -706,6 +730,76 @@ Optional:
 - `filter_by` (List of String) A list of processes.
 - `limit` (Number) The max number of items in the filter list.
 - `search_by` (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--bar_chart_definition--request--projection"></a>
+### Nested Schema for `widget.bar_chart_definition.request.projection`
+
+Required:
+
+- `type` (String) Type of the projection. Valid values are `bar_chart`.
+
+Optional:
+
+- `dimension` (Block List) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--projection--dimension))
+
+<a id="nestedblock--widget--bar_chart_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.bar_chart_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--bar_chart_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.bar_chart_definition.request.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--bar_chart_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.bar_chart_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--bar_chart_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.bar_chart_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--bar_chart_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.bar_chart_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--bar_chart_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.bar_chart_definition.request.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
+
 
 
 <a id="nestedblock--widget--bar_chart_definition--request--query"></a>
@@ -6248,7 +6342,7 @@ Optional:
 - `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
-- `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request))
+- `request` (Block List, Max: 1) The Formula, legacy, or inline DDSQL request used to display the Bar Chart. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request))
 - `style` (Block List, Max: 1) Style customization for the bar chart widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--style))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--time))
 - `title` (String) The title of the widget.
@@ -6273,11 +6367,16 @@ Optional:
 
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--apm_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--conditional_formats))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--log_query))
 - `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--process_query))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--projection))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `tabular`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--security_query))
 - `sort` (Block List, Max: 1) The controls for sorting the widget. Only applicable for formula-style requests. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--sort))
@@ -6364,6 +6463,25 @@ Optional:
 - `image_url` (String) Displays an image as the background.
 - `metric` (String) The metric from the request to correlate with this conditional format.
 - `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--group_definition--widget--bar_chart_definition--request--dataset"></a>
+### Nested Schema for `widget.group_definition.widget.bar_chart_definition.request.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--dataset--query))
+
+<a id="nestedblock--widget--group_definition--widget--bar_chart_definition--request--dataset--query"></a>
+### Nested Schema for `widget.group_definition.widget.bar_chart_definition.request.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
+
 
 
 <a id="nestedblock--widget--group_definition--widget--bar_chart_definition--request--formula"></a>
@@ -6552,6 +6670,76 @@ Optional:
 - `filter_by` (List of String) A list of processes.
 - `limit` (Number) The max number of items in the filter list.
 - `search_by` (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--group_definition--widget--bar_chart_definition--request--projection"></a>
+### Nested Schema for `widget.group_definition.widget.bar_chart_definition.request.projection`
+
+Required:
+
+- `type` (String) Type of the projection. Valid values are `bar_chart`.
+
+Optional:
+
+- `dimension` (Block List) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--projection--dimension))
+
+<a id="nestedblock--widget--group_definition--widget--bar_chart_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.group_definition.widget.bar_chart_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--group_definition--widget--bar_chart_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.bar_chart_definition.request.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--bar_chart_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.bar_chart_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--bar_chart_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.bar_chart_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--group_definition--widget--bar_chart_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.bar_chart_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--bar_chart_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.bar_chart_definition.request.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--bar_chart_definition--request--query"></a>
@@ -18226,7 +18414,7 @@ Optional:
 - `has_search_bar` (String) Controls the display of the search bar. Valid values are `always`, `never`, `auto`.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
-- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request))
+- `request` (Block List) The Formula, legacy, or inline DDSQL request used to display the Query Table. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -18254,13 +18442,18 @@ Optional:
 - `apm_stats_query` (Block List, Max: 1, Deprecated) The APM stats query for table and distribution widgets. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_stats_query))
 - `cell_display_mode` (List of String) A list of display modes for each table cell. Valid values are `number`, `bar`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--conditional_formats))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--formula))
 - `limit` (Number) For metric queries, the number of lines to show in the table. Only one request should have this property.
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--log_query))
 - `order` (String) The sort order for the rows. Valid values are `asc`, `desc`.
 - `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--process_query))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--projection))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `tabular`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--security_query))
 - `sort` (Block List, Max: 1) The controls for sorting the widget request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--sort))
@@ -18378,6 +18571,25 @@ Optional:
 - `image_url` (String) Displays an image as the background.
 - `metric` (String) The metric from the request to correlate with this conditional format.
 - `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--dataset"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--dataset--query))
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--dataset--query"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
+
 
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--formula"></a>
@@ -18566,6 +18778,98 @@ Optional:
 - `filter_by` (List of String) A list of processes.
 - `limit` (Number) The max number of items in the filter list.
 - `search_by` (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--projection"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.projection`
+
+Required:
+
+- `type` (String) Type of the projection. Valid values are `query_table`.
+
+Optional:
+
+- `column_order` (String) Order columns by the query result or by the listed dimensions. Valid values are `query`, `dimensions`.
+- `dimension` (Block List) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--projection--dimension))
+- `unlisted_columns` (String) Whether to show result columns not listed as dimensions. Valid values are `show`, `hide`.
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `alias` (String) Display name of the column header.
+- `cell_display_mode` (String) How to display the cells in this column. Valid values are `number`, `bar`, `text`.
+- `conditional_formats` (String) Numeric threshold or range rules for this column, as a JSON array. Use `jsonencode` to supply the rules.
+- `date_format` (String) Date or timestamp display format for this column.
+- `is_hidden` (Boolean) Hide the column while retaining its other settings.
+- `link` (Block List, Max: 1) Display column values as links. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--projection--dimension--link))
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--projection--dimension--number_format))
+- `text_align` (String) Alignment of the column header and values.
+- `text_formats` (String) Text matching and replacement rules for this column, as a JSON array. Use `jsonencode` to supply the rules.
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--projection--dimension--link"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.projection.dimension.link`
+
+Required:
+
+- `url` (String) Link URL template.
+
+Optional:
+
+- `label` (String) Display label for the link.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--query"></a>
@@ -19572,7 +19876,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) Number of decimals to show. If not defined, the widget uses the raw value.
-- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request))
+- `request` (Block List) The Formula, legacy, or inline DDSQL request used to display the Query Value. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request))
 - `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--time))
 - `timeseries_background` (Block List, Max: 1) Set a timeseries on the widget background. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--timeseries_background))
@@ -19601,11 +19905,16 @@ Optional:
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query))
 - `comparison` (Block List, Max: 1) A change indicator that compares the current value to a historical period. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--comparison))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--conditional_formats))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--log_query))
 - `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--process_query))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--projection))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `tabular`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--security_query))
 
@@ -19788,6 +20097,25 @@ Optional:
 - `image_url` (String) Displays an image as the background.
 - `metric` (String) The metric from the request to correlate with this conditional format.
 - `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--dataset"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--dataset--query))
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--dataset--query"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
+
 
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--formula"></a>
@@ -19976,6 +20304,73 @@ Optional:
 - `filter_by` (List of String) A list of processes.
 - `limit` (Number) The max number of items in the filter list.
 - `search_by` (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--projection"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.projection`
+
+Required:
+
+- `dimension` (Block List, Min: 1, Max: 1) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--projection--dimension))
+- `type` (String) Type of the projection. Valid values are `query_value`.
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query"></a>
@@ -21511,7 +21906,7 @@ Optional:
 
 Optional:
 
-- `scatterplot_table` (Block List) Scatterplot request containing formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table))
+- `scatterplot_table` (Block List) Scatterplot table request containing Formula queries or an inline DDSQL dataset. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table))
 - `x` (Block List, Max: 1) The query used for the X-Axis. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x))
 - `y` (Block List, Max: 1) The query used for the Y-Axis. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y))
 
@@ -21520,8 +21915,32 @@ Optional:
 
 Optional:
 
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--formula))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--projection))
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `tabular`.
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--dataset"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--dataset--query))
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--dataset--query"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
+
+
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--formula"></a>
 ### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.formula`
@@ -21534,6 +21953,76 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
+
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--projection"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.projection`
+
+Required:
+
+- `type` (String) Type of the projection. Valid values are `scatterplot`.
+
+Optional:
+
+- `dimension` (Block List) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--projection--dimension))
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--projection--dimension"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format))
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query"></a>
@@ -24849,7 +25338,7 @@ Optional:
 - `legend_inline` (Block List, Max: 1) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--legend_inline))
 - `legend_table` (Block List, Max: 1) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--legend_table))
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
-- `request` (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request))
+- `request` (Block List) The Formula, legacy, or inline DDSQL request used to display the Sunburst. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -24894,12 +25383,17 @@ Optional:
 
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--audit_query))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--log_query))
 - `network_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--network_query))
 - `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--process_query))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--projection))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `tabular`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--security_query))
 - `sort` (Block List, Max: 1) The controls for sorting the widget. Only applicable for formula-style requests. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--sort))
@@ -25030,6 +25524,25 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--dataset"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--dataset--query))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--dataset--query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
 
 
 
@@ -25283,6 +25796,76 @@ Optional:
 - `filter_by` (List of String) A list of processes.
 - `limit` (Number) The max number of items in the filter list.
 - `search_by` (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--projection"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.projection`
+
+Required:
+
+- `type` (String) Type of the projection. Valid values are `sunburst`.
+
+Optional:
+
+- `dimension` (Block List) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--projection--dimension))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query"></a>
@@ -26255,7 +26838,7 @@ Optional:
 - `legend_size` (String) The size of the legend displayed in the widget. Valid values are `0`, `2`, `4`, `8`, `16`, `auto`.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `marker` (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--marker))
-- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request))
+- `request` (Block List) Formula, legacy, or inline DDSQL request. Multiple requests are allowed, including Formula overlays alongside one inline DDSQL request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request))
 - `right_yaxis` (Block List, Max: 1) A nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--right_yaxis))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--time))
@@ -26308,7 +26891,9 @@ Optional:
 
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query))
-- `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `line`, `overlay`.
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
+- `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `adjacent_bars`, `line`, `overlay`.
 - `event_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--event_query))
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query))
@@ -26317,8 +26902,11 @@ Optional:
 - `on_right_yaxis` (Boolean) A Boolean indicating whether the request uses the right or left Y-Axis.
 - `process_query` (Block List, Max: 1) The process query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--process_query))
 - `profile_metrics_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--profile_metrics_query))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--projection))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) List of queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `timeseries`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. Exactly one `style` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--style))
@@ -26448,6 +27036,25 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--dataset"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--dataset--query))
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--dataset--query"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
 
 
 
@@ -26840,6 +27447,76 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--projection"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.projection`
+
+Required:
+
+- `type` (String) Type of the projection. Valid values are `timeseries`.
+
+Optional:
+
+- `dimension` (Block List) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--projection--dimension))
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
 
 
 
@@ -27730,11 +28407,14 @@ Optional:
 
 Optional:
 
+- `color_order` (String) Order in which to assign colors to series. Valid values are `monotonic`, `shuffled`.
 - `has_value_labels` (Boolean) Whether to display value labels on the timeseries.
 - `line_type` (String) The type of lines displayed. Valid values are `dashed`, `dotted`, `solid`.
 - `line_width` (String) The width of line displayed. Valid values are `normal`, `thick`, `thin`.
 - `order_by` (String) How to order series in timeseries visualizations. Valid values are `tags`, `values`.
+- `order_reverse` (Boolean) Reverse the order of the series.
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+- `value_labels_density` (String) Density of value labels when shown. Valid values are `maximize`.
 
 
 
@@ -27799,7 +28479,7 @@ Optional:
 - `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
-- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request))
+- `request` (Block List) The Formula, legacy, or inline DDSQL request used to display the Toplist. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request))
 - `style` (Block List, Max: 1) The style of the widget (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--style))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--time))
 - `title` (String) The title of the widget.
@@ -27825,11 +28505,16 @@ Optional:
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--conditional_formats))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--log_query))
 - `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--process_query))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--projection))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `tabular`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--security_query))
 - `sort` (Block List, Max: 1) The controls for sorting the widget. Only applicable for formula-style requests. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--sort))
@@ -27980,6 +28665,25 @@ Optional:
 - `image_url` (String) Displays an image as the background.
 - `metric` (String) The metric from the request to correlate with this conditional format.
 - `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--dataset"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--dataset--query))
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--dataset--query"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
+
 
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--formula"></a>
@@ -28168,6 +28872,76 @@ Optional:
 - `filter_by` (List of String) A list of processes.
 - `limit` (Number) The max number of items in the filter list.
 - `search_by` (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--projection"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.projection`
+
+Required:
+
+- `type` (String) Type of the projection. Valid values are `toplist`.
+
+Optional:
+
+- `dimension` (Block List) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--projection--dimension))
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query"></a>
@@ -29302,7 +30076,7 @@ Optional:
 - `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
-- `request` (Block List) Nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request))
+- `request` (Block List) The Formula or inline DDSQL request used to display the Treemap. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -29324,10 +30098,34 @@ Optional:
 
 Optional:
 
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--formula))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--projection))
 - `query` (Block List) List of queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `tabular`.
 - `sort` (Block List, Max: 1) The controls for sorting the widget. Only applicable for formula-style requests. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--sort))
 - `style` (Block List, Max: 1) Define style for the widget's request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--style))
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--dataset"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--dataset--query))
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--dataset--query"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
+
+
 
 <a id="nestedblock--widget--group_definition--widget--treemap_definition--request--formula"></a>
 ### Nested Schema for `widget.group_definition.widget.treemap_definition.request.formula`
@@ -29436,6 +30234,76 @@ Optional:
 
 - `palette` (String) The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors.
 - `palette_index` (Number) Index specifying which color to use within the palette.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--projection"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.projection`
+
+Required:
+
+- `type` (String) Type of the projection. Valid values are `treemap`.
+
+Optional:
+
+- `dimension` (Block List) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--projection--dimension))
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
 
 
 
@@ -39406,7 +40274,7 @@ Optional:
 - `has_search_bar` (String) Controls the display of the search bar. Valid values are `always`, `never`, `auto`.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
-- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_table_definition--request))
+- `request` (Block List) The Formula, legacy, or inline DDSQL request used to display the Query Table. (see [below for nested schema](#nestedblock--widget--query_table_definition--request))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--query_table_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -39434,13 +40302,18 @@ Optional:
 - `apm_stats_query` (Block List, Max: 1, Deprecated) The APM stats query for table and distribution widgets. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_stats_query))
 - `cell_display_mode` (List of String) A list of display modes for each table cell. Valid values are `number`, `bar`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--conditional_formats))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula))
 - `limit` (Number) For metric queries, the number of lines to show in the table. Only one request should have this property.
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--log_query))
 - `order` (String) The sort order for the rows. Valid values are `asc`, `desc`.
 - `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--process_query))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--projection))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `tabular`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query))
 - `sort` (Block List, Max: 1) The controls for sorting the widget request. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--sort))
@@ -39558,6 +40431,25 @@ Optional:
 - `image_url` (String) Displays an image as the background.
 - `metric` (String) The metric from the request to correlate with this conditional format.
 - `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--query_table_definition--request--dataset"></a>
+### Nested Schema for `widget.query_table_definition.request.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--dataset--query))
+
+<a id="nestedblock--widget--query_table_definition--request--dataset--query"></a>
+### Nested Schema for `widget.query_table_definition.request.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
+
 
 
 <a id="nestedblock--widget--query_table_definition--request--formula"></a>
@@ -39746,6 +40638,98 @@ Optional:
 - `filter_by` (List of String) A list of processes.
 - `limit` (Number) The max number of items in the filter list.
 - `search_by` (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--query_table_definition--request--projection"></a>
+### Nested Schema for `widget.query_table_definition.request.projection`
+
+Required:
+
+- `type` (String) Type of the projection. Valid values are `query_table`.
+
+Optional:
+
+- `column_order` (String) Order columns by the query result or by the listed dimensions. Valid values are `query`, `dimensions`.
+- `dimension` (Block List) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--projection--dimension))
+- `unlisted_columns` (String) Whether to show result columns not listed as dimensions. Valid values are `show`, `hide`.
+
+<a id="nestedblock--widget--query_table_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.query_table_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `alias` (String) Display name of the column header.
+- `cell_display_mode` (String) How to display the cells in this column. Valid values are `number`, `bar`, `text`.
+- `conditional_formats` (String) Numeric threshold or range rules for this column, as a JSON array. Use `jsonencode` to supply the rules.
+- `date_format` (String) Date or timestamp display format for this column.
+- `is_hidden` (Boolean) Hide the column while retaining its other settings.
+- `link` (Block List, Max: 1) Display column values as links. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--projection--dimension--link))
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--projection--dimension--number_format))
+- `text_align` (String) Alignment of the column header and values.
+- `text_formats` (String) Text matching and replacement rules for this column, as a JSON array. Use `jsonencode` to supply the rules.
+
+<a id="nestedblock--widget--query_table_definition--request--projection--dimension--link"></a>
+### Nested Schema for `widget.query_table_definition.request.projection.dimension.link`
+
+Required:
+
+- `url` (String) Link URL template.
+
+Optional:
+
+- `label` (String) Display label for the link.
+
+
+<a id="nestedblock--widget--query_table_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.query_table_definition.request.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--query_table_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.query_table_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--query_table_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--query_table_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.query_table_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--query_table_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.query_table_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--query_table_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.query_table_definition.request.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
+
 
 
 <a id="nestedblock--widget--query_table_definition--request--query"></a>
@@ -40752,7 +41736,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) Number of decimals to show. If not defined, the widget uses the raw value.
-- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_value_definition--request))
+- `request` (Block List) The Formula, legacy, or inline DDSQL request used to display the Query Value. (see [below for nested schema](#nestedblock--widget--query_value_definition--request))
 - `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--query_value_definition--time))
 - `timeseries_background` (Block List, Max: 1) Set a timeseries on the widget background. (see [below for nested schema](#nestedblock--widget--query_value_definition--timeseries_background))
@@ -40781,11 +41765,16 @@ Optional:
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query))
 - `comparison` (Block List, Max: 1) A change indicator that compares the current value to a historical period. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--comparison))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--conditional_formats))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query))
 - `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--process_query))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--projection))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `tabular`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query))
 
@@ -40968,6 +41957,25 @@ Optional:
 - `image_url` (String) Displays an image as the background.
 - `metric` (String) The metric from the request to correlate with this conditional format.
 - `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--query_value_definition--request--dataset"></a>
+### Nested Schema for `widget.query_value_definition.request.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--dataset--query))
+
+<a id="nestedblock--widget--query_value_definition--request--dataset--query"></a>
+### Nested Schema for `widget.query_value_definition.request.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
+
 
 
 <a id="nestedblock--widget--query_value_definition--request--formula"></a>
@@ -41156,6 +42164,73 @@ Optional:
 - `filter_by` (List of String) A list of processes.
 - `limit` (Number) The max number of items in the filter list.
 - `search_by` (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--query_value_definition--request--projection"></a>
+### Nested Schema for `widget.query_value_definition.request.projection`
+
+Required:
+
+- `dimension` (Block List, Min: 1, Max: 1) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--projection--dimension))
+- `type` (String) Type of the projection. Valid values are `query_value`.
+
+<a id="nestedblock--widget--query_value_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.query_value_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--query_value_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.query_value_definition.request.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--query_value_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.query_value_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--query_value_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--query_value_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.query_value_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--query_value_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.query_value_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--query_value_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.query_value_definition.request.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
+
 
 
 <a id="nestedblock--widget--query_value_definition--request--query"></a>
@@ -42691,7 +43766,7 @@ Optional:
 
 Optional:
 
-- `scatterplot_table` (Block List) Scatterplot request containing formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table))
+- `scatterplot_table` (Block List) Scatterplot table request containing Formula queries or an inline DDSQL dataset. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table))
 - `x` (Block List, Max: 1) The query used for the X-Axis. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block). (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x))
 - `y` (Block List, Max: 1) The query used for the Y-Axis. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block). (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y))
 
@@ -42700,8 +43775,32 @@ Optional:
 
 Optional:
 
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--formula))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--projection))
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `tabular`.
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--dataset"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--dataset--query))
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--dataset--query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
+
+
 
 <a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--formula"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.formula`
@@ -42714,6 +43813,76 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--projection"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.projection`
+
+Required:
+
+- `type` (String) Type of the projection. Valid values are `scatterplot`.
+
+Optional:
+
+- `dimension` (Block List) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--projection--dimension))
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--projection--dimension"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format))
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
+
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query"></a>
@@ -48411,7 +49580,7 @@ Optional:
 - `has_search_bar` (String) Controls the display of the search bar. Valid values are `always`, `never`, `auto`.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
-- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request))
+- `request` (Block List) The Formula, legacy, or inline DDSQL request used to display the Query Table. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -48439,13 +49608,18 @@ Optional:
 - `apm_stats_query` (Block List, Max: 1, Deprecated) The APM stats query for table and distribution widgets. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--apm_stats_query))
 - `cell_display_mode` (List of String) A list of display modes for each table cell. Valid values are `number`, `bar`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--conditional_formats))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula))
 - `limit` (Number) For metric queries, the number of lines to show in the table. Only one request should have this property.
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--log_query))
 - `order` (String) The sort order for the rows. Valid values are `asc`, `desc`.
 - `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--process_query))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--projection))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `tabular`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--security_query))
 - `sort` (Block List, Max: 1) The controls for sorting the widget request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--sort))
@@ -48563,6 +49737,25 @@ Optional:
 - `image_url` (String) Displays an image as the background.
 - `metric` (String) The metric from the request to correlate with this conditional format.
 - `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--dataset"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--dataset--query))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--dataset--query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
+
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula"></a>
@@ -48751,6 +49944,98 @@ Optional:
 - `filter_by` (List of String) A list of processes.
 - `limit` (Number) The max number of items in the filter list.
 - `search_by` (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--projection"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.projection`
+
+Required:
+
+- `type` (String) Type of the projection. Valid values are `query_table`.
+
+Optional:
+
+- `column_order` (String) Order columns by the query result or by the listed dimensions. Valid values are `query`, `dimensions`.
+- `dimension` (Block List) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--projection--dimension))
+- `unlisted_columns` (String) Whether to show result columns not listed as dimensions. Valid values are `show`, `hide`.
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `alias` (String) Display name of the column header.
+- `cell_display_mode` (String) How to display the cells in this column. Valid values are `number`, `bar`, `text`.
+- `conditional_formats` (String) Numeric threshold or range rules for this column, as a JSON array. Use `jsonencode` to supply the rules.
+- `date_format` (String) Date or timestamp display format for this column.
+- `is_hidden` (Boolean) Hide the column while retaining its other settings.
+- `link` (Block List, Max: 1) Display column values as links. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--projection--dimension--link))
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--projection--dimension--number_format))
+- `text_align` (String) Alignment of the column header and values.
+- `text_formats` (String) Text matching and replacement rules for this column, as a JSON array. Use `jsonencode` to supply the rules.
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--projection--dimension--link"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.projection.dimension.link`
+
+Required:
+
+- `url` (String) Link URL template.
+
+Optional:
+
+- `label` (String) Display label for the link.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
+
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query"></a>
@@ -49757,7 +51042,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) Number of decimals to show. If not defined, the widget uses the raw value.
-- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request))
+- `request` (Block List) The Formula, legacy, or inline DDSQL request used to display the Query Value. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request))
 - `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--time))
 - `timeseries_background` (Block List, Max: 1) Set a timeseries on the widget background. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--timeseries_background))
@@ -49786,11 +51071,16 @@ Optional:
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--audit_query))
 - `comparison` (Block List, Max: 1) A change indicator that compares the current value to a historical period. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--comparison))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--conditional_formats))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--log_query))
 - `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--process_query))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--projection))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `tabular`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--security_query))
 
@@ -49973,6 +51263,25 @@ Optional:
 - `image_url` (String) Displays an image as the background.
 - `metric` (String) The metric from the request to correlate with this conditional format.
 - `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--dataset"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.request.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--dataset--query))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--dataset--query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.request.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
+
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula"></a>
@@ -50161,6 +51470,73 @@ Optional:
 - `filter_by` (List of String) A list of processes.
 - `limit` (Number) The max number of items in the filter list.
 - `search_by` (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--projection"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.request.projection`
+
+Required:
+
+- `dimension` (Block List, Min: 1, Max: 1) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--projection--dimension))
+- `type` (String) Type of the projection. Valid values are `query_value`.
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.request.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.request.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
+
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query"></a>
@@ -51132,7 +52508,7 @@ Optional:
 
 Optional:
 
-- `scatterplot_table` (Block List) Scatterplot request containing formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table))
+- `scatterplot_table` (Block List) Scatterplot table request containing Formula queries or an inline DDSQL dataset. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table))
 - `x` (Block List, Max: 1) The query used for the X-Axis. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x))
 - `y` (Block List, Max: 1) The query used for the Y-Axis. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y))
 
@@ -51141,8 +52517,32 @@ Optional:
 
 Optional:
 
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--formula))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--projection))
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `tabular`.
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--dataset"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.scatterplot_table.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--dataset--query))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--dataset--query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.scatterplot_table.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
+
+
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--formula"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.scatterplot_table.formula`
@@ -51155,6 +52555,76 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--projection"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.scatterplot_table.projection`
+
+Required:
+
+- `type` (String) Type of the projection. Valid values are `scatterplot`.
+
+Optional:
+
+- `dimension` (Block List) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--projection--dimension))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--projection--dimension"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.scatterplot_table.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.scatterplot_table.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.scatterplot_table.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.scatterplot_table.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.scatterplot_table.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.scatterplot_table.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
+
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query"></a>
@@ -54277,7 +55747,7 @@ Optional:
 - `legend_inline` (Block List, Max: 1) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--legend_inline))
 - `legend_table` (Block List, Max: 1) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--legend_table))
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
-- `request` (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request))
+- `request` (Block List) The Formula, legacy, or inline DDSQL request used to display the Sunburst. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -54322,12 +55792,17 @@ Optional:
 
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--audit_query))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--log_query))
 - `network_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--network_query))
 - `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--process_query))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--projection))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `tabular`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--security_query))
 - `sort` (Block List, Max: 1) The controls for sorting the widget. Only applicable for formula-style requests. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--sort))
@@ -54458,6 +55933,25 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--dataset"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.request.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--dataset--query))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--dataset--query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.request.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
 
 
 
@@ -54711,6 +56205,76 @@ Optional:
 - `filter_by` (List of String) A list of processes.
 - `limit` (Number) The max number of items in the filter list.
 - `search_by` (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--projection"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.request.projection`
+
+Required:
+
+- `type` (String) Type of the projection. Valid values are `sunburst`.
+
+Optional:
+
+- `dimension` (Block List) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--projection--dimension))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.request.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.request.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
+
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query"></a>
@@ -55683,7 +57247,7 @@ Optional:
 - `legend_size` (String) The size of the legend displayed in the widget. Valid values are `0`, `2`, `4`, `8`, `16`, `auto`.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `marker` (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--marker))
-- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request))
+- `request` (Block List) Formula, legacy, or inline DDSQL request. Multiple requests are allowed, including Formula overlays alongside one inline DDSQL request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request))
 - `right_yaxis` (Block List, Max: 1) A nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--right_yaxis))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--time))
@@ -55736,7 +57300,9 @@ Optional:
 
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--audit_query))
-- `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `line`, `overlay`.
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
+- `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `adjacent_bars`, `line`, `overlay`.
 - `event_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--event_query))
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--log_query))
@@ -55745,8 +57311,11 @@ Optional:
 - `on_right_yaxis` (Boolean) A Boolean indicating whether the request uses the right or left Y-Axis.
 - `process_query` (Block List, Max: 1) The process query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--process_query))
 - `profile_metrics_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--profile_metrics_query))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--projection))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) List of queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `timeseries`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. Exactly one `style` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--style))
@@ -55876,6 +57445,25 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--dataset"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--dataset--query))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--dataset--query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
 
 
 
@@ -56268,6 +57856,76 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--projection"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.projection`
+
+Required:
+
+- `type` (String) Type of the projection. Valid values are `timeseries`.
+
+Optional:
+
+- `dimension` (Block List) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--projection--dimension))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
 
 
 
@@ -57158,11 +58816,14 @@ Optional:
 
 Optional:
 
+- `color_order` (String) Order in which to assign colors to series. Valid values are `monotonic`, `shuffled`.
 - `has_value_labels` (Boolean) Whether to display value labels on the timeseries.
 - `line_type` (String) The type of lines displayed. Valid values are `dashed`, `dotted`, `solid`.
 - `line_width` (String) The width of line displayed. Valid values are `normal`, `thick`, `thin`.
 - `order_by` (String) How to order series in timeseries visualizations. Valid values are `tags`, `values`.
+- `order_reverse` (Boolean) Reverse the order of the series.
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+- `value_labels_density` (String) Density of value labels when shown. Valid values are `maximize`.
 
 
 
@@ -57227,7 +58888,7 @@ Optional:
 - `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
-- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request))
+- `request` (Block List) The Formula, legacy, or inline DDSQL request used to display the Toplist. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request))
 - `style` (Block List, Max: 1) The style of the widget (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--time))
 - `title` (String) The title of the widget.
@@ -57253,11 +58914,16 @@ Optional:
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--audit_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--conditional_formats))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--log_query))
 - `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--process_query))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--projection))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `tabular`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--security_query))
 - `sort` (Block List, Max: 1) The controls for sorting the widget. Only applicable for formula-style requests. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--sort))
@@ -57408,6 +59074,25 @@ Optional:
 - `image_url` (String) Displays an image as the background.
 - `metric` (String) The metric from the request to correlate with this conditional format.
 - `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--dataset"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--dataset--query))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--dataset--query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
+
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula"></a>
@@ -57596,6 +59281,76 @@ Optional:
 - `filter_by` (List of String) A list of processes.
 - `limit` (Number) The max number of items in the filter list.
 - `search_by` (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--projection"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.projection`
+
+Required:
+
+- `type` (String) Type of the projection. Valid values are `toplist`.
+
+Optional:
+
+- `dimension` (Block List) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--projection--dimension))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
+
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query"></a>
@@ -58595,7 +60350,7 @@ Optional:
 - `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
-- `request` (Block List) Nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request))
+- `request` (Block List) The Formula or inline DDSQL request used to display the Treemap. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -58617,10 +60372,34 @@ Optional:
 
 Optional:
 
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--projection))
 - `query` (Block List) List of queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `tabular`.
 - `sort` (Block List, Max: 1) The controls for sorting the widget. Only applicable for formula-style requests. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--sort))
 - `style` (Block List, Max: 1) Define style for the widget's request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--style))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--dataset"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.request.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--dataset--query))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--dataset--query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.request.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
+
+
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.request.formula`
@@ -58729,6 +60508,76 @@ Optional:
 
 - `palette` (String) The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors.
 - `palette_index` (Number) Index specifying which color to use within the palette.
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--projection"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.request.projection`
+
+Required:
+
+- `type` (String) Type of the projection. Valid values are `treemap`.
+
+Optional:
+
+- `dimension` (Block List) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--projection--dimension))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.request.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.request.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
 
 
 
@@ -59601,7 +61450,7 @@ Optional:
 - `legend_inline` (Block List, Max: 1) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--sunburst_definition--legend_inline))
 - `legend_table` (Block List, Max: 1) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--sunburst_definition--legend_table))
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
-- `request` (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--sunburst_definition--request))
+- `request` (Block List) The Formula, legacy, or inline DDSQL request used to display the Sunburst. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--sunburst_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -59646,12 +61495,17 @@ Optional:
 
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--audit_query))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--log_query))
 - `network_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--network_query))
 - `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--process_query))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--projection))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `tabular`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--security_query))
 - `sort` (Block List, Max: 1) The controls for sorting the widget. Only applicable for formula-style requests. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--sort))
@@ -59782,6 +61636,25 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--sunburst_definition--request--dataset"></a>
+### Nested Schema for `widget.sunburst_definition.request.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--dataset--query))
+
+<a id="nestedblock--widget--sunburst_definition--request--dataset--query"></a>
+### Nested Schema for `widget.sunburst_definition.request.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
 
 
 
@@ -60035,6 +61908,76 @@ Optional:
 - `filter_by` (List of String) A list of processes.
 - `limit` (Number) The max number of items in the filter list.
 - `search_by` (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--sunburst_definition--request--projection"></a>
+### Nested Schema for `widget.sunburst_definition.request.projection`
+
+Required:
+
+- `type` (String) Type of the projection. Valid values are `sunburst`.
+
+Optional:
+
+- `dimension` (Block List) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--projection--dimension))
+
+<a id="nestedblock--widget--sunburst_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.sunburst_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--sunburst_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.sunburst_definition.request.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--sunburst_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.sunburst_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--sunburst_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.sunburst_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--sunburst_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.sunburst_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--sunburst_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.sunburst_definition.request.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
+
 
 
 <a id="nestedblock--widget--sunburst_definition--request--query"></a>
@@ -61007,7 +62950,7 @@ Optional:
 - `legend_size` (String) The size of the legend displayed in the widget. Valid values are `0`, `2`, `4`, `8`, `16`, `auto`.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `marker` (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block. (see [below for nested schema](#nestedblock--widget--timeseries_definition--marker))
-- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--timeseries_definition--request))
+- `request` (Block List) Formula, legacy, or inline DDSQL request. Multiple requests are allowed, including Formula overlays alongside one inline DDSQL request. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request))
 - `right_yaxis` (Block List, Max: 1) A nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--right_yaxis))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--timeseries_definition--time))
@@ -61060,7 +63003,9 @@ Optional:
 
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--audit_query))
-- `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `line`, `overlay`.
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
+- `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `adjacent_bars`, `line`, `overlay`.
 - `event_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--event_query))
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query))
@@ -61069,8 +63014,11 @@ Optional:
 - `on_right_yaxis` (Boolean) A Boolean indicating whether the request uses the right or left Y-Axis.
 - `process_query` (Block List, Max: 1) The process query to use in the widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--process_query))
 - `profile_metrics_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--profile_metrics_query))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--projection))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) List of queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `timeseries`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. Exactly one `style` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style))
@@ -61200,6 +63148,25 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--timeseries_definition--request--dataset"></a>
+### Nested Schema for `widget.timeseries_definition.request.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--dataset--query))
+
+<a id="nestedblock--widget--timeseries_definition--request--dataset--query"></a>
+### Nested Schema for `widget.timeseries_definition.request.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
 
 
 
@@ -61592,6 +63559,76 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--timeseries_definition--request--projection"></a>
+### Nested Schema for `widget.timeseries_definition.request.projection`
+
+Required:
+
+- `type` (String) Type of the projection. Valid values are `timeseries`.
+
+Optional:
+
+- `dimension` (Block List) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--projection--dimension))
+
+<a id="nestedblock--widget--timeseries_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.timeseries_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--timeseries_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.timeseries_definition.request.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--timeseries_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.timeseries_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--timeseries_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.timeseries_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--timeseries_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.timeseries_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--timeseries_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.timeseries_definition.request.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
 
 
 
@@ -62482,11 +64519,14 @@ Optional:
 
 Optional:
 
+- `color_order` (String) Order in which to assign colors to series. Valid values are `monotonic`, `shuffled`.
 - `has_value_labels` (Boolean) Whether to display value labels on the timeseries.
 - `line_type` (String) The type of lines displayed. Valid values are `dashed`, `dotted`, `solid`.
 - `line_width` (String) The width of line displayed. Valid values are `normal`, `thick`, `thin`.
 - `order_by` (String) How to order series in timeseries visualizations. Valid values are `tags`, `values`.
+- `order_reverse` (Boolean) Reverse the order of the series.
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+- `value_labels_density` (String) Density of value labels when shown. Valid values are `maximize`.
 
 
 
@@ -62551,7 +64591,7 @@ Optional:
 - `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
-- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--toplist_definition--request))
+- `request` (Block List) The Formula, legacy, or inline DDSQL request used to display the Toplist. (see [below for nested schema](#nestedblock--widget--toplist_definition--request))
 - `style` (Block List, Max: 1) The style of the widget (see [below for nested schema](#nestedblock--widget--toplist_definition--style))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--toplist_definition--time))
 - `title` (String) The title of the widget.
@@ -62577,11 +64617,16 @@ Optional:
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--audit_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--conditional_formats))
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--log_query))
 - `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--process_query))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--projection))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `tabular`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query))
 - `sort` (Block List, Max: 1) The controls for sorting the widget. Only applicable for formula-style requests. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--sort))
@@ -62732,6 +64777,25 @@ Optional:
 - `image_url` (String) Displays an image as the background.
 - `metric` (String) The metric from the request to correlate with this conditional format.
 - `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--toplist_definition--request--dataset"></a>
+### Nested Schema for `widget.toplist_definition.request.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--dataset--query))
+
+<a id="nestedblock--widget--toplist_definition--request--dataset--query"></a>
+### Nested Schema for `widget.toplist_definition.request.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
+
 
 
 <a id="nestedblock--widget--toplist_definition--request--formula"></a>
@@ -62920,6 +64984,76 @@ Optional:
 - `filter_by` (List of String) A list of processes.
 - `limit` (Number) The max number of items in the filter list.
 - `search_by` (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--toplist_definition--request--projection"></a>
+### Nested Schema for `widget.toplist_definition.request.projection`
+
+Required:
+
+- `type` (String) Type of the projection. Valid values are `toplist`.
+
+Optional:
+
+- `dimension` (Block List) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--projection--dimension))
+
+<a id="nestedblock--widget--toplist_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.toplist_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--toplist_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.toplist_definition.request.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--toplist_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.toplist_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--toplist_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--toplist_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.toplist_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--toplist_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.toplist_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--toplist_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.toplist_definition.request.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
+
 
 
 <a id="nestedblock--widget--toplist_definition--request--query"></a>
@@ -64054,7 +66188,7 @@ Optional:
 - `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
-- `request` (Block List) Nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--treemap_definition--request))
+- `request` (Block List) The Formula or inline DDSQL request used to display the Treemap. (see [below for nested schema](#nestedblock--widget--treemap_definition--request))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--treemap_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -64076,10 +66210,34 @@ Optional:
 
 Optional:
 
+- `dataset` (Block List, Max: 1) Inline SQL dataset used by the request. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--dataset))
+- `dataset_to_query` (String) Name of the inline dataset to query.
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula))
+- `projection` (Block List, Max: 1) Mapping from result columns to widget dimensions. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--projection))
 - `query` (Block List) List of queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query))
+- `request_type` (String) Request type for inline DDSQL. Valid values are `advanced_query`.
+- `response_format` (String) Response format for the inline DDSQL request. Valid values are `tabular`.
 - `sort` (Block List, Max: 1) The controls for sorting the widget. Only applicable for formula-style requests. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--sort))
 - `style` (Block List, Max: 1) Define style for the widget's request. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--style))
+
+<a id="nestedblock--widget--treemap_definition--request--dataset"></a>
+### Nested Schema for `widget.treemap_definition.request.dataset`
+
+Required:
+
+- `data_source` (String) Source of the inline dataset. Valid values are `analysis_dataset`.
+- `name` (String) Local name referenced by `dataset_to_query`.
+- `query` (Block List, Min: 1, Max: 1) SQL query defining the dataset. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--dataset--query))
+
+<a id="nestedblock--widget--treemap_definition--request--dataset--query"></a>
+### Nested Schema for `widget.treemap_definition.request.dataset.query`
+
+Required:
+
+- `sql_query` (String) Inline DDSQL statement.
+- `type` (String) Type of the dataset query. Valid values are `sql_analysis`.
+
+
 
 <a id="nestedblock--widget--treemap_definition--request--formula"></a>
 ### Nested Schema for `widget.treemap_definition.request.formula`
@@ -64188,6 +66346,76 @@ Optional:
 
 - `palette` (String) The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors.
 - `palette_index` (Number) Index specifying which color to use within the palette.
+
+
+
+<a id="nestedblock--widget--treemap_definition--request--projection"></a>
+### Nested Schema for `widget.treemap_definition.request.projection`
+
+Required:
+
+- `type` (String) Type of the projection. Valid values are `treemap`.
+
+Optional:
+
+- `dimension` (Block List) Mapping of a SQL result column to a visualization role. Dimension order is preserved. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--projection--dimension))
+
+<a id="nestedblock--widget--treemap_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.treemap_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Name of the SQL result column.
+- `dimension` (String) Role of the result column in the visualization.
+
+Optional:
+
+- `number_format` (Block List, Max: 1) Number format for a numeric dimension. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--treemap_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.treemap_definition.request.projection.dimension.number_format`
+
+Optional:
+
+- `precision` (String) Number of decimal places (0–10), `*`, or `integer`.
+- `unit` (Block List, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--projection--dimension--number_format--unit))
+- `unit_scale` (Block List, Max: 1) Canonical scale for the value. An empty block disables automatic scaling; omit the block to leave the scale unset. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--treemap_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.treemap_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--treemap_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--treemap_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--treemap_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.treemap_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--treemap_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.treemap_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--treemap_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.treemap_definition.request.projection.dimension.number_format.unit_scale`
+
+Optional:
+
+- `type` (String) Type of the scale. Valid values are `canonical_unit`.
+- `unit_name` (String) Name of the canonical unit.
+
+
 
 
 

@@ -10,6 +10,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -148,7 +149,7 @@ func resourceDatadogDashboardV2ValidateWidgets(ctx context.Context, diff *schema
 	if !ok {
 		return nil
 	}
-	validationWidgets := flattenDashboardWidgets(widgets)
+	validationWidgets := flattenDashboardWidgets(widgets, diff)
 	if len(validationWidgets) == 0 {
 		return nil
 	}
@@ -213,7 +214,7 @@ func dashboardV2ConfigObjectKnown(diff *schema.ResourceDiff, path string, object
 // flattenDashboardWidgets converts the SDKv2 widget representation to API
 // widgets. Group children are validated separately so errors point to the
 // specific nested widget.
-func flattenDashboardWidgets(widgets interface{}) []dashboardWidget {
+func flattenDashboardWidgets(widgets interface{}, rawConfig dashboardmapping.RawConfigAtReader) []dashboardWidget {
 	widgetList, ok := widgets.([]interface{})
 	if !ok {
 		return nil
@@ -224,7 +225,7 @@ func flattenDashboardWidgets(widgets interface{}) []dashboardWidget {
 		if !ok {
 			continue
 		}
-		widgetJSON := dashboardmapping.BuildWidgetEngineJSONFromMap(widget)
+		widgetJSON := dashboardmapping.BuildWidgetEngineJSONFromMapWithRawConfig(widget, rawConfig, cty.GetAttrPath("widget").IndexInt(i))
 		definition, ok := widgetJSON["definition"].(map[string]interface{})
 		if !ok {
 			continue

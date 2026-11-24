@@ -740,8 +740,8 @@ var TimeseriesWidgetSpec = WidgetSpec{
 			JSONKey:     "requests",
 			Type:        TypeBlockList,
 			OmitEmpty:   false,
-			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block).",
-			Children:    timeseriesWidgetRequestFields,
+			Description: "Formula, legacy, or inline DDSQL request. Multiple requests are allowed, including Formula overlays alongside one inline DDSQL request.",
+			Children:    append(inlineDDSQLRequestFields("timeseries"), timeseriesWidgetRequestFields...),
 		},
 		widgetCustomLinkField,
 	},
@@ -1053,7 +1053,7 @@ var queryValueRequestFields = append(append([]FieldSpec{
 		Description: "Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below.",
 		Children:    widgetConditionalFormatFields},
 	queryValueWidgetComparisonField,
-}, standardQueryFields...), inlineDDSQLRequestFields("tabular", queryValueProjectionFields)...)
+}, standardQueryFields...), inlineDDSQLRequestFields("query_value")...)
 
 var QueryValueWidgetSpec = WidgetSpec{
 	HCLKey:      "query_value_definition",
@@ -1112,8 +1112,8 @@ var ToplistWidgetSpec = WidgetSpec{
 			Description: "The style of the widget",
 			Children:    toplistWidgetStyleFields},
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
-			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block).",
-			Children:    toplistWidgetRequestFields},
+			Description: "The Formula, legacy, or inline DDSQL request used to display the Toplist.",
+			Children:    append(inlineDDSQLRequestFields("toplist"), toplistWidgetRequestFields...)},
 		widgetCustomLinkField,
 	},
 }
@@ -1127,10 +1127,9 @@ var scatterplotRequestOuterFields = []FieldSpec{
 	{HCLKey: "y", Type: TypeBlock, OmitEmpty: true,
 		Description: "The query used for the Y-Axis. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block).",
 		Children:    scatterplotXYRequestFields},
-	// SchemaOnly: JSON building is handled by buildScatterplotTableJSON (injected as requests.table),
-	// not by the FieldSpec engine (which would incorrectly emit it as requests.scatterplot_table).
-	{HCLKey: "scatterplot_table", Type: TypeBlockList, OmitEmpty: true, SchemaOnly: true,
-		Description: "Scatterplot request containing formulas and functions.",
+	// SchemaOnly: requests.table is one API object, not an array of tables.
+	{HCLKey: "scatterplot_table", JSONKey: "table", Type: TypeBlockList, OmitEmpty: true, SchemaOnly: true,
+		Description: "Scatterplot table request containing Formula queries or an inline DDSQL dataset.",
 		Children:    scatterplotTableRequestFields},
 }
 
@@ -1200,8 +1199,8 @@ var SunburstWidgetSpec = WidgetSpec{
 					Description: "The type of legend (table or none)."},
 			}},
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
-			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block).",
-			Children:    sunburstWidgetRequestFields},
+			Description: "The Formula, legacy, or inline DDSQL request used to display the Sunburst.",
+			Children:    append(inlineDDSQLRequestFields("sunburst"), sunburstWidgetRequestFields...)},
 		widgetCustomLinkField,
 	},
 }
@@ -1262,7 +1261,7 @@ var GeomapWidgetSpec = WidgetSpec{
 //     getTreemapDefinitionSchema), unlike all other widgets which use "custom_link" singular.
 //
 // treemapRequestFields contains the HCL schema for treemap request blocks.
-// Treemap only supports formula/query style — no old-style requests.
+// Treemap has no legacy metric request.
 var treemapRequestFields = []FieldSpec{
 	{HCLKey: "query", Type: TypeBlockList, OmitEmpty: true,
 		Description: "List of queries that can be returned directly or used in formulas.",
@@ -1285,10 +1284,9 @@ var TreemapWidgetSpec = WidgetSpec{
 	JSONType:    "treemap",
 	Description: "The definition for a Treemap widget.",
 	Fields: []FieldSpec{
-		// request block: treemap uses formula/query only
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: true,
-			Description: "Nested block describing the request to use when displaying the widget.",
-			Children:    treemapRequestFields},
+			Description: "The Formula or inline DDSQL request used to display the Treemap.",
+			Children:    append(inlineDDSQLRequestFields("treemap"), treemapRequestFields...)},
 		// custom_links: both HCL and JSON keys are plural for treemap (schema-verified).
 		{HCLKey: "custom_links", JSONKey: "custom_links", Type: TypeBlockList, OmitEmpty: true,
 			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
@@ -1350,8 +1348,8 @@ var QueryTableWidgetSpec = WidgetSpec{
 			JSONKey:     "requests",
 			Type:        TypeBlockList,
 			OmitEmpty:   false,
-			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block).",
-			Children:    queryTableOldRequestFields,
+			Description: "The Formula, legacy, or inline DDSQL request used to display the Query Table.",
+			Children:    queryTableRequestFields,
 		},
 		widgetCustomLinkField,
 	},
@@ -1656,8 +1654,8 @@ var BarChartWidgetSpec = WidgetSpec{
 			Children:    barChartWidgetStyleFields},
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
 			MaxItems:    1,
-			Description: "A nested block describing the request to use when displaying the widget.",
-			Children:    barChartWidgetRequestFields},
+			Description: "The Formula, legacy, or inline DDSQL request used to display the Bar Chart.",
+			Children:    append(inlineDDSQLRequestFields("bar_chart"), barChartWidgetRequestFields...)},
 		widgetCustomLinkField,
 	},
 }
@@ -1786,6 +1784,9 @@ var timeseriesWidgetRequestStyleFields = []FieldSpec{
 		Description: "How to order series in timeseries visualizations.",
 		ValidValues: []string{"tags", "values"},
 	},
+	{HCLKey: "order_reverse", Type: TypeBool, OmitEmpty: true, Description: "Reverse the order of the series."},
+	{HCLKey: "color_order", Type: TypeString, OmitEmpty: true, Description: "Order in which to assign colors to series.", ValidValues: []string{"monotonic", "shuffled"}},
+	{HCLKey: "value_labels_density", Type: TypeString, OmitEmpty: true, Description: "Density of value labels when shown.", ValidValues: []string{"maximize"}},
 	{
 		HCLKey:      "has_value_labels",
 		Type:        TypeBool,
@@ -1822,7 +1823,7 @@ var timeseriesWidgetRequestFields = []FieldSpec{
 		Type:        TypeString,
 		OmitEmpty:   true,
 		Description: "How to display the marker lines.",
-		ValidValues: []string{"area", "bars", "line", "overlay"},
+		ValidValues: []string{"area", "bars", "adjacent_bars", "line", "overlay"},
 	},
 	// on_right_yaxis is always emitted even when false — cassette confirms both true and false appear
 	{

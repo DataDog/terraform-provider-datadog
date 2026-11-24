@@ -1332,8 +1332,12 @@ var datasetListQueryFields = []FieldSpec{
 
 // inlineDDSQLRequestFields maps a single inline SQL dataset. The request-level
 // fields are optional because the same HCL block also represents non-DDSQL requests.
-func inlineDDSQLRequestFields(responseFormat string, projectionFields []FieldSpec) []FieldSpec {
-	return []FieldSpec{
+func inlineDDSQLRequestFields(widgetType string) []FieldSpec {
+	responseFormat := "tabular"
+	if widgetType == "timeseries" {
+		responseFormat = "timeseries"
+	}
+	fields := []FieldSpec{
 		{HCLKey: "request_type", Type: TypeString, OmitEmpty: true,
 			Description: "Request type for inline DDSQL.", ValidValues: []string{"advanced_query"}},
 		{HCLKey: "dataset", JSONKey: "datasets", Type: TypeBlockList, MaxItems: 1, OmitEmpty: true,
@@ -1357,19 +1361,23 @@ func inlineDDSQLRequestFields(responseFormat string, projectionFields []FieldSpe
 		{HCLKey: "response_format", Type: TypeString, OmitEmpty: true,
 			Description: "Response format for the inline DDSQL request.", ValidValues: []string{responseFormat}},
 		{HCLKey: "projection", Type: TypeBlock, OmitEmpty: true,
-			Description: "Mapping from result columns to widget dimensions.", Children: projectionFields},
+			Description: "Mapping from result columns to widget dimensions.", Children: inlineDDSQLProjectionFields(widgetType)},
 	}
+	// Legacy requests can also return request_type and response_format. Keep
+	// those API-only values out of their existing Terraform representation.
+	for i := range fields {
+		fields[i].FlattenRequestType = "advanced_query"
+	}
+	return fields
 }
 
-var queryValueProjectionFields = []FieldSpec{
-	{HCLKey: "type", Type: TypeString, Required: true,
-		Description: "Type of the projection.", ValidValues: []string{"query_value"}},
-	{HCLKey: "dimension", JSONKey: "dimensions", Type: TypeBlockList, Required: true, MaxItems: 1,
-		Description: "Result column to display in the Query Value.",
+func inlineDDSQLProjectionFields(widgetType string) []FieldSpec {
+	dimension := FieldSpec{HCLKey: "dimension", JSONKey: "dimensions", Type: TypeBlockList,
+		Description: "Mapping of a SQL result column to a visualization role. Dimension order is preserved.",
 		Children: []FieldSpec{
 			{HCLKey: "column", Type: TypeString, Required: true, Description: "Name of the SQL result column."},
-			{HCLKey: "dimension", Type: TypeString, Required: true, Description: "Role of the result column (`value` for Query Value)."},
-			{HCLKey: "number_format", Type: TypeBlock, Description: "Number format for the projected value.",
+			{HCLKey: "dimension", Type: TypeString, Required: true, Description: "Role of the result column in the visualization."},
+			{HCLKey: "number_format", Type: TypeBlock, Description: "Number format for a numeric dimension.",
 				Children: []FieldSpec{
 					{HCLKey: "precision", Type: TypeIntOrString, OmitEmpty: true,
 						Description: "Number of decimal places (0–10), `*`, or `integer`."},
@@ -1381,7 +1389,35 @@ var queryValueProjectionFields = []FieldSpec{
 							{HCLKey: "unit_name", Type: TypeString, OmitEmpty: true, Description: "Name of the canonical unit."},
 						}},
 				}},
-		}},
+		}}
+	fields := []FieldSpec{{HCLKey: "type", Type: TypeString, Required: true, Description: "Type of the projection.", ValidValues: []string{widgetType}}}
+	switch widgetType {
+	case "query_value":
+		dimension.Required, dimension.MaxItems = true, 1
+	case "query_table":
+		dimension.Children = append(dimension.Children, inlineDDSQLTableColumnFields...)
+		fields = append(fields,
+			FieldSpec{HCLKey: "column_order", Type: TypeString, OmitEmpty: true, Description: "Order columns by the query result or by the listed dimensions.", ValidValues: []string{"query", "dimensions"}},
+			FieldSpec{HCLKey: "unlisted_columns", Type: TypeString, OmitEmpty: true, Description: "Whether to show result columns not listed as dimensions.", ValidValues: []string{"show", "hide"}},
+		)
+	}
+	return append(fields, dimension)
+}
+
+var inlineDDSQLTableColumnFields = []FieldSpec{
+	{HCLKey: "alias", Type: TypeString, OmitEmpty: true, Description: "Display name of the column header."},
+	{HCLKey: "cell_display_mode", Type: TypeString, OmitEmpty: true, Description: "How to display the cells in this column.", ValidValues: []string{"number", "bar", "text"}},
+	{HCLKey: "text_align", Type: TypeString, OmitEmpty: true, Description: "Alignment of the column header and values."},
+	{HCLKey: "is_hidden", Type: TypeBool, OmitEmpty: true, Description: "Hide the column while retaining its other settings."},
+	{HCLKey: "date_format", Type: TypeString, OmitEmpty: true, Description: "Date or timestamp display format for this column."},
+	{HCLKey: "link", Type: TypeBlock, Description: "Display column values as links.", Children: []FieldSpec{
+		{HCLKey: "url", Type: TypeString, Required: true, Description: "Link URL template."},
+		{HCLKey: "label", Type: TypeString, OmitEmpty: true, Description: "Display label for the link."},
+	}},
+	// These ordered rule arrays have multiple API shapes. JSON preserves empty
+	// arrays, zero thresholds and optional false flags without SDKv2 defaults.
+	{HCLKey: "conditional_formats", Type: TypeJSON, Description: "Numeric threshold or range rules for this column, as a JSON array. Use `jsonencode` to supply the rules."},
+	{HCLKey: "text_formats", Type: TypeJSON, Description: "Text matching and replacement rules for this column, as a JSON array. Use `jsonencode` to supply the rules."},
 }
 
 // hostmapProjectionDimensionMappingFields corresponds to OpenAPI
@@ -1518,16 +1554,17 @@ var scatterplotFormulaFields = []FieldSpec{
 		Description: "An expression alias."},
 }
 
-// scatterplotTableRequestFields corresponds to OpenAPI ScatterplotTableRequest.
-// Used by: scatterplot scatterplot_table sub-block.
-var scatterplotTableRequestFields = []FieldSpec{
+var scatterplotInlineDDSQLFields = inlineDDSQLRequestFields("scatterplot")
+
+// scatterplotTableRequestFields is the shared schema for the requests.table object.
+var scatterplotTableRequestFields = append([]FieldSpec{
 	{HCLKey: "query", Type: TypeBlockList, OmitEmpty: true,
 		Description: "A list of queries to use in the widget.",
 		Children:    formulaAndFunctionQueryFields},
 	{HCLKey: "formula", Type: TypeBlockList, OmitEmpty: true,
 		Description: "A list of formulas to use in the widget.",
 		Children:    scatterplotFormulaFields},
-}
+}, scatterplotInlineDDSQLFields...)
 
 // toplistWidgetDisplayStackedFields corresponds to OpenAPI ToplistWidgetStacked.
 // The "legend" field controls legend display behavior for stacked top lists.
@@ -1801,6 +1838,8 @@ var queryTableOldRequestFields = append(append([]FieldSpec{
 		Description: "A list of formulas to use in the widget.",
 		Children:    widgetFormulaFields},
 }...)
+
+var queryTableRequestFields = append(inlineDDSQLRequestFields("query_table"), queryTableOldRequestFields...)
 
 // listStreamColumnFields corresponds to OpenAPI
 // components/schemas/ListStreamColumn.

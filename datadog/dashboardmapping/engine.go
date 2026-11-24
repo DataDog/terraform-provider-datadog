@@ -102,6 +102,10 @@ type FieldSpec struct {
 	// decoded maps, so the build engine consults raw configuration when available.
 	PreserveZero bool
 
+	// FlattenRequestType limits an optional field on a shared request schema to
+	// JSON objects with this request_type. It does not constrain HCL input.
+	FlattenRequestType string
+
 	// Children: for TypeBlock and TypeBlockList, the nested field specs.
 	Children []FieldSpec
 
@@ -359,7 +363,7 @@ func findPopulatedVariant(f FieldSpec, item map[string]interface{}) (*FieldSpec,
 func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[string]interface{} {
 	result := map[string]interface{}{}
 	for _, f := range fields {
-		if f.SchemaOnly {
+		if f.SchemaOnly || (f.FlattenRequestType != "" && data["request_type"] != f.FlattenRequestType) {
 			continue
 		}
 		jsonVal, present := getAtJSONPath(data, f.effectiveJSONPath())
@@ -918,7 +922,7 @@ func flattenScatterplotTableState(def map[string]interface{}, defState map[strin
 		return
 	}
 
-	tableState := map[string]interface{}{}
+	tableState := FlattenEngineJSON(scatterplotInlineDDSQLFields, tableObj)
 
 	// formulas
 	if formulas, ok := tableObj["formulas"].([]interface{}); ok {
@@ -1199,7 +1203,7 @@ func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defSt
 					// New-style formula/query request (unified via FormulaRequestConfig)
 					flatRequests[ri] = flattenFormulaRequest(reqMap, formulaRequestConfigForWidget(spec.JSONType))
 				} else {
-					// Old-style request — already flattened by FieldSpec engine
+					// Legacy or inline DDSQL request, already flattened by the FieldSpec engine.
 					if existingRequests, ok := defState["request"].([]interface{}); ok && ri < len(existingRequests) {
 						flatRequests[ri] = existingRequests[ri]
 					} else {
@@ -1364,8 +1368,8 @@ func flattenQueryTableRequestJSON(req map[string]interface{}) map[string]interfa
 		}
 		return result
 	}
-	// Old-style request
-	result := FlattenEngineJSON(queryTableOldRequestFields, req)
+	// Legacy or inline DDSQL request.
+	result := FlattenEngineJSON(queryTableRequestFields, req)
 	if sortObj, ok := req["sort"].(map[string]interface{}); ok {
 		if s := flattenWidgetSortByJSON(sortObj); len(s) > 0 {
 			result["sort"] = []interface{}{s}
@@ -1870,15 +1874,25 @@ type RawConfigAtReader interface {
 }
 
 type mapBuildContext struct {
-	rawConfig RawConfigAtReader
-	path      cty.Path
+	rawConfig   RawConfigAtReader
+	path        cty.Path
+	inlineDDSQL bool
 }
 
 func (ctx mapBuildContext) block(key string, index int) mapBuildContext {
-	return mapBuildContext{
-		rawConfig: ctx.rawConfig,
-		path:      ctx.path.GetAttr(key).IndexInt(index),
+	ctx.path = ctx.path.GetAttr(key).IndexInt(index)
+	return ctx
+}
+
+// SDKv2 fills omitted nested booleans with false. In an inline SQL request,
+// consult the raw config before emitting false for an optional display setting.
+// Formula and legacy requests keep their existing serialized defaults.
+func (ctx mapBuildContext) explicitlyConfiguredFalse(key string) bool {
+	if ctx.rawConfig == nil {
+		return false
 	}
+	v, diags := ctx.rawConfig.GetRawConfigAt(ctx.path.GetAttr(key))
+	return !diags.HasError() && v.IsKnown() && !v.IsNull() && v.Type() == cty.Bool && !v.True()
 }
 
 func (ctx mapBuildContext) explicitlyConfiguredZero(data map[string]interface{}, field FieldSpec) bool {
@@ -1900,6 +1914,9 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 }
 
 func buildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec, ctx mapBuildContext) map[string]interface{} {
+	if data["request_type"] == "advanced_query" && getBlockFromMap(data, "dataset") != nil {
+		ctx.inlineDDSQL = true
+	}
 	result := map[string]interface{}{}
 	for _, f := range fields {
 		if f.SchemaOnly {
@@ -1922,8 +1939,14 @@ func buildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec, ctx
 
 		case TypeBool:
 			boolVal := getBoolFromMap(data, f.HCLKey)
-			if f.OmitEmpty && !boolVal {
-				continue
+			if !boolVal {
+				if ctx.inlineDDSQL && !f.Required {
+					if !ctx.explicitlyConfiguredFalse(f.HCLKey) {
+						continue
+					}
+				} else if f.OmitEmpty {
+					continue
+				}
 			}
 			setAtJSONPath(result, f.effectiveJSONPath(), boolVal)
 
@@ -2513,13 +2536,13 @@ func buildWidgetSortByJSONFromMap(sortMap map[string]interface{}) map[string]int
 
 // buildQueryTableRequestsJSONFromMap builds the "requests" array for query_table from a SDKv2 map.
 // Parallel to buildQueryTableRequestsJSON in engine.go.
-func buildQueryTableRequestsJSONFromMap(defMap map[string]interface{}) []interface{} {
+func buildQueryTableRequestsJSONFromMap(defMap map[string]interface{}, ctx mapBuildContext) []interface{} {
 	requestList := getBlockListFromMap(defMap, "request")
 	if len(requestList) == 0 {
 		return []interface{}{}
 	}
 	requests := make([]interface{}, 0, len(requestList))
-	for _, reqMap := range requestList {
+	for i, reqMap := range requestList {
 		formulaCount := len(getBlockListFromMap(reqMap, "formula"))
 		queryCount := len(getBlockListFromMap(reqMap, "query"))
 		if formulaCount > 0 || queryCount > 0 {
@@ -2527,7 +2550,7 @@ func buildQueryTableRequestsJSONFromMap(defMap map[string]interface{}) []interfa
 			buildQueryTableTextFormatsJSONFromMap(reqMap, req)
 			requests = append(requests, req)
 		} else {
-			req := BuildEngineJSONFromMap(reqMap, queryTableOldRequestFields)
+			req := buildEngineJSONFromMap(reqMap, queryTableRequestFields, ctx.block("request", i))
 			if sortMap := getBlockFromMap(reqMap, "sort"); sortMap != nil {
 				if sortJSON := buildWidgetSortByJSONFromMap(sortMap); len(sortJSON) > 0 {
 					req["sort"] = sortJSON
@@ -2594,7 +2617,7 @@ func buildQueryTableTextFormatsJSONFromMap(reqMap map[string]interface{}, req ma
 
 // buildScatterplotTableJSONFromMap builds the scatterplot "requests.table" from a SDKv2 map.
 // Parallel to buildScatterplotTableJSON in engine.go.
-func buildScatterplotTableJSONFromMap(defMap map[string]interface{}, defJSON map[string]interface{}) {
+func buildScatterplotTableJSONFromMap(defMap map[string]interface{}, defJSON map[string]interface{}, ctx mapBuildContext) {
 	reqMap := getBlockFromMap(defMap, "request")
 	if reqMap == nil {
 		return
@@ -2604,7 +2627,7 @@ func buildScatterplotTableJSONFromMap(defMap map[string]interface{}, defJSON map
 		return
 	}
 
-	tableObj := map[string]interface{}{}
+	tableObj := buildEngineJSONFromMap(tableMap, scatterplotInlineDDSQLFields, ctx.block("request", 0).block("scatterplot_table", 0))
 
 	formulaList := getBlockListFromMap(tableMap, "formula")
 	if len(formulaList) > 0 {
@@ -2771,7 +2794,7 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 				if formulaCount > 0 || queryCount > 0 {
 					requests = append(requests, buildFormulaRequestFromMap(reqMap, formulaRequestConfigForWidget(spec.JSONType)))
 				} else {
-					// Old-style request — already built by FieldSpec engine
+					// Legacy or inline DDSQL request, already built by the FieldSpec engine.
 					if existingReqs, ok := defJSON["requests"].([]interface{}); ok && ri < len(existingReqs) {
 						requests = append(requests, existingReqs[ri])
 					}
@@ -2783,7 +2806,7 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 
 	// ---- Scatterplot table ----
 	if spec.JSONType == "scatterplot" {
-		buildScatterplotTableJSONFromMap(defMap, defJSON)
+		buildScatterplotTableJSONFromMap(defMap, defJSON, ctx)
 	}
 
 	// ---- Treemap color_by ----
@@ -2793,7 +2816,7 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 
 	// ---- Query table requests override ----
 	if spec.JSONType == "query_table" {
-		defJSON["requests"] = buildQueryTableRequestsJSONFromMap(defMap)
+		defJSON["requests"] = buildQueryTableRequestsJSONFromMap(defMap, ctx)
 	}
 
 	// ---- Host map infrastructure request ----
@@ -2999,7 +3022,7 @@ func BuildDashboardEngineJSONFromMap(data map[string]interface{}, id string) map
 }
 
 // BuildDashboardEngineJSONFromMapWithRawConfig preserves explicitly configured
-// zero values that SDKv2 omits from decoded nested maps.
+// zero values and distinguishes omitted from explicitly false DDSQL settings.
 func BuildDashboardEngineJSONFromMapWithRawConfig(data map[string]interface{}, id string, rawConfig RawConfigAtReader) map[string]interface{} {
 	return buildDashboardEngineJSONFromMap(data, id, mapBuildContext{rawConfig: rawConfig})
 }
