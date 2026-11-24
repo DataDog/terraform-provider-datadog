@@ -18,7 +18,7 @@ services:
         volumes:
             - ./:/terraform-datadog-provider
     datadog:
-        image: datadog/agent:latest
+        image: registry.datadoghq.com/agent:latest
         networks:
             - test
         environment:
