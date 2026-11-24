@@ -82,7 +82,7 @@ func TestAmazonOpenSearchDestinationFlattenWithoutAuth(t *testing.T) {
 
 func TestObservabilityPipelineUIMetadataRoundTrip(t *testing.T) {
 	ctx := context.Background()
-	for _, metadata := range []types.String{types.StringNull(), types.StringUnknown(), types.StringValue("eyJzaGFyZWRHcm91cCI6Imdyb3VwLTEifQ==")} {
+	for _, metadata := range []types.String{types.StringNull(), types.StringUnknown(), types.StringValue("eyJzaGFyZWRQcm9jZXNzb3JHcm91cElkIjoiZ3JvdXAtMSJ9")} {
 		t.Run(metadata.String(), func(t *testing.T) {
 			inputs, inputDiags := types.ListValueFrom(ctx, types.StringType, []string{"source-1"})
 			require.False(t, inputDiags.HasError())
